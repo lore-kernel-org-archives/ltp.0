@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1SlxN0-00039Q-38
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:17:58 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SlxMv-00073T-Kl
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jul 2012 07:17:58 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q637HkmH006263
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Jul 2012 15:17:47 +0800
-Message-ID: <4FF29C81.9040600@cn.fujitsu.com>
-Date: Tue, 03 Jul 2012 15:17:21 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1Sw3gD-0006Wb-VP
+	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 04:03:33 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Sw3gD-0001aM-9o
+	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 04:03:33 +0000
+Received: by obcva7 with SMTP id va7so10404590obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 30 Jul 2012 21:03:27 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]pthread_cond_broadcast/1-2.c
+In-Reply-To: <ba9ec47929d3aa8783905c1e9061536e515ca9f6.1343703433.git.caspar@casparzhang.com>
+References: <35d6826c595733530915a3467146b9532f427429.1343703433.git.caspar@casparzhang.com>
+	<ba9ec47929d3aa8783905c1e9061536e515ca9f6.1343703433.git.caspar@casparzhang.com>
+Date: Mon, 30 Jul 2012 21:03:27 -0700
+Message-ID: <CAGH67wRjmm5puB_ci+4xcnDBtn-v-OJtjf-Jec5p75o056qPmg@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,46 +31,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Case pthread_cond_broadcast/1-2.c trys to create as many threads and 
-processes as possible which will wait on a condition variable.
+On Mon, Jul 30, 2012 at 7:57 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
+>
+> This patch makes the tests in mem/ dir use numa_helper in libkerntest.
+>
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 
-Unfortunately,if some thread or child process waits overtime(180s) 
-since maybe memory is not enough or whatever, it will call FAILED() and 
-exit without unlocking a global mutex.
+Inline patches are easier to review...
 
-Above-mentioned matter leads to a deadlock when parent process trys to
-pthread_mutex_lock the global mutex,and obviously status FAILED cannot 
-be reahed by parent process.
+>-		tst_brkm(TCONF, NULL, "required a NUMA system.");
+>+		tst_brkm(TCONF, NULL, "require a NUMA system.");
 
-This patch fixes the deadlock problem.
+`requires` is probably what was meant here, but nonetheless the
+comment is incomplete.
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- .../interfaces/pthread_cond_broadcast/1-2.c        |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+> /* shared */
+>-long count_numa(long nodes[]);
+>+unsigned get_a_numa_node(void (*cleanup_fn)(void));
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-index af826ba..f6ad9df 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-@@ -189,9 +189,13 @@ static void *child(void *arg)
- 			timed, td->predicate, ret);
- 		#endif
- 	} while ((ret == 0) && (td->predicate == 0));
--	if (ret == ETIMEDOUT)
-+	if (ret == ETIMEDOUT) {
-+		ret = pthread_mutex_unlock(&td->mtx);
-+		if (ret != 0)
-+			UNRESOLVED(ret, "Failed to unlock the mutex.");
- 		FAILED("Timeout occured. This means a cond signal was lost -- "
- 		       "or parent died");
-+	}
- 	if (ret != 0)
- 		UNRESOLVED(ret, "Failed to wait for the cond");
- 
--- 1.7.7.2 
+Please use `unsigned int`.
+
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
