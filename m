@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Sw3gD-0006Wb-VP
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 04:03:33 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sw3gD-0001aM-9o
-	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 04:03:33 +0000
-Received: by obcva7 with SMTP id va7so10404590obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 30 Jul 2012 21:03:27 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Sw3PX-0005aY-RQ
+	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 03:46:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sw3PV-0000zn-Bp
+	for ltp-list@lists.sourceforge.net; Tue, 31 Jul 2012 03:46:19 +0000
+Message-ID: <501754C1.904@cn.fujitsu.com>
+Date: Tue, 31 Jul 2012 11:45:05 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <ba9ec47929d3aa8783905c1e9061536e515ca9f6.1343703433.git.caspar@casparzhang.com>
-References: <35d6826c595733530915a3467146b9532f427429.1343703433.git.caspar@casparzhang.com>
-	<ba9ec47929d3aa8783905c1e9061536e515ca9f6.1343703433.git.caspar@casparzhang.com>
-Date: Mon, 30 Jul 2012 21:03:27 -0700
-Message-ID: <CAGH67wRjmm5puB_ci+4xcnDBtn-v-OJtjf-Jec5p75o056qPmg@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+References: <3ED83A9DB3B6D94CA68BF7C03F2981D35B18E7912E@EXDCVYMBSTM006.EQ1STM.local>
+In-Reply-To: <3ED83A9DB3B6D94CA68BF7C03F2981D35B18E7912E@EXDCVYMBSTM006.EQ1STM.local>
+Subject: Re: [LTP] Failure of syscalls in kernel version 3.4
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,31 +28,134 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Om Prakash PAL <omprakash.pal@stericsson.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Mon, Jul 30, 2012 at 7:57 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
->
-> This patch makes the tests in mem/ dir use numa_helper in libkerntest.
->
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+On 07/02/2012 02:49 PM, Om Prakash PAL wrote:
+> Hi,
+> 
+> I am currently using ltp-full-20110915.bz2.
+> 
+> When I switched to  kernel 3.4(from kernel 3.0)  then these syscalls ltp are failing.
+> 
+> [1].*get_robust_list01*
+> 
+> *get_robust_list01    1  TPASS  :  get_robust_list failed as expected with EFAULT *
+> 
+> *get_robust_list01    2  TPASS  :  get_robust_list failed as expected with EFAULT *
+> 
+> *get_robust_list01    3  TPASS  :  get_robust_list failed as expected with ESRCH *
+> 
+> *get_robust_list01    4  TFAIL  :  get_robust_list succeeded unexpectedly *
 
-Inline patches are easier to review...
+This is already fixed, please refer to this commit
+https://github.com/linux-test-project/ltp/commit/d28ecfa1f14b62ad779db38164ce54d3adfc7425
 
->-		tst_brkm(TCONF, NULL, "required a NUMA system.");
->+		tst_brkm(TCONF, NULL, "require a NUMA system.");
+> 
+> *get_robust_list01    5  TPASS  :  get_robust_list succeeded *
+> 
+> * *
+> 
+> *[2].**gettimeofday02*
+> 
+> *gettimeofday02    0  TINFO  :  checking if gettimeofday is monotonous, takes 30s *
+> 
+> *gettimeofday02    1  TFAIL  :  Time is going backwards: old 946*
+> 
+> * *
+> 
+> *[3].**lseek03*
+> 
+> *lseek03     1  TFAIL  :  lseek(tfile_16887, 1, 4) Failed, errno=6 No such device or address, expected 22(EINVAL) *
+> 
+> *lseek03     2  TPASS  :  lseek(tfile_16887, 1, -1) Failed, errno=22 : Invalid argument *
+> 
+> *lseek03     3  TPASS  :  lseek(tfile_16887, 1, 7) Failed, errno=22 : Invalid argument *
+> 
 
-`requires` is probably what was meant here, but nonetheless the
-comment is incomplete.
+This is fixed by commit https://github.com/linux-test-project/ltp/commit/423e636a4c8f2b04cd0407e91d7b7091f37e47b4
 
-> /* shared */
->-long count_numa(long nodes[]);
->+unsigned get_a_numa_node(void (*cleanup_fn)(void));
 
-Please use `unsigned int`.
+> * *
+> 
+> *[4].**readlink03*
+> 
+> *readlink03    1  TPASS  :  readlink(), No Search permissions to process, returned errno 13 *
+> 
+> *readlink03    2  TPASS  :  readlink(), No Search permissions to process, returned errno 13 *
+> 
+> *readlink03    3  TPASS  :  readlink(), Buffer size is not positive, returned errno 22 *
+> 
+> *readlink03    4  TPASS  :  readlink(), Buffer size is not positive, returned errno 22 *
+> 
+> *readlink03    5  TPASS  :  readlink(), File is not symbolic link, returned errno 22 *
+> 
+> *readlink03    6  TPASS  :  readlink(), File is not symbolic link, returned errno 22 *
+> 
+> *readlink03    7  TPASS  :  readlink(), Symlink path too long, returned errno 36 *
+> 
+> *readlink03    8  TPASS  :  readlink(), Symlink path too long, returned errno 36 *
+> 
+> *readlink03    9  TFAIL  :  readlink() failed, Symlink Pathname is empty, errno=2, expected errno=22 *
+
+This is fixed by commit https://github.com/linux-test-project/ltp/commit/dc9df862a95db96b7046623659ceaf911a583ce7
+
+
+and so on, if you meet further FAIL like these, please use upstream version of LTP,
+you can get from git://github.com/linux-test-project/ltp.git .
+And, if the upstream version also has problems, please feel free to send a patch here.
 
 Thanks,
--Garrett
+Wanlong Gao
+
+> 
+> * *
+> 
+> *[5]**shmat01*
+> 
+> *shmat01     1  TFAIL  :  shmat call failed: TEST_ERRNO=EINVAL(22): Invalid argument *
+> 
+> * *
+> 
+> *[6]**sysctl01*
+> 
+> *sysctl01    1  TFAIL  :  sysctl(2) failed unexpectedly errno:38 *
+> 
+> *sysctl01    2  TFAIL  :  sysctl(2) failed unexpectedly errno:38 *
+> 
+> *sysctl01    3  TFAIL  :  sysctl(2) failed unexpectedly errno:38 *
+> 
+> * *
+> 
+> *any idea why these testcases are failing now?.*
+> 
+> *How can I resolve it?.*
+> 
+> * *
+> 
+> *Best Regards,*
+> 
+> *Om Prakash Pal*
+> 
+>  
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
