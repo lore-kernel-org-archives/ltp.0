@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SzkNe-0005Yr-2q
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:15:38 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzkNZ-0002po-Om
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:15:38 +0000
-Message-ID: <5024C1FF.6010301@redhat.com>
-Date: Fri, 10 Aug 2012 16:10:39 +0800
-From: Zhouping Liu <zliu@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SwW64-0002bW-7z
+	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 10:24:08 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SwW5y-0000oA-Fc
+	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 10:24:08 +0000
+Date: Wed, 1 Aug 2012 06:23:55 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <17388238.6846564.1343816635852.JavaMail.root@redhat.com>
+In-Reply-To: <5018EF13.2040604@casparzhang.com>
 MIME-Version: 1.0
-References: <cover.1344492473.git.caspar@casparzhang.com>
-	<953f8552c3db0f5f4caa7997d7468af5cee0a851.1344508300.git.caspar@casparzhang.com>
-In-Reply-To: <953f8552c3db0f5f4caa7997d7468af5cee0a851.1344508300.git.caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH resend v2 3/6] syscalls/numa: check syscall
-	availability
+Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,131 +23,153 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7594567115931303706=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Caspar Zhang <caspar@casparzhang.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---===============7594567115931303706==
-Content-Type: multipart/alternative;
-	boundary="------------020908050804020307000906"
-
-This is a multi-part message in MIME format.
---------------020908050804020307000906
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 08/09/2012 06:31 PM, Caspar Zhang wrote:
-> some NUMA related syscalls: mbind, get_mempolicy are not supported on
-> some arches (e.g. i386), this patch checks the syscalls' availability in
-> setup() function by using the macro syscall() implemented in
-> linux_syscall_numbers.h, if the syscall is not implemented on the
-> system, a TCONF message will be given like this:
->
-> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
->
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-
-Reviewed-by: Zhouping Liu <zliu@redhat.com>
-
-Thanks,
-Zhouping
-
-> ---
->   .../syscalls/get_mempolicy/get_mempolicy01.c       |    3 +++
->   testcases/kernel/syscalls/mbind/mbind01.c          |    3 +++
->   2 files changed, 6 insertions(+), 0 deletions(-)
->
->
->
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
---------------020908050804020307000906
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, 1 August, 2012 10:55:47 AM
+> Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+> 
+> On 07/31/2012 03:38 PM, Jan Stancek wrote:
+> > Hi Caspar,
+> >
+> > ------- snip --------
+> > +	ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 2, &nd1, &nd2);
+> > +	switch (ret) {
+> > +	case 0:
+> > +		tst_resm(TINFO, "get node%lu.", nd2);
+> > +		return nd2;
+> > +	case -3:
+> > +		/*
+> > +		 * for unbalanced NUMA systems, at least 1 available node is
+> > +		 * required.
+> > +		 */
+> > +		ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 1, &nd1);
+> > +		switch (ret) {
+> > +		case 0:
+> > +			tst_resm(TINFO, "get node%lu.", nd1);
+> > +			return nd1;
+> > +		case -3:
+> > +			tst_brkm(TCONF, cleanup_fn, "require a NUMA system "
+> > +				    "that has at least one node with both "
+> > +				    "memory and cpu available.");
+> > +		default:
+> > +			tst_brkm(TBROK|TERRNO, cleanup_fn,
+> > +				    "3rd get_allowed_nodes");
+> > +		}
+> > +	}
+> > +	tst_brkm(TBROK|TERRNO, cleanup_fn, "2nd get_allowed_nodes");
+> > ------- snip --------
+> >
+> > I'm not sure I follow this snippet.
+> > So if there are 2+ nodes, it takes second one. If there is just
+> > one, it will take that one.
+> > Can't it take always first one?
+> 
+> It was the original design. Since a non-NUMA system have 1 node, the
+> first (and the only) node should have been tested already in
+> ksm01/oom01/etc cases. To increase test coverage, we chose 2nd node
+> on
+> NUMA system.
+> 
+> As to the fallback to 1 node design, if an unbalanced system only
+> contains 1 available node, we still want to test NUMA in separate
+> case,
+> ksm01/oom01/etc cases would probably fail to cover it.
+Agreed, having separate testcase for NUMA makes sense.
 
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">On 08/09/2012 06:31 PM, Caspar Zhang
-      wrote:<br>
-    </div>
-    <blockquote
-cite="mid:953f8552c3db0f5f4caa7997d7468af5cee0a851.1344508300.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
-some NUMA related syscalls: mbind, get_mempolicy are not supported on
-some arches (e.g. i386), this patch checks the syscalls' availability in
-setup() function by using the macro syscall() implemented in
-linux_syscall_numbers.h, if the syscall is not implemented on the
-system, a TCONF message will be given like this:
-
-get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
-
-Signed-off-by: Caspar Zhang <a class="moz-txt-link-rfc2396E" href="mailto:caspar@casparzhang.com">&lt;caspar@casparzhang.com&gt;</a></pre>
-    </blockquote>
-    <br>
-    Reviewed-by: Zhouping Liu <a class="moz-txt-link-rfc2396E" href="mailto:zliu@redhat.com">&lt;zliu@redhat.com&gt;</a><br>
-    <br>
-    Thanks,<br>
-    Zhouping<br>
-    <br>
-    <blockquote
-cite="mid:953f8552c3db0f5f4caa7997d7468af5cee0a851.1344508300.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |    3 +++
- testcases/kernel/syscalls/mbind/mbind01.c          |    3 +++
- 2 files changed, 6 insertions(+), 0 deletions(-)
-
-</pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------020908050804020307000906--
+> 
+> Do you think it will affect test coverage if we always test first
+> node?
+I'm leaning towards "no". I'm assuming oom01 is using default mem policy,
+so it can allocate memory from any node (including second one).
 
 
---===============7594567115931303706==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Issue 2.
+--------
+I noticed you put call to "get_a_numa_node()" to "oom()" and "testoom()",
+which is called also from oom01. As I understand from your previous
+email, this test should not be NUMA-aware, correct?
+
+<<<test_start>>>
+tag=oom01 stime=1343713154
+cmdline="oom01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+oom01       0  TINFO  :  set overcommit_memory to 2
+oom01       1  TCONF  :  require a NUMA system.
+oom01       2  TCONF  :  Remaining cases not appropriate for configuration
+oom01       0  TINFO  :  set overcommit_memory to 0
+<<<execution_status>>>
+
+Regards,
+Jan
+
+> 
+> Thanks,
+> Caspar
+> >
+> > Regards,
+> > Jan
+> >
+> >
+> > ----- Original Message -----
+> >> From: "Caspar Zhang" <caspar@casparzhang.com>
+> >> To: "LTP List" <ltp-list@lists.sourceforge.net>
+> >> Sent: Tuesday, 31 July, 2012 4:57:19 AM
+> >> Subject: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+> >>
+> >>
+> >> This patch makes the tests in mem/ dir use numa_helper in
+> >> libkerntest.
+> >>
+> >> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> >> ---
+> >>   testcases/kernel/mem/cpuset/Makefile           |    1 +
+> >>   testcases/kernel/mem/cpuset/cpuset01.c         |   16 +++---
+> >>   testcases/kernel/mem/hugetlb/Makefile.inc      |    1 +
+> >>   testcases/kernel/mem/hugetlb/hugemmap/Makefile |    1 +
+> >>   testcases/kernel/mem/include/mem.h             |    2 +-
+> >>   testcases/kernel/mem/ksm/Makefile              |    1 +
+> >>   testcases/kernel/mem/ksm/ksm02.c               |    9 ++--
+> >>   testcases/kernel/mem/ksm/ksm04.c               |    9 ++--
+> >>   testcases/kernel/mem/lib/Makefile              |    1 +
+> >>   testcases/kernel/mem/lib/mem.c                 |   61
+> >>   +++++++++++++++++------
+> >>   testcases/kernel/mem/oom/Makefile              |    1 +
+> >>   testcases/kernel/mem/oom/oom02.c               |    4 --
+> >>   testcases/kernel/mem/oom/oom04.c               |    4 --
+> >>   testcases/kernel/mem/swapping/Makefile         |    1 +
+> >>   testcases/kernel/mem/thp/Makefile              |    1 +
+> >>   testcases/kernel/mem/tunable/Makefile          |    1 +
+> >>   16 files changed, 71 insertions(+), 43 deletions(-)
+> >>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Live Security Virtual Conference
+> >> Exclusive live event will cover all the ways today's security and
+> >> threat landscape has changed and how IT managers can respond.
+> >> Discussions
+> >> will include endpoint security, mobile security and the latest in
+> >> malware
+> >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >>
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -158,16 +177,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============7594567115931303706==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7594567115931303706==--
-
