@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1T4RXa-00008U-DN
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 07:09:18 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T4RXZ-0007Sb-F3
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 07:09:18 +0000
-Date: Thu, 23 Aug 2012 03:09:08 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1624892809.9377039.1345705748634.JavaMail.root@redhat.com>
-In-Reply-To: <5035CBF7.3020407@windriver.com>
+	(envelope-from <caspar@casparzhang.com>) id 1SwX3T-0004Xj-3q
+	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 11:25:31 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SwX3S-0003iQ-Bk
+	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 11:25:31 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rq2so862702pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 01 Aug 2012 04:25:30 -0700 (PDT)
+Message-ID: <50191221.5070301@casparzhang.com>
+Date: Wed, 01 Aug 2012 19:25:21 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+References: <17388238.6846564.1343816635852.JavaMail.root@redhat.com>
+In-Reply-To: <17388238.6846564.1343816635852.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,82 +27,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkthbmcgS2FpIiA8S2FpLkth
-bmdAd2luZHJpdmVyLmNvbT4KPiBUbzogIkphbiBTdGFuY2VrIiA8anN0YW5jZWtAcmVkaGF0LmNv
-bT4sIGdhb3dhbmxvbmdAY24uZnVqaXRzdS5jb20KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0LCAiWmhlbmZlbmcgWmhhbyIgPFpoZW5mZW5nLlpoYW9Ad2luZHJpdmVyLmNvbT4K
-PiBTZW50OiBUaHVyc2RheSwgMjMgQXVndXN0LCAyMDEyIDg6MjE6NDMgQU0KPiBTdWJqZWN0OiBS
-ZTogW0xUUF0gW1BBVENIXSBwdGhyZWFkX2RldGFjaC80LTM6IHdvcmthcm91bmQgZm9yIHNlZ21l
-bnQgZmF1bHQKPiAKPiBPbiAyMDEy5bm0MDjmnIgyMuaXpSAyMjoyMCwgSmFuIFN0YW5jZWsgd3Jv
-dGU6Cj4gPiBPbiAwOC8yMi8yMDEyIDEwOjU4IEFNLCBKYW4gU3RhbmNlayB3cm90ZToKPiA+Pgo+
-ID4+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+Pj4gRnJvbTogIkthbmcgS2FpIjxL
-YWkuS2FuZ0B3aW5kcml2ZXIuY29tPgo+ID4+PiBUbzogIkphbiBTdGFuY2VrIjxqc3RhbmNla0By
-ZWRoYXQuY29tPgo+ID4+PiBDYzogZ2Fvd2FubG9uZ0Bjbi5mdWppdHN1LmNvbSwgbHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0LAo+ID4+PiAiWmhlbmZlbmcgWmhhbyI8WmhlbmZlbmcuWmhh
-b0B3aW5kcml2ZXIuY29tPgo+ID4+PiBTZW50OiBXZWRuZXNkYXksIDIyIEF1Z3VzdCwgMjAxMiAx
-MDoyODo1OSBBTQo+ID4+PiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIXSBwdGhyZWFkX2RldGFj
-aC80LTM6IHdvcmthcm91bmQgZm9yCj4gPj4+IHNlZ21lbnQgZmF1bHQKPiA+Pj4gSGkgSmFuLAo+
-ID4+Pgo+ID4+Pj4gSXMgdGhlIGFib3ZlIG91dHB1dCBmcm9tIG1pcHMgb3IgeDg2XzY0Pwo+ID4+
-Pj4gQXJlIHlvdSBydW5uaW5nIGl0IGFzIHJvb3QgdXNlcj8KPiA+Pj4gVGhpcyB3YXMgdGVzdGVk
-IG9uIHg4Nl82NCB3aXRoIHVucHJpdmlsZWdlZCAgdXNlci4gSSByZXRlc3QgaXQKPiA+Pj4gd2l0
-aAo+ID4+PiByb290Cj4gPj4+IGFuZCB0ZXN0IHBhc3Nlcy4KPiA+PiBZb3VyIHVucHJpdmlsZWdl
-ZCB1c2VyIGlzIGhpdHRpbmcgc29tZSByZXNvdXJjZSBsaW1pdCwgSSdkIGJlCj4gPj4gaW50ZXJl
-c3RlZAo+ID4+IHRvIHNlZSBob3cgbWFueSB0aHJlYWRzIGFyZSBhY3R1YWxseSBydW5uaW5nIGF0
-IHRoZSBzYW1lIHRpbWUuCj4gPj4KPiA+Pj4gSXQgcGFzc2VzIG9uIHJvdXRlcnN0YXRpb24obWlw
-cykgd2l0aCB5b3VyIHBhdGNoIHRvby4KPiA+Pj4gU28gaXQgbG9va3MgbGlrZSBhIHJhY2UgY29u
-ZGl0aW9uIGlzc3VlIGFib3V0IHN0YWNrIGF0dHJpYnV0ZQo+ID4+PiBiZXR3ZWVuCj4gPj4+IHRo
-cmVhZHMsIHJpZ2h0Pwo+ID4+IEkgdGhpbmsgc28uIFdlIGNhbiB0cnkgZGlmZmVyZW50IHdheSBv
-ZiBzaWduYWxsaW5nIHdoZW4gdGhyZWFkZWQoKQo+ID4+IGlzIGRvbmUKPiA+PiBhbmQgdHJ5IGl0
-IGFnYWluIHdpdGggYWxsIHNjZW5hcmlvcy4KPiA+IEkgdGhpbmsgdGhpcyB0ZXN0Y2FzZSBpcyBi
-cm9rZW4gaW4gbW9yZSB0aGFuIDEgd2F5LiBBdCBsZWFzdCBvbiBteQo+ID4gc2V0dXAsIEkgZG9u
-J3Qgc2VlCj4gPiBhIHNpbmdsZSBwdGhyZWFkX2RldGFjaCgpIHdoaWxlIHNpZ25hbHMgYXJlIGZp
-cmluZyAtIHdoaWNoIGlzCj4gPiBleGFjdGx5IGdvYWwgb2YgdGhpcyB0ZXN0Lgo+ID4KPiA+IFdp
-dGggZm9sbG93aW5nIGNoYW5nZToKPiA+Cj4gPiBkaWZmIC0tZ2l0Cj4gPiBhL3Rlc3RjYXNlcy9v
-cGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNo
-LzQtMy5jCj4gPiBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW4KPiA+
-IGluZGV4IGRmYTZlMTkuLjQ4ZTEzNDMgMTAwNjQ0Cj4gPiAtLS0KPiA+IGEvdGVzdGNhc2VzL29w
-ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gv
-NC0zLmMKPiA+ICsrKwo+ID4gYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
-bWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+ID4gQEAgLTI3Nyw2ICsyNzYs
-NyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+ID4gICAgICAgICAgICAgICAg
-ICBkb19pdDEgPSAwOwo+ID4gICAgICAgICAgfSB3aGlsZSAoZG9faXQxKTsKPiA+Cj4gPiArICAg
-ICAgIG91dHB1dCgiICAlZCB0aHJlYWQgZGV0YWNoZWQgd2hpbGUgc2lnbmFscyB3ZXJlIGZpcmlu
-Zy5cbiIsCj4gPiBjb3VudF9vcGUpOwo+ID4gICAgICAgICAgc2xlZXAoMSk7Cj4gPgo+ID4gICAg
-ICAgICAgZG8gewo+ID4KPiA+IEkgZ2V0Ogo+ID4gWzE2OjExOjIzXSAgMSB0aHJlYWQgZGV0YWNo
-ZWQgd2hpbGUgc2lnbmFscyBhcmUgZmlyaW5nLgo+ID4gWzE2OjExOjI0XVRlc3QgZXhlY3V0ZWQg
-c3VjY2Vzc2Z1bGx5Lgo+ID4gWzE2OjExOjI0XSAgNzc4NjUgdGhyZWFkIGRldGFjaGVkLgo+ID4K
-PiA+IGFuZCB0aGF0IHJlcG9ydGVkICIxIiBpcyBob3cgbWFueSB0aHJlYWRzIGF0dGVtcHRlZCB0
-byBjYWxsCj4gPiBwdGhyZWFkX2RldGFjaCwgbm90IGhvdyBtYW55IGFjdHVhbGx5Cj4gPiBzdWNj
-ZWVkZWQuIFNpZ25hbHMgYXJlIGZpcmluZyBzbyBmcmVxdWVudGx5IHRoYXQgdGhyZWFkZWQoKSBj
-YW4ndAo+ID4gcHJvZ3Jlc3MgYXQgYWxsLgoKPiBUaGVuIGhvdyBkbyB3ZSBmaXggdGhpcyBjYXNl
-PyBzeW5jIHNlbmRpbmcgdGhlIHNpZ25hbHMgd2l0aAo+IHB0aHJlYWRfZGV0YWNoPwoKSSB3YXMg
-dGhpbmtpbmcgdXNsZWVwKHNsZWVwX3RpbWUpIHRoYXQgcHJvZ3Jlc3NpdmVseSBpbmNyZWFzZXMu
-IFNvIGl0CnN0YXJ0cyBmaXJpbmcgc2lnbmFscyBhcyBxdWlja2x5IGFzIGl0IGNhbiBhbmQgc2xv
-d3MgZG93biBvdmVyIHRpbWUuCkVhY2ggcHRocmVhZF9kZXRhY2goKSB3b3VsZCByZXNldCB0aGUg
-c2xlZXBfdGltZS4KCkFzIGZvciBvdXIgb3JpZ2luYWwgaXNzdWUsIGlkZWEgSSdtIHBsYXlpbmcg
-d2l0aCBpczoKCm1haW4gKHByb2NBKSAtIGRvX2NoaWxkIChwcm9jQikgLSBzZW5kX3NpZyAodGhy
-ZWFkKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwgCiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB0ZXN0ICh0aHJlYWQpIC0gdGhyZWFkZWQgKGRldGFjaGVkIHRocmVh
-ZCkKCi0gdHVybiAnd2hpbGUnIGluIHRlc3QoKSB0byBzaW5nbGUgJ2ZvcicgbG9vcAotIGxvb3Ag
-aW4gbWFpbiwgZm9yayBhbmQgY2FsbCBkb19jaGlsZCwgd2FpdCBmb3IgY2hpbGQgdG8gZmluaXNo
-CgpUaGlzIHdheSB3ZSBjYW4gYmUgc3VyZSwgdGhhdCB3ZSBkb24ndCByZXVzZSBzYW1lIHN0YWNr
-IGZvciBtdWx0aXBsZSB0aHJlYWRzLAphbmQgd2UgY2FuIGFsc28gYmUgc3VyZSwgdGhlcmUgd29u
-J3QgYmUgbW9yZSB0aGFuIE5TQ0VOQVIgdGhyZWFkcywgc28gdW5wcml2aWxlZ2VkCnVzZXIgc2hv
-dWxkIG5vdCBydW4gb3V0IG9mIHJlc291cmNlcy4KClJlZ2FyZHMsCkphbgoKPiAKPiBXYW5sb25n
-LCBhbnkgY29tbWVudHM/Cj4gCj4gVGhhbmtzLAo+IEthaQo+IAo+ID4KPiA+IFJlZ2FyZHMsCj4g
-PiBKYW4KPiA+Cj4gCj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0
-dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdh
-eXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5k
-IGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBl
-bmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdh
-cmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIv
-MTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On 08/01/2012 06:23 PM, Jan Stancek wrote:
+>> >Do you think it will affect test coverage if we always test first
+>> >node?
+> I'm leaning towards "no". I'm assuming oom01 is using default mem policy,
+> so it can allocate memory from any node (including second one).
+
+OK, I think I'm agreeing with you now. If there's no objection, I'll 
+update my patch to choose 1st node to simplify the code.
+
+Caspar
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
