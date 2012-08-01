@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T3Gxu-0007jv-UI
-	for ltp-list@lists.sourceforge.net; Mon, 20 Aug 2012 01:39:38 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T3Gxt-0000Ht-Pw
-	for ltp-list@lists.sourceforge.net; Mon, 20 Aug 2012 01:39:38 +0000
-Message-ID: <5031955A.5060506@windriver.com>
-Date: Mon, 20 Aug 2012 09:39:38 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1SwgLx-0007dq-Sv
+	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 21:21:13 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SwgLt-0002wH-7Z
+	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 21:21:13 +0000
+Received: by obcva7 with SMTP id va7so13311338obc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 01 Aug 2012 14:21:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
-	<50301E06.9000102@cn.fujitsu.com>
-In-Reply-To: <50301E06.9000102@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+In-Reply-To: <201208011647.55852.vapier@gentoo.org>
+References: <CAO8ONPyEzsnxpivfG-Jw=5YyzmPdzW2JyVCJrH0i8PkSqDX7tg@mail.gmail.com>
+	<201208011647.55852.vapier@gentoo.org>
+Date: Wed, 1 Aug 2012 14:21:03 -0700
+Message-ID: <CAGH67wRjM+ifREgSNpLYK6u99Q4MHa1g25c9Z1+RRb17mMgQOA@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP on ARMV7
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +28,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Vanni Genua <vannigenua@gmail.com>
 
-T24gMjAxMuW5tDA45pyIMTnml6UgMDY6NTgsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IE9uIDA4LzE0
-LzIwMTIgMDU6MDAgUE0sIEthbmcgS2FpIHdyb3RlOgo+PiBUaGlzIGNhc2UgZmFpbHMgcmFuZG9t
-bHkgd2l0aCAiU2VnbWVudGF0aW9uIGZhdWx0Ii4gUmVzZXQgVkVSQk9TRSB0byA2Cj4+IGNhbiBh
-dm9pZCB0aGlzIHByb2JsZW0uCj4gQ2FuIHlvdSBleHBsYWluIHRoYXQgd2h5ICJyZXNldCBWRVJC
-T1NFIiBjYW4gYXZvaWQgdGhpcyAiU2VnIEZhdWx0IiBwcm9ibGVtPwpJdCBpcyBhIG11bHRpLXRo
-cmVhZCBpc3N1ZS4gWW91IGNhbiBydW4gaXQgZm9yIGxlc3MgdGhhbiAxMCB0aW1lcywgYW5kIApp
-dCB3aWxsIGZhaWwgd2l0aCAiU2VnbWVudGF0aW9uIGZhdWx0Ii4KSXQgaXMgaGFyZCB0byBkZWJ1
-ZyBhbmQgSSBkaWRuJ3QgZmluZCB0aGUgcm9vdCBjYXVzZSwgYnV0IG9wZW4gdGhlIApWRVJCT1NF
-IHdpbGwgYXZvaWQgdGhpcyBzaXR1YXRpb24uIFNvIGl0IGlzIGEgd29ya2Fyb3VuZC4KClJlZ2Fy
-ZHMsCkthaQoKPgo+PiBGaXggdHlwbyBhdCBzYW1lIHRpbWUuCj4gVGhlIHR5cG8gZml4IGlzIE9L
-Lgo+Cj4gVGhhbmtzLAo+IFdhbmxvbmcgR2FvCj4KPj4gU2lnbmVkLW9mZi1ieTogS2FuZyBLYWk8
-a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KPj4gLS0tCj4+ICAgLi4uL2NvbmZvcm1hbmNlL2ludGVy
-ZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMgICAgfCAgICA0ICsrLS0KPj4gICAxIGZpbGVzIGNo
-YW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBh
-L3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0
-aHJlYWRfZGV0YWNoLzQtMy5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZv
-cm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4gaW5kZXggNWMxNWU5My4u
-MjM3MzhkYyAxMDA2NDQKPj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2Nv
-bmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4gKysrIGIvdGVzdGNh
-c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9k
-ZXRhY2gvNC0zLmMKPj4gQEAgLTQ5LDcgKzQ5LDcgQEAKPj4gICAjaW5jbHVkZSAiLi4vdGVzdGZy
-bXcvdGVzdGZybXcuYyIKPj4KPj4gICAjaWZuZGVmIFZFUkJPU0UKPj4gLSNkZWZpbmUgVkVSQk9T
-RSAxCj4+ICsjZGVmaW5lIFZFUkJPU0UgNgo+PiAgICNlbmRpZgo+Pgo+PiAgICNkZWZpbmUgV0lU
-SF9TWU5DSFJPCj4+IEBAIC0yODEsNyArMjgxLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
-KmFyZ3ZbXSkKPj4KPj4gICAJZG8gewo+PiAgIAkJZG9faXQyID0gMDsKPj4gLQl9IHdoaWxlIChk
-b19pdDIgPSAwKTsKPj4gKwl9IHdoaWxlIChkb19pdDIpOwo+Pgo+PiAgIAlyZXQgPSBwdGhyZWFk
-X2pvaW4odGhfc2lnMSwgTlVMTCk7Cj4+ICAgCWlmIChyZXQpCj4+Cj4KCgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUg
-ZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVh
-dCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4g
-RGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3Vy
-aXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxh
-Y29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRw
-LWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
-L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Wed, Aug 1, 2012 at 1:47 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Monday 02 July 2012 11:27:45 Vanni Genua wrote:
+>> anybody know if LTP support ARMv7 and not only x86 architecture?
+>
+> LTP doesn't really care about the architecture.  it works on any CPU.
+
+- You may run into ARM bugs (in which case, patches are welcome after
+some investigation).
+- You will need to roll your own builds; once upon a time some RPMs
+and other binaries for LTP were produced and distributed by the
+project, but that kind of died out after some of the contributors got
+too busy or left the project.
+Thanks!
+-Garrett
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
