@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T0kk3-0007vI-CE
-	for ltp-list@lists.sourceforge.net; Mon, 13 Aug 2012 02:50:55 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T0kk0-0000yM-JA
-	for ltp-list@lists.sourceforge.net; Mon, 13 Aug 2012 02:50:55 +0000
-Message-ID: <50286B90.90104@windriver.com>
-Date: Mon, 13 Aug 2012 10:50:56 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
-MIME-Version: 1.0
-References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
-	<1344508258-25054-2-git-send-email-kai.kang@windriver.com>
-	<5024E0F0.3080406@redhat.com>
-In-Reply-To: <5024E0F0.3080406@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] pthread_cond_signal/1-1: use sched_yield to
- sync	threads
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1SwyMm-0002YQ-86
+	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 16:35:16 +0000
+Received: from rcsinet15.oracle.com ([148.87.113.117])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SwyMh-0000F1-EX
+	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 16:35:16 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by rcsinet15.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
+	ESMTP id q72GZ5Ja005306
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Aug 2012 16:35:05 GMT
+From: Simon Xu <xu.simon@oracle.com>
+Date: Fri,  3 Aug 2012 00:34:55 +0800
+Message-Id: <1343925295-1884-1-git-send-email-xu.simon@oracle.com>
+Subject: [LTP] [PATCH 1/1] fix container_ftp.pl
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,123 +26,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: OEL-QA_WW@oracle.com
 
-T24gMjAxMuW5tDA45pyIMTDml6UgMTg6MjIsIEphbiBTdGFuY2VrIHdyb3RlOgo+IEhpLApIaSBK
-YW4sCgpUaGFua3MgZm9yIHlvdXIgcmVwbHkuCj4gSGVyZSdzIGEgZGlmZmVyZW50IHByb3Bvc2Fs
-OiBkb24ndCBjb3VudCBob3cgbWFueSBwdGhyZWFkX2NvbmRfc2lnbmFscyBpdCB0b29rLAo+IGlm
-IGFueSBmYWlscyBTSUdBTFJNIHdpbGwgdHJpZ2dlciB0ZXN0Y2FzZSBmYWlsdXJlLgpUaGF0IGlz
-IGEgbW9yZSBzaW1wbGUgc29sdXRpb24sIGFuZCBJIGFncmVlIHdpdGggeW91LgoKUmVnYXJkcywK
-S2FpCgo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25m
-b3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfY29uZF9zaWduYWwvMS0xLmMgYi90ZXN0Y2FzZXMv
-b3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2NvbmRf
-c2lnbmFsLzEtMS5jCj4gaW5kZXggYmY1NWIzMS4uMjY2ZDQyZiAxMDA2NDQKPiAtLS0gYS90ZXN0
-Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFk
-X2NvbmRfc2lnbmFsLzEtMS5jCj4gKysrIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9jb25kX3NpZ25hbC8xLTEuYwo+IEBAIC0x
-MzQsOSArMTM0LDcgQEAgaW50IG1haW4oKQo+ICAgCWFsYXJtKDUpOwo+Cj4gICAJLyogbG9vcCB0
-byB3YWtlIHVwIHRoZSByZXN0IHRocmVhZHMgKi8KPiAtCWk9MDsKPiAtCXdoaWxlICh3YWtlbl9u
-dW08ICBUSFJFQURfTlVNKSB7Cj4gLQkJKytpOwo+ICsJZm9yIChpPTE7IGk8VEhSRUFEX05VTTsg
-aSsrKSB7Cj4gICAJCWZwcmludGYoc3RkZXJyLCJbTWFpbiB0aHJlYWRdIHNpZ25hbHMgdG8gd2Fr
-ZSB1cCB0aGUgbmV4dCB0aHJlYWRcbiIpOwo+ICAgCQlpZiAocHRocmVhZF9jb25kX3NpZ25hbCgm
-dGQuY29uZCkgIT0gMCkgewo+ICAgCQkJZnByaW50ZihzdGRlcnIsIk1haW4gZmFpbGVkIHRvIHNp
-Z25hbCB0aGUgY29uZGl0aW9uXG4iKTsKPiBAQCAtMTQ1LDEyICsxNDMsNiBAQCBpbnQgbWFpbigp
-Cj4gICAJCXVzbGVlcCgxMDApOwo+ICAgCX0KPgo+IC0JaWYgKGk+PSBUSFJFQURfTlVNKSB7Cj4g
-LQkJZnByaW50ZihzdGRlcnIsIltNYWluIHRocmVhZF0gaGFkIHRvIHNpZ25hbCB0aGUgY29uZGl0
-aW9uICVpIHRpbWVzXG4iLCBpKzEpOwo+IC0JCWZwcmludGYoc3RkZXJyLCJbTWFpbiB0aHJlYWRd
-IHRvIHdha2UgdXAgJWkgdGhyZWFkc1xuLiBUZXN0IEZBSUxFRC5cbiIsIFRIUkVBRF9OVU0pOwo+
-IC0JCWV4aXQoUFRTX0ZBSUwpOwo+IC0JfQo+IC0KPiAgIAkvKiBqb2luIGFsbCBzZWNvbmRhcnkg
-dGhyZWFkcyAqLwo+ICAgCWZvciAoaT0wOyBpPFRIUkVBRF9OVU07IGkrKykgewo+ICAgCSAgICAJ
-aWYgKHB0aHJlYWRfam9pbih0aHJlYWRbaV0sIE5VTEwpICE9IDApIHsKPgo+IFJlZ2FyZHMsCj4g
-SmFuCj4KPiBPbiAwOC8wOS8yMDEyIDEyOjMwIFBNLCBLYW5nIEthaSB3cm90ZToKPj4gVGhpcyBj
-YXNlIGZhaWxzIG9uIG1pcHMgYm9hcmQgcm91dGVyc3RhdGlvbiByYW5kb21seS4gVGhlIHJvb3Qg
-Y2F1c2UgaXMKPj4gdGhhdCB3aGVuIG1haW4gdGhyZWFkIGNhbGwgdXNsZWVwKDEwMCkgYWZ0ZXIg
-c2lnbmFsIHRoZSBjaGlsZCB0aHJlYWRzLAo+PiBubyBjaGlsZCB0aHJlYWQgaXMgc2NoZWR1bGVk
-IHRvIHJ1bi4gIFNvIHRoZSBjYXNlIGZhaWxzLgo+Pgo+PiBJIHVwZGF0ZSBpdCB0byBzZXQgbWFp
-biB0aHJlYWQgd2l0aCBhIGxvd2VyIHByaW9yaXR5IGFuZCBjaGlsZCB0aHJlYWRzCj4+IHdpdGgg
-YSBoaWdoZXIgb25lLCB0aGVuIGNhbGwgc2NoZWRfeWllbGQgYW5kIHVzbGVlcCBpbiBtYWluIHRo
-cmVhZCB3aWxsCj4+IG1ha2Ugc3VyZSB0aGF0IG9uZSBvZiB0aGUgY2hpbGQgdGhyZWFkcyB3aWxs
-IGJlIHNjaGVkdWxlZC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogS2FuZyBLYWk8a2FpLmthbmdAd2lu
-ZHJpdmVyLmNvbT4KPj4gLS0tCj4+ICAgLi4uL2ludGVyZmFjZXMvcHRocmVhZF9jb25kX3NpZ25h
-bC8xLTEuYyAgICAgICAgICAgfCAgIDQ0ICsrKysrKysrKysrKysrKysrKystCj4+ICAgMSBmaWxl
-cyBjaGFuZ2VkLCA0MiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
-ZXMvcHRocmVhZF9jb25kX3NpZ25hbC8xLTEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
-dWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfY29uZF9zaWduYWwvMS0xLmMKPj4g
-aW5kZXggYmY1NWIzMS4uNzczNzRiZiAxMDA2NDQKPj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9z
-aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9jb25kX3NpZ25hbC8x
-LTEuYwo+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9wdGhyZWFkX2NvbmRfc2lnbmFsLzEtMS5jCj4+IEBAIC0xMiw2ICsxMiw3IEBA
-Cj4+Cj4+ICAgI2RlZmluZSBfWE9QRU5fU09VUkNFIDYwMAo+Pgo+PiArI2luY2x1ZGU8ZXJybm8u
-aD4KPj4gICAjaW5jbHVkZTxwdGhyZWFkLmg+Cj4+ICAgI2luY2x1ZGU8c3RkaW8uaD4KPj4gICAj
-aW5jbHVkZTxzdGRsaWIuaD4KPj4gQEAgLTIwLDYgKzIxLDcgQEAKPj4gICAjaW5jbHVkZSAicG9z
-aXh0ZXN0LmgiCj4+Cj4+ICAgI2RlZmluZSBUSFJFQURfTlVNICAzCj4+ICsjZGVmaW5lIFNDSEVE
-X1BPTElDWSBTQ0hFRF9GSUZPCj4+Cj4+ICAgc3RydWN0IHRlc3RkYXRhCj4+ICAgewo+PiBAQCAt
-NzcsNiArNzksMTAgQEAgaW50IG1haW4oKQo+PiAgIHsKPj4gICAJaW50IGksIHJjOwo+PiAgIAlz
-dHJ1Y3Qgc2lnYWN0aW9uIGFjdDsKPj4gKwlpbnQgcGlkOwo+PiArCWludCBwb2xpY3k7Cj4+ICsJ
-c3RydWN0IHNjaGVkX3BhcmFtIHBhcmFtOwo+PiArCXB0aHJlYWRfYXR0cl90IGF0dHI7Cj4+Cj4+
-ICAgCWlmIChwdGhyZWFkX211dGV4X2luaXQoJnRkLm11dGV4LCBOVUxMKSAhPSAwKSB7Cj4+ICAg
-CQlmcHJpbnRmKHN0ZGVyciwiRmFpbCB0byBpbml0aWFsaXplIG11dGV4XG4iKTsKPj4gQEAgLTg3
-LDggKzkzLDM1IEBAIGludCBtYWluKCkKPj4gICAJCXJldHVybiBQVFNfVU5SRVNPTFZFRDsKPj4g
-ICAJfQo+Pgo+PiArCXBpZCA9IGdldHBpZCgpOwo+PiArCXBhcmFtLnNjaGVkX3ByaW9yaXR5ID0g
-c2NoZWRfZ2V0X3ByaW9yaXR5X21pbihTQ0hFRF9QT0xJQ1kpOwo+PiArCWlmIChzY2hlZF9zZXRz
-Y2hlZHVsZXIocGlkLCBTQ0hFRF9QT0xJQ1ksJnBhcmFtKSAhPSAwKSB7Cj4+ICsJCWZwcmludGYo
-c3RkZXJyLCAiRmFpbCB0byBzZXQgbWFpbiB0aHJlYWQgc2NoZWR1bGVyLlxuIik7Cj4+ICsJCWlm
-IChlcnJubyA9PSBFUEVSTSkKPj4gKwkJCWZwcmludGYoc3RkZXJyLCAiRmFpbGVkIHdpdGggRVBF
-Uk06IGFyZSB5b3Ugcm9vdD9cbiIpOwo+PiArCQlyZXR1cm4gUFRTX1VOUkVTT0xWRUQ7Cj4+ICsJ
-fQo+PiArCj4+ICsJaWYgKHB0aHJlYWRfYXR0cl9pbml0KCZhdHRyKSAhPSAwKSB7Cj4+ICsJCWZw
-cmludGYoc3RkZXJyLCAiRmFpbCB0byBpbml0IGNoaWxkIHRocmVhZCBhdHRyaWJ1dGUuXG4iKTsK
-Pj4gKwkJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+PiArCX0KPj4gKwlpZiAocHRocmVhZF9hdHRy
-X3NldHNjaGVkcG9saWN5KCZhdHRyLCBTQ0hFRF9QT0xJQ1kpICE9IDApIHsKPj4gKwkJZnByaW50
-ZihzdGRlcnIsICJGYWlsIHRvIHNldCBjaGlsZCB0aHJlYWQgc2NoZWR1bGUgcG9saWN5IGF0dHJp
-YnV0ZS5cbiIpOwo+PiArCQlyZXR1cm4gUFRTX1VOUkVTT0xWRUQ7Cj4+ICsJfQo+PiArCXBhcmFt
-LnNjaGVkX3ByaW9yaXR5ICs9IDEwOwo+PiArCWlmIChwdGhyZWFkX2F0dHJfc2V0c2NoZWRwYXJh
-bSgmYXR0ciwmcGFyYW0pICE9IDApIHsKPj4gKwkJZnByaW50ZihzdGRlcnIsICJGYWlsIHRvIHNl
-dCBjaGlsZCB0aHJlYWQgc2NoZWR1bGUgcHJpb3JpdHkgYXR0cmlidXRlLlxuIik7Cj4+ICsJCXJl
-dHVybiBQVFNfVU5SRVNPTFZFRDsKPj4gKwl9Cj4+ICsJaWYgKHB0aHJlYWRfYXR0cl9zZXRpbmhl
-cml0c2NoZWQoJmF0dHIsIFBUSFJFQURfRVhQTElDSVRfU0NIRUQpICE9IDApIHsKPj4gKwkJZnBy
-aW50ZihzdGRlcnIsICJGYWlsIHRvIHNldCBjaGlsZCB0aHJlYWQgaW5oZXJpdGFjZSBhdHRyaWJ1
-dGUuXG4iKTsKPj4gKwkJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+PiArCX0KPj4gKwo+PiAgIAlm
-b3IgKGk9MDsgaTxUSFJFQURfTlVNOyBpKyspIHsJLyogY3JlYXRlIFRIUkVBRF9OVU0gdGhyZWFk
-cyAqLwo+PiAtCSAgICAJaWYgKHB0aHJlYWRfY3JlYXRlKCZ0aHJlYWRbaV0sIE5VTEwsIHRocl9m
-dW5jLCBOVUxMKSAhPSAwKSB7Cj4+ICsJCWlmIChwdGhyZWFkX2NyZWF0ZSgmdGhyZWFkW2ldLCZh
-dHRyLCB0aHJfZnVuYywgTlVMTCkgIT0gMCkgewo+PiAgIAkJCWZwcmludGYoc3RkZXJyLCJGYWls
-IHRvIGNyZWF0ZSB0aHJlYWRbJWRdXG4iLCBpKTsKPj4gICAJCQlleGl0KFBUU19VTlJFU09MVkVE
-KTsKPj4gICAJCX0KPj4gQEAgLTk2LDYgKzEyOSw4IEBAIGludCBtYWluKCkKPj4gICAJd2hpbGUg
-KHN0YXJ0X251bTwgIFRIUkVBRF9OVU0pCS8qIHdhaXRpbmcgZm9yIGFsbCB0aHJlYWRzIHN0YXJ0
-ZWQgKi8KPj4gICAJCXVzbGVlcCgxMDApOwo+Pgo+PiArCXB0aHJlYWRfYXR0cl9kZXN0cm95KCZh
-dHRyKTsKPj4gKwo+PiAgIAkvKiBBY3F1aXJlIHRoZSBtdXRleCB0byBtYWtlIHN1cmUgdGhhdCBh
-bGwgd2FpdGVycyBhcmUgY3VycmVudGx5Cj4+ICAgCSAgIGJsb2NrZWQgb24gcHRocmVhZF9jb25k
-X3dhaXQgKi8KPj4gICAJaWYgKHB0aHJlYWRfbXV0ZXhfbG9jaygmdGQubXV0ZXgpICE9IDApIHsK
-Pj4gQEAgLTE0Miw2ICsxNzcsNyBAQCBpbnQgbWFpbigpCj4+ICAgCQkJZnByaW50ZihzdGRlcnIs
-Ik1haW4gZmFpbGVkIHRvIHNpZ25hbCB0aGUgY29uZGl0aW9uXG4iKTsKPj4gICAJCQlleGl0KFBU
-U19VTlJFU09MVkVEKTsKPj4gICAJCX0KPj4gKwkJc2NoZWRfeWllbGQoKTsKPj4gICAJCXVzbGVl
-cCgxMDApOwo+PiAgIAl9Cj4+Cj4+IEBAIC0xNTgsNiArMTk0LDEwIEBAIGludCBtYWluKCkKPj4g
-ICAJCQlleGl0KFBUU19VTlJFU09MVkVEKTsKPj4gICAJCX0KPj4gICAJfQo+PiArCj4+ICsJcHRo
-cmVhZF9tdXRleF9kZXN0cm95KCZ0ZC5tdXRleCk7Cj4+ICsJcHRocmVhZF9jb25kX2Rlc3Ryb3ko
-JnRkLmNvbmQpOwo+PiArCj4+ICAgCXByaW50ZigiVGVzdCBQQVNTRURcbiIpOwo+PiAgIAlyZXR1
-cm4gUFRTX1BBU1M7Cj4+IC19Cj4+IFwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQo+PiArfQo+
-Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVu
-Y2UKPiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdz
-IHNlY3VyaXR5IGFuZAo+IHRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBt
-YW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMKPiB3aWxsIGluY2x1ZGUgZW5kcG9pbnQg
-c2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlCj4gdGhy
-ZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAx
-MjIyNjMvCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-PiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+
-CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNl
-CkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2Vj
-dXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdl
-cnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJp
-dHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBo
-dHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+container_ftp.pl has several problems:
+
+* ftp users can't cd to a temporary dir in /tmp
+* ftp->cwd($dir) will always fail
+* if we do 'chdir $dir', 'rmdir("$dir")' will fail
+* 'ftp->put' should be 'ftp->get'
+
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
+---
+ testcases/kernel/containers/netns/container_ftp.pl | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/kernel/containers/netns/container_ftp.pl b/testcases/kernel/containers/netns/container_ftp.pl
+index 89a35b5..98742f3 100644
+--- a/testcases/kernel/containers/netns/container_ftp.pl
++++ b/testcases/kernel/containers/netns/container_ftp.pl
+@@ -23,6 +23,7 @@
+ 
+ use File::Temp 'tempdir';
+ use Net::FTP;
++use File::Path;
+ 
+ if ($#ARGV == -1) {
+ 	print "usage: $0 host\n";
+@@ -35,7 +36,7 @@ my $i = 0;
+ my $kount = 51;
+ my $file="junkfile";
+ 
+-my $tmpdir = defined($ENV{TMPDIR}) ? $ENV{TMPDIR} : "/tmp";
++my $tmpdir = "/var/ftp";
+ 
+ my $dir;
+ $dir = tempdir("container_ftp.XXXXXXX", DIR => $tmpdir);
+@@ -47,8 +48,7 @@ if (chmod(0777, $dir) == 0) {
+ 	push @ERRORS, "Failed to change mode for temporary directory: $!\n";
+ 	printerr();
+ }
+-chdir $dir;
+-system("dd if=/dev/zero of=$file bs=512 count=10 > /dev/null 2>&1 ");
++system("dd if=/dev/zero of=$dir/$file bs=512 count=10 > /dev/null 2>&1 ");
+ 
+ while ( $i < $kount )
+ {
+@@ -61,13 +61,15 @@ while ( $i < $kount )
+         $ftp->quit if $newerr;
+         printerr() if $newerr; 
+ 
+-        $ftp->cwd($dir) or $newerr=1; 
++        $basedir = `basename "$dir"`;
++        chomp $basedir;
++        $ftp->cwd($basedir) or $newerr=1; 
+         push @ERRORS, "Can't cd  $!\n" if $newerr;
+         $ftp->quit if $newerr;
+         printerr() if $newerr; 
+ 
+         $newname = $file . "_" . $i ;
+-        $ftp->put($file,$newname) or $newerr=1;
++        $ftp->get($file,$newname) or $newerr=1;
+         push @ERRORS, "Can't get file $file $!\n" if $newerr;
+         printerr() if $newerr;
+ 
+@@ -82,6 +84,5 @@ sub printerr {
+ }
+ 
+ END {
+-	unlink("$dir/$file");
+-	rmdir("$dir");
++	rmtree("$dir");
+ }
+-- 
+1.7.11.4
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
