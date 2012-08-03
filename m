@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1T4uFA-0001mE-Hj
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 13:48:12 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T4uF4-0006z0-JY
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 13:48:12 +0000
-Date: Fri, 24 Aug 2012 09:48:00 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <2058987008.58575291.1345816080840.JavaMail.root@redhat.com>
-In-Reply-To: <503754D8.8000703@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1SxE5E-00012X-T9
+	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 09:22:12 +0000
+Received: from acsinet15.oracle.com ([141.146.126.227])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SxE59-00047Q-HE
+	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 09:22:12 +0000
+Message-ID: <501B9824.9060606@oracle.com>
+Date: Fri, 03 Aug 2012 17:21:40 +0800
+From: Simon Xu <xu.simon@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+References: <238395883.7949798.1343975904079.JavaMail.root@redhat.com>
+In-Reply-To: <238395883.7949798.1343975904079.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address
+ for shmat()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,82 +28,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuang Qiu <shuang.qiu@oracle.com>
+To: Jan Stancek <jstancek@redhat.com>, gaowanlong@cn.fujitsu.com
 Cc: ltp-list@lists.sourceforge.net
 
+On 2012/8/3 14:38, Jan Stancek wrote:
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Simon Xu" <xu.simon@oracle.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Friday, 3 August, 2012 5:46:31 AM
+>> Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address for shmat()
+>>
+>> On 08/03/2012 12:53 AM, Simon Xu wrote:
+>>> In certain occasions, 0x22000000 is invalid for shmat() and
+>>> madvise03 fails:
+>>>
+>>> madvise03 1 TBROK : shmat error
+>>> madvise03 2 TBROK : Remaining cases broken
+>>>
+>>> Use `NULL' for shmat() to let the system attach the shared memory
+>>> segment
+>>> at the first available address.
+>>>
+>>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+>>> ---
+>>>   testcases/kernel/syscalls/madvise/madvise03.c | 6 +++---
+>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
+>>> b/testcases/kernel/syscalls/madvise/madvise03.c
+>>> index 2e696e8..fd0bd97 100644
+>>> --- a/testcases/kernel/syscalls/madvise/madvise03.c
+>>> +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+>>> @@ -154,13 +154,13 @@ int main(int argc, char *argv[])
+>>>   		if (shmid1 == -1)
+>>>   			tst_brkm(TBROK, cleanup, "shmget failed");
+>>>   
+>>> -		/* Attach shared memory segment to 0x22000000 address */
+>>> -		addr1 = shmat(shmid1, (void *)0x22000000, 0);
+>>> +		/* Attach shared memory segment to an address selected by the
+>>> system */
+>>> +		addr1 = shmat(shmid1, NULL, 0);
+>>>   		if (addr1 == (void *) -1)
+>>>   			tst_brkm(TBROK, cleanup, "shmat error");
+>>>   
+>>>   		/* (1) Test case for MADV_REMOVE */
+>>> -		TEST(madvise((void *)0x22000000, 4096, MADV_REMOVE));
+>>> +		TEST(madvise((void *)addr1, 4096, MADV_REMOVE));
+>> (void *) is not needed now ?
+> That shouldn't be needed for NULL.
+
+addr1 is the return value of shmat(), whose return value type is void 
+*.  Yes, `(void *)' is no longer needed.  Thanks for pointing this out.
 
 
------ Original Message -----
-> From: "Shuang Qiu" <shuang.qiu@oracle.com>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, August 24, 2012 6:18:00 PM
-> Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
-> 
-> On 08/24/2012 04:11 PM, Zhouping Liu wrote:
-> >
-> > ----- Original Message -----
-> >> From: "shuang qiu" <shuang.qiu@oracle.com>
-> >> To: ltp-list@lists.sourceforge.net
-> >> Sent: Thursday, August 23, 2012 2:43:01 PM
-> >> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
-> >>
-> >> From: Shuang Qiu <shuang.qiu@oracle.com>
-> >>
-> >> The value of min_free_kbytes is set too high(half of mem_free)
-> >> during
-> >> testing min_free_kbytes tunable.It often cause the system to
-> >> become
-> >> out-of-memory.Using 20% of mem_free to avoid oom and system hang.
-> > Hi, shuang
-> >
-> > I met the issue that min_free_kbytes caused system hang before, and
-> > what you said made sense.
-> >
-> > but after tested the patch, I found it still make the system hang
-> > with the patch, so I don't think
-> > this patch can fix the issue completely, maybe there are other
-> > factors, or need lower tune value.
-> > always suppose it was because of the high tune value, it's more
-> > better to add an optional to control it.
-> > also I will investigate it deeper to look after the real reason.
-> > please comment if you have other ideas.
-> >
-> > Thanks,
-> > Zhouping
-> Thanks for testing,Zhouping.
-> 
-> I find it says "However, setting this parameter to a value that is
-> too
-> high (5-10% of total system memory) will cause your system to become
-> out-of-memory immediately." in redhat memory-tunables document.
-> https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-tunables.html
-> Set the value less than 5% of total memory will make it more safe.
+Thanks
+Simon
 
-Thanks for sharing this! I will take your ideas into account.
-
-> Let's think about a better option to control it.
-
-Ok, I will prepare a patch for this.
-
-
-> 
-> It is great that you will investigate it deeper.
-> Seems there are some other problems in this case,it always failed
-> with i386.
-> The type of total_mem "unsigned long" is not suitable with nowadays
-> memory ,it will overflow(with i386) in line 177:map_count = total_mem
-> *
-> KB / MAP_SIZE and the value of map_count is not correct.
-> Using "unsigned long long" could fix this issue.
-> But the case still failed after fix it.
-> Could you help to investigate it too.
-
-sure.
-
--- 
-Thanks,
-Zhouping
+>> otherwise, looks OK to me.
+> +1, this looks better than hardcoding some random address.
+>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>   		check_and_print("MADV_REMOVE");
+>>>   
+>>>   		/* (2) Test case for MADV_DONTFORK */
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
