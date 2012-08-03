@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Sx7lC-0002j8-Lu
-	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 02:37:06 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SxE8q-0007tz-N0
+	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 09:25:56 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sx7lB-0008PY-JF
-	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 02:37:06 +0000
-Message-ID: <501B3905.1030501@cn.fujitsu.com>
-Date: Fri, 03 Aug 2012 10:35:49 +0800
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SxE8k-0004BW-Hm
+	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 09:25:56 +0000
+Message-ID: <501B98D9.9020001@cn.fujitsu.com>
+Date: Fri, 03 Aug 2012 17:24:41 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1343269349-24981-1-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1343269349-24981-1-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH] aio_suspend/3-1: cancel the aio_write operations
+References: <238395883.7949798.1343975904079.JavaMail.root@redhat.com>
+	<501B9824.9060606@oracle.com>
+In-Reply-To: <501B9824.9060606@oracle.com>
+Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address
+ for shmat()
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,67 +30,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 07/26/2012 10:22 AM, Kang Kai wrote:
-> After aio_suspend, call aio_cancel to cancel other aio_write operations
-> then wait them to canceld or complete.
+On 08/03/2012 05:21 PM, Simon Xu wrote:
+> On 2012/8/3 14:38, Jan Stancek wrote:
+>> ----- Original Message -----
+>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>> To: "Simon Xu" <xu.simon@oracle.com>
+>>> Cc: ltp-list@lists.sourceforge.net
+>>> Sent: Friday, 3 August, 2012 5:46:31 AM
+>>> Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address for shmat()
+>>>
+>>> On 08/03/2012 12:53 AM, Simon Xu wrote:
+>>>> In certain occasions, 0x22000000 is invalid for shmat() and
+>>>> madvise03 fails:
+>>>>
+>>>> madvise03 1 TBROK : shmat error
+>>>> madvise03 2 TBROK : Remaining cases broken
+>>>>
+>>>> Use `NULL' for shmat() to let the system attach the shared memory
+>>>> segment
+>>>> at the first available address.
+>>>>
+>>>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+>>>> ---
+>>>>   testcases/kernel/syscalls/madvise/madvise03.c | 6 +++---
+>>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
+>>>> b/testcases/kernel/syscalls/madvise/madvise03.c
+>>>> index 2e696e8..fd0bd97 100644
+>>>> --- a/testcases/kernel/syscalls/madvise/madvise03.c
+>>>> +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+>>>> @@ -154,13 +154,13 @@ int main(int argc, char *argv[])
+>>>>           if (shmid1 == -1)
+>>>>               tst_brkm(TBROK, cleanup, "shmget failed");
+>>>>   -        /* Attach shared memory segment to 0x22000000 address */
+>>>> -        addr1 = shmat(shmid1, (void *)0x22000000, 0);
+>>>> +        /* Attach shared memory segment to an address selected by the
+>>>> system */
+>>>> +        addr1 = shmat(shmid1, NULL, 0);
+>>>>           if (addr1 == (void *) -1)
+>>>>               tst_brkm(TBROK, cleanup, "shmat error");
+>>>>             /* (1) Test case for MADV_REMOVE */
+>>>> -        TEST(madvise((void *)0x22000000, 4096, MADV_REMOVE));
+>>>> +        TEST(madvise((void *)addr1, 4096, MADV_REMOVE));
+>>> (void *) is not needed now ?
+>> That shouldn't be needed for NULL.
 > 
-> If don't do that, it fails with "Segmentation fault" on routerstation(mips)
-> board randomly about in 1000 continuous test. The reason may be some
-> aio_writes don't complete before close the file, that cause some resouse
-> don't be released and finally cause segment fault.
-> 
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
-> ---
->  .../conformance/interfaces/aio_suspend/3-1.c       |   15 +++++++++++++++
->  1 files changed, 15 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-> index 15120e1..49d204a 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-> @@ -87,6 +87,21 @@ int main()
->  		exit(PTS_FAIL);
->  	}
->  
-> +	if (aio_cancel(fd, NULL) == -1) {
-> +		printf(TNAME " Error at aio_cancel(): %s\n", strerror(errno));
-> +		exit(PTS_FAIL);
-> +	}
+> addr1 is the return value of shmat(), whose return value type is void *.  Yes, `(void *)' is no longer needed.  Thanks for pointing this out.
 
-Try to cancel the pending aio seems useless, how about waiting aios until completed?
-Can you test like below?
-	
-	for (i = 0; i < NAIOCB; i++) {
-		do {
-			usleep(10000);
-			ret = aio_error(&aiocb[i]);
-		} while (ret == EINPROGRESS);
-		if (ret < 0) {
-			printf(TNAME " Error at aio_error() : %s\n", strerror(ret));
-			exit(PTS_FAIL);
-		}
-	}
+OK, I can make a snip change for this and push this patch, no need to send a V2. 
+Thank you Simon.
 
-Thanks,
 Wanlong Gao
 
-> +
-> +
-> +	while (1) {
-> +		for (i = 0; i < NAIOCB; ++i) {
-> +			if (aio_error(&aiocb[i]) == EINPROGRESS)
-> +				break;
-> +		}
-> +		if (i == NAIOCB)
-> +			break;
-> +	}
-> +
->  	close(fd);
->  	printf("Test PASSED\n");
->  	return PTS_PASS;
+> 
+> 
+> Thanks
+> Simon
+> 
+>>> otherwise, looks OK to me.
+>> +1, this looks better than hardcoding some random address.
+>>
+>>> Thanks,
+>>> Wanlong Gao
+>>>
+>>>>           check_and_print("MADV_REMOVE");
+>>>>             /* (2) Test case for MADV_DONTFORK */
 > 
 
 
