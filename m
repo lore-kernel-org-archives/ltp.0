@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SzkM9-0005UM-0H
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:14:05 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzkM6-0002ky-Il
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:14:04 +0000
-Date: Fri, 10 Aug 2012 04:13:51 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <2069635652.36480140.1344586431604.JavaMail.root@redhat.com>
-In-Reply-To: <5024BE51.6040202@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1SxBWr-000220-Rw
+	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 06:38:33 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SxBWq-0003e5-L3
+	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 06:38:33 +0000
+Date: Fri, 3 Aug 2012 02:38:24 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <238395883.7949798.1343975904079.JavaMail.root@redhat.com>
+In-Reply-To: <501B4997.8060002@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall
- availability
+Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address
+ for shmat()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,98 +28,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
 
 
 ----- Original Message -----
 > From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Cc: "Caspar Zhang" <caspar@casparzhang.com>, "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, August 10, 2012 3:54:57 PM
-> Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall availability
+> To: "Simon Xu" <xu.simon@oracle.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 3 August, 2012 5:46:31 AM
+> Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address for shmat()
 > 
-> On 08/10/2012 03:46 PM, Zhouping Liu wrote:
-> > On 08/09/2012 02:15 PM, Caspar Zhang wrote:
-> >> some NUMA related syscalls: mbind, get_mempolicy are not supported
-> >> on
-> >> some arches (e.g. i386), this patch checks the syscalls'
-> >> availability in
-> >> setup() function, if the syscall is not implemented on the system,
-> >> a
-> >> TCONF message will be given like this:
-> >>
-> >> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not
-> >> supported on your arch
-> >>
-> >> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> On 08/03/2012 12:53 AM, Simon Xu wrote:
+> > In certain occasions, 0x22000000 is invalid for shmat() and
+> > madvise03 fails:
 > > 
-> > Reviewed-by: Zhouping Liu <zliu@redhat.com>
+> > madvise03 1 TBROK : shmat error
+> > madvise03 2 TBROK : Remaining cases broken
+> > 
+> > Use `NULL' for shmat() to let the system attach the shared memory
+> > segment
+> > at the first available address.
+> > 
+> > Signed-off-by: Simon Xu <xu.simon@oracle.com>
+> > ---
+> >  testcases/kernel/syscalls/madvise/madvise03.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
+> > b/testcases/kernel/syscalls/madvise/madvise03.c
+> > index 2e696e8..fd0bd97 100644
+> > --- a/testcases/kernel/syscalls/madvise/madvise03.c
+> > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+> > @@ -154,13 +154,13 @@ int main(int argc, char *argv[])
+> >  		if (shmid1 == -1)
+> >  			tst_brkm(TBROK, cleanup, "shmget failed");
+> >  
+> > -		/* Attach shared memory segment to 0x22000000 address */
+> > -		addr1 = shmat(shmid1, (void *)0x22000000, 0);
+> > +		/* Attach shared memory segment to an address selected by the
+> > system */
+> > +		addr1 = shmat(shmid1, NULL, 0);
+> >  		if (addr1 == (void *) -1)
+> >  			tst_brkm(TBROK, cleanup, "shmat error");
+> >  
+> >  		/* (1) Test case for MADV_REMOVE */
+> > -		TEST(madvise((void *)0x22000000, 4096, MADV_REMOVE));
+> > +		TEST(madvise((void *)addr1, 4096, MADV_REMOVE));
 > 
-> Zhouping, 3/6 already has a V2 version.
+> (void *) is not needed now ?
+That shouldn't be needed for NULL.
 
-yeah, sorry, I replied on a bad place. :(
-thanks for your reminder :)
-
-Thanks,
-Zhouping
+> 
+> otherwise, looks OK to me.
++1, this looks better than hardcoding some random address.
 
 > 
 > Thanks,
 > Wanlong Gao
 > 
-> > 
-> > Thanks,
-> > Zhouping
-> > 
-> >> ---
-> >>  .../syscalls/get_mempolicy/get_mempolicy01.c       |   10
-> >>  ++++++++++
-> >>  testcases/kernel/syscalls/mbind/mbind01.c          |    9
-> >>  +++++++++
-> >>  2 files changed, 19 insertions(+), 0 deletions(-)
-> >>
-> >>
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Live Security Virtual Conference
-> >> Exclusive live event will cover all the ways today's security and
-> >> threat landscape has changed and how IT managers can respond.
-> >> Discussions
-> >> will include endpoint security, mobile security and the latest in
-> >> malware
-> >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> >>
-> >>
-> >> _______________________________________________
-> >> Ltp-list mailing list
-> >> Ltp-list@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> > 
-> > 
-> > ------------------------------------------------------------------------------
-> > Live Security Virtual Conference
-> > Exclusive live event will cover all the ways today's security and
-> > threat landscape has changed and how IT managers can respond.
-> > Discussions
-> > will include endpoint security, mobile security and the latest in
-> > malware
-> > threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> > 
-> > 
-> > 
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >  		check_and_print("MADV_REMOVE");
+> >  
+> >  		/* (2) Test case for MADV_DONTFORK */
 > > 
 > 
 > 
-
--- 
-Thanks,
-Zhouping
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond.
+> Discussions
+> will include endpoint security, mobile security and the latest in
+> malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
