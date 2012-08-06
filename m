@@ -2,21 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T3HKy-0008Gd-Pn
-	for ltp-list@lists.sourceforge.net; Mon, 20 Aug 2012 02:03:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	(envelope-from <jstancek@redhat.com>) id 1SyJfw-0002Uq-Rg
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 09:32:36 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T3HKv-0005uo-66
-	for ltp-list@lists.sourceforge.net; Mon, 20 Aug 2012 02:03:28 +0000
-Message-ID: <50319A82.3030500@cn.fujitsu.com>
-Date: Mon, 20 Aug 2012 10:01:38 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1SyJfs-0004os-N5
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 09:32:36 +0000
+Date: Mon, 6 Aug 2012 05:32:26 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1219564277.410348.1344245546074.JavaMail.root@redhat.com>
+In-Reply-To: <a6931ad85f58a40296244d0dd0f9353a5d979125.1344242276.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
-	<50301E06.9000102@cn.fujitsu.com> <5031955A.5060506@windriver.com>
-In-Reply-To: <5031955A.5060506@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH v3 2/2] mm: use new numa_helper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,50 +23,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-T24gMDgvMjAvMjAxMiAwOTozOSBBTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA45pyI
-MTnml6UgMDY6NTgsIFdhbmxvbmcgR2FvIHdyb3RlOgo+PiBPbiAwOC8xNC8yMDEyIDA1OjAwIFBN
-LCBLYW5nIEthaSB3cm90ZToKPj4+IFRoaXMgY2FzZSBmYWlscyByYW5kb21seSB3aXRoICJTZWdt
-ZW50YXRpb24gZmF1bHQiLiBSZXNldCBWRVJCT1NFIHRvIDYKPj4+IGNhbiBhdm9pZCB0aGlzIHBy
-b2JsZW0uCj4+IENhbiB5b3UgZXhwbGFpbiB0aGF0IHdoeSAicmVzZXQgVkVSQk9TRSIgY2FuIGF2
-b2lkIHRoaXMgIlNlZyBGYXVsdCIgcHJvYmxlbT8KPiBJdCBpcyBhIG11bHRpLXRocmVhZCBpc3N1
-ZS4gWW91IGNhbiBydW4gaXQgZm9yIGxlc3MgdGhhbiAxMCB0aW1lcywgYW5kIGl0IHdpbGwgZmFp
-bCB3aXRoICJTZWdtZW50YXRpb24gZmF1bHQiLgoKSSBkaWRuJ3Qgc2VlIHRoaXMgb24gbXkgc2lk
-ZS4KCj4gSXQgaXMgaGFyZCB0byBkZWJ1ZyBhbmQgSSBkaWRuJ3QgZmluZCB0aGUgcm9vdCBjYXVz
-ZSwgYnV0IG9wZW4gdGhlIFZFUkJPU0Ugd2lsbCBhdm9pZCB0aGlzIHNpdHVhdGlvbi4gU28gaXQg
-aXMgYSB3b3JrYXJvdW5kLgoKSSdkIGxpa2UgdG8gc2VuZCBhIHBhdGNoIHRvIGZpeCB0aGlzIHR5
-cG8gZmlyc3QuCgpUaGFua3MsCldhbmxvbmcgR2FvCgo+IAo+IFJlZ2FyZHMsCj4gS2FpCj4gCj4+
-Cj4+PiBGaXggdHlwbyBhdCBzYW1lIHRpbWUuCj4+IFRoZSB0eXBvIGZpeCBpcyBPSy4KPj4KPj4g
-VGhhbmtzLAo+PiBXYW5sb25nIEdhbwo+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogS2FuZyBLYWk8a2Fp
-LmthbmdAd2luZHJpdmVyLmNvbT4KPj4+IC0tLQo+Pj4gICAuLi4vY29uZm9ybWFuY2UvaW50ZXJm
-YWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYyAgICB8ICAgIDQgKystLQo+Pj4gICAxIGZpbGVzIGNo
-YW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4+Cj4+PiBkaWZmIC0tZ2l0
-IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv
-cHRocmVhZF9kZXRhY2gvNC0zLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29u
-Zm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4gaW5kZXggNWMxNWU5
-My4uMjM3MzhkYyAxMDA2NDQKPj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0
-ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+PiArKysgYi90
-ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhy
-ZWFkX2RldGFjaC80LTMuYwo+Pj4gQEAgLTQ5LDcgKzQ5LDcgQEAKPj4+ICAgI2luY2x1ZGUgIi4u
-L3Rlc3Rmcm13L3Rlc3Rmcm13LmMiCj4+Pgo+Pj4gICAjaWZuZGVmIFZFUkJPU0UKPj4+IC0jZGVm
-aW5lIFZFUkJPU0UgMQo+Pj4gKyNkZWZpbmUgVkVSQk9TRSA2Cj4+PiAgICNlbmRpZgo+Pj4KPj4+
-ICAgI2RlZmluZSBXSVRIX1NZTkNIUk8KPj4+IEBAIC0yODEsNyArMjgxLDcgQEAgaW50IG1haW4o
-aW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPj4+Cj4+PiAgICAgICBkbyB7Cj4+PiAgICAgICAgICAg
-ZG9faXQyID0gMDsKPj4+IC0gICAgfSB3aGlsZSAoZG9faXQyID0gMCk7Cj4+PiArICAgIH0gd2hp
-bGUgKGRvX2l0Mik7Cj4+Pgo+Pj4gICAgICAgcmV0ID0gcHRocmVhZF9qb2luKHRoX3NpZzEsIE5V
-TEwpOwo+Pj4gICAgICAgaWYgKHJldCkKPj4+Cj4+Cj4gCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2ZW50
-IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQgbGFu
-ZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1
-c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBh
-bmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0u
-Y29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0
-QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0
-cy9saXN0aW5mby9sdHAtbGlzdAo=
+
+
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Monday, 6 August, 2012 10:38:22 AM
+> Subject: [LTP] [PATCH v3 2/2] mm: use new numa_helper
+> 
+> 
+> This patch makes the tests in mem/ dir use numa_helper in
+> libkerntest.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/mem/cpuset/Makefile           |    1 +
+>  testcases/kernel/mem/cpuset/cpuset01.c         |   16 ++++----
+>  testcases/kernel/mem/hugetlb/Makefile.inc      |    1 +
+>  testcases/kernel/mem/hugetlb/hugemmap/Makefile |    1 +
+>  testcases/kernel/mem/include/mem.h             |    2 +-
+>  testcases/kernel/mem/ksm/Makefile              |    1 +
+>  testcases/kernel/mem/ksm/ksm02.c               |    9 ++--
+>  testcases/kernel/mem/ksm/ksm04.c               |    9 ++--
+>  testcases/kernel/mem/lib/Makefile              |    1 +
+>  testcases/kernel/mem/lib/mem.c                 |   50
+>  ++++++++++++++++--------
+>  testcases/kernel/mem/oom/Makefile              |    1 +
+>  testcases/kernel/mem/oom/oom02.c               |    4 --
+>  testcases/kernel/mem/oom/oom04.c               |    4 --
+>  testcases/kernel/mem/swapping/Makefile         |    1 +
+>  testcases/kernel/mem/thp/Makefile              |    1 +
+>  testcases/kernel/mem/tunable/Makefile          |    1 +
+>  testcases/kernel/mem/vma/Makefile              |    3 +-
+>  testcases/kernel/mem/vma/vma02.c               |   19 ++++++---
+>  testcases/kernel/mem/vma/vma04.c               |   11 ++++-
+>  19 files changed, 81 insertions(+), 55 deletions(-)
+> 
+
+V3 looks OK to me.
+
+Regards,
+Jan
+
+
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond.
+> Discussions
+> will include endpoint security, mobile security and the latest in
+> malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
