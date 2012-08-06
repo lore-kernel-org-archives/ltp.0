@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1SyIwr-0002WS-6M
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:46:01 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SyIwq-0000Fm-9P
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:46:01 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail.windriver.com (8.14.5/8.14.3) with ESMTP id q768jspK018625
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SyGsk-0004sZ-M4
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 06:33:38 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SyGsj-0000Yg-M0
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 06:33:38 +0000
+Received: by pbcwy7 with SMTP id wy7so1112583pbc.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 6 Aug 2012 01:45:54 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Mon, 6 Aug 2012 16:45:57 +0800
-Message-ID: <1344242757-26186-1-git-send-email-kai.kang@windriver.com>
+	Sun, 05 Aug 2012 23:33:31 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Mon,  6 Aug 2012 14:33:20 +0800
+Message-Id: <82efde5e79da4aa1a103dea1cfbe20fb8990de8d.1344234731.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH] mem: add common Makefile include: libmem.mk
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,136 +26,353 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Zhenfeng.Zhao@windriver.com
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-In this test case, it uses a variable to share data between child and
-parent processes. But after fork there is a copy of the variable in
-child process and modify it will not affect the variable in the parent
-process. Then when the child process call mq_open() before parent process,
-the case will fail.
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-Use tmp file to replace the variable. Any modification in child process
-can be seen in parent process.
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
+libmem.mk is used as a common Makefile used by tests under mem/ dir to
+avoid duplicated libmem-related lines.
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 ---
- .../conformance/interfaces/mq_open/16-1.c          |   38 +++++++++++++++++--
- 1 files changed, 34 insertions(+), 4 deletions(-)
+ testcases/kernel/mem/cpuset/Makefile           |   23 +-------------
+ testcases/kernel/mem/hugetlb/Makefile.inc      |   19 +++--------
+ testcases/kernel/mem/hugetlb/hugemmap/Makefile |   13 +-------
+ testcases/kernel/mem/include/libmem.mk         |   40 ++++++++++++++++++++++++
+ testcases/kernel/mem/ksm/Makefile              |   23 +-------------
+ testcases/kernel/mem/oom/Makefile              |   23 +-------------
+ testcases/kernel/mem/swapping/Makefile         |   23 +-------------
+ testcases/kernel/mem/thp/Makefile              |   23 +-------------
+ testcases/kernel/mem/tunable/Makefile          |   23 +-------------
+ testcases/kernel/mem/vma/Makefile              |    3 +-
+ 10 files changed, 54 insertions(+), 159 deletions(-)
+ create mode 100644 testcases/kernel/mem/include/libmem.mk
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-index b9a3215..ebd697b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-@@ -20,9 +20,11 @@
-  * this is fine (will have some false positives, but no false negatives).
-  */
+
+--------------1.7.8.6
+Content-Type: text/x-patch;
+	name="0001-mem-add-common-Makefile-include-libmem.mk.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-mem-add-common-Makefile-include-libmem.mk.patch"
+
+diff --git a/testcases/kernel/mem/cpuset/Makefile b/testcases/kernel/mem/cpuset/Makefile
+index c9d03bf..8e41c02 100644
+--- a/testcases/kernel/mem/cpuset/Makefile
++++ b/testcases/kernel/mem/cpuset/Makefile
+@@ -20,26 +20,5 @@
+ top_srcdir		?= ../../../..
  
-+#include <sys/mman.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-+#include <errno.h>
- #include <fcntl.h>
- #include <mqueue.h>
- #include <signal.h>
-@@ -32,11 +34,15 @@
- #include "posixtest.h"
- 
- #define NAMESIZE 50
-+#define TNAME "mq_open/16-1.c"
- 
- int main()
- {
-        	char qname[NAMESIZE];
-+	char fname[NAMESIZE];
- 	int pid, succeeded=0;
-+	int fd;
-+	void *pa = NULL;
- 	mqd_t childqueue, queue;
- 
- 	/*
-@@ -47,6 +53,26 @@ int main()
- 
-        	sprintf(qname, "/mq_open_16-1_%d", getpid());
- 
-+	sprintf(fname, "/tmp/pts_mq_open_16_1_%d", getpid());
-+	unlink(fname);
-+	fd = open(fname, O_CREAT | O_RDWR | O_EXCL,
-+		 S_IRUSR | S_IWUSR);
-+	if (fd == -1) {
-+		printf(TNAME " Error at open(): %s\n", strerror(errno));
-+		exit(PTS_UNRESOLVED);
-+	}
-+	/* file is empty now, will cause "Bus error" */
-+	write(fd, "\0", 1);
-+	unlink(fname);
-+
-+	pa = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	if (pa == MAP_FAILED) {
-+		printf(TNAME " Error at mmap: %s\n", strerror(errno));
-+		close(fd);
-+		exit(PTS_FAIL);
-+	}
-+	*(int *)pa = 0;
-+
- 	if ((pid = fork()) == 0) {
- 		sigset_t mask;
- 		int sig;
-@@ -62,7 +88,7 @@ int main()
-         	childqueue = mq_open(qname, O_CREAT|O_EXCL|O_RDWR,
- 				S_IRUSR | S_IWUSR, NULL);
-         	if (childqueue != (mqd_t)-1) {
--			succeeded++;
-+			++*(int *)pa;
- #ifdef DEBUG
- 			printf("mq_open() in child succeeded\n");
- 		} else {
-@@ -79,7 +105,7 @@ int main()
-         	queue = mq_open(qname, O_CREAT | O_EXCL |O_RDWR,
- 				S_IRUSR | S_IWUSR, NULL);
-         	if (queue != (mqd_t)-1) {
--			succeeded++;
-+			++*(int *)pa;
- #ifdef DEBUG
- 			printf("mq_open() in parent succeeded\n");
- 		} else {
-@@ -93,13 +119,15 @@ int main()
- 			mq_close(queue);
- 			mq_close(childqueue);
- 			mq_unlink(qname);
-+			close(fd);
-+			munmap(pa, sizeof(int));
- 			return PTS_UNRESOLVED;
- 		}
- 
- 		mq_close(queue);
- 		mq_close(childqueue);
- 		mq_unlink(qname);
+ include $(top_srcdir)/include/mk/testcases.mk
 -
-+		succeeded = *(int *)pa;
- 		if (succeeded==0) {
- 			printf("Test FAILED - mq_open() never succeeded\n");
- 			return PTS_FAIL;
-@@ -111,8 +139,10 @@ int main()
- 		}
+-LDLIBS 			+= $(NUMA_LIBS) -lmem -lltp -lm
+-LIBDIR			:= ../lib
+-LIB			:= $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-CFLAGS			+= -I../include
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/hugetlb/Makefile.inc b/testcases/kernel/mem/hugetlb/Makefile.inc
+index 1831fbb..cc0ada6 100644
+--- a/testcases/kernel/mem/hugetlb/Makefile.inc
++++ b/testcases/kernel/mem/hugetlb/Makefile.inc
+@@ -23,23 +23,16 @@
+ # DO NOT USE THIS FILE FOR hugetlb / lib!!!
+ LIBIPCDIR		:= ../lib
+ LIBIPC			:= $(LIBIPCDIR)/libipc_hugetlb.a
++
+ $(LIBIPCDIR):
+ 	mkdir -p "$@"
+ $(LIBIPC): $(LIBIPCDIR)
+ 	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
  
-         	printf("Test PASSED\n");
-+		close(fd);
-+		munmap(pa, sizeof(int));
-         	return PTS_PASS;
- 	}
+-LIBMEMDIR		:= ../../lib
+-LIBMEM			:= $(LIBMEMDIR)/libmem.a
+-$(LIBMEM): $(LIBMEMDIR)
+-	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
+-
+-CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR) -I$(abs_srcdir)/../../include
+-LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR) -L$(abs_builddir)/$(LIBMEMDIR)
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp -lipc_hugetlb
+-MAKE_DEPS		+= $(LIBMEM) $(LIBIPC)
+-
+-lib-clean:: $(LIBMEMDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR)
++LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR)
++LDLIBS			+= -lipc_hugetlb
++MAKE_DEPS		+= $(LIBIPC)
  
- 	return PTS_UNRESOLVED;
--}
-\ No newline at end of file
-+}
--- 
-1.7.5.4
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ # vim: syntax=make
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+index 0b1b60c..71da630 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
++++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+@@ -23,16 +23,5 @@
+ top_srcdir		?= ../../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-LIBMEMDIR		:= ../../lib
+-LIBMEM			:= $(LIBMEMDIR)/libmem.a
+-$(LIBMEM): $(LIBMEMDIR)
+-	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
+-
+-CPPFLAGS		+= -I$(abs_srcdir)/$(LIBMEMDIR) -I$(abs_srcdir)/../../include
+-LDFLAGS			+= -L$(abs_builddir)/$(LIBMEMDIR)
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+-MAKE_DEPS		+= $(LIBMEM)
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
+new file mode 100644
+index 0000000..22efda2
+--- /dev/null
++++ b/testcases/kernel/mem/include/libmem.mk
+@@ -0,0 +1,40 @@
++#
++#  Copyright (C) 2012  Red Hat, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++
++MEM_DIR			:= $(top_srcdir)/testcases/kernel/mem
++LIBMEM_DIR		:= $(MEM_DIR)/lib
++LIBMEM			:= $(LIBMEM_DIR)/libmem.a
++FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
++CFLAGS			+= -I$(MEM_DIR)/include
++LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
++LDFLAGS			+= -L$(LIBMEM_DIR)
++
++$(LIBMEM_DIR):
++	mkdir -p "$@"
++
++$(LIBMEM): $(LIBMEM_DIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++
++MAKE_DEPS		+= $(LIBMEM)
++
++trunk-clean:: | lib-clean
++
++lib-clean:: $(LIBMEM_DIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
+index b17845b..128d7bc 100644
+--- a/testcases/kernel/mem/ksm/Makefile
++++ b/testcases/kernel/mem/ksm/Makefile
+@@ -19,26 +19,5 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+-LIBDIR			:= ../lib
+-LIB			:= $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-CFLAGS			+= -I../include
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/oom/Makefile b/testcases/kernel/mem/oom/Makefile
+index b17845b..128d7bc 100644
+--- a/testcases/kernel/mem/oom/Makefile
++++ b/testcases/kernel/mem/oom/Makefile
+@@ -19,26 +19,5 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+-LIBDIR			:= ../lib
+-LIB			:= $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-CFLAGS			+= -I../include
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/swapping/Makefile b/testcases/kernel/mem/swapping/Makefile
+index b17845b..128d7bc 100644
+--- a/testcases/kernel/mem/swapping/Makefile
++++ b/testcases/kernel/mem/swapping/Makefile
+@@ -19,26 +19,5 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+-LIBDIR			:= ../lib
+-LIB			:= $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-CFLAGS			+= -I../include
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
+index 3ef9288..867dcf0 100644
+--- a/testcases/kernel/mem/thp/Makefile
++++ b/testcases/kernel/mem/thp/Makefile
+@@ -20,26 +20,5 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+-LIBDIR			:= ../lib
+-LIB			:= $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-CFLAGS			+= -I../include
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/tunable/Makefile b/testcases/kernel/mem/tunable/Makefile
+index 3ef9288..867dcf0 100644
+--- a/testcases/kernel/mem/tunable/Makefile
++++ b/testcases/kernel/mem/tunable/Makefile
+@@ -20,26 +20,5 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+-LIBDIR			:= ../lib
+-LIB			:= $(LIBDIR)/libmem.a
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-CFLAGS			+= -I../include
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/vma/Makefile b/testcases/kernel/mem/vma/Makefile
+index 949db9a..b323dbf 100644
+--- a/testcases/kernel/mem/vma/Makefile
++++ b/testcases/kernel/mem/vma/Makefile
+@@ -20,6 +20,5 @@
+ top_srcdir              ?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -164,7 +380,18 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.6--
+
+
+
