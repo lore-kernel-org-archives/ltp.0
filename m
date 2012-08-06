@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T4jvE-0007Fz-TS
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 02:46:56 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T4jvD-00022P-MG
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 02:46:56 +0000
-Message-ID: <5036EB22.9090303@windriver.com>
-Date: Fri, 24 Aug 2012 10:46:58 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vinson@twitter.com>) id 1SyQan-000307-1r
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 16:55:45 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SyQah-0000Hq-Hi
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 16:55:44 +0000
+Received: by pbcwy7 with SMTP id wy7so1787395pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Aug 2012 09:55:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <1624892809.9377039.1345705748634.JavaMail.root@redhat.com>
-	<50360EF3.4020803@redhat.com>
-In-Reply-To: <50360EF3.4020803@redhat.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+In-Reply-To: <501F20F5.3060301@cn.fujitsu.com>
+References: <1344032944-27019-1-git-send-email-vlee@twitter.com>
+	<501F20F5.3060301@cn.fujitsu.com>
+Date: Mon, 6 Aug 2012 09:55:33 -0700
+Message-ID: <CAKixpbjzpzLBLuUL3rf=9ujuPC7s89DmBLehfEmHoEk4iAjjsA@mail.gmail.com>
+From: Vinson Lee <vlee@twitter.com>
+Subject: Re: [LTP] [PATCH] ltp_signal.h: Remove inline keyword from
+	handler_h.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,102 +29,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDA45pyIMjPml6UgMTk6MDcsIEphbiBTdGFuY2VrIHdyb3RlOgo+IE9uIDA4LzIz
-LzIwMTIgMDk6MDkgQU0sIEphbiBTdGFuY2VrIHdyb3RlOgo+Pgo+PiAtLS0tLSBPcmlnaW5hbCBN
-ZXNzYWdlIC0tLS0tCj4+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdpbmRyaXZlci5jb20+
-Cj4+PiBUbzogIkphbiBTdGFuY2VrIjxqc3RhbmNla0ByZWRoYXQuY29tPiwgZ2Fvd2FubG9uZ0Bj
-bi5mdWppdHN1LmNvbQo+Pj4gQ2M6IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCwgIlpo
-ZW5mZW5nIFpoYW8iPFpoZW5mZW5nLlpoYW9Ad2luZHJpdmVyLmNvbT4KPj4+IFNlbnQ6IFRodXJz
-ZGF5LCAyMyBBdWd1c3QsIDIwMTIgODoyMTo0MyBBTQo+Pj4gU3ViamVjdDogUmU6IFtMVFBdIFtQ
-QVRDSF0gcHRocmVhZF9kZXRhY2gvNC0zOiB3b3JrYXJvdW5kIGZvciBzZWdtZW50IGZhdWx0Cj4+
-Pgo+Pj4gT24gMjAxMuW5tDA45pyIMjLml6UgMjI6MjAsIEphbiBTdGFuY2VrIHdyb3RlOgo+Pj4+
-IE9uIDA4LzIyLzIwMTIgMTA6NTggQU0sIEphbiBTdGFuY2VrIHdyb3RlOgo+Pj4+PiAtLS0tLSBP
-cmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4+Pj4+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdp
-bmRyaXZlci5jb20+Cj4+Pj4+PiBUbzogIkphbiBTdGFuY2VrIjxqc3RhbmNla0ByZWRoYXQuY29t
-Pgo+Pj4+Pj4gQ2M6IGdhb3dhbmxvbmdAY24uZnVqaXRzdS5jb20sIGx0cC1saXN0QGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldCwKPj4+Pj4+ICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVuZy5aaGFvQHdpbmRy
-aXZlci5jb20+Cj4+Pj4+PiBTZW50OiBXZWRuZXNkYXksIDIyIEF1Z3VzdCwgMjAxMiAxMDoyODo1
-OSBBTQo+Pj4+Pj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSF0gcHRocmVhZF9kZXRhY2gvNC0z
-OiB3b3JrYXJvdW5kIGZvcgo+Pj4+Pj4gc2VnbWVudCBmYXVsdAo+Pj4+Pj4gSGkgSmFuLAo+Pj4+
-Pj4KPj4+Pj4+PiBJcyB0aGUgYWJvdmUgb3V0cHV0IGZyb20gbWlwcyBvciB4ODZfNjQ/Cj4+Pj4+
-Pj4gQXJlIHlvdSBydW5uaW5nIGl0IGFzIHJvb3QgdXNlcj8KPj4+Pj4+IFRoaXMgd2FzIHRlc3Rl
-ZCBvbiB4ODZfNjQgd2l0aCB1bnByaXZpbGVnZWQgIHVzZXIuIEkgcmV0ZXN0IGl0Cj4+Pj4+PiB3
-aXRoCj4+Pj4+PiByb290Cj4+Pj4+PiBhbmQgdGVzdCBwYXNzZXMuCj4+Pj4+IFlvdXIgdW5wcml2
-aWxlZ2VkIHVzZXIgaXMgaGl0dGluZyBzb21lIHJlc291cmNlIGxpbWl0LCBJJ2QgYmUKPj4+Pj4g
-aW50ZXJlc3RlZAo+Pj4+PiB0byBzZWUgaG93IG1hbnkgdGhyZWFkcyBhcmUgYWN0dWFsbHkgcnVu
-bmluZyBhdCB0aGUgc2FtZSB0aW1lLgo+Pj4+Pgo+Pj4+Pj4gSXQgcGFzc2VzIG9uIHJvdXRlcnN0
-YXRpb24obWlwcykgd2l0aCB5b3VyIHBhdGNoIHRvby4KPj4+Pj4+IFNvIGl0IGxvb2tzIGxpa2Ug
-YSByYWNlIGNvbmRpdGlvbiBpc3N1ZSBhYm91dCBzdGFjayBhdHRyaWJ1dGUKPj4+Pj4+IGJldHdl
-ZW4KPj4+Pj4+IHRocmVhZHMsIHJpZ2h0Pwo+Pj4+PiBJIHRoaW5rIHNvLiBXZSBjYW4gdHJ5IGRp
-ZmZlcmVudCB3YXkgb2Ygc2lnbmFsbGluZyB3aGVuIHRocmVhZGVkKCkKPj4+Pj4gaXMgZG9uZQo+
-Pj4+PiBhbmQgdHJ5IGl0IGFnYWluIHdpdGggYWxsIHNjZW5hcmlvcy4KPj4+PiBJIHRoaW5rIHRo
-aXMgdGVzdGNhc2UgaXMgYnJva2VuIGluIG1vcmUgdGhhbiAxIHdheS4gQXQgbGVhc3Qgb24gbXkK
-Pj4+PiBzZXR1cCwgSSBkb24ndCBzZWUKPj4+PiBhIHNpbmdsZSBwdGhyZWFkX2RldGFjaCgpIHdo
-aWxlIHNpZ25hbHMgYXJlIGZpcmluZyAtIHdoaWNoIGlzCj4+Pj4gZXhhY3RseSBnb2FsIG9mIHRo
-aXMgdGVzdC4KPj4+Pgo+Pj4+IFdpdGggZm9sbG93aW5nIGNoYW5nZToKPj4+Pgo+Pj4+IGRpZmYg
-LS1naXQKPj4+PiBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9p
-bnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+Pj4gYi90ZXN0Y2FzZXMvb3Blbl9wb3Np
-eF90ZXN0c3VpdGUvY29uZm9ybWFuCj4+Pj4gaW5kZXggZGZhNmUxOS4uNDhlMTM0MyAxMDA2NDQK
-Pj4+PiAtLS0KPj4+PiBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5j
-ZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+Pj4gKysrCj4+Pj4gYi90ZXN0Y2Fz
-ZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2Rl
-dGFjaC80LTMuYwo+Pj4+IEBAIC0yNzcsNiArMjc2LDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNo
-YXIgKmFyZ3ZbXSkKPj4+PiAgICAgICAgICAgICAgICAgICBkb19pdDEgPSAwOwo+Pj4+ICAgICAg
-ICAgICB9IHdoaWxlIChkb19pdDEpOwo+Pj4+Cj4+Pj4gKyAgICAgICBvdXRwdXQoIiAgJWQgdGhy
-ZWFkIGRldGFjaGVkIHdoaWxlIHNpZ25hbHMgd2VyZSBmaXJpbmcuXG4iLAo+Pj4+IGNvdW50X29w
-ZSk7Cj4+Pj4gICAgICAgICAgIHNsZWVwKDEpOwo+Pj4+Cj4+Pj4gICAgICAgICAgIGRvIHsKPj4+
-Pgo+Pj4+IEkgZ2V0Ogo+Pj4+IFsxNjoxMToyM10gIDEgdGhyZWFkIGRldGFjaGVkIHdoaWxlIHNp
-Z25hbHMgYXJlIGZpcmluZy4KPj4+PiBbMTY6MTE6MjRdVGVzdCBleGVjdXRlZCBzdWNjZXNzZnVs
-bHkuCj4+Pj4gWzE2OjExOjI0XSAgNzc4NjUgdGhyZWFkIGRldGFjaGVkLgo+Pj4+Cj4+Pj4gYW5k
-IHRoYXQgcmVwb3J0ZWQgIjEiIGlzIGhvdyBtYW55IHRocmVhZHMgYXR0ZW1wdGVkIHRvIGNhbGwK
-Pj4+PiBwdGhyZWFkX2RldGFjaCwgbm90IGhvdyBtYW55IGFjdHVhbGx5Cj4+Pj4gc3VjY2VlZGVk
-LiBTaWduYWxzIGFyZSBmaXJpbmcgc28gZnJlcXVlbnRseSB0aGF0IHRocmVhZGVkKCkgY2FuJ3QK
-Pj4+PiBwcm9ncmVzcyBhdCBhbGwuCj4+PiBUaGVuIGhvdyBkbyB3ZSBmaXggdGhpcyBjYXNlPyBz
-eW5jIHNlbmRpbmcgdGhlIHNpZ25hbHMgd2l0aAo+Pj4gcHRocmVhZF9kZXRhY2g/Cj4+IEkgd2Fz
-IHRoaW5raW5nIHVzbGVlcChzbGVlcF90aW1lKSB0aGF0IHByb2dyZXNzaXZlbHkgaW5jcmVhc2Vz
-LiBTbyBpdAo+PiBzdGFydHMgZmlyaW5nIHNpZ25hbHMgYXMgcXVpY2tseSBhcyBpdCBjYW4gYW5k
-IHNsb3dzIGRvd24gb3ZlciB0aW1lLgo+PiBFYWNoIHB0aHJlYWRfZGV0YWNoKCkgd291bGQgcmVz
-ZXQgdGhlIHNsZWVwX3RpbWUuCj4+Cj4+IEFzIGZvciBvdXIgb3JpZ2luYWwgaXNzdWUsIGlkZWEg
-SSdtIHBsYXlpbmcgd2l0aCBpczoKPj4KPj4gbWFpbiAocHJvY0EpIC0gZG9fY2hpbGQgKHByb2NC
-KSAtIHNlbmRfc2lnICh0aHJlYWQpCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFwKPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXN0ICh0aHJlYWQpIC0g
-dGhyZWFkZWQgKGRldGFjaGVkIHRocmVhZCkKPj4KPj4gLSB0dXJuICd3aGlsZScgaW4gdGVzdCgp
-IHRvIHNpbmdsZSAnZm9yJyBsb29wCj4+IC0gbG9vcCBpbiBtYWluLCBmb3JrIGFuZCBjYWxsIGRv
-X2NoaWxkLCB3YWl0IGZvciBjaGlsZCB0byBmaW5pc2gKPiBIaSwKPgo+IGF0dGFjaGVkIGlzIHYx
-IG9mIHRoZSBpZGVhIGFib3ZlLiBJIHJhbiBpdCAxMDB4IHRpbWVzIG9uIHZhcmlvdXMKPiBzZXR1
-cHMgYXMgcm9vdCBhbmQgdW5wcml2aWxlZ2VkIHVzZXIuCgpIaSBKYW4sCgpHcmVhdCEKPiBLYWks
-IHdvdWxkIHlvdSBsaWtlIHRvIGdpdmUgYSB0cnk/CkkgaGF2ZSB0ZXN0IGl0IG9uIHJvdXRlcnN0
-YXRpb24sIHg4Nl82NCh1YnVudHUxMS4xMCAmIHJlZGhhdCA1LjMpIGFuZCAKeDg2KHJlZGhhdCA1
-LjMpIGVhY2ggMTAwKyB0aW1lcywgYW5kIGFsbCBQQVNTLgoKUmVnYXJkcywKS2FpCgo+Cj4gUmVn
-YXJkcywKPiBKYW4KPgo+PiBUaGlzIHdheSB3ZSBjYW4gYmUgc3VyZSwgdGhhdCB3ZSBkb24ndCBy
-ZXVzZSBzYW1lIHN0YWNrIGZvciBtdWx0aXBsZSB0aHJlYWRzLAo+PiBhbmQgd2UgY2FuIGFsc28g
-YmUgc3VyZSwgdGhlcmUgd29uJ3QgYmUgbW9yZSB0aGFuIE5TQ0VOQVIgdGhyZWFkcywgc28gdW5w
-cml2aWxlZ2VkCj4+IHVzZXIgc2hvdWxkIG5vdCBydW4gb3V0IG9mIHJlc291cmNlcy4KPj4KPj4g
-UmVnYXJkcywKPj4gSmFuCj4+Cj4+PiBXYW5sb25nLCBhbnkgY29tbWVudHM/Cj4+Pgo+Pj4gVGhh
-bmtzLAo+Pj4gS2FpCj4+Pgo+Pj4+IFJlZ2FyZHMsCj4+Pj4gSmFuCj4+Pj4KPj4+Cj4+IC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQo+PiBMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQo+PiBF
-eGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3Vy
-aXR5IGFuZAo+PiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdl
-cnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zCj4+IHdpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1
-cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUKPj4gdGhyZWF0
-cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIy
-NjMvCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+
-IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+PiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-Pj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UK
-RXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1
-cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2Vy
-cyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0
-eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0
-dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
-YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Sun, Aug 5, 2012 at 6:42 PM, Wanlong Gao <gaowanlong@cn.fujitsu.com> wrote:
+> On 08/04/2012 06:29 AM, Vinson Lee wrote:
+>> This patch fixes this build error with clang.
+>>
+>> testcases/kernel/syscalls/rt_sigaction/../../../../include/ltp_signal.h:85: undefined reference to `handler_h'
+>
+> If you wanna build LTP with LLVM, why not make out "a path for LLVM building" and send
+> out it. I think this one line change can't do everything for LLVM building, although
+> untested. right?
+>
+> Thanks,
+> Wanlong Gao
+>
+
+This was the only build error with I saw with clang. This one change
+fixes the build with clang.
+
+It's a C99 error which would probably occur with gcc -std=c99 as well.
+http://clang.llvm.org/compatibility.html#inline
+
+
+>>
+>> Signed-off-by: Vinson Lee <vlee@twitter.com>
+>> ---
+>>  include/ltp_signal.h |    2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/ltp_signal.h b/include/ltp_signal.h
+>> index 1ac6f70..093059f 100644
+>> --- a/include/ltp_signal.h
+>> +++ b/include/ltp_signal.h
+>> @@ -69,7 +69,7 @@ struct kernel_sigaction {
+>>
+>>  void (*restore_rt) (void);
+>>
+>> -inline void
+>> +void
+>>  handler_h (int signal)
+>>  {
+>>       return;
+>>
+>
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
