@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1SyIX2-0002kw-Rs
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:19:20 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SyIWy-0007LE-G9
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:19:20 +0000
-From: Kang Kai <kai.kang@windriver.com>
-Date: Mon, 6 Aug 2012 16:19:04 +0800
-Message-ID: <1344241144-25750-2-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1344241144-25750-1-git-send-email-kai.kang@windriver.com>
-References: <1344241144-25750-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SyCQE-0008Dt-UG
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 01:47:54 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SyCQD-0002ib-7A
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 01:47:54 +0000
+Message-ID: <501F21E8.6030302@cn.fujitsu.com>
+Date: Mon, 06 Aug 2012 09:46:16 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] aio_suspend/3-1: wait all aio_write complete
+References: <13ebcba495cd84de8ffb6db190d3cfc5490c7af2.1343994187.git.jstancek@redhat.com>
+In-Reply-To: <13ebcba495cd84de8ffb6db190d3cfc5490c7af2.1343994187.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] sockioctl01: fix expected errno for pipe ioctl
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,53 +28,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-After aio_suspend, wait all aio_write operations to complete.
+On 08/03/2012 07:48 PM, Jan Stancek wrote:
+> 
+> commit 46ce341b2f176c2611f12ac390adf862e932eb02
+> Author: Will Deacon <will.deacon@arm.com>
+> Date:   Fri May 25 11:39:13 2012 +0100
+> 
+>     pipe: return -ENOIOCTLCMD instead of -EINVAL on unknown ioctl
+> command
+> 
+> This commit (v3.4-8603-g46ce341 in linux-stable) changed pipe_ioctl,
+> so vfs_ioctl() now returns ENOTTY instead of EINVAL.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-If don't do that, it fails with "Segmentation fault" on routerstation(mips)
-board randomly about in 1000 continuous test. The reason may be some
-aio_writes don't complete before close the file, that cause some resouse
-don't be released and finally cause segment fault.
+Pushed, thanks Jan.
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/aio_suspend/3-1.c       |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+Wanlong Gao
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-index 15120e1..e8e9705 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-@@ -46,6 +46,7 @@ int main()
- 	struct aiocb aiocb[NAIOCB];
- 	const struct aiocb *list[NENT];
- 	int i;
-+	int ret;
- 
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
-@@ -87,6 +88,17 @@ int main()
- 		exit(PTS_FAIL);
- 	}
- 
-+	for (i = 0; i < NAIOCB; ++i) {
-+		do {
-+			usleep(10000);
-+			ret = aio_error(&aiocb[i]);
-+		} while (ret == EINPROGRESS);
-+		if (aio_return(&aiocb[i]) == -1) {
-+			printf(TNAME " Error at aio_return(): %s\n", strerror(errno));
-+			exit(PTS_FAIL);
-+		}
-+	}
-+
- 	close(fd);
- 	printf("Test PASSED\n");
- 	return PTS_PASS;
--- 
-1.7.5.4
+> ---
+>  testcases/kernel/syscalls/sockioctl/sockioctl01.c |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 ------------------------------------------------------------------------------
