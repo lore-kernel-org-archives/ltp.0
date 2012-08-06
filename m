@@ -1,28 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1T2GzM-0004M9-Ax
-	for ltp-list@lists.sourceforge.net; Fri, 17 Aug 2012 07:29:00 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SyJn6-0001qE-Bf
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 09:40:00 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T2GzL-0007Ve-AL
-	for ltp-list@lists.sourceforge.net; Fri, 17 Aug 2012 07:29:00 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7H7Sr2V030064
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 17 Aug 2012 03:28:53 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id q7H7SpKS016867
-	for <ltp-list@lists.sourceforge.net>; Fri, 17 Aug 2012 03:28:52 -0400
+	id 1SyJn4-0005HW-5U
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 09:40:00 +0000
+Date: Mon, 6 Aug 2012 05:39:50 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 17 Aug 2012 09:28:43 +0200
-Message-Id: <ae5da61e39dd2d43562dc9857d17fd4ab66c2aa4.1345188176.git.jstancek@redhat.com>
-In-Reply-To: <9018a236d9800df20fe96edaec0d03149f6d26ca.1345188176.git.jstancek@redhat.com>
-References: <9018a236d9800df20fe96edaec0d03149f6d26ca.1345188176.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 2/3] new syscall test: migrate_pages01
+Message-ID: <1121805817.413044.1344245990666.JavaMail.root@redhat.com>
+In-Reply-To: <2fbaeedd90ff07905a440eff5a3877bc7bf40f4c.1344234636.git.caspar@casparzhang.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2 1/2] numa_helper: move to libkerntest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,451 +23,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-errno tests for migrate_pages(2).
-Note, that older kernels (~2.6.18) are likely to panic during this test.
+Hi Caspar,
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/migrate_pages/Makefile   |   32 +++
- .../syscalls/migrate_pages/migrate_pages01.c       |  270 ++++++++++++++++++++
- .../syscalls/migrate_pages/migrate_pages_common.c  |   62 +++++
- .../syscalls/migrate_pages/migrate_pages_common.h  |   33 +++
- 4 files changed, 397 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/migrate_pages/Makefile
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
+I found one small issue during my testing, but I suppose this can be fixed
+in follow-up patch without need to resend whole series.
 
-diff --git a/testcases/kernel/syscalls/migrate_pages/Makefile b/testcases/kernel/syscalls/migrate_pages/Makefile
-new file mode 100644
-index 0000000..7168cd6
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/Makefile
-@@ -0,0 +1,32 @@
-+#
-+#  Copyright (C) 2012 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
-+$(MAKE_TARGETS): %: %.o migrate_pages_common.o
-+
-+ifeq ($(NUMA_LIBS),)
-+CPPFLAGS		+= -Wno-unused
-+endif
-+CPPFLAGS		+= -I$(abs_srcdir)/../utils/
-+
-+include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-new file mode 100644
-index 0000000..cffb784
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -0,0 +1,270 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+/*
-+ * errno tests for migrate_pages() syscall
-+ */
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+#include <sys/wait.h>
-+#include <sys/mman.h>
-+#include <errno.h>
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <pwd.h>
-+#include "config.h"
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
-+#include "numa_helper.h"
-+#include "migrate_pages_common.h"
-+
-+char *TCID = "migrate_pages01";
-+int  TST_TOTAL = 1;
-+
-+#if defined(__NR_migrate_pages) && defined(HAVE_NUMA_H)
-+static unsigned long *sane_old_nodes;
-+static unsigned long *sane_new_nodes;
-+static int sane_nodemask_size;
-+static int sane_max_node;
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void test_sane_nodes(void)
-+{
-+	tst_resm(TINFO, "test_empty_mask");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node,
-+		sane_old_nodes, sane_new_nodes));
-+	check_ret(0);
-+}
-+
-+static void test_invalid_pid(void)
-+{
-+	const char pid_max[] = "/proc/sys/kernel/pid_max";
-+	FILE *fp;
-+	char buff[512];
-+	pid_t invalid_pid = -1;
-+
-+	tst_resm(TINFO, "test_invalid_pid -1");
-+	TEST(syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
-+		sane_old_nodes, sane_new_nodes));
-+	check_ret(-1);
-+	check_errno(ESRCH);
-+
-+	tst_resm(TINFO, "test_invalid_pid pid_max+1");
-+	fp = fopen(pid_max, "r");
-+	if (fp == NULL)
-+		tst_brkm(TBROK, cleanup,
-+			"Could not open %s", pid_max);
-+	if (!fgets(buff, sizeof(buff), fp))
-+		tst_brkm(TBROK, cleanup,
-+			"Could not read %s", pid_max);
-+	fclose(fp);
-+	invalid_pid = atol(buff) + 1;
-+	TEST(syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
-+		sane_old_nodes, sane_new_nodes));
-+	check_ret(-1);
-+	check_errno(ESRCH);
-+}
-+
-+static void test_invalid_masksize(void)
-+{
-+	tst_resm(TINFO, "test_invalid_masksize");
-+	TEST(syscall(__NR_migrate_pages, 0, -1, sane_old_nodes,
-+		sane_new_nodes));
-+	check_ret(-1);
-+	check_errno(EINVAL);
-+}
-+
-+static void test_invalid_mem(void)
-+{
-+	unsigned long *p;
-+
-+	tst_resm(TINFO, "test_invalid_mem -1");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, -1, -1));
-+	check_ret(-1);
-+	check_errno(EFAULT);
-+
-+	tst_resm(TINFO, "test_invalid_mem invalid prot");
-+	p = mmap(NULL, getpagesize(), PROT_NONE,
-+		MAP_PRIVATE|MAP_ANONYMOUS, 0, 0);
-+	if (p == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
-+	check_ret(-1);
-+	check_errno(EFAULT);
-+
-+	if (munmap(p, getpagesize()) < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+	tst_resm(TINFO, "test_invalid_mem unmmaped");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
-+	check_ret(-1);
-+	check_errno(EFAULT);
-+}
-+
-+static void test_invalid_nodes(void)
-+{
-+	int *nodes;
-+	int num_nodes, ret, i;
-+	int invalid_node = 0;
-+	unsigned long *old_nodes, *new_nodes;
-+
-+	tst_resm(TINFO, "test_invalid_nodes");
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup,
-+			"get_allowed_nodes_arr: %d", ret);
-+
-+	/* get first node which is not in nodes */
-+	for (i = 0; i < num_nodes; i++, invalid_node++)
-+		if (invalid_node != nodes[i])
-+			break;
-+	if (invalid_node < sane_max_node) {
-+		old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+		new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+		memcpy(old_nodes, sane_old_nodes, sane_nodemask_size);
-+		memset(new_nodes, 0, sane_nodemask_size);
-+		set_bit(new_nodes, invalid_node, 1);
-+
-+		TEST(syscall(__NR_migrate_pages, 0, sane_max_node,
-+			old_nodes, new_nodes));
-+		check_ret(-1);
-+		check_errno(EINVAL);
-+		free(old_nodes);
-+		free(new_nodes);
-+	} else
-+		tst_resm(TCONF, "All possible nodes are present");
-+
-+	free(nodes);
-+}
-+
-+static void test_invalid_perm(void)
-+{
-+	char nobody_uid[] = "nobody";
-+	struct passwd *ltpuser;
-+	int status;
-+	pid_t child_pid;
-+	pid_t parent_pid;
-+	int ret = 0;
-+
-+	tst_resm(TINFO, "test_invalid_perm");
-+	parent_pid = getpid();
-+	fflush(stdout);
-+	child_pid = fork();
-+	switch (child_pid) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		break;
-+	case 0:
-+		ltpuser = getpwnam(nobody_uid);
-+		if (ltpuser == NULL)
-+			tst_brkm(TBROK|TERRNO, NULL,
-+					"getpwnam failed");
-+		if (setuid(ltpuser->pw_uid) == -1)
-+			tst_brkm(TBROK|TERRNO, NULL,
-+					"setuid(%u) failed",
-+					ltpuser->pw_uid);
-+		TEST(syscall(__NR_migrate_pages, parent_pid,
-+			sane_max_node, sane_old_nodes,
-+			sane_new_nodes));
-+		ret |= check_ret(-1);
-+		ret |= check_errno(EPERM);
-+		exit(ret);
-+	default:
-+		if (waitpid(child_pid, &status, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "child returns %d", status);
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		test_sane_nodes();
-+		test_invalid_pid();
-+		test_invalid_masksize();
-+		test_invalid_mem();
-+		test_invalid_nodes();
-+		test_invalid_perm();
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	int node, ret;
-+
-+	tst_require_root(NULL);
-+	TEST(syscall(__NR_migrate_pages, 0, 0, NULL, NULL));
-+
-+	if (numa_available() == -1)
-+		tst_brkm(TCONF, NULL, "NUMA not available");
-+
-+	ret = get_allowed_nodes(NH_MEMS, 1, &node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes_arr: %d", ret);
-+
-+	sane_max_node = get_max_node();
-+	sane_nodemask_size = sane_max_node/8+1;
-+	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+	memset(sane_old_nodes, 0, sane_nodemask_size);
-+	memset(sane_new_nodes, 0, sane_nodemask_size);
-+
-+	set_bit(sane_old_nodes, node, 1);
-+	set_bit(sane_new_nodes, node, 1);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	free(sane_old_nodes);
-+	free(sane_new_nodes);
-+	TEST_CLEANUP;
-+}
-+
-+#else /* __NR_migrate_pages */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
-+			" or libnuma is not available");
-+}
-+#endif
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
-new file mode 100644
-index 0000000..00b512a
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
-@@ -0,0 +1,62 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "migrate_pages_common.h"
-+
-+void set_bit(unsigned long *b, unsigned int n, unsigned int v)
-+{
-+	if (v)
-+		b[n/bitsperlong] |= 1UL << (n % bitsperlong);
-+	else
-+		b[n/bitsperlong] &= ~(1UL << (n % bitsperlong));
-+}
-+
-+int check_ret(long expected_ret)
-+{
-+	if (expected_ret == TEST_RETURN) {
-+		tst_resm(TPASS, "expected ret success - "
-+			"returned value = %ld", TEST_RETURN);
-+		return 0;
-+	} else
-+		tst_resm(TFAIL, "unexpected failure - "
-+			"returned value = %ld, expected: %ld",
-+			TEST_RETURN, expected_ret);
-+	return 1;
-+}
-+
-+int check_errno(long expected_errno)
-+{
-+	if (TEST_ERRNO == expected_errno) {
-+		tst_resm(TPASS|TTERRNO, "expected failure");
-+		return 0;
-+	} else if (TEST_ERRNO == 0)
-+		tst_resm(TFAIL, "call succeeded unexpectedly");
-+	else
-+		tst_resm(TFAIL|TTERRNO, "unexpected failure - "
-+			"expected = %ld : %s, actual",
-+			expected_errno, strerror(expected_errno));
-+	return 1;
-+}
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
-new file mode 100644
-index 0000000..d821b07
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
-@@ -0,0 +1,33 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#ifndef MIGRATE_PAGES_COMMON_H
-+#define MIGRATE_PAGES_COMMON_H
-+
-+#define bitsperlong (8 * sizeof(unsigned long))
-+
-+void set_bit(unsigned long *b, unsigned int n, unsigned int v);
-+int check_ret(long expected_ret);
-+int check_errno(long expected_errno);
-+#endif
--- 
-1.7.1
+When I do "make clean" from LTP root, kernel/lib is not cleaned:
+# ll testcases/kernel/lib/
+total 36
+-rw-r--r--. 1 root root 9704 Aug  6 05:27 libkerntest.a
+-rw-rw-r--. 1  501  501 1051 Aug  6 03:21 Makefile
+-rw-rw-r--. 1  501  501 6424 Aug  6 03:21 numa_helper.c
+-rw-r--r--. 1 root root 9456 Aug  6 05:27 numa_helper.o
 
+Regards,
+Jan
+
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Monday, 6 August, 2012 8:30:50 AM
+> Subject: [LTP] [PATCH v2 1/2] numa_helper: move to libkerntest
+> 
+> 
+> libnuma_helper could be used by testcases both under syscalls/ and
+> mem/,
+> it's better to add a new common lib in their parent dir, so I created
+> libkerntest under testcases/kernel/lib/, and put numa_helper to it.
+> In
+> the future, we can add more APIs to it.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/include/lib.mk                  |   37 +++
+>  testcases/kernel/include/numa_helper.h           |   37 +++
+>  testcases/kernel/lib/Makefile                    |   29 +++
+>  testcases/kernel/lib/numa_helper.c               |  266
+>  ++++++++++++++++++++++
+>  testcases/kernel/syscalls/get_mempolicy/Makefile |    2 +-
+>  testcases/kernel/syscalls/mbind/Makefile         |    2 +-
+>  testcases/kernel/syscalls/move_pages/Makefile    |    2 +-
+>  testcases/kernel/syscalls/numa/Makefile          |   22 --
+>  testcases/kernel/syscalls/numa/Makefile.inc      |   27 ---
+>  testcases/kernel/syscalls/numa/lib/Makefile      |   26 --
+>  testcases/kernel/syscalls/numa/lib/numa_helper.c |  266
+>  ----------------------
+>  testcases/kernel/syscalls/numa/lib/numa_helper.h |   37 ---
+>  12 files changed, 372 insertions(+), 381 deletions(-)
+>  create mode 100644 testcases/kernel/include/lib.mk
+>  create mode 100644 testcases/kernel/include/numa_helper.h
+>  create mode 100644 testcases/kernel/lib/Makefile
+>  create mode 100644 testcases/kernel/lib/numa_helper.c
+>  delete mode 100644 testcases/kernel/syscalls/numa/Makefile
+>  delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+>  delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+>  delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+>  delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond.
+> Discussions
+> will include endpoint security, mobile security and the latest in
+> malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
