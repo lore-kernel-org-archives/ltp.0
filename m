@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1Szlva-00016I-Tj
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 09:54:46 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzlvZ-0005oJ-K5
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 09:54:46 +0000
-Date: Fri, 10 Aug 2012 05:54:38 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <23193633.36569632.1344592478934.JavaMail.root@redhat.com>
-In-Reply-To: <2014107378.3027931.1344587065940.JavaMail.root@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SyLxp-00073T-Ed
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 11:59:13 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SyLxl-000752-PO
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 11:59:13 +0000
+Received: by pbcwy7 with SMTP id wy7so1466653pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Aug 2012 04:58:59 -0700 (PDT)
+Message-ID: <501FB17B.4040900@casparzhang.com>
+Date: Mon, 06 Aug 2012 19:58:51 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH resend 5/6] mm: use new numa_helper
+References: <1121805817.413044.1344245990666.JavaMail.root@redhat.com>
+In-Reply-To: <1121805817.413044.1344245990666.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH v2 1/2] numa_helper: move to libkerntest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,56 +27,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkphbiBTdGFuY2VrIiA8anN0
-YW5jZWtAcmVkaGF0LmNvbT4KPiBUbzogIlpob3VwaW5nIExpdSIgPHpsaXVAcmVkaGF0LmNvbT4K
-PiBDYzogIkxUUCBMaXN0IiA8bHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0PiwgIkNhc3Bh
-ciBaaGFuZyIgPGNhc3BhckBjYXNwYXJ6aGFuZy5jb20+Cj4gU2VudDogRnJpZGF5LCBBdWd1c3Qg
-MTAsIDIwMTIgNDoyNDoyNSBQTQo+IFN1YmplY3Q6IFJlOiBbTFRQXSBbUEFUQ0ggcmVzZW5kIDUv
-Nl0gbW06IHVzZSBuZXcgbnVtYV9oZWxwZXIKPiAKPiAKPiAKPiAtLS0tLSBPcmlnaW5hbCBNZXNz
-YWdlIC0tLS0tCj4gPiBGcm9tOiAiWmhvdXBpbmcgTGl1IiA8emxpdUByZWRoYXQuY29tPgo+ID4g
-VG86ICJDYXNwYXIgWmhhbmciIDxjYXNwYXJAY2FzcGFyemhhbmcuY29tPgo+ID4gQ2M6ICJMVFAg
-TGlzdCIgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldD4KPiA+IFNlbnQ6IEZyaWRheSwg
-MTAgQXVndXN0LCAyMDEyIDEwOjAyOjAxIEFNCj4gPiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENI
-IHJlc2VuZCA1LzZdIG1tOiB1c2UgbmV3IG51bWFfaGVscGVyCj4gPiAKPiAKPiA+ID4gLcK7IHJl
-dHVybsK3bm5vZGVzOwo+ID4gPiArwrsgcmV0wrc9wrdnZXRfYWxsb3dlZF9ub2RlcyhOSF9NRU1T
-fE5IX0NQVVMswrcxLMK3Jm5kMSk7Cj4gPiAKPiA+IENhc3BhciwgSSBmb3VuZCBnZXRfYV9udW1h
-X25vZGUgYWx3YXlzIHJldHVybiB0aGUgZmlyc3Qgbm9kZSBpZCwKPiA+IHdoaWNoCj4gPiB3aWxs
-IG1ha2UgYWxsIGNhc2VzIGNhbGxlZCB0aGUgZnVuY3Rpb24KPiA+IG9ubHkgcnVuIGluIHRoZSBm
-aXJzdCBub2RlLCBJIGRvbid0IHRoaW5rIGl0J3MgYSBnb29kIHdheSwgaXQKPiA+IGRlY3JlYXNl
-Cj4gPiB0aGUgY292ZXJhZ2UuCj4gCj4gV2UgaGFkIGEgZGlzY3Vzc2lvbiB3aXRoIENhc3BhciBv
-biB0aGlzIHRvcGljOgo+IGh0dHA6Ly9hcnRpY2xlLmdtYW5lLm9yZy9nbWFuZS5saW51eC5sdHAv
-MTY0OTUKPiAKPiBDYW4geW91IGV4cGxhaW4gd2h5IGEgc3BlY2lmaWMgbm9kZSBtYXR0ZXJzIGhl
-cmU/Cgp5ZWFoLCBJIGRpZG4ndCBjYXJlZnVsbHkgcmVhZCB0aGUgZGlzY3Vzc2lvbiBiZWZvcmUs
-CmFuZCBkaXNjdXNzZWQgd2l0aCBDYXNwYXIsIEkgYWdyZWUgd2l0aCB0aGUgY3VycmVudCBzb2x1
-dGlvbi4Kc28gUmV2aWV3ZWQtYnk6IFpob3VwaW5nIExpdSA8emxpdUByZWRoYXQuY29tPgoKYnV0
-IGFsd2F5cyBJJ20gd29ycnlpbmcgaXQgbWF5YmUgaGFzIGRpZmZlcmVuY2UgYmV0d2VlbiBkaWZm
-ZXJlbnQgbm9kZXMsCmVzcGVjaWFsbHkgaW4gb2xkIHZlcnNpb24sIHN1Y2ggYXMgUkhFTDUsIHdo
-aWNoIGRpZG4ndCBpbXByb3ZlIHRoZQpwZXJmb3JtYW5jZSBvZiBzY2hlZHVsaW5nIGluIE5VTUEg
-c3lzdGVtLCBzbyB0aGF0IG1vcmUgcHJvY2VzcyB3aWxsIGNob29zZQp0aGUgZmlyc3Qgbm9kZShJ
-IGd1ZXNzKSwgYW5kIGluIGEgbGFyZ2UgTlVNQSBzeXN0ZW0sIHdoaWNoIGhhdmUgMisgYXZhaWxh
-YmxlCk5VTUEgbm9kZXMoY29udGFpbiBtZW1vcnkgYW5kIENQVXMpLCBJIHRoaW5rIHRoZSBzZWNv
-bmQgbm9kZSByZXByZXNlbnQgbW9yZQp1bml2ZXJzYWxpdHkgdGhhbiBmaXJzdCBvbmUsIHRoYXQn
-cyBhbGwgbXkgc3VwcG9zaW5nLCBzbyBJIHdpbGwgaW52ZXN0aWdhdGluZwp0aGUgc3VwcG9zaW5n
-LCBhY3R1YWxseSBpZiBpdCBleGlzdHMgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBkaWZmZXJlbnQg
-bm9kZXMsCkkgd2lsbCBkbyBhIG5ldyBwYXRjaC4KClRoYW5rcywKWmhvdXBpbmcgCgo+IAo+IFJl
-Z2FyZHMsCj4gSmFuCj4gCj4gPiAKPiA+IHdlIHNob3VsZCBwcmVmZXIgdG8gcnVuIGNhc2VzIG9u
-IHRoZSBzZWNvbmQgbm9kZSwgd2UgY2FuIGNob3NlIHRoZQo+ID4gZmlyc3QKPiA+IG9ubHkgaWYg
-aXQganVzdCBvbmx5IGhhcwo+ID4gb25lIG5vZGUgd2l0aCBOSF9NRU1TfE5IX0NQVVMuIGRvIHlv
-dSB0aGluayBzbz8KPiA+IAo+ID4gYW5kIG90aGVycyBpcyBnb29kIGZvciBtZS4KPiA+IAo+ID4g
-VGhhbmtzLAo+ID4gWmhvdXBpbmcKPiAKPgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2Vj
-dXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIg
-YWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBj
-aGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxs
-IGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVz
-dCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJu
-bDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+On 08/06/2012 05:39 PM, Jan Stancek wrote:
+> Hi Caspar,
+>
+> I found one small issue during my testing, but I suppose this can be fixed
+> in follow-up patch without need to resend whole series.
+>
+> When I do "make clean" from LTP root, kernel/lib is not cleaned:
+> # ll testcases/kernel/lib/
+> total 36
+> -rw-r--r--. 1 root root 9704 Aug  6 05:27 libkerntest.a
+> -rw-rw-r--. 1  501  501 1051 Aug  6 03:21 Makefile
+> -rw-rw-r--. 1  501  501 6424 Aug  6 03:21 numa_helper.c
+> -rw-r--r--. 1 root root 9456 Aug  6 05:27 numa_helper.o
+>
+> Regards,
+> Jan
+
+I'll fix it soon. thanks!
+
+Caspar
+
+>
+> ----- Original Message -----
+>> From: "Caspar Zhang" <caspar@casparzhang.com>
+>> To: "LTP List" <ltp-list@lists.sourceforge.net>
+>> Sent: Monday, 6 August, 2012 8:30:50 AM
+>> Subject: [LTP] [PATCH v2 1/2] numa_helper: move to libkerntest
+>>
+>>
+>> libnuma_helper could be used by testcases both under syscalls/ and
+>> mem/,
+>> it's better to add a new common lib in their parent dir, so I created
+>> libkerntest under testcases/kernel/lib/, and put numa_helper to it.
+>> In
+>> the future, we can add more APIs to it.
+>>
+>> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+>> ---
+>>   testcases/kernel/include/lib.mk                  |   37 +++
+>>   testcases/kernel/include/numa_helper.h           |   37 +++
+>>   testcases/kernel/lib/Makefile                    |   29 +++
+>>   testcases/kernel/lib/numa_helper.c               |  266
+>>   ++++++++++++++++++++++
+>>   testcases/kernel/syscalls/get_mempolicy/Makefile |    2 +-
+>>   testcases/kernel/syscalls/mbind/Makefile         |    2 +-
+>>   testcases/kernel/syscalls/move_pages/Makefile    |    2 +-
+>>   testcases/kernel/syscalls/numa/Makefile          |   22 --
+>>   testcases/kernel/syscalls/numa/Makefile.inc      |   27 ---
+>>   testcases/kernel/syscalls/numa/lib/Makefile      |   26 --
+>>   testcases/kernel/syscalls/numa/lib/numa_helper.c |  266
+>>   ----------------------
+>>   testcases/kernel/syscalls/numa/lib/numa_helper.h |   37 ---
+>>   12 files changed, 372 insertions(+), 381 deletions(-)
+>>   create mode 100644 testcases/kernel/include/lib.mk
+>>   create mode 100644 testcases/kernel/include/numa_helper.h
+>>   create mode 100644 testcases/kernel/lib/Makefile
+>>   create mode 100644 testcases/kernel/lib/numa_helper.c
+>>   delete mode 100644 testcases/kernel/syscalls/numa/Makefile
+>>   delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+>>   delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+>>   delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+>>   delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Live Security Virtual Conference
+>> Exclusive live event will cover all the ways today's security and
+>> threat landscape has changed and how IT managers can respond.
+>> Discussions
+>> will include endpoint security, mobile security and the latest in
+>> malware
+>> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
