@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Sym58-0003Y9-Lz
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 15:52:30 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sym54-0000YN-Tm
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 15:52:30 +0000
-Received: by yenm1 with SMTP id m1so507256yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Aug 2012 08:52:21 -0700 (PDT)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SyKAO-0002eI-Lt
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 10:04:04 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SyKAN-0007q2-M3
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 10:04:04 +0000
+Message-ID: <501F9692.1000509@windriver.com>
+Date: Mon, 6 Aug 2012 18:04:02 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <1344331752-817-1-git-send-email-xu.simon@oracle.com>
-References: <1344331752-817-1-git-send-email-xu.simon@oracle.com>
-Date: Tue, 7 Aug 2012 08:52:21 -0700
-Message-ID: <CAGH67wT32j4P8eH_R2+Qbve5B5gVcSjU4npzs5dB2Bze=BS6rQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] runltp: fix -d option processing
+References: <1344241144-25750-1-git-send-email-kai.kang@windriver.com>
+	<1344241144-25750-2-git-send-email-kai.kang@windriver.com>
+	<501F8139.3010709@cn.fujitsu.com> <501F8E9D.4070403@windriver.com>
+	<501F9077.1060008@cn.fujitsu.com>
+In-Reply-To: <501F9077.1060008@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] aio_suspend/3-1: wait all aio_write complete
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,40 +27,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-On Tue, Aug 7, 2012 at 2:29 AM, Simon Xu <xu.simon@oracle.com> wrote:
-> When converting the path specified for -d to absolute path, an extra '/' is
-> added, e.g. if '/mypath' is specified, TMPBASE will be '//mypath'.
-> Some testcases fail because of this, e.g. chdir01A fails with:
->
-> chdir01     1  TFAIL  :  symlink(object, symbolic) was succesful.
-> mkdir(object, 0700) was successful
-> chdir(2) returned successfully, but getcwd(3) indicated new current
-> working directory location /ext4/ltp-2nHcAjcGKr/chd2Y4XkO/object not equal
-> to expected //ext4/ltp-2nHcAjcGKr/chd2Y4XkO/object
->
-> Use readlink to get absolute path.
->
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
-
-Reviewed-by: Garrett Cooper <yanegomi@gmail.com>
-
-Pushed to the repo.
-Thanks!
--Garrett
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMDbml6UgMTc6MzcsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IE9uIDA4LzA2
+LzIwMTIgMDU6MzAgUE0sIEthbmcgS2FpIHdyb3RlOgo+PiBPbiAyMDEy5bm0MDjmnIgwNuaXpSAx
+NjozMiwgV2FubG9uZyBHYW8gd3JvdGU6Cj4+PiBPbiAwOC8wNi8yMDEyIDA0OjE5IFBNLCBLYW5n
+IEthaSB3cm90ZToKPj4+PiBBZnRlciBhaW9fc3VzcGVuZCwgd2FpdCBhbGwgYWlvX3dyaXRlIG9w
+ZXJhdGlvbnMgdG8gY29tcGxldGUuCj4+Pj4KPj4+PiBJZiBkb24ndCBkbyB0aGF0LCBpdCBmYWls
+cyB3aXRoICJTZWdtZW50YXRpb24gZmF1bHQiIG9uIHJvdXRlcnN0YXRpb24obWlwcykKPj4+PiBi
+b2FyZCByYW5kb21seSBhYm91dCBpbiAxMDAwIGNvbnRpbnVvdXMgdGVzdC4gVGhlIHJlYXNvbiBt
+YXkgYmUgc29tZQo+Pj4+IGFpb193cml0ZXMgZG9uJ3QgY29tcGxldGUgYmVmb3JlIGNsb3NlIHRo
+ZSBmaWxlLCB0aGF0IGNhdXNlIHNvbWUgcmVzb3VzZQo+Pj4+IGRvbid0IGJlIHJlbGVhc2VkIGFu
+ZCBmaW5hbGx5IGNhdXNlIHNlZ21lbnQgZmF1bHQuCj4+Pj4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBL
+YW5nIEthaTxrYWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+Pj4+IC0tLQo+Pj4+ICAgIC4uLi9jb25m
+b3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19zdXNwZW5kLzMtMS5jICAgICAgIHwgICAxMiArKysrKysr
+KysrKysKPj4+PiAgICAxIGZpbGVzIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDAgZGVsZXRp
+b25zKC0pCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1
+aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3N1c3BlbmQvMy0xLmMgYi90ZXN0Y2FzZXMv
+b3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fc3VzcGVuZC8z
+LTEuYwo+Pj4+IGluZGV4IDE1MTIwZTEuLmU4ZTk3MDUgMTAwNjQ0Cj4+Pj4gLS0tIGEvdGVzdGNh
+c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3N1c3Bl
+bmQvMy0xLmMKPj4+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
+bWFuY2UvaW50ZXJmYWNlcy9haW9fc3VzcGVuZC8zLTEuYwo+Pj4+IEBAIC00Niw2ICs0Niw3IEBA
+IGludCBtYWluKCkKPj4+PiAgICAgICAgc3RydWN0IGFpb2NiIGFpb2NiW05BSU9DQl07Cj4+Pj4g
+ICAgICAgIGNvbnN0IHN0cnVjdCBhaW9jYiAqbGlzdFtORU5UXTsKPj4+PiAgICAgICAgaW50IGk7
+Cj4+Pj4gKyAgICBpbnQgcmV0Owo+Pj4+Cj4+Pj4gICAgICAgIGlmIChzeXNjb25mKF9TQ19BU1lO
+Q0hST05PVVNfSU8pPCAgIDIwMDExMkwpCj4+Pj4gICAgICAgICAgICByZXR1cm4gUFRTX1VOU1VQ
+UE9SVEVEOwo+Pj4+IEBAIC04Nyw2ICs4OCwxNyBAQCBpbnQgbWFpbigpCj4+Pj4gICAgICAgICAg
+ICBleGl0KFBUU19GQUlMKTsKPj4+PiAgICAgICAgfQo+Pj4+Cj4+Pj4gKyAgICBmb3IgKGkgPSAw
+OyBpPCAgIE5BSU9DQjsgKytpKSB7Cj4+Pj4gKyAgICAgICAgZG8gewo+Pj4+ICsgICAgICAgICAg
+ICB1c2xlZXAoMTAwMDApOwo+Pj4+ICsgICAgICAgICAgICByZXQgPSBhaW9fZXJyb3IoJmFpb2Ni
+W2ldKTsKPj4+PiArICAgICAgICB9IHdoaWxlIChyZXQgPT0gRUlOUFJPR1JFU1MpOwo+Pj4+ICsg
+ICAgICAgIGlmIChhaW9fcmV0dXJuKCZhaW9jYltpXSkgPT0gLTEpIHsKPj4gSGkgV2FubG9uZywK
+Pj4KPj4+IFdoeSBkbyB5b3UgY2hlY2sgdGhlIHJldHVybiB2YWx1ZSBoZXJlPyBhbmQgZGlkIHlv
+dSB0ZXN0IHRoaXMgcGF0Y2ggb24geW91ciBtaXBzIG1hY2hpbmU/Cj4+IEkgdGVzdCBpdCBvbiBt
+aXBzIGZvciA0eDEwMDAgdGltZXMgYW5kIHg4Nl82NCwgYW5kIHRoZSByZXN1bHRzIGFyZSBmaW5l
+Lgo+PiBXaXRoIG5vIG90aGVyIG9wZXJhdGlvbiwgd2hlbiBhaW9fd3JpdGUgY29tcGxldGUsIGl0
+IHNob3VsZCBzdWNjZWVkLiBTbyBJIHVzZSBhaW9fcmV0dXJuIHRvIGNoZWNrIHRoZSByZXR1cm4g
+dmFsdWVzLgo+Pgo+IE9LLiBQdXNoZWQuIFRoYW5rIHlvdS4KVGhhbmtzIGEgbG90LgoKS2FpCgo+
+IFdhbmxvbmcgR2FvCj4KPj4gUmVnYXJkcywKPj4gS2FpCj4+Cj4+PiBUaGFua3MsCj4+PiBXYW5s
+b25nIEdhbwo+Pj4KPj4+PiArICAgICAgICAgICAgcHJpbnRmKFROQU1FICIgRXJyb3IgYXQgYWlv
+X3JldHVybigpOiAlc1xuIiwgc3RyZXJyb3IoZXJybm8pKTsKPj4+PiArICAgICAgICAgICAgZXhp
+dChQVFNfRkFJTCk7Cj4+Pj4gKyAgICAgICAgfQo+Pj4+ICsgICAgfQo+Pj4+ICsKPj4+PiAgICAg
+ICAgY2xvc2UoZmQpOwo+Pj4+ICAgICAgICBwcmludGYoIlRlc3QgUEFTU0VEXG4iKTsKPj4+PiAg
+ICAgICAgcmV0dXJuIFBUU19QQVNTOwo+Pj4+Cj4+Cj4KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+TGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2ls
+bCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVhdCBsYW5kc2Nh
+cGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lv
+bnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0
+aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20v
+amF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL2x0cC1saXN0Cg==
