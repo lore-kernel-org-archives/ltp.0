@@ -1,31 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Syg6T-00023q-5x
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 09:29:29 +0000
-Received: from rcsinet15.oracle.com ([148.87.113.117])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Syg6P-0004oP-Cy
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 09:29:29 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by rcsinet15.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
-	ESMTP id q779TIas003041
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 09:29:19 GMT
-Received: from acsmt356.oracle.com (acsmt356.oracle.com [141.146.40.156])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	q779TIE3027132
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 09:29:18 GMT
-Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
-	by acsmt356.oracle.com (8.12.11.20060308/8.12.11) with ESMTP id
-	q779TIJe022009
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 04:29:18 -0500
-From: Simon Xu <xu.simon@oracle.com>
-Date: Tue,  7 Aug 2012 17:29:12 +0800
-Message-Id: <1344331752-817-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH 1/1] runltp: fix -d option processing
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SyI40-0005XK-43
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 07:49:20 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SyI3z-0004Wq-50
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 07:49:20 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q767nDiC028471
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 6 Aug 2012 00:49:13 -0700 (PDT)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Mon, 6 Aug 2012 15:49:17 +0800
+Message-ID: <1344239357-25017-1-git-send-email-kai.kang@windriver.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,44 +27,135 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Zhenfeng.Zhao@windriver.com
 
-When converting the path specified for -d to absolute path, an extra '/' is
-added, e.g. if '/mypath' is specified, TMPBASE will be '//mypath'.
-Some testcases fail because of this, e.g. chdir01A fails with:
+In this test case, it uses a variable to share data between child and
+parent processes. But after fork there is a copy of the variable in
+child process and modify it will not affect the variable in the parent
+process. Then when the child process call mq_open() before parent process,
+the case will fail.
 
-chdir01     1  TFAIL  :  symlink(object, symbolic) was succesful.
-mkdir(object, 0700) was successful
-chdir(2) returned successfully, but getcwd(3) indicated new current
-working directory location /ext4/ltp-2nHcAjcGKr/chd2Y4XkO/object not equal
-to expected //ext4/ltp-2nHcAjcGKr/chd2Y4XkO/object
+Use tmp file to replace the variable. Any modification in child process
+can be seen in parent process.
 
-Use readlink to get absolute path.
-
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
+Signed-off-by: Kang Kai <kai.kang@windriver.com>
 ---
- runltp | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../conformance/interfaces/mq_open/16-1.c          |   38 +++++++++++++++++--
+ 1 files changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/runltp b/runltp
-index 0d77a6e..bf5f975 100755
---- a/runltp
-+++ b/runltp
-@@ -235,7 +235,7 @@ main()
-             esac ;;
-                    
-         d)  # convert the user path to absolute path.
--            export TMPBASE=`cd \`dirname ${OPTARG}\`; pwd`/`basename ${OPTARG}` ;;
-+            export TMPBASE=$(readlink -f "$OPTARG") ;;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+index b9a3215..c7760bc 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+@@ -20,9 +20,11 @@
+  * this is fine (will have some false positives, but no false negatives).
+  */
  
-         D)  NUM_PROCS=1; NUM_FILES=1; NUM_BYTES=$((1024 * 1024 * 1024)); CLEAN_FLAG=0
-             ARGUMENT_LIST=$OPTARG
++#include <sys/mman.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <errno.h>
+ #include <fcntl.h>
+ #include <mqueue.h>
+ #include <signal.h>
+@@ -32,11 +34,15 @@
+ #include "posixtest.h"
+ 
+ #define NAMESIZE 50
++#define TNAME "mq_open/16-1.c"
+ 
+ int main()
+ {
+        	char qname[NAMESIZE];
++	char fname[NAMESIZE];
+ 	int pid, succeeded=0;
++	int fd;
++	void *pa = NULL;
+ 	mqd_t childqueue, queue;
+ 
+ 	/*
+@@ -47,6 +53,26 @@ int main()
+ 
+        	sprintf(qname, "/mq_open_16-1_%d", getpid());
+ 
++	sprintf(fname, "/tmp/pts_mq_open_16_1_%d", getpid());
++	unlink(fname);
++	fd = open(fname, O_CREAT | O_RDWR | O_EXCL,
++		 S_IRUSR | S_IWUSR);
++	if (fd == -1) {
++		printf(TNAME " Error at open(): %s\n", strerror(errno));
++		exit(PTS_UNRESOLVED);
++	}
++	/* file is empty now, will cause "Bus error" */
++	write(fd, "0", 1);
++	unlink(fname);
++
++	pa = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	if (pa == MAP_FAILED) {
++		printf(TNAME " Error at mmap: %s\n", strerror(errno));
++		close(fd);
++		exit(PTS_FAIL);
++	}
++	*(int *)pa = 0;
++
+ 	if ((pid = fork()) == 0) {
+ 		sigset_t mask;
+ 		int sig;
+@@ -62,7 +88,7 @@ int main()
+         	childqueue = mq_open(qname, O_CREAT|O_EXCL|O_RDWR,
+ 				S_IRUSR | S_IWUSR, NULL);
+         	if (childqueue != (mqd_t)-1) {
+-			succeeded++;
++			++*(int *)pa;
+ #ifdef DEBUG
+ 			printf("mq_open() in child succeeded\n");
+ 		} else {
+@@ -79,7 +105,7 @@ int main()
+         	queue = mq_open(qname, O_CREAT | O_EXCL |O_RDWR,
+ 				S_IRUSR | S_IWUSR, NULL);
+         	if (queue != (mqd_t)-1) {
+-			succeeded++;
++			++*(int *)pa;
+ #ifdef DEBUG
+ 			printf("mq_open() in parent succeeded\n");
+ 		} else {
+@@ -93,13 +119,15 @@ int main()
+ 			mq_close(queue);
+ 			mq_close(childqueue);
+ 			mq_unlink(qname);
++			close(fd);
++			munmap(pa, sizeof(int));
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+ 		mq_close(queue);
+ 		mq_close(childqueue);
+ 		mq_unlink(qname);
+-
++		succeeded = *(int *)pa;
+ 		if (succeeded==0) {
+ 			printf("Test FAILED - mq_open() never succeeded\n");
+ 			return PTS_FAIL;
+@@ -111,8 +139,10 @@ int main()
+ 		}
+ 
+         	printf("Test PASSED\n");
++		close(fd);
++		munmap(pa, sizeof(int));
+         	return PTS_PASS;
+ 	}
+ 
+ 	return PTS_UNRESOLVED;
+-}
+\ No newline at end of file
++}
 -- 
-1.7.11.4
+1.7.5.4
 
 
 ------------------------------------------------------------------------------
