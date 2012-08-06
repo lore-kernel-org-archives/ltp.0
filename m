@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1T6efQ-0001Fe-7e
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 09:34:32 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1T6efP-0003Vy-B3
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 09:34:32 +0000
-Received: by pbcwy7 with SMTP id wy7so746150pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Aug 2012 02:34:25 -0700 (PDT)
-Message-ID: <503DE20A.8010200@casparzhang.com>
-Date: Wed, 29 Aug 2012 17:34:02 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SyIX1-0001Zm-PE
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:19:19 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SyIWx-0006cO-EF
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:19:19 +0000
+From: Kang Kai <kai.kang@windriver.com>
+Date: Mon, 6 Aug 2012 16:19:03 +0800
+Message-ID: <1344241144-25750-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] hugemmap02/03?
+Subject: [LTP] V2: patch for aio_suspend/3-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,15 +25,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-I looked into hugemmap02 and hugemmap03, they were about huge maping in 
-high region/low region. After checked the codes, I don't think they're 
-well-implmented, or even worse, I don't think the tests make too much 
-sense. I don't know mmap regions very well, is there any other comments 
-against these two cases?
+Hi Wanlong,
 
-Caspar
+This V2 remove aio_cancel operation and wait aio_write to complete as your comments.
+
+Regards,
+Kai
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
