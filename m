@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SwW64-0002bW-7z
-	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 10:24:08 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SwW5y-0000oA-Fc
-	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 10:24:08 +0000
-Date: Wed, 1 Aug 2012 06:23:55 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <17388238.6846564.1343816635852.JavaMail.root@redhat.com>
-In-Reply-To: <5018EF13.2040604@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SyJmS-0002ld-KW
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 09:39:20 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SyJmR-0006O6-LD
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 09:39:20 +0000
+Message-ID: <501F9077.1060008@cn.fujitsu.com>
+Date: Mon, 06 Aug 2012 17:37:59 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+References: <1344241144-25750-1-git-send-email-kai.kang@windriver.com>
+	<1344241144-25750-2-git-send-email-kai.kang@windriver.com>
+	<501F8139.3010709@cn.fujitsu.com> <501F8E9D.4070403@windriver.com>
+In-Reply-To: <501F8E9D.4070403@windriver.com>
+Subject: Re: [LTP] [PATCH] aio_suspend/3-1: wait all aio_write complete
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,161 +27,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-
-
------ Original Message -----
-> From: "Caspar Zhang" <caspar@casparzhang.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Wednesday, 1 August, 2012 10:55:47 AM
-> Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
-> 
-> On 07/31/2012 03:38 PM, Jan Stancek wrote:
-> > Hi Caspar,
-> >
-> > ------- snip --------
-> > +	ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 2, &nd1, &nd2);
-> > +	switch (ret) {
-> > +	case 0:
-> > +		tst_resm(TINFO, "get node%lu.", nd2);
-> > +		return nd2;
-> > +	case -3:
-> > +		/*
-> > +		 * for unbalanced NUMA systems, at least 1 available node is
-> > +		 * required.
-> > +		 */
-> > +		ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 1, &nd1);
-> > +		switch (ret) {
-> > +		case 0:
-> > +			tst_resm(TINFO, "get node%lu.", nd1);
-> > +			return nd1;
-> > +		case -3:
-> > +			tst_brkm(TCONF, cleanup_fn, "require a NUMA system "
-> > +				    "that has at least one node with both "
-> > +				    "memory and cpu available.");
-> > +		default:
-> > +			tst_brkm(TBROK|TERRNO, cleanup_fn,
-> > +				    "3rd get_allowed_nodes");
-> > +		}
-> > +	}
-> > +	tst_brkm(TBROK|TERRNO, cleanup_fn, "2nd get_allowed_nodes");
-> > ------- snip --------
-> >
-> > I'm not sure I follow this snippet.
-> > So if there are 2+ nodes, it takes second one. If there is just
-> > one, it will take that one.
-> > Can't it take always first one?
-> 
-> It was the original design. Since a non-NUMA system have 1 node, the
-> first (and the only) node should have been tested already in
-> ksm01/oom01/etc cases. To increase test coverage, we chose 2nd node
-> on
-> NUMA system.
-> 
-> As to the fallback to 1 node design, if an unbalanced system only
-> contains 1 available node, we still want to test NUMA in separate
-> case,
-> ksm01/oom01/etc cases would probably fail to cover it.
-Agreed, having separate testcase for NUMA makes sense.
-
-> 
-> Do you think it will affect test coverage if we always test first
-> node?
-I'm leaning towards "no". I'm assuming oom01 is using default mem policy,
-so it can allocate memory from any node (including second one).
-
-
-Issue 2.
---------
-I noticed you put call to "get_a_numa_node()" to "oom()" and "testoom()",
-which is called also from oom01. As I understand from your previous
-email, this test should not be NUMA-aware, correct?
-
-<<<test_start>>>
-tag=oom01 stime=1343713154
-cmdline="oom01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-oom01       0  TINFO  :  set overcommit_memory to 2
-oom01       1  TCONF  :  require a NUMA system.
-oom01       2  TCONF  :  Remaining cases not appropriate for configuration
-oom01       0  TINFO  :  set overcommit_memory to 0
-<<<execution_status>>>
-
-Regards,
-Jan
-
-> 
-> Thanks,
-> Caspar
-> >
-> > Regards,
-> > Jan
-> >
-> >
-> > ----- Original Message -----
-> >> From: "Caspar Zhang" <caspar@casparzhang.com>
-> >> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> >> Sent: Tuesday, 31 July, 2012 4:57:19 AM
-> >> Subject: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
-> >>
-> >>
-> >> This patch makes the tests in mem/ dir use numa_helper in
-> >> libkerntest.
-> >>
-> >> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> >> ---
-> >>   testcases/kernel/mem/cpuset/Makefile           |    1 +
-> >>   testcases/kernel/mem/cpuset/cpuset01.c         |   16 +++---
-> >>   testcases/kernel/mem/hugetlb/Makefile.inc      |    1 +
-> >>   testcases/kernel/mem/hugetlb/hugemmap/Makefile |    1 +
-> >>   testcases/kernel/mem/include/mem.h             |    2 +-
-> >>   testcases/kernel/mem/ksm/Makefile              |    1 +
-> >>   testcases/kernel/mem/ksm/ksm02.c               |    9 ++--
-> >>   testcases/kernel/mem/ksm/ksm04.c               |    9 ++--
-> >>   testcases/kernel/mem/lib/Makefile              |    1 +
-> >>   testcases/kernel/mem/lib/mem.c                 |   61
-> >>   +++++++++++++++++------
-> >>   testcases/kernel/mem/oom/Makefile              |    1 +
-> >>   testcases/kernel/mem/oom/oom02.c               |    4 --
-> >>   testcases/kernel/mem/oom/oom04.c               |    4 --
-> >>   testcases/kernel/mem/swapping/Makefile         |    1 +
-> >>   testcases/kernel/mem/thp/Makefile              |    1 +
-> >>   testcases/kernel/mem/tunable/Makefile          |    1 +
-> >>   16 files changed, 71 insertions(+), 43 deletions(-)
-> >>
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Live Security Virtual Conference
-> >> Exclusive live event will cover all the ways today's security and
-> >> threat landscape has changed and how IT managers can respond.
-> >> Discussions
-> >> will include endpoint security, mobile security and the latest in
-> >> malware
-> >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> >> _______________________________________________
-> >> Ltp-list mailing list
-> >> Ltp-list@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >>
-> 
-> 
-> 
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDgvMDYvMjAxMiAwNTozMCBQTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA45pyI
+MDbml6UgMTY6MzIsIFdhbmxvbmcgR2FvIHdyb3RlOgo+PiBPbiAwOC8wNi8yMDEyIDA0OjE5IFBN
+LCBLYW5nIEthaSB3cm90ZToKPj4+IEFmdGVyIGFpb19zdXNwZW5kLCB3YWl0IGFsbCBhaW9fd3Jp
+dGUgb3BlcmF0aW9ucyB0byBjb21wbGV0ZS4KPj4+Cj4+PiBJZiBkb24ndCBkbyB0aGF0LCBpdCBm
+YWlscyB3aXRoICJTZWdtZW50YXRpb24gZmF1bHQiIG9uIHJvdXRlcnN0YXRpb24obWlwcykKPj4+
+IGJvYXJkIHJhbmRvbWx5IGFib3V0IGluIDEwMDAgY29udGludW91cyB0ZXN0LiBUaGUgcmVhc29u
+IG1heSBiZSBzb21lCj4+PiBhaW9fd3JpdGVzIGRvbid0IGNvbXBsZXRlIGJlZm9yZSBjbG9zZSB0
+aGUgZmlsZSwgdGhhdCBjYXVzZSBzb21lIHJlc291c2UKPj4+IGRvbid0IGJlIHJlbGVhc2VkIGFu
+ZCBmaW5hbGx5IGNhdXNlIHNlZ21lbnQgZmF1bHQuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogS2Fu
+ZyBLYWk8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KPj4+IC0tLQo+Pj4gICAuLi4vY29uZm9ybWFu
+Y2UvaW50ZXJmYWNlcy9haW9fc3VzcGVuZC8zLTEuYyAgICAgICB8ICAgMTIgKysrKysrKysrKysr
+Cj4+PiAgIDEgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkK
+Pj4+Cj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZv
+cm1hbmNlL2ludGVyZmFjZXMvYWlvX3N1c3BlbmQvMy0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3Np
+eF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fc3VzcGVuZC8zLTEuYwo+Pj4g
+aW5kZXggMTUxMjBlMS4uZThlOTcwNSAxMDA2NDQKPj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bv
+c2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19zdXNwZW5kLzMtMS5jCj4+
+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJm
+YWNlcy9haW9fc3VzcGVuZC8zLTEuYwo+Pj4gQEAgLTQ2LDYgKzQ2LDcgQEAgaW50IG1haW4oKQo+
+Pj4gICAgICAgc3RydWN0IGFpb2NiIGFpb2NiW05BSU9DQl07Cj4+PiAgICAgICBjb25zdCBzdHJ1
+Y3QgYWlvY2IgKmxpc3RbTkVOVF07Cj4+PiAgICAgICBpbnQgaTsKPj4+ICsgICAgaW50IHJldDsK
+Pj4+Cj4+PiAgICAgICBpZiAoc3lzY29uZihfU0NfQVNZTkNIUk9OT1VTX0lPKTwgIDIwMDExMkwp
+Cj4+PiAgICAgICAgICAgcmV0dXJuIFBUU19VTlNVUFBPUlRFRDsKPj4+IEBAIC04Nyw2ICs4OCwx
+NyBAQCBpbnQgbWFpbigpCj4+PiAgICAgICAgICAgZXhpdChQVFNfRkFJTCk7Cj4+PiAgICAgICB9
+Cj4+Pgo+Pj4gKyAgICBmb3IgKGkgPSAwOyBpPCAgTkFJT0NCOyArK2kpIHsKPj4+ICsgICAgICAg
+IGRvIHsKPj4+ICsgICAgICAgICAgICB1c2xlZXAoMTAwMDApOwo+Pj4gKyAgICAgICAgICAgIHJl
+dCA9IGFpb19lcnJvcigmYWlvY2JbaV0pOwo+Pj4gKyAgICAgICAgfSB3aGlsZSAocmV0ID09IEVJ
+TlBST0dSRVNTKTsKPj4+ICsgICAgICAgIGlmIChhaW9fcmV0dXJuKCZhaW9jYltpXSkgPT0gLTEp
+IHsKPiAKPiBIaSBXYW5sb25nLAo+IAo+PiBXaHkgZG8geW91IGNoZWNrIHRoZSByZXR1cm4gdmFs
+dWUgaGVyZT8gYW5kIGRpZCB5b3UgdGVzdCB0aGlzIHBhdGNoIG9uIHlvdXIgbWlwcyBtYWNoaW5l
+Pwo+IEkgdGVzdCBpdCBvbiBtaXBzIGZvciA0eDEwMDAgdGltZXMgYW5kIHg4Nl82NCwgYW5kIHRo
+ZSByZXN1bHRzIGFyZSBmaW5lLgo+IFdpdGggbm8gb3RoZXIgb3BlcmF0aW9uLCB3aGVuIGFpb193
+cml0ZSBjb21wbGV0ZSwgaXQgc2hvdWxkIHN1Y2NlZWQuIFNvIEkgdXNlIGFpb19yZXR1cm4gdG8g
+Y2hlY2sgdGhlIHJldHVybiB2YWx1ZXMuCj4gCgpPSy4gUHVzaGVkLiBUaGFuayB5b3UuCgpXYW5s
+b25nIEdhbwoKPiBSZWdhcmRzLAo+IEthaQo+IAo+Pgo+PiBUaGFua3MsCj4+IFdhbmxvbmcgR2Fv
+Cj4+Cj4+PiArICAgICAgICAgICAgcHJpbnRmKFROQU1FICIgRXJyb3IgYXQgYWlvX3JldHVybigp
+OiAlc1xuIiwgc3RyZXJyb3IoZXJybm8pKTsKPj4+ICsgICAgICAgICAgICBleGl0KFBUU19GQUlM
+KTsKPj4+ICsgICAgICAgIH0KPj4+ICsgICAgfQo+Pj4gKwo+Pj4gICAgICAgY2xvc2UoZmQpOwo+
+Pj4gICAgICAgcHJpbnRmKCJUZXN0IFBBU1NFRFxuIik7Cj4+PiAgICAgICByZXR1cm4gUFRTX1BB
+U1M7Cj4+Pgo+Pgo+IAo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZp
+cnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUg
+d2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBh
+bmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRl
+IGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFs
+d2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAx
+Mi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
