@@ -2,23 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T7HP9-0005fq-8D
-	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 02:56:19 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T7HP7-0001RX-Mz
-	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 02:56:19 +0000
-Message-ID: <50402752.50501@cn.fujitsu.com>
-Date: Fri, 31 Aug 2012 10:54:10 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <Kai.Kang@windriver.com>) id 1SyIKL-0001An-09
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:06:13 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SyIKH-0007nS-3B
+	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:06:12 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q76864IY028764
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 6 Aug 2012 01:06:04 -0700 (PDT)
+Message-ID: <501F7AF3.1080109@windriver.com>
+Date: Mon, 6 Aug 2012 16:06:11 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
-	<92b6d1dd1bba3ce81f5f51612e99a23ed2409b7e.1346244062.git.zliu@redhat.com>
-	<50402521.2000504@casparzhang.com>
-In-Reply-To: <50402521.2000504@casparzhang.com>
-Subject: Re: [LTP] [PATCH 3/3] tunable/min_free_kbytes: add 32-bit system
- limit
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1344239357-25017-1-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1344239357-25017-1-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +29,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-On 08/31/2012 10:44 AM, Caspar Zhang wrote:
-> On 08/29/2012 08:43 PM, Zhouping Liu wrote:
->> > in 32-bit system, one process only allocate 3Gb memory at
->> > least, even though there are enough memory and setting
->> > overcommit_memory=1, the porcess always exit when it arrives
->> > in 3Gb memory.
->> >
->> > the patch use '__WORDSIZE' macro to avoid the incorrect 'TFAIL'
->> > without the patch:
->> >   ---- snip ----
->> >   min_free_kbytes    0  TINFO  :  set overcommit_memory to 1
->> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 3794
->> >   memfree is 15478420 kB before eatup mem
->> >   memfree is 12333408 kB after eatup mem
->> >   min_free_kbytes    3  TFAIL  :  child unexpectedly failed: 0
->> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 7588
->> >   ---- snip ----
->> >
->> > after applying the patch:
->> >   ---- snip ----
->> >   min_free_kbytes    0  TINFO  :  set overcommit_memory to 1
->> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 3794
->> >   memfree is 15478420 kB before eatup mem
->> >   memfree is 12333408 kB after eatup mem
->> >   min_free_kbytes    0  TINFO  :  Child can't allocate >3Gb memory in 32bit system
->> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 7588
->> >   ---- snip ----
->> >
->> > Reported-by: Shuang Qiu <shuang.qiu@oracle.com>
->> > Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> Series Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
-> 
-
-Pushed series, thank you all involved.
-
-Wanlong Gao
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMDbml6UgMTU6NDksIEthbmcgS2FpIHdyb3RlOgoKUGxlYXNlIGlnbm9y
+ZSB0aGlzIGNvbW1pdCwgSSdsbCBzZW5kIFYyIHdpdGggbGl0dGxlIHR3ZWFrLgoKVGhhbmtzLApL
+YWkKCj4gSW4gdGhpcyB0ZXN0IGNhc2UsIGl0IHVzZXMgYSB2YXJpYWJsZSB0byBzaGFyZSBkYXRh
+IGJldHdlZW4gY2hpbGQgYW5kCj4gcGFyZW50IHByb2Nlc3Nlcy4gQnV0IGFmdGVyIGZvcmsgdGhl
+cmUgaXMgYSBjb3B5IG9mIHRoZSB2YXJpYWJsZSBpbgo+IGNoaWxkIHByb2Nlc3MgYW5kIG1vZGlm
+eSBpdCB3aWxsIG5vdCBhZmZlY3QgdGhlIHZhcmlhYmxlIGluIHRoZSBwYXJlbnQKPiBwcm9jZXNz
+LiBUaGVuIHdoZW4gdGhlIGNoaWxkIHByb2Nlc3MgY2FsbCBtcV9vcGVuKCkgYmVmb3JlIHBhcmVu
+dCBwcm9jZXNzLAo+IHRoZSBjYXNlIHdpbGwgZmFpbC4KPgo+IFVzZSB0bXAgZmlsZSB0byByZXBs
+YWNlIHRoZSB2YXJpYWJsZS4gQW55IG1vZGlmaWNhdGlvbiBpbiBjaGlsZCBwcm9jZXNzCj4gY2Fu
+IGJlIHNlZW4gaW4gcGFyZW50IHByb2Nlc3MuCj4KPiBTaWduZWQtb2ZmLWJ5OiBLYW5nIEthaTxr
+YWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+IC0tLQo+ICAgLi4uL2NvbmZvcm1hbmNlL2ludGVyZmFj
+ZXMvbXFfb3Blbi8xNi0xLmMgICAgICAgICAgfCAgIDM4ICsrKysrKysrKysrKysrKysrLS0KPiAg
+IDEgZmlsZXMgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPgo+IGRp
+ZmYgLS1naXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
+ZXJmYWNlcy9tcV9vcGVuLzE2LTEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9j
+b25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5jCj4gaW5kZXggYjlhMzIxNS4uYzc3
+NjBiYyAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
+bWFuY2UvaW50ZXJmYWNlcy9tcV9vcGVuLzE2LTEuYwo+ICsrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bv
+c2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5jCj4gQEAg
+LTIwLDkgKzIwLDExIEBACj4gICAgKiB0aGlzIGlzIGZpbmUgKHdpbGwgaGF2ZSBzb21lIGZhbHNl
+IHBvc2l0aXZlcywgYnV0IG5vIGZhbHNlIG5lZ2F0aXZlcykuCj4gICAgKi8KPgo+ICsjaW5jbHVk
+ZTxzeXMvbW1hbi5oPgo+ICAgI2luY2x1ZGU8c3lzL3N0YXQuaD4KPiAgICNpbmNsdWRlPHN5cy90
+eXBlcy5oPgo+ICAgI2luY2x1ZGU8c3lzL3dhaXQuaD4KPiArI2luY2x1ZGU8ZXJybm8uaD4KPiAg
+ICNpbmNsdWRlPGZjbnRsLmg+Cj4gICAjaW5jbHVkZTxtcXVldWUuaD4KPiAgICNpbmNsdWRlPHNp
+Z25hbC5oPgo+IEBAIC0zMiwxMSArMzQsMTUgQEAKPiAgICNpbmNsdWRlICJwb3NpeHRlc3QuaCIK
+Pgo+ICAgI2RlZmluZSBOQU1FU0laRSA1MAo+ICsjZGVmaW5lIFROQU1FICJtcV9vcGVuLzE2LTEu
+YyIKPgo+ICAgaW50IG1haW4oKQo+ICAgewo+ICAgICAgICAgIAljaGFyIHFuYW1lW05BTUVTSVpF
+XTsKPiArCWNoYXIgZm5hbWVbTkFNRVNJWkVdOwo+ICAgCWludCBwaWQsIHN1Y2NlZWRlZD0wOwo+
+ICsJaW50IGZkOwo+ICsJdm9pZCAqcGEgPSBOVUxMOwo+ICAgCW1xZF90IGNoaWxkcXVldWUsIHF1
+ZXVlOwo+Cj4gICAJLyoKPiBAQCAtNDcsNiArNTMsMjYgQEAgaW50IG1haW4oKQo+Cj4gICAgICAg
+ICAgCXNwcmludGYocW5hbWUsICIvbXFfb3Blbl8xNi0xXyVkIiwgZ2V0cGlkKCkpOwo+Cj4gKwlz
+cHJpbnRmKGZuYW1lLCAiL3RtcC9wdHNfbXFfb3Blbl8xNl8xXyVkIiwgZ2V0cGlkKCkpOwo+ICsJ
+dW5saW5rKGZuYW1lKTsKPiArCWZkID0gb3BlbihmbmFtZSwgT19DUkVBVCB8IE9fUkRXUiB8IE9f
+RVhDTCwKPiArCQkgU19JUlVTUiB8IFNfSVdVU1IpOwo+ICsJaWYgKGZkID09IC0xKSB7Cj4gKwkJ
+cHJpbnRmKFROQU1FICIgRXJyb3IgYXQgb3BlbigpOiAlc1xuIiwgc3RyZXJyb3IoZXJybm8pKTsK
+PiArCQlleGl0KFBUU19VTlJFU09MVkVEKTsKPiArCX0KPiArCS8qIGZpbGUgaXMgZW1wdHkgbm93
+LCB3aWxsIGNhdXNlICJCdXMgZXJyb3IiICovCj4gKwl3cml0ZShmZCwgIjAiLCAxKTsKPiArCXVu
+bGluayhmbmFtZSk7Cj4gKwo+ICsJcGEgPSBtbWFwKE5VTEwsIHNpemVvZihpbnQpLCBQUk9UX1JF
+QUQgfCBQUk9UX1dSSVRFLCBNQVBfU0hBUkVELCBmZCwgMCk7Cj4gKwlpZiAocGEgPT0gTUFQX0ZB
+SUxFRCkgewo+ICsJCXByaW50ZihUTkFNRSAiIEVycm9yIGF0IG1tYXA6ICVzXG4iLCBzdHJlcnJv
+cihlcnJubykpOwo+ICsJCWNsb3NlKGZkKTsKPiArCQlleGl0KFBUU19GQUlMKTsKPiArCX0KPiAr
+CSooaW50ICopcGEgPSAwOwo+ICsKPiAgIAlpZiAoKHBpZCA9IGZvcmsoKSkgPT0gMCkgewo+ICAg
+CQlzaWdzZXRfdCBtYXNrOwo+ICAgCQlpbnQgc2lnOwo+IEBAIC02Miw3ICs4OCw3IEBAIGludCBt
+YWluKCkKPiAgICAgICAgICAgCWNoaWxkcXVldWUgPSBtcV9vcGVuKHFuYW1lLCBPX0NSRUFUfE9f
+RVhDTHxPX1JEV1IsCj4gICAJCQkJU19JUlVTUiB8IFNfSVdVU1IsIE5VTEwpOwo+ICAgICAgICAg
+ICAJaWYgKGNoaWxkcXVldWUgIT0gKG1xZF90KS0xKSB7Cj4gLQkJCXN1Y2NlZWRlZCsrOwo+ICsJ
+CQkrKyooaW50ICopcGE7Cj4gICAjaWZkZWYgREVCVUcKPiAgIAkJCXByaW50ZigibXFfb3Blbigp
+IGluIGNoaWxkIHN1Y2NlZWRlZFxuIik7Cj4gICAJCX0gZWxzZSB7Cj4gQEAgLTc5LDcgKzEwNSw3
+IEBAIGludCBtYWluKCkKPiAgICAgICAgICAgCXF1ZXVlID0gbXFfb3BlbihxbmFtZSwgT19DUkVB
+VCB8IE9fRVhDTCB8T19SRFdSLAo+ICAgCQkJCVNfSVJVU1IgfCBTX0lXVVNSLCBOVUxMKTsKPiAg
+ICAgICAgICAgCWlmIChxdWV1ZSAhPSAobXFkX3QpLTEpIHsKPiAtCQkJc3VjY2VlZGVkKys7Cj4g
+KwkJCSsrKihpbnQgKilwYTsKPiAgICNpZmRlZiBERUJVRwo+ICAgCQkJcHJpbnRmKCJtcV9vcGVu
+KCkgaW4gcGFyZW50IHN1Y2NlZWRlZFxuIik7Cj4gICAJCX0gZWxzZSB7Cj4gQEAgLTkzLDEzICsx
+MTksMTUgQEAgaW50IG1haW4oKQo+ICAgCQkJbXFfY2xvc2UocXVldWUpOwo+ICAgCQkJbXFfY2xv
+c2UoY2hpbGRxdWV1ZSk7Cj4gICAJCQltcV91bmxpbmsocW5hbWUpOwo+ICsJCQljbG9zZShmZCk7
+Cj4gKwkJCW11bm1hcChwYSwgc2l6ZW9mKGludCkpOwo+ICAgCQkJcmV0dXJuIFBUU19VTlJFU09M
+VkVEOwo+ICAgCQl9Cj4KPiAgIAkJbXFfY2xvc2UocXVldWUpOwo+ICAgCQltcV9jbG9zZShjaGls
+ZHF1ZXVlKTsKPiAgIAkJbXFfdW5saW5rKHFuYW1lKTsKPiAtCj4gKwkJc3VjY2VlZGVkID0gKihp
+bnQgKilwYTsKPiAgIAkJaWYgKHN1Y2NlZWRlZD09MCkgewo+ICAgCQkJcHJpbnRmKCJUZXN0IEZB
+SUxFRCAtIG1xX29wZW4oKSBuZXZlciBzdWNjZWVkZWRcbiIpOwo+ICAgCQkJcmV0dXJuIFBUU19G
+QUlMOwo+IEBAIC0xMTEsOCArMTM5LDEwIEBAIGludCBtYWluKCkKPiAgIAkJfQo+Cj4gICAgICAg
+ICAgIAlwcmludGYoIlRlc3QgUEFTU0VEXG4iKTsKPiArCQljbG9zZShmZCk7Cj4gKwkJbXVubWFw
+KHBhLCBzaXplb2YoaW50KSk7Cj4gICAgICAgICAgIAlyZXR1cm4gUFRTX1BBU1M7Cj4gICAJfQo+
+Cj4gICAJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+IC19Cj4gXCBObyBuZXdsaW5lIGF0IGVuZCBv
+ZiBmaWxlCj4gK30KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFs
+IENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMg
+dG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhv
+dyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRw
+b2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUg
+CnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0
+LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
