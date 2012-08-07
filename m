@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1T1gRn-0001Su-AU
-	for ltp-list@lists.sourceforge.net; Wed, 15 Aug 2012 16:27:55 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T1gRm-0007tl-Em
-	for ltp-list@lists.sourceforge.net; Wed, 15 Aug 2012 16:27:55 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 15 Aug 2012 12:27:47 -0400
-References: <4505db854dcfba3131523a89e158cae4f9c27d01.1345025497.git.jstancek@redhat.com>
-In-Reply-To: <4505db854dcfba3131523a89e158cae4f9c27d01.1345025497.git.jstancek@redhat.com>
-MIME-Version: 1.0
-Message-Id: <201208151227.48778.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] ioctl: check if tty device nodes are usable
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1Syg6T-00023q-5x
+	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 09:29:29 +0000
+Received: from rcsinet15.oracle.com ([148.87.113.117])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Syg6P-0004oP-Cy
+	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 09:29:29 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by rcsinet15.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
+	ESMTP id q779TIas003041
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 09:29:19 GMT
+Received: from acsmt356.oracle.com (acsmt356.oracle.com [141.146.40.156])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	q779TIE3027132
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 09:29:18 GMT
+Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
+	by acsmt356.oracle.com (8.12.11.20060308/8.12.11) with ESMTP id
+	q779TIJe022009
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 04:29:18 -0500
+From: Simon Xu <xu.simon@oracle.com>
+Date: Tue,  7 Aug 2012 17:29:12 +0800
+Message-Id: <1344331752-817-1-git-send-email-xu.simon@oracle.com>
+Subject: [LTP] [PATCH 1/1] runltp: fix -d option processing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,72 +35,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1066278779899755069=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============1066278779899755069==
-Content-Type: multipart/signed; boundary="nextPart19516831.PCsE3e53T3";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+When converting the path specified for -d to absolute path, an extra '/' is
+added, e.g. if '/mypath' is specified, TMPBASE will be '//mypath'.
+Some testcases fail because of this, e.g. chdir01A fails with:
 
---nextPart19516831.PCsE3e53T3
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+chdir01     1  TFAIL  :  symlink(object, symbolic) was succesful.
+mkdir(object, 0700) was successful
+chdir(2) returned successfully, but getcwd(3) indicated new current
+working directory location /ext4/ltp-2nHcAjcGKr/chd2Y4XkO/object not equal
+to expected //ext4/ltp-2nHcAjcGKr/chd2Y4XkO/object
 
-On Wednesday 15 August 2012 06:14:34 Jan Stancek wrote:
-> +has_tty()
-> +{
-> +    if command -v stty >/dev/null 2>&1; then
-> +        stty --file=$1 > /dev/null
-> +        if [ $? -ne 0 ]; then
-> +            return 0;
-> +        fi
-> +    fi
-> +    return 1;
+Use readlink to get absolute path.
 
-no need for the trailing semi colons on either of those return statements
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
+---
+ runltp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +        continue;
+diff --git a/runltp b/runltp
+index 0d77a6e..bf5f975 100755
+--- a/runltp
++++ b/runltp
+@@ -235,7 +235,7 @@ main()
+             esac ;;
+                    
+         d)  # convert the user path to absolute path.
+-            export TMPBASE=`cd \`dirname ${OPTARG}\`; pwd`/`basename ${OPTARG}` ;;
++            export TMPBASE=$(readlink -f "$OPTARG") ;;
+ 
+         D)  NUM_PROCS=1; NUM_FILES=1; NUM_BYTES=$((1024 * 1024 * 1024)); CLEAN_FLAG=0
+             ARGUMENT_LIST=$OPTARG
+-- 
+1.7.11.4
 
-or here
-
-> +        continue;
-
-or here
--mike
-
---nextPart19516831.PCsE3e53T3
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJQK84EAAoJEEFjO5/oN/WBdloP/2lz0EnB9uR+yi+G/VOC2RM2
-jhJ8Rc4FKy+Mak4NLXOFrVbj0NGX7Ygg/LBIUpYJHHjvTVaACRUtGmvR/IyvHcAW
-sc1wnq/2NWgqHwpYWqOWg2CFwMJTy9CPzXJgHvCrBUQLhPAIQx3ELmWHDxJDV485
-kasDVKNuvIH2KPXfzL54zEW1qK2OsEieTMGsbPI948umE4NkRRCQ6dT8grquWzWm
-yZ2aJPRTWfcobxt1UARJe3VGKA5u3f79eLBcKGpT4XjbD9ciFzmocUig0uy9IhBg
-taJGYcsafe1U2EKLQy2fSJNlopfMCBD2BX/rJvMk9FrUAAAsuLRe+tr0F6VHjGUh
-zL7omfVNELFYT6HVdJzDPykcWQFJVG54S/Idf2ZwrX1C1/KqBDPWzoSj8Qq/3KX7
-HClL1hVBCtVFpdHR65vApWj8gxNFwcrIBc+SFZhJi6tWskMMiiDP8IfOdL01JMY/
-xhTm4LRkBBNixLappQLT20DZpUurPkEVih9P+LcNZE78aMHwZ8g8fGKThQ8KQBxO
-45h30G/VSAANM02IqKimJGQKyAmC/LJ1D6DRCI8CmC4Pj/LeC386/4d01MDRj12O
-9HhanXG5+xtq6+h1y5amHDgVmPBme2AEEMB1Q6Xg759MWtUXzcPlJs9iYl77IABf
-D5j//aMynk2MEmMIFI+9
-=ogh0
------END PGP SIGNATURE-----
-
---nextPart19516831.PCsE3e53T3--
-
-
---===============1066278779899755069==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -97,16 +81,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============1066278779899755069==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1066278779899755069==--
-
