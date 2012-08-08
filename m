@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SzQ2S-0005Je-4i
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:32:24 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SzQ2O-00031g-6N
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:32:24 +0000
-Received: by yenm1 with SMTP id m1so223616yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Aug 2012 03:32:14 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Aug 2012 18:31:56 +0800
-Message-Id: <953f8552c3db0f5f4caa7997d7468af5cee0a851.1344508300.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Sz65S-0008U1-50
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 13:14:10 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sz65R-0007k1-0N
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 13:14:10 +0000
+Date: Wed, 8 Aug 2012 09:14:02 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <438207751.1923339.1344431642365.JavaMail.root@redhat.com>
+In-Reply-To: <1186725319.1825876.1344423162046.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH resend v2 3/6] syscalls/numa: check syscall
-	availability
+Subject: Re: [LTP] [PATCH 1/4] syscall/process_vm_readv02: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,71 +23,129 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-some NUMA related syscalls: mbind, get_mempolicy are not supported on
-some arches (e.g. i386), this patch checks the syscalls' availability in
-setup() function by using the macro syscall() implemented in
-linux_syscall_numbers.h, if the syscall is not implemented on the
-system, a TCONF message will be given like this:
-
-get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |    3 +++
- testcases/kernel/syscalls/mbind/mbind01.c          |    3 +++
- 2 files changed, 6 insertions(+), 0 deletions(-)
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0001-syscalls-numa-check-syscall-availability.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-numa-check-syscall-availability.patch"
-
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-index d0e372c..34fc52a 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-@@ -339,6 +339,9 @@ static void cleanup(void)
- 
- static void setup(void)
- {
-+	/* check syscall availability */
-+	syscall(__NR_get_mempolicy, NULL, NULL, 0, NULL, 0);
-+
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 2fc6f5a..9e877f1 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -300,6 +300,9 @@ TEST_END:
- 
- static void setup(void)
- {
-+	/* check syscall availability */
-+	syscall(__NR_mbind, NULL, 0, 0, NULL, 0, 0);
-+
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-
---------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
+
+
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "Caspar Zhang" <caspar@casparzhang.com>
+> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, 8 August, 2012 12:52:42 PM
+> Subject: Re: [LTP] [PATCH 1/4] syscall/process_vm_readv02: new testcase
+> 
+> Hi Caspar,
+> 
+> +	if (TEST_RETURN != len)
+> +		tst_brkm(TBROK|TERRNO, tst_exit, "process_vm_readv");
+> Shouldn't this be TFAIL? Can it also print TEST_RETURN?
+> 
+> +	lp = SAFE_MALLOC(tst_exit, len + 1);
+> +	local.iov_base  = lp;
+> +	local.iov_len   = len;
+> +	remote.iov_base = rp;
+> +	remote.iov_len  = len;
+> +
+> +	tst_resm(TINFO, "child 1: reading string from same memory
+> location.");
+> +	TEST(test_process_vm_readv(pids[0], &local, 1, &remote, 1, 0));
+> +	if (TEST_RETURN != len)
+> +		tst_brkm(TBROK|TERRNO, tst_exit, "process_vm_readv");
+> +	if (strcmp(lp, tst_string) != 0)
+> +		tst_brkm(TFAIL, tst_exit, "child 1: expected string: %s, "
+> +			    "received string: %s", tst_string, lp);
+> I think SAFE_MALLOC is not initialising memory. So if "lp[len] != 0"
+> strcmp will fail.
+> 
+> +#if !defined(__NR_process_vm_readv)
+> +	tst_brkm(TCONF, NULL, "process_vm_writev does not exist "
+> +		    "on your system");
+> Message says "process_vm_writev", testcase is for "process_vm_readv".
+
++			tst_brkm(TBROK|TERRNO, cleanup, "fork #0");
+Both messages about broken fork are "fork #0".
+
+SIGSTOP/SIGCONT approach seems prone to races: if other child
+is able to finish before first one raises SIGSTOP, then SIGCONT
+arrives first. For example, let's put small sleep before SIGSTOP
+in child_alloc() and child will never finish:
+
+    sleep(2);
+    if (raise(SIGSTOP) < 0)
+            tst_brkm(TBROK|TERRNO, tst_exit, "raise");
+
+The testcase still gives PASS, but one of children is now hanging
+in background:
+ 5399 pts/0    T      0:00 ./process_vm_readv02
+
+Regards,
+Jan
+
+> 
+> Regards,
+> Jan
+> 
+> ----- Original Message -----
+> > From: "Caspar Zhang" <caspar@casparzhang.com>
+> > To: "LTP List" <ltp-list@lists.sourceforge.net>
+> > Sent: Wednesday, 8 August, 2012 11:26:54 AM
+> > Subject: [LTP] [PATCH 1/4] syscall/process_vm_readv02: new testcase
+> > 
+> > 
+> > This testcase is one of the simple CMA syscalls (process_vm_readv,
+> > process_vm_writev) tests originally written by Chris Yeoh
+> > <yeohc@au1.ibm.com>. I made some modifications to make it match the
+> > code
+> > style in LTP.
+> > 
+> > Test Assertion and Strategy:
+> > 
+> >     Fork two children, one child allocates memory and initializes
+> >     it;
+> >     then the other one calls process_vm_readv and reads from the
+> >     same
+> >     memory location, it then verifies if process_vm_readv returns
+> >     correct data.
+> > 
+> > Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> > ---
+> >  testcases/kernel/syscalls/cma/process_vm_readv02.c |  162
+> >  ++++++++++++++++++++
+> >  1 files changed, 162 insertions(+), 0 deletions(-)
+> >  create mode 100644
+> >  testcases/kernel/syscalls/cma/process_vm_readv02.c
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Live Security Virtual Conference
+> > Exclusive live event will cover all the ways today's security and
+> > threat landscape has changed and how IT managers can respond.
+> > Discussions
+> > will include endpoint security, mobile security and the latest in
+> > malware
+> > threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond.
+> Discussions
+> will include endpoint security, mobile security and the latest in
+> malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -101,18 +153,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
