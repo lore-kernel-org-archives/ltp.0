@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Sz20n-0008Gs-LL
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 08:53:05 +0000
-Received: from rcsinet15.oracle.com ([148.87.113.117])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sz20j-0003oW-Pt
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 08:53:05 +0000
-Message-ID: <502228E3.9010802@oracle.com>
-Date: Wed, 08 Aug 2012 16:52:51 +0800
-From: Simon Xu <xu.simon@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Sz6zE-0002oO-Uk
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 14:11:48 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Sz6zE-0004Xq-5Y
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 14:11:48 +0000
+Received: by yenm1 with SMTP id m1so780065yen.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Aug 2012 07:11:42 -0700 (PDT)
+Message-ID: <5022738E.4010201@casparzhang.com>
+Date: Wed, 08 Aug 2012 22:11:26 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1343925295-1884-1-git-send-email-xu.simon@oracle.com>
-	<502223B6.2070608@cn.fujitsu.com>
-In-Reply-To: <502223B6.2070608@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/1] fix container_ftp.pl
+References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
+	<6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
+	<CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
+	<5022315D.1090709@casparzhang.com>
+	<11850AA3-DB90-4525-B168-AF39B8B4B373@gmail.com>
+In-Reply-To: <11850AA3-DB90-4525-B168-AF39B8B4B373@gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls/numa: check syscall availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,94 +34,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 2012/8/8 16:30, DAN LI wrote:
-> On 08/03/2012 12:34 AM, Simon Xu wrote:
->> container_ftp.pl has several problems:
+On 08/08/2012 05:46 PM, Garrett Cooper wrote:
+> On Aug 8, 2012, at 2:29 AM, Caspar Zhang wrote:
+>
+>> On 07/31/2012 11:57 AM, Garrett Cooper wrote:
+>>> On Mon, Jul 30, 2012 at 7:53 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
+>>>>
+>>>> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+>>>> some arches (e.g. i386), I use TEST macro to test the syscall in setup()
+>>>> function, if the syscall is not implemented on the system, a TCONF
+>>>> message will given like this:
+>>>>
+>>>> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
+>>>
+>>>      Using TEST isn't necessary to be honest: the syscall wrapper
+>>> handles the (if you add a comment as to why things are being done in a
+>>> single line, untested, that should be ok).
+>>> Thanks!
+>>> -Garrett
+>>>
 >>
->> * ftp users can't cd to a temporary dir in /tmp
->> * ftp->cwd($dir) will always fail
->> * if we do 'chdir $dir', 'rmdir("$dir")' will fail
->> * 'ftp->put' should be 'ftp->get'
->>
->> Signed-off-by: Simon Xu <xu.simon@oracle.com>
->> ---
->>   testcases/kernel/containers/netns/container_ftp.pl | 15 
->> ++++++++-------
->>   1 file changed, 8 insertions(+), 7 deletions(-)
->>
->> diff --git a/testcases/kernel/containers/netns/container_ftp.pl 
->> b/testcases/kernel/containers/netns/container_ftp.pl
->> index 89a35b5..98742f3 100644
->> --- a/testcases/kernel/containers/netns/container_ftp.pl
->> +++ b/testcases/kernel/containers/netns/container_ftp.pl
->> @@ -23,6 +23,7 @@
->>     use File::Temp 'tempdir';
->>   use Net::FTP;
->> +use File::Path;
->>     if ($#ARGV == -1) {
->>       print "usage: $0 host\n";
->> @@ -35,7 +36,7 @@ my $i = 0;
->>   my $kount = 51;
->>   my $file="junkfile";
->>   -my $tmpdir = defined($ENV{TMPDIR}) ? $ENV{TMPDIR} : "/tmp";
->> +my $tmpdir = "/var/ftp";
-> hi, Simon
+>> Hi Garrett, sorry I'm kind of not catching you :-( what's your suggestion of correcting/improving this message?
 >
-> I tested container_ftp.pl as follow:
-> ********************************************************
-> #./container_ftp.pl    knownhost_with_vsftpd
-> ********************************************************
-> and failed at "$ftp->cwd" either with this fix or without it.
->
-> So,did i get the wrong way to test this script ,or,something wrong
-> still exists.
+> 	I'd remove "TEST(..)" from the line and just use the syscall function call.
+> 	If you want, we can make syscall more explicit as far as a custom wrapper goes.
 
-Could you print the value of $dir before "$ftp->cwd"?  And try ftp login 
-as anonymous user, and see if you can cd to the value.
+OK, I'll remove TEST() and resend the patch.
 
-Thanks
-Simon
+Thanks,
+Caspar
 
->>     my $dir;
->>   $dir = tempdir("container_ftp.XXXXXXX", DIR => $tmpdir);
->> @@ -47,8 +48,7 @@ if (chmod(0777, $dir) == 0) {
->>       push @ERRORS, "Failed to change mode for temporary directory: 
->> $!\n";
->>       printerr();
->>   }
->> -chdir $dir;
->> -system("dd if=/dev/zero of=$file bs=512 count=10 > /dev/null 2>&1 ");
->> +system("dd if=/dev/zero of=$dir/$file bs=512 count=10 > /dev/null 
->> 2>&1 ");
->>     while ( $i < $kount )
->>   {
->> @@ -61,13 +61,15 @@ while ( $i < $kount )
->>           $ftp->quit if $newerr;
->>           printerr() if $newerr;
->>   -        $ftp->cwd($dir) or $newerr=1;
->> +        $basedir = `basename "$dir"`;
->> +        chomp $basedir;
->> +        $ftp->cwd($basedir) or $newerr=1;
->>           push @ERRORS, "Can't cd  $!\n" if $newerr;
->>           $ftp->quit if $newerr;
->>           printerr() if $newerr;
->>             $newname = $file . "_" . $i ;
->> -        $ftp->put($file,$newname) or $newerr=1;
->> +        $ftp->get($file,$newname) or $newerr=1;
->>           push @ERRORS, "Can't get file $file $!\n" if $newerr;
->>           printerr() if $newerr;
->>   @@ -82,6 +84,5 @@ sub printerr {
->>   }
->>     END {
->> -    unlink("$dir/$file");
->> -    rmdir("$dir");
->> +    rmtree("$dir");
->>   }
+> Cheers!
+> -Garrett
 >
->
+
 
 
 ------------------------------------------------------------------------------
