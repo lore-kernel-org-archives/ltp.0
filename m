@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1T5arz-0005PB-Dp
-	for ltp-list@lists.sourceforge.net; Sun, 26 Aug 2012 11:19:07 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T5arx-0007Ub-VP
-	for ltp-list@lists.sourceforge.net; Sun, 26 Aug 2012 11:19:07 +0000
-Date: Sun, 26 Aug 2012 07:18:56 -0400 (EDT)
+	(envelope-from <jstancek@redhat.com>) id 1Sz3si-0001fe-S2
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 10:52:52 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sz3se-0006iU-MA
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 10:52:52 +0000
+Date: Wed, 8 Aug 2012 06:52:42 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1030988505.10747274.1345979936065.JavaMail.root@redhat.com>
-In-Reply-To: <043301cd82b6$a9809f10$fc81dd30$@pv@huawei.com>
+Message-ID: <1186725319.1825876.1344423162046.JavaMail.root@redhat.com>
+In-Reply-To: <9fe539868cd8580388b98397a87e25ff1cac34bc.1344418001.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] sendto syscall fails because of the error value
-	missmatch	from 3.6-rc1 kernel onwards
+Subject: Re: [LTP] [PATCH 1/4] syscall/process_vm_readv02: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,77 +26,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shyju pv <shyju.pv@huawei.com>
-Cc: Sanil kumar <sanil.kumar@huawei.com>, ltp-list@lists.sourceforge.net, nagamani mantha <nagamani.mantha@huawei.com>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi,
+Hi Caspar,
 
-this looks like kernel commit, which caused it:
++	if (TEST_RETURN != len)
++		tst_brkm(TBROK|TERRNO, tst_exit, "process_vm_readv");
+Shouldn't this be TFAIL? Can it also print TEST_RETURN?
 
-commit cf60af03ca4e71134206809ea892e49b92a88896
-Author: Yuchung Cheng <ycheng@google.com>
-Date:   Thu Jul 19 06:43:09 2012 +0000
-    net-tcp: Fast Open client - sendmsg(MSG_FASTOPEN)
++	lp = SAFE_MALLOC(tst_exit, len + 1);
++	local.iov_base  = lp;
++	local.iov_len   = len;
++	remote.iov_base = rp;
++	remote.iov_len  = len;
++
++	tst_resm(TINFO, "child 1: reading string from same memory location.");
++	TEST(test_process_vm_readv(pids[0], &local, 1, &remote, 1, 0));
++	if (TEST_RETURN != len)
++		tst_brkm(TBROK|TERRNO, tst_exit, "process_vm_readv");
++	if (strcmp(lp, tst_string) != 0)
++		tst_brkm(TFAIL, tst_exit, "child 1: expected string: %s, "
++			    "received string: %s", tst_string, lp);
+I think SAFE_MALLOC is not initialising memory. So if "lp[len] != 0"
+strcmp will fail.
 
-And it depends also on value of tcp_fastopen:
-echo 1 > /proc/sys/net/ipv4/tcp_fastopen
-# ./sendto01
-...
-sendto01    1  TFAIL  :  invalid flags set ; returned -1 (expected 0), errno 106 (expected 32)
-
-# echo 0 > /proc/sys/net/ipv4/tcp_fastopen
-# ./sendto01
-...
-sendto01    1  TFAIL  :  invalid flags set ; returned -1 (expected 0), errno 95 (expected 32)
++#if !defined(__NR_process_vm_readv)
++	tst_brkm(TCONF, NULL, "process_vm_writev does not exist "
++		    "on your system");
+Message says "process_vm_writev", testcase is for "process_vm_readv".
 
 Regards,
 Jan
 
 ----- Original Message -----
-> From: "Shyju PV" <shyju.pv@huawei.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Sanil kumar" <sanil.kumar@huawei.com>, "nagamani mantha" <nagamani.mantha@huawei.com>
-> Sent: Saturday, 25 August, 2012 1:42:09 PM
-> Subject: [LTP] sendto syscall fails because of the error value missmatch	from 3.6-rc1 kernel onwards
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, 8 August, 2012 11:26:54 AM
+> Subject: [LTP] [PATCH 1/4] syscall/process_vm_readv02: new testcase
 > 
-> LTP_Version: 2012-06-14
-> LTP Test case: sendto01
-> Description : Verifies the sendto syscall errorno for various failure
-> cases
-> Failure Analysis : when the invalid flag is set, The error no
-> EOPNOTSUPP
-> (95) and syscall returns 0 .instead LTP expects EPIPE (32) and the
-> syscall
-> return value as -1.
-> Fix : Modify  the LTP code with respect the the system return values
-> of the
-> latest kernel(3.6-rc1)
-> Test case passed in Kernel 3.5
-> Failed from  3.6-rc1,rc2and rc3
 > 
-> Test output :: <<<test_output>>>
-> incrementing stop
-> sendto01    1  TPASS  :  bad file descriptor successful
-> sendto01    2  TPASS  :  invalid socket successful
-> sendto01    3  TPASS  :  invalid send buffer successful
-> sendto01    4  TPASS  :  connected TCP successful
-> sendto01    5  TPASS  :  not connected TCP successful
-> sendto01    6  TPASS  :  invalid to buffer length successful
-> sendto01    7  TPASS  :  invalid to buffer successful
-> sendto01    8  TPASS  :  UDP message too big successful
-> sendto01    9  TPASS  :  local endpoint shutdown successful
-> sendto01   10  TFAIL  :  invalid flags set ; returned -1 (expected
-> 0), errno
-> 95
-> (expected 32)
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=1 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
+> This testcase is one of the simple CMA syscalls (process_vm_readv,
+> process_vm_writev) tests originally written by Chris Yeoh
+> <yeohc@au1.ibm.com>. I made some modifications to make it match the
+> code
+> style in LTP.
 > 
-> Shyju
+> Test Assertion and Strategy:
+> 
+>     Fork two children, one child allocates memory and initializes it;
+>     then the other one calls process_vm_readv and reads from the same
+>     memory location, it then verifies if process_vm_readv returns
+>     correct data.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/syscalls/cma/process_vm_readv02.c |  162
+>  ++++++++++++++++++++
+>  1 files changed, 162 insertions(+), 0 deletions(-)
+>  create mode 100644
+>  testcases/kernel/syscalls/cma/process_vm_readv02.c
 > 
 > 
 > ------------------------------------------------------------------------------
