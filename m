@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SzM2R-0000NX-PJ
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:07 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SzM2Q-0001QC-SC
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:07 +0000
-Received: by pbcwy7 with SMTP id wy7so334108pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 23:16:00 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Aug 2012 14:15:36 +0800
-Message-Id: <cover.1344492473.git.caspar@casparzhang.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Syxst-0007ia-8H
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 04:28:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Syxsq-0000Zp-HP
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 04:28:39 +0000
+Message-ID: <5021EA9F.1090606@cn.fujitsu.com>
+Date: Wed, 08 Aug 2012 12:27:11 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH resend 0/6] NUMA and follow-up fix
+References: <CANoG8sX7V5VFgHdm7O2r1E4DXrfFM9jDeP2WDyD7roMXkGe-RA@mail.gmail.com>
+In-Reply-To: <CANoG8sX7V5VFgHdm7O2r1E4DXrfFM9jDeP2WDyD7roMXkGe-RA@mail.gmail.com>
+Subject: Re: [LTP]
+ =?windows-1252?q?/usr/include/linux/capability=2Eh=3A70=3A_?=
+ =?windows-1252?q?error=3A_expected_specifier-qualifier-list_before_=91=5F?=
+ =?windows-1252?q?=5Fle32=92?=
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,120 +28,130 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Romu <huruomu@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+On 07/30/2012 10:58 AM, Romu wrote:
+> Hi,
+> =
+
+> I tried building LTP-20120614 on CentOS5 but it always failed (see
+> error message below).  LTP-20120401 builds fine on CentOS5.
+> =
+
+> make[3]: Entering directory
+> `/dev/shm/ltp-full-20120614/testcases/kernel/security'
+> make[4]: Entering directory
+> `/dev/shm/ltp-full-20120614/testcases/kernel/security/cap_bound'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/dev/shm/ltp-full-20120614/testcases/kernel/include
+> -I../../../../include -I../../../../include   -L../../../../lib
+> cap_bounds_r.c   -lltp  -o cap_bounds_r
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/dev/shm/ltp-full-20120614/testcases/kernel/include
+> -I../../../../include -I../../../../include   -L../../../../lib
+> cap_bounds_rw.c   -lltp  -o cap_bounds_rw
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/dev/shm/ltp-full-20120614/testcases/kernel/include
+> -I../../../../include -I../../../../include   -L../../../../lib
+> cap_bset_inh_bounds.c   -lltp  -o cap_bset_inh_bounds
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/dev/shm/ltp-full-20120614/testcases/kernel/include
+> -I../../../../include -I../../../../include   -L../../../../lib
+> check_pe.c   -lltp  -o check_pe
+> In file included from /usr/include/sys/capability.h:34,
+>                  from cap_bset_inh_bounds.c:32:
+> /usr/include/linux/capability.h:70: error: expected
+> specifier-qualifier-list before =91__le32=92
+> In file included from /usr/include/sys/capability.h:34,
+>                  from cap_bounds_rw.c:29:
+> /usr/include/linux/capability.h:70: error: expected
+> specifier-qualifier-list before =91__le32=92
+> In file included from /usr/include/sys/capability.h:34,
+>                  from cap_bounds_r.c:30:
+> /usr/include/linux/capability.h:70: error: expected
+> specifier-qualifier-list before =91__le32=92
+> In file included from /usr/include/sys/capability.h:34,
+>                  from check_pe.c:33:
+> /usr/include/linux/capability.h:70: error: expected
+> specifier-qualifier-list before =91__le32=92
+> cap_bset_inh_bounds.c:128:2: warning: no newline at end of file
+> make[4]: *** [cap_bset_inh_bounds] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> cap_bounds_rw.c: In function =91main=92:
+> cap_bounds_rw.c:82: warning: unused variable =91i=92
+> cap_bounds_rw.c:81: warning: unused variable =91ret=92
+> make[4]: *** [cap_bounds_rw] Error 1
+> make[4]: *** [cap_bounds_r] Error 1
+> check_pe.c:88:2: warning: no newline at end of file
+> make[4]: *** [check_pe] Error 1
+> make[4]: Leaving directory
+> `/dev/shm/ltp-full-20120614/testcases/kernel/security/cap_bound'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory
+> `/dev/shm/ltp-full-20120614/testcases/kernel/security'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/dev/shm/ltp-full-20120614/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/dev/shm/ltp-full-20120614/testcases'
+> make: *** [testcases-all] Error 2
+> =
+
+> =
+
+> I found:
+> http://osdir.com/ml/debian-bugs-dist/2009-12/msg00664.html
+> https://bugs.gentoo.org/show_bug.cgi?id=3D264770
+> =
+
+> But still can't figure out how to fix the issue.
+> Any idea?
+
+Can you test this patch ? =
+
+http://marc.info/?l=3Dltp-list&m=3D134392485410819&w=3D2
+
+Thanks,
+Wanlong Gao
+
+> =
+
+> Thanks
+> Romu
+> =
+
+> -------------------------------------------------------------------------=
+-----
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and =
+
+> threat landscape has changed and how IT managers can respond. Discussions =
+
+> will include endpoint security, mobile security and the latest in malware =
+
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> =
 
 
-Resending the whole patch series (including Jan's 2 patches) for easier 
-reviewing.
 
-updates:
-   syscalls/numa: check syscall availability
-     remove TEST() macro and use syscall() directly.
-   numa_helper: move to libkerntest
-     merged the library cleaning fix to this one.
-   mm: use new numa_helper
-     the same as previous V3 version, which already has Jan's reivew.
-
-Caspar Zhang (4):
-  syscalls/numa: check syscall availability
-  numa_helper: move to libkerntest
-  mm: use new numa_helper
-  mm: add common Makefile include: libmem.mk
-
-Jan Stancek (2):
-  numa_helper: add flag to get_allowed_nodes()
-  update testcases to use flag for get_allowed_nodes()
-
- testcases/kernel/Makefile                          |    4 +
- testcases/kernel/include/lib.mk                    |   37 +++
- testcases/kernel/include/numa_helper.h             |   37 +++
- testcases/kernel/lib/Makefile                      |   29 +++
- testcases/kernel/lib/numa_helper.c                 |  266 ++++++++++++++++++++
- testcases/kernel/mem/cpuset/Makefile               |   22 +--
- testcases/kernel/mem/cpuset/cpuset01.c             |   16 +-
- testcases/kernel/mem/hugetlb/Makefile.inc          |   18 +-
- testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +-
- testcases/kernel/mem/include/libmem.mk             |   40 +++
- testcases/kernel/mem/include/mem.h                 |    2 +-
- testcases/kernel/mem/ksm/Makefile                  |   22 +--
- testcases/kernel/mem/ksm/ksm02.c                   |    9 +-
- testcases/kernel/mem/ksm/ksm04.c                   |    9 +-
- testcases/kernel/mem/lib/Makefile                  |    1 +
- testcases/kernel/mem/lib/mem.c                     |   50 +++--
- testcases/kernel/mem/oom/Makefile                  |   22 +--
- testcases/kernel/mem/oom/oom02.c                   |    4 -
- testcases/kernel/mem/oom/oom04.c                   |    4 -
- testcases/kernel/mem/swapping/Makefile             |   22 +--
- testcases/kernel/mem/thp/Makefile                  |   22 +--
- testcases/kernel/mem/tunable/Makefile              |   22 +--
- testcases/kernel/mem/vma/Makefile                  |    4 +-
- testcases/kernel/mem/vma/vma02.c                   |   19 +-
- testcases/kernel/mem/vma/vma04.c                   |   11 +-
- testcases/kernel/syscalls/get_mempolicy/Makefile   |    2 +-
- .../syscalls/get_mempolicy/get_mempolicy01.c       |   15 +-
- testcases/kernel/syscalls/mbind/Makefile           |    2 +-
- testcases/kernel/syscalls/mbind/mbind01.c          |   14 +-
- testcases/kernel/syscalls/move_pages/Makefile      |    2 +-
- .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
- .../syscalls/move_pages/move_pages_support.c       |    8 +-
- testcases/kernel/syscalls/numa/Makefile            |   22 --
- testcases/kernel/syscalls/numa/Makefile.inc        |   27 --
- testcases/kernel/syscalls/numa/lib/Makefile        |   26 --
- testcases/kernel/syscalls/numa/lib/numa_helper.c   |  165 ------------
- testcases/kernel/syscalls/numa/lib/numa_helper.h   |   33 ---
- 46 files changed, 562 insertions(+), 508 deletions(-)
- create mode 100644 testcases/kernel/include/lib.mk
- create mode 100644 testcases/kernel/include/numa_helper.h
- create mode 100644 testcases/kernel/lib/Makefile
- create mode 100644 testcases/kernel/lib/numa_helper.c
- create mode 100644 testcases/kernel/mem/include/libmem.mk
- delete mode 100644 testcases/kernel/syscalls/numa/Makefile
- delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
- delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
- delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
- delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
-
--- 
-1.7.8.6
-
-
-
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Exclusive live event will cover all the ways today's security and =
 
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
