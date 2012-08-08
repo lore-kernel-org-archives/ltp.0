@@ -2,19 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T6e5e-0007yZ-Ta
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 08:57:34 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T6e5d-0005rv-Dz
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 08:57:34 +0000
-Message-ID: <503DD983.9030608@windriver.com>
-Date: Wed, 29 Aug 2012 16:57:39 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Sz3Bp-0000E2-Dn
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 10:08:33 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sz3Bn-0003rS-T9
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 10:08:33 +0000
+Message-ID: <50223A4A.3000608@cn.fujitsu.com>
+Date: Wed, 08 Aug 2012 18:07:06 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1527836506.11605302.1346143033089.JavaMail.root@redhat.com>
-In-Reply-To: <1527836506.11605302.1346143033089.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+References: <1343925295-1884-1-git-send-email-xu.simon@oracle.com>
+	<502223B6.2070608@cn.fujitsu.com> <502228E3.9010802@oracle.com>
+	<50223785.8040200@cn.fujitsu.com>
+In-Reply-To: <50223785.8040200@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/1] fix container_ftp.pl
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,83 +27,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDA45pyIMjjml6UgMTY6MzcsIEphbiBTdGFuY2VrIHdyb3RlOgo+Cj4gLS0tLS0g
-T3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdpbmRy
-aXZlci5jb20+Cj4+IFRvOiAiSmFuIFN0YW5jZWsiPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4+IENj
-OiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQsICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVu
-Zy5aaGFvQHdpbmRyaXZlci5jb20+Cj4+IFNlbnQ6IEZyaWRheSwgMjQgQXVndXN0LCAyMDEyIDQ6
-NDY6NTggQU0KPj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSF0gcHRocmVhZF9kZXRhY2gvNC0z
-OiB3b3JrYXJvdW5kIGZvciBzZWdtZW50IGZhdWx0Cj4+Pj4gSSB3YXMgdGhpbmtpbmcgdXNsZWVw
-KHNsZWVwX3RpbWUpIHRoYXQgcHJvZ3Jlc3NpdmVseSBpbmNyZWFzZXMuIFNvCj4+Pj4gaXQKPj4+
-PiBzdGFydHMgZmlyaW5nIHNpZ25hbHMgYXMgcXVpY2tseSBhcyBpdCBjYW4gYW5kIHNsb3dzIGRv
-d24gb3Zlcgo+Pj4+IHRpbWUuCj4+Pj4gRWFjaCBwdGhyZWFkX2RldGFjaCgpIHdvdWxkIHJlc2V0
-IHRoZSBzbGVlcF90aW1lLgo+Pj4+Cj4+Pj4gQXMgZm9yIG91ciBvcmlnaW5hbCBpc3N1ZSwgaWRl
-YSBJJ20gcGxheWluZyB3aXRoIGlzOgo+Pj4+Cj4+Pj4gbWFpbiAocHJvY0EpIC0gZG9fY2hpbGQg
-KHByb2NCKSAtIHNlbmRfc2lnICh0aHJlYWQpCj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIFwKPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXN0
-ICh0aHJlYWQpIC0gdGhyZWFkZWQKPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAoZGV0YWNoZWQgdGhyZWFkKQo+Pj4+Cj4+Pj4gLSB0dXJuICd3aGlsZScgaW4gdGVzdCgp
-IHRvIHNpbmdsZSAnZm9yJyBsb29wCj4+Pj4gLSBsb29wIGluIG1haW4sIGZvcmsgYW5kIGNhbGwg
-ZG9fY2hpbGQsIHdhaXQgZm9yIGNoaWxkIHRvIGZpbmlzaAo+Pj4gSGksCj4+Pgo+Pj4gYXR0YWNo
-ZWQgaXMgdjEgb2YgdGhlIGlkZWEgYWJvdmUuIEkgcmFuIGl0IDEwMHggdGltZXMgb24gdmFyaW91
-cwo+Pj4gc2V0dXBzIGFzIHJvb3QgYW5kIHVucHJpdmlsZWdlZCB1c2VyLgo+PiBIaSBKYW4sCj4+
-Cj4+IEdyZWF0IQo+Pj4gS2FpLCB3b3VsZCB5b3UgbGlrZSB0byBnaXZlIGEgdHJ5Pwo+PiBJIGhh
-dmUgdGVzdCBpdCBvbiByb3V0ZXJzdGF0aW9uLCB4ODZfNjQodWJ1bnR1MTEuMTAmICByZWRoYXQg
-NS4zKSBhbmQKPj4geDg2KHJlZGhhdCA1LjMpIGVhY2ggMTAwKyB0aW1lcywgYW5kIGFsbCBQQVNT
-Lgo+Pgo+IEhpLAo+Cj4gSSdtIHN0aWxsIGxvb2tpbmcgYXQgdGhpcyB0ZXN0Y2FzZS4gSSBoYXZl
-IGJlZW4gdGVzdGluZyB2MSBtb3JlIG9uIGRpZmZlcmVudAo+IHJlbGVhc2VzIGFuZCBhcmNoZXMg
-YW5kIEknbSBoaXR0aW5nIGFuIGlzc3VlIG9uIHBwYzY0IFJIRUw2LjMuCj4KPiBJJ20gZ2V0dGlu
-ZyBhYm9ydCBmcm9tIGdjY19hc3NlcnQuIFRoZSBtb3N0IGludGVyZXN0aW5nIHRoaW5nIGlzIHRo
-YXQKPiB0aHJlYWQsIHdoaWNoIGFib3J0cyBzaG91bGRuJ3QgZXhpc3QsIGJlY2F1c2UgZm9yIHRo
-aXMgc2NlbmFyaW8gcHRocmVhZF9jcmVhdGUKPiByZXR1cm5zIDEgKEVQRVJNKS4KPgo+IChnZGIp
-IGJ0Cj4gIzAgIDB4MDAwMDAwODA2NjM3NGU1MCBpbiByYWlzZSAoc2lnPTx2YWx1ZSBvcHRpbWl6
-ZWQgb3V0PikgYXQgLi4vbnB0bC9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9yYWlzZS5jOjY0Cj4g
-IzEgIDB4MDAwMDAwODA2NjM3NmRlNCBpbiBhYm9ydCAoKSBhdCBhYm9ydC5jOjkyCj4gIzIgIDB4
-MDAwMDAwODA2Njg3ZTUwNCBpbiBfVW53aW5kX1NldFNwQ29sdW1uIChjb250ZXh0PTB4ZmZmOTdh
-MGRmNTgsIG91dGVyX2NmYT0weGZmZjk3YTBlNjEwLCBvdXRlcl9yYT0weDgwNjY1NDg5MDQpIGF0
-IC4uLy4uLy4uL2djYy91bndpbmQtZHcyLmM6MTI2NQo+ICMzICB1d19pbml0X2NvbnRleHRfMSAo
-Y29udGV4dD0weGZmZjk3YTBkZjU4LCBvdXRlcl9jZmE9MHhmZmY5N2EwZTYxMCwgb3V0ZXJfcmE9
-MHg4MDY2NTQ4OTA0KSBhdCAuLi8uLi8uLi9nY2MvdW53aW5kLWR3Mi5jOjE0NzIKPiAjNCAgMHgw
-MDAwMDA4MDY2ODdlYmUwIGluIF9VbndpbmRfRm9yY2VkVW53aW5kIChleGM9MHhmZmY5N2EwZjY3
-MCwgc3RvcD1AMHg4MDY2NTYwYWQ4OiAweDgwNjY1NDU2NjA8dW53aW5kX3N0b3A+LCBzdG9wX2Fy
-Z3VtZW50PTB4ZmZmOTdhMGU4ODApIGF0IC4uLy4uLy4uL2djYy91bndpbmQuaW5jOjIwMQo+ICM1
-ICAweDAwMDAwMDgwNjY1NDg5MDQgaW4gX1Vud2luZF9Gb3JjZWRVbndpbmQgKGV4Yz08dmFsdWUg
-b3B0aW1pemVkIG91dD4sIHN0b3A9PHZhbHVlIG9wdGltaXplZCBvdXQ+LCBzdG9wX2FyZ3VtZW50
-PTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PikgYXQgLi4vbnB0bC9zeXNkZXBzL3B0aHJlYWQvdW53aW5k
-LWZvcmNlZHVud2luZC5jOjEzMgo+ICM2ICAweDAwMDAwMDgwNjY1NDU2MDAgaW4gX19wdGhyZWFk
-X3Vud2luZCAoYnVmPTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PikgYXQgdW53aW5kLmM6MTMwCj4gIzcg
-IDB4MDAwMDAwODA2NjU0NWJhYyBpbiBfX2RvX2NhbmNlbCAoKSBhdCBwdGhyZWFkUC5oOjI2NQo+
-ICM4ICBfX3B0aHJlYWRfZW5hYmxlX2FzeW5jY2FuY2VsICgpIGF0IGNhbmNlbGxhdGlvbi5jOjQ5
-Cj4gIzkgIDB4MDAwMDAwODA2NjUzYzU2OCBpbiBzdGFydF90aHJlYWQgKGFyZz0weGZmZjk3YTBm
-MjAwKSBhdCBwdGhyZWFkX2NyZWF0ZS5jOjI4OQo+ICMxMCAweDAwMDAwMDgwNjY0M2EzMmMgaW4g
-Ll9fY2xvbmUgKCkgZnJvbSAvbGliNjQvbGliYy0yLjEyLnNvCj4KPiAoZ2RiKSBmcmFtZSAyCj4g
-IzIgIDB4MDAwMDAwODA2Njg3ZTUwNCBpbiBfVW53aW5kX1NldFNwQ29sdW1uIChjb250ZXh0PTB4
-ZmZmOTdhMGRmNTgsIG91dGVyX2NmYT0weGZmZjk3YTBlNjEwLCBvdXRlcl9yYT0weDgwNjY1NDg5
-MDQpIGF0IC4uLy4uLy4uL2djYy91bndpbmQtZHcyLmM6MTI2NQo+IDEyNjUgICAgICAgICAgZ2Nj
-X2Fzc2VydCAoc2l6ZSA9PSBzaXplb2YoX1Vud2luZF9Xb3JkKSk7Cj4KPiBUaGUgYXJnIGluIHRo
-cmVhZGVkKCkgaXMgbm90IHVzZWQgZm9yIGFueXRoaW5nLCBzbyBJIHBhc3NlZCBzY2VuYXJpbyBu
-dW1iZXIgYXMgcGFyYW1ldGVyLgo+IChnZGIpIHAveCAoKHN0cnVjdCBwdGhyZWFkICopIDB4ZmZm
-OTdhMGYyMDApLT5hcmcKPiAkMSA9IDB4MTIKPgo+IFNvIGl0J3MgdGhyZWFkIGZvciBzY2VuYXJp
-byAweDEyLiBUaGlzIHNjZW5hcmlvIHRyaWVzIHRvIHNldCBleHBsaWNpdCBzY2hlZHVsaW5nIHdp
-dGggbWF4Cj4gcHJpb3JpdHkuIFdoZW4geW91IHJ1biB0aGlzIGFzIHVucHJpdmlsZWdlZCB1c2Vy
-LCBwdGhyZWFkX2NyZWF0ZSBnaXZlcyB5b3UgRVBFUk0uCklzIGl0IHByb3BlciBmb3IgdGhpcyBj
-YXNlIHRoYXQgbGltaXQgb25seSByb290IGNhbiBydW4/CgpSZWdhcmRzLApLYWkKCj4KPiBUaGlz
-IGNvbW1lbnQgaXMgaW50ZXJlc3RpbmcsIHNhbWUgZ2NjX2Fzc2VydCgpLCBhbHNvIHBvd2VyNzoK
-PiBodHRwOi8vZ2NjLmdudS5vcmcvYnVnemlsbGEvc2hvd19idWcuY2dpP2lkPTUyODM5I2MxMAo+
-Cj4gUmVnYXJkcywKPiBKYW4KPgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5
-IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0
-aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdl
-ZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNs
-dWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4g
-bWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0
-MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxp
-c3QK
+On 08/08/2012 05:55 PM, DAN LI wrote:
+> On 08/08/2012 04:52 PM, Simon Xu wrote:
+>> On 2012/8/8 16:30, DAN LI wrote:
+>>> On 08/03/2012 12:34 AM, Simon Xu wrote:
+>>>> container_ftp.pl has several problems:
+>>>>
+>>>> * ftp users can't cd to a temporary dir in /tmp
+>>>> * ftp->cwd($dir) will always fail
+>>>> * if we do 'chdir $dir', 'rmdir("$dir")' will fail
+>>>> * 'ftp->put' should be 'ftp->get'
+>>>>
+>>>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+>>>> ---
+>>>>   testcases/kernel/containers/netns/container_ftp.pl | 15 ++++++++-------
+>>>>   1 file changed, 8 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/testcases/kernel/containers/netns/container_ftp.pl b/testcases/kernel/containers/netns/container_ftp.pl
+>>>> index 89a35b5..98742f3 100644
+>>>> --- a/testcases/kernel/containers/netns/container_ftp.pl
+>>>> +++ b/testcases/kernel/containers/netns/container_ftp.pl
+>>>> @@ -23,6 +23,7 @@
+>>>>     use File::Temp 'tempdir';
+>>>>   use Net::FTP;
+>>>> +use File::Path;
+>>>>     if ($#ARGV == -1) {
+>>>>       print "usage: $0 host\n";
+>>>> @@ -35,7 +36,7 @@ my $i = 0;
+>>>>   my $kount = 51;
+>>>>   my $file="junkfile";
+>>>>   -my $tmpdir = defined($ENV{TMPDIR}) ? $ENV{TMPDIR} : "/tmp";
+>>>> +my $tmpdir = "/var/ftp";
+>>> hi, Simon
+>>>
+>>> I tested container_ftp.pl as follow:
+>>> ********************************************************
+>>> #./container_ftp.pl    knownhost_with_vsftpd
+>>> ********************************************************
+>>> and failed at "$ftp->cwd" either with this fix or without it.
+>>>
+>>> So,did i get the wrong way to test this script ,or,something wrong
+>>> still exists.
+>>
+>> Could you print the value of $dir before "$ftp->cwd"?  And try ftp login as anonymous user, and see if you can cd to the value.
+>>
+> Thanks for your quick reply and sorry for my careless.
+> I try operations as you suggested,and find the problem that dir created for test is not available
+> for any user expect root.
+> 
+> So, now i test and confirm this fix works fine.
+
+OK, pushed with your Reviewed-by and removed the tailing spaces. Thank you all.
+
+Wanlong Gao
+
+> 
+> Thanks
+> DAN LI
+>> Thanks
+>> Simon
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
