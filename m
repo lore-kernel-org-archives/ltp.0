@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1Sz0jc-0004qi-DY
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 07:31:16 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sz0jW-0003SH-TJ
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 07:31:16 +0000
-Received: by obc16 with SMTP id 16so786086obc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 00:31:05 -0700 (PDT)
+	(envelope-from <xu.simon@oracle.com>) id 1Sz20n-0008Gs-LL
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 08:53:05 +0000
+Received: from rcsinet15.oracle.com ([148.87.113.117])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Sz20j-0003oW-Pt
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 08:53:05 +0000
+Message-ID: <502228E3.9010802@oracle.com>
+Date: Wed, 08 Aug 2012 16:52:51 +0800
+From: Simon Xu <xu.simon@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <5021FA02.8000905@casparzhang.com>
-References: <1343924528-1811-1-git-send-email-xu.simon@oracle.com>
-	<5021FA02.8000905@casparzhang.com>
-Date: Wed, 8 Aug 2012 00:31:05 -0700
-Message-ID: <CAGH67wRuCxnP_5GC1rnY=n4J7s7DDz1NFt=tVJR6f81NG3L+JA@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] capability: fix sys/capability.h compile error
+References: <1343925295-1884-1-git-send-email-xu.simon@oracle.com>
+	<502223B6.2070608@cn.fujitsu.com>
+In-Reply-To: <502223B6.2070608@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/1] fix container_ftp.pl
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,53 +28,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
+To: DAN LI <li.dan@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 7, 2012 at 10:32 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
-> On 08/03/2012 12:22 AM, Simon Xu wrote:
->> Capability testcases fail to compile with sys/capability.h of libcap-devel in
->> RHEL5-like distros:
+On 2012/8/8 16:30, DAN LI wrote:
+> On 08/03/2012 12:34 AM, Simon Xu wrote:
+>> container_ftp.pl has several problems:
 >>
->> In file included from /usr/include/sys/capability.h:34, from cap_bounds_r.c:30:
->> /usr/include/linux/capability.h:70:
->>           error: expected specifier-qualifier-list before '__le32'
->>
->> This is due to sys/capability.h preventing the correct _LINUX_TYPES_H_ from
->> being included.  The problem can be bypassed by including linux/types.h in
->> capability testcases.
+>> * ftp users can't cd to a temporary dir in /tmp
+>> * ftp->cwd($dir) will always fail
+>> * if we do 'chdir $dir', 'rmdir("$dir")' will fail
+>> * 'ftp->put' should be 'ftp->get'
 >>
 >> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+>> ---
+>>   testcases/kernel/containers/netns/container_ftp.pl | 15 
+>> ++++++++-------
+>>   1 file changed, 8 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/testcases/kernel/containers/netns/container_ftp.pl 
+>> b/testcases/kernel/containers/netns/container_ftp.pl
+>> index 89a35b5..98742f3 100644
+>> --- a/testcases/kernel/containers/netns/container_ftp.pl
+>> +++ b/testcases/kernel/containers/netns/container_ftp.pl
+>> @@ -23,6 +23,7 @@
+>>     use File::Temp 'tempdir';
+>>   use Net::FTP;
+>> +use File::Path;
+>>     if ($#ARGV == -1) {
+>>       print "usage: $0 host\n";
+>> @@ -35,7 +36,7 @@ my $i = 0;
+>>   my $kount = 51;
+>>   my $file="junkfile";
+>>   -my $tmpdir = defined($ENV{TMPDIR}) ? $ENV{TMPDIR} : "/tmp";
+>> +my $tmpdir = "/var/ftp";
+> hi, Simon
 >
-> from doc/style-guide.txt:
+> I tested container_ftp.pl as follow:
+> ********************************************************
+> #./container_ftp.pl    knownhost_with_vsftpd
+> ********************************************************
+> and failed at "$ftp->cwd" either with this fix or without it.
 >
-> "
-> 14. System headers
-> ~~~~~~~~~~~~~~~~~~
->
-> Don't use +linux/+ headers if at all possible. Usually they are replaced
-> with
-> +sys/+ headers as things work their way into glibc.  Furthermore, +linux/+
-> headers get shuffled around a lot more than their +sys/+ counterparts it
-> seems.
-> "
->
-> Do we have a better solution?
+> So,did i get the wrong way to test this script ,or,something wrong
+> still exists.
 
-It's a guideline, not a hard rule. The intent was to avoid nasty
-snaking #ifdefs [and special case autoconf tests], or avoid including
-system headers (e.g. linux/inotify.h vs sys/inotify.h); this kind of
-exists in LTP and exists in other projects like hdparm, iozone,
-net-snmp, etc as there isn't a tight coupling between kernel and
-userland in Linux.
+Could you print the value of $dir before "$ftp->cwd"?  And try ftp login 
+as anonymous user, and see if you can cd to the value.
 
-I doublechecked and there really isn't a good way to check for this in
-Fedora (at least), so it's ok, but the upstream author should be
-encouraged to not do things like that in headers. It really wreaks
-havoc with projects trying to achieve consistency.
+Thanks
+Simon
 
-Thanks,
--Garrett
+>>     my $dir;
+>>   $dir = tempdir("container_ftp.XXXXXXX", DIR => $tmpdir);
+>> @@ -47,8 +48,7 @@ if (chmod(0777, $dir) == 0) {
+>>       push @ERRORS, "Failed to change mode for temporary directory: 
+>> $!\n";
+>>       printerr();
+>>   }
+>> -chdir $dir;
+>> -system("dd if=/dev/zero of=$file bs=512 count=10 > /dev/null 2>&1 ");
+>> +system("dd if=/dev/zero of=$dir/$file bs=512 count=10 > /dev/null 
+>> 2>&1 ");
+>>     while ( $i < $kount )
+>>   {
+>> @@ -61,13 +61,15 @@ while ( $i < $kount )
+>>           $ftp->quit if $newerr;
+>>           printerr() if $newerr;
+>>   -        $ftp->cwd($dir) or $newerr=1;
+>> +        $basedir = `basename "$dir"`;
+>> +        chomp $basedir;
+>> +        $ftp->cwd($basedir) or $newerr=1;
+>>           push @ERRORS, "Can't cd  $!\n" if $newerr;
+>>           $ftp->quit if $newerr;
+>>           printerr() if $newerr;
+>>             $newname = $file . "_" . $i ;
+>> -        $ftp->put($file,$newname) or $newerr=1;
+>> +        $ftp->get($file,$newname) or $newerr=1;
+>>           push @ERRORS, "Can't get file $file $!\n" if $newerr;
+>>           printerr() if $newerr;
+>>   @@ -82,6 +84,5 @@ sub printerr {
+>>   }
+>>     END {
+>> -    unlink("$dir/$file");
+>> -    rmdir("$dir");
+>> +    rmtree("$dir");
+>>   }
+>
+>
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
