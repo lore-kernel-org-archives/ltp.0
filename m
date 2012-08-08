@@ -2,19 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SzlS4-0000d9-Cp
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 09:24:16 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SyymC-0000aW-B1
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 05:25:48 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzlS1-0001Qh-UI
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 09:24:16 +0000
-Message-ID: <5024D2E5.9050805@cn.fujitsu.com>
-Date: Fri, 10 Aug 2012 17:22:45 +0800
+	id 1SyymB-0001Yd-CO
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 05:25:48 +0000
+Message-ID: <5021F807.6080605@cn.fujitsu.com>
+Date: Wed, 08 Aug 2012 13:24:23 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <cover.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH resend 0/6] NUMA and follow-up fix
+References: <CANoG8sX7V5VFgHdm7O2r1E4DXrfFM9jDeP2WDyD7roMXkGe-RA@mail.gmail.com>
+	<5021EA9F.1090606@cn.fujitsu.com>
+	<CANoG8sUiB=+MfOGD8UNtkZh7Gf5X=YOSiAVZN0n=FPbhHm4_5g@mail.gmail.com>
+In-Reply-To: <CANoG8sUiB=+MfOGD8UNtkZh7Gf5X=YOSiAVZN0n=FPbhHm4_5g@mail.gmail.com>
+Subject: Re: [LTP]
+ =?windows-1252?q?/usr/include/linux/capability=2Eh=3A70=3A_?=
+ =?windows-1252?q?error=3A_expected_specifier-qualifier-list_before_=91=5F?=
+ =?windows-1252?q?=5Fle32=92?=
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,37 +33,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Romu <huruomu@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 08/09/2012 02:15 PM, Caspar Zhang wrote:
-> 
-> Resending the whole patch series (including Jan's 2 patches) for easier 
-> reviewing.
-> 
-> updates:
->    syscalls/numa: check syscall availability
->      remove TEST() macro and use syscall() directly.
->    numa_helper: move to libkerntest
->      merged the library cleaning fix to this one.
->    mm: use new numa_helper
->      the same as previous V3 version, which already has Jan's reivew.
-> 
-> Caspar Zhang (4):
->   syscalls/numa: check syscall availability
->   numa_helper: move to libkerntest
->   mm: use new numa_helper
->   mm: add common Makefile include: libmem.mk
-> 
-> Jan Stancek (2):
->   numa_helper: add flag to get_allowed_nodes()
->   update testcases to use flag for get_allowed_nodes()
+On 08/08/2012 12:51 PM, Romu wrote:
+> I tried the patch, it solves the problem.
 
-As you guys all reviewed and tested this series, and this already flies for weeks,
-I just pushed this series. Then will run on our test system next week. ;)
-Thank you guys.
+Thank you. I pushed this patch to upstream.
 
 Wanlong Gao
+
+> 
+> Thanks
+> Romu
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
