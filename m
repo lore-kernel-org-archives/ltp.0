@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SyytH-0000sg-GE
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 05:33:07 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1Sz2Zq-0001Rr-I9
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 09:29:18 +0000
 Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SyytG-0004ar-Jg
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 05:33:07 +0000
-Received: by yenm1 with SMTP id m1so383019yen.34
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Sz2Zp-0008Mi-U2
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 09:29:18 +0000
+Received: by yenm1 with SMTP id m1so514809yen.34
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Aug 2012 22:33:01 -0700 (PDT)
-Message-ID: <5021FA02.8000905@casparzhang.com>
-Date: Wed, 08 Aug 2012 13:32:50 +0800
+	Wed, 08 Aug 2012 02:29:12 -0700 (PDT)
+Message-ID: <5022315D.1090709@casparzhang.com>
+Date: Wed, 08 Aug 2012 17:29:01 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1343924528-1811-1-git-send-email-xu.simon@oracle.com>
-In-Reply-To: <1343924528-1811-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH 1/1] capability: fix sys/capability.h compile error
+References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
+	<6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
+	<CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
+In-Reply-To: <CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls/numa: check syscall availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,214 +32,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 08/03/2012 12:22 AM, Simon Xu wrote:
-> Capability testcases fail to compile with sys/capability.h of libcap-devel in
-> RHEL5-like distros:
+On 07/31/2012 11:57 AM, Garrett Cooper wrote:
+> On Mon, Jul 30, 2012 at 7:53 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
+>>
+>> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+>> some arches (e.g. i386), I use TEST macro to test the syscall in setup()
+>> function, if the syscall is not implemented on the system, a TCONF
+>> message will given like this:
+>>
+>> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
 >
-> In file included from /usr/include/sys/capability.h:34, from cap_bounds_r.c:30:
-> /usr/include/linux/capability.h:70:
->           error: expected specifier-qualifier-list before '__le32'
+>      Using TEST isn't necessary to be honest: the syscall wrapper
+> handles the (if you add a comment as to why things are being done in a
+> single line, untested, that should be ok).
+> Thanks!
+> -Garrett
 >
-> This is due to sys/capability.h preventing the correct _LINUX_TYPES_H_ from
-> being included.  The problem can be bypassed by including linux/types.h in
-> capability testcases.
->
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
 
-from doc/style-guide.txt:
+Hi Garrett, sorry I'm kind of not catching you :-( what's your 
+suggestion of correcting/improving this message?
 
-"
-14. System headers
-~~~~~~~~~~~~~~~~~~
-
-Don't use +linux/+ headers if at all possible. Usually they are replaced 
-with
-+sys/+ headers as things work their way into glibc.  Furthermore, +linux/+
-headers get shuffled around a lot more than their +sys/+ counterparts it
-seems.
-"
-
-Do we have a better solution?
-
+Thanks,
 Caspar
-
-> ---
->   testcases/kernel/security/cap_bound/cap_bounds_r.c        | 1 +
->   testcases/kernel/security/cap_bound/cap_bounds_rw.c       | 1 +
->   testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c | 1 +
->   testcases/kernel/security/cap_bound/check_pe.c            | 1 +
->   testcases/kernel/security/cap_bound/dummy.c               | 1 +
->   testcases/kernel/security/cap_bound/exec_with_inh.c       | 1 +
->   testcases/kernel/security/cap_bound/exec_without_inh.c    | 1 +
->   testcases/kernel/security/filecaps/c.c                    | 1 +
->   testcases/kernel/security/filecaps/check_simple_capset.c  | 1 +
->   testcases/kernel/security/filecaps/inh_capped.c           | 1 +
->   testcases/kernel/security/filecaps/print_caps.c           | 1 +
->   testcases/kernel/security/filecaps/verify_caps_exec.c     | 1 +
->   testcases/kernel/security/securebits/check_keepcaps.c     | 1 +
->   13 files changed, 13 insertions(+)
->
-> diff --git a/testcases/kernel/security/cap_bound/cap_bounds_r.c b/testcases/kernel/security/cap_bound/cap_bounds_r.c
-> index 0c09873..4b28a6f 100644
-> --- a/testcases/kernel/security/cap_bound/cap_bounds_r.c
-> +++ b/testcases/kernel/security/cap_bound/cap_bounds_r.c
-> @@ -27,6 +27,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/cap_bound/cap_bounds_rw.c b/testcases/kernel/security/cap_bound/cap_bounds_rw.c
-> index 010ace6..e5bcb74 100644
-> --- a/testcases/kernel/security/cap_bound/cap_bounds_rw.c
-> +++ b/testcases/kernel/security/cap_bound/cap_bounds_rw.c
-> @@ -26,6 +26,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c b/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-> index 3a65faf..f4b0bd3 100644
-> --- a/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-> +++ b/testcases/kernel/security/cap_bound/cap_bset_inh_bounds.c
-> @@ -29,6 +29,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/cap_bound/check_pe.c b/testcases/kernel/security/cap_bound/check_pe.c
-> index be16cc5..acdefe5 100644
-> --- a/testcases/kernel/security/cap_bound/check_pe.c
-> +++ b/testcases/kernel/security/cap_bound/check_pe.c
-> @@ -30,6 +30,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/cap_bound/dummy.c b/testcases/kernel/security/cap_bound/dummy.c
-> index 0559a8e..cb58259 100644
-> --- a/testcases/kernel/security/cap_bound/dummy.c
-> +++ b/testcases/kernel/security/cap_bound/dummy.c
-> @@ -3,6 +3,7 @@
->   #include "test.h"
->
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->
-> diff --git a/testcases/kernel/security/cap_bound/exec_with_inh.c b/testcases/kernel/security/cap_bound/exec_with_inh.c
-> index dd026ce..4bacfcf 100644
-> --- a/testcases/kernel/security/cap_bound/exec_with_inh.c
-> +++ b/testcases/kernel/security/cap_bound/exec_with_inh.c
-> @@ -29,6 +29,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/cap_bound/exec_without_inh.c b/testcases/kernel/security/cap_bound/exec_without_inh.c
-> index 687e72b..56e9e9d 100644
-> --- a/testcases/kernel/security/cap_bound/exec_without_inh.c
-> +++ b/testcases/kernel/security/cap_bound/exec_without_inh.c
-> @@ -29,6 +29,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/filecaps/c.c b/testcases/kernel/security/filecaps/c.c
-> index fbd0365..76f1803 100644
-> --- a/testcases/kernel/security/filecaps/c.c
-> +++ b/testcases/kernel/security/filecaps/c.c
-> @@ -20,6 +20,7 @@
->
->   #include <stdio.h>
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->
-> diff --git a/testcases/kernel/security/filecaps/check_simple_capset.c b/testcases/kernel/security/filecaps/check_simple_capset.c
-> index 8f391e0..d1d2ee5 100644
-> --- a/testcases/kernel/security/filecaps/check_simple_capset.c
-> +++ b/testcases/kernel/security/filecaps/check_simple_capset.c
-> @@ -21,6 +21,7 @@
->   #include <stdio.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->
-> diff --git a/testcases/kernel/security/filecaps/inh_capped.c b/testcases/kernel/security/filecaps/inh_capped.c
-> index b6dfeee..285c2ea 100644
-> --- a/testcases/kernel/security/filecaps/inh_capped.c
-> +++ b/testcases/kernel/security/filecaps/inh_capped.c
-> @@ -27,6 +27,7 @@
->   #include <stdio.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include "test.h"
-> diff --git a/testcases/kernel/security/filecaps/print_caps.c b/testcases/kernel/security/filecaps/print_caps.c
-> index ed40c45..7584820 100644
-> --- a/testcases/kernel/security/filecaps/print_caps.c
-> +++ b/testcases/kernel/security/filecaps/print_caps.c
-> @@ -33,6 +33,7 @@
->   #include "config.h"
->
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->
-> diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> index d89df82..f10ce86 100644
-> --- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-> +++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> @@ -38,6 +38,7 @@
->   #include <fcntl.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
-> diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
-> index 8cb9d22..f5c18eb 100644
-> --- a/testcases/kernel/security/securebits/check_keepcaps.c
-> +++ b/testcases/kernel/security/securebits/check_keepcaps.c
-> @@ -1,6 +1,7 @@
->   #include <errno.h>
->   #include "config.h"
->   #if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
->   #include <sys/capability.h>
->   #endif
->   #include <sys/prctl.h>
->
-
-
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
