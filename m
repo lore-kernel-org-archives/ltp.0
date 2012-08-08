@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SzOx2-0001CR-HX
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 09:22:44 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzOwz-00059F-AO
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 09:22:44 +0000
-Date: Thu, 9 Aug 2012 05:22:33 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1024699575.2373526.1344504153517.JavaMail.root@redhat.com>
-In-Reply-To: <c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall
- availability
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1Sz2qz-0002go-LS
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 09:47:01 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Sz2qw-00057V-26
+	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 09:47:01 +0000
+Received: by pbcwy7 with SMTP id wy7so1108576pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Aug 2012 02:46:52 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v1278)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <5022315D.1090709@casparzhang.com>
+Date: Wed, 8 Aug 2012 02:46:55 -0700
+Message-Id: <11850AA3-DB90-4525-B168-AF39B8B4B373@gmail.com>
+References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
+	<6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
+	<CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
+	<5022315D.1090709@casparzhang.com>
+Subject: Re: [LTP] [PATCH] syscalls/numa: check syscall availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,54 +36,31 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Caspar Zhang <caspar@casparzhang.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Caspar,
+On Aug 8, 2012, at 2:29 AM, Caspar Zhang wrote:
 
-I think what Garrett meant was something like this:
-/* check if syscall is supported, syscall() here is macro from linux_syscall_numbers.h */
-syscall(__NR_get_mempolicy, NULL, NULL, 0, NULL, 0);
+> On 07/31/2012 11:57 AM, Garrett Cooper wrote:
+>> On Mon, Jul 30, 2012 at 7:53 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
+>>> 
+>>> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+>>> some arches (e.g. i386), I use TEST macro to test the syscall in setup()
+>>> function, if the syscall is not implemented on the system, a TCONF
+>>> message will given like this:
+>>> 
+>>> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
+>> 
+>>     Using TEST isn't necessary to be honest: the syscall wrapper
+>> handles the (if you add a comment as to why things are being done in a
+>> single line, untested, that should be ok).
+>> Thanks!
+>> -Garrett
+>> 
+> 
+> Hi Garrett, sorry I'm kind of not catching you :-( what's your suggestion of correcting/improving this message?
 
-linux_syscall_numbers.h defines a macro "syscall", which checks for ENOSYS.
-
-Regards,
-Jan
-
------ Original Message -----
-> From: "Caspar Zhang" <caspar@casparzhang.com>
-> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Thursday, 9 August, 2012 8:15:39 AM
-> Subject: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall availability
-> 
-> 
-> some NUMA related syscalls: mbind, get_mempolicy are not supported on
-> some arches (e.g. i386), this patch checks the syscalls' availability
-> in
-> setup() function, if the syscall is not implemented on the system, a
-> TCONF message will be given like this:
-> 
-> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not
-> supported on your arch
-> 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-> ---
->  .../syscalls/get_mempolicy/get_mempolicy01.c       |   10 ++++++++++
->  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +++++++++
->  2 files changed, 19 insertions(+), 0 deletions(-)
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+	I'd remove "TEST(..)" from the line and just use the syscall function call.
+	If you want, we can make syscall more explicit as far as a custom wrapper goes.
+Cheers!
+-Garrett
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
 Exclusive live event will cover all the ways today's security and 
