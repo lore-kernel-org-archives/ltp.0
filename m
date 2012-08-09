@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T7GjP-0002Ca-6Y
-	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 02:13:11 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T7GjO-0000Cc-A6
-	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 02:13:11 +0000
-Message-ID: <50401D36.3090305@cn.fujitsu.com>
-Date: Fri, 31 Aug 2012 10:11:02 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SzQ1N-0001kz-Ap
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:31:17 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SzQ1J-0004ot-G0
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:31:17 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.5/8.14.3) with ESMTP id q79AV72N017212
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 9 Aug 2012 03:31:07 -0700 (PDT)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Thu, 9 Aug 2012 18:30:58 +0800
+Message-ID: <1344508258-25054-4-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
+References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-References: <850600673.62700357.1346378820659.JavaMail.root@redhat.com>
-In-Reply-To: <850600673.62700357.1346378820659.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH 3/3] tunable/min_free_kbytes: add 32-bit system
- limit
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [PATCH 3/3] timer_settime/5-3: fix test hung
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +32,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Zhenfeng.Zhao@windriver.com
 
-On 08/31/2012 10:07 AM, Zhouping Liu wrote:
-> 
-> ----- Original Message -----
->> > From: "Zhouping Liu" <zliu@redhat.com>
->> > To: "LTP list" <ltp-list@lists.sourceforge.net>
->> > Sent: Wednesday, August 29, 2012 8:43:59 PM
->> > Subject: [LTP] [PATCH 3/3] tunable/min_free_kbytes: add 32-bit system limit
->> > 
->> > in 32-bit system, one process only allocate 3Gb memory at
->> > least, even though there are enough memory and setting
-> I'm sorry that the above sentences has a typo, 'at least' should be
-> changed as 'at most', so maintainers, please correct it if you apply the patch.
-> please let me know if you need me send a V2.
+This case hangs on sugarbay(intel x86_64) platform.
 
-This typo is harmless, no need. I wanna know if Caspar like to review this set.
+The root cause is that the case calls timer_settime with time which
+already took place and then calls sleep. When the timer expires and
+sends signal the sleep will be break.
 
-Thanks,
-Wanlong Gao
+But on sugarbay the timer always expires before the case enters sleep,
+then it always sleeps NUMTESTS * LONGSLEEPTIME seconds. So it exceeds
+the time limit set by auto-run test shell script, and reports that it
+hangs.
 
-> 
-> Thanks,
-> Zhouping
-> 
+Decrease LONGSLEEPTIME value to avoid this issue.
+
+Signed-off-by: Kang Kai <kai.kang@windriver.com>
+---
+ .../conformance/interfaces/timer_settime/5-3.c     |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
+index 0ad1957..4a47458 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
+@@ -27,7 +27,7 @@
+ 
+ #define SIGTOTEST SIGALRM
+ 
+-#define LONGSLEEPTIME 10
++#define LONGSLEEPTIME 5
+ 
+ #define NUMTESTS 30
+ 
+@@ -105,4 +105,4 @@ int main(int argc, char *argv[])
+ 
+ 	printf("This code should not be executed.\n");
+ 	return PTS_UNRESOLVED;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.5.4
 
 
 ------------------------------------------------------------------------------
