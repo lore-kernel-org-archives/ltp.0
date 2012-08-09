@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SzjzL-0005hP-37
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:50:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzjzI-0001vX-VY
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:50:31 +0000
-Message-ID: <5024BC1E.1070502@redhat.com>
-Date: Fri, 10 Aug 2012 15:45:34 +0800
-From: Zhouping Liu <zliu@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SzOx2-0001CR-HX
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 09:22:44 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SzOwz-00059F-AO
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 09:22:44 +0000
+Date: Thu, 9 Aug 2012 05:22:33 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1024699575.2373526.1344504153517.JavaMail.root@redhat.com>
+In-Reply-To: <c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <cover.1344492473.git.caspar@casparzhang.com>
-	<c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH resend 2/6] update testcases to use flag for
-	get_allowed_nodes()
+Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall
+ availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,151 +24,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7371957607804726742=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Caspar Zhang <caspar@casparzhang.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---===============7371957607804726742==
-Content-Type: multipart/alternative;
-	boundary="------------030805070807070002090901"
+Caspar,
 
-This is a multi-part message in MIME format.
---------------030805070807070002090901
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+I think what Garrett meant was something like this:
+/* check if syscall is supported, syscall() here is macro from linux_syscall_numbers.h */
+syscall(__NR_get_mempolicy, NULL, NULL, 0, NULL, 0);
 
-On 08/09/2012 02:15 PM, Caspar Zhang wrote:
-> Interface of get_allowed_nodes() now requires a flag,
-> update all testcases using this interface.
->
-> Also fix some checkpatch warnings.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+linux_syscall_numbers.h defines a macro "syscall", which checks for ENOSYS.
 
-Looks good for me.
+Regards,
+Jan
 
-Reviewed-by: Zhouping Liu <zliu@redhat.com>
-
-Thanks,
-Zhouping
-
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Thursday, 9 August, 2012 8:15:39 AM
+> Subject: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall availability
+> 
+> 
+> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+> some arches (e.g. i386), this patch checks the syscalls' availability
+> in
+> setup() function, if the syscall is not implemented on the system, a
+> TCONF message will be given like this:
+> 
+> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not
+> supported on your arch
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 > ---
->   .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +++--
->   testcases/kernel/syscalls/mbind/mbind01.c          |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages02.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages03.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages04.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages05.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages06.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages07.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages08.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages09.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages10.c      |    5 +++--
->   .../kernel/syscalls/move_pages/move_pages11.c      |    5 +++--
->   .../syscalls/move_pages/move_pages_support.c       |    8 +++++---
->   13 files changed, 41 insertions(+), 27 deletions(-)
->
->
->
+>  .../syscalls/get_mempolicy/get_mempolicy01.c       |   10 ++++++++++
+>  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +++++++++
+>  2 files changed, 19 insertions(+), 0 deletions(-)
+> 
+> 
 > ------------------------------------------------------------------------------
 > Live Security Virtual Conference
 > Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
+> threat landscape has changed and how IT managers can respond.
+> Discussions
+> will include endpoint security, mobile security and the latest in
+> malware
 > threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->
->
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
---------------030805070807070002090901
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">On 08/09/2012 02:15 PM, Caspar Zhang
-      wrote:<br>
-    </div>
-    <blockquote
-cite="mid:c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
-Interface of get_allowed_nodes() now requires a flag,
-update all testcases using this interface.
-
-Also fix some checkpatch warnings.
-
-Signed-off-by: Jan Stancek <a class="moz-txt-link-rfc2396E" href="mailto:jstancek@redhat.com">&lt;jstancek@redhat.com&gt;</a></pre>
-    </blockquote>
-    <br>
-    Looks good for me.<br>
-    <br>
-    Reviewed-by: Zhouping Liu <a class="moz-txt-link-rfc2396E" href="mailto:zliu@redhat.com">&lt;zliu@redhat.com&gt;</a><br>
-    <br>
-    Thanks,<br>
-    Zhouping<br>
-    <br>
-    <blockquote
-cite="mid:c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +++--
- testcases/kernel/syscalls/mbind/mbind01.c          |    5 +++--
- .../kernel/syscalls/move_pages/move_pages02.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages03.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages04.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages05.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages06.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages07.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages08.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages09.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages10.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages11.c      |    5 +++--
- .../syscalls/move_pages/move_pages_support.c       |    8 +++++---
- 13 files changed, 41 insertions(+), 27 deletions(-)
-
-</pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------030805070807070002090901--
-
-
---===============7371957607804726742==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -178,16 +84,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============7371957607804726742==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7371957607804726742==--
-
