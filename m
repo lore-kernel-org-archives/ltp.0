@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SwX1j-0004TV-0r
-	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 11:23:43 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SwX1f-0006zW-77
-	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 11:23:43 +0000
-Received: by pbbrq2 with SMTP id rq2so861016pbb.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1SzQ1L-0001FC-Aj
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:31:15 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SzQ1G-0000Hs-9K
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:31:15 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail.windriver.com (8.14.5/8.14.3) with ESMTP id q79AV4Yj017191
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 01 Aug 2012 04:23:33 -0700 (PDT)
-Message-ID: <501911AB.2080508@casparzhang.com>
-Date: Wed, 01 Aug 2012 19:23:23 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	Thu, 9 Aug 2012 03:31:04 -0700 (PDT)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Thu, 9 Aug 2012 18:30:56 +0800
+Message-ID: <1344508258-25054-2-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
+References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-References: <17388238.6846564.1343816635852.JavaMail.root@redhat.com>
-In-Reply-To: <17388238.6846564.1343816635852.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+Subject: [LTP] [PATCH 1/3] pthread_cond_signal/1-1: use sched_yield to sync
+	threads
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,36 +33,122 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Zhenfeng.Zhao@windriver.com
 
-On 08/01/2012 06:23 PM, Jan Stancek wrote:
-> I noticed you put call to "get_a_numa_node()" to "oom()" and "testoom()",
-> which is called also from oom01. As I understand from your previous
-> email, this test should not be NUMA-aware, correct?
+This case fails on mips board routerstation randomly. The root cause is
+that when main thread call usleep(100) after signal the child threads,
+no child thread is scheduled to run.  So the case fails.
 
-I missed a `if (mempolicy)` inside oom() {....} :-(
+I update it to set main thread with a lower priority and child threads
+with a higher one, then call sched_yield and usleep in main thread will
+make sure that one of the child threads will be scheduled.
 
-Nice catch! Thanks!
+Signed-off-by: Kang Kai <kai.kang@windriver.com>
+---
+ .../interfaces/pthread_cond_signal/1-1.c           |   44 +++++++++++++++++++-
+ 1 files changed, 42 insertions(+), 2 deletions(-)
 
-Caspar
-
->
-> <<<test_start>>>
-> tag=oom01 stime=1343713154
-> cmdline="oom01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> oom01       0  TINFO  :  set overcommit_memory to 2
-> oom01       1  TCONF  :  require a NUMA system.
-> oom01       2  TCONF  :  Remaining cases not appropriate for configuration
-> oom01       0  TINFO  :  set overcommit_memory to 0
-> <<<execution_status>>>
->
-> Regards,
-> Jan
-
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+index bf55b31..77374bf 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+@@ -12,6 +12,7 @@
+ 
+ #define _XOPEN_SOURCE 600
+ 
++#include <errno.h>
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -20,6 +21,7 @@
+ #include "posixtest.h"
+ 
+ #define THREAD_NUM  3
++#define SCHED_POLICY SCHED_FIFO
+ 
+ struct testdata
+ {
+@@ -77,6 +79,10 @@ int main()
+ {
+ 	int i, rc;
+ 	struct sigaction act;
++	int pid;
++	int policy;
++	struct sched_param param;
++	pthread_attr_t attr;
+ 
+ 	if (pthread_mutex_init(&td.mutex, NULL) != 0) {
+ 		fprintf(stderr,"Fail to initialize mutex\n");
+@@ -87,8 +93,35 @@ int main()
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	pid = getpid();
++	param.sched_priority = sched_get_priority_min(SCHED_POLICY);
++	if (sched_setscheduler(pid, SCHED_POLICY, &param) != 0) {
++		fprintf(stderr, "Fail to set main thread scheduler.\n");
++		if (errno == EPERM)
++			fprintf(stderr, "Failed with EPERM: are you root?\n");
++		return PTS_UNRESOLVED;
++	}
++
++	if (pthread_attr_init(&attr) != 0) {
++		fprintf(stderr, "Fail to init child thread attribute.\n");
++		return PTS_UNRESOLVED;
++	}
++	if (pthread_attr_setschedpolicy(&attr, SCHED_POLICY) != 0) {
++		fprintf(stderr, "Fail to set child thread schedule policy attribute.\n");
++		return PTS_UNRESOLVED;
++	}
++	param.sched_priority += 10;
++	if (pthread_attr_setschedparam(&attr, &param) != 0) {
++		fprintf(stderr, "Fail to set child thread schedule priority attribute.\n");
++		return PTS_UNRESOLVED;
++	}
++	if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED) != 0) {
++		fprintf(stderr, "Fail to set child thread inheritace attribute.\n");
++		return PTS_UNRESOLVED;
++	}
++
+ 	for (i=0; i<THREAD_NUM; i++) {	/* create THREAD_NUM threads */
+-	    	if (pthread_create(&thread[i], NULL, thr_func, NULL) != 0) {
++		if (pthread_create(&thread[i], &attr, thr_func, NULL) != 0) {
+ 			fprintf(stderr,"Fail to create thread[%d]\n", i);
+ 			exit(PTS_UNRESOLVED);
+ 		}
+@@ -96,6 +129,8 @@ int main()
+ 	while (start_num < THREAD_NUM)	/* waiting for all threads started */
+ 		usleep(100);
+ 
++	pthread_attr_destroy(&attr);
++
+ 	/* Acquire the mutex to make sure that all waiters are currently
+ 	   blocked on pthread_cond_wait */
+ 	if (pthread_mutex_lock(&td.mutex) != 0) {
+@@ -142,6 +177,7 @@ int main()
+ 			fprintf(stderr,"Main failed to signal the condition\n");
+ 			exit(PTS_UNRESOLVED);
+ 		}
++		sched_yield();
+ 		usleep(100);
+ 	}
+ 
+@@ -158,6 +194,10 @@ int main()
+ 			exit(PTS_UNRESOLVED);
+ 		}
+ 	}
++
++	pthread_mutex_destroy(&td.mutex);
++	pthread_cond_destroy(&td.cond);
++
+ 	printf("Test PASSED\n");
+ 	return PTS_PASS;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.5.4
 
 
 ------------------------------------------------------------------------------
