@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T3kj7-0008GH-Mn
-	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 09:26:21 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SzM6U-0000ZI-Q7
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:20:18 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T3kj6-0007bs-H5
-	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 09:26:21 +0000
-Message-ID: <503353CE.7030207@cn.fujitsu.com>
-Date: Tue, 21 Aug 2012 17:24:30 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SzM6T-0000SA-Ms
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:20:18 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q796KADe026178
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Aug 2012 14:20:11 +0800
+Message-ID: <5023564B.7050309@cn.fujitsu.com>
+Date: Thu, 09 Aug 2012 14:18:51 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
-	<50301E06.9000102@cn.fujitsu.com> <5031955A.5060506@windriver.com>
-	<50319A82.3030500@cn.fujitsu.com>
-	<50319F1D.1090906@windriver.com> <5032E504.30404@windriver.com>
-	<5032E5E7.4080500@cn.fujitsu.com> <503353BA.6040309@windriver.com>
-In-Reply-To: <503353BA.6040309@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+References: <1344490274-19671-1-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1344490274-19671-1-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] syslog07: fix a bug of -o
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,82 +28,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gMDgvMjEvMjAxMiAwNToyNCBQTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA45pyI
-MjHml6UgMDk6MzUsIFdhbmxvbmcgR2FvIHdyb3RlOgo+PiBPbiAwOC8yMS8yMDEyIDA5OjMxIEFN
-LCBLYW5nIEthaSB3cm90ZToKPj4+IE9uIDIwMTLlubQwOOaciDIw5pelIDEwOjIxLCBLYW5nIEth
-aSB3cm90ZToKPj4+PiBPbiAyMDEy5bm0MDjmnIgyMOaXpSAxMDowMSwgV2FubG9uZyBHYW8gd3Jv
-dGU6Cj4+Pj4+IE9uIDA4LzIwLzIwMTIgMDk6MzkgQU0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4g
-T24gMjAxMuW5tDA45pyIMTnml6UgMDY6NTgsIFdhbmxvbmcgR2FvIHdyb3RlOgo+Pj4+Pj4+IE9u
-IDA4LzE0LzIwMTIgMDU6MDAgUE0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4+PiBUaGlzIGNhc2Ug
-ZmFpbHMgcmFuZG9tbHkgd2l0aCAiU2VnbWVudGF0aW9uIGZhdWx0Ii4gUmVzZXQgVkVSQk9TRSB0
-byA2Cj4+Pj4+Pj4+IGNhbiBhdm9pZCB0aGlzIHByb2JsZW0uCj4+Pj4+Pj4gQ2FuIHlvdSBleHBs
-YWluIHRoYXQgd2h5ICJyZXNldCBWRVJCT1NFIiBjYW4gYXZvaWQgdGhpcyAiU2VnIEZhdWx0IiBw
-cm9ibGVtPwo+Pj4+Pj4gSXQgaXMgYSBtdWx0aS10aHJlYWQgaXNzdWUuIFlvdSBjYW4gcnVuIGl0
-IGZvciBsZXNzIHRoYW4gMTAgdGltZXMsIGFuZCBpdCB3aWxsIGZhaWwgd2l0aCAiU2VnbWVudGF0
-aW9uIGZhdWx0Ii4KPj4+Pj4gSSBkaWRuJ3Qgc2VlIHRoaXMgb24gbXkgc2lkZS4KPj4+IEhpIFdh
-bmxvbmcsCj4+Pgo+Pj4+IEl0IGZhaWxzIGJvdGggb24gbWlwcyBhbmQgeDg2XzY0Lgo+Pj4+IE9u
-IHRoZSB4ODZfNjQsCj4+Pj4gY3B1OiAgSW50ZWwgSTcKPj4+PiBPUzogICBVYnVudHUgMTEuMTAK
-Pj4+PiBsaWJjOiAgZWdsaWJjIDIuMTMKPj4+PiBrZXJuZWw6IDMuMC4wLTEyLWdlbmVyaWMKPj4+
-Pgo+Pj4+IEhvdyBhYm91dCB0cnkgdGhpcyBzY3JpcHQgb24gYSB4ODZfNjQgbWFjaGluZToKPj4+
-PiBmb3IgaSBpbiAkKHNlcSAxMDApOyBkbyBlY2hvICRpOyAgLi80LTMucnVuLXRlc3QgOyByZXQ9
-JD87IGlmIFsgJHJldCAtbmUKPj4+PiAwIF07IHRoZW4gZWNobyAgJD8gOyBicmVhazsgZmk7ICBk
-b25lCj4+PiBEbyB5b3UgbWVldCB0aGUgIlNlZ21lbnRhdGlvbiBGYXVsdCIgeWV0Pwo+IAo+IEhp
-IFdhbmxvbmcsCj4+IE5vdCB5ZXQuCj4gSSB0ZXN0IGl0IG9uIHg4Nl82NCB3aXRoIFJlZGhhdCA1
-LjMsIGl0IGRvZXNuJ3QgZmFpbC4KPiBJIHRyeSB0byBjb21wYXJlIHRoZW0gdG8gZmluZCB3aHkg
-aXQgZmFpbHMgd2l0aCBVYnVudHUgMTEuMTAuCgpPSywgcGxlYXNlLgoKVGhhbmtzLApXYW5sb25n
-IEdhbwoKPiAKPiBUaGFua3MsCj4gS2FpCj4gCj4+Cj4+IFRoYW5rcywKPj4gV2FubG9uZyBHYW8K
-Pj4KPj4+IFJlZ2FyZHMsCj4+PiBLYWkKPj4+Cj4+Pj4+PiBJdCBpcyBoYXJkIHRvIGRlYnVnIGFu
-ZCBJIGRpZG4ndCBmaW5kIHRoZSByb290IGNhdXNlLCBidXQgb3BlbiB0aGUgVkVSQk9TRSB3aWxs
-IGF2b2lkIHRoaXMgc2l0dWF0aW9uLiBTbyBpdCBpcyBhIHdvcmthcm91bmQuCj4+Pj4+IEknZCBs
-aWtlIHRvIHNlbmQgYSBwYXRjaCB0byBmaXggdGhpcyB0eXBvIGZpcnN0Lgo+Pj4+IEZpbmUuCj4+
-Pj4KPj4+PiBSZWdhcmRzLAo+Pj4+IEthaQo+Pj4+Cj4+Pj4+IFRoYW5rcywKPj4+Pj4gV2FubG9u
-ZyBHYW8KPj4+Pj4KPj4+Pj4+IFJlZ2FyZHMsCj4+Pj4+PiBLYWkKPj4+Pj4+Cj4+Pj4+Pj4+IEZp
-eCB0eXBvIGF0IHNhbWUgdGltZS4KPj4+Pj4+PiBUaGUgdHlwbyBmaXggaXMgT0suCj4+Pj4+Pj4K
-Pj4+Pj4+PiBUaGFua3MsCj4+Pj4+Pj4gV2FubG9uZyBHYW8KPj4+Pj4+Pgo+Pj4+Pj4+PiBTaWdu
-ZWQtb2ZmLWJ5OiBLYW5nIEthaTxrYWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+Pj4+Pj4+PiAtLS0K
-Pj4+Pj4+Pj4gICAgICAuLi4vY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80
-LTMuYyAgICB8ICAgIDQgKystLQo+Pj4+Pj4+PiAgICAgIDEgZmlsZXMgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBkaWZmIC0tZ2l0IGEv
-dGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRo
-cmVhZF9kZXRhY2gvNC0zLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
-bWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4+Pj4+PiBpbmRleCA1YzE1
-ZTkzLi4yMzczOGRjIDEwMDY0NAo+Pj4+Pj4+PiAtLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90
-ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4+
-Pj4+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
-ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4+Pj4+PiBAQCAtNDksNyArNDksNyBAQAo+
-Pj4+Pj4+PiAgICAgICNpbmNsdWRlICIuLi90ZXN0ZnJtdy90ZXN0ZnJtdy5jIgo+Pj4+Pj4+Pgo+
-Pj4+Pj4+PiAgICAgICNpZm5kZWYgVkVSQk9TRQo+Pj4+Pj4+PiAtI2RlZmluZSBWRVJCT1NFIDEK
-Pj4+Pj4+Pj4gKyNkZWZpbmUgVkVSQk9TRSA2Cj4+Pj4+Pj4+ICAgICAgI2VuZGlmCj4+Pj4+Pj4+
-Cj4+Pj4+Pj4+ICAgICAgI2RlZmluZSBXSVRIX1NZTkNIUk8KPj4+Pj4+Pj4gQEAgLTI4MSw3ICsy
-ODEsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+Pj4+Pj4+Pgo+Pj4+Pj4+
-PiAgICAgICAgICBkbyB7Cj4+Pj4+Pj4+ICAgICAgICAgICAgICBkb19pdDIgPSAwOwo+Pj4+Pj4+
-PiAtICAgIH0gd2hpbGUgKGRvX2l0MiA9IDApOwo+Pj4+Pj4+PiArICAgIH0gd2hpbGUgKGRvX2l0
-Mik7Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICAgICAgIHJldCA9IHB0aHJlYWRfam9pbih0aF9zaWcx
-LCBOVUxMKTsKPj4+Pj4+Pj4gICAgICAgICAgaWYgKHJldCkKPj4+Pj4+Pj4KPj4+PiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KPj4+PiBMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQo+Pj4+
-IEV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2Vj
-dXJpdHkgYW5kCj4+Pj4gdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1h
-bmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucwo+Pj4+IHdpbGwgaW5jbHVkZSBlbmRwb2lu
-dCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUKPj4+
-PiB0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzEx
-NC81MDEyMjI2My8KPj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+Pj4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+Pj4+IEx0cC1saXN0QGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldAo+Pj4+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cj4+Pgo+Pgo+IAo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZl
-IFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNv
-dmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBo
-YXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAK
-d2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBs
-YXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcv
-c2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+On 08/09/2012 01:31 PM, Peng Haitao wrote:
+> Add missing -o.
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/syslog/syslog07 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Pushed, thank you.
+
+Wanlong Gao
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
