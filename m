@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T46JC-00063e-G4
-	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 08:29:02 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T46J8-0000MS-E9
-	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 08:29:02 +0000
-Message-ID: <5034984B.3020905@windriver.com>
-Date: Wed, 22 Aug 2012 16:28:59 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SzM2R-0000NX-PJ
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:07 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SzM2Q-0001QC-SC
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:07 +0000
+Received: by pbcwy7 with SMTP id wy7so334108pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Aug 2012 23:16:00 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Thu,  9 Aug 2012 14:15:36 +0800
+Message-Id: <cover.1344492473.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <2056136406.8818538.1345619173970.JavaMail.root@redhat.com>
-In-Reply-To: <2056136406.8818538.1345619173970.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH resend 0/6] NUMA and follow-up fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,86 +26,120 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng@suse.de, Zhao <Zhenfeng.Zhao@windriver.com>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-T24gMjAxMuW5tDA45pyIMjLml6UgMTU6MDYsIEphbiBTdGFuY2VrIHdyb3RlOgo+Cj4gLS0tLS0g
-T3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdpbmRy
-aXZlci5jb20+Cj4+IFRvOiAiSmFuIFN0YW5jZWsiPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4+IENj
-OiBnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tLCBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQsICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVuZy5aaGFvQHdpbmRyaXZlci5jb20+Cj4+IFNlbnQ6
-IFdlZG5lc2RheSwgMjIgQXVndXN0LCAyMDEyIDQ6Mjk6MjUgQU0KPj4gU3ViamVjdDogUmU6IFtM
-VFBdIFtQQVRDSF0gcHRocmVhZF9kZXRhY2gvNC0zOiB3b3JrYXJvdW5kIGZvciBzZWdtZW50IGZh
-dWx0Cj4+Cj4+IE9uIDIwMTLlubQwOOaciDIx5pelIDE4OjM1LCBKYW4gU3RhbmNlayB3cm90ZToK
-Pj4+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPj4+PiBGcm9tOiAiS2FuZyBLYWkiPEth
-aS5LYW5nQHdpbmRyaXZlci5jb20+Cj4+Pj4gVG86ICJKYW4gU3RhbmNlayI8anN0YW5jZWtAcmVk
-aGF0LmNvbT4KPj4+PiBDYzogZ2Fvd2FubG9uZ0Bjbi5mdWppdHN1LmNvbSwgbHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0LAo+Pj4+ICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVuZy5aaGFvQHdp
-bmRyaXZlci5jb20+Cj4+Pj4gU2VudDogVHVlc2RheSwgMjEgQXVndXN0LCAyMDEyIDExOjU5OjE5
-IEFNCj4+Pj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSF0gcHRocmVhZF9kZXRhY2gvNC0zOiB3
-b3JrYXJvdW5kIGZvcgo+Pj4+IHNlZ21lbnQgZmF1bHQKPj4+IDxzbmlwPgo+Pj4KPj4+PiBIaSBK
-YW4sCj4+Pj4KPj4+PiBUaGFua3MuCj4+Pj4gSSBhbSBzb3JyeSB0aGF0IEl0IGRvZXNuJ3Qgd29y
-ayBhbmQgc3RpbGwgInNlZ21lbnQgZmF1bHQiLgo+Pj4gTWF5YmUgd2UgY2FuIG5hcnJvdyBpdCBk
-b3duIGJ5IHJ1bm5pbmcgb25seSBzdWJzZXQgb2Ygc2NlbmFyaW9zLgo+Pj4gSSB3b3VsZCBzdWdn
-ZXN0IHRyeWluZyB0byBsaW1pdCAic2MiIG9yICJOU0NFTkFSIiBhbmQgc2VlIHdoaWNoCj4+PiBv
-bmUgdHJpZ2dlcnMgaXQuCj4+Pgo+Pj4gQW5vdGhlciB0aGluZyB0aGF0IGxvb2tzIHN1c3BpY2lv
-dXMgYXJlIHNjZW5hcmlvcyB3aXRoIGFsdHN0YWNrLAo+Pj4gdGhlcmUgc2VlbXMKPj4+IHRvIGJl
-IHNtYWxsIHdpbmRvdyB3aGVyZSBtb3JlIHRoYW4gMSB0aHJlYWQgY2FuIHVzZSBzYW1lIGFsdHN0
-YWNrLgo+Pj4gQ2FuIHlvdSB0cnkgdG8gcmVwcm9kdWNlIGl0IHdpdGhvdXQgYWx0c3RhY2sgc2Nl
-bmFyaW9zPwo+Pj4KPj4+IGRpZmYgLS1naXQKPj4+IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVz
-dHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4+IGIv
-dGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbgo+Pj4gaW5kZXggNWMxNWU5
-My4uNjNiNmVlNyAxMDA2NDQKPj4+IC0tLQo+Pj4gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0
-c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4gKysr
-Cj4+PiBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZh
-Y2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+PiBAQCAtMTYyLDYgKzE2MiwxMSBAQCBzdGF0aWMg
-dm9pZCAqdGVzdCh2b2lkICphcmcpCj4+PiAgICAgICAgICAgICAgICAgICBvdXRwdXQoIlN0YXJ0
-aW5nIHRlc3Qgd2l0aCBzY2VuYXJpbyAoJWkpOiAlc1xuIiwKPj4+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICBzYywgc2NlbmFyaWlbc2NdLmRlc2NyKTsKPj4+ICAgICNlbmRpZgo+PiBIaSBKYW4s
-Cj4+Cj4+PiArICAgICAgICAgICAgICAgaWYgKHNjZW5hcmlpW3NjXS5hbHRzdGFjaykgewo+Pj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgc2MrKzsKPj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-IHNjICU9IE5TQ0VOQVI7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsKPj4+
-ICsgICAgICAgICAgICAgICB9Cj4+Pgo+PiBJdCBmYWlscyB3aXRoIGFub3RoZXIgZXJyb3IgcmFu
-ZG9tbHksIGFuZCBvdXRwdXQgaXM6Cj4+Cj4+IFswOTo0NToxNl1TeXN0ZW0gYWJpbGl0aWVzOgo+
-PiBbMDk6NDU6MTZdIFRTQTogMjAwODA5Cj4+IFswOTo0NToxNl0gVFNTOiAyMDA4MDkKPj4gWzA5
-OjQ1OjE2XSBUUFM6IDIwMDgwOQo+PiBbMDk6NDU6MTZdIHBhZ2VzaXplOiA0MDk2Cj4+IFswOTo0
-NToxNl0gbWluIHN0YWNrIHNpemU6IDE2Mzg0Cj4+IFswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBT
-IG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQKPj4gc2V0c2NvcGUgZmFpbHMK
-Pj4gWzA5OjQ1OjE2XVdBUk5JTkc6IFRoZSBUUFMgb3B0aW9uIGlzIGNsYWltZWQgdG8gYmUgc3Vw
-cG9ydGVkIGJ1dAo+PiBzZXRzY29wZSBmYWlscwo+PiBbMDk6NDU6MTZdV0FSTklORzogVGhlIFRQ
-UyBvcHRpb24gaXMgY2xhaW1lZCB0byBiZSBzdXBwb3J0ZWQgYnV0Cj4+IHNldHNjb3BlIGZhaWxz
-Cj4+IFswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1
-cHBvcnRlZCBidXQKPj4gc2V0c2NvcGUgZmFpbHMKPj4gWzA5OjQ1OjE2XVdBUk5JTkc6IFRoZSBU
-UFMgb3B0aW9uIGlzIGNsYWltZWQgdG8gYmUgc3VwcG9ydGVkIGJ1dAo+PiBzZXRzY29wZSBmYWls
-cwo+PiBbMDk6NDU6MTZdV0FSTklORzogVGhlIFRQUyBvcHRpb24gaXMgY2xhaW1lZCB0byBiZSBz
-dXBwb3J0ZWQgYnV0Cj4+IHNldHNjb3BlIGZhaWxzCj4+IFswOTo0NToxNl1XQVJOSU5HOiBUaGUg
-VFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQKPj4gc2V0c2NvcGUgZmFp
-bHMKPj4gWzA5OjQ1OjE2XVdBUk5JTkc6IFRoZSBUUFMgb3B0aW9uIGlzIGNsYWltZWQgdG8gYmUg
-c3VwcG9ydGVkIGJ1dAo+PiBzZXRzY29wZSBmYWlscwo+PiBbMDk6NDU6MTZdV0FSTklORzogVGhl
-IFRQUyBvcHRpb24gaXMgY2xhaW1lZCB0byBiZSBzdXBwb3J0ZWQgYnV0Cj4+IHNldHNjb3BlIGZh
-aWxzCj4+IFswOTo0NToxNl1BbGwgMzMgdGhyZWFkIGF0dHJpYnV0ZSBvYmplY3RzIHdlcmUgaW5p
-dGlhbGl6ZWQKPj4KPj4gWzA5OjQ1OjE4XVRlc3QgLi4vLi4vLi4vY29uZm9ybWFuY2UvaW50ZXJm
-YWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+PiB1bnJlc29sdmVkOiBnb3QgMTIgKENhbm5vdCBh
-bGxvY2F0ZSBtZW1vcnkpIG9uIGxpbmUgMTc5IChGYWlsZWQgdG8KPj4gY3JlYXRlIHRoaXMgdGhy
-ZWFkKQoKSGkgSmFuLAoKPiBJcyB0aGUgYWJvdmUgb3V0cHV0IGZyb20gbWlwcyBvciB4ODZfNjQ/
-Cj4gQXJlIHlvdSBydW5uaW5nIGl0IGFzIHJvb3QgdXNlcj8KClRoaXMgd2FzIHRlc3RlZCBvbiB4
-ODZfNjQgd2l0aCB1bnByaXZpbGVnZWQgIHVzZXIuIEkgcmV0ZXN0IGl0IHdpdGggcm9vdCAKYW5k
-IHRlc3QgcGFzc2VzLgpJdCBwYXNzZXMgb24gcm91dGVyc3RhdGlvbihtaXBzKSB3aXRoIHlvdXIg
-cGF0Y2ggdG9vLgpTbyBpdCBsb29rcyBsaWtlIGEgcmFjZSBjb25kaXRpb24gaXNzdWUgYWJvdXQg
-c3RhY2sgYXR0cmlidXRlIGJldHdlZW4gCnRocmVhZHMsIHJpZ2h0PwoKVGhhbmtzIGEgbG90LgpL
-YWkKCj4KPiBSZWdhcmRzLAo+IEphbgo+Cj4+Cj4+IFJlZ2FyZHMsCj4+IEthaQo+Pgo+Pj4gICAg
-ICAgICAgICAgICAgICAgY291bnRfb3BlKys7Cj4+Pgo+Pj4KPj4+IFJlZ2FyZHMsCj4+PiBKYW4K
-Pj4+Cj4+Pj4gUmVnYXJkcywKPj4+PiBLYWkKPj4+Pgo+PgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3
-aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRz
-Y2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNz
-aW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5k
-IHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNv
-bS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
+
+
+Resending the whole patch series (including Jan's 2 patches) for easier 
+reviewing.
+
+updates:
+   syscalls/numa: check syscall availability
+     remove TEST() macro and use syscall() directly.
+   numa_helper: move to libkerntest
+     merged the library cleaning fix to this one.
+   mm: use new numa_helper
+     the same as previous V3 version, which already has Jan's reivew.
+
+Caspar Zhang (4):
+  syscalls/numa: check syscall availability
+  numa_helper: move to libkerntest
+  mm: use new numa_helper
+  mm: add common Makefile include: libmem.mk
+
+Jan Stancek (2):
+  numa_helper: add flag to get_allowed_nodes()
+  update testcases to use flag for get_allowed_nodes()
+
+ testcases/kernel/Makefile                          |    4 +
+ testcases/kernel/include/lib.mk                    |   37 +++
+ testcases/kernel/include/numa_helper.h             |   37 +++
+ testcases/kernel/lib/Makefile                      |   29 +++
+ testcases/kernel/lib/numa_helper.c                 |  266 ++++++++++++++++++++
+ testcases/kernel/mem/cpuset/Makefile               |   22 +--
+ testcases/kernel/mem/cpuset/cpuset01.c             |   16 +-
+ testcases/kernel/mem/hugetlb/Makefile.inc          |   18 +-
+ testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +-
+ testcases/kernel/mem/include/libmem.mk             |   40 +++
+ testcases/kernel/mem/include/mem.h                 |    2 +-
+ testcases/kernel/mem/ksm/Makefile                  |   22 +--
+ testcases/kernel/mem/ksm/ksm02.c                   |    9 +-
+ testcases/kernel/mem/ksm/ksm04.c                   |    9 +-
+ testcases/kernel/mem/lib/Makefile                  |    1 +
+ testcases/kernel/mem/lib/mem.c                     |   50 +++--
+ testcases/kernel/mem/oom/Makefile                  |   22 +--
+ testcases/kernel/mem/oom/oom02.c                   |    4 -
+ testcases/kernel/mem/oom/oom04.c                   |    4 -
+ testcases/kernel/mem/swapping/Makefile             |   22 +--
+ testcases/kernel/mem/thp/Makefile                  |   22 +--
+ testcases/kernel/mem/tunable/Makefile              |   22 +--
+ testcases/kernel/mem/vma/Makefile                  |    4 +-
+ testcases/kernel/mem/vma/vma02.c                   |   19 +-
+ testcases/kernel/mem/vma/vma04.c                   |   11 +-
+ testcases/kernel/syscalls/get_mempolicy/Makefile   |    2 +-
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |   15 +-
+ testcases/kernel/syscalls/mbind/Makefile           |    2 +-
+ testcases/kernel/syscalls/mbind/mbind01.c          |   14 +-
+ testcases/kernel/syscalls/move_pages/Makefile      |    2 +-
+ .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
+ .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
+ .../syscalls/move_pages/move_pages_support.c       |    8 +-
+ testcases/kernel/syscalls/numa/Makefile            |   22 --
+ testcases/kernel/syscalls/numa/Makefile.inc        |   27 --
+ testcases/kernel/syscalls/numa/lib/Makefile        |   26 --
+ testcases/kernel/syscalls/numa/lib/numa_helper.c   |  165 ------------
+ testcases/kernel/syscalls/numa/lib/numa_helper.h   |   33 ---
+ 46 files changed, 562 insertions(+), 508 deletions(-)
+ create mode 100644 testcases/kernel/include/lib.mk
+ create mode 100644 testcases/kernel/include/numa_helper.h
+ create mode 100644 testcases/kernel/lib/Makefile
+ create mode 100644 testcases/kernel/lib/numa_helper.c
+ create mode 100644 testcases/kernel/mem/include/libmem.mk
+ delete mode 100644 testcases/kernel/syscalls/numa/Makefile
+ delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+
+-- 
+1.7.8.6
+
+
+
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.6--
