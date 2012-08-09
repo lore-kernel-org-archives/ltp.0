@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bincy_k_philip@yahoo.co.in>) id 1T7Ihb-00086C-ST
-	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 04:19:27 +0000
-Received: from nm40-vm4.bullet.mail.sg3.yahoo.com ([106.10.151.207])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1T7IhX-0003CZ-4u
-	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 04:19:27 +0000
-References: <1346324865.59629.YahooMailNeo@web192605.mail.sg3.yahoo.com>
-	<50401309.3050400@redhat.com>
-Message-ID: <1346386756.61131.YahooMailNeo@web192604.mail.sg3.yahoo.com>
-Date: Fri, 31 Aug 2012 12:19:16 +0800 (SGT)
-From: Bincy K Philip <bincy_k_philip@yahoo.co.in>
-In-Reply-To: <50401309.3050400@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SzM2V-0005H5-Lg
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:11 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SzM2T-0001QC-6d
+	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:11 +0000
+Received: by mail-pb0-f47.google.com with SMTP id wy7so334108pbc.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Aug 2012 23:16:08 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Thu,  9 Aug 2012 14:15:40 +0800
+Message-Id: <74a85e39016c9752a9948a07fe75b84e00191b1f.1344492473.git.caspar@casparzhang.com>
+In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
+References: <cover.1344492473.git.caspar@casparzhang.com>
+In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
+References: <cover.1344492473.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Container testcases In LTP
-Reply-To: Bincy K Philip <bincy_k_philip@yahoo.co.in>
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH resend 4/6] numa_helper: move to libkerntest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,135 +30,904 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4763669124154872645=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: cxie <cxie@redhat.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
---===============4763669124154872645==
-Content-Type: multipart/alternative;
-	boundary="1007199867-1133671153-1346386756=:61131"
-
---1007199867-1133671153-1346386756=:61131
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-=0A=0AHi=A0 Madper,=0AThanks for your response.=0AI have gone throgh LTP in=
-stallation and understood basic flow about ltp.=0ABut I looking for contain=
-er specific test caes and the prerequisite required for that.=0AI need some=
- help to understand container test cases.=0ARegards=0ABincy=0A=0A__________=
-______________________=0A From: cxie <cxie@redhat.com>=0ATo: Bincy K Philip=
- <bincy_k_philip@yahoo.co.in> =0ASent: Friday, 31 August 2012 6:57 AM=0ASub=
-ject: Re: [LTP] Container testcases In LTP=0A =0A=0AHi Bincy, =0A=A0=A0=A0 =
-You can find all testcases in `ltp/testcases/`.=0A=A0=A0=A0 You need build =
-and install them before you run them. In my=0A      computer, I can build/i=
-nstall like follows:=0A=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - change dir to ltp=
-=A0=A0=A0=A0=A0=A0 # you need download them=A0=A0=A0=0A      :)=0A=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 - make autotools=0A=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - m=
-ake =0A=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - sudo make install=A0=A0=A0=A0=A0 # =
-as root=0A=A0=A0=A0 Then you could find the ltp installed to the `/opt/ltp`=
-. For=0A      more detail, please read `ltp/INSTALL`.=0A=A0=A0=A0 Then, you=
- can easily run those cases by follows:=0A=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - =
-change dir to `/opt/ltp`=0A=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - sudo ./runltp -=
-f XXXXX=A0=A0 #you can find a test set in=0A      `/opt/ltp/runtest`=0A=A0=
-=A0=A0=A0 For more detail, please read `ltp/README`.=A0 Good Luck, Bincy.=
-=0A=0A--=0AThanks,=0AMadper Xie.=0AOn 08/30/2012 07:07 PM, Bincy K Philip w=
-rote:=0A=0AHi,=0A>=0A>=0A>I am working on linux containers.=0A>Can=A0 anybo=
-dy describe me that what all container test cases are addressed in LTP.=0A>=
-Any prerequisites is required to run container testcases?=0A>=0A>=0A>Regard=
-s=0A>Bincy=0A>=0A>=0A>=0A>-------------------------------------------------=
------------------------------=0ALive Security Virtual Conference=0AExclusiv=
-e live event will cover all the ways today's security and =0Athreat landsca=
-pe has changed and how IT managers can respond. Discussions =0Awill include=
- endpoint security, mobile security and the latest in malware =0Athreats. h=
-ttp://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/=0A>=0A>=0A>_______=
-________________________________________=0ALtp-list mailing list Ltp-list@l=
-ists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list 
---1007199867-1133671153-1346386756=:61131
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<html><body><div style=3D"color:#000; background-color:#fff; font-family:ti=
-mes new roman, new york, times, serif;font-size:12pt"><div><span><br></span=
-></div><div>Hi&nbsp; Madper,<br>Thanks for your response.<br>I have gone th=
-rogh LTP installation and understood basic flow about ltp.<br>But I looking=
- for container specific test caes and the prerequisite required for that.<b=
-r>I need some help to understand container test cases.<br>Regards<br>Bincy<=
-/div>  <div style=3D"font-family: times new roman, new york, times, serif; =
-font-size: 12pt;"> <div style=3D"font-family: times new roman, new york, ti=
-mes, serif; font-size: 12pt;"> <div dir=3D"ltr"> <font face=3D"Arial" size=
-=3D"2"> <hr size=3D"1">  <b><span style=3D"font-weight:bold;">From:</span><=
-/b> cxie &lt;cxie@redhat.com&gt;<br> <b><span style=3D"font-weight: bold;">=
-To:</span></b> Bincy K Philip &lt;bincy_k_philip@yahoo.co.in&gt; <br> <b><s=
-pan style=3D"font-weight: bold;">Sent:</span></b> Friday, 31 August 2012 6:=
-57 AM<br>
- <b><span style=3D"font-weight: bold;">Subject:</span></b> Re: [LTP] Contai=
-ner testcases In LTP<br> </font> </div> <br><meta http-equiv=3D"x-dns-prefe=
-tch-control" content=3D"off"><div id=3D"yiv1613789460">=0A  =0A=0A    =0A  =
-=0A  <div>=0A    <div class=3D"yiv1613789460moz-cite-prefix">Hi Bincy, <br>=
-=0A      &nbsp;&nbsp;&nbsp; You can find all testcases in `ltp/testcases/`.=
-<br>=0A      &nbsp;&nbsp;&nbsp; You need build and install them before you =
-run them. In my=0A      computer, I can build/install like follows:<br>=0A =
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - change =
-dir to ltp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # you need download them&nbs=
-p;&nbsp;&nbsp;=0A      :)<br>=0A      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp; - make autotools<br>=0A      &nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - make <br>=0A      &nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - sudo make install&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp; # as root<br>=0A      &nbsp;&nbsp;&nbsp; Then you could=
- find the ltp installed to the `/opt/ltp`. For=0A      more detail, please =
-read `ltp/INSTALL`.<br>=0A      &nbsp;&nbsp;&nbsp; Then, you can easily run=
- those cases by follows:<br>=0A      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp; - change dir to `/opt/ltp`<br>=0A      &nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - sudo ./runltp -f XXXXX&nb=
-sp;&nbsp; #you can find a test set in=0A      `/opt/ltp/runtest`<br>=0A    =
-  &nbsp;&nbsp;&nbsp;&nbsp; For more detail, please read `ltp/README`.&nbsp;=
- Good Luck, Bincy.<br>=0A      <br>=0A      --<br>=0A      Thanks,<br>=0A  =
-    Madper Xie.<br>=0A      On 08/30/2012 07:07 PM, Bincy K Philip wrote:<b=
-r>=0A    </div>=0A    <blockquote type=3D"cite">=0A      <div style=3D"colo=
-r:#000;background-color:#fff;font-family:times new roman, new york, times, =
-serif;font-size:12pt;">=0A        <div>Hi,</div>=0A        <div><br>=0A    =
-    </div>=0A        <div style=3D"color:rgb(0, 0, 0);font-size:16px;=0Afon=
-t-family:times new roman, new york, times, serif;=0Abackground-color:transp=
-arent;font-style:normal;">I am working on linux=0A          containers.</di=
-v>=0A        <div style=3D"color:rgb(0, 0, 0);font-size:16px;=0Afont-family=
-:times new roman, new york, times, serif;=0Abackground-color:transparent;fo=
-nt-style:normal;">Can&nbsp; anybody describe me=0A          that what all c=
-ontainer test cases are addressed in LTP.</div>=0A        <div style=3D"col=
-or:rgb(0, 0, 0);font-size:16px;=0Afont-family:times new roman, new york, ti=
-mes, serif;=0Abackground-color:transparent;font-style:normal;">Any prerequi=
-sites is=0A          required to run container testcases?</div>=0A        <=
-div style=3D"color:rgb(0, 0, 0);font-size:16px;=0Afont-family:times new rom=
-an, new york, times, serif;=0Abackground-color:transparent;font-style:norma=
-l;"><br>=0A        </div>=0A        <div style=3D"color:rgb(0, 0, 0);font-s=
-ize:16px;=0Afont-family:times new roman, new york, times, serif;=0Abackgrou=
-nd-color:transparent;font-style:normal;">Regards</div>=0A        <div style=
-=3D"color:rgb(0, 0, 0);font-size:16px;=0Afont-family:times new roman, new y=
-ork, times, serif;=0Abackground-color:transparent;font-style:normal;">Bincy=
-<br>=0A        </div>=0A      </div>=0A      <br>=0A      <fieldset class=
-=3D"yiv1613789460mimeAttachmentHeader"></fieldset>=0A      <br>=0A      <pr=
-e>-------------------------------------------------------------------------=
------=0ALive Security Virtual Conference=0AExclusive live event will cover =
-all the ways today's security and =0Athreat landscape has changed and how I=
-T managers can respond. Discussions =0Awill include endpoint security, mobi=
-le security and the latest in malware =0Athreats. <a rel=3D"nofollow" class=
-=3D"yiv1613789460moz-txt-link-freetext" target=3D"_blank" href=3D"http://ww=
-w.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com=
-/jaw/sfrnl04242012/114/50122263/</a></pre>=0A      <br>=0A      <fieldset c=
-lass=3D"yiv1613789460mimeAttachmentHeader"></fieldset>=0A      <br>=0A     =
- <pre>_______________________________________________=0ALtp-list mailing li=
-st=0A<a rel=3D"nofollow" class=3D"yiv1613789460moz-txt-link-abbreviated" ym=
-ailto=3D"mailto:Ltp-list@lists.sourceforge.net" target=3D"_blank" href=3D"m=
-ailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>=0A=
-<a rel=3D"nofollow" class=3D"yiv1613789460moz-txt-link-freetext" target=3D"=
-_blank" href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list">http=
-s://lists.sourceforge.net/lists/listinfo/ltp-list</a>=0A</pre>=0A    </bloc=
-kquote>=0A    <br>=0A  </div>=0A=0A</div><meta http-equiv=3D"x-dns-prefetch=
--control" content=3D"on"><br><br> </div> </div>  </div></body></html>
---1007199867-1133671153-1346386756=:61131--
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
 
---===============4763669124154872645==
+libnuma_helper could be used by testcases both under syscalls/ and mem/,
+it's better to add a new common lib in their parent dir, so I created
+libkerntest under testcases/kernel/lib/, and put numa_helper to it. In
+the future, we can add more APIs to it.
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ testcases/kernel/Makefile                        |    4 +
+ testcases/kernel/include/lib.mk                  |   37 +++
+ testcases/kernel/include/numa_helper.h           |   37 +++
+ testcases/kernel/lib/Makefile                    |   29 +++
+ testcases/kernel/lib/numa_helper.c               |  266 ++++++++++++++++++++++
+ testcases/kernel/syscalls/get_mempolicy/Makefile |    2 +-
+ testcases/kernel/syscalls/mbind/Makefile         |    2 +-
+ testcases/kernel/syscalls/move_pages/Makefile    |    2 +-
+ testcases/kernel/syscalls/numa/Makefile          |   22 --
+ testcases/kernel/syscalls/numa/Makefile.inc      |   27 ---
+ testcases/kernel/syscalls/numa/lib/Makefile      |   26 --
+ testcases/kernel/syscalls/numa/lib/numa_helper.c |  266 ----------------------
+ testcases/kernel/syscalls/numa/lib/numa_helper.h |   37 ---
+ 13 files changed, 376 insertions(+), 381 deletions(-)
+ create mode 100644 testcases/kernel/include/lib.mk
+ create mode 100644 testcases/kernel/include/numa_helper.h
+ create mode 100644 testcases/kernel/lib/Makefile
+ create mode 100644 testcases/kernel/lib/numa_helper.c
+ delete mode 100644 testcases/kernel/syscalls/numa/Makefile
+ delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+
+
+--------------1.7.8.6
+Content-Type: text/x-patch; name="0004-numa_helper-move-to-libkerntest.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0004-numa_helper-move-to-libkerntest.patch"
+
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 3922ce1..4b4800d 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -29,6 +29,10 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+ # Build syscalls in all scenarios.
+ SUBDIRS			:= syscalls
++
++# Build lib
++SUBDIRS			+= lib
++
+ ifneq ($(UCLINUX),1)
+ # KEEP THIS LIST ALPHABETIZED PLEASE!
+ SUBDIRS			+= connectors \
+diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
+new file mode 100644
+index 0000000..624134b
+--- /dev/null
++++ b/testcases/kernel/include/lib.mk
+@@ -0,0 +1,37 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++KERNEL_DIR		:= $(top_srcdir)/testcases/kernel
++LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
++LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_DIR)/include
++LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
++LDFLAGS			+= -L$(LIBKERNTEST_DIR)
++
++$(LIBKERNTEST_DIR):
++	mkdir -p "$@"
++
++$(LIBKERNTEST): $(LIBKERNTEST_DIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++
++MAKE_DEPS		+= $(LIBKERNTEST)
++
++trunk-clean:: | lib-clean
++
++lib-clean:: $(LIBKERNTEST_DIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+diff --git a/testcases/kernel/include/numa_helper.h b/testcases/kernel/include/numa_helper.h
+new file mode 100644
+index 0000000..463019a
+--- /dev/null
++++ b/testcases/kernel/include/numa_helper.h
+@@ -0,0 +1,37 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#ifndef NUMA_HELPER_H
++#define NUMA_HELPER_H
++
++#include "config.h"
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++
++#define NH_MEMS (1 << 0)
++#define NH_CPUS (1 << 1)
++
++int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
++int get_allowed_nodes(int flag, int count, ...);
++void nh_dump_nodes();
++
++#endif
+diff --git a/testcases/kernel/lib/Makefile b/testcases/kernel/lib/Makefile
+new file mode 100644
+index 0000000..847f6af
+--- /dev/null
++++ b/testcases/kernel/lib/Makefile
+@@ -0,0 +1,29 @@
++#
++#    kernel/lib Makefile.
++#
++#    Copyright (C) 2012, Linux Test Project.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../include
++LIB			:= libkerntest.a
++
++include $(top_srcdir)/include/mk/lib.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+new file mode 100644
+index 0000000..aa98522
+--- /dev/null
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -0,0 +1,266 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include "config.h"
++#include <errno.h>
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++#include <stdarg.h>
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <errno.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "numa_helper.h"
++#include "linux_syscall_numbers.h"
++
++#if HAVE_NUMA_H
++static unsigned long get_max_node()
++{
++	unsigned long max_node = 0;
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++	max_node = NUMA_NUM_NODES;
++	/*
++	 * NUMA_NUM_NODES is not reliable, libnuma >=2 is looking
++	 * at /proc/self/status to figure out correct number.
++	 * If buffer is not large enough get_mempolicy will fail with EINVAL.
++	 */
++	if (max_node < 1024)
++		max_node = 1024;
++#else
++	max_node = numa_max_possible_node() + 1;
++#endif
++	return max_node;
++}
++
++static void get_nodemask_allnodes(nodemask_t *nodemask,
++	unsigned long max_node)
++{
++	unsigned long nodemask_size = max_node/8+1;
++	int i;
++	char fn[64];
++	struct stat st;
++
++	memset(nodemask, 0, nodemask_size);
++	for (i = 0; i < max_node; i++) {
++		sprintf(fn, "/sys/devices/system/node/node%d", i);
++		if (stat(fn, &st) == 0)
++			nodemask_set(nodemask, i);
++	}
++}
++
++static int filter_nodemask_mem(nodemask_t *nodemask, unsigned long max_node)
++{
++#if MPOL_F_MEMS_ALLOWED
++	unsigned long nodemask_size = max_node/8+1;
++	memset(nodemask, 0, nodemask_size);
++	/*
++	 * avoid numa_get_mems_allowed(), because of bug in getpol()
++	 * utility function in older versions:
++	 * http://www.spinics.net/lists/linux-numa/msg00849.html
++	 */
++	if (syscall(__NR_get_mempolicy, NULL, nodemask->n,
++		max_node, 0, MPOL_F_MEMS_ALLOWED) < 0)
++		return -2;
++#else
++	int i;
++	/*
++	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
++	 * that we can use any node with memory > 0
++	 */
++	for (i = 0; i < max_node; i++) {
++		if (!nodemask_isset(nodemask, i))
++			continue;
++		if (numa_node_size64(i, NULL) <= 0)
++			nodemask_clr(nodemask, i);
++	}
++#endif /* MPOL_F_MEMS_ALLOWED */
++	return 0;
++}
++
++static int cpumask_has_cpus(char *cpumask, size_t len)
++{
++	int j;
++	for (j = 0; j < len; j++)
++		if (cpumask[j] == '\0')
++			return 0;
++		else if ((cpumask[j] > '0' && cpumask[j] <= '9') ||
++			(cpumask[j] >= 'a' && cpumask[j] <= 'f'))
++			return 1;
++	return 0;
++
++}
++
++static void filter_nodemask_cpu(nodemask_t *nodemask, unsigned long max_node)
++{
++	char *cpumask = NULL;
++	char fn[64];
++	FILE *f;
++	size_t len;
++	int i, ret;
++
++	for (i = 0; i < max_node; i++) {
++		if (!nodemask_isset(nodemask, i))
++			continue;
++		sprintf(fn, "/sys/devices/system/node/node%d/cpumap", i);
++		f = fopen(fn, "r");
++		if (f) {
++			ret = getdelim(&cpumask, &len, '\n', f);
++			if ((ret > 0) && (!cpumask_has_cpus(cpumask, len)))
++				nodemask_clr(nodemask, i);
++			fclose(f);
++		}
++	}
++	free(cpumask);
++}
++#endif /* HAVE_NUMA_H */
++
++/*
++ * get_allowed_nodes_arr - get number and array of available nodes
++ * @num_nodes: pointer where number of available nodes will be stored
++ * @nodes: array of available node ids, this is MPOL_F_MEMS_ALLOWED
++ *                 node bitmask compacted (without holes), so that each field
++ *                 contains node number. If NULL only num_nodes is
++ *                 returned, otherwise it cotains new allocated array,
++ *                 which caller is responsible to free.
++ * RETURNS:
++ *     0 on success
++ *    -1 on allocation failure
++ *    -2 on get_mempolicy failure
++ */
++int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
++{
++	int ret = 0;
++#if HAVE_NUMA_H
++	int i;
++	nodemask_t *nodemask = NULL;
++#endif
++	*num_nodes = 0;
++	if (nodes)
++		*nodes = NULL;
++
++#if HAVE_NUMA_H
++	unsigned long max_node = get_max_node();
++	unsigned long nodemask_size = max_node/8+1;
++
++	nodemask = malloc(nodemask_size);
++	if (nodes)
++		*nodes = malloc(sizeof(int)*max_node);
++
++	do {
++		if (nodemask == NULL ||	(nodes && (*nodes == NULL))) {
++			ret = -1;
++			break;
++		}
++
++		/* allow all nodes at start, then filter based on flags */
++		get_nodemask_allnodes(nodemask, max_node);
++		if ((flag & NH_MEMS) == NH_MEMS) {
++			ret = filter_nodemask_mem(nodemask, max_node);
++			if (ret < 0)
++				break;
++		}
++		if ((flag & NH_CPUS) == NH_CPUS)
++			filter_nodemask_cpu(nodemask, max_node);
++
++		for (i = 0; i <	max_node; i++) {
++			if (nodemask_isset(nodemask, i)) {
++				if (nodes)
++					(*nodes)[*num_nodes] = i;
++				(*num_nodes)++;
++			}
++		}
++	} while (0);
++	free(nodemask);
++#endif
++	return ret;
++}
++
++/*
++ * get_allowed_nodes - convenience function to get fixed number of nodes
++ * @count: how many nodes to get
++ * @...: int pointers, where node ids will be stored
++ * RETURNS:
++ *     0 on success
++ *    -1 on allocation failure
++ *    -2 on get_mempolicy failure
++ *    -3 on not enough allowed nodes
++ */
++int get_allowed_nodes(int flag, int count, ...)
++{
++	int ret;
++	int i, *nodep;
++	va_list ap;
++	int num_nodes = 0;
++	int *nodes = NULL;
++
++	ret = get_allowed_nodes_arr(flag, &num_nodes, &nodes);
++	if (ret < 0)
++		return ret;
++
++	va_start(ap, count);
++	for (i = 0; i < count; i++) {
++		nodep = va_arg(ap, int *);
++		if (i < num_nodes) {
++			*nodep = nodes[i];
++		} else {
++			ret = -3;
++			errno = EINVAL;
++			break;
++		}
++	}
++	free(nodes);
++	va_end(ap);
++
++	return ret;
++}
++
++static void print_node_info(int flag)
++{
++	int *allowed_nodes = NULL;
++	int i, ret, num_nodes;
++
++	ret = get_allowed_nodes_arr(flag, &num_nodes, &allowed_nodes);
++	printf("nodes (flag=%d): ", flag);
++	if (ret == 0) {
++		for (i = 0; i < num_nodes; i++)
++			printf("%d ", allowed_nodes[i]);
++		printf("\n");
++	} else
++		printf("error(%d)\n", ret);
++	free(allowed_nodes);
++}
++
++/*
++ * nh_dump_nodes - dump info about nodes to stdout
++ */
++void nh_dump_nodes()
++{
++	print_node_info(0);
++	print_node_info(NH_MEMS);
++	print_node_info(NH_CPUS);
++	print_node_info(NH_MEMS | NH_CPUS);
++}
+diff --git a/testcases/kernel/syscalls/get_mempolicy/Makefile b/testcases/kernel/syscalls/get_mempolicy/Makefile
+index 333ad21..fb7e9ac 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/Makefile
++++ b/testcases/kernel/syscalls/get_mempolicy/Makefile
+@@ -22,5 +22,5 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ 
+-include $(abs_srcdir)/../numa/Makefile.inc
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mbind/Makefile b/testcases/kernel/syscalls/mbind/Makefile
+index 932037f..5132dff 100644
+--- a/testcases/kernel/syscalls/mbind/Makefile
++++ b/testcases/kernel/syscalls/mbind/Makefile
+@@ -31,5 +31,5 @@ endif
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils/
+ 
+-include $(abs_srcdir)/../numa/Makefile.inc
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/move_pages/Makefile b/testcases/kernel/syscalls/move_pages/Makefile
+index cf2b83f..d4620e1 100644
+--- a/testcases/kernel/syscalls/move_pages/Makefile
++++ b/testcases/kernel/syscalls/move_pages/Makefile
+@@ -35,5 +35,5 @@ $(MAKE_TARGETS): %: %.o move_pages_support.o
+ 
+ LDLIBS			+= -lpthread -lrt
+ 
+-include $(abs_srcdir)/../numa/Makefile.inc
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/numa/Makefile b/testcases/kernel/syscalls/numa/Makefile
+deleted file mode 100644
+index b38c5b2..0000000
+--- a/testcases/kernel/syscalls/numa/Makefile
++++ /dev/null
+@@ -1,22 +0,0 @@
+-#
+-#  Copyright (C) 2012 Linux Test Project, Inc.
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-top_srcdir		?= ../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/numa/Makefile.inc b/testcases/kernel/syscalls/numa/Makefile.inc
+deleted file mode 100644
+index 59c2f9e..0000000
+--- a/testcases/kernel/syscalls/numa/Makefile.inc
++++ /dev/null
+@@ -1,27 +0,0 @@
+-#
+-#  Copyright (C) 2012 Linux Test Project, Inc.
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../numa/lib/
+-LIBDIR			:= ../numa/lib
+-LIB			:= $(LIBDIR)/libnuma_helper.a
+-MAKE_DEPS		+= $(LIB)
+-LDLIBS			+= $(NUMA_LIBS) -lnuma_helper -lltp
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIB): $(LIBDIR)
+-		$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+diff --git a/testcases/kernel/syscalls/numa/lib/Makefile b/testcases/kernel/syscalls/numa/lib/Makefile
+deleted file mode 100644
+index ba2fb48..0000000
+--- a/testcases/kernel/syscalls/numa/lib/Makefile
++++ /dev/null
+@@ -1,26 +0,0 @@
+-#
+-#  Copyright (C) 2012 Linux Test Project, Inc.
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-top_srcdir		?= ../../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-
+-CPPFLAGS		+= -I../../../include $(NUMA_CPPFLAGS)
+-LIB			:= libnuma_helper.a
+-
+-include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.c b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+deleted file mode 100644
+index aa98522..0000000
+--- a/testcases/kernel/syscalls/numa/lib/numa_helper.c
++++ /dev/null
+@@ -1,266 +0,0 @@
+-/*
+- * Copyright (C) 2012 Linux Test Project, Inc.
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+- */
+-
+-#include "config.h"
+-#include <errno.h>
+-#if HAVE_NUMA_H
+-#include <numa.h>
+-#endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
+-#endif
+-#include <stdarg.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <errno.h>
+-
+-#include "test.h"
+-#include "usctest.h"
+-#include "safe_macros.h"
+-#include "numa_helper.h"
+-#include "linux_syscall_numbers.h"
+-
+-#if HAVE_NUMA_H
+-static unsigned long get_max_node()
+-{
+-	unsigned long max_node = 0;
+-#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+-	max_node = NUMA_NUM_NODES;
+-	/*
+-	 * NUMA_NUM_NODES is not reliable, libnuma >=2 is looking
+-	 * at /proc/self/status to figure out correct number.
+-	 * If buffer is not large enough get_mempolicy will fail with EINVAL.
+-	 */
+-	if (max_node < 1024)
+-		max_node = 1024;
+-#else
+-	max_node = numa_max_possible_node() + 1;
+-#endif
+-	return max_node;
+-}
+-
+-static void get_nodemask_allnodes(nodemask_t *nodemask,
+-	unsigned long max_node)
+-{
+-	unsigned long nodemask_size = max_node/8+1;
+-	int i;
+-	char fn[64];
+-	struct stat st;
+-
+-	memset(nodemask, 0, nodemask_size);
+-	for (i = 0; i < max_node; i++) {
+-		sprintf(fn, "/sys/devices/system/node/node%d", i);
+-		if (stat(fn, &st) == 0)
+-			nodemask_set(nodemask, i);
+-	}
+-}
+-
+-static int filter_nodemask_mem(nodemask_t *nodemask, unsigned long max_node)
+-{
+-#if MPOL_F_MEMS_ALLOWED
+-	unsigned long nodemask_size = max_node/8+1;
+-	memset(nodemask, 0, nodemask_size);
+-	/*
+-	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+-	 * utility function in older versions:
+-	 * http://www.spinics.net/lists/linux-numa/msg00849.html
+-	 */
+-	if (syscall(__NR_get_mempolicy, NULL, nodemask->n,
+-		max_node, 0, MPOL_F_MEMS_ALLOWED) < 0)
+-		return -2;
+-#else
+-	int i;
+-	/*
+-	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
+-	 * that we can use any node with memory > 0
+-	 */
+-	for (i = 0; i < max_node; i++) {
+-		if (!nodemask_isset(nodemask, i))
+-			continue;
+-		if (numa_node_size64(i, NULL) <= 0)
+-			nodemask_clr(nodemask, i);
+-	}
+-#endif /* MPOL_F_MEMS_ALLOWED */
+-	return 0;
+-}
+-
+-static int cpumask_has_cpus(char *cpumask, size_t len)
+-{
+-	int j;
+-	for (j = 0; j < len; j++)
+-		if (cpumask[j] == '\0')
+-			return 0;
+-		else if ((cpumask[j] > '0' && cpumask[j] <= '9') ||
+-			(cpumask[j] >= 'a' && cpumask[j] <= 'f'))
+-			return 1;
+-	return 0;
+-
+-}
+-
+-static void filter_nodemask_cpu(nodemask_t *nodemask, unsigned long max_node)
+-{
+-	char *cpumask = NULL;
+-	char fn[64];
+-	FILE *f;
+-	size_t len;
+-	int i, ret;
+-
+-	for (i = 0; i < max_node; i++) {
+-		if (!nodemask_isset(nodemask, i))
+-			continue;
+-		sprintf(fn, "/sys/devices/system/node/node%d/cpumap", i);
+-		f = fopen(fn, "r");
+-		if (f) {
+-			ret = getdelim(&cpumask, &len, '\n', f);
+-			if ((ret > 0) && (!cpumask_has_cpus(cpumask, len)))
+-				nodemask_clr(nodemask, i);
+-			fclose(f);
+-		}
+-	}
+-	free(cpumask);
+-}
+-#endif /* HAVE_NUMA_H */
+-
+-/*
+- * get_allowed_nodes_arr - get number and array of available nodes
+- * @num_nodes: pointer where number of available nodes will be stored
+- * @nodes: array of available node ids, this is MPOL_F_MEMS_ALLOWED
+- *                 node bitmask compacted (without holes), so that each field
+- *                 contains node number. If NULL only num_nodes is
+- *                 returned, otherwise it cotains new allocated array,
+- *                 which caller is responsible to free.
+- * RETURNS:
+- *     0 on success
+- *    -1 on allocation failure
+- *    -2 on get_mempolicy failure
+- */
+-int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
+-{
+-	int ret = 0;
+-#if HAVE_NUMA_H
+-	int i;
+-	nodemask_t *nodemask = NULL;
+-#endif
+-	*num_nodes = 0;
+-	if (nodes)
+-		*nodes = NULL;
+-
+-#if HAVE_NUMA_H
+-	unsigned long max_node = get_max_node();
+-	unsigned long nodemask_size = max_node/8+1;
+-
+-	nodemask = malloc(nodemask_size);
+-	if (nodes)
+-		*nodes = malloc(sizeof(int)*max_node);
+-
+-	do {
+-		if (nodemask == NULL ||	(nodes && (*nodes == NULL))) {
+-			ret = -1;
+-			break;
+-		}
+-
+-		/* allow all nodes at start, then filter based on flags */
+-		get_nodemask_allnodes(nodemask, max_node);
+-		if ((flag & NH_MEMS) == NH_MEMS) {
+-			ret = filter_nodemask_mem(nodemask, max_node);
+-			if (ret < 0)
+-				break;
+-		}
+-		if ((flag & NH_CPUS) == NH_CPUS)
+-			filter_nodemask_cpu(nodemask, max_node);
+-
+-		for (i = 0; i <	max_node; i++) {
+-			if (nodemask_isset(nodemask, i)) {
+-				if (nodes)
+-					(*nodes)[*num_nodes] = i;
+-				(*num_nodes)++;
+-			}
+-		}
+-	} while (0);
+-	free(nodemask);
+-#endif
+-	return ret;
+-}
+-
+-/*
+- * get_allowed_nodes - convenience function to get fixed number of nodes
+- * @count: how many nodes to get
+- * @...: int pointers, where node ids will be stored
+- * RETURNS:
+- *     0 on success
+- *    -1 on allocation failure
+- *    -2 on get_mempolicy failure
+- *    -3 on not enough allowed nodes
+- */
+-int get_allowed_nodes(int flag, int count, ...)
+-{
+-	int ret;
+-	int i, *nodep;
+-	va_list ap;
+-	int num_nodes = 0;
+-	int *nodes = NULL;
+-
+-	ret = get_allowed_nodes_arr(flag, &num_nodes, &nodes);
+-	if (ret < 0)
+-		return ret;
+-
+-	va_start(ap, count);
+-	for (i = 0; i < count; i++) {
+-		nodep = va_arg(ap, int *);
+-		if (i < num_nodes) {
+-			*nodep = nodes[i];
+-		} else {
+-			ret = -3;
+-			errno = EINVAL;
+-			break;
+-		}
+-	}
+-	free(nodes);
+-	va_end(ap);
+-
+-	return ret;
+-}
+-
+-static void print_node_info(int flag)
+-{
+-	int *allowed_nodes = NULL;
+-	int i, ret, num_nodes;
+-
+-	ret = get_allowed_nodes_arr(flag, &num_nodes, &allowed_nodes);
+-	printf("nodes (flag=%d): ", flag);
+-	if (ret == 0) {
+-		for (i = 0; i < num_nodes; i++)
+-			printf("%d ", allowed_nodes[i]);
+-		printf("\n");
+-	} else
+-		printf("error(%d)\n", ret);
+-	free(allowed_nodes);
+-}
+-
+-/*
+- * nh_dump_nodes - dump info about nodes to stdout
+- */
+-void nh_dump_nodes()
+-{
+-	print_node_info(0);
+-	print_node_info(NH_MEMS);
+-	print_node_info(NH_CPUS);
+-	print_node_info(NH_MEMS | NH_CPUS);
+-}
+diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.h b/testcases/kernel/syscalls/numa/lib/numa_helper.h
+deleted file mode 100644
+index 463019a..0000000
+--- a/testcases/kernel/syscalls/numa/lib/numa_helper.h
++++ /dev/null
+@@ -1,37 +0,0 @@
+-/*
+- * Copyright (C) 2012 Linux Test Project, Inc.
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+- */
+-
+-#ifndef NUMA_HELPER_H
+-#define NUMA_HELPER_H
+-
+-#include "config.h"
+-#if HAVE_NUMA_H
+-#include <numa.h>
+-#endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
+-#endif
+-
+-#define NH_MEMS (1 << 0)
+-#define NH_CPUS (1 << 1)
+-
+-int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
+-int get_allowed_nodes(int flag, int count, ...);
+-void nh_dump_nodes();
+-
+-#endif
+
+--------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -166,7 +939,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============4763669124154872645==
+--------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -177,5 +950,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4763669124154872645==--
+--------------1.7.8.6--
+
+
 
