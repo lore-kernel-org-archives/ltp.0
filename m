@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T6dgs-0004gh-JL
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 08:31:58 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6dgr-0004EM-1z
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 08:31:58 +0000
-Message-ID: <503DD300.309@cn.fujitsu.com>
-Date: Wed, 29 Aug 2012 16:29:52 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SzjzL-0005hP-37
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:50:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SzjzI-0001vX-VY
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:50:31 +0000
+Message-ID: <5024BC1E.1070502@redhat.com>
+Date: Fri, 10 Aug 2012 15:45:34 +0800
+From: Zhouping Liu <zliu@redhat.com>
 MIME-Version: 1.0
-References: <1768335107.59483055.1346044605729.JavaMail.root@redhat.com>
-	<503C36CC.20201@oracle.com> <503CBEBF.2040101@redhat.com>
-In-Reply-To: <503CBEBF.2040101@redhat.com>
-Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <cover.1344492473.git.caspar@casparzhang.com>
+	<c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com>
+In-Reply-To: <c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH resend 2/6] update testcases to use flag for
+	get_allowed_nodes()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +26,151 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7371957607804726742=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ZhouPing Liu <zliu@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
+
+This is a multi-part message in MIME format.
+--===============7371957607804726742==
+Content-Type: multipart/alternative;
+	boundary="------------030805070807070002090901"
+
+This is a multi-part message in MIME format.
+--------------030805070807070002090901
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 08/09/2012 02:15 PM, Caspar Zhang wrote:
+> Interface of get_allowed_nodes() now requires a flag,
+> update all testcases using this interface.
+>
+> Also fix some checkpatch warnings.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+Looks good for me.
+
+Reviewed-by: Zhouping Liu <zliu@redhat.com>
+
+Thanks,
+Zhouping
+
+> ---
+>   .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +++--
+>   testcases/kernel/syscalls/mbind/mbind01.c          |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages02.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages03.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages04.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages05.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages06.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages07.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages08.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages09.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages10.c      |    5 +++--
+>   .../kernel/syscalls/move_pages/move_pages11.c      |    5 +++--
+>   .../syscalls/move_pages/move_pages_support.c       |    8 +++++---
+>   13 files changed, 41 insertions(+), 27 deletions(-)
+>
+>
+>
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond. Discussions
+> will include endpoint security, mobile security and the latest in malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
-> yes, you are right.
-> I tried to fork several processes to hog memory, but I don't think it's 
-> a better way, so a good solution(I think) is included in below patch.
-> 
->>
->> And we can also patch the overflow issue which I mentioned before:
->>
->> The type of total_mem "unsigned long" is not suitable with nowadays
->> memory ,it will overflow(with i386) in line 177:map_count = total_mem
->> *
->> KB / MAP_SIZE and the value of map_count is not correct.
->> Using "unsigned long long" could fix this issue.
-> 
-> after re-check the code, I found map_count was not necessary, so I 
-> removed it,
-> at the same time, it fixed your the overflow issue.
-> 
-> please review the patch again, if you agree the fix, I will send a 
-> formal patch set in new subject:
+--------------030805070807070002090901
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <div class="moz-cite-prefix">On 08/09/2012 02:15 PM, Caspar Zhang
+      wrote:<br>
+    </div>
+    <blockquote
+cite="mid:c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com"
+      type="cite">
+      <pre wrap="">
+Interface of get_allowed_nodes() now requires a flag,
+update all testcases using this interface.
+
+Also fix some checkpatch warnings.
+
+Signed-off-by: Jan Stancek <a class="moz-txt-link-rfc2396E" href="mailto:jstancek@redhat.com">&lt;jstancek@redhat.com&gt;</a></pre>
+    </blockquote>
+    <br>
+    Looks good for me.<br>
+    <br>
+    Reviewed-by: Zhouping Liu <a class="moz-txt-link-rfc2396E" href="mailto:zliu@redhat.com">&lt;zliu@redhat.com&gt;</a><br>
+    <br>
+    Thanks,<br>
+    Zhouping<br>
+    <br>
+    <blockquote
+cite="mid:c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com"
+      type="cite">
+      <pre wrap="">
+---
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +++--
+ testcases/kernel/syscalls/mbind/mbind01.c          |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages02.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages03.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages04.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages05.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages06.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages07.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages08.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages09.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages10.c      |    5 +++--
+ .../kernel/syscalls/move_pages/move_pages11.c      |    5 +++--
+ .../syscalls/move_pages/move_pages_support.c       |    8 +++++---
+ 13 files changed, 41 insertions(+), 27 deletions(-)
+
+</pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+</pre>
+    </blockquote>
+    <br>
+  </body>
+</html>
+
+--------------030805070807070002090901--
 
 
-So, please, thank you.
-
-Wanlong Gao
-
+--===============7371957607804726742==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -65,7 +178,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============7371957607804726742==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7371957607804726742==--
+
