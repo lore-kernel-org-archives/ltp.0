@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1T6hhH-0007Fs-IS
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:48:39 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1Szk0e-0005l2-CP
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:51:52 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6hhG-0008CH-G6
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:48:39 +0000
+	id 1Szk0b-0001y3-WD
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:51:52 +0000
+Message-ID: <5024BC6F.7010408@redhat.com>
+Date: Fri, 10 Aug 2012 15:46:55 +0800
 From: Zhouping Liu <zliu@redhat.com>
-Date: Wed, 29 Aug 2012 20:42:59 +0800
-Message-Id: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
-Subject: [LTP]  [PATCH 1/3] tunable: reduce the min_free_kbytes tunable
+MIME-Version: 1.0
+References: <cover.1344492473.git.caspar@casparzhang.com>
+	<c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com>
+In-Reply-To: <c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall
+	availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,76 +26,129 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4080319092246863929=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Setting min_free_kbytes too high will cause system hangs,
-especially in i386 arch, using less than 5% of total memory
-can avoid it, so choose %5 of free memory or 2% of total memory.
-Thanks Shuang pointed out it.
+This is a multi-part message in MIME format.
+--===============4080319092246863929==
+Content-Type: multipart/alternative;
+	boundary="------------020709020805050204040607"
 
-also, in order to enlarge the coverage, the patch adds a new
-case item: 2 * default tunable
+This is a multi-part message in MIME format.
+--------------020709020805050204040607
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+On 08/09/2012 02:15 PM, Caspar Zhang wrote:
+> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+> some arches (e.g. i386), this patch checks the syscalls' availability in
+> setup() function, if the syscall is not implemented on the system, a
+> TCONF message will be given like this:
+>
+> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
+>
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+
+Reviewed-by: Zhouping Liu <zliu@redhat.com>
+
+Thanks,
+Zhouping
+
+> ---
+>   .../syscalls/get_mempolicy/get_mempolicy01.c       |   10 ++++++++++
+>   testcases/kernel/syscalls/mbind/mbind01.c          |    9 +++++++++
+>   2 files changed, 19 insertions(+), 0 deletions(-)
+>
+>
+>
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and
+> threat landscape has changed and how IT managers can respond. Discussions
+> will include endpoint security, mobile security and the latest in malware
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+--------------020709020805050204040607
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <div class="moz-cite-prefix">On 08/09/2012 02:15 PM, Caspar Zhang
+      wrote:<br>
+    </div>
+    <blockquote
+cite="mid:c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com"
+      type="cite">
+      <pre wrap="">
+some NUMA related syscalls: mbind, get_mempolicy are not supported on
+some arches (e.g. i386), this patch checks the syscalls' availability in
+setup() function, if the syscall is not implemented on the system, a
+TCONF message will be given like this:
+
+get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
+
+Signed-off-by: Caspar Zhang <a class="moz-txt-link-rfc2396E" href="mailto:caspar@casparzhang.com">&lt;caspar@casparzhang.com&gt;</a></pre>
+    </blockquote>
+    <br>
+    Reviewed-by: Zhouping Liu <a class="moz-txt-link-rfc2396E" href="mailto:zliu@redhat.com">&lt;zliu@redhat.com&gt;</a><br>
+    <br>
+    Thanks,<br>
+    Zhouping<br>
+    <br>
+    <blockquote
+cite="mid:c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com"
+      type="cite">
+      <pre wrap="">
 ---
- testcases/kernel/mem/tunable/min_free_kbytes.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ .../syscalls/get_mempolicy/get_mempolicy01.c       |   10 ++++++++++
+ testcases/kernel/syscalls/mbind/mbind01.c          |    9 +++++++++
+ 2 files changed, 19 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index 00ead04..f8288ec 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -10,7 +10,8 @@
-  * the current free memory with the tunable value repeatedly.
-  *
-  * a) default min_free_kbytes with all overcommit memory policy
-- * b) half of mem_free with all overcommit memory policy
-+ * b) 2x default value with all overcommit memory policy
-+ * c) 5% of MemFree or %2 MemTotal with all overcommit memory policy
-  *
-  ********************************************************************
-  * Copyright (C) 2012 Red Hat, Inc.
-@@ -115,20 +116,27 @@ int main(int argc, char *argv[])
- static void test_tune(unsigned long overcommit_policy)
- {
- 	int status;
--	int pid[2];
-+	int pid[3];
- 	int ret, i;
--	unsigned long tune, memfree;
-+	unsigned long tune, memfree, memtotal;
- 
- 	set_sys_tune("overcommit_memory", overcommit_policy, 1);
- 
--	for (i = 0; i < 2; i++) {
-+	for (i = 0; i < 3; i++) {
- 		/* case1 */
- 		if (i == 0)
- 			set_sys_tune("min_free_kbytes", default_tune, 1);
- 		/* case2 */
--		else {
-+		else if (i == 1) {
-+			set_sys_tune("min_free_kbytes", 2 * default_tune, 1);
-+		/* case3 */
-+		} else {
- 			memfree = read_meminfo("MemFree:");
--			tune = memfree / 2;
-+			memtotal = read_meminfo("MemTotal:");
-+			tune = memfree / 20;
-+			if (tune > (memtotal / 50))
-+				tune = memtotal / 50;
-+
- 			set_sys_tune("min_free_kbytes", tune, 1);
- 		}
- 
--- 
-1.7.11.2
+</pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+</pre>
+    </blockquote>
+    <br>
+  </body>
+</html>
 
+--------------020709020805050204040607--
+
+
+--===============4080319092246863929==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -98,7 +156,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============4080319092246863929==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4080319092246863929==--
+
