@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1T3l1q-0005qY-6n
-	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 09:45:42 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T3l1m-0008Eh-Uc
-	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 09:45:42 +0000
-Message-ID: <503358B5.8070106@redhat.com>
-Date: Tue, 21 Aug 2012 11:45:25 +0200
-From: Jan Stancek <jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1SzfsO-0000bV-Cc
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 03:27:04 +0000
+Received: from mail-gh0-f175.google.com ([209.85.160.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SzfsL-0005k2-FL
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 03:27:04 +0000
+Received: by ghbz2 with SMTP id z2so1197314ghb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 09 Aug 2012 20:26:56 -0700 (PDT)
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Fri, 10 Aug 2012 11:26:35 +0800
+Message-Id: <26038550c7f51ea9d7a35b87b4e780f8bb4e05a9.1344569191.git.caspar@casparzhang.com>
+In-Reply-To: <74a85e39016c9752a9948a07fe75b84e00191b1f.1344492473.git.caspar@casparzhang.com>
+References: <74a85e39016c9752a9948a07fe75b84e00191b1f.1344492473.git.caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>	<50301E06.9000102@cn.fujitsu.com>
-	<5031955A.5060506@windriver.com>	<50319A82.3030500@cn.fujitsu.com>	<50319F1D.1090906@windriver.com>
-	<5032E504.30404@windriver.com>	<5032E5E7.4080500@cn.fujitsu.com>
-	<503353BA.6040309@windriver.com>
-In-Reply-To: <503353BA.6040309@windriver.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+Content-Type: multipart/mixed; boundary="------------1.7.8.6"
+Subject: [LTP] [PATCH resend 4/6 v2] numa_helper: move to libkerntest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,111 +28,926 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-T24gMDgvMjEvMjAxMiAxMToyNCBBTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA45pyI
-MjHml6UgMDk6MzUsIFdhbmxvbmcgR2FvIHdyb3RlOgo+PiBPbiAwOC8yMS8yMDEyIDA5OjMxIEFN
-LCBLYW5nIEthaSB3cm90ZToKPj4+IE9uIDIwMTLlubQwOOaciDIw5pelIDEwOjIxLCBLYW5nIEth
-aSB3cm90ZToKPj4+PiBPbiAyMDEy5bm0MDjmnIgyMOaXpSAxMDowMSwgV2FubG9uZyBHYW8gd3Jv
-dGU6Cj4+Pj4+IE9uIDA4LzIwLzIwMTIgMDk6MzkgQU0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4g
-T24gMjAxMuW5tDA45pyIMTnml6UgMDY6NTgsIFdhbmxvbmcgR2FvIHdyb3RlOgo+Pj4+Pj4+IE9u
-IDA4LzE0LzIwMTIgMDU6MDAgUE0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4+PiBUaGlzIGNhc2Ug
-ZmFpbHMgcmFuZG9tbHkgd2l0aCAiU2VnbWVudGF0aW9uIGZhdWx0Ii4gUmVzZXQgVkVSQk9TRSB0
-byA2Cj4+Pj4+Pj4+IGNhbiBhdm9pZCB0aGlzIHByb2JsZW0uCj4+Pj4+Pj4gQ2FuIHlvdSBleHBs
-YWluIHRoYXQgd2h5ICJyZXNldCBWRVJCT1NFIiBjYW4gYXZvaWQgdGhpcyAiU2VnIEZhdWx0IiBw
-cm9ibGVtPwo+Pj4+Pj4gSXQgaXMgYSBtdWx0aS10aHJlYWQgaXNzdWUuIFlvdSBjYW4gcnVuIGl0
-IGZvciBsZXNzIHRoYW4gMTAgdGltZXMsIGFuZCBpdCB3aWxsIGZhaWwgd2l0aCAiU2VnbWVudGF0
-aW9uIGZhdWx0Ii4KPj4+Pj4gSSBkaWRuJ3Qgc2VlIHRoaXMgb24gbXkgc2lkZS4KPj4+IEhpIFdh
-bmxvbmcsCj4+Pgo+Pj4+IEl0IGZhaWxzIGJvdGggb24gbWlwcyBhbmQgeDg2XzY0Lgo+Pj4+IE9u
-IHRoZSB4ODZfNjQsCj4+Pj4gY3B1OiAgSW50ZWwgSTcKPj4+PiBPUzogICBVYnVudHUgMTEuMTAK
-Pj4+PiBsaWJjOiAgZWdsaWJjIDIuMTMKPj4+PiBrZXJuZWw6IDMuMC4wLTEyLWdlbmVyaWMKPj4+
-Pgo+Pj4+IEhvdyBhYm91dCB0cnkgdGhpcyBzY3JpcHQgb24gYSB4ODZfNjQgbWFjaGluZToKPj4+
-PiBmb3IgaSBpbiAkKHNlcSAxMDApOyBkbyBlY2hvICRpOyAgLi80LTMucnVuLXRlc3QgOyByZXQ9
-JD87IGlmIFsgJHJldCAtbmUKPj4+PiAwIF07IHRoZW4gZWNobyAgJD8gOyBicmVhazsgZmk7ICBk
-b25lCj4+PiBEbyB5b3UgbWVldCB0aGUgIlNlZ21lbnRhdGlvbiBGYXVsdCIgeWV0Pwo+IAo+IEhp
-IFdhbmxvbmcsCj4+IE5vdCB5ZXQuCj4gSSB0ZXN0IGl0IG9uIHg4Nl82NCB3aXRoIFJlZGhhdCA1
-LjMsIGl0IGRvZXNuJ3QgZmFpbC4KCkkgdHJpZWQgdG8gcmVwcm9kdWNlIGl0IG9uIHg4Nl82NCBS
-SEVMNi83IChyZWFsIGh3K2t2bSkgYW5kIHVidW50dS0xMi4wNC1zZXJ2ZXIgKGt2bSksCmJ1dCB3
-aXRob3V0IGFueSBsdWNrLgoKSSBzcG90dGVkIG9uZSBwb3NzaWJsZSBpc3N1ZToKCmRpZmYgLS1n
-aXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
-cy9wdGhyZWFkX2RldGFjaC80LTMuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9j
-b25mb3JtYW4KaW5kZXggNWMxNWU5My4uN2I3MzhlNyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL29w
-ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gv
-NC0zLmMKKysrIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2lu
-dGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKQEAgLTEyOSw5ICsxMjksMTMgQEAgc3RhdGlj
-IHZvaWQgKnRocmVhZGVkKHZvaWQgKmFyZykKICAgICAgICAgICAgICAgIFVOUkVTT0xWRUQocmV0
-LCAiVW5hYmxlIHRvIHVuYmxvY2sgU0lHVVNSMSBhbmQgU0lHVVNSMiIKICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIiBpbiB3b3JrZXIgdGhyZWFkIik7CiAKLSAgICAgICByZXQgPSBwdGhyZWFk
-X2RldGFjaChwdGhyZWFkX3NlbGYoKSk7Ci0gICAgICAgaWYgKHJldCA9PSBFSU5UUikKLSAgICAg
-ICAgICAgICAgIEZBSUxFRCgicHRocmVhZF9kZXRhY2goKSByZXR1cm5lZCBFSU5UUiIpOworICAg
-ICAgIC8qIEF0dGVtcHRpbmcgdG8gZGV0YWNoIGFuIGFscmVhZHkgZGV0YWNoZWQgdGhyZWFkIHJl
-c3VsdHMKKyAgICAgICAgKiBpbiB1bnNwZWNpZmllZCBiZWhhdmlvciAqLworICAgICAgIGlmIChz
-Y2VuYXJpaVtzY10uZGV0YWNoZWQgIT0gMSkgeworICAgICAgICAgICAgICAgcmV0ID0gcHRocmVh
-ZF9kZXRhY2gocHRocmVhZF9zZWxmKCkpOworICAgICAgICAgICAgICAgaWYgKHJldCA9PSBFSU5U
-UikKKyAgICAgICAgICAgICAgICAgICAgICAgRkFJTEVEKCJwdGhyZWFkX2RldGFjaCgpIHJldHVy
-bmVkIEVJTlRSIik7CisgICAgICAgfQogCiAgICAgICAgLyogU2lnbmFsIHdlJ3JlIGRvbmUgKi8K
-ICAgICAgICBkbyB7CgpSZWdhcmRzLApKYW4KCj4gSSB0cnkgdG8gY29tcGFyZSB0aGVtIHRvIGZp
-bmQgd2h5IGl0IGZhaWxzIHdpdGggVWJ1bnR1IDExLjEwLgo+IAo+IFRoYW5rcywKPiBLYWkKPiAK
-Pj4KPj4gVGhhbmtzLAo+PiBXYW5sb25nIEdhbwo+Pgo+Pj4gUmVnYXJkcywKPj4+IEthaQo+Pj4K
-Pj4+Pj4+IEl0IGlzIGhhcmQgdG8gZGVidWcgYW5kIEkgZGlkbid0IGZpbmQgdGhlIHJvb3QgY2F1
-c2UsIGJ1dCBvcGVuIHRoZSBWRVJCT1NFIHdpbGwgYXZvaWQgdGhpcyBzaXR1YXRpb24uIFNvIGl0
-IGlzIGEgd29ya2Fyb3VuZC4KPj4+Pj4gSSdkIGxpa2UgdG8gc2VuZCBhIHBhdGNoIHRvIGZpeCB0
-aGlzIHR5cG8gZmlyc3QuCj4+Pj4gRmluZS4KPj4+Pgo+Pj4+IFJlZ2FyZHMsCj4+Pj4gS2FpCj4+
-Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+PiBXYW5sb25nIEdhbwo+Pj4+Pgo+Pj4+Pj4gUmVnYXJkcywK
-Pj4+Pj4+IEthaQo+Pj4+Pj4KPj4+Pj4+Pj4gRml4IHR5cG8gYXQgc2FtZSB0aW1lLgo+Pj4+Pj4+
-IFRoZSB0eXBvIGZpeCBpcyBPSy4KPj4+Pj4+Pgo+Pj4+Pj4+IFRoYW5rcywKPj4+Pj4+PiBXYW5s
-b25nIEdhbwo+Pj4+Pj4+Cj4+Pj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEthbmcgS2FpPGthaS5rYW5n
-QHdpbmRyaXZlci5jb20+Cj4+Pj4+Pj4+IC0tLQo+Pj4+Pj4+PiAgICAgIC4uLi9jb25mb3JtYW5j
-ZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jICAgIHwgICAgNCArKy0tCj4+Pj4+Pj4+
-ICAgICAgMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+
-Pj4+Pj4+Cj4+Pj4+Pj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYyBiL3Rlc3RjYXNl
-cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0
-YWNoLzQtMy5jCj4+Pj4+Pj4+IGluZGV4IDVjMTVlOTMuLjIzNzM4ZGMgMTAwNjQ0Cj4+Pj4+Pj4+
-IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZh
-Y2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+Pj4+Pj4+ICsrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bv
-c2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5j
-Cj4+Pj4+Pj4+IEBAIC00OSw3ICs0OSw3IEBACj4+Pj4+Pj4+ICAgICAgI2luY2x1ZGUgIi4uL3Rl
-c3Rmcm13L3Rlc3Rmcm13LmMiCj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICAgI2lmbmRlZiBWRVJCT1NF
-Cj4+Pj4+Pj4+IC0jZGVmaW5lIFZFUkJPU0UgMQo+Pj4+Pj4+PiArI2RlZmluZSBWRVJCT1NFIDYK
-Pj4+Pj4+Pj4gICAgICAjZW5kaWYKPj4+Pj4+Pj4KPj4+Pj4+Pj4gICAgICAjZGVmaW5lIFdJVEhf
-U1lOQ0hSTwo+Pj4+Pj4+PiBAQCAtMjgxLDcgKzI4MSw3IEBAIGludCBtYWluKGludCBhcmdjLCBj
-aGFyICphcmd2W10pCj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICAgICAgIGRvIHsKPj4+Pj4+Pj4gICAg
-ICAgICAgICAgIGRvX2l0MiA9IDA7Cj4+Pj4+Pj4+IC0gICAgfSB3aGlsZSAoZG9faXQyID0gMCk7
-Cj4+Pj4+Pj4+ICsgICAgfSB3aGlsZSAoZG9faXQyKTsKPj4+Pj4+Pj4KPj4+Pj4+Pj4gICAgICAg
-ICAgcmV0ID0gcHRocmVhZF9qb2luKHRoX3NpZzEsIE5VTEwpOwo+Pj4+Pj4+PiAgICAgICAgICBp
-ZiAocmV0KQo+Pj4+Pj4+Pgo+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Pj4+IExpdmUgU2Vj
-dXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCj4+Pj4gRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBj
-b3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQKPj4+PiB0aHJlYXQgbGFuZHNj
-YXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Np
-b25zCj4+Pj4gd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkg
-YW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZQo+Pj4+IHRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxh
-Y29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwo+Pj4+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4gTHRwLWxpc3QgbWFpbGlu
-ZyBsaXN0Cj4+Pj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4+Pj4gaHR0cHM6Ly9s
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPj4+Cj4+Cj4gCj4g
-Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVu
-Y2UKPiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdz
-IHNlY3VyaXR5IGFuZCAKPiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQg
-bWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAo+IHdpbGwgaW5jbHVkZSBlbmRwb2lu
-dCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCj4g
-dGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQv
-NTAxMjIyNjMvCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5j
-ZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNl
-Y3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFn
-ZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3Vy
-aXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4g
-aHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMv
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0
-IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+This is a multi-part message in MIME format.
+--------------1.7.8.6
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
+
+
+libnuma_helper could be used by testcases both under syscalls/ and mem/,
+it's better to add a new common lib in their parent dir, so I created
+libkerntest under testcases/kernel/lib/, and put numa_helper to it. In
+the future, we can add more APIs to it.
+
+Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+---
+ testcases/kernel/Makefile                        |    4 +
+ testcases/kernel/include/lib.mk                  |   37 +++
+ testcases/kernel/include/numa_helper.h           |   37 +++
+ testcases/kernel/lib/Makefile                    |   28 +++
+ testcases/kernel/lib/numa_helper.c               |  266 ++++++++++++++++++++++
+ testcases/kernel/syscalls/get_mempolicy/Makefile |    2 +-
+ testcases/kernel/syscalls/mbind/Makefile         |    2 +-
+ testcases/kernel/syscalls/move_pages/Makefile    |    2 +-
+ testcases/kernel/syscalls/numa/Makefile          |   22 --
+ testcases/kernel/syscalls/numa/Makefile.inc      |   27 ---
+ testcases/kernel/syscalls/numa/lib/Makefile      |   26 --
+ testcases/kernel/syscalls/numa/lib/numa_helper.c |  266 ----------------------
+ testcases/kernel/syscalls/numa/lib/numa_helper.h |   37 ---
+ 13 files changed, 375 insertions(+), 381 deletions(-)
+ create mode 100644 testcases/kernel/include/lib.mk
+ create mode 100644 testcases/kernel/include/numa_helper.h
+ create mode 100644 testcases/kernel/lib/Makefile
+ create mode 100644 testcases/kernel/lib/numa_helper.c
+ delete mode 100644 testcases/kernel/syscalls/numa/Makefile
+ delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
+ delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
+
+
+--------------1.7.8.6
+Content-Type: text/x-patch; name="0001-numa_helper-move-to-libkerntest.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-numa_helper-move-to-libkerntest.patch"
+
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 3922ce1..4b4800d 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -29,6 +29,10 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+ # Build syscalls in all scenarios.
+ SUBDIRS			:= syscalls
++
++# Build lib
++SUBDIRS			+= lib
++
+ ifneq ($(UCLINUX),1)
+ # KEEP THIS LIST ALPHABETIZED PLEASE!
+ SUBDIRS			+= connectors \
+diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
+new file mode 100644
+index 0000000..624134b
+--- /dev/null
++++ b/testcases/kernel/include/lib.mk
+@@ -0,0 +1,37 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++KERNEL_DIR		:= $(top_srcdir)/testcases/kernel
++LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
++LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_DIR)/include
++LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
++LDFLAGS			+= -L$(LIBKERNTEST_DIR)
++
++$(LIBKERNTEST_DIR):
++	mkdir -p "$@"
++
++$(LIBKERNTEST): $(LIBKERNTEST_DIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++
++MAKE_DEPS		+= $(LIBKERNTEST)
++
++trunk-clean:: | lib-clean
++
++lib-clean:: $(LIBKERNTEST_DIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+diff --git a/testcases/kernel/include/numa_helper.h b/testcases/kernel/include/numa_helper.h
+new file mode 100644
+index 0000000..463019a
+--- /dev/null
++++ b/testcases/kernel/include/numa_helper.h
+@@ -0,0 +1,37 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#ifndef NUMA_HELPER_H
++#define NUMA_HELPER_H
++
++#include "config.h"
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++
++#define NH_MEMS (1 << 0)
++#define NH_CPUS (1 << 1)
++
++int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
++int get_allowed_nodes(int flag, int count, ...);
++void nh_dump_nodes();
++
++#endif
+diff --git a/testcases/kernel/lib/Makefile b/testcases/kernel/lib/Makefile
+new file mode 100644
+index 0000000..f41af8f
+--- /dev/null
++++ b/testcases/kernel/lib/Makefile
+@@ -0,0 +1,28 @@
++#
++#    kernel/lib Makefile.
++#
++#    Copyright (C) 2012, Linux Test Project.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../include
++LIB			:= libkerntest.a
++
++include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+new file mode 100644
+index 0000000..aa98522
+--- /dev/null
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -0,0 +1,266 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include "config.h"
++#include <errno.h>
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++#include <stdarg.h>
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <errno.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "numa_helper.h"
++#include "linux_syscall_numbers.h"
++
++#if HAVE_NUMA_H
++static unsigned long get_max_node()
++{
++	unsigned long max_node = 0;
++#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
++	max_node = NUMA_NUM_NODES;
++	/*
++	 * NUMA_NUM_NODES is not reliable, libnuma >=2 is looking
++	 * at /proc/self/status to figure out correct number.
++	 * If buffer is not large enough get_mempolicy will fail with EINVAL.
++	 */
++	if (max_node < 1024)
++		max_node = 1024;
++#else
++	max_node = numa_max_possible_node() + 1;
++#endif
++	return max_node;
++}
++
++static void get_nodemask_allnodes(nodemask_t *nodemask,
++	unsigned long max_node)
++{
++	unsigned long nodemask_size = max_node/8+1;
++	int i;
++	char fn[64];
++	struct stat st;
++
++	memset(nodemask, 0, nodemask_size);
++	for (i = 0; i < max_node; i++) {
++		sprintf(fn, "/sys/devices/system/node/node%d", i);
++		if (stat(fn, &st) == 0)
++			nodemask_set(nodemask, i);
++	}
++}
++
++static int filter_nodemask_mem(nodemask_t *nodemask, unsigned long max_node)
++{
++#if MPOL_F_MEMS_ALLOWED
++	unsigned long nodemask_size = max_node/8+1;
++	memset(nodemask, 0, nodemask_size);
++	/*
++	 * avoid numa_get_mems_allowed(), because of bug in getpol()
++	 * utility function in older versions:
++	 * http://www.spinics.net/lists/linux-numa/msg00849.html
++	 */
++	if (syscall(__NR_get_mempolicy, NULL, nodemask->n,
++		max_node, 0, MPOL_F_MEMS_ALLOWED) < 0)
++		return -2;
++#else
++	int i;
++	/*
++	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
++	 * that we can use any node with memory > 0
++	 */
++	for (i = 0; i < max_node; i++) {
++		if (!nodemask_isset(nodemask, i))
++			continue;
++		if (numa_node_size64(i, NULL) <= 0)
++			nodemask_clr(nodemask, i);
++	}
++#endif /* MPOL_F_MEMS_ALLOWED */
++	return 0;
++}
++
++static int cpumask_has_cpus(char *cpumask, size_t len)
++{
++	int j;
++	for (j = 0; j < len; j++)
++		if (cpumask[j] == '\0')
++			return 0;
++		else if ((cpumask[j] > '0' && cpumask[j] <= '9') ||
++			(cpumask[j] >= 'a' && cpumask[j] <= 'f'))
++			return 1;
++	return 0;
++
++}
++
++static void filter_nodemask_cpu(nodemask_t *nodemask, unsigned long max_node)
++{
++	char *cpumask = NULL;
++	char fn[64];
++	FILE *f;
++	size_t len;
++	int i, ret;
++
++	for (i = 0; i < max_node; i++) {
++		if (!nodemask_isset(nodemask, i))
++			continue;
++		sprintf(fn, "/sys/devices/system/node/node%d/cpumap", i);
++		f = fopen(fn, "r");
++		if (f) {
++			ret = getdelim(&cpumask, &len, '\n', f);
++			if ((ret > 0) && (!cpumask_has_cpus(cpumask, len)))
++				nodemask_clr(nodemask, i);
++			fclose(f);
++		}
++	}
++	free(cpumask);
++}
++#endif /* HAVE_NUMA_H */
++
++/*
++ * get_allowed_nodes_arr - get number and array of available nodes
++ * @num_nodes: pointer where number of available nodes will be stored
++ * @nodes: array of available node ids, this is MPOL_F_MEMS_ALLOWED
++ *                 node bitmask compacted (without holes), so that each field
++ *                 contains node number. If NULL only num_nodes is
++ *                 returned, otherwise it cotains new allocated array,
++ *                 which caller is responsible to free.
++ * RETURNS:
++ *     0 on success
++ *    -1 on allocation failure
++ *    -2 on get_mempolicy failure
++ */
++int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
++{
++	int ret = 0;
++#if HAVE_NUMA_H
++	int i;
++	nodemask_t *nodemask = NULL;
++#endif
++	*num_nodes = 0;
++	if (nodes)
++		*nodes = NULL;
++
++#if HAVE_NUMA_H
++	unsigned long max_node = get_max_node();
++	unsigned long nodemask_size = max_node/8+1;
++
++	nodemask = malloc(nodemask_size);
++	if (nodes)
++		*nodes = malloc(sizeof(int)*max_node);
++
++	do {
++		if (nodemask == NULL ||	(nodes && (*nodes == NULL))) {
++			ret = -1;
++			break;
++		}
++
++		/* allow all nodes at start, then filter based on flags */
++		get_nodemask_allnodes(nodemask, max_node);
++		if ((flag & NH_MEMS) == NH_MEMS) {
++			ret = filter_nodemask_mem(nodemask, max_node);
++			if (ret < 0)
++				break;
++		}
++		if ((flag & NH_CPUS) == NH_CPUS)
++			filter_nodemask_cpu(nodemask, max_node);
++
++		for (i = 0; i <	max_node; i++) {
++			if (nodemask_isset(nodemask, i)) {
++				if (nodes)
++					(*nodes)[*num_nodes] = i;
++				(*num_nodes)++;
++			}
++		}
++	} while (0);
++	free(nodemask);
++#endif
++	return ret;
++}
++
++/*
++ * get_allowed_nodes - convenience function to get fixed number of nodes
++ * @count: how many nodes to get
++ * @...: int pointers, where node ids will be stored
++ * RETURNS:
++ *     0 on success
++ *    -1 on allocation failure
++ *    -2 on get_mempolicy failure
++ *    -3 on not enough allowed nodes
++ */
++int get_allowed_nodes(int flag, int count, ...)
++{
++	int ret;
++	int i, *nodep;
++	va_list ap;
++	int num_nodes = 0;
++	int *nodes = NULL;
++
++	ret = get_allowed_nodes_arr(flag, &num_nodes, &nodes);
++	if (ret < 0)
++		return ret;
++
++	va_start(ap, count);
++	for (i = 0; i < count; i++) {
++		nodep = va_arg(ap, int *);
++		if (i < num_nodes) {
++			*nodep = nodes[i];
++		} else {
++			ret = -3;
++			errno = EINVAL;
++			break;
++		}
++	}
++	free(nodes);
++	va_end(ap);
++
++	return ret;
++}
++
++static void print_node_info(int flag)
++{
++	int *allowed_nodes = NULL;
++	int i, ret, num_nodes;
++
++	ret = get_allowed_nodes_arr(flag, &num_nodes, &allowed_nodes);
++	printf("nodes (flag=%d): ", flag);
++	if (ret == 0) {
++		for (i = 0; i < num_nodes; i++)
++			printf("%d ", allowed_nodes[i]);
++		printf("\n");
++	} else
++		printf("error(%d)\n", ret);
++	free(allowed_nodes);
++}
++
++/*
++ * nh_dump_nodes - dump info about nodes to stdout
++ */
++void nh_dump_nodes()
++{
++	print_node_info(0);
++	print_node_info(NH_MEMS);
++	print_node_info(NH_CPUS);
++	print_node_info(NH_MEMS | NH_CPUS);
++}
+diff --git a/testcases/kernel/syscalls/get_mempolicy/Makefile b/testcases/kernel/syscalls/get_mempolicy/Makefile
+index 333ad21..fb7e9ac 100644
+--- a/testcases/kernel/syscalls/get_mempolicy/Makefile
++++ b/testcases/kernel/syscalls/get_mempolicy/Makefile
+@@ -22,5 +22,5 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ 
+-include $(abs_srcdir)/../numa/Makefile.inc
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mbind/Makefile b/testcases/kernel/syscalls/mbind/Makefile
+index 932037f..5132dff 100644
+--- a/testcases/kernel/syscalls/mbind/Makefile
++++ b/testcases/kernel/syscalls/mbind/Makefile
+@@ -31,5 +31,5 @@ endif
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils/
+ 
+-include $(abs_srcdir)/../numa/Makefile.inc
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/move_pages/Makefile b/testcases/kernel/syscalls/move_pages/Makefile
+index cf2b83f..d4620e1 100644
+--- a/testcases/kernel/syscalls/move_pages/Makefile
++++ b/testcases/kernel/syscalls/move_pages/Makefile
+@@ -35,5 +35,5 @@ $(MAKE_TARGETS): %: %.o move_pages_support.o
+ 
+ LDLIBS			+= -lpthread -lrt
+ 
+-include $(abs_srcdir)/../numa/Makefile.inc
++include $(top_srcdir)/testcases/kernel/include/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/numa/Makefile b/testcases/kernel/syscalls/numa/Makefile
+deleted file mode 100644
+index b38c5b2..0000000
+--- a/testcases/kernel/syscalls/numa/Makefile
++++ /dev/null
+@@ -1,22 +0,0 @@
+-#
+-#  Copyright (C) 2012 Linux Test Project, Inc.
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-top_srcdir		?= ../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/numa/Makefile.inc b/testcases/kernel/syscalls/numa/Makefile.inc
+deleted file mode 100644
+index 59c2f9e..0000000
+--- a/testcases/kernel/syscalls/numa/Makefile.inc
++++ /dev/null
+@@ -1,27 +0,0 @@
+-#
+-#  Copyright (C) 2012 Linux Test Project, Inc.
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../numa/lib/
+-LIBDIR			:= ../numa/lib
+-LIB			:= $(LIBDIR)/libnuma_helper.a
+-MAKE_DEPS		+= $(LIB)
+-LDLIBS			+= $(NUMA_LIBS) -lnuma_helper -lltp
+-LDFLAGS			+= -L$(LIBDIR)
+-
+-$(LIB): $(LIBDIR)
+-		$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+diff --git a/testcases/kernel/syscalls/numa/lib/Makefile b/testcases/kernel/syscalls/numa/lib/Makefile
+deleted file mode 100644
+index ba2fb48..0000000
+--- a/testcases/kernel/syscalls/numa/lib/Makefile
++++ /dev/null
+@@ -1,26 +0,0 @@
+-#
+-#  Copyright (C) 2012 Linux Test Project, Inc.
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-top_srcdir		?= ../../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-
+-CPPFLAGS		+= -I../../../include $(NUMA_CPPFLAGS)
+-LIB			:= libnuma_helper.a
+-
+-include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.c b/testcases/kernel/syscalls/numa/lib/numa_helper.c
+deleted file mode 100644
+index aa98522..0000000
+--- a/testcases/kernel/syscalls/numa/lib/numa_helper.c
++++ /dev/null
+@@ -1,266 +0,0 @@
+-/*
+- * Copyright (C) 2012 Linux Test Project, Inc.
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+- */
+-
+-#include "config.h"
+-#include <errno.h>
+-#if HAVE_NUMA_H
+-#include <numa.h>
+-#endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
+-#endif
+-#include <stdarg.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <errno.h>
+-
+-#include "test.h"
+-#include "usctest.h"
+-#include "safe_macros.h"
+-#include "numa_helper.h"
+-#include "linux_syscall_numbers.h"
+-
+-#if HAVE_NUMA_H
+-static unsigned long get_max_node()
+-{
+-	unsigned long max_node = 0;
+-#if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+-	max_node = NUMA_NUM_NODES;
+-	/*
+-	 * NUMA_NUM_NODES is not reliable, libnuma >=2 is looking
+-	 * at /proc/self/status to figure out correct number.
+-	 * If buffer is not large enough get_mempolicy will fail with EINVAL.
+-	 */
+-	if (max_node < 1024)
+-		max_node = 1024;
+-#else
+-	max_node = numa_max_possible_node() + 1;
+-#endif
+-	return max_node;
+-}
+-
+-static void get_nodemask_allnodes(nodemask_t *nodemask,
+-	unsigned long max_node)
+-{
+-	unsigned long nodemask_size = max_node/8+1;
+-	int i;
+-	char fn[64];
+-	struct stat st;
+-
+-	memset(nodemask, 0, nodemask_size);
+-	for (i = 0; i < max_node; i++) {
+-		sprintf(fn, "/sys/devices/system/node/node%d", i);
+-		if (stat(fn, &st) == 0)
+-			nodemask_set(nodemask, i);
+-	}
+-}
+-
+-static int filter_nodemask_mem(nodemask_t *nodemask, unsigned long max_node)
+-{
+-#if MPOL_F_MEMS_ALLOWED
+-	unsigned long nodemask_size = max_node/8+1;
+-	memset(nodemask, 0, nodemask_size);
+-	/*
+-	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+-	 * utility function in older versions:
+-	 * http://www.spinics.net/lists/linux-numa/msg00849.html
+-	 */
+-	if (syscall(__NR_get_mempolicy, NULL, nodemask->n,
+-		max_node, 0, MPOL_F_MEMS_ALLOWED) < 0)
+-		return -2;
+-#else
+-	int i;
+-	/*
+-	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
+-	 * that we can use any node with memory > 0
+-	 */
+-	for (i = 0; i < max_node; i++) {
+-		if (!nodemask_isset(nodemask, i))
+-			continue;
+-		if (numa_node_size64(i, NULL) <= 0)
+-			nodemask_clr(nodemask, i);
+-	}
+-#endif /* MPOL_F_MEMS_ALLOWED */
+-	return 0;
+-}
+-
+-static int cpumask_has_cpus(char *cpumask, size_t len)
+-{
+-	int j;
+-	for (j = 0; j < len; j++)
+-		if (cpumask[j] == '\0')
+-			return 0;
+-		else if ((cpumask[j] > '0' && cpumask[j] <= '9') ||
+-			(cpumask[j] >= 'a' && cpumask[j] <= 'f'))
+-			return 1;
+-	return 0;
+-
+-}
+-
+-static void filter_nodemask_cpu(nodemask_t *nodemask, unsigned long max_node)
+-{
+-	char *cpumask = NULL;
+-	char fn[64];
+-	FILE *f;
+-	size_t len;
+-	int i, ret;
+-
+-	for (i = 0; i < max_node; i++) {
+-		if (!nodemask_isset(nodemask, i))
+-			continue;
+-		sprintf(fn, "/sys/devices/system/node/node%d/cpumap", i);
+-		f = fopen(fn, "r");
+-		if (f) {
+-			ret = getdelim(&cpumask, &len, '\n', f);
+-			if ((ret > 0) && (!cpumask_has_cpus(cpumask, len)))
+-				nodemask_clr(nodemask, i);
+-			fclose(f);
+-		}
+-	}
+-	free(cpumask);
+-}
+-#endif /* HAVE_NUMA_H */
+-
+-/*
+- * get_allowed_nodes_arr - get number and array of available nodes
+- * @num_nodes: pointer where number of available nodes will be stored
+- * @nodes: array of available node ids, this is MPOL_F_MEMS_ALLOWED
+- *                 node bitmask compacted (without holes), so that each field
+- *                 contains node number. If NULL only num_nodes is
+- *                 returned, otherwise it cotains new allocated array,
+- *                 which caller is responsible to free.
+- * RETURNS:
+- *     0 on success
+- *    -1 on allocation failure
+- *    -2 on get_mempolicy failure
+- */
+-int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
+-{
+-	int ret = 0;
+-#if HAVE_NUMA_H
+-	int i;
+-	nodemask_t *nodemask = NULL;
+-#endif
+-	*num_nodes = 0;
+-	if (nodes)
+-		*nodes = NULL;
+-
+-#if HAVE_NUMA_H
+-	unsigned long max_node = get_max_node();
+-	unsigned long nodemask_size = max_node/8+1;
+-
+-	nodemask = malloc(nodemask_size);
+-	if (nodes)
+-		*nodes = malloc(sizeof(int)*max_node);
+-
+-	do {
+-		if (nodemask == NULL ||	(nodes && (*nodes == NULL))) {
+-			ret = -1;
+-			break;
+-		}
+-
+-		/* allow all nodes at start, then filter based on flags */
+-		get_nodemask_allnodes(nodemask, max_node);
+-		if ((flag & NH_MEMS) == NH_MEMS) {
+-			ret = filter_nodemask_mem(nodemask, max_node);
+-			if (ret < 0)
+-				break;
+-		}
+-		if ((flag & NH_CPUS) == NH_CPUS)
+-			filter_nodemask_cpu(nodemask, max_node);
+-
+-		for (i = 0; i <	max_node; i++) {
+-			if (nodemask_isset(nodemask, i)) {
+-				if (nodes)
+-					(*nodes)[*num_nodes] = i;
+-				(*num_nodes)++;
+-			}
+-		}
+-	} while (0);
+-	free(nodemask);
+-#endif
+-	return ret;
+-}
+-
+-/*
+- * get_allowed_nodes - convenience function to get fixed number of nodes
+- * @count: how many nodes to get
+- * @...: int pointers, where node ids will be stored
+- * RETURNS:
+- *     0 on success
+- *    -1 on allocation failure
+- *    -2 on get_mempolicy failure
+- *    -3 on not enough allowed nodes
+- */
+-int get_allowed_nodes(int flag, int count, ...)
+-{
+-	int ret;
+-	int i, *nodep;
+-	va_list ap;
+-	int num_nodes = 0;
+-	int *nodes = NULL;
+-
+-	ret = get_allowed_nodes_arr(flag, &num_nodes, &nodes);
+-	if (ret < 0)
+-		return ret;
+-
+-	va_start(ap, count);
+-	for (i = 0; i < count; i++) {
+-		nodep = va_arg(ap, int *);
+-		if (i < num_nodes) {
+-			*nodep = nodes[i];
+-		} else {
+-			ret = -3;
+-			errno = EINVAL;
+-			break;
+-		}
+-	}
+-	free(nodes);
+-	va_end(ap);
+-
+-	return ret;
+-}
+-
+-static void print_node_info(int flag)
+-{
+-	int *allowed_nodes = NULL;
+-	int i, ret, num_nodes;
+-
+-	ret = get_allowed_nodes_arr(flag, &num_nodes, &allowed_nodes);
+-	printf("nodes (flag=%d): ", flag);
+-	if (ret == 0) {
+-		for (i = 0; i < num_nodes; i++)
+-			printf("%d ", allowed_nodes[i]);
+-		printf("\n");
+-	} else
+-		printf("error(%d)\n", ret);
+-	free(allowed_nodes);
+-}
+-
+-/*
+- * nh_dump_nodes - dump info about nodes to stdout
+- */
+-void nh_dump_nodes()
+-{
+-	print_node_info(0);
+-	print_node_info(NH_MEMS);
+-	print_node_info(NH_CPUS);
+-	print_node_info(NH_MEMS | NH_CPUS);
+-}
+diff --git a/testcases/kernel/syscalls/numa/lib/numa_helper.h b/testcases/kernel/syscalls/numa/lib/numa_helper.h
+deleted file mode 100644
+index 463019a..0000000
+--- a/testcases/kernel/syscalls/numa/lib/numa_helper.h
++++ /dev/null
+@@ -1,37 +0,0 @@
+-/*
+- * Copyright (C) 2012 Linux Test Project, Inc.
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+- */
+-
+-#ifndef NUMA_HELPER_H
+-#define NUMA_HELPER_H
+-
+-#include "config.h"
+-#if HAVE_NUMA_H
+-#include <numa.h>
+-#endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
+-#endif
+-
+-#define NH_MEMS (1 << 0)
+-#define NH_CPUS (1 << 1)
+-
+-int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
+-int get_allowed_nodes(int flag, int count, ...);
+-void nh_dump_nodes();
+-
+-#endif
+
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.8.6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.8.6--
+
+
+
