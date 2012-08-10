@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T6ZCc-0003Lt-2V
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 03:44:26 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SzdcN-0000TC-Uy
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 01:02:23 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6ZCa-0005hp-Et
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 03:44:26 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7T3GYV7028376
-	for <ltp-list@lists.sourceforge.net>; Wed, 29 Aug 2012 11:16:34 +0800
-Message-ID: <503D891D.50307@cn.fujitsu.com>
-Date: Wed, 29 Aug 2012 11:14:37 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SzdcM-0001yY-BD
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 01:02:23 +0000
+Message-ID: <50245D45.90801@cn.fujitsu.com>
+Date: Fri, 10 Aug 2012 09:00:53 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <503C8866.9000909@cn.fujitsu.com> <503C89D7.5030305@cn.fujitsu.com>
-In-Reply-To: <503C89D7.5030305@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2]sigpause/3-1.c Fix hung
+References: <1344533811-4683-1-git-send-email-marios.makris@gmail.com>
+In-Reply-To: <1344533811-4683-1-git-send-email-marios.makris@gmail.com>
+Subject: Re: [LTP] [PATCH 1/6] /lib/tst_tmpdir indentation and coding style
+ fixes
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -31,15 +29,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Marios Makris <marios.makris@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 08/28/2012 05:05 PM, DAN LI wrote:
-> If sem is set as INTHREAD finally,the loop will be endless.
+On 08/10/2012 01:36 AM, Marios Makris wrote:
+> Identation and coding style fixes as well as moved the function descriptions
+> to the header file (/include/test.h)
 > 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> Signed-off-by: Marios Makris <marios.makris@gmail.com>
+> ---
+>  include/test.h   |   26 +++++++++++++++
+>  lib/tst_tmpdir.c |   97 ++++++++++++++++++------------------------------------
+>  2 files changed, 58 insertions(+), 65 deletions(-)
 
-Good catch, pushed, thank you.
+Pushed whole series, thank you.
 
 Wanlong Gao
 
