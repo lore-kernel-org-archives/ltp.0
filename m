@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SzM2W-00008R-BU
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:12 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SzM2V-00008d-1O
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:12 +0000
-Received: by pbcwy7 with SMTP id wy7so334179pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 23:16:05 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Aug 2012 14:15:38 +0800
-Message-Id: <c72d6c4c98600ecb26fb3dd55d70518fd3bdacfe.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Szi0G-0004rD-Qz
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 05:43:20 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Szi0E-0005oJ-SY
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 05:43:20 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7A572u3024169
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Aug 2012 13:07:04 +0800
+Message-ID: <502496C6.3090906@cn.fujitsu.com>
+Date: Fri, 10 Aug 2012 13:06:14 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH resend 2/6] update testcases to use flag for
-	get_allowed_nodes()
+Subject: [LTP] [PATCH v4] pthread_cond_brodcast/1-2.c hung when mem left is
+ not enough
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,278 +26,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-From: Jan Stancek <jstancek@redhat.com>
-
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-Interface of get_allowed_nodes() now requires a flag,
-update all testcases using this interface.
-
-Also fix some checkpatch warnings.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |    5 +++--
- testcases/kernel/syscalls/mbind/mbind01.c          |    5 +++--
- .../kernel/syscalls/move_pages/move_pages02.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages03.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages04.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages05.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages06.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages07.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages08.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages09.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages10.c      |    5 +++--
- .../kernel/syscalls/move_pages/move_pages11.c      |    5 +++--
- .../syscalls/move_pages/move_pages_support.c       |    8 +++++---
- 13 files changed, 41 insertions(+), 27 deletions(-)
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0002-update-testcases-to-use-flag-for-get_allowed_nodes.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0002-update-testcases-to-use-flag-for-get_allowed_nodes.patch"
-
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-index 9011980..d0e372c 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-@@ -234,8 +234,9 @@ static int do_test(struct test_case *tc)
- 	unsigned long len = MEM_LENGTH;
- 	int test_node = -1;
- 
--	if ((ret = get_allowed_nodes(1, &test_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 1, &test_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
- 	nodemask = malloc(sizeof(nodemask_t));
- 	nodemask_zero(nodemask);
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 1148324..2fc6f5a 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -220,8 +220,9 @@ static int do_test(struct test_case *tc)
- 	unsigned long *invalid_nodemask;
- 	int test_node = -1;
- 
--	if ((ret = get_allowed_nodes(1, &test_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 1, &test_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- #if !defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
- 	nodemask = malloc(sizeof(nodemask_t));
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages02.c b/testcases/kernel/syscalls/move_pages/move_pages02.c
-index 410e368..903de0c 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages02.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages02.c
-@@ -87,8 +87,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages03.c b/testcases/kernel/syscalls/move_pages/move_pages03.c
-index 77de94d..b216803 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages03.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages03.c
-@@ -126,8 +126,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
-index acb4c78..5a09943 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages04.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
-@@ -93,8 +93,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret	< 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages05.c b/testcases/kernel/syscalls/move_pages/move_pages05.c
-index d2db475..fca97c3 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages05.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages05.c
-@@ -127,8 +127,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages06.c b/testcases/kernel/syscalls/move_pages/move_pages06.c
-index 6929f8d..e414e4a 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages06.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages06.c
-@@ -87,8 +87,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(1, &from_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 1, &from_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages07.c b/testcases/kernel/syscalls/move_pages/move_pages07.c
-index 4a1f96a..0027af6 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages07.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
-@@ -87,8 +87,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages08.c b/testcases/kernel/syscalls/move_pages/move_pages08.c
-index 9b36a00..cd84d70 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages08.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages08.c
-@@ -85,8 +85,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages09.c b/testcases/kernel/syscalls/move_pages/move_pages09.c
-index 8190a26..0d30a9e 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages09.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages09.c
-@@ -84,8 +84,9 @@ int main(int argc, char **argv)
- 	unsigned int from_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(1, &from_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 1, &from_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages10.c b/testcases/kernel/syscalls/move_pages/move_pages10.c
-index cec114c..7ea3900 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages10.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages10.c
-@@ -87,8 +87,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
-index 3d82c6f..96006cc 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages11.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
-@@ -126,8 +126,9 @@ int main(int argc, char **argv)
- 	unsigned int to_node;
- 	int ret;
- 
--	if ((ret = get_allowed_nodes(2, &from_node, &to_node)) < 0)
--		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes(): %d", ret);
-+	ret = get_allowed_nodes(NH_MEMS, 2, &from_node, &to_node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_allowed_nodes: %d", ret);
- 
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.c b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-index f7e3995..5a869ec 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages_support.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-@@ -120,7 +120,8 @@ int alloc_pages_linear(void **pages, unsigned int num)
- 	int *allowed_nodes;
- 	int ret;
- 
--	ret = get_allowed_nodes_arr(&num_allowed_nodes, &allowed_nodes);
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_allowed_nodes,
-+		&allowed_nodes);
- 	if (ret < 0)
- 		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes(): %d", ret);
- 
-@@ -223,7 +224,8 @@ void verify_pages_linear(void **pages, int *status, unsigned int num)
- 	int *allowed_nodes;
- 	int ret;
- 
--	ret = get_allowed_nodes_arr(&num_allowed_nodes, &allowed_nodes);
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_allowed_nodes,
-+		&allowed_nodes);
- 	if (ret < 0)
- 		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes(): %d", ret);
- 
-@@ -396,7 +398,7 @@ void check_config(unsigned int min_nodes)
- 	int num_allowed_nodes;
- 	int ret;
- 
--	ret = get_allowed_nodes_arr(&num_allowed_nodes, NULL);
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_allowed_nodes, NULL);
- 	if (ret < 0)
- 		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes(): %d", ret);
- 
-
---------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+pthread_cond_brodcast/1-2.c try to create as many childrens(thread or process) 
+as possible,however,if current free memory is exhausted before all childrens are
+started,the case will timeout and hung since it's stated with program "t0".
+ 
+The patch adjust count of childrens according to judgement of size of current free
+memory.
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ .../interfaces/pthread_cond_broadcast/1-2.c        |   47 ++++++++++++++++++--
+ 1 file changed, 43 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+index f6ad9df..897448c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+@@ -48,6 +48,7 @@
+ #include <sys/mman.h>
+ #include <sys/wait.h>
+ #include <semaphore.h>
++#include <sys/sysinfo.h>
+ 
+ #include "../testfrmw/testfrmw.h"
+ #include "../testfrmw/testfrmw.c"
+@@ -82,8 +83,8 @@
+ #endif
+ 
+ /* Do not create more than this amount of children: */
+-#define MAX_PROCESS_CHILDREN  (200)
+-#define MAX_THREAD_CHILDREN   (1000)
++static int max_process_children  = 200;
++static int max_thread_children = 1000;
+ 
+ #define TIMEOUT  (180)
+ 
+@@ -243,6 +244,42 @@ void *timer(void *arg)
+ 	return NULL; /* For compiler */
+ }
+ 
++#ifdef __linux__
++static void children_number(void)
++{
++	struct sysinfo sysinformation;
++	int ret;
++	int avail_number;
++	unsigned long per_process;
++	unsigned long min_stack;
++
++	min_stack = sysconf(_SC_THREAD_STACK_MIN);
++
++	ret = sysinfo(&sysinformation);
++	if (ret != 0)
++		UNRESOLVED(ret, "Failed to get system information.");
++
++	per_process = min_stack * max_thread_children;
++	if (per_process > sysinformation.freeram)
++		UNTESTED("Not enough memory.");
++
++	avail_number = sysinformation.freeram / per_process;
++
++	if (avail_number < 10)
++		UNTESTED("Not enough memory.");
++
++	max_process_children = (avail_number < max_process_children ?
++					avail_number : max_process_children);
++
++	return;
++}
++#else 
++static void children_number(void)
++{
++	return;
++}
++#endif
++
+ int main(int argc, char *argv[])
+ {
+ 	int ret;
+@@ -268,6 +305,8 @@ int main(int argc, char *argv[])
+ 
+ 	output_init();
+ 
++	children_number();
++
+ 	/* check the system abilities */
+ 	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
+ 	cs = sysconf(_SC_CLOCK_SELECTION);
+@@ -476,7 +515,7 @@ int main(int argc, char *argv[])
+ 				} else {
+ 					ret = errno;
+ 				}
+-			} while ((ret == 0) && (child_count < MAX_THREAD_CHILDREN));
++			} while ((ret == 0) && (child_count < max_thread_children));
+ 			#if VERBOSE > 2
+ 			output("[parent] Created %i children threads\n", child_count);
+ 			#endif
+@@ -504,7 +543,7 @@ int main(int argc, char *argv[])
+ 				} else {
+ 					ret = errno;
+ 				}
+-			} while ((ret == 0) && (child_count < MAX_PROCESS_CHILDREN));
++			} while ((ret == 0) && (child_count < max_process_children));
+ 			#if VERBOSE > 2
+ 			output("[parent] Created %i children processes\n", child_count);
+ 			#endif
+-- 
+1.7.10.2
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -310,18 +145,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
