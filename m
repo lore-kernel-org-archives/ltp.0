@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SyIkl-0000QL-US
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:33:31 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SyIkl-000051-05
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 08:33:31 +0000
-Received: by pbcwy7 with SMTP id wy7so1243521pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Aug 2012 01:33:23 -0700 (PDT)
-Message-ID: <501F814C.7090608@casparzhang.com>
-Date: Mon, 06 Aug 2012 16:33:16 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1SzkM9-0005UM-0H
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:14:05 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SzkM6-0002ky-Il
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:14:04 +0000
+Date: Fri, 10 Aug 2012 04:13:51 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <2069635652.36480140.1344586431604.JavaMail.root@redhat.com>
+In-Reply-To: <5024BE51.6040202@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <431447144.362760.1344240993345.JavaMail.root@redhat.com>
-In-Reply-To: <431447144.362760.1344240993345.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH v2 2/2] mm: use new numa_helper
+Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall
+ availability
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,83 +27,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: gaowanlong@cn.fujitsu.com
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 08/06/2012 04:16 PM, Jan Stancek wrote:
-> Hi Caspar,
->
-> There seems to be a typo in vma02.c and vma04.c: "err = -3"
->
-> +	} else {
->
-> +		err = get_allowed_nodes(NH_MEMS|NH_MEMS, 1, &node);
->
-> +		if (err = -3)
->
-> +			tst_brkm(TCONF, NULL, "requires at least one node.");
->
-> also in vma04.c, ret variable is not used, so perhaps it can be removed:
-> +	int lc, node, ret, err;
-
-Oops... Thanks for reviewing! a V3 will come out soon.
-
-Caspar
-
->
-> Regards,
-> Jan
->
-> ----- Original Message -----
->> From: "Caspar Zhang" <caspar@casparzhang.com>
->> To: "LTP List" <ltp-list@lists.sourceforge.net>
->> Sent: Monday, 6 August, 2012 8:30:51 AM
->> Subject: [LTP] [PATCH v2 2/2] mm: use new numa_helper
->>
->>
->> This patch makes the tests in mem/ dir use numa_helper in
->> libkerntest.
->>
->> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
->> ---
->>   testcases/kernel/mem/cpuset/Makefile           |    1 +
->>   testcases/kernel/mem/cpuset/cpuset01.c         |   16 ++++----
->>   testcases/kernel/mem/hugetlb/Makefile.inc      |    1 +
->>   testcases/kernel/mem/hugetlb/hugemmap/Makefile |    1 +
->>   testcases/kernel/mem/include/mem.h             |    2 +-
->>   testcases/kernel/mem/ksm/Makefile              |    1 +
->>   testcases/kernel/mem/ksm/ksm02.c               |    9 ++--
->>   testcases/kernel/mem/ksm/ksm04.c               |    9 ++--
->>   testcases/kernel/mem/lib/Makefile              |    1 +
->>   testcases/kernel/mem/lib/mem.c                 |   50
->>   ++++++++++++++++--------
->>   testcases/kernel/mem/oom/Makefile              |    1 +
->>   testcases/kernel/mem/oom/oom02.c               |    4 --
->>   testcases/kernel/mem/oom/oom04.c               |    4 --
->>   testcases/kernel/mem/swapping/Makefile         |    1 +
->>   testcases/kernel/mem/thp/Makefile              |    1 +
->>   testcases/kernel/mem/tunable/Makefile          |    1 +
->>   testcases/kernel/mem/vma/Makefile              |    3 +-
->>   testcases/kernel/mem/vma/vma02.c               |   19 ++++++---
->>   testcases/kernel/mem/vma/vma04.c               |   11 ++++-
->>   19 files changed, 81 insertions(+), 55 deletions(-)
->>
->>
->> ------------------------------------------------------------------------------
->> Live Security Virtual Conference
->> Exclusive live event will cover all the ways today's security and
->> threat landscape has changed and how IT managers can respond.
->> Discussions
->> will include endpoint security, mobile security and the latest in
->> malware
->> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
 
 
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Cc: "Caspar Zhang" <caspar@casparzhang.com>, "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Friday, August 10, 2012 3:54:57 PM
+> Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall availability
+> 
+> On 08/10/2012 03:46 PM, Zhouping Liu wrote:
+> > On 08/09/2012 02:15 PM, Caspar Zhang wrote:
+> >> some NUMA related syscalls: mbind, get_mempolicy are not supported
+> >> on
+> >> some arches (e.g. i386), this patch checks the syscalls'
+> >> availability in
+> >> setup() function, if the syscall is not implemented on the system,
+> >> a
+> >> TCONF message will be given like this:
+> >>
+> >> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not
+> >> supported on your arch
+> >>
+> >> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> > 
+> > Reviewed-by: Zhouping Liu <zliu@redhat.com>
+> 
+> Zhouping, 3/6 already has a V2 version.
+
+yeah, sorry, I replied on a bad place. :(
+thanks for your reminder :)
+
+Thanks,
+Zhouping
+
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> > 
+> > Thanks,
+> > Zhouping
+> > 
+> >> ---
+> >>  .../syscalls/get_mempolicy/get_mempolicy01.c       |   10
+> >>  ++++++++++
+> >>  testcases/kernel/syscalls/mbind/mbind01.c          |    9
+> >>  +++++++++
+> >>  2 files changed, 19 insertions(+), 0 deletions(-)
+> >>
+> >>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Live Security Virtual Conference
+> >> Exclusive live event will cover all the ways today's security and
+> >> threat landscape has changed and how IT managers can respond.
+> >> Discussions
+> >> will include endpoint security, mobile security and the latest in
+> >> malware
+> >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> >>
+> >>
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Live Security Virtual Conference
+> > Exclusive live event will cover all the ways today's security and
+> > threat landscape has changed and how IT managers can respond.
+> > Discussions
+> > will include endpoint security, mobile security and the latest in
+> > malware
+> > threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> > 
+> > 
+> > 
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> 
+> 
+
+-- 
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
