@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1T4qxz-0002xT-GE
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 10:18:15 +0000
-Received: from acsinet15.oracle.com ([141.146.126.227])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T4qxt-0008Sk-UG
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 10:18:15 +0000
-Message-ID: <503754D8.8000703@oracle.com>
-Date: Fri, 24 Aug 2012 18:18:00 +0800
-From: Shuang Qiu <shuang.qiu@oracle.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Szk58-0000mv-0t
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:56:30 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Szk56-0005Hc-En
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:56:29 +0000
+Message-ID: <5024BE51.6040202@cn.fujitsu.com>
+Date: Fri, 10 Aug 2012 15:54:57 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1802694099.58389885.1345795901969.JavaMail.root@redhat.com>
-In-Reply-To: <1802694099.58389885.1345795901969.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+References: <cover.1344492473.git.caspar@casparzhang.com>
+	<c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com>
+	<5024BC6F.7010408@redhat.com>
+In-Reply-To: <5024BC6F.7010408@redhat.com>
+Subject: Re: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall
+	availability
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,89 +32,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zhouping Liu <zliu@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 08/24/2012 04:11 PM, Zhouping Liu wrote:
->
-> ----- Original Message -----
->> From: "shuang qiu" <shuang.qiu@oracle.com>
->> To: ltp-list@lists.sourceforge.net
->> Sent: Thursday, August 23, 2012 2:43:01 PM
->> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+On 08/10/2012 03:46 PM, Zhouping Liu wrote:
+> On 08/09/2012 02:15 PM, Caspar Zhang wrote:
+>> some NUMA related syscalls: mbind, get_mempolicy are not supported on
+>> some arches (e.g. i386), this patch checks the syscalls' availability in
+>> setup() function, if the syscall is not implemented on the system, a
+>> TCONF message will be given like this:
 >>
->> From: Shuang Qiu <shuang.qiu@oracle.com>
+>> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
 >>
->> The value of min_free_kbytes is set too high(half of mem_free) during
->> testing min_free_kbytes tunable.It often cause the system to become
->> out-of-memory.Using 20% of mem_free to avoid oom and system hang.
-> Hi, shuang
->
-> I met the issue that min_free_kbytes caused system hang before, and what you said made sense.
->
-> but after tested the patch, I found it still make the system hang with the patch, so I don't think
-> this patch can fix the issue completely, maybe there are other factors, or need lower tune value.
-> always suppose it was because of the high tune value, it's more better to add an optional to control it.
-> also I will investigate it deeper to look after the real reason. please comment if you have other ideas.
->
+>> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> 
+> Reviewed-by: Zhouping Liu <zliu@redhat.com>
+
+Zhouping, 3/6 already has a V2 version.
+
+Thanks,
+Wanlong Gao
+
+> 
 > Thanks,
 > Zhouping
-Thanks for testing,Zhouping.
-
-I find it says "However, setting this parameter to a value that is too 
-high (5-10% of total system memory) will cause your system to become 
-out-of-memory immediately." in redhat memory-tunables document.
-https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-tunables.html
-Set the value less than 5% of total memory will make it more safe.
-Let's think about a better option to control it.
-
-It is great that you will investigate it deeper.
-Seems there are some other problems in this case,it always failed with i386.
-The type of total_mem "unsigned long" is not suitable with nowadays 
-memory ,it will overflow(with i386) in line 177:map_count = total_mem * 
-KB / MAP_SIZE and the value of map_count is not correct.
-Using "unsigned long long" could fix this issue.
-But the case still failed after fix it.
-Could you help to investigate it too.
-
-Thanks
-Shuang
+> 
 >> ---
->>   testcases/kernel/mem/tunable/min_free_kbytes.c |    2 +-
->>   1 files changed, 1 insertions(+), 1 deletions(-)
+>>  .../syscalls/get_mempolicy/get_mempolicy01.c       |   10 ++++++++++
+>>  testcases/kernel/syscalls/mbind/mbind01.c          |    9 +++++++++
+>>  2 files changed, 19 insertions(+), 0 deletions(-)
 >>
->> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
->> b/testcases/kernel/mem/tunable/min_free_kbytes.c
->> index 00ead04..8a03f85 100644
->> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
->> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
->> @@ -128,7 +128,7 @@ static void test_tune(unsigned long
->> overcommit_policy)
->>   		/* case2 */
->>   		else {
->>   			memfree = read_meminfo("MemFree:");
->> -			tune = memfree / 2;
->> +			tune = memfree / 5;
->>   			set_sys_tune("min_free_kbytes", tune, 1);
->>   		}
->>   
->> --
->> 1.7.7
 >>
 >>
 >> ------------------------------------------------------------------------------
 >> Live Security Virtual Conference
->> Exclusive live event will cover all the ways today's security and
->> threat landscape has changed and how IT managers can respond.
->> Discussions
->> will include endpoint security, mobile security and the latest in
->> malware
+>> Exclusive live event will cover all the ways today's security and 
+>> threat landscape has changed and how IT managers can respond. Discussions 
+>> will include endpoint security, mobile security and the latest in malware 
 >> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>>
+>>
 >> _______________________________________________
 >> Ltp-list mailing list
 >> Ltp-list@lists.sourceforge.net
 >> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 ------------------------------------------------------------------------------
