@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bincy_k_philip@yahoo.co.in>) id 1T72bK-0007ni-IB
-	for ltp-list@lists.sourceforge.net; Thu, 30 Aug 2012 11:07:54 +0000
-Received: from nm33-vm8.bullet.mail.sg3.yahoo.com ([106.10.151.231])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1T72bH-0001PQ-UJ
-	for ltp-list@lists.sourceforge.net; Thu, 30 Aug 2012 11:07:54 +0000
-Message-ID: <1346324865.59629.YahooMailNeo@web192605.mail.sg3.yahoo.com>
-Date: Thu, 30 Aug 2012 19:07:45 +0800 (SGT)
-From: Bincy K Philip <bincy_k_philip@yahoo.co.in>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1SzkWH-0004pu-8v
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:24:33 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SzkWG-0006TB-6k
+	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 08:24:33 +0000
+Date: Fri, 10 Aug 2012 04:24:25 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2014107378.3027931.1344587065940.JavaMail.root@redhat.com>
+In-Reply-To: <5024BFF9.7050703@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] Container testcases In LTP
-Reply-To: Bincy K Philip <bincy_k_philip@yahoo.co.in>
+Subject: Re: [LTP] [PATCH resend 5/6] mm: use new numa_helper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,71 +23,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6643437123856790188=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
---===============6643437123856790188==
-Content-Type: multipart/alternative;
-	boundary="1060170558-136056263-1346324865=:59629"
-
---1060170558-136056263-1346324865=:59629
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi,=0A=0AI am working on linux containers.=0ACan=A0 anybody describe me tha=
-t what all container test cases are addressed in LTP.=0AAny prerequisites i=
-s required to run container testcases?=0A=0ARegards=0ABincy
---1060170558-136056263-1346324865=:59629
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<html><body><div style=3D"color:#000; background-color:#fff; font-family:ti=
-mes new roman, new york, times, serif;font-size:12pt"><div>Hi,</div><div><b=
-r></div><div style=3D"color: rgb(0, 0, 0); font-size: 16px; font-family: ti=
-mes new roman,new york,times,serif; background-color: transparent; font-sty=
-le: normal;">I am working on linux containers.</div><div style=3D"color: rg=
-b(0, 0, 0); font-size: 16px; font-family: times new roman,new york,times,se=
-rif; background-color: transparent; font-style: normal;">Can&nbsp; anybody =
-describe me that what all container test cases are addressed in LTP.</div><=
-div style=3D"color: rgb(0, 0, 0); font-size: 16px; font-family: times new r=
-oman,new york,times,serif; background-color: transparent; font-style: norma=
-l;">Any prerequisites is required to run container testcases?</div><div sty=
-le=3D"color: rgb(0, 0, 0); font-size: 16px; font-family: times new roman,ne=
-w york,times,serif; background-color: transparent; font-style:
- normal;"><br></div><div style=3D"color: rgb(0, 0, 0); font-size: 16px; fon=
-t-family: times new roman,new york,times,serif; background-color: transpare=
-nt; font-style: normal;">Regards</div><div style=3D"color: rgb(0, 0, 0); fo=
-nt-size: 16px; font-family: times new roman,new york,times,serif; backgroun=
-d-color: transparent; font-style: normal;">Bincy<br></div><div style=3D"col=
-or: rgb(0, 0, 0); font-size: 16px; font-family: times new roman,new york,ti=
-mes,serif; background-color: transparent; font-style: normal;"></div></div>=
-</body></html>
---1060170558-136056263-1346324865=:59629--
-
-
---===============6643437123856790188==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============6643437123856790188==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6643437123856790188==--
-
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIlpob3VwaW5nIExpdSIgPHps
+aXVAcmVkaGF0LmNvbT4KPiBUbzogIkNhc3BhciBaaGFuZyIgPGNhc3BhckBjYXNwYXJ6aGFuZy5j
+b20+Cj4gQ2M6ICJMVFAgTGlzdCIgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldD4KPiBT
+ZW50OiBGcmlkYXksIDEwIEF1Z3VzdCwgMjAxMiAxMDowMjowMSBBTQo+IFN1YmplY3Q6IFJlOiBb
+TFRQXSBbUEFUQ0ggcmVzZW5kIDUvNl0gbW06IHVzZSBuZXcgbnVtYV9oZWxwZXIKPiAKCj4gPiAt
+wrsgcmV0dXJuwrdubm9kZXM7Cj4gPiArwrsgcmV0wrc9wrdnZXRfYWxsb3dlZF9ub2RlcyhOSF9N
+RU1TfE5IX0NQVVMswrcxLMK3Jm5kMSk7Cj4gCj4gQ2FzcGFyLCBJIGZvdW5kIGdldF9hX251bWFf
+bm9kZSBhbHdheXMgcmV0dXJuIHRoZSBmaXJzdCBub2RlIGlkLAo+IHdoaWNoCj4gd2lsbCBtYWtl
+IGFsbCBjYXNlcyBjYWxsZWQgdGhlIGZ1bmN0aW9uCj4gb25seSBydW4gaW4gdGhlIGZpcnN0IG5v
+ZGUsIEkgZG9uJ3QgdGhpbmsgaXQncyBhIGdvb2Qgd2F5LCBpdAo+IGRlY3JlYXNlCj4gdGhlIGNv
+dmVyYWdlLgoKV2UgaGFkIGEgZGlzY3Vzc2lvbiB3aXRoIENhc3BhciBvbiB0aGlzIHRvcGljOgpo
+dHRwOi8vYXJ0aWNsZS5nbWFuZS5vcmcvZ21hbmUubGludXgubHRwLzE2NDk1CgpDYW4geW91IGV4
+cGxhaW4gd2h5IGEgc3BlY2lmaWMgbm9kZSBtYXR0ZXJzIGhlcmU/CgpSZWdhcmRzLApKYW4KCj4g
+Cj4gd2Ugc2hvdWxkIHByZWZlciB0byBydW4gY2FzZXMgb24gdGhlIHNlY29uZCBub2RlLCB3ZSBj
+YW4gY2hvc2UgdGhlCj4gZmlyc3QKPiBvbmx5IGlmIGl0IGp1c3Qgb25seSBoYXMKPiBvbmUgbm9k
+ZSB3aXRoIE5IX01FTVN8TkhfQ1BVUy4gZG8geW91IHRoaW5rIHNvPwo+IAo+IGFuZCBvdGhlcnMg
+aXMgZ29vZCBmb3IgbWUuCj4gCj4gVGhhbmtzLAo+IFpob3VwaW5nCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2
+ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQg
+bGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERp
+c2N1c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0
+eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNv
+bW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
+aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
