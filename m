@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1SzfjH-0003rj-3T
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 03:17:39 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzfjE-0001rE-Fz
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 03:17:39 +0000
-Message-ID: <50247C2C.5000104@redhat.com>
-Date: Fri, 10 Aug 2012 11:12:44 +0800
-From: Zhouping Liu <zliu@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T16Y8-0006kQ-TC
+	for ltp-list@lists.sourceforge.net; Tue, 14 Aug 2012 02:08:04 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T16Y7-0008Uo-T0
+	for ltp-list@lists.sourceforge.net; Tue, 14 Aug 2012 02:08:04 +0000
+Message-ID: <5029B2B0.5080603@windriver.com>
+Date: Tue, 14 Aug 2012 10:06:40 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <cover.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH resend 0/6] NUMA and follow-up fix
+Subject: [LTP] POSIX pthread_detach/4-3 fails with SIGSEGV randomly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,307 +22,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0045803360883140080=="
+Content-Type: multipart/mixed; boundary="===============5699908066458657198=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---===============0045803360883140080==
+--===============5699908066458657198==
 Content-Type: multipart/alternative;
-	boundary="------------000903010100030003000806"
+	boundary="------------060704090308020807030508"
 
-This is a multi-part message in MIME format.
---------------000903010100030003000806
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--------------060704090308020807030508
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi,
+Hi Wanlong,
 
-On 08/09/2012 02:15 PM, Caspar Zhang wrote:
-> Resending the whole patch series (including Jan's 2 patches) for easier
-> reviewing.
+Case pthread_detach/4-3 fails with SIGSEGV randomly on x86_64 with 
+Ubuntu 11.10.
+I saw that you have made a patch for it. So would you like to give me 
+some advice to solve it? Thanks.
+It seems a multi-threads issue and I have try to debug with the core 
+file but not much help.
 
-Caspar, after applying the patch set, I met the bellow compiling error 
-when do  'make install':
+The fail log:
+[09:58:38]System abilities:
+[09:58:38] TSA: 200809
+[09:58:38] TSS: 200809
+[09:58:38] TPS: 200809
+[09:58:38] pagesize: 4096
+[09:58:38] min stack size: 16384
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]WARNING: The TPS option is claimed to be supported but 
+setscope fails
+[09:58:38]All 33 thread attribute objects were initialized
 
-... snip ...
-make[4]: Leaving directory `/root/ltp_new/testcases/kernel/syscalls/umask'
-make[3]: Leaving directory `/root/ltp_new/testcases/kernel/syscalls'
-make[3]: Entering directory `/root/ltp_new/testcases/kernel/lib'
-../../../include/mk/env_post.mk:94: warning: overriding recipe for 
-target `/opt/ltp/lib'
-../../../include/mk/env_post.mk:94: warning: ignoring old recipe for 
-target `/opt/ltp/lib'
-../../../include/mk/env_post.mk:96: warning: overriding recipe for 
-target `/opt/ltp/lib/libkerntest.a'
-../../../include/mk/env_post.mk:96: warning: ignoring old recipe for 
-target `/opt/ltp/lib/libkerntest.a'
-../../../include/mk/generic_trunk_target.inc:89: CURDIR is: 
-/root/ltp_new/testcases/kernel/lib
-../../../include/mk/generic_trunk_target.inc:89: *** SUBDIRS empty -- 
-did you want generic_leaf_target instead?.  Stop.
-make[3]: Leaving directory `/root/ltp_new/testcases/kernel/lib'
-make[2]: *** [install] Error 2
-make[2]: Leaving directory `/root/ltp_new/testcases/kernel'
-make[1]: *** [install] Error 2
-make[1]: Leaving directory `/root/ltp_new/testcases'
-make: *** [testcases-install] Error 2
+Segmentation fault (core dumped)
 
-Thanks,
-Zhouping
+Regards,
+Kai
 
->
-> updates:
->     syscalls/numa: check syscall availability
->       remove TEST() macro and use syscall() directly.
->     numa_helper: move to libkerntest
->       merged the library cleaning fix to this one.
->     mm: use new numa_helper
->       the same as previous V3 version, which already has Jan's reivew.
->
-> Caspar Zhang (4):
->    syscalls/numa: check syscall availability
->    numa_helper: move to libkerntest
->    mm: use new numa_helper
->    mm: add common Makefile include: libmem.mk
->
-> Jan Stancek (2):
->    numa_helper: add flag to get_allowed_nodes()
->    update testcases to use flag for get_allowed_nodes()
->
->   testcases/kernel/Makefile                          |    4 +
->   testcases/kernel/include/lib.mk                    |   37 +++
->   testcases/kernel/include/numa_helper.h             |   37 +++
->   testcases/kernel/lib/Makefile                      |   29 +++
->   testcases/kernel/lib/numa_helper.c                 |  266 ++++++++++++++++++++
->   testcases/kernel/mem/cpuset/Makefile               |   22 +--
->   testcases/kernel/mem/cpuset/cpuset01.c             |   16 +-
->   testcases/kernel/mem/hugetlb/Makefile.inc          |   18 +-
->   testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +-
->   testcases/kernel/mem/include/libmem.mk             |   40 +++
->   testcases/kernel/mem/include/mem.h                 |    2 +-
->   testcases/kernel/mem/ksm/Makefile                  |   22 +--
->   testcases/kernel/mem/ksm/ksm02.c                   |    9 +-
->   testcases/kernel/mem/ksm/ksm04.c                   |    9 +-
->   testcases/kernel/mem/lib/Makefile                  |    1 +
->   testcases/kernel/mem/lib/mem.c                     |   50 +++--
->   testcases/kernel/mem/oom/Makefile                  |   22 +--
->   testcases/kernel/mem/oom/oom02.c                   |    4 -
->   testcases/kernel/mem/oom/oom04.c                   |    4 -
->   testcases/kernel/mem/swapping/Makefile             |   22 +--
->   testcases/kernel/mem/thp/Makefile                  |   22 +--
->   testcases/kernel/mem/tunable/Makefile              |   22 +--
->   testcases/kernel/mem/vma/Makefile                  |    4 +-
->   testcases/kernel/mem/vma/vma02.c                   |   19 +-
->   testcases/kernel/mem/vma/vma04.c                   |   11 +-
->   testcases/kernel/syscalls/get_mempolicy/Makefile   |    2 +-
->   .../syscalls/get_mempolicy/get_mempolicy01.c       |   15 +-
->   testcases/kernel/syscalls/mbind/Makefile           |    2 +-
->   testcases/kernel/syscalls/mbind/mbind01.c          |   14 +-
->   testcases/kernel/syscalls/move_pages/Makefile      |    2 +-
->   .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
->   .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
->   .../syscalls/move_pages/move_pages_support.c       |    8 +-
->   testcases/kernel/syscalls/numa/Makefile            |   22 --
->   testcases/kernel/syscalls/numa/Makefile.inc        |   27 --
->   testcases/kernel/syscalls/numa/lib/Makefile        |   26 --
->   testcases/kernel/syscalls/numa/lib/numa_helper.c   |  165 ------------
->   testcases/kernel/syscalls/numa/lib/numa_helper.h   |   33 ---
->   46 files changed, 562 insertions(+), 508 deletions(-)
->   create mode 100644 testcases/kernel/include/lib.mk
->   create mode 100644 testcases/kernel/include/numa_helper.h
->   create mode 100644 testcases/kernel/lib/Makefile
->   create mode 100644 testcases/kernel/lib/numa_helper.c
->   create mode 100644 testcases/kernel/mem/include/libmem.mk
->   delete mode 100644 testcases/kernel/syscalls/numa/Makefile
->   delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
->   delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
->   delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
->   delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
->
->
->
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
---------------000903010100030003000806
-Content-Type: text/html; charset=ISO-8859-1
+--------------060704090308020807030508
+Content-Type: text/html; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 
 <html>
   <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
+
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
   </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">Hi,<br>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <font size="+1">Hi Wanlong,<br>
       <br>
-      On 08/09/2012 02:15 PM, Caspar Zhang wrote:<br>
-    </div>
-    <blockquote cite="mid:cover.1344492473.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
-Resending the whole patch series (including Jan's 2 patches) for easier 
-reviewing.</pre>
-    </blockquote>
-    <br>
-    Caspar, after applying the patch set, I met the bellow compiling
-    error when do&nbsp; 'make install':<br>
-    <br>
-    ... snip ...<br>
-    make[4]: Leaving directory
-    `/root/ltp_new/testcases/kernel/syscalls/umask'<br>
-    make[3]: Leaving directory `/root/ltp_new/testcases/kernel/syscalls'<br>
-    make[3]: Entering directory `/root/ltp_new/testcases/kernel/lib'<br>
-    ../../../include/mk/env_post.mk:94: warning: overriding recipe for
-    target `/opt/ltp/lib'<br>
-    ../../../include/mk/env_post.mk:94: warning: ignoring old recipe for
-    target `/opt/ltp/lib'<br>
-    ../../../include/mk/env_post.mk:96: warning: overriding recipe for
-    target `/opt/ltp/lib/libkerntest.a'<br>
-    ../../../include/mk/env_post.mk:96: warning: ignoring old recipe for
-    target `/opt/ltp/lib/libkerntest.a'<br>
-    ../../../include/mk/generic_trunk_target.inc:89: CURDIR is:
-    /root/ltp_new/testcases/kernel/lib<br>
-    ../../../include/mk/generic_trunk_target.inc:89: *** SUBDIRS empty
-    -- did you want generic_leaf_target instead?.&nbsp; Stop.<br>
-    make[3]: Leaving directory `/root/ltp_new/testcases/kernel/lib'<br>
-    make[2]: *** [install] Error 2<br>
-    make[2]: Leaving directory `/root/ltp_new/testcases/kernel'<br>
-    make[1]: *** [install] Error 2<br>
-    make[1]: Leaving directory `/root/ltp_new/testcases'<br>
-    make: *** [testcases-install] Error 2<br>
-    <br>
-    Thanks,<br>
-    Zhouping <br>
-    <br>
-    <blockquote cite="mid:cover.1344492473.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
-
-updates:
-   syscalls/numa: check syscall availability
-     remove TEST() macro and use syscall() directly.
-   numa_helper: move to libkerntest
-     merged the library cleaning fix to this one.
-   mm: use new numa_helper
-     the same as previous V3 version, which already has Jan's reivew.
-
-Caspar Zhang (4):
-  syscalls/numa: check syscall availability
-  numa_helper: move to libkerntest
-  mm: use new numa_helper
-  mm: add common Makefile include: libmem.mk
-
-Jan Stancek (2):
-  numa_helper: add flag to get_allowed_nodes()
-  update testcases to use flag for get_allowed_nodes()
-
- testcases/kernel/Makefile                          |    4 +
- testcases/kernel/include/lib.mk                    |   37 +++
- testcases/kernel/include/numa_helper.h             |   37 +++
- testcases/kernel/lib/Makefile                      |   29 +++
- testcases/kernel/lib/numa_helper.c                 |  266 ++++++++++++++++++++
- testcases/kernel/mem/cpuset/Makefile               |   22 +--
- testcases/kernel/mem/cpuset/cpuset01.c             |   16 +-
- testcases/kernel/mem/hugetlb/Makefile.inc          |   18 +-
- testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +-
- testcases/kernel/mem/include/libmem.mk             |   40 +++
- testcases/kernel/mem/include/mem.h                 |    2 +-
- testcases/kernel/mem/ksm/Makefile                  |   22 +--
- testcases/kernel/mem/ksm/ksm02.c                   |    9 +-
- testcases/kernel/mem/ksm/ksm04.c                   |    9 +-
- testcases/kernel/mem/lib/Makefile                  |    1 +
- testcases/kernel/mem/lib/mem.c                     |   50 +++--
- testcases/kernel/mem/oom/Makefile                  |   22 +--
- testcases/kernel/mem/oom/oom02.c                   |    4 -
- testcases/kernel/mem/oom/oom04.c                   |    4 -
- testcases/kernel/mem/swapping/Makefile             |   22 +--
- testcases/kernel/mem/thp/Makefile                  |   22 +--
- testcases/kernel/mem/tunable/Makefile              |   22 +--
- testcases/kernel/mem/vma/Makefile                  |    4 +-
- testcases/kernel/mem/vma/vma02.c                   |   19 +-
- testcases/kernel/mem/vma/vma04.c                   |   11 +-
- testcases/kernel/syscalls/get_mempolicy/Makefile   |    2 +-
- .../syscalls/get_mempolicy/get_mempolicy01.c       |   15 +-
- testcases/kernel/syscalls/mbind/Makefile           |    2 +-
- testcases/kernel/syscalls/mbind/mbind01.c          |   14 +-
- testcases/kernel/syscalls/move_pages/Makefile      |    2 +-
- .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
- .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
- .../syscalls/move_pages/move_pages_support.c       |    8 +-
- testcases/kernel/syscalls/numa/Makefile            |   22 --
- testcases/kernel/syscalls/numa/Makefile.inc        |   27 --
- testcases/kernel/syscalls/numa/lib/Makefile        |   26 --
- testcases/kernel/syscalls/numa/lib/numa_helper.c   |  165 ------------
- testcases/kernel/syscalls/numa/lib/numa_helper.h   |   33 ---
- 46 files changed, 562 insertions(+), 508 deletions(-)
- create mode 100644 testcases/kernel/include/lib.mk
- create mode 100644 testcases/kernel/include/numa_helper.h
- create mode 100644 testcases/kernel/lib/Makefile
- create mode 100644 testcases/kernel/lib/numa_helper.c
- create mode 100644 testcases/kernel/mem/include/libmem.mk
- delete mode 100644 testcases/kernel/syscalls/numa/Makefile
- delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
- delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
- delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
- delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
-
-</pre>
+      Case pthread_detach/4-3 fails with SIGSEGV randomly on x86_64 with
+      Ubuntu 11.10. <br>
+      I saw that you have made a patch for it. So would you like to give
+      me some advice to solve it? Thanks.<br>
+      It seems a multi-threads issue and I have try to debug with the
+      core file but not much help.<br>
       <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
+      The fail log:<br>
+      [09:58:38]System abilities:<br>
+      [09:58:38] TSA: 200809<br>
+      [09:58:38] TSS: 200809<br>
+      [09:58:38] TPS: 200809<br>
+      [09:58:38] pagesize: 4096<br>
+      [09:58:38] min stack size: 16384<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]WARNING: The TPS option is claimed to be supported but
+      setscope fails<br>
+      [09:58:38]All 33 thread attribute objects were initialized<br>
       <br>
-      <pre wrap="">------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
+      Segmentation fault (core dumped)<br>
       <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    <br>
+      Regards,<br>
+      Kai<br>
+    </font>
   </body>
 </html>
 
---------------000903010100030003000806--
+--------------060704090308020807030508--
 
 
---===============0045803360883140080==
+--===============5699908066458657198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -336,7 +145,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============0045803360883140080==
+--===============5699908066458657198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -347,5 +156,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============0045803360883140080==--
+--===============5699908066458657198==--
 
