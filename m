@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T4Qnc-00070s-Ok
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 06:21:48 +0000
-Received: from mail.windriver.com ([147.11.1.11])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T1CzQ-0001Un-W8
+	for ltp-list@lists.sourceforge.net; Tue, 14 Aug 2012 09:00:40 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T4QnW-0007st-Uk
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 06:21:48 +0000
-Message-ID: <5035CBF7.3020407@windriver.com>
-Date: Thu, 23 Aug 2012 14:21:43 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	(Exim 4.76) id 1T1CzM-0004nT-PF
+	for ltp-list@lists.sourceforge.net; Tue, 14 Aug 2012 09:00:40 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q7E90Su5002618
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 14 Aug 2012 02:00:30 -0700 (PDT)
+From: Kang Kai <kai.kang@windriver.com>
+Date: Tue, 14 Aug 2012 17:00:26 +0800
+Message-ID: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-References: <40249568.8900482.1345625939805.JavaMail.root@redhat.com>
-	<5034EAA5.3020405@redhat.com>
-In-Reply-To: <5034EAA5.3020405@redhat.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+Subject: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,60 +27,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: ltp-list@lists.sourceforge.net
+Cc: Zhenfeng.Zhao@windriver.com
 
-T24gMjAxMuW5tDA45pyIMjLml6UgMjI6MjAsIEphbiBTdGFuY2VrIHdyb3RlOgo+IE9uIDA4LzIy
-LzIwMTIgMTA6NTggQU0sIEphbiBTdGFuY2VrIHdyb3RlOgo+Pgo+PiAtLS0tLSBPcmlnaW5hbCBN
-ZXNzYWdlIC0tLS0tCj4+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdpbmRyaXZlci5jb20+
-Cj4+PiBUbzogIkphbiBTdGFuY2VrIjxqc3RhbmNla0ByZWRoYXQuY29tPgo+Pj4gQ2M6IGdhb3dh
-bmxvbmdAY24uZnVqaXRzdS5jb20sIGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCwgIlpo
-ZW5mZW5nIFpoYW8iPFpoZW5mZW5nLlpoYW9Ad2luZHJpdmVyLmNvbT4KPj4+IFNlbnQ6IFdlZG5l
-c2RheSwgMjIgQXVndXN0LCAyMDEyIDEwOjI4OjU5IEFNCj4+PiBTdWJqZWN0OiBSZTogW0xUUF0g
-W1BBVENIXSBwdGhyZWFkX2RldGFjaC80LTM6IHdvcmthcm91bmQgZm9yIHNlZ21lbnQgZmF1bHQK
-Pj4+IEhpIEphbiwKPj4+Cj4+Pj4gSXMgdGhlIGFib3ZlIG91dHB1dCBmcm9tIG1pcHMgb3IgeDg2
-XzY0Pwo+Pj4+IEFyZSB5b3UgcnVubmluZyBpdCBhcyByb290IHVzZXI/Cj4+PiBUaGlzIHdhcyB0
-ZXN0ZWQgb24geDg2XzY0IHdpdGggdW5wcml2aWxlZ2VkICB1c2VyLiBJIHJldGVzdCBpdCB3aXRo
-Cj4+PiByb290Cj4+PiBhbmQgdGVzdCBwYXNzZXMuCj4+IFlvdXIgdW5wcml2aWxlZ2VkIHVzZXIg
-aXMgaGl0dGluZyBzb21lIHJlc291cmNlIGxpbWl0LCBJJ2QgYmUgaW50ZXJlc3RlZAo+PiB0byBz
-ZWUgaG93IG1hbnkgdGhyZWFkcyBhcmUgYWN0dWFsbHkgcnVubmluZyBhdCB0aGUgc2FtZSB0aW1l
-Lgo+Pgo+Pj4gSXQgcGFzc2VzIG9uIHJvdXRlcnN0YXRpb24obWlwcykgd2l0aCB5b3VyIHBhdGNo
-IHRvby4KPj4+IFNvIGl0IGxvb2tzIGxpa2UgYSByYWNlIGNvbmRpdGlvbiBpc3N1ZSBhYm91dCBz
-dGFjayBhdHRyaWJ1dGUgYmV0d2Vlbgo+Pj4gdGhyZWFkcywgcmlnaHQ/Cj4+IEkgdGhpbmsgc28u
-IFdlIGNhbiB0cnkgZGlmZmVyZW50IHdheSBvZiBzaWduYWxsaW5nIHdoZW4gdGhyZWFkZWQoKSBp
-cyBkb25lCj4+IGFuZCB0cnkgaXQgYWdhaW4gd2l0aCBhbGwgc2NlbmFyaW9zLgo+IEkgdGhpbmsg
-dGhpcyB0ZXN0Y2FzZSBpcyBicm9rZW4gaW4gbW9yZSB0aGFuIDEgd2F5LiBBdCBsZWFzdCBvbiBt
-eSBzZXR1cCwgSSBkb24ndCBzZWUKPiBhIHNpbmdsZSBwdGhyZWFkX2RldGFjaCgpIHdoaWxlIHNp
-Z25hbHMgYXJlIGZpcmluZyAtIHdoaWNoIGlzIGV4YWN0bHkgZ29hbCBvZiB0aGlzIHRlc3QuCj4K
-PiBXaXRoIGZvbGxvd2luZyBjaGFuZ2U6Cj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5f
-cG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0z
-LmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuCj4gaW5kZXggZGZh
-NmUxOS4uNDhlMTM0MyAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+ICsrKyBiL3Rl
-c3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJl
-YWRfZGV0YWNoLzQtMy5jCj4gQEAgLTI3Nyw2ICsyNzYsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywg
-Y2hhciAqYXJndltdKQo+ICAgICAgICAgICAgICAgICAgZG9faXQxID0gMDsKPiAgICAgICAgICB9
-IHdoaWxlIChkb19pdDEpOwo+Cj4gKyAgICAgICBvdXRwdXQoIiAgJWQgdGhyZWFkIGRldGFjaGVk
-IHdoaWxlIHNpZ25hbHMgd2VyZSBmaXJpbmcuXG4iLCBjb3VudF9vcGUpOwo+ICAgICAgICAgIHNs
-ZWVwKDEpOwo+Cj4gICAgICAgICAgZG8gewo+Cj4gSSBnZXQ6Cj4gWzE2OjExOjIzXSAgMSB0aHJl
-YWQgZGV0YWNoZWQgd2hpbGUgc2lnbmFscyBhcmUgZmlyaW5nLgo+IFsxNjoxMToyNF1UZXN0IGV4
-ZWN1dGVkIHN1Y2Nlc3NmdWxseS4KPiBbMTY6MTE6MjRdICA3Nzg2NSB0aHJlYWQgZGV0YWNoZWQu
-Cj4KPiBhbmQgdGhhdCByZXBvcnRlZCAiMSIgaXMgaG93IG1hbnkgdGhyZWFkcyBhdHRlbXB0ZWQg
-dG8gY2FsbCBwdGhyZWFkX2RldGFjaCwgbm90IGhvdyBtYW55IGFjdHVhbGx5Cj4gc3VjY2VlZGVk
-LiBTaWduYWxzIGFyZSBmaXJpbmcgc28gZnJlcXVlbnRseSB0aGF0IHRocmVhZGVkKCkgY2FuJ3Qg
-cHJvZ3Jlc3MgYXQgYWxsLgpUaGVuIGhvdyBkbyB3ZSBmaXggdGhpcyBjYXNlPyBzeW5jIHNlbmRp
-bmcgdGhlIHNpZ25hbHMgd2l0aCBwdGhyZWFkX2RldGFjaD8KCldhbmxvbmcsIGFueSBjb21tZW50
-cz8KClRoYW5rcywKS2FpCgo+Cj4gUmVnYXJkcywKPiBKYW4KPgoKCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVu
-dCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxh
-bmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNj
-dXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkg
-YW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21t
-LmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlz
-dEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlz
-dHMvbGlzdGluZm8vbHRwLWxpc3QK
+This case fails randomly with "Segmentation fault". Reset VERBOSE to 6
+can avoid this problem.
+
+Fix typo at same time.
+
+Signed-off-by: Kang Kai <kai.kang@windriver.com>
+---
+ .../conformance/interfaces/pthread_detach/4-3.c    |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
+index 5c15e93..23738dc 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
+@@ -49,7 +49,7 @@
+ #include "../testfrmw/testfrmw.c"
+ 
+ #ifndef VERBOSE
+-#define VERBOSE 1
++#define VERBOSE 6
+ #endif
+ 
+ #define WITH_SYNCHRO
+@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
+ 
+ 	do {
+ 		do_it2 = 0;
+-	} while (do_it2 = 0);
++	} while (do_it2);
+ 
+ 	ret = pthread_join(th_sig1, NULL);
+ 	if (ret)
+-- 
+1.7.5.4
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
