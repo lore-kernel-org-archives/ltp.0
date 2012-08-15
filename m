@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1T6hhk-0007HN-O7
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:49:08 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1T1adD-0000vc-4t
+	for ltp-list@lists.sourceforge.net; Wed, 15 Aug 2012 10:15:19 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6hhg-0006FA-Vd
-	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:49:08 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7TCmxDn004784
+	id 1T1adC-0007yN-Hf
+	for ltp-list@lists.sourceforge.net; Wed, 15 Aug 2012 10:15:19 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7FAFCuL010843
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 29 Aug 2012 08:48:59 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Wed, 29 Aug 2012 20:43:48 +0800
-Message-Id: <06b56f221ddc8215d3a0fe2690731596c48ca326.1346244062.git.zliu@redhat.com>
-In-Reply-To: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
-References: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
-Subject: [LTP]  [PATCH 2/3] tunable/min_free_kbytes: remove map_count args
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Aug 2012 06:15:12 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q7FAFB4B002420
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Aug 2012 06:15:11 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 15 Aug 2012 12:14:34 +0200
+Message-Id: <4505db854dcfba3131523a89e158cae4f9c27d01.1345025497.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] ioctl: check if tty device nodes are usable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,66 +34,70 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-as the type of total_mem is 'unsigned long', inside
-32-bit system, it will overflow in this sentence
-  map_count = total_mem * KB / MAP_SIZE
+ioctl testcases fail on s390x because it doesn't
+support virtual consoles.
 
-e.g: if total_mem > 4194304, 'total_mem*KB' will > ULONG_MAX.
+Trying to use such device node fails:
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty0
+ioctl01     1  TBROK  :  Couldn't open /dev/tty0: errno=ENXIO(6): No
+such device or address
 
-after re-cehck the code, I found map_count was not necessary,
-and removing it can fix the overflow issue.
+This patch tries to get terminal line settings for each tty,
+that would be used in test. If that fails, tty is skipped.
 
-Reported-by: Shuang Qiu <shuang.qiu@oracle.com>
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/mem/tunable/min_free_kbytes.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/ioctl/test_ioctl |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index f8288ec..dde182c 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -177,31 +177,23 @@ static void test_tune(unsigned long overcommit_policy)
+diff --git a/testcases/kernel/syscalls/ioctl/test_ioctl b/testcases/kernel/syscalls/ioctl/test_ioctl
+index e824ff7..062212b 100755
+--- a/testcases/kernel/syscalls/ioctl/test_ioctl
++++ b/testcases/kernel/syscalls/ioctl/test_ioctl
+@@ -23,11 +23,27 @@ export TCID=ioctl01_02
+ export TST_TOTAL=2
+ export TST_COUNT=0
  
- static int eatup_mem(unsigned long overcommit_policy)
- {
--	int map_count, i;
- 	int ret = 0;
- 	unsigned long memfree;
--	void **addrs;
--
--	map_count = total_mem * KB / MAP_SIZE;
--	addrs = (void **)malloc(map_count * sizeof(void *));
--	if (addrs == NULL) {
--		perror("malloc");
--		return -1;
--	}
-+	void *addrs;
- 
- 	memfree = read_meminfo("MemFree:");
- 	printf("memfree is %lu kB before eatup mem\n", memfree);
--	for (i = 0; i < map_count; i++) {
--		addrs[i] = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
-+	while (1) {
-+		addrs = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
- 		    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
--		if (addrs[i] == MAP_FAILED) {
-+		if (addrs == MAP_FAILED) {
- 			if (overcommit_policy != 1 && errno != ENOMEM) {
- 				perror("mmap");
- 				ret = -1;
- 			}
- 			break;
- 		}
--		memset(addrs[i], i, MAP_SIZE);
-+		memset(addrs, 1, MAP_SIZE);
- 	}
- 	memfree = read_meminfo("MemFree:");
- 	printf("memfree is %lu kB after eatup mem\n", memfree);
++has_tty()
++{
++    if command -v stty >/dev/null 2>&1; then
++        stty --file=$1 > /dev/null
++        if [ $? -ne 0 ]; then
++            return 0;
++        fi
++    fi
++    return 1;
++}
++
+ for tttype in `ls /dev/tty*`
+ do
+ device_no=${tttype#/dev/tty}
+ case "$device_no" in
+ [0-9]|[0-9][0-9])
++    has_tty $tttype
++    if [ $? -eq 0 ]; then
++        tst_resm TINFO "Skipping ioctl01 with $tttype"
++        continue;
++    fi
+     tst_resm TINFO "Testing ioctl01 with $tttype"
+     ioctl01 -D $tttype
+     RC=$?
+@@ -46,6 +62,11 @@ do
+ device_no=${tttype#/dev/tty}
+ case "$device_no" in
+ [0-9]|[0-9][0-9])
++    has_tty $tttype
++    if [ $? -eq 0 ]; then
++        tst_resm TINFO "Skipping ioctl02 with $tttype"
++        continue;
++    fi
+     tst_resm TINFO "Testing ioctl02 with $tttype"
+     ioctl02 -D $tttype
+     RC=$?
 -- 
-1.7.11.2
+1.7.1
 
 
 ------------------------------------------------------------------------------
