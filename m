@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1SwyMm-0002YQ-86
-	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 16:35:16 +0000
-Received: from rcsinet15.oracle.com ([148.87.113.117])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SwyMh-0000F1-EX
-	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 16:35:16 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by rcsinet15.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
-	ESMTP id q72GZ5Ja005306
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1T1cKe-0004ca-Lh
+	for ltp-list@lists.sourceforge.net; Wed, 15 Aug 2012 12:04:16 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T1cKc-0004A1-CV
+	for ltp-list@lists.sourceforge.net; Wed, 15 Aug 2012 12:04:16 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7FC48WQ028880
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Aug 2012 16:35:05 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Fri,  3 Aug 2012 00:34:55 +0800
-Message-Id: <1343925295-1884-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH 1/1] fix container_ftp.pl
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Aug 2012 08:04:08 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q7FC47aK028606
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Aug 2012 08:04:07 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 15 Aug 2012 14:03:59 +0200
+Message-Id: <7fa9c1ccd34208d5b20d0438629639ab3ea70cae.1345032017.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------1.7.1"
+Subject: [LTP] [PATCH 1/2] new syscall test: readahead01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,85 +32,233 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: OEL-QA_WW@oracle.com
 
-container_ftp.pl has several problems:
+This is a multi-part message in MIME format.
+--------------1.7.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-* ftp users can't cd to a temporary dir in /tmp
-* ftp->cwd($dir) will always fail
-* if we do 'chdir $dir', 'rmdir("$dir")' will fail
-* 'ftp->put' should be 'ftp->get'
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
+errno testcase for readahead(2).
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/containers/netns/container_ftp.pl | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/readahead/Makefile      |   22 +++
+ testcases/kernel/syscalls/readahead/readahead01.c |  161 +++++++++++++++++++++
+ 2 files changed, 183 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/readahead/Makefile
+ create mode 100644 testcases/kernel/syscalls/readahead/readahead01.c
 
-diff --git a/testcases/kernel/containers/netns/container_ftp.pl b/testcases/kernel/containers/netns/container_ftp.pl
-index 89a35b5..98742f3 100644
---- a/testcases/kernel/containers/netns/container_ftp.pl
-+++ b/testcases/kernel/containers/netns/container_ftp.pl
-@@ -23,6 +23,7 @@
- 
- use File::Temp 'tempdir';
- use Net::FTP;
-+use File::Path;
- 
- if ($#ARGV == -1) {
- 	print "usage: $0 host\n";
-@@ -35,7 +36,7 @@ my $i = 0;
- my $kount = 51;
- my $file="junkfile";
- 
--my $tmpdir = defined($ENV{TMPDIR}) ? $ENV{TMPDIR} : "/tmp";
-+my $tmpdir = "/var/ftp";
- 
- my $dir;
- $dir = tempdir("container_ftp.XXXXXXX", DIR => $tmpdir);
-@@ -47,8 +48,7 @@ if (chmod(0777, $dir) == 0) {
- 	push @ERRORS, "Failed to change mode for temporary directory: $!\n";
- 	printerr();
- }
--chdir $dir;
--system("dd if=/dev/zero of=$file bs=512 count=10 > /dev/null 2>&1 ");
-+system("dd if=/dev/zero of=$dir/$file bs=512 count=10 > /dev/null 2>&1 ");
- 
- while ( $i < $kount )
- {
-@@ -61,13 +61,15 @@ while ( $i < $kount )
-         $ftp->quit if $newerr;
-         printerr() if $newerr; 
- 
--        $ftp->cwd($dir) or $newerr=1; 
-+        $basedir = `basename "$dir"`;
-+        chomp $basedir;
-+        $ftp->cwd($basedir) or $newerr=1; 
-         push @ERRORS, "Can't cd  $!\n" if $newerr;
-         $ftp->quit if $newerr;
-         printerr() if $newerr; 
- 
-         $newname = $file . "_" . $i ;
--        $ftp->put($file,$newname) or $newerr=1;
-+        $ftp->get($file,$newname) or $newerr=1;
-         push @ERRORS, "Can't get file $file $!\n" if $newerr;
-         printerr() if $newerr;
- 
-@@ -82,6 +84,5 @@ sub printerr {
- }
- 
- END {
--	unlink("$dir/$file");
--	rmdir("$dir");
-+	rmtree("$dir");
- }
--- 
-1.7.11.4
 
+--------------1.7.1
+Content-Type: text/x-patch; name="0001-new-syscall-test-readahead01.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+	filename="0001-new-syscall-test-readahead01.patch"
+
+diff --git a/testcases/kernel/syscalls/readahead/Makefile b/testcases/kernel/syscalls/readahead/Makefile
+new file mode 100644
+index 0000000..45a3bbc
+--- /dev/null
++++ b/testcases/kernel/syscalls/readahead/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+new file mode 100644
+index 0000000..727dd7b
+--- /dev/null
++++ b/testcases/kernel/syscalls/readahead/readahead01.c
+@@ -0,0 +1,161 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * errno tests for readahead() syscall
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <sys/socket.h>
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include "config.h"
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
++
++char *TCID = "readahead01";
++int  TST_TOTAL = 1;
++
++#if defined(__NR_readahead)
++static void setup(char *argv[]);
++static void cleanup(void);
++
++static int check_ret(long expected_ret)
++{
++	if (expected_ret == TEST_RETURN) {
++		tst_resm(TPASS, "expected ret success - "
++			"returned value = %ld", TEST_RETURN);
++		return 0;
++	} else
++		tst_resm(TFAIL, "unexpected failure - "
++			"returned value = %ld, expected: %ld",
++			TEST_RETURN, expected_ret);
++	return 1;
++}
++
++static int check_errno(long expected_errno)
++{
++	if (TEST_ERRNO == expected_errno) {
++		tst_resm(TPASS|TTERRNO, "expected failure");
++		return 0;
++	} else if (TEST_ERRNO == 0)
++		tst_resm(TFAIL, "call succeeded unexpectedly");
++	else
++		tst_resm(TFAIL|TTERRNO, "unexpected failure - "
++			"expected = %ld : %s, actual",
++			expected_errno, strerror(expected_errno));
++	return 1;
++}
++
++static void test_bad_fd()
++{
++	char tempname[PATH_MAX] = "readahead01_XXXXXX";
++	int fd;
++
++	tst_resm(TINFO, "test_bad_fd -1");
++	TEST(syscall(__NR_readahead, -1, 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EBADF);
++
++	tst_resm(TINFO, "test_bad_fd O_WRONLY");
++	fd = mkstemp(tempname);
++	if (fd == -1)
++		tst_resm(TBROK|TERRNO, "mkstemp failed");
++	close(fd);
++	fd = open(tempname, O_WRONLY);
++	if (fd == -1)
++		tst_resm(TBROK|TERRNO, "Failed to open testfile");
++	TEST(syscall(__NR_readahead, fd, 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EBADF);
++	close(fd);
++	unlink(tempname);
++}
++
++static void test_invalid_fd()
++{
++	int fd[2];
++
++	tst_resm(TINFO, "test_invalid_fd pipe");
++	if (pipe(fd) < 0)
++		tst_resm(TBROK|TERRNO, "Failed to create pipe");
++	TEST(syscall(__NR_readahead, fd[0], 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EINVAL);
++	close(fd[0]);
++	close(fd[1]);
++
++	tst_resm(TINFO, "test_invalid_fd socket");
++	fd[0] = socket(AF_INET, SOCK_STREAM, 0);
++	if (fd[0] < 0)
++		tst_resm(TBROK|TERRNO, "Failed to create socket");
++	TEST(syscall(__NR_readahead, fd[0], 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EINVAL);
++	close(fd[0]);
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	setup(argv);
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		test_bad_fd();
++		test_invalid_fd();
++	}
++	cleanup();
++	tst_exit();
++}
++
++static void setup(char *argv[])
++{
++	tst_require_root(NULL);
++	tst_tmpdir();
++
++	/* check if readahead syscall is supported */
++	syscall(__NR_readahead, 0, 0, 0);
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++	tst_rmdir();
++}
++
++#else /* __NR_readahead */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "System doesn't support __NR_readahead");
++}
++#endif
++
+
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -112,7 +266,18 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--------------1.7.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------1.7.1--
+
+
+
