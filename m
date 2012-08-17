@@ -1,20 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1T4BnQ-00059I-Al
-	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 14:20:36 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1T2GzM-0004M9-Ax
+	for ltp-list@lists.sourceforge.net; Fri, 17 Aug 2012 07:29:00 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T4BnK-0005oU-De
-	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 14:20:36 +0000
-Message-ID: <5034EAA5.3020405@redhat.com>
-Date: Wed, 22 Aug 2012 16:20:21 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T2GzL-0007Ve-AL
+	for ltp-list@lists.sourceforge.net; Fri, 17 Aug 2012 07:29:00 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7H7Sr2V030064
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 17 Aug 2012 03:28:53 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id q7H7SpKS016867
+	for <ltp-list@lists.sourceforge.net>; Fri, 17 Aug 2012 03:28:52 -0400
 From: Jan Stancek <jstancek@redhat.com>
-MIME-Version: 1.0
-References: <40249568.8900482.1345625939805.JavaMail.root@redhat.com>
-In-Reply-To: <40249568.8900482.1345625939805.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+Date: Fri, 17 Aug 2012 09:28:43 +0200
+Message-Id: <ae5da61e39dd2d43562dc9857d17fd4ab66c2aa4.1345188176.git.jstancek@redhat.com>
+In-Reply-To: <9018a236d9800df20fe96edaec0d03149f6d26ca.1345188176.git.jstancek@redhat.com>
+References: <9018a236d9800df20fe96edaec0d03149f6d26ca.1345188176.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 2/3] new syscall test: migrate_pages01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,69 +32,451 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: ltp-list@lists.sourceforge.net
 
-On 08/22/2012 10:58 AM, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
->> From: "Kang Kai" <Kai.Kang@windriver.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net, "Zhenfeng Zhao" <Zhenfeng.Zhao@windriver.com>
->> Sent: Wednesday, 22 August, 2012 10:28:59 AM
->> Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
-> 
->> Hi Jan,
->>
->>> Is the above output from mips or x86_64?
->>> Are you running it as root user?
->>
->> This was tested on x86_64 with unprivileged  user. I retest it with
->> root
->> and test passes.
-> 
-> Your unprivileged user is hitting some resource limit, I'd be interested
-> to see how many threads are actually running at the same time. 
-> 
->> It passes on routerstation(mips) with your patch too.
->> So it looks like a race condition issue about stack attribute between
->> threads, right?
-> 
-> I think so. We can try different way of signalling when threaded() is done
-> and try it again with all scenarios.
+errno tests for migrate_pages(2).
+Note, that older kernels (~2.6.18) are likely to panic during this test.
 
-I think this testcase is broken in more than 1 way. At least on my setup, I don't see
-a single pthread_detach() while signals are firing - which is exactly goal of this test.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/migrate_pages/Makefile   |   32 +++
+ .../syscalls/migrate_pages/migrate_pages01.c       |  270 ++++++++++++++++++++
+ .../syscalls/migrate_pages/migrate_pages_common.c  |   62 +++++
+ .../syscalls/migrate_pages/migrate_pages_common.h  |   33 +++
+ 4 files changed, 397 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/Makefile
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
 
-With following change:
+diff --git a/testcases/kernel/syscalls/migrate_pages/Makefile b/testcases/kernel/syscalls/migrate_pages/Makefile
+new file mode 100644
+index 0000000..7168cd6
+--- /dev/null
++++ b/testcases/kernel/syscalls/migrate_pages/Makefile
+@@ -0,0 +1,32 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
++$(MAKE_TARGETS): %: %.o migrate_pages_common.o
++
++ifeq ($(NUMA_LIBS),)
++CPPFLAGS		+= -Wno-unused
++endif
++CPPFLAGS		+= -I$(abs_srcdir)/../utils/
++
++include $(top_srcdir)/testcases/kernel/include/lib.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+new file mode 100644
+index 0000000..cffb784
+--- /dev/null
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+@@ -0,0 +1,270 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * errno tests for migrate_pages() syscall
++ */
++#include <sys/types.h>
++#include <sys/syscall.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <pwd.h>
++#include "config.h"
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
++#include "numa_helper.h"
++#include "migrate_pages_common.h"
++
++char *TCID = "migrate_pages01";
++int  TST_TOTAL = 1;
++
++#if defined(__NR_migrate_pages) && defined(HAVE_NUMA_H)
++static unsigned long *sane_old_nodes;
++static unsigned long *sane_new_nodes;
++static int sane_nodemask_size;
++static int sane_max_node;
++
++static void setup(void);
++static void cleanup(void);
++
++static void test_sane_nodes(void)
++{
++	tst_resm(TINFO, "test_empty_mask");
++	TEST(syscall(__NR_migrate_pages, 0, sane_max_node,
++		sane_old_nodes, sane_new_nodes));
++	check_ret(0);
++}
++
++static void test_invalid_pid(void)
++{
++	const char pid_max[] = "/proc/sys/kernel/pid_max";
++	FILE *fp;
++	char buff[512];
++	pid_t invalid_pid = -1;
++
++	tst_resm(TINFO, "test_invalid_pid -1");
++	TEST(syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
++		sane_old_nodes, sane_new_nodes));
++	check_ret(-1);
++	check_errno(ESRCH);
++
++	tst_resm(TINFO, "test_invalid_pid pid_max+1");
++	fp = fopen(pid_max, "r");
++	if (fp == NULL)
++		tst_brkm(TBROK, cleanup,
++			"Could not open %s", pid_max);
++	if (!fgets(buff, sizeof(buff), fp))
++		tst_brkm(TBROK, cleanup,
++			"Could not read %s", pid_max);
++	fclose(fp);
++	invalid_pid = atol(buff) + 1;
++	TEST(syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
++		sane_old_nodes, sane_new_nodes));
++	check_ret(-1);
++	check_errno(ESRCH);
++}
++
++static void test_invalid_masksize(void)
++{
++	tst_resm(TINFO, "test_invalid_masksize");
++	TEST(syscall(__NR_migrate_pages, 0, -1, sane_old_nodes,
++		sane_new_nodes));
++	check_ret(-1);
++	check_errno(EINVAL);
++}
++
++static void test_invalid_mem(void)
++{
++	unsigned long *p;
++
++	tst_resm(TINFO, "test_invalid_mem -1");
++	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, -1, -1));
++	check_ret(-1);
++	check_errno(EFAULT);
++
++	tst_resm(TINFO, "test_invalid_mem invalid prot");
++	p = mmap(NULL, getpagesize(), PROT_NONE,
++		MAP_PRIVATE|MAP_ANONYMOUS, 0, 0);
++	if (p == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
++	check_ret(-1);
++	check_errno(EFAULT);
++
++	if (munmap(p, getpagesize()) < 0)
++		tst_brkm(TBROK|TERRNO, cleanup, "munmap");
++	tst_resm(TINFO, "test_invalid_mem unmmaped");
++	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
++	check_ret(-1);
++	check_errno(EFAULT);
++}
++
++static void test_invalid_nodes(void)
++{
++	int *nodes;
++	int num_nodes, ret, i;
++	int invalid_node = 0;
++	unsigned long *old_nodes, *new_nodes;
++
++	tst_resm(TINFO, "test_invalid_nodes");
++	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
++	if (ret < 0)
++		tst_brkm(TBROK|TERRNO, cleanup,
++			"get_allowed_nodes_arr: %d", ret);
++
++	/* get first node which is not in nodes */
++	for (i = 0; i < num_nodes; i++, invalid_node++)
++		if (invalid_node != nodes[i])
++			break;
++	if (invalid_node < sane_max_node) {
++		old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
++		new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
++		memcpy(old_nodes, sane_old_nodes, sane_nodemask_size);
++		memset(new_nodes, 0, sane_nodemask_size);
++		set_bit(new_nodes, invalid_node, 1);
++
++		TEST(syscall(__NR_migrate_pages, 0, sane_max_node,
++			old_nodes, new_nodes));
++		check_ret(-1);
++		check_errno(EINVAL);
++		free(old_nodes);
++		free(new_nodes);
++	} else
++		tst_resm(TCONF, "All possible nodes are present");
++
++	free(nodes);
++}
++
++static void test_invalid_perm(void)
++{
++	char nobody_uid[] = "nobody";
++	struct passwd *ltpuser;
++	int status;
++	pid_t child_pid;
++	pid_t parent_pid;
++	int ret = 0;
++
++	tst_resm(TINFO, "test_invalid_perm");
++	parent_pid = getpid();
++	fflush(stdout);
++	child_pid = fork();
++	switch (child_pid) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		break;
++	case 0:
++		ltpuser = getpwnam(nobody_uid);
++		if (ltpuser == NULL)
++			tst_brkm(TBROK|TERRNO, NULL,
++					"getpwnam failed");
++		if (setuid(ltpuser->pw_uid) == -1)
++			tst_brkm(TBROK|TERRNO, NULL,
++					"setuid(%u) failed",
++					ltpuser->pw_uid);
++		TEST(syscall(__NR_migrate_pages, parent_pid,
++			sane_max_node, sane_old_nodes,
++			sane_new_nodes));
++		ret |= check_ret(-1);
++		ret |= check_errno(EPERM);
++		exit(ret);
++	default:
++		if (waitpid(child_pid, &status, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "child returns %d", status);
++	}
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		test_sane_nodes();
++		test_invalid_pid();
++		test_invalid_masksize();
++		test_invalid_mem();
++		test_invalid_nodes();
++		test_invalid_perm();
++	}
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	int node, ret;
++
++	tst_require_root(NULL);
++	TEST(syscall(__NR_migrate_pages, 0, 0, NULL, NULL));
++
++	if (numa_available() == -1)
++		tst_brkm(TCONF, NULL, "NUMA not available");
++
++	ret = get_allowed_nodes(NH_MEMS, 1, &node);
++	if (ret < 0)
++		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes_arr: %d", ret);
++
++	sane_max_node = get_max_node();
++	sane_nodemask_size = sane_max_node/8+1;
++	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
++	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
++	memset(sane_old_nodes, 0, sane_nodemask_size);
++	memset(sane_new_nodes, 0, sane_nodemask_size);
++
++	set_bit(sane_old_nodes, node, 1);
++	set_bit(sane_new_nodes, node, 1);
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	free(sane_old_nodes);
++	free(sane_new_nodes);
++	TEST_CLEANUP;
++}
++
++#else /* __NR_migrate_pages */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
++			" or libnuma is not available");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
+new file mode 100644
+index 0000000..00b512a
+--- /dev/null
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
+@@ -0,0 +1,62 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#include "test.h"
++#include "usctest.h"
++#include "migrate_pages_common.h"
++
++void set_bit(unsigned long *b, unsigned int n, unsigned int v)
++{
++	if (v)
++		b[n/bitsperlong] |= 1UL << (n % bitsperlong);
++	else
++		b[n/bitsperlong] &= ~(1UL << (n % bitsperlong));
++}
++
++int check_ret(long expected_ret)
++{
++	if (expected_ret == TEST_RETURN) {
++		tst_resm(TPASS, "expected ret success - "
++			"returned value = %ld", TEST_RETURN);
++		return 0;
++	} else
++		tst_resm(TFAIL, "unexpected failure - "
++			"returned value = %ld, expected: %ld",
++			TEST_RETURN, expected_ret);
++	return 1;
++}
++
++int check_errno(long expected_errno)
++{
++	if (TEST_ERRNO == expected_errno) {
++		tst_resm(TPASS|TTERRNO, "expected failure");
++		return 0;
++	} else if (TEST_ERRNO == 0)
++		tst_resm(TFAIL, "call succeeded unexpectedly");
++	else
++		tst_resm(TFAIL|TTERRNO, "unexpected failure - "
++			"expected = %ld : %s, actual",
++			expected_errno, strerror(expected_errno));
++	return 1;
++}
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
+new file mode 100644
+index 0000000..d821b07
+--- /dev/null
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
+@@ -0,0 +1,33 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++#ifndef MIGRATE_PAGES_COMMON_H
++#define MIGRATE_PAGES_COMMON_H
++
++#define bitsperlong (8 * sizeof(unsigned long))
++
++void set_bit(unsigned long *b, unsigned int n, unsigned int v);
++int check_ret(long expected_ret);
++int check_errno(long expected_errno);
++#endif
+-- 
+1.7.1
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c b/testcases/open_posix_testsuite/conforman
-index dfa6e19..48e1343 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
-@@ -277,6 +276,7 @@ int main(int argc, char *argv[])
-                do_it1 = 0;
-        } while (do_it1);
- 
-+       output("  %d thread detached while signals were firing.\n", count_ope);
-        sleep(1);
- 
-        do {
-
-I get:
-[16:11:23]  1 thread detached while signals are firing.
-[16:11:24]Test executed successfully.
-[16:11:24]  77865 thread detached.
-
-and that reported "1" is how many threads attempted to call pthread_detach, not how many actually
-succeeded. Signals are firing so frequently that threaded() can't progress at all.
-
-Regards,
-Jan
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
