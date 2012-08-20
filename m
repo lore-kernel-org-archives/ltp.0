@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <preeti@linux.vnet.ibm.com>) id 1Sqxfc-0002Jh-0c
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jul 2012 02:37:52 +0000
-Received: from e28smtp01.in.ibm.com ([122.248.162.1])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sqxfa-0007aI-NQ
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jul 2012 02:37:51 +0000
-Received: from /spool/local
-	by e28smtp01.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <preeti@linux.vnet.ibm.com>; 
-	Tue, 17 Jul 2012 08:07:42 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	q6H2bbVU50069722
-	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jul 2012 08:07:38 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	q6H879DN022909
-	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jul 2012 13:37:09 +0530
-Message-ID: <5004D28D.8020203@linux.vnet.ibm.com>
-Date: Tue, 17 Jul 2012 08:18:45 +0530
-From: preeti <preeti@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T3HcB-0002mL-BY
+	for ltp-list@lists.sourceforge.net; Mon, 20 Aug 2012 02:21:15 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T3HcA-0001vj-D0
+	for ltp-list@lists.sourceforge.net; Mon, 20 Aug 2012 02:21:15 +0000
+Message-ID: <50319F1D.1090906@windriver.com>
+Date: Mon, 20 Aug 2012 10:21:17 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <6F91E0FFDA542149961F7BDED2D2B94B568E0DED0D@EXGMBX01.sasken.com>
-In-Reply-To: <6F91E0FFDA542149961F7BDED2D2B94B568E0DED0D@EXGMBX01.sasken.com>
-Subject: Re: [LTP] Executing LTP one test at a time
+References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
+	<50301E06.9000102@cn.fujitsu.com> <5031955A.5060506@windriver.com>
+	<50319A82.3030500@cn.fujitsu.com>
+In-Reply-To: <50319A82.3030500@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,68 +26,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rejish Rajagopala <rejish.rajagopala@sasken.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-On 07/16/2012 06:35 PM, Rejish Rajagopala wrote:
-> Hi,
-Hi Rajish,
-> 
-> Please let me know is there way to execute single test using runltp script.
-
-Yes there is.when you run the command runltp -f cmdfile,runltp searches
-for the cmdfile under runtest.Under runtest are files for each
-subsystem,like fs,mm,sched etc each of which define how the test cases
-beneath them should run.
-
-> 
-> That is, I know we can execute user defined test cases through the command "runltp -f pty" but  is there a way so that I can run ltp like "runltp pty01" that is the test case directly through runltp script.
-
- So in the example that you have quoted,pty is the subsystem whose file
-is under runtest.you can edit this file by commenting out the rest of
-the scripts under pty.
-
-This might seem a bit more inconvenient than running runltp with some
-command line options but if you are not using the other scripts under
-pty,each time you run it,might as well comment them out.
-
->
-
-> 
-> 
-> Regards,
-> Rejish
-> 
-> SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
-> Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
-
-Regards,
-Preeti
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMjDml6UgMTA6MDEsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IE9uIDA4LzIw
+LzIwMTIgMDk6MzkgQU0sIEthbmcgS2FpIHdyb3RlOgo+PiBPbiAyMDEy5bm0MDjmnIgxOeaXpSAw
+Njo1OCwgV2FubG9uZyBHYW8gd3JvdGU6Cj4+PiBPbiAwOC8xNC8yMDEyIDA1OjAwIFBNLCBLYW5n
+IEthaSB3cm90ZToKPj4+PiBUaGlzIGNhc2UgZmFpbHMgcmFuZG9tbHkgd2l0aCAiU2VnbWVudGF0
+aW9uIGZhdWx0Ii4gUmVzZXQgVkVSQk9TRSB0byA2Cj4+Pj4gY2FuIGF2b2lkIHRoaXMgcHJvYmxl
+bS4KPj4+IENhbiB5b3UgZXhwbGFpbiB0aGF0IHdoeSAicmVzZXQgVkVSQk9TRSIgY2FuIGF2b2lk
+IHRoaXMgIlNlZyBGYXVsdCIgcHJvYmxlbT8KPj4gSXQgaXMgYSBtdWx0aS10aHJlYWQgaXNzdWUu
+IFlvdSBjYW4gcnVuIGl0IGZvciBsZXNzIHRoYW4gMTAgdGltZXMsIGFuZCBpdCB3aWxsIGZhaWwg
+d2l0aCAiU2VnbWVudGF0aW9uIGZhdWx0Ii4KPiBJIGRpZG4ndCBzZWUgdGhpcyBvbiBteSBzaWRl
+LgpJdCBmYWlscyBib3RoIG9uIG1pcHMgYW5kIHg4Nl82NC4KT24gdGhlIHg4Nl82NCwKY3B1OiAg
+SW50ZWwgSTcKT1M6ICAgVWJ1bnR1IDExLjEwCmxpYmM6ICBlZ2xpYmMgMi4xMwprZXJuZWw6IDMu
+MC4wLTEyLWdlbmVyaWMKCkhvdyBhYm91dCB0cnkgdGhpcyBzY3JpcHQgb24gYSB4ODZfNjQgbWFj
+aGluZToKZm9yIGkgaW4gJChzZXEgMTAwKTsgZG8gZWNobyAkaTsgIC4vNC0zLnJ1bi10ZXN0IDsg
+cmV0PSQ/OyBpZiBbICRyZXQgLW5lIAowIF07IHRoZW4gZWNobyAgJD8gOyBicmVhazsgZmk7ICBk
+b25lCgo+Cj4+IEl0IGlzIGhhcmQgdG8gZGVidWcgYW5kIEkgZGlkbid0IGZpbmQgdGhlIHJvb3Qg
+Y2F1c2UsIGJ1dCBvcGVuIHRoZSBWRVJCT1NFIHdpbGwgYXZvaWQgdGhpcyBzaXR1YXRpb24uIFNv
+IGl0IGlzIGEgd29ya2Fyb3VuZC4KPiBJJ2QgbGlrZSB0byBzZW5kIGEgcGF0Y2ggdG8gZml4IHRo
+aXMgdHlwbyBmaXJzdC4KRmluZS4KClJlZ2FyZHMsCkthaQoKPgo+IFRoYW5rcywKPiBXYW5sb25n
+IEdhbwo+Cj4+IFJlZ2FyZHMsCj4+IEthaQo+Pgo+Pj4+IEZpeCB0eXBvIGF0IHNhbWUgdGltZS4K
+Pj4+IFRoZSB0eXBvIGZpeCBpcyBPSy4KPj4+Cj4+PiBUaGFua3MsCj4+PiBXYW5sb25nIEdhbwo+
+Pj4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBLYW5nIEthaTxrYWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+
+Pj4+IC0tLQo+Pj4+ICAgIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNo
+LzQtMy5jICAgIHwgICAgNCArKy0tCj4+Pj4gICAgMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlv
+bnMoKyksIDIgZGVsZXRpb25zKC0pCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29w
+ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gv
+NC0zLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJm
+YWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4+IGluZGV4IDVjMTVlOTMuLjIzNzM4ZGMgMTAw
+NjQ0Cj4+Pj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNl
+L2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4+PiArKysgYi90ZXN0Y2FzZXMvb3Bl
+bl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80
+LTMuYwo+Pj4+IEBAIC00OSw3ICs0OSw3IEBACj4+Pj4gICAgI2luY2x1ZGUgIi4uL3Rlc3Rmcm13
+L3Rlc3Rmcm13LmMiCj4+Pj4KPj4+PiAgICAjaWZuZGVmIFZFUkJPU0UKPj4+PiAtI2RlZmluZSBW
+RVJCT1NFIDEKPj4+PiArI2RlZmluZSBWRVJCT1NFIDYKPj4+PiAgICAjZW5kaWYKPj4+Pgo+Pj4+
+ICAgICNkZWZpbmUgV0lUSF9TWU5DSFJPCj4+Pj4gQEAgLTI4MSw3ICsyODEsNyBAQCBpbnQgbWFp
+bihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+Pj4+Cj4+Pj4gICAgICAgIGRvIHsKPj4+PiAgICAg
+ICAgICAgIGRvX2l0MiA9IDA7Cj4+Pj4gLSAgICB9IHdoaWxlIChkb19pdDIgPSAwKTsKPj4+PiAr
+ICAgIH0gd2hpbGUgKGRvX2l0Mik7Cj4+Pj4KPj4+PiAgICAgICAgcmV0ID0gcHRocmVhZF9qb2lu
+KHRoX3NpZzEsIE5VTEwpOwo+Pj4+ICAgICAgICBpZiAocmV0KQo+Pj4+Cj4+Cj4KCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZl
+IGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQg
+CnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVz
+cG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxl
+IHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cu
+YWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
+c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
+Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
