@@ -2,23 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1SyZkk-0000k3-13
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 02:42:38 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T3dVf-0006Lk-Hp
+	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 01:43:59 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SyZki-00042I-6A
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 02:42:38 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q772atAi009743
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 10:36:55 +0800
-Message-ID: <50207F19.5080105@cn.fujitsu.com>
-Date: Tue, 07 Aug 2012 10:36:09 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	id 1T3dVd-0007Kd-M7
+	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 01:43:59 +0000
+Message-ID: <5032E5E7.4080500@cn.fujitsu.com>
+Date: Tue, 21 Aug 2012 09:35:35 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <501A3EA1.4010902@cn.fujitsu.com> <501F8DA0.6030104@cn.fujitsu.com>
-In-Reply-To: <501F8DA0.6030104@cn.fujitsu.com>
-Subject: [LTP] [PATCH v2] pthread_cond_brodcast/1-2.c hung when mem left is
- not enough
+References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
+	<50301E06.9000102@cn.fujitsu.com> <5031955A.5060506@windriver.com>
+	<50319A82.3030500@cn.fujitsu.com>
+	<50319F1D.1090906@windriver.com> <5032E504.30404@windriver.com>
+In-Reply-To: <5032E504.30404@windriver.com>
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,260 +28,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5249810997177184507=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-This is a multi-part message in MIME format.
---===============5249810997177184507==
-Content-Type: multipart/alternative;
-	boundary="------------050908080804020602060203"
-
-This is a multi-part message in MIME format.
---------------050908080804020602060203
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-
-pthread_cond_brodcast/1-2.c try to create as many childrens(thread or process)
-as possible,however,if current free memoryis exhausted before all childrens are
-started,the case will timeout and hung since it's stated with program "t0".
-  
-The patch adjust count of childrens according to judgement of size of current free
-memory.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
-  .../interfaces/pthread_cond_broadcast/1-2.c        |   39 ++++++++++++++++++--
-  1 files changed, 35 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-index f6ad9df..a31dc2b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-@@ -48,6 +48,7 @@
-  #include <sys/mman.h>
-  #include <sys/wait.h>
-  #include <semaphore.h>
-+#include <sys/sysinfo.h>
-  
-  #include "../testfrmw/testfrmw.h"
-  #include "../testfrmw/testfrmw.c"
-@@ -82,8 +83,8 @@
-  #endif
-  
-  /* Do not create more than this amount of children: */
--#define MAX_PROCESS_CHILDREN  (200)
--#define MAX_THREAD_CHILDREN   (1000)
-+static int max_process_children  = 200;
-+static int max_thread_children = 1000;
-  
-  #define TIMEOUT  (180)
-  
-@@ -242,6 +243,34 @@ void *timer(void *arg)
-  	FAILED_KILLALL("Operation timed out. A signal was lost.");
-  	return NULL; /* For compiler */
-  }
-+static int decide_process_children_count(void)
-+{
-+	struct sysinfo sysinforma;
-+	int ret;
-+	int avail_count;
-+	unsigned long memper;
-+	unsigned long min_stack;
-+
-+	min_stack = sysconf(_SC_THREAD_STACK_MIN);
-+
-+	ret = sysinfo(&sysinforma);
-+	if (ret != 0)
-+		UNRESOLVED(ret, "Failed to get system infomation.");
-+
-+	memper = min_stack * max_thread_children;
-+	if (memper > sysinforma.freeram)
-+		UNTESTED("Free ram not enough for test.");
-+
-+	avail_count = sysinforma.freeram / memper;
-+
-+	if (avail_count < 10)
-+		UNTESTED("Free ram not enough for test.");
-+
-+	max_process_children = (avail_count < max_process_children ?
-+					avail_count : max_process_children);
-+
-+	return 0;
-+}
-  
-  int main(int argc, char *argv[])
-  {
-@@ -268,6 +297,8 @@ int main(int argc, char *argv[])
-  
-  	output_init();
-  
-+	decide_process_children_count();
-+
-  	/* check the system abilities */
-  	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
-  	cs = sysconf(_SC_CLOCK_SELECTION);
-@@ -476,7 +507,7 @@ int main(int argc, char *argv[])
-  				} else {
-  					ret = errno;
-  				}
--			} while ((ret == 0) && (child_count < MAX_THREAD_CHILDREN));
-+			} while ((ret == 0) && (child_count < max_thread_children));
-  			#if VERBOSE > 2
-  			output("[parent] Created %i children threads\n", child_count);
-  			#endif
-@@ -504,7 +535,7 @@ int main(int argc, char *argv[])
-  				} else {
-  					ret = errno;
-  				}
--			} while ((ret == 0) && (child_count < MAX_PROCESS_CHILDREN));
-+			} while ((ret == 0) && (child_count < max_process_children));
-  			#if VERBOSE > 2
-  			output("[parent] Created %i children processes\n", child_count);
-  			#endif
--- 
-1.7.7.6
-
-
---------------050908080804020602060203
-Content-Transfer-Encoding: 7bit
-Content-Type: text/html; charset=ISO-8859-1
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <pre>pthread_cond_brodcast/1-2.c try to create as many childrens(thread or process) 
-as possible,however,if current free memory <span style="color: rgb(0, 0, 0); font-family: Arial; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: 2; text-align: -webkit-auto; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none; ">is exhaust</span>ed before all childrens are
-started,the case will timeout and hung since it's stated with program "t0".
-&nbsp;
-The patch adjust count of childrens according to judgement of size of current free
-memory.
-
-Signed-off-by: DAN LI <a class="moz-txt-link-rfc2396E" href="mailto:li.dan@cn.fujitsu.com">&lt;li.dan@cn.fujitsu.com&gt;</a>
----
- .../interfaces/pthread_cond_broadcast/1-2.c        |   39 ++++++++++++++++++--
- 1 files changed, 35 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-index f6ad9df..a31dc2b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-@@ -48,6 +48,7 @@
- #include &lt;sys/mman.h&gt;
- #include &lt;sys/wait.h&gt;
- #include &lt;semaphore.h&gt;
-+#include &lt;sys/sysinfo.h&gt;
- 
- #include "../testfrmw/testfrmw.h"
- #include "../testfrmw/testfrmw.c"
-@@ -82,8 +83,8 @@
- #endif
- 
- /* Do not create more than this amount of children: */
--#define MAX_PROCESS_CHILDREN  (200)
--#define MAX_THREAD_CHILDREN   (1000)
-+static int max_process_children  = 200;
-+static int max_thread_children = 1000;
- 
- #define TIMEOUT  (180)
- 
-@@ -242,6 +243,34 @@ void *timer(void *arg)
- 	FAILED_KILLALL("Operation timed out. A signal was lost.");
- 	return NULL; /* For compiler */
- }
-+static int decide_process_children_count(void)
-+{
-+	struct sysinfo sysinforma;
-+	int ret;
-+	int avail_count;
-+	unsigned long memper;
-+	unsigned long min_stack;
-+
-+	min_stack = sysconf(_SC_THREAD_STACK_MIN);
-+
-+	ret = sysinfo(&amp;sysinforma);
-+	if (ret != 0)
-+		UNRESOLVED(ret, "Failed to get system infomation.");
-+
-+	memper = min_stack * max_thread_children;
-+	if (memper &gt; sysinforma.freeram)
-+		UNTESTED("Free ram not enough for test.");
-+
-+	avail_count = sysinforma.freeram / memper;
-+
-+	if (avail_count &lt; 10)
-+		UNTESTED("Free ram not enough for test.");
-+
-+	max_process_children = (avail_count &lt; max_process_children ?
-+					avail_count : max_process_children);
-+
-+	return 0;
-+}
- 
- int main(int argc, char *argv[])
- {
-@@ -268,6 +297,8 @@ int main(int argc, char *argv[])
- 
- 	output_init();
- 
-+	decide_process_children_count();
-+
- 	/* check the system abilities */
- 	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
- 	cs = sysconf(_SC_CLOCK_SELECTION);
-@@ -476,7 +507,7 @@ int main(int argc, char *argv[])
- 				} else {
- 					ret = errno;
- 				}
--			} while ((ret == 0) &amp;&amp; (child_count &lt; MAX_THREAD_CHILDREN));
-+			} while ((ret == 0) &amp;&amp; (child_count &lt; max_thread_children));
- 			#if VERBOSE &gt; 2
- 			output("[parent] Created %i children threads\n", child_count);
- 			#endif
-@@ -504,7 +535,7 @@ int main(int argc, char *argv[])
- 				} else {
- 					ret = errno;
- 				}
--			} while ((ret == 0) &amp;&amp; (child_count &lt; MAX_PROCESS_CHILDREN));
-+			} while ((ret == 0) &amp;&amp; (child_count &lt; max_process_children));
- 			#if VERBOSE &gt; 2
- 			output("[parent] Created %i children processes\n", child_count);
- 			#endif
--- 
-1.7.7.6
-</pre>
-  </body>
-</html>
-
---------------050908080804020602060203--
-
-
---===============5249810997177184507==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============5249810997177184507==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5249810997177184507==--
-
+T24gMDgvMjEvMjAxMiAwOTozMSBBTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA45pyI
+MjDml6UgMTA6MjEsIEthbmcgS2FpIHdyb3RlOgo+PiBPbiAyMDEy5bm0MDjmnIgyMOaXpSAxMDow
+MSwgV2FubG9uZyBHYW8gd3JvdGU6Cj4+PiBPbiAwOC8yMC8yMDEyIDA5OjM5IEFNLCBLYW5nIEth
+aSB3cm90ZToKPj4+PiBPbiAyMDEy5bm0MDjmnIgxOeaXpSAwNjo1OCwgV2FubG9uZyBHYW8gd3Jv
+dGU6Cj4+Pj4+IE9uIDA4LzE0LzIwMTIgMDU6MDAgUE0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4g
+VGhpcyBjYXNlIGZhaWxzIHJhbmRvbWx5IHdpdGggIlNlZ21lbnRhdGlvbiBmYXVsdCIuIFJlc2V0
+IFZFUkJPU0UgdG8gNgo+Pj4+Pj4gY2FuIGF2b2lkIHRoaXMgcHJvYmxlbS4KPj4+Pj4gQ2FuIHlv
+dSBleHBsYWluIHRoYXQgd2h5ICJyZXNldCBWRVJCT1NFIiBjYW4gYXZvaWQgdGhpcyAiU2VnIEZh
+dWx0IiBwcm9ibGVtPwo+Pj4+IEl0IGlzIGEgbXVsdGktdGhyZWFkIGlzc3VlLiBZb3UgY2FuIHJ1
+biBpdCBmb3IgbGVzcyB0aGFuIDEwIHRpbWVzLCBhbmQgaXQgd2lsbCBmYWlsIHdpdGggIlNlZ21l
+bnRhdGlvbiBmYXVsdCIuCj4+PiBJIGRpZG4ndCBzZWUgdGhpcyBvbiBteSBzaWRlLgo+IAo+IEhp
+IFdhbmxvbmcsCj4gCj4+IEl0IGZhaWxzIGJvdGggb24gbWlwcyBhbmQgeDg2XzY0Lgo+PiBPbiB0
+aGUgeDg2XzY0LAo+PiBjcHU6ICBJbnRlbCBJNwo+PiBPUzogICBVYnVudHUgMTEuMTAKPj4gbGli
+YzogIGVnbGliYyAyLjEzCj4+IGtlcm5lbDogMy4wLjAtMTItZ2VuZXJpYwo+Pgo+PiBIb3cgYWJv
+dXQgdHJ5IHRoaXMgc2NyaXB0IG9uIGEgeDg2XzY0IG1hY2hpbmU6Cj4+IGZvciBpIGluICQoc2Vx
+IDEwMCk7IGRvIGVjaG8gJGk7ICAuLzQtMy5ydW4tdGVzdCA7IHJldD0kPzsgaWYgWyAkcmV0IC1u
+ZQo+PiAwIF07IHRoZW4gZWNobyAgJD8gOyBicmVhazsgZmk7ICBkb25lCj4gCj4gRG8geW91IG1l
+ZXQgdGhlICJTZWdtZW50YXRpb24gRmF1bHQiIHlldD8KCk5vdCB5ZXQuCgpUaGFua3MsCldhbmxv
+bmcgR2FvCgo+IAo+IFJlZ2FyZHMsCj4gS2FpCj4gCj4+Pj4gSXQgaXMgaGFyZCB0byBkZWJ1ZyBh
+bmQgSSBkaWRuJ3QgZmluZCB0aGUgcm9vdCBjYXVzZSwgYnV0IG9wZW4gdGhlIFZFUkJPU0Ugd2ls
+bCBhdm9pZCB0aGlzIHNpdHVhdGlvbi4gU28gaXQgaXMgYSB3b3JrYXJvdW5kLgo+Pj4gSSdkIGxp
+a2UgdG8gc2VuZCBhIHBhdGNoIHRvIGZpeCB0aGlzIHR5cG8gZmlyc3QuCj4+IEZpbmUuCj4+Cj4+
+IFJlZ2FyZHMsCj4+IEthaQo+Pgo+Pj4gVGhhbmtzLAo+Pj4gV2FubG9uZyBHYW8KPj4+Cj4+Pj4g
+UmVnYXJkcywKPj4+PiBLYWkKPj4+Pgo+Pj4+Pj4gRml4IHR5cG8gYXQgc2FtZSB0aW1lLgo+Pj4+
+PiBUaGUgdHlwbyBmaXggaXMgT0suCj4+Pj4+Cj4+Pj4+IFRoYW5rcywKPj4+Pj4gV2FubG9uZyBH
+YW8KPj4+Pj4KPj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEthbmcgS2FpPGthaS5rYW5nQHdpbmRyaXZl
+ci5jb20+Cj4+Pj4+PiAtLS0KPj4+Pj4+ICAgICAuLi4vY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9w
+dGhyZWFkX2RldGFjaC80LTMuYyAgICB8ICAgIDQgKystLQo+Pj4+Pj4gICAgIDEgZmlsZXMgY2hh
+bmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pj4+Pj4KPj4+Pj4+IGRpZmYg
+LS1naXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJm
+YWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0
+ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+Pj4+PiBpbmRl
+eCA1YzE1ZTkzLi4yMzczOGRjIDEwMDY0NAo+Pj4+Pj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9z
+aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMK
+Pj4+Pj4+ICsrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9p
+bnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+Pj4+PiBAQCAtNDksNyArNDksNyBAQAo+
+Pj4+Pj4gICAgICNpbmNsdWRlICIuLi90ZXN0ZnJtdy90ZXN0ZnJtdy5jIgo+Pj4+Pj4KPj4+Pj4+
+ICAgICAjaWZuZGVmIFZFUkJPU0UKPj4+Pj4+IC0jZGVmaW5lIFZFUkJPU0UgMQo+Pj4+Pj4gKyNk
+ZWZpbmUgVkVSQk9TRSA2Cj4+Pj4+PiAgICAgI2VuZGlmCj4+Pj4+Pgo+Pj4+Pj4gICAgICNkZWZp
+bmUgV0lUSF9TWU5DSFJPCj4+Pj4+PiBAQCAtMjgxLDcgKzI4MSw3IEBAIGludCBtYWluKGludCBh
+cmdjLCBjaGFyICphcmd2W10pCj4+Pj4+Pgo+Pj4+Pj4gICAgICAgICBkbyB7Cj4+Pj4+PiAgICAg
+ICAgICAgICBkb19pdDIgPSAwOwo+Pj4+Pj4gLSAgICB9IHdoaWxlIChkb19pdDIgPSAwKTsKPj4+
+Pj4+ICsgICAgfSB3aGlsZSAoZG9faXQyKTsKPj4+Pj4+Cj4+Pj4+PiAgICAgICAgIHJldCA9IHB0
+aHJlYWRfam9pbih0aF9zaWcxLCBOVUxMKTsKPj4+Pj4+ICAgICAgICAgaWYgKHJldCkKPj4+Pj4+
+Cj4+Cj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiBMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29u
+ZmVyZW5jZQo+PiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0
+b2RheSdzIHNlY3VyaXR5IGFuZAo+PiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBo
+b3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zCj4+IHdpbGwgaW5jbHVkZSBl
+bmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdh
+cmUKPj4gdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAx
+Mi8xMTQvNTAxMjIyNjMvCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCj4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+PiBMdHAtbGlzdEBsaXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vbHRwLWxpc3QKPiAKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGl2ZSBTZWN1cml0eSBW
+aXJ0dWFsIENvbmZlcmVuY2UKRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBjb3ZlciBhbGwgdGhl
+IHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQgCnRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQg
+YW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMgCndpbGwgaW5jbHVk
+ZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1h
+bHdhcmUgCnRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIw
+MTIvMTE0LzUwMTIyMjYzLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
