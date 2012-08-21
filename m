@@ -2,26 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Sz6zE-0002oO-Uk
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 14:11:48 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sz6zE-0004Xq-5Y
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 14:11:48 +0000
-Received: by yenm1 with SMTP id m1so780065yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 07:11:42 -0700 (PDT)
-Message-ID: <5022738E.4010201@casparzhang.com>
-Date: Wed, 08 Aug 2012 22:11:26 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	(envelope-from <Kai.Kang@windriver.com>) id 1T3dJz-0001Ll-4V
+	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 01:31:55 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T3dJx-0000d8-Oo
+	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 01:31:55 +0000
+Message-ID: <5032E504.30404@windriver.com>
+Date: Tue, 21 Aug 2012 09:31:48 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <134772967.3599142.1343297650967.JavaMail.root@redhat.com>
-	<6e0436fef24c3f2fc48066a4a08594704e657950.1343703178.git.caspar@casparzhang.com>
-	<CAGH67wQHxhA0XwEjjA+E9NRE-Mh6bh2DmuLXz4ory5XZPTN4DQ@mail.gmail.com>
-	<5022315D.1090709@casparzhang.com>
-	<11850AA3-DB90-4525-B168-AF39B8B4B373@gmail.com>
-In-Reply-To: <11850AA3-DB90-4525-B168-AF39B8B4B373@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls/numa: check syscall availability
+References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
+	<50301E06.9000102@cn.fujitsu.com> <5031955A.5060506@windriver.com>
+	<50319A82.3030500@cn.fujitsu.com> <50319F1D.1090906@windriver.com>
+In-Reply-To: <50319F1D.1090906@windriver.com>
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,55 +26,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-On 08/08/2012 05:46 PM, Garrett Cooper wrote:
-> On Aug 8, 2012, at 2:29 AM, Caspar Zhang wrote:
->
->> On 07/31/2012 11:57 AM, Garrett Cooper wrote:
->>> On Mon, Jul 30, 2012 at 7:53 PM, Caspar Zhang <caspar@casparzhang.com> wrote:
->>>>
->>>> some NUMA related syscalls: mbind, get_mempolicy are not supported on
->>>> some arches (e.g. i386), I use TEST macro to test the syscall in setup()
->>>> function, if the syscall is not implemented on the system, a TCONF
->>>> message will given like this:
->>>>
->>>> get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
->>>
->>>      Using TEST isn't necessary to be honest: the syscall wrapper
->>> handles the (if you add a comment as to why things are being done in a
->>> single line, untested, that should be ok).
->>> Thanks!
->>> -Garrett
->>>
->>
->> Hi Garrett, sorry I'm kind of not catching you :-( what's your suggestion of correcting/improving this message?
->
-> 	I'd remove "TEST(..)" from the line and just use the syscall function call.
-> 	If you want, we can make syscall more explicit as far as a custom wrapper goes.
-
-OK, I'll remove TEST() and resend the patch.
-
-Thanks,
-Caspar
-
-> Cheers!
-> -Garrett
->
-
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMjDml6UgMTA6MjEsIEthbmcgS2FpIHdyb3RlOgo+IE9uIDIwMTLlubQw
+OOaciDIw5pelIDEwOjAxLCBXYW5sb25nIEdhbyB3cm90ZToKPj4gT24gMDgvMjAvMjAxMiAwOToz
+OSBBTSwgS2FuZyBLYWkgd3JvdGU6Cj4+PiBPbiAyMDEy5bm0MDjmnIgxOeaXpSAwNjo1OCwgV2Fu
+bG9uZyBHYW8gd3JvdGU6Cj4+Pj4gT24gMDgvMTQvMjAxMiAwNTowMCBQTSwgS2FuZyBLYWkgd3Jv
+dGU6Cj4+Pj4+IFRoaXMgY2FzZSBmYWlscyByYW5kb21seSB3aXRoICJTZWdtZW50YXRpb24gZmF1
+bHQiLiBSZXNldCBWRVJCT1NFIHRvIDYKPj4+Pj4gY2FuIGF2b2lkIHRoaXMgcHJvYmxlbS4KPj4+
+PiBDYW4geW91IGV4cGxhaW4gdGhhdCB3aHkgInJlc2V0IFZFUkJPU0UiIGNhbiBhdm9pZCB0aGlz
+ICJTZWcgRmF1bHQiIHByb2JsZW0/Cj4+PiBJdCBpcyBhIG11bHRpLXRocmVhZCBpc3N1ZS4gWW91
+IGNhbiBydW4gaXQgZm9yIGxlc3MgdGhhbiAxMCB0aW1lcywgYW5kIGl0IHdpbGwgZmFpbCB3aXRo
+ICJTZWdtZW50YXRpb24gZmF1bHQiLgo+PiBJIGRpZG4ndCBzZWUgdGhpcyBvbiBteSBzaWRlLgoK
+SGkgV2FubG9uZywKCj4gSXQgZmFpbHMgYm90aCBvbiBtaXBzIGFuZCB4ODZfNjQuCj4gT24gdGhl
+IHg4Nl82NCwKPiBjcHU6ICBJbnRlbCBJNwo+IE9TOiAgIFVidW50dSAxMS4xMAo+IGxpYmM6ICBl
+Z2xpYmMgMi4xMwo+IGtlcm5lbDogMy4wLjAtMTItZ2VuZXJpYwo+Cj4gSG93IGFib3V0IHRyeSB0
+aGlzIHNjcmlwdCBvbiBhIHg4Nl82NCBtYWNoaW5lOgo+IGZvciBpIGluICQoc2VxIDEwMCk7IGRv
+IGVjaG8gJGk7ICAuLzQtMy5ydW4tdGVzdCA7IHJldD0kPzsgaWYgWyAkcmV0IC1uZQo+IDAgXTsg
+dGhlbiBlY2hvICAkPyA7IGJyZWFrOyBmaTsgIGRvbmUKCkRvIHlvdSBtZWV0IHRoZSAiU2VnbWVu
+dGF0aW9uIEZhdWx0IiB5ZXQ/CgpSZWdhcmRzLApLYWkKCj4+PiBJdCBpcyBoYXJkIHRvIGRlYnVn
+IGFuZCBJIGRpZG4ndCBmaW5kIHRoZSByb290IGNhdXNlLCBidXQgb3BlbiB0aGUgVkVSQk9TRSB3
+aWxsIGF2b2lkIHRoaXMgc2l0dWF0aW9uLiBTbyBpdCBpcyBhIHdvcmthcm91bmQuCj4+IEknZCBs
+aWtlIHRvIHNlbmQgYSBwYXRjaCB0byBmaXggdGhpcyB0eXBvIGZpcnN0Lgo+IEZpbmUuCj4KPiBS
+ZWdhcmRzLAo+IEthaQo+Cj4+IFRoYW5rcywKPj4gV2FubG9uZyBHYW8KPj4KPj4+IFJlZ2FyZHMs
+Cj4+PiBLYWkKPj4+Cj4+Pj4+IEZpeCB0eXBvIGF0IHNhbWUgdGltZS4KPj4+PiBUaGUgdHlwbyBm
+aXggaXMgT0suCj4+Pj4KPj4+PiBUaGFua3MsCj4+Pj4gV2FubG9uZyBHYW8KPj4+Pgo+Pj4+PiBT
+aWduZWQtb2ZmLWJ5OiBLYW5nIEthaTxrYWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+Pj4+PiAtLS0K
+Pj4+Pj4gICAgIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5j
+ICAgIHwgICAgNCArKy0tCj4+Pj4+ICAgICAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
+KSwgMiBkZWxldGlvbnMoLSkKPj4+Pj4KPj4+Pj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVu
+X3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQt
+My5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
+ZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4+Pj4gaW5kZXggNWMxNWU5My4uMjM3MzhkYyAxMDA2
+NDQKPj4+Pj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNl
+L2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4+Pj4gKysrIGIvdGVzdGNhc2VzL29w
+ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gv
+NC0zLmMKPj4+Pj4gQEAgLTQ5LDcgKzQ5LDcgQEAKPj4+Pj4gICAgICNpbmNsdWRlICIuLi90ZXN0
+ZnJtdy90ZXN0ZnJtdy5jIgo+Pj4+Pgo+Pj4+PiAgICAgI2lmbmRlZiBWRVJCT1NFCj4+Pj4+IC0j
+ZGVmaW5lIFZFUkJPU0UgMQo+Pj4+PiArI2RlZmluZSBWRVJCT1NFIDYKPj4+Pj4gICAgICNlbmRp
+Zgo+Pj4+Pgo+Pj4+PiAgICAgI2RlZmluZSBXSVRIX1NZTkNIUk8KPj4+Pj4gQEAgLTI4MSw3ICsy
+ODEsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+Pj4+Pgo+Pj4+PiAgICAg
+ICAgIGRvIHsKPj4+Pj4gICAgICAgICAgICAgZG9faXQyID0gMDsKPj4+Pj4gLSAgICB9IHdoaWxl
+IChkb19pdDIgPSAwKTsKPj4+Pj4gKyAgICB9IHdoaWxlIChkb19pdDIpOwo+Pj4+Pgo+Pj4+PiAg
+ICAgICAgIHJldCA9IHB0aHJlYWRfam9pbih0aF9zaWcxLCBOVUxMKTsKPj4+Pj4gICAgICAgICBp
+ZiAocmV0KQo+Pj4+Pgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gTGl2ZSBTZWN1cml0eSBW
+aXJ0dWFsIENvbmZlcmVuY2UKPiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0
+aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZAo+IHRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5n
+ZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4gcmVzcG9uZC4gRGlzY3Vzc2lvbnMKPiB3aWxsIGlu
+Y2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBp
+biBtYWx3YXJlCj4gdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2Zybmww
+NDI0MjAxMi8xMTQvNTAxMjIyNjMvCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
+aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1
+YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5
+cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQg
+aG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVu
+ZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2Fy
+ZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8x
+MTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
