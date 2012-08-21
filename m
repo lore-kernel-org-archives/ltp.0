@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Sya5m-0005vB-4M
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 03:04:22 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sya5k-0005AD-R8
-	for ltp-list@lists.sourceforge.net; Tue, 07 Aug 2012 03:04:22 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7733lKQ011617
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Aug 2012 11:04:14 +0800
-Message-ID: <50208562.3030401@cn.fujitsu.com>
-Date: Tue, 07 Aug 2012 11:02:58 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1T3l1q-0005qY-6n
+	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 09:45:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T3l1m-0008Eh-Uc
+	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 09:45:42 +0000
+Message-ID: <503358B5.8070106@redhat.com>
+Date: Tue, 21 Aug 2012 11:45:25 +0200
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <501A3EA1.4010902@cn.fujitsu.com> <501F8DA0.6030104@cn.fujitsu.com>
-	<50207F19.5080105@cn.fujitsu.com>
-In-Reply-To: <50207F19.5080105@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] pthread_cond_brodcast/1-2.c hung when mem left
- is not enough
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>	<50301E06.9000102@cn.fujitsu.com>
+	<5031955A.5060506@windriver.com>	<50319A82.3030500@cn.fujitsu.com>	<50319F1D.1090906@windriver.com>
+	<5032E504.30404@windriver.com>	<5032E5E7.4080500@cn.fujitsu.com>
+	<503353BA.6040309@windriver.com>
+In-Reply-To: <503353BA.6040309@windriver.com>
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,143 +27,111 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-On 08/07/2012 10:36 AM, DAN LI wrote:
-> pthread_cond_brodcast/1-2.c try to create as many childrens(thread or process) 
-> as possible,however,if current free memory is exhausted before all childrens are
-> started,the case will timeout and hung since it's stated with program "t0".
->  
-> The patch adjust count of childrens according to judgement of size of current free
-> memory.
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> ---
->  .../interfaces/pthread_cond_broadcast/1-2.c        |   39 ++++++++++++++++++--
->  1 files changed, 35 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-> index f6ad9df..a31dc2b 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-> @@ -48,6 +48,7 @@
->  #include <sys/mman.h>
->  #include <sys/wait.h>
->  #include <semaphore.h>
-> +#include <sys/sysinfo.h>
->  
->  #include "../testfrmw/testfrmw.h"
->  #include "../testfrmw/testfrmw.c"
-> @@ -82,8 +83,8 @@
->  #endif
->  
->  /* Do not create more than this amount of children: */
-> -#define MAX_PROCESS_CHILDREN  (200)
-> -#define MAX_THREAD_CHILDREN   (1000)
-> +static int max_process_children  = 200;
-> +static int max_thread_children = 1000;
->  
->  #define TIMEOUT  (180)
->  
-> @@ -242,6 +243,34 @@ void *timer(void *arg)
->  	FAILED_KILLALL("Operation timed out. A signal was lost.");
->  	return NULL; /* For compiler */
->  }
-> +static int decide_process_children_count(void)
-> +{
-> +	struct sysinfo sysinforma;
-> +	int ret;
-> +	int avail_count;
-> +	unsigned long memper;
-> +	unsigned long min_stack;
-> +
-> +	min_stack = sysconf(_SC_THREAD_STACK_MIN);
-> +
-> +	ret = sysinfo(&sysinforma);
-
-This is a linux specific function, so you can define this function
-like this
-
-#ifdef __linux__
-static void decide_xxx(void)
-{
-	xxx
-	xxx
-}
-#else
-static void decide_xxx(void)
-{
-	return;
-}
-#endif
-
-Thanks,
-Wanlong Gao
-
-
-> +	if (ret != 0)
-> +		UNRESOLVED(ret, "Failed to get system infomation.");
-> +
-> +	memper = min_stack * max_thread_children;
-> +	if (memper > sysinforma.freeram)
-> +		UNTESTED("Free ram not enough for test.");
-> +
-> +	avail_count = sysinforma.freeram / memper;
-> +
-> +	if (avail_count < 10)
-> +		UNTESTED("Free ram not enough for test.");
-> +
-> +	max_process_children = (avail_count < max_process_children ?
-> +					avail_count : max_process_children);
-> +
-> +	return 0;
-> +}
->  
->  int main(int argc, char *argv[])
->  {
-> @@ -268,6 +297,8 @@ int main(int argc, char *argv[])
->  
->  	output_init();
->  
-> +	decide_process_children_count();
-> +
->  	/* check the system abilities */
->  	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
->  	cs = sysconf(_SC_CLOCK_SELECTION);
-> @@ -476,7 +507,7 @@ int main(int argc, char *argv[])
->  				} else {
->  					ret = errno;
->  				}
-> -			} while ((ret == 0) && (child_count < MAX_THREAD_CHILDREN));
-> +			} while ((ret == 0) && (child_count < max_thread_children));
->  			#if VERBOSE > 2
->  			output("[parent] Created %i children threads\n", child_count);
->  			#endif
-> @@ -504,7 +535,7 @@ int main(int argc, char *argv[])
->  				} else {
->  					ret = errno;
->  				}
-> -			} while ((ret == 0) && (child_count < MAX_PROCESS_CHILDREN));
-> +			} while ((ret == 0) && (child_count < max_process_children));
->  			#if VERBOSE > 2
->  			output("[parent] Created %i children processes\n", child_count);
->  			#endif
-> -- 
-> 1.7.7.6
-> 
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDgvMjEvMjAxMiAxMToyNCBBTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA45pyI
+MjHml6UgMDk6MzUsIFdhbmxvbmcgR2FvIHdyb3RlOgo+PiBPbiAwOC8yMS8yMDEyIDA5OjMxIEFN
+LCBLYW5nIEthaSB3cm90ZToKPj4+IE9uIDIwMTLlubQwOOaciDIw5pelIDEwOjIxLCBLYW5nIEth
+aSB3cm90ZToKPj4+PiBPbiAyMDEy5bm0MDjmnIgyMOaXpSAxMDowMSwgV2FubG9uZyBHYW8gd3Jv
+dGU6Cj4+Pj4+IE9uIDA4LzIwLzIwMTIgMDk6MzkgQU0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4g
+T24gMjAxMuW5tDA45pyIMTnml6UgMDY6NTgsIFdhbmxvbmcgR2FvIHdyb3RlOgo+Pj4+Pj4+IE9u
+IDA4LzE0LzIwMTIgMDU6MDAgUE0sIEthbmcgS2FpIHdyb3RlOgo+Pj4+Pj4+PiBUaGlzIGNhc2Ug
+ZmFpbHMgcmFuZG9tbHkgd2l0aCAiU2VnbWVudGF0aW9uIGZhdWx0Ii4gUmVzZXQgVkVSQk9TRSB0
+byA2Cj4+Pj4+Pj4+IGNhbiBhdm9pZCB0aGlzIHByb2JsZW0uCj4+Pj4+Pj4gQ2FuIHlvdSBleHBs
+YWluIHRoYXQgd2h5ICJyZXNldCBWRVJCT1NFIiBjYW4gYXZvaWQgdGhpcyAiU2VnIEZhdWx0IiBw
+cm9ibGVtPwo+Pj4+Pj4gSXQgaXMgYSBtdWx0aS10aHJlYWQgaXNzdWUuIFlvdSBjYW4gcnVuIGl0
+IGZvciBsZXNzIHRoYW4gMTAgdGltZXMsIGFuZCBpdCB3aWxsIGZhaWwgd2l0aCAiU2VnbWVudGF0
+aW9uIGZhdWx0Ii4KPj4+Pj4gSSBkaWRuJ3Qgc2VlIHRoaXMgb24gbXkgc2lkZS4KPj4+IEhpIFdh
+bmxvbmcsCj4+Pgo+Pj4+IEl0IGZhaWxzIGJvdGggb24gbWlwcyBhbmQgeDg2XzY0Lgo+Pj4+IE9u
+IHRoZSB4ODZfNjQsCj4+Pj4gY3B1OiAgSW50ZWwgSTcKPj4+PiBPUzogICBVYnVudHUgMTEuMTAK
+Pj4+PiBsaWJjOiAgZWdsaWJjIDIuMTMKPj4+PiBrZXJuZWw6IDMuMC4wLTEyLWdlbmVyaWMKPj4+
+Pgo+Pj4+IEhvdyBhYm91dCB0cnkgdGhpcyBzY3JpcHQgb24gYSB4ODZfNjQgbWFjaGluZToKPj4+
+PiBmb3IgaSBpbiAkKHNlcSAxMDApOyBkbyBlY2hvICRpOyAgLi80LTMucnVuLXRlc3QgOyByZXQ9
+JD87IGlmIFsgJHJldCAtbmUKPj4+PiAwIF07IHRoZW4gZWNobyAgJD8gOyBicmVhazsgZmk7ICBk
+b25lCj4+PiBEbyB5b3UgbWVldCB0aGUgIlNlZ21lbnRhdGlvbiBGYXVsdCIgeWV0Pwo+IAo+IEhp
+IFdhbmxvbmcsCj4+IE5vdCB5ZXQuCj4gSSB0ZXN0IGl0IG9uIHg4Nl82NCB3aXRoIFJlZGhhdCA1
+LjMsIGl0IGRvZXNuJ3QgZmFpbC4KCkkgdHJpZWQgdG8gcmVwcm9kdWNlIGl0IG9uIHg4Nl82NCBS
+SEVMNi83IChyZWFsIGh3K2t2bSkgYW5kIHVidW50dS0xMi4wNC1zZXJ2ZXIgKGt2bSksCmJ1dCB3
+aXRob3V0IGFueSBsdWNrLgoKSSBzcG90dGVkIG9uZSBwb3NzaWJsZSBpc3N1ZToKCmRpZmYgLS1n
+aXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9wdGhyZWFkX2RldGFjaC80LTMuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9j
+b25mb3JtYW4KaW5kZXggNWMxNWU5My4uN2I3MzhlNyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL29w
+ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gv
+NC0zLmMKKysrIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2lu
+dGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKQEAgLTEyOSw5ICsxMjksMTMgQEAgc3RhdGlj
+IHZvaWQgKnRocmVhZGVkKHZvaWQgKmFyZykKICAgICAgICAgICAgICAgIFVOUkVTT0xWRUQocmV0
+LCAiVW5hYmxlIHRvIHVuYmxvY2sgU0lHVVNSMSBhbmQgU0lHVVNSMiIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIiBpbiB3b3JrZXIgdGhyZWFkIik7CiAKLSAgICAgICByZXQgPSBwdGhyZWFk
+X2RldGFjaChwdGhyZWFkX3NlbGYoKSk7Ci0gICAgICAgaWYgKHJldCA9PSBFSU5UUikKLSAgICAg
+ICAgICAgICAgIEZBSUxFRCgicHRocmVhZF9kZXRhY2goKSByZXR1cm5lZCBFSU5UUiIpOworICAg
+ICAgIC8qIEF0dGVtcHRpbmcgdG8gZGV0YWNoIGFuIGFscmVhZHkgZGV0YWNoZWQgdGhyZWFkIHJl
+c3VsdHMKKyAgICAgICAgKiBpbiB1bnNwZWNpZmllZCBiZWhhdmlvciAqLworICAgICAgIGlmIChz
+Y2VuYXJpaVtzY10uZGV0YWNoZWQgIT0gMSkgeworICAgICAgICAgICAgICAgcmV0ID0gcHRocmVh
+ZF9kZXRhY2gocHRocmVhZF9zZWxmKCkpOworICAgICAgICAgICAgICAgaWYgKHJldCA9PSBFSU5U
+UikKKyAgICAgICAgICAgICAgICAgICAgICAgRkFJTEVEKCJwdGhyZWFkX2RldGFjaCgpIHJldHVy
+bmVkIEVJTlRSIik7CisgICAgICAgfQogCiAgICAgICAgLyogU2lnbmFsIHdlJ3JlIGRvbmUgKi8K
+ICAgICAgICBkbyB7CgpSZWdhcmRzLApKYW4KCj4gSSB0cnkgdG8gY29tcGFyZSB0aGVtIHRvIGZp
+bmQgd2h5IGl0IGZhaWxzIHdpdGggVWJ1bnR1IDExLjEwLgo+IAo+IFRoYW5rcywKPiBLYWkKPiAK
+Pj4KPj4gVGhhbmtzLAo+PiBXYW5sb25nIEdhbwo+Pgo+Pj4gUmVnYXJkcywKPj4+IEthaQo+Pj4K
+Pj4+Pj4+IEl0IGlzIGhhcmQgdG8gZGVidWcgYW5kIEkgZGlkbid0IGZpbmQgdGhlIHJvb3QgY2F1
+c2UsIGJ1dCBvcGVuIHRoZSBWRVJCT1NFIHdpbGwgYXZvaWQgdGhpcyBzaXR1YXRpb24uIFNvIGl0
+IGlzIGEgd29ya2Fyb3VuZC4KPj4+Pj4gSSdkIGxpa2UgdG8gc2VuZCBhIHBhdGNoIHRvIGZpeCB0
+aGlzIHR5cG8gZmlyc3QuCj4+Pj4gRmluZS4KPj4+Pgo+Pj4+IFJlZ2FyZHMsCj4+Pj4gS2FpCj4+
+Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+PiBXYW5sb25nIEdhbwo+Pj4+Pgo+Pj4+Pj4gUmVnYXJkcywK
+Pj4+Pj4+IEthaQo+Pj4+Pj4KPj4+Pj4+Pj4gRml4IHR5cG8gYXQgc2FtZSB0aW1lLgo+Pj4+Pj4+
+IFRoZSB0eXBvIGZpeCBpcyBPSy4KPj4+Pj4+Pgo+Pj4+Pj4+IFRoYW5rcywKPj4+Pj4+PiBXYW5s
+b25nIEdhbwo+Pj4+Pj4+Cj4+Pj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEthbmcgS2FpPGthaS5rYW5n
+QHdpbmRyaXZlci5jb20+Cj4+Pj4+Pj4+IC0tLQo+Pj4+Pj4+PiAgICAgIC4uLi9jb25mb3JtYW5j
+ZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jICAgIHwgICAgNCArKy0tCj4+Pj4+Pj4+
+ICAgICAgMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+
+Pj4+Pj4+Cj4+Pj4+Pj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYyBiL3Rlc3RjYXNl
+cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0
+YWNoLzQtMy5jCj4+Pj4+Pj4+IGluZGV4IDVjMTVlOTMuLjIzNzM4ZGMgMTAwNjQ0Cj4+Pj4+Pj4+
+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZh
+Y2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+Pj4+Pj4+ICsrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bv
+c2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5j
+Cj4+Pj4+Pj4+IEBAIC00OSw3ICs0OSw3IEBACj4+Pj4+Pj4+ICAgICAgI2luY2x1ZGUgIi4uL3Rl
+c3Rmcm13L3Rlc3Rmcm13LmMiCj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICAgI2lmbmRlZiBWRVJCT1NF
+Cj4+Pj4+Pj4+IC0jZGVmaW5lIFZFUkJPU0UgMQo+Pj4+Pj4+PiArI2RlZmluZSBWRVJCT1NFIDYK
+Pj4+Pj4+Pj4gICAgICAjZW5kaWYKPj4+Pj4+Pj4KPj4+Pj4+Pj4gICAgICAjZGVmaW5lIFdJVEhf
+U1lOQ0hSTwo+Pj4+Pj4+PiBAQCAtMjgxLDcgKzI4MSw3IEBAIGludCBtYWluKGludCBhcmdjLCBj
+aGFyICphcmd2W10pCj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICAgICAgIGRvIHsKPj4+Pj4+Pj4gICAg
+ICAgICAgICAgIGRvX2l0MiA9IDA7Cj4+Pj4+Pj4+IC0gICAgfSB3aGlsZSAoZG9faXQyID0gMCk7
+Cj4+Pj4+Pj4+ICsgICAgfSB3aGlsZSAoZG9faXQyKTsKPj4+Pj4+Pj4KPj4+Pj4+Pj4gICAgICAg
+ICAgcmV0ID0gcHRocmVhZF9qb2luKHRoX3NpZzEsIE5VTEwpOwo+Pj4+Pj4+PiAgICAgICAgICBp
+ZiAocmV0KQo+Pj4+Pj4+Pgo+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Pj4+IExpdmUgU2Vj
+dXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCj4+Pj4gRXhjbHVzaXZlIGxpdmUgZXZlbnQgd2lsbCBj
+b3ZlciBhbGwgdGhlIHdheXMgdG9kYXkncyBzZWN1cml0eSBhbmQKPj4+PiB0aHJlYXQgbGFuZHNj
+YXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Np
+b25zCj4+Pj4gd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkg
+YW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZQo+Pj4+IHRocmVhdHMuIGh0dHA6Ly93d3cuYWNjZWxh
+Y29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwo+Pj4+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4gTHRwLWxpc3QgbWFpbGlu
+ZyBsaXN0Cj4+Pj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4+Pj4gaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPj4+Cj4+Cj4gCj4g
+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVu
+Y2UKPiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdz
+IHNlY3VyaXR5IGFuZCAKPiB0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQg
+bWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAo+IHdpbGwgaW5jbHVkZSBlbmRwb2lu
+dCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUgCj4g
+dGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQv
+NTAxMjIyNjMvCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
+dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5j
+ZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNl
+Y3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFn
+ZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3Vy
+aXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4g
+aHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMv
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0
+IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
