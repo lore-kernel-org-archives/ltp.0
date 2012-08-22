@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1T6Heu-000800-Pt
-	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:00:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6Heo-00021z-99
-	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:00:28 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7S90FLM032323
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Aug 2012 17:00:16 +0800
-Message-ID: <503C8866.9000909@cn.fujitsu.com>
-Date: Tue, 28 Aug 2012 16:59:18 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T46JC-00063e-G4
+	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 08:29:02 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T46J8-0000MS-E9
+	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 08:29:02 +0000
+Message-ID: <5034984B.3020905@windriver.com>
+Date: Wed, 22 Aug 2012 16:28:59 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2]sigpause/3-1.c Clean up
+References: <2056136406.8818538.1345619173970.JavaMail.root@redhat.com>
+In-Reply-To: <2056136406.8818538.1345619173970.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,111 +24,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng@suse.de, Zhao <Zhenfeng.Zhao@windriver.com>
 
-Clean up sigpause/3-1.c.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- .../conformance/interfaces/sigpause/3-1.c          |   34
-++++++++++----------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
-diff --git
-a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-index 2fa7504..00024ed 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-@@ -32,7 +32,8 @@
- int result = 2;
- int sem = INMAIN;
-
--void handler() {
-+void handler()
-+{
- 	printf("signal was called\n");
- 	return;
- }
-@@ -48,18 +49,20 @@ void *a_thread_func()
- 	return_value = sigpause(SIGTOTEST);
- 	if (return_value == -1) {
- 		if (errno == EINTR) {
--			printf ("Test PASSED: sigpause returned -1 and set errno to EINTR\n");
-+			printf("Test PASSED: sigpause returned -1 "
-+					"and set errno to EINTR\n");
- 			result = 0;
- 		} else {
--			printf ("Test FAILED: sigpause did not set errno to EINTR\n");
-+			printf("Test FAILED: sigpause did not "
-+					"set errno to EINTR\n");
- 			result = 1;
- 		}
- 	} else {
--		if (errno == EINTR) {
--			printf ("Test FAILED: sigpause did not return -1\n");
--		}
--		printf ("Test FAILED: sigpause did not set errno to EINTR\n");
--		printf ("Test FAILED: sigpause did not return -1\n");
-+		if (errno == EINTR)
-+			printf("Test FAILED: sigpause did not return -1\n");
-+
-+		printf("Test FAILED: sigpause did not set errno to EINTR\n");
-+		printf("Test FAILED: sigpause did not return -1\n");
- 		result = 1;
-
- 	}
-@@ -71,16 +74,14 @@ int main()
- {
- 	pthread_t new_th;
-
--	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0)
--	{
-+	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0) {
- 		perror("Error creating thread\n");
- 		return PTS_UNRESOLVED;
- 	}
-
- 	sleep(1);
-
--	if (pthread_kill(new_th, SIGTOTEST) != 0)
--	{
-+	if (pthread_kill(new_th, SIGTOTEST) != 0) {
- 		printf("Test UNRESOLVED: Couldn't send signal to thread\n");
- 		return PTS_UNRESOLVED;
- 	}
-@@ -89,13 +90,12 @@ int main()
- 	while (sem == INTHREAD)
- 		sleep(1);
-
--	if (result == 2) {
-+	if (result == 2)
- 		return PTS_UNRESOLVED;
--	}
--	if (result == 1) {
-+
-+	if (result == 1)
- 		return PTS_FAIL;
--	}
-
- 	printf("Test PASSED\n");
- 	return PTS_PASS;
--}
-\ No newline at end of file
-+}
--- 
-1.7.10.2
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMjLml6UgMTU6MDYsIEphbiBTdGFuY2VrIHdyb3RlOgo+Cj4gLS0tLS0g
+T3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdpbmRy
+aXZlci5jb20+Cj4+IFRvOiAiSmFuIFN0YW5jZWsiPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4+IENj
+OiBnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tLCBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQsICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVuZy5aaGFvQHdpbmRyaXZlci5jb20+Cj4+IFNlbnQ6
+IFdlZG5lc2RheSwgMjIgQXVndXN0LCAyMDEyIDQ6Mjk6MjUgQU0KPj4gU3ViamVjdDogUmU6IFtM
+VFBdIFtQQVRDSF0gcHRocmVhZF9kZXRhY2gvNC0zOiB3b3JrYXJvdW5kIGZvciBzZWdtZW50IGZh
+dWx0Cj4+Cj4+IE9uIDIwMTLlubQwOOaciDIx5pelIDE4OjM1LCBKYW4gU3RhbmNlayB3cm90ZToK
+Pj4+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPj4+PiBGcm9tOiAiS2FuZyBLYWkiPEth
+aS5LYW5nQHdpbmRyaXZlci5jb20+Cj4+Pj4gVG86ICJKYW4gU3RhbmNlayI8anN0YW5jZWtAcmVk
+aGF0LmNvbT4KPj4+PiBDYzogZ2Fvd2FubG9uZ0Bjbi5mdWppdHN1LmNvbSwgbHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0LAo+Pj4+ICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVuZy5aaGFvQHdp
+bmRyaXZlci5jb20+Cj4+Pj4gU2VudDogVHVlc2RheSwgMjEgQXVndXN0LCAyMDEyIDExOjU5OjE5
+IEFNCj4+Pj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSF0gcHRocmVhZF9kZXRhY2gvNC0zOiB3
+b3JrYXJvdW5kIGZvcgo+Pj4+IHNlZ21lbnQgZmF1bHQKPj4+IDxzbmlwPgo+Pj4KPj4+PiBIaSBK
+YW4sCj4+Pj4KPj4+PiBUaGFua3MuCj4+Pj4gSSBhbSBzb3JyeSB0aGF0IEl0IGRvZXNuJ3Qgd29y
+ayBhbmQgc3RpbGwgInNlZ21lbnQgZmF1bHQiLgo+Pj4gTWF5YmUgd2UgY2FuIG5hcnJvdyBpdCBk
+b3duIGJ5IHJ1bm5pbmcgb25seSBzdWJzZXQgb2Ygc2NlbmFyaW9zLgo+Pj4gSSB3b3VsZCBzdWdn
+ZXN0IHRyeWluZyB0byBsaW1pdCAic2MiIG9yICJOU0NFTkFSIiBhbmQgc2VlIHdoaWNoCj4+PiBv
+bmUgdHJpZ2dlcnMgaXQuCj4+Pgo+Pj4gQW5vdGhlciB0aGluZyB0aGF0IGxvb2tzIHN1c3BpY2lv
+dXMgYXJlIHNjZW5hcmlvcyB3aXRoIGFsdHN0YWNrLAo+Pj4gdGhlcmUgc2VlbXMKPj4+IHRvIGJl
+IHNtYWxsIHdpbmRvdyB3aGVyZSBtb3JlIHRoYW4gMSB0aHJlYWQgY2FuIHVzZSBzYW1lIGFsdHN0
+YWNrLgo+Pj4gQ2FuIHlvdSB0cnkgdG8gcmVwcm9kdWNlIGl0IHdpdGhvdXQgYWx0c3RhY2sgc2Nl
+bmFyaW9zPwo+Pj4KPj4+IGRpZmYgLS1naXQKPj4+IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVz
+dHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPj4+IGIv
+dGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbgo+Pj4gaW5kZXggNWMxNWU5
+My4uNjNiNmVlNyAxMDA2NDQKPj4+IC0tLQo+Pj4gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0
+c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+Pj4gKysr
+Cj4+PiBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZh
+Y2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jCj4+PiBAQCAtMTYyLDYgKzE2MiwxMSBAQCBzdGF0aWMg
+dm9pZCAqdGVzdCh2b2lkICphcmcpCj4+PiAgICAgICAgICAgICAgICAgICBvdXRwdXQoIlN0YXJ0
+aW5nIHRlc3Qgd2l0aCBzY2VuYXJpbyAoJWkpOiAlc1xuIiwKPj4+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICBzYywgc2NlbmFyaWlbc2NdLmRlc2NyKTsKPj4+ICAgICNlbmRpZgo+PiBIaSBKYW4s
+Cj4+Cj4+PiArICAgICAgICAgICAgICAgaWYgKHNjZW5hcmlpW3NjXS5hbHRzdGFjaykgewo+Pj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgc2MrKzsKPj4+ICsgICAgICAgICAgICAgICAgICAgICAg
+IHNjICU9IE5TQ0VOQVI7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsKPj4+
+ICsgICAgICAgICAgICAgICB9Cj4+Pgo+PiBJdCBmYWlscyB3aXRoIGFub3RoZXIgZXJyb3IgcmFu
+ZG9tbHksIGFuZCBvdXRwdXQgaXM6Cj4+Cj4+IFswOTo0NToxNl1TeXN0ZW0gYWJpbGl0aWVzOgo+
+PiBbMDk6NDU6MTZdIFRTQTogMjAwODA5Cj4+IFswOTo0NToxNl0gVFNTOiAyMDA4MDkKPj4gWzA5
+OjQ1OjE2XSBUUFM6IDIwMDgwOQo+PiBbMDk6NDU6MTZdIHBhZ2VzaXplOiA0MDk2Cj4+IFswOTo0
+NToxNl0gbWluIHN0YWNrIHNpemU6IDE2Mzg0Cj4+IFswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBT
+IG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQKPj4gc2V0c2NvcGUgZmFpbHMK
+Pj4gWzA5OjQ1OjE2XVdBUk5JTkc6IFRoZSBUUFMgb3B0aW9uIGlzIGNsYWltZWQgdG8gYmUgc3Vw
+cG9ydGVkIGJ1dAo+PiBzZXRzY29wZSBmYWlscwo+PiBbMDk6NDU6MTZdV0FSTklORzogVGhlIFRQ
+UyBvcHRpb24gaXMgY2xhaW1lZCB0byBiZSBzdXBwb3J0ZWQgYnV0Cj4+IHNldHNjb3BlIGZhaWxz
+Cj4+IFswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1
+cHBvcnRlZCBidXQKPj4gc2V0c2NvcGUgZmFpbHMKPj4gWzA5OjQ1OjE2XVdBUk5JTkc6IFRoZSBU
+UFMgb3B0aW9uIGlzIGNsYWltZWQgdG8gYmUgc3VwcG9ydGVkIGJ1dAo+PiBzZXRzY29wZSBmYWls
+cwo+PiBbMDk6NDU6MTZdV0FSTklORzogVGhlIFRQUyBvcHRpb24gaXMgY2xhaW1lZCB0byBiZSBz
+dXBwb3J0ZWQgYnV0Cj4+IHNldHNjb3BlIGZhaWxzCj4+IFswOTo0NToxNl1XQVJOSU5HOiBUaGUg
+VFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQKPj4gc2V0c2NvcGUgZmFp
+bHMKPj4gWzA5OjQ1OjE2XVdBUk5JTkc6IFRoZSBUUFMgb3B0aW9uIGlzIGNsYWltZWQgdG8gYmUg
+c3VwcG9ydGVkIGJ1dAo+PiBzZXRzY29wZSBmYWlscwo+PiBbMDk6NDU6MTZdV0FSTklORzogVGhl
+IFRQUyBvcHRpb24gaXMgY2xhaW1lZCB0byBiZSBzdXBwb3J0ZWQgYnV0Cj4+IHNldHNjb3BlIGZh
+aWxzCj4+IFswOTo0NToxNl1BbGwgMzMgdGhyZWFkIGF0dHJpYnV0ZSBvYmplY3RzIHdlcmUgaW5p
+dGlhbGl6ZWQKPj4KPj4gWzA5OjQ1OjE4XVRlc3QgLi4vLi4vLi4vY29uZm9ybWFuY2UvaW50ZXJm
+YWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+PiB1bnJlc29sdmVkOiBnb3QgMTIgKENhbm5vdCBh
+bGxvY2F0ZSBtZW1vcnkpIG9uIGxpbmUgMTc5IChGYWlsZWQgdG8KPj4gY3JlYXRlIHRoaXMgdGhy
+ZWFkKQoKSGkgSmFuLAoKPiBJcyB0aGUgYWJvdmUgb3V0cHV0IGZyb20gbWlwcyBvciB4ODZfNjQ/
+Cj4gQXJlIHlvdSBydW5uaW5nIGl0IGFzIHJvb3QgdXNlcj8KClRoaXMgd2FzIHRlc3RlZCBvbiB4
+ODZfNjQgd2l0aCB1bnByaXZpbGVnZWQgIHVzZXIuIEkgcmV0ZXN0IGl0IHdpdGggcm9vdCAKYW5k
+IHRlc3QgcGFzc2VzLgpJdCBwYXNzZXMgb24gcm91dGVyc3RhdGlvbihtaXBzKSB3aXRoIHlvdXIg
+cGF0Y2ggdG9vLgpTbyBpdCBsb29rcyBsaWtlIGEgcmFjZSBjb25kaXRpb24gaXNzdWUgYWJvdXQg
+c3RhY2sgYXR0cmlidXRlIGJldHdlZW4gCnRocmVhZHMsIHJpZ2h0PwoKVGhhbmtzIGEgbG90LgpL
+YWkKCj4KPiBSZWdhcmRzLAo+IEphbgo+Cj4+Cj4+IFJlZ2FyZHMsCj4+IEthaQo+Pgo+Pj4gICAg
+ICAgICAgICAgICAgICAgY291bnRfb3BlKys7Cj4+Pgo+Pj4KPj4+IFJlZ2FyZHMsCj4+PiBKYW4K
+Pj4+Cj4+Pj4gUmVnYXJkcywKPj4+PiBLYWkKPj4+Pgo+PgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3
+aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRz
+Y2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNz
+aW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5k
+IHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNv
+bS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QK
