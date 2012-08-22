@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1T4ozh-0003jw-E0
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 08:11:53 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T4ozb-0003kq-QF
-	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 08:11:53 +0000
-Date: Fri, 24 Aug 2012 04:11:41 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1802694099.58389885.1345795901969.JavaMail.root@redhat.com>
-In-Reply-To: <1345704181-5596-1-git-send-email-shuang.qiu@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T40hB-0002Wi-KA
+	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 02:29:25 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T40hA-00012D-CV
+	for ltp-list@lists.sourceforge.net; Wed, 22 Aug 2012 02:29:25 +0000
+Message-ID: <50344405.7010204@windriver.com>
+Date: Wed, 22 Aug 2012 10:29:25 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+References: <5033647F.8000904@redhat.com>
+In-Reply-To: <5033647F.8000904@redhat.com>
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,82 +24,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang qiu <shuang.qiu@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng@suse.de, Zhao <Zhenfeng.Zhao@windriver.com>
 
-
-
------ Original Message -----
-> From: "shuang qiu" <shuang.qiu@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, August 23, 2012 2:43:01 PM
-> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
-> 
-> From: Shuang Qiu <shuang.qiu@oracle.com>
-> 
-> The value of min_free_kbytes is set too high(half of mem_free) during
-> testing min_free_kbytes tunable.It often cause the system to become
-> out-of-memory.Using 20% of mem_free to avoid oom and system hang.
-
-Hi, shuang
-
-I met the issue that min_free_kbytes caused system hang before, and what you said made sense.
-
-but after tested the patch, I found it still make the system hang with the patch, so I don't think
-this patch can fix the issue completely, maybe there are other factors, or need lower tune value.
-always suppose it was because of the high tune value, it's more better to add an optional to control it.
-also I will investigate it deeper to look after the real reason. please comment if you have other ideas.
-
-Thanks,
-Zhouping
-
-> ---
->  testcases/kernel/mem/tunable/min_free_kbytes.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> index 00ead04..8a03f85 100644
-> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> @@ -128,7 +128,7 @@ static void test_tune(unsigned long
-> overcommit_policy)
->  		/* case2 */
->  		else {
->  			memfree = read_meminfo("MemFree:");
-> -			tune = memfree / 2;
-> +			tune = memfree / 5;
->  			set_sys_tune("min_free_kbytes", tune, 1);
->  		}
->  
-> --
-> 1.7.7
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMjHml6UgMTg6MzUsIEphbiBTdGFuY2VrIHdyb3RlOgo+Cj4gLS0tLS0g
+T3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAiS2FuZyBLYWkiPEthaS5LYW5nQHdpbmRy
+aXZlci5jb20+Cj4+IFRvOiAiSmFuIFN0YW5jZWsiPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4+IENj
+OiBnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tLCBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQsICJaaGVuZmVuZyBaaGFvIjxaaGVuZmVuZy5aaGFvQHdpbmRyaXZlci5jb20+Cj4+IFNlbnQ6
+IFR1ZXNkYXksIDIxIEF1Z3VzdCwgMjAxMiAxMTo1OToxOSBBTQo+PiBTdWJqZWN0OiBSZTogW0xU
+UF0gW1BBVENIXSBwdGhyZWFkX2RldGFjaC80LTM6IHdvcmthcm91bmQgZm9yIHNlZ21lbnQgZmF1
+bHQKPiA8c25pcD4KPgo+PiBIaSBKYW4sCj4+Cj4+IFRoYW5rcy4KPj4gSSBhbSBzb3JyeSB0aGF0
+IEl0IGRvZXNuJ3Qgd29yayBhbmQgc3RpbGwgInNlZ21lbnQgZmF1bHQiLgo+IE1heWJlIHdlIGNh
+biBuYXJyb3cgaXQgZG93biBieSBydW5uaW5nIG9ubHkgc3Vic2V0IG9mIHNjZW5hcmlvcy4KPiBJ
+IHdvdWxkIHN1Z2dlc3QgdHJ5aW5nIHRvIGxpbWl0ICJzYyIgb3IgIk5TQ0VOQVIiIGFuZCBzZWUg
+d2hpY2gKPiBvbmUgdHJpZ2dlcnMgaXQuCj4KPiBBbm90aGVyIHRoaW5nIHRoYXQgbG9va3Mgc3Vz
+cGljaW91cyBhcmUgc2NlbmFyaW9zIHdpdGggYWx0c3RhY2ssIHRoZXJlIHNlZW1zCj4gdG8gYmUg
+c21hbGwgd2luZG93IHdoZXJlIG1vcmUgdGhhbiAxIHRocmVhZCBjYW4gdXNlIHNhbWUgYWx0c3Rh
+Y2suCj4gQ2FuIHlvdSB0cnkgdG8gcmVwcm9kdWNlIGl0IHdpdGhvdXQgYWx0c3RhY2sgc2NlbmFy
+aW9zPwo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25m
+b3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZGV0YWNoLzQtMy5jIGIvdGVzdGNhc2VzL29wZW5f
+cG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbgo+IGluZGV4IDVjMTVlOTMuLjYzYjZlZTcgMTAwNjQ0
+Cj4gLS0tIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVy
+ZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMKPiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90
+ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2RldGFjaC80LTMuYwo+IEBA
+IC0xNjIsNiArMTYyLDExIEBAIHN0YXRpYyB2b2lkICp0ZXN0KHZvaWQgKmFyZykKPiAgICAgICAg
+ICAgICAgICAgIG91dHB1dCgiU3RhcnRpbmcgdGVzdCB3aXRoIHNjZW5hcmlvICglaSk6ICVzXG4i
+LAo+ICAgICAgICAgICAgICAgICAgICAgICAgIHNjLCBzY2VuYXJpaVtzY10uZGVzY3IpOwo+ICAg
+I2VuZGlmCgpIaSBKYW4sCgo+ICsgICAgICAgICAgICAgICBpZiAoc2NlbmFyaWlbc2NdLmFsdHN0
+YWNrKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgc2MrKzsKPiArICAgICAgICAgICAgICAg
+ICAgICAgICBzYyAlPSBOU0NFTkFSOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVl
+Owo+ICsgICAgICAgICAgICAgICB9Cj4gICAKCkl0IGZhaWxzIHdpdGggYW5vdGhlciBlcnJvciBy
+YW5kb21seSwgYW5kIG91dHB1dCBpczoKClswOTo0NToxNl1TeXN0ZW0gYWJpbGl0aWVzOgpbMDk6
+NDU6MTZdIFRTQTogMjAwODA5ClswOTo0NToxNl0gVFNTOiAyMDA4MDkKWzA5OjQ1OjE2XSBUUFM6
+IDIwMDgwOQpbMDk6NDU6MTZdIHBhZ2VzaXplOiA0MDk2ClswOTo0NToxNl0gbWluIHN0YWNrIHNp
+emU6IDE2Mzg0ClswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRv
+IGJlIHN1cHBvcnRlZCBidXQgCnNldHNjb3BlIGZhaWxzClswOTo0NToxNl1XQVJOSU5HOiBUaGUg
+VFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQgCnNldHNjb3BlIGZhaWxz
+ClswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBv
+cnRlZCBidXQgCnNldHNjb3BlIGZhaWxzClswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlv
+biBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQgCnNldHNjb3BlIGZhaWxzClswOTo0NTox
+Nl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQg
+CnNldHNjb3BlIGZhaWxzClswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFp
+bWVkIHRvIGJlIHN1cHBvcnRlZCBidXQgCnNldHNjb3BlIGZhaWxzClswOTo0NToxNl1XQVJOSU5H
+OiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQgCnNldHNjb3Bl
+IGZhaWxzClswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBTIG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJl
+IHN1cHBvcnRlZCBidXQgCnNldHNjb3BlIGZhaWxzClswOTo0NToxNl1XQVJOSU5HOiBUaGUgVFBT
+IG9wdGlvbiBpcyBjbGFpbWVkIHRvIGJlIHN1cHBvcnRlZCBidXQgCnNldHNjb3BlIGZhaWxzClsw
+OTo0NToxNl1BbGwgMzMgdGhyZWFkIGF0dHJpYnV0ZSBvYmplY3RzIHdlcmUgaW5pdGlhbGl6ZWQK
+ClswOTo0NToxOF1UZXN0IC4uLy4uLy4uL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9k
+ZXRhY2gvNC0zLmMgCnVucmVzb2x2ZWQ6IGdvdCAxMiAoQ2Fubm90IGFsbG9jYXRlIG1lbW9yeSkg
+b24gbGluZSAxNzkgKEZhaWxlZCB0byAKY3JlYXRlIHRoaXMgdGhyZWFkKQoKClJlZ2FyZHMsCkth
+aQoKPiAgICAgICAgICAgICAgICAgIGNvdW50X29wZSsrOwo+Cj4KPiBSZWdhcmRzLAo+IEphbgo+
+Cj4+IFJlZ2FyZHMsCj4+IEthaQo+Pgo+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2Vj
+dXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIg
+YWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBj
+aGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxs
+IGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVz
+dCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJu
+bDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
+dHAtbGlzdAo=
