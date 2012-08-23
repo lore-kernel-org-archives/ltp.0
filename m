@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SzPmU-0003MD-U4
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:15:54 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzPmT-0006Sl-KL
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 10:15:54 +0000
-Date: Thu, 9 Aug 2012 06:15:46 -0400 (EDT)
+	(envelope-from <jstancek@redhat.com>) id 1T4RKZ-0007wO-9F
+	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 06:55:51 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T4RKT-0006PQ-8I
+	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 06:55:51 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7N6tda0001589
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Aug 2012 02:55:39 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q7N6tcrR022661
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Aug 2012 02:55:38 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1794806682.2410276.1344507346569.JavaMail.root@redhat.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH resend 0/6] NUMA and follow-up fix
+Date: Thu, 23 Aug 2012 08:55:36 +0200
+Message-Id: <0b20ceed0020e979ec36629e552f77acf96467cc.1345704746.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] pthread_cond_signal: don't count pthread_cond_signals
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,132 +30,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Caspar,
+Don't count how many pthread_cond_signals it took,
+if any fails SIGALRM will trigger testcase failure.
 
-thanks for putting it all together. I tested it on x86_64
-with and without libnuma-devel. Applies cleanly, I didn't notice
-anything broken while running modified testcases.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../interfaces/pthread_cond_signal/1-1.c           |   10 +---------
+ 1 files changed, 1 insertions(+), 9 deletions(-)
 
-Patches 1,2,4,5 look good to me.
-Patch 3 - I replied to this one already (no functional issue with this version)
-Patch 6 - Only tested
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+index bf55b31..5808fed 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_signal/1-1.c
+@@ -134,9 +134,7 @@ int main()
+ 	alarm(5);
+ 
+ 	/* loop to wake up the rest threads */
+-	i=0;
+-	while (waken_num < THREAD_NUM) {
+-		++i;
++	for (i=1; i<THREAD_NUM; i++) {
+ 		fprintf(stderr,"[Main thread] signals to wake up the next thread\n");
+ 		if (pthread_cond_signal(&td.cond) != 0) {
+ 			fprintf(stderr,"Main failed to signal the condition\n");
+@@ -145,12 +143,6 @@ int main()
+ 		usleep(100);
+ 	}
+ 
+-	if (i >= THREAD_NUM) {
+-		fprintf(stderr,"[Main thread] had to signal the condition %i times\n", i+1);
+-		fprintf(stderr,"[Main thread] to wake up %i threads\n. Test FAILED.\n", THREAD_NUM);
+-		exit(PTS_FAIL);
+-	}
+-
+ 	/* join all secondary threads */
+ 	for (i=0; i<THREAD_NUM; i++) {
+ 	    	if (pthread_join(thread[i], NULL) != 0) {
+-- 
+1.7.1
 
-Regards,
-Jan
-
------ Original Message -----
-> From: "Caspar Zhang" <caspar@casparzhang.com>
-> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Thursday, 9 August, 2012 8:15:36 AM
-> Subject: [LTP] [PATCH resend 0/6] NUMA and follow-up fix
-> 
-> 
-> Resending the whole patch series (including Jan's 2 patches) for
-> easier
-> reviewing.
-> 
-> updates:
->    syscalls/numa: check syscall availability
->      remove TEST() macro and use syscall() directly.
->    numa_helper: move to libkerntest
->      merged the library cleaning fix to this one.
->    mm: use new numa_helper
->      the same as previous V3 version, which already has Jan's reivew.
-> 
-> Caspar Zhang (4):
->   syscalls/numa: check syscall availability
->   numa_helper: move to libkerntest
->   mm: use new numa_helper
->   mm: add common Makefile include: libmem.mk
-> 
-> Jan Stancek (2):
->   numa_helper: add flag to get_allowed_nodes()
->   update testcases to use flag for get_allowed_nodes()
-> 
->  testcases/kernel/Makefile                          |    4 +
->  testcases/kernel/include/lib.mk                    |   37 +++
->  testcases/kernel/include/numa_helper.h             |   37 +++
->  testcases/kernel/lib/Makefile                      |   29 +++
->  testcases/kernel/lib/numa_helper.c                 |  266
->  ++++++++++++++++++++
->  testcases/kernel/mem/cpuset/Makefile               |   22 +--
->  testcases/kernel/mem/cpuset/cpuset01.c             |   16 +-
->  testcases/kernel/mem/hugetlb/Makefile.inc          |   18 +-
->  testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   12 +-
->  testcases/kernel/mem/include/libmem.mk             |   40 +++
->  testcases/kernel/mem/include/mem.h                 |    2 +-
->  testcases/kernel/mem/ksm/Makefile                  |   22 +--
->  testcases/kernel/mem/ksm/ksm02.c                   |    9 +-
->  testcases/kernel/mem/ksm/ksm04.c                   |    9 +-
->  testcases/kernel/mem/lib/Makefile                  |    1 +
->  testcases/kernel/mem/lib/mem.c                     |   50 +++--
->  testcases/kernel/mem/oom/Makefile                  |   22 +--
->  testcases/kernel/mem/oom/oom02.c                   |    4 -
->  testcases/kernel/mem/oom/oom04.c                   |    4 -
->  testcases/kernel/mem/swapping/Makefile             |   22 +--
->  testcases/kernel/mem/thp/Makefile                  |   22 +--
->  testcases/kernel/mem/tunable/Makefile              |   22 +--
->  testcases/kernel/mem/vma/Makefile                  |    4 +-
->  testcases/kernel/mem/vma/vma02.c                   |   19 +-
->  testcases/kernel/mem/vma/vma04.c                   |   11 +-
->  testcases/kernel/syscalls/get_mempolicy/Makefile   |    2 +-
->  .../syscalls/get_mempolicy/get_mempolicy01.c       |   15 +-
->  testcases/kernel/syscalls/mbind/Makefile           |    2 +-
->  testcases/kernel/syscalls/mbind/mbind01.c          |   14 +-
->  testcases/kernel/syscalls/move_pages/Makefile      |    2 +-
->  .../kernel/syscalls/move_pages/move_pages02.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages03.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages04.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages05.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages06.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages07.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages08.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages09.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages10.c      |    5 +-
->  .../kernel/syscalls/move_pages/move_pages11.c      |    5 +-
->  .../syscalls/move_pages/move_pages_support.c       |    8 +-
->  testcases/kernel/syscalls/numa/Makefile            |   22 --
->  testcases/kernel/syscalls/numa/Makefile.inc        |   27 --
->  testcases/kernel/syscalls/numa/lib/Makefile        |   26 --
->  testcases/kernel/syscalls/numa/lib/numa_helper.c   |  165
->  ------------
->  testcases/kernel/syscalls/numa/lib/numa_helper.h   |   33 ---
->  46 files changed, 562 insertions(+), 508 deletions(-)
->  create mode 100644 testcases/kernel/include/lib.mk
->  create mode 100644 testcases/kernel/include/numa_helper.h
->  create mode 100644 testcases/kernel/lib/Makefile
->  create mode 100644 testcases/kernel/lib/numa_helper.c
->  create mode 100644 testcases/kernel/mem/include/libmem.mk
->  delete mode 100644 testcases/kernel/syscalls/numa/Makefile
->  delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
->  delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
->  delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
->  delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
-> 
-> --
-> 1.7.8.6
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
