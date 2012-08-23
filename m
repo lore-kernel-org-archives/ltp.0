@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1T6Hkq-0007Lu-QN
-	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:06:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6Hkl-0000cN-Ad
-	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:06:36 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7S96O7S000442
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Aug 2012 17:06:24 +0800
-Message-ID: <503C89D7.5030305@cn.fujitsu.com>
-Date: Tue, 28 Aug 2012 17:05:27 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T4San-0002Ml-QS
+	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 08:16:41 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T4Sam-0003fr-IF
+	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 08:16:41 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
+	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q7N8GYji005039
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 23 Aug 2012 01:16:34 -0700 (PDT)
+Message-ID: <5035E6EF.2060808@windriver.com>
+Date: Thu, 23 Aug 2012 16:16:47 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-References: <503C8866.9000909@cn.fujitsu.com>
-In-Reply-To: <503C8866.9000909@cn.fujitsu.com>
-Subject: [LTP] [PATCH 2/2]sigpause/3-1.c Fix hung
+References: <0b20ceed0020e979ec36629e552f77acf96467cc.1345704746.git.jstancek@redhat.com>
+In-Reply-To: <0b20ceed0020e979ec36629e552f77acf96467cc.1345704746.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] pthread_cond_signal: don't count
+	pthread_cond_signals
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,52 +30,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-If sem is set as INTHREAD finally,the loop will be endless.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- .../open_posix_testsuite/conformance/interfaces/sigpause/3-1.c      |
-  3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git
-a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-index 00024ed..6f1f454 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
-@@ -30,7 +30,7 @@
- #define INMAIN 1
-
- int result = 2;
--int sem = INMAIN;
-+int sem = INTHREAD;
-
- void handler()
- {
-@@ -86,7 +86,6 @@ int main()
- 		return PTS_UNRESOLVED;
- 	}
-
--	sem = INTHREAD;
- 	while (sem == INTHREAD)
- 		sleep(1);
-
--- 
-1.7.10.2
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxMuW5tDA45pyIMjPml6UgMTQ6NTUsIEphbiBTdGFuY2VrIHdyb3RlOgo+IERvbid0IGNv
+dW50IGhvdyBtYW55IHB0aHJlYWRfY29uZF9zaWduYWxzIGl0IHRvb2ssCj4gaWYgYW55IGZhaWxz
+IFNJR0FMUk0gd2lsbCB0cmlnZ2VyIHRlc3RjYXNlIGZhaWx1cmUuCj4KPiBTaWduZWQtb2ZmLWJ5
+OiBKYW4gU3RhbmNlazxqc3RhbmNla0ByZWRoYXQuY29tPgpTaWduZWQtb2ZmLWJ5OiBLYW5nIEth
+aSA8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KCj4gLS0tCj4gICAuLi4vaW50ZXJmYWNlcy9wdGhy
+ZWFkX2NvbmRfc2lnbmFsLzEtMS5jICAgICAgICAgICB8ICAgMTAgKy0tLS0tLS0tLQo+ICAgMSBm
+aWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
+Z2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
+ZXMvcHRocmVhZF9jb25kX3NpZ25hbC8xLTEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
+dWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfY29uZF9zaWduYWwvMS0xLmMKPiBp
+bmRleCBiZjU1YjMxLi41ODA4ZmVkIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4
+X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfY29uZF9zaWduYWwvMS0x
+LmMKPiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
+ZXJmYWNlcy9wdGhyZWFkX2NvbmRfc2lnbmFsLzEtMS5jCj4gQEAgLTEzNCw5ICsxMzQsNyBAQCBp
+bnQgbWFpbigpCj4gICAJYWxhcm0oNSk7Cj4KPiAgIAkvKiBsb29wIHRvIHdha2UgdXAgdGhlIHJl
+c3QgdGhyZWFkcyAqLwo+IC0JaT0wOwo+IC0Jd2hpbGUgKHdha2VuX251bTwgIFRIUkVBRF9OVU0p
+IHsKPiAtCQkrK2k7Cj4gKwlmb3IgKGk9MTsgaTxUSFJFQURfTlVNOyBpKyspIHsKPiAgIAkJZnBy
+aW50ZihzdGRlcnIsIltNYWluIHRocmVhZF0gc2lnbmFscyB0byB3YWtlIHVwIHRoZSBuZXh0IHRo
+cmVhZFxuIik7Cj4gICAJCWlmIChwdGhyZWFkX2NvbmRfc2lnbmFsKCZ0ZC5jb25kKSAhPSAwKSB7
+Cj4gICAJCQlmcHJpbnRmKHN0ZGVyciwiTWFpbiBmYWlsZWQgdG8gc2lnbmFsIHRoZSBjb25kaXRp
+b25cbiIpOwo+IEBAIC0xNDUsMTIgKzE0Myw2IEBAIGludCBtYWluKCkKPiAgIAkJdXNsZWVwKDEw
+MCk7Cj4gICAJfQo+Cj4gLQlpZiAoaT49IFRIUkVBRF9OVU0pIHsKPiAtCQlmcHJpbnRmKHN0ZGVy
+ciwiW01haW4gdGhyZWFkXSBoYWQgdG8gc2lnbmFsIHRoZSBjb25kaXRpb24gJWkgdGltZXNcbiIs
+IGkrMSk7Cj4gLQkJZnByaW50ZihzdGRlcnIsIltNYWluIHRocmVhZF0gdG8gd2FrZSB1cCAlaSB0
+aHJlYWRzXG4uIFRlc3QgRkFJTEVELlxuIiwgVEhSRUFEX05VTSk7Cj4gLQkJZXhpdChQVFNfRkFJ
+TCk7Cj4gLQl9Cj4gLQo+ICAgCS8qIGpvaW4gYWxsIHNlY29uZGFyeSB0aHJlYWRzICovCj4gICAJ
+Zm9yIChpPTA7IGk8VEhSRUFEX05VTTsgaSsrKSB7Cj4gICAJICAgIAlpZiAocHRocmVhZF9qb2lu
+KHRocmVhZFtpXSwgTlVMTCkgIT0gMCkgewoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNl
+Y3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVy
+IGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMg
+Y2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2ls
+bCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRl
+c3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2Zy
+bmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
+bHRwLWxpc3QK
