@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T3gJv-0007Lq-DG
-	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 04:44:03 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T3gJt-00025M-Pf
-	for ltp-list@lists.sourceforge.net; Tue, 21 Aug 2012 04:44:03 +0000
-Message-ID: <50330833.1080708@cn.fujitsu.com>
-Date: Tue, 21 Aug 2012 12:01:55 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1T4qxz-0002xT-GE
+	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 10:18:15 +0000
+Received: from acsinet15.oracle.com ([141.146.126.227])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T4qxt-0008Sk-UG
+	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 10:18:15 +0000
+Message-ID: <503754D8.8000703@oracle.com>
+Date: Fri, 24 Aug 2012 18:18:00 +0800
+From: Shuang Qiu <shuang.qiu@oracle.com>
 MIME-Version: 1.0
-References: <446368613.3052914.1344590200420.JavaMail.root@redhat.com>
-In-Reply-To: <446368613.3052914.1344590200420.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH 3/3] timer_settime/5-3: fix test hung
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1802694099.58389885.1345795901969.JavaMail.root@redhat.com>
+In-Reply-To: <1802694099.58389885.1345795901969.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +27,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 08/10/2012 05:16 PM, Jan Stancek wrote:
-> 
+On 08/24/2012 04:11 PM, Zhouping Liu wrote:
+>
 > ----- Original Message -----
->> > From: "Kang Kai" <kai.kang@windriver.com>
->> > To: ltp-list@lists.sourceforge.net
->> > Cc: "Zhenfeng Zhao" <Zhenfeng.Zhao@windriver.com>
->> > Sent: Thursday, 9 August, 2012 12:30:58 PM
->> > Subject: [LTP] [PATCH 3/3] timer_settime/5-3: fix test hung
->> > 
->> > This case hangs on sugarbay(intel x86_64) platform.
->> > 
->> > The root cause is that the case calls timer_settime with time which
->> > already took place and then calls sleep. When the timer expires and
->> > sends signal the sleep will be break.
->> > 
->> > But on sugarbay the timer always expires before the case enters
->> > sleep,
->> > then it always sleeps NUMTESTS * LONGSLEEPTIME seconds. So it exceeds
->> > the time limit set by auto-run test shell script, and reports that it
->> > hangs.
->> > 
->> > Decrease LONGSLEEPTIME value to avoid this issue.
->> > 
->> > Signed-off-by: Kang Kai <kai.kang@windriver.com>
-> Looks good to me, 5 secs is still enough time.
-> 
-> Reviewed-by: Jan Stancek <jstancek@redhat.com>
-> 
+>> From: "shuang qiu" <shuang.qiu@oracle.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Sent: Thursday, August 23, 2012 2:43:01 PM
+>> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+>>
+>> From: Shuang Qiu <shuang.qiu@oracle.com>
+>>
+>> The value of min_free_kbytes is set too high(half of mem_free) during
+>> testing min_free_kbytes tunable.It often cause the system to become
+>> out-of-memory.Using 20% of mem_free to avoid oom and system hang.
+> Hi, shuang
+>
+> I met the issue that min_free_kbytes caused system hang before, and what you said made sense.
+>
+> but after tested the patch, I found it still make the system hang with the patch, so I don't think
+> this patch can fix the issue completely, maybe there are other factors, or need lower tune value.
+> always suppose it was because of the high tune value, it's more better to add an optional to control it.
+> also I will investigate it deeper to look after the real reason. please comment if you have other ideas.
+>
+> Thanks,
+> Zhouping
+Thanks for testing,Zhouping.
 
-Pushed, thank you.
+I find it says "However, setting this parameter to a value that is too 
+high (5-10% of total system memory) will cause your system to become 
+out-of-memory immediately." in redhat memory-tunables document.
+https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-tunables.html
+Set the value less than 5% of total memory will make it more safe.
+Let's think about a better option to control it.
 
-Wanlong Gao
+It is great that you will investigate it deeper.
+Seems there are some other problems in this case,it always failed with i386.
+The type of total_mem "unsigned long" is not suitable with nowadays 
+memory ,it will overflow(with i386) in line 177:map_count = total_mem * 
+KB / MAP_SIZE and the value of map_count is not correct.
+Using "unsigned long long" could fix this issue.
+But the case still failed after fix it.
+Could you help to investigate it too.
+
+Thanks
+Shuang
+>> ---
+>>   testcases/kernel/mem/tunable/min_free_kbytes.c |    2 +-
+>>   1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
+>> b/testcases/kernel/mem/tunable/min_free_kbytes.c
+>> index 00ead04..8a03f85 100644
+>> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
+>> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+>> @@ -128,7 +128,7 @@ static void test_tune(unsigned long
+>> overcommit_policy)
+>>   		/* case2 */
+>>   		else {
+>>   			memfree = read_meminfo("MemFree:");
+>> -			tune = memfree / 2;
+>> +			tune = memfree / 5;
+>>   			set_sys_tune("min_free_kbytes", tune, 1);
+>>   		}
+>>   
+>> --
+>> 1.7.7
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Live Security Virtual Conference
+>> Exclusive live event will cover all the ways today's security and
+>> threat landscape has changed and how IT managers can respond.
+>> Discussions
+>> will include endpoint security, mobile security and the latest in
+>> malware
+>> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+
 
 
 ------------------------------------------------------------------------------
