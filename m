@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SzM2X-0005HN-Tf
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:13 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SzM2W-00008o-OL
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:13 +0000
-Received: by yenm1 with SMTP id m1so74948yen.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 23:16:07 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Aug 2012 14:15:39 +0800
-Message-Id: <c34d8829b21a0e2cd2d5b1241ea751e61b993348.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1T4uFA-0001mE-Hj
+	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 13:48:12 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T4uF4-0006z0-JY
+	for ltp-list@lists.sourceforge.net; Fri, 24 Aug 2012 13:48:12 +0000
+Date: Fri, 24 Aug 2012 09:48:00 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <2058987008.58575291.1345816080840.JavaMail.root@redhat.com>
+In-Reply-To: <503754D8.8000703@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH resend 3/6] syscalls/numa: check syscall availability
+Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,83 +23,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-some NUMA related syscalls: mbind, get_mempolicy are not supported on
-some arches (e.g. i386), this patch checks the syscalls' availability in
-setup() function, if the syscall is not implemented on the system, a
-TCONF message will be given like this:
-
-get_mempolicy01    1  TCONF  : syscall __NR_get_mempolicy01 not supported on your arch
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- .../syscalls/get_mempolicy/get_mempolicy01.c       |   10 ++++++++++
- testcases/kernel/syscalls/mbind/mbind01.c          |    9 +++++++++
- 2 files changed, 19 insertions(+), 0 deletions(-)
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0003-syscalls-numa-check-syscall-availability.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0003-syscalls-numa-check-syscall-availability.patch"
-
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-index d0e372c..f321172 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-@@ -339,6 +339,16 @@ static void cleanup(void)
- 
- static void setup(void)
- {
-+	/* check syscall availability */
-+	if (syscall(__NR_get_mempolicy, NULL, NULL, 0, NULL, 0) == -1) {
-+		if (errno == ENOSYS)
-+			tst_brkm(TCONF, NULL, "syscall __NR_get_mempolicy "
-+				    "not supported on your arch.");
-+		else
-+			tst_brkm(TBROK|TERRNO, NULL,
-+				    "syscall __NR_get_mempolicy");
-+	}
-+
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 2fc6f5a..714dbf7 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -300,6 +300,15 @@ TEST_END:
- 
- static void setup(void)
- {
-+	/* check syscall availability */
-+	if (syscall(__NR_mbind, NULL, 0, 0, NULL, 0, 0) == -1) {
-+		if (errno == ENOSYS)
-+			tst_brkm(TCONF, NULL, "syscall __NR_mbind "
-+				    "not supported on your arch.");
-+		else
-+			tst_brkm(TBROK|TERRNO, NULL, "syscall __NR_mbind");
-+	}
-+
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-
---------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Shuang Qiu <shuang.qiu@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
+
+
+
+----- Original Message -----
+> From: "Shuang Qiu" <shuang.qiu@oracle.com>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, August 24, 2012 6:18:00 PM
+> Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+> 
+> On 08/24/2012 04:11 PM, Zhouping Liu wrote:
+> >
+> > ----- Original Message -----
+> >> From: "shuang qiu" <shuang.qiu@oracle.com>
+> >> To: ltp-list@lists.sourceforge.net
+> >> Sent: Thursday, August 23, 2012 2:43:01 PM
+> >> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+> >>
+> >> From: Shuang Qiu <shuang.qiu@oracle.com>
+> >>
+> >> The value of min_free_kbytes is set too high(half of mem_free)
+> >> during
+> >> testing min_free_kbytes tunable.It often cause the system to
+> >> become
+> >> out-of-memory.Using 20% of mem_free to avoid oom and system hang.
+> > Hi, shuang
+> >
+> > I met the issue that min_free_kbytes caused system hang before, and
+> > what you said made sense.
+> >
+> > but after tested the patch, I found it still make the system hang
+> > with the patch, so I don't think
+> > this patch can fix the issue completely, maybe there are other
+> > factors, or need lower tune value.
+> > always suppose it was because of the high tune value, it's more
+> > better to add an optional to control it.
+> > also I will investigate it deeper to look after the real reason.
+> > please comment if you have other ideas.
+> >
+> > Thanks,
+> > Zhouping
+> Thanks for testing,Zhouping.
+> 
+> I find it says "However, setting this parameter to a value that is
+> too
+> high (5-10% of total system memory) will cause your system to become
+> out-of-memory immediately." in redhat memory-tunables document.
+> https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-tunables.html
+> Set the value less than 5% of total memory will make it more safe.
+
+Thanks for sharing this! I will take your ideas into account.
+
+> Let's think about a better option to control it.
+
+Ok, I will prepare a patch for this.
+
+
+> 
+> It is great that you will investigate it deeper.
+> Seems there are some other problems in this case,it always failed
+> with i386.
+> The type of total_mem "unsigned long" is not suitable with nowadays
+> memory ,it will overflow(with i386) in line 177:map_count = total_mem
+> *
+> KB / MAP_SIZE and the value of map_count is not correct.
+> Using "unsigned long long" could fix this issue.
+> But the case still failed after fix it.
+> Could you help to investigate it too.
+
+sure.
+
+-- 
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -114,18 +109,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
