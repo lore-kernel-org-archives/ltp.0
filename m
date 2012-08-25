@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SyCM4-0005yL-H7
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 01:43:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SyCM3-0001gE-37
-	for ltp-list@lists.sourceforge.net; Mon, 06 Aug 2012 01:43:36 +0000
-Message-ID: <501F20F5.3060301@cn.fujitsu.com>
-Date: Mon, 06 Aug 2012 09:42:13 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shyju.pv@huawei.com>) id 1T5Elm-0002wQ-5j
+	for ltp-list@lists.sourceforge.net; Sat, 25 Aug 2012 11:43:14 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T5Elh-0005OY-2V
+	for ltp-list@lists.sourceforge.net; Sat, 25 Aug 2012 11:43:14 +0000
+From: Shyju PV <shyju.pv@huawei.com>
+References: <mailman.414062.1338991083.27891.ltp-list@lists.sourceforge.net>
+In-Reply-To: <mailman.414062.1338991083.27891.ltp-list@lists.sourceforge.net>
+Date: Sat, 25 Aug 2012 17:12:09 +0530
+Message-ID: <043301cd82b6$a9809f10$fc81dd30$@pv@huawei.com>
 MIME-Version: 1.0
-References: <1344032944-27019-1-git-send-email-vlee@twitter.com>
-In-Reply-To: <1344032944-27019-1-git-send-email-vlee@twitter.com>
-Subject: Re: [LTP] [PATCH] ltp_signal.h: Remove inline keyword from
-	handler_h.
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Language: en-us
+Subject: [LTP] sendto syscall fails because of the error value missmatch
+	from 3.6-rc1 kernel onwards
+Reply-To: shyju.pv@huawei.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,41 +30,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vinson Lee <vlee@twitter.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: 'Sanil kumar' <sanil.kumar@huawei.com>, nagamani.mantha@huawei.com
 
-On 08/04/2012 06:29 AM, Vinson Lee wrote:
-> This patch fixes this build error with clang.
-> 
-> testcases/kernel/syscalls/rt_sigaction/../../../../include/ltp_signal.h:85: undefined reference to `handler_h'
+LTP_Version: 2012-06-14 
+LTP Test case: sendto01 
+Description : Verifies the sendto syscall errorno for various failure cases 
+Failure Analysis : when the invalid flag is set, The error no EOPNOTSUPP
+(95) and syscall returns 0 .instead LTP expects EPIPE (32) and the syscall
+return value as -1. 
+Fix : Modify  the LTP code with respect the the system return values of the
+latest kernel(3.6-rc1) 
+Test case passed in Kernel 3.5 
+Failed from  3.6-rc1,rc2and rc3 
 
-If you wanna build LTP with LLVM, why not make out "a path for LLVM building" and send
-out it. I think this one line change can't do everything for LLVM building, although
-untested. right?
+Test output :: <<<test_output>>> 
+incrementing stop 
+sendto01    1  TPASS  :  bad file descriptor successful 
+sendto01    2  TPASS  :  invalid socket successful 
+sendto01    3  TPASS  :  invalid send buffer successful 
+sendto01    4  TPASS  :  connected TCP successful 
+sendto01    5  TPASS  :  not connected TCP successful 
+sendto01    6  TPASS  :  invalid to buffer length successful 
+sendto01    7  TPASS  :  invalid to buffer successful 
+sendto01    8  TPASS  :  UDP message too big successful 
+sendto01    9  TPASS  :  local endpoint shutdown successful 
+sendto01   10  TFAIL  :  invalid flags set ; returned -1 (expected 0), errno
+95 
+(expected 32) 
+<<<execution_status>>> 
+initiation_status="ok" 
+duration=0 termination_type=exited termination_id=1 corefile=no 
+cutime=0 cstime=0 
+<<<test_end>>> 
+INFO: ltp-pan reported some tests FAIL
 
-Thanks,
-Wanlong Gao
-
-> 
-> Signed-off-by: Vinson Lee <vlee@twitter.com>
-> ---
->  include/ltp_signal.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/ltp_signal.h b/include/ltp_signal.h
-> index 1ac6f70..093059f 100644
-> --- a/include/ltp_signal.h
-> +++ b/include/ltp_signal.h
-> @@ -69,7 +69,7 @@ struct kernel_sigaction {
->  
->  void (*restore_rt) (void);
->  
-> -inline void
-> +void
->  handler_h (int signal)
->  {
->  	return;
-> 
+Shyju
 
 
 ------------------------------------------------------------------------------
