@@ -2,20 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T4TIy-0004Hi-Fn
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 09:02:20 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	(envelope-from <zliu@redhat.com>) id 1T5rRr-0002qv-Pl
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 05:01:15 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T4TIx-0005z6-Df
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 09:02:20 +0000
-Message-ID: <5035F125.6000106@cn.fujitsu.com>
-Date: Thu, 23 Aug 2012 17:00:21 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1T5rRl-0000kw-Tk
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 05:01:15 +0000
+Date: Mon, 27 Aug 2012 01:01:03 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <476171815.59480688.1346043663931.JavaMail.root@redhat.com>
+In-Reply-To: <503AE389.6080300@oracle.com>
 MIME-Version: 1.0
-References: <1281448625.57776160.1345712387252.JavaMail.root@redhat.com>
-In-Reply-To: <1281448625.57776160.1345712387252.JavaMail.root@redhat.com>
 Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
-Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,29 +26,125 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
+To: Shuang Qiu <shuang.qiu@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 08/23/2012 04:59 PM, Zhouping Liu wrote:
+
+
+----- Original Message -----
+> From: "Shuang Qiu" <shuang.qiu@oracle.com>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Monday, August 27, 2012 11:03:37 AM
+> Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
 > 
-> ----- Original Message -----
->> > From: "shuang qiu" <shuang.qiu@oracle.com>
->> > To: ltp-list@lists.sourceforge.net
->> > Sent: Thursday, August 23, 2012 2:43:01 PM
->> > Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
->> > 
->> > From: Shuang Qiu <shuang.qiu@oracle.com>
->> > 
->> > The value of min_free_kbytes is set too high(half of mem_free) during
->> > testing min_free_kbytes tunable.It often cause the system to become
->> > out-of-memory.Using 20% of mem_free to avoid oom and system hang.
-> Thanks for the patch, I will test the patch, will provide feedback ASAP.
+> On 08/24/2012 09:48 PM, Zhouping Liu wrote:
+> >
+> > ----- Original Message -----
+> >> From: "Shuang Qiu" <shuang.qiu@oracle.com>
+> >> To: "Zhouping Liu" <zliu@redhat.com>
+> >> Cc: ltp-list@lists.sourceforge.net
+> >> Sent: Friday, August 24, 2012 6:18:00 PM
+> >> Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes
+> >> lower
+> >>
+> >> On 08/24/2012 04:11 PM, Zhouping Liu wrote:
+> >>> ----- Original Message -----
+> >>>> From: "shuang qiu" <shuang.qiu@oracle.com>
+> >>>> To: ltp-list@lists.sourceforge.net
+> >>>> Sent: Thursday, August 23, 2012 2:43:01 PM
+> >>>> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes
+> >>>> lower
+> >>>>
+> >>>> From: Shuang Qiu <shuang.qiu@oracle.com>
+> >>>>
+> >>>> The value of min_free_kbytes is set too high(half of mem_free)
+> >>>> during
+> >>>> testing min_free_kbytes tunable.It often cause the system to
+> >>>> become
+> >>>> out-of-memory.Using 20% of mem_free to avoid oom and system
+> >>>> hang.
+> >>> Hi, shuang
+> >>>
+> >>> I met the issue that min_free_kbytes caused system hang before,
+> >>> and
+> >>> what you said made sense.
+> >>>
+> >>> but after tested the patch, I found it still make the system hang
+> >>> with the patch, so I don't think
+> >>> this patch can fix the issue completely, maybe there are other
+> >>> factors, or need lower tune value.
+> >>> always suppose it was because of the high tune value, it's more
+> >>> better to add an optional to control it.
+> >>> also I will investigate it deeper to look after the real reason.
+> >>> please comment if you have other ideas.
+> >>>
+> >>> Thanks,
+> >>> Zhouping
+> >> Thanks for testing,Zhouping.
+> >>
+> >> I find it says "However, setting this parameter to a value that is
+> >> too
+> >> high (5-10% of total system memory) will cause your system to
+> >> become
+> >> out-of-memory immediately." in redhat memory-tunables document.
+> >> https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-tunables.html
+> >> Set the value less than 5% of total memory will make it more safe.
+> > Thanks for sharing this! I will take your ideas into account.
+> >
+> >> Let's think about a better option to control it.
+> > Ok, I will prepare a patch for this.
+> >
+> >
+> >> It is great that you will investigate it deeper.
+> >> Seems there are some other problems in this case,it always failed
+> >> with i386.
+> >> The type of total_mem "unsigned long" is not suitable with
+> >> nowadays
+> >> memory ,it will overflow(with i386) in line 177:map_count =
+> >> total_mem
+> >> *
+> >> KB / MAP_SIZE and the value of map_count is not correct.
+> >> Using "unsigned long long" could fix this issue.
+> >> But the case still failed after fix it.
+> >> Could you help to investigate it too.
+> > sure.
+> >
+
+Hi, Shuang
+
+I think the below patch can't fix the issue, it looks more like a bug related to oom-killer,
+I have opened a bug to trace it, please see https://bugzilla.redhat.com/show_bug.cgi?id=851938
+
+> Hi Zhouping,
+> I think the reason for the failures which I met is also that  it just
+> catched oom_killer scenario when overcommit_memory=1.
+> I found your patch before:
+> commit 4f267b6fd11749c91211c9dbfc706cf46919650b
+> Author: Zhouping Liu <zliu@redhat.com>
+> Date:   Fri Mar 30 22:29:58 2012 +0800
+> 
+>      mm/tunable: fix unexpected error log in min_free_kbytes
+> 
+>      when overcommit_memory=0, mmap() will be destroyed in two below
+> scenario:
+>       1) MAP_FAILED with ENOMEM,
+>       2) oom_killer kill it.
+>      without the patch, it just catched oom_killer scenario,
+>      the patch fixed it.
+> 
+> 
+> Could this patch also for when overcommit_memory=1 scenario?
+> 
+> Thanks
+> Shuang
+> 
+> 
 > 
 
-Great! thank you Zhouping.
-
-Wanlong Gao
-
+-- 
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
