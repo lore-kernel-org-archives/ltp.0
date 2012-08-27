@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SzM2d-0000P0-D4
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:19 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SzM2c-0001Qy-77
-	for ltp-list@lists.sourceforge.net; Thu, 09 Aug 2012 06:16:19 +0000
-Received: by yhjj56 with SMTP id j56so76579yhj.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 23:16:12 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  9 Aug 2012 14:15:42 +0800
-Message-Id: <8b75c02f08feec233c87fd99d73e2752d4c40623.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
-In-Reply-To: <cover.1344492473.git.caspar@casparzhang.com>
-References: <cover.1344492473.git.caspar@casparzhang.com>
+	(envelope-from <shuang.qiu@oracle.com>) id 1T5pcH-00084x-Jn
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 03:03:53 +0000
+Received: from rcsinet15.oracle.com ([148.87.113.117])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T5pcE-0007AO-Uy
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 03:03:53 +0000
+Message-ID: <503AE389.6080300@oracle.com>
+Date: Mon, 27 Aug 2012 11:03:37 +0800
+From: Shuang Qiu <shuang.qiu@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH resend 6/6] mm: add common Makefile include: libmem.mk
+References: <2058987008.58575291.1345816080840.JavaMail.root@redhat.com>
+In-Reply-To: <2058987008.58575291.1345816080840.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,353 +24,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-libmem.mk is used as a common Makefile used by tests under mem/ dir to
-avoid duplicated libmem-related lines.
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- testcases/kernel/mem/cpuset/Makefile           |   23 +-------------
- testcases/kernel/mem/hugetlb/Makefile.inc      |   19 +++--------
- testcases/kernel/mem/hugetlb/hugemmap/Makefile |   13 +-------
- testcases/kernel/mem/include/libmem.mk         |   40 ++++++++++++++++++++++++
- testcases/kernel/mem/ksm/Makefile              |   23 +-------------
- testcases/kernel/mem/oom/Makefile              |   23 +-------------
- testcases/kernel/mem/swapping/Makefile         |   23 +-------------
- testcases/kernel/mem/thp/Makefile              |   23 +-------------
- testcases/kernel/mem/tunable/Makefile          |   23 +-------------
- testcases/kernel/mem/vma/Makefile              |    3 +-
- 10 files changed, 54 insertions(+), 159 deletions(-)
- create mode 100644 testcases/kernel/mem/include/libmem.mk
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0006-mm-add-common-Makefile-include-libmem.mk.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0006-mm-add-common-Makefile-include-libmem.mk.patch"
-
-diff --git a/testcases/kernel/mem/cpuset/Makefile b/testcases/kernel/mem/cpuset/Makefile
-index c9d03bf..8e41c02 100644
---- a/testcases/kernel/mem/cpuset/Makefile
-+++ b/testcases/kernel/mem/cpuset/Makefile
-@@ -20,26 +20,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS 			+= $(NUMA_LIBS) -lmem -lltp -lm
--LIBDIR			:= ../lib
--LIB			:= $(LIBDIR)/libmem.a
--FILTER_OUT_DIRS		:= $(LIBDIR)
--CFLAGS			+= -I../include
--LDFLAGS			+= -L$(LIBDIR)
--
--$(LIBDIR):
--	mkdir -p "$@"
--
--$(LIB): $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--
--MAKE_DEPS		:= $(LIB)
--
--trunk-clean:: | lib-clean
--
--lib-clean:: $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/hugetlb/Makefile.inc b/testcases/kernel/mem/hugetlb/Makefile.inc
-index 1831fbb..cc0ada6 100644
---- a/testcases/kernel/mem/hugetlb/Makefile.inc
-+++ b/testcases/kernel/mem/hugetlb/Makefile.inc
-@@ -23,23 +23,16 @@
- # DO NOT USE THIS FILE FOR hugetlb / lib!!!
- LIBIPCDIR		:= ../lib
- LIBIPC			:= $(LIBIPCDIR)/libipc_hugetlb.a
-+
- $(LIBIPCDIR):
- 	mkdir -p "$@"
- $(LIBIPC): $(LIBIPCDIR)
- 	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
- 
--LIBMEMDIR		:= ../../lib
--LIBMEM			:= $(LIBMEMDIR)/libmem.a
--$(LIBMEM): $(LIBMEMDIR)
--	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
--
--CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR) -I$(abs_srcdir)/../../include
--LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR) -L$(abs_builddir)/$(LIBMEMDIR)
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp -lipc_hugetlb
--MAKE_DEPS		+= $(LIBMEM) $(LIBIPC)
--
--lib-clean:: $(LIBMEMDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-+CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR)
-+LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR)
-+LDLIBS			+= -lipc_hugetlb
-+MAKE_DEPS		+= $(LIBIPC)
- 
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- # vim: syntax=make
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-index 0b1b60c..71da630 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-@@ -23,16 +23,5 @@
- top_srcdir		?= ../../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LIBMEMDIR		:= ../../lib
--LIBMEM			:= $(LIBMEMDIR)/libmem.a
--$(LIBMEM): $(LIBMEMDIR)
--	$(MAKE) -C "$^" -f "$(abs_srcdir)/$^/Makefile" all
--
--CPPFLAGS		+= -I$(abs_srcdir)/$(LIBMEMDIR) -I$(abs_srcdir)/../../include
--LDFLAGS			+= -L$(abs_builddir)/$(LIBMEMDIR)
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
--MAKE_DEPS		+= $(LIBMEM)
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
-new file mode 100644
-index 0000000..22efda2
---- /dev/null
-+++ b/testcases/kernel/mem/include/libmem.mk
-@@ -0,0 +1,40 @@
-+#
-+#  Copyright (C) 2012  Red Hat, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+#
-+
-+MEM_DIR			:= $(top_srcdir)/testcases/kernel/mem
-+LIBMEM_DIR		:= $(MEM_DIR)/lib
-+LIBMEM			:= $(LIBMEM_DIR)/libmem.a
-+FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
-+CFLAGS			+= -I$(MEM_DIR)/include
-+LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
-+LDFLAGS			+= -L$(LIBMEM_DIR)
-+
-+$(LIBMEM_DIR):
-+	mkdir -p "$@"
-+
-+$(LIBMEM): $(LIBMEM_DIR)
-+	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-+
-+MAKE_DEPS		+= $(LIBMEM)
-+
-+trunk-clean:: | lib-clean
-+
-+lib-clean:: $(LIBMEM_DIR)
-+	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-+
-+include $(top_srcdir)/testcases/kernel/include/lib.mk
-diff --git a/testcases/kernel/mem/ksm/Makefile b/testcases/kernel/mem/ksm/Makefile
-index b17845b..128d7bc 100644
---- a/testcases/kernel/mem/ksm/Makefile
-+++ b/testcases/kernel/mem/ksm/Makefile
-@@ -19,26 +19,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
--LIBDIR			:= ../lib
--LIB			:= $(LIBDIR)/libmem.a
--FILTER_OUT_DIRS		:= $(LIBDIR)
--CFLAGS			+= -I../include
--LDFLAGS			+= -L$(LIBDIR)
--
--$(LIBDIR):
--	mkdir -p "$@"
--
--$(LIB): $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--
--MAKE_DEPS		:= $(LIB)
--
--trunk-clean:: | lib-clean
--
--lib-clean:: $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/oom/Makefile b/testcases/kernel/mem/oom/Makefile
-index b17845b..128d7bc 100644
---- a/testcases/kernel/mem/oom/Makefile
-+++ b/testcases/kernel/mem/oom/Makefile
-@@ -19,26 +19,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
--LIBDIR			:= ../lib
--LIB			:= $(LIBDIR)/libmem.a
--FILTER_OUT_DIRS		:= $(LIBDIR)
--CFLAGS			+= -I../include
--LDFLAGS			+= -L$(LIBDIR)
--
--$(LIBDIR):
--	mkdir -p "$@"
--
--$(LIB): $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--
--MAKE_DEPS		:= $(LIB)
--
--trunk-clean:: | lib-clean
--
--lib-clean:: $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/swapping/Makefile b/testcases/kernel/mem/swapping/Makefile
-index b17845b..128d7bc 100644
---- a/testcases/kernel/mem/swapping/Makefile
-+++ b/testcases/kernel/mem/swapping/Makefile
-@@ -19,26 +19,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
--LIBDIR			:= ../lib
--LIB			:= $(LIBDIR)/libmem.a
--FILTER_OUT_DIRS		:= $(LIBDIR)
--CFLAGS			+= -I../include
--LDFLAGS			+= -L$(LIBDIR)
--
--$(LIBDIR):
--	mkdir -p "$@"
--
--$(LIB): $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--
--MAKE_DEPS		:= $(LIB)
--
--trunk-clean:: | lib-clean
--
--lib-clean:: $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/thp/Makefile b/testcases/kernel/mem/thp/Makefile
-index 3ef9288..867dcf0 100644
---- a/testcases/kernel/mem/thp/Makefile
-+++ b/testcases/kernel/mem/thp/Makefile
-@@ -20,26 +20,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
--LIBDIR			:= ../lib
--LIB			:= $(LIBDIR)/libmem.a
--FILTER_OUT_DIRS		:= $(LIBDIR)
--CFLAGS			+= -I../include
--LDFLAGS			+= -L$(LIBDIR)
--
--$(LIBDIR):
--	mkdir -p "$@"
--
--$(LIB): $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--
--MAKE_DEPS		:= $(LIB)
--
--trunk-clean:: | lib-clean
--
--lib-clean:: $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/tunable/Makefile b/testcases/kernel/mem/tunable/Makefile
-index 3ef9288..867dcf0 100644
---- a/testcases/kernel/mem/tunable/Makefile
-+++ b/testcases/kernel/mem/tunable/Makefile
-@@ -20,26 +20,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
--LIBDIR			:= ../lib
--LIB			:= $(LIBDIR)/libmem.a
--FILTER_OUT_DIRS		:= $(LIBDIR)
--CFLAGS			+= -I../include
--LDFLAGS			+= -L$(LIBDIR)
--
--$(LIBDIR):
--	mkdir -p "$@"
--
--$(LIB): $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--
--MAKE_DEPS		:= $(LIB)
--
--trunk-clean:: | lib-clean
--
--lib-clean:: $(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/mem/vma/Makefile b/testcases/kernel/mem/vma/Makefile
-index 949db9a..b323dbf 100644
---- a/testcases/kernel/mem/vma/Makefile
-+++ b/testcases/kernel/mem/vma/Makefile
-@@ -20,6 +20,5 @@
- top_srcdir              ?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--
--include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
---------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 08/24/2012 09:48 PM, Zhouping Liu wrote:
+>
+> ----- Original Message -----
+>> From: "Shuang Qiu" <shuang.qiu@oracle.com>
+>> To: "Zhouping Liu" <zliu@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Friday, August 24, 2012 6:18:00 PM
+>> Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+>>
+>> On 08/24/2012 04:11 PM, Zhouping Liu wrote:
+>>> ----- Original Message -----
+>>>> From: "shuang qiu" <shuang.qiu@oracle.com>
+>>>> To: ltp-list@lists.sourceforge.net
+>>>> Sent: Thursday, August 23, 2012 2:43:01 PM
+>>>> Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+>>>>
+>>>> From: Shuang Qiu <shuang.qiu@oracle.com>
+>>>>
+>>>> The value of min_free_kbytes is set too high(half of mem_free)
+>>>> during
+>>>> testing min_free_kbytes tunable.It often cause the system to
+>>>> become
+>>>> out-of-memory.Using 20% of mem_free to avoid oom and system hang.
+>>> Hi, shuang
+>>>
+>>> I met the issue that min_free_kbytes caused system hang before, and
+>>> what you said made sense.
+>>>
+>>> but after tested the patch, I found it still make the system hang
+>>> with the patch, so I don't think
+>>> this patch can fix the issue completely, maybe there are other
+>>> factors, or need lower tune value.
+>>> always suppose it was because of the high tune value, it's more
+>>> better to add an optional to control it.
+>>> also I will investigate it deeper to look after the real reason.
+>>> please comment if you have other ideas.
+>>>
+>>> Thanks,
+>>> Zhouping
+>> Thanks for testing,Zhouping.
+>>
+>> I find it says "However, setting this parameter to a value that is
+>> too
+>> high (5-10% of total system memory) will cause your system to become
+>> out-of-memory immediately." in redhat memory-tunables document.
+>> https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-tunables.html
+>> Set the value less than 5% of total memory will make it more safe.
+> Thanks for sharing this! I will take your ideas into account.
+>
+>> Let's think about a better option to control it.
+> Ok, I will prepare a patch for this.
+>
+>
+>> It is great that you will investigate it deeper.
+>> Seems there are some other problems in this case,it always failed
+>> with i386.
+>> The type of total_mem "unsigned long" is not suitable with nowadays
+>> memory ,it will overflow(with i386) in line 177:map_count = total_mem
+>> *
+>> KB / MAP_SIZE and the value of map_count is not correct.
+>> Using "unsigned long long" could fix this issue.
+>> But the case still failed after fix it.
+>> Could you help to investigate it too.
+> sure.
+>
+Hi Zhouping,
+I think the reason for the failures which I met is also that  it just 
+catched oom_killer scenario when overcommit_memory=1.
+I found your patch before:
+commit 4f267b6fd11749c91211c9dbfc706cf46919650b
+Author: Zhouping Liu <zliu@redhat.com>
+Date:   Fri Mar 30 22:29:58 2012 +0800
+
+     mm/tunable: fix unexpected error log in min_free_kbytes
+
+     when overcommit_memory=0, mmap() will be destroyed in two below 
+scenario:
+      1) MAP_FAILED with ENOMEM,
+      2) oom_killer kill it.
+     without the patch, it just catched oom_killer scenario,
+     the patch fixed it.
+
+
+Could this patch also for when overcommit_memory=1 scenario?
+
+Thanks
+Shuang
+
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -384,18 +126,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
