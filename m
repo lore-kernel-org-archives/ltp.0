@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Sz2Y6-0001zq-1K
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 09:27:30 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Sz2Y0-0008AC-Nm
-	for ltp-list@lists.sourceforge.net; Wed, 08 Aug 2012 09:27:30 +0000
-Received: by pbcwy7 with SMTP id wy7so1085529pbc.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Aug 2012 02:27:18 -0700 (PDT)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Wed,  8 Aug 2012 17:26:57 +0800
-Message-Id: <d894c0a00563bc5666b1665040e6bc7fca4e8eda.1344418001.git.caspar@casparzhang.com>
-In-Reply-To: <9fe539868cd8580388b98397a87e25ff1cac34bc.1344418001.git.caspar@casparzhang.com>
-References: <9fe539868cd8580388b98397a87e25ff1cac34bc.1344418001.git.caspar@casparzhang.com>
-In-Reply-To: <9fe539868cd8580388b98397a87e25ff1cac34bc.1344418001.git.caspar@casparzhang.com>
-References: <9fe539868cd8580388b98397a87e25ff1cac34bc.1344418001.git.caspar@casparzhang.com>
+	(envelope-from <shyju.pv@huawei.com>) id 1T65AR-0000A2-NK
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 19:40:11 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T65AP-0004hu-Lr
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 19:40:11 +0000
+From: shyju pv <shyju.pv@huawei.com>
+Date: Mon, 27 Aug 2012 19:34:51 +0000
+Message-ID: <E061084CB90FCE4F89232A6CF839683B32BC7AE2@SZXEML507-MBS.china.huawei.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.7.8.6"
-Subject: [LTP] [PATCH 4/4] runtest/syscalls: add cma testcases
+Subject: [LTP] sendmsg01 fails  from 3.6-rc1 kernel onward,
+ possible ltp test case update needed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,55 +24,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.7.8.6
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-adding the following testcases into runtest/syscalls:
-
-    process_vm_readv02
-    process_vm_readv03
-    process_vm_writev02
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- runtest/syscalls |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-
---------------1.7.8.6
-Content-Type: text/x-patch;
-	name="0004-runtest-syscalls-add-cma-testcases.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0004-runtest-syscalls-add-cma-testcases.patch"
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7c4c9ca..edf6c1e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -734,7 +734,10 @@ pread03_64 pread03_64
- profil01 profil01
- 
- process_vm_readv01 process_vm01 -r
-+process_vm_readv02 process_vm_readv02
-+process_vm_readv03 process_vm_readv03
- process_vm_writev01 process_vm01 -w
-+process_vm_writev02 process_vm_writev02
- 
- pselect01 pselect01
- pselect01_64 pselect01_64
-
---------------1.7.8.6
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Hi 
+System call sendmsg01 fails from 3.6-rc1 onward.
+LTP_Version: 2012-06-14
+Testcase : sendmsg01
+Description : verifies the sendmsg syscall returns value for various failure
+cases
+Failure Analysis : System call returns -1 and the test case expect 0
+Latest Kernel version in which test case passed :  Kernel 3.5
+Test case Failed : Kernel 3.6-rc1,rc2and rc3
+Output log :: <<<test_output>>>
+incrementing stop
+sendmsg01    1  TPASS  :  bad file descriptor successful
+sendmsg01    2  TPASS  :  invalid socket successful
+sendmsg01    3  TPASS  :  invalid send buffer successful
+sendmsg01    4  TPASS  :  connected TCP successful
+sendmsg01    5  TPASS  :  not connected TCP successful
+sendmsg01    6  TPASS  :  invalid to buffer length successful
+sendmsg01    7  TPASS  :  invalid to buffer successful
+sendmsg01    8  TPASS  :  UDP message too big successful
+sendmsg01    9  TPASS  :  local endpoint shutdown successful
+sendmsg01   10  TPASS  :  invalid iovec pointer successful
+sendmsg01   11  TPASS  :  invalid msghdr pointer successful
+sendmsg01   12  TPASS  :  rights passing successful
+sendmsg01   13  TPASS  :  invalid flags set w/ control successful
+sendmsg01   14  TFAIL  :  invalid flags set ; returned -1 (expected 0),
+errno
+95 (expected 95)
+sendmsg01   15  TPASS  :  invalid cmsg length successful
+sendmsg01   16  TPASS  :  invalid cmsg pointer successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -86,18 +71,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---------------1.7.8.6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.7.8.6--
-
-
-
