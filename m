@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1T4R8W-0007iM-6X
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 06:43:24 +0000
-Received: from rcsinet15.oracle.com ([148.87.113.117])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T4R8S-0003qK-7O
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 06:43:24 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by rcsinet15.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
-	ESMTP id q7N6hDiD032336
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1T5z1v-000415-DM
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 13:06:59 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T5z1u-0001GV-Hg
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 13:06:59 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7RD6qqx022384
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 23 Aug 2012 06:43:14 GMT
-Received: from acsmt357.oracle.com (acsmt357.oracle.com [141.146.40.157])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	q7N6hCtx024619
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 23 Aug 2012 06:43:13 GMT
-Received: from abhmt102.oracle.com (abhmt102.oracle.com [141.146.116.54])
-	by acsmt357.oracle.com (8.12.11.20060308/8.12.11) with ESMTP id
-	q7N6hCPq009483
-	for <ltp-list@lists.sourceforge.net>; Thu, 23 Aug 2012 01:43:12 -0500
-From: shuang.qiu@oracle.com
-Date: Thu, 23 Aug 2012 14:43:01 +0800
-Message-Id: <1345704181-5596-1-git-send-email-shuang.qiu@oracle.com>
-Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+	for <ltp-list@lists.sourceforge.net>; Mon, 27 Aug 2012 09:06:52 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Mon, 27 Aug 2012 21:01:37 +0800
+Message-Id: <38bbdc8adabaf3b66b9442c474b685e8c0838d06.1346072038.git.zliu@redhat.com>
+Subject: [LTP]  [PATCH v2] mm/oom05: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,32 +30,178 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+add a new testcase to test OOM on each NUMA node at the same time.
 
-The value of min_free_kbytes is set too high(half of mem_free) during
-testing min_free_kbytes tunable.It often cause the system to become
-out-of-memory.Using 20% of mem_free to avoid oom and system hang.
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- testcases/kernel/mem/tunable/min_free_kbytes.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ runtest/mm                       |   1 +
+ testcases/kernel/mem/oom/oom05.c | 137 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 138 insertions(+)
+ create mode 100644 testcases/kernel/mem/oom/oom05.c
 
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index 00ead04..8a03f85 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -128,7 +128,7 @@ static void test_tune(unsigned long overcommit_policy)
- 		/* case2 */
- 		else {
- 			memfree = read_meminfo("MemFree:");
--			tune = memfree / 2;
-+			tune = memfree / 5;
- 			set_sys_tune("min_free_kbytes", tune, 1);
- 		}
+change log from v1 to v2:
+
+used numa_helper.h lib
+
+diff --git a/runtest/mm b/runtest/mm
+index 2dd66f0..a60c04b 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -77,6 +77,7 @@ oom01 oom01
+ oom02 oom02
+ oom03 oom03
+ oom04 oom04
++oom05 oom05
  
+ swapping01 swapping01 -i 5
+ 
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+new file mode 100644
+index 0000000..5f49447
+--- /dev/null
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -0,0 +1,137 @@
++/*
++ * Out Of Memory (OOM) on Each NUMA node at the same time
++ *
++ * The program is designed to cope with unpredictable like amount and
++ * system physical memory, swap size and other VMM technology like KSM,
++ * memcg, memory hotplug and so on which may affect the OOM
++ * behaviours. It simply increase the memory consumption 3G each time
++ * until all the available memory is consumed and OOM is triggered.
++ *
++ * Copyright (C) 2012  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++
++#include "test.h"
++#include "safe_macros.h"
++#include "usctest.h"
++#include "mem.h"
++#include "numa_helper.h"
++
++char *TCID = "oom05";
++int TST_TOTAL = 1;
++
++#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
++        && HAVE_MPOL_CONSTANTS
++#include <numa.h>
++#include <numaif.h>
++
++int main(int argc, char *argv[])
++{
++	char *msg;
++	int lc;
++	int *nodes, nnodes, i;
++	pid_t pids[MAXNODES];
++	int status;
++	unsigned long nmasks[MAXNODES];
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++#if __WORDSIZE == 32
++	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
++#endif
++	if (get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &nnodes, &nodes) < 0)
++		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes_arr");
++	if (nnodes <= 1)
++		tst_brkm(TCONF, NULL, "requres a NUMA system.");
++
++	setup();
++
++	set_sys_tune("overcommit_memory", 1, 1);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		for (i = 0; i < nnodes; i++) {
++			nmasks[i] = 1 << nodes[i];
++			switch (pids[i] = fork()) {
++			case -1:
++				tst_brkm(TBROK | TERRNO, cleanup, "fork");
++			case 0:
++				if (set_mempolicy(MPOL_BIND, &nmasks[i],
++				    MAXNODES)== -1)
++					tst_brkm(TBROK | TERRNO, cleanup,
++					    "set_mempolicy");
++
++				tst_resm(TINFO, "start oom on numa node%d",
++				    nodes[i]);
++
++				testoom(0, 0, 0);
++
++				exit(0);
++			}
++		}
++
++		for (i = 0; i < nnodes; i++) {
++			if (waitpid(pids[i], &status, WUNTRACED | WCONTINUED)
++			    == -1)
++				tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
++				tst_resm(TFAIL,
++				    "check_monitor child exit with status: %d",
++				    status);
++		}
++	}
++	cleanup();
++	tst_exit();
++}
++
++void setup(void)
++{
++	tst_require_root(NULL);
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++
++	overcommit = get_sys_tune("overcommit_memory");
++}
++
++void cleanup(void)
++{
++	set_sys_tune("overcommit_memory", overcommit, 0);
++
++	TEST_CLEANUP;
++}
++
++#else				/* no NUMA */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
++}
++#endif
 -- 
-1.7.7
+1.7.11.2
 
 
 ------------------------------------------------------------------------------
