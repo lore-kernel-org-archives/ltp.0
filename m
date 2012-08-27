@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T1CzQ-0001Un-W8
-	for ltp-list@lists.sourceforge.net; Tue, 14 Aug 2012 09:00:40 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T1CzM-0004nT-PF
-	for ltp-list@lists.sourceforge.net; Tue, 14 Aug 2012 09:00:40 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q7E90Su5002618
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Aug 2012 02:00:30 -0700 (PDT)
-From: Kang Kai <kai.kang@windriver.com>
-Date: Tue, 14 Aug 2012 17:00:26 +0800
-Message-ID: <1344934826-31007-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shyju.pv@huawei.com>) id 1T5wcf-0008Kz-8V
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 10:32:45 +0000
+Received: from szxga01-in.huawei.com ([119.145.14.64])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T5wcW-00059h-G2
+	for ltp-list@lists.sourceforge.net; Mon, 27 Aug 2012 10:32:45 +0000
+From: shyju pv <shyju.pv@huawei.com>
+Date: Mon, 27 Aug 2012 10:30:34 +0000
+Message-ID: <E061084CB90FCE4F89232A6CF839683B32BC7591@SZXEML507-MBS.china.huawei.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
+Subject: [LTP] Test case send01 fails in kernel version 3.6-rc1, rc2 and rc3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,43 +26,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Zhenfeng.Zhao@windriver.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: shyju pv <shyju.pv@huawei.com>
 
-This case fails randomly with "Segmentation fault". Reset VERBOSE to 6
-can avoid this problem.
+Hi,
 
-Fix typo at same time.
+sendt01 test cases fails from 3.6-rc1,rc2 and rc3
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/pthread_detach/4-3.c    |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Bug descreption:
+-------------------------
+LTP_Version: 2012-06-14
+LTP Test case: send01
+Description : Verifies the send syscall errorno for various failure cases
+Failure Analysis :  when the invalid flag set , The system gives error no
+EOPNOTSUPP (95) whereas LTP expects EFAULT(14)
+Fix : Modify  the LTP code with respect the the system return values of the
+latest kernel(3.6-rc1)
+Test case passed in Kernel 3.5
+Failed from  3.6-rc1,rc2and rc3
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
-index 5c15e93..23738dc 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
-@@ -49,7 +49,7 @@
- #include "../testfrmw/testfrmw.c"
- 
- #ifndef VERBOSE
--#define VERBOSE 1
-+#define VERBOSE 6
- #endif
- 
- #define WITH_SYNCHRO
-@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
- 
- 	do {
- 		do_it2 = 0;
--	} while (do_it2 = 0);
-+	} while (do_it2);
- 
- 	ret = pthread_join(th_sig1, NULL);
- 	if (ret)
--- 
-1.7.5.4
+Execution Log
+---------------------
+<<<test_output>>>
+incrementing stop
+send01      1  TPASS  :  bad file descriptor successful
+send01      2  TPASS  :  invalid socket successful
+send01      3  TPASS  :  invalid send buffer successful
+send01      4  TPASS  :  UDP message too big successful
+send01      5  TPASS  :  local endpoint shutdown successful
+send01      6  TFAIL  :  invalid flags set ; returned -1 (expected -1),
+errno
+95 (expected 14)
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+
+Shyju
 
 
 ------------------------------------------------------------------------------
