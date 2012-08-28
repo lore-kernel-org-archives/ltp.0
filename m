@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <qiaozqjhsy@gmail.com>) id 1T75GY-0006FD-KB
-	for ltp-list@lists.sourceforge.net; Thu, 30 Aug 2012 13:58:38 +0000
-Received: from mail-wi0-f181.google.com ([209.85.212.181])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1T75GT-0003cX-3U
-	for ltp-list@lists.sourceforge.net; Thu, 30 Aug 2012 13:58:38 +0000
-Received: by wibhm2 with SMTP id hm2so229026wib.10
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Aug 2012 06:58:27 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1T6Heu-000800-Pt
+	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:00:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T6Heo-00021z-99
+	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:00:28 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7S90FLM032323
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 Aug 2012 17:00:16 +0800
+Message-ID: <503C8866.9000909@cn.fujitsu.com>
+Date: Tue, 28 Aug 2012 16:59:18 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1346324865.59629.YahooMailNeo@web192605.mail.sg3.yahoo.com>
-References: <1346324865.59629.YahooMailNeo@web192605.mail.sg3.yahoo.com>
-Date: Thu, 30 Aug 2012 21:58:26 +0800
-Message-ID: <CAMskSfJyPZBVN=0h2VJO+Hq8sLcP7-3f9b4CuBqzp6E=qXHNDw@mail.gmail.com>
-From: zhaoqiao <qiaozqjhsy@gmail.com>
-Subject: Re: [LTP] Container testcases In LTP
+Subject: [LTP] [PATCH 1/2]sigpause/3-1.c Clean up
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,115 +25,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4156138725745462407=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bincy K Philip <bincy_k_philip@yahoo.co.in>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
---===============4156138725745462407==
-Content-Type: multipart/alternative; boundary=0016e6d97610cb469c04c87c1125
-
---0016e6d97610cb469c04c87c1125
-Content-Type: text/plain; charset=ISO-8859-1
-
-2012/8/30 Bincy K Philip <bincy_k_philip@yahoo.co.in>
-
-> Hi,
->
-> I am working on linux containers.
-> Can  anybody describe me that what all container test cases are addressed
-> in LTP.
-> Any prerequisites is required to run container testcases?
->
-> Regards
-> Bincy
->
->
-Hi, bincy
-
-Maybe it can help you:
-http://ltp.sourceforge.net/documentation/how-to/ltp.php
-
--------
-Qiao
-
-
-
->
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
-
---0016e6d97610cb469c04c87c1125
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<br><br><div class=3D"gmail_quote">2012/8/30 Bincy K Philip <span dir=3D"lt=
-r">&lt;<a href=3D"mailto:bincy_k_philip@yahoo.co.in" target=3D"_blank">binc=
-y_k_philip@yahoo.co.in</a>&gt;</span><br><blockquote class=3D"gmail_quote" =
-style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
-<div><div style=3D"font-size:12pt;font-family:times new roman,new york,time=
-s,serif"><div>Hi,</div><div><br></div><div style=3D"font-style:normal;font-=
-size:16px;background-color:transparent;font-family:times new roman,new york=
-,times,serif">
-I am working on linux containers.</div><div style=3D"font-style:normal;font=
--size:16px;background-color:transparent;font-family:times new roman,new yor=
-k,times,serif">Can=A0 anybody describe me that what all container test case=
-s are addressed in LTP.</div>
-<div style=3D"font-style:normal;font-size:16px;background-color:transparent=
-;font-family:times new roman,new york,times,serif">Any prerequisites is req=
-uired to run container testcases?</div><div style=3D"font-style:normal;font=
--size:16px;background-color:transparent;font-family:times new roman,new yor=
-k,times,serif">
-<br></div><div style=3D"font-style:normal;font-size:16px;background-color:t=
-ransparent;font-family:times new roman,new york,times,serif">Regards</div><=
-span class=3D"HOEnZb"><font color=3D"#888888"><div style=3D"font-style:norm=
-al;font-size:16px;background-color:transparent;font-family:times new roman,=
-new york,times,serif">
-Bincy<br></div><div style=3D"font-style:normal;font-size:16px;background-co=
-lor:transparent;font-family:times new roman,new york,times,serif"></div></f=
-ont></span></div></div><br></blockquote><div>=A0</div><div>Hi, bincy</div><=
-div>
-<br></div><div>Maybe it can help you:=A0<a href=3D"http://ltp.sourceforge.n=
-et/documentation/how-to/ltp.php">http://ltp.sourceforge.net/documentation/h=
-ow-to/ltp.php</a></div><div><br></div><div>-------</div><div>Qiao</div><div=
->
-<br></div><div>=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0=
- 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">--------------------=
-----------------------------------------------------------<br>
-Live Security Virtual Conference<br>
-Exclusive live event will cover all the ways today&#39;s security and<br>
-threat landscape has changed and how IT managers can respond. Discussions<b=
-r>
-will include endpoint security, mobile security and the latest in malware<b=
-r>
-threats. <a href=3D"http://www.accelacomm.com/jaw/sfrnl04242012/114/5012226=
-3/" target=3D"_blank">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122=
-263/</a><br>_______________________________________________<br>
-Ltp-list mailing list<br>
-<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
-e.net</a><br>
-<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
-"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
-<br></blockquote></div><br>
-
---0016e6d97610cb469c04c87c1125--
-
-
---===============4156138725745462407==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+Clean up sigpause/3-1.c.
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ .../conformance/interfaces/sigpause/3-1.c          |   34
+++++++++++----------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
+
+diff --git
+a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
+index 2fa7504..00024ed 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
+@@ -32,7 +32,8 @@
+ int result = 2;
+ int sem = INMAIN;
+
+-void handler() {
++void handler()
++{
+ 	printf("signal was called\n");
+ 	return;
+ }
+@@ -48,18 +49,20 @@ void *a_thread_func()
+ 	return_value = sigpause(SIGTOTEST);
+ 	if (return_value == -1) {
+ 		if (errno == EINTR) {
+-			printf ("Test PASSED: sigpause returned -1 and set errno to EINTR\n");
++			printf("Test PASSED: sigpause returned -1 "
++					"and set errno to EINTR\n");
+ 			result = 0;
+ 		} else {
+-			printf ("Test FAILED: sigpause did not set errno to EINTR\n");
++			printf("Test FAILED: sigpause did not "
++					"set errno to EINTR\n");
+ 			result = 1;
+ 		}
+ 	} else {
+-		if (errno == EINTR) {
+-			printf ("Test FAILED: sigpause did not return -1\n");
+-		}
+-		printf ("Test FAILED: sigpause did not set errno to EINTR\n");
+-		printf ("Test FAILED: sigpause did not return -1\n");
++		if (errno == EINTR)
++			printf("Test FAILED: sigpause did not return -1\n");
++
++		printf("Test FAILED: sigpause did not set errno to EINTR\n");
++		printf("Test FAILED: sigpause did not return -1\n");
+ 		result = 1;
+
+ 	}
+@@ -71,16 +74,14 @@ int main()
+ {
+ 	pthread_t new_th;
+
+-	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0)
+-	{
++	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0) {
+ 		perror("Error creating thread\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+
+ 	sleep(1);
+
+-	if (pthread_kill(new_th, SIGTOTEST) != 0)
+-	{
++	if (pthread_kill(new_th, SIGTOTEST) != 0) {
+ 		printf("Test UNRESOLVED: Couldn't send signal to thread\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -89,13 +90,12 @@ int main()
+ 	while (sem == INTHREAD)
+ 		sleep(1);
+
+-	if (result == 2) {
++	if (result == 2)
+ 		return PTS_UNRESOLVED;
+-	}
+-	if (result == 1) {
++
++	if (result == 1)
+ 		return PTS_FAIL;
+-	}
+
+ 	printf("Test PASSED\n");
+ 	return PTS_PASS;
+-}
+\ No newline at end of file
++}
+-- 
+1.7.10.2
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -143,16 +129,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============4156138725745462407==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4156138725745462407==--
-
