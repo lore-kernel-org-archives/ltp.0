@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Swyf7-0000bi-9G
-	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 16:54:13 +0000
-Received: from rcsinet15.oracle.com ([148.87.113.117])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Swyf6-0000FA-Hj
-	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 16:54:13 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by rcsinet15.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
-	ESMTP id q72Gs453025541
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Aug 2012 16:54:04 GMT
-Received: from acsmt358.oracle.com (acsmt358.oracle.com [141.146.40.158])
-	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	q72Gs3fF001562
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Aug 2012 16:54:03 GMT
-Received: from abhmt115.oracle.com (abhmt115.oracle.com [141.146.116.67])
-	by acsmt358.oracle.com (8.12.11.20060308/8.12.11) with ESMTP id
-	q72Gs3Dj021793
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Aug 2012 11:54:03 -0500
-From: Simon Xu <xu.simon@oracle.com>
-Date: Fri,  3 Aug 2012 00:53:57 +0800
-Message-Id: <1343926437-2099-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH 1/1] madvise03: let the system select an address for
-	shmat()
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1T6Hkq-0007Lu-QN
+	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:06:36 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T6Hkl-0000cN-Ad
+	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 09:06:36 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q7S96O7S000442
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 Aug 2012 17:06:24 +0800
+Message-ID: <503C89D7.5030305@cn.fujitsu.com>
+Date: Tue, 28 Aug 2012 17:05:27 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <503C8866.9000909@cn.fujitsu.com>
+In-Reply-To: <503C8866.9000909@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2]sigpause/3-1.c Fix hung
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,49 +27,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-In certain occasions, 0x22000000 is invalid for shmat() and madvise03 fails:
+If sem is set as INTHREAD finally,the loop will be endless.
 
-madvise03 1 TBROK : shmat error
-madvise03 2 TBROK : Remaining cases broken
-
-Use `NULL' for shmat() to let the system attach the shared memory segment
-at the first available address.
-
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/madvise/madvise03.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../open_posix_testsuite/conformance/interfaces/sigpause/3-1.c      |
+  3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise03.c b/testcases/kernel/syscalls/madvise/madvise03.c
-index 2e696e8..fd0bd97 100644
---- a/testcases/kernel/syscalls/madvise/madvise03.c
-+++ b/testcases/kernel/syscalls/madvise/madvise03.c
-@@ -154,13 +154,13 @@ int main(int argc, char *argv[])
- 		if (shmid1 == -1)
- 			tst_brkm(TBROK, cleanup, "shmget failed");
- 
--		/* Attach shared memory segment to 0x22000000 address */
--		addr1 = shmat(shmid1, (void *)0x22000000, 0);
-+		/* Attach shared memory segment to an address selected by the system */
-+		addr1 = shmat(shmid1, NULL, 0);
- 		if (addr1 == (void *) -1)
- 			tst_brkm(TBROK, cleanup, "shmat error");
- 
- 		/* (1) Test case for MADV_REMOVE */
--		TEST(madvise((void *)0x22000000, 4096, MADV_REMOVE));
-+		TEST(madvise((void *)addr1, 4096, MADV_REMOVE));
- 		check_and_print("MADV_REMOVE");
- 
- 		/* (2) Test case for MADV_DONTFORK */
+diff --git
+a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
+index 00024ed..6f1f454 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sigpause/3-1.c
+@@ -30,7 +30,7 @@
+ #define INMAIN 1
+
+ int result = 2;
+-int sem = INMAIN;
++int sem = INTHREAD;
+
+ void handler()
+ {
+@@ -86,7 +86,6 @@ int main()
+ 		return PTS_UNRESOLVED;
+ 	}
+
+-	sem = INTHREAD;
+ 	while (sem == INTHREAD)
+ 		sleep(1);
+
 -- 
-1.7.11.4
-
+1.7.10.2
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
