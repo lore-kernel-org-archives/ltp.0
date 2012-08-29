@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T4San-0002Ml-QS
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 08:16:41 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T4Sam-0003fr-IF
-	for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2012 08:16:41 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q7N8GYji005039
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 23 Aug 2012 01:16:34 -0700 (PDT)
-Message-ID: <5035E6EF.2060808@windriver.com>
-Date: Thu, 23 Aug 2012 16:16:47 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1T6ira-0006ae-7s
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 14:03:25 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T6irY-0004Ap-Px
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 14:03:22 +0000
+Date: Wed, 29 Aug 2012 10:03:15 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <1357090412.61662055.1346248995037.JavaMail.root@redhat.com>
+In-Reply-To: <1768335107.59483055.1346044605729.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <0b20ceed0020e979ec36629e552f77acf96467cc.1345704746.git.jstancek@redhat.com>
-In-Reply-To: <0b20ceed0020e979ec36629e552f77acf96467cc.1345704746.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] pthread_cond_signal: don't count
-	pthread_cond_signals
+Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,46 +23,187 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: shuang qiu <shuang.qiu@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDA45pyIMjPml6UgMTQ6NTUsIEphbiBTdGFuY2VrIHdyb3RlOgo+IERvbid0IGNv
-dW50IGhvdyBtYW55IHB0aHJlYWRfY29uZF9zaWduYWxzIGl0IHRvb2ssCj4gaWYgYW55IGZhaWxz
-IFNJR0FMUk0gd2lsbCB0cmlnZ2VyIHRlc3RjYXNlIGZhaWx1cmUuCj4KPiBTaWduZWQtb2ZmLWJ5
-OiBKYW4gU3RhbmNlazxqc3RhbmNla0ByZWRoYXQuY29tPgpTaWduZWQtb2ZmLWJ5OiBLYW5nIEth
-aSA8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KCj4gLS0tCj4gICAuLi4vaW50ZXJmYWNlcy9wdGhy
-ZWFkX2NvbmRfc2lnbmFsLzEtMS5jICAgICAgICAgICB8ICAgMTAgKy0tLS0tLS0tLQo+ICAgMSBm
-aWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
-ZXMvcHRocmVhZF9jb25kX3NpZ25hbC8xLTEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
-dWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfY29uZF9zaWduYWwvMS0xLmMKPiBp
-bmRleCBiZjU1YjMxLi41ODA4ZmVkIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4
-X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfY29uZF9zaWduYWwvMS0x
-LmMKPiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
-ZXJmYWNlcy9wdGhyZWFkX2NvbmRfc2lnbmFsLzEtMS5jCj4gQEAgLTEzNCw5ICsxMzQsNyBAQCBp
-bnQgbWFpbigpCj4gICAJYWxhcm0oNSk7Cj4KPiAgIAkvKiBsb29wIHRvIHdha2UgdXAgdGhlIHJl
-c3QgdGhyZWFkcyAqLwo+IC0JaT0wOwo+IC0Jd2hpbGUgKHdha2VuX251bTwgIFRIUkVBRF9OVU0p
-IHsKPiAtCQkrK2k7Cj4gKwlmb3IgKGk9MTsgaTxUSFJFQURfTlVNOyBpKyspIHsKPiAgIAkJZnBy
-aW50ZihzdGRlcnIsIltNYWluIHRocmVhZF0gc2lnbmFscyB0byB3YWtlIHVwIHRoZSBuZXh0IHRo
-cmVhZFxuIik7Cj4gICAJCWlmIChwdGhyZWFkX2NvbmRfc2lnbmFsKCZ0ZC5jb25kKSAhPSAwKSB7
-Cj4gICAJCQlmcHJpbnRmKHN0ZGVyciwiTWFpbiBmYWlsZWQgdG8gc2lnbmFsIHRoZSBjb25kaXRp
-b25cbiIpOwo+IEBAIC0xNDUsMTIgKzE0Myw2IEBAIGludCBtYWluKCkKPiAgIAkJdXNsZWVwKDEw
-MCk7Cj4gICAJfQo+Cj4gLQlpZiAoaT49IFRIUkVBRF9OVU0pIHsKPiAtCQlmcHJpbnRmKHN0ZGVy
-ciwiW01haW4gdGhyZWFkXSBoYWQgdG8gc2lnbmFsIHRoZSBjb25kaXRpb24gJWkgdGltZXNcbiIs
-IGkrMSk7Cj4gLQkJZnByaW50ZihzdGRlcnIsIltNYWluIHRocmVhZF0gdG8gd2FrZSB1cCAlaSB0
-aHJlYWRzXG4uIFRlc3QgRkFJTEVELlxuIiwgVEhSRUFEX05VTSk7Cj4gLQkJZXhpdChQVFNfRkFJ
-TCk7Cj4gLQl9Cj4gLQo+ICAgCS8qIGpvaW4gYWxsIHNlY29uZGFyeSB0aHJlYWRzICovCj4gICAJ
-Zm9yIChpPTA7IGk8VEhSRUFEX05VTTsgaSsrKSB7Cj4gICAJICAgIAlpZiAocHRocmVhZF9qb2lu
-KHRocmVhZFtpXSwgTlVMTCkgIT0gMCkgewoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNl
-Y3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVy
-IGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMg
-Y2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2ls
-bCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRl
-c3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2Zy
-bmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bHRwLWxpc3QK
+
+
+----- Original Message -----
+> From: "Zhouping Liu" <zliu@redhat.com>
+> To: "shuang qiu" <shuang.qiu@oracle.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Monday, August 27, 2012 1:16:45 PM
+> Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Zhouping Liu" <zliu@redhat.com>
+> > To: "shuang qiu" <shuang.qiu@oracle.com>
+> > Cc: ltp-list@lists.sourceforge.net
+> > Sent: Friday, August 24, 2012 4:11:41 PM
+> > Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes
+> > lower
+> > 
+> > 
+> > 
+> > ----- Original Message -----
+> > > From: "shuang qiu" <shuang.qiu@oracle.com>
+> > > To: ltp-list@lists.sourceforge.net
+> > > Sent: Thursday, August 23, 2012 2:43:01 PM
+> > > Subject: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+> > > 
+> > > From: Shuang Qiu <shuang.qiu@oracle.com>
+> > > 
+> > > The value of min_free_kbytes is set too high(half of mem_free)
+> > > during
+> > > testing min_free_kbytes tunable.It often cause the system to
+> > > become
+> > > out-of-memory.Using 20% of mem_free to avoid oom and system hang.
+> > 
+> > Hi, shuang
+> > 
+> > I met the issue that min_free_kbytes caused system hang before, and
+> > what you said made sense.
+> 
+> For the issue that min_free_kbytes caused system hang, I prepared a
+> patch for it,
+> at the same time, in order to enlarge the case's coverage, I add a
+> new case(2x default_tune)
+> I have tested it in my box, it's good.
+> 
+> Shuang, can you review and test the patch?
+> 
+> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
+> b/testcases/kernel/mem/tunable/min_free_kbytes.c
+> index 00ead04..ded0e45 100644
+> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
+> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+> @@ -10,7 +10,8 @@
+>   * the current free memory with the tunable value repeatedly.
+>   *
+>   * a) default min_free_kbytes with all overcommit memory policy
+> - * b) half of mem_free with all overcommit memory policy
+> + * b) 2x default value with all overcommit memory policy
+> + * c) 10% of MemFree or %5 MemTotal with all overcommit memory
+
+Hi, Shuang
+
+after setting 10% of MemFree or 5% MemTotal, it still cause a system
+hang, which has 16Gb memory. so I adjusted the value, reduced the value
+to 5% of MemFree or 2% MemTotal, which I think is more reasonable.
+
+Thanks,
+Zhouping
+
+> policy
+>   *
+>   ********************************************************************
+>   * Copyright (C) 2012 Red Hat, Inc.
+> @@ -115,20 +116,27 @@ int main(int argc, char *argv[])
+>  static void test_tune(unsigned long overcommit_policy)
+>  {
+>         int status;
+> -       int pid[2];
+> +       int pid[3];
+>         int ret, i;
+> -       unsigned long tune, memfree;
+> +       unsigned long tune, memfree, memtotal;
+>  
+>         set_sys_tune("overcommit_memory", overcommit_policy, 1);
+>  
+> -       for (i = 0; i < 2; i++) {
+> +       for (i = 0; i < 3; i++) {
+>                 /* case1 */
+>                 if (i == 0)
+>                         set_sys_tune("min_free_kbytes", default_tune,
+>                         1);
+>                 /* case2 */
+> -               else {
+> +               else if (i == 1) {
+> +                       set_sys_tune("min_free_kbytes", 2 *
+> default_tune, 1);
+> +               /* case3 */
+> +               } else {
+>                         memfree = read_meminfo("MemFree:");
+> -                       tune = memfree / 2;
+> +                       memtotal = read_meminfo("MemTotal:");
+> +                       tune = memfree / 10;
+> +                       if (tune > (memtotal / 20))
+> +                               tune = memtotal / 20;
+> +
+>                         set_sys_tune("min_free_kbytes", tune, 1);
+>                 }
+>  
+> 
+> 
+> > 
+> > but after tested the patch, I found it still make the system hang
+> > with the patch, so I don't think
+> > this patch can fix the issue completely, maybe there are other
+> > factors, or need lower tune value.
+> > always suppose it was because of the high tune value, it's more
+> > better to add an optional to control it.
+> > also I will investigate it deeper to look after the real reason.
+> > please comment if you have other ideas.
+> > 
+> > Thanks,
+> > Zhouping
+> > 
+> > > ---
+> > >  testcases/kernel/mem/tunable/min_free_kbytes.c |    2 +-
+> > >  1 files changed, 1 insertions(+), 1 deletions(-)
+> > > 
+> > > diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > > b/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > > index 00ead04..8a03f85 100644
+> > > --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > > +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > > @@ -128,7 +128,7 @@ static void test_tune(unsigned long
+> > > overcommit_policy)
+> > >  		/* case2 */
+> > >  		else {
+> > >  			memfree = read_meminfo("MemFree:");
+> > > -			tune = memfree / 2;
+> > > +			tune = memfree / 5;
+> > >  			set_sys_tune("min_free_kbytes", tune, 1);
+> > >  		}
+> > >  
+> > > --
+> > > 1.7.7
+> > > 
+> > > 
+> > > ------------------------------------------------------------------------------
+> > > Live Security Virtual Conference
+> > > Exclusive live event will cover all the ways today's security and
+> > > threat landscape has changed and how IT managers can respond.
+> > > Discussions
+> > > will include endpoint security, mobile security and the latest in
+> > > malware
+> > > threats.
+> > > http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> > > _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > 
+> > 
+> 
+> --
+> Thanks,
+> Zhouping
+> 
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
