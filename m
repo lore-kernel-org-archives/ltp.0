@@ -2,20 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1T6LFZ-0008T9-I5
-	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 12:50:33 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <jstancek@redhat.com>) id 1T6eSb-0000hL-JG
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 09:21:17 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T6LFY-0006l6-N8
-	for ltp-list@lists.sourceforge.net; Tue, 28 Aug 2012 12:50:33 +0000
-Message-ID: <503CBEBF.2040101@redhat.com>
-Date: Tue, 28 Aug 2012 20:51:11 +0800
-From: ZhouPing Liu <zliu@redhat.com>
+	id 1T6eSV-0007fp-Pu
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 09:21:17 +0000
+Date: Wed, 29 Aug 2012 05:21:05 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <765054537.12395391.1346232065915.JavaMail.root@redhat.com>
+In-Reply-To: <503DD983.9030608@windriver.com>
 MIME-Version: 1.0
-References: <1768335107.59483055.1346044605729.JavaMail.root@redhat.com>
-	<503C36CC.20201@oracle.com>
-In-Reply-To: <503C36CC.20201@oracle.com>
-Subject: Re: [LTP] [PATCH] Set tunable value of min_free_kbytes lower
+Subject: Re: [LTP] [PATCH] pthread_detach/4-3: workaround for segment fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,176 +23,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuang Qiu <shuang.qiu@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
 
-On 08/28/2012 11:11 AM, Shuang Qiu wrote:
-> On 08/27/2012 01:16 PM, Zhouping Liu wrote:
->>
->> ----- Original Message -----
->> For the issue that min_free_kbytes caused system hang, I prepared a 
->> patch for it,
->> at the same time, in order to enlarge the case's coverage, I add a 
->> new case(2x default_tune)
->> I have tested it in my box, it's good.
->>
->> Shuang, can you review and test the patch?
->>
->> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c 
->> b/testcases/kernel/mem/tunable/min_free_kbytes.c
->> index 00ead04..ded0e45 100644
->> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
->> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
->> @@ -10,7 +10,8 @@
->>    * the current free memory with the tunable value repeatedly.
->>    *
->>    * a) default min_free_kbytes with all overcommit memory policy
->> - * b) half of mem_free with all overcommit memory policy
->> + * b) 2x default value with all overcommit memory policy
->> + * c) 10% of MemFree or %5 MemTotal with all overcommit memory policy
->>    *
->> ********************************************************************
->>    * Copyright (C) 2012 Red Hat, Inc.
->> @@ -115,20 +116,27 @@ int main(int argc, char *argv[])
->>   static void test_tune(unsigned long overcommit_policy)
->>   {
->>          int status;
->> -       int pid[2];
->> +       int pid[3];
->>          int ret, i;
->> -       unsigned long tune, memfree;
->> +       unsigned long tune, memfree, memtotal;
->>            set_sys_tune("overcommit_memory", overcommit_policy, 1);
->>   -       for (i = 0; i < 2; i++) {
->> +       for (i = 0; i < 3; i++) {
->>                  /* case1 */
->>                  if (i == 0)
->>                          set_sys_tune("min_free_kbytes", 
->> default_tune, 1);
->>                  /* case2 */
->> -               else {
->> +               else if (i == 1) {
->> +                       set_sys_tune("min_free_kbytes", 2 * 
->> default_tune, 1);
->> +               /* case3 */
->> +               } else {
->>                          memfree = read_meminfo("MemFree:");
->> -                       tune = memfree / 2;
->> +                       memtotal = read_meminfo("MemTotal:");
->> +                       tune = memfree / 10;
->> +                       if (tune > (memtotal / 20))
->> +                               tune = memtotal / 20;
->> +
->>                          set_sys_tune("min_free_kbytes", tune, 1);
->>                  }
-> Hi Zhouping,
-> I have tested this patch,it works.
->
-> But I found another problem with this case that it is not work 
-> expectedly with the scenario that i386 system(PAE kernel) which has 
-> >4GB memory.
-> i.e. In i386 system with 7GB free memory,it could only eat about 3GB 
-> memory in one mem-hog fork process.
-
-yes, you are right.
-I tried to fork several processes to hog memory, but I don't think it's 
-a better way, so a good solution(I think) is included in below patch.
-
->
-> And we can also patch the overflow issue which I mentioned before:
->
-> The type of total_mem "unsigned long" is not suitable with nowadays
-> memory ,it will overflow(with i386) in line 177:map_count = total_mem
-> *
-> KB / MAP_SIZE and the value of map_count is not correct.
-> Using "unsigned long long" could fix this issue.
-
-after re-check the code, I found map_count was not necessary, so I 
-removed it,
-at the same time, it fixed your the overflow issue.
-
-please review the patch again, if you agree the fix, I will send a 
-formal patch set in new subject:
-
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c 
-b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index ded0e45..af25597 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -158,8 +158,18 @@ static void test_tune(unsigned long overcommit_policy)
-                                     "child unexpectedly failed: %d", 
-status);
-                 } else if (overcommit_policy == 1) {
-                         if (!WIFSIGNALED(status) || WTERMSIG(status) != 
-SIGKILL)
-+                       {
-+#if __WORDSIZE == 32
-+                               if (total_mem < 3145728UL)
-+#endif
-                                 tst_resm(TFAIL,
-                                     "child unexpectedly failed: %d", 
-status);
-+#if __WORDSIZE == 32
-+                               else
-+                                       tst_resm(TINFO, "Child can't 
-allocate "
-+                                           ">3Gb memory in 32bit system");
-+#endif
-+                       }
-                 } else {
-                         if (WIFEXITED(status)) {
-                                 if (WEXITSTATUS(status) != 0) {
-@@ -177,31 +187,23 @@ static void test_tune(unsigned long overcommit_policy)
-
-  static int eatup_mem(unsigned long overcommit_policy)
-  {
--       int map_count, i;
-         int ret = 0;
-         unsigned long memfree;
--       void **addrs;
--
--       map_count = total_mem * KB / MAP_SIZE;
--       addrs = (void **)malloc(map_count * sizeof(void *));
--       if (addrs == NULL) {
--               perror("malloc");
--               return -1;
--       }
-+       void *addrs;
-
-         memfree = read_meminfo("MemFree:");
-         printf("memfree is %lu kB before eatup mem\n", memfree);
--       for (i = 0; i < map_count; i++) {
--               addrs[i] = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
-+       while (1) {
-+               addrs = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
-                     MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
--               if (addrs[i] == MAP_FAILED) {
-+               if (addrs == MAP_FAILED) {
-                         if (overcommit_policy != 1 && errno != ENOMEM) {
-                                 perror("mmap");
-                                 ret = -1;
-                         }
-                         break;
-                 }
--               memset(addrs[i], i, MAP_SIZE);
-+               memset(addrs, 1, MAP_SIZE);
-         }
-         memfree = read_meminfo("MemFree:");
-         printf("memfree is %lu kB after eatup mem\n", memfree);
-
-Thanks,
-Zhouping
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkthbmcgS2FpIiA8S2FpLkth
+bmdAd2luZHJpdmVyLmNvbT4KPiBUbzogIkphbiBTdGFuY2VrIiA8anN0YW5jZWtAcmVkaGF0LmNv
+bT4KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0LCAiWmhlbmZlbmcgWmhhbyIg
+PFpoZW5mZW5nLlpoYW9Ad2luZHJpdmVyLmNvbT4KPiBTZW50OiBXZWRuZXNkYXksIDI5IEF1Z3Vz
+dCwgMjAxMiAxMDo1NzozOSBBTQo+IFN1YmplY3Q6IFJlOiBbTFRQXSBbUEFUQ0hdIHB0aHJlYWRf
+ZGV0YWNoLzQtMzogd29ya2Fyb3VuZCBmb3Igc2VnbWVudCBmYXVsdAo+IAo+IE9uIDIwMTLlubQw
+OOaciDI45pelIDE2OjM3LCBKYW4gU3RhbmNlayB3cm90ZToKPiA+Cj4gPiAtLS0tLSBPcmlnaW5h
+bCBNZXNzYWdlIC0tLS0tCj4gPj4gRnJvbTogIkthbmcgS2FpIjxLYWkuS2FuZ0B3aW5kcml2ZXIu
+Y29tPgo+ID4+IFRvOiAiSmFuIFN0YW5jZWsiPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4gPj4gQ2M6
+IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCwgIlpoZW5mZW5nCj4gPj4gWmhhbyI8Wmhl
+bmZlbmcuWmhhb0B3aW5kcml2ZXIuY29tPgo+ID4+IFNlbnQ6IEZyaWRheSwgMjQgQXVndXN0LCAy
+MDEyIDQ6NDY6NTggQU0KPiA+PiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIXSBwdGhyZWFkX2Rl
+dGFjaC80LTM6IHdvcmthcm91bmQgZm9yCj4gPj4gc2VnbWVudCBmYXVsdAo+ID4+Pj4gSSB3YXMg
+dGhpbmtpbmcgdXNsZWVwKHNsZWVwX3RpbWUpIHRoYXQgcHJvZ3Jlc3NpdmVseSBpbmNyZWFzZXMu
+Cj4gPj4+PiBTbwo+ID4+Pj4gaXQKPiA+Pj4+IHN0YXJ0cyBmaXJpbmcgc2lnbmFscyBhcyBxdWlj
+a2x5IGFzIGl0IGNhbiBhbmQgc2xvd3MgZG93biBvdmVyCj4gPj4+PiB0aW1lLgo+ID4+Pj4gRWFj
+aCBwdGhyZWFkX2RldGFjaCgpIHdvdWxkIHJlc2V0IHRoZSBzbGVlcF90aW1lLgo+ID4+Pj4KPiA+
+Pj4+IEFzIGZvciBvdXIgb3JpZ2luYWwgaXNzdWUsIGlkZWEgSSdtIHBsYXlpbmcgd2l0aCBpczoK
+PiA+Pj4+Cj4gPj4+PiBtYWluIChwcm9jQSkgLSBkb19jaGlsZCAocHJvY0IpIC0gc2VuZF9zaWcg
+KHRocmVhZCkKPiA+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCj4gPj4+
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXN0ICh0aHJlYWQpIC0gdGhy
+ZWFkZWQKPiA+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChkZXRhY2hl
+ZCB0aHJlYWQpCj4gPj4+Pgo+ID4+Pj4gLSB0dXJuICd3aGlsZScgaW4gdGVzdCgpIHRvIHNpbmds
+ZSAnZm9yJyBsb29wCj4gPj4+PiAtIGxvb3AgaW4gbWFpbiwgZm9yayBhbmQgY2FsbCBkb19jaGls
+ZCwgd2FpdCBmb3IgY2hpbGQgdG8gZmluaXNoCj4gPj4+IEhpLAo+ID4+Pgo+ID4+PiBhdHRhY2hl
+ZCBpcyB2MSBvZiB0aGUgaWRlYSBhYm92ZS4gSSByYW4gaXQgMTAweCB0aW1lcyBvbiB2YXJpb3Vz
+Cj4gPj4+IHNldHVwcyBhcyByb290IGFuZCB1bnByaXZpbGVnZWQgdXNlci4KPiA+PiBIaSBKYW4s
+Cj4gPj4KPiA+PiBHcmVhdCEKPiA+Pj4gS2FpLCB3b3VsZCB5b3UgbGlrZSB0byBnaXZlIGEgdHJ5
+Pwo+ID4+IEkgaGF2ZSB0ZXN0IGl0IG9uIHJvdXRlcnN0YXRpb24sIHg4Nl82NCh1YnVudHUxMS4x
+MCYgIHJlZGhhdCA1LjMpCj4gPj4gYW5kCj4gPj4geDg2KHJlZGhhdCA1LjMpIGVhY2ggMTAwKyB0
+aW1lcywgYW5kIGFsbCBQQVNTLgo+ID4+Cj4gPiBIaSwKPiA+Cj4gPiBJJ20gc3RpbGwgbG9va2lu
+ZyBhdCB0aGlzIHRlc3RjYXNlLiBJIGhhdmUgYmVlbiB0ZXN0aW5nIHYxIG1vcmUgb24KPiA+IGRp
+ZmZlcmVudAo+ID4gcmVsZWFzZXMgYW5kIGFyY2hlcyBhbmQgSSdtIGhpdHRpbmcgYW4gaXNzdWUg
+b24gcHBjNjQgUkhFTDYuMy4KPiA+Cj4gPiBJJ20gZ2V0dGluZyBhYm9ydCBmcm9tIGdjY19hc3Nl
+cnQuIFRoZSBtb3N0IGludGVyZXN0aW5nIHRoaW5nIGlzCj4gPiB0aGF0Cj4gPiB0aHJlYWQsIHdo
+aWNoIGFib3J0cyBzaG91bGRuJ3QgZXhpc3QsIGJlY2F1c2UgZm9yIHRoaXMgc2NlbmFyaW8KPiA+
+IHB0aHJlYWRfY3JlYXRlCj4gPiByZXR1cm5zIDEgKEVQRVJNKS4KPiA+Cj4gPiAoZ2RiKSBidAo+
+ID4gIzAgIDB4MDAwMDAwODA2NjM3NGU1MCBpbiByYWlzZSAoc2lnPTx2YWx1ZSBvcHRpbWl6ZWQg
+b3V0PikgYXQKPiA+IC4uL25wdGwvc3lzZGVwcy91bml4L3N5c3YvbGludXgvcmFpc2UuYzo2NAo+
+ID4gIzEgIDB4MDAwMDAwODA2NjM3NmRlNCBpbiBhYm9ydCAoKSBhdCBhYm9ydC5jOjkyCj4gPiAj
+MiAgMHgwMDAwMDA4MDY2ODdlNTA0IGluIF9VbndpbmRfU2V0U3BDb2x1bW4KPiA+IChjb250ZXh0
+PTB4ZmZmOTdhMGRmNTgsIG91dGVyX2NmYT0weGZmZjk3YTBlNjEwLAo+ID4gb3V0ZXJfcmE9MHg4
+MDY2NTQ4OTA0KSBhdCAuLi8uLi8uLi9nY2MvdW53aW5kLWR3Mi5jOjEyNjUKPiA+ICMzICB1d19p
+bml0X2NvbnRleHRfMSAoY29udGV4dD0weGZmZjk3YTBkZjU4LAo+ID4gb3V0ZXJfY2ZhPTB4ZmZm
+OTdhMGU2MTAsIG91dGVyX3JhPTB4ODA2NjU0ODkwNCkgYXQKPiA+IC4uLy4uLy4uL2djYy91bndp
+bmQtZHcyLmM6MTQ3Mgo+ID4gIzQgIDB4MDAwMDAwODA2Njg3ZWJlMCBpbiBfVW53aW5kX0ZvcmNl
+ZFVud2luZCAoZXhjPTB4ZmZmOTdhMGY2NzAsCj4gPiBzdG9wPUAweDgwNjY1NjBhZDg6IDB4ODA2
+NjU0NTY2MDx1bndpbmRfc3RvcD4sCj4gPiBzdG9wX2FyZ3VtZW50PTB4ZmZmOTdhMGU4ODApIGF0
+IC4uLy4uLy4uL2djYy91bndpbmQuaW5jOjIwMQo+ID4gIzUgIDB4MDAwMDAwODA2NjU0ODkwNCBp
+biBfVW53aW5kX0ZvcmNlZFVud2luZCAoZXhjPTx2YWx1ZQo+ID4gb3B0aW1pemVkIG91dD4sIHN0
+b3A9PHZhbHVlIG9wdGltaXplZCBvdXQ+LCBzdG9wX2FyZ3VtZW50PTx2YWx1ZQo+ID4gb3B0aW1p
+emVkIG91dD4pIGF0Cj4gPiAuLi9ucHRsL3N5c2RlcHMvcHRocmVhZC91bndpbmQtZm9yY2VkdW53
+aW5kLmM6MTMyCj4gPiAjNiAgMHgwMDAwMDA4MDY2NTQ1NjAwIGluIF9fcHRocmVhZF91bndpbmQg
+KGJ1Zj08dmFsdWUgb3B0aW1pemVkCj4gPiBvdXQ+KSBhdCB1bndpbmQuYzoxMzAKPiA+ICM3ICAw
+eDAwMDAwMDgwNjY1NDViYWMgaW4gX19kb19jYW5jZWwgKCkgYXQgcHRocmVhZFAuaDoyNjUKPiA+
+ICM4ICBfX3B0aHJlYWRfZW5hYmxlX2FzeW5jY2FuY2VsICgpIGF0IGNhbmNlbGxhdGlvbi5jOjQ5
+Cj4gPiAjOSAgMHgwMDAwMDA4MDY2NTNjNTY4IGluIHN0YXJ0X3RocmVhZCAoYXJnPTB4ZmZmOTdh
+MGYyMDApIGF0Cj4gPiBwdGhyZWFkX2NyZWF0ZS5jOjI4OQo+ID4gIzEwIDB4MDAwMDAwODA2NjQz
+YTMyYyBpbiAuX19jbG9uZSAoKSBmcm9tIC9saWI2NC9saWJjLTIuMTIuc28KPiA+Cj4gPiAoZ2Ri
+KSBmcmFtZSAyCj4gPiAjMiAgMHgwMDAwMDA4MDY2ODdlNTA0IGluIF9VbndpbmRfU2V0U3BDb2x1
+bW4KPiA+IChjb250ZXh0PTB4ZmZmOTdhMGRmNTgsIG91dGVyX2NmYT0weGZmZjk3YTBlNjEwLAo+
+ID4gb3V0ZXJfcmE9MHg4MDY2NTQ4OTA0KSBhdCAuLi8uLi8uLi9nY2MvdW53aW5kLWR3Mi5jOjEy
+NjUKPiA+IDEyNjUgICAgICAgICAgZ2NjX2Fzc2VydCAoc2l6ZSA9PSBzaXplb2YoX1Vud2luZF9X
+b3JkKSk7Cj4gPgo+ID4gVGhlIGFyZyBpbiB0aHJlYWRlZCgpIGlzIG5vdCB1c2VkIGZvciBhbnl0
+aGluZywgc28gSSBwYXNzZWQKPiA+IHNjZW5hcmlvIG51bWJlciBhcyBwYXJhbWV0ZXIuCj4gPiAo
+Z2RiKSBwL3ggKChzdHJ1Y3QgcHRocmVhZCAqKSAweGZmZjk3YTBmMjAwKS0+YXJnCj4gPiAkMSA9
+IDB4MTIKPiA+Cj4gPiBTbyBpdCdzIHRocmVhZCBmb3Igc2NlbmFyaW8gMHgxMi4gVGhpcyBzY2Vu
+YXJpbyB0cmllcyB0byBzZXQKPiA+IGV4cGxpY2l0IHNjaGVkdWxpbmcgd2l0aCBtYXgKPiA+IHBy
+aW9yaXR5LiBXaGVuIHlvdSBydW4gdGhpcyBhcyB1bnByaXZpbGVnZWQgdXNlciwgcHRocmVhZF9j
+cmVhdGUKPiA+IGdpdmVzIHlvdSBFUEVSTS4KPiBJcyBpdCBwcm9wZXIgZm9yIHRoaXMgY2FzZSB0
+aGF0IGxpbWl0IG9ubHkgcm9vdCBjYW4gcnVuPwoKV2UgY291bGQgc2tpcCBzY2VuYXJpb3Mgd2Ug
+a25vdyBhcmUgZ29pbmcgdG8gZmFpbCBmb3IgdW5wcml2aWxlZ2VkIHVzZXIsCml0IHdpbGwgbGlr
+ZWx5IGF2b2lkIGhpdHRpbmcgdGhhdCBnY2NfYXNzZXJ0LgoKQW55d2F5LCBzbyBmYXIgdGhpcyBs
+b29rcyBsaWtlIGdjYy9nbGliYyBpc3N1ZSwgSSBjcmVhdGVkIGJ1ZyBmb3IgaXQ6CkJ1ZyA4NTI0
+NDUgLSBnY2NfYXNzZXJ0IGZhaWx1cmUgaW4gX1Vud2luZF9TZXRTcENvbHVtbigpIG9uIHBwYzY0
+Cmh0dHBzOi8vYnVnemlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9ODUyNDQ1CgpSZWdh
+cmRzLApKYW4KCj4gCj4gUmVnYXJkcywKPiBLYWkKPiAKPiA+Cj4gPiBUaGlzIGNvbW1lbnQgaXMg
+aW50ZXJlc3RpbmcsIHNhbWUgZ2NjX2Fzc2VydCgpLCBhbHNvIHBvd2VyNzoKPiA+IGh0dHA6Ly9n
+Y2MuZ251Lm9yZy9idWd6aWxsYS9zaG93X2J1Zy5jZ2k/aWQ9NTI4MzkjYzEwCj4gPgo+ID4gUmVn
+YXJkcywKPiA+IEphbgo+ID4KPiAKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3Vy
+aXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFs
+bCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hh
+bmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBp
+bmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3Qg
+aW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2Zybmww
+NDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRw
+LWxpc3QK
