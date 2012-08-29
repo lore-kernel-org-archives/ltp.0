@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1SwUir-0000fV-3r
-	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 08:56:05 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SwUil-0003KP-Dd
-	for ltp-list@lists.sourceforge.net; Wed, 01 Aug 2012 08:56:05 +0000
-Received: by pbbrq2 with SMTP id rq2so696818pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 01 Aug 2012 01:55:53 -0700 (PDT)
-Message-ID: <5018EF13.2040604@casparzhang.com>
-Date: Wed, 01 Aug 2012 16:55:47 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
-MIME-Version: 1.0
-References: <402709823.5725690.1343720288429.JavaMail.root@redhat.com>
-In-Reply-To: <402709823.5725690.1343720288429.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1T6hhk-0007HN-O7
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:49:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T6hhg-0006FA-Vd
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:49:08 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7TCmxDn004784
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 Aug 2012 08:48:59 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Wed, 29 Aug 2012 20:43:48 +0800
+Message-Id: <06b56f221ddc8215d3a0fe2690731596c48ca326.1346244062.git.zliu@redhat.com>
+In-Reply-To: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
+References: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
+Subject: [LTP]  [PATCH 2/3] tunable/min_free_kbytes: remove map_count args
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,111 +28,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/31/2012 03:38 PM, Jan Stancek wrote:
-> Hi Caspar,
->
-> ------- snip --------
-> +	ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 2, &nd1, &nd2);
-> +	switch (ret) {
-> +	case 0:
-> +		tst_resm(TINFO, "get node%lu.", nd2);
-> +		return nd2;
-> +	case -3:
-> +		/*
-> +		 * for unbalanced NUMA systems, at least 1 available node is
-> +		 * required.
-> +		 */
-> +		ret = get_allowed_nodes(NH_MEMS|NH_CPUS, 1, &nd1);
-> +		switch (ret) {
-> +		case 0:
-> +			tst_resm(TINFO, "get node%lu.", nd1);
-> +			return nd1;
-> +		case -3:
-> +			tst_brkm(TCONF, cleanup_fn, "require a NUMA system "
-> +				    "that has at least one node with both "
-> +				    "memory and cpu available.");
-> +		default:
-> +			tst_brkm(TBROK|TERRNO, cleanup_fn,
-> +				    "3rd get_allowed_nodes");
-> +		}
-> +	}
-> +	tst_brkm(TBROK|TERRNO, cleanup_fn, "2nd get_allowed_nodes");
-> ------- snip --------
->
-> I'm not sure I follow this snippet.
-> So if there are 2+ nodes, it takes second one. If there is just one, it will take that one.
-> Can't it take always first one?
+as the type of total_mem is 'unsigned long', inside
+32-bit system, it will overflow in this sentence
+  map_count = total_mem * KB / MAP_SIZE
 
-It was the original design. Since a non-NUMA system have 1 node, the 
-first (and the only) node should have been tested already in 
-ksm01/oom01/etc cases. To increase test coverage, we chose 2nd node on 
-NUMA system.
+e.g: if total_mem > 4194304, 'total_mem*KB' will > ULONG_MAX.
 
-As to the fallback to 1 node design, if an unbalanced system only 
-contains 1 available node, we still want to test NUMA in separate case, 
-ksm01/oom01/etc cases would probably fail to cover it.
+after re-cehck the code, I found map_count was not necessary,
+and removing it can fix the overflow issue.
 
-Do you think it will affect test coverage if we always test first node?
+Reported-by: Shuang Qiu <shuang.qiu@oracle.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/tunable/min_free_kbytes.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-Thanks,
-Caspar
->
-> Regards,
-> Jan
->
->
-> ----- Original Message -----
->> From: "Caspar Zhang" <caspar@casparzhang.com>
->> To: "LTP List" <ltp-list@lists.sourceforge.net>
->> Sent: Tuesday, 31 July, 2012 4:57:19 AM
->> Subject: [LTP] [PATCH/RFE 2/2] mm: use new numa_helper
->>
->>
->> This patch makes the tests in mem/ dir use numa_helper in
->> libkerntest.
->>
->> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
->> ---
->>   testcases/kernel/mem/cpuset/Makefile           |    1 +
->>   testcases/kernel/mem/cpuset/cpuset01.c         |   16 +++---
->>   testcases/kernel/mem/hugetlb/Makefile.inc      |    1 +
->>   testcases/kernel/mem/hugetlb/hugemmap/Makefile |    1 +
->>   testcases/kernel/mem/include/mem.h             |    2 +-
->>   testcases/kernel/mem/ksm/Makefile              |    1 +
->>   testcases/kernel/mem/ksm/ksm02.c               |    9 ++--
->>   testcases/kernel/mem/ksm/ksm04.c               |    9 ++--
->>   testcases/kernel/mem/lib/Makefile              |    1 +
->>   testcases/kernel/mem/lib/mem.c                 |   61
->>   +++++++++++++++++------
->>   testcases/kernel/mem/oom/Makefile              |    1 +
->>   testcases/kernel/mem/oom/oom02.c               |    4 --
->>   testcases/kernel/mem/oom/oom04.c               |    4 --
->>   testcases/kernel/mem/swapping/Makefile         |    1 +
->>   testcases/kernel/mem/thp/Makefile              |    1 +
->>   testcases/kernel/mem/tunable/Makefile          |    1 +
->>   16 files changed, 71 insertions(+), 43 deletions(-)
->>
->>
->> ------------------------------------------------------------------------------
->> Live Security Virtual Conference
->> Exclusive live event will cover all the ways today's security and
->> threat landscape has changed and how IT managers can respond.
->> Discussions
->> will include endpoint security, mobile security and the latest in
->> malware
->> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index f8288ec..dde182c 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -177,31 +177,23 @@ static void test_tune(unsigned long overcommit_policy)
+ 
+ static int eatup_mem(unsigned long overcommit_policy)
+ {
+-	int map_count, i;
+ 	int ret = 0;
+ 	unsigned long memfree;
+-	void **addrs;
+-
+-	map_count = total_mem * KB / MAP_SIZE;
+-	addrs = (void **)malloc(map_count * sizeof(void *));
+-	if (addrs == NULL) {
+-		perror("malloc");
+-		return -1;
+-	}
++	void *addrs;
+ 
+ 	memfree = read_meminfo("MemFree:");
+ 	printf("memfree is %lu kB before eatup mem\n", memfree);
+-	for (i = 0; i < map_count; i++) {
+-		addrs[i] = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
++	while (1) {
++		addrs = mmap(NULL, MAP_SIZE, PROT_READ|PROT_WRITE,
+ 		    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
+-		if (addrs[i] == MAP_FAILED) {
++		if (addrs == MAP_FAILED) {
+ 			if (overcommit_policy != 1 && errno != ENOMEM) {
+ 				perror("mmap");
+ 				ret = -1;
+ 			}
+ 			break;
+ 		}
+-		memset(addrs[i], i, MAP_SIZE);
++		memset(addrs, 1, MAP_SIZE);
+ 	}
+ 	memfree = read_meminfo("MemFree:");
+ 	printf("memfree is %lu kB after eatup mem\n", memfree);
+-- 
+1.7.11.2
 
 
 ------------------------------------------------------------------------------
