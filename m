@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1Szk5S-00060Q-2l
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:56:50 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1T6hhH-0007Fs-IS
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:48:39 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Szk5R-0005IG-1K
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 07:56:50 +0000
-Message-ID: <5024BD9A.9020104@redhat.com>
-Date: Fri, 10 Aug 2012 15:51:54 +0800
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T6hhG-0008CH-G6
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:48:39 +0000
 From: Zhouping Liu <zliu@redhat.com>
-MIME-Version: 1.0
-References: <74a85e39016c9752a9948a07fe75b84e00191b1f.1344492473.git.caspar@casparzhang.com>
-	<26038550c7f51ea9d7a35b87b4e780f8bb4e05a9.1344569191.git.caspar@casparzhang.com>
-In-Reply-To: <26038550c7f51ea9d7a35b87b4e780f8bb4e05a9.1344569191.git.caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH resend 4/6 v2] numa_helper: move to libkerntest
+Date: Wed, 29 Aug 2012 20:42:59 +0800
+Message-Id: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
+Subject: [LTP]  [PATCH 1/3] tunable: reduce the min_free_kbytes tunable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,169 +21,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7144546274255717811=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---===============7144546274255717811==
-Content-Type: multipart/alternative;
-	boundary="------------030000030304060809050907"
-
-This is a multi-part message in MIME format.
---------------030000030304060809050907
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 08/10/2012 11:26 AM, Caspar Zhang wrote:
-> libnuma_helper could be used by testcases both under syscalls/ and mem/,
-> it's better to add a new common lib in their parent dir, so I created
-> libkerntest under testcases/kernel/lib/, and put numa_helper to it. In
-> the future, we can add more APIs to it.
->
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
-tested on two machines with 2 & 8 nodes, and offline all cpus in one 
-nodes, not found any issues.
-
-Tested-by: Zhouping Liu <zliu@redhat.com>
-
-Thanks,
-Zhouping
-
-> ---
->   testcases/kernel/Makefile                        |    4 +
->   testcases/kernel/include/lib.mk                  |   37 +++
->   testcases/kernel/include/numa_helper.h           |   37 +++
->   testcases/kernel/lib/Makefile                    |   28 +++
->   testcases/kernel/lib/numa_helper.c               |  266 ++++++++++++++++++++++
->   testcases/kernel/syscalls/get_mempolicy/Makefile |    2 +-
->   testcases/kernel/syscalls/mbind/Makefile         |    2 +-
->   testcases/kernel/syscalls/move_pages/Makefile    |    2 +-
->   testcases/kernel/syscalls/numa/Makefile          |   22 --
->   testcases/kernel/syscalls/numa/Makefile.inc      |   27 ---
->   testcases/kernel/syscalls/numa/lib/Makefile      |   26 --
->   testcases/kernel/syscalls/numa/lib/numa_helper.c |  266 ----------------------
->   testcases/kernel/syscalls/numa/lib/numa_helper.h |   37 ---
->   13 files changed, 375 insertions(+), 381 deletions(-)
->   create mode 100644 testcases/kernel/include/lib.mk
->   create mode 100644 testcases/kernel/include/numa_helper.h
->   create mode 100644 testcases/kernel/lib/Makefile
->   create mode 100644 testcases/kernel/lib/numa_helper.c
->   delete mode 100644 testcases/kernel/syscalls/numa/Makefile
->   delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
->   delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
->   delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
->   delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
->
->
->
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
---------------030000030304060809050907
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">On 08/10/2012 11:26 AM, Caspar Zhang
-      wrote:<br>
-    </div>
-    <blockquote
-cite="mid:26038550c7f51ea9d7a35b87b4e780f8bb4e05a9.1344569191.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
-libnuma_helper could be used by testcases both under syscalls/ and mem/,
-it's better to add a new common lib in their parent dir, so I created
-libkerntest under testcases/kernel/lib/, and put numa_helper to it. In
-the future, we can add more APIs to it.
-
-Signed-off-by: Caspar Zhang <a class="moz-txt-link-rfc2396E" href="mailto:caspar@casparzhang.com">&lt;caspar@casparzhang.com&gt;</a></pre>
-    </blockquote>
-    tested on two machines with 2 &amp; 8 nodes, and offline all cpus in
-    one nodes, not found any issues.<br>
-    <br>
-    Tested-by: Zhouping Liu <a class="moz-txt-link-rfc2396E" href="mailto:zliu@redhat.com">&lt;zliu@redhat.com&gt;</a><br>
-    <br>
-    Thanks,<br>
-    Zhouping<br>
-    <br>
-    <blockquote
-cite="mid:26038550c7f51ea9d7a35b87b4e780f8bb4e05a9.1344569191.git.caspar@casparzhang.com"
-      type="cite">
-      <pre wrap="">
----
- testcases/kernel/Makefile                        |    4 +
- testcases/kernel/include/lib.mk                  |   37 +++
- testcases/kernel/include/numa_helper.h           |   37 +++
- testcases/kernel/lib/Makefile                    |   28 +++
- testcases/kernel/lib/numa_helper.c               |  266 ++++++++++++++++++++++
- testcases/kernel/syscalls/get_mempolicy/Makefile |    2 +-
- testcases/kernel/syscalls/mbind/Makefile         |    2 +-
- testcases/kernel/syscalls/move_pages/Makefile    |    2 +-
- testcases/kernel/syscalls/numa/Makefile          |   22 --
- testcases/kernel/syscalls/numa/Makefile.inc      |   27 ---
- testcases/kernel/syscalls/numa/lib/Makefile      |   26 --
- testcases/kernel/syscalls/numa/lib/numa_helper.c |  266 ----------------------
- testcases/kernel/syscalls/numa/lib/numa_helper.h |   37 ---
- 13 files changed, 375 insertions(+), 381 deletions(-)
- create mode 100644 testcases/kernel/include/lib.mk
- create mode 100644 testcases/kernel/include/numa_helper.h
- create mode 100644 testcases/kernel/lib/Makefile
- create mode 100644 testcases/kernel/lib/numa_helper.c
- delete mode 100644 testcases/kernel/syscalls/numa/Makefile
- delete mode 100644 testcases/kernel/syscalls/numa/Makefile.inc
- delete mode 100644 testcases/kernel/syscalls/numa/lib/Makefile
- delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.c
- delete mode 100644 testcases/kernel/syscalls/numa/lib/numa_helper.h
-
-</pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------030000030304060809050907--
-
-
---===============7144546274255717811==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+Setting min_free_kbytes too high will cause system hangs,
+especially in i386 arch, using less than 5% of total memory
+can avoid it, so choose %5 of free memory or 2% of total memory.
+Thanks Shuang pointed out it.
+
+also, in order to enlarge the coverage, the patch adds a new
+case item: 2 * default tunable
+
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ testcases/kernel/mem/tunable/min_free_kbytes.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index 00ead04..f8288ec 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -10,7 +10,8 @@
+  * the current free memory with the tunable value repeatedly.
+  *
+  * a) default min_free_kbytes with all overcommit memory policy
+- * b) half of mem_free with all overcommit memory policy
++ * b) 2x default value with all overcommit memory policy
++ * c) 5% of MemFree or %2 MemTotal with all overcommit memory policy
+  *
+  ********************************************************************
+  * Copyright (C) 2012 Red Hat, Inc.
+@@ -115,20 +116,27 @@ int main(int argc, char *argv[])
+ static void test_tune(unsigned long overcommit_policy)
+ {
+ 	int status;
+-	int pid[2];
++	int pid[3];
+ 	int ret, i;
+-	unsigned long tune, memfree;
++	unsigned long tune, memfree, memtotal;
+ 
+ 	set_sys_tune("overcommit_memory", overcommit_policy, 1);
+ 
+-	for (i = 0; i < 2; i++) {
++	for (i = 0; i < 3; i++) {
+ 		/* case1 */
+ 		if (i == 0)
+ 			set_sys_tune("min_free_kbytes", default_tune, 1);
+ 		/* case2 */
+-		else {
++		else if (i == 1) {
++			set_sys_tune("min_free_kbytes", 2 * default_tune, 1);
++		/* case3 */
++		} else {
+ 			memfree = read_meminfo("MemFree:");
+-			tune = memfree / 2;
++			memtotal = read_meminfo("MemTotal:");
++			tune = memfree / 20;
++			if (tune > (memtotal / 50))
++				tune = memtotal / 50;
++
+ 			set_sys_tune("min_free_kbytes", tune, 1);
+ 		}
+ 
+-- 
+1.7.11.2
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -195,16 +98,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============7144546274255717811==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7144546274255717811==--
-
