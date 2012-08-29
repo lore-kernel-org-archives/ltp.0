@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1SxE8q-0007tz-N0
-	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 09:25:56 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SxE8k-0004BW-Hm
-	for ltp-list@lists.sourceforge.net; Fri, 03 Aug 2012 09:25:56 +0000
-Message-ID: <501B98D9.9020001@cn.fujitsu.com>
-Date: Fri, 03 Aug 2012 17:24:41 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <238395883.7949798.1343975904079.JavaMail.root@redhat.com>
-	<501B9824.9060606@oracle.com>
-In-Reply-To: <501B9824.9060606@oracle.com>
-Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address
- for shmat()
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1T6hhx-0002tZ-PE
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:49:21 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T6hhr-000896-Vm
+	for ltp-list@lists.sourceforge.net; Wed, 29 Aug 2012 12:49:21 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q7TCn9gm028841
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 Aug 2012 08:49:10 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Wed, 29 Aug 2012 20:43:59 +0800
+Message-Id: <92b6d1dd1bba3ce81f5f51612e99a23ed2409b7e.1346244062.git.zliu@redhat.com>
+In-Reply-To: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
+References: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
+Subject: [LTP] [PATCH 3/3] tunable/min_free_kbytes: add 32-bit system limit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,79 +28,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 08/03/2012 05:21 PM, Simon Xu wrote:
-> On 2012/8/3 14:38, Jan Stancek wrote:
->> ----- Original Message -----
->>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->>> To: "Simon Xu" <xu.simon@oracle.com>
->>> Cc: ltp-list@lists.sourceforge.net
->>> Sent: Friday, 3 August, 2012 5:46:31 AM
->>> Subject: Re: [LTP] [PATCH 1/1] madvise03: let the system select an address for shmat()
->>>
->>> On 08/03/2012 12:53 AM, Simon Xu wrote:
->>>> In certain occasions, 0x22000000 is invalid for shmat() and
->>>> madvise03 fails:
->>>>
->>>> madvise03 1 TBROK : shmat error
->>>> madvise03 2 TBROK : Remaining cases broken
->>>>
->>>> Use `NULL' for shmat() to let the system attach the shared memory
->>>> segment
->>>> at the first available address.
->>>>
->>>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
->>>> ---
->>>>   testcases/kernel/syscalls/madvise/madvise03.c | 6 +++---
->>>>   1 file changed, 3 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
->>>> b/testcases/kernel/syscalls/madvise/madvise03.c
->>>> index 2e696e8..fd0bd97 100644
->>>> --- a/testcases/kernel/syscalls/madvise/madvise03.c
->>>> +++ b/testcases/kernel/syscalls/madvise/madvise03.c
->>>> @@ -154,13 +154,13 @@ int main(int argc, char *argv[])
->>>>           if (shmid1 == -1)
->>>>               tst_brkm(TBROK, cleanup, "shmget failed");
->>>>   -        /* Attach shared memory segment to 0x22000000 address */
->>>> -        addr1 = shmat(shmid1, (void *)0x22000000, 0);
->>>> +        /* Attach shared memory segment to an address selected by the
->>>> system */
->>>> +        addr1 = shmat(shmid1, NULL, 0);
->>>>           if (addr1 == (void *) -1)
->>>>               tst_brkm(TBROK, cleanup, "shmat error");
->>>>             /* (1) Test case for MADV_REMOVE */
->>>> -        TEST(madvise((void *)0x22000000, 4096, MADV_REMOVE));
->>>> +        TEST(madvise((void *)addr1, 4096, MADV_REMOVE));
->>> (void *) is not needed now ?
->> That shouldn't be needed for NULL.
-> 
-> addr1 is the return value of shmat(), whose return value type is void *.  Yes, `(void *)' is no longer needed.  Thanks for pointing this out.
+in 32-bit system, one process only allocate 3Gb memory at
+least, even though there are enough memory and setting
+overcommit_memory=1, the porcess always exit when it arrives
+in 3Gb memory.
 
-OK, I can make a snip change for this and push this patch, no need to send a V2. 
-Thank you Simon.
+the patch use '__WORDSIZE' macro to avoid the incorrect 'TFAIL'
+without the patch:
+ ---- snip ----
+ min_free_kbytes    0  TINFO  :  set overcommit_memory to 1
+ min_free_kbytes    0  TINFO  :  set min_free_kbytes to 3794
+ memfree is 15478420 kB before eatup mem
+ memfree is 12333408 kB after eatup mem
+ min_free_kbytes    3  TFAIL  :  child unexpectedly failed: 0
+ min_free_kbytes    0  TINFO  :  set min_free_kbytes to 7588
+ ---- snip ----
 
-Wanlong Gao
+after applying the patch:
+ ---- snip ----
+ min_free_kbytes    0  TINFO  :  set overcommit_memory to 1
+ min_free_kbytes    0  TINFO  :  set min_free_kbytes to 3794
+ memfree is 15478420 kB before eatup mem
+ memfree is 12333408 kB after eatup mem
+ min_free_kbytes    0  TINFO  :  Child can't allocate >3Gb memory in 32bit system
+ min_free_kbytes    0  TINFO  :  set min_free_kbytes to 7588
+ ---- snip ----
 
-> 
-> 
-> Thanks
-> Simon
-> 
->>> otherwise, looks OK to me.
->> +1, this looks better than hardcoding some random address.
->>
->>> Thanks,
->>> Wanlong Gao
->>>
->>>>           check_and_print("MADV_REMOVE");
->>>>             /* (2) Test case for MADV_DONTFORK */
-> 
+Reported-by: Shuang Qiu <shuang.qiu@oracle.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/tunable/min_free_kbytes.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index dde182c..873b807 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -158,8 +158,19 @@ static void test_tune(unsigned long overcommit_policy)
+ 				    "child unexpectedly failed: %d", status);
+ 		} else if (overcommit_policy == 1) {
+ 			if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
++#if __WORDSIZE == 32
++			{
++				if (total_mem < 3145728UL)
++#endif
+ 				tst_resm(TFAIL,
+ 				    "child unexpectedly failed: %d", status);
++#if __WORDSIZE == 32
++	/* in 32-bit system, a process allocate about 3Gb memory at most */
++				else
++					tst_resm(TINFO, "Child can't allocate "
++					    ">3Gb memory in 32bit system");
++			}
++#endif
+ 		} else {
+ 			if (WIFEXITED(status)) {
+ 				if (WEXITSTATUS(status) != 0) {
+-- 
+1.7.11.2
 
 
 ------------------------------------------------------------------------------
