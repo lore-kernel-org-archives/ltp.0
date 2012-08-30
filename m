@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Swr52-0006FY-2e
-	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 08:48:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Swr4w-0002KW-Su
-	for ltp-list@lists.sourceforge.net; Thu, 02 Aug 2012 08:48:28 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q728mE47024559
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Aug 2012 16:48:14 +0800
-Message-ID: <501A3EA1.4010902@cn.fujitsu.com>
-Date: Thu, 02 Aug 2012 16:47:29 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bincy_k_philip@yahoo.co.in>) id 1T72bK-0007ni-IB
+	for ltp-list@lists.sourceforge.net; Thu, 30 Aug 2012 11:07:54 +0000
+Received: from nm33-vm8.bullet.mail.sg3.yahoo.com ([106.10.151.231])
+	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1T72bH-0001PQ-UJ
+	for ltp-list@lists.sourceforge.net; Thu, 30 Aug 2012 11:07:54 +0000
+Message-ID: <1346324865.59629.YahooMailNeo@web192605.mail.sg3.yahoo.com>
+Date: Thu, 30 Aug 2012 19:07:45 +0800 (SGT)
+From: Bincy K Philip <bincy_k_philip@yahoo.co.in>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] pthread_cond_brodcast/1-2.c hung when mem left is not
- enough
+Subject: [LTP] Container testcases In LTP
+Reply-To: Bincy K Philip <bincy_k_philip@yahoo.co.in>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,239 +23,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4972954828594627248=="
+Content-Type: multipart/mixed; boundary="===============6643437123856790188=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---===============4972954828594627248==
+--===============6643437123856790188==
 Content-Type: multipart/alternative;
-	boundary="------------060908060303030109000508"
+	boundary="1060170558-136056263-1346324865=:59629"
 
-This is a multi-part message in MIME format.
---------------060908060303030109000508
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--1060170558-136056263-1346324865=:59629
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-pthread_cond_brodcast/1-2.c try to create as many childrens(thread or process)
-as possible,however,if current free memoryis exhausted before all childrens are
-started,the case will timeout and hung since it's stated with program "t0".
-  
-The patch adjust count of childrens according tojudgement of size of current free
-memory.
+Hi,=0A=0AI am working on linux containers.=0ACan=A0 anybody describe me tha=
+t what all container test cases are addressed in LTP.=0AAny prerequisites i=
+s required to run container testcases?=0A=0ARegards=0ABincy
+--1060170558-136056263-1346324865=:59629
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
-  .../interfaces/pthread_cond_broadcast/1-2.c        | 39 +++++++++++++++++++---
-  1 file changed, 35 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-index f6ad9df..14bda10 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-@@ -48,6 +48,7 @@
-  #include <sys/mman.h>
-  #include <sys/wait.h>
-  #include <semaphore.h>
-+#include <sys/sysinfo.h>
-  
-  #include "../testfrmw/testfrmw.h"
-  #include "../testfrmw/testfrmw.c"
-@@ -82,8 +83,8 @@
-  #endif
-  
-  /* Do not create more than this amount of children: */
--#define MAX_PROCESS_CHILDREN  (200)
--#define MAX_THREAD_CHILDREN   (1000)
-+int max_process_children = 200;
-+int max_thread_children = 1000;
-  
-  #define TIMEOUT  (180)
-  
-@@ -243,6 +244,34 @@ void *timer(void *arg)
-  	return NULL; /* For compiler */
-  }
-  
-+int decide_process_children_count(void)
-+{
-+	struct sysinfo sysinforma;
-+	int ret;
-+	int avail_count;
-+	unsigned long memper;
-+	unsigned long min_stack;
-+
-+	min_stack = sysconf(_SC_THREAD_STACK_MIN);
-+
-+	ret = sysinfo(&sysinforma);
-+	if (ret != 0)
-+		UNRESOLVED(ret, "Failed to get system infomation.");
-+
-+	memper = min_stack * max_thread_children;
-+	if (memper > sysinforma.freeram)
-+		UNTESTED("Free ram not enough for test.");
-+
-+	avail_count = sysinforma.freeram/memper;
-+	if (avail_count < 10)
-+		UNTESTED("Free ram not enough for test.");
-+	
-+	max_process_children = (avail_count<max_process_children ?
-+					avail_count : max_process_children);
-+
-+	return 0;
-+}
-+
-  int main(int argc, char *argv[])
-  {
-  	int ret;
-@@ -268,6 +297,8 @@ int main(int argc, char *argv[])
-  
-  	output_init();
-  
-+	decide_process_children_count();
-+
-  	/* check the system abilities */
-  	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
-  	cs = sysconf(_SC_CLOCK_SELECTION);
-@@ -476,7 +507,7 @@ int main(int argc, char *argv[])
-  				} else {
-  					ret = errno;
-  				}
--			} while ((ret == 0) && (child_count < MAX_THREAD_CHILDREN));
-+			} while ((ret == 0) && (child_count < max_thread_children));
-  			#if VERBOSE > 2
-  			output("[parent] Created %i children threads\n", child_count);
-  			#endif
-@@ -504,7 +535,7 @@ int main(int argc, char *argv[])
-  				} else {
-  					ret = errno;
-  				}
--			} while ((ret == 0) && (child_count < MAX_PROCESS_CHILDREN));
-+			} while ((ret == 0) && (child_count < max_process_children));
-  			#if VERBOSE > 2
-  			output("[parent] Created %i children processes\n", child_count);
-  			#endif
--- 
-1.7.11.rc0
+<html><body><div style=3D"color:#000; background-color:#fff; font-family:ti=
+mes new roman, new york, times, serif;font-size:12pt"><div>Hi,</div><div><b=
+r></div><div style=3D"color: rgb(0, 0, 0); font-size: 16px; font-family: ti=
+mes new roman,new york,times,serif; background-color: transparent; font-sty=
+le: normal;">I am working on linux containers.</div><div style=3D"color: rg=
+b(0, 0, 0); font-size: 16px; font-family: times new roman,new york,times,se=
+rif; background-color: transparent; font-style: normal;">Can&nbsp; anybody =
+describe me that what all container test cases are addressed in LTP.</div><=
+div style=3D"color: rgb(0, 0, 0); font-size: 16px; font-family: times new r=
+oman,new york,times,serif; background-color: transparent; font-style: norma=
+l;">Any prerequisites is required to run container testcases?</div><div sty=
+le=3D"color: rgb(0, 0, 0); font-size: 16px; font-family: times new roman,ne=
+w york,times,serif; background-color: transparent; font-style:
+ normal;"><br></div><div style=3D"color: rgb(0, 0, 0); font-size: 16px; fon=
+t-family: times new roman,new york,times,serif; background-color: transpare=
+nt; font-style: normal;">Regards</div><div style=3D"color: rgb(0, 0, 0); fo=
+nt-size: 16px; font-family: times new roman,new york,times,serif; backgroun=
+d-color: transparent; font-style: normal;">Bincy<br></div><div style=3D"col=
+or: rgb(0, 0, 0); font-size: 16px; font-family: times new roman,new york,ti=
+mes,serif; background-color: transparent; font-style: normal;"></div></div>=
+</body></html>
+--1060170558-136056263-1346324865=:59629--
 
 
---------------060908060303030109000508
-Content-Transfer-Encoding: 7bit
-Content-Type: text/html; charset=ISO-8859-1
-
-<html>
-  <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <pre>pthread_cond_brodcast/1-2.c try to create as many childrens(thread or process) 
-as possible,however,if current free memory <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><span style="color: rgb(0, 0, 0); font-family: Arial; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: 2; text-align: -webkit-auto; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none; ">is exhaust</span>ed before all childrens are
-started,the case will timeout and hung since it's stated with program "t0".
-&nbsp;
-The patch adjust count of childrens according to <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">judgement of size of current free
-memory.
-
-Signed-off-by: DAN LI <a class="moz-txt-link-rfc2396E" href="mailto:li.dan@cn.fujitsu.com">&lt;li.dan@cn.fujitsu.com&gt;</a>
----
- .../interfaces/pthread_cond_broadcast/1-2.c        | 39 +++++++++++++++++++---
- 1 file changed, 35 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-index f6ad9df..14bda10 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
-@@ -48,6 +48,7 @@
- #include &lt;sys/mman.h&gt;
- #include &lt;sys/wait.h&gt;
- #include &lt;semaphore.h&gt;
-+#include &lt;sys/sysinfo.h&gt;
- 
- #include "../testfrmw/testfrmw.h"
- #include "../testfrmw/testfrmw.c"
-@@ -82,8 +83,8 @@
- #endif
- 
- /* Do not create more than this amount of children: */
--#define MAX_PROCESS_CHILDREN  (200)
--#define MAX_THREAD_CHILDREN   (1000)
-+int max_process_children = 200;
-+int max_thread_children = 1000;
- 
- #define TIMEOUT  (180)
- 
-@@ -243,6 +244,34 @@ void *timer(void *arg)
- 	return NULL; /* For compiler */
- }
- 
-+int decide_process_children_count(void)
-+{
-+	struct sysinfo sysinforma;
-+	int ret;
-+	int avail_count;
-+	unsigned long memper;
-+	unsigned long min_stack;
-+
-+	min_stack = sysconf(_SC_THREAD_STACK_MIN);
-+
-+	ret = sysinfo(&amp;sysinforma);
-+	if (ret != 0)
-+		UNRESOLVED(ret, "Failed to get system infomation.");
-+
-+	memper = min_stack * max_thread_children;
-+	if (memper &gt; sysinforma.freeram)
-+		UNTESTED("Free ram not enough for test.");
-+
-+	avail_count = sysinforma.freeram/memper;
-+	if (avail_count &lt; 10) 
-+		UNTESTED("Free ram not enough for test.");
-+	
-+	max_process_children = (avail_count&lt;max_process_children ?
-+					avail_count : max_process_children);
-+
-+	return 0;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int ret;
-@@ -268,6 +297,8 @@ int main(int argc, char *argv[])
- 
- 	output_init();
- 
-+	decide_process_children_count();
-+
- 	/* check the system abilities */
- 	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
- 	cs = sysconf(_SC_CLOCK_SELECTION);
-@@ -476,7 +507,7 @@ int main(int argc, char *argv[])
- 				} else {
- 					ret = errno;
- 				}
--			} while ((ret == 0) &amp;&amp; (child_count &lt; MAX_THREAD_CHILDREN));
-+			} while ((ret == 0) &amp;&amp; (child_count &lt; max_thread_children));
- 			#if VERBOSE &gt; 2
- 			output("[parent] Created %i children threads\n", child_count);
- 			#endif
-@@ -504,7 +535,7 @@ int main(int argc, char *argv[])
- 				} else {
- 					ret = errno;
- 				}
--			} while ((ret == 0) &amp;&amp; (child_count &lt; MAX_PROCESS_CHILDREN));
-+			} while ((ret == 0) &amp;&amp; (child_count &lt; max_process_children));
- 			#if VERBOSE &gt; 2
- 			output("[parent] Created %i children processes\n", child_count);
- 			#endif
--- 
-1.7.11.rc0
-
-</pre>
-  </body>
-</html>
-
---------------060908060303030109000508--
-
-
---===============4972954828594627248==
+--===============6643437123856790188==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -270,7 +78,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============4972954828594627248==
+--===============6643437123856790188==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -281,5 +89,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4972954828594627248==--
+--===============6643437123856790188==--
 
