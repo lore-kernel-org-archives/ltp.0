@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T2sE9-0007Mp-E2
-	for ltp-list@lists.sourceforge.net; Sat, 18 Aug 2012 23:14:45 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T7HP9-0005fq-8D
+	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 02:56:19 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T2sE8-0006bB-Hn
-	for ltp-list@lists.sourceforge.net; Sat, 18 Aug 2012 23:14:45 +0000
-Message-ID: <50302185.9000503@cn.fujitsu.com>
-Date: Sun, 19 Aug 2012 07:13:09 +0800
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T7HP7-0001RX-Mz
+	for ltp-list@lists.sourceforge.net; Fri, 31 Aug 2012 02:56:19 +0000
+Message-ID: <50402752.50501@cn.fujitsu.com>
+Date: Fri, 31 Aug 2012 10:54:10 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <8cf0e07f2b2d40fb137ce8e5eba8446dba4d4ddb.1345189299.git.jstancek@redhat.com>
-In-Reply-To: <8cf0e07f2b2d40fb137ce8e5eba8446dba4d4ddb.1345189299.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2] ioctl: check if tty device nodes are usable
+References: <cd572cfe7fb9a357ce92149957ed2a3779c542d3.1346244062.git.zliu@redhat.com>
+	<92b6d1dd1bba3ce81f5f51612e99a23ed2409b7e.1346244062.git.zliu@redhat.com>
+	<50402521.2000504@casparzhang.com>
+In-Reply-To: <50402521.2000504@casparzhang.com>
+Subject: Re: [LTP] [PATCH 3/3] tunable/min_free_kbytes: add 32-bit system
+ limit
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,24 +31,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 08/17/2012 03:43 PM, Jan Stancek wrote:
-> ioctl testcases fail on s390x because it doesn't
-> support virtual consoles.
+On 08/31/2012 10:44 AM, Caspar Zhang wrote:
+> On 08/29/2012 08:43 PM, Zhouping Liu wrote:
+>> > in 32-bit system, one process only allocate 3Gb memory at
+>> > least, even though there are enough memory and setting
+>> > overcommit_memory=1, the porcess always exit when it arrives
+>> > in 3Gb memory.
+>> >
+>> > the patch use '__WORDSIZE' macro to avoid the incorrect 'TFAIL'
+>> > without the patch:
+>> >   ---- snip ----
+>> >   min_free_kbytes    0  TINFO  :  set overcommit_memory to 1
+>> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 3794
+>> >   memfree is 15478420 kB before eatup mem
+>> >   memfree is 12333408 kB after eatup mem
+>> >   min_free_kbytes    3  TFAIL  :  child unexpectedly failed: 0
+>> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 7588
+>> >   ---- snip ----
+>> >
+>> > after applying the patch:
+>> >   ---- snip ----
+>> >   min_free_kbytes    0  TINFO  :  set overcommit_memory to 1
+>> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 3794
+>> >   memfree is 15478420 kB before eatup mem
+>> >   memfree is 12333408 kB after eatup mem
+>> >   min_free_kbytes    0  TINFO  :  Child can't allocate >3Gb memory in 32bit system
+>> >   min_free_kbytes    0  TINFO  :  set min_free_kbytes to 7588
+>> >   ---- snip ----
+>> >
+>> > Reported-by: Shuang Qiu <shuang.qiu@oracle.com>
+>> > Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> Series Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 > 
-> Trying to use such device node fails:
-> ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty0
-> ioctl01     1  TBROK  :  Couldn't open /dev/tty0: errno=ENXIO(6): No
-> such device or address
-> 
-> This patch tries to get terminal line settings for each tty,
-> that would be used in test. If that fails, tty is skipped.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Pushed, thank you Jan.
+Pushed series, thank you all involved.
 
 Wanlong Gao
 
