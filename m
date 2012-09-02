@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1SzlKp-0000Eg-AB
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 09:16:47 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SzlKo-0000AB-9Z
-	for ltp-list@lists.sourceforge.net; Fri, 10 Aug 2012 09:16:47 +0000
-Date: Fri, 10 Aug 2012 05:16:40 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <446368613.3052914.1344590200420.JavaMail.root@redhat.com>
-In-Reply-To: <1344508258-25054-4-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gang.chen@asianux.com>) id 1T834z-0007eh-2U
+	for ltp-list@lists.sourceforge.net; Sun, 02 Sep 2012 05:50:41 +0000
+Received: from intranet.asianux.com ([58.214.24.6])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T834w-0003hR-4t
+	for ltp-list@lists.sourceforge.net; Sun, 02 Sep 2012 05:50:41 +0000
+Received: from [10.1.0.143] (unknown [219.143.36.82])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by intranet.asianux.com (Postfix) with ESMTP id 50AC3184029F
+	for <ltp-list@lists.sourceforge.net>;
+	Sun,  2 Sep 2012 13:50:30 +0800 (CST)
+Message-ID: <5042F3ED.6030409@asianux.com>
+Date: Sun, 02 Sep 2012 13:51:41 +0800
+From: gchen <gang.chen@asianux.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/3] timer_settime/5-3: fix test hung
+Subject: [LTP] [QUESTION] LTP stress test for RHEL5 and  NFS local mount
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,86 +28,126 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5375836535168544385=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: ltp-list@lists.sourceforge.net
+
+This is a multi-part message in MIME format.
+--===============5375836535168544385==
+Content-Type: multipart/alternative;
+	boundary="------------080902010401080709030800"
+
+This is a multi-part message in MIME format.
+--------------080902010401080709030800
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
+
+Hello ltp-list@lists.sourceforge.net
+
+
+Question:
+
+Use ltp stress test (/opt/ltp/ltpstress.sh) with ltp-full-20100331.gz
+to test RHEL5 (kernel-2.6.18-308.4.1.el5) for 72 hours.
+
+Not give any more configurations for NFS (using default configuration:
+mount NFS locally, so the NFS client and NFS server are on the same
+machine).
+
+My question is that "for stress test, is it suitable to let NFS server and
+client on the same machine ?"
+
+
+Background;
+
+This configuration will cause deadlock for RHEL5, and can not boot
+machine in normal way.
+
+someone from Red Hat has said that:
+--------------------------------------------------------------------------------------------------------------
+
+"Have configuration where the same host is acting as both NFS client
+and server. That's a configuration known to cause deadlocks."
+
+--------------------------------------------------------------------------------------------------------------
+
+can reference Red Hat Bugzilla (bug 848706) for more details.
 
 
 
------ Original Message -----
-> From: "Kang Kai" <kai.kang@windriver.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Zhenfeng Zhao" <Zhenfeng.Zhao@windriver.com>
-> Sent: Thursday, 9 August, 2012 12:30:58 PM
-> Subject: [LTP] [PATCH 3/3] timer_settime/5-3: fix test hung
-> 
-> This case hangs on sugarbay(intel x86_64) platform.
-> 
-> The root cause is that the case calls timer_settime with time which
-> already took place and then calls sleep. When the timer expires and
-> sends signal the sleep will be break.
-> 
-> But on sugarbay the timer always expires before the case enters
-> sleep,
-> then it always sleeps NUMTESTS * LONGSLEEPTIME seconds. So it exceeds
-> the time limit set by auto-run test shell script, and reports that it
-> hangs.
-> 
-> Decrease LONGSLEEPTIME value to avoid this issue.
-> 
-> Signed-off-by: Kang Kai <kai.kang@windriver.com>
 
-Looks good to me, 5 secs is still enough time.
+thanks.
 
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
+gchen.
 
-> ---
->  .../conformance/interfaces/timer_settime/5-3.c     |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git
-> a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
-> index 0ad1957..4a47458 100644
-> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
-> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/5-3.c
-> @@ -27,7 +27,7 @@
->  
->  #define SIGTOTEST SIGALRM
->  
-> -#define LONGSLEEPTIME 10
-> +#define LONGSLEEPTIME 5
->  
->  #define NUMTESTS 30
->  
-> @@ -105,4 +105,4 @@ int main(int argc, char *argv[])
->  
->  	printf("This code should not be executed.\n");
->  	return PTS_UNRESOLVED;
-> -}
-> \ No newline at end of file
-> +}
-> --
-> 1.7.5.4
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond.
-> Discussions
-> will include endpoint security, mobile security and the latest in
-> malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+Asianux Corporation.
+
+
+--------------080902010401080709030800
+Content-Type: text/html; charset=GB2312
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=GB2312">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <div class="moz-text-plain" wrap="true" graphical-quote="true"
+      style="font-family: -moz-fixed" lang="zh-cn">
+      <pre wrap="">Hello <a class="moz-txt-link-abbreviated" href="mailto:ltp-list@lists.sourceforge.net">ltp-list@lists.sourceforge.net</a>
+
+
+Question:
+
+Use ltp stress test (/opt/ltp/ltpstress.sh) with ltp-full-20100331.gz
+to test RHEL5 (kernel-2.6.18-308.4.1.el5) for 72 hours.
+
+Not give any more configurations for NFS (using default configuration:
+mount NFS locally, so the NFS client and NFS server are on the same
+machine).
+
+My question is that "for stress test, is it suitable to let NFS server and
+client on the same machine ?"
+
+
+Background;
+
+This configuration will cause deadlock for RHEL5, and can not boot
+machine in normal way.
+
+someone from Red Hat has said that:
+--------------------------------------------------------------------------------------------------------------
+
+"Have configuration where the same host is acting as both NFS client
+and server. That's a configuration known to cause deadlocks."
+
+--------------------------------------------------------------------------------------------------------------
+
+can reference Red Hat Bugzilla (bug 848706) for more details.
+
+
+
+
+thanks.
+
+gchen.
+
+Asianux Corporation.
+
+</pre>
+    </div>
+  </body>
+</html>
+
+--------------080902010401080709030800--
+
+
+--===============5375836535168544385==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -110,7 +155,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============5375836535168544385==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5375836535168544385==--
+
