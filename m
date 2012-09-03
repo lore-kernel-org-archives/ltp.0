@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1T8mjq-00008K-JD
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 06:35:54 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T8mjm-0002IN-9f
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 06:35:54 +0000
-Date: Tue, 4 Sep 2012 02:35:44 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1083211279.14961355.1346740544417.JavaMail.root@redhat.com>
-In-Reply-To: <50446E46.1050105@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vikasbisla15@gmail.com>) id 1T8VZp-0000io-1E
+	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 12:16:25 +0000
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1T8VZj-0004lM-Gn
+	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 12:16:25 +0000
+Received: by wgbfm10 with SMTP id fm10so3230860wgb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 03 Sep 2012 05:16:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/3] mq_open/16-1: use tmp file to share info
+Date: Mon, 3 Sep 2012 21:16:13 +0900
+Message-ID: <CALFGhcTOGwfj=WQJL8FJn8q8LsEPe3fD+KEJBTjidxM47=PL6A@mail.gmail.com>
+From: vikas bisla <vikasbisla15@gmail.com>
+Subject: [LTP] Compling LTP for android Using Ndk revision 8
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,106 +25,141 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6729224790326661959=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <Kai.Kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
+To: ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkthbmcgS2FpIiA8S2FpLkth
-bmdAd2luZHJpdmVyLmNvbT4KPiBUbzogIkthbmcgS2FpIiA8a2FpLmthbmdAd2luZHJpdmVyLmNv
-bT4KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0LCAiWmhlbmZlbmcgWmhhbyIg
-PFpoZW5mZW5nLlpoYW9Ad2luZHJpdmVyLmNvbT4KPiBTZW50OiBNb25kYXksIDMgU2VwdGVtYmVy
-LCAyMDEyIDEwOjQ1OjU4IEFNCj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSCAyLzNdIG1xX29w
-ZW4vMTYtMTogdXNlIHRtcCBmaWxlIHRvIHNoYXJlIGluZm8KPiAKPiBPbiAyMDEy5bm0MDjmnIgw
-OeaXpSAxODozMCwgS2FuZyBLYWkgd3JvdGU6Cj4gCj4gSGkgV2FubG9uZywKPiAKPiA+IEluIHRo
-aXMgdGVzdCBjYXNlLCBpdCB1c2VzIGEgdmFyaWFibGUgdG8gc2hhcmUgZGF0YSBiZXR3ZWVuIGNo
-aWxkCj4gPiBhbmQKPiA+IHBhcmVudCBwcm9jZXNzZXMuIEJ1dCBhZnRlciBmb3JrIHRoZXJlIGlz
-IGEgY29weSBvZiB0aGUgdmFyaWFibGUgaW4KPiA+IGNoaWxkIHByb2Nlc3MgYW5kIG1vZGlmeSBp
-dCB3aWxsIG5vdCBhZmZlY3QgdGhlIHZhcmlhYmxlIGluIHRoZQo+ID4gcGFyZW50Cj4gPiBwcm9j
-ZXNzLiBUaGVuIHdoZW4gdGhlIGNoaWxkIHByb2Nlc3MgY2FsbCBtcV9vcGVuKCkgYmVmb3JlIHBh
-cmVudAo+ID4gcHJvY2VzcywKPiA+IHRoZSBjYXNlIHdpbGwgZmFpbC4KPiA+Cj4gPiBVc2UgdG1w
-IGZpbGUgdG8gcmVwbGFjZSB0aGUgdmFyaWFibGUuIEFueSBtb2RpZmljYXRpb24gaW4gY2hpbGQK
-PiA+IHByb2Nlc3MKPiA+IGNhbiBiZSBzZWVuIGluIHBhcmVudCBwcm9jZXNzLgo+IAo+IEFueSBj
-b21tZW50IGZvciB0aGlzIHBhdGNoPwoKSSBoYWQgb25lIHF1ZXN0aW9uLCBzZWUgaGVyZToKaHR0
-cDovL2FydGljbGUuZ21hbmUub3JnL2dtYW5lLmxpbnV4Lmx0cC8xNjYxMQoKUmVnYXJkcywKSmFu
-Cgo+IAo+IFRoYW5rcywKPiBLYWkKPiAKPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBLYW5nIEthaTxr
-YWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+ID4gLS0tCj4gPiAgIC4uLi9jb25mb3JtYW5jZS9pbnRl
-cmZhY2VzL21xX29wZW4vMTYtMS5jICAgICAgICAgIHwgICAzOAo+ID4gICArKysrKysrKysrKysr
-KysrKy0tCj4gPiAgIDEgZmlsZXMgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
-bnMoLSkKPiA+Cj4gPiBkaWZmIC0tZ2l0Cj4gPiBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
-dWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5jCj4gPiBiL3Rlc3RjYXNl
-cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYt
-MS5jCj4gPiBpbmRleCBiOWEzMjE1Li5lYmQ2OTdiIDEwMDY0NAo+ID4gLS0tCj4gPiBhL3Rlc3Rj
-YXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4v
-MTYtMS5jCj4gPiArKysKPiA+IGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZv
-cm1hbmNlL2ludGVyZmFjZXMvbXFfb3Blbi8xNi0xLmMKPiA+IEBAIC0yMCw5ICsyMCwxMSBAQAo+
-ID4gICAgKiB0aGlzIGlzIGZpbmUgKHdpbGwgaGF2ZSBzb21lIGZhbHNlIHBvc2l0aXZlcywgYnV0
-IG5vIGZhbHNlCj4gPiAgICBuZWdhdGl2ZXMpLgo+ID4gICAgKi8KPiA+Cj4gPiArI2luY2x1ZGU8
-c3lzL21tYW4uaD4KPiA+ICAgI2luY2x1ZGU8c3lzL3N0YXQuaD4KPiA+ICAgI2luY2x1ZGU8c3lz
-L3R5cGVzLmg+Cj4gPiAgICNpbmNsdWRlPHN5cy93YWl0Lmg+Cj4gPiArI2luY2x1ZGU8ZXJybm8u
-aD4KPiA+ICAgI2luY2x1ZGU8ZmNudGwuaD4KPiA+ICAgI2luY2x1ZGU8bXF1ZXVlLmg+Cj4gPiAg
-ICNpbmNsdWRlPHNpZ25hbC5oPgo+ID4gQEAgLTMyLDExICszNCwxNSBAQAo+ID4gICAjaW5jbHVk
-ZSAicG9zaXh0ZXN0LmgiCj4gPgo+ID4gICAjZGVmaW5lIE5BTUVTSVpFIDUwCj4gPiArI2RlZmlu
-ZSBUTkFNRSAibXFfb3Blbi8xNi0xLmMiCj4gPgo+ID4gICBpbnQgbWFpbigpCj4gPiAgIHsKPiA+
-ICAgICAgICAgIAljaGFyIHFuYW1lW05BTUVTSVpFXTsKPiA+ICsJY2hhciBmbmFtZVtOQU1FU0la
-RV07Cj4gPiAgIAlpbnQgcGlkLCBzdWNjZWVkZWQ9MDsKPiA+ICsJaW50IGZkOwo+ID4gKwl2b2lk
-ICpwYSA9IE5VTEw7Cj4gPiAgIAltcWRfdCBjaGlsZHF1ZXVlLCBxdWV1ZTsKPiA+Cj4gPiAgIAkv
-Kgo+ID4gQEAgLTQ3LDYgKzUzLDI2IEBAIGludCBtYWluKCkKPiA+Cj4gPiAgICAgICAgICAJc3By
-aW50ZihxbmFtZSwgIi9tcV9vcGVuXzE2LTFfJWQiLCBnZXRwaWQoKSk7Cj4gPgo+ID4gKwlzcHJp
-bnRmKGZuYW1lLCAiL3RtcC9wdHNfbXFfb3Blbl8xNl8xXyVkIiwgZ2V0cGlkKCkpOwo+ID4gKwl1
-bmxpbmsoZm5hbWUpOwo+ID4gKwlmZCA9IG9wZW4oZm5hbWUsIE9fQ1JFQVQgfCBPX1JEV1IgfCBP
-X0VYQ0wsCj4gPiArCQkgU19JUlVTUiB8IFNfSVdVU1IpOwo+ID4gKwlpZiAoZmQgPT0gLTEpIHsK
-PiA+ICsJCXByaW50ZihUTkFNRSAiIEVycm9yIGF0IG9wZW4oKTogJXNcbiIsIHN0cmVycm9yKGVy
-cm5vKSk7Cj4gPiArCQlleGl0KFBUU19VTlJFU09MVkVEKTsKPiA+ICsJfQo+ID4gKwkvKiBmaWxl
-IGlzIGVtcHR5IG5vdywgd2lsbCBjYXVzZSAiQnVzIGVycm9yIiAqLwo+ID4gKwl3cml0ZShmZCwg
-IlwwIiwgMSk7Cj4gPiArCXVubGluayhmbmFtZSk7Cj4gPiArCj4gPiArCXBhID0gbW1hcChOVUxM
-LCBzaXplb2YoaW50KSwgUFJPVF9SRUFEIHwgUFJPVF9XUklURSwgTUFQX1NIQVJFRCwKPiA+IGZk
-LCAwKTsKPiA+ICsJaWYgKHBhID09IE1BUF9GQUlMRUQpIHsKPiA+ICsJCXByaW50ZihUTkFNRSAi
-IEVycm9yIGF0IG1tYXA6ICVzXG4iLCBzdHJlcnJvcihlcnJubykpOwo+ID4gKwkJY2xvc2UoZmQp
-Owo+ID4gKwkJZXhpdChQVFNfRkFJTCk7Cj4gPiArCX0KPiA+ICsJKihpbnQgKilwYSA9IDA7Cj4g
-PiArCj4gPiAgIAlpZiAoKHBpZCA9IGZvcmsoKSkgPT0gMCkgewo+ID4gICAJCXNpZ3NldF90IG1h
-c2s7Cj4gPiAgIAkJaW50IHNpZzsKPiA+IEBAIC02Miw3ICs4OCw3IEBAIGludCBtYWluKCkKPiA+
-ICAgICAgICAgICAJY2hpbGRxdWV1ZSA9IG1xX29wZW4ocW5hbWUsIE9fQ1JFQVR8T19FWENMfE9f
-UkRXUiwKPiA+ICAgCQkJCVNfSVJVU1IgfCBTX0lXVVNSLCBOVUxMKTsKPiA+ICAgICAgICAgICAJ
-aWYgKGNoaWxkcXVldWUgIT0gKG1xZF90KS0xKSB7Cj4gPiAtCQkJc3VjY2VlZGVkKys7Cj4gPiAr
-CQkJKysqKGludCAqKXBhOwo+ID4gICAjaWZkZWYgREVCVUcKPiA+ICAgCQkJcHJpbnRmKCJtcV9v
-cGVuKCkgaW4gY2hpbGQgc3VjY2VlZGVkXG4iKTsKPiA+ICAgCQl9IGVsc2Ugewo+ID4gQEAgLTc5
-LDcgKzEwNSw3IEBAIGludCBtYWluKCkKPiA+ICAgICAgICAgICAJcXVldWUgPSBtcV9vcGVuKHFu
-YW1lLCBPX0NSRUFUIHwgT19FWENMIHxPX1JEV1IsCj4gPiAgIAkJCQlTX0lSVVNSIHwgU19JV1VT
-UiwgTlVMTCk7Cj4gPiAgICAgICAgICAgCWlmIChxdWV1ZSAhPSAobXFkX3QpLTEpIHsKPiA+IC0J
-CQlzdWNjZWVkZWQrKzsKPiA+ICsJCQkrKyooaW50ICopcGE7Cj4gPiAgICNpZmRlZiBERUJVRwo+
-ID4gICAJCQlwcmludGYoIm1xX29wZW4oKSBpbiBwYXJlbnQgc3VjY2VlZGVkXG4iKTsKPiA+ICAg
-CQl9IGVsc2Ugewo+ID4gQEAgLTkzLDEzICsxMTksMTUgQEAgaW50IG1haW4oKQo+ID4gICAJCQlt
-cV9jbG9zZShxdWV1ZSk7Cj4gPiAgIAkJCW1xX2Nsb3NlKGNoaWxkcXVldWUpOwo+ID4gICAJCQlt
-cV91bmxpbmsocW5hbWUpOwo+ID4gKwkJCWNsb3NlKGZkKTsKPiA+ICsJCQltdW5tYXAocGEsIHNp
-emVvZihpbnQpKTsKPiA+ICAgCQkJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+ID4gICAJCX0KPiA+
-Cj4gPiAgIAkJbXFfY2xvc2UocXVldWUpOwo+ID4gICAJCW1xX2Nsb3NlKGNoaWxkcXVldWUpOwo+
-ID4gICAJCW1xX3VubGluayhxbmFtZSk7Cj4gPiAtCj4gPiArCQlzdWNjZWVkZWQgPSAqKGludCAq
-KXBhOwo+ID4gICAJCWlmIChzdWNjZWVkZWQ9PTApIHsKPiA+ICAgCQkJcHJpbnRmKCJUZXN0IEZB
-SUxFRCAtIG1xX29wZW4oKSBuZXZlciBzdWNjZWVkZWRcbiIpOwo+ID4gICAJCQlyZXR1cm4gUFRT
-X0ZBSUw7Cj4gPiBAQCAtMTExLDggKzEzOSwxMCBAQCBpbnQgbWFpbigpCj4gPiAgIAkJfQo+ID4K
-PiA+ICAgICAgICAgICAJcHJpbnRmKCJUZXN0IFBBU1NFRFxuIik7Cj4gPiArCQljbG9zZShmZCk7
-Cj4gPiArCQltdW5tYXAocGEsIHNpemVvZihpbnQpKTsKPiA+ICAgICAgICAgICAJcmV0dXJuIFBU
-U19QQVNTOwo+ID4gICAJfQo+ID4KPiA+ICAgCXJldHVybiBQVFNfVU5SRVNPTFZFRDsKPiA+IC19
-Cj4gPiBcIE5vIG5ld2xpbmUgYXQgZW5kIG9mIGZpbGUKPiA+ICt9Cj4gCj4gCj4gLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCj4gTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKPiBFeGNsdXNp
-dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
-ZAo+IHRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4g
-cmVzcG9uZC4KPiBEaXNjdXNzaW9ucwo+IHdpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwg
-bW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluCj4gbWFsd2FyZQo+IHRocmVhdHMuIGh0
-dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwo+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxp
-c3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6
-Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPiAKCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNp
-dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
-ZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiBy
-ZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
-bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3
-dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
-bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+--===============6729224790326661959==
+Content-Type: multipart/alternative; boundary=f46d043c7f38925ac704c8cb1b93
+
+--f46d043c7f38925ac704c8cb1b93
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi All,
+
+We are trying to compile LTP for android using NDK tool chain.
+
+Flags set while configuration-
+
+./configure --host=arm-eabi
+CC=/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc
+CPPFLAGS="-I/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/include/"
+CFLAGS="-nostdlib"
+LDFLAGS="-Wl,-rpath-link=/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/lib/
+-L/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/lib/"
+LIBS="-lc"
+
+After Config we are doing
+
+Make ARCH=arm
+
+it is giving following error.
+
+/Desktop/LTP/ltp-full-20120903$ make ARCH=arm
+make -C "lib" \
+-f "/home/vikas/Desktop/LTP/ltp-full-20120903/lib/Makefile" all
+make[1]: Entering directory `/home/vikas/Desktop/LTP/ltp-full-20120903/lib'
+/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc -nostdlib -g -O2
+-fno-strict-aliasing -pipe -Wall
+-I/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/include/
+-I../include -I../include -I../include -I../include  -c -o
+bytes_by_prefix.o bytes_by_prefix.c
+bytes_by_prefix.c: In function 'bytes_by_prefix':
+bytes_by_prefix.c:94: error: 'B_MULT' undeclared (first use in this
+function)
+bytes_by_prefix.c:94: error: (Each undeclared identifier is reported only
+once
+bytes_by_prefix.c:94: error: for each function it appears in.)
+bytes_by_prefix.c: In function 'lbytes_by_prefix':
+bytes_by_prefix.c:142: error: 'B_MULT' undeclared (first use in this
+function)
+bytes_by_prefix.c: In function 'llbytes_by_prefix':
+bytes_by_prefix.c:193: error: 'B_MULT' undeclared (first use in this
+function)
+make[1]: *** [bytes_by_prefix.o] Error 1
+make[1]: Leaving directory `/home/vikas/Desktop/LTP/ltp-full-20120903/lib'
+make: *** [lib-all] Error 2
+
+Can anybody please suggest some pointer so that we can go forward.
+
+Regards
+vikas bisla
+
+--f46d043c7f38925ac704c8cb1b93
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi <font color=3D"#000099">All,</font><div><font color=3D"#000099"><br></fo=
+nt></div><div><font color=3D"#000099">We are trying to compile LTP for andr=
+oid using NDK tool chain.=A0</font></div><div><font color=3D"#000099"><br><=
+/font></div>
+<div><font color=3D"#000099">Flags set while configuration-=A0</font></div>=
+<div><font color=3D"#000099"><br></font></div><div><font color=3D"#000099">=
+./configure --host=3Darm-eabi CC=3D/home/vikas/Desktop/LTP/arm-eabi-4.4.3/b=
+in/arm-eabi-gcc CPPFLAGS=3D&quot;-I/home/vikas/Desktop/android-ndk-r8b/plat=
+forms/android-14/arch-arm/usr/include/&quot; CFLAGS=3D&quot;-nostdlib&quot;=
+ LDFLAGS=3D&quot;-Wl,-rpath-link=3D/home/vikas/Desktop/android-ndk-r8b/plat=
+forms/android-14/arch-arm/usr/lib/ -L/home/vikas/Desktop/android-ndk-r8b/pl=
+atforms/android-14/arch-arm/usr/lib/&quot; LIBS=3D&quot;-lc&quot;</font></d=
+iv>
+<div><font color=3D"#000099"><br></font></div><div><font color=3D"#000099">=
+After Config we are doing=A0</font></div><div><font color=3D"#000099"><br><=
+/font></div><div><font color=3D"#000099">Make ARCH=3Darm</font></div><div><=
+font color=3D"#000099"><br>
+</font></div><div><font color=3D"#000099">it is giving following error.</fo=
+nt></div><div><font color=3D"#000099"><br></font></div><div><font color=3D"=
+#000099"><div>/Desktop/LTP/ltp-full-20120903$ make ARCH=3Darm</div><div>mak=
+e -C &quot;lib&quot; \</div>
+<div><span class=3D"Apple-tab-span" style=3D"white-space:pre">		</span>-f &=
+quot;/home/vikas/Desktop/LTP/ltp-full-20120903/lib/Makefile&quot; all</div>=
+<div>make[1]: Entering directory `/home/vikas/Desktop/LTP/ltp-full-20120903=
+/lib&#39;</div>
+<div>/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc -nostdlib -g -=
+O2 -fno-strict-aliasing -pipe -Wall -I/home/vikas/Desktop/android-ndk-r8b/p=
+latforms/android-14/arch-arm/usr/include/ -I../include -I../include -I../in=
+clude -I../include =A0-c -o bytes_by_prefix.o bytes_by_prefix.c</div>
+<div>bytes_by_prefix.c: In function &#39;bytes_by_prefix&#39;:</div><div>by=
+tes_by_prefix.c:94: error: &#39;B_MULT&#39; undeclared (first use in this f=
+unction)</div><div>bytes_by_prefix.c:94: error: (Each undeclared identifier=
+ is reported only once</div>
+<div>bytes_by_prefix.c:94: error: for each function it appears in.)</div><d=
+iv>bytes_by_prefix.c: In function &#39;lbytes_by_prefix&#39;:</div><div>byt=
+es_by_prefix.c:142: error: &#39;B_MULT&#39; undeclared (first use in this f=
+unction)</div>
+<div>bytes_by_prefix.c: In function &#39;llbytes_by_prefix&#39;:</div><div>=
+bytes_by_prefix.c:193: error: &#39;B_MULT&#39; undeclared (first use in thi=
+s function)</div><div>make[1]: *** [bytes_by_prefix.o] Error 1</div><div>
+make[1]: Leaving directory `/home/vikas/Desktop/LTP/ltp-full-20120903/lib&#=
+39;</div><div>make: *** [lib-all] Error 2</div><div><br></div><div>Can anyb=
+ody please suggest some pointer so that we can go forward.=A0</div><div><br=
+>
+</div><div>Regards</div><div>vikas bisla</div></font></div>
+
+--f46d043c7f38925ac704c8cb1b93--
+
+
+--===============6729224790326661959==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============6729224790326661959==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6729224790326661959==--
+
