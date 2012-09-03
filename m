@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cxie@redhat.com>) id 1T9618-0000P7-A0
-	for ltp-list@lists.sourceforge.net; Wed, 05 Sep 2012 03:11:02 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T9617-0006QZ-3R
-	for ltp-list@lists.sourceforge.net; Wed, 05 Sep 2012 03:11:02 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q853Atqp027021
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Sep 2012 23:10:55 -0400
-From: Madper Xie <cxie@redhat.com>
-Date: Wed,  5 Sep 2012 11:10:33 +0800
-Message-Id: <1346814633-3257-1-git-send-email-cxie@redhat.com>
-Subject: [LTP] [PATCH] syscall/fork/fork14:new testcase
+	(envelope-from <ritesh.harjani@gmail.com>) id 1T8Osc-0007Uu-Ue
+	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 05:07:22 +0000
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1T8OsY-0003Ts-7I
+	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 05:07:22 +0000
+Received: by wgbfm10 with SMTP id fm10so3005075wgb.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 02 Sep 2012 22:07:12 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 3 Sep 2012 10:37:12 +0530
+Message-ID: <CAD15agakqdqNiZY_rKRyh0GocADu7F2rLdctJpSwdosiNz7CYg@mail.gmail.com>
+From: Ritesh Harjani <ritesh.harjani@gmail.com>
+Subject: [LTP] LTP test reults for kernel 3.0.15 and 3.4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,139 +25,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6881438720658412665=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This case is for kernel patch:
-       https://lkml.org/lkml/2012/4/24/328
-Since vma length in dup_mmap is calculated and stored
-in a unsigned int, it will overflow when length > 16TB.
-The patch above fixed it.
-That patch increases the storage size of the result to
-unsigned long, which should be sufficient for storing the difference
-between addresses.
-This case is to verify whether that patch is added.
+--===============6881438720658412665==
+Content-Type: multipart/alternative; boundary=0016e6d58fbd4649e904c8c51d81
 
-Signed-off-by: Madper Xie <cxie@redhat.com>
----
- testcases/kernel/syscalls/fork/fork14.c | 102 ++++++++++++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fork/fork14.c
+--0016e6d58fbd4649e904c8c51d81
+Content-Type: text/plain; charset=ISO-8859-1
 
-diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
-new file mode 100644
-index 0000000..5046e67
---- /dev/null
-+++ b/testcases/kernel/syscalls/fork/fork14.c
-@@ -0,0 +1,102 @@
-+/*********************************************************************
-+ * Copyright (C) 2012  Red Hat, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ *
-+ * Description: This test is for kernel commit:
-+ *              7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
-+ *		Since vma length in dup_mmap is calculated and stored
-+ *              in a unsigned int, it will overflow when length > 16
-+ *              TB. The commit above fixed it. This case is to verify
-+ *              whether that patch is added.
-+ ********************************************************************/
-+
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "fork14";
-+
-+#define GIG (1024 * 1024 * 1024L)
-+#define EXTENT 16393
-+
-+/*
-+ * If The vma length in dup_mmap is
-+ * calculated and stored in a unsigned int,
-+ * will overflow when length > 16TB.
-+ */
-+#define LARGE  16383
-+
-+static void setup();
-+static void cleanup();
-+
-+int main(int argc, char *argv[])
-+{
-+	int i, r, lc;
-+	void *m;
-+
-+/*
-+ * I test this case on ppc64/x86_64/i386/s390x
-+ * Only ppc64 x86_64 s390x can run it.
-+ * So, I think it's only for 64bit system
-+ * The fork will always successed on 32bit.
-+ */
-+#if __WORDSIZE == 32
-+	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
-+#endif
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++){	
-+		for (i = 0; i < EXTENT; i++) {
-+			m = mmap(NULL, (size_t) 1 * GIG, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+			switch (fork()){
-+			case -1:
-+				break;
-+			case 0 :
-+				exit(0);
-+			default:
-+				if (waitpid(-1, NULL, 0) == -1)
-+					tst_brkm(TBROK|TERRNO,
-+						cleanup, "waitpid");
-+				if (i >= LARGE) 
-+					tst_brkm(TFAIL, NULL,
-+						"Fork succeed unexpect:%d", i);
-+			}
-+		}
-+	}
-+	
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
--- 
-1.7.12
+Has anyone tried running LTP tests on kernel 3.0.15 (Android ICS) and
+kernel 3.4 (Android ICS)
 
+Actually there is mem02 test which is failing in kernel 3.0.15 which is not
+the case with kernel 3.4.
+So, if anyone can point out why the difference and also if someone can
+direct me onto what exactly this test does and
+some source of information from where i can have a deeper understanding on
+this.
+
+Thank you
+Ritesh
+
+--0016e6d58fbd4649e904c8c51d81
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Has anyone tried running LTP tests on kernel 3.0.15 (Android ICS) and kerne=
+l 3.4 (Android ICS)<br><br>Actually there is mem02 test which is failing in=
+ kernel 3.0.15 which is not the case with kernel 3.4. <br>So, if anyone can=
+ point out why the difference and also if someone can direct me onto what e=
+xactly this test does and <br>
+some source of information from where i can have a deeper understanding on =
+this. <br><br>Thank you <br>Ritesh<br>
+
+--0016e6d58fbd4649e904c8c51d81--
+
+
+--===============6881438720658412665==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -166,7 +75,16 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============6881438720658412665==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6881438720658412665==--
+
