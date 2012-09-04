@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cxie@redhat.com>) id 1T8i9a-0004Km-Pj
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 01:42:10 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T8i9Z-0005gy-D1
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 01:42:10 +0000
-Message-ID: <50455C5D.6020201@redhat.com>
-Date: Tue, 04 Sep 2012 09:41:49 +0800
-From: cxie <cxie@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1T8mjq-00008K-JD
+	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 06:35:54 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T8mjm-0002IN-9f
+	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 06:35:54 +0000
+Date: Tue, 4 Sep 2012 02:35:44 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1083211279.14961355.1346740544417.JavaMail.root@redhat.com>
+In-Reply-To: <50446E46.1050105@windriver.com>
 MIME-Version: 1.0
-References: <CALFGhcTOGwfj=WQJL8FJn8q8LsEPe3fD+KEJBTjidxM47=PL6A@mail.gmail.com>
-In-Reply-To: <CALFGhcTOGwfj=WQJL8FJn8q8LsEPe3fD+KEJBTjidxM47=PL6A@mail.gmail.com>
-Subject: Re: [LTP] Compling LTP for android Using Ndk revision 8
+Subject: Re: [LTP] [PATCH 2/3] mq_open/16-1: use tmp file to share info
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,290 +23,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7432358128935804650=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: vikas bisla <vikasbisla15@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net, Zhenfeng Zhao <Zhenfeng.Zhao@windriver.com>
 
-This is a multi-part message in MIME format.
---===============7432358128935804650==
-Content-Type: multipart/alternative;
-	boundary="------------040901050302060201090901"
-
-This is a multi-part message in MIME format.
---------------040901050302060201090901
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi Vikas,
-     I looked that code. And think that your arch or system is not 
-supported by this file.
-     Here is line 61 to 69:
------------------------
-#if CRAY
-#define B_MULT    BSIZE        /* block size */
-#elif sgi
-#define B_MULT    BBSIZE        /* block size */
-#elif defined(__linux__) || defined(__sun) || defined(__hpux)
-#define B_MULT    DEV_BSIZE    /* block size */
-#elif defined(_AIX)
-#define B_MULT UBSIZE
-#endif
-------------------------
-     you can check if your compiler contain one of these macro by 
-following command:
-            gcc -E -dM - < /dev/null           # maybe you need change 
-gcc to
-                                                            # 
-=/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc
-
-     if none of (CRAY  sgi  __linux__    __sun   __hpux  _AIX) is 
-defined,  B_MULT won't be defined.
-     So, you can find the right Macro and block size for your system and 
-add them to this file.
-
-     Also you can add a line  like this to line 70 simplely:
-                 #ifndef B_MULT
-                 #define B_MULT 1024       /*you should change 1024 to 
-the block size of you system.*/
-                 #endif                                /*once you add 
-this, the code can *only* used in *this* system.*/
---
-Yours,
-Madper Xie.
-
-On 09/03/2012 08:16 PM, vikas bisla wrote:
-> Hi All,
->
-> We are trying to compile LTP for android using NDK tool chain.
->
-> Flags set while configuration-
->
-> ./configure --host=arm-eabi 
-> CC=/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc 
-> CPPFLAGS="-I/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/include/" 
-> CFLAGS="-nostdlib" 
-> LDFLAGS="-Wl,-rpath-link=/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/lib/ 
-> -L/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/lib/" 
-> LIBS="-lc"
->
-> After Config we are doing
->
-> Make ARCH=arm
->
-> it is giving following error.
->
-> /Desktop/LTP/ltp-full-20120903$ make ARCH=arm
-> make -C "lib" \
-> -f "/home/vikas/Desktop/LTP/ltp-full-20120903/lib/Makefile" all
-> make[1]: Entering directory 
-> `/home/vikas/Desktop/LTP/ltp-full-20120903/lib'
-> /home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc -nostdlib -g 
-> -O2 -fno-strict-aliasing -pipe -Wall 
-> -I/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/include/ 
-> -I../include -I../include -I../include -I../include  -c -o 
-> bytes_by_prefix.o bytes_by_prefix.c
-> bytes_by_prefix.c: In function 'bytes_by_prefix':
-> bytes_by_prefix.c:94: error: 'B_MULT' undeclared (first use in this 
-> function)
-> bytes_by_prefix.c:94: error: (Each undeclared identifier is reported 
-> only once
-> bytes_by_prefix.c:94: error: for each function it appears in.)
-> bytes_by_prefix.c: In function 'lbytes_by_prefix':
-> bytes_by_prefix.c:142: error: 'B_MULT' undeclared (first use in this 
-> function)
-> bytes_by_prefix.c: In function 'llbytes_by_prefix':
-> bytes_by_prefix.c:193: error: 'B_MULT' undeclared (first use in this 
-> function)
-> make[1]: *** [bytes_by_prefix.o] Error 1
-> make[1]: Leaving directory `/home/vikas/Desktop/LTP/ltp-full-20120903/lib'
-> make: *** [lib-all] Error 2
->
-> Can anybody please suggest some pointer so that we can go forward.
->
-> Regards
-> vikas bisla
->
->
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and
-> threat landscape has changed and how IT managers can respond. Discussions
-> will include endpoint security, mobile security and the latest in malware
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
->
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
---------------040901050302060201090901
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">Hi Vikas,<br>
-      &nbsp;&nbsp;&nbsp; I looked that code. And think that your arch or system is not
-      supported by this file. <br>
-      &nbsp;&nbsp;&nbsp; Here is line 61 to 69:<br>
-      -----------------------<br>
-      #if CRAY<br>
-      #define B_MULT&nbsp;&nbsp;&nbsp; BSIZE&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* block size */<br>
-      #elif sgi<br>
-      #define B_MULT&nbsp;&nbsp;&nbsp; BBSIZE&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* block size */<br>
-      #elif defined(__linux__) || defined(__sun) || defined(__hpux)<br>
-      #define B_MULT&nbsp;&nbsp;&nbsp; DEV_BSIZE&nbsp;&nbsp;&nbsp; /* block size */<br>
-      #elif defined(_AIX)<br>
-      #define B_MULT UBSIZE<br>
-      #endif<br>
-      ------------------------ <br>
-      &nbsp;&nbsp;&nbsp; you can check if your compiler contain one of these macro by
-      following command: <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc -E -dM - &lt; /dev/null&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # maybe you need
-      change gcc to <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # <font
-        color="#000099">=/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc</font><br>
-      <br>
-      &nbsp;&nbsp;&nbsp; if none of (CRAY&nbsp; sgi&nbsp; __linux__&nbsp;&nbsp;&nbsp; __sun&nbsp;&nbsp; __hpux&nbsp; _AIX) is
-      defined,&nbsp; B_MULT won't be defined.<br>
-      &nbsp;&nbsp;&nbsp; So, you can find the right Macro and block size for your
-      system and add them to this file. <br>
-      <br>
-      &nbsp;&nbsp;&nbsp; Also you can add a line&nbsp; like this to line 70 simplely:<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifndef B_MULT <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #define B_MULT 1024&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*you should change 1024
-      to the block size of you system.*/<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endif&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*once you
-      add this, the code can *only* used in *this* system.*/<br>
-      --<br>
-      Yours,<br>
-      Madper Xie.<br>
-      <br>
-      On 09/03/2012 08:16 PM, vikas bisla wrote:<br>
-    </div>
-    <blockquote
-cite="mid:CALFGhcTOGwfj=WQJL8FJn8q8LsEPe3fD+KEJBTjidxM47=PL6A@mail.gmail.com"
-      type="cite">Hi <font color="#000099">All,</font>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">We are trying to compile LTP for
-          android using NDK tool chain.&nbsp;</font></div>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">Flags set while configuration-&nbsp;</font></div>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">./configure --host=arm-eabi
-          CC=/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc
-          CPPFLAGS="-I/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/include/"
-          CFLAGS="-nostdlib"
-          LDFLAGS="-Wl,-rpath-link=/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/lib/
-          -L/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/lib/"
-          LIBS="-lc"</font></div>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">After Config we are doing&nbsp;</font></div>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">Make ARCH=arm</font></div>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">it is giving following error.</font></div>
-      <div><font color="#000099"><br>
-        </font></div>
-      <div><font color="#000099">
-          <div>/Desktop/LTP/ltp-full-20120903$ make ARCH=arm</div>
-          <div>make -C "lib" \</div>
-          <div><span class="Apple-tab-span" style="white-space:pre"> </span>-f
-            "/home/vikas/Desktop/LTP/ltp-full-20120903/lib/Makefile" all</div>
-          <div>make[1]: Entering directory
-            `/home/vikas/Desktop/LTP/ltp-full-20120903/lib'</div>
-          <div>/home/vikas/Desktop/LTP/arm-eabi-4.4.3/bin/arm-eabi-gcc
-            -nostdlib -g -O2 -fno-strict-aliasing -pipe -Wall
-            -I/home/vikas/Desktop/android-ndk-r8b/platforms/android-14/arch-arm/usr/include/
-            -I../include -I../include -I../include -I../include &nbsp;-c -o
-            bytes_by_prefix.o bytes_by_prefix.c</div>
-          <div>bytes_by_prefix.c: In function 'bytes_by_prefix':</div>
-          <div>bytes_by_prefix.c:94: error: 'B_MULT' undeclared (first
-            use in this function)</div>
-          <div>bytes_by_prefix.c:94: error: (Each undeclared identifier
-            is reported only once</div>
-          <div>bytes_by_prefix.c:94: error: for each function it appears
-            in.)</div>
-          <div>bytes_by_prefix.c: In function 'lbytes_by_prefix':</div>
-          <div>bytes_by_prefix.c:142: error: 'B_MULT' undeclared (first
-            use in this function)</div>
-          <div>bytes_by_prefix.c: In function 'llbytes_by_prefix':</div>
-          <div>bytes_by_prefix.c:193: error: 'B_MULT' undeclared (first
-            use in this function)</div>
-          <div>make[1]: *** [bytes_by_prefix.o] Error 1</div>
-          <div>
-            make[1]: Leaving directory
-            `/home/vikas/Desktop/LTP/ltp-full-20120903/lib'</div>
-          <div>make: *** [lib-all] Error 2</div>
-          <div><br>
-          </div>
-          <div>Can anybody please suggest some pointer so that we can go
-            forward.&nbsp;</div>
-          <div><br>
-          </div>
-          <div>Regards</div>
-          <div>vikas bisla</div>
-        </font></div>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. <a class="moz-txt-link-freetext" href="http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/">http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/</a></pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------040901050302060201090901--
-
-
---===============7432358128935804650==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============7432358128935804650==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7432358128935804650==--
-
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkthbmcgS2FpIiA8S2FpLkth
+bmdAd2luZHJpdmVyLmNvbT4KPiBUbzogIkthbmcgS2FpIiA8a2FpLmthbmdAd2luZHJpdmVyLmNv
+bT4KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0LCAiWmhlbmZlbmcgWmhhbyIg
+PFpoZW5mZW5nLlpoYW9Ad2luZHJpdmVyLmNvbT4KPiBTZW50OiBNb25kYXksIDMgU2VwdGVtYmVy
+LCAyMDEyIDEwOjQ1OjU4IEFNCj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSCAyLzNdIG1xX29w
+ZW4vMTYtMTogdXNlIHRtcCBmaWxlIHRvIHNoYXJlIGluZm8KPiAKPiBPbiAyMDEy5bm0MDjmnIgw
+OeaXpSAxODozMCwgS2FuZyBLYWkgd3JvdGU6Cj4gCj4gSGkgV2FubG9uZywKPiAKPiA+IEluIHRo
+aXMgdGVzdCBjYXNlLCBpdCB1c2VzIGEgdmFyaWFibGUgdG8gc2hhcmUgZGF0YSBiZXR3ZWVuIGNo
+aWxkCj4gPiBhbmQKPiA+IHBhcmVudCBwcm9jZXNzZXMuIEJ1dCBhZnRlciBmb3JrIHRoZXJlIGlz
+IGEgY29weSBvZiB0aGUgdmFyaWFibGUgaW4KPiA+IGNoaWxkIHByb2Nlc3MgYW5kIG1vZGlmeSBp
+dCB3aWxsIG5vdCBhZmZlY3QgdGhlIHZhcmlhYmxlIGluIHRoZQo+ID4gcGFyZW50Cj4gPiBwcm9j
+ZXNzLiBUaGVuIHdoZW4gdGhlIGNoaWxkIHByb2Nlc3MgY2FsbCBtcV9vcGVuKCkgYmVmb3JlIHBh
+cmVudAo+ID4gcHJvY2VzcywKPiA+IHRoZSBjYXNlIHdpbGwgZmFpbC4KPiA+Cj4gPiBVc2UgdG1w
+IGZpbGUgdG8gcmVwbGFjZSB0aGUgdmFyaWFibGUuIEFueSBtb2RpZmljYXRpb24gaW4gY2hpbGQK
+PiA+IHByb2Nlc3MKPiA+IGNhbiBiZSBzZWVuIGluIHBhcmVudCBwcm9jZXNzLgo+IAo+IEFueSBj
+b21tZW50IGZvciB0aGlzIHBhdGNoPwoKSSBoYWQgb25lIHF1ZXN0aW9uLCBzZWUgaGVyZToKaHR0
+cDovL2FydGljbGUuZ21hbmUub3JnL2dtYW5lLmxpbnV4Lmx0cC8xNjYxMQoKUmVnYXJkcywKSmFu
+Cgo+IAo+IFRoYW5rcywKPiBLYWkKPiAKPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBLYW5nIEthaTxr
+YWkua2FuZ0B3aW5kcml2ZXIuY29tPgo+ID4gLS0tCj4gPiAgIC4uLi9jb25mb3JtYW5jZS9pbnRl
+cmZhY2VzL21xX29wZW4vMTYtMS5jICAgICAgICAgIHwgICAzOAo+ID4gICArKysrKysrKysrKysr
+KysrKy0tCj4gPiAgIDEgZmlsZXMgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
+bnMoLSkKPiA+Cj4gPiBkaWZmIC0tZ2l0Cj4gPiBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
+dWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5jCj4gPiBiL3Rlc3RjYXNl
+cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYt
+MS5jCj4gPiBpbmRleCBiOWEzMjE1Li5lYmQ2OTdiIDEwMDY0NAo+ID4gLS0tCj4gPiBhL3Rlc3Rj
+YXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4v
+MTYtMS5jCj4gPiArKysKPiA+IGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZv
+cm1hbmNlL2ludGVyZmFjZXMvbXFfb3Blbi8xNi0xLmMKPiA+IEBAIC0yMCw5ICsyMCwxMSBAQAo+
+ID4gICAgKiB0aGlzIGlzIGZpbmUgKHdpbGwgaGF2ZSBzb21lIGZhbHNlIHBvc2l0aXZlcywgYnV0
+IG5vIGZhbHNlCj4gPiAgICBuZWdhdGl2ZXMpLgo+ID4gICAgKi8KPiA+Cj4gPiArI2luY2x1ZGU8
+c3lzL21tYW4uaD4KPiA+ICAgI2luY2x1ZGU8c3lzL3N0YXQuaD4KPiA+ICAgI2luY2x1ZGU8c3lz
+L3R5cGVzLmg+Cj4gPiAgICNpbmNsdWRlPHN5cy93YWl0Lmg+Cj4gPiArI2luY2x1ZGU8ZXJybm8u
+aD4KPiA+ICAgI2luY2x1ZGU8ZmNudGwuaD4KPiA+ICAgI2luY2x1ZGU8bXF1ZXVlLmg+Cj4gPiAg
+ICNpbmNsdWRlPHNpZ25hbC5oPgo+ID4gQEAgLTMyLDExICszNCwxNSBAQAo+ID4gICAjaW5jbHVk
+ZSAicG9zaXh0ZXN0LmgiCj4gPgo+ID4gICAjZGVmaW5lIE5BTUVTSVpFIDUwCj4gPiArI2RlZmlu
+ZSBUTkFNRSAibXFfb3Blbi8xNi0xLmMiCj4gPgo+ID4gICBpbnQgbWFpbigpCj4gPiAgIHsKPiA+
+ICAgICAgICAgIAljaGFyIHFuYW1lW05BTUVTSVpFXTsKPiA+ICsJY2hhciBmbmFtZVtOQU1FU0la
+RV07Cj4gPiAgIAlpbnQgcGlkLCBzdWNjZWVkZWQ9MDsKPiA+ICsJaW50IGZkOwo+ID4gKwl2b2lk
+ICpwYSA9IE5VTEw7Cj4gPiAgIAltcWRfdCBjaGlsZHF1ZXVlLCBxdWV1ZTsKPiA+Cj4gPiAgIAkv
+Kgo+ID4gQEAgLTQ3LDYgKzUzLDI2IEBAIGludCBtYWluKCkKPiA+Cj4gPiAgICAgICAgICAJc3By
+aW50ZihxbmFtZSwgIi9tcV9vcGVuXzE2LTFfJWQiLCBnZXRwaWQoKSk7Cj4gPgo+ID4gKwlzcHJp
+bnRmKGZuYW1lLCAiL3RtcC9wdHNfbXFfb3Blbl8xNl8xXyVkIiwgZ2V0cGlkKCkpOwo+ID4gKwl1
+bmxpbmsoZm5hbWUpOwo+ID4gKwlmZCA9IG9wZW4oZm5hbWUsIE9fQ1JFQVQgfCBPX1JEV1IgfCBP
+X0VYQ0wsCj4gPiArCQkgU19JUlVTUiB8IFNfSVdVU1IpOwo+ID4gKwlpZiAoZmQgPT0gLTEpIHsK
+PiA+ICsJCXByaW50ZihUTkFNRSAiIEVycm9yIGF0IG9wZW4oKTogJXNcbiIsIHN0cmVycm9yKGVy
+cm5vKSk7Cj4gPiArCQlleGl0KFBUU19VTlJFU09MVkVEKTsKPiA+ICsJfQo+ID4gKwkvKiBmaWxl
+IGlzIGVtcHR5IG5vdywgd2lsbCBjYXVzZSAiQnVzIGVycm9yIiAqLwo+ID4gKwl3cml0ZShmZCwg
+IlwwIiwgMSk7Cj4gPiArCXVubGluayhmbmFtZSk7Cj4gPiArCj4gPiArCXBhID0gbW1hcChOVUxM
+LCBzaXplb2YoaW50KSwgUFJPVF9SRUFEIHwgUFJPVF9XUklURSwgTUFQX1NIQVJFRCwKPiA+IGZk
+LCAwKTsKPiA+ICsJaWYgKHBhID09IE1BUF9GQUlMRUQpIHsKPiA+ICsJCXByaW50ZihUTkFNRSAi
+IEVycm9yIGF0IG1tYXA6ICVzXG4iLCBzdHJlcnJvcihlcnJubykpOwo+ID4gKwkJY2xvc2UoZmQp
+Owo+ID4gKwkJZXhpdChQVFNfRkFJTCk7Cj4gPiArCX0KPiA+ICsJKihpbnQgKilwYSA9IDA7Cj4g
+PiArCj4gPiAgIAlpZiAoKHBpZCA9IGZvcmsoKSkgPT0gMCkgewo+ID4gICAJCXNpZ3NldF90IG1h
+c2s7Cj4gPiAgIAkJaW50IHNpZzsKPiA+IEBAIC02Miw3ICs4OCw3IEBAIGludCBtYWluKCkKPiA+
+ICAgICAgICAgICAJY2hpbGRxdWV1ZSA9IG1xX29wZW4ocW5hbWUsIE9fQ1JFQVR8T19FWENMfE9f
+UkRXUiwKPiA+ICAgCQkJCVNfSVJVU1IgfCBTX0lXVVNSLCBOVUxMKTsKPiA+ICAgICAgICAgICAJ
+aWYgKGNoaWxkcXVldWUgIT0gKG1xZF90KS0xKSB7Cj4gPiAtCQkJc3VjY2VlZGVkKys7Cj4gPiAr
+CQkJKysqKGludCAqKXBhOwo+ID4gICAjaWZkZWYgREVCVUcKPiA+ICAgCQkJcHJpbnRmKCJtcV9v
+cGVuKCkgaW4gY2hpbGQgc3VjY2VlZGVkXG4iKTsKPiA+ICAgCQl9IGVsc2Ugewo+ID4gQEAgLTc5
+LDcgKzEwNSw3IEBAIGludCBtYWluKCkKPiA+ICAgICAgICAgICAJcXVldWUgPSBtcV9vcGVuKHFu
+YW1lLCBPX0NSRUFUIHwgT19FWENMIHxPX1JEV1IsCj4gPiAgIAkJCQlTX0lSVVNSIHwgU19JV1VT
+UiwgTlVMTCk7Cj4gPiAgICAgICAgICAgCWlmIChxdWV1ZSAhPSAobXFkX3QpLTEpIHsKPiA+IC0J
+CQlzdWNjZWVkZWQrKzsKPiA+ICsJCQkrKyooaW50ICopcGE7Cj4gPiAgICNpZmRlZiBERUJVRwo+
+ID4gICAJCQlwcmludGYoIm1xX29wZW4oKSBpbiBwYXJlbnQgc3VjY2VlZGVkXG4iKTsKPiA+ICAg
+CQl9IGVsc2Ugewo+ID4gQEAgLTkzLDEzICsxMTksMTUgQEAgaW50IG1haW4oKQo+ID4gICAJCQlt
+cV9jbG9zZShxdWV1ZSk7Cj4gPiAgIAkJCW1xX2Nsb3NlKGNoaWxkcXVldWUpOwo+ID4gICAJCQlt
+cV91bmxpbmsocW5hbWUpOwo+ID4gKwkJCWNsb3NlKGZkKTsKPiA+ICsJCQltdW5tYXAocGEsIHNp
+emVvZihpbnQpKTsKPiA+ICAgCQkJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+ID4gICAJCX0KPiA+
+Cj4gPiAgIAkJbXFfY2xvc2UocXVldWUpOwo+ID4gICAJCW1xX2Nsb3NlKGNoaWxkcXVldWUpOwo+
+ID4gICAJCW1xX3VubGluayhxbmFtZSk7Cj4gPiAtCj4gPiArCQlzdWNjZWVkZWQgPSAqKGludCAq
+KXBhOwo+ID4gICAJCWlmIChzdWNjZWVkZWQ9PTApIHsKPiA+ICAgCQkJcHJpbnRmKCJUZXN0IEZB
+SUxFRCAtIG1xX29wZW4oKSBuZXZlciBzdWNjZWVkZWRcbiIpOwo+ID4gICAJCQlyZXR1cm4gUFRT
+X0ZBSUw7Cj4gPiBAQCAtMTExLDggKzEzOSwxMCBAQCBpbnQgbWFpbigpCj4gPiAgIAkJfQo+ID4K
+PiA+ICAgICAgICAgICAJcHJpbnRmKCJUZXN0IFBBU1NFRFxuIik7Cj4gPiArCQljbG9zZShmZCk7
+Cj4gPiArCQltdW5tYXAocGEsIHNpemVvZihpbnQpKTsKPiA+ICAgICAgICAgICAJcmV0dXJuIFBU
+U19QQVNTOwo+ID4gICAJfQo+ID4KPiA+ICAgCXJldHVybiBQVFNfVU5SRVNPTFZFRDsKPiA+IC19
+Cj4gPiBcIE5vIG5ld2xpbmUgYXQgZW5kIG9mIGZpbGUKPiA+ICt9Cj4gCj4gCj4gLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCj4gTGl2ZSBTZWN1cml0eSBWaXJ0dWFsIENvbmZlcmVuY2UKPiBFeGNsdXNp
+dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
+ZAo+IHRocmVhdCBsYW5kc2NhcGUgaGFzIGNoYW5nZWQgYW5kIGhvdyBJVCBtYW5hZ2VycyBjYW4g
+cmVzcG9uZC4KPiBEaXNjdXNzaW9ucwo+IHdpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwg
+bW9iaWxlIHNlY3VyaXR5IGFuZCB0aGUgbGF0ZXN0IGluCj4gbWFsd2FyZQo+IHRocmVhdHMuIGh0
+dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3Nmcm5sMDQyNDIwMTIvMTE0LzUwMTIyMjYzLwo+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxp
+c3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6
+Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPiAKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNp
+dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
+ZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiBy
+ZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
+bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3
+dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
+bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
