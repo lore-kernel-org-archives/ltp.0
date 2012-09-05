@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T8SIA-0005QP-JS
-	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 08:45:58 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T8SI6-0002cN-GS
-	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 08:45:58 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca [147.11.189.40])
-	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q838jinR017397
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 3 Sep 2012 01:45:44 -0700 (PDT)
-Message-ID: <50446E46.1050105@windriver.com>
-Date: Mon, 3 Sep 2012 16:45:58 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
-MIME-Version: 1.0
-References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
-	<1344508258-25054-3-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1344508258-25054-3-git-send-email-kai.kang@windriver.com>
-Subject: Re: [LTP] [PATCH 2/3] mq_open/16-1: use tmp file to share info
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cxie@redhat.com>) id 1T9618-0000P7-A0
+	for ltp-list@lists.sourceforge.net; Wed, 05 Sep 2012 03:11:02 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T9617-0006QZ-3R
+	for ltp-list@lists.sourceforge.net; Wed, 05 Sep 2012 03:11:02 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q853Atqp027021
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Sep 2012 23:10:55 -0400
+From: Madper Xie <cxie@redhat.com>
+Date: Wed,  5 Sep 2012 11:10:33 +0800
+Message-Id: <1346814633-3257-1-git-send-email-cxie@redhat.com>
+Subject: [LTP] [PATCH] syscall/fork/fork14:new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,83 +26,147 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kang Kai <kai.kang@windriver.com>
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDA45pyIMDnml6UgMTg6MzAsIEthbmcgS2FpIHdyb3RlOgoKSGkgV2FubG9uZywK
-Cj4gSW4gdGhpcyB0ZXN0IGNhc2UsIGl0IHVzZXMgYSB2YXJpYWJsZSB0byBzaGFyZSBkYXRhIGJl
-dHdlZW4gY2hpbGQgYW5kCj4gcGFyZW50IHByb2Nlc3Nlcy4gQnV0IGFmdGVyIGZvcmsgdGhlcmUg
-aXMgYSBjb3B5IG9mIHRoZSB2YXJpYWJsZSBpbgo+IGNoaWxkIHByb2Nlc3MgYW5kIG1vZGlmeSBp
-dCB3aWxsIG5vdCBhZmZlY3QgdGhlIHZhcmlhYmxlIGluIHRoZSBwYXJlbnQKPiBwcm9jZXNzLiBU
-aGVuIHdoZW4gdGhlIGNoaWxkIHByb2Nlc3MgY2FsbCBtcV9vcGVuKCkgYmVmb3JlIHBhcmVudCBw
-cm9jZXNzLAo+IHRoZSBjYXNlIHdpbGwgZmFpbC4KPgo+IFVzZSB0bXAgZmlsZSB0byByZXBsYWNl
-IHRoZSB2YXJpYWJsZS4gQW55IG1vZGlmaWNhdGlvbiBpbiBjaGlsZCBwcm9jZXNzCj4gY2FuIGJl
-IHNlZW4gaW4gcGFyZW50IHByb2Nlc3MuCgpBbnkgY29tbWVudCBmb3IgdGhpcyBwYXRjaD8KClRo
-YW5rcywKS2FpCgo+Cj4gU2lnbmVkLW9mZi1ieTogS2FuZyBLYWk8a2FpLmthbmdAd2luZHJpdmVy
-LmNvbT4KPiAtLS0KPiAgIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5j
-ICAgICAgICAgIHwgICAzOCArKysrKysrKysrKysrKysrKy0tCj4gICAxIGZpbGVzIGNoYW5nZWQs
-IDM0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNh
-c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfb3Blbi8x
-Ni0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJm
-YWNlcy9tcV9vcGVuLzE2LTEuYwo+IGluZGV4IGI5YTMyMTUuLmViZDY5N2IgMTAwNjQ0Cj4gLS0t
-IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv
-bXFfb3Blbi8xNi0xLmMKPiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29u
-Zm9ybWFuY2UvaW50ZXJmYWNlcy9tcV9vcGVuLzE2LTEuYwo+IEBAIC0yMCw5ICsyMCwxMSBAQAo+
-ICAgICogdGhpcyBpcyBmaW5lICh3aWxsIGhhdmUgc29tZSBmYWxzZSBwb3NpdGl2ZXMsIGJ1dCBu
-byBmYWxzZSBuZWdhdGl2ZXMpLgo+ICAgICovCj4KPiArI2luY2x1ZGU8c3lzL21tYW4uaD4KPiAg
-ICNpbmNsdWRlPHN5cy9zdGF0Lmg+Cj4gICAjaW5jbHVkZTxzeXMvdHlwZXMuaD4KPiAgICNpbmNs
-dWRlPHN5cy93YWl0Lmg+Cj4gKyNpbmNsdWRlPGVycm5vLmg+Cj4gICAjaW5jbHVkZTxmY250bC5o
-Pgo+ICAgI2luY2x1ZGU8bXF1ZXVlLmg+Cj4gICAjaW5jbHVkZTxzaWduYWwuaD4KPiBAQCAtMzIs
-MTEgKzM0LDE1IEBACj4gICAjaW5jbHVkZSAicG9zaXh0ZXN0LmgiCj4KPiAgICNkZWZpbmUgTkFN
-RVNJWkUgNTAKPiArI2RlZmluZSBUTkFNRSAibXFfb3Blbi8xNi0xLmMiCj4KPiAgIGludCBtYWlu
-KCkKPiAgIHsKPiAgICAgICAgICAJY2hhciBxbmFtZVtOQU1FU0laRV07Cj4gKwljaGFyIGZuYW1l
-W05BTUVTSVpFXTsKPiAgIAlpbnQgcGlkLCBzdWNjZWVkZWQ9MDsKPiArCWludCBmZDsKPiArCXZv
-aWQgKnBhID0gTlVMTDsKPiAgIAltcWRfdCBjaGlsZHF1ZXVlLCBxdWV1ZTsKPgo+ICAgCS8qCj4g
-QEAgLTQ3LDYgKzUzLDI2IEBAIGludCBtYWluKCkKPgo+ICAgICAgICAgIAlzcHJpbnRmKHFuYW1l
-LCAiL21xX29wZW5fMTYtMV8lZCIsIGdldHBpZCgpKTsKPgo+ICsJc3ByaW50ZihmbmFtZSwgIi90
-bXAvcHRzX21xX29wZW5fMTZfMV8lZCIsIGdldHBpZCgpKTsKPiArCXVubGluayhmbmFtZSk7Cj4g
-KwlmZCA9IG9wZW4oZm5hbWUsIE9fQ1JFQVQgfCBPX1JEV1IgfCBPX0VYQ0wsCj4gKwkJIFNfSVJV
-U1IgfCBTX0lXVVNSKTsKPiArCWlmIChmZCA9PSAtMSkgewo+ICsJCXByaW50ZihUTkFNRSAiIEVy
-cm9yIGF0IG9wZW4oKTogJXNcbiIsIHN0cmVycm9yKGVycm5vKSk7Cj4gKwkJZXhpdChQVFNfVU5S
-RVNPTFZFRCk7Cj4gKwl9Cj4gKwkvKiBmaWxlIGlzIGVtcHR5IG5vdywgd2lsbCBjYXVzZSAiQnVz
-IGVycm9yIiAqLwo+ICsJd3JpdGUoZmQsICJcMCIsIDEpOwo+ICsJdW5saW5rKGZuYW1lKTsKPiAr
-Cj4gKwlwYSA9IG1tYXAoTlVMTCwgc2l6ZW9mKGludCksIFBST1RfUkVBRCB8IFBST1RfV1JJVEUs
-IE1BUF9TSEFSRUQsIGZkLCAwKTsKPiArCWlmIChwYSA9PSBNQVBfRkFJTEVEKSB7Cj4gKwkJcHJp
-bnRmKFROQU1FICIgRXJyb3IgYXQgbW1hcDogJXNcbiIsIHN0cmVycm9yKGVycm5vKSk7Cj4gKwkJ
-Y2xvc2UoZmQpOwo+ICsJCWV4aXQoUFRTX0ZBSUwpOwo+ICsJfQo+ICsJKihpbnQgKilwYSA9IDA7
-Cj4gKwo+ICAgCWlmICgocGlkID0gZm9yaygpKSA9PSAwKSB7Cj4gICAJCXNpZ3NldF90IG1hc2s7
-Cj4gICAJCWludCBzaWc7Cj4gQEAgLTYyLDcgKzg4LDcgQEAgaW50IG1haW4oKQo+ICAgICAgICAg
-ICAJY2hpbGRxdWV1ZSA9IG1xX29wZW4ocW5hbWUsIE9fQ1JFQVR8T19FWENMfE9fUkRXUiwKPiAg
-IAkJCQlTX0lSVVNSIHwgU19JV1VTUiwgTlVMTCk7Cj4gICAgICAgICAgIAlpZiAoY2hpbGRxdWV1
-ZSAhPSAobXFkX3QpLTEpIHsKPiAtCQkJc3VjY2VlZGVkKys7Cj4gKwkJCSsrKihpbnQgKilwYTsK
-PiAgICNpZmRlZiBERUJVRwo+ICAgCQkJcHJpbnRmKCJtcV9vcGVuKCkgaW4gY2hpbGQgc3VjY2Vl
-ZGVkXG4iKTsKPiAgIAkJfSBlbHNlIHsKPiBAQCAtNzksNyArMTA1LDcgQEAgaW50IG1haW4oKQo+
-ICAgICAgICAgICAJcXVldWUgPSBtcV9vcGVuKHFuYW1lLCBPX0NSRUFUIHwgT19FWENMIHxPX1JE
-V1IsCj4gICAJCQkJU19JUlVTUiB8IFNfSVdVU1IsIE5VTEwpOwo+ICAgICAgICAgICAJaWYgKHF1
-ZXVlICE9IChtcWRfdCktMSkgewo+IC0JCQlzdWNjZWVkZWQrKzsKPiArCQkJKysqKGludCAqKXBh
-Owo+ICAgI2lmZGVmIERFQlVHCj4gICAJCQlwcmludGYoIm1xX29wZW4oKSBpbiBwYXJlbnQgc3Vj
-Y2VlZGVkXG4iKTsKPiAgIAkJfSBlbHNlIHsKPiBAQCAtOTMsMTMgKzExOSwxNSBAQCBpbnQgbWFp
-bigpCj4gICAJCQltcV9jbG9zZShxdWV1ZSk7Cj4gICAJCQltcV9jbG9zZShjaGlsZHF1ZXVlKTsK
-PiAgIAkJCW1xX3VubGluayhxbmFtZSk7Cj4gKwkJCWNsb3NlKGZkKTsKPiArCQkJbXVubWFwKHBh
-LCBzaXplb2YoaW50KSk7Cj4gICAJCQlyZXR1cm4gUFRTX1VOUkVTT0xWRUQ7Cj4gICAJCX0KPgo+
-ICAgCQltcV9jbG9zZShxdWV1ZSk7Cj4gICAJCW1xX2Nsb3NlKGNoaWxkcXVldWUpOwo+ICAgCQlt
-cV91bmxpbmsocW5hbWUpOwo+IC0KPiArCQlzdWNjZWVkZWQgPSAqKGludCAqKXBhOwo+ICAgCQlp
-ZiAoc3VjY2VlZGVkPT0wKSB7Cj4gICAJCQlwcmludGYoIlRlc3QgRkFJTEVEIC0gbXFfb3Blbigp
-IG5ldmVyIHN1Y2NlZWRlZFxuIik7Cj4gICAJCQlyZXR1cm4gUFRTX0ZBSUw7Cj4gQEAgLTExMSw4
-ICsxMzksMTAgQEAgaW50IG1haW4oKQo+ICAgCQl9Cj4KPiAgICAgICAgICAgCXByaW50ZigiVGVz
-dCBQQVNTRURcbiIpOwo+ICsJCWNsb3NlKGZkKTsKPiArCQltdW5tYXAocGEsIHNpemVvZihpbnQp
-KTsKPiAgICAgICAgICAgCXJldHVybiBQVFNfUEFTUzsKPiAgIAl9Cj4KPiAgIAlyZXR1cm4gUFRT
-X1VOUkVTT0xWRUQ7Cj4gLX0KPiBcIE5vIG5ld2xpbmUgYXQgZW5kIG9mIGZpbGUKPiArfQoKCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNs
-dXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5
-IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNh
-biByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBt
-b2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDov
-L3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
-bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+This case is for kernel patch:
+       https://lkml.org/lkml/2012/4/24/328
+Since vma length in dup_mmap is calculated and stored
+in a unsigned int, it will overflow when length > 16TB.
+The patch above fixed it.
+That patch increases the storage size of the result to
+unsigned long, which should be sufficient for storing the difference
+between addresses.
+This case is to verify whether that patch is added.
+
+Signed-off-by: Madper Xie <cxie@redhat.com>
+---
+ testcases/kernel/syscalls/fork/fork14.c | 102 ++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fork/fork14.c
+
+diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+new file mode 100644
+index 0000000..5046e67
+--- /dev/null
++++ b/testcases/kernel/syscalls/fork/fork14.c
+@@ -0,0 +1,102 @@
++/*********************************************************************
++ * Copyright (C) 2012  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ *
++ * Description: This test is for kernel commit:
++ *              7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
++ *		Since vma length in dup_mmap is calculated and stored
++ *              in a unsigned int, it will overflow when length > 16
++ *              TB. The commit above fixed it. This case is to verify
++ *              whether that patch is added.
++ ********************************************************************/
++
++#include <sys/mman.h>
++#include <sys/wait.h>
++#include <stdio.h>
++#include <unistd.h>
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "fork14";
++
++#define GIG (1024 * 1024 * 1024L)
++#define EXTENT 16393
++
++/*
++ * If The vma length in dup_mmap is
++ * calculated and stored in a unsigned int,
++ * will overflow when length > 16TB.
++ */
++#define LARGE  16383
++
++static void setup();
++static void cleanup();
++
++int main(int argc, char *argv[])
++{
++	int i, r, lc;
++	void *m;
++
++/*
++ * I test this case on ppc64/x86_64/i386/s390x
++ * Only ppc64 x86_64 s390x can run it.
++ * So, I think it's only for 64bit system
++ * The fork will always successed on 32bit.
++ */
++#if __WORDSIZE == 32
++	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
++#endif
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++){	
++		for (i = 0; i < EXTENT; i++) {
++			m = mmap(NULL, (size_t) 1 * GIG, PROT_READ | PROT_WRITE,
++				MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++			switch (fork()){
++			case -1:
++				break;
++			case 0 :
++				exit(0);
++			default:
++				if (waitpid(-1, NULL, 0) == -1)
++					tst_brkm(TBROK|TERRNO,
++						cleanup, "waitpid");
++				if (i >= LARGE) 
++					tst_brkm(TFAIL, NULL,
++						"Fork succeed unexpect:%d", i);
++			}
++		}
++	}
++	
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++}
+-- 
+1.7.12
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
