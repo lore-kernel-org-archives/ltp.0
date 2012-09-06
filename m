@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T8oTz-0003EB-Da
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 08:27:39 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T8oTv-0006p4-8E
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 08:27:39 +0000
-Message-ID: <5045BB7D.7050502@windriver.com>
-Date: Tue, 4 Sep 2012 16:27:41 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1T9Qjb-0001lh-GT
+	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 01:18:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T9QjZ-00024n-Jy
+	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 01:18:19 +0000
+Message-ID: <5047F9BC.8080809@cn.fujitsu.com>
+Date: Thu, 06 Sep 2012 09:17:48 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
-	<1344508258-25054-3-git-send-email-kai.kang@windriver.com>
-	<504592C6.8060100@cn.fujitsu.com>
-In-Reply-To: <504592C6.8060100@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/3] mq_open/16-1: use tmp file to share info
+References: <1346752345-16116-1-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1346752345-16116-1-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,90 +25,153 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
+To: Kang Kai <kai.kang@windriver.com>, jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
 
-T24gMjAxMuW5tDA55pyIMDTml6UgMTM6MzMsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IE9uIDA4LzA5
-LzIwMTIgMDY6MzAgUE0sIEthbmcgS2FpIHdyb3RlOgo+PiBJbiB0aGlzIHRlc3QgY2FzZSwgaXQg
-dXNlcyBhIHZhcmlhYmxlIHRvIHNoYXJlIGRhdGEgYmV0d2VlbiBjaGlsZCBhbmQKPj4gcGFyZW50
-IHByb2Nlc3Nlcy4gQnV0IGFmdGVyIGZvcmsgdGhlcmUgaXMgYSBjb3B5IG9mIHRoZSB2YXJpYWJs
-ZSBpbgo+PiBjaGlsZCBwcm9jZXNzIGFuZCBtb2RpZnkgaXQgd2lsbCBub3QgYWZmZWN0IHRoZSB2
-YXJpYWJsZSBpbiB0aGUgcGFyZW50Cj4+IHByb2Nlc3MuIFRoZW4gd2hlbiB0aGUgY2hpbGQgcHJv
-Y2VzcyBjYWxsIG1xX29wZW4oKSBiZWZvcmUgcGFyZW50IHByb2Nlc3MsCj4+IHRoZSBjYXNlIHdp
-bGwgZmFpbC4KPj4KPj4gVXNlIHRtcCBmaWxlIHRvIHJlcGxhY2UgdGhlIHZhcmlhYmxlLiBBbnkg
-bW9kaWZpY2F0aW9uIGluIGNoaWxkIHByb2Nlc3MKPj4gY2FuIGJlIHNlZW4gaW4gcGFyZW50IHBy
-b2Nlc3MuCj4+Cj4gTG9va3MgT2sgaW4gZ2VuZXJhbC4KPiBBIGJpdCBjb21tZW50IGJlbG93Lgo+
-Cj4+IFNpZ25lZC1vZmYtYnk6IEthbmcgS2FpPGthaS5rYW5nQHdpbmRyaXZlci5jb20+Cj4+IC0t
-LQo+PiAgIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5jICAgICAgICAg
-IHwgICAzOCArKysrKysrKysrKysrKysrKy0tCj4+ICAgMSBmaWxlcyBjaGFuZ2VkLCAzNCBpbnNl
-cnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29w
-ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfb3Blbi8xNi0xLmMg
-Yi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9t
-cV9vcGVuLzE2LTEuYwo+PiBpbmRleCBiOWEzMjE1Li5lYmQ2OTdiIDEwMDY0NAo+PiAtLS0gYS90
-ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tcV9v
-cGVuLzE2LTEuYwo+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
-bWFuY2UvaW50ZXJmYWNlcy9tcV9vcGVuLzE2LTEuYwo+PiBAQCAtMjAsOSArMjAsMTEgQEAKPj4g
-ICAgKiB0aGlzIGlzIGZpbmUgKHdpbGwgaGF2ZSBzb21lIGZhbHNlIHBvc2l0aXZlcywgYnV0IG5v
-IGZhbHNlIG5lZ2F0aXZlcykuCj4+ICAgICovCj4+Cj4+ICsjaW5jbHVkZTxzeXMvbW1hbi5oPgo+
-PiAgICNpbmNsdWRlPHN5cy9zdGF0Lmg+Cj4+ICAgI2luY2x1ZGU8c3lzL3R5cGVzLmg+Cj4+ICAg
-I2luY2x1ZGU8c3lzL3dhaXQuaD4KPj4gKyNpbmNsdWRlPGVycm5vLmg+Cj4+ICAgI2luY2x1ZGU8
-ZmNudGwuaD4KPj4gICAjaW5jbHVkZTxtcXVldWUuaD4KPj4gICAjaW5jbHVkZTxzaWduYWwuaD4K
-Pj4gQEAgLTMyLDExICszNCwxNSBAQAo+PiAgICNpbmNsdWRlICJwb3NpeHRlc3QuaCIKPj4KPj4g
-ICAjZGVmaW5lIE5BTUVTSVpFIDUwCj4+ICsjZGVmaW5lIFROQU1FICJtcV9vcGVuLzE2LTEuYyIK
-Pj4KPj4gICBpbnQgbWFpbigpCj4+ICAgewo+PiAgICAgICAgICAJY2hhciBxbmFtZVtOQU1FU0la
-RV07Cj4+ICsJY2hhciBmbmFtZVtOQU1FU0laRV07Cj4+ICAgCWludCBwaWQsIHN1Y2NlZWRlZD0w
-Owo+PiArCWludCBmZDsKPj4gKwl2b2lkICpwYSA9IE5VTEw7Cj4+ICAgCW1xZF90IGNoaWxkcXVl
-dWUsIHF1ZXVlOwo+Pgo+PiAgIAkvKgo+PiBAQCAtNDcsNiArNTMsMjYgQEAgaW50IG1haW4oKQo+
-Pgo+PiAgICAgICAgICAJc3ByaW50ZihxbmFtZSwgIi9tcV9vcGVuXzE2LTFfJWQiLCBnZXRwaWQo
-KSk7Cj4+Cj4+ICsJc3ByaW50ZihmbmFtZSwgIi90bXAvcHRzX21xX29wZW5fMTZfMV8lZCIsIGdl
-dHBpZCgpKTsKPj4gKwl1bmxpbmsoZm5hbWUpOwo+PiArCWZkID0gb3BlbihmbmFtZSwgT19DUkVB
-VCB8IE9fUkRXUiB8IE9fRVhDTCwKPj4gKwkJIFNfSVJVU1IgfCBTX0lXVVNSKTsKPj4gKwlpZiAo
-ZmQgPT0gLTEpIHsKPj4gKwkJcHJpbnRmKFROQU1FICIgRXJyb3IgYXQgb3BlbigpOiAlc1xuIiwg
-c3RyZXJyb3IoZXJybm8pKTsKPj4gKwkJZXhpdChQVFNfVU5SRVNPTFZFRCk7Cj4+ICsJfQo+PiAr
-CS8qIGZpbGUgaXMgZW1wdHkgbm93LCB3aWxsIGNhdXNlICJCdXMgZXJyb3IiICovCj4+ICsJd3Jp
-dGUoZmQsICJcMCIsIDEpOwo+PiArCXVubGluayhmbmFtZSk7Cj4+ICsKPj4gKwlwYSA9IG1tYXAo
-TlVMTCwgc2l6ZW9mKGludCksIFBST1RfUkVBRCB8IFBST1RfV1JJVEUsIE1BUF9TSEFSRUQsIGZk
-LCAwKTsKCkhpIFdhbmxvbmcsCgo+IFdoeSBub3QgdXNlIGFub255bW91cyBtYXA/IGluIHRoYXQg
-Y2FzZSB5b3Ugd2lsbCBub3QgbmVlZCB0byBjcmVhdGUgYSBmaWxlLgoKSXQgc2VlbXMgTUFQX0FO
-T05ZTU9TIGlzIG5vdCBzcGVjaWZpZWQgaW4gUE9TSVggc3BlY2lmaWNhdGlvbi4KClJlZ2FyZHMs
-CkthaQoKPgo+Cj4gVGhhbmtzLAo+IFdhbmxvbmcgR2FvCj4KPgo+PiArCWlmIChwYSA9PSBNQVBf
-RkFJTEVEKSB7Cj4+ICsJCXByaW50ZihUTkFNRSAiIEVycm9yIGF0IG1tYXA6ICVzXG4iLCBzdHJl
-cnJvcihlcnJubykpOwo+PiArCQljbG9zZShmZCk7Cj4+ICsJCWV4aXQoUFRTX0ZBSUwpOwo+PiAr
-CX0KPj4gKwkqKGludCAqKXBhID0gMDsKPj4gKwo+PiAgIAlpZiAoKHBpZCA9IGZvcmsoKSkgPT0g
-MCkgewo+PiAgIAkJc2lnc2V0X3QgbWFzazsKPj4gICAJCWludCBzaWc7Cj4+IEBAIC02Miw3ICs4
-OCw3IEBAIGludCBtYWluKCkKPj4gICAgICAgICAgIAljaGlsZHF1ZXVlID0gbXFfb3BlbihxbmFt
-ZSwgT19DUkVBVHxPX0VYQ0x8T19SRFdSLAo+PiAgIAkJCQlTX0lSVVNSIHwgU19JV1VTUiwgTlVM
-TCk7Cj4+ICAgICAgICAgICAJaWYgKGNoaWxkcXVldWUgIT0gKG1xZF90KS0xKSB7Cj4+IC0JCQlz
-dWNjZWVkZWQrKzsKPj4gKwkJCSsrKihpbnQgKilwYTsKPj4gICAjaWZkZWYgREVCVUcKPj4gICAJ
-CQlwcmludGYoIm1xX29wZW4oKSBpbiBjaGlsZCBzdWNjZWVkZWRcbiIpOwo+PiAgIAkJfSBlbHNl
-IHsKPj4gQEAgLTc5LDcgKzEwNSw3IEBAIGludCBtYWluKCkKPj4gICAgICAgICAgIAlxdWV1ZSA9
-IG1xX29wZW4ocW5hbWUsIE9fQ1JFQVQgfCBPX0VYQ0wgfE9fUkRXUiwKPj4gICAJCQkJU19JUlVT
-UiB8IFNfSVdVU1IsIE5VTEwpOwo+PiAgICAgICAgICAgCWlmIChxdWV1ZSAhPSAobXFkX3QpLTEp
-IHsKPj4gLQkJCXN1Y2NlZWRlZCsrOwo+PiArCQkJKysqKGludCAqKXBhOwo+PiAgICNpZmRlZiBE
-RUJVRwo+PiAgIAkJCXByaW50ZigibXFfb3BlbigpIGluIHBhcmVudCBzdWNjZWVkZWRcbiIpOwo+
-PiAgIAkJfSBlbHNlIHsKPj4gQEAgLTkzLDEzICsxMTksMTUgQEAgaW50IG1haW4oKQo+PiAgIAkJ
-CW1xX2Nsb3NlKHF1ZXVlKTsKPj4gICAJCQltcV9jbG9zZShjaGlsZHF1ZXVlKTsKPj4gICAJCQlt
-cV91bmxpbmsocW5hbWUpOwo+PiArCQkJY2xvc2UoZmQpOwo+PiArCQkJbXVubWFwKHBhLCBzaXpl
-b2YoaW50KSk7Cj4+ICAgCQkJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+PiAgIAkJfQo+Pgo+PiAg
-IAkJbXFfY2xvc2UocXVldWUpOwo+PiAgIAkJbXFfY2xvc2UoY2hpbGRxdWV1ZSk7Cj4+ICAgCQlt
-cV91bmxpbmsocW5hbWUpOwo+PiAtCj4+ICsJCXN1Y2NlZWRlZCA9ICooaW50ICopcGE7Cj4+ICAg
-CQlpZiAoc3VjY2VlZGVkPT0wKSB7Cj4+ICAgCQkJcHJpbnRmKCJUZXN0IEZBSUxFRCAtIG1xX29w
-ZW4oKSBuZXZlciBzdWNjZWVkZWRcbiIpOwo+PiAgIAkJCXJldHVybiBQVFNfRkFJTDsKPj4gQEAg
-LTExMSw4ICsxMzksMTAgQEAgaW50IG1haW4oKQo+PiAgIAkJfQo+Pgo+PiAgICAgICAgICAgCXBy
-aW50ZigiVGVzdCBQQVNTRURcbiIpOwo+PiArCQljbG9zZShmZCk7Cj4+ICsJCW11bm1hcChwYSwg
-c2l6ZW9mKGludCkpOwo+PiAgICAgICAgICAgCXJldHVybiBQVFNfUEFTUzsKPj4gICAJfQo+Pgo+
-PiAgIAlyZXR1cm4gUFRTX1VOUkVTT0xWRUQ7Cj4+IC19Cj4+IFwgTm8gbmV3bGluZSBhdCBlbmQg
-b2YgZmlsZQo+PiArfQo+Pgo+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkg
-VmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIgYWxsIHRo
-ZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2Vk
-IGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxsIGluY2x1
-ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBt
-YWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQy
-MDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAo=
+On 09/04/2012 05:52 PM, Kang Kai wrote:
+> In this test case, it uses a variable to share data between child and
+> parent processes. But after fork there is a copy of the variable in
+> child process and modify it will not affect the variable in the parent
+> process. Then when the child process call mq_open() before parent process,
+> the case will fail.
+> 
+> Use tmp file to replace the variable. Any modification in child process
+> can be seen in parent process.
+
+Jan, do you have more question about this patch?
+Kang, can you please rebase the patch against the newest tree?
+
+Thanks,
+Wanlong Gao
+
+> 
+> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+> ---
+>  .../conformance/interfaces/mq_open/16-1.c          |   40 ++++++++++++++++++--
+>  1 files changed, 36 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+> index b9a3215..51b954e 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+> @@ -20,9 +20,11 @@
+>   * this is fine (will have some false positives, but no false negatives).
+>   */
+>  
+> +#include <sys/mman.h>
+>  #include <sys/stat.h>
+>  #include <sys/types.h>
+>  #include <sys/wait.h>
+> +#include <errno.h>
+>  #include <fcntl.h>
+>  #include <mqueue.h>
+>  #include <signal.h>
+> @@ -32,11 +34,16 @@
+>  #include "posixtest.h"
+>  
+>  #define NAMESIZE 50
+> +#define TNAME "mq_open/16-1.c"
+>  
+>  int main()
+>  {
+>         	char qname[NAMESIZE];
+> +	char fname[NAMESIZE];
+> +	char buf[NAMESIZE];
+>  	int pid, succeeded=0;
+> +	int fd;
+> +	void *pa = NULL;
+>  	mqd_t childqueue, queue;
+>  
+>  	/*
+> @@ -47,6 +54,27 @@ int main()
+>  
+>         	sprintf(qname, "/mq_open_16-1_%d", getpid());
+>  
+> +	sprintf(fname, "/tmp/pts_mq_open_16_1_%d", getpid());
+> +	unlink(fname);
+> +	fd = open(fname, O_CREAT | O_RDWR | O_EXCL,
+> +		 S_IRUSR | S_IWUSR);
+> +	if (fd == -1) {
+> +		printf(TNAME " Error at open(): %s\n", strerror(errno));
+> +		exit(PTS_UNRESOLVED);
+> +	}
+> +	/* file is empty now, will cause "Bus error" */
+> +	memset(buf, '\0', NAMESIZE);
+> +	write(fd, buf, sizeof(int));
+> +	unlink(fname);
+> +
+> +	pa = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> +	if (pa == MAP_FAILED) {
+> +		printf(TNAME " Error at mmap: %s\n", strerror(errno));
+> +		close(fd);
+> +		exit(PTS_FAIL);
+> +	}
+> +	*(int *)pa = 0;
+> +
+>  	if ((pid = fork()) == 0) {
+>  		sigset_t mask;
+>  		int sig;
+> @@ -62,7 +90,7 @@ int main()
+>          	childqueue = mq_open(qname, O_CREAT|O_EXCL|O_RDWR,
+>  				S_IRUSR | S_IWUSR, NULL);
+>          	if (childqueue != (mqd_t)-1) {
+> -			succeeded++;
+> +			++*(int *)pa;
+>  #ifdef DEBUG
+>  			printf("mq_open() in child succeeded\n");
+>  		} else {
+> @@ -79,7 +107,7 @@ int main()
+>          	queue = mq_open(qname, O_CREAT | O_EXCL |O_RDWR,
+>  				S_IRUSR | S_IWUSR, NULL);
+>          	if (queue != (mqd_t)-1) {
+> -			succeeded++;
+> +			++*(int *)pa;
+>  #ifdef DEBUG
+>  			printf("mq_open() in parent succeeded\n");
+>  		} else {
+> @@ -93,13 +121,15 @@ int main()
+>  			mq_close(queue);
+>  			mq_close(childqueue);
+>  			mq_unlink(qname);
+> +			close(fd);
+> +			munmap(pa, sizeof(int));
+>  			return PTS_UNRESOLVED;
+>  		}
+>  
+>  		mq_close(queue);
+>  		mq_close(childqueue);
+>  		mq_unlink(qname);
+> -
+> +		succeeded = *(int *)pa;
+>  		if (succeeded==0) {
+>  			printf("Test FAILED - mq_open() never succeeded\n");
+>  			return PTS_FAIL;
+> @@ -111,8 +141,10 @@ int main()
+>  		}
+>  
+>          	printf("Test PASSED\n");
+> +		close(fd);
+> +		munmap(pa, sizeof(int));
+>          	return PTS_PASS;
+>  	}
+>  
+>  	return PTS_UNRESOLVED;
+> -}
+> \ No newline at end of file
+> +}
+> 
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
