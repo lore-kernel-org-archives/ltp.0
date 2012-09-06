@@ -2,20 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1TDtnV-0006B6-7l
-	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 09:08:49 +0000
-Received: from mail.windriver.com ([147.11.1.11])
+	(envelope-from <Kai.Kang@windriver.com>) id 1T9UeZ-0001Tz-3n
+	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 05:29:23 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TDtnS-0001DW-SN
-	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 09:08:49 +0000
-Message-ID: <50583A1A.4060800@windriver.com>
-Date: Tue, 18 Sep 2012 17:08:42 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	(Exim 4.76) id 1T9UeY-0002Gz-3d
+	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 05:29:23 +0000
+From: Kang Kai <kai.kang@windriver.com>
+Date: Thu, 6 Sep 2012 13:29:09 +0800
+Message-ID: <1346909350-716-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
-References: <9261c230876e6a3ab96b3e927c6d4b32eea0b56e.1346750103.git.jstancek@redhat.com>
-	<50581E82.7080008@cn.fujitsu.com>
-In-Reply-To: <50581E82.7080008@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] pthread_detach: avoid threads sharing stack
+Subject: [LTP] [PATCH] V2: mq_open/16-1: use tmp file to share info
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,89 +22,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDA55pyIMTjml6UgMTU6MTAsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IEhpIEthbmcs
-Cj4KPj4gVGhpcyB0ZXN0Y2FzZSB3YXMgb2JzZXJ2ZWQgdG8gY3Jhc2ggd2l0aCBzZWdtZW50YXRp
-b24gZmF1bHQ6Cj4+IGh0dHA6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9sdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbXNnMTQ2OTIuaHRtbAoKSGkgV2FubG9uZywKCj4gSGF2ZSB5b3UgdGVz
-dGVkIHRoaXMgcGF0Y2ggZnJvbSBKYW4gb24geW91ciBzeXN0ZW0/CgpJdCBvcmlnaW5hbGx5IGZh
-aWxzIG9uIHJvdXRlcnN0YXRpb24obWlwcykgYW5kIHRlc3QgSmFuJ3MgcGF0Y2ggMTAwIAp0aW1l
-cyBhbmQgcGFzcy4KVGhlIHBhdGNoIGFsc28gcGFzc2VzIG9uIHg4NiB3aXRoIFlvY3RvIGxpbnV4
-IGFuZCB4ODZfNjQgd2l0aCBVYnVudHUgMTEuMTAuCgpSZWdhcmRzLApLYWkKCj4KPiBUaGFua3Ms
-Cj4gV2FubG9uZyBHYW8KPgo+PiBGb2xsb3dpbmcgaXNzdWVzIGhhdmUgYmVlbiBmb3VuZDoKPj4g
-LSBXaGVuIGRldGFjaGVkIHRocmVhZCBzaWduYWxzIGl0J3MgZG9uZSwgaXQncyBub3QgcmVhbGx5
-IGRvbmUgeWV0Cj4+ICAgIGFuZCBpdCBpcyBwb3NzaWJsZSBmb3Igc2NoZWR1bGVyIHRvIHN3aXRj
-aCB0byB0ZXN0KCkgdGhyZWFkIGFuZCBjcmVhdGUKPj4gICAgYW5vdGhlciB0aHJlYWQocykgdGhh
-dCB1c2VzIHNhbWUgYWx0c3RhY2suIHNlbV9wb3N0L3NlbV93YWl0Cj4+ICAgIGlzIG5vdCByZWxp
-YWJsZSB3YXkgdG8gdGVsbCB3aGVuIGRldGFjaGVkIHRocmVhZCBpcyBmaW5pc2hlZC4KPj4gICAg
-dGVzdCgpIHRocmVhZCBjYW4gY29udGludWUgdG8gc3Bhd24gbmV3IHRocmVhZHMgYW5kIHVucHJp
-dmlsZWdlZCB1c2VyCj4+ICAgIGNhbiBydW4gb3V0IG9mIHJlc291cmNlcy4KPj4gLSBUaHJlYWRz
-IHdoaWNoIGZpcmUgU0lHVVNSIHNpZ25hbHMgY2FuIGRvIHNvIHZlcnkgZnJlcXVlbnRseSwKPj4g
-ICAgc28gdGhyZWFkZWQoKSB0aHJlYWQgbWF5IG5vdCBwcm9ncmVzcyBhdCBhbGwgYW5kIGl0IHN0
-YXJ0cyB0bwo+PiAgICBwcm9ncmVzcyBvbmx5IHdoZW4gc2lnbmFsIHRocmVhZHMgYXJlIHRvbGQg
-dG8gc3RvcCBzZW5kaW5nIHNpZ25hbHMuCj4+Cj4+IFRoaXMgcGF0Y2ggbW9kaWZpZXMgdGVzdGNh
-c2UgaW4gZm9sbG93aW5nIHdheToKPj4KPj4gQmVmb3JlCj4+IC0tLS0tLS0KPj4gdGVzdCgpIGxv
-b3BzIG92ZXIgYWxsIHNjZW5hcmlvcyByZXBlYXRlZGx5IGFuZCBzcGF3bnMgbmV3IHRocmVhZGVk
-KCkKPj4gYXMgc29vbiBhcyBwcmV2aW91cyBvbmUgY2FsbGVkIHNlbV9wb3N0Lgo+Pgo+PiBtYWlu
-ICsKPj4gICAgICAgfFwKPj4gICAgICAgfCBzZW5kX3NpZzEgKHRocmVhZCkKPj4gICAgICAgfFwK
-Pj4gICAgICAgfCBzZW5kX3NpZzIgKHRocmVhZCkKPj4gICAgICAgXAo+PiAgICAgICAgIHRlc3Qg
-KHRocmVhZCkKPj4gICAgICAgICAgIFwKPj4gICAgICAgICAgICB0aHJlYWRlZCAoZGV0YWNoZWQg
-dGhyZWFkKQo+Pgo+PiBBZnRlcgo+PiAtLS0tLS0KPj4gT25seSBvbmUgdGhyZWFkIGlzIHNlbmRp
-bmcgc2lnbmFscyAoU0lHVVNSMSkgd2l0aCBncmFkdWFsbHkgaW5jcmVhc2luZwo+PiBzbGVlcCB0
-aW1lIHRvIG1ha2Ugc3VyZSB0aHJlYWRlZCgpIGNhbiBwcm9ncmVzcy4gdGVzdCgpIGxvb3BzIG92
-ZXIKPj4gc2NlbmFyaW9zIGp1c3Qgb25jZS4KPj4KPj4gbWFpbigpIGxvb3BzIGZvciBzcGVjaWZp
-ZWQgdGltZSwgaXQgc3Bhd25zIG5ldyBjaGlsZCBhbmQgd2FpdHMgZm9yIGl0Cj4+IHRvIGZpbmlz
-aC4gVGhpcyB3aWxsIGF2b2lkIHVzaW5nIHNhbWUgc3RhY2sgYnkgMisgdGhyZWFkcyBhbmQgdGhl
-cmUgd2lsbCBiZQo+PiBubyBtb3JlIHRoYW4gTlNDRU5BUiB0aHJlYWRzIGF0IGEgdGltZS4KPj4K
-Pj4gbWFpbiAocHJvY0EpCj4+ICAgICAgICAgICAgICAgXAo+PiAgICAgICAgICAgICAgICBkb19j
-aGlsZCAocHJvY0IpICsKPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8XAo+PiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgc2VuZF9zaWcgKHRocmVhZCkKPj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAo+PiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgdGVzdCAodGhyZWFkKQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBcCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aHJlYWRl
-ZCAoZGV0YWNoZWQgdGhyZWFkKQo+Pgo+PiBNb2RpZmllZCB2ZXJzaW9uIGhhdmUgYmVlbiBzdWNj
-ZXNmdWxseSB0ZXN0ZWQgYnkgcmVwb3J0ZXI6Cj4+IHJvdXRlcnN0YXRpb24obWlwcyksIHg4Nl82
-NCh1YnVudHUxMS4xMCYgIHJlZGhhdCA1LjMpCj4+IGFuZCB4ODYocmVkaGF0IDUuMykgZWFjaCAx
-MDArIHRpbWVzCj4+Cj4+IGFuZCBieSBtZTogMTAwKyB0aW1lcyBhcyByb290IGFuZCB1bnByaXZp
-bGVnZWQgdXNlciBvbjoKPj4gUkhFTDUuOCAoaTM4NiwgeDg2XzY0LCBpYTY0LCBwcGM2NCwgczM5
-MHgpCj4+IFJIRUw2LjAgKGkzODYsIHg4Nl82NCwgcHBjNjQsIHMzOTB4KQo+PiBSSEVMNi4zIChp
-Mzg2LCB4ODZfNjQsIHBwYzY0LCBzMzkweCkKPj4KPj4gRm9sbG93aW5nIGdsaWJjIGJ1ZyBoYXMg
-YmVlbiBvYnNlcnZlZCBkdXJpbmcgdGVzdGluZyBvbiBwcGM2NDoKPj4gQnVnIDg1MjQ0NSAtIGdj
-Y19hc3NlcnQgZmFpbHVyZSBpbiBfVW53aW5kX1NldFNwQ29sdW1uKCkgb24gcHBjNjQKPj4gaHR0
-cHM6Ly9idWd6aWxsYS5yZWRoYXQuY29tL3Nob3dfYnVnLmNnaT9pZD04NTI0NDUKPj4KPj4gVGhp
-cyBwYXRjaCBpcyBjdXJyZW50bHkgbm90IG1ha2luZyBhbnkgd29ya2Fyb3VuZHMgdG8gYXZvaWQK
-Pj4gaGl0dGluZyB0aGlzIGlzc3VlLCBiZWNhdXNlIHNvIGZhciBpdCBpcyBrbm93biB0byBoYXBw
-ZW4gb25seQo+PiByYXJlbHkgb24gcHBjNjQgd2hlbiB1bnByaXZpbGVnZWQgdXNlciBydW5zIHRo
-ZSB0ZXN0Y2FzZS4KPj4gSWYgdGhpcyBpc3N1ZSBiZWNvbWVzIG1vcmUgc2lnbmlmaWNhbnQsIHRl
-c3RjYXNlIGNhbiBiZSBtb2RpZmllZAo+PiB0byBza2lwIHNjZW5hcmlvcyB3aXRoIGV4cGxpY2l0
-IHNjaGVkdWxpbmcgaWYgdGhleSBhcmUgcnVuIGJ5Cj4+IHVucHJpdmlsZWdlZCB1c2VyLgo+Pgo+
-PiBSZXBvcnRlZC1ieTogS2FuZyBLYWk8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KPj4gU2lnbmVk
-LW9mZi1ieTogSmFuIFN0YW5jZWs8anN0YW5jZWtAcmVkaGF0LmNvbT4KPj4gLS0tCj4+ICAgLi4u
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMgICAgfCAgMjM5ICsr
-KysrKysrKysrKy0tLS0tLS0tCj4+ICAgMSBmaWxlcyBjaGFuZ2VkLCAxNDIgaW5zZXJ0aW9ucygr
-KSwgOTcgZGVsZXRpb25zKC0pCj4+Cj4+Cj4+Cj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiBM
-aXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQo+PiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3
-aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZAo+PiB0aHJlYXQgbGFu
-ZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1
-c3Npb25zCj4+IHdpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5
-IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUKPj4gdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFj
-b21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCj4+Cj4+Cj4+Cj4+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEx0cC1saXN0IG1h
-aWxpbmcgbGlzdAo+PiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9s
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPj4KPgoKCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNp
-dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
-ZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiBy
-ZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
-bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3
-dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
-bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi,
+
+V2 just remove the var buf[], and write fname[] to the tmp file.
+And more cleanup work when test fails.
+
+Regards,
+Kai
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
