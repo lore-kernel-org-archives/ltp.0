@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T9UeZ-0005Br-6v
-	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 05:29:23 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1T9Yk2-0008GF-H2
+	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 09:51:18 +0000
 Received: from mail.windriver.com ([147.11.1.11])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T9UeY-0007K4-07
-	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 05:29:23 +0000
+	(Exim 4.76) id 1T9Yjw-0007uv-W5
+	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 09:51:18 +0000
 From: Kang Kai <kai.kang@windriver.com>
-Date: Thu, 6 Sep 2012 13:29:10 +0800
-Message-ID: <1346909350-716-2-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1346909350-716-1-git-send-email-kai.kang@windriver.com>
-References: <1346909350-716-1-git-send-email-kai.kang@windriver.com>
+Date: Thu, 6 Sep 2012 17:50:57 +0800
+Message-ID: <1346925057-5511-2-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1346925057-5511-1-git-send-email-kai.kang@windriver.com>
+References: <1346925057-5511-1-git-send-email-kai.kang@windriver.com>
 MIME-Version: 1.0
 Subject: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
 List-Id: Linux Test Project General Discussions
@@ -41,11 +41,11 @@ can be seen in parent process.
 
 Signed-off-by: Kang Kai <kai.kang@windriver.com>
 ---
- .../conformance/interfaces/mq_open/16-1.c          |   39 +++++++++++++++++++-
- 1 files changed, 37 insertions(+), 2 deletions(-)
+ .../conformance/interfaces/mq_open/16-1.c          |   36 ++++++++++++++++++-
+ 1 files changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-index e07ce86..eadac81 100644
+index e07ce86..9aae29b 100644
 --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
 +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
 @@ -20,9 +20,11 @@
@@ -130,31 +130,17 @@ index e07ce86..eadac81 100644
  			return PTS_UNRESOLVED;
  		}
  
-@@ -101,17 +129,24 @@ int main()
+@@ -101,6 +129,10 @@ int main()
  		mq_close(childqueue);
  		mq_unlink(qname);
  
 +		succeeded = *(int *)pa;
- 		if (succeeded == 0) {
- 			printf("Test FAILED - mq_open() never succeeded\n");
-+			close(fd);
-+			munmap(pa, sizeof(int));
- 			return PTS_FAIL;
- 		}
- 
- 		if (succeeded > 1) {
- 			printf("Test FAILED - mq_open() succeeded twice\n");
-+			close(fd);
-+			munmap(pa, sizeof(int));
- 			return PTS_FAIL;
- 		}
- 
- 		printf("Test PASSED\n");
 +		close(fd);
 +		munmap(pa, sizeof(int));
- 		return PTS_PASS;
- 	}
- 
++
+ 		if (succeeded == 0) {
+ 			printf("Test FAILED - mq_open() never succeeded\n");
+ 			return PTS_FAIL;
 -- 
 1.7.5.4
 
