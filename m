@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T8nkY-0002m7-3s
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 07:40:42 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T8nkT-0001aD-PL
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 07:40:42 +0000
-Message-ID: <5045B079.6070302@windriver.com>
-Date: Tue, 4 Sep 2012 15:40:41 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TBy6r-0004l4-Bx
+	for ltp-list@lists.sourceforge.net; Thu, 13 Sep 2012 01:20:49 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TBy6p-0000tq-Q2
+	for ltp-list@lists.sourceforge.net; Thu, 13 Sep 2012 01:20:49 +0000
+Message-ID: <505134C4.3060602@cn.fujitsu.com>
+Date: Thu, 13 Sep 2012 09:20:04 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
-	<1344508258-25054-3-git-send-email-kai.kang@windriver.com>
-	<504592C6.8060100@cn.fujitsu.com>
-In-Reply-To: <504592C6.8060100@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/3] mq_open/16-1: use tmp file to share info
+References: <1346925057-5511-1-git-send-email-kai.kang@windriver.com>
+	<1346925057-5511-2-git-send-email-kai.kang@windriver.com>
+In-Reply-To: <1346925057-5511-2-git-send-email-kai.kang@windriver.com>
+Subject: Re: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +26,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Kang Kai <kai.kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gMjAxMuW5tDA55pyIMDTml6UgMTM6MzMsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IE9uIDA4LzA5
-LzIwMTIgMDY6MzAgUE0sIEthbmcgS2FpIHdyb3RlOgo+PiBJbiB0aGlzIHRlc3QgY2FzZSwgaXQg
-dXNlcyBhIHZhcmlhYmxlIHRvIHNoYXJlIGRhdGEgYmV0d2VlbiBjaGlsZCBhbmQKPj4gcGFyZW50
-IHByb2Nlc3Nlcy4gQnV0IGFmdGVyIGZvcmsgdGhlcmUgaXMgYSBjb3B5IG9mIHRoZSB2YXJpYWJs
-ZSBpbgo+PiBjaGlsZCBwcm9jZXNzIGFuZCBtb2RpZnkgaXQgd2lsbCBub3QgYWZmZWN0IHRoZSB2
-YXJpYWJsZSBpbiB0aGUgcGFyZW50Cj4+IHByb2Nlc3MuIFRoZW4gd2hlbiB0aGUgY2hpbGQgcHJv
-Y2VzcyBjYWxsIG1xX29wZW4oKSBiZWZvcmUgcGFyZW50IHByb2Nlc3MsCj4+IHRoZSBjYXNlIHdp
-bGwgZmFpbC4KPj4KPj4gVXNlIHRtcCBmaWxlIHRvIHJlcGxhY2UgdGhlIHZhcmlhYmxlLiBBbnkg
-bW9kaWZpY2F0aW9uIGluIGNoaWxkIHByb2Nlc3MKPj4gY2FuIGJlIHNlZW4gaW4gcGFyZW50IHBy
-b2Nlc3MuCj4+Cj4gTG9va3MgT2sgaW4gZ2VuZXJhbC4KPiBBIGJpdCBjb21tZW50IGJlbG93Lgo+
-Cj4+IFNpZ25lZC1vZmYtYnk6IEthbmcgS2FpPGthaS5rYW5nQHdpbmRyaXZlci5jb20+Cj4+IC0t
-LQo+PiAgIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21xX29wZW4vMTYtMS5jICAgICAgICAg
-IHwgICAzOCArKysrKysrKysrKysrKysrKy0tCj4+ICAgMSBmaWxlcyBjaGFuZ2VkLCAzNCBpbnNl
-cnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29w
-ZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbXFfb3Blbi8xNi0xLmMg
-Yi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9t
-cV9vcGVuLzE2LTEuYwo+PiBpbmRleCBiOWEzMjE1Li5lYmQ2OTdiIDEwMDY0NAo+PiAtLS0gYS90
-ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tcV9v
-cGVuLzE2LTEuYwo+PiArKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
-bWFuY2UvaW50ZXJmYWNlcy9tcV9vcGVuLzE2LTEuYwo+PiBAQCAtMjAsOSArMjAsMTEgQEAKPj4g
-ICAgKiB0aGlzIGlzIGZpbmUgKHdpbGwgaGF2ZSBzb21lIGZhbHNlIHBvc2l0aXZlcywgYnV0IG5v
-IGZhbHNlIG5lZ2F0aXZlcykuCj4+ICAgICovCj4+Cj4+ICsjaW5jbHVkZTxzeXMvbW1hbi5oPgo+
-PiAgICNpbmNsdWRlPHN5cy9zdGF0Lmg+Cj4+ICAgI2luY2x1ZGU8c3lzL3R5cGVzLmg+Cj4+ICAg
-I2luY2x1ZGU8c3lzL3dhaXQuaD4KPj4gKyNpbmNsdWRlPGVycm5vLmg+Cj4+ICAgI2luY2x1ZGU8
-ZmNudGwuaD4KPj4gICAjaW5jbHVkZTxtcXVldWUuaD4KPj4gICAjaW5jbHVkZTxzaWduYWwuaD4K
-Pj4gQEAgLTMyLDExICszNCwxNSBAQAo+PiAgICNpbmNsdWRlICJwb3NpeHRlc3QuaCIKPj4KPj4g
-ICAjZGVmaW5lIE5BTUVTSVpFIDUwCj4+ICsjZGVmaW5lIFROQU1FICJtcV9vcGVuLzE2LTEuYyIK
-Pj4KPj4gICBpbnQgbWFpbigpCj4+ICAgewo+PiAgICAgICAgICAJY2hhciBxbmFtZVtOQU1FU0la
-RV07Cj4+ICsJY2hhciBmbmFtZVtOQU1FU0laRV07Cj4+ICAgCWludCBwaWQsIHN1Y2NlZWRlZD0w
-Owo+PiArCWludCBmZDsKPj4gKwl2b2lkICpwYSA9IE5VTEw7Cj4+ICAgCW1xZF90IGNoaWxkcXVl
-dWUsIHF1ZXVlOwo+Pgo+PiAgIAkvKgo+PiBAQCAtNDcsNiArNTMsMjYgQEAgaW50IG1haW4oKQo+
-Pgo+PiAgICAgICAgICAJc3ByaW50ZihxbmFtZSwgIi9tcV9vcGVuXzE2LTFfJWQiLCBnZXRwaWQo
-KSk7Cj4+Cj4+ICsJc3ByaW50ZihmbmFtZSwgIi90bXAvcHRzX21xX29wZW5fMTZfMV8lZCIsIGdl
-dHBpZCgpKTsKPj4gKwl1bmxpbmsoZm5hbWUpOwo+PiArCWZkID0gb3BlbihmbmFtZSwgT19DUkVB
-VCB8IE9fUkRXUiB8IE9fRVhDTCwKPj4gKwkJIFNfSVJVU1IgfCBTX0lXVVNSKTsKPj4gKwlpZiAo
-ZmQgPT0gLTEpIHsKPj4gKwkJcHJpbnRmKFROQU1FICIgRXJyb3IgYXQgb3BlbigpOiAlc1xuIiwg
-c3RyZXJyb3IoZXJybm8pKTsKPj4gKwkJZXhpdChQVFNfVU5SRVNPTFZFRCk7Cj4+ICsJfQo+PiAr
-CS8qIGZpbGUgaXMgZW1wdHkgbm93LCB3aWxsIGNhdXNlICJCdXMgZXJyb3IiICovCj4+ICsJd3Jp
-dGUoZmQsICJcMCIsIDEpOwo+PiArCXVubGluayhmbmFtZSk7Cj4+ICsKPj4gKwlwYSA9IG1tYXAo
-TlVMTCwgc2l6ZW9mKGludCksIFBST1RfUkVBRCB8IFBST1RfV1JJVEUsIE1BUF9TSEFSRUQsIGZk
-LCAwKTsKPiBXaHkgbm90IHVzZSBhbm9ueW1vdXMgbWFwPyBpbiB0aGF0IGNhc2UgeW91IHdpbGwg
-bm90IG5lZWQgdG8gY3JlYXRlIGEgZmlsZS4KCk9rLCBJJ2xsIHNlbmQgdjIgd2l0aCBhbm9ueW1v
-dXMgbWFwLgoKVGhhbmtzLApLYWkKCj4KPgo+IFRoYW5rcywKPiBXYW5sb25nIEdhbwo+Cj4KPj4g
-KwlpZiAocGEgPT0gTUFQX0ZBSUxFRCkgewo+PiArCQlwcmludGYoVE5BTUUgIiBFcnJvciBhdCBt
-bWFwOiAlc1xuIiwgc3RyZXJyb3IoZXJybm8pKTsKPj4gKwkJY2xvc2UoZmQpOwo+PiArCQlleGl0
-KFBUU19GQUlMKTsKPj4gKwl9Cj4+ICsJKihpbnQgKilwYSA9IDA7Cj4+ICsKPj4gICAJaWYgKChw
-aWQgPSBmb3JrKCkpID09IDApIHsKPj4gICAJCXNpZ3NldF90IG1hc2s7Cj4+ICAgCQlpbnQgc2ln
-Owo+PiBAQCAtNjIsNyArODgsNyBAQCBpbnQgbWFpbigpCj4+ICAgICAgICAgICAJY2hpbGRxdWV1
-ZSA9IG1xX29wZW4ocW5hbWUsIE9fQ1JFQVR8T19FWENMfE9fUkRXUiwKPj4gICAJCQkJU19JUlVT
-UiB8IFNfSVdVU1IsIE5VTEwpOwo+PiAgICAgICAgICAgCWlmIChjaGlsZHF1ZXVlICE9IChtcWRf
-dCktMSkgewo+PiAtCQkJc3VjY2VlZGVkKys7Cj4+ICsJCQkrKyooaW50ICopcGE7Cj4+ICAgI2lm
-ZGVmIERFQlVHCj4+ICAgCQkJcHJpbnRmKCJtcV9vcGVuKCkgaW4gY2hpbGQgc3VjY2VlZGVkXG4i
-KTsKPj4gICAJCX0gZWxzZSB7Cj4+IEBAIC03OSw3ICsxMDUsNyBAQCBpbnQgbWFpbigpCj4+ICAg
-ICAgICAgICAJcXVldWUgPSBtcV9vcGVuKHFuYW1lLCBPX0NSRUFUIHwgT19FWENMIHxPX1JEV1Is
-Cj4+ICAgCQkJCVNfSVJVU1IgfCBTX0lXVVNSLCBOVUxMKTsKPj4gICAgICAgICAgIAlpZiAocXVl
-dWUgIT0gKG1xZF90KS0xKSB7Cj4+IC0JCQlzdWNjZWVkZWQrKzsKPj4gKwkJCSsrKihpbnQgKilw
-YTsKPj4gICAjaWZkZWYgREVCVUcKPj4gICAJCQlwcmludGYoIm1xX29wZW4oKSBpbiBwYXJlbnQg
-c3VjY2VlZGVkXG4iKTsKPj4gICAJCX0gZWxzZSB7Cj4+IEBAIC05MywxMyArMTE5LDE1IEBAIGlu
-dCBtYWluKCkKPj4gICAJCQltcV9jbG9zZShxdWV1ZSk7Cj4+ICAgCQkJbXFfY2xvc2UoY2hpbGRx
-dWV1ZSk7Cj4+ICAgCQkJbXFfdW5saW5rKHFuYW1lKTsKPj4gKwkJCWNsb3NlKGZkKTsKPj4gKwkJ
-CW11bm1hcChwYSwgc2l6ZW9mKGludCkpOwo+PiAgIAkJCXJldHVybiBQVFNfVU5SRVNPTFZFRDsK
-Pj4gICAJCX0KPj4KPj4gICAJCW1xX2Nsb3NlKHF1ZXVlKTsKPj4gICAJCW1xX2Nsb3NlKGNoaWxk
-cXVldWUpOwo+PiAgIAkJbXFfdW5saW5rKHFuYW1lKTsKPj4gLQo+PiArCQlzdWNjZWVkZWQgPSAq
-KGludCAqKXBhOwo+PiAgIAkJaWYgKHN1Y2NlZWRlZD09MCkgewo+PiAgIAkJCXByaW50ZigiVGVz
-dCBGQUlMRUQgLSBtcV9vcGVuKCkgbmV2ZXIgc3VjY2VlZGVkXG4iKTsKPj4gICAJCQlyZXR1cm4g
-UFRTX0ZBSUw7Cj4+IEBAIC0xMTEsOCArMTM5LDEwIEBAIGludCBtYWluKCkKPj4gICAJCX0KPj4K
-Pj4gICAgICAgICAgIAlwcmludGYoIlRlc3QgUEFTU0VEXG4iKTsKPj4gKwkJY2xvc2UoZmQpOwo+
-PiArCQltdW5tYXAocGEsIHNpemVvZihpbnQpKTsKPj4gICAgICAgICAgIAlyZXR1cm4gUFRTX1BB
-U1M7Cj4+ICAgCX0KPj4KPj4gICAJcmV0dXJuIFBUU19VTlJFU09MVkVEOwo+PiAtfQo+PiBcIE5v
-IG5ld2xpbmUgYXQgZW5kIG9mIGZpbGUKPj4gK30KPj4KPgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3
-aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRz
-Y2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNz
-aW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5k
-IHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNv
-bS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+On 09/06/2012 05:50 PM, Kang Kai wrote:
+> In this test case, it uses a variable to share data between child and
+> parent processes. But after fork there is a copy of the variable in
+> child process and modify it will not affect the variable in the parent
+> process. Then when the child process call mq_open() before parent
+> process, the case will fail.
+> 
+> Use tmp file to replace the variable. Any modification in child process
+> can be seen in parent process.
+> 
+> Signed-off-by: Kang Kai <kai.kang@windriver.com>
+
+Pushed, thank you .
+
+Wanlong Gao
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
