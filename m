@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ritesh.harjani@gmail.com>) id 1T8Osc-0007Uu-Ue
-	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 05:07:22 +0000
-Received: from mail-wg0-f53.google.com ([74.125.82.53])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1T8OsY-0003Ts-7I
-	for ltp-list@lists.sourceforge.net; Mon, 03 Sep 2012 05:07:22 +0000
-Received: by wgbfm10 with SMTP id fm10so3005075wgb.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 02 Sep 2012 22:07:12 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TDryR-0002wI-7n
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 07:11:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TDryM-0007cc-Mw
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 07:11:59 +0000
+Message-ID: <50581E82.7080008@cn.fujitsu.com>
+Date: Tue, 18 Sep 2012 15:10:58 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Mon, 3 Sep 2012 10:37:12 +0530
-Message-ID: <CAD15agakqdqNiZY_rKRyh0GocADu7F2rLdctJpSwdosiNz7CYg@mail.gmail.com>
-From: Ritesh Harjani <ritesh.harjani@gmail.com>
-Subject: [LTP] LTP test reults for kernel 3.0.15 and 3.4
+References: <9261c230876e6a3ab96b3e927c6d4b32eea0b56e.1346750103.git.jstancek@redhat.com>
+In-Reply-To: <9261c230876e6a3ab96b3e927c6d4b32eea0b56e.1346750103.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] pthread_detach: avoid threads sharing stack
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,49 +25,115 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6881438720658412665=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============6881438720658412665==
-Content-Type: multipart/alternative; boundary=0016e6d58fbd4649e904c8c51d81
-
---0016e6d58fbd4649e904c8c51d81
-Content-Type: text/plain; charset=ISO-8859-1
-
-Has anyone tried running LTP tests on kernel 3.0.15 (Android ICS) and
-kernel 3.4 (Android ICS)
-
-Actually there is mem02 test which is failing in kernel 3.0.15 which is not
-the case with kernel 3.4.
-So, if anyone can point out why the difference and also if someone can
-direct me onto what exactly this test does and
-some source of information from where i can have a deeper understanding on
-this.
-
-Thank you
-Ritesh
-
---0016e6d58fbd4649e904c8c51d81
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Has anyone tried running LTP tests on kernel 3.0.15 (Android ICS) and kerne=
-l 3.4 (Android ICS)<br><br>Actually there is mem02 test which is failing in=
- kernel 3.0.15 which is not the case with kernel 3.4. <br>So, if anyone can=
- point out why the difference and also if someone can direct me onto what e=
-xactly this test does and <br>
-some source of information from where i can have a deeper understanding on =
-this. <br><br>Thank you <br>Ritesh<br>
-
---0016e6d58fbd4649e904c8c51d81--
-
-
---===============6881438720658412665==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi Kang,
+
+> 
+> This testcase was observed to crash with segmentation fault:
+> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg14692.html
+
+Have you tested this patch from Jan on your system?
+
+Thanks,
+Wanlong Gao
+
+> 
+> Following issues have been found:
+> - When detached thread signals it's done, it's not really done yet
+>   and it is possible for scheduler to switch to test() thread and create
+>   another thread(s) that uses same altstack. sem_post/sem_wait
+>   is not reliable way to tell when detached thread is finished.
+>   test() thread can continue to spawn new threads and unprivileged user
+>   can run out of resources.
+> - Threads which fire SIGUSR signals can do so very frequently,
+>   so threaded() thread may not progress at all and it starts to
+>   progress only when signal threads are told to stop sending signals.
+> 
+> This patch modifies testcase in following way:
+> 
+> Before
+> -------
+> test() loops over all scenarios repeatedly and spawns new threaded()
+> as soon as previous one called sem_post.
+> 
+> main +
+>      |\
+>      | send_sig1 (thread)
+>      |\
+>      | send_sig2 (thread)
+>      \
+>        test (thread)
+>          \
+>           threaded (detached thread)
+> 
+> After
+> ------
+> Only one thread is sending signals (SIGUSR1) with gradually increasing
+> sleep time to make sure threaded() can progress. test() loops over
+> scenarios just once.
+> 
+> main() loops for specified time, it spawns new child and waits for it
+> to finish. This will avoid using same stack by 2+ threads and there will be
+> no more than NSCENAR threads at a time.
+> 
+> main (procA)
+>              \
+>               do_child (procB) +
+>                                |\
+>                                | send_sig (thread)
+>                                 \
+>                                  test (thread)
+>                                    \
+>                                     threaded (detached thread)
+> 
+> Modified version have been succesfully tested by reporter:
+> routerstation(mips), x86_64(ubuntu11.10 & redhat 5.3)
+> and x86(redhat 5.3) each 100+ times
+> 
+> and by me: 100+ times as root and unprivileged user on:
+> RHEL5.8 (i386, x86_64, ia64, ppc64, s390x)
+> RHEL6.0 (i386, x86_64, ppc64, s390x)
+> RHEL6.3 (i386, x86_64, ppc64, s390x)
+> 
+> Following glibc bug has been observed during testing on ppc64:
+> Bug 852445 - gcc_assert failure in _Unwind_SetSpColumn() on ppc64
+> https://bugzilla.redhat.com/show_bug.cgi?id=852445
+> 
+> This patch is currently not making any workarounds to avoid
+> hitting this issue, because so far it is known to happen only
+> rarely on ppc64 when unprivileged user runs the testcase.
+> If this issue becomes more significant, testcase can be modified
+> to skip scenarios with explicit scheduling if they are run by
+> unprivileged user.
+> 
+> Reported-by: Kang Kai <kai.kang@windriver.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  .../conformance/interfaces/pthread_detach/4-3.c    |  239 ++++++++++++--------
+>  1 files changed, 142 insertions(+), 97 deletions(-)
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -75,16 +141,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============6881438720658412665==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6881438720658412665==--
-
