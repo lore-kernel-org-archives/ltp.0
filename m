@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T9Yk2-0008GF-H2
-	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 09:51:18 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T9Yjw-0007uv-W5
-	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 09:51:18 +0000
-From: Kang Kai <kai.kang@windriver.com>
-Date: Thu, 6 Sep 2012 17:50:57 +0800
-Message-ID: <1346925057-5511-2-git-send-email-kai.kang@windriver.com>
-In-Reply-To: <1346925057-5511-1-git-send-email-kai.kang@windriver.com>
-References: <1346925057-5511-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TDs7O-0006fs-VH
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 07:21:14 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TDs7L-0003Sq-4B
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 07:21:14 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q8I7L3pu003980
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Sep 2012 15:21:03 +0800
+Message-ID: <505820B1.80005@cn.fujitsu.com>
+Date: Tue, 18 Sep 2012 15:20:17 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mq_open/16-1: use tmp file to share info
+References: <5051362C.8070402@cn.fujitsu.com>
+In-Reply-To: <5051362C.8070402@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] bind/03, 21 rbind/38,
+ 33:fix missing umount and error umount in these cases
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,122 +32,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, =?UTF-8?B?56qm6ZGr?= <wq-doux@cn.fujitsu.com>
 
-In this test case, it uses a variable to share data between child and
-parent processes. But after fork there is a copy of the variable in
-child process and modify it will not affect the variable in the parent
-process. Then when the child process call mq_open() before parent
-process, the case will fail.
+On 09/13/2012 09:26 AM, DAN LI wrote:
+> The cases have the same problem that dirs are still in mount when their
+> targets are removed.for rbind/38,beside the problem above,there are two
+> error umount operations that umount dirs that are not in mount.
+> and all these result in making the test script trapped in a infinite loop.
+> To resolve these problems,all we need is just umount the mountpoints before
+> their targets are removed and delete the error umount operations.
 
-Use tmp file to replace the variable. Any modification in child process
-can be seen in parent process.
+Pushed, thank you.
 
-Signed-off-by: Kang Kai <kai.kang@windriver.com>
----
- .../conformance/interfaces/mq_open/16-1.c          |   36 ++++++++++++++++++-
- 1 files changed, 34 insertions(+), 2 deletions(-)
+Wanlong Gao
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-index e07ce86..9aae29b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-@@ -20,9 +20,11 @@
-  * this is fine (will have some false positives, but no false negatives).
-  */
- 
-+#include <sys/mman.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-+#include <errno.h>
- #include <fcntl.h>
- #include <mqueue.h>
- #include <signal.h>
-@@ -32,11 +34,15 @@
- #include "posixtest.h"
- 
- #define NAMESIZE 50
-+#define TNAME "mq_open/16-1.c"
- 
- int main()
- {
- 	char qname[NAMESIZE];
-+	char fname[NAMESIZE];
- 	int pid, succeeded = 0;
-+	int fd;
-+	void *pa = NULL;
- 	mqd_t childqueue, queue;
- 
- 	/*
-@@ -47,6 +53,26 @@ int main()
- 
- 	sprintf(qname, "/mq_open_16-1_%d", getpid());
- 
-+	sprintf(fname, "/tmp/pts_mq_open_16_1_%d", getpid());
-+	unlink(fname);
-+	fd = open(fname, O_CREAT | O_RDWR | O_EXCL,
-+		 S_IRUSR | S_IWUSR);
-+	if (fd == -1) {
-+		printf(TNAME " Error at open(): %s\n", strerror(errno));
-+		exit(PTS_UNRESOLVED);
-+	}
-+	/* file is empty now, will cause "Bus error" */
-+	write(fd, fname, sizeof(int));
-+	unlink(fname);
-+
-+	pa = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	if (pa == MAP_FAILED) {
-+		printf(TNAME " Error at mmap: %s\n", strerror(errno));
-+		close(fd);
-+		exit(PTS_FAIL);
-+	}
-+	*(int *)pa = 0;
-+
- 	pid = fork();
- 	if (pid == 0) {
- 		sigset_t mask;
-@@ -63,7 +89,7 @@ int main()
- 		childqueue = mq_open(qname, O_CREAT | O_EXCL | O_RDWR,
- 				     S_IRUSR | S_IWUSR, NULL);
- 		if (childqueue != (mqd_t) -1) {
--			succeeded++;
-+			++*(int *)pa;
- #ifdef DEBUG
- 			printf("mq_open() in child succeeded\n");
- 		} else {
-@@ -80,7 +106,7 @@ int main()
- 		queue = mq_open(qname, O_CREAT | O_EXCL | O_RDWR,
- 				S_IRUSR | S_IWUSR, NULL);
- 		if (queue != (mqd_t) -1) {
--			succeeded++;
-+			++*(int *)pa;
- #ifdef DEBUG
- 			printf("mq_open() in parent succeeded\n");
- 		} else {
-@@ -94,6 +120,8 @@ int main()
- 			mq_close(queue);
- 			mq_close(childqueue);
- 			mq_unlink(qname);
-+			close(fd);
-+			munmap(pa, sizeof(int));
- 			return PTS_UNRESOLVED;
- 		}
- 
-@@ -101,6 +129,10 @@ int main()
- 		mq_close(childqueue);
- 		mq_unlink(qname);
- 
-+		succeeded = *(int *)pa;
-+		close(fd);
-+		munmap(pa, sizeof(int));
-+
- 		if (succeeded == 0) {
- 			printf("Test FAILED - mq_open() never succeeded\n");
- 			return PTS_FAIL;
--- 
-1.7.5.4
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Live Security Virtual Conference
+> Exclusive live event will cover all the ways today's security and 
+> threat landscape has changed and how IT managers can respond. Discussions 
+> will include endpoint security, mobile security and the latest in malware 
+> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 ------------------------------------------------------------------------------
