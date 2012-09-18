@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T8olY-00068K-3p
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 08:45:48 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T8olX-0005Fk-AU
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 08:45:48 +0000
-Message-ID: <5045BFC1.4020308@windriver.com>
-Date: Tue, 4 Sep 2012 16:45:53 +0800
-From: Kang Kai <Kai.Kang@windriver.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TDrZ7-0005g6-0Y
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 06:45:49 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TDrZ2-0001OT-VK
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 06:45:48 +0000
+Message-ID: <5058135C.2090003@cn.fujitsu.com>
+Date: Tue, 18 Sep 2012 14:23:24 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1344508258-25054-1-git-send-email-kai.kang@windriver.com>
-	<1344508258-25054-3-git-send-email-kai.kang@windriver.com>
-	<504592C6.8060100@cn.fujitsu.com> <5045BB7D.7050502@windriver.com>
-	<5045BEBA.80901@cn.fujitsu.com>
-In-Reply-To: <5045BEBA.80901@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/3] mq_open/16-1: use tmp file to share info
+References: <1346814633-3257-1-git-send-email-cxie@redhat.com>
+	<5058101D.4010800@cn.fujitsu.com>
+	<505812F7.8090904@casparzhang.com>
+In-Reply-To: <505812F7.8090904@casparzhang.com>
+Subject: Re: [LTP] [PATCH] syscall/fork/fork14:new testcase
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,27 +27,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: Jan@suse.de, ltp-list@lists.sourceforge.net, Zhenfeng.Zhao@windriver.com
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net, =?UTF-8?B?6LCi5oiQ6aqP?= <bbboson@gmail.com>
 
-T24gMjAxMuW5tDA55pyIMDTml6UgMTY6NDEsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IE9uIDA5LzA0
-LzIwMTIgMDQ6MjcgUE0sIEthbmcgS2FpIHdyb3RlOgo+PiBIaSBXYW5sb25nLAo+Pgo+Pj4gV2h5
-IG5vdCB1c2UgYW5vbnltb3VzIG1hcD8gaW4gdGhhdCBjYXNlIHlvdSB3aWxsIG5vdCBuZWVkIHRv
-IGNyZWF0ZSBhIGZpbGUuCj4+IEl0IHNlZW1zIE1BUF9BTk9OWU1PUyBpcyBub3Qgc3BlY2lmaWVk
-IGluIFBPU0lYIHNwZWNpZmljYXRpb24uCj4gT0ssIGJ1dCBpbiB0aGlzIGNhc2UsIHlvdSBzaG91
-bGQgdGhpbmsgYWJvdXQgSmFuJ3MgcXVlc3Rpb24gYWJvdXQgU0lHQlVTIG5vdy4KSSBhbSBjaGVj
-a2luZyB0aGUgU0lHQlVTIGlzc3VlLgoKVGhhbmtzLApLYWkKCj4KPiBUaGFua3MsCj4gV2FubG9u
-ZyBHYW8KPgo+PiBSZWdhcmRzLAo+PiBLYWkKPgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZl
-IFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNv
-dmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBo
-YXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAK
-d2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBs
-YXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcv
-c2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+On 09/18/2012 02:21 PM, Caspar Zhang wrote:
+> 
+> Hi Wanlong, this version is deprecated, Madper should have composed a fixed version. Sorry for wasting your time on it :-(
+> 
+
+Never mind. ;)
+
+Thanks,
+Wanlong Gao
+
+> Caspar
+
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
