@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gang.chen@asianux.com>) id 1T834z-0007eh-2U
-	for ltp-list@lists.sourceforge.net; Sun, 02 Sep 2012 05:50:41 +0000
-Received: from intranet.asianux.com ([58.214.24.6])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T834w-0003hR-4t
-	for ltp-list@lists.sourceforge.net; Sun, 02 Sep 2012 05:50:41 +0000
-Received: from [10.1.0.143] (unknown [219.143.36.82])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by intranet.asianux.com (Postfix) with ESMTP id 50AC3184029F
-	for <ltp-list@lists.sourceforge.net>;
-	Sun,  2 Sep 2012 13:50:30 +0800 (CST)
-Message-ID: <5042F3ED.6030409@asianux.com>
-Date: Sun, 02 Sep 2012 13:51:41 +0800
-From: gchen <gang.chen@asianux.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Kai.Kang@windriver.com>) id 1TDtnV-0006B6-7l
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 09:08:49 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TDtnS-0001DW-SN
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 09:08:49 +0000
+Message-ID: <50583A1A.4060800@windriver.com>
+Date: Tue, 18 Sep 2012 17:08:42 +0800
+From: Kang Kai <Kai.Kang@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] [QUESTION] LTP stress test for RHEL5 and  NFS local mount
+References: <9261c230876e6a3ab96b3e927c6d4b32eea0b56e.1346750103.git.jstancek@redhat.com>
+	<50581E82.7080008@cn.fujitsu.com>
+In-Reply-To: <50581E82.7080008@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] pthread_detach: avoid threads sharing stack
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,143 +25,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5375836535168544385=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---===============5375836535168544385==
-Content-Type: multipart/alternative;
-	boundary="------------080902010401080709030800"
-
-This is a multi-part message in MIME format.
---------------080902010401080709030800
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-
-Hello ltp-list@lists.sourceforge.net
-
-
-Question:
-
-Use ltp stress test (/opt/ltp/ltpstress.sh) with ltp-full-20100331.gz
-to test RHEL5 (kernel-2.6.18-308.4.1.el5) for 72 hours.
-
-Not give any more configurations for NFS (using default configuration:
-mount NFS locally, so the NFS client and NFS server are on the same
-machine).
-
-My question is that "for stress test, is it suitable to let NFS server and
-client on the same machine ?"
-
-
-Background;
-
-This configuration will cause deadlock for RHEL5, and can not boot
-machine in normal way.
-
-someone from Red Hat has said that:
---------------------------------------------------------------------------------------------------------------
-
-"Have configuration where the same host is acting as both NFS client
-and server. That's a configuration known to cause deadlocks."
-
---------------------------------------------------------------------------------------------------------------
-
-can reference Red Hat Bugzilla (bug 848706) for more details.
-
-
-
-
-thanks.
-
-gchen.
-
-Asianux Corporation.
-
-
---------------080902010401080709030800
-Content-Type: text/html; charset=GB2312
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=GB2312">
-  </head>
-  <body text="#000000" bgcolor="#FFFFFF">
-    <div class="moz-text-plain" wrap="true" graphical-quote="true"
-      style="font-family: -moz-fixed" lang="zh-cn">
-      <pre wrap="">Hello <a class="moz-txt-link-abbreviated" href="mailto:ltp-list@lists.sourceforge.net">ltp-list@lists.sourceforge.net</a>
-
-
-Question:
-
-Use ltp stress test (/opt/ltp/ltpstress.sh) with ltp-full-20100331.gz
-to test RHEL5 (kernel-2.6.18-308.4.1.el5) for 72 hours.
-
-Not give any more configurations for NFS (using default configuration:
-mount NFS locally, so the NFS client and NFS server are on the same
-machine).
-
-My question is that "for stress test, is it suitable to let NFS server and
-client on the same machine ?"
-
-
-Background;
-
-This configuration will cause deadlock for RHEL5, and can not boot
-machine in normal way.
-
-someone from Red Hat has said that:
---------------------------------------------------------------------------------------------------------------
-
-"Have configuration where the same host is acting as both NFS client
-and server. That's a configuration known to cause deadlocks."
-
---------------------------------------------------------------------------------------------------------------
-
-can reference Red Hat Bugzilla (bug 848706) for more details.
-
-
-
-
-thanks.
-
-gchen.
-
-Asianux Corporation.
-
-</pre>
-    </div>
-  </body>
-</html>
-
---------------080902010401080709030800--
-
-
---===============5375836535168544385==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============5375836535168544385==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5375836535168544385==--
-
+T24gMjAxMuW5tDA55pyIMTjml6UgMTU6MTAsIFdhbmxvbmcgR2FvIHdyb3RlOgo+IEhpIEthbmcs
+Cj4KPj4gVGhpcyB0ZXN0Y2FzZSB3YXMgb2JzZXJ2ZWQgdG8gY3Jhc2ggd2l0aCBzZWdtZW50YXRp
+b24gZmF1bHQ6Cj4+IGh0dHA6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9sdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbXNnMTQ2OTIuaHRtbAoKSGkgV2FubG9uZywKCj4gSGF2ZSB5b3UgdGVz
+dGVkIHRoaXMgcGF0Y2ggZnJvbSBKYW4gb24geW91ciBzeXN0ZW0/CgpJdCBvcmlnaW5hbGx5IGZh
+aWxzIG9uIHJvdXRlcnN0YXRpb24obWlwcykgYW5kIHRlc3QgSmFuJ3MgcGF0Y2ggMTAwIAp0aW1l
+cyBhbmQgcGFzcy4KVGhlIHBhdGNoIGFsc28gcGFzc2VzIG9uIHg4NiB3aXRoIFlvY3RvIGxpbnV4
+IGFuZCB4ODZfNjQgd2l0aCBVYnVudHUgMTEuMTAuCgpSZWdhcmRzLApLYWkKCj4KPiBUaGFua3Ms
+Cj4gV2FubG9uZyBHYW8KPgo+PiBGb2xsb3dpbmcgaXNzdWVzIGhhdmUgYmVlbiBmb3VuZDoKPj4g
+LSBXaGVuIGRldGFjaGVkIHRocmVhZCBzaWduYWxzIGl0J3MgZG9uZSwgaXQncyBub3QgcmVhbGx5
+IGRvbmUgeWV0Cj4+ICAgIGFuZCBpdCBpcyBwb3NzaWJsZSBmb3Igc2NoZWR1bGVyIHRvIHN3aXRj
+aCB0byB0ZXN0KCkgdGhyZWFkIGFuZCBjcmVhdGUKPj4gICAgYW5vdGhlciB0aHJlYWQocykgdGhh
+dCB1c2VzIHNhbWUgYWx0c3RhY2suIHNlbV9wb3N0L3NlbV93YWl0Cj4+ICAgIGlzIG5vdCByZWxp
+YWJsZSB3YXkgdG8gdGVsbCB3aGVuIGRldGFjaGVkIHRocmVhZCBpcyBmaW5pc2hlZC4KPj4gICAg
+dGVzdCgpIHRocmVhZCBjYW4gY29udGludWUgdG8gc3Bhd24gbmV3IHRocmVhZHMgYW5kIHVucHJp
+dmlsZWdlZCB1c2VyCj4+ICAgIGNhbiBydW4gb3V0IG9mIHJlc291cmNlcy4KPj4gLSBUaHJlYWRz
+IHdoaWNoIGZpcmUgU0lHVVNSIHNpZ25hbHMgY2FuIGRvIHNvIHZlcnkgZnJlcXVlbnRseSwKPj4g
+ICAgc28gdGhyZWFkZWQoKSB0aHJlYWQgbWF5IG5vdCBwcm9ncmVzcyBhdCBhbGwgYW5kIGl0IHN0
+YXJ0cyB0bwo+PiAgICBwcm9ncmVzcyBvbmx5IHdoZW4gc2lnbmFsIHRocmVhZHMgYXJlIHRvbGQg
+dG8gc3RvcCBzZW5kaW5nIHNpZ25hbHMuCj4+Cj4+IFRoaXMgcGF0Y2ggbW9kaWZpZXMgdGVzdGNh
+c2UgaW4gZm9sbG93aW5nIHdheToKPj4KPj4gQmVmb3JlCj4+IC0tLS0tLS0KPj4gdGVzdCgpIGxv
+b3BzIG92ZXIgYWxsIHNjZW5hcmlvcyByZXBlYXRlZGx5IGFuZCBzcGF3bnMgbmV3IHRocmVhZGVk
+KCkKPj4gYXMgc29vbiBhcyBwcmV2aW91cyBvbmUgY2FsbGVkIHNlbV9wb3N0Lgo+Pgo+PiBtYWlu
+ICsKPj4gICAgICAgfFwKPj4gICAgICAgfCBzZW5kX3NpZzEgKHRocmVhZCkKPj4gICAgICAgfFwK
+Pj4gICAgICAgfCBzZW5kX3NpZzIgKHRocmVhZCkKPj4gICAgICAgXAo+PiAgICAgICAgIHRlc3Qg
+KHRocmVhZCkKPj4gICAgICAgICAgIFwKPj4gICAgICAgICAgICB0aHJlYWRlZCAoZGV0YWNoZWQg
+dGhyZWFkKQo+Pgo+PiBBZnRlcgo+PiAtLS0tLS0KPj4gT25seSBvbmUgdGhyZWFkIGlzIHNlbmRp
+bmcgc2lnbmFscyAoU0lHVVNSMSkgd2l0aCBncmFkdWFsbHkgaW5jcmVhc2luZwo+PiBzbGVlcCB0
+aW1lIHRvIG1ha2Ugc3VyZSB0aHJlYWRlZCgpIGNhbiBwcm9ncmVzcy4gdGVzdCgpIGxvb3BzIG92
+ZXIKPj4gc2NlbmFyaW9zIGp1c3Qgb25jZS4KPj4KPj4gbWFpbigpIGxvb3BzIGZvciBzcGVjaWZp
+ZWQgdGltZSwgaXQgc3Bhd25zIG5ldyBjaGlsZCBhbmQgd2FpdHMgZm9yIGl0Cj4+IHRvIGZpbmlz
+aC4gVGhpcyB3aWxsIGF2b2lkIHVzaW5nIHNhbWUgc3RhY2sgYnkgMisgdGhyZWFkcyBhbmQgdGhl
+cmUgd2lsbCBiZQo+PiBubyBtb3JlIHRoYW4gTlNDRU5BUiB0aHJlYWRzIGF0IGEgdGltZS4KPj4K
+Pj4gbWFpbiAocHJvY0EpCj4+ICAgICAgICAgICAgICAgXAo+PiAgICAgICAgICAgICAgICBkb19j
+aGlsZCAocHJvY0IpICsKPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8XAo+PiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgc2VuZF9zaWcgKHRocmVhZCkKPj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAo+PiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgdGVzdCAodGhyZWFkKQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBcCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aHJlYWRl
+ZCAoZGV0YWNoZWQgdGhyZWFkKQo+Pgo+PiBNb2RpZmllZCB2ZXJzaW9uIGhhdmUgYmVlbiBzdWNj
+ZXNmdWxseSB0ZXN0ZWQgYnkgcmVwb3J0ZXI6Cj4+IHJvdXRlcnN0YXRpb24obWlwcyksIHg4Nl82
+NCh1YnVudHUxMS4xMCYgIHJlZGhhdCA1LjMpCj4+IGFuZCB4ODYocmVkaGF0IDUuMykgZWFjaCAx
+MDArIHRpbWVzCj4+Cj4+IGFuZCBieSBtZTogMTAwKyB0aW1lcyBhcyByb290IGFuZCB1bnByaXZp
+bGVnZWQgdXNlciBvbjoKPj4gUkhFTDUuOCAoaTM4NiwgeDg2XzY0LCBpYTY0LCBwcGM2NCwgczM5
+MHgpCj4+IFJIRUw2LjAgKGkzODYsIHg4Nl82NCwgcHBjNjQsIHMzOTB4KQo+PiBSSEVMNi4zIChp
+Mzg2LCB4ODZfNjQsIHBwYzY0LCBzMzkweCkKPj4KPj4gRm9sbG93aW5nIGdsaWJjIGJ1ZyBoYXMg
+YmVlbiBvYnNlcnZlZCBkdXJpbmcgdGVzdGluZyBvbiBwcGM2NDoKPj4gQnVnIDg1MjQ0NSAtIGdj
+Y19hc3NlcnQgZmFpbHVyZSBpbiBfVW53aW5kX1NldFNwQ29sdW1uKCkgb24gcHBjNjQKPj4gaHR0
+cHM6Ly9idWd6aWxsYS5yZWRoYXQuY29tL3Nob3dfYnVnLmNnaT9pZD04NTI0NDUKPj4KPj4gVGhp
+cyBwYXRjaCBpcyBjdXJyZW50bHkgbm90IG1ha2luZyBhbnkgd29ya2Fyb3VuZHMgdG8gYXZvaWQK
+Pj4gaGl0dGluZyB0aGlzIGlzc3VlLCBiZWNhdXNlIHNvIGZhciBpdCBpcyBrbm93biB0byBoYXBw
+ZW4gb25seQo+PiByYXJlbHkgb24gcHBjNjQgd2hlbiB1bnByaXZpbGVnZWQgdXNlciBydW5zIHRo
+ZSB0ZXN0Y2FzZS4KPj4gSWYgdGhpcyBpc3N1ZSBiZWNvbWVzIG1vcmUgc2lnbmlmaWNhbnQsIHRl
+c3RjYXNlIGNhbiBiZSBtb2RpZmllZAo+PiB0byBza2lwIHNjZW5hcmlvcyB3aXRoIGV4cGxpY2l0
+IHNjaGVkdWxpbmcgaWYgdGhleSBhcmUgcnVuIGJ5Cj4+IHVucHJpdmlsZWdlZCB1c2VyLgo+Pgo+
+PiBSZXBvcnRlZC1ieTogS2FuZyBLYWk8a2FpLmthbmdAd2luZHJpdmVyLmNvbT4KPj4gU2lnbmVk
+LW9mZi1ieTogSmFuIFN0YW5jZWs8anN0YW5jZWtAcmVkaGF0LmNvbT4KPj4gLS0tCj4+ICAgLi4u
+L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9kZXRhY2gvNC0zLmMgICAgfCAgMjM5ICsr
+KysrKysrKysrKy0tLS0tLS0tCj4+ICAgMSBmaWxlcyBjaGFuZ2VkLCAxNDIgaW5zZXJ0aW9ucygr
+KSwgOTcgZGVsZXRpb25zKC0pCj4+Cj4+Cj4+Cj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiBM
+aXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQo+PiBFeGNsdXNpdmUgbGl2ZSBldmVudCB3
+aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZAo+PiB0aHJlYXQgbGFu
+ZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQuIERpc2N1
+c3Npb25zCj4+IHdpbGwgaW5jbHVkZSBlbmRwb2ludCBzZWN1cml0eSwgbW9iaWxlIHNlY3VyaXR5
+IGFuZCB0aGUgbGF0ZXN0IGluIG1hbHdhcmUKPj4gdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFj
+b21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCj4+Cj4+Cj4+Cj4+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEx0cC1saXN0IG1h
+aWxpbmcgbGlzdAo+PiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPj4KPgoKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNp
+dmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3VyaXR5IGFu
+ZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJzIGNhbiBy
+ZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5LCBtb2Jp
+bGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3
+dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
+bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
