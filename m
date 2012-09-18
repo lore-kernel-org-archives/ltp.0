@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1TEhkg-0000zd-KW
-	for ltp-list@lists.sourceforge.net; Thu, 20 Sep 2012 14:29:14 +0000
-Date: Thu, 20 Sep 2012 16:29:05 +0200
-From: chrubis@suse.cz
-Message-ID: <20120920142905.GC7902@saboteur.suse.cz>
-References: <CAD15agakqdqNiZY_rKRyh0GocADu7F2rLdctJpSwdosiNz7CYg@mail.gmail.com>
-	<CABhB_e8j2oRbKPererNep1-T5z3sCsvRPW-2rSoPg-tvF4AZoA@mail.gmail.com>
-	<CAD15agZmMyu+vWLoRn1NukgaeXvG-v6pbxs=fUVULTQc6DLhgg@mail.gmail.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TDr0z-0000ne-5i
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 06:10:33 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TDr0x-0007m1-7J
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 06:10:33 +0000
+Message-ID: <5058101D.4010800@cn.fujitsu.com>
+Date: Tue, 18 Sep 2012 14:09:33 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAD15agZmMyu+vWLoRn1NukgaeXvG-v6pbxs=fUVULTQc6DLhgg@mail.gmail.com>
-Subject: Re: [LTP] LTP test reults for kernel 3.0.15 and 3.4
+References: <1346814633-3257-1-git-send-email-cxie@redhat.com>
+In-Reply-To: <1346814633-3257-1-git-send-email-cxie@redhat.com>
+Subject: Re: [LTP] [PATCH] syscall/fork/fork14:new testcase
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,62 +28,160 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ritesh Harjani <ritesh.harjani@gmail.com>
+To: Madper Xie <cxie@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Following are the lines of code where the test case is exiting, for kernel
-> 3.0.15 (ICS).
+On 09/05/2012 11:10 AM, Madper Xie wrote:
+> This case is for kernel patch:
+>        https://lkml.org/lkml/2012/4/24/328
+> Since vma length in dup_mmap is calculated and stored
+> in a unsigned int, it will overflow when length > 16TB.
+> The patch above fixed it.
+> That patch increases the storage size of the result to
+> unsigned long, which should be sufficient for storing the difference
+> between addresses.
+> This case is to verify whether that patch is added.
 > 
-> 128         pm2=pm1;
-> 129         free(pm1);
-> 130
-> 131         if((pm1=(char *)calloc(memsize,1)) == NULL) {
-> 132                 tst_resm(TFAIL, "calloc did not alloc memory ");
-> 133                              tst_exit();
-> 134         }
-> 135
-> 136         if(pm1 != pm2) {
-> 137                 tst_resm(TINFO, "pm1=%p pm2=%p ", pm1,pm2);
-> 138                 tst_resm(TFAIL, "free did not dealloc memory ");
-> 139
-> tst_exit();                                                     // *Here
-> code is exited in kernel 3.0.15 while it is passing in case of kernel 3.4
-> (ICS)*.
-> 140         }
+> Signed-off-by: Madper Xie <cxie@redhat.com>
+> ---
+>  testcases/kernel/syscalls/fork/fork14.c | 102 ++++++++++++++++++++++++++++++++
+>  1 file changed, 102 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fork/fork14.c
 > 
-> 
-> 
-> *LTP version = "LTP-20100630"*
-> 
-> at line 136 my test is failing. Now isnt this condition of the dangling
-> pointer. At line 129 we are freeing pm1 this means that pm2 becomes a
-> dangling pointer.
-> And how come after doing
-> pm1=(char *)calloc(memsize,1)
-> pm1 is equal to pm2 for kernel 3.4 (ICS) (Since this test case is passing
-> for that)??
-> 
-> According to me, it should not be equal.
+> diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+> new file mode 100644
+> index 0000000..5046e67
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fork/fork14.c
+> @@ -0,0 +1,102 @@
+> +/*********************************************************************
+> + * Copyright (C) 2012  Red Hat, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + *
+> + * Description: This test is for kernel commit:
+> + *              7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
+> + *		Since vma length in dup_mmap is calculated and stored
+> + *              in a unsigned int, it will overflow when length > 16
+> + *              TB. The commit above fixed it. This case is to verify
+> + *              whether that patch is added.
+> + ********************************************************************/
+> +
+> +#include <sys/mman.h>
+> +#include <sys/wait.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +char *TCID = "fork14";
+> +
+> +#define GIG (1024 * 1024 * 1024L)
+> +#define EXTENT 16393
+> +
+> +/*
+> + * If The vma length in dup_mmap is
+> + * calculated and stored in a unsigned int,
+> + * will overflow when length > 16TB.
+> + */
+> +#define LARGE  16383
 
-Indeed this test seems to be wrong. My guess is that it was written with
-'it works so and so it must be true' attitude as it's not unlikely to
-get same pointer if you request chunk of a same size directly after you
-free one.
+Can you explain these two numbers "16393" and "16383" more clearly?
 
-So my conclusion is that the test is broken and should be fixed. Do you
-care to send a patch (against latest git tree)?
+> +
+> +static void setup();
+> +static void cleanup();
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int i, r, lc;
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Here, "r" is an unused variable.
+
+> +	void *m;
+> +
+> +/*
+> + * I test this case on ppc64/x86_64/i386/s390x
+> + * Only ppc64 x86_64 s390x can run it.
+> + * So, I think it's only for 64bit system
+> + * The fork will always successed on 32bit.
+> + */
+> +#if __WORDSIZE == 32
+> +	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
+> +#endif
+
+Why only for 64 bit, can you give us a more robust reason?
+
+> +	setup();
+> +	for (lc = 0; TEST_LOOPING(lc); lc++){	
+> +		for (i = 0; i < EXTENT; i++) {
+> +			m = mmap(NULL, (size_t) 1 * GIG, PROT_READ | PROT_WRITE,
+> +				MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+
+You didn't check the error path of "mmap".
+
+
+Thanks,
+Wanlong Gao
+
+
+> +			switch (fork()){
+> +			case -1:
+> +				break;
+> +			case 0 :
+> +				exit(0);
+> +			default:
+> +				if (waitpid(-1, NULL, 0) == -1)
+> +					tst_brkm(TBROK|TERRNO,
+> +						cleanup, "waitpid");
+> +				if (i >= LARGE) 
+> +					tst_brkm(TFAIL, NULL,
+> +						"Fork succeed unexpect:%d", i);
+> +			}
+> +		}
+> +	}
+> +	
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +}
+> 
+
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://ad.doubleclick.net/clk;258768047;13503038;j?
-http://info.appdynamics.com/FreeJavaPerformanceDownload.html
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
