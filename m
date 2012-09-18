@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1T86Te-0004bS-3K
-	for ltp-list@lists.sourceforge.net; Sun, 02 Sep 2012 09:28:22 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1TDrd3-0005mz-R0
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 06:49:53 +0000
 Received: from mail-ob0-f175.google.com ([209.85.214.175])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1T86Td-0004wy-Fi
-	for ltp-list@lists.sourceforge.net; Sun, 02 Sep 2012 09:28:22 +0000
-Received: by obblz20 with SMTP id lz20so8338805obb.34
+	(Exim 4.76) id 1TDrd2-0001l5-NG
+	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 06:49:53 +0000
+Received: by obblz20 with SMTP id lz20so10668750obb.34
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 02 Sep 2012 02:28:15 -0700 (PDT)
+	Mon, 17 Sep 2012 23:49:47 -0700 (PDT)
+Message-ID: <505812F7.8090904@casparzhang.com>
+Date: Tue, 18 Sep 2012 14:21:43 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-In-Reply-To: <5042EF01.9020700@asianux.com>
-References: <5042EF01.9020700@asianux.com>
-Date: Sun, 2 Sep 2012 02:28:15 -0700
-Message-ID: <CAGH67wTX0Lw_cNZduov1UnsGJLjP5GitJCe_zV64Vs2CtW9VgQ@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [QUESTION] ltp stress test for RHEL5 and NFS local mount
+References: <1346814633-3257-1-git-send-email-cxie@redhat.com>
+	<5058101D.4010800@cn.fujitsu.com>
+In-Reply-To: <5058101D.4010800@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] syscall/fork/fork14:new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,51 +31,157 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gchen <gang.chen@asianux.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net, =?UTF-8?B?6LCi5oiQ6aqP?= <bbboson@gmail.com>
 
-On Sat, Sep 1, 2012 at 10:30 PM, gchen <gang.chen@asianux.com> wrote:
-> Hello ltp-list@lists.sourceforge.net
+On 09/18/2012 02:09 PM, Wanlong Gao wrote:
+> On 09/05/2012 11:10 AM, Madper Xie wrote:
+>> This case is for kernel patch:
+>>         https://lkml.org/lkml/2012/4/24/328
+>> Since vma length in dup_mmap is calculated and stored
+>> in a unsigned int, it will overflow when length > 16TB.
+>> The patch above fixed it.
+>> That patch increases the storage size of the result to
+>> unsigned long, which should be sufficient for storing the difference
+>> between addresses.
+>> This case is to verify whether that patch is added.
+>>
+>> Signed-off-by: Madper Xie <cxie@redhat.com>
+>> ---
+>>   testcases/kernel/syscalls/fork/fork14.c | 102 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 102 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/fork/fork14.c
+>>
+>> diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+>> new file mode 100644
+>> index 0000000..5046e67
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/fork/fork14.c
+>> @@ -0,0 +1,102 @@
+>> +/*********************************************************************
+>> + * Copyright (C) 2012  Red Hat, Inc.
+>> + *
+>> + * This program is free software; you can redistribute it and/or
+>> + * modify it under the terms of version 2 of the GNU General Public
+>> + * License as published by the Free Software Foundation.
+>> + *
+>> + * This program is distributed in the hope that it would be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>> + *
+>> + * Further, this software is distributed without any warranty that it
+>> + * is free of the rightful claim of any third person regarding
+>> + * infringement or the like.  Any license provided herein, whether
+>> + * implied or otherwise, applies only to this software file.  Patent
+>> + * licenses, if any, provided herein do not apply to combinations of
+>> + * this program with other software, or any other product whatsoever.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, write the Free Software
+>> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+>> + * 02110-1301, USA.
+>> + *
+>> + * Description: This test is for kernel commit:
+>> + *              7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
+>> + *		Since vma length in dup_mmap is calculated and stored
+>> + *              in a unsigned int, it will overflow when length > 16
+>> + *              TB. The commit above fixed it. This case is to verify
+>> + *              whether that patch is added.
+>> + ********************************************************************/
+>> +
+>> +#include <sys/mman.h>
+>> +#include <sys/wait.h>
+>> +#include <stdio.h>
+>> +#include <unistd.h>
+>> +#include "test.h"
+>> +#include "usctest.h"
+>> +
+>> +char *TCID = "fork14";
+>> +
+>> +#define GIG (1024 * 1024 * 1024L)
+>> +#define EXTENT 16393
+>> +
+>> +/*
+>> + * If The vma length in dup_mmap is
+>> + * calculated and stored in a unsigned int,
+>> + * will overflow when length > 16TB.
+>> + */
+>> +#define LARGE  16383
+>
+> Can you explain these two numbers "16393" and "16383" more clearly?
+>
+>> +
+>> +static void setup();
+>> +static void cleanup();
+>> +
+>> +int main(int argc, char *argv[])
+>> +{
+>> +	int i, r, lc;
+>
+> Here, "r" is an unused variable.
+>
+>> +	void *m;
+>> +
+>> +/*
+>> + * I test this case on ppc64/x86_64/i386/s390x
+>> + * Only ppc64 x86_64 s390x can run it.
+>> + * So, I think it's only for 64bit system
+>> + * The fork will always successed on 32bit.
+>> + */
+>> +#if __WORDSIZE == 32
+>> +	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
+>> +#endif
+>
+> Why only for 64 bit, can you give us a more robust reason?
+>
+>> +	setup();
+>> +	for (lc = 0; TEST_LOOPING(lc); lc++){	
+>> +		for (i = 0; i < EXTENT; i++) {
+>> +			m = mmap(NULL, (size_t) 1 * GIG, PROT_READ | PROT_WRITE,
+>> +				MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+>
+> You didn't check the error path of "mmap".
 >
 >
-> Question:
->
-> Use ltp stress test (/opt/ltp/ltpstress.sh) with ltp-full-20100331.gz
-> to test RHEL5 (kernel-2.6.18-308.4.1.el5) for 72 hours.
->
-> Not give any more configurations for NFS (using default configuration:
-> mount NFS locally, so the NFS client and NFS server are on the same
-> machine).
->
-> My question is that "for stress test, is it suitable to let NFS server and
-> client on the same machine ?"
+> Thanks,
+> Wanlong Gao
 >
 >
-> Background;
->
-> This configuration will cause deadlock for RHEL5, and can not boot
-> machine in normal way.
->
-> someone from Red Hat has said that:
-> --------------------------------------------------------------------------------------------------------------
->
-> "Have configuration where the same host is acting as both NFS client
-> and server. That's a configuration known to cause deadlocks."
->
-> --------------------------------------------------------------------------------------------------------------
->
-> can reference Red Hat Bugzilla (bug 848706) for more details.
+>> +			switch (fork()){
+>> +			case -1:
+>> +				break;
+>> +			case 0 :
+>> +				exit(0);
+>> +			default:
+>> +				if (waitpid(-1, NULL, 0) == -1)
+>> +					tst_brkm(TBROK|TERRNO,
+>> +						cleanup, "waitpid");
+>> +				if (i >= LARGE)
+>> +					tst_brkm(TFAIL, NULL,
+>> +						"Fork succeed unexpect:%d", i);
+>> +			}
+>> +		}
+>> +	}
+>> +	
+>> +	cleanup();
+>> +	tst_exit();
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+>> +	TEST_PAUSE;
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	TEST_CLEANUP;
+>> +}
 
-    I've done that occasionally on FreeBSD (mount over nfs into a
-chroot) before I discovered nullfs (sort of like the unionfs
-equivalent on *BSD), but I didn't stress the system. It's an
-interesting scenario, but I would say that this is more of a fringe
-case than something that one would normally do.
-    If it helps you better isolate an issue that occurs in scenarios
-where the NFS client/server are separate from one another, I'd say go
-for it.
-Cheers,
--Garrett
+Hi Wanlong, this version is deprecated, Madper should have composed a 
+fixed version. Sorry for wasting your time on it :-(
+
+Caspar
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
