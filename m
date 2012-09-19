@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TDs7O-0006fs-VH
-	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 07:21:14 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TE8pn-00082c-Ju
+	for ltp-list@lists.sourceforge.net; Wed, 19 Sep 2012 01:12:11 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TDs7L-0003Sq-4B
-	for ltp-list@lists.sourceforge.net; Tue, 18 Sep 2012 07:21:14 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q8I7L3pu003980
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Sep 2012 15:21:03 +0800
-Message-ID: <505820B1.80005@cn.fujitsu.com>
-Date: Tue, 18 Sep 2012 15:20:17 +0800
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TE8pl-0007nC-AP
+	for ltp-list@lists.sourceforge.net; Wed, 19 Sep 2012 01:12:11 +0000
+Message-ID: <50591BB1.8030406@cn.fujitsu.com>
+Date: Wed, 19 Sep 2012 09:11:13 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <5051362C.8070402@cn.fujitsu.com>
-In-Reply-To: <5051362C.8070402@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] bind/03, 21 rbind/38,
- 33:fix missing umount and error umount in these cases
+References: <9261c230876e6a3ab96b3e927c6d4b32eea0b56e.1346750103.git.jstancek@redhat.com>
+	<50581E82.7080008@cn.fujitsu.com> <50583A1A.4060800@windriver.com>
+In-Reply-To: <50583A1A.4060800@windriver.com>
+Subject: Re: [LTP] [PATCH] pthread_detach: avoid threads sharing stack
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,50 +26,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, =?UTF-8?B?56qm6ZGr?= <wq-doux@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Kang Kai <Kai.Kang@windriver.com>
 
-On 09/13/2012 09:26 AM, DAN LI wrote:
-> The cases have the same problem that dirs are still in mount when their
-> targets are removed.for rbind/38,beside the problem above,there are two
-> error umount operations that umount dirs that are not in mount.
-> and all these result in making the test script trapped in a infinite loop.
-> To resolve these problems,all we need is just umount the mountpoints before
-> their targets are removed and delete the error umount operations.
-
-Pushed, thank you.
-
-Wanlong Gao
-
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Live Security Virtual Conference
-> Exclusive live event will cover all the ways today's security and 
-> threat landscape has changed and how IT managers can respond. Discussions 
-> will include endpoint security, mobile security and the latest in malware 
-> threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDkvMTgvMjAxMiAwNTowOCBQTSwgS2FuZyBLYWkgd3JvdGU6Cj4gT24gMjAxMuW5tDA55pyI
+MTjml6UgMTU6MTAsIFdhbmxvbmcgR2FvIHdyb3RlOgo+PiBIaSBLYW5nLAo+Pgo+Pj4gVGhpcyB0
+ZXN0Y2FzZSB3YXMgb2JzZXJ2ZWQgdG8gY3Jhc2ggd2l0aCBzZWdtZW50YXRpb24gZmF1bHQ6Cj4+
+PiBodHRwOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L21zZzE0NjkyLmh0bWwKPiAKPiBIaSBXYW5sb25nLAo+IAo+PiBIYXZlIHlvdSB0ZXN0ZWQg
+dGhpcyBwYXRjaCBmcm9tIEphbiBvbiB5b3VyIHN5c3RlbT8KPiAKPiBJdCBvcmlnaW5hbGx5IGZh
+aWxzIG9uIHJvdXRlcnN0YXRpb24obWlwcykgYW5kIHRlc3QgSmFuJ3MgcGF0Y2ggMTAwIHRpbWVz
+IGFuZCBwYXNzLgo+IFRoZSBwYXRjaCBhbHNvIHBhc3NlcyBvbiB4ODYgd2l0aCBZb2N0byBsaW51
+eCBhbmQgeDg2XzY0IHdpdGggVWJ1bnR1IDExLjEwLgoKT0ssIHNvLCBKYW4sIGNhbiB5b3Ugd29y
+ayBvdXQgYSBjbGVhbiBwYXRjaCB3aXRob3V0IGNvZGluZyBzdHlsZSBjaGFuZ2U/IEkgbWVhbiBq
+dXN0CmNoYW5nZSB0aGUgY29kZSByZWxhdGVkIHlvdXIgdGhlb3J5LCBpdCdsbCBtYWtlIHRoZSBw
+YXRjaCBsb29rcyBtb3JlIGNsZWFybHkuCgpPUiwgc3R5bGUgY2xlYW51cCBjYW4gZ28gZmlyc3Rs
+eSBiZWZvcmUgdGhlIHRoZW9yeSBjaGFuZ2Ugd2l0aGluIHNlcGFyYXRlIHBhdGNoZXMuCgpUaGFu
+a3MsCldhbmxvbmcgR2FvCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZp
+cnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUg
+d2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBh
+bmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRl
+IGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFs
+d2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAx
+Mi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
