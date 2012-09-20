@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Kai.Kang@windriver.com>) id 1T9UeZ-0001Tz-3n
-	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 05:29:23 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T9UeY-0002Gz-3d
-	for ltp-list@lists.sourceforge.net; Thu, 06 Sep 2012 05:29:23 +0000
-From: Kang Kai <kai.kang@windriver.com>
-Date: Thu, 6 Sep 2012 13:29:09 +0800
-Message-ID: <1346909350-716-1-git-send-email-kai.kang@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1TEhkg-0000zd-KW
+	for ltp-list@lists.sourceforge.net; Thu, 20 Sep 2012 14:29:14 +0000
+Date: Thu, 20 Sep 2012 16:29:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20120920142905.GC7902@saboteur.suse.cz>
+References: <CAD15agakqdqNiZY_rKRyh0GocADu7F2rLdctJpSwdosiNz7CYg@mail.gmail.com>
+	<CABhB_e8j2oRbKPererNep1-T5z3sCsvRPW-2rSoPg-tvF4AZoA@mail.gmail.com>
+	<CAD15agZmMyu+vWLoRn1NukgaeXvG-v6pbxs=fUVULTQc6DLhgg@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] V2: mq_open/16-1: use tmp file to share info
+Content-Disposition: inline
+In-Reply-To: <CAD15agZmMyu+vWLoRn1NukgaeXvG-v6pbxs=fUVULTQc6DLhgg@mail.gmail.com>
+Subject: Re: [LTP] LTP test reults for kernel 3.0.15 and 3.4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,24 +26,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
+To: Ritesh Harjani <ritesh.harjani@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> Following are the lines of code where the test case is exiting, for kernel
+> 3.0.15 (ICS).
+> 
+> 128         pm2=pm1;
+> 129         free(pm1);
+> 130
+> 131         if((pm1=(char *)calloc(memsize,1)) == NULL) {
+> 132                 tst_resm(TFAIL, "calloc did not alloc memory ");
+> 133                              tst_exit();
+> 134         }
+> 135
+> 136         if(pm1 != pm2) {
+> 137                 tst_resm(TINFO, "pm1=%p pm2=%p ", pm1,pm2);
+> 138                 tst_resm(TFAIL, "free did not dealloc memory ");
+> 139
+> tst_exit();                                                     // *Here
+> code is exited in kernel 3.0.15 while it is passing in case of kernel 3.4
+> (ICS)*.
+> 140         }
+> 
+> 
+> 
+> *LTP version = "LTP-20100630"*
+> 
+> at line 136 my test is failing. Now isnt this condition of the dangling
+> pointer. At line 129 we are freeing pm1 this means that pm2 becomes a
+> dangling pointer.
+> And how come after doing
+> pm1=(char *)calloc(memsize,1)
+> pm1 is equal to pm2 for kernel 3.4 (ICS) (Since this test case is passing
+> for that)??
+> 
+> According to me, it should not be equal.
 
-V2 just remove the var buf[], and write fname[] to the tmp file.
-And more cleanup work when test fails.
+Indeed this test seems to be wrong. My guess is that it was written with
+'it works so and so it must be true' attitude as it's not unlikely to
+get same pointer if you request chunk of a same size directly after you
+free one.
 
-Regards,
-Kai
+So my conclusion is that the test is broken and should be fixed. Do you
+care to send a patch (against latest git tree)?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://ad.doubleclick.net/clk;258768047;13503038;j?
+http://info.appdynamics.com/FreeJavaPerformanceDownload.html
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
