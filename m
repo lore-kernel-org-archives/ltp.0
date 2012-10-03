@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TOWa9-0004L1-Io
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 16:34:57 +0000
-Date: Wed, 17 Oct 2012 18:32:42 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1TJNJE-0003b4-B5
+	for ltp-list@lists.sourceforge.net; Wed, 03 Oct 2012 11:40:12 +0000
+Date: Wed, 3 Oct 2012 13:40:39 +0200
 From: chrubis@suse.cz
-Message-ID: <20121017163242.GE27890@rei>
-References: <9D7565DAE340BD42B8D00446E021992C28ABAD91@SZXEML506-MBS.china.huawei.com>
+Message-ID: <20121003114039.GC22986@saboteur.suse.cz>
+References: <E061084CB90FCE4F89232A6CF839683B32BC7591@SZXEML507-MBS.china.huawei.com>
+	<1291748381.11026946.1346066218005.JavaMail.root@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <9D7565DAE340BD42B8D00446E021992C28ABAD91@SZXEML506-MBS.china.huawei.com>
-Subject: Re: [LTP] testcases/kernel/syscalls/mount test cases of mount2 and
- mount3 faild in JUNE 2012 STABLE :ltp-full-20120614
+In-Reply-To: <1291748381.11026946.1346066218005.JavaMail.root@redhat.com>
+Subject: Re: [LTP] Test case send01 fails in kernel version 3.6-rc1,
+ rc2 and rc3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,67 +26,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wangyicheng <yicheng.wang@huawei.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Dingguofu <dingguofu@huawei.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: shyju pv <shyju.pv@huawei.com>, ltp-list@lists.sourceforge.net
 
 Hi!
-> There are egiht items in the exp_enos, but the value of TST_TOTAL is
-> 13, it means there are 13 checkpoints int the testcase.  As a result
-> ,in the setup_test function , there are 13 switch-cases ( case
-> 0??case1 ... case 12)
->
-> But the number of the expect result in the exp_enos array is mismatch
-> with the number of checkpoint, so the TBROK  happend.
+> Looks to be the same reason as sendto().
+> I'm thinking we can either remove that test or change it to UDP:
+> 
+> diff --git a/testcases/kernel/syscalls/sendto/sendto01.c b/testcases/kernel/syscalls/sendto/sendto01.c
+> index ad64c70..c8dd9bd 100644
+> --- a/testcases/kernel/syscalls/sendto/sendto01.c
+> +++ b/testcases/kernel/syscalls/sendto/sendto01.c
+> @@ -126,8 +126,8 @@ struct test_case_t {                /* test case structure */
+>                     sizeof(sin1), -1, EPIPE, setup2, cleanup1,
+>                     "local endpoint shutdown"}
+>         , {
+> -       PF_INET, SOCK_STREAM, 0, buf, sizeof(buf), -1, &sin1,
+> -                   sizeof(sin1), 0, EPIPE, setup1, cleanup1,
+> +       PF_INET, SOCK_DGRAM, 0, buf, sizeof(buf), -1, &sin1,
+> +                   sizeof(sin1), -1, EOPNOTSUPP, setup1, cleanup1,
+>                     "invalid flags set"}
+>  };
 
-That seems to be correct. Could you please send signed patch against
-latest LTP git? Ideally attached as well as inline (the best way to send
-git patches is using the 'git send-email').
+The usuall concensus for such case is to change expected return values
+depending on the kernel version (see for example tst_kvercmp() in
+testcases/kernel/syscalls/sysctl/sysctl03.c). Which is the best solution
+I can come up with.
 
-Also please check your coding style (which could be easily done by
-checkpatch.pl script that is shipped with linux kernel sources).
+On the other hand we don't bother to work with rc kernels they change
+far to often.
 
-> In mount03.c, there are three issues:
->
->   1??In setup function,  the setuid_test file is in the testhome_path
->   instead of the temporary directory Path_name. It results "stat for
->   setuid_test failed"
->
->   2??In setup function,  snprintf(Path_name, PATH_MAX, "%s/%s/",
->   Path_name, mntpoint)?? it can not implement appending the mntpoint
->   string to the Path_name string;
-
-There is still quite a lot of unnecessary string handling. Couldn't the
-whole setup be done with two or three snprintf()?
-
->   3??In test_rwflag function, in the part of "case 2"(at line 280 in
->   mount03.c), if the "execlp(file, basename(file), NULL)" will return
->   (actually it will return), the return value of test_rwflag is always
->   1 (1 means fail),so the testcase is always failed; Another hand, if
->   it will not return (if kernel bug exists), the process will
->   terminate unexpectedly.
-
-I'm not sure that I follow, but you changed execlp to system so that the
-file gets executed in child and the return value gets passed to the
-test?
-
-> I fix them in the patch (See the attachment), and both of the tow
-> testcase can get pass. Pls check the patch attachmented.
-
-And while you are looking at these files, there are several things that
-could be fixed too. These tests should use tst_require_root(NULL)
-instead of if (getuid() != 0). There are unnecessary casts for pointers
-returned from malloc() and useless comments like /* this is loop counter */.
-If you care enough to fix them, these should be ideally fixed in separate patch.
+Does this behave same on released linux 3.6?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
