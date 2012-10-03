@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TLw51-0007EJ-Lt
-	for ltp-list@lists.sourceforge.net; Wed, 10 Oct 2012 13:12:07 +0000
-Date: Wed, 10 Oct 2012 15:09:52 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1TJLfT-0000zq-ID
+	for ltp-list@lists.sourceforge.net; Wed, 03 Oct 2012 09:55:03 +0000
+Date: Wed, 3 Oct 2012 11:55:29 +0200
 From: chrubis@suse.cz
-Message-ID: <20121010130952.GB2853@rei.suse.cz>
-References: <20121003114039.GC22986@saboteur.suse.cz>
-	<564795434.6124572.1349265888804.JavaMail.root@redhat.com>
-	<20121003123250.GA8435@rei>
+Message-ID: <20121003095529.GA22986@saboteur.suse.cz>
+References: <503DE20A.8010200@casparzhang.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20121003123250.GA8435@rei>
-Subject: Re: [LTP] Test case send01 fails in kernel version 3.6-rc1,
- rc2 and rc3
+In-Reply-To: <503DE20A.8010200@casparzhang.com>
+Subject: Re: [LTP] hugemmap02/03?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,13 +24,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: shyju pv <shyju.pv@huawei.com>, ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Okay then I will prepare patch. Stay tuned.
+> I looked into hugemmap02 and hugemmap03, they were about huge maping in 
+> high region/low region. After checked the codes, I don't think they're 
+> well-implmented, or even worse, I don't think the tests make too much 
+> sense. I don't know mmap regions very well, is there any other comments 
+> against these two cases?
 
-I've just pushed patch to fix this (tested on 3.6.1).
+I've glanced over the code but haven't found anything unusual (the
+quality reflect rest of the LTP).
+
+On the other hand I don't really understand the assertions here. Could
+you describe more closely why are these assertions wrong (or point me to
+some source of information)?
 
 -- 
 Cyril Hrubis
