@@ -2,20 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TOPgM-0007Ej-VQ
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 09:12:54 +0000
-Date: Wed, 17 Oct 2012 11:10:36 +0200
+	(envelope-from <chrubis@suse.de>) id 1TJOef-000360-As
+	for ltp-list@lists.sourceforge.net; Wed, 03 Oct 2012 13:06:25 +0000
+Date: Wed, 3 Oct 2012 15:06:40 +0200
 From: chrubis@suse.cz
-Message-ID: <20121017091036.GA26815@rei.Home>
-References: <CAD15agakqdqNiZY_rKRyh0GocADu7F2rLdctJpSwdosiNz7CYg@mail.gmail.com>
-	<CABhB_e8j2oRbKPererNep1-T5z3sCsvRPW-2rSoPg-tvF4AZoA@mail.gmail.com>
-	<CAD15agZmMyu+vWLoRn1NukgaeXvG-v6pbxs=fUVULTQc6DLhgg@mail.gmail.com>
-	<20120920142905.GC7902@saboteur.suse.cz>
-	<CAD15agaKdae3Xo1YqG_G=Ue_p-MusuPFjcY9fppmhwTR2qufww@mail.gmail.com>
+Message-ID: <20121003130640.GD22986@saboteur.suse.cz>
+References: <502496C6.3090906@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAD15agaKdae3Xo1YqG_G=Ue_p-MusuPFjcY9fppmhwTR2qufww@mail.gmail.com>
-Subject: Re: [LTP] LTP test reults for kernel 3.0.15 and 3.4
+In-Reply-To: <502496C6.3090906@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4] pthread_cond_brodcast/1-2.c hung when mem left
+ is not enough
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +25,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ritesh Harjani <ritesh.harjani@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Sorry for such a long gap. I tried finding out that why that test case was
-> failing by running a normal C program with malloc implementation.
-> 
-> I found that, when I am trying to allocate a smaller memory chunk, memory
-> is getting allocated from the same address, but for a larger memory chunk,
-> it is allocating from some different address i.e if condition is getting
-> true (that means that test is failing).
-> Couldn't figure out, why this difference. Any idea on to where should I
-> look into?
+>  /* Do not create more than this amount of children: */
+> -#define MAX_PROCESS_CHILDREN  (200)
+> -#define MAX_THREAD_CHILDREN   (1000)
+> +static int max_process_children  = 200;
+> +static int max_thread_children = 1000;
+>  
+>  #define TIMEOUT  (180)
+>  
+> @@ -243,6 +244,42 @@ void *timer(void *arg)
+>  	return NULL; /* For compiler */
+>  }
+>  
+> +#ifdef __linux__
+> +static void children_number(void)
+> +{
+> +	struct sysinfo sysinformation;
+> +	int ret;
+> +	int avail_number;
+> +	unsigned long per_process;
+> +	unsigned long min_stack;
+> +
+> +	min_stack = sysconf(_SC_THREAD_STACK_MIN);
+> +
+> +	ret = sysinfo(&sysinformation);
+> +	if (ret != 0)
+> +		UNRESOLVED(ret, "Failed to get system information.");
+> +
+> +	per_process = min_stack * max_thread_children;
+> +	if (per_process > sysinformation.freeram)
+> +		UNTESTED("Not enough memory.");
+> +
+> +	avail_number = sysinformation.freeram / per_process;
+> +
+> +	if (avail_number < 10)
+> +		UNTESTED("Not enough memory.");
+> +
+> +	max_process_children = (avail_number < max_process_children ?
+> +					avail_number : max_process_children);
+> +
+> +	return;
+> +}
 
-Well as far as I know very large chunks are not allocated on the heap
-but using anonymous mmap() (wikipedia suggests that usual threshold
-value is 256KB). In such case having two different addresses would not
-idicate a bug as expecting deterministic behavior from mutitasking
-preemptive kernel is simply wrong.
+I generally don't like to see linux-only solutions in the open posix
+testsuite and advice to use them only when there is no POSIX interface
+for them.
 
-> And yes, I will surely try to fix if this is a broken test. But moreover,
-> in some other kernel version it was passing. So, need to figure out as to
-> what changes has been made for this.
+And this looks like the only thing that is not in the scope of POSIX is
+size of the available memory. What about creating header in
+open_posix_testsuite/include/ that would define interface to get free
+ram in different systems and using this code in general case?
 
-I've been faster than you ;). I've commited a patch that removes this
-part of the test yesterday.
+And actually I think that free ram itself is enough to figoure out
+available memory as the kernel tends to eat as many memory for buffers
+as available and reclaims it back only when needed.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
