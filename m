@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TTD73-0000iW-Q2
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 14:48:17 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TTD6y-0006KA-3V
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 14:48:17 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9UEm62k002681
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 10:48:06 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id q9UEm4d0006990
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 10:48:05 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 30 Oct 2012 15:47:55 +0100
-Message-Id: <17bab533f4f5e5c80a676158bfd75cfb1b361228.1351608161.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] mremap: add new test mremap05
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TJOAC-0005xb-GH
+	for ltp-list@lists.sourceforge.net; Wed, 03 Oct 2012 12:34:56 +0000
+Date: Wed, 3 Oct 2012 14:32:50 +0200
+From: chrubis@suse.cz
+Message-ID: <20121003123250.GA8435@rei>
+References: <20121003114039.GC22986@saboteur.suse.cz>
+	<564795434.6124572.1349265888804.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <564795434.6124572.1349265888804.JavaMail.root@redhat.com>
+Subject: Re: [LTP] Test case send01 fails in kernel version 3.6-rc1,
+ rc2 and rc3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,263 +23,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: shyju pv <shyju.pv@huawei.com>, ltp-list@lists.sourceforge.net
 
-New mremap syscall testcase targeting flag MREMAP_FIXED.
+Hi!
+> > The usuall concensus for such case is to change expected return
+> > values
+> > depending on the kernel version (see for example tst_kvercmp() in
+> > testcases/kernel/syscalls/sysctl/sysctl03.c). Which is the best
+> > solution
+> > I can come up with.
+> > 
+> > On the other hand we don't bother to work with rc kernels they change
+> > far to often.
+> > 
+> > Does this behave same on released linux 3.6?
+> 
+> I believe it does. I just tested with RHEL7 kernel based on 3.6, which is at this point
+> very close to vanilla (+- few changes in build scripts and config).
+> 
+> # ./send01 
+> send01      1  TPASS  :  bad file descriptor successful
+> send01      2  TPASS  :  invalid socket successful
+> send01      3  TPASS  :  invalid send buffer successful
+> send01      4  TPASS  :  UDP message too big successful
+> send01      5  TPASS  :  local endpoint shutdown successful
+> send01      6  TFAIL  :  invalid flags set ; returned -1 (expected -1), errno 95 (expected 14)
+> # cd ../sendto/
+> # ./sendto01 
+> sendto01    1  TPASS  :  bad file descriptor successful
+> sendto01    2  TPASS  :  invalid socket successful
+> sendto01    3  TPASS  :  invalid send buffer successful
+> sendto01    4  TPASS  :  connected TCP successful
+> sendto01    5  TPASS  :  not connected TCP successful
+> sendto01    6  TPASS  :  invalid to buffer length successful
+> sendto01    7  TPASS  :  invalid to buffer successful
+> sendto01    8  TPASS  :  UDP message too big successful
+> sendto01    9  TPASS  :  local endpoint shutdown successful
+> sendto01   10  TFAIL  :  invalid flags set ; returned -1 (expected 0), errno 95 (expected 32)
+> # cd ../sendmsg/
+> # ./sendmsg01 
+> sendmsg01    1  TPASS  :  bad file descriptor successful
+> sendmsg01    2  TPASS  :  invalid socket successful
+> sendmsg01    3  TPASS  :  invalid send buffer successful
+> sendmsg01    4  TPASS  :  connected TCP successful
+> sendmsg01    5  TPASS  :  not connected TCP successful
+> sendmsg01    6  TPASS  :  invalid to buffer length successful
+> sendmsg01    7  TPASS  :  invalid to buffer successful
+> sendmsg01    8  TPASS  :  UDP message too big successful
+> sendmsg01    9  TPASS  :  local endpoint shutdown successful
+> sendmsg01   10  TPASS  :  invalid iovec pointer successful
+> sendmsg01   11  TPASS  :  invalid msghdr pointer successful
+> sendmsg01   12  TPASS  :  rights passing successful
+> sendmsg01   13  TPASS  :  invalid flags set w/ control successful
+> sendmsg01   14  TFAIL  :  invalid flags set ; returned -1 (expected 0), errno 95 (expected 95)
+> sendmsg01   15  TPASS  :  invalid cmsg length successful
+> sendmsg01   16  TPASS  :  invalid cmsg pointer successful
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- runtest/syscalls                            |    1 +
- testcases/kernel/syscalls/.gitignore        |    1 +
- testcases/kernel/syscalls/mremap/mremap05.c |  202 +++++++++++++++++++++++++++
- 3 files changed, 204 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/mremap/mremap05.c
+Okay then I will prepare patch. Stay tuned.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6973aaa..8f7b5e4 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -603,6 +603,7 @@ mremap01 mremap01
- mremap02 mremap02
- mremap03 mremap03
- mremap04 mremap04
-+mremap05 mremap05
- 
- msgctl01 msgctl01
- msgctl02 msgctl02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 7df28c2..2fe7be4 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -541,6 +541,7 @@
- /mremap/mremap02
- /mremap/mremap03
- /mremap/mremap04
-+/mremap/mremap05
- /msync/msync01
- /msync/msync02
- /msync/msync03
-diff --git a/testcases/kernel/syscalls/mremap/mremap05.c b/testcases/kernel/syscalls/mremap/mremap05.c
-new file mode 100644
-index 0000000..b8e1354
---- /dev/null
-+++ b/testcases/kernel/syscalls/mremap/mremap05.c
-@@ -0,0 +1,202 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+/*
-+ * Test Name: mremap05
-+ *
-+ * Test Description:
-+ *  Verify that MREMAP_FIXED fails without MREMAP_MAYMOVE.
-+ *  Verify that MREMAP_FIXED|MREMAP_MAYMOVE fails if target address
-+ *    is not page aligned.
-+ *  Verify that MREMAP_FIXED|MREMAP_MAYMOVE fails if old range
-+ *    overlaps with new range.
-+ *  Verify that MREMAP_FIXED|MREMAP_MAYMOVE can move mapping to new address.
-+ *  Verify that MREMAP_FIXED|MREMAP_MAYMOVE unmaps previous mapping
-+ *    at the address range specified by new_address and new_size.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/mman.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+static int pagesize;
-+char *TCID = "mremap05";
-+int TST_TOTAL = 1;
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void free_test_area(void *p, int size)
-+{
-+	if (munmap(p, size) < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_test_area munmap");
-+}
-+
-+static void *get_test_area(int size, int free_area)
-+{
-+	void *p;
-+	p = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
-+		0, 0);
-+	if (p == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "get_test_area mmap");
-+	if (free_area)
-+		free_test_area(p, size);
-+	return p;
-+}
-+
-+static void *test_mremap(void *old_address, size_t old_size, size_t new_size,
-+	int flags, void *new_address, const char *msg, void *exp_ret,
-+	int exp_errno)
-+{
-+	void *ret;
-+
-+	ret = mremap(old_address, old_size, new_size, flags, new_address);
-+	if (ret == exp_ret)
-+		if (ret != MAP_FAILED)
-+			tst_resm(TPASS, "%s", msg);
-+		else
-+			if (errno == exp_errno)
-+				tst_resm(TPASS, "%s", msg);
-+			else
-+				tst_resm(TFAIL|TERRNO, "%s", msg);
-+	else
-+		tst_resm(TFAIL, "%s ret: %p, expected: %p", msg,
-+			ret, exp_ret);
-+	return ret;
-+}
-+
-+static void test_fixed_require_maymove(void)
-+{
-+	char *ret, *p1, *p2;
-+
-+	p1 = get_test_area(pagesize, 0);
-+	p2 = get_test_area(pagesize, 1);
-+	ret = test_mremap(p1, pagesize, pagesize, MREMAP_FIXED, p2,
-+		"MREMAP_FIXED requires MREMAP_MAYMOVE", MAP_FAILED, EINVAL);
-+	if (ret == MAP_FAILED)
-+		free_test_area(p1, pagesize);
-+	else
-+		free_test_area(ret, pagesize);
-+}
-+
-+static void test_new_addr_not_aligned(void)
-+{
-+	char *ret, *p1, *p2;
-+
-+	p1 = get_test_area(pagesize, 0);
-+	p2 = get_test_area(pagesize*2, 1) + 1;
-+	ret = test_mremap(p1, pagesize, pagesize, MREMAP_FIXED|MREMAP_MAYMOVE,
-+		p2, "new_addr has to be page aligned", MAP_FAILED, EINVAL);
-+	if (ret == MAP_FAILED)
-+		free_test_area(p1, pagesize);
-+	else
-+		free_test_area(ret, pagesize);
-+}
-+
-+static void test_old_new_area_overlap(void)
-+{
-+	char *ret, *p1, *p2;
-+
-+	p1 = get_test_area(pagesize*2, 0);
-+	p2 = p1 + pagesize;
-+	ret = test_mremap(p1, pagesize*2, pagesize, MREMAP_FIXED|MREMAP_MAYMOVE,
-+		p2, "old/new area must not overlap", MAP_FAILED, EINVAL);
-+	if (ret == MAP_FAILED)
-+		free_test_area(p1, pagesize*2);
-+	else
-+		free_test_area(ret, pagesize);
-+}
-+
-+static void test_mremap_fixed_maymove(void)
-+{
-+	char *ret, *p1, *p2;
-+
-+	/* mremap to free area */
-+	p1 = get_test_area(pagesize, 0);
-+	p2 = get_test_area(pagesize, 1);
-+	*p1 = 0x1;
-+	ret = test_mremap(p1, pagesize, pagesize, MREMAP_FIXED|MREMAP_MAYMOVE,
-+		p2, "mremap #1", p2, 0);
-+	if (ret == MAP_FAILED) {
-+		free_test_area(p1, pagesize);
-+	} else {
-+		if (*ret == 0x1)
-+			tst_resm(TPASS, "mremap #1 value OK");
-+		else
-+			tst_resm(TFAIL, "mremap #1 value different");
-+		free_test_area(ret, pagesize);
-+	}
-+
-+	/* mremap to occupied area */
-+	p1 = get_test_area(pagesize, 0);
-+	p2 = get_test_area(pagesize, 0);
-+	*p1 = 0x1;
-+	*p2 = 0x2;
-+	ret = test_mremap(p1, pagesize, pagesize, MREMAP_FIXED|MREMAP_MAYMOVE,
-+		p2, "mremap #2", p2, 0);
-+	if (ret == MAP_FAILED) {
-+		free_test_area(p1, pagesize);
-+		free_test_area(p2, pagesize);
-+	} else {
-+		if (*ret == 0x1)
-+			tst_resm(TPASS, "mremap #2 value OK");
-+		else
-+			tst_resm(TFAIL, "mremap #2 value different");
-+		free_test_area(ret, pagesize);
-+	}
-+}
-+
-+int main(int ac, char **av)
-+{
-+	char *msg;
-+	int lc;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	Tst_count = 0;
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		test_fixed_require_maymove();
-+		test_new_addr_not_aligned();
-+		test_old_new_area_overlap();
-+		test_mremap_fixed_maymove();
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	pagesize = getpagesize();
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
