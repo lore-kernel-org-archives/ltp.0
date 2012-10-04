@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1TJl1Y-0000Jo-Vx
-	for ltp-list@lists.sourceforge.net; Thu, 04 Oct 2012 12:59:32 +0000
-Date: Thu, 4 Oct 2012 15:00:02 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1TJjfv-0005oK-4M
+	for ltp-list@lists.sourceforge.net; Thu, 04 Oct 2012 11:33:07 +0000
+Date: Thu, 4 Oct 2012 13:33:34 +0200
 From: chrubis@suse.cz
-Message-ID: <20121004130002.GA18130@saboteur.suse.cz>
-References: <1344032944-27019-1-git-send-email-vlee@twitter.com>
-	<501F20F5.3060301@cn.fujitsu.com>
-	<CAKixpbjzpzLBLuUL3rf=9ujuPC7s89DmBLehfEmHoEk4iAjjsA@mail.gmail.com>
-	<50206AB5.7040701@cn.fujitsu.com>
+Message-ID: <20121004113334.GA16892@saboteur.suse.cz>
+References: <502C63AC.5080001@casparzhang.com>
+	<2042336520.6477173.1345188791970.JavaMail.root@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <50206AB5.7040701@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ltp_signal.h: Remove inline keyword from
- handler_h.
+In-Reply-To: <2042336520.6477173.1345188791970.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] new syscall test: readahead02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,24 +25,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I saw that "Change add to a static inline function. 
-> This is usually the right solution if only one translation
-> unit needs to use the function. static inline functions are
-> always resolved within the translation unit, so you won't have
-> to add a non-inline definition of the function elsewhere in your program."
+> > > Use readahead() syscall and check if subsequent
+> > > read saves some I/O and if cache size increased.
+> > >
+> > > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > > ---
+> > >   testcases/kernel/syscalls/readahead/readahead02.c |  371
+> > >   +++++++++++++++++++++
+> > >   1 files changed, 371 insertions(+), 0 deletions(-)
+> > >   create mode 100644
+> > >   testcases/kernel/syscalls/readahead/readahead02.c
+> > >
+> > 
+> > I'm thinking if we should write some common codes to fetch certain
+> > fields from /proc/meminfo and if we should move read/write
+> > /sys/kernel/vm files to libkerntest... We do have some duplicated
+> > functions in mm tests.
 > 
-> So, why not just change it to "static inline" to resolve this?
+> Sounds reasonable, I also noticed seeing (and using) some snippets
+> over and over again.
 
-Interestingly enough, the function is passed via pointer so compiler
-couldn't inline it at all, I wonder why there was the inline in the
-first place...
-
-I've removed the inline added static and confirmed that it builds with
-clang 3.1 on x86_64.
+I'm plannig (for some time) to write scanf and printf like functions to
+do exactly that, just haven't had time to write them.
 
 -- 
 Cyril Hrubis
