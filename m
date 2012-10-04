@@ -1,30 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chris@mips.com>) id 1TOXWx-0003Zf-NH
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 17:35:43 +0000
-Received: from dns1.mips.com ([12.201.5.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TOXWw-00077b-NG
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 17:35:43 +0000
-Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
-	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9HHZaie032390
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Oct 2012 10:35:36 -0700
-Received: from exchdb01.mips.com (unknown [192.168.36.84])
-	(using TLSv1 with cipher AES128-SHA (128/128 bits))
-	(No client certificate requested)
-	by mailgate1.mips.com (Postfix) with ESMTP id 2097F364656
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Oct 2012 10:35:36 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TJmL0-0006Rv-A9
+	for ltp-list@lists.sourceforge.net; Thu, 04 Oct 2012 14:23:42 +0000
+Date: Thu, 4 Oct 2012 16:21:31 +0200
+From: chrubis@suse.cz
+Message-ID: <20121004142130.GB24253@rei.suse.cz>
+References: <20100216022719.GA7902@saboteur.suse.cz>
+	<1513655937.3221262.1348143318321.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MIMEBOUNDARY"
-From: Chris Dearman <chris@mips.com>
-Date: Wed, 17 Oct 2012 10:35:35 -0700
-Message-ID: <20121017173535.11574.18883.stgit@localhost6.localdomain6>
-In-Reply-To: <507D6C63.5040704@mips.com>
-References: <507D6C63.5040704@mips.com>
-Subject: [LTP] [PATCH] Avoid compiler optimisation of malloc calls
+Content-Disposition: inline
+In-Reply-To: <1513655937.3221262.1348143318321.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] proc01: add option to limit max read bytes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,98 +22,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---MIMEBOUNDARY
-Content-Disposition: inline
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-clang understands the malloc library call and can optimise calls to
-it. In particular it will avoid calling malloc completely if it
-detects that the result is not used.
-
-Signed-off-by: Chris Dearman <chris@mips.com>
----
- .../conformance/interfaces/pthread_cond_init/4-1.c |   19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
-
---MIMEBOUNDARY
-Content-Disposition: attachment;
-	filename="avoid-compiler-optimisation-of.patch"
-MIME-Version: 1.0
-Content-Type: text/plain; name="avoid-compiler-optimisation-of.patch";
-	charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c
-index 287fda1..06accd6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c
-@@ -50,7 +50,7 @@
- #define ERR_MSG(f, rc) printf("Failed: func: %s rc: %s (%u)\n", \
- 			f, strerror(rc), rc);
- 
--/* Max memory for child is 81B */
-+/* Max memory for child is 1MB */
- #define MAX_MEM	((1<<20))
- 
- /*
-@@ -59,8 +59,8 @@
-  */
- static void child(void)
- {
--	char *curr;
--	char *prev = NULL;
-+	void *curr;
-+	void *prev = NULL;
- 	struct rlimit rl;
- 	pthread_cond_t cond;
- 	pthread_condattr_t attr;
-@@ -76,10 +76,15 @@ static void child(void)
- 		exit(PTS_UNRESOLVED);
- 	}
- 
--	/* Consume all memory we can */
--	do {
--		curr = malloc(1);
--	} while (curr);
-+	/*
-+	 * Consume all memory we can
-+	 * It's importamt to use the malloc() return value in a
-+	 * meaningful way to bypass potential compiler optimisations.
-+	 */
-+	while ((curr = malloc(sizeof(void *)))) {
-+		*(void **)curr = prev;
-+		prev = curr;
-+	}
- 	if (errno != ENOMEM) {
- 		ERR_MSG("malloc()", errno);
- 		exit(PTS_UNRESOLVED);
-
---MIMEBOUNDARY
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> Seems like a good idea. Question is, what should we choose
+> as good default for maximum. I'm running it now with:
+> proc01 proc01 -m 128
+> 
+> I chose 128MB as rule of thumb, so I can hit some real pages
+> and holes (in pagemap). 128MB equals to 4194304 pages (32bits per entry).
+> If page_size is 4kB, this covers first 16G of address space, so
+> it's likely you hit all kinds of pagemap entries.
+
+I've commited the change in runtest file.
+(and quoted part of your mail in the commit message)
+
+Thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
---MIMEBOUNDARY
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---MIMEBOUNDARY--
-
