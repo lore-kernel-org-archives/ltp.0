@@ -1,28 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TOpeZ-000465-Is
-	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 12:56:47 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TLVXR-0004Rw-4L
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 08:51:41 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TOpeT-0000Et-Qe
-	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 12:56:47 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9ICuZrx015823
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TLVXL-0004WQ-C3
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 08:51:41 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q998pTqu022059
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Oct 2012 08:56:35 -0400
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Oct 2012 04:51:29 -0400
 Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id q9ICuVXc003245
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Oct 2012 08:56:35 -0400
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q998pR64011200
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Oct 2012 04:51:28 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 18 Oct 2012 14:56:24 +0200
-Message-Id: <cf915a2efb79d200cc9f3b6c017eccf6feb870c9.1350564702.git.jstancek@redhat.com>
-In-Reply-To: <cover.1350564702.git.jstancek@redhat.com>
-References: <cover.1350564702.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 3/3 v2] new syscall test: migrate_pages02
+Date: Tue,  9 Oct 2012 10:51:21 +0200
+Message-Id: <538c53f77d011c2fe676abb59236c4bee6a1fb2c.1349771952.git.jstancek@redhat.com>
+In-Reply-To: <cover.1349771952.git.jstancek@redhat.com>
+References: <cover.1349771952.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2 1/2] new syscall test: readahead01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,34 +38,64 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Use migrate_pages() syscall and check that
-shared/non-shared memory is migrated to desired node.
+errno testcase for readahead(2).
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- runtest/syscalls                                   |    1 +
- .../syscalls/migrate_pages/migrate_pages02.c       |  363 ++++++++++++++++++++
- 2 files changed, 364 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+ runtest/syscalls                                  |    2 +
+ testcases/kernel/syscalls/readahead/Makefile      |   22 +++
+ testcases/kernel/syscalls/readahead/readahead01.c |  172 +++++++++++++++++++++
+ 3 files changed, 196 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/readahead/Makefile
+ create mode 100644 testcases/kernel/syscalls/readahead/readahead01.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 9daf234..78f3bd3 100644
+index edf6c1e..e754c60 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -518,6 +518,7 @@ memcmp01 memcmp01
- memcpy01 memcpy01
+@@ -767,6 +767,8 @@ read02 read02
+ read03 read03
+ read04 read04
  
- migrate_pages01 migrate_pages01
-+migrate_pages02 migrate_pages02
++readahead01 readahead01
++
+ readdir01 readdir01
+ readdir02 readdir02
  
- mlockall01 mlockall01
- mlockall02 mlockall02
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+diff --git a/testcases/kernel/syscalls/readahead/Makefile b/testcases/kernel/syscalls/readahead/Makefile
 new file mode 100644
-index 0000000..840aa2b
+index 0000000..45a3bbc
 --- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-@@ -0,0 +1,363 @@
++++ b/testcases/kernel/syscalls/readahead/Makefile
+@@ -0,0 +1,22 @@
++#
++#  Copyright (C) 2012 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+new file mode 100644
+index 0000000..d58c074
+--- /dev/null
++++ b/testcases/kernel/syscalls/readahead/readahead01.c
+@@ -0,0 +1,172 @@
 +/*
 + * Copyright (C) 2012 Linux Test Project, Inc.
 + *
@@ -91,353 +121,163 @@ index 0000000..840aa2b
 + */
 +
 +/*
-+ * use migrate_pages() and check that address is on correct node
-+ * 1. process A can migrate its non-shared mem with CAP_SYS_NICE
-+ * 2. process A can migrate its non-shared mem without CAP_SYS_NICE
-+ * 3. process A can migrate shared mem only with CAP_SYS_NICE
-+ * 4. process A can migrate non-shared mem in process B with same effective uid
-+ * 5. process A can migrate non-shared mem in process B with CAP_SYS_NICE
++ * errno tests for readahead() syscall
 + */
 +#include <sys/types.h>
++#include <sys/stat.h>
 +#include <sys/syscall.h>
-+#include <sys/wait.h>
-+#include <sys/mman.h>
++#include <sys/socket.h>
 +#include <errno.h>
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
 +#include <stdio.h>
 +#include <stdlib.h>
 +#include <unistd.h>
-+#include <pwd.h>
 +#include "config.h"
 +#include "test.h"
 +#include "usctest.h"
 +#include "safe_macros.h"
 +#include "linux_syscall_numbers.h"
-+#include "numa_helper.h"
-+#include "migrate_pages_common.h"
 +
-+#define NODE_MIN_FREEMEM 32*1024*1024
-+
-+char *TCID = "migrate_pages02";
++char *TCID = "readahead01";
 +int  TST_TOTAL = 1;
-+
-+#if defined(__NR_migrate_pages) && HAVE_NUMA_H && HAVE_NUMAIF_H
-+static char nobody_uid[] = "nobody";
-+static struct passwd *ltpuser;
-+static int *nodes, nodeA, nodeB;
-+static int num_nodes;
-+
-+static void setup(void);
-+static void cleanup(void);
 +
 +option_t options[] = {
 +	{ NULL, NULL, NULL }
 +};
 +
-+static int migrate_to_node(int pid, int node)
++#if defined(__NR_readahead)
++static void setup(char *argv[]);
++static void cleanup(void);
++
++static int check_ret(long expected_ret)
 +{
-+	unsigned long nodemask_size, max_node;
-+	unsigned long *old_nodes, *new_nodes;
-+	int i;
-+
-+	tst_resm(TPASS, "pid(%d) migrate pid %d to node -> %d",
-+		getpid(), pid, node);
-+	max_node = get_max_node();
-+	nodemask_size = max_node/8+1;
-+	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
-+	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
-+
-+	memset(old_nodes, 0, nodemask_size);
-+	memset(new_nodes, 0, nodemask_size);
-+	for (i = 0; i < num_nodes; i++)
-+		set_bit(old_nodes, nodes[i], 1);
-+	set_bit(new_nodes, node, 1);
-+
-+	TEST(syscall(__NR_migrate_pages, pid, max_node, old_nodes, new_nodes));
-+	if (TEST_RETURN == -1)
-+		tst_resm(TFAIL|TERRNO, "migrate_pages failed ");
-+	return TEST_RETURN;
-+}
-+
-+static int addr_on_node(void *addr)
-+{
-+	int node;
-+	int ret;
-+
-+	ret = syscall(__NR_get_mempolicy, &node, NULL, (unsigned long)0,
-+			(unsigned long) addr, MPOL_F_NODE | MPOL_F_ADDR);
-+	if (ret == -1) {
-+		tst_resm(TBROK | TERRNO, "error getting memory policy "
-+				"for page %p", addr);
-+	}
-+	return node;
-+}
-+
-+static int check_addr_on_node(void *addr, int exp_node)
-+{
-+	int node;
-+
-+	node = addr_on_node(addr);
-+	if (node == exp_node) {
-+		tst_resm(TPASS, "pid(%d) addr %p is on expected node: %d",
-+				getpid(), addr, exp_node);
++	if (expected_ret == TEST_RETURN) {
++		tst_resm(TPASS, "expected ret success - "
++			"returned value = %ld", TEST_RETURN);
 +		return 0;
-+	} else {
-+		tst_resm(TFAIL, "pid(%d) addr %p not on expected node: %d "
-+				", expected %d", getpid(), addr, node,
-+				exp_node);
-+		return 1;
 +	}
++	tst_resm(TFAIL, "unexpected failure - "
++			"returned value = %ld, expected: %ld",
++			TEST_RETURN, expected_ret);
++	return 1;
 +}
 +
-+static void test_migrate_current_process(int node1, int node2,
-+	int cap_sys_nice)
++static int check_errno(long expected_errno)
 +{
-+	char *testp, *testp2;
-+	int ret, status;
-+	pid_t child;
-+
-+	/* parent can migrate its non-shared memory */
-+	tst_resm(TINFO, "current_process, cap_sys_nice: %d", cap_sys_nice);
-+	testp = SAFE_MALLOC(NULL, getpagesize());
-+	testp[0] = 0;
-+	tst_resm(TINFO, "private anonymous: %p", testp);
-+	migrate_to_node(0, node2);
-+	check_addr_on_node(testp, node2);
-+	migrate_to_node(0, node1);
-+	check_addr_on_node(testp, node1);
-+	free(testp);
-+
-+	/* parent can migrate shared memory with CAP_SYS_NICE */
-+	testp2 = mmap(NULL, getpagesize(), PROT_READ|PROT_WRITE,
-+		MAP_ANONYMOUS|MAP_SHARED, 0, 0);
-+	if (testp2 == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap failed");
-+	testp2[0] = 1;
-+	tst_resm(TINFO, "shared anonymous: %p", testp2);
-+	migrate_to_node(0, node2);
-+	check_addr_on_node(testp2, node2);
-+
-+	/* shared mem is on node2, try to migrate in child to node1 */
-+	fflush(stdout);
-+	child = fork();
-+	switch (child) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		break;
-+	case 0:
-+		tst_resm(TINFO, "child shared anonymous, cap_sys_nice: %d",
-+			cap_sys_nice);
-+		testp = SAFE_MALLOC(NULL, getpagesize());
-+		testp[0] = 1;
-+		testp2[0] = 1;
-+		if (!cap_sys_nice)
-+			if (seteuid(ltpuser->pw_uid) == -1)
-+				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
-+
-+		migrate_to_node(0, node1);
-+		/* child can migrate non-shared memory */
-+		ret = check_addr_on_node(testp, node1);
-+
-+		free(testp);
-+		munmap(testp2, getpagesize());
-+		exit(ret);
-+	default:
-+		if (waitpid(child, &status, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "child returns %d", status);
-+		if (cap_sys_nice)
-+			/* child can migrate shared memory only
-+			 * with CAP_SYS_NICE */
-+			check_addr_on_node(testp2, node1);
-+		else
-+			check_addr_on_node(testp2, node2);
-+		munmap(testp2, getpagesize());
++	if (TEST_ERRNO == expected_errno) {
++		tst_resm(TPASS|TTERRNO, "expected failure");
++		return 0;
 +	}
++
++	if (TEST_ERRNO == 0)
++		tst_resm(TFAIL, "call succeeded unexpectedly");
++	else
++		tst_resm(TFAIL|TTERRNO, "unexpected failure - "
++			"expected = %ld : %s, actual",
++			expected_errno, strerror(expected_errno));
++	return 1;
 +}
 +
-+static void test_migrate_other_process(int node1, int node2,
-+	int cap_sys_nice)
++static void test_bad_fd(void)
 +{
-+	char *testp;
-+	int status, ret, tmp;
-+	pid_t child;
-+	int child_ready[2];
-+	int pages_migrated[2];
++	char tempname[PATH_MAX] = "readahead01_XXXXXX";
++	int fd;
 +
-+	/* setup pipes to synchronize child/parent */
-+	if (pipe(child_ready) == -1)
-+		tst_resm(TBROK | TERRNO, "pipe #1 failed");
-+	if (pipe(pages_migrated) == -1)
-+		tst_resm(TBROK | TERRNO, "pipe #2 failed");
++	tst_resm(TINFO, "test_bad_fd -1");
++	TEST(syscall(__NR_readahead, -1, 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EBADF);
 +
-+	tst_resm(TINFO, "other_process, cap_sys_nice: %d", cap_sys_nice);
++	tst_resm(TINFO, "test_bad_fd O_WRONLY");
++	fd = mkstemp(tempname);
++	if (fd == -1)
++		tst_resm(TBROK|TERRNO, "mkstemp failed");
++	close(fd);
++	fd = open(tempname, O_WRONLY);
++	if (fd == -1)
++		tst_resm(TBROK|TERRNO, "Failed to open testfile");
++	TEST(syscall(__NR_readahead, fd, 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EBADF);
++	close(fd);
++	unlink(tempname);
++}
 +
-+	fflush(stdout);
-+	child = fork();
-+	switch (child) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		break;
-+	case 0:
-+		close(child_ready[0]);
-+		close(pages_migrated[1]);
++static void test_invalid_fd(void)
++{
++	int fd[2];
 +
-+		testp = SAFE_MALLOC(NULL, getpagesize());
-+		testp[0] = 0;
++	tst_resm(TINFO, "test_invalid_fd pipe");
++	if (pipe(fd) < 0)
++		tst_resm(TBROK|TERRNO, "Failed to create pipe");
++	TEST(syscall(__NR_readahead, fd[0], 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EINVAL);
++	close(fd[0]);
++	close(fd[1]);
 +
-+		/* make sure we are on node1 */
-+		migrate_to_node(0, node1);
-+		check_addr_on_node(testp, node1);
-+
-+		if (seteuid(ltpuser->pw_uid) == -1)
-+			tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
-+
-+		/* signal parent it's OK to migrate child and wait */
-+		if (write(child_ready[1], &tmp, 1) != 1)
-+			tst_brkm(TBROK|TERRNO, NULL, "write #1 failed");
-+		if (read(pages_migrated[0], &tmp, 1) != 1)
-+			tst_brkm(TBROK|TERRNO, NULL, "read #1 failed");
-+
-+		/* parent can migrate child process with same euid */
-+		/* parent can migrate child process with CAP_SYS_NICE */
-+		ret = check_addr_on_node(testp, node2);
-+
-+		free(testp);
-+		close(child_ready[1]);
-+		close(pages_migrated[0]);
-+		exit(ret);
-+	default:
-+		close(child_ready[1]);
-+		close(pages_migrated[0]);
-+
-+		if (!cap_sys_nice)
-+			if (seteuid(ltpuser->pw_uid) == -1)
-+				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
-+
-+		/* wait until child is ready on node1, then migrate and
-+		 * signal to check current node */
-+		if (read(child_ready[0], &tmp, 1) != 1)
-+			tst_brkm(TBROK|TERRNO, NULL, "read #2 failed");
-+		migrate_to_node(child, node2);
-+		if (write(pages_migrated[1], &tmp, 1) != 1)
-+			tst_brkm(TBROK|TERRNO, NULL, "write #2 failed");
-+
-+		if (waitpid(child, &status, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "child returns %d", status);
-+		close(child_ready[0]);
-+		close(pages_migrated[1]);
-+
-+		/* reset euid, so this testcase can be used in loop */
-+		if (!cap_sys_nice)
-+			if (seteuid(0) == -1)
-+				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
-+	}
++	tst_resm(TINFO, "test_invalid_fd socket");
++	fd[0] = socket(AF_INET, SOCK_STREAM, 0);
++	if (fd[0] < 0)
++		tst_resm(TBROK|TERRNO, "Failed to create socket");
++	TEST(syscall(__NR_readahead, fd[0], 0, getpagesize()));
++	check_ret(-1);
++	check_errno(EINVAL);
++	close(fd[0]);
 +}
 +
 +int main(int argc, char *argv[])
 +{
-+	int lc;
 +	char *msg;
++	int lc;
 +
 +	msg = parse_opts(argc, argv, options, NULL);
 +	if (msg != NULL)
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
 +
-+	setup();
++	setup(argv);
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		Tst_count = 0;
-+		test_migrate_current_process(nodeA, nodeB, 1);
-+		test_migrate_current_process(nodeA, nodeB, 0);
-+		test_migrate_other_process(nodeA, nodeB, 1);
-+		test_migrate_other_process(nodeA, nodeB, 0);
++		test_bad_fd();
++		test_invalid_fd();
 +	}
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void setup(void)
++static void setup(char *argv[])
 +{
-+	int ret, i;
-+	long long freep, maxA, maxB, node_size;
-+
 +	tst_require_root(NULL);
-+	TEST(syscall(__NR_migrate_pages, 0, 0, NULL, NULL));
++	tst_tmpdir();
 +
-+	if (numa_available() == -1)
-+		tst_brkm(TCONF, NULL, "NUMA not available");
-+
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes(): %d", ret);
-+
-+	if (num_nodes < 2)
-+		tst_brkm(TCONF, NULL, "at least 2 allowed NUMA nodes"
-+				" are required");
-+	else if (tst_kvercmp(2, 6, 18) < 0)
-+		tst_brkm(TCONF, NULL, "2.6.18 or greater kernel required");
-+
-+	/* get 2 nodes with max free mem */
-+	maxA = maxB = 0;
-+	nodeA = nodeB = -1;
-+	for (i=0; i<num_nodes; i++) {
-+		node_size = numa_node_size64(nodes[i], &freep);
-+		if (node_size < 0)
-+			tst_brkm(TBROK|TERRNO, NULL, "numa_node_size64 failed");
-+		if (freep > NODE_MIN_FREEMEM) {
-+			if (freep > maxA) {
-+				maxB = maxA;
-+				nodeB = nodeA;
-+				maxA = freep;
-+				nodeA = nodes[i];
-+			} else if (freep > maxB) {
-+				maxB = freep;
-+				nodeB = nodes[i];
-+			}
-+		}
-+	}
-+
-+	if (nodeA == -1 || nodeB == -1)
-+		tst_brkm(TCONF, NULL, "at least 2 NUMA nodes with free mem > %d are needed", NODE_MIN_FREEMEM);
-+	tst_resm(TINFO, "Using nodes: %d %d", nodeA, nodeB);
-+
-+	ltpuser = getpwnam(nobody_uid);
-+	if (ltpuser == NULL)
-+		tst_brkm(TBROK|TERRNO, NULL, "getpwnam failed");
++	/* check if readahead syscall is supported */
++	syscall(__NR_readahead, 0, 0, 0);
 +
 +	TEST_PAUSE;
 +}
 +
 +static void cleanup(void)
 +{
-+	free(nodes);
 +	TEST_CLEANUP;
++	tst_rmdir();
 +}
 +
-+#else /* __NR_migrate_pages */
++#else /* __NR_readahead */
 +int main(void)
 +{
-+	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
-+			" or libnuma is not available");
++	tst_brkm(TCONF, NULL, "System doesn't support __NR_readahead");
 +}
 +#endif
++
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
