@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TQwCz-0000qb-NZ
-	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 08:21:01 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TQwCy-0004cc-C7
-	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 08:21:01 +0000
-Date: Wed, 24 Oct 2012 04:20:49 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <765493123.5437601.1351066849731.JavaMail.root@redhat.com>
-In-Reply-To: <50879E1F.2090106@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] Regarding shmat01 syscall test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1TLb7D-0005sK-CR
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 14:48:59 +0000
+Received: from mail-pa0-f47.google.com ([209.85.220.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TLb79-0002cH-NQ
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 14:48:59 +0000
+Received: by mail-pa0-f47.google.com with SMTP id fa11so5307157pad.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 09 Oct 2012 07:48:49 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Tue,  9 Oct 2012 22:48:36 +0800
+Message-Id: <1349794116-5016-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] testscripts: add appl test in networkstress.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,153 +24,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
+We have network_stress.appl in runtest dir. But we didn't include this test in
+networkstress.sh. Add a new parameter to support appl test.
 
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ testscripts/networkstress.sh |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL" <omprakash.pal@stericsson.com>
-> Sent: Wednesday, 24 October, 2012 9:51:59 AM
-> Subject: Re: [LTP] Regarding shmat01 syscall test
-> 
-> On 10/24/2012 03:49 PM, Jan Stancek wrote:
-> > 
-> > 
-> > ----- Original Message -----
-> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL"
-> >> <omprakash.pal@stericsson.com>
-> >> Sent: Wednesday, 24 October, 2012 9:03:16 AM
-> >> Subject: Re: [LTP] Regarding shmat01 syscall test
-> >>
-> >> On 10/24/2012 02:43 PM, Jan Stancek wrote:
-> >>>
-> >>>
-> >>> ----- Original Message -----
-> >>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> >>>> To: "Om Prakash PAL" <omprakash.pal@stericsson.com>
-> >>>> Cc: ltp-list@lists.sourceforge.net
-> >>>> Sent: Wednesday, 24 October, 2012 2:45:47 AM
-> >>>> Subject: Re: [LTP] Regarding shmat01 syscall test
-> >>>>
-> >>>> On 10/23/2012 06:05 PM, Om Prakash PAL wrote:
-> >>>>>
-> >>>>>
-> >>>>> -----Original Message-----
-> >>>>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> >>>>> Sent: Tuesday, October 23, 2012 3:07 PM
-> >>>>> To: Om Prakash PAL
-> >>>>> Cc: ltp-list@lists.sourceforge.net
-> >>>>> Subject: Re: [LTP] Regarding shmat01 syscall test
-> >>>>>
-> >>>>> On 10/23/2012 05:24 PM, Om Prakash PAL wrote:
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> I am working on syscall test:  shmat01.c
-> >>>>>>
-> >>>>>> I have some confusion:
-> >>>>>>
-> >>>>>>  
-> >>>>>>
-> >>>>>> In setup() : it is  allocating shared memory by shmget() and
-> >>>>>> then
-> >>>>>> attaching by shmat() and after  that detaching the attached
-> >>>>>> address (i.e. shmdt())
-> >>>>>>
-> >>>>>>  
-> >>>>>>
-> >>>>>>         if (shmdt((const void *)base_addr) == -1) {
-> >>>>>>
-> >>>>>>                 tst_brkm(TBROK, cleanup, "Couldn't detach
-> >>>>>>                 shared
-> >>>>>>                 memory");
-> >>>>>>
-> >>>>>>         }
-> >>>>>>
-> >>>>>>  
-> >>>>>>
-> >>>>>> And again in main function it is using same "base_addr" as
-> >>>>>> attaching address,
-> >>>>>>
-> >>>>>>  
-> >>>>>>
-> >>>>>> addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
-> >>>>>>
-> >>>>>>                                      TC[i].flags);
-> >>>>>>
-> >>>>>> how can we ensure(100%) that base_addr (virtual) will be free
-> >>>>>> till
-> >>>>>> this point for attaching?.
-> >>>>>
-> >>>>> Maybe we can't, but I didn't see any fail on this. Did you see
-> >>>>> any
-> >>>>> testing failure here?
-> >>>>>
-> >>>>> Yes, I got some failure and the reason of failure is : the
-> >>>>> address
-> >>>>> at which we want to attach is busy.
-> >>>>
-> >>>> OK, please feel free to send a patch, or can you tell us how to
-> >>>> reproduce it?
-> >>>
-> >>> I recall I could reproduce it, if I added single printf:
-> >>> http://article.gmane.org/gmane.linux.ltp/16480
-> >>
-> >> Do you get a solution? Send out a patch?
-> > 
-> > No, I haven't send any patch.
-> > 
-> > About solution:
-> > I'm thinking, that instead of probing with shmat, we can mmap large
-> > chunk of memory,
-> > and then set base_addr somewhere in the middle and unmap the chunk.
-> > That is, using address that get_unmapped_area() is unlikely to
-> > pick.
-> 
-> This idea seems good, bug how can you decide the size of this "chunk
-> of memory"?
+diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
+index e04a143..68673f4 100755
+--- a/testscripts/networkstress.sh
++++ b/testscripts/networkstress.sh
+@@ -59,6 +59,7 @@ usage () {
+     echo "---------------------------------------------------------"
+     echo -e "\033[31m $0 [options] \033[0m "
+     echo "---------------------------------------------------------"
++    echo " -A|a: Stress test for appl"
+     echo " -E|e: Stress test for interface"
+     echo " -I|i: Stress test for ICMP protocol"
+     echo " -T|t: Stress test for TCP/IP"
+@@ -76,9 +77,10 @@ usage () {
+     exit 1
+ }
+ 
+-while getopts EeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
++while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
+ do
+     case $OPTION in
++	A|a) TEST_CASE="network_stress.appl";;
+ 	E|e) TEST_CASE="network_stress.interface";;
+ 	B|b) TEST_CASE="network_stress.broken_ip";;
+ 	I|i) TEST_CASE="network_stress.icmp";;
+-- 
+1.7.7.6
 
-Good question. How about starting with some large value, say 512M,
-and keep dividing by 2 until mmap succeeds?
-
-Regards,
-Jan
-
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> > 
-> > Regards,
-> > Jan
-> > 
-> >>
-> >>
-> >> Thanks,
-> >> Wanlong Gao
-> >>
-> >>>
-> >>> Regards,
-> >>> Jan
-> >>>
-> >>
-> >>
-> > 
-> 
-> 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
