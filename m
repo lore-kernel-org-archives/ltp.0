@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <tdmackey@twitter.com>) id 1TSZnA-00031i-GZ
-	for ltp-list@lists.sourceforge.net; Sun, 28 Oct 2012 20:49:08 +0000
-Received: from mail-vc0-f175.google.com ([209.85.220.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TSZn9-0007yZ-RB
-	for ltp-list@lists.sourceforge.net; Sun, 28 Oct 2012 20:49:08 +0000
-Received: by mail-vc0-f175.google.com with SMTP id p1so5006412vcq.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 28 Oct 2012 13:49:02 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Nitin.Yadav@mphasis.com>) id 1TLT3s-0007GK-4Q
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 06:13:00 +0000
+Received: from mpbam6ip2.mphasis.com ([203.12.223.66])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TLT3p-0004Pb-PJ
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 06:13:00 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <1351413491-18760-1-git-send-email-tdmackey@twitter.com>
-References: <1351413491-18760-1-git-send-email-tdmackey@twitter.com>
-From: David Mackey <tdmackey@twitter.com>
-Date: Sun, 28 Oct 2012 13:48:32 -0700
-Message-ID: <CAMrBRo1HCuZ0GdwTE5Qxx3ygsH1jA6kxRVDw4QYxLsj1kjH8Qg@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] proc01: Add EAGAIN to known issues for acpi/event
+Date: Tue, 9 Oct 2012 11:38:34 +0530
+Message-ID: <E351E450E8B9F54684A699D42DC5ADF225E9C6D3@MPBAGVEX02.corp.mphasis.com>
+In-Reply-To: <4FED5CFD.7040406@cn.fujitsu.com>
+References: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
+	<4FED5CFD.7040406@cn.fujitsu.com>
+From: "Nitin Yadav" <Nitin.Yadav@mphasis.com>
+Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
+	-EINVAL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,119 +27,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1594405193481772304=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com, Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============1594405193481772304==
-Content-Type: multipart/alternative; boundary=14dae9ccd476d090a604cd24ae65
-
---14dae9ccd476d090a604cd24ae65
-Content-Type: text/plain; charset=UTF-8
-
-On Sun, Oct 28, 2012 at 1:38 AM, David Mackey <tdmackey@twitter.com> wrote:
-
-> Calling open on /proc/acpi/event with O_NONBLOCK will return EAGAIN if
-> the acpi bus event list is empty and no process is listening for events.
-> This is a common errno if acpid is not running.
->
-> - Add EAGAIN to known issues list for /proc/acpi/event.
->
-> Signed-off-by: David Mackey <tdmackey@twitter.com>
-> ---
->  testcases/kernel/fs/proc/proc01.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/testcases/kernel/fs/proc/proc01.c
-> b/testcases/kernel/fs/proc/proc01.c
-> index a6fb3d9..1c2b392 100644
-> --- a/testcases/kernel/fs/proc/proc01.c
-> +++ b/testcases/kernel/fs/proc/proc01.c
-> @@ -82,6 +82,7 @@ typedef struct mapping Mapping;
->     like if SELinux is disabled, the test may still fail on some other
->     entries. */
->  const Mapping known_issues[] = {
-> +    {"open", "/proc/acpi/event", EAGAIN},
->      {"open", "/proc/acpi/event", EBUSY},
->      {"open", "/proc/sal/cpe/data", EBUSY},
->      {"open", "/proc/sal/cmc/data", EBUSY},
-> --
-> 1.7.11.7
->
->
-Please discard. Will resubmit.
-
---14dae9ccd476d090a604cd24ae65
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Oct 28, 2012 at 1:38 AM, David Mackey <span dir=3D"ltr">&lt;<a href=
-=3D"mailto:tdmackey@twitter.com" target=3D"_blank">tdmackey@twitter.com</a>=
-&gt;</span> wrote:<br><div class=3D"gmail_quote"><blockquote class=3D"gmail=
-_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:=
-1ex">
-
-Calling open on /proc/acpi/event with O_NONBLOCK will return EAGAIN if<br>
-the acpi bus event list is empty and no process is listening for events.<br=
->
-This is a common errno if acpid is not running.<br>
-<br>
-- Add EAGAIN to known issues list for /proc/acpi/event.<br>
-<br>
-Signed-off-by: David Mackey &lt;<a href=3D"mailto:tdmackey@twitter.com">tdm=
-ackey@twitter.com</a>&gt;<br>
----<br>
-=C2=A0testcases/kernel/fs/proc/proc01.c | 1 +<br>
-=C2=A01 file changed, 1 insertion(+)<br>
-<br>
-diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/p=
-roc01.c<br>
-index a6fb3d9..1c2b392 100644<br>
---- a/testcases/kernel/fs/proc/proc01.c<br>
-+++ b/testcases/kernel/fs/proc/proc01.c<br>
-@@ -82,6 +82,7 @@ typedef struct mapping Mapping;<br>
-=C2=A0 =C2=A0 like if SELinux is disabled, the test may still fail on some =
-other<br>
-=C2=A0 =C2=A0 entries. */<br>
-=C2=A0const Mapping known_issues[] =3D {<br>
-+ =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/acpi/event&quot;, EAGAIN},<br=
->
-=C2=A0 =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/acpi/event&quot;, EBUSY}=
-,<br>
-=C2=A0 =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/sal/cpe/data&quot;, EBUS=
-Y},<br>
-=C2=A0 =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/sal/cmc/data&quot;, EBUS=
-Y},<br>
-<span class=3D"HOEnZb"><font color=3D"#888888">--<br>
-1.7.11.7<br>
-<br></font></span></blockquote><div><br></div><div>Please discard. Will res=
-ubmit.=C2=A0</div></div><br>
-
---14dae9ccd476d090a604cd24ae65--
-
-
---===============1594405193481772304==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-WINDOWS 8 is here. 
-Millions of people.  Your app in 30 days.
-Visit The Windows 8 Center at Sourceforge for all your go to resources.
-http://windows8center.sourceforge.net/
-join-generation-app-and-make-money-coding-fast/
---===============1594405193481772304==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1594405193481772304==--
-
+SGkgV2FubG9uZywNCiAgIA0KICBCZWxvdyBhcmUgdGhlIG91dHB1dCB3aGVyZSBJIGFtIGdldHRp
+bmcgLSBFUEVSTSAocmV0dXJuZWQgdmFsdWUgPSAxKSBhcyBhIHJldHVybiB2YWx1ZSBmcm9tIGlv
+X3N1Ym1pdC4gDQoNCmlvX3N1Ym1pdDAxICAgIDEgIFRQQVNTICA6ICBleHBlY3RlZCBmYWlsdXJl
+IC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIgOiBJbnZhbGlkIGFyZ3VtZW50DQppb19zdWJtaXQwMSAg
+ICAyICBUUEFTUyAgOiAgZXhwZWN0ZWQgZmFpbHVyZSAtIHJldHVybmVkIHZhbHVlID0gLTIyIDog
+SW52YWxpZCBhcmd1bWVudA0KaW9fc3VibWl0MDEgICAgMyAgVEZBSUwgICAgOiAgdW5leHBlY3Rl
+ZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAxIDogVW5rbm93biBlcnJvciAxODQ0Njc0NDA3
+MzcwOTU1MTYxNSwgZXhwZWN0ZWQgb25lIG9mIC1FSU5WQUwsIC1FQkFERiwgLUVGQVVMVA0KaW9f
+c3VibWl0MDEgICAgNCAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1
+ZSA9IC0xNCA6IEJhZCBhZGRyZXNzDQppb19zdWJtaXQwMSAgICA1ICBUUEFTUyAgOiAgZXhwZWN0
+ZWQgZmFpbHVyZSAtIHJldHVybmVkIHZhbHVlID0gLTIyIDogSW52YWxpZCBhcmd1bWVudA0KaW9f
+c3VibWl0MDEgICAgNiAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1
+ZSA9IC05ICAgOiBCYWQgZmlsZSBkZXNjcmlwdG9yDQppb19zdWJtaXQwMSAgICA3ICBUUEFTUyAg
+OiAgZXhwZWN0ZWQgc3VjY2VzcyAtIHJldHVybmVkIHZhbHVlID0gMA0KaW9fc3VibWl0MDEgICAg
+OCAgVFBBU1MgIDogIGV4cGVjdGVkIHN1Y2Nlc3MgLSByZXR1cm5lZCB2YWx1ZSA9IDENCg0KQ291
+bGQgeW91IHBsZWFzZSBsZXQgbWUga25vdyBjYW4gd2UgY29uc2lkZXIgLSBFUEVSTSBjYXNlIGFz
+IGEgcmV0dXJuIHZhbHVlIGZvciBpb19zdWJtaXQuDQoNClRoYW5rcywNCk5pdGluIFlhZGF2DQoN
+Cg0KDQpIaSBKYW7vvIwNCg0KPj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW9f
+c3VibWl0L2lvX3N1Ym1pdDAxLmMNCj4+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2lvX3N1Ym1pdC9pb19zdWJtaXQwMS5jDQo+Pj4gQEAgLTEyNiw3ICsxMjYsMjEgQEAgaW50IG1h
+aW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCj4+PiAgICAgICAgICAgICAvKiAxLjMgLSBFSU5W
+QUw6IHVuaW5pdGlhbGl6ZWQgaW9jYiAqLw0KPj4+ICAgICAgICAgICAgIGlvY2JzWzBdID0gJmlv
+Y2I7DQo+Pj4gICAgICAgICAgICAgVEVTVChpb19zdWJtaXQoY3R4LCAxLCBpb2NicykpOw0KPj4+
+IC0gICAgICAgICAgIGNoZWNrX3Jlc3VsdCgtRUlOVkFMLCBURVNUX1JFVFVSTik7DQo+Pj4gKyAg
+ICAgICAgICAgc3dpdGNoKFRFU1RfUkVUVVJOKSB7DQo+Pj4gKyAgICAgICAgICAgICAgICAgICBj
+YXNlIC1FSU5WQUw6DQo+Pj4gKyAgICAgICAgICAgICAgICAgICBjYXNlIC1FQkFERjoNCj4+PiAr
+ICAgICAgICAgICAgICAgICAgIGNhc2UgLUVGQVVMVDoNCj4+PiArICAgICAgICAgICAgICAgICAg
+IGNhc2UgLUVQRVJNOg0KPj4NCj4+DQo+PiBJIGRvbid0IHRoaW5rIGlvX3N1Ym1pdCgyKSBjYW4g
+cmV0dXJuIC1FUEVSTS4NCj4+DQo+PiBEbyB5b3UgdGhpbmsgc28/DQo+IA0KPiBJIHdhcyB0cnlp
+bmcgYWxsIHNvcnRzIG9mIHJhbmRvbSBkYXRhIGFuZCBJIHJlbWVtYmVyIHNlZWluZyBvbmNlICIt
+MSIuDQo+IEknbSBmYWlsaW5nIHRvIHJlcHJvZHVjZSBpdCB0b2RheSwgc28gSSBjb3VsZCBiZSB3
+cm9uZy4gSWYgSSBmYWlsIHRvIGZpbmQNCj4gZGF0YSB0aGF0IGdpdmVzIC1FUEVSTSwgSSdsbCBy
+ZW1vdmUgaXQgaW4gdjIuDQoNCg0KSSBsb29rZWQgaW50byB0aGUgaW9fc3VibWl0KDIpIGNvZGUg
+aW4ga2VybmVsIGFuZCBkaWRuJ3Qgc2VlIGFueSBwYXRoIGNhbg0KcmV0dXJuIC1FUEVSTSwgc28g
+SSB0aGluayB5b3Ugc2hvdWxkIGNvbmZpcm0gb24gaXQgYWdhaW4uDQoNClRoYW5rcywNCldhbmxv
+bmcgR2FvDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IEphbg0KPiANCj4+DQo+PiBUaGFua3MsDQo+PiBX
+YW5sb25nIEdhbw0KPj4NCj4gDQo+DQoNCgpJbmZvcm1hdGlvbiB0cmFuc21pdHRlZCBieSB0aGlz
+IGUtbWFpbCBpcyBwcm9wcmlldGFyeSB0byBNcGhhc2lTLCBpdHMgYXNzb2NpYXRlZCBjb21wYW5p
+ZXMgYW5kLyBvciBpdHMgY3VzdG9tZXJzIGFuZCBpcyBpbnRlbmRlZCAKZm9yIHVzZSBvbmx5IGJ5
+IHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3aGljaCBpdCBpcyBhZGRyZXNzZWQsIGFuZCBt
+YXkgY29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBv
+ciAKZXhlbXB0IGZyb20gZGlzY2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhdy4gSWYgeW91IGFy
+ZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCBvciBpdCBhcHBlYXJzIHRoYXQgdGhpcyBtYWls
+IGhhcyBiZWVuIGZvcndhcmRlZCAKdG8geW91IHdpdGhvdXQgcHJvcGVyIGF1dGhvcml0eSwgeW91
+IGFyZSBub3RpZmllZCB0aGF0IGFueSB1c2Ugb3IgZGlzc2VtaW5hdGlvbiBvZiB0aGlzIGluZm9y
+bWF0aW9uIGluIGFueSBtYW5uZXIgaXMgc3RyaWN0bHkgCnByb2hpYml0ZWQuIEluIHN1Y2ggY2Fz
+ZXMsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkgYXQgbWFpbG1hc3RlckBtcGhhc2lzLmNv
+bSBhbmQgZGVsZXRlIHRoaXMgbWFpbCBmcm9tIHlvdXIgcmVjb3Jkcy4KLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCkRvbid0IGxldCBzbG93IHNpdGUgcGVyZm9ybWFuY2UgcnVpbiB5b3VyIGJ1c2luZXNz
+LiBEZXBsb3kgTmV3IFJlbGljIEFQTQpEZXBsb3kgTmV3IFJlbGljIGFwcCBwZXJmb3JtYW5jZSBt
+YW5hZ2VtZW50IGFuZCBrbm93IGV4YWN0bHkKd2hhdCBpcyBoYXBwZW5pbmcgaW5zaWRlIHlvdXIg
+UnVieSwgUHl0aG9uLCBQSFAsIEphdmEsIGFuZCAuTkVUIGFwcApUcnkgTmV3IFJlbGljIGF0IG5v
+IGNvc3QgdG9kYXkgYW5kIGdldCBvdXIgc3dlZXQgRGF0YSBOZXJkIHNoaXJ0IHRvbyEKaHR0cDov
+L3Auc2YubmV0L3NmdS9uZXdyZWxpYy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0
+cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
+dGluZm8vbHRwLWxpc3QK
