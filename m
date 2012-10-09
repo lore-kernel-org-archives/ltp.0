@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrubis@suse.de>) id 1TJNJE-0003b4-B5
-	for ltp-list@lists.sourceforge.net; Wed, 03 Oct 2012 11:40:12 +0000
-Date: Wed, 3 Oct 2012 13:40:39 +0200
-From: chrubis@suse.cz
-Message-ID: <20121003114039.GC22986@saboteur.suse.cz>
-References: <E061084CB90FCE4F89232A6CF839683B32BC7591@SZXEML507-MBS.china.huawei.com>
-	<1291748381.11026946.1346066218005.JavaMail.root@redhat.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TLQ3U-0004jQ-Ld
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 03:00:24 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TLQ3T-0003Ib-Ea
+	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 03:00:24 +0000
+Message-ID: <50738CED.7090209@cn.fujitsu.com>
+Date: Tue, 09 Oct 2012 10:33:17 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1291748381.11026946.1346066218005.JavaMail.root@redhat.com>
-Subject: Re: [LTP] Test case send01 fails in kernel version 3.6-rc1,
- rc2 and rc3
+References: <1318126449-3660-1-git-send-email-liuhangbin@gmail.com>
+In-Reply-To: <1318126449-3660-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH] net: Install the missing file in network stress
+ test
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,41 +29,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: shyju pv <shyju.pv@huawei.com>, ltp-list@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Looks to be the same reason as sendto().
-> I'm thinking we can either remove that test or change it to UDP:
+On 10/09/2011 10:14 AM, Hangbin Liu wrote:
+> Some network stress test (dns, ftp, http) will lost local scripts while
+> install. Remove the "-" in makefile fixed this issue.
 > 
-> diff --git a/testcases/kernel/syscalls/sendto/sendto01.c b/testcases/kernel/syscalls/sendto/sendto01.c
-> index ad64c70..c8dd9bd 100644
-> --- a/testcases/kernel/syscalls/sendto/sendto01.c
-> +++ b/testcases/kernel/syscalls/sendto/sendto01.c
-> @@ -126,8 +126,8 @@ struct test_case_t {                /* test case structure */
->                     sizeof(sin1), -1, EPIPE, setup2, cleanup1,
->                     "local endpoint shutdown"}
->         , {
-> -       PF_INET, SOCK_STREAM, 0, buf, sizeof(buf), -1, &sin1,
-> -                   sizeof(sin1), 0, EPIPE, setup1, cleanup1,
-> +       PF_INET, SOCK_DGRAM, 0, buf, sizeof(buf), -1, &sin1,
-> +                   sizeof(sin1), -1, EOPNOTSUPP, setup1, cleanup1,
->                     "invalid flags set"}
->  };
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 
-The usuall concensus for such case is to change expected return values
-depending on the kernel version (see for example tst_kvercmp() in
-testcases/kernel/syscalls/sysctl/sysctl03.c). Which is the best solution
-I can come up with.
+Pushed, thank you.
 
-On the other hand we don't bother to work with rc kernels they change
-far to often.
+Wanlong Gao
 
-Does this behave same on released linux 3.6?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Don't let slow site performance ruin your business. Deploy New Relic APM
