@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chris@mips.com>) id 1TO8G5-0003Ai-33
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 14:36:37 +0000
-Received: from dns1.mips.com ([12.201.5.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TO8G4-0007ZK-99
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 14:36:37 +0000
-Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
-	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9GEIMpe028038
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Oct 2012 07:18:22 -0700
-Received: from exchdb01.mips.com (unknown [192.168.36.84])
-	(using TLSv1 with cipher AES128-SHA (128/128 bits))
-	(No client certificate requested)
-	by mailgate1.mips.com (Postfix) with ESMTP id 2BA8036465A
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 16 Oct 2012 07:18:22 -0700 (PDT)
-Message-ID: <507D6CAD.1040209@mips.com>
-Date: Tue, 16 Oct 2012 07:18:21 -0700
-From: Chris Dearman <chris@mips.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TMYF6-00030N-S8
+	for ltp-list@lists.sourceforge.net; Fri, 12 Oct 2012 05:57:04 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TMYF2-0007Sx-GZ
+	for ltp-list@lists.sourceforge.net; Fri, 12 Oct 2012 05:57:04 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q9C5u2o8002062
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Oct 2012 13:56:03 +0800
+Message-ID: <5077B093.6010704@cn.fujitsu.com>
+Date: Fri, 12 Oct 2012 13:54:27 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] pipe01 should only check the data actually received
- from the pipe
+References: <5077A8F8.6050609@cn.fujitsu.com>
+In-Reply-To: <5077A8F8.6050609@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v5] pthread_cond_brodcast/1-2.c hung when mem left
+ is not enough
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,41 +32,163 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Chris Dearman <chris@mips.com>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-The pipe write does not include the string terminator and the way the
-test is written it's valid for the writer to send less than the
-requested amount and for the reader to read less than the number of
-written bytes, so just compare the actual bytes received.
+On 10/12/2012 01:22 PM, DAN LI wrote:
+> pthread_cond_brodcast/1-2.c try to create as many childrens(thread or
+> process) as possible,however,if current free memory is exhausted before
+> all childrens are started,the case will timeout and hung since it's
+> stated with program "t0".
 
-Signed-off-by: Chris Dearman <chris@mips.com>
----
-  testcases/kernel/syscalls/pipe/pipe01.c |    4 ++--
-  1 files changed, 2 insertions(+), 2 deletions(-)
+You should make patch against the newest ltp tree.
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe01.c 
-b/testcases/kernel/syscalls/pipe/pipe01.c
-index 08cf612..04d1b11 100644
---- a/testcases/kernel/syscalls/pipe/pipe01.c
-+++ b/testcases/kernel/syscalls/pipe/pipe01.c
-@@ -119,7 +119,7 @@ int main(int ac, char **av)
-  			}
-   			/* are the strings written and read equal */
--			if ((greater = strcmp(rebuf, wrbuf)) != 0) {
-+			if ((greater = strncmp(rebuf, wrbuf, red)) != 0) {
-  				tst_resm(TFAIL, "Condition #3 test failed");
-  				continue;
-  			}
-@@ -155,4 +155,4 @@ void cleanup()
-  	 * print errno log if that option was specified.
-  	 */
-  	TEST_CLEANUP;
--}
-\ No newline at end of file
-+}
--- 
-1.7.1
+Thanks,
+Wanlong Gao
+
+
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+>  .../interfaces/pthread_cond_broadcast/1-2.c        | 40 +++++++++++++++++++---
+>  testcases/open_posix_testsuite/include/mem_info.h  | 40 ++++++++++++++++++++++
+>  2 files changed, 76 insertions(+), 4 deletions(-)
+>  create mode 100644 testcases/open_posix_testsuite/include/mem_info.h
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> index f6ad9df..6b27f40 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+> @@ -49,6 +49,7 @@
+>  #include <sys/wait.h>
+>  #include <semaphore.h>
+> 
+> +#include "mem_info.h"
+>  #include "../testfrmw/testfrmw.h"
+>  #include "../testfrmw/testfrmw.c"
+> 
+> @@ -82,8 +83,8 @@
+>  #endif
+> 
+>  /* Do not create more than this amount of children: */
+> -#define MAX_PROCESS_CHILDREN  (200)
+> -#define MAX_THREAD_CHILDREN   (1000)
+> +static int max_process_children  = 200;
+> +static int max_thread_children = 1000;
+> 
+>  #define TIMEOUT  (180)
+> 
+> @@ -243,6 +244,35 @@ void *timer(void *arg)
+>  	return NULL; /* For compiler */
+>  }
+> 
+> +static void children_number(void)
+> +{
+> +	struct sysinfo sysinformation;
+> +	int avail_number;
+> +	unsigned long freeram;
+> +	unsigned long per_process;
+> +	unsigned long min_stack;
+> +
+> +	min_stack = sysconf(_SC_THREAD_STACK_MIN);
+> +
+> +	freeram = getfreeram();
+> +	if (freeram == 0)
+> +		return;
+> +
+> +	per_process = min_stack * max_thread_children;
+> +	if (per_process > freeram)
+> +		UNTESTED("Not enough memory.");
+> +
+> +	avail_number = freeram / per_process;
+> +
+> +	if (avail_number < 10)
+> +		UNTESTED("Not enough memory.");
+> +
+> +	max_process_children = (avail_number < max_process_children ?
+> +					avail_number : max_process_children);
+> +
+> +	return;
+> +}
+> +
+>  int main(int argc, char *argv[])
+>  {
+>  	int ret;
+> @@ -268,6 +298,8 @@ int main(int argc, char *argv[])
+> 
+>  	output_init();
+> 
+> +	children_number();
+> +
+>  	/* check the system abilities */
+>  	pshared = sysconf(_SC_THREAD_PROCESS_SHARED);
+>  	cs = sysconf(_SC_CLOCK_SELECTION);
+> @@ -476,7 +508,7 @@ int main(int argc, char *argv[])
+>  				} else {
+>  					ret = errno;
+>  				}
+> -			} while ((ret == 0) && (child_count < MAX_THREAD_CHILDREN));
+> +			} while ((ret == 0) && (child_count < max_thread_children));
+>  			#if VERBOSE > 2
+>  			output("[parent] Created %i children threads\n", child_count);
+>  			#endif
+> @@ -504,7 +536,7 @@ int main(int argc, char *argv[])
+>  				} else {
+>  					ret = errno;
+>  				}
+> -			} while ((ret == 0) && (child_count < MAX_PROCESS_CHILDREN));
+> +			} while ((ret == 0) && (child_count < max_process_children));
+>  			#if VERBOSE > 2
+>  			output("[parent] Created %i children processes\n", child_count);
+>  			#endif
+> diff --git a/testcases/open_posix_testsuite/include/mem_info.h b/testcases/open_posix_testsuite/include/mem_info.h
+> new file mode 100644
+> index 0000000..1669216
+> --- /dev/null
+> +++ b/testcases/open_posix_testsuite/include/mem_info.h
+> @@ -0,0 +1,40 @@
+> +/*
+> + *
+> + *   Copyright (c) 2012, DAN LI
+> + *
+> + *   This program is free software;  you can redistribute it and/or modify
+> + *   it under the terms in version 2 of the GNU General Public License as
+> + *   published by the Free Software Foundation.
+> + *
+> + *   This program is distributed in the hope that it will be useful,
+> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + *   the GNU General Public License for more details.
+> + *
+> + *   You should have received a copy of the GNU General Public License
+> + *   along with this program;  if not, write to the Free Software
+> + *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> + *
+> + *   Author:  DAN LI <li.dan AT cn fujitsu com>
+> + *   Date:    10/12/2012
+> + */
+> +
+> +#ifdef __linux__
+> +#include <sys/sysinfo.h>
+> +
+> +static int getfreeram(void)
+> +{
+> +	int ret;
+> +	struct sysinfo sysinformation;
+> +
+> +	ret = sysinfo(&sysinformation);
+> +	if (ret != 0)
+> +		return 0;
+> +	return sysinformation.freeram;
+> +}
+> +#else
+> +static int getfreeram(void)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> 
 
 
 ------------------------------------------------------------------------------
