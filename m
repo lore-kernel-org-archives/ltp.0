@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1TSmhZ-0003Wy-6b
-	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 10:36:13 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TSmhY-0000LD-7j
-	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 10:36:13 +0000
-Received: by mail-pb0-f47.google.com with SMTP id ro12so3961723pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 29 Oct 2012 03:36:06 -0700 (PDT)
-Message-ID: <508E5A47.9070904@casparzhang.com>
-Date: Mon, 29 Oct 2012 18:28:23 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1TMaO5-0006A1-V3
+	for ltp-list@lists.sourceforge.net; Fri, 12 Oct 2012 08:14:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TMaNz-0006jF-N6
+	for ltp-list@lists.sourceforge.net; Fri, 12 Oct 2012 08:14:29 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id q9C8EFpP012236
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Oct 2012 16:14:15 +0800
+Message-ID: <5077D10C.3040302@cn.fujitsu.com>
+Date: Fri, 12 Oct 2012 16:13:00 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1351502940-20415-1-git-send-email-cxie@redhat.com>
-In-Reply-To: <1351502940-20415-1-git-send-email-cxie@redhat.com>
-Subject: Re: [LTP] [PATCH] thp/thp03: new testcase
+Subject: [LTP] [PATCH v6] pthread_cond_brodcast/1-2.c hung when mem left is
+ not enough
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,161 +29,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 10/29/2012 05:29 PM, cxie@redhat.com wrote:
-> From: Madper Xie <cxie@redhat.com>
->
-> Modified form a reproducer for
->             https://patchwork.kernel.org/patch/1358441/
-> pmd_present would return the wrong value on PROT_NONE ranges or in case
-> of a non reproducible race with split_huge_page.
->
-> The system will crash when this test failed.
->
-> Signed-off-by: Madper Xie <cxie@redhat.com>
+pthread_cond_brodcast/1-2.c try to create as many childrens(thread or
+process) as possible,however,if current free memory is exhausted before
+all childrens are started,the case will timeout and hung since it's
+stated with program "t0".
 
-Please also attach the runtest entry.
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ .../interfaces/pthread_cond_broadcast/1-2.c        | 16 +++------
+ testcases/open_posix_testsuite/include/mem_info.h  | 40 ++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 11 deletions(-)
+ create mode 100644 testcases/open_posix_testsuite/include/mem_info.h
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+index b59bbfc..df93f4b 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_broadcast/1-2.c
+@@ -50,6 +50,7 @@
+ #include <semaphore.h>
+ #include <sys/sysinfo.h>
 
-> ---
->   testcases/kernel/mem/thp/thp03.c | 117 +++++++++++++++++++++++++++++++++++++++
->   1 file changed, 117 insertions(+)
->   create mode 100644 testcases/kernel/mem/thp/thp03.c
->
-> diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
-> new file mode 100644
-> index 0000000..ee6fa1e
-> --- /dev/null
-> +++ b/testcases/kernel/mem/thp/thp03.c
-> @@ -0,0 +1,117 @@
-> +/*
-> + * Copyright (C) 2012  Red Hat, Inc.
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + *
-> + * thp03 - Case for spliting unaligned memory.
-> + *       - System will panic if failed.
-> + *
-> + * There was a bug in THP, will crash happened due to the following
-> + * reason according to developers:
-> + *
-> + * most VM places are using pmd_none but a few are still using
-> + * pmd_present. The meaning is about the same for the pmd. However
-> + * pmd_present would return the wrong value on PROT_NONE ranges or in
-> + * case of a non reproducible race with split_huge_page.
-> + * When the code using pmd_present gets a false negative, the kernel will
-> + * crash. It's just an annoying DoS with a BUG_ON triggering: no memory
-> + * corruption and no data corruption (nor userland nor kernel).
-> + */
-> +
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
-> +#include <fcntl.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include "mem.h"
-> +#include "safe_macros.h"
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +char *TCID = "thp03";
-> +
-> +static void thp_test(void);
-> +
-> +static long hugepage_size;
-> +static long unaligned_size;
-> +static long page_size;
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	int lc;
-> +	char *msg;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +
-> +		thp_test();
-> +	}
-> +	tst_resm(TPASS, "system didn't crash, pass.");
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void thp_test(void)
-> +{
-> +	void *p;
-> +
-> +	p = mmap(NULL, unaligned_size, PROT_READ | PROT_WRITE,
-> +		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-> +	if (p == MAP_FAILED)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-> +
-> +	memset(p, 0x00, unaligned_size);
-> +	if (mprotect(p, unaligned_size, PROT_NONE) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "mprotect");
-> +	if (madvise(p + hugepage_size, page_size, MADV_MERGEABLE) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-> +
-> +	switch (fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-> +	case 0:
-> +		exit(0);
-> +	default:
-> +		if (waitpid(-1, NULL, 0) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +	}
-> +}
-> +
-> +void setup(void)
-> +{
-> +	hugepage_size = read_meminfo("Hugepagesize:") * KB;
-> +	unaligned_size = hugepage_size * 4 - 1;
-> +	page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +}
->
++#include <mem_info.h>
+ #include "../testfrmw/testfrmw.h"
+ #include "../testfrmw/testfrmw.c"
 
+@@ -244,20 +245,19 @@ void *timer(void *arg)
+ 	return NULL; /* For compiler */
+ }
+
+-#ifdef __linux__
+ static void children_number(void)
+ {
+ 	struct sysinfo sysinformation;
+-	int ret;
+ 	int avail_number;
++	unsigned long freeram;
+ 	unsigned long per_process;
+ 	unsigned long min_stack;
+
+ 	min_stack = sysconf(_SC_THREAD_STACK_MIN);
+
+-	ret = sysinfo(&sysinformation);
+-	if (ret != 0)
+-		UNRESOLVED(ret, "Failed to get system information.");
++	freeram = getfreeram();
++	if (freeram == 0)
++		return;
+
+ 	per_process = min_stack * max_thread_children;
+ 	if (per_process > sysinformation.freeram)
+@@ -273,12 +273,6 @@ static void children_number(void)
+
+ 	return;
+ }
+-#else
+-static void children_number(void)
+-{
+-	return;
+-}
+-#endif
+
+ int main(int argc, char *argv[])
+ {
+diff --git a/testcases/open_posix_testsuite/include/mem_info.h b/testcases/open_posix_testsuite/include/mem_info.h
+new file mode 100644
+index 0000000..1669216
+--- /dev/null
++++ b/testcases/open_posix_testsuite/include/mem_info.h
+@@ -0,0 +1,40 @@
++/*
++ *
++ *   Copyright (c) 2012, DAN LI
++ *
++ *   This program is free software;  you can redistribute it and/or modify
++ *   it under the terms in version 2 of the GNU General Public License as
++ *   published by the Free Software Foundation.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *   the GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program;  if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ *   Author:  DAN LI <li.dan AT cn fujitsu com>
++ *   Date:    10/12/2012
++ */
++
++#ifdef __linux__
++#include <sys/sysinfo.h>
++
++static int getfreeram(void)
++{
++	int ret;
++	struct sysinfo sysinformation;
++
++	ret = sysinfo(&sysinformation);
++	if (ret != 0)
++		return 0;
++	return sysinformation.freeram;
++}
++#else
++static int getfreeram(void)
++{
++	return 0;
++}
++#endif
+-- 
+1.7.12
 
 ------------------------------------------------------------------------------
-The Windows 8 Center - In partnership with Sourceforge
-Your idea - your app - 30 days.
-Get started!
-http://windows8center.sourceforge.net/
-what-html-developers-need-to-know-about-coding-windows-8-metro-style-apps/
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
