@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TT9RK-0000lV-82
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 10:52:58 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TT9RE-00064m-Ai
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 10:52:58 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9UAqkNm006335
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 06:52:46 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id q9UAqiF5017776
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 06:52:45 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 30 Oct 2012 11:52:42 +0100
-Message-Id: <7714323b7c85bc53de14c05d1f5b47085a9a7ae2.1351593924.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v4] ipc/shmat: pick suitable base_addr before each
-	testcase
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TNxBq-000886-7m
+	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 02:47:30 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TNxBo-0003TC-H3
+	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 02:47:30 +0000
+Message-ID: <507CC7E8.1070200@cn.fujitsu.com>
+Date: Tue, 16 Oct 2012 10:35:20 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1350279542-16623-1-git-send-email-jin.li@windriver.com>
+	<1350279542-16623-2-git-send-email-jin.li@windriver.com>
+In-Reply-To: <1350279542-16623-2-git-send-email-jin.li@windriver.com>
+Subject: Re: [LTP] [PATCH] runltp: Change -s option to select single case
+ instead of matched name string of case
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,170 +27,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: jin.li@windriver.com
+Cc: ltp-list@lists.sourceforge.net, haotian.zhang@windriver.com
 
-This test picked fixed address in setup() which was used throughout
-the test. There has been reports that it can fail with EINVAL.
+On 10/15/2012 01:39 PM, jin.li@windriver.com wrote:
+> From: Jin Li <jin.li@windriver.com>
+> 
+> The scenario group file can be used if a set of related test cases need executing
+> at one time. Therefore, it's better to use runltp -s to select single test case.
+> 
+> Also, it is not a good practice to bind the option format of runltp with the implementation
+> of runltp internal code.Say the test case ar should be invoked in this way:
+> 
+> ./runltp -s ar
+> 
+> instead of
+> 
+> ./runltp -s "^ar "
 
-I could reproduce it by adding single printf in between
-detach/attach:
-http://article.gmane.org/gmane.linux.ltp/16480
+I don't think yours is better than matching with a PATTERN, so I vote to the original implementation.
 
-This patch picks suitable base_addr before each test. So even if glibc
-would mmap extra page with addr == base_addr picked by setup(),
-new suitable address will be chosen.
+Thanks,
+Wanlong Gao
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/ipc/shmat/shmat01.c      |   18 ++---------
- testcases/kernel/syscalls/ipc/shmat/shmat02.c      |   16 +--------
- testcases/kernel/syscalls/ipc/shmat/shmat_common.h |   33 ++++++++++++++++++++
- 3 files changed, 38 insertions(+), 29 deletions(-)
- create mode 100644 testcases/kernel/syscalls/ipc/shmat/shmat_common.h
-
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 6e4dee1..b64cf61 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -56,6 +56,7 @@
-  */
- 
- #include "ipcshm.h"
-+#include "shmat_common.h"
- 
- char *TCID = "shmat01";
- 
-@@ -108,6 +109,7 @@ int main(int ac, char **av)
- 			/*
- 			 * Use TEST macro to make the call
- 			 */
-+			base_addr = probe_free_addr();
- 			errno = 0;
- 			addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
- 				     TC[i].flags);
-@@ -128,7 +130,7 @@ int main(int ac, char **av)
- 			 * clean up things in case we are looping - in
- 			 * this case, detach the shared memory
- 			 */
--			if (shmdt((const void *)addr) == -1) {
-+			if (shmdt(addr) == -1) {
- 				tst_brkm(TBROK, cleanup,
- 					 "Couldn't detach shared memory");
- 			}
-@@ -261,20 +263,6 @@ void setup(void)
- 		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
- 			 "resource 1 in setup()");
- 	}
--
--	/* Probe an available linear address for attachment */
--	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
--		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
--	}
--	if (shmdt((const void *)base_addr) == -1) {
--		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
--	}
--
--	/* some architectures (e.g. parisc) are strange, so better always align to
--	 * next SHMLBA address. */
--	base_addr =
--	    (void *)(((unsigned long)(base_addr) + (SHMLBA - 1)) &
--		     ~(SHMLBA - 1));
- }
- 
- /*
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat02.c b/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-index d4cca0e..af28d6c 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-@@ -55,6 +55,7 @@
- 
- #include "ipcshm.h"
- #include <pwd.h>
-+#include "shmat_common.h"
- 
- char *TCID = "shmat02";
- char nobody_uid[] = "nobody";
-@@ -125,6 +126,7 @@ int main(int ac, char **av)
- 
- 			setup_tc(i, tc);
- 
-+			base_addr = probe_free_addr();
- 			errno = 0;
- 			addr = shmat(*(tc->shmid), base_addr + tc->offset, 0);
- 
-@@ -180,20 +182,6 @@ void setup(void)
- 	if ((shm_id_3 = shmget(shmkey2, INT_SIZE, IPC_CREAT|IPC_EXCL)) ==
- 	    -1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "shmget #2 failed");
--
--	/* Probe an available linear address for attachment */
--	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *)-1)
--		tst_brkm(TBROK|TERRNO, cleanup, "shmat #1 failed");
--
--	if (shmdt((const void *)base_addr) == -1)
--		tst_brkm(TBROK|TERRNO, cleanup, "shmat #2 failed");
--
--	/*
--	 * some architectures (e.g. parisc) are strange, so better always align
--	 * to next SHMLBA address
--	 */
--	base_addr =
--	    (void *)(((unsigned long)(base_addr) & ~(SHMLBA - 1)) + SHMLBA);
- }
- 
- /*
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat_common.h b/testcases/kernel/syscalls/ipc/shmat/shmat_common.h
-new file mode 100644
-index 0000000..06cf5ab
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat_common.h
-@@ -0,0 +1,33 @@
-+static key_t probe_key;
-+
-+void *probe_free_addr(void)
-+{
-+	void *p;
-+	int ret;
-+	int shm_id = -1;
-+
-+	if (probe_key == 0)
-+		probe_key = getipckey();
-+
-+	/* create a shared memory resource with read and write permissions
-+	 * We align this to SHMLBA so we should allocate at least
-+	 * SHMLBA*2 in case SHMLBA > page_size. */
-+	shm_id = shmget(probe_key, SHMLBA*2, SHM_RW | IPC_CREAT | IPC_EXCL);
-+	if (shm_id == -1)
-+		tst_brkm(TBROK, cleanup, "probe: shmget failed");
-+
-+	/* Probe an available linear address for attachment */
-+	p = shmat(shm_id, NULL, 0);
-+	if (p == (void *)-1)
-+		tst_brkm(TBROK, cleanup, "probe: shmat failed");
-+	ret = shmdt(p);
-+	if (ret == -1)
-+		tst_brkm(TBROK, cleanup, "probe: shmdt failed");
-+
-+	rm_shm(shm_id);
-+
-+	/* some architectures (e.g. parisc) are strange, so better always
-+	 * align to next SHMLBA address. */
-+	p = (void *)(((unsigned long)(p) + (SHMLBA - 1)) & ~(SHMLBA - 1));
-+	return p;
-+}
--- 
-1.7.1
+> 
+> Signed-off-by: Jin Li <jin.li@windriver.com>
+> ---
+>  runltp | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/runltp b/runltp
+> index f95c17b..7788275 100755
+> --- a/runltp
+> +++ b/runltp
+> @@ -150,7 +150,7 @@ usage()
+>      -p              Human readable format logfiles. 
+>      -q              Print less verbose output to screen.
+>      -r LTPROOT      Fully qualified path where testsuite is installed.
+> -    -s PATTERN      Only run test cases which match PATTERN.
+> +    -s TESTCASE     Only run single test case.
+>      -S SKIPFILE     Skip tests specified in SKIPFILE
+>      -t DURATION     Execute the testsuite for given duration. Examples:
+>                        -t 60s = 60 seconds
+> @@ -203,7 +203,7 @@ main()
+>      local HTMLFILE=""
+>      local DMESG_DIR=""
+>      local EMAIL_TO=""
+> -    local TAG_RESTRICT_STRING=""
+> +    local TESTCASE=""
+>      local PAN_COMMAND=""
+>      local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%b_%d-%Hh_%Mm_%Ss"`
+>  
+> @@ -394,7 +394,7 @@ main()
+>      
+>          r)  LTPROOT=$OPTARG;;
+>      
+> -        s)  TAG_RESTRICT_STRING=$OPTARG;;
+> +        s)  TESTCASE=$OPTARG;;
+>  
+>  	S)  case $OPTARG in
+>              /*)
+> @@ -647,11 +647,11 @@ main()
+>           }
+>      }
+>  
+> -    # If enabled, execute only test cases that match the PATTERN
+> -    if [ -n "$TAG_RESTRICT_STRING" ]
+> +    # If enabled, execute single test cases
+> +    if [ -n "$TESTCASE" ]
+>      then
+>          mv -f ${TMP}/alltests ${TMP}/alltests.orig
+> -	    grep $TAG_RESTRICT_STRING ${TMP}/alltests.orig > ${TMP}/alltests #Not worth checking return codes for this case
+> +	    grep "^$TESTCASE " ${TMP}/alltests.orig > ${TMP}/alltests #Not worth checking return codes for this case
+>      fi
+>  
+>      # Blacklist or skip tests if a SKIPFILE was specified with -S
+> @@ -743,8 +743,8 @@ main()
+>      PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ \
+>      -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE"
+>      echo "COMMAND:    $PAN_COMMAND"
+> -    if [ ! -z "$TAG_RESTRICT_STRING" ] ; then
+> -      echo "INFO: Restricted to $TAG_RESTRICT_STRING"
+> +    if [ ! -z "$TESTCASE" ] ; then
+> +      echo "INFO: Run single test case $TESTCASE"
+>      fi
+>      #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
+>      
+> 
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Don't let slow site performance ruin your business. Deploy New Relic APM
+Deploy New Relic app performance management and know exactly
+what is happening inside your Ruby, Python, PHP, Java, and .NET app
+Try New Relic at no cost today and get our sweet Data Nerd shirt too!
+http://p.sf.net/sfu/newrelic-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
