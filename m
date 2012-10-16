@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1TLPKx-0008Sj-If
-	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 02:14:23 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TLPKw-0004ee-RV
-	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 02:14:23 +0000
-Received: by mail-pb0-f47.google.com with SMTP id ro12so4681972pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 08 Oct 2012 19:14:17 -0700 (PDT)
-From: Hangbin Liu <liuhangbin@gmail.com>
-Date: Sun,  9 Oct 2011 10:14:09 +0800
-Message-Id: <1318126449-3660-1-git-send-email-liuhangbin@gmail.com>
-Subject: [LTP] [PATCH] net: Install the missing file in network stress test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TNwy1-0005Le-NK
+	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 02:33:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TNwxz-0001xN-HD
+	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 02:33:13 +0000
+Message-ID: <507CC6F5.3090409@cn.fujitsu.com>
+Date: Tue, 16 Oct 2012 10:31:17 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
+	<4FED5CFD.7040406@cn.fujitsu.com>
+	<E351E450E8B9F54684A699D42DC5ADF225E9C6D3@MPBAGVEX02.corp.mphasis.com>
+In-Reply-To: <E351E450E8B9F54684A699D42DC5ADF225E9C6D3@MPBAGVEX02.corp.mphasis.com>
+Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
+	-EINVAL
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,72 +28,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Nitin Yadav <Nitin.Yadav@mphasis.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Some network stress test (dns, ftp, http) will lost local scripts while
-install. Remove the "-" in makefile fixed this issue.
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- testcases/network/stress/dns/Makefile  |    2 +-
- testcases/network/stress/ftp/Makefile  |    2 +-
- testcases/network/stress/http/Makefile |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/network/stress/dns/Makefile b/testcases/network/stress/dns/Makefile
-index a627839..d15ce29 100644
---- a/testcases/network/stress/dns/Makefile
-+++ b/testcases/network/stress/dns/Makefile
-@@ -24,7 +24,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS		:= dns-*
-+INSTALL_TARGETS		:= dns*
- 
- MAKE_TARGETS		:=
- 
-diff --git a/testcases/network/stress/ftp/Makefile b/testcases/network/stress/ftp/Makefile
-index a1a5224..1a1e9f4 100644
---- a/testcases/network/stress/ftp/Makefile
-+++ b/testcases/network/stress/ftp/Makefile
-@@ -24,7 +24,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS		:= ftp-*
-+INSTALL_TARGETS		:= ftp*
- 
- MAKE_TARGETS		:=
- 
-diff --git a/testcases/network/stress/http/Makefile b/testcases/network/stress/http/Makefile
-index 35d9e5f..0523238 100644
---- a/testcases/network/stress/http/Makefile
-+++ b/testcases/network/stress/http/Makefile
-@@ -24,7 +24,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS		:= http-*
-+INSTALL_TARGETS		:= http*
- 
- MAKE_TARGETS		:=
- 
--- 
-1.7.7.6
-
-
-------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMTAvMDkvMjAxMiAwMjowOCBQTSwgTml0aW4gWWFkYXYgd3JvdGU6Cj4gSGkgV2FubG9uZywK
+PiAgICAKPiAgIEJlbG93IGFyZSB0aGUgb3V0cHV0IHdoZXJlIEkgYW0gZ2V0dGluZyAtIEVQRVJN
+IChyZXR1cm5lZCB2YWx1ZSA9IDEpIGFzIGEgcmV0dXJuIHZhbHVlIGZyb20gaW9fc3VibWl0LiAK
+PiAKPiBpb19zdWJtaXQwMSAgICAxICBUUEFTUyAgOiAgZXhwZWN0ZWQgZmFpbHVyZSAtIHJldHVy
+bmVkIHZhbHVlID0gLTIyIDogSW52YWxpZCBhcmd1bWVudAo+IGlvX3N1Ym1pdDAxICAgIDIgIFRQ
+QVNTICA6ICBleHBlY3RlZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIgOiBJbnZhbGlk
+IGFyZ3VtZW50Cj4gaW9fc3VibWl0MDEgICAgMyAgVEZBSUwgICAgOiAgdW5leHBlY3RlZCBmYWls
+dXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAxIDogVW5rbm93biBlcnJvciAxODQ0Njc0NDA3MzcwOTU1
+MTYxNSwgZXhwZWN0ZWQgb25lIG9mIC1FSU5WQUwsIC1FQkFERiwgLUVGQVVMVAo+IGlvX3N1Ym1p
+dDAxICAgIDQgIFRQQVNTICA6ICBleHBlY3RlZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAt
+MTQgOiBCYWQgYWRkcmVzcwo+IGlvX3N1Ym1pdDAxICAgIDUgIFRQQVNTICA6ICBleHBlY3RlZCBm
+YWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIgOiBJbnZhbGlkIGFyZ3VtZW50Cj4gaW9fc3Vi
+bWl0MDEgICAgNiAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1ZSA9
+IC05ICAgOiBCYWQgZmlsZSBkZXNjcmlwdG9yCj4gaW9fc3VibWl0MDEgICAgNyAgVFBBU1MgIDog
+IGV4cGVjdGVkIHN1Y2Nlc3MgLSByZXR1cm5lZCB2YWx1ZSA9IDAKPiBpb19zdWJtaXQwMSAgICA4
+ICBUUEFTUyAgOiAgZXhwZWN0ZWQgc3VjY2VzcyAtIHJldHVybmVkIHZhbHVlID0gMQo+IAo+IENv
+dWxkIHlvdSBwbGVhc2UgbGV0IG1lIGtub3cgY2FuIHdlIGNvbnNpZGVyIC0gRVBFUk0gY2FzZSBh
+cyBhIHJldHVybiB2YWx1ZSBmb3IgaW9fc3VibWl0LgoKT0ssIG1heWJlIEkgbWlzc2VkIHNvbWV0
+aGluZywgc28sIGNhbiB5b3Ugc2hvdyB1cyBob3cgZGlkIHlvdSBwcm9kdWNlIHRoaXMgaW4gZGV0
+YWlsPwoKVGhhbmtzLApXYW5sb25nIEdhbwoKPiAKPiBUaGFua3MsCj4gTml0aW4gWWFkYXYKPiAK
+PiAKPiAKPiBIaSBKYW7vvIwKPiAKPj4+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2lvX3N1Ym1pdC9pb19zdWJtaXQwMS5jCj4+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pb19zdWJtaXQvaW9fc3VibWl0MDEuYwo+Pj4+IEBAIC0xMjYsNyArMTI2LDIxIEBAIGlu
+dCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCj4+Pj4gICAgICAgICAgICAgLyogMS4zIC0g
+RUlOVkFMOiB1bmluaXRpYWxpemVkIGlvY2IgKi8KPj4+PiAgICAgICAgICAgICBpb2Nic1swXSA9
+ICZpb2NiOwo+Pj4+ICAgICAgICAgICAgIFRFU1QoaW9fc3VibWl0KGN0eCwgMSwgaW9jYnMpKTsK
+Pj4+PiAtICAgICAgICAgICBjaGVja19yZXN1bHQoLUVJTlZBTCwgVEVTVF9SRVRVUk4pOwo+Pj4+
+ICsgICAgICAgICAgIHN3aXRjaChURVNUX1JFVFVSTikgewo+Pj4+ICsgICAgICAgICAgICAgICAg
+ICAgY2FzZSAtRUlOVkFMOgo+Pj4+ICsgICAgICAgICAgICAgICAgICAgY2FzZSAtRUJBREY6Cj4+
+Pj4gKyAgICAgICAgICAgICAgICAgICBjYXNlIC1FRkFVTFQ6Cj4+Pj4gKyAgICAgICAgICAgICAg
+ICAgICBjYXNlIC1FUEVSTToKPj4+Cj4+Pgo+Pj4gSSBkb24ndCB0aGluayBpb19zdWJtaXQoMikg
+Y2FuIHJldHVybiAtRVBFUk0uCj4+Pgo+Pj4gRG8geW91IHRoaW5rIHNvPwo+Pgo+PiBJIHdhcyB0
+cnlpbmcgYWxsIHNvcnRzIG9mIHJhbmRvbSBkYXRhIGFuZCBJIHJlbWVtYmVyIHNlZWluZyBvbmNl
+ICItMSIuCj4+IEknbSBmYWlsaW5nIHRvIHJlcHJvZHVjZSBpdCB0b2RheSwgc28gSSBjb3VsZCBi
+ZSB3cm9uZy4gSWYgSSBmYWlsIHRvIGZpbmQKPj4gZGF0YSB0aGF0IGdpdmVzIC1FUEVSTSwgSSds
+bCByZW1vdmUgaXQgaW4gdjIuCj4gCj4gCj4gSSBsb29rZWQgaW50byB0aGUgaW9fc3VibWl0KDIp
+IGNvZGUgaW4ga2VybmVsIGFuZCBkaWRuJ3Qgc2VlIGFueSBwYXRoIGNhbgo+IHJldHVybiAtRVBF
+Uk0sIHNvIEkgdGhpbmsgeW91IHNob3VsZCBjb25maXJtIG9uIGl0IGFnYWluLgo+IAo+IFRoYW5r
+cywKPiBXYW5sb25nIEdhbwo+IAo+Pgo+PiBSZWdhcmRzLAo+PiBKYW4KPj4KPj4+Cj4+PiBUaGFu
+a3MsCj4+PiBXYW5sb25nIEdhbwo+Pj4KPj4KPj4KPiAKPiAKPiBJbmZvcm1hdGlvbiB0cmFuc21p
+dHRlZCBieSB0aGlzIGUtbWFpbCBpcyBwcm9wcmlldGFyeSB0byBNcGhhc2lTLCBpdHMgYXNzb2Np
+YXRlZCBjb21wYW5pZXMgYW5kLyBvciBpdHMgY3VzdG9tZXJzIGFuZCBpcyBpbnRlbmRlZCAKPiBm
+b3IgdXNlIG9ubHkgYnkgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdoaWNoIGl0IGlzIGFk
+ZHJlc3NlZCwgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZCwg
+Y29uZmlkZW50aWFsIG9yIAo+IGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUgdW5kZXIgYXBwbGljYWJs
+ZSBsYXcuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQgb3IgaXQgYXBwZWFy
+cyB0aGF0IHRoaXMgbWFpbCBoYXMgYmVlbiBmb3J3YXJkZWQgCj4gdG8geW91IHdpdGhvdXQgcHJv
+cGVyIGF1dGhvcml0eSwgeW91IGFyZSBub3RpZmllZCB0aGF0IGFueSB1c2Ugb3IgZGlzc2VtaW5h
+dGlvbiBvZiB0aGlzIGluZm9ybWF0aW9uIGluIGFueSBtYW5uZXIgaXMgc3RyaWN0bHkgCj4gcHJv
+aGliaXRlZC4gSW4gc3VjaCBjYXNlcywgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBhdCBt
+YWlsbWFzdGVyQG1waGFzaXMuY29tIGFuZCBkZWxldGUgdGhpcyBtYWlsIGZyb20geW91ciByZWNv
+cmRzLgo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb24ndCBsZXQgc2xvdyBzaXRlIHBlcmZv
+cm1hbmNlIHJ1aW4geW91ciBidXNpbmVzcy4gRGVwbG95IE5ldyBSZWxpYyBBUE0KRGVwbG95IE5l
+dyBSZWxpYyBhcHAgcGVyZm9ybWFuY2UgbWFuYWdlbWVudCBhbmQga25vdyBleGFjdGx5CndoYXQg
+aXMgaGFwcGVuaW5nIGluc2lkZSB5b3VyIFJ1YnksIFB5dGhvbiwgUEhQLCBKYXZhLCBhbmQgLk5F
+VCBhcHAKVHJ5IE5ldyBSZWxpYyBhdCBubyBjb3N0IHRvZGF5IGFuZCBnZXQgb3VyIHN3ZWV0IERh
+dGEgTmVyZCBzaGlydCB0b28hCmh0dHA6Ly9wLnNmLm5ldC9zZnUvbmV3cmVsaWMtZGV2MmRldgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
