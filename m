@@ -2,22 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TOf4K-0003uZ-Cl
-	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 01:38:40 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TOf4J-0001VI-8D
-	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 01:38:40 +0000
-Message-ID: <507F5D2B.5030402@cn.fujitsu.com>
-Date: Thu, 18 Oct 2012 09:36:43 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1TOPgM-0007Ej-VQ
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 09:12:54 +0000
+Date: Wed, 17 Oct 2012 11:10:36 +0200
+From: chrubis@suse.cz
+Message-ID: <20121017091036.GA26815@rei.Home>
+References: <CAD15agakqdqNiZY_rKRyh0GocADu7F2rLdctJpSwdosiNz7CYg@mail.gmail.com>
+	<CABhB_e8j2oRbKPererNep1-T5z3sCsvRPW-2rSoPg-tvF4AZoA@mail.gmail.com>
+	<CAD15agZmMyu+vWLoRn1NukgaeXvG-v6pbxs=fUVULTQc6DLhgg@mail.gmail.com>
+	<20120920142905.GC7902@saboteur.suse.cz>
+	<CAD15agaKdae3Xo1YqG_G=Ue_p-MusuPFjcY9fppmhwTR2qufww@mail.gmail.com>
 MIME-Version: 1.0
-References: <507D6CAD.1040209@mips.com>
-	<20121017173819.11624.74780.stgit@localhost6.localdomain6>
-In-Reply-To: <20121017173819.11624.74780.stgit@localhost6.localdomain6>
-Subject: Re: [LTP] [PATCH] pipe01 should only check the data actually
- received from the	pipe
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <CAD15agaKdae3Xo1YqG_G=Ue_p-MusuPFjcY9fppmhwTR2qufww@mail.gmail.com>
+Subject: Re: [LTP] LTP test reults for kernel 3.0.15 and 3.4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,41 +28,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chris Dearman <chris@mips.com>
+To: Ritesh Harjani <ritesh.harjani@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 10/18/2012 01:38 AM, Chris Dearman wrote:
-> The pipe write does not include the string terminator. The way the
-> test is written it's valid for the writer to send less than the
-> requested data and for the reader to read less than the number of
-> written bytes, so just compare the actual bytes received.
+Hi!
+> Sorry for such a long gap. I tried finding out that why that test case was
+> failing by running a normal C program with malloc implementation.
 > 
-> Signed-off-by: Chris Dearman <chris@mips.com>
+> I found that, when I am trying to allocate a smaller memory chunk, memory
+> is getting allocated from the same address, but for a larger memory chunk,
+> it is allocating from some different address i.e if condition is getting
+> true (that means that test is failing).
+> Couldn't figure out, why this difference. Any idea on to where should I
+> look into?
 
-Pushed with Cyril's Ack, thank you.
+Well as far as I know very large chunks are not allocated on the heap
+but using anonymous mmap() (wikipedia suggests that usual threshold
+value is 256KB). In such case having two different addresses would not
+idicate a bug as expecting deterministic behavior from mutitasking
+preemptive kernel is simply wrong.
 
-Wanlong Gao
+> And yes, I will surely try to fix if this is a broken test. But moreover,
+> in some other kernel version it was passing. So, need to figure out as to
+> what changes has been made for this.
 
-> ---
->  testcases/kernel/syscalls/pipe/pipe01.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Everyone hates slow websites. So do we.
-> Make your web apps faster with AppDynamics
-> Download AppDynamics Lite for free today:
-> http://p.sf.net/sfu/appdyn_sfd2d_oct
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+I've been faster than you ;). I've commited a patch that removes this
+part of the test yesterday.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
