@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TO12X-0008Sn-2F
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 06:54:09 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TO12V-0007CH-Rn
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 06:54:09 +0000
-Date: Tue, 16 Oct 2012 02:53:58 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <82432993.665989.1350370438315.JavaMail.root@redhat.com>
-In-Reply-To: <507CC6F5.3090409@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1TOQas-0005oD-TL
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 10:11:18 +0000
+Date: Wed, 17 Oct 2012 12:09:02 +0200
+From: chrubis@suse.cz
+Message-ID: <20121017100902.GB26815@rei.Home>
+References: <502496C6.3090906@cn.fujitsu.com>
+	<20121003130640.GD22986@saboteur.suse.cz>
+	<5077DDA1.1000206@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not
-	return	-EINVAL
+Content-Disposition: inline
+In-Reply-To: <5077DDA1.1000206@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4] pthread_cond_brodcast/1-2.c hung when mem left
+ is not enough
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,92 +24,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com, Nitin Yadav <Nitin.Yadav@mphasis.com>
-Cc: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIldhbmxvbmcgR2FvIiA8Z2Fv
-d2FubG9uZ0Bjbi5mdWppdHN1LmNvbT4KPiBUbzogIk5pdGluIFlhZGF2IiA8Tml0aW4uWWFkYXZA
-bXBoYXNpcy5jb20+Cj4gQ2M6IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IFNlbnQ6
-IFR1ZXNkYXksIDE2IE9jdG9iZXIsIDIwMTIgNDozMToxNyBBTQo+IFN1YmplY3Q6IFJlOiBbTFRQ
-XSBbUEFUQ0hdIGlvX3N1Ym1pdDogdW5pbml0aWFsaXplZCBpb2NiIG1heSBub3QgcmV0dXJuCS1F
-SU5WQUwKPiAKPiBPbiAxMC8wOS8yMDEyIDAyOjA4IFBNLCBOaXRpbiBZYWRhdiB3cm90ZToKPiA+
-IEhpIFdhbmxvbmcsCj4gPiAgICAKPiA+ICAgQmVsb3cgYXJlIHRoZSBvdXRwdXQgd2hlcmUgSSBh
-bSBnZXR0aW5nIC0gRVBFUk0gKHJldHVybmVkIHZhbHVlID0KPiA+ICAgMSkgYXMgYSByZXR1cm4g
-dmFsdWUgZnJvbSBpb19zdWJtaXQuCj4gPiAKPiA+IGlvX3N1Ym1pdDAxICAgIDEgIFRQQVNTICA6
-ICBleHBlY3RlZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIKPiA+IDogSW52YWxpZCBh
-cmd1bWVudAo+ID4gaW9fc3VibWl0MDEgICAgMiAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUg
-LSByZXR1cm5lZCB2YWx1ZSA9IC0yMgo+ID4gOiBJbnZhbGlkIGFyZ3VtZW50Cj4gPiBpb19zdWJt
-aXQwMSAgICAzICBURkFJTCAgICA6ICB1bmV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1
-ZSA9Cj4gPiAxIDogVW5rbm93biBlcnJvciAxODQ0Njc0NDA3MzcwOTU1MTYxNSwgZXhwZWN0ZWQg
-b25lIG9mIC1FSU5WQUwsCj4gPiAtRUJBREYsIC1FRkFVTFQKPiA+IGlvX3N1Ym1pdDAxICAgIDQg
-IFRQQVNTICA6ICBleHBlY3RlZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMTQKPiA+IDog
-QmFkIGFkZHJlc3MKPiA+IGlvX3N1Ym1pdDAxICAgIDUgIFRQQVNTICA6ICBleHBlY3RlZCBmYWls
-dXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIKPiA+IDogSW52YWxpZCBhcmd1bWVudAo+ID4gaW9f
-c3VibWl0MDEgICAgNiAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1
-ZSA9IC05Cj4gPiAgIDogQmFkIGZpbGUgZGVzY3JpcHRvcgo+ID4gaW9fc3VibWl0MDEgICAgNyAg
-VFBBU1MgIDogIGV4cGVjdGVkIHN1Y2Nlc3MgLSByZXR1cm5lZCB2YWx1ZSA9IDAKPiA+IGlvX3N1
-Ym1pdDAxICAgIDggIFRQQVNTICA6ICBleHBlY3RlZCBzdWNjZXNzIC0gcmV0dXJuZWQgdmFsdWUg
-PSAxCgpOb3RpY2UgdGhhdCByZXR1cm4gdmFsdWUgaXMgcG9zaXRpdmUgKDEpLiBTbyBpdCBjb3Vs
-ZCBiZSB0aGF0IHNvbWUgcmFuZG9tIGRhdGEKc3VjY2VlZGVkIGFuZCBvbmUgaW9jYiB3YXMgYWN0
-dWFsbHkgc3VibWl0dGVkLgoKUmVnYXJkcywKSmFuCgo+ID4gCj4gPiBDb3VsZCB5b3UgcGxlYXNl
-IGxldCBtZSBrbm93IGNhbiB3ZSBjb25zaWRlciAtIEVQRVJNIGNhc2UgYXMgYQo+ID4gcmV0dXJu
-IHZhbHVlIGZvciBpb19zdWJtaXQuCj4gCj4gT0ssIG1heWJlIEkgbWlzc2VkIHNvbWV0aGluZywg
-c28sIGNhbiB5b3Ugc2hvdyB1cyBob3cgZGlkIHlvdSBwcm9kdWNlCj4gdGhpcyBpbiBkZXRhaWw/
-Cj4gCj4gVGhhbmtzLAo+IFdhbmxvbmcgR2FvCj4gCj4gPiAKPiA+IFRoYW5rcywKPiA+IE5pdGlu
-IFlhZGF2Cj4gPiAKPiA+IAo+ID4gCj4gPiBIaSBKYW7vvIwKPiA+IAo+ID4+Pj4gLS0tIGEvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb19zdWJtaXQvaW9fc3VibWl0MDEuYwo+ID4+Pj4gKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb19zdWJtaXQvaW9fc3VibWl0MDEuYwo+ID4+
-Pj4gQEAgLTEyNiw3ICsxMjYsMjEgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkK
-PiA+Pj4+ICAgICAgICAgICAgIC8qIDEuMyAtIEVJTlZBTDogdW5pbml0aWFsaXplZCBpb2NiICov
-Cj4gPj4+PiAgICAgICAgICAgICBpb2Nic1swXSA9ICZpb2NiOwo+ID4+Pj4gICAgICAgICAgICAg
-VEVTVChpb19zdWJtaXQoY3R4LCAxLCBpb2NicykpOwo+ID4+Pj4gLSAgICAgICAgICAgY2hlY2tf
-cmVzdWx0KC1FSU5WQUwsIFRFU1RfUkVUVVJOKTsKPiA+Pj4+ICsgICAgICAgICAgIHN3aXRjaChU
-RVNUX1JFVFVSTikgewo+ID4+Pj4gKyAgICAgICAgICAgICAgICAgICBjYXNlIC1FSU5WQUw6Cj4g
-Pj4+PiArICAgICAgICAgICAgICAgICAgIGNhc2UgLUVCQURGOgo+ID4+Pj4gKyAgICAgICAgICAg
-ICAgICAgICBjYXNlIC1FRkFVTFQ6Cj4gPj4+PiArICAgICAgICAgICAgICAgICAgIGNhc2UgLUVQ
-RVJNOgo+ID4+Pgo+ID4+Pgo+ID4+PiBJIGRvbid0IHRoaW5rIGlvX3N1Ym1pdCgyKSBjYW4gcmV0
-dXJuIC1FUEVSTS4KPiA+Pj4KPiA+Pj4gRG8geW91IHRoaW5rIHNvPwo+ID4+Cj4gPj4gSSB3YXMg
-dHJ5aW5nIGFsbCBzb3J0cyBvZiByYW5kb20gZGF0YSBhbmQgSSByZW1lbWJlciBzZWVpbmcgb25j
-ZQo+ID4+ICItMSIuCj4gPj4gSSdtIGZhaWxpbmcgdG8gcmVwcm9kdWNlIGl0IHRvZGF5LCBzbyBJ
-IGNvdWxkIGJlIHdyb25nLiBJZiBJIGZhaWwKPiA+PiB0byBmaW5kCj4gPj4gZGF0YSB0aGF0IGdp
-dmVzIC1FUEVSTSwgSSdsbCByZW1vdmUgaXQgaW4gdjIuCj4gPiAKPiA+IAo+ID4gSSBsb29rZWQg
-aW50byB0aGUgaW9fc3VibWl0KDIpIGNvZGUgaW4ga2VybmVsIGFuZCBkaWRuJ3Qgc2VlIGFueQo+
-ID4gcGF0aCBjYW4KPiA+IHJldHVybiAtRVBFUk0sIHNvIEkgdGhpbmsgeW91IHNob3VsZCBjb25m
-aXJtIG9uIGl0IGFnYWluLgo+ID4gCj4gPiBUaGFua3MsCj4gPiBXYW5sb25nIEdhbwo+ID4gCj4g
-Pj4KPiA+PiBSZWdhcmRzLAo+ID4+IEphbgo+ID4+Cj4gPj4+Cj4gPj4+IFRoYW5rcywKPiA+Pj4g
-V2FubG9uZyBHYW8KPiA+Pj4KPiA+Pgo+ID4+Cj4gPiAKPiA+IAo+ID4gSW5mb3JtYXRpb24gdHJh
-bnNtaXR0ZWQgYnkgdGhpcyBlLW1haWwgaXMgcHJvcHJpZXRhcnkgdG8gTXBoYXNpUywKPiA+IGl0
-cyBhc3NvY2lhdGVkIGNvbXBhbmllcyBhbmQvIG9yIGl0cyBjdXN0b21lcnMgYW5kIGlzIGludGVu
-ZGVkCj4gPiBmb3IgdXNlIG9ubHkgYnkgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdoaWNo
-IGl0IGlzIGFkZHJlc3NlZCwKPiA+IGFuZCBtYXkgY29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlz
-IHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBvcgo+ID4gZXhlbXB0IGZyb20gZGlzY2xvc3VyZSB1
-bmRlciBhcHBsaWNhYmxlIGxhdy4gSWYgeW91IGFyZSBub3QgdGhlCj4gPiBpbnRlbmRlZCByZWNp
-cGllbnQgb3IgaXQgYXBwZWFycyB0aGF0IHRoaXMgbWFpbCBoYXMgYmVlbiBmb3J3YXJkZWQKPiA+
-IHRvIHlvdSB3aXRob3V0IHByb3BlciBhdXRob3JpdHksIHlvdSBhcmUgbm90aWZpZWQgdGhhdCBh
-bnkgdXNlIG9yCj4gPiBkaXNzZW1pbmF0aW9uIG9mIHRoaXMgaW5mb3JtYXRpb24gaW4gYW55IG1h
-bm5lciBpcyBzdHJpY3RseQo+ID4gcHJvaGliaXRlZC4gSW4gc3VjaCBjYXNlcywgcGxlYXNlIG5v
-dGlmeSB1cyBpbW1lZGlhdGVseSBhdAo+ID4gbWFpbG1hc3RlckBtcGhhc2lzLmNvbSBhbmQgZGVs
-ZXRlIHRoaXMgbWFpbCBmcm9tIHlvdXIgcmVjb3Jkcy4KPiA+IAo+IAo+IAo+IC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQo+IERvbid0IGxldCBzbG93IHNpdGUgcGVyZm9ybWFuY2UgcnVpbiB5b3VyIGJ1
-c2luZXNzLiBEZXBsb3kgTmV3IFJlbGljCj4gQVBNCj4gRGVwbG95IE5ldyBSZWxpYyBhcHAgcGVy
-Zm9ybWFuY2UgbWFuYWdlbWVudCBhbmQga25vdyBleGFjdGx5Cj4gd2hhdCBpcyBoYXBwZW5pbmcg
-aW5zaWRlIHlvdXIgUnVieSwgUHl0aG9uLCBQSFAsIEphdmEsIGFuZCAuTkVUIGFwcAo+IFRyeSBO
-ZXcgUmVsaWMgYXQgbm8gY29zdCB0b2RheSBhbmQgZ2V0IG91ciBzd2VldCBEYXRhIE5lcmQgc2hp
-cnQgdG9vIQo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvbmV3cmVsaWMtZGV2MmRldgo+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGlu
-ZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpEb24ndCBsZXQgc2xvdyBzaXRlIHBlcmZvcm1hbmNlIHJ1aW4geW91ciBidXNpbmVz
-cy4gRGVwbG95IE5ldyBSZWxpYyBBUE0KRGVwbG95IE5ldyBSZWxpYyBhcHAgcGVyZm9ybWFuY2Ug
-bWFuYWdlbWVudCBhbmQga25vdyBleGFjdGx5CndoYXQgaXMgaGFwcGVuaW5nIGluc2lkZSB5b3Vy
-IFJ1YnksIFB5dGhvbiwgUEhQLCBKYXZhLCBhbmQgLk5FVCBhcHAKVHJ5IE5ldyBSZWxpYyBhdCBu
-byBjb3N0IHRvZGF5IGFuZCBnZXQgb3VyIHN3ZWV0IERhdGEgTmVyZCBzaGlydCB0b28hCmh0dHA6
-Ly9wLnNmLm5ldC9zZnUvbmV3cmVsaWMtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> > And actually I think that free ram itself is enough to figoure out
+> > available memory as the kernel tends to eat as many memory for buffers
+> > as available and reclaims it back only when needed.
+> > 
+> 
+> Unfortunately i'v not got other good ideas.
+> Do you have any suggestion?
+
+There are several ways how to fix this.
+
+One is to assume usable ram as free + buffers/N where N > 1
+
+Another is to assume usable ram from total amount of RAM as
+(total - M)/N where M statically reserved size and N > 1.
+
+The problem is to choose the constats carefully so that we excersize the
+system enough but don't overload it.
+
+After you figure out this part, the patch with sysinfo() in header in
+include is fine.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
