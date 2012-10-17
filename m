@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TNwy1-0005Le-NK
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 02:33:13 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TNwxz-0001xN-HD
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 02:33:13 +0000
-Message-ID: <507CC6F5.3090409@cn.fujitsu.com>
-Date: Tue, 16 Oct 2012 10:31:17 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TOW8n-0006Pe-29
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 16:06:41 +0000
+Date: Wed, 17 Oct 2012 18:04:29 +0200
+From: chrubis@suse.cz
+Message-ID: <20121017160429.GD27890@rei>
+References: <507D6C63.5040704@mips.com>
 MIME-Version: 1.0
-References: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
-	<4FED5CFD.7040406@cn.fujitsu.com>
-	<E351E450E8B9F54684A699D42DC5ADF225E9C6D3@MPBAGVEX02.corp.mphasis.com>
-In-Reply-To: <E351E450E8B9F54684A699D42DC5ADF225E9C6D3@MPBAGVEX02.corp.mphasis.com>
-Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
-	-EINVAL
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <507D6C63.5040704@mips.com>
+Subject: Re: [LTP] [PATCH] Avoid compiler optimisation of malloc calls
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,70 +21,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nitin Yadav <Nitin.Yadav@mphasis.com>
+To: Chris Dearman <chris@mips.com>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gMTAvMDkvMjAxMiAwMjowOCBQTSwgTml0aW4gWWFkYXYgd3JvdGU6Cj4gSGkgV2FubG9uZywK
-PiAgICAKPiAgIEJlbG93IGFyZSB0aGUgb3V0cHV0IHdoZXJlIEkgYW0gZ2V0dGluZyAtIEVQRVJN
-IChyZXR1cm5lZCB2YWx1ZSA9IDEpIGFzIGEgcmV0dXJuIHZhbHVlIGZyb20gaW9fc3VibWl0LiAK
-PiAKPiBpb19zdWJtaXQwMSAgICAxICBUUEFTUyAgOiAgZXhwZWN0ZWQgZmFpbHVyZSAtIHJldHVy
-bmVkIHZhbHVlID0gLTIyIDogSW52YWxpZCBhcmd1bWVudAo+IGlvX3N1Ym1pdDAxICAgIDIgIFRQ
-QVNTICA6ICBleHBlY3RlZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIgOiBJbnZhbGlk
-IGFyZ3VtZW50Cj4gaW9fc3VibWl0MDEgICAgMyAgVEZBSUwgICAgOiAgdW5leHBlY3RlZCBmYWls
-dXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAxIDogVW5rbm93biBlcnJvciAxODQ0Njc0NDA3MzcwOTU1
-MTYxNSwgZXhwZWN0ZWQgb25lIG9mIC1FSU5WQUwsIC1FQkFERiwgLUVGQVVMVAo+IGlvX3N1Ym1p
-dDAxICAgIDQgIFRQQVNTICA6ICBleHBlY3RlZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAt
-MTQgOiBCYWQgYWRkcmVzcwo+IGlvX3N1Ym1pdDAxICAgIDUgIFRQQVNTICA6ICBleHBlY3RlZCBm
-YWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIgOiBJbnZhbGlkIGFyZ3VtZW50Cj4gaW9fc3Vi
-bWl0MDEgICAgNiAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1ZSA9
-IC05ICAgOiBCYWQgZmlsZSBkZXNjcmlwdG9yCj4gaW9fc3VibWl0MDEgICAgNyAgVFBBU1MgIDog
-IGV4cGVjdGVkIHN1Y2Nlc3MgLSByZXR1cm5lZCB2YWx1ZSA9IDAKPiBpb19zdWJtaXQwMSAgICA4
-ICBUUEFTUyAgOiAgZXhwZWN0ZWQgc3VjY2VzcyAtIHJldHVybmVkIHZhbHVlID0gMQo+IAo+IENv
-dWxkIHlvdSBwbGVhc2UgbGV0IG1lIGtub3cgY2FuIHdlIGNvbnNpZGVyIC0gRVBFUk0gY2FzZSBh
-cyBhIHJldHVybiB2YWx1ZSBmb3IgaW9fc3VibWl0LgoKT0ssIG1heWJlIEkgbWlzc2VkIHNvbWV0
-aGluZywgc28sIGNhbiB5b3Ugc2hvdyB1cyBob3cgZGlkIHlvdSBwcm9kdWNlIHRoaXMgaW4gZGV0
-YWlsPwoKVGhhbmtzLApXYW5sb25nIEdhbwoKPiAKPiBUaGFua3MsCj4gTml0aW4gWWFkYXYKPiAK
-PiAKPiAKPiBIaSBKYW7vvIwKPiAKPj4+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2lvX3N1Ym1pdC9pb19zdWJtaXQwMS5jCj4+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9pb19zdWJtaXQvaW9fc3VibWl0MDEuYwo+Pj4+IEBAIC0xMjYsNyArMTI2LDIxIEBAIGlu
-dCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCj4+Pj4gICAgICAgICAgICAgLyogMS4zIC0g
-RUlOVkFMOiB1bmluaXRpYWxpemVkIGlvY2IgKi8KPj4+PiAgICAgICAgICAgICBpb2Nic1swXSA9
-ICZpb2NiOwo+Pj4+ICAgICAgICAgICAgIFRFU1QoaW9fc3VibWl0KGN0eCwgMSwgaW9jYnMpKTsK
-Pj4+PiAtICAgICAgICAgICBjaGVja19yZXN1bHQoLUVJTlZBTCwgVEVTVF9SRVRVUk4pOwo+Pj4+
-ICsgICAgICAgICAgIHN3aXRjaChURVNUX1JFVFVSTikgewo+Pj4+ICsgICAgICAgICAgICAgICAg
-ICAgY2FzZSAtRUlOVkFMOgo+Pj4+ICsgICAgICAgICAgICAgICAgICAgY2FzZSAtRUJBREY6Cj4+
-Pj4gKyAgICAgICAgICAgICAgICAgICBjYXNlIC1FRkFVTFQ6Cj4+Pj4gKyAgICAgICAgICAgICAg
-ICAgICBjYXNlIC1FUEVSTToKPj4+Cj4+Pgo+Pj4gSSBkb24ndCB0aGluayBpb19zdWJtaXQoMikg
-Y2FuIHJldHVybiAtRVBFUk0uCj4+Pgo+Pj4gRG8geW91IHRoaW5rIHNvPwo+Pgo+PiBJIHdhcyB0
-cnlpbmcgYWxsIHNvcnRzIG9mIHJhbmRvbSBkYXRhIGFuZCBJIHJlbWVtYmVyIHNlZWluZyBvbmNl
-ICItMSIuCj4+IEknbSBmYWlsaW5nIHRvIHJlcHJvZHVjZSBpdCB0b2RheSwgc28gSSBjb3VsZCBi
-ZSB3cm9uZy4gSWYgSSBmYWlsIHRvIGZpbmQKPj4gZGF0YSB0aGF0IGdpdmVzIC1FUEVSTSwgSSds
-bCByZW1vdmUgaXQgaW4gdjIuCj4gCj4gCj4gSSBsb29rZWQgaW50byB0aGUgaW9fc3VibWl0KDIp
-IGNvZGUgaW4ga2VybmVsIGFuZCBkaWRuJ3Qgc2VlIGFueSBwYXRoIGNhbgo+IHJldHVybiAtRVBF
-Uk0sIHNvIEkgdGhpbmsgeW91IHNob3VsZCBjb25maXJtIG9uIGl0IGFnYWluLgo+IAo+IFRoYW5r
-cywKPiBXYW5sb25nIEdhbwo+IAo+Pgo+PiBSZWdhcmRzLAo+PiBKYW4KPj4KPj4+Cj4+PiBUaGFu
-a3MsCj4+PiBXYW5sb25nIEdhbwo+Pj4KPj4KPj4KPiAKPiAKPiBJbmZvcm1hdGlvbiB0cmFuc21p
-dHRlZCBieSB0aGlzIGUtbWFpbCBpcyBwcm9wcmlldGFyeSB0byBNcGhhc2lTLCBpdHMgYXNzb2Np
-YXRlZCBjb21wYW5pZXMgYW5kLyBvciBpdHMgY3VzdG9tZXJzIGFuZCBpcyBpbnRlbmRlZCAKPiBm
-b3IgdXNlIG9ubHkgYnkgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdoaWNoIGl0IGlzIGFk
-ZHJlc3NlZCwgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZCwg
-Y29uZmlkZW50aWFsIG9yIAo+IGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUgdW5kZXIgYXBwbGljYWJs
-ZSBsYXcuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQgb3IgaXQgYXBwZWFy
-cyB0aGF0IHRoaXMgbWFpbCBoYXMgYmVlbiBmb3J3YXJkZWQgCj4gdG8geW91IHdpdGhvdXQgcHJv
-cGVyIGF1dGhvcml0eSwgeW91IGFyZSBub3RpZmllZCB0aGF0IGFueSB1c2Ugb3IgZGlzc2VtaW5h
-dGlvbiBvZiB0aGlzIGluZm9ybWF0aW9uIGluIGFueSBtYW5uZXIgaXMgc3RyaWN0bHkgCj4gcHJv
-aGliaXRlZC4gSW4gc3VjaCBjYXNlcywgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBhdCBt
-YWlsbWFzdGVyQG1waGFzaXMuY29tIGFuZCBkZWxldGUgdGhpcyBtYWlsIGZyb20geW91ciByZWNv
-cmRzLgo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb24ndCBsZXQgc2xvdyBzaXRlIHBlcmZv
-cm1hbmNlIHJ1aW4geW91ciBidXNpbmVzcy4gRGVwbG95IE5ldyBSZWxpYyBBUE0KRGVwbG95IE5l
-dyBSZWxpYyBhcHAgcGVyZm9ybWFuY2UgbWFuYWdlbWVudCBhbmQga25vdyBleGFjdGx5CndoYXQg
-aXMgaGFwcGVuaW5nIGluc2lkZSB5b3VyIFJ1YnksIFB5dGhvbiwgUEhQLCBKYXZhLCBhbmQgLk5F
-VCBhcHAKVHJ5IE5ldyBSZWxpYyBhdCBubyBjb3N0IHRvZGF5IGFuZCBnZXQgb3VyIHN3ZWV0IERh
-dGEgTmVyZCBzaGlydCB0b28hCmh0dHA6Ly9wLnNmLm5ldC9zZnUvbmV3cmVsaWMtZGV2MmRldgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
-YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> clang understands the malloc library call and can optimise calls to
+> it. In particular it will avoid calling malloc completely if it
+> detects that the result is not used.
+
+Both patches are okay, but seems to be corrupted (git am wasn't able to
+understand them).
+
+Could you send these again (possibly with git send-email) or send a pull
+request from repo forked on github or anything else that would work?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
