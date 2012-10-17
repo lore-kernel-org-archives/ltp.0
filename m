@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TTUrE-0002rk-NC
-	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 09:45:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TTUr9-00015N-6I
-	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 09:45:08 +0000
-Message-ID: <5090F333.1070608@cn.fujitsu.com>
-Date: Wed, 31 Oct 2012 17:45:23 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chris@mips.com>) id 1TOY6U-0000jW-LP
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 18:12:26 +0000
+Received: from dns1.mips.com ([12.201.5.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TOY6T-0006Z1-TY
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 18:12:26 +0000
+Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
+	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9HICKew000954
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Oct 2012 11:12:20 -0700
+Received: from exchdb01.mips.com (unknown [192.168.36.84])
+	(using TLSv1 with cipher AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by mailgate1.mips.com (Postfix) with ESMTP id 20313364656
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Oct 2012 11:12:16 -0700 (PDT)
+From: Chris Dearman <chris@mips.com>
+Date: Wed, 17 Oct 2012 11:12:15 -0700
+Message-ID: <20121017181033.12482.53855.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
-References: <1351675894-4843-1-git-send-email-jin.li@windriver.com>
-	<1351675894-4843-2-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1351675894-4843-2-git-send-email-jin.li@windriver.com>
-Subject: Re: [LTP] [PATCH] number overcommit_memory test name in runtest/mm
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [PATCH 0/2] Cleanup trailing whitespace and missing \n at EOF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,25 +34,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 10/31/2012 05:31 PM, jin.li@windriver.com wrote:
-> From: Jin Li <jin.li@windriver.com>
-> 
-> ---
->  runtest/mm | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/runtest/mm b/runtest/mm
-> index 0f59ef7..a8bd605 100644
-> --- a/runtest/mm
-> +++ b/runtest/mm
+These two patches are a general cleanup of files in the tree to remove
+trailing whitespace at end of line and add missing \n at end of file.
 
-
-Pushed, thank you.
-
-Wanlong Gao
+-- 
+Chris Dearman               Desk: +1 408 530 5092  Cell: +1 408 398 5531
+MIPS Technologies Inc         955 East Arques Avenue, Sunnyvale CA 94085
 
 
 ------------------------------------------------------------------------------
