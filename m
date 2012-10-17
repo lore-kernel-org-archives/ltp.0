@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TNpKE-0001hA-Kp
-	for ltp-list@lists.sourceforge.net; Mon, 15 Oct 2012 18:23:38 +0000
-Date: Mon, 15 Oct 2012 20:21:22 +0200
-From: chrubis@suse.cz
-Message-ID: <20121015182122.GA6698@rei.suse.cz>
-References: <1349679654-16708-1-git-send-email-GuoJian.Zhou@windriver.com>
-	<201210150014.47389.vapier@gentoo.org>
-	<507B9964.8070905@windriver.com>
-	<201210151332.57424.vapier@gentoo.org>
-	<20121015181808.GA6380@rei.suse.cz>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chris@mips.com>) id 1TOXZf-00051H-Hl
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 17:38:31 +0000
+Received: from dns1.mips.com ([12.201.5.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TOXZb-0007QC-Ib
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 17:38:31 +0000
+Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
+	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9HHcLfd032471
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Oct 2012 10:38:21 -0700
+Received: from exchdb01.mips.com (unknown [192.168.36.84])
+	(using TLSv1 with cipher AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by mailgate1.mips.com (Postfix) with ESMTP id 22DE2364656
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Oct 2012 10:38:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20121015181808.GA6380@rei.suse.cz>
-Subject: Re: [LTP] [PATCH] There was no "processor" key word in the
- "cpuinfo" on the non-SMP ARM Platforms. So the tracing
- "ftrace_buffer_size.sh" script would report "division by 0" error,
- then it would exit soon. The tracing test would check failed when it could
- not find this script running.
+Content-Type: multipart/mixed; boundary="MIMEBOUNDARY"
+From: Chris Dearman <chris@mips.com>
+Date: Wed, 17 Oct 2012 10:38:19 -0700
+Message-ID: <20121017173819.11624.74780.stgit@localhost6.localdomain6>
+In-Reply-To: <507D6CAD.1040209@mips.com>
+References: <507D6CAD.1040209@mips.com>
+Subject: [LTP] [PATCH] pipe01 should only check the data actually received
+	from the	pipe
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,38 +35,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Zhou Guojian <Guojian.Zhou@windriver.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-> > really we should be using `getconf _NPROCESSORS_ONLN` instead and centralizing 
-> > this parsing logic.  /proc/cpuinfo is directly accessed by many scripts.  the 
-> > -i suggestion i provided came from its usage in those other files which, 
-> > according to your findings, are also broken.
-> > 
-> > i'd suggest updating tools/apicmds/ to add a new helper program like 
-> > `tst_ncpus` which will call sysconf() and we convert all of our .sh scripts 
-> > from reading /proc/cpuinfo to calling that program.
-> 
-> That is coincidentally soultion I would about to propose.
+--MIMEBOUNDARY
+Content-Disposition: inline
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Should have been: "was about to propose"
+The pipe write does not include the string terminator. The way the
+test is written it's valid for the writer to send less than the
+requested data and for the reader to read less than the number of
+written bytes, so just compare the actual bytes received.
 
-Now we only need somebody to get it implemented ;).
+Signed-off-by: Chris Dearman <chris@mips.com>
+---
+ testcases/kernel/syscalls/pipe/pipe01.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--MIMEBOUNDARY
+Content-Disposition: attachment; filename="improve-correctness-of-pipe01.patch"
+MIME-Version: 1.0
+Content-Type: text/plain; name="improve-correctness-of-pipe01.patch";
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/testcases/kernel/syscalls/pipe/pipe01.c b/testcases/kernel/syscalls/pipe/pipe01.c
+index 08cf612..f49d7f4 100644
+--- a/testcases/kernel/syscalls/pipe/pipe01.c
++++ b/testcases/kernel/syscalls/pipe/pipe01.c
+@@ -119,7 +119,7 @@ int main(int ac, char **av)
+ 			}
+ 
+ 			/* are the strings written and read equal */
+-			if ((greater = strcmp(rebuf, wrbuf)) != 0) {
++			if ((greater = strncmp(rebuf, wrbuf, red)) != 0) {
+ 				tst_resm(TFAIL, "Condition #3 test failed");
+ 				continue;
+ 			}
+
+--MIMEBOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
+--MIMEBOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--MIMEBOUNDARY--
+
