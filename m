@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TQvn2-0007Wa-Jm
-	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 07:54:12 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TQvmy-00065P-Lf
-	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 07:54:12 +0000
-Message-ID: <50879E1F.2090106@cn.fujitsu.com>
-Date: Wed, 24 Oct 2012 15:51:59 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <chris@mips.com>) id 1TOXWx-0003Zf-NH
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 17:35:43 +0000
+Received: from dns1.mips.com ([12.201.5.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TOXWw-00077b-NG
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 17:35:43 +0000
+Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
+	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9HHZaie032390
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Oct 2012 10:35:36 -0700
+Received: from exchdb01.mips.com (unknown [192.168.36.84])
+	(using TLSv1 with cipher AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by mailgate1.mips.com (Postfix) with ESMTP id 2097F364656
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Oct 2012 10:35:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <1701010771.5419513.1351064968870.JavaMail.root@redhat.com>
-In-Reply-To: <1701010771.5419513.1351064968870.JavaMail.root@redhat.com>
-Subject: Re: [LTP] Regarding shmat01 syscall test
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="MIMEBOUNDARY"
+From: Chris Dearman <chris@mips.com>
+Date: Wed, 17 Oct 2012 10:35:35 -0700
+Message-ID: <20121017173535.11574.18883.stgit@localhost6.localdomain6>
+In-Reply-To: <507D6C63.5040704@mips.com>
+References: <507D6C63.5040704@mips.com>
+Subject: [LTP] [PATCH] Avoid compiler optimisation of malloc calls
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,132 +34,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 10/24/2012 03:49 PM, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL" <omprakash.pal@stericsson.com>
->> Sent: Wednesday, 24 October, 2012 9:03:16 AM
->> Subject: Re: [LTP] Regarding shmat01 syscall test
->>
->> On 10/24/2012 02:43 PM, Jan Stancek wrote:
->>>
->>>
->>> ----- Original Message -----
->>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->>>> To: "Om Prakash PAL" <omprakash.pal@stericsson.com>
->>>> Cc: ltp-list@lists.sourceforge.net
->>>> Sent: Wednesday, 24 October, 2012 2:45:47 AM
->>>> Subject: Re: [LTP] Regarding shmat01 syscall test
->>>>
->>>> On 10/23/2012 06:05 PM, Om Prakash PAL wrote:
->>>>>
->>>>>
->>>>> -----Original Message-----
->>>>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
->>>>> Sent: Tuesday, October 23, 2012 3:07 PM
->>>>> To: Om Prakash PAL
->>>>> Cc: ltp-list@lists.sourceforge.net
->>>>> Subject: Re: [LTP] Regarding shmat01 syscall test
->>>>>
->>>>> On 10/23/2012 05:24 PM, Om Prakash PAL wrote:
->>>>>> Hi,
->>>>>>
->>>>>> I am working on syscall test:  shmat01.c
->>>>>>
->>>>>> I have some confusion:
->>>>>>
->>>>>>  
->>>>>>
->>>>>> In setup() : it is  allocating shared memory by shmget() and
->>>>>> then
->>>>>> attaching by shmat() and after  that detaching the attached
->>>>>> address (i.e. shmdt())
->>>>>>
->>>>>>  
->>>>>>
->>>>>>         if (shmdt((const void *)base_addr) == -1) {
->>>>>>
->>>>>>                 tst_brkm(TBROK, cleanup, "Couldn't detach shared
->>>>>>                 memory");
->>>>>>
->>>>>>         }
->>>>>>
->>>>>>  
->>>>>>
->>>>>> And again in main function it is using same "base_addr" as
->>>>>> attaching address,
->>>>>>
->>>>>>  
->>>>>>
->>>>>> addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
->>>>>>
->>>>>>                                      TC[i].flags);
->>>>>>
->>>>>> how can we ensure(100%) that base_addr (virtual) will be free
->>>>>> till
->>>>>> this point for attaching?.
->>>>>
->>>>> Maybe we can't, but I didn't see any fail on this. Did you see
->>>>> any
->>>>> testing failure here?
->>>>>
->>>>> Yes, I got some failure and the reason of failure is : the
->>>>> address
->>>>> at which we want to attach is busy.
->>>>
->>>> OK, please feel free to send a patch, or can you tell us how to
->>>> reproduce it?
->>>
->>> I recall I could reproduce it, if I added single printf:
->>> http://article.gmane.org/gmane.linux.ltp/16480
->>
->> Do you get a solution? Send out a patch?
-> 
-> No, I haven't send any patch.
-> 
-> About solution:
-> I'm thinking, that instead of probing with shmat, we can mmap large chunk of memory,
-> and then set base_addr somewhere in the middle and unmap the chunk.
-> That is, using address that get_unmapped_area() is unlikely to pick.
+--MIMEBOUNDARY
+Content-Disposition: inline
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-This idea seems good, bug how can you decide the size of this "chunk of memory"?
+clang understands the malloc library call and can optimise calls to
+it. In particular it will avoid calling malloc completely if it
+detects that the result is not used.
 
-Thanks,
-Wanlong Gao
+Signed-off-by: Chris Dearman <chris@mips.com>
+---
+ .../conformance/interfaces/pthread_cond_init/4-1.c |   19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-> 
-> Regards,
-> Jan
-> 
->>
->>
->> Thanks,
->> Wanlong Gao
->>
->>>
->>> Regards,
->>> Jan
->>>
->>
->>
-> 
+--MIMEBOUNDARY
+Content-Disposition: attachment;
+	filename="avoid-compiler-optimisation-of.patch"
+MIME-Version: 1.0
+Content-Type: text/plain; name="avoid-compiler-optimisation-of.patch";
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c
+index 287fda1..06accd6 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_init/4-1.c
+@@ -50,7 +50,7 @@
+ #define ERR_MSG(f, rc) printf("Failed: func: %s rc: %s (%u)\n", \
+ 			f, strerror(rc), rc);
+ 
+-/* Max memory for child is 81B */
++/* Max memory for child is 1MB */
+ #define MAX_MEM	((1<<20))
+ 
+ /*
+@@ -59,8 +59,8 @@
+  */
+ static void child(void)
+ {
+-	char *curr;
+-	char *prev = NULL;
++	void *curr;
++	void *prev = NULL;
+ 	struct rlimit rl;
+ 	pthread_cond_t cond;
+ 	pthread_condattr_t attr;
+@@ -76,10 +76,15 @@ static void child(void)
+ 		exit(PTS_UNRESOLVED);
+ 	}
+ 
+-	/* Consume all memory we can */
+-	do {
+-		curr = malloc(1);
+-	} while (curr);
++	/*
++	 * Consume all memory we can
++	 * It's importamt to use the malloc() return value in a
++	 * meaningful way to bypass potential compiler optimisations.
++	 */
++	while ((curr = malloc(sizeof(void *)))) {
++		*(void **)curr = prev;
++		prev = curr;
++	}
+ 	if (errno != ENOMEM) {
+ 		ERR_MSG("malloc()", errno);
+ 		exit(PTS_UNRESOLVED);
+
+--MIMEBOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_sfd2d_oct
+--MIMEBOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--MIMEBOUNDARY--
+
