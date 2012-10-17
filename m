@@ -2,23 +2,27 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TNpHA-0000Mf-1w
-	for ltp-list@lists.sourceforge.net; Mon, 15 Oct 2012 18:20:28 +0000
-Date: Mon, 15 Oct 2012 20:18:09 +0200
-From: chrubis@suse.cz
-Message-ID: <20121015181808.GA6380@rei.suse.cz>
-References: <1349679654-16708-1-git-send-email-GuoJian.Zhou@windriver.com>
-	<201210150014.47389.vapier@gentoo.org>
-	<507B9964.8070905@windriver.com>
-	<201210151332.57424.vapier@gentoo.org>
+	(envelope-from <chris@mips.com>) id 1TOZ68-0003yn-3Q
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 19:16:08 +0000
+Received: from dns1.mips.com ([12.201.5.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TOZ62-0005DK-Ct
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 19:16:08 +0000
+Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
+	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9HJFu4S002647
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Oct 2012 12:15:56 -0700
+Received: from exchdb01.mips.com (unknown [192.168.36.84])
+	(using TLSv1 with cipher AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by mailgate1.mips.com (Postfix) with ESMTP id 2972B3645FF
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Oct 2012 12:15:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201210151332.57424.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] There was no "processor" key word in the
- "cpuinfo" on the non-SMP ARM Platforms. So the tracing
- "ftrace_buffer_size.sh" script would report "division by 0" error,
- then it would exit soon. The tracing test would check failed when it could
- not find this script running.
+Content-Type: multipart/mixed; boundary="MIMEBOUNDARY"
+From: Chris Dearman <chris@mips.com>
+Date: Wed, 17 Oct 2012 12:15:49 -0700
+Message-ID: <20121017191549.24471.86119.stgit@localhost6.localdomain6>
+Subject: [LTP] [PATCH] Add generated files to .gitignore
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,35 +32,149 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Zhou Guojian <Guojian.Zhou@windriver.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> really we should be using `getconf _NPROCESSORS_ONLN` instead and centralizing 
-> this parsing logic.  /proc/cpuinfo is directly accessed by many scripts.  the 
-> -i suggestion i provided came from its usage in those other files which, 
-> according to your findings, are also broken.
-> 
-> i'd suggest updating tools/apicmds/ to add a new helper program like 
-> `tst_ncpus` which will call sysconf() and we convert all of our .sh scripts 
-> from reading /proc/cpuinfo to calling that program.
+--MIMEBOUNDARY
+Content-Disposition: inline
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-That is coincidentally soultion I would about to propose.
+Signed-off-by: Chris Dearman <chris@mips.com>
+---
+ .gitignore                                        |    2 ++
+ testcases/commands/.gitignore                     |    5 +++++
+ testcases/kernel/mem/.gitignore                   |    2 ++
+ testcases/kernel/syscalls/.gitignore              |    8 ++++++++
+ testcases/kernel/timers/leapsec/.gitignore        |    1 +
+ testcases/misc/tcore_patch_test_suites/.gitignore |    1 +
+ 6 files changed, 19 insertions(+)
+ create mode 100644 testcases/commands/.gitignore
+ create mode 100644 testcases/kernel/timers/leapsec/.gitignore
+ create mode 100644 testcases/misc/tcore_patch_test_suites/.gitignore
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--MIMEBOUNDARY
+Content-Disposition: attachment;
+	filename="add-generated-files-to-gitigno.patch"
+MIME-Version: 1.0
+Content-Type: text/plain; name="add-generated-files-to-gitigno.patch";
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/.gitignore b/.gitignore
+index c723901..c9f5637 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -48,3 +48,5 @@ patches/
+ logfile.*
+ 
+ /utils/benchmark/ebizzy-0.3/ebizzy
++/lib/tests/bytes_by_prefix_test
++/lib/tests/tst_tmpdir_test
+diff --git a/testcases/commands/.gitignore b/testcases/commands/.gitignore
+new file mode 100644
+index 0000000..01918ea
+--- /dev/null
++++ b/testcases/commands/.gitignore
+@@ -0,0 +1,5 @@
++/ade/objdump/test_arch_debug
++/ade/objdump/test_arch_stripped
++/ade/size/test
++/cron/cron_dirs_check
++/eject/check_tray
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 5a3a8e9..e60e458 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -57,9 +57,11 @@
+ /shmt/shmt08
+ /shmt/shmt09
+ /shmt/shmt10
++/swapping/swapping01
+ /thp/thp01
+ /thp/thp02
+ /tunable/max_map_count
++/tunable/min_free_kbytes
+ /tunable/overcommit_memory
+ /vma/vma01
+ /vma/vma02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 0d2c3d8..7df28c2 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -68,6 +68,10 @@
+ /close/close01
+ /close/close02
+ /close/close08
++/cma/process_vm01
++/cma/process_vm_readv02
++/cma/process_vm_readv03
++/cma/process_vm_writev02
+ /confstr/confstr01
+ /connect/connect01
+ /creat/creat01
+@@ -342,6 +346,7 @@
+ /inotify/inotify01
+ /inotify/inotify02
+ /inotify/inotify03
++/inotify/inotify04
+ /inotify_init/inotify_init1_01
+ /inotify_init/inotify_init1_02
+ /io_cancel/io_cancel01
+@@ -460,6 +465,7 @@
+ /madvise/madvise01
+ /madvise/madvise02
+ /madvise/madvise03
++/madvise/madvise04
+ /mallopt/mallopt01
+ /mbind/mbind01
+ /memcmp/memcmp01
+@@ -623,6 +629,8 @@
+ /read/read02
+ /read/read03
+ /read/read04
++/readahead/readahead01
++/readahead/readahead02
+ /readdir/readdir01
+ /readdir/readdir02
+ /readlink/creat_slink
+diff --git a/testcases/kernel/timers/leapsec/.gitignore b/testcases/kernel/timers/leapsec/.gitignore
+new file mode 100644
+index 0000000..58787e2
+--- /dev/null
++++ b/testcases/kernel/timers/leapsec/.gitignore
+@@ -0,0 +1 @@
++/leapsec_timer
+diff --git a/testcases/misc/tcore_patch_test_suites/.gitignore b/testcases/misc/tcore_patch_test_suites/.gitignore
+new file mode 100644
+index 0000000..e47c402
+--- /dev/null
++++ b/testcases/misc/tcore_patch_test_suites/.gitignore
+@@ -0,0 +1 @@
++/tcore
+
+--MIMEBOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
+--MIMEBOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--MIMEBOUNDARY--
+
