@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1TNz4U-00065U-Uf
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 04:48:02 +0000
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TNz4S-00079i-L7
-	for ltp-list@lists.sourceforge.net; Tue, 16 Oct 2012 04:48:02 +0000
-Received: by mail-pb0-f47.google.com with SMTP id ro12so5477083pbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Oct 2012 21:47:54 -0700 (PDT)
-Message-ID: <507CD89D.6060305@casparzhang.com>
-Date: Tue, 16 Oct 2012 11:46:37 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TOWa9-0004L1-Io
+	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 16:34:57 +0000
+Date: Wed, 17 Oct 2012 18:32:42 +0200
+From: chrubis@suse.cz
+Message-ID: <20121017163242.GE27890@rei>
+References: <9D7565DAE340BD42B8D00446E021992C28ABAD91@SZXEML506-MBS.china.huawei.com>
 MIME-Version: 1.0
-References: <1350279542-16623-1-git-send-email-jin.li@windriver.com>
-	<1350279542-16623-2-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1350279542-16623-2-git-send-email-jin.li@windriver.com>
-Subject: Re: [LTP] [PATCH] runltp: Change -s option to select single case
- instead of matched name string of case
+Content-Disposition: inline
+In-Reply-To: <9D7565DAE340BD42B8D00446E021992C28ABAD91@SZXEML506-MBS.china.huawei.com>
+Subject: Re: [LTP] testcases/kernel/syscalls/mount test cases of mount2 and
+ mount3 faild in JUNE 2012 STABLE :ltp-full-20120614
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,115 +25,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com
-Cc: ltp-list@lists.sourceforge.net, haotian.zhang@WINDRIVER.COM
+To: Wangyicheng <yicheng.wang@huawei.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Dingguofu <dingguofu@huawei.com>
 
-On 10/15/2012 01:39 PM, jin.li@windriver.com wrote:
-> From: Jin Li <jin.li@windriver.com>
+Hi!
+> There are egiht items in the exp_enos, but the value of TST_TOTAL is
+> 13, it means there are 13 checkpoints int the testcase.  As a result
+> ,in the setup_test function , there are 13 switch-cases ( case
+> 0??case1 ... case 12)
 >
-> The scenario group file can be used if a set of related test cases need executing
-> at one time. Therefore, it's better to use runltp -s to select single test case.
+> But the number of the expect result in the exp_enos array is mismatch
+> with the number of checkpoint, so the TBROK  happend.
 
-This sounds not that convincible to me... Yes, group file can be used in 
-such situation, but we need to create a separate one. Using pattern 
-match would be much easier to me.
+That seems to be correct. Could you please send signed patch against
+latest LTP git? Ideally attached as well as inline (the best way to send
+git patches is using the 'git send-email').
 
->
-> Also, it is not a good practice to bind the option format of runltp with the implementation
-> of runltp internal code.Say the test case ar should be invoked in this way:
+Also please check your coding style (which could be easily done by
+checkpatch.pl script that is shipped with linux kernel sources).
 
-I don't think this is a bad practice... it just behaviors like "grep" 
-does, doesn't it?
+> In mount03.c, there are three issues:
+>
+>   1??In setup function,  the setuid_test file is in the testhome_path
+>   instead of the temporary directory Path_name. It results "stat for
+>   setuid_test failed"
+>
+>   2??In setup function,  snprintf(Path_name, PATH_MAX, "%s/%s/",
+>   Path_name, mntpoint)?? it can not implement appending the mntpoint
+>   string to the Path_name string;
 
->
-> ./runltp -s ar
->
-> instead of
->
-> ./runltp -s "^ar "
+There is still quite a lot of unnecessary string handling. Couldn't the
+whole setup be done with two or three snprintf()?
 
-So, NAK to the design :-(
+>   3??In test_rwflag function, in the part of "case 2"(at line 280 in
+>   mount03.c), if the "execlp(file, basename(file), NULL)" will return
+>   (actually it will return), the return value of test_rwflag is always
+>   1 (1 means fail),so the testcase is always failed; Another hand, if
+>   it will not return (if kernel bug exists), the process will
+>   terminate unexpectedly.
 
-You're removing the implementation of pattern match -- someone else 
-might want this feature.
+I'm not sure that I follow, but you changed execlp to system so that the
+file gets executed in child and the return value gets passed to the
+test?
 
-Comments welcomed.
+> I fix them in the patch (See the attachment), and both of the tow
+> testcase can get pass. Pls check the patch attachmented.
 
-Thanks,
-Caspar
+And while you are looking at these files, there are several things that
+could be fixed too. These tests should use tst_require_root(NULL)
+instead of if (getuid() != 0). There are unnecessary casts for pointers
+returned from malloc() and useless comments like /* this is loop counter */.
+If you care enough to fix them, these should be ideally fixed in separate patch.
 
->
-> Signed-off-by: Jin Li <jin.li@windriver.com>
-> ---
->   runltp | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/runltp b/runltp
-> index f95c17b..7788275 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -150,7 +150,7 @@ usage()
->       -p              Human readable format logfiles.
->       -q              Print less verbose output to screen.
->       -r LTPROOT      Fully qualified path where testsuite is installed.
-> -    -s PATTERN      Only run test cases which match PATTERN.
-> +    -s TESTCASE     Only run single test case.
->       -S SKIPFILE     Skip tests specified in SKIPFILE
->       -t DURATION     Execute the testsuite for given duration. Examples:
->                         -t 60s = 60 seconds
-> @@ -203,7 +203,7 @@ main()
->       local HTMLFILE=""
->       local DMESG_DIR=""
->       local EMAIL_TO=""
-> -    local TAG_RESTRICT_STRING=""
-> +    local TESTCASE=""
->       local PAN_COMMAND=""
->       local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%b_%d-%Hh_%Mm_%Ss"`
->
-> @@ -394,7 +394,7 @@ main()
->
->           r)  LTPROOT=$OPTARG;;
->
-> -        s)  TAG_RESTRICT_STRING=$OPTARG;;
-> +        s)  TESTCASE=$OPTARG;;
->
->   	S)  case $OPTARG in
->               /*)
-> @@ -647,11 +647,11 @@ main()
->            }
->       }
->
-> -    # If enabled, execute only test cases that match the PATTERN
-> -    if [ -n "$TAG_RESTRICT_STRING" ]
-> +    # If enabled, execute single test cases
-> +    if [ -n "$TESTCASE" ]
->       then
->           mv -f ${TMP}/alltests ${TMP}/alltests.orig
-> -	    grep $TAG_RESTRICT_STRING ${TMP}/alltests.orig > ${TMP}/alltests #Not worth checking return codes for this case
-> +	    grep "^$TESTCASE " ${TMP}/alltests.orig > ${TMP}/alltests #Not worth checking return codes for this case
->       fi
->
->       # Blacklist or skip tests if a SKIPFILE was specified with -S
-> @@ -743,8 +743,8 @@ main()
->       PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ \
->       -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE"
->       echo "COMMAND:    $PAN_COMMAND"
-> -    if [ ! -z "$TAG_RESTRICT_STRING" ] ; then
-> -      echo "INFO: Restricted to $TAG_RESTRICT_STRING"
-> +    if [ ! -z "$TESTCASE" ] ; then
-> +      echo "INFO: Run single test case $TESTCASE"
->       fi
->       #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
->
->
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
