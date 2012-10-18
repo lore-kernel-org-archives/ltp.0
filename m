@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunilmkr79@gmail.com>) id 1TReoi-0000UE-HE
-	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 07:58:56 +0000
-Received: from mail-vb0-f47.google.com ([209.85.212.47])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TReoe-0003Jd-T6
-	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 07:58:56 +0000
-Received: by mail-vb0-f47.google.com with SMTP id ez10so2945204vbb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 26 Oct 2012 00:58:47 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 26 Oct 2012 16:58:47 +0900
-Message-ID: <CAFHB78ZgnjaWBxqo28wm6Z+Hc9qzW=DVDE2-5ZELpJnxWD9iYQ@mail.gmail.com>
-From: sunil kumar <sunilmkr79@gmail.com>
-Subject: [LTP] I want ltp package with issue no 10 and 11 fixed kindly
-	provide .
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TOpeU-000442-GW
+	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 12:56:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TOpeQ-0002k1-Fu
+	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 12:56:42 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9ICuW9j010180
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Oct 2012 08:56:32 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id q9ICuVXZ003245
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Oct 2012 08:56:31 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 18 Oct 2012 14:56:21 +0200
+Message-Id: <cover.1350564702.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2 0/3] new syscall testcases: migrate_pages
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,47 +30,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6598635642566672154=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============6598635642566672154==
-Content-Type: multipart/alternative; boundary=20cf3071c9b47f293c04ccf1b0b5
+Changes in v2:
+- add parse_opts
+- add new testcases to runtest/syscalls
+- add parenthesis to else blocks where needed
+- replace drop_caches with check for free memory
 
---20cf3071c9b47f293c04ccf1b0b5
-Content-Type: text/plain; charset=ISO-8859-1
+Jan Stancek (3):
+  numa_helper: export get_max_node()
+  new syscall test: migrate_pages01
+  new syscall test: migrate_pages02
 
-Kindly provide ltp package with issue no 10 11 fixed
+ runtest/syscalls                                   |    3 +
+ testcases/kernel/include/numa_helper.h             |    1 +
+ testcases/kernel/lib/numa_helper.c                 |    6 +-
+ testcases/kernel/syscalls/migrate_pages/Makefile   |   32 ++
+ .../syscalls/migrate_pages/migrate_pages01.c       |  280 +++++++++++++++
+ .../syscalls/migrate_pages/migrate_pages02.c       |  363 ++++++++++++++++++++
+ .../syscalls/migrate_pages/migrate_pages_common.c  |   62 ++++
+ .../syscalls/migrate_pages/migrate_pages_common.h  |   33 ++
+ 8 files changed, 778 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/Makefile
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
 
---20cf3071c9b47f293c04ccf1b0b5
-Content-Type: text/html; charset=ISO-8859-1
-
-<p>Kindly provide ltp package with issue no 10 11 fixed</p>
-
---20cf3071c9b47f293c04ccf1b0b5--
-
-
---===============6598635642566672154==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_sfd2d_oct
---===============6598635642566672154==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6598635642566672154==--
-
