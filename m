@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TRhYy-0003Df-Sc
-	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 10:54:52 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1TP99h-0005qM-0P
+	for ltp-list@lists.sourceforge.net; Fri, 19 Oct 2012 09:46:13 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TRhYt-0003HJ-46
-	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 10:54:52 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9QAsewA031320
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TP99c-0003M3-LT
+	for ltp-list@lists.sourceforge.net; Fri, 19 Oct 2012 09:46:12 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9J9k2fE002185
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Oct 2012 06:54:40 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id q9QAsdcQ029403
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Oct 2012 06:54:40 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 26 Oct 2012 12:54:37 +0200
-Message-Id: <a8673441164c2c578dc5a485640a433f3e92c5d3.1351248861.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] ipc/shmat: pick suitable base_addr before each
-	testcase
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Oct 2012 05:46:02 -0400
+Message-ID: <508121DF.1000506@redhat.com>
+Date: Fri, 19 Oct 2012 17:48:15 +0800
+From: Zhouping Liu <zliu@redhat.com>
+MIME-Version: 1.0
+References: <cover.1350564702.git.jstancek@redhat.com>
+	<cf915a2efb79d200cc9f3b6c017eccf6feb870c9.1350564702.git.jstancek@redhat.com>
+In-Reply-To: <cf915a2efb79d200cc9f3b6c017eccf6feb870c9.1350564702.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 3/3 v2] new syscall test: migrate_pages02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,163 +30,423 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This test picked fixed address in setup() which was used throughout
-the test. There has been reports that it can fail with EINVAL.
+Hi Jan,
 
-I could reproduce it by adding single printf in between
-detach/attach:
-http://article.gmane.org/gmane.linux.ltp/16480
+On 10/18/2012 08:56 PM, Jan Stancek wrote:
+> Use migrate_pages() syscall and check that
+> shared/non-shared memory is migrated to desired node.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>   runtest/syscalls                                   |    1 +
+>   .../syscalls/migrate_pages/migrate_pages02.c       |  363 ++++++++++++++++++++
+>   2 files changed, 364 insertions(+), 0 deletions(-)
+>   create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 9daf234..78f3bd3 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -518,6 +518,7 @@ memcmp01 memcmp01
+>   memcpy01 memcpy01
+>   
+>   migrate_pages01 migrate_pages01
+> +migrate_pages02 migrate_pages02
+>   
+>   mlockall01 mlockall01
+>   mlockall02 mlockall02
+> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+> new file mode 100644
+> index 0000000..840aa2b
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+> @@ -0,0 +1,363 @@
+> +/*
+> + * Copyright (C) 2012 Linux Test Project, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + */
+> +
+> +/*
+> + * use migrate_pages() and check that address is on correct node
+> + * 1. process A can migrate its non-shared mem with CAP_SYS_NICE
+> + * 2. process A can migrate its non-shared mem without CAP_SYS_NICE
+> + * 3. process A can migrate shared mem only with CAP_SYS_NICE
+> + * 4. process A can migrate non-shared mem in process B with same effective uid
+> + * 5. process A can migrate non-shared mem in process B with CAP_SYS_NICE
+> + */
+> +#include <sys/types.h>
+> +#include <sys/syscall.h>
+> +#include <sys/wait.h>
+> +#include <sys/mman.h>
+> +#include <errno.h>
+> +#if HAVE_NUMA_H
+> +#include <numa.h>
+> +#endif
+> +#if HAVE_NUMAIF_H
+> +#include <numaif.h>
+> +#endif
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <pwd.h>
+> +#include "config.h"
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "safe_macros.h"
+> +#include "linux_syscall_numbers.h"
+> +#include "numa_helper.h"
+> +#include "migrate_pages_common.h"
+> +
+> +#define NODE_MIN_FREEMEM 32*1024*1024
 
-This patch picks suitable base_addr before each test. So even if glibc
-would mmap extra page with addr == base_addr picked by setup(),
-new suitable address will be chosen.
+I think we can give some comments to explain why the minimum free memory 
+is 32M.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/ipc/shmat/Makefile       |    3 ++
- testcases/kernel/syscalls/ipc/shmat/shmat01.c      |   16 ++---------
- testcases/kernel/syscalls/ipc/shmat/shmat02.c      |   16 ++---------
- testcases/kernel/syscalls/ipc/shmat/shmat_common.c |   29 ++++++++++++++++++++
- 4 files changed, 38 insertions(+), 26 deletions(-)
- create mode 100644 testcases/kernel/syscalls/ipc/shmat/shmat_common.c
+> +
+> +char *TCID = "migrate_pages02";
+> +int  TST_TOTAL = 1;
+> +
+> +#if defined(__NR_migrate_pages) && HAVE_NUMA_H && HAVE_NUMAIF_H
+> +static char nobody_uid[] = "nobody";
+> +static struct passwd *ltpuser;
+> +static int *nodes, nodeA, nodeB;
+> +static int num_nodes;
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +option_t options[] = {
+> +	{ NULL, NULL, NULL }
+> +};
+> +
+> +static int migrate_to_node(int pid, int node)
+> +{
+> +	unsigned long nodemask_size, max_node;
+> +	unsigned long *old_nodes, *new_nodes;
+> +	int i;
+> +
+> +	tst_resm(TPASS, "pid(%d) migrate pid %d to node -> %d",
+> +		getpid(), pid, node);
+> +	max_node = get_max_node();
+> +	nodemask_size = max_node/8+1;
+> +	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
+> +	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
+> +
+> +	memset(old_nodes, 0, nodemask_size);
+> +	memset(new_nodes, 0, nodemask_size);
+> +	for (i = 0; i < num_nodes; i++)
+> +		set_bit(old_nodes, nodes[i], 1);
+> +	set_bit(new_nodes, node, 1);
+> +
+> +	TEST(syscall(__NR_migrate_pages, pid, max_node, old_nodes, new_nodes));
+> +	if (TEST_RETURN == -1)
+> +		tst_resm(TFAIL|TERRNO, "migrate_pages failed ");
+> +	return TEST_RETURN;
+> +}
+> +
+> +static int addr_on_node(void *addr)
+> +{
+> +	int node;
+> +	int ret;
+> +
+> +	ret = syscall(__NR_get_mempolicy, &node, NULL, (unsigned long)0,
+> +			(unsigned long) addr, MPOL_F_NODE | MPOL_F_ADDR);
 
-diff --git a/testcases/kernel/syscalls/ipc/shmat/Makefile b/testcases/kernel/syscalls/ipc/shmat/Makefile
-index f467389..5cbf37c 100644
---- a/testcases/kernel/syscalls/ipc/shmat/Makefile
-+++ b/testcases/kernel/syscalls/ipc/shmat/Makefile
-@@ -20,4 +20,7 @@ top_srcdir              ?= ../../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
-+
-+MAKE_TARGETS            := $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 6e4dee1..160abca 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -56,6 +56,7 @@
-  */
- 
- #include "ipcshm.h"
-+#include "shmat_common.c"
- 
- char *TCID = "shmat01";
- 
-@@ -108,6 +109,7 @@ int main(int ac, char **av)
- 			/*
- 			 * Use TEST macro to make the call
- 			 */
-+			base_addr = probe_free_addr();
- 			errno = 0;
- 			addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
- 				     TC[i].flags);
-@@ -262,19 +264,7 @@ void setup(void)
- 			 "resource 1 in setup()");
- 	}
- 
--	/* Probe an available linear address for attachment */
--	if ((base_addr = shmat(shm_id_1, NULL, 0)) == (void *)-1) {
--		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
--	}
--	if (shmdt((const void *)base_addr) == -1) {
--		tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
--	}
--
--	/* some architectures (e.g. parisc) are strange, so better always align to
--	 * next SHMLBA address. */
--	base_addr =
--	    (void *)(((unsigned long)(base_addr) + (SHMLBA - 1)) &
--		     ~(SHMLBA - 1));
-+	base_addr = probe_free_addr();
- }
- 
- /*
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat02.c b/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-index d4cca0e..b260e18 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-@@ -55,6 +55,7 @@
- 
- #include "ipcshm.h"
- #include <pwd.h>
-+#include "shmat_common.c"
- 
- char *TCID = "shmat02";
- char nobody_uid[] = "nobody";
-@@ -125,6 +126,7 @@ int main(int ac, char **av)
- 
- 			setup_tc(i, tc);
- 
-+			base_addr = probe_free_addr();
- 			errno = 0;
- 			addr = shmat(*(tc->shmid), base_addr + tc->offset, 0);
- 
-@@ -181,19 +183,7 @@ void setup(void)
- 	    -1)
- 		tst_brkm(TBROK|TERRNO, cleanup, "shmget #2 failed");
- 
--	/* Probe an available linear address for attachment */
--	if ((base_addr = shmat(shm_id_2, NULL, 0)) == (void *)-1)
--		tst_brkm(TBROK|TERRNO, cleanup, "shmat #1 failed");
--
--	if (shmdt((const void *)base_addr) == -1)
--		tst_brkm(TBROK|TERRNO, cleanup, "shmat #2 failed");
--
--	/*
--	 * some architectures (e.g. parisc) are strange, so better always align
--	 * to next SHMLBA address
--	 */
--	base_addr =
--	    (void *)(((unsigned long)(base_addr) & ~(SHMLBA - 1)) + SHMLBA);
-+	base_addr = probe_free_addr();
- }
- 
- /*
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat_common.c b/testcases/kernel/syscalls/ipc/shmat/shmat_common.c
-new file mode 100644
-index 0000000..826cf2d
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat_common.c
-@@ -0,0 +1,29 @@
-+void *probe_free_addr()
-+{
-+	void *p;
-+	int ret;
-+	int shm_id = -1;
-+
-+	/* create a shared memory resource with read and write permissions
-+	 * We align this to SHMLBA so we should allocate at least
-+	 * SHMLBA*2 in case SHMLBA > page_size. */
-+	shm_id = shmget(getipckey(), SHMLBA*2, SHM_RW | IPC_CREAT | IPC_EXCL);
-+	if (shm_id == -1)
-+		tst_brkm(TBROK, cleanup, "probe: shmget failed");
-+
-+	/* Probe an available linear address for attachment */
-+	p = shmat(shm_id, NULL, 0);
-+	if (p == (void *)-1)
-+		tst_brkm(TBROK, cleanup, "probe: shmat failed");
-+	ret = shmdt((const void *)p);
-+	if (ret == -1)
-+		tst_brkm(TBROK, cleanup, "probe: shmdt failed");
-+
-+	rm_shm(shm_id);
-+
-+	/* some architectures (e.g. parisc) are strange, so better always
-+	 * align to next SHMLBA address. */
-+	p = (void *)(((unsigned long)(p) + (SHMLBA - 1)) & ~(SHMLBA - 1));
-+	return p;
-+}
-+
--- 
-1.7.1
+get_mempolicy() syscall is defined as
+
+    int get_mempolicy(int *mode, unsigned long *nodemask,
+                          unsigned long maxnode, unsigned long addr,
+                          unsigned long flags);
+
+and the 1st arg is the policy of memory, the 2nd arg is nodemask,
+but in your codes, the 1st arg is '&node',  I'm confusing how it can 
+implement to get the node id of address?
+
+Thanks,
+Zhouping
+> +	if (ret == -1) {
+> +		tst_resm(TBROK | TERRNO, "error getting memory policy "
+> +				"for page %p", addr);
+> +	}
+> +	return node;
+> +}
+> +
+> +static int check_addr_on_node(void *addr, int exp_node)
+> +{
+> +	int node;
+> +
+> +	node = addr_on_node(addr);
+> +	if (node == exp_node) {
+> +		tst_resm(TPASS, "pid(%d) addr %p is on expected node: %d",
+> +				getpid(), addr, exp_node);
+> +		return 0;
+> +	} else {
+> +		tst_resm(TFAIL, "pid(%d) addr %p not on expected node: %d "
+> +				", expected %d", getpid(), addr, node,
+> +				exp_node);
+> +		return 1;
+> +	}
+> +}
+> +
+> +static void test_migrate_current_process(int node1, int node2,
+> +	int cap_sys_nice)
+> +{
+> +	char *testp, *testp2;
+> +	int ret, status;
+> +	pid_t child;
+> +
+> +	/* parent can migrate its non-shared memory */
+> +	tst_resm(TINFO, "current_process, cap_sys_nice: %d", cap_sys_nice);
+> +	testp = SAFE_MALLOC(NULL, getpagesize());
+> +	testp[0] = 0;
+> +	tst_resm(TINFO, "private anonymous: %p", testp);
+> +	migrate_to_node(0, node2);
+> +	check_addr_on_node(testp, node2);
+> +	migrate_to_node(0, node1);
+> +	check_addr_on_node(testp, node1);
+> +	free(testp);
+> +
+> +	/* parent can migrate shared memory with CAP_SYS_NICE */
+> +	testp2 = mmap(NULL, getpagesize(), PROT_READ|PROT_WRITE,
+> +		MAP_ANONYMOUS|MAP_SHARED, 0, 0);
+> +	if (testp2 == MAP_FAILED)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "mmap failed");
+> +	testp2[0] = 1;
+> +	tst_resm(TINFO, "shared anonymous: %p", testp2);
+> +	migrate_to_node(0, node2);
+> +	check_addr_on_node(testp2, node2);
+> +
+> +	/* shared mem is on node2, try to migrate in child to node1 */
+> +	fflush(stdout);
+> +	child = fork();
+> +	switch (child) {
+> +	case -1:
+> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
+> +		break;
+> +	case 0:
+> +		tst_resm(TINFO, "child shared anonymous, cap_sys_nice: %d",
+> +			cap_sys_nice);
+> +		testp = SAFE_MALLOC(NULL, getpagesize());
+> +		testp[0] = 1;
+> +		testp2[0] = 1;
+> +		if (!cap_sys_nice)
+> +			if (seteuid(ltpuser->pw_uid) == -1)
+> +				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
+> +
+> +		migrate_to_node(0, node1);
+> +		/* child can migrate non-shared memory */
+> +		ret = check_addr_on_node(testp, node1);
+> +
+> +		free(testp);
+> +		munmap(testp2, getpagesize());
+> +		exit(ret);
+> +	default:
+> +		if (waitpid(child, &status, 0) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +			tst_resm(TFAIL, "child returns %d", status);
+> +		if (cap_sys_nice)
+> +			/* child can migrate shared memory only
+> +			 * with CAP_SYS_NICE */
+> +			check_addr_on_node(testp2, node1);
+> +		else
+> +			check_addr_on_node(testp2, node2);
+> +		munmap(testp2, getpagesize());
+> +	}
+> +}
+> +
+> +static void test_migrate_other_process(int node1, int node2,
+> +	int cap_sys_nice)
+> +{
+> +	char *testp;
+> +	int status, ret, tmp;
+> +	pid_t child;
+> +	int child_ready[2];
+> +	int pages_migrated[2];
+> +
+> +	/* setup pipes to synchronize child/parent */
+> +	if (pipe(child_ready) == -1)
+> +		tst_resm(TBROK | TERRNO, "pipe #1 failed");
+> +	if (pipe(pages_migrated) == -1)
+> +		tst_resm(TBROK | TERRNO, "pipe #2 failed");
+> +
+> +	tst_resm(TINFO, "other_process, cap_sys_nice: %d", cap_sys_nice);
+> +
+> +	fflush(stdout);
+> +	child = fork();
+> +	switch (child) {
+> +	case -1:
+> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
+> +		break;
+> +	case 0:
+> +		close(child_ready[0]);
+> +		close(pages_migrated[1]);
+> +
+> +		testp = SAFE_MALLOC(NULL, getpagesize());
+> +		testp[0] = 0;
+> +
+> +		/* make sure we are on node1 */
+> +		migrate_to_node(0, node1);
+> +		check_addr_on_node(testp, node1);
+> +
+> +		if (seteuid(ltpuser->pw_uid) == -1)
+> +			tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
+> +
+> +		/* signal parent it's OK to migrate child and wait */
+> +		if (write(child_ready[1], &tmp, 1) != 1)
+> +			tst_brkm(TBROK|TERRNO, NULL, "write #1 failed");
+> +		if (read(pages_migrated[0], &tmp, 1) != 1)
+> +			tst_brkm(TBROK|TERRNO, NULL, "read #1 failed");
+> +
+> +		/* parent can migrate child process with same euid */
+> +		/* parent can migrate child process with CAP_SYS_NICE */
+> +		ret = check_addr_on_node(testp, node2);
+> +
+> +		free(testp);
+> +		close(child_ready[1]);
+> +		close(pages_migrated[0]);
+> +		exit(ret);
+> +	default:
+> +		close(child_ready[1]);
+> +		close(pages_migrated[0]);
+> +
+> +		if (!cap_sys_nice)
+> +			if (seteuid(ltpuser->pw_uid) == -1)
+> +				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
+> +
+> +		/* wait until child is ready on node1, then migrate and
+> +		 * signal to check current node */
+> +		if (read(child_ready[0], &tmp, 1) != 1)
+> +			tst_brkm(TBROK|TERRNO, NULL, "read #2 failed");
+> +		migrate_to_node(child, node2);
+> +		if (write(pages_migrated[1], &tmp, 1) != 1)
+> +			tst_brkm(TBROK|TERRNO, NULL, "write #2 failed");
+> +
+> +		if (waitpid(child, &status, 0) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +			tst_resm(TFAIL, "child returns %d", status);
+> +		close(child_ready[0]);
+> +		close(pages_migrated[1]);
+> +
+> +		/* reset euid, so this testcase can be used in loop */
+> +		if (!cap_sys_nice)
+> +			if (seteuid(0) == -1)
+> +				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
+> +	}
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	char *msg;
+> +
+> +	msg = parse_opts(argc, argv, options, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		Tst_count = 0;
+> +		test_migrate_current_process(nodeA, nodeB, 1);
+> +		test_migrate_current_process(nodeA, nodeB, 0);
+> +		test_migrate_other_process(nodeA, nodeB, 1);
+> +		test_migrate_other_process(nodeA, nodeB, 0);
+> +	}
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int ret, i;
+> +	long long freep, maxA, maxB, node_size;
+> +
+> +	tst_require_root(NULL);
+> +	TEST(syscall(__NR_migrate_pages, 0, 0, NULL, NULL));
+> +
+> +	if (numa_available() == -1)
+> +		tst_brkm(TCONF, NULL, "NUMA not available");
+> +
+> +	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
+> +	if (ret < 0)
+> +		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes(): %d", ret);
+> +
+> +	if (num_nodes < 2)
+> +		tst_brkm(TCONF, NULL, "at least 2 allowed NUMA nodes"
+> +				" are required");
+> +	else if (tst_kvercmp(2, 6, 18) < 0)
+> +		tst_brkm(TCONF, NULL, "2.6.18 or greater kernel required");
+> +
+> +	/* get 2 nodes with max free mem */
+> +	maxA = maxB = 0;
+> +	nodeA = nodeB = -1;
+> +	for (i=0; i<num_nodes; i++) {
+> +		node_size = numa_node_size64(nodes[i], &freep);
+> +		if (node_size < 0)
+> +			tst_brkm(TBROK|TERRNO, NULL, "numa_node_size64 failed");
+> +		if (freep > NODE_MIN_FREEMEM) {
+> +			if (freep > maxA) {
+> +				maxB = maxA;
+> +				nodeB = nodeA;
+> +				maxA = freep;
+> +				nodeA = nodes[i];
+> +			} else if (freep > maxB) {
+> +				maxB = freep;
+> +				nodeB = nodes[i];
+> +			}
+> +		}
+> +	}
+> +
+> +	if (nodeA == -1 || nodeB == -1)
+> +		tst_brkm(TCONF, NULL, "at least 2 NUMA nodes with free mem > %d are needed", NODE_MIN_FREEMEM);
+> +	tst_resm(TINFO, "Using nodes: %d %d", nodeA, nodeB);
+> +
+> +	ltpuser = getpwnam(nobody_uid);
+> +	if (ltpuser == NULL)
+> +		tst_brkm(TBROK|TERRNO, NULL, "getpwnam failed");
+> +
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	free(nodes);
+> +	TEST_CLEANUP;
+> +}
+> +
+> +#else /* __NR_migrate_pages */
+> +int main(void)
+> +{
+> +	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
+> +			" or libnuma is not available");
+> +}
+> +#endif
 
 
 ------------------------------------------------------------------------------
