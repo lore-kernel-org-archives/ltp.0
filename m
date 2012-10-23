@@ -1,34 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1TT9tS-0005dk-9H
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 11:22:02 +0000
-Received: from e06smtp12.uk.ibm.com ([195.75.94.108])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TT9tN-00036D-Ln
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 11:22:02 +0000
-Received: from /spool/local
-	by e06smtp12.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
-	Tue, 30 Oct 2012 11:21:51 -0000
-Received: from d06av12.portsmouth.uk.ibm.com (d06av12.portsmouth.uk.ibm.com
-	[9.149.37.247])
-	by b06cxnps4076.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v10.0) with
-	ESMTP id q9UBLfic49479724
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 11:21:41 GMT
-Received: from d06av12.portsmouth.uk.ibm.com (loopback [127.0.0.1])
-	by d06av12.portsmouth.uk.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with
-	ESMTP id q9UBLmTE012110
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 05:21:48 -0600
-Message-ID: <508FB84D.5050308@linux.vnet.ibm.com>
-Date: Tue, 30 Oct 2012 12:21:49 +0100
-From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+	(envelope-from <omprakash.pal@stericsson.com>) id 1TQbMb-0007ly-5I
+	for ltp-list@lists.sourceforge.net; Tue, 23 Oct 2012 10:05:33 +0000
+Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TQbMV-000512-F0
+	for ltp-list@lists.sourceforge.net; Tue, 23 Oct 2012 10:05:33 +0000
+From: Om Prakash PAL <omprakash.pal@stericsson.com>
+Date: Tue, 23 Oct 2012 12:05:07 +0200
+Message-ID: <3ED83A9DB3B6D94CA68BF7C03F2981D35D01C26723@EXDCVYMBSTM006.EQ1STM.local>
+References: <3ED83A9DB3B6D94CA68BF7C03F2981D35D01C266B4@EXDCVYMBSTM006.EQ1STM.local>
+	<5086654E.1010303@cn.fujitsu.com>
+In-Reply-To: <5086654E.1010303@cn.fujitsu.com>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <20121030003915.GU24652@mediapc.snapdragonfly.net>
-In-Reply-To: <20121030003915.GU24652@mediapc.snapdragonfly.net>
-Subject: Re: [LTP] coverage history
+Subject: Re: [LTP] Regarding shmat01 syscall test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,25 +29,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: John Schmitt <marmalodak@gmail.com>
+To: "gaowanlong@cn.fujitsu.com" <gaowanlong@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+
+
+-----Original Message-----
+From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+Sent: Tuesday, October 23, 2012 3:07 PM
+To: Om Prakash PAL
 Cc: ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] Regarding shmat01 syscall test
 
-On 30.10.2012 01:39, John Schmitt wrote:
-> Is there a way to generate track the coverage of a project over time?  If I'm writing unit tests as my code base expands, can I see how my coverage of that code base goes up or down over time as reported by lcov?
+On 10/23/2012 05:24 PM, Om Prakash PAL wrote:
+> Hi,
+> 
+> I am working on syscall test:  shmat01.c
+> 
+> I have some confusion:
+> 
+>  
+> 
+> In setup() : it is  allocating shared memory by shmget() and then attaching by shmat() and after  that detaching the attached address (i.e. shmdt())   
+> 
+>  
+> 
+>         if (shmdt((const void *)base_addr) == -1) {
+> 
+>                 tst_brkm(TBROK, cleanup, "Couldn't detach shared memory");
+> 
+>         }
+> 
+>  
+> 
+> And again in main function it is using same "base_addr" as attaching address,
+> 
+>  
+> 
+> addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
+> 
+>                                      TC[i].flags);
+> 
+> how can we ensure(100%) that base_addr (virtual) will be free till this point for attaching?.
 
-There is no integrated way to track coverage changes over time with 
-lcov, although this may be a good idea for a future improvement.
+Maybe we can't, but I didn't see any fail on this. Did you see any testing failure here?
 
-For now, you could manually extract the coverage results using the 
---summary or --list option of lcov and put that into a spreadsheet.
+Yes, I got some failure and the reason of failure is : the address at which we want to attach is busy.
+
+Best Regards,
+Om Prakash Pal  
 
 
-Regards,
-   Peter Oberparleiter
 
--- 
-Peter Oberparleiter
-Linux on System z Development - IBM Germany
+Thanks,
+Wanlong Gao
+
+> 
+> there is possibility that this address(base_addr) will be used, so in that case this shmat() will fail.
+> 
+> Please correct me if I am wrong.
+> 
+> Thanks in advance.
+> 
+>  
+> 
+> Best Regards,
+> 
+> Om Prakash Pal   
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Everyone hates slow websites. So do we.
+> Make your web apps faster with AppDynamics
+> Download AppDynamics Lite for free today:
+> http://p.sf.net/sfu/appdyn_sfd2d_oct
+> 
+> 
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 ------------------------------------------------------------------------------
