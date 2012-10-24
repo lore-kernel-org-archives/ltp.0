@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TSpzO-0005pp-8x
-	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 14:06:50 +0000
-Date: Mon, 29 Oct 2012 15:04:25 +0100
-From: chrubis@suse.cz
-Message-ID: <20121029140424.GB12578@rei.suse.cz>
-References: <b578714d08c38d1fb789ab53266109b8bd760c52.1351503873.git.jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TQvig-0002uX-HO
+	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 07:49:42 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TQvia-0005ej-PM
+	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 07:49:42 +0000
+Date: Wed, 24 Oct 2012 03:49:28 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1701010771.5419513.1351064968870.JavaMail.root@redhat.com>
+In-Reply-To: <508792B4.1050101@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b578714d08c38d1fb789ab53266109b8bd760c52.1351503873.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v3] ipc/shmat: pick suitable base_addr before each
- testcase
+Subject: Re: [LTP] Regarding shmat01 syscall test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,101 +26,119 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: gaowanlong@cn.fujitsu.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/ipc/shmat/Makefile b/testcases/kernel/syscalls/ipc/shmat/Makefile
-> index f467389..5cbf37c 100644
-> --- a/testcases/kernel/syscalls/ipc/shmat/Makefile
-> +++ b/testcases/kernel/syscalls/ipc/shmat/Makefile
-> @@ -20,4 +20,7 @@ top_srcdir              ?= ../../../../..
->  
->  include $(top_srcdir)/include/mk/testcases.mk
->  include $(abs_srcdir)/../Makefile.inc
-> +
-> +MAKE_TARGETS            := $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
 
-Hm, perhaps it would be easier to rename the shmat_common.c to
-shmat_common.h.
 
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-> index 6e4dee1..1f46b23 100644
-> --- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-> +++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-> @@ -56,6 +56,7 @@
->   */
->  
->  #include "ipcshm.h"
-> +#include "shmat_common.c"
->  
->  char *TCID = "shmat01";
->  
-> @@ -108,6 +109,7 @@ int main(int ac, char **av)
->  			/*
->  			 * Use TEST macro to make the call
->  			 */
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL" <omprakash.pal@stericsson.com>
+> Sent: Wednesday, 24 October, 2012 9:03:16 AM
+> Subject: Re: [LTP] Regarding shmat01 syscall test
+> 
+> On 10/24/2012 02:43 PM, Jan Stancek wrote:
+> > 
+> > 
+> > ----- Original Message -----
+> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> >> To: "Om Prakash PAL" <omprakash.pal@stericsson.com>
+> >> Cc: ltp-list@lists.sourceforge.net
+> >> Sent: Wednesday, 24 October, 2012 2:45:47 AM
+> >> Subject: Re: [LTP] Regarding shmat01 syscall test
+> >>
+> >> On 10/23/2012 06:05 PM, Om Prakash PAL wrote:
+> >>>
+> >>>
+> >>> -----Original Message-----
+> >>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+> >>> Sent: Tuesday, October 23, 2012 3:07 PM
+> >>> To: Om Prakash PAL
+> >>> Cc: ltp-list@lists.sourceforge.net
+> >>> Subject: Re: [LTP] Regarding shmat01 syscall test
+> >>>
+> >>> On 10/23/2012 05:24 PM, Om Prakash PAL wrote:
+> >>>> Hi,
+> >>>>
+> >>>> I am working on syscall test:  shmat01.c
+> >>>>
+> >>>> I have some confusion:
+> >>>>
+> >>>>  
+> >>>>
+> >>>> In setup() : it is  allocating shared memory by shmget() and
+> >>>> then
+> >>>> attaching by shmat() and after  that detaching the attached
+> >>>> address (i.e. shmdt())
+> >>>>
+> >>>>  
+> >>>>
+> >>>>         if (shmdt((const void *)base_addr) == -1) {
+> >>>>
+> >>>>                 tst_brkm(TBROK, cleanup, "Couldn't detach shared
+> >>>>                 memory");
+> >>>>
+> >>>>         }
+> >>>>
+> >>>>  
+> >>>>
+> >>>> And again in main function it is using same "base_addr" as
+> >>>> attaching address,
+> >>>>
+> >>>>  
+> >>>>
+> >>>> addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
+> >>>>
+> >>>>                                      TC[i].flags);
+> >>>>
+> >>>> how can we ensure(100%) that base_addr (virtual) will be free
+> >>>> till
+> >>>> this point for attaching?.
+> >>>
+> >>> Maybe we can't, but I didn't see any fail on this. Did you see
+> >>> any
+> >>> testing failure here?
+> >>>
+> >>> Yes, I got some failure and the reason of failure is : the
+> >>> address
+> >>> at which we want to attach is busy.
+> >>
+> >> OK, please feel free to send a patch, or can you tell us how to
+> >> reproduce it?
+> > 
+> > I recall I could reproduce it, if I added single printf:
+> > http://article.gmane.org/gmane.linux.ltp/16480
+> 
+> Do you get a solution? Send out a patch?
 
-Once you are touching the source, you are welcomed to remove 
-dumbious comments like this (ideally in separate patch). ;)
+No, I haven't send any patch.
 
-> diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat_common.c b/testcases/kernel/syscalls/ipc/shmat/shmat_common.c
-> new file mode 100644
-> index 0000000..5a920c8
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/shmat/shmat_common.c
-> @@ -0,0 +1,33 @@
-> +static key_t probe_key;
-> +
-> +void *probe_free_addr()
+About solution:
+I'm thinking, that instead of probing with shmat, we can mmap large chunk of memory,
+and then set base_addr somewhere in the middle and unmap the chunk.
+That is, using address that get_unmapped_area() is unlikely to pick.
 
-Add void as the function parameters here.
+Regards,
+Jan
 
-> +{
-> +	void *p;
-> +	int ret;
-> +	int shm_id = -1;
-> +
-> +	if (probe_key == 0)
-> +		probe_key = getipckey();
-> +
-> +	/* create a shared memory resource with read and write permissions
-> +	 * We align this to SHMLBA so we should allocate at least
-> +	 * SHMLBA*2 in case SHMLBA > page_size. */
-> +	shm_id = shmget(probe_key, SHMLBA*2, SHM_RW | IPC_CREAT | IPC_EXCL);
-> +	if (shm_id == -1)
-> +		tst_brkm(TBROK, cleanup, "probe: shmget failed");
-> +
-> +	/* Probe an available linear address for attachment */
-> +	p = shmat(shm_id, NULL, 0);
-> +	if (p == (void *)-1)
-> +		tst_brkm(TBROK, cleanup, "probe: shmat failed");
-> +	ret = shmdt((const void *)p);
-
-Hmm, is this cast really needed?
-
-> +	if (ret == -1)
-> +		tst_brkm(TBROK, cleanup, "probe: shmdt failed");
-> +
-> +	rm_shm(shm_id);
-> +
-> +	/* some architectures (e.g. parisc) are strange, so better always
-> +	 * align to next SHMLBA address. */
-> +	p = (void *)(((unsigned long)(p) + (SHMLBA - 1)) & ~(SHMLBA - 1));
-> +	return p;
-> +}
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> > 
+> > Regards,
+> > Jan
+> > 
+> 
+> 
 
 ------------------------------------------------------------------------------
-The Windows 8 Center - In partnership with Sourceforge
-Your idea - your app - 30 days.
-Get started!
-http://windows8center.sourceforge.net/
-what-html-developers-need-to-know-about-coding-windows-8-metro-style-apps/
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
