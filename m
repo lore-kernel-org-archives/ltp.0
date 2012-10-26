@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TOT1b-0006kk-Fh
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 12:47:03 +0000
-Date: Wed, 17 Oct 2012 14:44:46 +0200
-From: chrubis@suse.cz
-Message-ID: <20121017124445.GA27890@rei>
-References: <507CC6F5.3090409@cn.fujitsu.com>
-	<82432993.665989.1350370438315.JavaMail.root@redhat.com>
-	<20121016101101.GB9320@rei.Home>
-	<E351E450E8B9F54684A699D42DC5ADF2263AF477@MPBAGVEX02.corp.mphasis.com>
-	<E351E450E8B9F54684A699D42DC5ADF22640E162@MPBAGVEX02.corp.mphasis.com>
+	(envelope-from <jstancek@redhat.com>) id 1TRht8-00038s-T1
+	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 11:15:42 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TRht3-0002Dn-1j
+	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 11:15:42 +0000
+Received: from zmail17.collab.prod.int.phx2.redhat.com
+	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id q9QBFUn8027423
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Oct 2012 07:15:30 -0400
+Date: Fri, 26 Oct 2012 07:15:30 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <830469677.390108.1351250130900.JavaMail.root@redhat.com>
+In-Reply-To: <a8673441164c2c578dc5a485640a433f3e92c5d3.1351248861.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E351E450E8B9F54684A699D42DC5ADF22640E162@MPBAGVEX02.corp.mphasis.com>
-Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may notreturn-EINVAL
+Subject: Re: [LTP] [PATCH] ipc/shmat: pick suitable base_addr before
+	each	testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,24 +31,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nitin Yadav <Nitin.Yadav@mphasis.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> When the test fails, the return value from io_submit() is 1. This means
-> that io_submit successfully submitted one I/O request block for
-> processing.
-> 	Could you please let me know is it correct behavior to
-> successfully submit io request for uninitialized iocb with return value
-> 1 (-EPERM).
 
-As far as I understand io_submit() return value 1 is success i.e. 1 io
-request queued. So I think that in your case the uninitialized structure
-contains data valid enough for the operation to be actually queued.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Friday, 26 October, 2012 12:54:37 PM
+> Subject: [LTP] [PATCH] ipc/shmat: pick suitable base_addr before each	testcase
+> 
+> This test picked fixed address in setup() which was used throughout
+> the test. There has been reports that it can fail with EINVAL.
+> 
+> I could reproduce it by adding single printf in between
+> detach/attach:
+> http://article.gmane.org/gmane.linux.ltp/16480
+> 
+> This patch picks suitable base_addr before each test. So even if
+> glibc
+> would mmap extra page with addr == base_addr picked by setup(),
+> new suitable address will be chosen.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+I'll send v2, getipckey() appears to return only few unique
+keys and after couple loops this fails because it returns key
+which already exists.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
