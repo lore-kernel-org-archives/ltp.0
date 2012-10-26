@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cxie@redhat.com>) id 1TT1Ey-0007iu-Sh
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 02:07:40 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TT1Ex-0008MO-TH
-	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 02:07:40 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9U27XKw028386
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 29 Oct 2012 22:07:33 -0400
-From: cxie@redhat.com
-Date: Tue, 30 Oct 2012 10:07:26 +0800
-Message-Id: <1351562846-3321-1-git-send-email-cxie@redhat.com>
-Subject: [LTP] [PATCH v2] thp/thp03: new testcase
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TRest-0001an-P3
+	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 08:03:15 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TResp-00046Q-NU
+	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 08:03:15 +0000
+Message-ID: <508A43DA.8080304@cn.fujitsu.com>
+Date: Fri, 26 Oct 2012 16:03:38 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <283406208.283915.1351238510163.JavaMail.root@redhat.com>
+In-Reply-To: <283406208.283915.1351238510163.JavaMail.root@redhat.com>
+Subject: Re: [LTP] Regarding shmat01 syscall test
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,170 +25,153 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Madper Xie <cxie@redhat.com>
+On 10/26/2012 04:01 PM, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL" <omprakash.pal@stericsson.com>
+>> Sent: Friday, 26 October, 2012 3:45:31 AM
+>> Subject: Re: [LTP] Regarding shmat01 syscall test
+>>
+>> On 10/24/2012 04:20 PM, Jan Stancek wrote:
+>>>
+>>>
+>>> ----- Original Message -----
+>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>> To: "Jan Stancek" <jstancek@redhat.com>
+>>>> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL"
+>>>> <omprakash.pal@stericsson.com>
+>>>> Sent: Wednesday, 24 October, 2012 9:51:59 AM
+>>>> Subject: Re: [LTP] Regarding shmat01 syscall test
+>>>>
+>>>> On 10/24/2012 03:49 PM, Jan Stancek wrote:
+>>>>>
+>>>>>
+>>>>> ----- Original Message -----
+>>>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>>>> To: "Jan Stancek" <jstancek@redhat.com>
+>>>>>> Cc: ltp-list@lists.sourceforge.net, "Om Prakash PAL"
+>>>>>> <omprakash.pal@stericsson.com>
+>>>>>> Sent: Wednesday, 24 October, 2012 9:03:16 AM
+>>>>>> Subject: Re: [LTP] Regarding shmat01 syscall test
+>>>>>>
+>>>>>> On 10/24/2012 02:43 PM, Jan Stancek wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> ----- Original Message -----
+>>>>>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>>>>>> To: "Om Prakash PAL" <omprakash.pal@stericsson.com>
+>>>>>>>> Cc: ltp-list@lists.sourceforge.net
+>>>>>>>> Sent: Wednesday, 24 October, 2012 2:45:47 AM
+>>>>>>>> Subject: Re: [LTP] Regarding shmat01 syscall test
+>>>>>>>>
+>>>>>>>> On 10/23/2012 06:05 PM, Om Prakash PAL wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> -----Original Message-----
+>>>>>>>>> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+>>>>>>>>> Sent: Tuesday, October 23, 2012 3:07 PM
+>>>>>>>>> To: Om Prakash PAL
+>>>>>>>>> Cc: ltp-list@lists.sourceforge.net
+>>>>>>>>> Subject: Re: [LTP] Regarding shmat01 syscall test
+>>>>>>>>>
+>>>>>>>>> On 10/23/2012 05:24 PM, Om Prakash PAL wrote:
+>>>>>>>>>> Hi,
+>>>>>>>>>>
+>>>>>>>>>> I am working on syscall test:  shmat01.c
+>>>>>>>>>>
+>>>>>>>>>> I have some confusion:
+>>>>>>>>>>
+>>>>>>>>>>  
+>>>>>>>>>>
+>>>>>>>>>> In setup() : it is  allocating shared memory by shmget() and
+>>>>>>>>>> then
+>>>>>>>>>> attaching by shmat() and after  that detaching the attached
+>>>>>>>>>> address (i.e. shmdt())
+>>>>>>>>>>
+>>>>>>>>>>  
+>>>>>>>>>>
+>>>>>>>>>>         if (shmdt((const void *)base_addr) == -1) {
+>>>>>>>>>>
+>>>>>>>>>>                 tst_brkm(TBROK, cleanup, "Couldn't detach
+>>>>>>>>>>                 shared
+>>>>>>>>>>                 memory");
+>>>>>>>>>>
+>>>>>>>>>>         }
+>>>>>>>>>>
+>>>>>>>>>>  
+>>>>>>>>>>
+>>>>>>>>>> And again in main function it is using same "base_addr" as
+>>>>>>>>>> attaching address,
+>>>>>>>>>>
+>>>>>>>>>>  
+>>>>>>>>>>
+>>>>>>>>>> addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
+>>>>>>>>>>
+>>>>>>>>>>                                      TC[i].flags);
+>>>>>>>>>>
+>>>>>>>>>> how can we ensure(100%) that base_addr (virtual) will be
+>>>>>>>>>> free
+>>>>>>>>>> till
+>>>>>>>>>> this point for attaching?.
+>>>>>>>>>
+>>>>>>>>> Maybe we can't, but I didn't see any fail on this. Did you
+>>>>>>>>> see
+>>>>>>>>> any
+>>>>>>>>> testing failure here?
+>>>>>>>>>
+>>>>>>>>> Yes, I got some failure and the reason of failure is : the
+>>>>>>>>> address
+>>>>>>>>> at which we want to attach is busy.
+>>>>>>>>
+>>>>>>>> OK, please feel free to send a patch, or can you tell us how
+>>>>>>>> to
+>>>>>>>> reproduce it?
+>>>>>>>
+>>>>>>> I recall I could reproduce it, if I added single printf:
+>>>>>>> http://article.gmane.org/gmane.linux.ltp/16480
+>>>>>>
+>>>>>> Do you get a solution? Send out a patch?
+>>>>>
+>>>>> No, I haven't send any patch.
+>>>>>
+>>>>> About solution:
+>>>>> I'm thinking, that instead of probing with shmat, we can mmap
+>>>>> large
+>>>>> chunk of memory,
+>>>>> and then set base_addr somewhere in the middle and unmap the
+>>>>> chunk.
+>>>>> That is, using address that get_unmapped_area() is unlikely to
+>>>>> pick.
+>>>>
+>>>> This idea seems good, bug how can you decide the size of this
+>>>> "chunk
+>>>> of memory"?
+>>>
+>>> Good question. How about starting with some large value, say 512M,
+>>> and keep dividing by 2 until mmap succeeds?
+>>
+>> So, can you send out a patch to see if others have an objection?
+> 
+> Sure, I'll have a look at this today.
 
-Modified form a reproducer for
-            https://patchwork.kernel.org/patch/1358441/
-Commit: 59af0d4348eb07087097e310f60422b994dd3a2c
-pmd_present would return the wrong value on PROT_NONE ranges or in case
-of a non reproducible race with split_huge_page.
+That's nice. Thank you.
 
-The system will crash when this test failed.
+Regards,
+Wanlong Gao
 
-Signed-off-by: Madper Xie <cxie@redhat.com>
----
- runtest/mm                       |   1 +
- testcases/kernel/mem/thp/thp03.c | 121 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+)
- create mode 100644 testcases/kernel/mem/thp/thp03.c
-
-diff --git a/runtest/mm b/runtest/mm
-index 2dd66f0..0f59ef7 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -82,6 +82,7 @@ swapping01 swapping01 -i 5
- 
- thp01 thp01 -I 120
- thp02 thp02
-+thp03 thp03
- 
- vma01 vma01
- vma02 vma02
-diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
-new file mode 100644
-index 0000000..93a0689
---- /dev/null
-+++ b/testcases/kernel/mem/thp/thp03.c
-@@ -0,0 +1,121 @@
-+/*
-+ * Copyright (C) 2012  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ *
-+ * thp03 - Case for spliting unaligned memory.
-+ *       - System will panic if failed.
-+ *
-+ * Modified form a reproducer for
-+ *          https://patchwork.kernel.org/patch/1358441/
-+ * Commit: 59af0d4348eb07087097e310f60422b994dd3a2c
-+ * There was a bug in THP, will crash happened due to the following
-+ * reason according to developers:
-+ *
-+ * most VM places are using pmd_none but a few are still using
-+ * pmd_present. The meaning is about the same for the pmd. However
-+ * pmd_present would return the wrong value on PROT_NONE ranges or in
-+ * case of a non reproducible race with split_huge_page.
-+ * When the code using pmd_present gets a false negative, the kernel will
-+ * crash. It's just an annoying DoS with a BUG_ON triggering: no memory
-+ * corruption and no data corruption (nor userland nor kernel).
-+ */
-+
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include "mem.h"
-+#include "safe_macros.h"
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "thp03";
-+int TST_TOTAL = 1;
-+
-+static void thp_test(void);
-+
-+static long hugepage_size;
-+static long unaligned_size;
-+static long page_size;
-+
-+int main(int argc, char **argv)
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+
-+		thp_test();
-+	}
-+	tst_resm(TPASS, "system didn't crash, pass.");
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void thp_test(void)
-+{
-+	void *p;
-+
-+	p = mmap(NULL, unaligned_size, PROT_READ | PROT_WRITE,
-+		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+	if (p == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+
-+	memset(p, 0x00, unaligned_size);
-+	if (mprotect(p, unaligned_size, PROT_NONE) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mprotect");
-+	if (madvise(p + hugepage_size, page_size, MADV_MERGEABLE) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
-+
-+	switch (fork()) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+	case 0:
-+		exit(0);
-+	default:
-+		if (waitpid(-1, NULL, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+	}
-+}
-+
-+void setup(void)
-+{
-+	hugepage_size = read_meminfo("Hugepagesize:") * KB;
-+	unaligned_size = hugepage_size * 4 - 1;
-+	page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
--- 
-1.8.0
+> 
+> Regards,
+> Jan
+> 
 
 
 ------------------------------------------------------------------------------
