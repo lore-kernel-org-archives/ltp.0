@@ -1,28 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chris@mips.com>) id 1TOZ68-0003yn-3Q
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 19:16:08 +0000
-Received: from dns1.mips.com ([12.201.5.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TOZ62-0005DK-Ct
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 19:16:08 +0000
-Received: from mailgate1.mips.com (mailgate1.mips.com [12.201.5.111])
-	by dns1.mips.com (8.13.8/8.13.8) with ESMTP id q9HJFu4S002647
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Oct 2012 12:15:56 -0700
-Received: from exchdb01.mips.com (unknown [192.168.36.84])
-	(using TLSv1 with cipher AES128-SHA (128/128 bits))
-	(No client certificate requested)
-	by mailgate1.mips.com (Postfix) with ESMTP id 2972B3645FF
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Oct 2012 12:15:52 -0700 (PDT)
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MIMEBOUNDARY"
-From: Chris Dearman <chris@mips.com>
-Date: Wed, 17 Oct 2012 12:15:49 -0700
-Message-ID: <20121017191549.24471.86119.stgit@localhost6.localdomain6>
-Subject: [LTP] [PATCH] Add generated files to .gitignore
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TRk0e-0005Ki-IV
+	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 13:31:36 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TRk0d-0007DT-95
+	for ltp-list@lists.sourceforge.net; Fri, 26 Oct 2012 13:31:36 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9QDVTVL000649
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Oct 2012 09:31:29 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id q9QDVOfO016952
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Oct 2012 09:31:28 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 26 Oct 2012 15:31:17 +0200
+Message-Id: <0800ef411c4f06c7cb570bfe4595958fde0471a3.1351256774.git.jstancek@redhat.com>
+In-Reply-To: <cover.1351256774.git.jstancek@redhat.com>
+References: <cover.1351256774.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v3 3/3] new syscall test: migrate_pages02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,149 +32,496 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---MIMEBOUNDARY
-Content-Disposition: inline
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Use migrate_pages() syscall and check that
+shared/non-shared memory is migrated to desired node.
 
-Signed-off-by: Chris Dearman <chris@mips.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .gitignore                                        |    2 ++
- testcases/commands/.gitignore                     |    5 +++++
- testcases/kernel/mem/.gitignore                   |    2 ++
- testcases/kernel/syscalls/.gitignore              |    8 ++++++++
- testcases/kernel/timers/leapsec/.gitignore        |    1 +
- testcases/misc/tcore_patch_test_suites/.gitignore |    1 +
- 6 files changed, 19 insertions(+)
- create mode 100644 testcases/commands/.gitignore
- create mode 100644 testcases/kernel/timers/leapsec/.gitignore
- create mode 100644 testcases/misc/tcore_patch_test_suites/.gitignore
+ runtest/syscalls                                   |    1 +
+ testcases/kernel/syscalls/.gitignore               |    1 +
+ .../syscalls/migrate_pages/migrate_pages01.c       |    2 +-
+ .../syscalls/migrate_pages/migrate_pages02.c       |  419 ++++++++++++++++++++
+ 4 files changed, 422 insertions(+), 1 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
 
---MIMEBOUNDARY
-Content-Disposition: attachment;
-	filename="add-generated-files-to-gitigno.patch"
-MIME-Version: 1.0
-Content-Type: text/plain; name="add-generated-files-to-gitigno.patch";
-	charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/.gitignore b/.gitignore
-index c723901..c9f5637 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -48,3 +48,5 @@ patches/
- logfile.*
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9daf234..78f3bd3 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -518,6 +518,7 @@ memcmp01 memcmp01
+ memcpy01 memcpy01
  
- /utils/benchmark/ebizzy-0.3/ebizzy
-+/lib/tests/bytes_by_prefix_test
-+/lib/tests/tst_tmpdir_test
-diff --git a/testcases/commands/.gitignore b/testcases/commands/.gitignore
-new file mode 100644
-index 0000000..01918ea
---- /dev/null
-+++ b/testcases/commands/.gitignore
-@@ -0,0 +1,5 @@
-+/ade/objdump/test_arch_debug
-+/ade/objdump/test_arch_stripped
-+/ade/size/test
-+/cron/cron_dirs_check
-+/eject/check_tray
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 5a3a8e9..e60e458 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -57,9 +57,11 @@
- /shmt/shmt08
- /shmt/shmt09
- /shmt/shmt10
-+/swapping/swapping01
- /thp/thp01
- /thp/thp02
- /tunable/max_map_count
-+/tunable/min_free_kbytes
- /tunable/overcommit_memory
- /vma/vma01
- /vma/vma02
+ migrate_pages01 migrate_pages01
++migrate_pages02 migrate_pages02
+ 
+ mlockall01 mlockall01
+ mlockall02 mlockall02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0d2c3d8..7df28c2 100644
+index e883617..a146eee 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -68,6 +68,10 @@
- /close/close01
- /close/close02
- /close/close08
-+/cma/process_vm01
-+/cma/process_vm_readv02
-+/cma/process_vm_readv03
-+/cma/process_vm_writev02
- /confstr/confstr01
- /connect/connect01
- /creat/creat01
-@@ -342,6 +346,7 @@
- /inotify/inotify01
- /inotify/inotify02
- /inotify/inotify03
-+/inotify/inotify04
- /inotify_init/inotify_init1_01
- /inotify_init/inotify_init1_02
- /io_cancel/io_cancel01
-@@ -460,6 +465,7 @@
- /madvise/madvise01
- /madvise/madvise02
- /madvise/madvise03
-+/madvise/madvise04
- /mallopt/mallopt01
- /mbind/mbind01
- /memcmp/memcmp01
-@@ -623,6 +629,8 @@
- /read/read02
- /read/read03
- /read/read04
-+/readahead/readahead01
-+/readahead/readahead02
- /readdir/readdir01
- /readdir/readdir02
- /readlink/creat_slink
-diff --git a/testcases/kernel/timers/leapsec/.gitignore b/testcases/kernel/timers/leapsec/.gitignore
+@@ -473,6 +473,7 @@
+ /memmap/mem03
+ /memset/memset01
+ /migrate_pages/migrate_pages01
++/migrate_pages/migrate_pages02
+ /mincore/mincore01
+ /mincore/mincore02
+ /mkdir/mkdir01
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+index 53ced25..1c52b62 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+@@ -56,7 +56,7 @@ option_t options[] = {
+ 	{ NULL, NULL, NULL }
+ };
+ 
+-#if defined(__NR_migrate_pages) && defined(HAVE_NUMA_H)
++#if defined(__NR_migrate_pages) && HAVE_NUMA_H && HAVE_NUMAIF_H
+ static unsigned long *sane_old_nodes;
+ static unsigned long *sane_new_nodes;
+ static int sane_nodemask_size;
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
 new file mode 100644
-index 0000000..58787e2
+index 0000000..b1c294a
 --- /dev/null
-+++ b/testcases/kernel/timers/leapsec/.gitignore
-@@ -0,0 +1 @@
-+/leapsec_timer
-diff --git a/testcases/misc/tcore_patch_test_suites/.gitignore b/testcases/misc/tcore_patch_test_suites/.gitignore
-new file mode 100644
-index 0000000..e47c402
---- /dev/null
-+++ b/testcases/misc/tcore_patch_test_suites/.gitignore
-@@ -0,0 +1 @@
-+/tcore
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+@@ -0,0 +1,419 @@
++/*
++ * Copyright (C) 2012 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * use migrate_pages() and check that address is on correct node
++ * 1. process A can migrate its non-shared mem with CAP_SYS_NICE
++ * 2. process A can migrate its non-shared mem without CAP_SYS_NICE
++ * 3. process A can migrate shared mem only with CAP_SYS_NICE
++ * 4. process A can migrate non-shared mem in process B with same effective uid
++ * 5. process A can migrate non-shared mem in process B with CAP_SYS_NICE
++ */
++#include <sys/types.h>
++#include <sys/syscall.h>
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <errno.h>
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <pwd.h>
++#include "config.h"
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
++#include "numa_helper.h"
++#include "migrate_pages_common.h"
++
++/*
++ * This is an estimated minimum of free mem required to migrate this
++ * process to another node as migrate_pages will fail if there is not
++ * enough free space on node. While running this test on x86_64
++ * it used ~2048 pages (total VM, not just RSS). Considering ia64 as
++ * architecture with largest (non-huge) page size (16k), this limit
++ * is set to 2048*16k == 32M.
++ */
++#define NODE_MIN_FREEMEM (32*1024*1024)
++
++char *TCID = "migrate_pages02";
++int  TST_TOTAL = 1;
++
++#if defined(__NR_migrate_pages) && HAVE_NUMA_H && HAVE_NUMAIF_H
++static const char nobody_uid[] = "nobody";
++static struct passwd *ltpuser;
++static int *nodes, nodeA, nodeB;
++static int num_nodes;
++
++static void setup(void);
++static void cleanup(void);
++
++option_t options[] = {
++	{ NULL, NULL, NULL }
++};
++
++static void print_mem_stats(pid_t pid, int node)
++{
++	char s[64];
++	long long node_size, freep;
++
++	if (pid == 0)
++		pid = getpid();
++
++	tst_resm(TINFO, "mem_stats pid: %d, node: %d", pid, node);
++
++	/* dump pid's VM info */
++	sprintf(s, "cat /proc/%d/status", pid);
++	system(s);
++	sprintf(s, "cat /proc/%d/numa_maps", pid);
++	system(s);
++
++	/* dump node free mem */
++	node_size = numa_node_size64(node, &freep);
++	tst_resm(TINFO, "Node id: %d, size: %lld, free: %lld",
++		node, node_size, freep);
++}
++
++static int migrate_to_node(pid_t pid, int node)
++{
++	unsigned long nodemask_size, max_node;
++	unsigned long *old_nodes, *new_nodes;
++	int i;
++
++	tst_resm(TINFO, "pid(%d) migrate pid %d to node -> %d",
++		getpid(), pid, node);
++	max_node = get_max_node();
++	nodemask_size = max_node/8+1;
++	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
++	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
++
++	memset(old_nodes, 0, nodemask_size);
++	memset(new_nodes, 0, nodemask_size);
++	for (i = 0; i < num_nodes; i++)
++		set_bit(old_nodes, nodes[i], 1);
++	set_bit(new_nodes, node, 1);
++
++	TEST(syscall(__NR_migrate_pages, pid, max_node, old_nodes, new_nodes));
++	if (TEST_RETURN != 0) {
++		if (TEST_RETURN < 0)
++			tst_resm(TFAIL|TERRNO, "migrate_pages failed "
++					"ret: %ld, ", TEST_RETURN);
++		else
++			tst_resm(TWARN, "migrate_pages could not migrate all "
++				"pages, not migrated: %ld", TEST_RETURN);
++		print_mem_stats(pid, node);
++	}
++	free(old_nodes);
++	free(new_nodes);
++	return TEST_RETURN;
++}
++
++static int addr_on_node(void *addr)
++{
++	int node;
++	int ret;
++
++	ret = syscall(__NR_get_mempolicy, &node, NULL, (unsigned long)0,
++			(unsigned long) addr, MPOL_F_NODE | MPOL_F_ADDR);
++	if (ret == -1) {
++		tst_resm(TBROK | TERRNO, "error getting memory policy "
++				"for page %p", addr);
++	}
++	return node;
++}
++
++static int check_addr_on_node(void *addr, int exp_node)
++{
++	int node;
++
++	node = addr_on_node(addr);
++	if (node == exp_node) {
++		tst_resm(TPASS, "pid(%d) addr %p is on expected node: %d",
++				getpid(), addr, exp_node);
++		return 0;
++	} else {
++		tst_resm(TFAIL, "pid(%d) addr %p not on expected node: %d "
++				", expected %d", getpid(), addr, node,
++				exp_node);
++		print_mem_stats(0, exp_node);
++		return 1;
++	}
++}
++
++static void test_migrate_current_process(int node1, int node2,
++	int cap_sys_nice)
++{
++	char *testp, *testp2;
++	int ret, status;
++	pid_t child;
++
++	/* parent can migrate its non-shared memory */
++	tst_resm(TINFO, "current_process, cap_sys_nice: %d", cap_sys_nice);
++	testp = SAFE_MALLOC(NULL, getpagesize());
++	testp[0] = 0;
++	tst_resm(TINFO, "private anonymous: %p", testp);
++	migrate_to_node(0, node2);
++	check_addr_on_node(testp, node2);
++	migrate_to_node(0, node1);
++	check_addr_on_node(testp, node1);
++	free(testp);
++
++	/* parent can migrate shared memory with CAP_SYS_NICE */
++	testp2 = mmap(NULL, getpagesize(), PROT_READ|PROT_WRITE,
++		MAP_ANONYMOUS|MAP_SHARED, 0, 0);
++	if (testp2 == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap failed");
++	testp2[0] = 1;
++	tst_resm(TINFO, "shared anonymous: %p", testp2);
++	migrate_to_node(0, node2);
++	check_addr_on_node(testp2, node2);
++
++	/* shared mem is on node2, try to migrate in child to node1 */
++	fflush(stdout);
++	child = fork();
++	switch (child) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		break;
++	case 0:
++		tst_resm(TINFO, "child shared anonymous, cap_sys_nice: %d",
++			cap_sys_nice);
++		testp = SAFE_MALLOC(NULL, getpagesize());
++		testp[0] = 1;
++		testp2[0] = 1;
++		if (!cap_sys_nice)
++			if (seteuid(ltpuser->pw_uid) == -1)
++				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
++
++		migrate_to_node(0, node1);
++		/* child can migrate non-shared memory */
++		ret = check_addr_on_node(testp, node1);
++
++		free(testp);
++		munmap(testp2, getpagesize());
++		exit(ret);
++	default:
++		if (waitpid(child, &status, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "child returns %d", status);
++		if (cap_sys_nice)
++			/* child can migrate shared memory only
++			 * with CAP_SYS_NICE */
++			check_addr_on_node(testp2, node1);
++		else
++			check_addr_on_node(testp2, node2);
++		munmap(testp2, getpagesize());
++	}
++}
++
++static void test_migrate_other_process(int node1, int node2,
++	int cap_sys_nice)
++{
++	char *testp;
++	int status, ret, tmp;
++	pid_t child;
++	int child_ready[2];
++	int pages_migrated[2];
++
++	/* setup pipes to synchronize child/parent */
++	if (pipe(child_ready) == -1)
++		tst_resm(TBROK | TERRNO, "pipe #1 failed");
++	if (pipe(pages_migrated) == -1)
++		tst_resm(TBROK | TERRNO, "pipe #2 failed");
++
++	tst_resm(TINFO, "other_process, cap_sys_nice: %d", cap_sys_nice);
++
++	fflush(stdout);
++	child = fork();
++	switch (child) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++		break;
++	case 0:
++		close(child_ready[0]);
++		close(pages_migrated[1]);
++
++		testp = SAFE_MALLOC(NULL, getpagesize());
++		testp[0] = 0;
++
++		/* make sure we are on node1 */
++		migrate_to_node(0, node1);
++		check_addr_on_node(testp, node1);
++
++		if (seteuid(ltpuser->pw_uid) == -1)
++			tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
++
++		/* signal parent it's OK to migrate child and wait */
++		if (write(child_ready[1], &tmp, 1) != 1)
++			tst_brkm(TBROK|TERRNO, NULL, "write #1 failed");
++		if (read(pages_migrated[0], &tmp, 1) != 1)
++			tst_brkm(TBROK|TERRNO, NULL, "read #1 failed");
++
++		/* parent can migrate child process with same euid */
++		/* parent can migrate child process with CAP_SYS_NICE */
++		ret = check_addr_on_node(testp, node2);
++
++		free(testp);
++		close(child_ready[1]);
++		close(pages_migrated[0]);
++		exit(ret);
++	default:
++		close(child_ready[1]);
++		close(pages_migrated[0]);
++
++		if (!cap_sys_nice)
++			if (seteuid(ltpuser->pw_uid) == -1)
++				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
++
++		/* wait until child is ready on node1, then migrate and
++		 * signal to check current node */
++		if (read(child_ready[0], &tmp, 1) != 1)
++			tst_brkm(TBROK|TERRNO, NULL, "read #2 failed");
++		migrate_to_node(child, node2);
++		if (write(pages_migrated[1], &tmp, 1) != 1)
++			tst_brkm(TBROK|TERRNO, NULL, "write #2 failed");
++
++		if (waitpid(child, &status, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "child returns %d", status);
++		close(child_ready[0]);
++		close(pages_migrated[1]);
++
++		/* reset euid, so this testcase can be used in loop */
++		if (!cap_sys_nice)
++			if (seteuid(0) == -1)
++				tst_brkm(TBROK|TERRNO, NULL, "seteuid failed");
++	}
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++		test_migrate_current_process(nodeA, nodeB, 1);
++		test_migrate_current_process(nodeA, nodeB, 0);
++		test_migrate_other_process(nodeA, nodeB, 1);
++		test_migrate_other_process(nodeA, nodeB, 0);
++	}
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	int ret, i, j;
++	int pagesize = getpagesize();
++	void *p;
++
++	tst_require_root(NULL);
++	TEST(syscall(__NR_migrate_pages, 0, 0, NULL, NULL));
++
++	if (numa_available() == -1)
++		tst_brkm(TCONF, NULL, "NUMA not available");
++
++	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
++	if (ret < 0)
++		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes(): %d", ret);
++
++	if (num_nodes < 2)
++		tst_brkm(TCONF, NULL, "at least 2 allowed NUMA nodes"
++				" are required");
++	else if (tst_kvercmp(2, 6, 18) < 0)
++		tst_brkm(TCONF, NULL, "2.6.18 or greater kernel required");
++
++	/*
++	 * find 2 nodes, which can hold NODE_MIN_FREEMEM bytes
++	 * The reason is that:
++	 * 1. migrate_pages() is expected to succeed
++	 * 2. this test avoids hitting:
++	 *    Bug 870326 - migrate_pages() reports success, but pages are
++	 *                 not moved to desired node
++	 *    https://bugzilla.redhat.com/show_bug.cgi?id=870326
++	 */
++	nodeA = nodeB = -1;
++	for (i = 0; i < num_nodes; i++) {
++		p = numa_alloc_onnode(NODE_MIN_FREEMEM, nodes[i]);
++		if (p == NULL)
++			break;
++		memset(p, 0xff, NODE_MIN_FREEMEM);
++
++		j = 0;
++		while (j < NODE_MIN_FREEMEM) {
++			if (addr_on_node(p+j) != nodes[i])
++				break;
++			j += pagesize;
++		}
++		numa_free(p, NODE_MIN_FREEMEM);
++
++		if (j >= NODE_MIN_FREEMEM) {
++			if (nodeA == -1)
++				nodeA = nodes[i];
++			else if (nodeB == -1)
++				nodeB = nodes[i];
++			else
++				break;
++		}
++	}
++
++	if (nodeA == -1 || nodeB == -1)
++		tst_brkm(TCONF, NULL, "at least 2 NUMA nodes with "
++			"free mem > %d are needed", NODE_MIN_FREEMEM);
++	tst_resm(TINFO, "Using nodes: %d %d", nodeA, nodeB);
++
++	ltpuser = getpwnam(nobody_uid);
++	if (ltpuser == NULL)
++		tst_brkm(TBROK|TERRNO, NULL, "getpwnam failed");
++
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	free(nodes);
++	TEST_CLEANUP;
++}
++
++#else /* __NR_migrate_pages */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
++			" or libnuma is not available");
++}
++#endif
+-- 
+1.7.1
 
---MIMEBOUNDARY
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_sfd2d_oct
---MIMEBOUNDARY
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---MIMEBOUNDARY--
-
