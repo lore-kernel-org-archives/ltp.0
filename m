@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TMbxl-0007Gc-5G
-	for ltp-list@lists.sourceforge.net; Fri, 12 Oct 2012 09:55:25 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TMbxj-00019Z-R1
-	for ltp-list@lists.sourceforge.net; Fri, 12 Oct 2012 09:55:25 +0000
-Message-ID: <5077E8A5.2080309@cn.fujitsu.com>
-Date: Fri, 12 Oct 2012 17:53:41 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <tdmackey@twitter.com>) id 1TSZnA-00031i-GZ
+	for ltp-list@lists.sourceforge.net; Sun, 28 Oct 2012 20:49:08 +0000
+Received: from mail-vc0-f175.google.com ([209.85.220.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TSZn9-0007yZ-RB
+	for ltp-list@lists.sourceforge.net; Sun, 28 Oct 2012 20:49:08 +0000
+Received: by mail-vc0-f175.google.com with SMTP id p1so5006412vcq.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 28 Oct 2012 13:49:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1349771952.git.jstancek@redhat.com>
-	<538c53f77d011c2fe676abb59236c4bee6a1fb2c.1349771952.git.jstancek@redhat.com>
-In-Reply-To: <538c53f77d011c2fe676abb59236c4bee6a1fb2c.1349771952.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2 1/2] new syscall test: readahead01
-Reply-To: gaowanlong@cn.fujitsu.com
+In-Reply-To: <1351413491-18760-1-git-send-email-tdmackey@twitter.com>
+References: <1351413491-18760-1-git-send-email-tdmackey@twitter.com>
+From: David Mackey <tdmackey@twitter.com>
+Date: Sun, 28 Oct 2012 13:48:32 -0700
+Message-ID: <CAMrBRo1HCuZ0GdwTE5Qxx3ygsH1jA6kxRVDw4QYxLsj1kjH8Qg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] proc01: Add EAGAIN to known issues for acpi/event
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,265 +27,119 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1594405193481772304=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 10/09/2012 04:51 PM, Jan Stancek wrote:
-> errno testcase for readahead(2).
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+--===============1594405193481772304==
+Content-Type: multipart/alternative; boundary=14dae9ccd476d090a604cd24ae65
+
+--14dae9ccd476d090a604cd24ae65
+Content-Type: text/plain; charset=UTF-8
+
+On Sun, Oct 28, 2012 at 1:38 AM, David Mackey <tdmackey@twitter.com> wrote:
+
+> Calling open on /proc/acpi/event with O_NONBLOCK will return EAGAIN if
+> the acpi bus event list is empty and no process is listening for events.
+> This is a common errno if acpid is not running.
+>
+> - Add EAGAIN to known issues list for /proc/acpi/event.
+>
+> Signed-off-by: David Mackey <tdmackey@twitter.com>
 > ---
->  runtest/syscalls                                  |    2 +
->  testcases/kernel/syscalls/readahead/Makefile      |   22 +++
->  testcases/kernel/syscalls/readahead/readahead01.c |  172 +++++++++++++++++++++
->  3 files changed, 196 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/readahead/Makefile
->  create mode 100644 testcases/kernel/syscalls/readahead/readahead01.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index edf6c1e..e754c60 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -767,6 +767,8 @@ read02 read02
->  read03 read03
->  read04 read04
->  
-> +readahead01 readahead01
-> +
->  readdir01 readdir01
->  readdir02 readdir02
->  
-> diff --git a/testcases/kernel/syscalls/readahead/Makefile b/testcases/kernel/syscalls/readahead/Makefile
-> new file mode 100644
-> index 0000000..45a3bbc
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/readahead/Makefile
-> @@ -0,0 +1,22 @@
-> +#
-> +#  Copyright (C) 2012 Linux Test Project, Inc.
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
-> new file mode 100644
-> index 0000000..d58c074
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/readahead/readahead01.c
-> @@ -0,0 +1,172 @@
-> +/*
-> + * Copyright (C) 2012 Linux Test Project, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +/*
-> + * errno tests for readahead() syscall
-> + */
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/syscall.h>
-> +#include <sys/socket.h>
-> +#include <errno.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include "config.h"
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +#include "linux_syscall_numbers.h"
-> +
-> +char *TCID = "readahead01";
-> +int  TST_TOTAL = 1;
-> +
-> +option_t options[] = {
-> +	{ NULL, NULL, NULL }
-> +};
-> +
-> +#if defined(__NR_readahead)
-> +static void setup(char *argv[]);
+>  testcases/kernel/fs/proc/proc01.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/fs/proc/proc01.c
+> b/testcases/kernel/fs/proc/proc01.c
+> index a6fb3d9..1c2b392 100644
+> --- a/testcases/kernel/fs/proc/proc01.c
+> +++ b/testcases/kernel/fs/proc/proc01.c
+> @@ -82,6 +82,7 @@ typedef struct mapping Mapping;
+>     like if SELinux is disabled, the test may still fail on some other
+>     entries. */
+>  const Mapping known_issues[] = {
+> +    {"open", "/proc/acpi/event", EAGAIN},
+>      {"open", "/proc/acpi/event", EBUSY},
+>      {"open", "/proc/sal/cpe/data", EBUSY},
+>      {"open", "/proc/sal/cmc/data", EBUSY},
+> --
+> 1.7.11.7
+>
+>
+Please discard. Will resubmit.
 
-It seems that the argument of setup() can be declared to void.
+--14dae9ccd476d090a604cd24ae65
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> +static void cleanup(void);
-> +
-> +static int check_ret(long expected_ret)
-> +{
-> +	if (expected_ret == TEST_RETURN) {
-> +		tst_resm(TPASS, "expected ret success - "
-> +			"returned value = %ld", TEST_RETURN);
-> +		return 0;
-> +	}
-> +	tst_resm(TFAIL, "unexpected failure - "
-> +			"returned value = %ld, expected: %ld",
-> +			TEST_RETURN, expected_ret);
-> +	return 1;
-> +}
-> +
-> +static int check_errno(long expected_errno)
-> +{
-> +	if (TEST_ERRNO == expected_errno) {
-> +		tst_resm(TPASS|TTERRNO, "expected failure");
-> +		return 0;
-> +	}
-> +
-> +	if (TEST_ERRNO == 0)
-> +		tst_resm(TFAIL, "call succeeded unexpectedly");
-> +	else
-> +		tst_resm(TFAIL|TTERRNO, "unexpected failure - "
-> +			"expected = %ld : %s, actual",
-> +			expected_errno, strerror(expected_errno));
-> +	return 1;
-> +}
-> +
-> +static void test_bad_fd(void)
-> +{
-> +	char tempname[PATH_MAX] = "readahead01_XXXXXX";
-> +	int fd;
-> +
-> +	tst_resm(TINFO, "test_bad_fd -1");
-> +	TEST(syscall(__NR_readahead, -1, 0, getpagesize()));
-> +	check_ret(-1);
-> +	check_errno(EBADF);
-> +
-> +	tst_resm(TINFO, "test_bad_fd O_WRONLY");
-> +	fd = mkstemp(tempname);
-> +	if (fd == -1)
-> +		tst_resm(TBROK|TERRNO, "mkstemp failed");
-> +	close(fd);
-> +	fd = open(tempname, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_resm(TBROK|TERRNO, "Failed to open testfile");
-> +	TEST(syscall(__NR_readahead, fd, 0, getpagesize()));
-> +	check_ret(-1);
-> +	check_errno(EBADF);
-> +	close(fd);
-> +	unlink(tempname);
-> +}
-> +
-> +static void test_invalid_fd(void)
-> +{
-> +	int fd[2];
-> +
-> +	tst_resm(TINFO, "test_invalid_fd pipe");
-> +	if (pipe(fd) < 0)
-> +		tst_resm(TBROK|TERRNO, "Failed to create pipe");
-> +	TEST(syscall(__NR_readahead, fd[0], 0, getpagesize()));
-> +	check_ret(-1);
-> +	check_errno(EINVAL);
-> +	close(fd[0]);
-> +	close(fd[1]);
-> +
-> +	tst_resm(TINFO, "test_invalid_fd socket");
-> +	fd[0] = socket(AF_INET, SOCK_STREAM, 0);
-> +	if (fd[0] < 0)
-> +		tst_resm(TBROK|TERRNO, "Failed to create socket");
-> +	TEST(syscall(__NR_readahead, fd[0], 0, getpagesize()));
-> +	check_ret(-1);
-> +	check_errno(EINVAL);
-> +	close(fd[0]);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char *msg;
-> +	int lc;
-> +
-> +	msg = parse_opts(argc, argv, options, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup(argv);
+On Sun, Oct 28, 2012 at 1:38 AM, David Mackey <span dir=3D"ltr">&lt;<a href=
+=3D"mailto:tdmackey@twitter.com" target=3D"_blank">tdmackey@twitter.com</a>=
+&gt;</span> wrote:<br><div class=3D"gmail_quote"><blockquote class=3D"gmail=
+_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:=
+1ex">
 
-argv is useless in setup().
+Calling open on /proc/acpi/event with O_NONBLOCK will return EAGAIN if<br>
+the acpi bus event list is empty and no process is listening for events.<br=
+>
+This is a common errno if acpid is not running.<br>
+<br>
+- Add EAGAIN to known issues list for /proc/acpi/event.<br>
+<br>
+Signed-off-by: David Mackey &lt;<a href=3D"mailto:tdmackey@twitter.com">tdm=
+ackey@twitter.com</a>&gt;<br>
+---<br>
+=C2=A0testcases/kernel/fs/proc/proc01.c | 1 +<br>
+=C2=A01 file changed, 1 insertion(+)<br>
+<br>
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/p=
+roc01.c<br>
+index a6fb3d9..1c2b392 100644<br>
+--- a/testcases/kernel/fs/proc/proc01.c<br>
++++ b/testcases/kernel/fs/proc/proc01.c<br>
+@@ -82,6 +82,7 @@ typedef struct mapping Mapping;<br>
+=C2=A0 =C2=A0 like if SELinux is disabled, the test may still fail on some =
+other<br>
+=C2=A0 =C2=A0 entries. */<br>
+=C2=A0const Mapping known_issues[] =3D {<br>
++ =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/acpi/event&quot;, EAGAIN},<br=
+>
+=C2=A0 =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/acpi/event&quot;, EBUSY}=
+,<br>
+=C2=A0 =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/sal/cpe/data&quot;, EBUS=
+Y},<br>
+=C2=A0 =C2=A0 =C2=A0{&quot;open&quot;, &quot;/proc/sal/cmc/data&quot;, EBUS=
+Y},<br>
+<span class=3D"HOEnZb"><font color=3D"#888888">--<br>
+1.7.11.7<br>
+<br></font></span></blockquote><div><br></div><div>Please discard. Will res=
+ubmit.=C2=A0</div></div><br>
 
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		Tst_count = 0;
-> +		test_bad_fd();
-> +		test_invalid_fd();
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(char *argv[])
+--14dae9ccd476d090a604cd24ae65--
 
-ditto.
 
-Thanks,
-Wanlong Gao
-
-> +{
-> +	tst_require_root(NULL);
-> +	tst_tmpdir();
-> +
-> +	/* check if readahead syscall is supported */
-> +	syscall(__NR_readahead, 0, 0, 0);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +}
-> +
-> +#else /* __NR_readahead */
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "System doesn't support __NR_readahead");
-> +}
-> +#endif
-> +
-> 
-
+--===============1594405193481772304==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+WINDOWS 8 is here. 
+Millions of people.  Your app in 30 days.
+Visit The Windows 8 Center at Sourceforge for all your go to resources.
+http://windows8center.sourceforge.net/
+join-generation-app-and-make-money-coding-fast/
+--===============1594405193481772304==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1594405193481772304==--
+
