@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TLQ3U-0004jQ-Ld
-	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 03:00:24 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TLQ3T-0003Ib-Ea
-	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 03:00:24 +0000
-Message-ID: <50738CED.7090209@cn.fujitsu.com>
-Date: Tue, 09 Oct 2012 10:33:17 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1318126449-3660-1-git-send-email-liuhangbin@gmail.com>
-In-Reply-To: <1318126449-3660-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] net: Install the missing file in network stress
- test
-Reply-To: gaowanlong@cn.fujitsu.com
+	(envelope-from <tdmackey@twitter.com>) id 1TSOlp-00021H-IH
+	for ltp-list@lists.sourceforge.net; Sun, 28 Oct 2012 09:03:01 +0000
+Received: from mail-pa0-f47.google.com ([209.85.220.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TSOlo-0007z7-Qf
+	for ltp-list@lists.sourceforge.net; Sun, 28 Oct 2012 09:03:01 +0000
+Received: by mail-pa0-f47.google.com with SMTP id fa11so2645650pad.34
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 28 Oct 2012 02:02:54 -0700 (PDT)
+From: David Mackey <tdmackey@twitter.com>
+Date: Sun, 28 Oct 2012 01:38:11 -0700
+Message-Id: <1351413491-18760-1-git-send-email-tdmackey@twitter.com>
+Subject: [LTP] [PATCH] proc01: Add EAGAIN to known issues for acpi/event
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,29 +24,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 10/09/2011 10:14 AM, Hangbin Liu wrote:
-> Some network stress test (dns, ftp, http) will lost local scripts while
-> install. Remove the "-" in makefile fixed this issue.
-> 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Calling open on /proc/acpi/event with O_NONBLOCK will return EAGAIN if
+the acpi bus event list is empty and no process is listening for events.
+This is a common errno if acpid is not running.
 
-Pushed, thank you.
+- Add EAGAIN to known issues list for /proc/acpi/event.
 
-Wanlong Gao
+Signed-off-by: David Mackey <tdmackey@twitter.com>
+---
+ testcases/kernel/fs/proc/proc01.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index a6fb3d9..1c2b392 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -82,6 +82,7 @@ typedef struct mapping Mapping;
+    like if SELinux is disabled, the test may still fail on some other
+    entries. */
+ const Mapping known_issues[] = {
++    {"open", "/proc/acpi/event", EAGAIN},
+     {"open", "/proc/acpi/event", EBUSY},
+     {"open", "/proc/sal/cpe/data", EBUSY},
+     {"open", "/proc/sal/cmc/data", EBUSY},
+-- 
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+WINDOWS 8 is here. 
+Millions of people.  Your app in 30 days.
+Visit The Windows 8 Center at Sourceforge for all your go to resources.
+http://windows8center.sourceforge.net/
+join-generation-app-and-make-money-coding-fast/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
