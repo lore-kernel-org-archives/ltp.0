@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Nitin.Yadav@mphasis.com>) id 1TLT3s-0007GK-4Q
-	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 06:13:00 +0000
-Received: from mpbam6ip2.mphasis.com ([203.12.223.66])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TLT3p-0004Pb-PJ
-	for ltp-list@lists.sourceforge.net; Tue, 09 Oct 2012 06:13:00 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Tue, 9 Oct 2012 11:38:34 +0530
-Message-ID: <E351E450E8B9F54684A699D42DC5ADF225E9C6D3@MPBAGVEX02.corp.mphasis.com>
-In-Reply-To: <4FED5CFD.7040406@cn.fujitsu.com>
-References: <CANysfL_ya=ZMyZyyE__=3T-QTqFniRrj+nHMrNzeaVHMrnmA5A@mail.gmail.com>
-	<4FED5CFD.7040406@cn.fujitsu.com>
-From: "Nitin Yadav" <Nitin.Yadav@mphasis.com>
-Subject: Re: [LTP] [PATCH] io_submit: uninitialized iocb may not return
-	-EINVAL
+	(envelope-from <cxie@redhat.com>) id 1TSlen-00070l-8I
+	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 09:29:17 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TSlej-000132-3d
+	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 09:29:17 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9T9T7Qs030121
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 29 Oct 2012 05:29:07 -0400
+From: cxie@redhat.com
+Date: Mon, 29 Oct 2012 17:29:00 +0800
+Message-Id: <1351502940-20415-1-git-send-email-cxie@redhat.com>
+Subject: [LTP] [PATCH] thp/thp03: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,67 +26,161 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com, Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGkgV2FubG9uZywNCiAgIA0KICBCZWxvdyBhcmUgdGhlIG91dHB1dCB3aGVyZSBJIGFtIGdldHRp
-bmcgLSBFUEVSTSAocmV0dXJuZWQgdmFsdWUgPSAxKSBhcyBhIHJldHVybiB2YWx1ZSBmcm9tIGlv
-X3N1Ym1pdC4gDQoNCmlvX3N1Ym1pdDAxICAgIDEgIFRQQVNTICA6ICBleHBlY3RlZCBmYWlsdXJl
-IC0gcmV0dXJuZWQgdmFsdWUgPSAtMjIgOiBJbnZhbGlkIGFyZ3VtZW50DQppb19zdWJtaXQwMSAg
-ICAyICBUUEFTUyAgOiAgZXhwZWN0ZWQgZmFpbHVyZSAtIHJldHVybmVkIHZhbHVlID0gLTIyIDog
-SW52YWxpZCBhcmd1bWVudA0KaW9fc3VibWl0MDEgICAgMyAgVEZBSUwgICAgOiAgdW5leHBlY3Rl
-ZCBmYWlsdXJlIC0gcmV0dXJuZWQgdmFsdWUgPSAxIDogVW5rbm93biBlcnJvciAxODQ0Njc0NDA3
-MzcwOTU1MTYxNSwgZXhwZWN0ZWQgb25lIG9mIC1FSU5WQUwsIC1FQkFERiwgLUVGQVVMVA0KaW9f
-c3VibWl0MDEgICAgNCAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1
-ZSA9IC0xNCA6IEJhZCBhZGRyZXNzDQppb19zdWJtaXQwMSAgICA1ICBUUEFTUyAgOiAgZXhwZWN0
-ZWQgZmFpbHVyZSAtIHJldHVybmVkIHZhbHVlID0gLTIyIDogSW52YWxpZCBhcmd1bWVudA0KaW9f
-c3VibWl0MDEgICAgNiAgVFBBU1MgIDogIGV4cGVjdGVkIGZhaWx1cmUgLSByZXR1cm5lZCB2YWx1
-ZSA9IC05ICAgOiBCYWQgZmlsZSBkZXNjcmlwdG9yDQppb19zdWJtaXQwMSAgICA3ICBUUEFTUyAg
-OiAgZXhwZWN0ZWQgc3VjY2VzcyAtIHJldHVybmVkIHZhbHVlID0gMA0KaW9fc3VibWl0MDEgICAg
-OCAgVFBBU1MgIDogIGV4cGVjdGVkIHN1Y2Nlc3MgLSByZXR1cm5lZCB2YWx1ZSA9IDENCg0KQ291
-bGQgeW91IHBsZWFzZSBsZXQgbWUga25vdyBjYW4gd2UgY29uc2lkZXIgLSBFUEVSTSBjYXNlIGFz
-IGEgcmV0dXJuIHZhbHVlIGZvciBpb19zdWJtaXQuDQoNClRoYW5rcywNCk5pdGluIFlhZGF2DQoN
-Cg0KDQpIaSBKYW7vvIwNCg0KPj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW9f
-c3VibWl0L2lvX3N1Ym1pdDAxLmMNCj4+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2lvX3N1Ym1pdC9pb19zdWJtaXQwMS5jDQo+Pj4gQEAgLTEyNiw3ICsxMjYsMjEgQEAgaW50IG1h
-aW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCj4+PiAgICAgICAgICAgICAvKiAxLjMgLSBFSU5W
-QUw6IHVuaW5pdGlhbGl6ZWQgaW9jYiAqLw0KPj4+ICAgICAgICAgICAgIGlvY2JzWzBdID0gJmlv
-Y2I7DQo+Pj4gICAgICAgICAgICAgVEVTVChpb19zdWJtaXQoY3R4LCAxLCBpb2NicykpOw0KPj4+
-IC0gICAgICAgICAgIGNoZWNrX3Jlc3VsdCgtRUlOVkFMLCBURVNUX1JFVFVSTik7DQo+Pj4gKyAg
-ICAgICAgICAgc3dpdGNoKFRFU1RfUkVUVVJOKSB7DQo+Pj4gKyAgICAgICAgICAgICAgICAgICBj
-YXNlIC1FSU5WQUw6DQo+Pj4gKyAgICAgICAgICAgICAgICAgICBjYXNlIC1FQkFERjoNCj4+PiAr
-ICAgICAgICAgICAgICAgICAgIGNhc2UgLUVGQVVMVDoNCj4+PiArICAgICAgICAgICAgICAgICAg
-IGNhc2UgLUVQRVJNOg0KPj4NCj4+DQo+PiBJIGRvbid0IHRoaW5rIGlvX3N1Ym1pdCgyKSBjYW4g
-cmV0dXJuIC1FUEVSTS4NCj4+DQo+PiBEbyB5b3UgdGhpbmsgc28/DQo+IA0KPiBJIHdhcyB0cnlp
-bmcgYWxsIHNvcnRzIG9mIHJhbmRvbSBkYXRhIGFuZCBJIHJlbWVtYmVyIHNlZWluZyBvbmNlICIt
-MSIuDQo+IEknbSBmYWlsaW5nIHRvIHJlcHJvZHVjZSBpdCB0b2RheSwgc28gSSBjb3VsZCBiZSB3
-cm9uZy4gSWYgSSBmYWlsIHRvIGZpbmQNCj4gZGF0YSB0aGF0IGdpdmVzIC1FUEVSTSwgSSdsbCBy
-ZW1vdmUgaXQgaW4gdjIuDQoNCg0KSSBsb29rZWQgaW50byB0aGUgaW9fc3VibWl0KDIpIGNvZGUg
-aW4ga2VybmVsIGFuZCBkaWRuJ3Qgc2VlIGFueSBwYXRoIGNhbg0KcmV0dXJuIC1FUEVSTSwgc28g
-SSB0aGluayB5b3Ugc2hvdWxkIGNvbmZpcm0gb24gaXQgYWdhaW4uDQoNClRoYW5rcywNCldhbmxv
-bmcgR2FvDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IEphbg0KPiANCj4+DQo+PiBUaGFua3MsDQo+PiBX
-YW5sb25nIEdhbw0KPj4NCj4gDQo+DQoNCgpJbmZvcm1hdGlvbiB0cmFuc21pdHRlZCBieSB0aGlz
-IGUtbWFpbCBpcyBwcm9wcmlldGFyeSB0byBNcGhhc2lTLCBpdHMgYXNzb2NpYXRlZCBjb21wYW5p
-ZXMgYW5kLyBvciBpdHMgY3VzdG9tZXJzIGFuZCBpcyBpbnRlbmRlZCAKZm9yIHVzZSBvbmx5IGJ5
-IHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3aGljaCBpdCBpcyBhZGRyZXNzZWQsIGFuZCBt
-YXkgY29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBv
-ciAKZXhlbXB0IGZyb20gZGlzY2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhdy4gSWYgeW91IGFy
-ZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCBvciBpdCBhcHBlYXJzIHRoYXQgdGhpcyBtYWls
-IGhhcyBiZWVuIGZvcndhcmRlZCAKdG8geW91IHdpdGhvdXQgcHJvcGVyIGF1dGhvcml0eSwgeW91
-IGFyZSBub3RpZmllZCB0aGF0IGFueSB1c2Ugb3IgZGlzc2VtaW5hdGlvbiBvZiB0aGlzIGluZm9y
-bWF0aW9uIGluIGFueSBtYW5uZXIgaXMgc3RyaWN0bHkgCnByb2hpYml0ZWQuIEluIHN1Y2ggY2Fz
-ZXMsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkgYXQgbWFpbG1hc3RlckBtcGhhc2lzLmNv
-bSBhbmQgZGVsZXRlIHRoaXMgbWFpbCBmcm9tIHlvdXIgcmVjb3Jkcy4KLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCkRvbid0IGxldCBzbG93IHNpdGUgcGVyZm9ybWFuY2UgcnVpbiB5b3VyIGJ1c2luZXNz
-LiBEZXBsb3kgTmV3IFJlbGljIEFQTQpEZXBsb3kgTmV3IFJlbGljIGFwcCBwZXJmb3JtYW5jZSBt
-YW5hZ2VtZW50IGFuZCBrbm93IGV4YWN0bHkKd2hhdCBpcyBoYXBwZW5pbmcgaW5zaWRlIHlvdXIg
-UnVieSwgUHl0aG9uLCBQSFAsIEphdmEsIGFuZCAuTkVUIGFwcApUcnkgTmV3IFJlbGljIGF0IG5v
-IGNvc3QgdG9kYXkgYW5kIGdldCBvdXIgc3dlZXQgRGF0YSBOZXJkIHNoaXJ0IHRvbyEKaHR0cDov
-L3Auc2YubmV0L3NmdS9uZXdyZWxpYy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0
-cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
-dGluZm8vbHRwLWxpc3QK
+From: Madper Xie <cxie@redhat.com>
+
+Modified form a reproducer for
+           https://patchwork.kernel.org/patch/1358441/
+pmd_present would return the wrong value on PROT_NONE ranges or in case
+of a non reproducible race with split_huge_page.
+
+The system will crash when this test failed.
+
+Signed-off-by: Madper Xie <cxie@redhat.com>
+---
+ testcases/kernel/mem/thp/thp03.c | 117 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 117 insertions(+)
+ create mode 100644 testcases/kernel/mem/thp/thp03.c
+
+diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+new file mode 100644
+index 0000000..ee6fa1e
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp03.c
+@@ -0,0 +1,117 @@
++/*
++ * Copyright (C) 2012  Red Hat, Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ *
++ * thp03 - Case for spliting unaligned memory.
++ *       - System will panic if failed.
++ *
++ * There was a bug in THP, will crash happened due to the following
++ * reason according to developers:
++ *
++ * most VM places are using pmd_none but a few are still using
++ * pmd_present. The meaning is about the same for the pmd. However
++ * pmd_present would return the wrong value on PROT_NONE ranges or in
++ * case of a non reproducible race with split_huge_page.
++ * When the code using pmd_present gets a false negative, the kernel will
++ * crash. It's just an annoying DoS with a BUG_ON triggering: no memory
++ * corruption and no data corruption (nor userland nor kernel).
++ */
++
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <string.h>
++#include "mem.h"
++#include "safe_macros.h"
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "thp03";
++
++static void thp_test(void);
++
++static long hugepage_size;
++static long unaligned_size;
++static long page_size;
++
++int main(int argc, char **argv)
++{
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		Tst_count = 0;
++
++		thp_test();
++	}
++	tst_resm(TPASS, "system didn't crash, pass.");
++	cleanup();
++	tst_exit();
++}
++
++static void thp_test(void)
++{
++	void *p;
++
++	p = mmap(NULL, unaligned_size, PROT_READ | PROT_WRITE,
++		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
++	if (p == MAP_FAILED)
++		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++
++	memset(p, 0x00, unaligned_size);
++	if (mprotect(p, unaligned_size, PROT_NONE) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "mprotect");
++	if (madvise(p + hugepage_size, page_size, MADV_MERGEABLE) == -1)
++		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
++
++	switch (fork()) {
++	case -1:
++		tst_brkm(TBROK|TERRNO, cleanup, "fork");
++	case 0:
++		exit(0);
++	default:
++		if (waitpid(-1, NULL, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++	}
++}
++
++void setup(void)
++{
++	hugepage_size = read_meminfo("Hugepagesize:") * KB;
++	unaligned_size = hugepage_size * 4 - 1;
++	page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
++
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++}
++
++void cleanup(void)
++{
++	TEST_CLEANUP;
++}
+-- 
+1.8.0
+
+
+------------------------------------------------------------------------------
+The Windows 8 Center - In partnership with Sourceforge
+Your idea - your app - 30 days.
+Get started!
+http://windows8center.sourceforge.net/
+what-html-developers-need-to-know-about-coding-windows-8-metro-style-apps/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
