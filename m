@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TOpeT-00042Y-7w
-	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 12:56:41 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TOpeS-0002k5-8k
-	for ltp-list@lists.sourceforge.net; Thu, 18 Oct 2012 12:56:41 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q9ICuYaL015817
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Oct 2012 08:56:34 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id q9ICuVXb003245
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Oct 2012 08:56:34 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 18 Oct 2012 14:56:23 +0200
-Message-Id: <5f67fbd40c7d3ba98f1bd3f73d915dfb28021342.1350564702.git.jstancek@redhat.com>
-In-Reply-To: <cover.1350564702.git.jstancek@redhat.com>
-References: <cover.1350564702.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2 2/3] new syscall test: migrate_pages01
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1TSmhZ-0003Wy-6b
+	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 10:36:13 +0000
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TSmhY-0000LD-7j
+	for ltp-list@lists.sourceforge.net; Mon, 29 Oct 2012 10:36:13 +0000
+Received: by mail-pb0-f47.google.com with SMTP id ro12so3961723pbb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 29 Oct 2012 03:36:06 -0700 (PDT)
+Message-ID: <508E5A47.9070904@casparzhang.com>
+Date: Mon, 29 Oct 2012 18:28:23 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
+MIME-Version: 1.0
+References: <1351502940-20415-1-git-send-email-cxie@redhat.com>
+In-Reply-To: <1351502940-20415-1-git-send-email-cxie@redhat.com>
+Subject: Re: [LTP] [PATCH] thp/thp03: new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,481 +27,164 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-errno tests for migrate_pages(2).
-Note, that older kernels (~2.6.18) are likely to panic during this test.
+On 10/29/2012 05:29 PM, cxie@redhat.com wrote:
+> From: Madper Xie <cxie@redhat.com>
+>
+> Modified form a reproducer for
+>             https://patchwork.kernel.org/patch/1358441/
+> pmd_present would return the wrong value on PROT_NONE ranges or in case
+> of a non reproducible race with split_huge_page.
+>
+> The system will crash when this test failed.
+>
+> Signed-off-by: Madper Xie <cxie@redhat.com>
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- runtest/syscalls                                   |    2 +
- testcases/kernel/syscalls/migrate_pages/Makefile   |   32 +++
- .../syscalls/migrate_pages/migrate_pages01.c       |  280 ++++++++++++++++++++
- .../syscalls/migrate_pages/migrate_pages_common.c  |   62 +++++
- .../syscalls/migrate_pages/migrate_pages_common.h  |   33 +++
- 5 files changed, 409 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/migrate_pages/Makefile
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
- create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
+Please also attach the runtest entry.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6973aaa..9daf234 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -517,6 +517,8 @@ memset01 memset01
- memcmp01 memcmp01
- memcpy01 memcpy01
- 
-+migrate_pages01 migrate_pages01
-+
- mlockall01 mlockall01
- mlockall02 mlockall02
- mlockall03 mlockall03
-diff --git a/testcases/kernel/syscalls/migrate_pages/Makefile b/testcases/kernel/syscalls/migrate_pages/Makefile
-new file mode 100644
-index 0000000..7168cd6
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/Makefile
-@@ -0,0 +1,32 @@
-+#
-+#  Copyright (C) 2012 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
-+$(MAKE_TARGETS): %: %.o migrate_pages_common.o
-+
-+ifeq ($(NUMA_LIBS),)
-+CPPFLAGS		+= -Wno-unused
-+endif
-+CPPFLAGS		+= -I$(abs_srcdir)/../utils/
-+
-+include $(top_srcdir)/testcases/kernel/include/lib.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-new file mode 100644
-index 0000000..53ced25
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -0,0 +1,280 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+/*
-+ * errno tests for migrate_pages() syscall
-+ */
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+#include <sys/wait.h>
-+#include <sys/mman.h>
-+#include <errno.h>
-+#if HAVE_NUMA_H
-+#include <numa.h>
-+#endif
-+#if HAVE_NUMAIF_H
-+#include <numaif.h>
-+#endif
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <pwd.h>
-+#include "config.h"
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
-+#include "numa_helper.h"
-+#include "migrate_pages_common.h"
-+
-+char *TCID = "migrate_pages01";
-+int  TST_TOTAL = 1;
-+
-+option_t options[] = {
-+	{ NULL, NULL, NULL }
-+};
-+
-+#if defined(__NR_migrate_pages) && defined(HAVE_NUMA_H)
-+static unsigned long *sane_old_nodes;
-+static unsigned long *sane_new_nodes;
-+static int sane_nodemask_size;
-+static int sane_max_node;
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void test_sane_nodes(void)
-+{
-+	tst_resm(TINFO, "test_empty_mask");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node,
-+		sane_old_nodes, sane_new_nodes));
-+	check_ret(0);
-+}
-+
-+static void test_invalid_pid(void)
-+{
-+	const char pid_max[] = "/proc/sys/kernel/pid_max";
-+	FILE *fp;
-+	char buff[512];
-+	pid_t invalid_pid = -1;
-+
-+	tst_resm(TINFO, "test_invalid_pid -1");
-+	TEST(syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
-+		sane_old_nodes, sane_new_nodes));
-+	check_ret(-1);
-+	check_errno(ESRCH);
-+
-+	tst_resm(TINFO, "test_invalid_pid pid_max+1");
-+	fp = fopen(pid_max, "r");
-+	if (fp == NULL)
-+		tst_brkm(TBROK, cleanup,
-+			"Could not open %s", pid_max);
-+	if (!fgets(buff, sizeof(buff), fp))
-+		tst_brkm(TBROK, cleanup,
-+			"Could not read %s", pid_max);
-+	fclose(fp);
-+	invalid_pid = atol(buff) + 1;
-+	TEST(syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
-+		sane_old_nodes, sane_new_nodes));
-+	check_ret(-1);
-+	check_errno(ESRCH);
-+}
-+
-+static void test_invalid_masksize(void)
-+{
-+	tst_resm(TINFO, "test_invalid_masksize");
-+	TEST(syscall(__NR_migrate_pages, 0, -1, sane_old_nodes,
-+		sane_new_nodes));
-+	check_ret(-1);
-+	check_errno(EINVAL);
-+}
-+
-+static void test_invalid_mem(void)
-+{
-+	unsigned long *p;
-+
-+	tst_resm(TINFO, "test_invalid_mem -1");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, -1, -1));
-+	check_ret(-1);
-+	check_errno(EFAULT);
-+
-+	tst_resm(TINFO, "test_invalid_mem invalid prot");
-+	p = mmap(NULL, getpagesize(), PROT_NONE,
-+		MAP_PRIVATE|MAP_ANONYMOUS, 0, 0);
-+	if (p == MAP_FAILED)
-+		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
-+	check_ret(-1);
-+	check_errno(EFAULT);
-+
-+	if (munmap(p, getpagesize()) < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup, "munmap");
-+	tst_resm(TINFO, "test_invalid_mem unmmaped");
-+	TEST(syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
-+	check_ret(-1);
-+	check_errno(EFAULT);
-+}
-+
-+static void test_invalid_nodes(void)
-+{
-+	int *nodes;
-+	int num_nodes, ret, i;
-+	int invalid_node = 0;
-+	unsigned long *old_nodes, *new_nodes;
-+
-+	tst_resm(TINFO, "test_invalid_nodes");
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, cleanup,
-+			"get_allowed_nodes_arr: %d", ret);
-+
-+	/* get first node which is not in nodes */
-+	for (i = 0; i < num_nodes; i++, invalid_node++)
-+		if (invalid_node != nodes[i])
-+			break;
-+	if (invalid_node < sane_max_node) {
-+		old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+		new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+		memcpy(old_nodes, sane_old_nodes, sane_nodemask_size);
-+		memset(new_nodes, 0, sane_nodemask_size);
-+		set_bit(new_nodes, invalid_node, 1);
-+
-+		TEST(syscall(__NR_migrate_pages, 0, sane_max_node,
-+			old_nodes, new_nodes));
-+		check_ret(-1);
-+		check_errno(EINVAL);
-+		free(old_nodes);
-+		free(new_nodes);
-+	} else {
-+		tst_resm(TCONF, "All possible nodes are present");
-+	}
-+
-+	free(nodes);
-+}
-+
-+static void test_invalid_perm(void)
-+{
-+	char nobody_uid[] = "nobody";
-+	struct passwd *ltpuser;
-+	int status;
-+	pid_t child_pid;
-+	pid_t parent_pid;
-+	int ret = 0;
-+
-+	tst_resm(TINFO, "test_invalid_perm");
-+	parent_pid = getpid();
-+	fflush(stdout);
-+	child_pid = fork();
-+	switch (child_pid) {
-+	case -1:
-+		tst_brkm(TBROK|TERRNO, cleanup, "fork");
-+		break;
-+	case 0:
-+		ltpuser = getpwnam(nobody_uid);
-+		if (ltpuser == NULL)
-+			tst_brkm(TBROK|TERRNO, NULL,
-+					"getpwnam failed");
-+		if (setuid(ltpuser->pw_uid) == -1)
-+			tst_brkm(TBROK|TERRNO, NULL,
-+					"setuid(%u) failed",
-+					ltpuser->pw_uid);
-+		TEST(syscall(__NR_migrate_pages, parent_pid,
-+			sane_max_node, sane_old_nodes,
-+			sane_new_nodes));
-+		ret |= check_ret(-1);
-+		ret |= check_errno(EPERM);
-+		exit(ret);
-+	default:
-+		if (waitpid(child_pid, &status, 0) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "child returns %d", status);
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, options, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		Tst_count = 0;
-+		test_sane_nodes();
-+		test_invalid_pid();
-+		test_invalid_masksize();
-+		test_invalid_mem();
-+		test_invalid_nodes();
-+		test_invalid_perm();
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	int node, ret;
-+
-+	tst_require_root(NULL);
-+	TEST(syscall(__NR_migrate_pages, 0, 0, NULL, NULL));
-+
-+	if (numa_available() == -1)
-+		tst_brkm(TCONF, NULL, "NUMA not available");
-+
-+	ret = get_allowed_nodes(NH_MEMS, 1, &node);
-+	if (ret < 0)
-+		tst_brkm(TBROK|TERRNO, NULL, "get_allowed_nodes_arr: %d", ret);
-+
-+	sane_max_node = get_max_node();
-+	sane_nodemask_size = sane_max_node/8+1;
-+	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
-+	memset(sane_old_nodes, 0, sane_nodemask_size);
-+	memset(sane_new_nodes, 0, sane_nodemask_size);
-+
-+	set_bit(sane_old_nodes, node, 1);
-+	set_bit(sane_new_nodes, node, 1);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	free(sane_old_nodes);
-+	free(sane_new_nodes);
-+	TEST_CLEANUP;
-+}
-+
-+#else /* __NR_migrate_pages */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
-+			" or libnuma is not available");
-+}
-+#endif
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
-new file mode 100644
-index 0000000..00b512a
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.c
-@@ -0,0 +1,62 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "migrate_pages_common.h"
-+
-+void set_bit(unsigned long *b, unsigned int n, unsigned int v)
-+{
-+	if (v)
-+		b[n/bitsperlong] |= 1UL << (n % bitsperlong);
-+	else
-+		b[n/bitsperlong] &= ~(1UL << (n % bitsperlong));
-+}
-+
-+int check_ret(long expected_ret)
-+{
-+	if (expected_ret == TEST_RETURN) {
-+		tst_resm(TPASS, "expected ret success - "
-+			"returned value = %ld", TEST_RETURN);
-+		return 0;
-+	} else
-+		tst_resm(TFAIL, "unexpected failure - "
-+			"returned value = %ld, expected: %ld",
-+			TEST_RETURN, expected_ret);
-+	return 1;
-+}
-+
-+int check_errno(long expected_errno)
-+{
-+	if (TEST_ERRNO == expected_errno) {
-+		tst_resm(TPASS|TTERRNO, "expected failure");
-+		return 0;
-+	} else if (TEST_ERRNO == 0)
-+		tst_resm(TFAIL, "call succeeded unexpectedly");
-+	else
-+		tst_resm(TFAIL|TTERRNO, "unexpected failure - "
-+			"expected = %ld : %s, actual",
-+			expected_errno, strerror(expected_errno));
-+	return 1;
-+}
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
-new file mode 100644
-index 0000000..d821b07
---- /dev/null
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages_common.h
-@@ -0,0 +1,33 @@
-+/*
-+ * Copyright (C) 2012 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#ifndef MIGRATE_PAGES_COMMON_H
-+#define MIGRATE_PAGES_COMMON_H
-+
-+#define bitsperlong (8 * sizeof(unsigned long))
-+
-+void set_bit(unsigned long *b, unsigned int n, unsigned int v);
-+int check_ret(long expected_ret);
-+int check_errno(long expected_errno);
-+#endif
--- 
-1.7.1
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+
+> ---
+>   testcases/kernel/mem/thp/thp03.c | 117 +++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 117 insertions(+)
+>   create mode 100644 testcases/kernel/mem/thp/thp03.c
+>
+> diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+> new file mode 100644
+> index 0000000..ee6fa1e
+> --- /dev/null
+> +++ b/testcases/kernel/mem/thp/thp03.c
+> @@ -0,0 +1,117 @@
+> +/*
+> + * Copyright (C) 2012  Red Hat, Inc.
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + *
+> + * thp03 - Case for spliting unaligned memory.
+> + *       - System will panic if failed.
+> + *
+> + * There was a bug in THP, will crash happened due to the following
+> + * reason according to developers:
+> + *
+> + * most VM places are using pmd_none but a few are still using
+> + * pmd_present. The meaning is about the same for the pmd. However
+> + * pmd_present would return the wrong value on PROT_NONE ranges or in
+> + * case of a non reproducible race with split_huge_page.
+> + * When the code using pmd_present gets a false negative, the kernel will
+> + * crash. It's just an annoying DoS with a BUG_ON triggering: no memory
+> + * corruption and no data corruption (nor userland nor kernel).
+> + */
+> +
+> +#include <sys/mman.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include <fcntl.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include "mem.h"
+> +#include "safe_macros.h"
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +char *TCID = "thp03";
+> +
+> +static void thp_test(void);
+> +
+> +static long hugepage_size;
+> +static long unaligned_size;
+> +static long page_size;
+> +
+> +int main(int argc, char **argv)
+> +{
+> +	int lc;
+> +	char *msg;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		Tst_count = 0;
+> +
+> +		thp_test();
+> +	}
+> +	tst_resm(TPASS, "system didn't crash, pass.");
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void thp_test(void)
+> +{
+> +	void *p;
+> +
+> +	p = mmap(NULL, unaligned_size, PROT_READ | PROT_WRITE,
+> +		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+> +	if (p == MAP_FAILED)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "mmap");
+> +
+> +	memset(p, 0x00, unaligned_size);
+> +	if (mprotect(p, unaligned_size, PROT_NONE) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "mprotect");
+> +	if (madvise(p + hugepage_size, page_size, MADV_MERGEABLE) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "madvise");
+> +
+> +	switch (fork()) {
+> +	case -1:
+> +		tst_brkm(TBROK|TERRNO, cleanup, "fork");
+> +	case 0:
+> +		exit(0);
+> +	default:
+> +		if (waitpid(-1, NULL, 0) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +	}
+> +}
+> +
+> +void setup(void)
+> +{
+> +	hugepage_size = read_meminfo("Hugepagesize:") * KB;
+> +	unaligned_size = hugepage_size * 4 - 1;
+> +	page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	TEST_PAUSE;
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +}
+>
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+The Windows 8 Center - In partnership with Sourceforge
+Your idea - your app - 30 days.
+Get started!
+http://windows8center.sourceforge.net/
+what-html-developers-need-to-know-about-coding-windows-8-metro-style-apps/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
