@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TOQas-0005oD-TL
-	for ltp-list@lists.sourceforge.net; Wed, 17 Oct 2012 10:11:18 +0000
-Date: Wed, 17 Oct 2012 12:09:02 +0200
-From: chrubis@suse.cz
-Message-ID: <20121017100902.GB26815@rei.Home>
-References: <502496C6.3090906@cn.fujitsu.com>
-	<20121003130640.GD22986@saboteur.suse.cz>
-	<5077DDA1.1000206@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1TT9tS-0005dk-9H
+	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 11:22:02 +0000
+Received: from e06smtp12.uk.ibm.com ([195.75.94.108])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TT9tN-00036D-Ln
+	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 11:22:02 +0000
+Received: from /spool/local
+	by e06smtp12.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
+	Tue, 30 Oct 2012 11:21:51 -0000
+Received: from d06av12.portsmouth.uk.ibm.com (d06av12.portsmouth.uk.ibm.com
+	[9.149.37.247])
+	by b06cxnps4076.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v10.0) with
+	ESMTP id q9UBLfic49479724
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 11:21:41 GMT
+Received: from d06av12.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av12.portsmouth.uk.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with
+	ESMTP id q9UBLmTE012110
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Oct 2012 05:21:48 -0600
+Message-ID: <508FB84D.5050308@linux.vnet.ibm.com>
+Date: Tue, 30 Oct 2012 12:21:49 +0100
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5077DDA1.1000206@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4] pthread_cond_brodcast/1-2.c hung when mem left
- is not enough
+References: <20121030003915.GU24652@mediapc.snapdragonfly.net>
+In-Reply-To: <20121030003915.GU24652@mediapc.snapdragonfly.net>
+Subject: Re: [LTP] coverage history
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,34 +41,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: John Schmitt <marmalodak@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > And actually I think that free ram itself is enough to figoure out
-> > available memory as the kernel tends to eat as many memory for buffers
-> > as available and reclaims it back only when needed.
-> > 
-> 
-> Unfortunately i'v not got other good ideas.
-> Do you have any suggestion?
+On 30.10.2012 01:39, John Schmitt wrote:
+> Is there a way to generate track the coverage of a project over time?  If I'm writing unit tests as my code base expands, can I see how my coverage of that code base goes up or down over time as reported by lcov?
 
-There are several ways how to fix this.
+There is no integrated way to track coverage changes over time with 
+lcov, although this may be a good idea for a future improvement.
 
-One is to assume usable ram as free + buffers/N where N > 1
+For now, you could manually extract the coverage results using the 
+--summary or --list option of lcov and put that into a spreadsheet.
 
-Another is to assume usable ram from total amount of RAM as
-(total - M)/N where M statically reserved size and N > 1.
 
-The problem is to choose the constats carefully so that we excersize the
-system enough but don't overload it.
-
-After you figure out this part, the patch with sysinfo() in header in
-include is fine.
+Regards,
+   Peter Oberparleiter
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Peter Oberparleiter
+Linux on System z Development - IBM Germany
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
