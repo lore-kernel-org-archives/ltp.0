@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1TTUeI-00006o-5Z
-	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 09:31:46 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TTUeH-0007bT-4g
-	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 09:31:46 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com
-	[147.11.189.40])
-	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id q9V9Vdq8027270
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 31 Oct 2012 02:31:39 -0700 (PDT)
-From: <jin.li@windriver.com>
-Date: Wed, 31 Oct 2012 17:31:34 +0800
-Message-ID: <1351675894-4843-2-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1351675894-4843-1-git-send-email-jin.li@windriver.com>
-References: <1351675894-4843-1-git-send-email-jin.li@windriver.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TT9bU-0007tH-Io
+	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 11:03:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TT9bO-0007u1-Ke
+	for ltp-list@lists.sourceforge.net; Tue, 30 Oct 2012 11:03:28 +0000
+Message-ID: <508FB40D.5050600@cn.fujitsu.com>
+Date: Tue, 30 Oct 2012 19:03:41 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] number overcommit_memory test name in runtest/mm
+References: <7714323b7c85bc53de14c05d1f5b47085a9a7ae2.1351593924.git.jstancek@redhat.com>
+In-Reply-To: <7714323b7c85bc53de14c05d1f5b47085a9a7ae2.1351593924.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v4] ipc/shmat: pick suitable base_addr before each
+ testcase
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,39 +29,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Jin Li <jin.li@windriver.com>
+On 10/30/2012 06:52 PM, Jan Stancek wrote:
+> This test picked fixed address in setup() which was used throughout
+> the test. There has been reports that it can fail with EINVAL.
+> 
+> I could reproduce it by adding single printf in between
+> detach/attach:
+> http://article.gmane.org/gmane.linux.ltp/16480
+> 
+> This patch picks suitable base_addr before each test. So even if glibc
+> would mmap extra page with addr == base_addr picked by setup(),
+> new suitable address will be chosen.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
----
- runtest/mm | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Pushed, thank you. 
 
-diff --git a/runtest/mm b/runtest/mm
-index 0f59ef7..a8bd605 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -91,12 +91,12 @@ vma04 vma04
- 
- zram01 zram01
- 
--overcommit_memory overcommit_memory
--overcommit_memory overcommit_memory -R 0
--overcommit_memory overcommit_memory -R 30
--overcommit_memory overcommit_memory -R 80
--overcommit_memory overcommit_memory -R 100
--overcommit_memory overcommit_memory -R 200
-+overcommit_memory01 overcommit_memory
-+overcommit_memory02 overcommit_memory -R 0
-+overcommit_memory03 overcommit_memory -R 30
-+overcommit_memory04 overcommit_memory -R 80
-+overcommit_memory05 overcommit_memory -R 100
-+overcommit_memory06 overcommit_memory -R 200
- 
- max_map_count max_map_count -i 10
- 
--- 
-1.7.11
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
