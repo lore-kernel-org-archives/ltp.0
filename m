@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TNmWE-0004Gf-Ra
-	for ltp-list@lists.sourceforge.net; Mon, 15 Oct 2012 15:23:50 +0000
-Date: Mon, 15 Oct 2012 17:21:32 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TTVcG-0007JB-2t
+	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 10:33:44 +0000
+Date: Wed, 31 Oct 2012 11:31:20 +0100
 From: chrubis@suse.cz
-Message-ID: <20121015152131.GA4852@rei.suse.cz>
-References: <5077D10C.3040302@cn.fujitsu.com>
+Message-ID: <20121031103119.GA18055@rei>
+References: <17bab533f4f5e5c80a676158bfd75cfb1b361228.1351608161.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5077D10C.3040302@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v6] pthread_cond_brodcast/1-2.c hung when mem left
- is not enough
+In-Reply-To: <17bab533f4f5e5c80a676158bfd75cfb1b361228.1351608161.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] mremap: add new test mremap05
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +24,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +#ifdef __linux__
-> +#include <sys/sysinfo.h>
-> +
-> +static int getfreeram(void)
-> +{
-> +	int ret;
-> +	struct sysinfo sysinformation;
-> +
-> +	ret = sysinfo(&sysinformation);
-> +	if (ret != 0)
-> +		return 0;
-> +	return sysinformation.freeram;
-> +}
-> +#else
-> +static int getfreeram(void)
-> +{
-> +	return 0;
-> +}
-> +#endif
+> +static void *test_mremap(void *old_address, size_t old_size, size_t new_size,
+> +	int flags, void *new_address, const char *msg, void *exp_ret,
+> +	int exp_errno)
 
-I think that there is still the same problem as in the first version.
-Are you sure that sysinfo.freeram is reasonable number? Because as far
-as I understand it this nuber shows amount of ram that is not used
-currently. So when you run the test inside of LTP testsuite the number
-may be quite low as there may be a lot of data cached in the buffers
-because buffers are flushed only when there is memory pressure.
+Looking at the number of parameters it may be better to pass a structure
+pointer here. And looking at the way it's called, most of the structure
+could be statically initalized.
 
-I've checked docs for both fork() and pthread_create() and both of them
-shall indicate that there are no resources to create process/thread by
-setting errno to EAGAIN (fork() may additionally return ENOMEM too). So
-we could create processes until counter is reached or we got ENOMEM
-which should be 100% portable.
+See for an example kernel/syscalls/sendto/sendto01.c
+
+> +{
+> +	void *ret;
+> +
+> +	ret = mremap(old_address, old_size, new_size, flags, new_address);
+> +	if (ret == exp_ret)
+> +		if (ret != MAP_FAILED)
+> +			tst_resm(TPASS, "%s", msg);
+> +		else
+> +			if (errno == exp_errno)
+> +				tst_resm(TPASS, "%s", msg);
+> +			else
+> +				tst_resm(TFAIL|TERRNO, "%s", msg);
+> +	else
+> +		tst_resm(TFAIL, "%s ret: %p, expected: %p", msg,
+> +			ret, exp_ret);
+> +	return ret;
+> +}
+
+There is too much if ... else ... without any curly brackets, the
+indentation helps a lot but I would rather see blocks longer than
+one line enclosed in them.
+
+> +int main(int ac, char **av)
+> +{
+> +	char *msg;
+> +	int lc;
+> +
+> +	msg = parse_opts(ac, av, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	Tst_count = 0;
+
+There is no need to zero the Tst_count here it's initialized to
+zero in tst_res.c.
+
+> +	setup();
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		Tst_count = 0;
+> +		test_fixed_require_maymove();
+> +		test_new_addr_not_aligned();
+> +		test_old_new_area_overlap();
+> +		test_mremap_fixed_maymove();
+> +	}
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	pagesize = getpagesize();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +}
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
