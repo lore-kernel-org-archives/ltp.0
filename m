@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TQugU-00076A-JU
-	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 06:43:22 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TQugO-0007KM-RG
-	for ltp-list@lists.sourceforge.net; Wed, 24 Oct 2012 06:43:22 +0000
-Date: Wed, 24 Oct 2012 02:43:08 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <953803847.5389852.1351060988163.JavaMail.root@redhat.com>
-In-Reply-To: <50873A3B.3030209@cn.fujitsu.com>
+	(envelope-from <Jin.Li@windriver.com>) id 1TTUeM-0003TO-37
+	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 09:31:50 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TTUeG-0007bP-65
+	for ltp-list@lists.sourceforge.net; Wed, 31 Oct 2012 09:31:50 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com
+	[147.11.189.40])
+	by mail.windriver.com (8.14.5/8.14.3) with ESMTP id q9V9Vbil003149
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 31 Oct 2012 02:31:38 -0700 (PDT)
+From: <jin.li@windriver.com>
+Date: Wed, 31 Oct 2012 17:31:33 +0800
+Message-ID: <1351675894-4843-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Regarding shmat01 syscall test
+Subject: [LTP] number overcommit_memory test name in runtest/mm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,78 +31,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: jin.li@windriver.com, ltp-list@lists.sourceforge.net
 
+Hi,
 
-
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Om Prakash PAL" <omprakash.pal@stericsson.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 24 October, 2012 2:45:47 AM
-> Subject: Re: [LTP] Regarding shmat01 syscall test
-> 
-> On 10/23/2012 06:05 PM, Om Prakash PAL wrote:
-> > 
-> > 
-> > -----Original Message-----
-> > From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> > Sent: Tuesday, October 23, 2012 3:07 PM
-> > To: Om Prakash PAL
-> > Cc: ltp-list@lists.sourceforge.net
-> > Subject: Re: [LTP] Regarding shmat01 syscall test
-> > 
-> > On 10/23/2012 05:24 PM, Om Prakash PAL wrote:
-> >> Hi,
-> >>
-> >> I am working on syscall test:  shmat01.c
-> >>
-> >> I have some confusion:
-> >>
-> >>  
-> >>
-> >> In setup() : it is  allocating shared memory by shmget() and then
-> >> attaching by shmat() and after  that detaching the attached
-> >> address (i.e. shmdt())
-> >>
-> >>  
-> >>
-> >>         if (shmdt((const void *)base_addr) == -1) {
-> >>
-> >>                 tst_brkm(TBROK, cleanup, "Couldn't detach shared
-> >>                 memory");
-> >>
-> >>         }
-> >>
-> >>  
-> >>
-> >> And again in main function it is using same "base_addr" as
-> >> attaching address,
-> >>
-> >>  
-> >>
-> >> addr = shmat(*(TC[i].shmid), base_addr+TC[i].offset,
-> >>
-> >>                                      TC[i].flags);
-> >>
-> >> how can we ensure(100%) that base_addr (virtual) will be free till
-> >> this point for attaching?.
-> > 
-> > Maybe we can't, but I didn't see any fail on this. Did you see any
-> > testing failure here?
-> > 
-> > Yes, I got some failure and the reason of failure is : the address
-> > at which we want to attach is busy.
-> 
-> OK, please feel free to send a patch, or can you tell us how to
-> reproduce it?
-
-I recall I could reproduce it, if I added single printf:
-http://article.gmane.org/gmane.linux.ltp/16480
+number the overcommit_memory test case so that the test report looks clearer
 
 Regards,
-Jan
+
+Jin
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
