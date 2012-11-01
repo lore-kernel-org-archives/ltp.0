@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gang.chen@asianux.com>) id 1TVJST-0004vr-Qj
-	for ltp-list@lists.sourceforge.net; Mon, 05 Nov 2012 09:59:05 +0000
-Received: from intranet.asianux.com ([58.214.24.6])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TVJSM-0006W0-2Y
-	for ltp-list@lists.sourceforge.net; Mon, 05 Nov 2012 09:59:05 +0000
-Received: from [10.1.0.143] (unknown [219.143.36.82])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by intranet.asianux.com (Postfix) with ESMTP id 2EFB7184020C
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  5 Nov 2012 17:38:05 +0800 (CST)
-Message-ID: <5097893B.7060105@asianux.com>
-Date: Mon, 05 Nov 2012 17:39:07 +0800
-From: Chen Gang <gang.chen@asianux.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TTrdz-0006ws-Dg
+	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 10:04:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TTrdx-0007uT-2E
+	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 10:04:59 +0000
+Message-ID: <50924959.10905@cn.fujitsu.com>
+Date: Thu, 01 Nov 2012 18:05:13 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [Issue Report] the stress test which includes nfs test with
- client and server under same machine
+References: <1211223113.3263014.1351763732593.JavaMail.root@redhat.com>
+In-Reply-To: <1211223113.3263014.1351763732593.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed
+ an	invalid command
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,49 +29,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: shyju pv <shyju.pv@huawei.com>, sanil kumar <sanil.kumar@huawei.com>, max maxiansheng <max.maxiansheng@huawei.com>, Mike Frysinger <vapier@gentoo.org>, LTP <ltp-list@lists.sourceforge.net>
 
-Hello ltp-list@lists.sorceforge.net 
+On 11/01/2012 05:55 PM, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: "sanil kumar" <sanil.kumar@huawei.com>, "Mike Frysinger" <vapier@gentoo.org>, "shyju pv" <shyju.pv@huawei.com>,
+>> "max maxiansheng" <max.maxiansheng@huawei.com>, "LTP" <ltp-list@lists.sourceforge.net>
+>> Sent: Thursday, 1 November, 2012 9:15:08 AM
+>> Subject: Re: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed an	invalid command
+>>
+>>>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c
+>>>> b/testcases/kernel/syscalls/ioctl/ioctl01.c
+>>>> index 8b044e7..ef64896 100644
+>>>> --- a/testcases/kernel/syscalls/ioctl/ioctl01.c
+>>>> +++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
+>>>> @@ -87,7 +87,7 @@ struct test_case_t {
+>>>>  	&fd, TCGETA, (struct termio *)-1, EFAULT},
+>>>>  	    /* command is invalid */
+>>>>  	{
+>>>> -	&fd, INVAL_IOCTL, &termio, EINVAL},
+>>>> +	&fd, INVAL_IOCTL, &termio, ENOTTY},
+>>>
+>>> Won't this break on older kernels? Can we test for kernel version
+>>> with tst_kvercmp()?
+>>
+>> Surely will, this is also a trouble on my side.
+>> Does we treat this as a kernel bug or a kernel change?
+>> I think if we treat it as a kernel bug, we needn't check the kernel
+>> version, while if
+>> it just a kernel change, we need.
+>> And, What's your opinion about this?
+> 
+> I'd go with kernel change, it worked the old way for years, there may be
+> applications which rely on that. If we just change it to 'ENOTTY' it will
+> start failing on older kernels and there are 2 choices: fix the kernel
+> or stop using this testcase. And I'm not sure there are enough arguments
+> to justify changing it in various distro's (stable) kernels.
 
-1) Firstly:
+OK, agree.
 
-   A) LTP is a very useful tools for Asianux to test Linux kernel.
-   B) Thank LTP very much.
-   C) During test, Asianux find an issue about LTP
-      Asianux think maybe it will be better to let LTP know about it.
+> 
+> Is this commit backported to any upstream stable trees? Are there plans to do so?
 
+I didn't see any backport, it may because some drivers return the old value, we can't
+ensure to backport all of them, so I think there is no backprot plan. it's needless.
 
-2) Description:
+Thanks,
+Wanlong Gao
 
-   A) with default configuration for /opt/ltp/testscripts/ltpstress.sh
-   B) it tests the nfs with client and server under the same machine
-   C) it is an known issue about it.
+> 
+> Regards,
+> Jan
+> 
 
-3) Reference
-
-   A) Red Hat Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=858978
-   B) LKVM Mailing list: https://lkml.org/lkml/2012/10/16/1  (at tail)
-
-> Running the client and server on the same machine is likely to deadlock
-> due to memory pressure issues. The client needs to be able to _increase_
-> memory pressure on the server in order to reduce its own pressure. That
-> doesn't work well when client == server.
-
-
-
-  At last, hope these information are useful for LTP,  thanks.
-
--- 
-Chen Gang
-
-Asianux Corporation
 
 ------------------------------------------------------------------------------
-LogMeIn Central: Instant, anywhere, Remote PC access and management.
-Stay in control, update software, and manage PCs from one command center
-Diagnose problems and improve visibility into emerging IT issues
-Automate, monitor and manage. Do more in less time with Central
-http://p.sf.net/sfu/logmein12331_d2d
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
