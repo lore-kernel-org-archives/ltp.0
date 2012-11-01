@@ -2,23 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1TXoU2-0007MQ-Dm
-	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 07:31:02 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TXoU1-0003Ag-DN
-	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 07:31:02 +0000
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com
-	[147.11.189.40])
-	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id qAC7UrE1028726
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 11 Nov 2012 23:30:53 -0800 (PST)
-From: <jin.li@windriver.com>
-Date: Mon, 12 Nov 2012 15:30:44 +0800
-Message-ID: <1352705445-24051-2-git-send-email-jin.li@windriver.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TTllZ-0003Ts-SR
+	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 03:48:25 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TTllY-0006XK-9S
+	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 03:48:25 +0000
+Message-ID: <5091EDBC.4030909@cn.fujitsu.com>
+Date: Thu, 01 Nov 2012 11:34:20 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/3] Fix cpuhotplug test case cpuhotplug03
+References: <D7504F77ECABB0449431598E06DDF6E9179A600C@szxeml526-mbx.china.huawei.com>
+In-Reply-To: <D7504F77ECABB0449431598E06DDF6E9179A600C@szxeml526-mbx.china.huawei.com>
+Subject: Re: [LTP] ioctl01 failed when checking the ioctl bad command return
+ value.
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,78 +29,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com, ltp-list@lists.sourceforge.net
+To: Linliangjie <linliangjie@huawei.com>
+Cc: shyju pv <shyju.pv@huawei.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Maxiansheng (Max)" <max.maxiansheng@huawei.com>, Sanil kumar <sanil.kumar@huawei.com>
 
-From: Jin Li <jin.li@windriver.com>
+On 11/01/2012 10:10 AM, Linliangjie wrote:
+> Issue description: 
+> ------------------- 
+> Kernel Version : 3.7-rc2
+> System call : ioctl
+> LTP Testcase : ioctl01
+> LTP Version : 20120903 
+> Platform : x86_64 ( HP 8200 PC ) 
+> Testcase Description : Testcase to check the errnos set by the ioctl(2) system
+> call.
+> Previous kernel version in which testcase passed : 3.2.9
+> 
+> Executing log:
+> -------------------------
+> [root@linux-qf4g]-[/tmp/ltp/ltp/testcases/bin]
+> (0)# ./ioctl01 -D /dev/tty
+> ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file
+> descriptor
+> ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+> ioctl01     3  TFAIL  :  failed unexpectedly; expected 22 - Invalid argument:
+> TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+> ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25):
+> Inappropriate ioctl for device
+> ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+> -------------------------
+> The return value of the code is expected to be 22 but 24 is returned and 
+> hence the LTP test failed. 
+> 
+>>From v3.2.9, kernel has changed the return value for bad command. 
+> The patch commit no:07d106d0a33d6063d2061305903deb02489eba20
 
-Fix test case cpuhotplug03 as follows:
-1. Avoid to check whether the cpu0 is on.
-2. Check the cpu before turn it on
+Yes, you are right, but you didn't find the real effective patch,
+the real effective patch is 
 
-Signed-off-by: Jin Li <jin.li@windriver.com>
----
- .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh  | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+commit bbb63c514a3464342967237a51a21ea8f61ab951
+Author: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Date:   Mon Aug 27 15:23:12 2012 +0800
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-index ca636d1..516a21f 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-@@ -60,15 +60,22 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
- 
- 	# Turns on all CPUs and saves their states
- 	for i in $( get_all_cpus ); do
--		if ! online_cpu $1; then
--			: $(( cpu += 1 ))
--			eval "on_${cpu}=$i"
--		fi
-+            if [ "$i" = "cpu0" ]; then
-+                continue
-+            fi
-+            if ! cpu_is_online $i; then
-+		if ! online_cpu $i; then
-+                    tst_resm TFAIL "Could not online cpu $i"
-+                    exit_clean 1
-+                fi
-+                : $(( cpu += 1 ))
-+                eval "on_${cpu}=$i"
-+            fi
- 		: $(( number_of_cpus += 1 ))
- 	done
- 
- 	if ! offline_cpu ${CPU_TO_TEST} ; then
--		tst_resm TBAIL "CPU${CPU_TO_TEST} cannot be offlined"
-+		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be offlined"
- 		exit_clean 1
- 	fi
- 
-@@ -90,7 +97,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
- 	tst_resm TINFO "Onlining CPU ${CPU_TO_TEST}"
- 	online_cpu ${CPU_TO_TEST}
- 	RC=$?
--	if [ $RC -eq 0 ]; then
-+	if [ $RC -ne 0 ]; then
- 		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be onlined"
- 		exit_clean 1
- 	fi
-@@ -101,7 +108,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
- 	ps -o psr -o command --no-headers -C do_spin_loop
- 	RC=$?
- 	NUM=`ps -o psr -o command --no-headers -C do_spin_loop | sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" | wc -l`
--	if [ $RC -eq 0 ]; then
-+	if [ $RC -ne 0 ]; then
- 		tst_resm TBROK "No do_spin_loop processes found on any processor"
- 	elif [ $NUM -lt 1 ]; then
- 		tst_resm TFAIL "No do_spin_loop processes found on CPU${CPU_TO_TEST}"
--- 
-1.7.11
+    drivers:tty:fix up ENOIOCTLCMD error handling
+    
+    At commit 07d106d0, Linus pointed out that ENOIOCTLCMD should be
+    translated as ENOTTY to user mode.
+    For example:
+        fd = open("/dev/tty", O_RDWR);
+        ioctl(fd, -1, &argp);
+    
+    then the errno should be ENOTTY but not EINVAL.
+    
+    Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+    Acked-by: Alan Cox <alan@linux.intel.com>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
+It's a kernel change, so I will make a patch to fix this LTP test case.
+Thank you very much for reporting this. ;)
+And you *Huawei* guys are very welcome to the Open Source community. :-)
+
+
+Regards,
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_nov
+http://p.sf.net/sfu/appdyn_sfd2d_oct
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
