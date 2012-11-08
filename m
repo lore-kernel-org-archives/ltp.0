@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Tbm2B-0002T3-Du
-	for ltp-list@lists.sourceforge.net; Fri, 23 Nov 2012 05:42:39 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1TWMVb-0002Q3-VI
+	for ltp-list@lists.sourceforge.net; Thu, 08 Nov 2012 07:26:40 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Tbm29-0002lT-5I
-	for ltp-list@lists.sourceforge.net; Fri, 23 Nov 2012 05:42:39 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.2.2/Sentrion-MTA-4.2.2) with
-	ESMTP id qAN5gUxS010184
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 23 Nov 2012 05:42:31 GMT
-Received: from acsmt358.oracle.com (acsmt358.oracle.com [141.146.40.158])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	qAN5gTc4025817
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 23 Nov 2012 05:42:30 GMT
-Received: from abhmt106.oracle.com (abhmt106.oracle.com [141.146.116.58])
-	by acsmt358.oracle.com (8.12.11.20060308/8.12.11) with ESMTP id
-	qAN5gT5N029510
-	for <ltp-list@lists.sourceforge.net>; Thu, 22 Nov 2012 23:42:29 -0600
-From: Simon Xu <xu.simon@oracle.com>
-Date: Fri, 23 Nov 2012 13:42:20 +0800
-Message-Id: <1353649340-678-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH] numa01.sh: fix error in getting number of CPUs
+	(Exim 4.76) id 1TWMVa-0005DT-TH
+	for ltp-list@lists.sourceforge.net; Thu, 08 Nov 2012 07:26:39 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com
+	[147.11.189.40])
+	by mail.windriver.com (8.14.5/8.14.3) with ESMTP id qA87QWpX019704
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 7 Nov 2012 23:26:32 -0800 (PST)
+From: <jin.li@windriver.com>
+Date: Thu, 8 Nov 2012 15:26:21 +0800
+Message-ID: <1352359582-7832-1-git-send-email-jin.li@windriver.com>
+MIME-Version: 1.0
+Subject: [LTP] clean up cpuhotplug test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,54 +28,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: jin.li@windriver.com, ltp-list@lists.sourceforge.net
 
-test04 in numa01.sh is using a wrong method to get the number of CPUs.
-This results in:
+Hi all,
 
-numactl: cpu argument 9 is out of range
+I want to clean up the cpuhotplug test in LTP.
 
-awk: cmd. line:1: fatal: cannot open file `/proc/4116/stat' for reading
-(No such file or directory)
-/opt/ltp/testcases/bin/numa01.sh: line 475: [: =: unary operator expected
-awk: cmd. line:1: fatal: cannot open file `/proc/4116/stat' for reading
-(No such file or directory)
-/opt/ltp/testcases/bin/numa01.sh: line 481: [: -ne: unary operator expected
-/opt/ltp/testcases/bin/numa01.sh: line 488: kill: (4116) - No such process
-numa04      4  TBROK  :  Kill on process 4116 fails
+In this commit, I just split the test cases and change scenario group file and
+test case name. The fix for each test case will come up later.
 
-Fix it by getting number of CPUs by grepping /proc/cpuinfo.
----
- testcases/kernel/numa/numa01.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
 
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index 3ea7950..8d0808a 100644
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -466,7 +466,7 @@ test04()
-     run_on_cpu=0
-     running_on_cpu=0
- 
--    no_of_cpus=$(ls /sys/devices/system/cpu/ | wc -w)
-+    no_of_cpus=$(grep "^processor"  /proc/cpuinfo | wc -l)
-     # not sure whether cpu's can't be in odd number
-     run_on_cpu=$[$[$no_of_cpus+1]/2]
-     numactl --physcpubind=$run_on_cpu support_numa $PAUSE & #just waits for sigint
--- 
-1.8.0
-
+Jin
 
 ------------------------------------------------------------------------------
-Monitor your physical, virtual and cloud infrastructure from a single
-web console. Get in-depth insight into apps, servers, databases, vmware,
-SAP, cloud infrastructure, etc. Download 30-day Free Trial.
-Pricing starts from $795 for 25 servers or applications!
-http://p.sf.net/sfu/zoho_dev2dev_nov
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_nov
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
