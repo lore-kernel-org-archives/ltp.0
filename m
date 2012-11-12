@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TbBiN-0007jR-Mu
-	for ltp-list@lists.sourceforge.net; Wed, 21 Nov 2012 14:55:47 +0000
-Date: Wed, 21 Nov 2012 15:53:07 +0100
-From: chrubis@suse.cz
-Message-ID: <20121121145306.GA5187@rei.suse.cz>
-References: <1353490217-30332-1-git-send-email-penght@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TXj9H-0008Bf-Bv
+	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 01:49:15 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TXj9F-00006W-As
+	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 01:49:15 +0000
+Message-ID: <50A04DFC.3010100@cn.fujitsu.com>
+Date: Mon, 12 Nov 2012 09:16:44 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1353490217-30332-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ar01: fix a bug of attribute "selinux" in rhel6
+References: <5097893B.7060105@asianux.com>
+In-Reply-To: <5097893B.7060105@asianux.com>
+Subject: Re: [LTP] [Issue Report] the stress test which includes nfs test
+ with client and server under same machine
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,49 +29,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Chen Gang <gang.chen@asianux.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> When SELinux is enabled, "ls -ln" will list permissions with "-rw-r--r--.",
-> but "ar -tv" will list permissions with "-rw-r--r--"???so the case 22 will fail.
+On 11/05/2012 05:39 PM, Chen Gang wrote:
+> Hello ltp-list@lists.sorceforge.net 
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> ---
->  testcases/commands/ade/ar/ar01 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> 1) Firstly:
 > 
-> diff --git a/testcases/commands/ade/ar/ar01 b/testcases/commands/ade/ar/ar01
-> index 948c1fe..32fef11 100755
-> --- a/testcases/commands/ade/ar/ar01
-> +++ b/testcases/commands/ade/ar/ar01
-> @@ -536,7 +536,7 @@ do
->  	ls -ln --time-style=+%b" "%e" "%H:%M file1.in file2.in file3.in |
->  	while read permissions link uid gid size month day time file_name
->  	do
-> -		echo "$permissions;$uid/$gid;$size;$month;$day;$time;$file_name"
-> +		echo "${permissions%.};$uid/$gid;$size;$month;$day;$time;$file_name"
->  	done >>  $TCtmp/lib.a.exp
->  	ar -tv $TCtmp/lib.a |
+>    A) LTP is a very useful tools for Asianux to test Linux kernel.
+>    B) Thank LTP very much.
+>    C) During test, Asianux find an issue about LTP
+>       Asianux think maybe it will be better to let LTP know about it.
+> 
+> 
+> 2) Description:
+> 
+>    A) with default configuration for /opt/ltp/testscripts/ltpstress.sh
+>    B) it tests the nfs with client and server under the same machine
+>    C) it is an known issue about it.
+> 
+> 3) Reference
+> 
+>    A) Red Hat Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=858978
+>    B) LKVM Mailing list: https://lkml.org/lkml/2012/10/16/1  (at tail)
+> 
+>> Running the client and server on the same machine is likely to deadlock
+>> due to memory pressure issues. The client needs to be able to _increase_
+>> memory pressure on the server in order to reduce its own pressure. That
+>> doesn't work well when client == server.
+> 
+> 
+> 
+>   At last, hope these information are useful for LTP,  thanks.
 
-Acked.
 
-However please include a short description of the solution to the commit
-log as well.
+Thank you very much for reporting this issue, we will take care of this.
+And if you like, bug-fix-patches are very welcome.
 
-Something like "This patch removes the dot from the end of the
-permission string if there was one."
+Thanks,
+Wanlong Gao
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+
 
 ------------------------------------------------------------------------------
-Monitor your physical, virtual and cloud infrastructure from a single
-web console. Get in-depth insight into apps, servers, databases, vmware,
-SAP, cloud infrastructure, etc. Download 30-day Free Trial.
-Pricing starts from $795 for 25 servers or applications!
-http://p.sf.net/sfu/zoho_dev2dev_nov
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_nov
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
