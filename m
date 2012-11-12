@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gang.chen@asianux.com>) id 1TY6RO-0006RW-DD
-	for ltp-list@lists.sourceforge.net; Tue, 13 Nov 2012 02:41:30 +0000
-Received: from intranet.asianux.com ([58.214.24.6])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1TXoXE-0007Y2-CN
+	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 07:34:20 +0000
+Received: from mail.windriver.com ([147.11.1.11])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TY6RL-0007In-2g
-	for ltp-list@lists.sourceforge.net; Tue, 13 Nov 2012 02:41:30 +0000
-Message-ID: <50A1B38A.1040503@asianux.com>
-Date: Tue, 13 Nov 2012 10:42:18 +0800
-From: Chen Gang <gang.chen@asianux.com>
+	(Exim 4.76) id 1TXoXA-0000X4-EI
+	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 07:34:20 +0000
+From: <jin.li@windriver.com>
+Date: Mon, 12 Nov 2012 15:34:00 +0800
+Message-ID: <1352705641-27644-3-git-send-email-jin.li@windriver.com>
+In-Reply-To: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
+References: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-References: <5097893B.7060105@asianux.com> <50A04DFC.3010100@cn.fujitsu.com>
-In-Reply-To: <50A04DFC.3010100@cn.fujitsu.com>
-Subject: Re: [LTP] [Issue Report] the stress test which includes nfs test
- with client and server under same machine
+Subject: [LTP] [PATCH 2/3] Fix cpuhotplug test case cpuhotplug03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,45 +24,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: jin.li@windriver.com, gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
 
-5LqOIDIwMTLlubQxMeaciDEy5pelIDA5OjE2LCBXYW5sb25nIEdhbyDlhpnpgZM6Cj4gT24gMTEv
-MDUvMjAxMiAwNTozOSBQTSwgQ2hlbiBHYW5nIHdyb3RlOgo+PiBIZWxsbyBsdHAtbGlzdEBsaXN0
-cy5zb3JjZWZvcmdlLm5ldCAKPj4KPj4gMSkgRmlyc3RseToKPj4KPj4gICAgQSkgTFRQIGlzIGEg
-dmVyeSB1c2VmdWwgdG9vbHMgZm9yIEFzaWFudXggdG8gdGVzdCBMaW51eCBrZXJuZWwuCj4+ICAg
-IEIpIFRoYW5rIExUUCB2ZXJ5IG11Y2guCj4+ICAgIEMpIER1cmluZyB0ZXN0LCBBc2lhbnV4IGZp
-bmQgYW4gaXNzdWUgYWJvdXQgTFRQCj4+ICAgICAgIEFzaWFudXggdGhpbmsgbWF5YmUgaXQgd2ls
-bCBiZSBiZXR0ZXIgdG8gbGV0IExUUCBrbm93IGFib3V0IGl0Lgo+Pgo+Pgo+PiAyKSBEZXNjcmlw
-dGlvbjoKPj4KPj4gICAgQSkgd2l0aCBkZWZhdWx0IGNvbmZpZ3VyYXRpb24gZm9yIC9vcHQvbHRw
-L3Rlc3RzY3JpcHRzL2x0cHN0cmVzcy5zaAo+PiAgICBCKSBpdCB0ZXN0cyB0aGUgbmZzIHdpdGgg
-Y2xpZW50IGFuZCBzZXJ2ZXIgdW5kZXIgdGhlIHNhbWUgbWFjaGluZQo+PiAgICBDKSBpdCBpcyBh
-biBrbm93biBpc3N1ZSBhYm91dCBpdC4KPj4KPj4gMykgUmVmZXJlbmNlCj4+Cj4+ICAgIEEpIFJl
-ZCBIYXQgQnVnemlsbGE6IGh0dHBzOi8vYnVnemlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/
-aWQ9ODU4OTc4Cj4+ICAgIEIpIExLVk0gTWFpbGluZyBsaXN0OiBodHRwczovL2xrbWwub3JnL2xr
-bWwvMjAxMi8xMC8xNi8xICAoYXQgdGFpbCkKPj4KPj4+IFJ1bm5pbmcgdGhlIGNsaWVudCBhbmQg
-c2VydmVyIG9uIHRoZSBzYW1lIG1hY2hpbmUgaXMgbGlrZWx5IHRvIGRlYWRsb2NrCj4+PiBkdWUg
-dG8gbWVtb3J5IHByZXNzdXJlIGlzc3Vlcy4gVGhlIGNsaWVudCBuZWVkcyB0byBiZSBhYmxlIHRv
-IF9pbmNyZWFzZV8KPj4+IG1lbW9yeSBwcmVzc3VyZSBvbiB0aGUgc2VydmVyIGluIG9yZGVyIHRv
-IHJlZHVjZSBpdHMgb3duIHByZXNzdXJlLiBUaGF0Cj4+PiBkb2Vzbid0IHdvcmsgd2VsbCB3aGVu
-IGNsaWVudCA9PSBzZXJ2ZXIuCj4+Cj4+Cj4+Cj4+ICAgQXQgbGFzdCwgaG9wZSB0aGVzZSBpbmZv
-cm1hdGlvbiBhcmUgdXNlZnVsIGZvciBMVFAsICB0aGFua3MuCj4gCj4gCj4gVGhhbmsgeW91IHZl
-cnkgbXVjaCBmb3IgcmVwb3J0aW5nIHRoaXMgaXNzdWUsIHdlIHdpbGwgdGFrZSBjYXJlIG9mIHRo
-aXMuCj4gQW5kIGlmIHlvdSBsaWtlLCBidWctZml4LXBhdGNoZXMgYXJlIHZlcnkgd2VsY29tZS4K
-PgoKICBJZiB0aW1lIHJlc291cmNlIHBlcm1pdHMgbWUsIEkgd2lsbCB0cnkuCgogIEFzaWFudXgg
-bmVlZCBwcm92aWRlIHRoZWlyIGNvbnRyaWJ1dGVzIHRvIHRoZSBPcGVuIFNvdXJjZSwKICBKdXN0
-IGFzIEFzaWFudXggaGF2ZSBhbHJlYWR5IGdldCBiZW5lZml0cyBmcm9tIHRoZSBPcGVuIFNvdXJj
-ZS4KCgo+IFRoYW5rcywKPiBXYW5sb25nIEdhbwo+IAo+Pgo+IAo+IAo+IAoKCi0tIApDaGVuIEdh
-bmcKCkFzaWFudXggQ29ycG9yYXRpb24KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNb25pdG9yIHlv
-dXIgcGh5c2ljYWwsIHZpcnR1YWwgYW5kIGNsb3VkIGluZnJhc3RydWN0dXJlIGZyb20gYSBzaW5n
-bGUKd2ViIGNvbnNvbGUuIEdldCBpbi1kZXB0aCBpbnNpZ2h0IGludG8gYXBwcywgc2VydmVycywg
-ZGF0YWJhc2VzLCB2bXdhcmUsClNBUCwgY2xvdWQgaW5mcmFzdHJ1Y3R1cmUsIGV0Yy4gRG93bmxv
-YWQgMzAtZGF5IEZyZWUgVHJpYWwuClByaWNpbmcgc3RhcnRzIGZyb20gJDc5NSBmb3IgMjUgc2Vy
-dmVycyBvciBhcHBsaWNhdGlvbnMhCmh0dHA6Ly9wLnNmLm5ldC9zZnUvem9ob19kZXYyZGV2X25v
-dgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlz
-dCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+From: Jin Li <jin.li@windriver.com>
+
+Fix test case cpuhotplug03 as follows:
+1. Avoid to check whether the cpu0 is on.
+2. Check the cpu before turn it on
+
+Signed-off-by: Jin Li <jin.li@windriver.com>
+---
+ .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh  | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index ca636d1..516a21f 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -60,15 +60,22 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+ 
+ 	# Turns on all CPUs and saves their states
+ 	for i in $( get_all_cpus ); do
+-		if ! online_cpu $1; then
+-			: $(( cpu += 1 ))
+-			eval "on_${cpu}=$i"
+-		fi
++            if [ "$i" = "cpu0" ]; then
++                continue
++            fi
++            if ! cpu_is_online $i; then
++		if ! online_cpu $i; then
++                    tst_resm TFAIL "Could not online cpu $i"
++                    exit_clean 1
++                fi
++                : $(( cpu += 1 ))
++                eval "on_${cpu}=$i"
++            fi
+ 		: $(( number_of_cpus += 1 ))
+ 	done
+ 
+ 	if ! offline_cpu ${CPU_TO_TEST} ; then
+-		tst_resm TBAIL "CPU${CPU_TO_TEST} cannot be offlined"
++		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be offlined"
+ 		exit_clean 1
+ 	fi
+ 
+@@ -90,7 +97,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+ 	tst_resm TINFO "Onlining CPU ${CPU_TO_TEST}"
+ 	online_cpu ${CPU_TO_TEST}
+ 	RC=$?
+-	if [ $RC -eq 0 ]; then
++	if [ $RC -ne 0 ]; then
+ 		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be onlined"
+ 		exit_clean 1
+ 	fi
+@@ -101,7 +108,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+ 	ps -o psr -o command --no-headers -C do_spin_loop
+ 	RC=$?
+ 	NUM=`ps -o psr -o command --no-headers -C do_spin_loop | sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" | wc -l`
+-	if [ $RC -eq 0 ]; then
++	if [ $RC -ne 0 ]; then
+ 		tst_resm TBROK "No do_spin_loop processes found on any processor"
+ 	elif [ $NUM -lt 1 ]; then
+ 		tst_resm TFAIL "No do_spin_loop processes found on CPU${CPU_TO_TEST}"
+-- 
+1.7.11
+
+
+------------------------------------------------------------------------------
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_nov
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
