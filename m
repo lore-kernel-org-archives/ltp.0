@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TTpmS-0007Y5-BZ
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 08:05:36 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TTpmR-0006vA-2e
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 08:05:36 +0000
-Date: Thu, 1 Nov 2012 04:05:17 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <787397777.3211869.1351757117123.JavaMail.root@redhat.com>
-In-Reply-To: <1351742419-30299-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gang.chen@asianux.com>) id 1TY6RO-0006RW-DD
+	for ltp-list@lists.sourceforge.net; Tue, 13 Nov 2012 02:41:30 +0000
+Received: from intranet.asianux.com ([58.214.24.6])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TY6RL-0007In-2g
+	for ltp-list@lists.sourceforge.net; Tue, 13 Nov 2012 02:41:30 +0000
+Message-ID: <50A1B38A.1040503@asianux.com>
+Date: Tue, 13 Nov 2012 10:42:18 +0800
+From: Chen Gang <gang.chen@asianux.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed
- an	invalid command
+References: <5097893B.7060105@asianux.com> <50A04DFC.3010100@cn.fujitsu.com>
+In-Reply-To: <50A04DFC.3010100@cn.fujitsu.com>
+Subject: Re: [LTP] [Issue Report] the stress test which includes nfs test
+ with client and server under same machine
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,126 +25,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: shyju pv <shyju.pv@huawei.com>, sanil kumar <sanil.kumar@huawei.com>, max maxiansheng <max.maxiansheng@huawei.com>, Mike Frysinger <vapier@gentoo.org>, LTP <ltp-list@lists.sourceforge.net>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-
-
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "LTP" <ltp-list@lists.sourceforge.net>
-> Cc: "sanil kumar" <sanil.kumar@huawei.com>, "Mike Frysinger" <vapier@gentoo.org>, "shyju pv" <shyju.pv@huawei.com>,
-> "max maxiansheng" <max.maxiansheng@huawei.com>
-> Sent: Thursday, 1 November, 2012 5:00:19 AM
-> Subject: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed an	invalid command
-> 
-> As linus said at the below commit,
-> commit 07d106d0a33d6063d2061305903deb02489eba20
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Thu Jan 5 15:40:12 2012 -0800
-> 
->     vfs: fix up ENOIOCTLCMD error handling
-> 
->     We're doing some odd things there, which already messes up
->     various users
->     (see the net/socket.c code that this removes), and it was going
->     to add
->     yet more crud to the block layer because of the incorrect error
->     code
->     translation.
-> 
->     ENOIOCTLCMD is not an error return that should be returned to
->     user mode
->     from the "ioctl()" system call, but it should *not* be translated
->     as
->     EINVAL ("Invalid argument").  It should be translated as ENOTTY
->     ("Inappropriate ioctl for device").
-> 
->     That EINVAL confusion has apparently so permeated some code that
->     the
->     block layer actually checks for it, which is sad.  We continue to
->     do so
->     for now, but add a big comment about how wrong that is, and we
->     should
->     remove it entirely eventually.  In the meantime, this tries to
->     keep the
->     changes localized to just the EINVAL -> ENOTTY fix, and removing
->     code
->     that makes it harder to do the right thing.
-> 
->     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> Return ENOTTY is right. And with the tty driver change with below
-> commit,
-> commit bbb63c514a3464342967237a51a21ea8f61ab951
-> Author: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> Date:   Mon Aug 27 15:23:12 2012 +0800
-> 
->     drivers:tty:fix up ENOIOCTLCMD error handling
-> 
->     At commit 07d106d0, Linus pointed out that ENOIOCTLCMD should be
->     translated as ENOTTY to user mode.
->     For example:
->         fd = open("/dev/tty", O_RDWR);
->         ioctl(fd, -1, &argp);
-> 
->     then the errno should be ENOTTY but not EINVAL.
-> 
->     Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->     Acked-by: Alan Cox <alan@linux.intel.com>
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> The tty driver will return the right ENOTTY in upstream kernel when
-> passed a invalid ioctl command, so we fixed the LTP test case to
-> suit this return value change.
-> ---
->  testcases/kernel/syscalls/ioctl/ioctl01.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c
-> b/testcases/kernel/syscalls/ioctl/ioctl01.c
-> index 8b044e7..ef64896 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl01.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
-> @@ -87,7 +87,7 @@ struct test_case_t {
->  	&fd, TCGETA, (struct termio *)-1, EFAULT},
->  	    /* command is invalid */
->  	{
-> -	&fd, INVAL_IOCTL, &termio, EINVAL},
-> +	&fd, INVAL_IOCTL, &termio, ENOTTY},
-
-Won't this break on older kernels? Can we test for kernel version with tst_kvercmp()?
-
-Regards,
-Jan
-
->  	    /* file descriptor is for a regular file */
->  	{
->  	&fd1, TCGETA, &termio, ENOTTY},
-> --
-> 1.8.0
-> 
-> 
-> ------------------------------------------------------------------------------
-> Everyone hates slow websites. So do we.
-> Make your web apps faster with AppDynamics
-> Download AppDynamics Lite for free today:
-> http://p.sf.net/sfu/appdyn_sfd2d_oct
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+5LqOIDIwMTLlubQxMeaciDEy5pelIDA5OjE2LCBXYW5sb25nIEdhbyDlhpnpgZM6Cj4gT24gMTEv
+MDUvMjAxMiAwNTozOSBQTSwgQ2hlbiBHYW5nIHdyb3RlOgo+PiBIZWxsbyBsdHAtbGlzdEBsaXN0
+cy5zb3JjZWZvcmdlLm5ldCAKPj4KPj4gMSkgRmlyc3RseToKPj4KPj4gICAgQSkgTFRQIGlzIGEg
+dmVyeSB1c2VmdWwgdG9vbHMgZm9yIEFzaWFudXggdG8gdGVzdCBMaW51eCBrZXJuZWwuCj4+ICAg
+IEIpIFRoYW5rIExUUCB2ZXJ5IG11Y2guCj4+ICAgIEMpIER1cmluZyB0ZXN0LCBBc2lhbnV4IGZp
+bmQgYW4gaXNzdWUgYWJvdXQgTFRQCj4+ICAgICAgIEFzaWFudXggdGhpbmsgbWF5YmUgaXQgd2ls
+bCBiZSBiZXR0ZXIgdG8gbGV0IExUUCBrbm93IGFib3V0IGl0Lgo+Pgo+Pgo+PiAyKSBEZXNjcmlw
+dGlvbjoKPj4KPj4gICAgQSkgd2l0aCBkZWZhdWx0IGNvbmZpZ3VyYXRpb24gZm9yIC9vcHQvbHRw
+L3Rlc3RzY3JpcHRzL2x0cHN0cmVzcy5zaAo+PiAgICBCKSBpdCB0ZXN0cyB0aGUgbmZzIHdpdGgg
+Y2xpZW50IGFuZCBzZXJ2ZXIgdW5kZXIgdGhlIHNhbWUgbWFjaGluZQo+PiAgICBDKSBpdCBpcyBh
+biBrbm93biBpc3N1ZSBhYm91dCBpdC4KPj4KPj4gMykgUmVmZXJlbmNlCj4+Cj4+ICAgIEEpIFJl
+ZCBIYXQgQnVnemlsbGE6IGh0dHBzOi8vYnVnemlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/
+aWQ9ODU4OTc4Cj4+ICAgIEIpIExLVk0gTWFpbGluZyBsaXN0OiBodHRwczovL2xrbWwub3JnL2xr
+bWwvMjAxMi8xMC8xNi8xICAoYXQgdGFpbCkKPj4KPj4+IFJ1bm5pbmcgdGhlIGNsaWVudCBhbmQg
+c2VydmVyIG9uIHRoZSBzYW1lIG1hY2hpbmUgaXMgbGlrZWx5IHRvIGRlYWRsb2NrCj4+PiBkdWUg
+dG8gbWVtb3J5IHByZXNzdXJlIGlzc3Vlcy4gVGhlIGNsaWVudCBuZWVkcyB0byBiZSBhYmxlIHRv
+IF9pbmNyZWFzZV8KPj4+IG1lbW9yeSBwcmVzc3VyZSBvbiB0aGUgc2VydmVyIGluIG9yZGVyIHRv
+IHJlZHVjZSBpdHMgb3duIHByZXNzdXJlLiBUaGF0Cj4+PiBkb2Vzbid0IHdvcmsgd2VsbCB3aGVu
+IGNsaWVudCA9PSBzZXJ2ZXIuCj4+Cj4+Cj4+Cj4+ICAgQXQgbGFzdCwgaG9wZSB0aGVzZSBpbmZv
+cm1hdGlvbiBhcmUgdXNlZnVsIGZvciBMVFAsICB0aGFua3MuCj4gCj4gCj4gVGhhbmsgeW91IHZl
+cnkgbXVjaCBmb3IgcmVwb3J0aW5nIHRoaXMgaXNzdWUsIHdlIHdpbGwgdGFrZSBjYXJlIG9mIHRo
+aXMuCj4gQW5kIGlmIHlvdSBsaWtlLCBidWctZml4LXBhdGNoZXMgYXJlIHZlcnkgd2VsY29tZS4K
+PgoKICBJZiB0aW1lIHJlc291cmNlIHBlcm1pdHMgbWUsIEkgd2lsbCB0cnkuCgogIEFzaWFudXgg
+bmVlZCBwcm92aWRlIHRoZWlyIGNvbnRyaWJ1dGVzIHRvIHRoZSBPcGVuIFNvdXJjZSwKICBKdXN0
+IGFzIEFzaWFudXggaGF2ZSBhbHJlYWR5IGdldCBiZW5lZml0cyBmcm9tIHRoZSBPcGVuIFNvdXJj
+ZS4KCgo+IFRoYW5rcywKPiBXYW5sb25nIEdhbwo+IAo+Pgo+IAo+IAo+IAoKCi0tIApDaGVuIEdh
+bmcKCkFzaWFudXggQ29ycG9yYXRpb24KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNb25pdG9yIHlv
+dXIgcGh5c2ljYWwsIHZpcnR1YWwgYW5kIGNsb3VkIGluZnJhc3RydWN0dXJlIGZyb20gYSBzaW5n
+bGUKd2ViIGNvbnNvbGUuIEdldCBpbi1kZXB0aCBpbnNpZ2h0IGludG8gYXBwcywgc2VydmVycywg
+ZGF0YWJhc2VzLCB2bXdhcmUsClNBUCwgY2xvdWQgaW5mcmFzdHJ1Y3R1cmUsIGV0Yy4gRG93bmxv
+YWQgMzAtZGF5IEZyZWUgVHJpYWwuClByaWNpbmcgc3RhcnRzIGZyb20gJDc5NSBmb3IgMjUgc2Vy
+dmVycyBvciBhcHBsaWNhdGlvbnMhCmh0dHA6Ly9wLnNmLm5ldC9zZnUvem9ob19kZXYyZGV2X25v
+dgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlz
+dCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
+dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
