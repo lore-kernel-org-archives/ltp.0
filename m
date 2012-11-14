@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TTrdz-0006ws-Dg
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 10:04:59 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TYZOr-0005j7-T4
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 09:36:49 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TTrdx-0007uT-2E
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 10:04:59 +0000
-Message-ID: <50924959.10905@cn.fujitsu.com>
-Date: Thu, 01 Nov 2012 18:05:13 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1211223113.3263014.1351763732593.JavaMail.root@redhat.com>
-In-Reply-To: <1211223113.3263014.1351763732593.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed
- an	invalid command
-Reply-To: gaowanlong@cn.fujitsu.com
+	id 1TYZOn-0008J2-Sf
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 09:36:49 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qAE9ad6W008901
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Nov 2012 04:36:40 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id qAE9acCj017287
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Nov 2012 04:36:39 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 14 Nov 2012 10:36:33 +0100
+Message-Id: <6c96a49f0109d33e28d1222f5f87dcca45c9c272.1352885663.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] waitpid02: avoid core file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,73 +30,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: shyju pv <shyju.pv@huawei.com>, sanil kumar <sanil.kumar@huawei.com>, max maxiansheng <max.maxiansheng@huawei.com>, Mike Frysinger <vapier@gentoo.org>, LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 11/01/2012 05:55 PM, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: "sanil kumar" <sanil.kumar@huawei.com>, "Mike Frysinger" <vapier@gentoo.org>, "shyju pv" <shyju.pv@huawei.com>,
->> "max maxiansheng" <max.maxiansheng@huawei.com>, "LTP" <ltp-list@lists.sourceforge.net>
->> Sent: Thursday, 1 November, 2012 9:15:08 AM
->> Subject: Re: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed an	invalid command
->>
->>>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c
->>>> b/testcases/kernel/syscalls/ioctl/ioctl01.c
->>>> index 8b044e7..ef64896 100644
->>>> --- a/testcases/kernel/syscalls/ioctl/ioctl01.c
->>>> +++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
->>>> @@ -87,7 +87,7 @@ struct test_case_t {
->>>>  	&fd, TCGETA, (struct termio *)-1, EFAULT},
->>>>  	    /* command is invalid */
->>>>  	{
->>>> -	&fd, INVAL_IOCTL, &termio, EINVAL},
->>>> +	&fd, INVAL_IOCTL, &termio, ENOTTY},
->>>
->>> Won't this break on older kernels? Can we test for kernel version
->>> with tst_kvercmp()?
->>
->> Surely will, this is also a trouble on my side.
->> Does we treat this as a kernel bug or a kernel change?
->> I think if we treat it as a kernel bug, we needn't check the kernel
->> version, while if
->> it just a kernel change, we need.
->> And, What's your opinion about this?
-> 
-> I'd go with kernel change, it worked the old way for years, there may be
-> applications which rely on that. If we just change it to 'ENOTTY' it will
-> start failing on older kernels and there are 2 choices: fix the kernel
-> or stop using this testcase. And I'm not sure there are enough arguments
-> to justify changing it in various distro's (stable) kernels.
+Depending on configuration this testcase may create core
+file with various location and name. The signal causing
+core dump is here by design so this core file isn't interesting.
 
-OK, agree.
+Avoid this core file by setting RLIMIT_CORE to 1.
 
-> 
-> Is this commit backported to any upstream stable trees? Are there plans to do so?
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/waitpid/waitpid02.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-I didn't see any backport, it may because some drivers return the old value, we can't
-ensure to backport all of them, so I think there is no backprot plan. it's needless.
-
-Thanks,
-Wanlong Gao
-
-> 
-> Regards,
-> Jan
-> 
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid02.c b/testcases/kernel/syscalls/waitpid/waitpid02.c
+index ae0446e..6db43c2 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid02.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid02.c
+@@ -50,6 +50,7 @@
+  */
+ 
+ #include <sys/file.h>
++#include <sys/resource.h>
+ #include <sys/signal.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+@@ -145,10 +146,6 @@ int main(int argc, char **argv)
+ 				}
+ 			}
+ 		}
+-
+-		if (access("core", F_OK) == 0) {
+-			unlink("core");
+-		}
+ 	}
+ 	cleanup();
+ 	tst_exit();
+@@ -174,6 +171,13 @@ void do_child()
+  */
+ void setup(void)
+ {
++	/* SIGFPE is expected signal, so avoid creating any corefile.
++	 * '1' is a special value, that will also avoid dumping via pipe. */
++	struct rlimit r;
++	r.rlim_cur = 1;
++	r.rlim_max = 1;
++	setrlimit(RLIMIT_CORE, &r);
++
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -c option.
+ 	 */
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Monitor your physical, virtual and cloud infrastructure from a single
+web console. Get in-depth insight into apps, servers, databases, vmware,
+SAP, cloud infrastructure, etc. Download 30-day Free Trial.
+Pricing starts from $795 for 25 servers or applications!
+http://p.sf.net/sfu/zoho_dev2dev_nov
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
