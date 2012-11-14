@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Jin.Li@windriver.com>) id 1TXoXC-0007Xk-Bo
-	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 07:34:18 +0000
-Received: from mail1.windriver.com ([147.11.146.13])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TXoXB-0000X8-EY
-	for ltp-list@lists.sourceforge.net; Mon, 12 Nov 2012 07:34:18 +0000
-From: <jin.li@windriver.com>
-Date: Mon, 12 Nov 2012 15:34:01 +0800
-Message-ID: <1352705641-27644-4-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
-References: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TYWUV-0000Zn-Cn
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 06:30:27 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TYWUQ-00037s-KI
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 06:30:27 +0000
+Message-ID: <50A33A4C.4090206@cn.fujitsu.com>
+Date: Wed, 14 Nov 2012 14:29:32 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/3] Fix cpuhotplug test case cpuhotplug05
+References: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
+	<1352705641-27644-3-git-send-email-jin.li@windriver.com>
+In-Reply-To: <1352705641-27644-3-git-send-email-jin.li@windriver.com>
+Subject: Re: [LTP] [PATCH 2/3] Fix cpuhotplug test case cpuhotplug03
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,42 +29,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com, gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
+To: jin.li@windriver.com
+Cc: ltp-list@lists.sourceforge.net
 
-From: Jin Li <jin.li@windriver.com>
+On 11/12/2012 03:34 PM, jin.li@windriver.com wrote:
+> From: Jin Li <jin.li@windriver.com>
+> 
+> Fix test case cpuhotplug03 as follows:
+> 1. Avoid to check whether the cpu0 is on.
+> 2. Check the cpu before turn it on
+> 
+> Signed-off-by: Jin Li <jin.li@windriver.com>
+> ---
+>  .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh  | 21 ++++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> index ca636d1..516a21f 100755
+> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> @@ -60,15 +60,22 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>  
+>  	# Turns on all CPUs and saves their states
+>  	for i in $( get_all_cpus ); do
+> -		if ! online_cpu $1; then
+> -			: $(( cpu += 1 ))
+> -			eval "on_${cpu}=$i"
+> -		fi
+> +            if [ "$i" = "cpu0" ]; then
+> +                continue
+> +            fi
+> +            if ! cpu_is_online $i; then
+> +		if ! online_cpu $i; then
+> +                    tst_resm TFAIL "Could not online cpu $i"
+> +                    exit_clean 1
+> +                fi
+> +                : $(( cpu += 1 ))
+> +                eval "on_${cpu}=$i"
+> +            fi
+>  		: $(( number_of_cpus += 1 ))
+>  	done
+>  
+>  	if ! offline_cpu ${CPU_TO_TEST} ; then
+> -		tst_resm TBAIL "CPU${CPU_TO_TEST} cannot be offlined"
+> +		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be offlined"
+>  		exit_clean 1
+>  	fi
+>  
+> @@ -90,7 +97,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>  	tst_resm TINFO "Onlining CPU ${CPU_TO_TEST}"
+>  	online_cpu ${CPU_TO_TEST}
+>  	RC=$?
+> -	if [ $RC -eq 0 ]; then
+> +	if [ $RC -ne 0 ]; then
+>  		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be onlined"
 
-Check whether sar is available befor run test
+I test with your patch and always failed here,
+Running tests.......
+<<<test_start>>>
+tag=cpuhotplug03 stime=1352874488
+cmdline="export CPU_TO_TEST=1; $LTPROOT/testcases/bin/cpu_hotplug/functional/cpuhotplug03.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+Name:   cpuhotplug03
+Date:   Wed Nov 14 14:28:08 CST 2012
+Desc:   Do tasks get scheduled to a newly on-lined CPU?
 
-Signed-off-by: Jin Li <jin.li@windriver.com>
----
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh | 5 +++++
- 1 file changed, 5 insertions(+)
+CPU is 1
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root     31631  3.0  0.0 134116  1556 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31632  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31634  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31635  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31636  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31637  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31638  2.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31639  1.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+root     31643  0.0  0.0 133488  1304 pts/1    S    14:28   0:00 grep do_spin_loop
+cpuhotplug03    0  TINFO  :  Onlining CPU 1
+cpuhotplug03    1  TFAIL  :  CPU1 cannot be onlined
+Wed Nov 14 14:28:08 CST 2012
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=37 cstime=4
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20120903-133-gb631790
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-index ad57efe..e64b91c 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-@@ -27,6 +27,11 @@ Desc:   Does sar behave properly during CPU hotplug events?
- 
- EOF
- 
-+which sar > /dev/null 2>&1 || {
-+        tst_resm TCONF "sar does not exist"
-+        exit_clean 1
-+}
-+
- # Verify the specified CPU is available
- if ! cpu_is_valid "${CPU_TO_TEST}" ; then
- 	tst_resm TBROK"CPU${CPU_TO_TEST} not found"
--- 
-1.7.11
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20120903-133-gb631790
+       ###############################################################
+
+
+Thanks,
+Wanlong Gao
+
+>  		exit_clean 1
+>  	fi
+> @@ -101,7 +108,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>  	ps -o psr -o command --no-headers -C do_spin_loop
+>  	RC=$?
+>  	NUM=`ps -o psr -o command --no-headers -C do_spin_loop | sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" | wc -l`
+> -	if [ $RC -eq 0 ]; then
+> +	if [ $RC -ne 0 ]; then
+>  		tst_resm TBROK "No do_spin_loop processes found on any processor"
+>  	elif [ $NUM -lt 1 ]; then
+>  		tst_resm TFAIL "No do_spin_loop processes found on CPU${CPU_TO_TEST}"
+> 
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_nov
+Monitor your physical, virtual and cloud infrastructure from a single
+web console. Get in-depth insight into apps, servers, databases, vmware,
+SAP, cloud infrastructure, etc. Download 30-day Free Trial.
+Pricing starts from $795 for 25 servers or applications!
+http://p.sf.net/sfu/zoho_dev2dev_nov
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
