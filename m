@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gang.chen@asianux.com>) id 1TVKJo-0008UR-Hw
-	for ltp-list@lists.sourceforge.net; Mon, 05 Nov 2012 10:54:12 +0000
-Received: from intranet.asianux.com ([58.214.24.6])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TVKJn-0004jn-Er
-	for ltp-list@lists.sourceforge.net; Mon, 05 Nov 2012 10:54:12 +0000
-Received: from [10.1.0.143] (unknown [219.143.36.82])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by intranet.asianux.com (Postfix) with ESMTP id F06E8184032E
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  5 Nov 2012 18:53:59 +0800 (CST)
-Message-ID: <50979B06.7030007@asianux.com>
-Date: Mon, 05 Nov 2012 18:55:02 +0800
-From: Chen Gang <gang.chen@asianux.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1TYWyw-0001uf-G3
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 07:01:54 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TYWyv-0006ew-DH
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 07:01:54 +0000
+Message-ID: <50A341D6.5050409@windriver.com>
+Date: Wed, 14 Nov 2012 15:01:42 +0800
+From: "Li, Jin" <Jin.Li@windriver.com>
 MIME-Version: 1.0
-References: <5097893B.7060105@asianux.com>
-In-Reply-To: <5097893B.7060105@asianux.com>
-Subject: Re: [LTP] [Issue Report] the stress test which includes nfs test
- with client and server under same machine
+References: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
+	<1352705641-27644-3-git-send-email-jin.li@windriver.com>
+	<50A33A4C.4090206@cn.fujitsu.com>
+In-Reply-To: <50A33A4C.4090206@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/3] Fix cpuhotplug test case cpuhotplug03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,40 +26,142 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-Cm9oLCBJIGFtIHZlcnkgc29ycnk6CgogIHRoZSBvcmlnaW5hbCByZWZlcmVuY2UgbGluayB0byBS
-ZWQgSGF0IEJ1Z3ppbGxhIGlzIG5vdCBjb3JyZWN0OwogIHRoZSBjb3JyZWN0IHJlZmVyZW5jZSBs
-aW5rOiBodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5jb20vc2hvd19idWcuY2dpP2lkPTgzNjA5NQoK
-Z2NoZW4uCgoK09ogMjAxMsTqMTHUwjA1yNUgMTc6MzksIENoZW4gR2FuZyDQtLXAOgo+IEhlbGxv
-IGx0cC1saXN0QGxpc3RzLnNvcmNlZm9yZ2UubmV0IAo+IAo+IDEpIEZpcnN0bHk6Cj4gCj4gICAg
-QSkgTFRQIGlzIGEgdmVyeSB1c2VmdWwgdG9vbHMgZm9yIEFzaWFudXggdG8gdGVzdCBMaW51eCBr
-ZXJuZWwuCj4gICAgQikgVGhhbmsgTFRQIHZlcnkgbXVjaC4KPiAgICBDKSBEdXJpbmcgdGVzdCwg
-QXNpYW51eCBmaW5kIGFuIGlzc3VlIGFib3V0IExUUAo+ICAgICAgIEFzaWFudXggdGhpbmsgbWF5
-YmUgaXQgd2lsbCBiZSBiZXR0ZXIgdG8gbGV0IExUUCBrbm93IGFib3V0IGl0Lgo+IAo+IAo+IDIp
-IERlc2NyaXB0aW9uOgo+IAo+ICAgIEEpIHdpdGggZGVmYXVsdCBjb25maWd1cmF0aW9uIGZvciAv
-b3B0L2x0cC90ZXN0c2NyaXB0cy9sdHBzdHJlc3Muc2gKPiAgICBCKSBpdCB0ZXN0cyB0aGUgbmZz
-IHdpdGggY2xpZW50IGFuZCBzZXJ2ZXIgdW5kZXIgdGhlIHNhbWUgbWFjaGluZQo+ICAgIEMpIGl0
-IGlzIGFuIGtub3duIGlzc3VlIGFib3V0IGl0Lgo+IAo+IDMpIFJlZmVyZW5jZQo+IAo+ICAgIEEp
-IFJlZCBIYXQgQnVnemlsbGE6IGh0dHBzOi8vYnVnemlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5j
-Z2k/aWQ9ODU4OTc4Cj4gICAgQikgTEtWTSBNYWlsaW5nIGxpc3Q6IGh0dHBzOi8vbGttbC5vcmcv
-bGttbC8yMDEyLzEwLzE2LzEgIChhdCB0YWlsKQo+IAo+PiBSdW5uaW5nIHRoZSBjbGllbnQgYW5k
-IHNlcnZlciBvbiB0aGUgc2FtZSBtYWNoaW5lIGlzIGxpa2VseSB0byBkZWFkbG9jawo+PiBkdWUg
-dG8gbWVtb3J5IHByZXNzdXJlIGlzc3Vlcy4gVGhlIGNsaWVudCBuZWVkcyB0byBiZSBhYmxlIHRv
-IF9pbmNyZWFzZV8KPj4gbWVtb3J5IHByZXNzdXJlIG9uIHRoZSBzZXJ2ZXIgaW4gb3JkZXIgdG8g
-cmVkdWNlIGl0cyBvd24gcHJlc3N1cmUuIFRoYXQKPj4gZG9lc24ndCB3b3JrIHdlbGwgd2hlbiBj
-bGllbnQgPT0gc2VydmVyLgo+IAo+IAo+IAo+ICAgQXQgbGFzdCwgaG9wZSB0aGVzZSBpbmZvcm1h
-dGlvbiBhcmUgdXNlZnVsIGZvciBMVFAsICB0aGFua3MuCj4gCgoKLS0gCkNoZW4gR2FuZwoKQXNp
-YW51eCBDb3Jwb3JhdGlvbgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxvZ01lSW4gQ2VudHJhbDog
-SW5zdGFudCwgYW55d2hlcmUsIFJlbW90ZSBQQyBhY2Nlc3MgYW5kIG1hbmFnZW1lbnQuClN0YXkg
-aW4gY29udHJvbCwgdXBkYXRlIHNvZnR3YXJlLCBhbmQgbWFuYWdlIFBDcyBmcm9tIG9uZSBjb21t
-YW5kIGNlbnRlcgpEaWFnbm9zZSBwcm9ibGVtcyBhbmQgaW1wcm92ZSB2aXNpYmlsaXR5IGludG8g
-ZW1lcmdpbmcgSVQgaXNzdWVzCkF1dG9tYXRlLCBtb25pdG9yIGFuZCBtYW5hZ2UuIERvIG1vcmUg
-aW4gbGVzcyB0aW1lIHdpdGggQ2VudHJhbApodHRwOi8vcC5zZi5uZXQvc2Z1L2xvZ21laW4xMjMz
-MV9kMmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
-LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
-L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+
+
+On 11/14/2012 02:29 PM, Wanlong Gao wrote:
+> On 11/12/2012 03:34 PM, jin.li@windriver.com wrote:
+>> From: Jin Li<jin.li@windriver.com>
+>>
+>> Fix test case cpuhotplug03 as follows:
+>> 1. Avoid to check whether the cpu0 is on.
+>> 2. Check the cpu before turn it on
+>>
+>> Signed-off-by: Jin Li<jin.li@windriver.com>
+>> ---
+>>   .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh  | 21 ++++++++++++++-------
+>>   1 file changed, 14 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+>> index ca636d1..516a21f 100755
+>> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+>> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+>> @@ -60,15 +60,22 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>>
+>>   	# Turns on all CPUs and saves their states
+>>   	for i in $( get_all_cpus ); do
+>> -		if ! online_cpu $1; then
+>> -			: $(( cpu += 1 ))
+>> -			eval "on_${cpu}=$i"
+>> -		fi
+>> +            if [ "$i" = "cpu0" ]; then
+>> +                continue
+>> +            fi
+>> +            if ! cpu_is_online $i; then
+>> +		if ! online_cpu $i; then
+>> +                    tst_resm TFAIL "Could not online cpu $i"
+>> +                    exit_clean 1
+>> +                fi
+>> +                : $(( cpu += 1 ))
+>> +                eval "on_${cpu}=$i"
+>> +            fi
+>>   		: $(( number_of_cpus += 1 ))
+>>   	done
+>>
+>>   	if ! offline_cpu ${CPU_TO_TEST} ; then
+>> -		tst_resm TBAIL "CPU${CPU_TO_TEST} cannot be offlined"
+>> +		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be offlined"
+>>   		exit_clean 1
+>>   	fi
+>>
+>> @@ -90,7 +97,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>>   	tst_resm TINFO "Onlining CPU ${CPU_TO_TEST}"
+>>   	online_cpu ${CPU_TO_TEST}
+>>   	RC=$?
+>> -	if [ $RC -eq 0 ]; then
+>> +	if [ $RC -ne 0 ]; then
+>>   		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be onlined"
+
+Looks strange. It's just what I fixed.
+
+Could you please help to confirm that the 0002-patch is applied correctly?
+
+Thanks,
+
+Jin
+
+>
+> I test with your patch and always failed here,
+> Running tests.......
+> <<<test_start>>>
+> tag=cpuhotplug03 stime=1352874488
+> cmdline="export CPU_TO_TEST=1; $LTPROOT/testcases/bin/cpu_hotplug/functional/cpuhotplug03.sh"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> Name:   cpuhotplug03
+> Date:   Wed Nov 14 14:28:08 CST 2012
+> Desc:   Do tasks get scheduled to a newly on-lined CPU?
+>
+> CPU is 1
+> USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root     31631  3.0  0.0 134116  1556 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31632  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31634  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31635  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31636  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31637  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31638  2.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31639  1.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
+> root     31643  0.0  0.0 133488  1304 pts/1    S    14:28   0:00 grep do_spin_loop
+> cpuhotplug03    0  TINFO  :  Onlining CPU 1
+> cpuhotplug03    1  TFAIL  :  CPU1 cannot be onlined
+> Wed Nov 14 14:28:08 CST 2012
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=1 corefile=no
+> cutime=37 cstime=4
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: 20120903-133-gb631790
+>
+>         ###############################################################
+>
+>              Done executing testcases.
+>              LTP Version:  20120903-133-gb631790
+>         ###############################################################
+>
+>
+> Thanks,
+> Wanlong Gao
+>
+>>   		exit_clean 1
+>>   	fi
+>> @@ -101,7 +108,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>>   	ps -o psr -o command --no-headers -C do_spin_loop
+>>   	RC=$?
+>>   	NUM=`ps -o psr -o command --no-headers -C do_spin_loop | sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" | wc -l`
+>> -	if [ $RC -eq 0 ]; then
+>> +	if [ $RC -ne 0 ]; then
+>>   		tst_resm TBROK "No do_spin_loop processes found on any processor"
+>>   	elif [ $NUM -lt 1 ]; then
+>>   		tst_resm TFAIL "No do_spin_loop processes found on CPU${CPU_TO_TEST}"
+>>
+>
+
+------------------------------------------------------------------------------
+Monitor your physical, virtual and cloud infrastructure from a single
+web console. Get in-depth insight into apps, servers, databases, vmware,
+SAP, cloud infrastructure, etc. Download 30-day Free Trial.
+Pricing starts from $795 for 25 servers or applications!
+http://p.sf.net/sfu/zoho_dev2dev_nov
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
