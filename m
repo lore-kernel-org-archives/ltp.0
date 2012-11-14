@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TTqSC-0001B7-6Z
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 08:48:44 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TTqS9-00049E-J5
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 08:48:44 +0000
-Message-ID: <50922F8C.7010601@cn.fujitsu.com>
-Date: Thu, 01 Nov 2012 16:15:08 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Jin.Li@windriver.com>) id 1TYXr3-0004lE-Iv
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 07:57:49 +0000
+Received: from mail1.windriver.com ([147.11.146.13])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TYXr2-0001QY-Pl
+	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 07:57:49 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com
+	[147.11.189.40])
+	by mail1.windriver.com (8.14.5/8.14.3) with ESMTP id qAE7viRH025461
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Nov 2012 23:57:44 -0800 (PST)
+From: <jin.li@windriver.com>
+Date: Wed, 14 Nov 2012 15:57:34 +0800
+Message-ID: <1352879855-18742-1-git-send-email-jin.li@windriver.com>
 MIME-Version: 1.0
-References: <787397777.3211869.1351757117123.JavaMail.root@redhat.com>
-In-Reply-To: <787397777.3211869.1351757117123.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed
- an	invalid command
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] Fix cpuhotplug testcase cpuhotplug01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,135 +31,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: shyju pv <shyju.pv@huawei.com>, sanil kumar <sanil.kumar@huawei.com>, max maxiansheng <max.maxiansheng@huawei.com>, Mike Frysinger <vapier@gentoo.org>, LTP <ltp-list@lists.sourceforge.net>
+To: jin.li@windriver.com, ltp-list@lists.sourceforge.net
 
-On 11/01/2012 04:05 PM, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "LTP" <ltp-list@lists.sourceforge.net>
->> Cc: "sanil kumar" <sanil.kumar@huawei.com>, "Mike Frysinger" <vapier@gentoo.org>, "shyju pv" <shyju.pv@huawei.com>,
->> "max maxiansheng" <max.maxiansheng@huawei.com>
->> Sent: Thursday, 1 November, 2012 5:00:19 AM
->> Subject: [LTP] [PATCH] ioctl01: change the errno to ENOTTY when passed an	invalid command
->>
->> As linus said at the below commit,
->> commit 07d106d0a33d6063d2061305903deb02489eba20
->> Author: Linus Torvalds <torvalds@linux-foundation.org>
->> Date:   Thu Jan 5 15:40:12 2012 -0800
->>
->>     vfs: fix up ENOIOCTLCMD error handling
->>
->>     We're doing some odd things there, which already messes up
->>     various users
->>     (see the net/socket.c code that this removes), and it was going
->>     to add
->>     yet more crud to the block layer because of the incorrect error
->>     code
->>     translation.
->>
->>     ENOIOCTLCMD is not an error return that should be returned to
->>     user mode
->>     from the "ioctl()" system call, but it should *not* be translated
->>     as
->>     EINVAL ("Invalid argument").  It should be translated as ENOTTY
->>     ("Inappropriate ioctl for device").
->>
->>     That EINVAL confusion has apparently so permeated some code that
->>     the
->>     block layer actually checks for it, which is sad.  We continue to
->>     do so
->>     for now, but add a big comment about how wrong that is, and we
->>     should
->>     remove it entirely eventually.  In the meantime, this tries to
->>     keep the
->>     changes localized to just the EINVAL -> ENOTTY fix, and removing
->>     code
->>     that makes it harder to do the right thing.
->>
->>     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
->>
->> Return ENOTTY is right. And with the tty driver change with below
->> commit,
->> commit bbb63c514a3464342967237a51a21ea8f61ab951
->> Author: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->> Date:   Mon Aug 27 15:23:12 2012 +0800
->>
->>     drivers:tty:fix up ENOIOCTLCMD error handling
->>
->>     At commit 07d106d0, Linus pointed out that ENOIOCTLCMD should be
->>     translated as ENOTTY to user mode.
->>     For example:
->>         fd = open("/dev/tty", O_RDWR);
->>         ioctl(fd, -1, &argp);
->>
->>     then the errno should be ENOTTY but not EINVAL.
->>
->>     Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->>     Acked-by: Alan Cox <alan@linux.intel.com>
->>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>
->> The tty driver will return the right ENOTTY in upstream kernel when
->> passed a invalid ioctl command, so we fixed the LTP test case to
->> suit this return value change.
->> ---
->>  testcases/kernel/syscalls/ioctl/ioctl01.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c
->> b/testcases/kernel/syscalls/ioctl/ioctl01.c
->> index 8b044e7..ef64896 100644
->> --- a/testcases/kernel/syscalls/ioctl/ioctl01.c
->> +++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
->> @@ -87,7 +87,7 @@ struct test_case_t {
->>  	&fd, TCGETA, (struct termio *)-1, EFAULT},
->>  	    /* command is invalid */
->>  	{
->> -	&fd, INVAL_IOCTL, &termio, EINVAL},
->> +	&fd, INVAL_IOCTL, &termio, ENOTTY},
-> 
-> Won't this break on older kernels? Can we test for kernel version with tst_kvercmp()?
+Hi Wenlong,
 
-Surely will, this is also a trouble on my side. 
-Does we treat this as a kernel bug or a kernel change?
-I think if we treat it as a kernel bug, we needn't check the kernel version, while if
-it just a kernel change, we need.
-And, What's your opinion about this?
+This V2 version remove the variable cpustate which will never used in
+case cpuhotplug01
 
-Thanks,
-Wanlong Gao
+Regards,
 
-> 
-> Regards,
-> Jan
-> 
->>  	    /* file descriptor is for a regular file */
->>  	{
->>  	&fd1, TCGETA, &termio, ENOTTY},
->> --
->> 1.8.0
->>
->>
->> ------------------------------------------------------------------------------
->> Everyone hates slow websites. So do we.
->> Make your web apps faster with AppDynamics
->> Download AppDynamics Lite for free today:
->> http://p.sf.net/sfu/appdyn_sfd2d_oct
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-> 
-
+Jin
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Monitor your physical, virtual and cloud infrastructure from a single
+web console. Get in-depth insight into apps, servers, databases, vmware,
+SAP, cloud infrastructure, etc. Download 30-day Free Trial.
+Pricing starts from $795 for 25 servers or applications!
+http://p.sf.net/sfu/zoho_dev2dev_nov
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
