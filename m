@@ -1,14 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <noreply@sourceforge.net>) id 1TaXeD-0007sq-P4
-	for ltp-list@lists.sourceforge.net; Mon, 19 Nov 2012 20:08:49 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <noreply@sourceforge.net>) id 1TaXQ1-0004BH-Dk
+	for ltp-list@lists.sourceforge.net; Mon, 19 Nov 2012 19:54:09 +0000
 From: SourceForge.net <noreply@sourceforge.net>
-Date: Mon, 19 Nov 2012 12:08:49 -0800
+Date: Mon, 19 Nov 2012 11:54:09 -0800
 Content-Disposition: inline
 MIME-Version: 1.0
-Subject: [LTP] [ ltp-Patches-3588583 ] Gcov-Kernel on 2.6.32-(44-60)
+Subject: [LTP] [ ltp-Bugs-3578432 ] -S SKIPFILE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,45 +21,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1TkTx8-0000SR-DN@sfs-ml-2.v29.ch3.sourceforge.com>
+Message-Id: <E1TkTx7-0000SA-PW@sfs-ml-2.v29.ch3.sourceforge.com>
 To: "SourceForge.net" <noreply@sourceforge.net>
 
-Patches item #3588583, was opened at 2012-11-19 12:07
+Bugs item #3578432, was opened at 2012-10-19 13:07
 Message generated for change (Settings changed) made by shayanb
 You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3588583&group_id=3382
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3578432&group_id=3382
 
 Please note that this message will contain a full copy of the comment thread,
 including the initial issue submission, for this request,
 not just the latest update.
-Category: None
-Group: None
+Category: Testcases
+Group: Commands
 Status: Open
-Resolution: None
->Priority: 9
+>Resolution: Works For Me
+>Priority: 2
 Private: No
 Submitted By: Shayan Es (shayanb)
 Assigned to: Nobody/Anonymous (nobody)
-Summary: Gcov-Kernel on 2.6.32-(44-60)
+Summary: -S SKIPFILE
 
 Initial Comment:
-I can't get the gcov module to be in the kernel on Ubuntu 10.04 2.6.32
+There is an error with using the -S flag to skip failed tests from previous test fail file
 
-I used the appropriate flags to build the kernel and it seems that gcov is working good with the applications sources but as I need to trace and find the coverage of the kernel sources I can't get the gcov module to work, actually there is no module named gcov*.o
-(* means anything that has gcov in it and is a module.)
+./runltp -S /home/shayan/Desktop/LtpResults/runltpfail2 -C /home/shayan/Desktop/LtpResults/runltpfail21shouldbenull -l /home/shayan/Desktop/LtpResults/ltplog21failsafe.log -o /home/shayan/Desktop/LtpResults/ltpout21failsafe -p -T 1
 
-I don't have anything related to gcov in /proc
-everything else seems to be ok, I have all .gcov .gnco kernel source files
+ERROR IN THE OUTPUT:
 
-but no modules, Lcov -c would give me this error:
+    INFO: no command files were provided. Will execute the following
+          runtest scenario files:
 
-Loading required gcov kernel module.
-lcov: ERROR: cannot load required gcov kernel module!
+syscalls fs fs_perms_simple fsx dio io mm ipc sched math nptl pty containers fs_bind controllers filecaps cap_bounds fcntl-locktests connectors admin_tools timers power_management_tests numa hugetlb commands hyperthreading 
+    
+sed: -e expression #1, char 42: unterminated `s' command
+sed: can't find label for jump to `estcases/bin'
+sed: -e expression #1, char 32: unknown command: `['
+
+
+----------------------------------------------------------------------
+
+>Comment By: Shayan Es (shayanb)
+Date: 2012-11-19 11:54
+
+Message:
+I found some ways to work around this issue,
+I guess the only problem with this is the misspelling of some testcases in
+scripts
 
 ----------------------------------------------------------------------
 
 You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3588583&group_id=3382
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3578432&group_id=3382
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
