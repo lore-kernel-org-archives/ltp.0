@@ -1,25 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TgsqY-0001o5-LG
-	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:46 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TgsqT-0005zI-8n
-	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:46 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB77qib7009764
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Dec 2012 15:52:45 +0800
-Message-ID: <50C19FCB.1090609@cn.fujitsu.com>
-Date: Fri, 07 Dec 2012 15:50:35 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <noreply@sourceforge.net>) id 1TaXd1-000233-Bn
+	for ltp-list@lists.sourceforge.net; Mon, 19 Nov 2012 20:07:35 +0000
+From: SourceForge.net <noreply@sourceforge.net>
+Date: Mon, 19 Nov 2012 12:07:35 -0800
+Content-Disposition: inline
 MIME-Version: 1.0
-References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/4] cmdlib.sh: Add four functions of controlling
- daemon
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [ ltp-Patches-3588583 ] Gcov-Kernel on 2.6.32-(44-60)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,22 +21,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+Message-Id: <E1TkTx8-0000SH-4T@sfs-ml-2.v29.ch3.sourceforge.com>
+To: "SourceForge.net" <noreply@sourceforge.net>
 
-On 12/04/2012 03:21 PM, Peng Haitao wrote:
-> Add four functions of controlling daemon:
->   - start_daemon
->   - stop_daemon
->   - status_daemon
->   - restart_daemon
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+Patches item #3588583, was opened at 2012-11-19 12:07
+Message generated for change (Tracker Item Submitted) made by shayanb
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3588583&group_id=3382
 
-Applied, thank you.
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: None
+Group: None
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Shayan Es (shayanb)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: Gcov-Kernel on 2.6.32-(44-60)
 
-Wanlong Gao
+Initial Comment:
+I can't get the gcov module to be in the kernel on Ubuntu 10.04 2.6.32
 
+I used the appropriate flags to build the kernel and it seems that gcov is working good with the applications sources but as I need to trace and find the coverage of the kernel sources I can't get the gcov module to work, actually there is no module named gcov*.o
+(* means anything that has gcov in it and is a module.)
+
+I don't have anything related to gcov in /proc
+everything else seems to be ok, I have all .gcov .gnco kernel source files
+
+but no modules, Lcov -c would give me this error:
+
+Loading required gcov kernel module.
+lcov: ERROR: cannot load required gcov kernel module!
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3588583&group_id=3382
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
