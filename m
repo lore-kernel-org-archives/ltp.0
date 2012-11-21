@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TYWUV-0000Zn-Cn
-	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 06:30:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TYWUQ-00037s-KI
-	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 06:30:27 +0000
-Message-ID: <50A33A4C.4090206@cn.fujitsu.com>
-Date: Wed, 14 Nov 2012 14:29:32 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TbBmG-0005ps-OQ
+	for ltp-list@lists.sourceforge.net; Wed, 21 Nov 2012 14:59:48 +0000
+Date: Wed, 21 Nov 2012 15:57:06 +0100
+From: chrubis@suse.cz
+Message-ID: <20121121145706.GB5187@rei.suse.cz>
+References: <1353493513-1288-1-git-send-email-penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
-	<1352705641-27644-3-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1352705641-27644-3-git-send-email-jin.li@windriver.com>
-Subject: Re: [LTP] [PATCH 2/3] Fix cpuhotplug test case cpuhotplug03
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1353493513-1288-1-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] runnetnstest.sh: fix a fail of vsftpd is disabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,119 +24,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 11/12/2012 03:34 PM, jin.li@windriver.com wrote:
-> From: Jin Li <jin.li@windriver.com>
-> 
-> Fix test case cpuhotplug03 as follows:
-> 1. Avoid to check whether the cpu0 is on.
-> 2. Check the cpu before turn it on
-> 
-> Signed-off-by: Jin Li <jin.li@windriver.com>
-> ---
->  .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh  | 21 ++++++++++++++-------
->  1 file changed, 14 insertions(+), 7 deletions(-)
-> 
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-> index ca636d1..516a21f 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-> @@ -60,15 +60,22 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
->  
->  	# Turns on all CPUs and saves their states
->  	for i in $( get_all_cpus ); do
-> -		if ! online_cpu $1; then
-> -			: $(( cpu += 1 ))
-> -			eval "on_${cpu}=$i"
-> -		fi
-> +            if [ "$i" = "cpu0" ]; then
-> +                continue
-> +            fi
-> +            if ! cpu_is_online $i; then
-> +		if ! online_cpu $i; then
-> +                    tst_resm TFAIL "Could not online cpu $i"
-> +                    exit_clean 1
-> +                fi
-> +                : $(( cpu += 1 ))
-> +                eval "on_${cpu}=$i"
-> +            fi
->  		: $(( number_of_cpus += 1 ))
->  	done
->  
->  	if ! offline_cpu ${CPU_TO_TEST} ; then
-> -		tst_resm TBAIL "CPU${CPU_TO_TEST} cannot be offlined"
-> +		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be offlined"
->  		exit_clean 1
->  	fi
->  
-> @@ -90,7 +97,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
->  	tst_resm TINFO "Onlining CPU ${CPU_TO_TEST}"
->  	online_cpu ${CPU_TO_TEST}
->  	RC=$?
-> -	if [ $RC -eq 0 ]; then
-> +	if [ $RC -ne 0 ]; then
->  		tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be onlined"
+Hi!
+> +flag=0
+> +# running under systemd?
+> +if command -v systemctl >/dev/null 2>&1; then
+> +	HAVE_SYSTEMCTL=1
+> +else
+> +	HAVE_SYSTEMCTL=0
+> +fi
+> +
+> +if [ $HAVE_SYSTEMCTL -eq 1 ]; then
+> +	systemctl status vsftpd.service > /dev/null 2>&1 || flag=$?
+> +	if [ $flag -ne 0 ]; then
+> +		systemctl start vsftpd.service > /dev/null 2>&1
+> +	fi
+> +else
+> +	service vsftpd status > /dev/null 2>&1 || flag=$?
+> +	if [ $flag -ne 0 ]; then
+> +		service vsftpd start > /dev/null 2>&1
+> +	fi
+> +fi
 
-I test with your patch and always failed here,
-Running tests.......
-<<<test_start>>>
-tag=cpuhotplug03 stime=1352874488
-cmdline="export CPU_TO_TEST=1; $LTPROOT/testcases/bin/cpu_hotplug/functional/cpuhotplug03.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-Name:   cpuhotplug03
-Date:   Wed Nov 14 14:28:08 CST 2012
-Desc:   Do tasks get scheduled to a newly on-lined CPU?
+Hmm, what is the reason of using the flag variable instead of $?
+directly?
 
-CPU is 1
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root     31631  3.0  0.0 134116  1556 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31632  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31634  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31635  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31636  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31637  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31638  2.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31639  1.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
-root     31643  0.0  0.0 133488  1304 pts/1    S    14:28   0:00 grep do_spin_loop
-cpuhotplug03    0  TINFO  :  Onlining CPU 1
-cpuhotplug03    1  TFAIL  :  CPU1 cannot be onlined
-Wed Nov 14 14:28:08 CST 2012
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=37 cstime=4
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20120903-133-gb631790
+And this snippet of code makes me wonder if it would be better to have a
+small shell library to restart the system services by a given name. Do
+we have other places with similar pieces of code?
 
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20120903-133-gb631790
-       ###############################################################
-
-
-Thanks,
-Wanlong Gao
-
->  		exit_clean 1
->  	fi
-> @@ -101,7 +108,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
->  	ps -o psr -o command --no-headers -C do_spin_loop
->  	RC=$?
->  	NUM=`ps -o psr -o command --no-headers -C do_spin_loop | sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" | wc -l`
-> -	if [ $RC -eq 0 ]; then
-> +	if [ $RC -ne 0 ]; then
->  		tst_resm TBROK "No do_spin_loop processes found on any processor"
->  	elif [ $NUM -lt 1 ]; then
->  		tst_resm TFAIL "No do_spin_loop processes found on CPU${CPU_TO_TEST}"
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Monitor your physical, virtual and cloud infrastructure from a single
