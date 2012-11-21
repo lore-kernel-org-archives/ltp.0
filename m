@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TYYGY-00065h-FY
-	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 08:24:10 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TYYGT-0000GD-VE
-	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 08:24:10 +0000
-Message-ID: <50A354EF.2080900@cn.fujitsu.com>
-Date: Wed, 14 Nov 2012 16:23:11 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1TbBiN-0007jR-Mu
+	for ltp-list@lists.sourceforge.net; Wed, 21 Nov 2012 14:55:47 +0000
+Date: Wed, 21 Nov 2012 15:53:07 +0100
+From: chrubis@suse.cz
+Message-ID: <20121121145306.GA5187@rei.suse.cz>
+References: <1353490217-30332-1-git-send-email-penght@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1352879855-18742-1-git-send-email-jin.li@windriver.com>
-	<1352879855-18742-2-git-send-email-jin.li@windriver.com>
-In-Reply-To: <1352879855-18742-2-git-send-email-jin.li@windriver.com>
-Subject: Re: [LTP] [V2] [PATCH] Fix cpuhotplug test case cpuhotplug01
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1353490217-30332-1-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] ar01: fix a bug of attribute "selinux" in rhel6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,25 +24,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 11/14/2012 03:57 PM, jin.li@windriver.com wrote:
-> From: Jin Li <jin.li@windriver.com>
+Hi!
+> When SELinux is enabled, "ls -ln" will list permissions with "-rw-r--r--.",
+> but "ar -tv" will list permissions with "-rw-r--r--"???so the case 22 will fail.
 > 
-> Fix for case cpuhotplug01:
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  testcases/commands/ade/ar/ar01 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 1. Give all available parameters to function migrate_irq.
-> 2. Add the INFO note for the IRQ whose IRQ affinity is NOT permitted to changed.
-> 3. Remove the variable cpustate and related code in function do_clean. The cpu,
-> which was off before the test start, has been closed correctly in do_clean.
-> 4. Add test case PASS at the end of the passed case
+> diff --git a/testcases/commands/ade/ar/ar01 b/testcases/commands/ade/ar/ar01
+> index 948c1fe..32fef11 100755
+> --- a/testcases/commands/ade/ar/ar01
+> +++ b/testcases/commands/ade/ar/ar01
+> @@ -536,7 +536,7 @@ do
+>  	ls -ln --time-style=+%b" "%e" "%H:%M file1.in file2.in file3.in |
+>  	while read permissions link uid gid size month day time file_name
+>  	do
+> -		echo "$permissions;$uid/$gid;$size;$month;$day;$time;$file_name"
+> +		echo "${permissions%.};$uid/$gid;$size;$month;$day;$time;$file_name"
+>  	done >>  $TCtmp/lib.a.exp
+>  	ar -tv $TCtmp/lib.a |
 
+Acked.
 
-Applied, thank you.
+However please include a short description of the solution to the commit
+log as well.
 
-Wanlong Gao
+Something like "This patch removes the dot from the end of the
+permission string if there was one."
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Monitor your physical, virtual and cloud infrastructure from a single
