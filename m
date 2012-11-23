@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TTllZ-0003Ts-SR
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 03:48:25 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TbnKG-00020h-Qq
+	for ltp-list@lists.sourceforge.net; Fri, 23 Nov 2012 07:05:24 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TTllY-0006XK-9S
-	for ltp-list@lists.sourceforge.net; Thu, 01 Nov 2012 03:48:25 +0000
-Message-ID: <5091EDBC.4030909@cn.fujitsu.com>
-Date: Thu, 01 Nov 2012 11:34:20 +0800
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TbnKC-0005Ny-3E
+	for ltp-list@lists.sourceforge.net; Fri, 23 Nov 2012 07:05:24 +0000
+Message-ID: <50AF1FEA.9000602@cn.fujitsu.com>
+Date: Fri, 23 Nov 2012 15:04:10 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <D7504F77ECABB0449431598E06DDF6E9179A600C@szxeml526-mbx.china.huawei.com>
-In-Reply-To: <D7504F77ECABB0449431598E06DDF6E9179A600C@szxeml526-mbx.china.huawei.com>
-Subject: Re: [LTP] ioctl01 failed when checking the ioctl bad command return
- value.
+References: <1353649340-678-1-git-send-email-xu.simon@oracle.com>
+	<50AF0DA9.1090908@cn.fujitsu.com> <50AF0EE3.1080904@oracle.com>
+In-Reply-To: <50AF0EE3.1080904@oracle.com>
+Subject: Re: [LTP] [PATCH] numa01.sh: fix error in getting number of CPUs
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,76 +29,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linliangjie <linliangjie@huawei.com>
-Cc: shyju pv <shyju.pv@huawei.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Maxiansheng (Max)" <max.maxiansheng@huawei.com>, Sanil kumar <sanil.kumar@huawei.com>
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 11/01/2012 10:10 AM, Linliangjie wrote:
-> Issue description: 
-> ------------------- 
-> Kernel Version : 3.7-rc2
-> System call : ioctl
-> LTP Testcase : ioctl01
-> LTP Version : 20120903 
-> Platform : x86_64 ( HP 8200 PC ) 
-> Testcase Description : Testcase to check the errnos set by the ioctl(2) system
-> call.
-> Previous kernel version in which testcase passed : 3.2.9
+On 11/23/2012 01:51 PM, Simon Xu wrote:
+> On 2012/11/23 13:46, Wanlong Gao wrote:
+>> On 11/23/2012 01:42 PM, Simon Xu wrote:
+>>> test04 in numa01.sh is using a wrong method to get the number of CPUs.
+>>> This results in:
+>>>
+>>> numactl: cpu argument 9 is out of range
+>>>
+>>> awk: cmd. line:1: fatal: cannot open file `/proc/4116/stat' for reading
+>>> (No such file or directory)
+>>> /opt/ltp/testcases/bin/numa01.sh: line 475: [: =: unary operator expected
+>>> awk: cmd. line:1: fatal: cannot open file `/proc/4116/stat' for reading
+>>> (No such file or directory)
+>>> /opt/ltp/testcases/bin/numa01.sh: line 481: [: -ne: unary operator expected
+>>> /opt/ltp/testcases/bin/numa01.sh: line 488: kill: (4116) - No such process
+>>> numa04      4  TBROK  :  Kill on process 4116 fails
+>>>
+>>> Fix it by getting number of CPUs by grepping /proc/cpuinfo.
+>>> ---
+>>>   testcases/kernel/numa/numa01.sh | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+>>> index 3ea7950..8d0808a 100644
+>>> --- a/testcases/kernel/numa/numa01.sh
+>>> +++ b/testcases/kernel/numa/numa01.sh
+>>> @@ -466,7 +466,7 @@ test04()
+>>>       run_on_cpu=0
+>>>       running_on_cpu=0
+>>>   -    no_of_cpus=$(ls /sys/devices/system/cpu/ | wc -w)
+>>> +    no_of_cpus=$(grep "^processor"  /proc/cpuinfo | wc -l)
+>> We have commands tst_ncpus and tst_ncpus_max to get the number of cpu in the system.
 > 
-> Executing log:
-> -------------------------
-> [root@linux-qf4g]-[/tmp/ltp/ltp/testcases/bin]
-> (0)# ./ioctl01 -D /dev/tty
-> ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file
-> descriptor
-> ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-> ioctl01     3  TFAIL  :  failed unexpectedly; expected 22 - Invalid argument:
-> TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-> ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25):
-> Inappropriate ioctl for device
-> ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-> -------------------------
-> The return value of the code is expected to be 22 but 24 is returned and 
-> hence the LTP test failed. 
-> 
->>From v3.2.9, kernel has changed the return value for bad command. 
-> The patch commit no:07d106d0a33d6063d2061305903deb02489eba20
+> That's fine.  Please fix this issue the LTP way.
 
-Yes, you are right, but you didn't find the real effective patch,
-the real effective patch is 
+Thank you, I made a patch to fix this, please refer to: https://github.com/linux-test-project/ltp/commit/9b87d9c5678ad3dc2cf561774c7a1c6a16388935
 
-commit bbb63c514a3464342967237a51a21ea8f61ab951
-Author: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Date:   Mon Aug 27 15:23:12 2012 +0800
-
-    drivers:tty:fix up ENOIOCTLCMD error handling
-    
-    At commit 07d106d0, Linus pointed out that ENOIOCTLCMD should be
-    translated as ENOTTY to user mode.
-    For example:
-        fd = open("/dev/tty", O_RDWR);
-        ioctl(fd, -1, &argp);
-    
-    then the errno should be ENOTTY but not EINVAL.
-    
-    Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-    Acked-by: Alan Cox <alan@linux.intel.com>
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
-It's a kernel change, so I will make a patch to fix this LTP test case.
-Thank you very much for reporting this. ;)
-And you *Huawei* guys are very welcome to the Open Source community. :-)
-
-
-Regards,
 Wanlong Gao
+
+> 
+> Thanks
+> Simon
+> 
+>>>       # not sure whether cpu's can't be in odd number
+>>>       run_on_cpu=$[$[$no_of_cpus+1]/2]
+>>>       numactl --physcpubind=$run_on_cpu support_numa $PAUSE & #just waits for sigint
+> 
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
+Monitor your physical, virtual and cloud infrastructure from a single
+web console. Get in-depth insight into apps, servers, databases, vmware,
+SAP, cloud infrastructure, etc. Download 30-day Free Trial.
+Pricing starts from $795 for 25 servers or applications!
+http://p.sf.net/sfu/zoho_dev2dev_nov
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
