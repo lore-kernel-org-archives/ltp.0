@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TYXEb-0002nJ-8Q
-	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 07:18:05 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TYXEW-0002Ls-QE
-	for ltp-list@lists.sourceforge.net; Wed, 14 Nov 2012 07:18:05 +0000
-Message-ID: <50A34576.9060109@cn.fujitsu.com>
-Date: Wed, 14 Nov 2012 15:17:10 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TeSa4-0004rO-I7
+	for ltp-list@lists.sourceforge.net; Fri, 30 Nov 2012 15:32:44 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TeSa3-0005Cv-G4
+	for ltp-list@lists.sourceforge.net; Fri, 30 Nov 2012 15:32:44 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qAUFWbBN012230
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 Nov 2012 10:32:37 -0500
+Message-ID: <50B8C48F.5010700@redhat.com>
+Date: Fri, 30 Nov 2012 15:37:03 +0100
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <1352705641-27644-1-git-send-email-jin.li@windriver.com>
-	<1352705641-27644-3-git-send-email-jin.li@windriver.com>
-	<50A33A4C.4090206@cn.fujitsu.com> <50A341D6.5050409@windriver.com>
-In-Reply-To: <50A341D6.5050409@windriver.com>
-Subject: Re: [LTP] [PATCH 2/3] Fix cpuhotplug test case cpuhotplug03
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Type: multipart/mixed; boundary="------------080206030503060600030300"
+Subject: [LTP] clone03/06 randomly crashing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,152 +28,206 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Li, Jin" <Jin.Li@windriver.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
-On 11/14/2012 03:01 PM, Li, Jin wrote:
-> 
-> 
-> On 11/14/2012 02:29 PM, Wanlong Gao wrote:
->> On 11/12/2012 03:34 PM, jin.li@windriver.com wrote:
->>> From: Jin Li<jin.li@windriver.com>
->>>
->>> Fix test case cpuhotplug03 as follows:
->>> 1. Avoid to check whether the cpu0 is on.
->>> 2. Check the cpu before turn it on
->>>
->>> Signed-off-by: Jin Li<jin.li@windriver.com>
->>> ---
->>>   .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh  | 21 ++++++++++++++-------
->>>   1 file changed, 14 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
->>> index ca636d1..516a21f 100755
->>> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
->>> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
->>> @@ -60,15 +60,22 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
->>>
->>>       # Turns on all CPUs and saves their states
->>>       for i in $( get_all_cpus ); do
->>> -        if ! online_cpu $1; then
->>> -            : $(( cpu += 1 ))
->>> -            eval "on_${cpu}=$i"
->>> -        fi
->>> +            if [ "$i" = "cpu0" ]; then
->>> +                continue
->>> +            fi
->>> +            if ! cpu_is_online $i; then
->>> +        if ! online_cpu $i; then
->>> +                    tst_resm TFAIL "Could not online cpu $i"
->>> +                    exit_clean 1
->>> +                fi
->>> +                : $(( cpu += 1 ))
->>> +                eval "on_${cpu}=$i"
->>> +            fi
->>>           : $(( number_of_cpus += 1 ))
->>>       done
->>>
->>>       if ! offline_cpu ${CPU_TO_TEST} ; then
->>> -        tst_resm TBAIL "CPU${CPU_TO_TEST} cannot be offlined"
->>> +        tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be offlined"
->>>           exit_clean 1
->>>       fi
->>>
->>> @@ -90,7 +97,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
->>>       tst_resm TINFO "Onlining CPU ${CPU_TO_TEST}"
->>>       online_cpu ${CPU_TO_TEST}
->>>       RC=$?
->>> -    if [ $RC -eq 0 ]; then
->>> +    if [ $RC -ne 0 ]; then
->>>           tst_resm TFAIL "CPU${CPU_TO_TEST} cannot be onlined"
-> 
-> Looks strange. It's just what I fixed.
-> 
-> Could you please help to confirm that the 0002-patch is applied correctly?
+This is a multi-part message in MIME format.
+--------------080206030503060600030300
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-I tested again and it passed. Maybe caused by some cache.
-So, can you resend your 1/3 patch and I can apply all these three.
+Hi,
 
-Thanks,
-Wanlong Gao
+I'm occasionally getting core files from clone03/clone06 testcases.
+The testcase itself gives PASS, it is the child which is randomly crashing.
+It seems to occur more on single cpu systems.
 
-> 
-> Thanks,
-> 
-> Jin
-> 
->>
->> I test with your patch and always failed here,
->> Running tests.......
->> <<<test_start>>>
->> tag=cpuhotplug03 stime=1352874488
->> cmdline="export CPU_TO_TEST=1; $LTPROOT/testcases/bin/cpu_hotplug/functional/cpuhotplug03.sh"
->> contacts=""
->> analysis=exit
->> <<<test_output>>>
->> incrementing stop
->> Name:   cpuhotplug03
->> Date:   Wed Nov 14 14:28:08 CST 2012
->> Desc:   Do tasks get scheduled to a newly on-lined CPU?
->>
->> CPU is 1
->> USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
->> root     31631  3.0  0.0 134116  1556 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31632  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31634  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31635  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31636  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31637  0.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31638  2.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31639  1.0  0.0 134116  1560 pts/1    R    14:28   0:00 /bin/sh /opt/ltp/testcases/bin/cpu_hotplug/tools/do_spin_loop
->> root     31643  0.0  0.0 133488  1304 pts/1    S    14:28   0:00 grep do_spin_loop
->> cpuhotplug03    0  TINFO  :  Onlining CPU 1
->> cpuhotplug03    1  TFAIL  :  CPU1 cannot be onlined
->> Wed Nov 14 14:28:08 CST 2012
->> <<<execution_status>>>
->> initiation_status="ok"
->> duration=0 termination_type=exited termination_id=1 corefile=no
->> cutime=37 cstime=4
->> <<<test_end>>>
->> INFO: ltp-pan reported some tests FAIL
->> LTP Version: 20120903-133-gb631790
->>
->>         ###############################################################
->>
->>              Done executing testcases.
->>              LTP Version:  20120903-133-gb631790
->>         ###############################################################
->>
->>
->> Thanks,
->> Wanlong Gao
->>
->>>           exit_clean 1
->>>       fi
->>> @@ -101,7 +108,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
->>>       ps -o psr -o command --no-headers -C do_spin_loop
->>>       RC=$?
->>>       NUM=`ps -o psr -o command --no-headers -C do_spin_loop | sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" | wc -l`
->>> -    if [ $RC -eq 0 ]; then
->>> +    if [ $RC -ne 0 ]; then
->>>           tst_resm TBROK "No do_spin_loop processes found on any processor"
->>>       elif [ $NUM -lt 1 ]; then
->>>           tst_resm TFAIL "No do_spin_loop processes found on CPU${CPU_TO_TEST}"
->>>
->>
-> 
+For example:
+Core was generated by `clone03'.
+Program terminated with signal 11, Segmentation fault.
+#0  0x0000000000402bfd in tst_print (tcid=0x403d0e "clone03", tnum=1, ttype=2, 
+    tmesg=0x14c6070 "unexpected signal 15 received (pid = 17427).") at tst_res.c:412
+412	{
+(gdb) bt
+#0  0x0000000000402bfd in tst_print (tcid=0x403d0e "clone03", tnum=1, ttype=2, 
+    tmesg=0x14c6070 "unexpected signal 15 received (pid = 17427).") at tst_res.c:412
+#1  0x00000000004031be in tst_res (ttype=2, fname=<value optimized out>, arg_fmt=<value optimized out>) at tst_res.c:316
+#2  0x0000000000403761 in tst_brk (ttype=2, fname=0x0, func=0x4013d0 <cleanup>, arg_fmt=<value optimized out>) at tst_res.c:640
+#3  0x0000000000403960 in tst_brkm (ttype=2, func=0x4013d0 <cleanup>, arg_fmt=<value optimized out>) at tst_res.c:698
+#4  0x0000000000403b45 in def_handler (sig=15) at tst_sig.c:248
+#5  <signal handler called>
+#6  0x00000037940db650 in __write_nocancel () at ../sysdeps/unix/syscall-template.S:82
+#7  0x000000000040169e in child_fn () at clone03.c:208
+#8  0x00000037940e890d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
 
+Dump of assembler code for function tst_print:
+   0x0000000000402bd0 <+0>:	mov    %rbx,-0x30(%rsp)
+   0x0000000000402bd5 <+5>:	mov    %rbp,-0x28(%rsp)
+   0x0000000000402bda <+10>:	mov    %edx,%ebx
+   0x0000000000402bdc <+12>:	mov    %r12,-0x20(%rsp)
+   0x0000000000402be1 <+17>:	mov    %r13,-0x18(%rsp)
+   0x0000000000402be6 <+22>:	mov    %rdi,%r12
+   0x0000000000402be9 <+25>:	mov    %r14,-0x10(%rsp)
+   0x0000000000402bee <+30>:	mov    %r15,-0x8(%rsp)
+   0x0000000000402bf3 <+35>:	sub    $0x2858,%rsp
+   0x0000000000402bfa <+42>:	mov    %esi,%r14d
+=> 0x0000000000402bfd <+45>:	mov    %rcx,0x18(%rsp)
+
+(gdb) p $rsp
+$1 = (void *) 0x14c3800
+(gdb) x/1x $rsp
+0x14c3800:	Cannot access memory at address 0x14c3800
+
+It looks like it receives SIGTERM and while handling SIGTERM it hits SIGSEGV.
+I don't know what is source of that SIGTERM. I was looking into the second part
+and looks like the stack for child is not large enough.
+
+I modified clone03.c (see attached clone03_poison.patch) to get some extra
+empty buffer before the child's stack, which was set to pattern 0xDE.
+
+Before:
+                          |-------------------------------|
+                     child_stack             child_stack+CHILD_STACK_SIZE
+After:
+    |---------------------|-------------------------------|
+poision_start        child_stack             child_stack+CHILD_STACK_SIZE
+
+Now if I start clone03 and kill it I can randomly reproduce the SIGSEGV (attached clone03_kill.sh).
+The backtrace usually looks like:
+... (random place)
+#5  0x000000000040324e in tst_res (ttype=2, fname=<value optimized out>, arg_fmt=<value optimized out>) at tst_res.c:316
+#6  0x00000000004037f1 in tst_brk (ttype=2, fname=0x0, func=0x401420 <cleanup>, arg_fmt=<value optimized out>) at tst_res.c:640
+#7  0x00000000004039f0 in tst_brkm (ttype=2, func=0x401420 <cleanup>, arg_fmt=<value optimized out>) at tst_res.c:698
+#8  0x0000000000403bd5 in def_handler (sig=13) at tst_sig.c:248
+#9  <signal handler called>
+#10 0x0000003327cdb650 in __write_nocancel () at ../sysdeps/unix/syscall-template.S:82
+#11 0x000000000040172e in child_fn () at clone03.c:212
+#12 0x0000003327ce890d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+
+(gdb) p poison_start 
+$1 = (void *) 0xa02010
+(gdb) p child_stack 
+$2 = (void *) 0xa03010
+
+(gdb) x/16x poison_start
+0xa02010:	0xdededede	0xdededede	0xdededede	0xdededede
+0xa02020:	0xdededede	0xdededede	0xdededede	0xdededede
+0xa02030:	0xdededede	0xdededede	0xdededede	0xdededede
+0xa02040:	0xdededede	0xdededede	0xdededede	0xdededede
+...
+(gdb) 
+0xa02490:	0xdededede	0xdededede	0xdededede	0xdededede
+0xa024a0:	0x00000018	0x00000030	0x00a02800	0x00000000
+0xa024b0:	0x00a02740	0x00000000	0xdededede	0xdededede
+0xa024c0:	0xdededede	0xdededede	0x27409296	0x00000033
+
+The above shows that 0xDE pattern has been overwritten. 
+
+Extending child stack helps with the second part: SIGSEGV
+#define CHILD_STACK_SIZE 16384*4
+but I have no idea, where is that first SIGTERM coming from. Any ideas?
+
+Regards,
+Jan
+
+--------------080206030503060600030300
+Content-Type: application/x-sh;
+ name="clone03_kill.sh"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="clone03_kill.sh"
+
+!/bin/bash
+
+ulimit -c unlimited
+
+i=0
+while [ $i -lt 100 ]; do
+	./clone03 &
+	usleep 500
+	kill $!
+	i=$((i+1))
+	ls core.* > /dev/null 
+	if [ $? -eq 0 ]; then
+		break;
+	fi
+done
+
+
+--------------080206030503060600030300
+Content-Type: text/x-patch;
+ name="clone03_poison.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="clone03_poison.patch"
+
+diff --git a/testcases/kernel/syscalls/clone/clone03.c b/testcases/kernel/syscalls/clone/clone03.c
+index 24ee8e6..dada00c 100644
+--- a/testcases/kernel/syscalls/clone/clone03.c
++++ b/testcases/kernel/syscalls/clone/clone03.c
+@@ -87,13 +87,15 @@ static int pfd[2];
+ 
+ char *TCID = "clone03";		/* Test program identifier.    */
+ int TST_TOTAL = 1;		/* Total number of test cases. */
++void *poison_start;		/* stack for child */
++void *child_stack;	/* stack for child */
++#define POISON_SIZE getpagesize()
+ 
+ int main(int ac, char **av)
+ {
+ 
+ 	int lc;
+ 	char *msg;
+-	void *child_stack;	/* stack for child */
+ 	char buff[10];
+ 	int child_pid;
+ 
+@@ -104,10 +106,13 @@ int main(int ac, char **av)
+ 	setup();
+ 
+ 	/* Allocate stack for child */
+-	if ((child_stack = (void *)malloc(CHILD_STACK_SIZE)) == NULL) {
++	if ((poison_start = (void *)malloc(POISON_SIZE+CHILD_STACK_SIZE)) == NULL) {
+ 		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
+ 	}
+ 
++	memset(poison_start, 0xDE, POISON_SIZE);
++	child_stack = poison_start + POISON_SIZE;
++
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
+ 		Tst_count = 0;
+@@ -154,7 +159,7 @@ int main(int ac, char **av)
+ 
+ 	}
+ 
+-	free(child_stack);
++	free(poison_start);
+ 
+ 	cleanup();
+ 	tst_exit();
+
+--------------080206030503060600030300
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Monitor your physical, virtual and cloud infrastructure from a single
-web console. Get in-depth insight into apps, servers, databases, vmware,
-SAP, cloud infrastructure, etc. Download 30-day Free Trial.
-Pricing starts from $795 for 25 servers or applications!
-http://p.sf.net/sfu/zoho_dev2dev_nov
+Keep yourself connected to Go Parallel: 
+TUNE You got it built. Now make it sing. Tune shows you how.
+http://goparallel.sourceforge.net
+--------------080206030503060600030300
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------080206030503060600030300--
+
