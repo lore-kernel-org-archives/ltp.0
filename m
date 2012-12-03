@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jshao@redhat.com>) id 1TnSbT-00072L-Pu
-	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 11:23:23 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TnSbR-000536-Tl
-	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 11:23:23 +0000
-Message-ID: <1356434591.8314.36.camel@station.monson>
-From: Monson Shao <jshao@redhat.com>
-Date: Tue, 25 Dec 2012 19:23:11 +0800
-In-Reply-To: <50D958CA.4010406@casparzhang.com>
-References: <1356420335-4204-1-git-send-email-jshao@redhat.com>
-	<50D958CA.4010406@casparzhang.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] pidns30 pidns31: syscall mq_open() failed
- EFAULT(Bad address)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TfSSy-0004mu-Eu
+	for ltp-list@lists.sourceforge.net; Mon, 03 Dec 2012 09:37:32 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TfSSs-0002rb-Gp
+	for ltp-list@lists.sourceforge.net; Mon, 03 Dec 2012 09:37:32 +0000
+Date: Mon, 3 Dec 2012 04:37:20 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1835266843.9449106.1354527440428.JavaMail.root@redhat.com>
+In-Reply-To: <50B8C48F.5010700@redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] clone03/06 randomly crashing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,57 +23,161 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@013.cdn.homezz.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Jeffrey Burke <jburke@redhat.com>
 
-T24gVHVlLCAyMDEyLTEyLTI1IGF0IDE1OjQyICswODAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6Cj4g
-T24gMTIvMjUvMjAxMiAwMzoyNSBQTSwgTW9uc29uIFNoYW8gd3JvdGU6Cj4gPiAnbWFuIDMgbXFf
-b3Blbicgc2FpZCBtcV9vcGVuKCkgY2FuIHRha2UgMiBvciA0IGFyZ3VtZW50cywgYnV0IHRoZSBp
-bXBsZW1lbnQKPiA+IHN5c2NhbGwoX19OUl9tcV9vcGVuLCAuLi4pIHRha2VzIDQsIGFjY29yZGlu
-ZyB0byBbMV0uCj4gPgo+ID4gTWFudWFsbHkgdGVzdGVkIG9uIGtlcm5lbC0zLjYuMCB3aXRoIGds
-aWJjLTIuMTYgLgo+ID4KPiA+IFsxXSBnbGliYy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9tcV9v
-cGVuLmM6NTUKPiAKPiB3aWxsIHRoaXMgY2hhbmdlIHRoZSByZXN1bHQgb24gb2xkIGtlcm5lbC9n
-bGliYz8KPiAKPiBDYXNwYXIKSSBoYXZlbid0IHRlc3RlZCBpdCBvbiBvbGQga2VybmVsL2dsaWJj
-LCBidXQgNCBhcmd1bWVudHMgc2hvdWxkIGFsd2F5cwpiZSBhY2NlcHRhYmxlLCBzaW5jZSB0aGlz
-IHVzYWdlIGV4aXN0cyBpbiB0aGUgc2FtZSBmaWxlIFsyXS4KClsyXSB0ZXN0Y2FzZXMva2VybmVs
-L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jOjI1NQo+IAo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6
-IE1vbnNvbiBTaGFvIDxqc2hhb0ByZWRoYXQuY29tPgo+ID4gLS0tCj4gPiAgIHRlc3RjYXNlcy9r
-ZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMgfCAyICstCj4gPiAgIHRlc3RjYXNlcy9r
-ZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMgfCAyICstCj4gPiAgIDIg5Liq5paH5Lu2
-6KKr5L+u5pS577yM5o+S5YWlIDIg6KGMKCsp77yM5Yig6ZmkIDIg6KGMKC0pCj4gPgo+ID4gZGlm
-ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMgYi90
-ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jCj4gPiBpbmRleCA3MWU4
-N2MxLi43NWM3MzZiIDEwMDY0NAo+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJz
-L3BpZG5zL3BpZG5zMzAuYwo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3Bp
-ZG5zL3BpZG5zMzAuYwo+ID4gQEAgLTE4Niw3ICsxODYsNyBAQCBpbnQgY2hpbGRfZm4odm9pZCAq
-YXJnKQo+ID4gICAJd2hpbGUgKHJlYWQoZmF0aGVyX3RvX2NoaWxkWzBdLCBidWYsIDEpICE9IDEp
-Cj4gPiAgIAkJc2xlZXAoMSk7Cj4gPgo+ID4gLQltcWQgPSBzeXNjYWxsKF9fTlJfbXFfb3Blbiwg
-bXFuYW1lLCBPX1JET05MWSk7Cj4gPiArCW1xZCA9IHN5c2NhbGwoX19OUl9tcV9vcGVuLCBtcW5h
-bWUsIE9fUkRPTkxZLCAwLCBOVUxMKTsKPiA+ICAgCWlmIChtcWQgPT0gLTEpIHsKPiA+ICAgCQlw
-ZXJyb3IoIm1xX29wZW4gZmFpbGVkIik7Cj4gPiAgIAkJcmV0dXJuIDE7Cj4gPiBkaWZmIC0tZ2l0
-IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzEuYyBiL3Rlc3RjYXNl
-cy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMKPiA+IGluZGV4IDJhMDc0ODkuLjE0
-OThkMTYgMTAwNjQ0Cj4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMv
-cGlkbnMzMS5jCj4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlk
-bnMzMS5jCj4gPiBAQCAtMTc3LDcgKzE3Nyw3IEBAIGludCBjaGlsZF9mbih2b2lkICphcmcpCj4g
-PiAgIAl9Cj4gPiAgIAl0c3RfcmVzbShUSU5GTywgImNpbml0OiBteSBmYXRoZXIgaXMgcmVhZHkg
-dG8gcmVjZWl2ZSBhIG1lc3NhZ2UiKTsKPiA+Cj4gPiAtCW1xZCA9IHN5c2NhbGwoX19OUl9tcV9v
-cGVuLCBtcW5hbWUsIE9fV1JPTkxZKTsKPiA+ICsJbXFkID0gc3lzY2FsbChfX05SX21xX29wZW4s
-IG1xbmFtZSwgT19XUk9OTFksIDAsIE5VTEwpOwo+ID4gICAJaWYgKG1xZCA9PSAobXFkX3QpIC0g
-MSkgewo+ID4gICAJCXRzdF9yZXNtKFRCUk9LLCAiY2luaXQ6IG1xX29wZW4oKSBmYWlsZWQgKCVz
-KSIsCj4gPiAgIAkJCSBzdHJlcnJvcihlcnJubykpOwo+ID4KPiAKCi0tIApNb25zb24gU2hhbwpL
-ZXJuZWwgUUEKCiMyOSBATkFZIC0gQmVpamluZywgQ2hpbmEgLSBHTVQrMDg6MDAKSVJDOiBtb25z
-b24gKCNrZXJuZWwtcWUsICNlbmctY2hpbmEpCkludGVybmFsOiAgODMgODgzODQKRXh0ZXJuYWw6
-ICs4NiAxMCA2MjYwIDgzODQKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTG9nTWVJbiBSZXNjdWU6
-IEFueXdoZXJlLCBBbnl0aW1lIFJlbW90ZSBzdXBwb3J0IGZvciBJVC4gRnJlZSBUcmlhbApSZW1v
-dGVseSBhY2Nlc3MgUENzIGFuZCBtb2JpbGUgZGV2aWNlcyBhbmQgcHJvdmlkZSBpbnN0YW50IHN1
-cHBvcnQKSW1wcm92ZSB5b3VyIGVmZmljaWVuY3ksIGFuZCBmb2N1cyBvbiBkZWxpdmVyaW5nIG1v
-cmUgdmFsdWUtYWRkIHNlcnZpY2VzCkRpc2NvdmVyIHdoYXQgSVQgUHJvZmVzc2lvbmFscyBLbm93
-LiBSZXNjdWUgZGVsaXZlcnMKaHR0cDovL3Auc2YubmV0L3NmdS9sb2dtZWluXzEyMzI5ZDJkCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1h
-aWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+
+
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "Jeffrey Burke" <jburke@redhat.com>
+> Sent: Friday, 30 November, 2012 3:37:03 PM
+> Subject: [LTP] clone03/06 randomly crashing
+> 
+> Hi,
+> 
+> I'm occasionally getting core files from clone03/clone06 testcases.
+> The testcase itself gives PASS, it is the child which is randomly
+> crashing.
+> It seems to occur more on single cpu systems.
+> 
+> For example:
+> Core was generated by `clone03'.
+> Program terminated with signal 11, Segmentation fault.
+> #0  0x0000000000402bfd in tst_print (tcid=0x403d0e "clone03", tnum=1,
+> ttype=2,
+>     tmesg=0x14c6070 "unexpected signal 15 received (pid = 17427).")
+>     at tst_res.c:412
+> 412	{
+> (gdb) bt
+> #0  0x0000000000402bfd in tst_print (tcid=0x403d0e "clone03", tnum=1,
+> ttype=2,
+>     tmesg=0x14c6070 "unexpected signal 15 received (pid = 17427).")
+>     at tst_res.c:412
+> #1  0x00000000004031be in tst_res (ttype=2, fname=<value optimized
+> out>, arg_fmt=<value optimized out>) at tst_res.c:316
+> #2  0x0000000000403761 in tst_brk (ttype=2, fname=0x0, func=0x4013d0
+> <cleanup>, arg_fmt=<value optimized out>) at tst_res.c:640
+> #3  0x0000000000403960 in tst_brkm (ttype=2, func=0x4013d0 <cleanup>,
+> arg_fmt=<value optimized out>) at tst_res.c:698
+> #4  0x0000000000403b45 in def_handler (sig=15) at tst_sig.c:248
+> #5  <signal handler called>
+> #6  0x00000037940db650 in __write_nocancel () at
+> ../sysdeps/unix/syscall-template.S:82
+> #7  0x000000000040169e in child_fn () at clone03.c:208
+> #8  0x00000037940e890d in clone () at
+> ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+> 
+> Dump of assembler code for function tst_print:
+>    0x0000000000402bd0 <+0>:	mov    %rbx,-0x30(%rsp)
+>    0x0000000000402bd5 <+5>:	mov    %rbp,-0x28(%rsp)
+>    0x0000000000402bda <+10>:	mov    %edx,%ebx
+>    0x0000000000402bdc <+12>:	mov    %r12,-0x20(%rsp)
+>    0x0000000000402be1 <+17>:	mov    %r13,-0x18(%rsp)
+>    0x0000000000402be6 <+22>:	mov    %rdi,%r12
+>    0x0000000000402be9 <+25>:	mov    %r14,-0x10(%rsp)
+>    0x0000000000402bee <+30>:	mov    %r15,-0x8(%rsp)
+>    0x0000000000402bf3 <+35>:	sub    $0x2858,%rsp
+>    0x0000000000402bfa <+42>:	mov    %esi,%r14d
+> => 0x0000000000402bfd <+45>:	mov    %rcx,0x18(%rsp)
+> 
+> (gdb) p $rsp
+> $1 = (void *) 0x14c3800
+> (gdb) x/1x $rsp
+> 0x14c3800:	Cannot access memory at address 0x14c3800
+> 
+> It looks like it receives SIGTERM and while handling SIGTERM it hits
+> SIGSEGV.
+> I don't know what is source of that SIGTERM. I was looking into the
+> second part
+> and looks like the stack for child is not large enough.
+> 
+> I modified clone03.c (see attached clone03_poison.patch) to get some
+> extra
+> empty buffer before the child's stack, which was set to pattern 0xDE.
+> 
+> Before:
+>                           |-------------------------------|
+>                      child_stack
+>                                  child_stack+CHILD_STACK_SIZE
+> After:
+>     |---------------------|-------------------------------|
+> poision_start        child_stack
+>             child_stack+CHILD_STACK_SIZE
+> 
+> Now if I start clone03 and kill it I can randomly reproduce the
+> SIGSEGV (attached clone03_kill.sh).
+> The backtrace usually looks like:
+> ... (random place)
+> #5  0x000000000040324e in tst_res (ttype=2, fname=<value optimized
+> out>, arg_fmt=<value optimized out>) at tst_res.c:316
+> #6  0x00000000004037f1 in tst_brk (ttype=2, fname=0x0, func=0x401420
+> <cleanup>, arg_fmt=<value optimized out>) at tst_res.c:640
+> #7  0x00000000004039f0 in tst_brkm (ttype=2, func=0x401420 <cleanup>,
+> arg_fmt=<value optimized out>) at tst_res.c:698
+> #8  0x0000000000403bd5 in def_handler (sig=13) at tst_sig.c:248
+> #9  <signal handler called>
+> #10 0x0000003327cdb650 in __write_nocancel () at
+> ../sysdeps/unix/syscall-template.S:82
+> #11 0x000000000040172e in child_fn () at clone03.c:212
+> #12 0x0000003327ce890d in clone () at
+> ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+> 
+> (gdb) p poison_start
+> $1 = (void *) 0xa02010
+> (gdb) p child_stack
+> $2 = (void *) 0xa03010
+> 
+> (gdb) x/16x poison_start
+> 0xa02010:	0xdededede	0xdededede	0xdededede	0xdededede
+> 0xa02020:	0xdededede	0xdededede	0xdededede	0xdededede
+> 0xa02030:	0xdededede	0xdededede	0xdededede	0xdededede
+> 0xa02040:	0xdededede	0xdededede	0xdededede	0xdededede
+> ...
+> (gdb)
+> 0xa02490:	0xdededede	0xdededede	0xdededede	0xdededede
+> 0xa024a0:	0x00000018	0x00000030	0x00a02800	0x00000000
+> 0xa024b0:	0x00a02740	0x00000000	0xdededede	0xdededede
+> 0xa024c0:	0xdededede	0xdededede	0x27409296	0x00000033
+> 
+> The above shows that 0xDE pattern has been overwritten.
+> 
+> Extending child stack helps with the second part: SIGSEGV
+> #define CHILD_STACK_SIZE 16384*4
+> but I have no idea, where is that first SIGTERM coming from. Any
+> ideas?
+
+It appears to be ltp-pan, which sees the child as orphan.
+When I added "-d 511", I've got some additional output:
+
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+pids still running: 
+orphans still running: -26125 
+clone03     1  TBROK  :  unexpected signal 15 received (pid = 26126).
+clone03     2  TBROK  :  Remaining cases broken
+
+pan was signaled with sig 2...
+  propagating sig 2 to orphaned pgrp -26125
+orphans still running: 
+
+I'll send a patch, that adds wait() to parent.
+
+Regards,
+Jan
+
+------------------------------------------------------------------------------
+Keep yourself connected to Go Parallel: 
+BUILD Helping you discover the best ways to construct your parallel projects.
+http://goparallel.sourceforge.net
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
