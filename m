@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jshao@redhat.com>) id 1Tnmfq-0003Bx-9N
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:14 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tnmfp-0000eD-KX
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:14 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBQ8n6jX003728
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Dec 2012 03:49:08 -0500
-From: Monson Shao <jshao@redhat.com>
-Date: Wed, 26 Dec 2012 16:48:36 +0800
-Message-Id: <1356511717-31058-2-git-send-email-jshao@redhat.com>
-In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-Subject: [LTP] [PATCHv2 2/3] pidns16: modified test results
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1TfnVJ-00045v-Cj
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 08:05:21 +0000
+Received: from mail-ie0-f175.google.com ([209.85.223.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TfnVE-0007Qw-U1
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 08:05:21 +0000
+Received: by mail-ie0-f175.google.com with SMTP id qd14so5815136ieb.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 04 Dec 2012 00:05:11 -0800 (PST)
+Message-ID: <50BDA8C3.4070802@casparzhang.com>
+Date: Tue, 04 Dec 2012 15:39:47 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
+MIME-Version: 1.0
+References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
+	<1354605716-4747-3-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1354605716-4747-3-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 3/4] at_allow01: Use lib to restart atd service
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +28,25 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The test should result TFAIL if child is signalled from unexpected pid,
-instead of TBROK. The same as TPASS/TINFO .
-
-Signed-off-by: Monson Shao <jshao@redhat.com>
----
- testcases/kernel/containers/pidns/pidns16.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
-index 04a1641..debc8d2 100644
---- a/testcases/kernel/containers/pidns/pidns16.c
-+++ b/testcases/kernel/containers/pidns/pidns16.c
-@@ -53,7 +53,7 @@
- #define PARENT_PID	0
- 
- char *TCID = "pidns16";
--int TST_TOTAL = 1;
-+int TST_TOTAL = 3;
- pid_t globalpid;
- 
- /*
-@@ -87,10 +87,10 @@ void child_signal_handler(int sig, siginfo_t * si, void *unused)
- 	}
- 
- 	if (si->si_pid == expected_pid)
--		tst_resm(TINFO, "child is signalled from expected pid %d",
-+		tst_resm(TPASS, "child is signalled from expected pid %d",
- 			 expected_pid);
- 	else
--		tst_resm(TBROK, "child is signalled from unexpected pid %d,"
-+		tst_resm(TFAIL, "child is signalled from unexpected pid %d,"
- 			 " expecting pid %d", si->si_pid, expected_pid);
- 
- 	c++;
--- 
-1.7.11.7
-
-
-------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMTIvMDQvMjAxMiAwMzoyMSBQTSwgUGVuZyBIYWl0YW8gd3JvdGU6Cj4gKyA4NMK7IC7Ct2Nt
+ZGxpYi5zaAoKUGF0Y2ggc2VyaWVzIGxvb2tzIGdvb2QgdG8gbWUgZXhjZXB0IHRoaXMuCgpzb3Vy
+Y2luZyBhIGxpYiBpbnNpZGUgYSBmdW5jdGlvbiBzZWVtcyBub3Qgc28gZ29vZC4gWWV0IEkgZG9u
+J3Qgc2VlIGFueSAKY29kZSBzdHlsZSBydWxlcyB0ZWxsaW5nIHdoaWNoIGlzIHRoZSBjb3JyZWN0
+IHBsYWNlIHRvIHB1dCBhIHNoZWxsIGxpYiAKc291cmNlIChjb21tb25seSBJIHRoaW5rIGl0IHdv
+dWxkIGJlIHRoZSB0b3AgaW4gdGhlIGZpbGUpCgpUaGFua3MsCkNhc3BhcgoKPiArIDg1wrsgcmVz
+dGFydF9kYWVtb27Ct2F0ZAoKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxvZ01lSW4gUmVzY3Vl
+OiBBbnl3aGVyZSwgQW55dGltZSBSZW1vdGUgc3VwcG9ydCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVt
+b3RlbHkgYWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRldmljZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBz
+dXBwb3J0CkltcHJvdmUgeW91ciBlZmZpY2llbmN5LCBhbmQgZm9jdXMgb24gZGVsaXZlcmluZyBt
+b3JlIHZhbHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3ZlciB3aGF0IElUIFByb2Zlc3Npb25hbHMgS25v
+dy4gUmVzY3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNmLm5ldC9zZnUvbG9nbWVpbl8xMjMyOWQyZApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
