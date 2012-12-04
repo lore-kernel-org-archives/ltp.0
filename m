@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1TnPBE-0004mu-ME
-	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:44:04 +0000
-Received: from mail-pa0-f47.google.com ([209.85.220.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TnPB8-0003oS-NY
-	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:44:04 +0000
-Received: by mail-pa0-f47.google.com with SMTP id fa10so4389864pad.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 24 Dec 2012 23:43:52 -0800 (PST)
-Message-ID: <50D958CA.4010406@casparzhang.com>
-Date: Tue, 25 Dec 2012 15:42:02 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
-MIME-Version: 1.0
-References: <1356420335-4204-1-git-send-email-jshao@redhat.com>
-In-Reply-To: <1356420335-4204-1-git-send-email-jshao@redhat.com>
-Subject: Re: [LTP] [PATCH] pidns30 pidns31: syscall mq_open() failed
- EFAULT(Bad address)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TfrMP-0005uH-NT
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 12:12:25 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TfrMJ-0002XF-MA
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 12:12:25 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qB4CCDYl019760
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 07:12:13 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id qB4CCCkO012920
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 07:12:12 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  4 Dec 2012 13:12:07 +0100
+Message-Id: <367be95f8c6b66828ee7930758141ec94c07d409.1354623101.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] open_posix_testsuite/.../sigset/{6,
+	7}-1.c: fix error handling
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,49 +31,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Monson Shao <jshao@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-T24gMTIvMjUvMjAxMiAwMzoyNSBQTSwgTW9uc29uIFNoYW8gd3JvdGU6Cj4gJ21hbiAzIG1xX29w
-ZW4nIHNhaWQgbXFfb3BlbigpIGNhbiB0YWtlIDIgb3IgNCBhcmd1bWVudHMsIGJ1dCB0aGUgaW1w
-bGVtZW50Cj4gc3lzY2FsbChfX05SX21xX29wZW4sIC4uLikgdGFrZXMgNCwgYWNjb3JkaW5nIHRv
-IFsxXS4KPgo+IE1hbnVhbGx5IHRlc3RlZCBvbiBrZXJuZWwtMy42LjAgd2l0aCBnbGliYy0yLjE2
-IC4KPgo+IFsxXSBnbGliYy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9tcV9vcGVuLmM6NTUKCndp
-bGwgdGhpcyBjaGFuZ2UgdGhlIHJlc3VsdCBvbiBvbGQga2VybmVsL2dsaWJjPwoKQ2FzcGFyCgo+
-Cj4gU2lnbmVkLW9mZi1ieTogTW9uc29uIFNoYW8gPGpzaGFvQHJlZGhhdC5jb20+Cj4gLS0tCj4g
-ICB0ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jIHwgMiArLQo+ICAg
-dGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzEuYyB8IDIgKy0KPiAgIDIg
-5Liq5paH5Lu26KKr5L+u5pS577yM5o+S5YWlIDIg6KGMKCsp77yM5Yig6ZmkIDIg6KGMKC0pCj4K
-PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzAu
-YyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMKPiBpbmRleCA3
-MWU4N2MxLi43NWM3MzZiIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVy
-cy9waWRucy9waWRuczMwLmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlk
-bnMvcGlkbnMzMC5jCj4gQEAgLTE4Niw3ICsxODYsNyBAQCBpbnQgY2hpbGRfZm4odm9pZCAqYXJn
-KQo+ICAgCXdoaWxlIChyZWFkKGZhdGhlcl90b19jaGlsZFswXSwgYnVmLCAxKSAhPSAxKQo+ICAg
-CQlzbGVlcCgxKTsKPgo+IC0JbXFkID0gc3lzY2FsbChfX05SX21xX29wZW4sIG1xbmFtZSwgT19S
-RE9OTFkpOwo+ICsJbXFkID0gc3lzY2FsbChfX05SX21xX29wZW4sIG1xbmFtZSwgT19SRE9OTFks
-IDAsIE5VTEwpOwo+ICAgCWlmIChtcWQgPT0gLTEpIHsKPiAgIAkJcGVycm9yKCJtcV9vcGVuIGZh
-aWxlZCIpOwo+ICAgCQlyZXR1cm4gMTsKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9j
-b250YWluZXJzL3BpZG5zL3BpZG5zMzEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9w
-aWRucy9waWRuczMxLmMKPiBpbmRleCAyYTA3NDg5Li4xNDk4ZDE2IDEwMDY0NAo+IC0tLSBhL3Rl
-c3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMKPiArKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMS5jCj4gQEAgLTE3Nyw3ICsxNzcsNyBA
-QCBpbnQgY2hpbGRfZm4odm9pZCAqYXJnKQo+ICAgCX0KPiAgIAl0c3RfcmVzbShUSU5GTywgImNp
-bml0OiBteSBmYXRoZXIgaXMgcmVhZHkgdG8gcmVjZWl2ZSBhIG1lc3NhZ2UiKTsKPgo+IC0JbXFk
-ID0gc3lzY2FsbChfX05SX21xX29wZW4sIG1xbmFtZSwgT19XUk9OTFkpOwo+ICsJbXFkID0gc3lz
-Y2FsbChfX05SX21xX29wZW4sIG1xbmFtZSwgT19XUk9OTFksIDAsIE5VTEwpOwo+ICAgCWlmICht
-cWQgPT0gKG1xZF90KSAtIDEpIHsKPiAgIAkJdHN0X3Jlc20oVEJST0ssICJjaW5pdDogbXFfb3Bl
-bigpIGZhaWxlZCAoJXMpIiwKPiAgIAkJCSBzdHJlcnJvcihlcnJubykpOwo+CgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCkxvZ01lSW4gUmVzY3VlOiBBbnl3aGVyZSwgQW55dGltZSBSZW1vdGUgc3Vw
-cG9ydCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVtb3RlbHkgYWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRl
-dmljZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBzdXBwb3J0CkltcHJvdmUgeW91ciBlZmZpY2llbmN5
-LCBhbmQgZm9jdXMgb24gZGVsaXZlcmluZyBtb3JlIHZhbHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3Zl
-ciB3aGF0IElUIFByb2Zlc3Npb25hbHMgS25vdy4gUmVzY3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNm
-Lm5ldC9zZnUvbG9nbWVpbl8xMjMyOWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0Cg==
+int may not be large enough to hold return value from sigset():
+  typedef void (*sighandler_t)(int);
+  sighandler_t sigset(int sig, sighandler_t disp);
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../conformance/interfaces/sigset/6-1.c            |    5 ++---
+ .../conformance/interfaces/sigset/7-1.c            |    5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c
+index 16d340c..286ee37 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c
+@@ -48,9 +48,8 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	rc = sigset(SIGCHLD, SIG_HOLD);
+-	if (rc < 0) {
+-		ERR_MSG("sigset()", rc);
++	if (sigset(SIGCHLD, SIG_HOLD) == SIG_ERR) {
++		perror("Unexpected error while using sigset()");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c
+index b7230db..18d4bb4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c
+@@ -56,9 +56,8 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	rc = sigset(SIGCHLD, SIG_HOLD);
+-	if (rc < 0) {
+-		ERR_MSG("sigset()", rc);
++	if (sigset(SIGCHLD, SIG_HOLD) == SIG_ERR) {
++		perror("Unexpected error while using sigset()");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
+Remotely access PCs and mobile devices and provide instant support
+Improve your efficiency, and focus on delivering more value-add services
+Discover what IT Professionals Know. Rescue delivers
+http://p.sf.net/sfu/logmein_12329d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
