@@ -2,17 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TgXzX-0007HB-Gb
-	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 09:43:39 +0000
-Date: Thu, 6 Dec 2012 10:43:28 +0100
-From: chrubis@suse.cz
-Message-ID: <20121206094327.GB2340@rei.nue.novell.com>
-References: <1835266843.9449106.1354527440428.JavaMail.root@redhat.com>
-	<50BCA312.7070508@st.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Tfmpq-0001Py-0v
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:30 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Tfmpl-0006vm-FA
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:29 +0000
+Message-ID: <50BDA457.1050400@cn.fujitsu.com>
+Date: Tue, 04 Dec 2012 15:20:55 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <50BCA312.7070508@st.com>
-Subject: Re: [LTP] clone03/06 randomly crashing
+References: <1354537197-5353-2-git-send-email-jstancek@redhat.com>
+In-Reply-To: <1354537197-5353-2-git-send-email-jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] clone: wait until child completes
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,55 +28,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Carmelo AMOROSO <carmelo.amoroso@st.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > It appears to be ltp-pan, which sees the child as orphan.
-> > When I added "-d 511", I've got some additional output:
-> > 
-> > <<<execution_status>>>
-> > initiation_status="ok"
-> > duration=0 termination_type=exited termination_id=0 corefile=no
-> > cutime=0 cstime=0
-> > <<<test_end>>>
-> > pids still running: 
-> > orphans still running: -26125 
-> > clone03     1  TBROK  :  unexpected signal 15 received (pid = 26126).
-> > clone03     2  TBROK  :  Remaining cases broken
-> > 
-> > pan was signaled with sig 2...
-> >   propagating sig 2 to orphaned pgrp -26125
-> > orphans still running: 
-> > 
-> > I'll send a patch, that adds wait() to parent.
-> >
-> > Regards,
-> > Jan
+On 12/03/2012 08:19 PM, Jan Stancek wrote:
+> If parent doesn't wait for child to finish,
+> ltp-pan detects these as 'orpahns' and will try
+> to kill them, which can result in TBROK messages:
+> http://article.gmane.org/gmane.linux.ltp/16993
 > 
-> Hi Jan,
-> I think you're right. We have hit similar problems with setrlimit01, and
-> few other tests.
-> 
-> Unfortunately we did not upstream these patches as we are still working
-> with an older LTP.
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Is there any reason for that? I try not to break anything and stay as
-backward compatible as possible. I know that for maintenance people
-usually use the version that was used for release testing and stick to
-this through the product life cycle.
+Good work Jan, thank you, Applied,
 
-Anyway if there are some changes or bugs that prevents you from using up
-to date LTP please let us know.
+Wanlong Gao
 
-> I'll try to rebase it and share some other pending patches we are using
-> in our project.
-
-I'm looking forward to see the patches.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
