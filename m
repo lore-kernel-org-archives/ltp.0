@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jshao@redhat.com>) id 1Tnmfs-0003C9-Mr
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:16 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tnmfn-0000cY-4z
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:16 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBQ8n5EL008804
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Dec 2012 03:49:05 -0500
-From: Monson Shao <jshao@redhat.com>
-Date: Wed, 26 Dec 2012 16:48:35 +0800
-Message-Id: <1356511717-31058-1-git-send-email-jshao@redhat.com>
-In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-Subject: [LTP] [PATCHv2 1/3] pidns16: split test condition and result judge
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Tfmpu-0006B5-Kb
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:34 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Tfmpt-0005O0-RP
+	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:34 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB47MXnb017391
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 15:22:34 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
+Date: Tue, 4 Dec 2012 15:21:54 +0800
+Message-Id: <1354605716-4747-2-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
+References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/4] runnetnstest.sh: fix a fail of vsftpd is disabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,57 +32,46 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Make it easy to read.
+When vsftpd is disabled, runnetnstest.sh should start vsftpd first.
 
-Signed-off-by: Monson Shao <jshao@redhat.com>
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 ---
- testcases/kernel/containers/pidns/pidns16.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ testcases/kernel/containers/netns/runnetnstest.sh | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
-index 8a232c6..04a1641 100644
---- a/testcases/kernel/containers/pidns/pidns16.c
-+++ b/testcases/kernel/containers/pidns/pidns16.c
-@@ -70,17 +70,29 @@ void cleanup()
- void child_signal_handler(int sig, siginfo_t * si, void *unused)
- {
- 	static int c = 1;
-+	pid_t expected_pid;
-+
- 	/* Verifying from which process the signal handler is signalled */
+diff --git a/testcases/kernel/containers/netns/runnetnstest.sh b/testcases/kernel/containers/netns/runnetnstest.sh
+index d2a7fec..fb494a2 100755
+--- a/testcases/kernel/containers/netns/runnetnstest.sh
++++ b/testcases/kernel/containers/netns/runnetnstest.sh
+@@ -106,6 +106,15 @@ echo
+ #fi
+ #echo
  
--	if ((c == 1) && (si->si_pid == globalpid))
--		tst_resm(TINFO, "sig_handler is signalled from pid  %d",
--			 globalpid);
--	else if ((c == 2) && (si->si_pid == CHILD_PID))
--		tst_resm(TINFO, "sig_handler is signalled from pid  %d",
--			 CHILD_PID);
-+	switch (c) {
-+	case 1:
-+		expected_pid = globalpid;
-+		break;
-+	case 2:
-+		expected_pid = CHILD_PID;
-+		break;
-+	default:
-+ 		tst_resm(TBROK, "child should NOT be signalled 3+ times");
-+ 		return;
-+	}
++. cmdlib.sh
++flag=0
 +
-+	if (si->si_pid == expected_pid)
-+		tst_resm(TINFO, "child is signalled from expected pid %d",
-+			 expected_pid);
- 	else
--		tst_resm(TBROK, "Unexpected value for Sending-ProcessID"
--			 " when signal handler called %d\n", si->si_pid);
-+		tst_resm(TBROK, "child is signalled from unexpected pid %d,"
-+			 " expecting pid %d", si->si_pid, expected_pid);
++status_daemon vsftpd
++if [ $? -ne 0 ]; then
++	start_daemon vsftpd
++	flag=1
++fi
 +
- 	c++;
- }
- 
+ par_chld_ftp
+ rc=$?
+ if [ $rc -ne 0 ]; then
+@@ -115,5 +124,10 @@ if [ $rc -ne 0 ]; then
+ else
+    echo "par_chld_ftp: PASS"
+ fi
++
++if [ $flag -eq 1 ]; then
++	stop_daemon vsftpd
++fi
++
+ echo
+ exit $exit_code
 -- 
-1.7.11.7
+1.8.0
 
 
 ------------------------------------------------------------------------------
