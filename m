@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TgcNS-0002MC-Lh
-	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 14:24:38 +0000
-Date: Thu, 6 Dec 2012 15:24:26 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TgdAy-00058w-A6
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 15:15:48 +0000
+Date: Thu, 6 Dec 2012 16:15:36 +0100
 From: chrubis@suse.cz
-Message-ID: <20121206142426.GB2317@rei.nue.novell.com>
-References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-	<1354605716-4747-3-git-send-email-penght@cn.fujitsu.com>
-	<50BDA8C3.4070802@casparzhang.com>
+Message-ID: <20121206151536.GD29885@rei.nue.novell.com>
+References: <8fbb13b857a614a0daf5dffdfb385871fce2e990.1354708056.git.jstancek@redhat.com>
+	<20121206093057.GA2340@rei.nue.novell.com>
+	<50C06733.2000903@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <50BDA8C3.4070802@casparzhang.com>
-Subject: Re: [LTP] [PATCH 3/4] at_allow01: Use lib to restart atd service
+In-Reply-To: <50C06733.2000903@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] open_posix_testsuite/.../aio_red/7-1.c: fix race
+ at exit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,28 +27,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > + 84?? .??cmdlib.sh
+> >> +	while (aio_error(&aiocb) == EINPROGRESS)
+> >> +		;
+> >> +
+> > 
+> > That creates unnecessary bussy-loop here, I usually add reasonally small
+> > usleep to such loop to avoid that. Something like usleep(10000) would
+> > do.
 > 
-> Patch series looks good to me except this.
+> Yeah, that's reasonable, so we have the same problem in almost all of the cases
+> under aio_read/ and aio_*/
 
-The patch series looks really good.
-
-> sourcing a lib inside a function seems not so good. Yet I don't see any 
-> code style rules telling which is the correct place to put a shell lib 
-> source (commonly I think it would be the top in the file)
-
-It's always better to include the bash library first so that your
-variables are not rewritten by these used in the library. I've seen
-cases where this was a issue (one test included a file from init scripts
-which is different in diferent version of distribution and in one case
-the name clashed) and the test was broken because the file wasn't
-included at the top.
-
-So actually this is not hard requirement but rather a good practice.
+As usuall, do you care to send a patch or should I look into this issue?
 
 -- 
 Cyril Hrubis
