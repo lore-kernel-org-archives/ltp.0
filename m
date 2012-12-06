@@ -2,21 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Tfmpw-0003al-7F
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tfmpv-0005O0-7G
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:36 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB47MY6T017392
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 15:22:34 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Tue, 4 Dec 2012 15:21:55 +0800
-Message-Id: <1354605716-4747-3-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH 3/4] at_allow01: Use lib to restart atd service
+	(envelope-from <metan@suse.de>) id 1TgdKy-0007dO-Qn
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 15:26:08 +0000
+Date: Thu, 6 Dec 2012 16:25:55 +0100
+From: chrubis@suse.cz
+Message-ID: <20121206152554.GA31201@rei.nue.novell.com>
+References: <8fbb13b857a614a0daf5dffdfb385871fce2e990.1354708056.git.jstancek@redhat.com>
+	<20121206093057.GA2340@rei.nue.novell.com>
+	<50C06733.2000903@cn.fujitsu.com>
+	<20121206151536.GD29885@rei.nue.novell.com>
+	<50C0B851.4050106@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <50C0B851.4050106@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] open_posix_testsuite/.../aio_red/7-1.c: fix race
+ at exit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,48 +26,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Use restart_daemon() to restart atd service.
+Hi!
+> >>> That creates unnecessary bussy-loop here, I usually add reasonally small
+> >>> usleep to such loop to avoid that. Something like usleep(10000) would
+> >>> do.
+> >>
+> >> Yeah, that's reasonable, so we have the same problem in almost all of the cases
+> >> under aio_read/ and aio_*/
+> > 
+> > As usuall, do you care to send a patch or should I look into this issue?
+> 
+> Yeah, let me do it tomorrow morning carefully, I'm sleepy now. ;)
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/commands/at/at_allow01 | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+Sure thing ;).
 
-diff --git a/testcases/commands/at/at_allow01 b/testcases/commands/at/at_allow01
-index 43b3428..ad4f733 100755
---- a/testcases/commands/at/at_allow01
-+++ b/testcases/commands/at/at_allow01
-@@ -80,19 +80,8 @@ do_setup()
- 		exit 1
- 	fi
- 
--	# running under systemd?
--	if command -v systemctl >/dev/null 2>&1; then
--		HAVE_SYSTEMCTL=true
--	else
--		HAVE_SYSTEMCTL=false
--	fi
--
--	# Restart atd daemon.
--	if $HAVE_SYSTEMCTL; then
--		systemctl restart atd.service
--	else
--		/etc/init.d/atd restart
--	fi
-+	. cmdlib.sh
-+	restart_daemon atd
- }
- 
- #-----------------------------------------------------------------------
 -- 
-1.8.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
