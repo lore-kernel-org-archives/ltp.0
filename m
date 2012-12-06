@@ -1,27 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TfrMP-0005uH-NT
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 12:12:25 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TfrMJ-0002XF-MA
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 12:12:25 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qB4CCDYl019760
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 07:12:13 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id qB4CCCkO012920
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 07:12:12 -0500
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TgYzS-0003cs-5w
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 10:47:38 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TgYzP-0003gK-8M
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 10:47:38 +0000
+Date: Thu, 6 Dec 2012 05:47:29 -0500 (EST)
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  4 Dec 2012 13:12:07 +0100
-Message-Id: <367be95f8c6b66828ee7930758141ec94c07d409.1354623101.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] open_posix_testsuite/.../sigset/{6,
-	7}-1.c: fix error handling
+Message-ID: <1066768064.11351529.1354790849174.JavaMail.root@redhat.com>
+In-Reply-To: <50C06D55.2020903@mips.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] clone03/06 randomly crashing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,56 +23,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Pete/Piet Delaney <piet@mips.com>
+Cc: ltp-list@lists.sourceforge.net, Chris Dearman <chris@mips.com>
 
-int may not be large enough to hold return value from sigset():
-  typedef void (*sighandler_t)(int);
-  sighandler_t sigset(int sig, sighandler_t disp);
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../conformance/interfaces/sigset/6-1.c            |    5 ++---
- .../conformance/interfaces/sigset/7-1.c            |    5 ++---
- 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c
-index 16d340c..286ee37 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigset/6-1.c
-@@ -48,9 +48,8 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	rc = sigset(SIGCHLD, SIG_HOLD);
--	if (rc < 0) {
--		ERR_MSG("sigset()", rc);
-+	if (sigset(SIGCHLD, SIG_HOLD) == SIG_ERR) {
-+		perror("Unexpected error while using sigset()");
- 		return PTS_UNRESOLVED;
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c
-index b7230db..18d4bb4 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigset/7-1.c
-@@ -56,9 +56,8 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	rc = sigset(SIGCHLD, SIG_HOLD);
--	if (rc < 0) {
--		ERR_MSG("sigset()", rc);
-+	if (sigset(SIGCHLD, SIG_HOLD) == SIG_ERR) {
-+		perror("Unexpected error while using sigset()");
- 		return PTS_UNRESOLVED;
- 	}
- 
--- 
-1.7.1
+----- Original Message -----
+> From: "Pete/Piet Delaney" <piet@mips.com>
+> To: "Carmelo AMOROSO" <carmelo.amoroso@st.com>
+> Cc: ltp-list@lists.sourceforge.net, "Chris Dearman" <chris@mips.com>
+> Sent: Thursday, 6 December, 2012 11:03:01 AM
+> Subject: Re: [LTP] clone03/06 randomly crashing
+> 
+> On 12/06/2012 01:43 AM, chrubis@suse.cz wrote:
+> > Hi!
+> >>> It appears to be ltp-pan, which sees the child as orphan.
+> >>> When I added "-d 511", I've got some additional output:
+> >>>
+> >>> <<<execution_status>>>
+> >>> initiation_status="ok"
+> >>> duration=0 termination_type=exited termination_id=0 corefile=no
+> >>> cutime=0 cstime=0
+> >>> <<<test_end>>>
+> >>> pids still running:
+> >>> orphans still running: -26125
+> >>> clone03     1  TBROK  :  unexpected signal 15 received (pid =
+> >>> 26126).
+> >>> clone03     2  TBROK  :  Remaining cases broken
+> >>>
+> >>> pan was signaled with sig 2...
+> >>>   propagating sig 2 to orphaned pgrp -26125
+> >>> orphans still running:
+> >>>
+> >>> I'll send a patch, that adds wait() to parent.
+> Could ya send me a copy of the patch to try.
+> I've been experiencing a problem with clone06
+> on Android LTP testing this evening. Would likely
+> save me some time to see and try the patch.
+
+I've met 2 issues, details are linked in description:
+https://github.com/linux-test-project/ltp/commit/db68aaa3bbc7c42f15535cc77e81691940f7b1bc
+https://github.com/linux-test-project/ltp/commit/443d16ede4dd9074faa00a98b8f9cdf22e5c168f
+
+Regards,
+Jan
 
 
 ------------------------------------------------------------------------------
