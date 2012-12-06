@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TgcQO-0003E9-4D
-	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 14:27:40 +0000
-Date: Thu, 6 Dec 2012 15:27:28 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TgeQM-00048L-F9
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 16:35:46 +0000
+Date: Thu, 6 Dec 2012 17:35:33 +0100
 From: chrubis@suse.cz
-Message-ID: <20121206142728.GA29885@rei.nue.novell.com>
-References: <50C08A4C.1090402@redhat.com>
- <50C0A844.2020004@cn.fujitsu.com>
+Message-ID: <20121206163533.GB31201@rei.nue.novell.com>
+References: <20121206141336.GA2317@rei.nue.novell.com>
+	<878595998.11610861.1354808151182.JavaMail.root@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <50C0A844.2020004@cn.fujitsu.com>
+In-Reply-To: <878595998.11610861.1354808151182.JavaMail.root@redhat.com>
 Subject: Re: [LTP] open posix testsuite and names of testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -25,24 +25,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > this testsuite has many testcases, where binary name is in format: [number]-[number].run-test
-> > This is not very helpful when trying to find out, which one actually
-> > crashed or which one is responsible for kernel oops/hung tasks.
-> > For example if I get in dmesg:
-> > [  702.018706] 1-5.run-test[10140]: segfault at 7f84e724bed8 ip 0000000000402208 sp 00007f84e724bed0 error 6 in 1-5.run-test[400000+4000]
-> > it's not clear, which testcase is responsible.
+> > Well I don't think that the option one is that hard, at least I'm not
+> > aware of much cases of hardcoded names in the Open Posix Testsuite.
+> > On
+> > the other hand having better test driver that executes the tests and
+> > presents the result in more convinient way would be more appealing.
+> > Or
+> > we can do both of them.
 > 
-> I met the same problem before because running the open_posix on recent RHEL6.4alpha and beta
-> will cause kernel panic...
+> I think we should do the renaming anyway.
+> Would the following format work for everyone? "testdirname-[number]-[number].c"
+> For example: pthread_create-1-5.c
+> It's unique, and it's easy to tell what old name was.
 
-Which could still be fixed by a testdriver that ensures that the logfile
-was written to the disk before each test is executed. But the renaming
-is still a good idea because there may be a rare case where the
-filesystem will be trashed.
+I'm ok with that.
+
+> > I was thinking of creating a relatively simply test driver that runs
+> > the
+> > tests, takes care of timeouts (and anything else) and logs
+> > information
+> > in some reasonable format (I used JSON in similar case). And then
+> > about
+> > some tools that could compare the results, print list of failed
+> > testcases and so on. Does that sound reasonable?
+> 
+> How would this be related to ltp-pan? Would this be only for open posix testsuite
+> or also for LTP?
+
+Well, that is a good question. The differencies between Open Posix
+Testsuite and the rest of the LTP aren't too big so it may be possible
+to create a test driver for both and share most of the code. On the
+other hand. To just run the tests you just need to export right
+VARIABLES and modify PATH accordingly. To collect the result you need to
+translate the test return values.
+
+On the other hand I'm not even sure about all the features that ltp-pan
+has and what subset of them is used by different people. But I will
+surely like to have more up to date test driver that produces more
+usefull data.
+
+There are couple possibilities what we can do.
+
+We may start creating something that could run the Open Posix Testsuite
+and then gradually extend it to work with the rest of the LTP adding all
+the features we would need while deprecating the ltp-pan and removing it
+once we have full replacement.
+
+Or we may look if there is something to fit our meets out there
+allready and modify it to meet our needs.
+
+Or anything that any of you may come up with.
 
 -- 
 Cyril Hrubis
