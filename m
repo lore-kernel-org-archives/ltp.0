@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Tfmpw-00082K-3p
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:36 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TgcFC-0000dG-5R
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 14:16:06 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tfmpq-0006vm-JS
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:36 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB47MXna017391
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Dec 2012 15:22:33 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Tue, 4 Dec 2012 15:21:53 +0800
-Message-Id: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH 1/4] cmdlib.sh: Add four functions of controlling
-	daemon
+	id 1TgcF9-0006pg-Ip
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 14:16:06 +0000
+Message-ID: <50C0A844.2020004@cn.fujitsu.com>
+Date: Thu, 06 Dec 2012 22:14:28 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <50C08A4C.1090402@redhat.com>
+In-Reply-To: <50C08A4C.1090402@redhat.com>
+Subject: Re: [LTP] open posix testsuite and names of testcases
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,76 +25,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Add four functions of controlling daemon:
-  - start_daemon
-  - stop_daemon
-  - status_daemon
-  - restart_daemon
+On 12/06/2012 08:06 PM, Jan Stancek wrote:
+> Hi,
+> 
+> this testsuite has many testcases, where binary name is in format: [number]-[number].run-test
+> This is not very helpful when trying to find out, which one actually
+> crashed or which one is responsible for kernel oops/hung tasks.
+> For example if I get in dmesg:
+> [  702.018706] 1-5.run-test[10140]: segfault at 7f84e724bed8 ip 0000000000402208 sp 00007f84e724bed0 error 6 in 1-5.run-test[400000+4000]
+> it's not clear, which testcase is responsible.
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/lib/cmdlib.sh | 43 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+I met the same problem before because running the open_posix on recent RHEL6.4alpha and beta
+will cause kernel panic...
 
-diff --git a/testcases/lib/cmdlib.sh b/testcases/lib/cmdlib.sh
-index 6aeb10f..b7eee1a 100644
---- a/testcases/lib/cmdlib.sh
-+++ b/testcases/lib/cmdlib.sh
-@@ -150,3 +150,46 @@ is_root()
- TCID=${TCID:=}
- [ -z "$TCID" ] && TCID=${0##*/}
- TC=$(echo "$TCID" | awk '{ sub( /[0-9]+$/,""); print; }')
-+
-+# running under systemd?
-+if command -v systemctl >/dev/null 2>&1; then
-+	HAVE_SYSTEMCTL=1
-+else
-+	HAVE_SYSTEMCTL=0
-+fi
-+
-+start_daemon()
-+{
-+	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
-+		systemctl start $1.service > /dev/null 2>&1
-+	else
-+		service $1 start > /dev/null 2>&1
-+	fi
-+}
-+
-+stop_daemon()
-+{
-+	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
-+		systemctl stop $1.service > /dev/null 2>&1
-+	else
-+		service $1 stop > /dev/null 2>&1
-+	fi
-+}
-+
-+status_daemon()
-+{
-+	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
-+		systemctl status $1.service > /dev/null 2>&1
-+	else
-+		service $1 status > /dev/null 2>&1
-+	fi
-+}
-+
-+restart_daemon()
-+{
-+	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
-+		systemctl start $1.service > /dev/null 2>&1
-+	else
-+		service $1 start > /dev/null 2>&1
-+	fi
-+}
--- 
-1.8.0
+Thanks,
+Wanlong Gao
+
+> 
+> Does anyone have some ideas?
+> 
+> I had these two:
+> 1. rename all testcases - lot of work, they are also referenced in some .sh scripts
+> 2. modify run-tests.sh to copy it under more verbose name and run that one
+> 
+> diff --git a/testcases/open_posix_testsuite/bin/run-tests.sh b/testcases/open_posix_testsuite/bin/run-tests.sh
+> index bd8ca14..ddb6e0b 100755
+> --- a/testcases/open_posix_testsuite/bin/run-tests.sh
+> +++ b/testcases/open_posix_testsuite/bin/run-tests.sh
+> @@ -46,8 +46,11 @@ run_test() {
+>  
+>  	complog=$(basename $testname).log.$$
+>  
+> -	sh -c "$SCRIPT_DIR/t0 $TIMEOUT_VAL ./$1 $(cat ./$(echo "$1" | sed 's,\.[^\.]*,,').args 2>/dev/null)" > $complog 2>&1
+> +	# create a copy with more verbose name
+> +	new_testname=$(basename $TEST_PATH)-$1
+> +	cp -f ./$1 $new_testname
+>  
+> +	sh -c "$SCRIPT_DIR/t0 $TIMEOUT_VAL ./$new_testname $(cat ./$(echo "$1" | sed 's,\.[^\.]*,,').args 2>/dev/null)" > $complog 2>&1
+>  	ret_code=$?
+>  
+>  	if [ "$ret_code" = "0" ]; then
+> 
+> Which makes logs a bit more helpful:
+> [179468.329814] User process fault: interruption code 0x60011 in pthread_create-1-5.run-test[80000000+5000]
+> 
+> Regards,
+> Jan
+> 
+> ------------------------------------------------------------------------------
+> LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
+> Remotely access PCs and mobile devices and provide instant support
+> Improve your efficiency, and focus on delivering more value-add services
+> Discover what IT Professionals Know. Rescue delivers
+> http://p.sf.net/sfu/logmein_12329d2d
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 
 ------------------------------------------------------------------------------
