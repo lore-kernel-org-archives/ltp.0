@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Tg3Uj-0008EG-5y
-	for ltp-list@lists.sourceforge.net; Wed, 05 Dec 2012 01:09:49 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tg3Uh-0003Lu-NS
-	for ltp-list@lists.sourceforge.net; Wed, 05 Dec 2012 01:09:49 +0000
-Message-ID: <50BE9E7F.1060604@cn.fujitsu.com>
-Date: Wed, 05 Dec 2012 09:08:15 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1TgXnS-00075j-Hv
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 09:31:10 +0000
+Date: Thu, 6 Dec 2012 10:30:58 +0100
+From: chrubis@suse.cz
+Message-ID: <20121206093057.GA2340@rei.nue.novell.com>
+References: <8fbb13b857a614a0daf5dffdfb385871fce2e990.1354708056.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <367be95f8c6b66828ee7930758141ec94c07d409.1354623101.git.jstancek@redhat.com>
-In-Reply-To: <367be95f8c6b66828ee7930758141ec94c07d409.1354623101.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] open_posix_testsuite/.../sigset/{6,
- 7}-1.c: fix error handling
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <8fbb13b857a614a0daf5dffdfb385871fce2e990.1354708056.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] open_posix_testsuite/.../aio_red/7-1.c: fix race
+ at exit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,17 +28,31 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 12/04/2012 08:12 PM, Jan Stancek wrote:
-> int may not be large enough to hold return value from sigset():
->   typedef void (*sighandler_t)(int);
->   sighandler_t sigset(int sig, sighandler_t disp);
-> 
+Hi!
 > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  .../conformance/interfaces/aio_read/7-1.c          |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/7-1.c
+> index 2d13565..1227db4 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/7-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/7-1.c
+> @@ -70,6 +70,9 @@ int main()
+>  		exit(PTS_FAIL);
+>  	}
+>  
+> +	while (aio_error(&aiocb) == EINPROGRESS)
+> +		;
+> +
 
-Applied, thank you.
+That creates unnecessary bussy-loop here, I usually add reasonally small
+usleep to such loop to avoid that. Something like usleep(10000) would
+do.
 
-Wanlong Gao
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
