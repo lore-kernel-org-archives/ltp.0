@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1TfnVJ-00045v-Cj
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 08:05:21 +0000
-Received: from mail-ie0-f175.google.com ([209.85.223.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TfnVE-0007Qw-U1
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 08:05:21 +0000
-Received: by mail-ie0-f175.google.com with SMTP id qd14so5815136ieb.34
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 04 Dec 2012 00:05:11 -0800 (PST)
-Message-ID: <50BDA8C3.4070802@casparzhang.com>
-Date: Tue, 04 Dec 2012 15:39:47 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1TgaE3-0000Sa-RK
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 12:06:47 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TgaDz-0001MH-Co
+	for ltp-list@lists.sourceforge.net; Thu, 06 Dec 2012 12:06:47 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qB6C6bGr013712
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Dec 2012 07:06:37 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id qB6C6aq1009936
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Dec 2012 07:06:37 -0500
+Message-ID: <50C08A4C.1090402@redhat.com>
+Date: Thu, 06 Dec 2012 13:06:36 +0100
+From: Jan Stancek <jstancek@redhat.com>
 MIME-Version: 1.0
-References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
-	<1354605716-4747-3-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1354605716-4747-3-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 3/4] at_allow01: Use lib to restart atd service
+Subject: [LTP] open posix testsuite and names of testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +31,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-T24gMTIvMDQvMjAxMiAwMzoyMSBQTSwgUGVuZyBIYWl0YW8gd3JvdGU6Cj4gKyA4NMK7IC7Ct2Nt
-ZGxpYi5zaAoKUGF0Y2ggc2VyaWVzIGxvb2tzIGdvb2QgdG8gbWUgZXhjZXB0IHRoaXMuCgpzb3Vy
-Y2luZyBhIGxpYiBpbnNpZGUgYSBmdW5jdGlvbiBzZWVtcyBub3Qgc28gZ29vZC4gWWV0IEkgZG9u
-J3Qgc2VlIGFueSAKY29kZSBzdHlsZSBydWxlcyB0ZWxsaW5nIHdoaWNoIGlzIHRoZSBjb3JyZWN0
-IHBsYWNlIHRvIHB1dCBhIHNoZWxsIGxpYiAKc291cmNlIChjb21tb25seSBJIHRoaW5rIGl0IHdv
-dWxkIGJlIHRoZSB0b3AgaW4gdGhlIGZpbGUpCgpUaGFua3MsCkNhc3BhcgoKPiArIDg1wrsgcmVz
-dGFydF9kYWVtb27Ct2F0ZAoKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxvZ01lSW4gUmVzY3Vl
-OiBBbnl3aGVyZSwgQW55dGltZSBSZW1vdGUgc3VwcG9ydCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVt
-b3RlbHkgYWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRldmljZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBz
-dXBwb3J0CkltcHJvdmUgeW91ciBlZmZpY2llbmN5LCBhbmQgZm9jdXMgb24gZGVsaXZlcmluZyBt
-b3JlIHZhbHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3ZlciB3aGF0IElUIFByb2Zlc3Npb25hbHMgS25v
-dy4gUmVzY3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNmLm5ldC9zZnUvbG9nbWVpbl8xMjMyOWQyZApf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
-YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi,
+
+this testsuite has many testcases, where binary name is in format: [number]-[number].run-test
+This is not very helpful when trying to find out, which one actually
+crashed or which one is responsible for kernel oops/hung tasks.
+For example if I get in dmesg:
+[  702.018706] 1-5.run-test[10140]: segfault at 7f84e724bed8 ip 0000000000402208 sp 00007f84e724bed0 error 6 in 1-5.run-test[400000+4000]
+it's not clear, which testcase is responsible.
+
+Does anyone have some ideas?
+
+I had these two:
+1. rename all testcases - lot of work, they are also referenced in some .sh scripts
+2. modify run-tests.sh to copy it under more verbose name and run that one
+
+diff --git a/testcases/open_posix_testsuite/bin/run-tests.sh b/testcases/open_posix_testsuite/bin/run-tests.sh
+index bd8ca14..ddb6e0b 100755
+--- a/testcases/open_posix_testsuite/bin/run-tests.sh
++++ b/testcases/open_posix_testsuite/bin/run-tests.sh
+@@ -46,8 +46,11 @@ run_test() {
+ 
+ 	complog=$(basename $testname).log.$$
+ 
+-	sh -c "$SCRIPT_DIR/t0 $TIMEOUT_VAL ./$1 $(cat ./$(echo "$1" | sed 's,\.[^\.]*,,').args 2>/dev/null)" > $complog 2>&1
++	# create a copy with more verbose name
++	new_testname=$(basename $TEST_PATH)-$1
++	cp -f ./$1 $new_testname
+ 
++	sh -c "$SCRIPT_DIR/t0 $TIMEOUT_VAL ./$new_testname $(cat ./$(echo "$1" | sed 's,\.[^\.]*,,').args 2>/dev/null)" > $complog 2>&1
+ 	ret_code=$?
+ 
+ 	if [ "$ret_code" = "0" ]; then
+
+Which makes logs a bit more helpful:
+[179468.329814] User process fault: interruption code 0x60011 in pthread_create-1-5.run-test[80000000+5000]
+
+Regards,
+Jan
+
+------------------------------------------------------------------------------
+LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
+Remotely access PCs and mobile devices and provide instant support
+Improve your efficiency, and focus on delivering more value-add services
+Discover what IT Professionals Know. Rescue delivers
+http://p.sf.net/sfu/logmein_12329d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
