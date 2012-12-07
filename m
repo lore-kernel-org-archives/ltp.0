@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TnkD8-0006tv-Ij
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 06:11:26 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TgsqY-0001o5-LG
+	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:46 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TnkD7-0001XT-BJ
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 06:11:26 +0000
-Message-ID: <50DA951C.7030106@cn.fujitsu.com>
-Date: Wed, 26 Dec 2012 14:11:40 +0800
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TgsqT-0005zI-8n
+	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:46 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB77qib7009764
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Dec 2012 15:52:45 +0800
+Message-ID: <50C19FCB.1090609@cn.fujitsu.com>
+Date: Fri, 07 Dec 2012 15:50:35 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] pidns16: split test condition and result judge
+References: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1354605716-4747-1-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/4] cmdlib.sh: Add four functions of controlling
+ daemon
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -25,48 +29,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Monson Shao <jshao@redhat.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gMTIvMjUvMjAxMiAwMzoyNiBQTSwgTW9uc29uIFNoYW8gd3JvdGU6Cj4gTWFrZSBpdCBlYXN5
-IHRvIHJlYWQuCj4gCj4gU2lnbmVkLW9mZi1ieTogTW9uc29uIFNoYW8gPGpzaGFvQHJlZGhhdC5j
-b20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczE2LmMg
-fCAyNCArKysrKysrKysrKysrKysrLS0tLS0tLS0KPiAgMSDkuKrmlofku7booqvkv67mlLnvvIzm
-j5LlhaUgMTYg6KGMKCsp77yM5Yig6ZmkIDgg6KGMKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczE2LmMgYi90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMxNi5jCj4gaW5kZXggOGEyMzJjNi4uOWExMjE5YSAxMDA2
-NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMxNi5jCj4g
-KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMTYuYwo+IEBAIC03
-MCwxNyArNzAsMjUgQEAgdm9pZCBjbGVhbnVwKCkKPiAgdm9pZCBjaGlsZF9zaWduYWxfaGFuZGxl
-cihpbnQgc2lnLCBzaWdpbmZvX3QgKiBzaSwgdm9pZCAqdW51c2VkKQo+ICB7Cj4gIAlzdGF0aWMg
-aW50IGMgPSAxOwo+ICsJcGlkX3QgZXhwZWN0ZWRfcGlkOwo+ICsKPiAgCS8qIFZlcmlmeWluZyBm
-cm9tIHdoaWNoIHByb2Nlc3MgdGhlIHNpZ25hbCBoYW5kbGVyIGlzIHNpZ25hbGxlZCAqLwo+ICAK
-PiAtCWlmICgoYyA9PSAxKSAmJiAoc2ktPnNpX3BpZCA9PSBnbG9iYWxwaWQpKQo+IC0JCXRzdF9y
-ZXNtKFRJTkZPLCAic2lnX2hhbmRsZXIgaXMgc2lnbmFsbGVkIGZyb20gcGlkICAlZCIsCj4gLQkJ
-CSBnbG9iYWxwaWQpOwo+IC0JZWxzZSBpZiAoKGMgPT0gMikgJiYgKHNpLT5zaV9waWQgPT0gQ0hJ
-TERfUElEKSkKPiAtCQl0c3RfcmVzbShUSU5GTywgInNpZ19oYW5kbGVyIGlzIHNpZ25hbGxlZCBm
-cm9tIHBpZCAgJWQiLAo+IC0JCQkgQ0hJTERfUElEKTsKPiArCWlmIChjID09IDEpCj4gKwkJZXhw
-ZWN0ZWRfcGlkID0gZ2xvYmFscGlkOwo+ICsJZWxzZSBpZiAoYyA9PSAyKQo+ICsJCWV4cGVjdGVk
-X3BpZCA9IENISUxEX1BJRDsKPiArCWVsc2Ugewo+ICsJCXRzdF9yZXNtKFRCUk9LLCAiY2hpbGQg
-c2hvdWxkIE5PVCBiZSBzaWduYWxsZWQgMysgdGltZXMiKTsKPiArCQlyZXR1cm47Cj4gKwl9CgpQ
-bGVhc2UgYWRkIGJyYWNlcyBpbiBib3RoIGJyYW5jaGVzIGhlcmUuCgpUaGFua3MsCldhbmxvbmcg
-R2FvCgo+ICsKPiArCWlmIChzaS0+c2lfcGlkID09IGV4cGVjdGVkX3BpZCkKPiArCQl0c3RfcmVz
-bShUSU5GTywgImNoaWxkIGlzIHNpZ25hbGxlZCBmcm9tIHBpZCAlZCIsIGV4cGVjdGVkX3BpZCk7
-Cj4gIAllbHNlCj4gLQkJdHN0X3Jlc20oVEJST0ssICJVbmV4cGVjdGVkIHZhbHVlIGZvciBTZW5k
-aW5nLVByb2Nlc3NJRCIKPiAtCQkJICIgd2hlbiBzaWduYWwgaGFuZGxlciBjYWxsZWQgJWRcbiIs
-IHNpLT5zaV9waWQpOwo+ICsJCXRzdF9yZXNtKFRCUk9LLCAiY2hpbGQgaXMgc2lnbmFsbGVkIGZy
-b20gdW5leHBlY3RlZCBwaWQgJWQsIgo+ICsJCQkgIiBleHBlY3RpbmcgcGlkICVkIiwgc2ktPnNp
-X3BpZCwgZXhwZWN0ZWRfcGlkKTsKPiArCj4gIAljKys7Cj4gIH0KPiAgCj4gCgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCkxvZ01lSW4gUmVzY3VlOiBBbnl3aGVyZSwgQW55dGltZSBSZW1vdGUgc3Vw
-cG9ydCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVtb3RlbHkgYWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRl
-dmljZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBzdXBwb3J0CkltcHJvdmUgeW91ciBlZmZpY2llbmN5
-LCBhbmQgZm9jdXMgb24gZGVsaXZlcmluZyBtb3JlIHZhbHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3Zl
-ciB3aGF0IElUIFByb2Zlc3Npb25hbHMgS25vdy4gUmVzY3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNm
-Lm5ldC9zZnUvbG9nbWVpbl8xMjMyOWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0Cg==
+On 12/04/2012 03:21 PM, Peng Haitao wrote:
+> Add four functions of controlling daemon:
+>   - start_daemon
+>   - stop_daemon
+>   - status_daemon
+>   - restart_daemon
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+
+Applied, thank you.
+
+Wanlong Gao
+
+
+------------------------------------------------------------------------------
+LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
+Remotely access PCs and mobile devices and provide instant support
+Improve your efficiency, and focus on delivering more value-add services
+Discover what IT Professionals Know. Rescue delivers
+http://p.sf.net/sfu/logmein_12329d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
