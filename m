@@ -1,14 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <noreply@sourceforge.net>) id 1TaXd1-000233-Bn
-	for ltp-list@lists.sourceforge.net; Mon, 19 Nov 2012 20:07:35 +0000
-From: SourceForge.net <noreply@sourceforge.net>
-Date: Mon, 19 Nov 2012 12:07:35 -0800
-Content-Disposition: inline
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TgsqS-0001nT-H7
+	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TgsqR-0005zI-Il
+	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:40 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB77rrW2009847
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Dec 2012 15:53:54 +0800
+Message-ID: <50C1A011.5040808@cn.fujitsu.com>
+Date: Fri, 07 Dec 2012 15:51:45 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [ ltp-Patches-3588583 ] Gcov-Kernel on 2.6.32-(44-60)
+References: <1354850641-15547-1-git-send-email-penght@cn.fujitsu.com>
+	<1354850641-15547-2-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1354850641-15547-2-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 2/2] at_deny01: Use lib to restart atd service
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,45 +32,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1TkTx8-0000SH-4T@sfs-ml-2.v29.ch3.sourceforge.com>
-To: "SourceForge.net" <noreply@sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Patches item #3588583, was opened at 2012-11-19 12:07
-Message generated for change (Tracker Item Submitted) made by shayanb
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3588583&group_id=3382
+On 12/07/2012 11:24 AM, Peng Haitao wrote:
+> Use restart_daemon() to restart atd service.
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: None
-Group: None
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Shayan Es (shayanb)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: Gcov-Kernel on 2.6.32-(44-60)
+Applied, thank you.
 
-Initial Comment:
-I can't get the gcov module to be in the kernel on Ubuntu 10.04 2.6.32
+Wanlong Gao
 
-I used the appropriate flags to build the kernel and it seems that gcov is working good with the applications sources but as I need to trace and find the coverage of the kernel sources I can't get the gcov module to work, actually there is no module named gcov*.o
-(* means anything that has gcov in it and is a module.)
-
-I don't have anything related to gcov in /proc
-everything else seems to be ok, I have all .gcov .gnco kernel source files
-
-but no modules, Lcov -c would give me this error:
-
-Loading required gcov kernel module.
-lcov: ERROR: cannot load required gcov kernel module!
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=3588583&group_id=3382
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
