@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Tj9di-0001yI-6l
-	for ltp-list@lists.sourceforge.net; Thu, 13 Dec 2012 14:19:54 +0000
-Date: Thu, 13 Dec 2012 15:19:46 +0100
-From: chrubis@suse.cz
-Message-ID: <20121213141946.GA10891@rei>
-References: <153425741.15364762.1355407029689.JavaMail.root@redhat.com>
-	<626133251.15365547.1355407159471.JavaMail.root@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <olli.vertanen@symbio.com>) id 1ThyN9-0006mT-Lo
+	for ltp-list@lists.sourceforge.net; Mon, 10 Dec 2012 08:05:55 +0000
+Received: from mail.fi.symbio.com ([89.236.120.22])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ThyN3-0006NZ-NU
+	for ltp-list@lists.sourceforge.net; Mon, 10 Dec 2012 08:05:55 +0000
+Message-ID: <50C597BF.3000807@symbio.com>
+Date: Mon, 10 Dec 2012 17:05:19 +0900
+From: Olli Vertanen <olli.vertanen@symbio.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <626133251.15365547.1355407159471.JavaMail.root@redhat.com>
-Subject: Re: [LTP] Add easy to use API for parent-child synchronization.
+Subject: [LTP] Running from tmpfs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +25,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
 Hi!
-> am I reading it correctly, that you can only use it for single
-> parent and child pair because the pipe name is pre-defined?
 
-There is only one hardcoded pipe to keep the interface simple as I
-haven't found testcase that would require more that this (that doesn't
-mean there is none).
+I'd like to know if LTP tests can be run entirely from tmpfs? My system 
+has rootfs mounted read-only, and I would like to avoid remounting it. 
+Do you have tests that require write access to rootfs?
 
-> Could be name of the pipe passed in tst_checkpoint_init()?
-> The testcase I have in mind is 'waitid02' which spawns multiple children.
+I've succeeded in running the runltplite.sh set of tests from tmpfs, but 
+to accomplish this with runalltests.sh minor modifications to the script 
+is required.
 
-That shouldn't be a problem as far as you don't need to distinguish
-between the childrens. Just call TST_CHECKPOINT_PARENT_WAIT() the number
-of children you need to to wait for and it should work.
+So, I started wondering, is the limitation because of inherit properties 
+of the tests, or just poor paramerization of the script.
 
-Each children would then write exactly one character to the fifo once
-it's ready and the parent would wait until all childrens signaled that
-they are ready.
+Thanks!
 
-Or even better we can easily create second version of parent wait that
-would have number of children as an argument.
-
-If you need something more complicated (i.e. synchronize several
-childrens and parent) we can easily add filename parameter to the
-checkpoint init and default to the current behavior if NULL is passed.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Olli Vertanen
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
