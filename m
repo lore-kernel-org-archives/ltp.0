@@ -1,14 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <noreply@sourceforge.net>) id 1TaXQ1-0004BH-Dk
-	for ltp-list@lists.sourceforge.net; Mon, 19 Nov 2012 19:54:09 +0000
-From: SourceForge.net <noreply@sourceforge.net>
-Date: Mon, 19 Nov 2012 11:54:09 -0800
-Content-Disposition: inline
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jshao@redhat.com>) id 1TnOu7-0004S6-2E
+	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:26:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TnOu4-0000Lg-TY
+	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:26:23 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBP7QE7J027224
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Dec 2012 02:26:15 -0500
+From: Monson Shao <jshao@redhat.com>
+Date: Tue, 25 Dec 2012 15:25:35 +0800
+Message-Id: <1356420335-4204-1-git-send-email-jshao@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [ ltp-Bugs-3578432 ] -S SKIPFILE
+Subject: [LTP] =?utf-8?q?=5BPATCH=5D_pidns30_pidns31=3A_syscall_mq=5Fopen?=
+	=?utf-8?q?=28=29_failed_EFAULT=28Bad_address=29?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -18,69 +28,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1TkTx7-0000SA-PW@sfs-ml-2.v29.ch3.sourceforge.com>
-To: "SourceForge.net" <noreply@sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Bugs item #3578432, was opened at 2012-10-19 13:07
-Message generated for change (Settings changed) made by shayanb
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3578432&group_id=3382
-
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Testcases
-Group: Commands
-Status: Open
->Resolution: Works For Me
->Priority: 2
-Private: No
-Submitted By: Shayan Es (shayanb)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: -S SKIPFILE
-
-Initial Comment:
-There is an error with using the -S flag to skip failed tests from previous test fail file
-
-./runltp -S /home/shayan/Desktop/LtpResults/runltpfail2 -C /home/shayan/Desktop/LtpResults/runltpfail21shouldbenull -l /home/shayan/Desktop/LtpResults/ltplog21failsafe.log -o /home/shayan/Desktop/LtpResults/ltpout21failsafe -p -T 1
-
-ERROR IN THE OUTPUT:
-
-    INFO: no command files were provided. Will execute the following
-          runtest scenario files:
-
-syscalls fs fs_perms_simple fsx dio io mm ipc sched math nptl pty containers fs_bind controllers filecaps cap_bounds fcntl-locktests connectors admin_tools timers power_management_tests numa hugetlb commands hyperthreading 
-    
-sed: -e expression #1, char 42: unterminated `s' command
-sed: can't find label for jump to `estcases/bin'
-sed: -e expression #1, char 32: unknown command: `['
-
-
-----------------------------------------------------------------------
-
->Comment By: Shayan Es (shayanb)
-Date: 2012-11-19 11:54
-
-Message:
-I found some ways to work around this issue,
-I guess the only problem with this is the misspelling of some testcases in
-scripts
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3578432&group_id=3382
-
-------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+J21hbiAzIG1xX29wZW4nIHNhaWQgbXFfb3BlbigpIGNhbiB0YWtlIDIgb3IgNCBhcmd1bWVudHMs
+IGJ1dCB0aGUgaW1wbGVtZW50CnN5c2NhbGwoX19OUl9tcV9vcGVuLCAuLi4pIHRha2VzIDQsIGFj
+Y29yZGluZyB0byBbMV0uCgpNYW51YWxseSB0ZXN0ZWQgb24ga2VybmVsLTMuNi4wIHdpdGggZ2xp
+YmMtMi4xNiAuCgpbMV0gZ2xpYmMvc3lzZGVwcy91bml4L3N5c3YvbGludXgvbXFfb3Blbi5jOjU1
+CgpTaWduZWQtb2ZmLWJ5OiBNb25zb24gU2hhbyA8anNoYW9AcmVkaGF0LmNvbT4KLS0tCiB0ZXN0
+Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jIHwgMiArLQogdGVzdGNhc2Vz
+L2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzEuYyB8IDIgKy0KIDIg5Liq5paH5Lu26KKr
+5L+u5pS577yM5o+S5YWlIDIg6KGMKCsp77yM5Yig6ZmkIDIg6KGMKC0pCgpkaWZmIC0tZ2l0IGEv
+dGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzAuYyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMKaW5kZXggNzFlODdjMS4uNzVjNzM2YiAx
+MDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzAuYwor
+KysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jCkBAIC0xODYs
+NyArMTg2LDcgQEAgaW50IGNoaWxkX2ZuKHZvaWQgKmFyZykKIAl3aGlsZSAocmVhZChmYXRoZXJf
+dG9fY2hpbGRbMF0sIGJ1ZiwgMSkgIT0gMSkKIAkJc2xlZXAoMSk7CiAKLQltcWQgPSBzeXNjYWxs
+KF9fTlJfbXFfb3BlbiwgbXFuYW1lLCBPX1JET05MWSk7CisJbXFkID0gc3lzY2FsbChfX05SX21x
+X29wZW4sIG1xbmFtZSwgT19SRE9OTFksIDAsIE5VTEwpOwogCWlmIChtcWQgPT0gLTEpIHsKIAkJ
+cGVycm9yKCJtcV9vcGVuIGZhaWxlZCIpOwogCQlyZXR1cm4gMTsKZGlmZiAtLWdpdCBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMgYi90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMS5jCmluZGV4IDJhMDc0ODkuLjE0OThkMTYgMTAwNjQ0
+Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMKKysrIGIv
+dGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzEuYwpAQCAtMTc3LDcgKzE3
+Nyw3IEBAIGludCBjaGlsZF9mbih2b2lkICphcmcpCiAJfQogCXRzdF9yZXNtKFRJTkZPLCAiY2lu
+aXQ6IG15IGZhdGhlciBpcyByZWFkeSB0byByZWNlaXZlIGEgbWVzc2FnZSIpOwogCi0JbXFkID0g
+c3lzY2FsbChfX05SX21xX29wZW4sIG1xbmFtZSwgT19XUk9OTFkpOworCW1xZCA9IHN5c2NhbGwo
+X19OUl9tcV9vcGVuLCBtcW5hbWUsIE9fV1JPTkxZLCAwLCBOVUxMKTsKIAlpZiAobXFkID09ICht
+cWRfdCkgLSAxKSB7CiAJCXRzdF9yZXNtKFRCUk9LLCAiY2luaXQ6IG1xX29wZW4oKSBmYWlsZWQg
+KCVzKSIsCiAJCQkgc3RyZXJyb3IoZXJybm8pKTsKLS0gCjEuNy4xMS43CgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkxvZ01lSW4gUmVzY3VlOiBBbnl3aGVyZSwgQW55dGltZSBSZW1vdGUgc3VwcG9y
+dCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVtb3RlbHkgYWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRldmlj
+ZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBzdXBwb3J0CkltcHJvdmUgeW91ciBlZmZpY2llbmN5LCBh
+bmQgZm9jdXMgb24gZGVsaXZlcmluZyBtb3JlIHZhbHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3ZlciB3
+aGF0IElUIFByb2Zlc3Npb25hbHMgS25vdy4gUmVzY3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNmLm5l
+dC9zZnUvbG9nbWVpbl8xMjMyOWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
