@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TgsqS-0001nT-H7
-	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:40 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TgsqR-0005zI-Il
-	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:40 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB77rrW2009847
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Dec 2012 15:53:54 +0800
-Message-ID: <50C1A011.5040808@cn.fujitsu.com>
-Date: Fri, 07 Dec 2012 15:51:45 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jshao@redhat.com>) id 1TnOv3-00040n-Dk
+	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:27:21 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TnOv2-0002Mk-Mi
+	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:27:21 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBP7REkw028577
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Dec 2012 02:27:14 -0500
+From: Monson Shao <jshao@redhat.com>
+Date: Tue, 25 Dec 2012 15:26:33 +0800
+Message-Id: <1356420393-4253-3-git-send-email-jshao@redhat.com>
 MIME-Version: 1.0
-References: <1354850641-15547-1-git-send-email-penght@cn.fujitsu.com>
-	<1354850641-15547-2-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1354850641-15547-2-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 2/2] at_deny01: Use lib to restart atd service
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] =?utf-8?q?=5BPATCH_3/3=5D_pidns16=3A_child_should_not_get_p?=
+	=?utf-8?q?arent_pid_in_parent_NS?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,29 +28,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 12/07/2012 11:24 AM, Peng Haitao wrote:
-> Use restart_daemon() to restart atd service.
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
-Applied, thank you.
-
-Wanlong Gao
-
-
-------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+cGFyZW50IHBpZCBpbiBwYXJlbnQgTlMgaXMgaW52aXNpYmxlIHRvIGNoaWxkLCBldmVuIHdoZW4g
+Y2hpbGQgZ290IHNpZ25hbGxlZApmcm9tIHBhcmVudCwgdGhlIHNpZ25hbGxlciBwcm9jZXNzIHNo
+b3VsZCBiZSBmYWtlIHBhcmVudCAoUElEIDApLgoKU2lnbmVkLW9mZi1ieTogTW9uc29uIFNoYW8g
+PGpzaGFvQHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5z
+L3BpZG5zMTYuYyB8IDUgKy0tLS0KIDEg5Liq5paH5Lu26KKr5L+u5pS577yM5o+S5YWlIDEg6KGM
+KCsp77yM5Yig6ZmkIDQg6KGMKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250
+YWluZXJzL3BpZG5zL3BpZG5zMTYuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRu
+cy9waWRuczE2LmMKaW5kZXggMGM1NGFjZi4uOWQ0Y2JkYyAxMDA2NDQKLS0tIGEvdGVzdGNhc2Vz
+L2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMTYuYworKysgYi90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMxNi5jCkBAIC01NCw3ICs1NCw2IEBACiAKIGNoYXIgKlRD
+SUQgPSAicGlkbnMxNiI7CiBpbnQgVFNUX1RPVEFMID0gMTsKLXBpZF90IGdsb2JhbHBpZDsKIAog
+LyoKICAqIGNsZWFudXAoKSAtIHBlcmZvcm1zIGFsbCBPTkUgVElNRSBjbGVhbnVwIGZvciB0aGlz
+IHRlc3QgYXQKQEAgLTc1LDcgKzc0LDcgQEAgdm9pZCBjaGlsZF9zaWduYWxfaGFuZGxlcihpbnQg
+c2lnLCBzaWdpbmZvX3QgKiBzaSwgdm9pZCAqdW51c2VkKQogCS8qIFZlcmlmeWluZyBmcm9tIHdo
+aWNoIHByb2Nlc3MgdGhlIHNpZ25hbCBoYW5kbGVyIGlzIHNpZ25hbGxlZCAqLwogCiAJaWYgKGMg
+PT0gMSkKLQkJZXhwZWN0ZWRfcGlkID0gZ2xvYmFscGlkOworCQlleHBlY3RlZF9waWQgPSBQQVJF
+TlRfUElEOwogCWVsc2UgaWYgKGMgPT0gMikKIAkJZXhwZWN0ZWRfcGlkID0gQ0hJTERfUElEOwog
+CWVsc2UgewpAQCAtMTM0LDggKzEzMyw2IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2
+W10pCiAJaW50IHN0YXR1czsKIAlwaWRfdCBjcGlkOwogCi0JZ2xvYmFscGlkID0gZ2V0cGlkKCk7
+Ci0KIAljcGlkID0gbHRwX2Nsb25lX3F1aWNrKENMT05FX05FV1BJRCB8IFNJR0NITEQsIGNoaWxk
+X2ZuLCBOVUxMKTsKIAogCWlmIChjcGlkIDwgMCkgewotLSAKMS43LjExLjcKCgotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KTG9nTWVJbiBSZXNjdWU6IEFueXdoZXJlLCBBbnl0aW1lIFJlbW90ZSBzdXBw
+b3J0IGZvciBJVC4gRnJlZSBUcmlhbApSZW1vdGVseSBhY2Nlc3MgUENzIGFuZCBtb2JpbGUgZGV2
+aWNlcyBhbmQgcHJvdmlkZSBpbnN0YW50IHN1cHBvcnQKSW1wcm92ZSB5b3VyIGVmZmljaWVuY3ks
+IGFuZCBmb2N1cyBvbiBkZWxpdmVyaW5nIG1vcmUgdmFsdWUtYWRkIHNlcnZpY2VzCkRpc2NvdmVy
+IHdoYXQgSVQgUHJvZmVzc2lvbmFscyBLbm93LiBSZXNjdWUgZGVsaXZlcnMKaHR0cDovL3Auc2Yu
+bmV0L3NmdS9sb2dtZWluXzEyMzI5ZDJkCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
+bHRwLWxpc3QK
