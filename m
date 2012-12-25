@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Tfmpq-0001Py-0v
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:30 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jshao@redhat.com>) id 1TnSbT-00072L-Pu
+	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 11:23:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tfmpl-0006vm-FA
-	for ltp-list@lists.sourceforge.net; Tue, 04 Dec 2012 07:22:29 +0000
-Message-ID: <50BDA457.1050400@cn.fujitsu.com>
-Date: Tue, 04 Dec 2012 15:20:55 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1354537197-5353-2-git-send-email-jstancek@redhat.com>
-In-Reply-To: <1354537197-5353-2-git-send-email-jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] clone: wait until child completes
-Reply-To: gaowanlong@cn.fujitsu.com
+	id 1TnSbR-000536-Tl
+	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 11:23:23 +0000
+Message-ID: <1356434591.8314.36.camel@station.monson>
+From: Monson Shao <jshao@redhat.com>
+Date: Tue, 25 Dec 2012 19:23:11 +0800
+In-Reply-To: <50D958CA.4010406@casparzhang.com>
+References: <1356420335-4204-1-git-send-email-jshao@redhat.com>
+	<50D958CA.4010406@casparzhang.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] pidns30 pidns31: syscall mq_open() failed
+ EFAULT(Bad address)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,32 +26,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Caspar Zhang <caspar@013.cdn.homezz.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 12/03/2012 08:19 PM, Jan Stancek wrote:
-> If parent doesn't wait for child to finish,
-> ltp-pan detects these as 'orpahns' and will try
-> to kill them, which can result in TBROK messages:
-> http://article.gmane.org/gmane.linux.ltp/16993
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-
-Good work Jan, thank you, Applied,
-
-Wanlong Gao
-
-
-------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlLCAyMDEyLTEyLTI1IGF0IDE1OjQyICswODAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6Cj4g
+T24gMTIvMjUvMjAxMiAwMzoyNSBQTSwgTW9uc29uIFNoYW8gd3JvdGU6Cj4gPiAnbWFuIDMgbXFf
+b3Blbicgc2FpZCBtcV9vcGVuKCkgY2FuIHRha2UgMiBvciA0IGFyZ3VtZW50cywgYnV0IHRoZSBp
+bXBsZW1lbnQKPiA+IHN5c2NhbGwoX19OUl9tcV9vcGVuLCAuLi4pIHRha2VzIDQsIGFjY29yZGlu
+ZyB0byBbMV0uCj4gPgo+ID4gTWFudWFsbHkgdGVzdGVkIG9uIGtlcm5lbC0zLjYuMCB3aXRoIGds
+aWJjLTIuMTYgLgo+ID4KPiA+IFsxXSBnbGliYy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9tcV9v
+cGVuLmM6NTUKPiAKPiB3aWxsIHRoaXMgY2hhbmdlIHRoZSByZXN1bHQgb24gb2xkIGtlcm5lbC9n
+bGliYz8KPiAKPiBDYXNwYXIKSSBoYXZlbid0IHRlc3RlZCBpdCBvbiBvbGQga2VybmVsL2dsaWJj
+LCBidXQgNCBhcmd1bWVudHMgc2hvdWxkIGFsd2F5cwpiZSBhY2NlcHRhYmxlLCBzaW5jZSB0aGlz
+IHVzYWdlIGV4aXN0cyBpbiB0aGUgc2FtZSBmaWxlIFsyXS4KClsyXSB0ZXN0Y2FzZXMva2VybmVs
+L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jOjI1NQo+IAo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6
+IE1vbnNvbiBTaGFvIDxqc2hhb0ByZWRoYXQuY29tPgo+ID4gLS0tCj4gPiAgIHRlc3RjYXNlcy9r
+ZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMgfCAyICstCj4gPiAgIHRlc3RjYXNlcy9r
+ZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMgfCAyICstCj4gPiAgIDIg5Liq5paH5Lu2
+6KKr5L+u5pS577yM5o+S5YWlIDIg6KGMKCsp77yM5Yig6ZmkIDIg6KGMKC0pCj4gPgo+ID4gZGlm
+ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMgYi90
+ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jCj4gPiBpbmRleCA3MWU4
+N2MxLi43NWM3MzZiIDEwMDY0NAo+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJz
+L3BpZG5zL3BpZG5zMzAuYwo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3Bp
+ZG5zL3BpZG5zMzAuYwo+ID4gQEAgLTE4Niw3ICsxODYsNyBAQCBpbnQgY2hpbGRfZm4odm9pZCAq
+YXJnKQo+ID4gICAJd2hpbGUgKHJlYWQoZmF0aGVyX3RvX2NoaWxkWzBdLCBidWYsIDEpICE9IDEp
+Cj4gPiAgIAkJc2xlZXAoMSk7Cj4gPgo+ID4gLQltcWQgPSBzeXNjYWxsKF9fTlJfbXFfb3Blbiwg
+bXFuYW1lLCBPX1JET05MWSk7Cj4gPiArCW1xZCA9IHN5c2NhbGwoX19OUl9tcV9vcGVuLCBtcW5h
+bWUsIE9fUkRPTkxZLCAwLCBOVUxMKTsKPiA+ICAgCWlmIChtcWQgPT0gLTEpIHsKPiA+ICAgCQlw
+ZXJyb3IoIm1xX29wZW4gZmFpbGVkIik7Cj4gPiAgIAkJcmV0dXJuIDE7Cj4gPiBkaWZmIC0tZ2l0
+IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMzEuYyBiL3Rlc3RjYXNl
+cy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMxLmMKPiA+IGluZGV4IDJhMDc0ODkuLjE0
+OThkMTYgMTAwNjQ0Cj4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMv
+cGlkbnMzMS5jCj4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlk
+bnMzMS5jCj4gPiBAQCAtMTc3LDcgKzE3Nyw3IEBAIGludCBjaGlsZF9mbih2b2lkICphcmcpCj4g
+PiAgIAl9Cj4gPiAgIAl0c3RfcmVzbShUSU5GTywgImNpbml0OiBteSBmYXRoZXIgaXMgcmVhZHkg
+dG8gcmVjZWl2ZSBhIG1lc3NhZ2UiKTsKPiA+Cj4gPiAtCW1xZCA9IHN5c2NhbGwoX19OUl9tcV9v
+cGVuLCBtcW5hbWUsIE9fV1JPTkxZKTsKPiA+ICsJbXFkID0gc3lzY2FsbChfX05SX21xX29wZW4s
+IG1xbmFtZSwgT19XUk9OTFksIDAsIE5VTEwpOwo+ID4gICAJaWYgKG1xZCA9PSAobXFkX3QpIC0g
+MSkgewo+ID4gICAJCXRzdF9yZXNtKFRCUk9LLCAiY2luaXQ6IG1xX29wZW4oKSBmYWlsZWQgKCVz
+KSIsCj4gPiAgIAkJCSBzdHJlcnJvcihlcnJubykpOwo+ID4KPiAKCi0tIApNb25zb24gU2hhbwpL
+ZXJuZWwgUUEKCiMyOSBATkFZIC0gQmVpamluZywgQ2hpbmEgLSBHTVQrMDg6MDAKSVJDOiBtb25z
+b24gKCNrZXJuZWwtcWUsICNlbmctY2hpbmEpCkludGVybmFsOiAgODMgODgzODQKRXh0ZXJuYWw6
+ICs4NiAxMCA2MjYwIDgzODQKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTG9nTWVJbiBSZXNjdWU6
+IEFueXdoZXJlLCBBbnl0aW1lIFJlbW90ZSBzdXBwb3J0IGZvciBJVC4gRnJlZSBUcmlhbApSZW1v
+dGVseSBhY2Nlc3MgUENzIGFuZCBtb2JpbGUgZGV2aWNlcyBhbmQgcHJvdmlkZSBpbnN0YW50IHN1
+cHBvcnQKSW1wcm92ZSB5b3VyIGVmZmljaWVuY3ksIGFuZCBmb2N1cyBvbiBkZWxpdmVyaW5nIG1v
+cmUgdmFsdWUtYWRkIHNlcnZpY2VzCkRpc2NvdmVyIHdoYXQgSVQgUHJvZmVzc2lvbmFscyBLbm93
+LiBSZXNjdWUgZGVsaXZlcnMKaHR0cDovL3Auc2YubmV0L3NmdS9sb2dtZWluXzEyMzI5ZDJkCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1h
+aWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
