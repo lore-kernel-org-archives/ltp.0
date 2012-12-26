@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TgsqQ-0006mA-Jt
-	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:38 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TgsqK-0005zI-Hr
-	for ltp-list@lists.sourceforge.net; Fri, 07 Dec 2012 07:59:38 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id qB77rYEK009826
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Dec 2012 15:53:35 +0800
-Message-ID: <50C19FFE.10309@cn.fujitsu.com>
-Date: Fri, 07 Dec 2012 15:51:26 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1TnhDZ-00082w-QJ
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 02:59:41 +0000
+Received: from mail-pa0-f41.google.com ([209.85.220.41])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TnhDV-0008To-WA
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 02:59:41 +0000
+Received: by mail-pa0-f41.google.com with SMTP id bj3so4696986pad.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 25 Dec 2012 18:59:32 -0800 (PST)
+Message-ID: <50DA679D.7010502@casparzhang.com>
+Date: Wed, 26 Dec 2012 10:57:33 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <1354850641-15547-1-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1354850641-15547-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/2] at_allow01: Use lib to restart atd service
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <1356420335-4204-1-git-send-email-jshao@redhat.com>
+	<50D958CA.4010406@casparzhang.com>
+	<1356434591.8314.36.camel@station.monson>
+In-Reply-To: <1356434591.8314.36.camel@station.monson>
+Subject: Re: [LTP] [PATCH] pidns30 pidns31: syscall mq_open() failed
+ EFAULT(Bad address)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,29 +30,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
+To: Monson Shao <jshao@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 12/07/2012 11:24 AM, Peng Haitao wrote:
-> Use restart_daemon() to restart atd service.
-> 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-
-Applied, thank you.
-
-Wanlong Gao
-
-
-------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMTIvMjUvMjAxMiAwNzoyMyBQTSwgTW9uc29uIFNoYW8gd3JvdGU6Cj4gT24gVHVlLCAyMDEy
+LTEyLTI1IGF0IDE1OjQyICswODAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6Cj4+IE9uIDEyLzI1LzIw
+MTIgMDM6MjUgUE0sIE1vbnNvbiBTaGFvIHdyb3RlOgo+Pj4gJ21hbiAzIG1xX29wZW4nIHNhaWQg
+bXFfb3BlbigpIGNhbiB0YWtlIDIgb3IgNCBhcmd1bWVudHMsIGJ1dCB0aGUgaW1wbGVtZW50Cj4+
+PiBzeXNjYWxsKF9fTlJfbXFfb3BlbiwgLi4uKSB0YWtlcyA0LCBhY2NvcmRpbmcgdG8gWzFdLgo+
+Pj4KPj4+IE1hbnVhbGx5IHRlc3RlZCBvbiBrZXJuZWwtMy42LjAgd2l0aCBnbGliYy0yLjE2IC4K
+Pj4+Cj4+PiBbMV0gZ2xpYmMvc3lzZGVwcy91bml4L3N5c3YvbGludXgvbXFfb3Blbi5jOjU1Cj4+
+Cj4+IHdpbGwgdGhpcyBjaGFuZ2UgdGhlIHJlc3VsdCBvbiBvbGQga2VybmVsL2dsaWJjPwo+Pgo+
+PiBDYXNwYXIKPiBJIGhhdmVuJ3QgdGVzdGVkIGl0IG9uIG9sZCBrZXJuZWwvZ2xpYmMsIGJ1dCA0
+IGFyZ3VtZW50cyBzaG91bGQgYWx3YXlzCj4gYmUgYWNjZXB0YWJsZSwgc2luY2UgdGhpcyB1c2Fn
+ZSBleGlzdHMgaW4gdGhlIHNhbWUgZmlsZSBbMl0uCgpNYWtlcyBzZW5zZS4KClJldmlld2VkLWJ5
+OiBDYXNwYXIgWmhhbmcgPGNhc3BhckBjYXNwYXJ6aGFuZy5jb20+Cgo+Cj4gWzJdIHRlc3RjYXNl
+cy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmM6MjU1Cj4+Cj4+Pgo+Pj4gU2lnbmVk
+LW9mZi1ieTogTW9uc29uIFNoYW8gPGpzaGFvQHJlZGhhdC5jb20+Cj4+PiAtLS0KPj4+ICAgIHRl
+c3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMgfCAyICstCj4+PiAgICB0
+ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMS5jIHwgMiArLQo+Pj4gICAg
+MiDkuKrmlofku7booqvkv67mlLnvvIzmj5LlhaUgMiDooYwoKynvvIzliKDpmaQgMiDooYwoLSkK
+Pj4+Cj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3Bp
+ZG5zMzAuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczMwLmMKPj4+
+IGluZGV4IDcxZTg3YzEuLjc1YzczNmIgMTAwNjQ0Cj4+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jCj4+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2Nv
+bnRhaW5lcnMvcGlkbnMvcGlkbnMzMC5jCj4+PiBAQCAtMTg2LDcgKzE4Niw3IEBAIGludCBjaGls
+ZF9mbih2b2lkICphcmcpCj4+PiAgICAJd2hpbGUgKHJlYWQoZmF0aGVyX3RvX2NoaWxkWzBdLCBi
+dWYsIDEpICE9IDEpCj4+PiAgICAJCXNsZWVwKDEpOwo+Pj4KPj4+IC0JbXFkID0gc3lzY2FsbChf
+X05SX21xX29wZW4sIG1xbmFtZSwgT19SRE9OTFkpOwo+Pj4gKwltcWQgPSBzeXNjYWxsKF9fTlJf
+bXFfb3BlbiwgbXFuYW1lLCBPX1JET05MWSwgMCwgTlVMTCk7Cj4+PiAgICAJaWYgKG1xZCA9PSAt
+MSkgewo+Pj4gICAgCQlwZXJyb3IoIm1xX29wZW4gZmFpbGVkIik7Cj4+PiAgICAJCXJldHVybiAx
+Owo+Pj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRu
+czMxLmMgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMzMS5jCj4+PiBp
+bmRleCAyYTA3NDg5Li4xNDk4ZDE2IDEwMDY0NAo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9j
+b250YWluZXJzL3BpZG5zL3BpZG5zMzEuYwo+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250
+YWluZXJzL3BpZG5zL3BpZG5zMzEuYwo+Pj4gQEAgLTE3Nyw3ICsxNzcsNyBAQCBpbnQgY2hpbGRf
+Zm4odm9pZCAqYXJnKQo+Pj4gICAgCX0KPj4+ICAgIAl0c3RfcmVzbShUSU5GTywgImNpbml0OiBt
+eSBmYXRoZXIgaXMgcmVhZHkgdG8gcmVjZWl2ZSBhIG1lc3NhZ2UiKTsKPj4+Cj4+PiAtCW1xZCA9
+IHN5c2NhbGwoX19OUl9tcV9vcGVuLCBtcW5hbWUsIE9fV1JPTkxZKTsKPj4+ICsJbXFkID0gc3lz
+Y2FsbChfX05SX21xX29wZW4sIG1xbmFtZSwgT19XUk9OTFksIDAsIE5VTEwpOwo+Pj4gICAgCWlm
+IChtcWQgPT0gKG1xZF90KSAtIDEpIHsKPj4+ICAgIAkJdHN0X3Jlc20oVEJST0ssICJjaW5pdDog
+bXFfb3BlbigpIGZhaWxlZCAoJXMpIiwKPj4+ICAgIAkJCSBzdHJlcnJvcihlcnJubykpOwo+Pj4K
+Pj4KPgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMb2dNZUluIFJlc2N1ZTogQW55d2hlcmUsIEFu
+eXRpbWUgUmVtb3RlIHN1cHBvcnQgZm9yIElULiBGcmVlIFRyaWFsClJlbW90ZWx5IGFjY2VzcyBQ
+Q3MgYW5kIG1vYmlsZSBkZXZpY2VzIGFuZCBwcm92aWRlIGluc3RhbnQgc3VwcG9ydApJbXByb3Zl
+IHlvdXIgZWZmaWNpZW5jeSwgYW5kIGZvY3VzIG9uIGRlbGl2ZXJpbmcgbW9yZSB2YWx1ZS1hZGQg
+c2VydmljZXMKRGlzY292ZXIgd2hhdCBJVCBQcm9mZXNzaW9uYWxzIEtub3cuIFJlc2N1ZSBkZWxp
+dmVycwpodHRwOi8vcC5zZi5uZXQvc2Z1L2xvZ21laW5fMTIzMjlkMmQKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0
+cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
