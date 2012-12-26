@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jshao@redhat.com>) id 1Tnmfr-0001Ji-Q0
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:15 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TnkD8-0006tv-Ij
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 06:11:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tnmfq-0002cB-Lp
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:15 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBQ8n8Yu001465
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Dec 2012 03:49:08 -0500
-From: Monson Shao <jshao@redhat.com>
-Date: Wed, 26 Dec 2012 16:48:37 +0800
-Message-Id: <1356511717-31058-3-git-send-email-jshao@redhat.com>
-In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+	id 1TnkD7-0001XT-BJ
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 06:11:26 +0000
+Message-ID: <50DA951C.7030106@cn.fujitsu.com>
+Date: Wed, 26 Dec 2012 14:11:40 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
 References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
-Subject: [LTP] [PATCHv2 3/3] pidns16: child should not get parent pid in
-	parent NS
+In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] pidns16: split test condition and result judge
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,61 +25,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Monson Shao <jshao@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-parent pid in parent NS is invisible to child, even when child got signalled
-from parent, the signaller process should be fake parent (PID 0).
-
-Signed-off-by: Monson Shao <jshao@redhat.com>
----
- testcases/kernel/containers/pidns/pidns16.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
-index debc8d2..5b8247b 100644
---- a/testcases/kernel/containers/pidns/pidns16.c
-+++ b/testcases/kernel/containers/pidns/pidns16.c
-@@ -54,7 +54,6 @@
- 
- char *TCID = "pidns16";
- int TST_TOTAL = 3;
--pid_t globalpid;
- 
- /*
-  * cleanup() - performs all ONE TIME cleanup for this test at
-@@ -76,7 +75,7 @@ void child_signal_handler(int sig, siginfo_t * si, void *unused)
- 
- 	switch (c) {
- 	case 1:
--		expected_pid = globalpid;
-+		expected_pid = PARENT_PID;
- 		break;
- 	case 2:
- 		expected_pid = CHILD_PID;
-@@ -138,8 +137,6 @@ int main(int argc, char *argv[])
- 	int status;
- 	pid_t cpid;
- 
--	globalpid = getpid();
--
- 	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
- 
- 	if (cpid < 0) {
--- 
-1.7.11.7
-
-
-------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMTIvMjUvMjAxMiAwMzoyNiBQTSwgTW9uc29uIFNoYW8gd3JvdGU6Cj4gTWFrZSBpdCBlYXN5
+IHRvIHJlYWQuCj4gCj4gU2lnbmVkLW9mZi1ieTogTW9uc29uIFNoYW8gPGpzaGFvQHJlZGhhdC5j
+b20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczE2LmMg
+fCAyNCArKysrKysrKysrKysrKysrLS0tLS0tLS0KPiAgMSDkuKrmlofku7booqvkv67mlLnvvIzm
+j5LlhaUgMTYg6KGMKCsp77yM5Yig6ZmkIDgg6KGMKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczE2LmMgYi90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMxNi5jCj4gaW5kZXggOGEyMzJjNi4uOWExMjE5YSAxMDA2
+NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMxNi5jCj4g
+KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMTYuYwo+IEBAIC03
+MCwxNyArNzAsMjUgQEAgdm9pZCBjbGVhbnVwKCkKPiAgdm9pZCBjaGlsZF9zaWduYWxfaGFuZGxl
+cihpbnQgc2lnLCBzaWdpbmZvX3QgKiBzaSwgdm9pZCAqdW51c2VkKQo+ICB7Cj4gIAlzdGF0aWMg
+aW50IGMgPSAxOwo+ICsJcGlkX3QgZXhwZWN0ZWRfcGlkOwo+ICsKPiAgCS8qIFZlcmlmeWluZyBm
+cm9tIHdoaWNoIHByb2Nlc3MgdGhlIHNpZ25hbCBoYW5kbGVyIGlzIHNpZ25hbGxlZCAqLwo+ICAK
+PiAtCWlmICgoYyA9PSAxKSAmJiAoc2ktPnNpX3BpZCA9PSBnbG9iYWxwaWQpKQo+IC0JCXRzdF9y
+ZXNtKFRJTkZPLCAic2lnX2hhbmRsZXIgaXMgc2lnbmFsbGVkIGZyb20gcGlkICAlZCIsCj4gLQkJ
+CSBnbG9iYWxwaWQpOwo+IC0JZWxzZSBpZiAoKGMgPT0gMikgJiYgKHNpLT5zaV9waWQgPT0gQ0hJ
+TERfUElEKSkKPiAtCQl0c3RfcmVzbShUSU5GTywgInNpZ19oYW5kbGVyIGlzIHNpZ25hbGxlZCBm
+cm9tIHBpZCAgJWQiLAo+IC0JCQkgQ0hJTERfUElEKTsKPiArCWlmIChjID09IDEpCj4gKwkJZXhw
+ZWN0ZWRfcGlkID0gZ2xvYmFscGlkOwo+ICsJZWxzZSBpZiAoYyA9PSAyKQo+ICsJCWV4cGVjdGVk
+X3BpZCA9IENISUxEX1BJRDsKPiArCWVsc2Ugewo+ICsJCXRzdF9yZXNtKFRCUk9LLCAiY2hpbGQg
+c2hvdWxkIE5PVCBiZSBzaWduYWxsZWQgMysgdGltZXMiKTsKPiArCQlyZXR1cm47Cj4gKwl9CgpQ
+bGVhc2UgYWRkIGJyYWNlcyBpbiBib3RoIGJyYW5jaGVzIGhlcmUuCgpUaGFua3MsCldhbmxvbmcg
+R2FvCgo+ICsKPiArCWlmIChzaS0+c2lfcGlkID09IGV4cGVjdGVkX3BpZCkKPiArCQl0c3RfcmVz
+bShUSU5GTywgImNoaWxkIGlzIHNpZ25hbGxlZCBmcm9tIHBpZCAlZCIsIGV4cGVjdGVkX3BpZCk7
+Cj4gIAllbHNlCj4gLQkJdHN0X3Jlc20oVEJST0ssICJVbmV4cGVjdGVkIHZhbHVlIGZvciBTZW5k
+aW5nLVByb2Nlc3NJRCIKPiAtCQkJICIgd2hlbiBzaWduYWwgaGFuZGxlciBjYWxsZWQgJWRcbiIs
+IHNpLT5zaV9waWQpOwo+ICsJCXRzdF9yZXNtKFRCUk9LLCAiY2hpbGQgaXMgc2lnbmFsbGVkIGZy
+b20gdW5leHBlY3RlZCBwaWQgJWQsIgo+ICsJCQkgIiBleHBlY3RpbmcgcGlkICVkIiwgc2ktPnNp
+X3BpZCwgZXhwZWN0ZWRfcGlkKTsKPiArCj4gIAljKys7Cj4gIH0KPiAgCj4gCgoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCkxvZ01lSW4gUmVzY3VlOiBBbnl3aGVyZSwgQW55dGltZSBSZW1vdGUgc3Vw
+cG9ydCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVtb3RlbHkgYWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRl
+dmljZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBzdXBwb3J0CkltcHJvdmUgeW91ciBlZmZpY2llbmN5
+LCBhbmQgZm9jdXMgb24gZGVsaXZlcmluZyBtb3JlIHZhbHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3Zl
+ciB3aGF0IElUIFByb2Zlc3Npb25hbHMgS25vdy4gUmVzY3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNm
+Lm5ldC9zZnUvbG9nbWVpbl8xMjMyOWQyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0Cg==
