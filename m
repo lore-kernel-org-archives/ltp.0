@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jshao@redhat.com>) id 1TnOv1-0002na-Ua
-	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:27:19 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jshao@redhat.com>) id 1Tnmfq-0003Bx-9N
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:14 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TnOv0-0000R3-63
-	for ltp-list@lists.sourceforge.net; Tue, 25 Dec 2012 07:27:19 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBP7RCsm025452
+	id 1Tnmfp-0000eD-KX
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:14 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBQ8n6jX003728
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Dec 2012 02:27:12 -0500
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Dec 2012 03:49:08 -0500
 From: Monson Shao <jshao@redhat.com>
-Date: Tue, 25 Dec 2012 15:26:32 +0800
-Message-Id: <1356420393-4253-2-git-send-email-jshao@redhat.com>
-MIME-Version: 1.0
-Subject: [LTP] =?utf-8?q?=5BPATCH_2/3=5D_pidns16=3A_modified_test_results?=
+Date: Wed, 26 Dec 2012 16:48:36 +0800
+Message-Id: <1356511717-31058-2-git-send-email-jshao@redhat.com>
+In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+Subject: [LTP] [PATCHv2 2/3] pidns16: modified test results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-VGhlIHRlc3Qgc2hvdWxkIHJlc3VsdCBURkFJTCBpZiBjaGlsZCBpcyBzaWduYWxsZWQgZnJvbSB1
-bmV4cGVjdGVkIHBpZCwKaW5zdGVhZCBvZiBUQlJPSy4gVGhlIHNhbWUgYXMgVFBBU1MvVElORk8g
-LgoKU2lnbmVkLW9mZi1ieTogTW9uc29uIFNoYW8gPGpzaGFvQHJlZGhhdC5jb20+Ci0tLQogdGVz
-dGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMTYuYyB8IDQgKystLQogMSDkuKrm
-lofku7booqvkv67mlLnvvIzmj5LlhaUgMiDooYwoKynvvIzliKDpmaQgMiDooYwoLSkKCmRpZmYg
-LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlkbnMxNi5jIGIvdGVz
-dGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL3BpZG5zMTYuYwppbmRleCA5YTEyMTlhLi4w
-YzU0YWNmIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvcGlk
-bnMxNi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9waWRuczE2LmMK
-QEAgLTg0LDkgKzg0LDkgQEAgdm9pZCBjaGlsZF9zaWduYWxfaGFuZGxlcihpbnQgc2lnLCBzaWdp
-bmZvX3QgKiBzaSwgdm9pZCAqdW51c2VkKQogCX0KIAogCWlmIChzaS0+c2lfcGlkID09IGV4cGVj
-dGVkX3BpZCkKLQkJdHN0X3Jlc20oVElORk8sICJjaGlsZCBpcyBzaWduYWxsZWQgZnJvbSBwaWQg
-JWQiLCBleHBlY3RlZF9waWQpOworCQl0c3RfcmVzbShUUEFTUywgImNoaWxkIGlzIHNpZ25hbGxl
-ZCBmcm9tIHBpZCAlZCIsIGV4cGVjdGVkX3BpZCk7CiAJZWxzZQotCQl0c3RfcmVzbShUQlJPSywg
-ImNoaWxkIGlzIHNpZ25hbGxlZCBmcm9tIHVuZXhwZWN0ZWQgcGlkICVkLCIKKwkJdHN0X3Jlc20o
-VEZBSUwsICJjaGlsZCBpcyBzaWduYWxsZWQgZnJvbSB1bmV4cGVjdGVkIHBpZCAlZCwiCiAJCQkg
-IiBleHBlY3RpbmcgcGlkICVkIiwgc2ktPnNpX3BpZCwgZXhwZWN0ZWRfcGlkKTsKIAogCWMrKzsK
-LS0gCjEuNy4xMS43CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxvZ01lSW4gUmVzY3VlOiBBbnl3
-aGVyZSwgQW55dGltZSBSZW1vdGUgc3VwcG9ydCBmb3IgSVQuIEZyZWUgVHJpYWwKUmVtb3RlbHkg
-YWNjZXNzIFBDcyBhbmQgbW9iaWxlIGRldmljZXMgYW5kIHByb3ZpZGUgaW5zdGFudCBzdXBwb3J0
-CkltcHJvdmUgeW91ciBlZmZpY2llbmN5LCBhbmQgZm9jdXMgb24gZGVsaXZlcmluZyBtb3JlIHZh
-bHVlLWFkZCBzZXJ2aWNlcwpEaXNjb3ZlciB3aGF0IElUIFByb2Zlc3Npb25hbHMgS25vdy4gUmVz
-Y3VlIGRlbGl2ZXJzCmh0dHA6Ly9wLnNmLm5ldC9zZnUvbG9nbWVpbl8xMjMyOWQyZApfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+The test should result TFAIL if child is signalled from unexpected pid,
+instead of TBROK. The same as TPASS/TINFO .
+
+Signed-off-by: Monson Shao <jshao@redhat.com>
+---
+ testcases/kernel/containers/pidns/pidns16.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
+index 04a1641..debc8d2 100644
+--- a/testcases/kernel/containers/pidns/pidns16.c
++++ b/testcases/kernel/containers/pidns/pidns16.c
+@@ -53,7 +53,7 @@
+ #define PARENT_PID	0
+ 
+ char *TCID = "pidns16";
+-int TST_TOTAL = 1;
++int TST_TOTAL = 3;
+ pid_t globalpid;
+ 
+ /*
+@@ -87,10 +87,10 @@ void child_signal_handler(int sig, siginfo_t * si, void *unused)
+ 	}
+ 
+ 	if (si->si_pid == expected_pid)
+-		tst_resm(TINFO, "child is signalled from expected pid %d",
++		tst_resm(TPASS, "child is signalled from expected pid %d",
+ 			 expected_pid);
+ 	else
+-		tst_resm(TBROK, "child is signalled from unexpected pid %d,"
++		tst_resm(TFAIL, "child is signalled from unexpected pid %d,"
+ 			 " expecting pid %d", si->si_pid, expected_pid);
+ 
+ 	c++;
+-- 
+1.7.11.7
+
+
+------------------------------------------------------------------------------
+LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
+Remotely access PCs and mobile devices and provide instant support
+Improve your efficiency, and focus on delivering more value-add services
+Discover what IT Professionals Know. Rescue delivers
+http://p.sf.net/sfu/logmein_12329d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
