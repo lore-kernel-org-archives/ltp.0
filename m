@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TfVox-0007db-1O
-	for ltp-list@lists.sourceforge.net; Mon, 03 Dec 2012 13:12:27 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jshao@redhat.com>) id 1Tnmfr-0001Ji-Q0
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:15 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TfVor-0002jZ-8Y
-	for ltp-list@lists.sourceforge.net; Mon, 03 Dec 2012 13:12:26 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qB3DCEIc002484
+	id 1Tnmfq-0002cB-Lp
+	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 08:49:15 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id qBQ8n8Yu001465
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Dec 2012 08:12:15 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id qB3CK2Uj026337
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Dec 2012 07:20:07 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  3 Dec 2012 13:19:56 +0100
-Message-Id: <1354537197-5353-1-git-send-email-jstancek@redhat.com>
-Subject: [LTP] [PATCH] clone: increase stack size to 1M
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Dec 2012 03:49:08 -0500
+From: Monson Shao <jshao@redhat.com>
+Date: Wed, 26 Dec 2012 16:48:37 +0800
+Message-Id: <1356511717-31058-3-git-send-email-jshao@redhat.com>
+In-Reply-To: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+Subject: [LTP] [PATCHv2 3/3] pidns16: child should not get parent pid in
+	parent NS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,33 +35,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-16k is not enough for some LTP signal handlers:
-http://article.gmane.org/gmane.linux.ltp/16992
-1M should be plenty for all architectures.
+parent pid in parent NS is invisible to child, even when child got signalled
+from parent, the signaller process should be fake parent (PID 0).
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Monson Shao <jshao@redhat.com>
 ---
- testcases/kernel/syscalls/clone/clone_platform.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ testcases/kernel/containers/pidns/pidns16.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/clone/clone_platform.h b/testcases/kernel/syscalls/clone/clone_platform.h
-index ae7ae1a..b5ba8c9 100644
---- a/testcases/kernel/syscalls/clone/clone_platform.h
-+++ b/testcases/kernel/syscalls/clone/clone_platform.h
-@@ -17,4 +17,4 @@
- /* Common platform specific defines for the clone system call tests */
+diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
+index debc8d2..5b8247b 100644
+--- a/testcases/kernel/containers/pidns/pidns16.c
++++ b/testcases/kernel/containers/pidns/pidns16.c
+@@ -54,7 +54,6 @@
  
- //#define CHILD_STACK_SIZE 8192
--#define CHILD_STACK_SIZE 16384
-+#define CHILD_STACK_SIZE (1024*1024)
+ char *TCID = "pidns16";
+ int TST_TOTAL = 3;
+-pid_t globalpid;
+ 
+ /*
+  * cleanup() - performs all ONE TIME cleanup for this test at
+@@ -76,7 +75,7 @@ void child_signal_handler(int sig, siginfo_t * si, void *unused)
+ 
+ 	switch (c) {
+ 	case 1:
+-		expected_pid = globalpid;
++		expected_pid = PARENT_PID;
+ 		break;
+ 	case 2:
+ 		expected_pid = CHILD_PID;
+@@ -138,8 +137,6 @@ int main(int argc, char *argv[])
+ 	int status;
+ 	pid_t cpid;
+ 
+-	globalpid = getpid();
+-
+ 	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
+ 
+ 	if (cpid < 0) {
 -- 
-1.7.1
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
-Keep yourself connected to Go Parallel: 
-BUILD Helping you discover the best ways to construct your parallel projects.
-http://goparallel.sourceforge.net
+LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
+Remotely access PCs and mobile devices and provide instant support
+Improve your efficiency, and focus on delivering more value-add services
+Discover what IT Professionals Know. Rescue delivers
+http://p.sf.net/sfu/logmein_12329d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
