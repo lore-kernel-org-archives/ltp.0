@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanegomi@gmail.com>) id 1TyjgP-0003yo-K5
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jan 2013 13:51:05 +0000
-Received: from mail-pa0-f47.google.com ([209.85.220.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TyjgM-0007Tl-Ca
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jan 2013 13:51:05 +0000
-Received: by mail-pa0-f47.google.com with SMTP id fa10so273036pad.6
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 25 Jan 2013 05:50:56 -0800 (PST)
-References: <04824307bb134b47b19291f8e3e100447919c496.1359115534.git.jstancek@redhat.com>
-Mime-Version: 1.0 (1.0)
-In-Reply-To: <04824307bb134b47b19291f8e3e100447919c496.1359115534.git.jstancek@redhat.com>
-Message-Id: <8D6AD52C-0E10-494A-9581-47F2ADA55158@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Date: Fri, 25 Jan 2013 05:50:54 -0800
-Subject: Re: [LTP] [PATCH] aio_fsync/2-1.c: fix race at exit,
-	check if write completed
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TqbFQ-0007J3-83
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jan 2013 03:13:36 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TqbFP-00013x-8J
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jan 2013 03:13:36 +0000
+Message-ID: <50E4F77C.9000403@cn.fujitsu.com>
+Date: Thu, 03 Jan 2013 11:14:04 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+	<1356511717-31058-1-git-send-email-jshao@redhat.com>
+In-Reply-To: <1356511717-31058-1-git-send-email-jshao@redhat.com>
+Subject: Re: [LTP] [PATCHv2 1/3] pidns16: split test condition and result
+ judge
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,94 +30,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Monson Shao <jshao@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Error code printing would be helpful...
-Thanks,
--Garrett
-
-Sent from my iPhone
-
-On Jan 25, 2013, at 4:15 AM, Jan Stancek <jstancek@redhat.com> wrote:
-
-> This is same issue as:
->  commit 4558bfae923a715ac78b5b3d3ecdfa16f9424808
->  Author: Jan Stancek <jstancek@redhat.com>
->  Date:   Wed Dec 5 12:49:47 2012 +0100
->      aio_read/7-1.c: fix race at exit
+On 12/26/2012 04:48 PM, Monson Shao wrote:
+> Make it easy to read.
 > 
-> This patch waits for aio_fsync to complete, and after that
-> checks that previously queued write is also completed.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> Signed-off-by: Monson Shao <jshao@redhat.com>
 > ---
-> .../conformance/interfaces/aio_fsync/2-1.c         |   24 ++++++++++++++++---
-> 1 files changed, 20 insertions(+), 4 deletions(-)
+>  testcases/kernel/containers/pidns/pidns16.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
-> index a534513..3a4c7fb 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
-> @@ -27,7 +27,7 @@ int main(void)
-> {
->    char tmpfname[256];
->    char buf[BUF_SIZE];
-> -    int fd;
-> +    int fd, ret;
->    struct aiocb aiocb_write;
->    struct aiocb aiocb_fsync;
+> diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
+> index 8a232c6..04a1641 100644
+> --- a/testcases/kernel/containers/pidns/pidns16.c
+> +++ b/testcases/kernel/containers/pidns/pidns16.c
+> @@ -70,17 +70,29 @@ void cleanup()
+>  void child_signal_handler(int sig, siginfo_t * si, void *unused)
+>  {
+>  	static int c = 1;
+> +	pid_t expected_pid;
+> +
+>  	/* Verifying from which process the signal handler is signalled */
+>  
+> -	if ((c == 1) && (si->si_pid == globalpid))
+> -		tst_resm(TINFO, "sig_handler is signalled from pid  %d",
+> -			 globalpid);
+> -	else if ((c == 2) && (si->si_pid == CHILD_PID))
+> -		tst_resm(TINFO, "sig_handler is signalled from pid  %d",
+> -			 CHILD_PID);
+> +	switch (c) {
+> +	case 1:
+> +		expected_pid = globalpid;
+> +		break;
+> +	case 2:
+> +		expected_pid = CHILD_PID;
+> +		break;
+> +	default:
+> + 		tst_resm(TBROK, "child should NOT be signalled 3+ times");
+> + 		return;
+
+These two lines added spaces before TAB, I edit on site, please take care next time.
+
+Thanks,
+Wanlong Gao
+
+> +	}
+> +
+> +	if (si->si_pid == expected_pid)
+> +		tst_resm(TINFO, "child is signalled from expected pid %d",
+> +			 expected_pid);
+>  	else
+> -		tst_resm(TBROK, "Unexpected value for Sending-ProcessID"
+> -			 " when signal handler called %d\n", si->si_pid);
+> +		tst_resm(TBROK, "child is signalled from unexpected pid %d,"
+> +			 " expecting pid %d", si->si_pid, expected_pid);
+> +
+>  	c++;
+>  }
+>  
 > 
-> @@ -63,9 +63,25 @@ int main(void)
->        exit(PTS_FAIL);
->    }
-> 
-> -    close(fd);
-> +    /* wait for aio_fsync */
-> +    do {
-> +        usleep(10000);
-> +        ret = aio_error(&aiocb_fsync);
-> +    } while (ret == EINPROGRESS);
-> 
-> -    /* we didn't check if the operation is really performed */
-> +    if (aio_return(&aiocb_fsync)) {
-> +        printf(TNAME " Error at aio_return()\n");
-> +        close(fd);
-> +        return PTS_FAIL;
-> +    }
-> 
-> -    return PTS_UNTESTED;
-> +    /* check that aio_write is completed at this point */
-> +    ret = aio_error(&aiocb_write);
-> +    if (ret == EINPROGRESS) {
-> +        printf(TNAME " aiocb_write error() : %s\n", strerror(ret));
-> +        close(fd);
-> +        return PTS_FAIL;
-> +    }
-> +    close(fd);
-> +    return PTS_PASS;
-> }
-> -- 
-> 1.7.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
-> MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
-> with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
-> MVPs and experts. ON SALE this month only -- learn more at:
-> http://p.sf.net/sfu/learnnow-d2d
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
 MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
 with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
 MVPs and experts. ON SALE this month only -- learn more at:
-http://p.sf.net/sfu/learnnow-d2d
+http://p.sf.net/sfu/learnmore_122712
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
