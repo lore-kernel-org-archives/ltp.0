@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <subashchandra.bose@wipro.com>) id 1Tnj06-0004dl-JF
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 04:53:54 +0000
-Received: from wipro-blr-out01.wipro.com ([203.91.198.74])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Tnj05-0005qM-7t
-	for ltp-list@lists.sourceforge.net; Wed, 26 Dec 2012 04:53:54 +0000
-From: <subashchandra.bose@wipro.com>
-Date: Wed, 26 Dec 2012 04:53:22 +0000
-Message-ID: <27EF8FABF41315449203A213FE20131355341D7F@BLR-SJP-MBX-4.wipro.com>
-Content-Language: en-US
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TqbDu-0000Dl-Bh
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jan 2013 03:12:02 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TqbDs-0008V6-Mu
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jan 2013 03:12:02 +0000
+Message-ID: <50E4F71D.6070803@cn.fujitsu.com>
+Date: Thu, 03 Jan 2013 11:12:29 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  Getting User input data not working
+References: <1356420393-4253-1-git-send-email-jshao@redhat.com>
+	<1356511717-31058-2-git-send-email-jshao@redhat.com>
+In-Reply-To: <1356511717-31058-2-git-send-email-jshao@redhat.com>
+Subject: Re: [LTP] [PATCHv2 2/3] pidns16: modified test results
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,109 +26,30 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1987461741197168535=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============1987461741197168535==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_27EF8FABF41315449203A213FE20131355341D7FBLRSJPMBX4wipro_"
-
---_000_27EF8FABF41315449203A213FE20131355341D7FBLRSJPMBX4wipro_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hello All,
-
-
-
-I am using LTP drop released on ltp-full-20120104 version.
-
-
-
-I have written a testcase to get user input data and call that testcase usi=
-ng "runltp", the command I use to get user input data is "read -t 10 respon=
-se"
-
-
-
-But, when enter user input after running "runltp" it is not working. The sa=
-me testcase is working fine getting user input from command line.
-
-
-
-Can any one help me why it is not working in LTP, is there any work around =
-on this?
-
-
-
-Thanks & Regards,
-
--Subash
-
---_000_27EF8FABF41315449203A213FE20131355341D7FBLRSJPMBX4wipro_
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html dir=3D"ltr">
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
-1">
-<style id=3D"owaParaStyle">P {
-	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
-}
-</style>
-</head>
-<body fPStyle=3D"1" ocsi=3D"0">
-<div style=3D"direction: ltr;font-family: Tahoma;color: #000000;font-size: =
-10pt;">
-<p>Hello All,</p>
-<p>&nbsp;</p>
-<p>I am using LTP drop released on ltp-full-20120104 version.</p>
-<p>&nbsp;</p>
-<p>I have written a testcase to get user input data and call that testcase =
-using &quot;runltp&quot;, the command I use to get user input data is &quot=
-;read -t 10 response&quot;</p>
-<p>&nbsp;</p>
-<p>But, when enter user input after running &quot;runltp&quot; it is not wo=
-rking. The same testcase is working fine getting user input from command li=
-ne.</p>
-<p>&nbsp;</p>
-<p>Can any one help me why it is not working in LTP, is there any work arou=
-nd on this?</p>
-<p>&nbsp;</p>
-<p>Thanks &amp; Regards,</p>
-<p>-Subash</p>
-</div>
-</body>
-</html>
-
---_000_27EF8FABF41315449203A213FE20131355341D7FBLRSJPMBX4wipro_--
-
-
---===============1987461741197168535==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Monson Shao <jshao@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 12/26/2012 04:48 PM, Monson Shao wrote:
+> The test should result TFAIL if child is signalled from unexpected pid,
+> instead of TBROK. The same as TPASS/TINFO .
+> 
+> Signed-off-by: Monson Shao <jshao@redhat.com>
+
+Applied, thank you.
+
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
-LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
-Remotely access PCs and mobile devices and provide instant support
-Improve your efficiency, and focus on delivering more value-add services
-Discover what IT Professionals Know. Rescue delivers
-http://p.sf.net/sfu/logmein_12329d2d
---===============1987461741197168535==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
+MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
+with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
+MVPs and experts. ON SALE this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122712
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1987461741197168535==--
-
