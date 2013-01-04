@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sedat.dilek@gmail.com>) id 1TvTyq-0002RA-SU
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 14:28:40 +0000
-Received: from mail-qa0-f44.google.com ([209.85.216.44])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TvTyn-0002m8-Gc
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 14:28:40 +0000
-Received: by mail-qa0-f44.google.com with SMTP id z4so3366919qan.3
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 16 Jan 2013 06:28:32 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1Tr1bw-0003AF-MM
+	for ltp-list@lists.sourceforge.net; Fri, 04 Jan 2013 07:22:36 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Tr1bv-0008Vt-85
+	for ltp-list@lists.sourceforge.net; Fri, 04 Jan 2013 07:22:36 +0000
+Message-ID: <50E682DF.3050901@redhat.com>
+Date: Fri, 04 Jan 2013 15:21:03 +0800
+From: Zhouping Liu <zliu@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <50F6B2EF.70007@linux.vnet.ibm.com>
-References: <CA+icZUUsDzP+uLWD0i=JpMSiK1Qu3Pdux19rE7wTeJJu+-FaZw@mail.gmail.com>
-	<50F6B2EF.70007@linux.vnet.ibm.com>
-Date: Wed, 16 Jan 2013 15:28:31 +0100
-Message-ID: <CA+icZUVRe5yzkkcO3_Lvvkmr53pZ9HmS40GgDGqd3GFdJkLqNA@mail.gmail.com>
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [LTP] Spelling "succeded" VS. "succeeded"
-Reply-To: sedat.dilek@gmail.com
+References: <cover.1357277005.git.zliu@redhat.com>
+	<50E67F91.106@casparzhang.com>
+In-Reply-To: <50E67F91.106@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2 0/2] updated create_same_memory() inside
+	lib/mem.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,123 +29,222 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shubham <shubham@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, Jan 16, 2013 at 3:02 PM, shubham <shubham@linux.vnet.ibm.com> wrote:
-> On 01/16/2013 06:45 PM, Sedat Dilek wrote:
+On 01/04/2013 03:06 PM, Caspar Zhang wrote:
+> On 01/04/2013 02:12 PM, Zhouping Liu wrote:
+>> changed in v2:
+>>   - modified '_function_name' as 'function_name'
+>>   - added 'static' key word for internal function
+>>   - updated a little commit log
 >>
->> Hi,
+>> Zhouping Liu (2):
+>>    mm/lib: rewrote create_same_memory()
+>>    mm/include: removed the global var 'memory'
 >>
->> this is my first email to the LTP ML, so I am new and anot not
->> familiar with known or unknown conventions here.
->>
->> I am using LTP, to be honest the "lite" test to check my Linux
->> (upstream) and Linux-Next kernels.
->> So, having run "runltplite.sh" successfully gives me a 1st impression
->> or orientation this kernel has no bigger issues.
->>
->> To be honest I have checked with a minimal kernel-setup (a
->> localmodconfig-ed setup with some debugging enabled).
->>
->> While looking trough the results especially searching for some
->> pattern, I noticed the different spelling of the word "succeeded" VS.
->> "succeded".
->> The spell-checker integrated in Firefox v18.0 tells me "succeeded"
->> with double-e is correct.
->>
->> [ SUCCEDED - one "E" ]
->>
->> $ egrep -i 'error|fail'
->> runltplite-results_3.8.0-rc3-next20130116-2-iniza-generic.txt | egrep
->> -i succeded
->> flock01     1  TPASS  :  flock() succeded with Shared Lock, returned
->> error number=0
->> flock01     2  TPASS  :  flock() succeded with Unlock, returned error
->> number=0
->> flock01     3  TPASS  :  flock() succeded with Exclusive Lock,
->> returned error number=0
->>
->> [ SUCCEEDED - double "E" ]
->>
->> $ egrep -i 'error|fail'
->> runltplite-results_3.8.0-rc3-next20130116-2-iniza-generic.txt | egrep
->> -i succeeded
->> madvise02    5  TFAIL  :  madvise succeeded unexpectedly
->> open call succeededopen failed with EACCES as expectedopen call
->> succeeded<<<execution_status>>>
->>
->> AFAICS flock01.c needs to be corrected:
->>
->> --- ltp-full-20120903.orig/testcases/kernel/syscalls/flock/flock01.c
->>   2012-09-03 06:39:27.000000000 +0200
->> +++ ltp-full-20120903/testcases/kernel/syscalls/flock/flock01.c
->> 2013-01-16 14:12:36.597859952 +0100
->> @@ -128,7 +128,7 @@ int main(int argc, char **argv)
->>                                  continue;       /*next loop for MTKERNEL
->> */
->>                          } else {
->>                                  tst_resm(TPASS,
->> -                                        "flock() succeded with %s,
->> returned error number=%d",
->> +                                        "flock() succeeded with %s,
->> returned error number=%d",
->>                                           test_cases[i].opt, TEST_ERRNO);
->>                          }
->>
->> Not sure if you like that patch sent via git-email as a separate patch?
+>>   testcases/kernel/mem/include/_private.h |   2 +-
+>>   testcases/kernel/mem/include/mem.h      |   5 -
+>>   testcases/kernel/mem/lib/mem.c          | 425 
+>> +++++++++++++-------------------
+>>   3 files changed, 170 insertions(+), 262 deletions(-)
 >>
 >
-> We are not very concerned about some typos in log messages. Please come up
-> with a fix for a broken test case or something which will really add a value
-> to the LTP. Your patches are welcome. Kindly refer the documentation
-> provided with LTP for the format of patch.
->
+> Since there is no function updated in the patch, I'm OK to apply it if 
+> a unit-test is executed (better testing in a wide range of systems) 
+> and get ACKs from other reviewers. Zhouping, would you mind pasting 
+> some test details against your patch before we apply it?
 
-Hi,
+This is an example of output log with the patch on Fedora 17:
 
-as said I am knew to LTP.
+[root@ZhoupingLiu ksm]# ./ksm01 -s 1 -n 6
+ksm01       0  TINFO  :  child 0 stops.
+ksm01       0  TINFO  :  child 1 stops.
+ksm01       0  TINFO  :  child 2 stops.
+ksm01       0  TINFO  :  child 3 stops.
+ksm01       0  TINFO  :  wait for all children to stop.
+ksm01       0  TINFO  :  child 4 stops.
+ksm01       0  TINFO  :  child 5 stops.
+ksm01       0  TINFO  :  KSM merging...
+ksm01       0  TINFO  :  resume all children.
+ksm01       0  TINFO  :  child 0 continues...
+ksm01       0  TINFO  :  child 1 continues...
+ksm01       0  TINFO  :  child 0 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 1 allocates 1 MB filled with 'a'
+ksm01       0  TINFO  :  child 4 continues...
+ksm01       0  TINFO  :  child 4 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 2 continues...
+ksm01       0  TINFO  :  child 2 allocates 1 MB filled with 'a'
+ksm01       0  TINFO  :  child 3 continues...
+ksm01       0  TINFO  :  child 3 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 0 stops.
+ksm01       0  TINFO  :  child 2 stops.
+ksm01       0  TINFO  :  child 3 stops.
+ksm01       0  TINFO  :  child 5 continues...
+ksm01       0  TINFO  :  child 5 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 4 stops.
+ksm01       0  TINFO  :  child 1 stops.
+ksm01       0  TINFO  :  child 5 stops.
+ksm01       0  TINFO  :  ksm daemon takes 20s to scan all mergeable pages
+ksm01       0  TINFO  :  check!
+ksm01       0  TINFO  :  run is 1.
+ksm01       0  TINFO  :  pages_shared is 2.
+ksm01       0  TINFO  :  pages_sharing is 1534.
+ksm01       0  TINFO  :  pages_volatile is 0.
+ksm01       0  TINFO  :  pages_unshared is 0.
+ksm01       0  TINFO  :  sleep_millisecs is 0.
+ksm01       0  TINFO  :  pages_to_scan is 1536.
+ksm01       0  TINFO  :  wait for all children to stop.
+ksm01       0  TINFO  :  resume all children.
+ksm01       0  TINFO  :  child 1 verifies memory content.
+ksm01       0  TINFO  :  child 0 verifies memory content.
+ksm01       0  TINFO  :  child 2 verifies memory content.
+ksm01       0  TINFO  :  child 1 continues...
+ksm01       0  TINFO  :  child 0 continues...
+ksm01       0  TINFO  :  child 2 continues...
+ksm01       0  TINFO  :  child 1 allocates 1 MB filled with 'b'
+ksm01       0  TINFO  :  child 0 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 2 allocates 1 MB filled with 'a'
+ksm01       0  TINFO  :  child 2 stops.
+ksm01       0  TINFO  :  child 4 verifies memory content.
+ksm01       0  TINFO  :  child 5 verifies memory content.
+ksm01       0  TINFO  :  child 0 stops.
+ksm01       0  TINFO  :  child 1 stops.
+ksm01       0  TINFO  :  child 3 verifies memory content.
+ksm01       0  TINFO  :  child 4 continues...
+ksm01       0  TINFO  :  child 5 continues...
+ksm01       0  TINFO  :  child 5 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 4 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 3 continues...
+ksm01       0  TINFO  :  child 3 allocates 1 MB filled with 'c'
+ksm01       0  TINFO  :  child 5 stops.
+ksm01       0  TINFO  :  child 3 stops.
+ksm01       0  TINFO  :  child 4 stops.
+ksm01       0  TINFO  :  ksm daemon takes 20s to scan all mergeable pages
+ksm01       0  TINFO  :  check!
+ksm01       0  TINFO  :  run is 1.
+ksm01       0  TINFO  :  pages_shared is 3.
+ksm01       0  TINFO  :  pages_sharing is 1533.
+ksm01       0  TINFO  :  pages_volatile is 0.
+ksm01       0  TINFO  :  pages_unshared is 0.
+ksm01       0  TINFO  :  sleep_millisecs is 0.
+ksm01       0  TINFO  :  pages_to_scan is 1536.
+ksm01       0  TINFO  :  wait for all children to stop.
+ksm01       0  TINFO  :  resume all children.
+ksm01       0  TINFO  :  child 1 verifies memory content.
+ksm01       0  TINFO  :  child 0 verifies memory content.
+ksm01       0  TINFO  :  child 2 verifies memory content.
+ksm01       0  TINFO  :  child 1 continues...
+ksm01       0  TINFO  :  child 1 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 0 continues...
+ksm01       0  TINFO  :  child 2 continues...
+ksm01       0  TINFO  :  child 0 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 2 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 3 verifies memory content.
+ksm01       0  TINFO  :  child 3 continues...
+ksm01       0  TINFO  :  child 3 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 1 stops.
+ksm01       0  TINFO  :  child 0 stops.
+ksm01       0  TINFO  :  child 2 stops.
+ksm01       0  TINFO  :  child 5 verifies memory content.
+ksm01       0  TINFO  :  child 4 verifies memory content.
+ksm01       0  TINFO  :  child 5 continues...
+ksm01       0  TINFO  :  child 5 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 3 stops.
+ksm01       0  TINFO  :  child 4 continues...
+ksm01       0  TINFO  :  child 4 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 5 stops.
+ksm01       0  TINFO  :  child 4 stops.
+ksm01       0  TINFO  :  ksm daemon takes 20s to scan all mergeable pages
+ksm01       0  TINFO  :  check!
+ksm01       0  TINFO  :  run is 1.
+ksm01       0  TINFO  :  pages_shared is 1.
+ksm01       0  TINFO  :  pages_sharing is 1535.
+ksm01       0  TINFO  :  pages_volatile is 0.
+ksm01       0  TINFO  :  pages_unshared is 0.
+ksm01       0  TINFO  :  sleep_millisecs is 0.
+ksm01       0  TINFO  :  pages_to_scan is 1536.
+ksm01       0  TINFO  :  wait for all children to stop.
+ksm01       0  TINFO  :  resume all children.
+ksm01       0  TINFO  :  child 1 verifies memory content.
+ksm01       0  TINFO  :  child 0 verifies memory content.
+ksm01       0  TINFO  :  child 2 verifies memory content.
+ksm01       0  TINFO  :  child 4 verifies memory content.
+ksm01       0  TINFO  :  child 1 continues...
+ksm01       0  TINFO  :  child 1 allocates 1 MB filled with 'd' except 
+one page with 'e'
+ksm01       0  TINFO  :  child 0 continues...
+ksm01       0  TINFO  :  child 2 continues...
+ksm01       0  TINFO  :  child 0 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 2 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 4 continues...
+ksm01       0  TINFO  :  child 4 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 1 stops.
+ksm01       0  TINFO  :  child 0 stops.
+ksm01       0  TINFO  :  child 2 stops.
+ksm01       0  TINFO  :  child 3 verifies memory content.
+ksm01       0  TINFO  :  child 5 verifies memory content.
+ksm01       0  TINFO  :  child 3 continues...
+ksm01       0  TINFO  :  child 3 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 4 stops.
+ksm01       0  TINFO  :  child 5 continues...
+ksm01       0  TINFO  :  child 5 allocates 1 MB filled with 'd'
+ksm01       0  TINFO  :  child 3 stops.
+ksm01       0  TINFO  :  child 5 stops.
+ksm01       0  TINFO  :  ksm daemon takes 20s to scan all mergeable pages
+ksm01       0  TINFO  :  check!
+ksm01       0  TINFO  :  run is 1.
+ksm01       0  TINFO  :  pages_shared is 1.
+ksm01       0  TINFO  :  pages_sharing is 1534.
+ksm01       0  TINFO  :  pages_volatile is 0.
+ksm01       0  TINFO  :  pages_unshared is 1.
+ksm01       0  TINFO  :  sleep_millisecs is 0.
+ksm01       0  TINFO  :  pages_to_scan is 1536.
+ksm01       0  TINFO  :  wait for all children to stop.
+ksm01       0  TINFO  :  KSM unmerging...
+ksm01       0  TINFO  :  resume all children.
+ksm01       0  TINFO  :  child 1 verifies memory content.
+ksm01       0  TINFO  :  child 1 verifies memory content.
+ksm01       0  TINFO  :  child 0 verifies memory content.
+ksm01       0  TINFO  :  child 4 verifies memory content.
+ksm01       0  TINFO  :  child 4 finished.
+ksm01       0  TINFO  :  child 1 finished.
+ksm01       0  TINFO  :  child 0 finished.
+ksm01       0  TINFO  :  child 5 verifies memory content.
+ksm01       0  TINFO  :  child 5 finished.
+ksm01       0  TINFO  :  child 2 verifies memory content.
+ksm01       0  TINFO  :  child 3 verifies memory content.
+ksm01       0  TINFO  :  child 2 finished.
+ksm01       0  TINFO  :  child 3 finished.
+ksm01       0  TINFO  :  ksm daemon takes 10s to scan all mergeable pages
+ksm01       0  TINFO  :  check!
+ksm01       0  TINFO  :  run is 2.
+ksm01       0  TINFO  :  pages_shared is 0.
+ksm01       0  TINFO  :  pages_sharing is 0.
+ksm01       0  TINFO  :  pages_volatile is 0.
+ksm01       0  TINFO  :  pages_unshared is 0.
+ksm01       0  TINFO  :  sleep_millisecs is 0.
+ksm01       0  TINFO  :  pages_to_scan is 1536.
+ksm01       0  TINFO  :  stop KSM.
+ksm01       0  TINFO  :  ksm daemon takes 10s to scan all mergeable pages
+ksm01       0  TINFO  :  check!
+ksm01       0  TINFO  :  run is 0.
+ksm01       0  TINFO  :  pages_shared is 0.
+ksm01       0  TINFO  :  pages_sharing is 0.
+ksm01       0  TINFO  :  pages_volatile is 0.
+ksm01       0  TINFO  :  pages_unshared is 0.
+ksm01       0  TINFO  :  sleep_millisecs is 0.
+ksm01       0  TINFO  :  pages_to_scan is 1536.
 
-Such a typo makes grepping for special search-patterns difficult.
-I was searching for real failures by sorting out "expected" and
-"succeeded" lines.
-Even this is a trivial fix for you - it helped here :-).
-
-Not sure what you are expecting from me.
-Might be I flood ltp-results ML with the results of my Linux-Next kernels.
-Unsure if this helps people or not.
-
-Personally, I don't like the outputs of results...
-Especially start/end tags should include the (file)name of the testcase.
-But I had no deeper look into the results and only run the "lite" test-script.
-
-Looking into the README file I see I am missing some kernel-configs to
-be enabled.
-Not sure if I really what to dig that deep into LTP.
-
-Of course, LTP is a helpful testing-framework.
-It gives me a better feeling than just only test my kernels...
-1. on bare metal (not in any VM)
-2. in daily usage
-
-I could catch a madvise regression in Linux-Next and reported it.
-
-Thanks!
-
-Regards,
-- Sedat -
-
-[1] http://marc.info/?l=linux-next&m=135819894717604&w=2
-
-> Thanks
->
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
-Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
-and much more. Keep your Java skills current with LearnJavaNow -
-200+ hours of step-by-step video tutorials by Java experts.
-SALE $49.99 this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122612 
+Master HTML5, CSS3, ASP.NET, MVC, AJAX, Knockout.js, Web API and
+much more. Get web development skills now with LearnDevNow -
+350+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
+SALE $99.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122812
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
