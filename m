@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1Tvpc8-0008Ia-VS
-	for ltp-list@lists.sourceforge.net; Thu, 17 Jan 2013 13:34:41 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Tvpc7-0002MW-FS
-	for ltp-list@lists.sourceforge.net; Thu, 17 Jan 2013 13:34:40 +0000
-Date: Thu, 17 Jan 2013 08:34:32 -0500 (EST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1Tr0XG-0001QF-4K
+	for ltp-list@lists.sourceforge.net; Fri, 04 Jan 2013 06:13:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Tr0XE-0004KN-8A
+	for ltp-list@lists.sourceforge.net; Fri, 04 Jan 2013 06:13:42 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r046DYLX031157
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 4 Jan 2013 01:13:34 -0500
 From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <147078656.7580859.1358429672135.JavaMail.root@redhat.com>
-In-Reply-To: <50F7E521.5050204@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] max_map_count: Fails due to negative memfree value
+Date: Fri,  4 Jan 2013 14:12:09 +0800
+Message-Id: <2a7ebedf19609652dd8a5da772b4575927d6891d.1357277005.git.zliu@redhat.com>
+In-Reply-To: <cover.1357277005.git.zliu@redhat.com>
+References: <cover.1357277005.git.zliu@redhat.com>
+In-Reply-To: <cover.1357277005.git.zliu@redhat.com>
+References: <cover.1357277005.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2 1/2] mm/lib: rewrote create_same_memory()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,72 +30,557 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: madhura <madhura@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
+create_same_memory() was too large and contained lots of duplicated codes,
+and it's a little hard-coding, so that it's not easy to read and
+extend it for new case.
 
+I splited it for five sub-functions:
 
------ Original Message -----
-> From: "madhura" <madhura@linux.vnet.ibm.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, January 17, 2013 7:48:49 PM
-> Subject: [LTP]  [PATCH] max_map_count: Fails due to negative memfree value
-> 
-> In situations when memory is occupied to a certain higher limit by
-> system processes, the amount of memory available may be in
-> negative/low values not suitable for testing.
-> Hence its better to have a memory check prior to the test beginning.
-> 
-> Signed-off-by: Madhura P S <madhura@linux.vnet.ibm.com>
-> 
-> ---
-> ltp-full-20130109/testcases/kernel/mem/tunable/max_map_count.c.org
-> 	2013-01-17 17:15:38.957032558 +0530
-> +++ ltp-full-20130109/testcases/kernel/mem/tunable/max_map_count.c
-> 	2013-01-17 17:16:58.092909326 +0530
-> @@ -152,7 +152,7 @@ static void max_map_count_test(void)
->   	pid_t pid;
->   	long max_maps;
->   	long map_count;
-> -	long max_iters;
-> +	long max_iters = 0;
->   	long memfree;
->   
->   	/*
-> @@ -174,7 +174,8 @@ static void max_map_count_test(void)
->   	 */
->   	memfree = read_meminfo("CommitLimit:") -
->   	read_meminfo("Committed_AS:");
->   	/* 64 used as a bias to make sure no overflow happen */
-> -	max_iters = memfree / sysconf(_SC_PAGESIZE) * 1024 - 64;
-> +	if (memfree > 0)
-> +		max_iters = memfree / sysconf(_SC_PAGESIZE) * 1024 - 64;
+  ksm_child_memset();
+  create_ksm_child();
+  stop_ksm_children();
+  resume_ksm_children();
+  create_smae_memory();
 
-Generally, the situation (CommitLimit < Committed_AS) can't be hit,
-IMO, if yes, that means your system has been some broken(I suppose it's kernel's issue)
+Also I intruduced a data struct to control the mergeable data:
 
-so you should here add the below lines to catch the exception:
+  struct ksm_merge_data {
+        char data;
+        int mergeable_size;
+  };
 
-        else {
-               tst_resm(TINFO, "CommmitLimit is %ld, Committed_AS"
-                        " is %ld", commit_limit, committed);
-               tst_brkm(TBROK, cleanup, "Unexpected error: "
-                        "CommitLimit < Committed_AS");
-        }
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/include/_private.h |   2 +-
+ testcases/kernel/mem/lib/mem.c          | 425 +++++++++++++-------------------
+ 2 files changed, 170 insertions(+), 257 deletions(-)
 
+diff --git a/testcases/kernel/mem/include/_private.h b/testcases/kernel/mem/include/_private.h
+index 71164f5..43eda0e 100644
+--- a/testcases/kernel/mem/include/_private.h
++++ b/testcases/kernel/mem/include/_private.h
+@@ -11,7 +11,7 @@ static void _check(char *path, long int value);
+ static void _group_check(int run, int pages_shared, int pages_sharing,
+ 		int pages_volatile, int pages_unshared,
+ 		int sleep_millisecs, int pages_to_scan);
+-static void _verify(char value, int proc, int start, int end,
++static void _verify(char **memory_new, char value, int proc, int start, int end,
+ 		int start2, int end2);
+ 
+ /* cpuset/memcg */
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index f095fe1..87d47a8 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -200,8 +200,8 @@ static void _group_check(int run, int pages_shared, int pages_sharing,
+ 	_check("pages_to_scan", pages_to_scan);
+ }
+ 
+-static void _verify(char value, int proc, int start, int end,
+-		    int start2, int end2)
++static void _verify(char **memory_new, char value, int proc,
++		    int start, int end, int start2, int end2)
+ {
+ 	int i, j;
+ 	void *s = NULL;
+@@ -212,14 +212,14 @@ static void _verify(char value, int proc, int start, int end,
+ 
+ 	tst_resm(TINFO, "child %d verifies memory content.", proc);
+ 	memset(s, value, (end - start) * (end2 - start2));
+-	if (memcmp(memory[proc][start], s, (end - start) * (end2 - start2))
++	if (memcmp(memory_new[start], s, (end - start) * (end2 - start2))
+ 	    != 0)
+ 		for (j = start; j < end; j++)
+ 			for (i = start2; i < end2; i++)
+-				if (memory[proc][j][i] != value)
++				if (memory_new[j][i] != value)
+ 					tst_resm(TFAIL, "child %d has %c at "
+ 						 "%d,%d,%d.",
+-						 proc, memory[proc][j][i], proc,
++						 proc, memory_new[j][i], proc,
+ 						 j, i);
+ 	free(s);
+ }
+@@ -235,299 +235,212 @@ void write_memcg(void)
+ 	write_file(MEMCG_PATH_NEW "/tasks", buf);
+ }
+ 
+-void create_same_memory(int size, int num, int unit)
++static struct ksm_merge_data {
++	char data;
++	int mergeable_size;
++};
++
++static void ksm_child_memset(int child_num, int size, int total_unit,
++		 struct ksm_merge_data ksm_merge_data, char **memory_new)
+ {
+-	char buf[BUFSIZ];
+-	int i, j, k;
+-	int status;
+-	int *child;
+-	long ps, pages;
++	int i, j;
++	int unit = size / total_unit;
+ 
+-	ps = sysconf(_SC_PAGE_SIZE);
+-	pages = 1024 * 1024 / ps;
++	tst_resm(TINFO, "child %d continues...", child_num);
+ 
+-	child = malloc(num);
+-	if (child == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++	if (ksm_merge_data.mergeable_size == size * MB) {
++		tst_resm(TINFO, "child %d allocates %d MB filled with '%c'",
++			child_num, size, ksm_merge_data.data);
+ 
+-	memory = malloc(num * sizeof(**memory));
+-	if (memory == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++	} else {
++		tst_resm(TINFO, "child %d allocates %d MB filled with '%c'"
++				" except one page with 'e'",
++				child_num, size, ksm_merge_data.data);
++	}
+ 
+-	/* Don't call cleanup in those children. Instead, do a cleanup from the
+-	   parent after fetched children's status. */
+-	switch (child[0] = fork()) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-	case 0:
+-		tst_resm(TINFO, "child 0 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-
+-		tst_resm(TINFO, "child 0 continues...");
+-		tst_resm(TINFO, "child 0 allocates %d MB filled with 'c'.",
+-			 size);
+-		memory[0] = malloc(size / unit * sizeof(*memory));
+-		if (memory[0] == NULL)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "malloc");
+-		for (j = 0; j * unit < size; j++) {
+-			memory[0][j] = mmap(NULL, unit * MB,
+-					    PROT_READ | PROT_WRITE,
+-					    MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+-			if (memory[0][j] == MAP_FAILED)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "mmap");
++	for (j = 0; j < total_unit; j++) {
++		for (i = 0; i < unit * MB; i++)
++			memory_new[j][i] = ksm_merge_data.data;
++	}
++
++	/* if it contains unshared page, then set 'e' char
++	 * at the end of the last page
++	 */
++	if (ksm_merge_data.mergeable_size < size * MB)
++		memory_new[j-1][i-1] = 'e';
++}
+ 
++static void create_ksm_child(int child_num, int size, int unit,
++		       struct ksm_merge_data *ksm_merge_data)
++{
++	int j, total_unit;
++	char **memory_new;
++
++	/* The total units in all */
++	total_unit = size / unit;
++
++	/* Apply for the space for memory_new */
++	memory_new = (char **)malloc(total_unit * sizeof(char *));
++	for (j = 0; j < total_unit; j++) {
++		memory_new[j] = mmap(NULL, unit * MB, PROT_READ|PROT_WRITE,
++			MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
++		if (memory_new[j] == MAP_FAILED)
++			tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
+ #ifdef HAVE_MADV_MERGEABLE
+-			if (madvise(memory[0][j], unit * MB, MADV_MERGEABLE)
+-			    == -1)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "madvise");
++		if (madvise(memory_new[j], unit * MB, MADV_MERGEABLE) == -1)
++			tst_brkm(TBROK|TERRNO, tst_exit, "madvise");
+ #endif
+-			for (i = 0; i < unit * MB; i++)
+-				memory[0][j][i] = 'c';
+-		}
+-		tst_resm(TINFO, "child 0 stops.");
++	}
++
++	tst_resm(TINFO, "child %d stops.", child_num);
++	if (raise(SIGSTOP) == -1)
++		tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++	fflush(stdout);
++
++	for (j = 0; j < 4; j++) {
++
++		ksm_child_memset(child_num, size, total_unit,
++				  ksm_merge_data[j], memory_new);
++
++		fflush(stdout);
++
++		tst_resm(TINFO, "child %d stops.", child_num);
+ 		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-
+-		tst_resm(TINFO, "child 0 continues...");
+-		_verify('c', 0, 0, size / unit, 0, unit * MB);
+-		tst_resm(TINFO, "child 0 changes memory content to 'd'.");
+-		for (j = 0; j < size / unit; j++) {
+-			for (i = 0; i < unit * MB; i++)
+-				memory[0][j][i] = 'd';
++			tst_brkm(TBROK|TERRNO, tst_exit, "kill");
++
++		if (ksm_merge_data[j].mergeable_size < size * MB) {
++			_verify(memory_new, 'e', child_num, total_unit - 1,
++				total_unit, unit * MB - 1, unit * MB);
++			_verify(memory_new, ksm_merge_data[j].data, child_num,
++				0, total_unit, 0, unit * MB - 1);
++		} else {
++			_verify(memory_new, ksm_merge_data[j].data, child_num,
++				0, total_unit, 0, unit * MB);
+ 		}
+-		/* Unmerge. */
+-		tst_resm(TINFO, "child 0 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
++	}
+ 
+-		tst_resm(TINFO, "child 0 continues...");
+-		_verify('d', 0, 0, size / unit, 0, unit * MB);
+-		/* Stop. */
+-		tst_resm(TINFO, "child 0 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-		tst_resm(TINFO, "child 0 continues...");
+-		exit(0);
++	tst_resm(TINFO, "child %d finished.", child_num);
++}
++
++static void stop_ksm_children(int *child, int num)
++{
++	int k, status;
++
++	tst_resm(TINFO, "wait for all children to stop.");
++	for (k = 0; k < num; k++) {
++		if (waitpid(child[k], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, cleanup, "child %d was not stopped", k);
+ 	}
+-	switch (child[1] = fork()) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-	case 0:
+-		tst_resm(TINFO, "child 1 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-		tst_resm(TINFO, "child 1 continues...");
+-		tst_resm(TINFO, "child 1 allocates %d MB filled with 'a'.",
+-			 size);
+-		memory[1] = malloc(size / unit * sizeof(*memory));
+-		if (memory[1] == NULL)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "malloc");
+-		for (j = 0; j < size / unit; j++) {
+-			memory[1][j] = mmap(NULL, unit * MB,
+-					    PROT_READ | PROT_WRITE,
+-					    MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+-			if (memory[1][j] == MAP_FAILED)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "mmap");
+-#ifdef HAVE_MADV_MERGEABLE
+-			if (madvise(memory[1][j], unit * MB, MADV_MERGEABLE)
+-			    == -1)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "madvise");
+-#endif
+-			for (i = 0; i < unit * MB; i++)
+-				memory[1][j][i] = 'a';
+-		}
+-		tst_resm(TINFO, "child 1 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-		tst_resm(TINFO, "child 1 continues...");
+-		_verify('a', 1, 0, size / unit, 0, unit * MB);
+-		tst_resm(TINFO, "child 1 changes memory content to 'b'.");
+-		for (j = 0; j < size / unit; j++) {
+-			for (i = 0; i < unit * MB; i++)
+-				memory[1][j][i] = 'b';
+-		}
+-		tst_resm(TINFO, "child 1 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-		tst_resm(TINFO, "child 1 continues...");
+-		_verify('b', 1, 0, size / unit, 0, unit * MB);
+-		tst_resm(TINFO, "child 1 changes memory content to 'd'");
+-		for (j = 0; j < size / unit; j++) {
+-			for (i = 0; i < unit * MB; i++)
+-				memory[1][j][i] = 'd';
+-		}
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
++}
+ 
+-		tst_resm(TINFO, "child 1 continues...");
+-		_verify('d', 1, 0, size / unit, 0, unit * MB);
+-		tst_resm(TINFO, "child 1 changes one page to 'e'.");
+-		memory[1][size / unit - 1][unit * MB - 1] = 'e';
++static void resume_ksm_children(int *child, int num)
++{
++	int k, status;
+ 
+-		/* Unmerge. */
+-		tst_resm(TINFO, "child 1 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-		tst_resm(TINFO, "child 1 continues...");
+-		_verify('e', 1, size / unit - 1, size / unit,
+-			unit * MB - 1, unit * MB);
+-		_verify('d', 1, 0, size / unit - 1, 0, unit * MB - 1);
+-
+-		/* Stop. */
+-		tst_resm(TINFO, "child 1 stops.");
+-		if (raise(SIGSTOP) == -1)
+-			tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-		tst_resm(TINFO, "child 1 continues...");
+-		exit(0);
++	tst_resm(TINFO, "resume all children.");
++	for (k = 0; k < num; k++) {
++		if (kill(child[k], SIGCONT) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "kill child[%d]", k);
+ 	}
+-	for (k = 2; k < num; k++) {
+-		switch (child[k] = fork()) {
++	fflush(stdout);
++}
++
++void create_same_memory(int size, int num, int unit)
++{
++	char buf[BUFSIZ];
++	int i, j, status, *child;
++	unsigned long ps, pages;
++	struct ksm_merge_data **ksm_data;
++
++	struct ksm_merge_data ksm_data0[] = {
++	       {'c', size*MB}, {'c', size*MB}, {'d', size*MB}, {'d', size*MB},
++	};
++	struct ksm_merge_data ksm_data1[] = {
++	       {'a', size*MB}, {'b', size*MB}, {'d', size*MB}, {'d', size*MB-1},
++	};
++	struct ksm_merge_data ksm_data2[] = {
++	       {'a', size*MB}, {'a', size*MB}, {'d', size*MB}, {'d', size*MB},
++	};
++
++	ps = sysconf(_SC_PAGE_SIZE);
++	pages = MB / ps;
++
++	ksm_data = (struct ksm_merge_data **)malloc
++		   ((num - 3) * sizeof(struct ksm_merge_data *));
++	/* Since from third child, the data is same with the first child's */
++	for (i = 0; i < num - 3; i++) {
++		ksm_data[i] = (struct ksm_merge_data *)malloc
++			      (4 * sizeof(struct ksm_merge_data));
++		for (j = 0; j < 4; j++) {
++			ksm_data[i][j].data = ksm_data0[j].data;
++			ksm_data[i][j].mergeable_size =
++				ksm_data0[j].mergeable_size;
++		}
++	}
++
++	child = (int *)malloc(num * sizeof(int));
++	if (child == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++
++	for (i = 0; i < num; i++) {
++		fflush(stdout);
++		switch (child[i] = fork()) {
+ 		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork");
++			tst_brkm(TBROK|TERRNO, cleanup, "fork");
+ 		case 0:
+-			tst_resm(TINFO, "child %d stops.", k);
+-			if (raise(SIGSTOP) == -1)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-			tst_resm(TINFO, "child %d continues...", k);
+-			tst_resm(TINFO, "child %d allocates %d "
+-				 "MB filled with 'a'.", k, size);
+-			memory[k] = malloc(size / unit * sizeof(*memory));
+-			if (memory[k] == NULL)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "malloc");
+-			for (j = 0; j < size / unit; j++) {
+-				memory[k][j] = mmap(NULL, unit * MB,
+-						    PROT_READ | PROT_WRITE,
+-						    MAP_ANONYMOUS
+-						    | MAP_PRIVATE, -1, 0);
+-				if (memory[k][j] == MAP_FAILED)
+-					tst_brkm(TBROK | TERRNO, cleanup,
+-						 "mmap");
+-#ifdef HAVE_MADV_MERGEABLE
+-				if (madvise(memory[k][j], unit * MB,
+-					    MADV_MERGEABLE) == -1)
+-					tst_brkm(TBROK | TERRNO, cleanup,
+-						 "madvise");
+-#endif
+-				for (i = 0; i < unit * MB; i++)
+-					memory[k][j][i] = 'a';
++			if (i == 0) {
++				create_ksm_child(i, size, unit, ksm_data0);
++				exit(0);
++			} else if (i == 1) {
++				create_ksm_child(i, size, unit, ksm_data1);
++				exit(0);
++			} else if (i == 2) {
++				create_ksm_child(i, size, unit, ksm_data2);
++				exit(0);
++			} else {
++				create_ksm_child(i, size, unit, ksm_data[i-3]);
++				exit(0);
+ 			}
+-			tst_resm(TINFO, "child %d stops.", k);
+-			if (raise(SIGSTOP) == -1)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-			tst_resm(TINFO, "child %d continues...", k);
+-			tst_resm(TINFO, "child %d changes memory content to "
+-				 "'d'", k);
+-			for (j = 0; j < size / unit; j++) {
+-				for (i = 0; i < unit * MB; i++)
+-					memory[k][j][i] = 'd';
+-			}
+-			/* Unmerge. */
+-			tst_resm(TINFO, "child %d stops.", k);
+-			if (raise(SIGSTOP) == -1)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-			tst_resm(TINFO, "child %d continues...", k);
+-
+-			/* Stop. */
+-			tst_resm(TINFO, "child %d stops.", k);
+-			if (raise(SIGSTOP) == -1)
+-				tst_brkm(TBROK | TERRNO, tst_exit, "kill");
+-			tst_resm(TINFO, "child %d continues...", k);
+-			exit(0);
+ 		}
+ 	}
++
++	stop_ksm_children(child, num);
++
+ 	tst_resm(TINFO, "KSM merging...");
+ 	write_file(PATH_KSM "run", "1");
+ 	snprintf(buf, BUFSIZ, "%ld", size * pages * num);
+ 	write_file(PATH_KSM "pages_to_scan", buf);
+ 	write_file(PATH_KSM "sleep_millisecs", "0");
+ 
+-	tst_resm(TINFO, "wait for all children to stop.");
+-	for (k = 0; k < num; k++) {
+-		if (waitpid(child[k], &status, WUNTRACED) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-		if (!WIFSTOPPED(status))
+-			tst_brkm(TBROK, cleanup, "child %d was not stopped.",
+-				 k);
+-	}
+-	tst_resm(TINFO, "resume all children.");
+-	for (k = 0; k < num; k++) {
+-		if (kill(child[k], SIGCONT) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "kill child[%d]", k);
+-	}
++	resume_ksm_children(child, num);
+ 	_group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+ 
+-	tst_resm(TINFO, "wait for child 1 to stop.");
+-	if (waitpid(child[1], &status, WUNTRACED) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-	if (!WIFSTOPPED(status))
+-		tst_brkm(TBROK, cleanup, "child 1 was not stopped.");
+-
+-	/* Child 1 changes all pages to 'b'. */
+-	tst_resm(TINFO, "resume child 1.");
+-	if (kill(child[1], SIGCONT) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "kill");
++	stop_ksm_children(child, num);
++	resume_ksm_children(child, num);
+ 	_group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+ 
+-	tst_resm(TINFO, "wait for child 1 to stop.");
+-	if (waitpid(child[1], &status, WUNTRACED) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-	if (!WIFSTOPPED(status))
+-		tst_brkm(TBROK, cleanup, "child 1 was not stopped.");
+-
+-	/* All children change pages to 'd'. */
+-	tst_resm(TINFO, "resume all children.");
+-	for (k = 0; k < num; k++) {
+-		if (kill(child[k], SIGCONT) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "kill child[%d]", k);
+-	}
++	stop_ksm_children(child, num);
++	resume_ksm_children(child, num);
+ 	_group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+ 
+-	tst_resm(TINFO, "wait for all children to stop.");
+-	for (k = 0; k < num; k++) {
+-		if (waitpid(child[k], &status, WUNTRACED) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-		if (!WIFSTOPPED(status))
+-			tst_brkm(TBROK, cleanup, "child %d was not stopped.",
+-				 k);
+-	}
+-	/* Child 1 changes pages to 'e'. */
+-	tst_resm(TINFO, "resume child 1.");
+-	if (kill(child[1], SIGCONT) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "kill");
++	stop_ksm_children(child, num);
++	resume_ksm_children(child, num);
+ 	_group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+ 
+-	tst_resm(TINFO, "wait for child 1 to stop.");
+-	if (waitpid(child[1], &status, WUNTRACED) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-	if (!WIFSTOPPED(status))
+-		tst_brkm(TBROK, cleanup, "child 1 was not stopped.");
++	stop_ksm_children(child, num);
+ 
+-	tst_resm(TINFO, "resume all children.");
+-	for (k = 0; k < num; k++) {
+-		if (kill(child[k], SIGCONT) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "kill child[%d]", k);
+-	}
+ 	tst_resm(TINFO, "KSM unmerging...");
+ 	write_file(PATH_KSM "run", "2");
++
++	resume_ksm_children(child, num);
+ 	_group_check(2, 0, 0, 0, 0, 0, size * pages * num);
+ 
+-	tst_resm(TINFO, "wait for all children to stop.");
+-	for (k = 0; k < num; k++) {
+-		if (waitpid(child[k], &status, WUNTRACED) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-		if (!WIFSTOPPED(status))
+-			tst_brkm(TBROK, cleanup, "child %d was not stopped.",
+-				 k);
+-	}
+-	tst_resm(TINFO, "resume all children.");
+-	for (k = 0; k < num; k++) {
+-		if (kill(child[k], SIGCONT) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "kill child[%d]", k);
+-	}
+ 	tst_resm(TINFO, "stop KSM.");
+ 	write_file(PATH_KSM "run", "0");
+ 	_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
++
+ 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
+ 		if (WEXITSTATUS(status) != 0)
+ 			tst_resm(TFAIL, "child exit status is %d",
 -- 
-Thanks,
-Zhouping
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
-Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
-MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
-with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
-MVPs and experts. ON SALE this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122712
+Master HTML5, CSS3, ASP.NET, MVC, AJAX, Knockout.js, Web API and
+much more. Get web development skills now with LearnDevNow -
+350+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
+SALE $99.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122812
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
