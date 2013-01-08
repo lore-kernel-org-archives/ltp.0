@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TsSpM-0004Ob-2w
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:38:24 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TsSOP-0000ev-QQ
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:10:33 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TsSpK-0002o4-DD
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:38:24 +0000
-Message-ID: <50EBBEF2.3020207@cn.fujitsu.com>
-Date: Tue, 08 Jan 2013 14:38:42 +0800
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TsSOO-0004pT-Qi
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:10:33 +0000
+Message-ID: <50EBB561.6010708@cn.fujitsu.com>
+Date: Tue, 08 Jan 2013 13:57:53 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1357616084-1705-1-git-send-email-jshao@redhat.com>
-	<20130108054041.GA32247@station.monson>
-	<50EBB4A4.8040103@cn.fujitsu.com>
-	<20130108062047.GB32247@station.monson>
-In-Reply-To: <20130108062047.GB32247@station.monson>
-Subject: Re: [LTP] [PATCH] containers: delete redundant newline in tst_resm()
+References: <cover.1357277005.git.zliu@redhat.com>
+	<ef3e82060d793bdd820b38b6ea669a70ef6bb494.1357277005.git.zliu@redhat.com>
+In-Reply-To: <ef3e82060d793bdd820b38b6ea669a70ef6bb494.1357277005.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v3 2/2] mm/include: removed the global var 'memory'
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -31,44 +29,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: monson@station.monson
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 01/08/2013 02:20 PM, monson wrote:
-> Hi Wanlong,
+On 01/04/2013 02:12 PM, Zhouping Liu wrote:
+> we don't use the global var 'memory' any more,
+> so removed it, and changed local var 'memory_new'
+> as 'memory'.
 > 
-> Is there any maitainer still taking care of the containers part? Different namespace
-> test cases are in different style and the code is messy. I checked the git log and found
-> it seems like be abandoned.
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 
-The container with the namespace issue is in heavy development, the test cases need to
-suit it. This part is not in the default running test, but it not means to be abandoned.
-Just remain to test separately or need to be fixed. If you are looking into this area,
-patches are very welcome. Thank you.
-
-Regards,
-Wanlong Gao
-
-> 
-> Regards,
-> monson
-> 
-> On Tue, Jan 08, 2013 at 01:54:44PM +0800, Wanlong Gao wrote:
->> On 01/08/2013 01:40 PM, monson wrote:
->>> Note:
->>>
->>> Some comment lines are modified because there are spaces around tab inside
->>> and my editor automaticly fixed it by the way.
->>>
->>> If it's not acceptable, I would work out another patch without those fixs.
->>
->> It's OK. Applied, thank you.
->>
->> Wanlong Gao
->>
->>>
->>> monson
-
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
 ------------------------------------------------------------------------------
 Master SQL Server Development, Administration, T-SQL, SSAS, SSIS, SSRS
