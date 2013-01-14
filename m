@@ -2,36 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1TtEkQ-0005IF-IT
-	for ltp-list@lists.sourceforge.net; Thu, 10 Jan 2013 09:48:30 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TtEkO-0008Mw-G5
-	for ltp-list@lists.sourceforge.net; Thu, 10 Jan 2013 09:48:30 +0000
-Received: from /spool/local
-	by e23smtp09.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
-	Thu, 10 Jan 2013 19:42:31 +1000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [9.190.235.21])
-	by d23dlp01.au.ibm.com (Postfix) with ESMTP id 8D7EF2CE8053
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 10 Jan 2013 20:48:01 +1100 (EST)
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	r0A9m0cm61997190
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Jan 2013 20:48:01 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	r0A9m09H015515
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Jan 2013 20:48:00 +1100
-Message-ID: <50EE8E4F.3080506@linux.vnet.ibm.com>
-Date: Thu, 10 Jan 2013 15:17:59 +0530
-From: shubham <shubham@linux.vnet.ibm.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TuZT9-0005a8-Vw
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jan 2013 02:08:12 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TuZT3-0001S2-Vo
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jan 2013 02:08:11 +0000
+Message-ID: <50F36890.7050202@cn.fujitsu.com>
+Date: Mon, 14 Jan 2013 10:08:16 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <34855531.post@talk.nabble.com>
-In-Reply-To: <34855531.post@talk.nabble.com>
-Subject: Re: [LTP] sendfile commands fails for LTP tcp network stress test
+References: <1178258988.5385396.1358128519932.JavaMail.root@redhat.com>
+In-Reply-To: <1178258988.5385396.1358128519932.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] numa/numa01.sh: fixed errors under noncontinuous
+ numa nodes list
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,36 +29,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: bhushan kumar <Bhushan.Kumar@mphasis.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 01/03/2013 09:25 PM, bhushan kumar wrote:
-> Hi,
-> As i was  running network stress test for tcp_cmds
->   then sendfile01  test script gets hangs.As after obseving output it seems
-> that it hangs during execution  of below mention statment.i.e
-> =========
-> rsh -n -l root $IPADDR "$TCsrc/SF_Server $IPADDR $PORT $TCsrc"
-> ==================
->
-> I shall be thankful for any suggetion or any hints.
->
-> Thanks and Regards,
-> Bhushan kumar
+On 01/14/2013 09:55 AM, Zhouping Liu wrote:
+> 
+> 
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Zhouping Liu" <zliu@redhat.com>
+>> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+>> Sent: Monday, January 14, 2013 9:25:56 AM
+>> Subject: Re: [LTP] [PATCH] numa/numa01.sh: fixed errors under noncontinuous numa nodes list
+>>
+>> On 01/09/2013 07:58 PM, Zhouping Liu wrote:
+>>>  
+>>> -            col=2                       #column represents node0
+>>> in numastat o/p
+>>> -        numnodes=$(ls /sys/devices/system/node | grep -Ec
+>>> "node[0-9]*")
+>>> -        Preferred_node=$[$[$numnodes/2]-1]
+>>> -        col=$[$Preferred_node+2]
+>>> +        if [ $COUNTER -eq $total_nodes ]; then
+>>> +            Preferred_node=`echo $nodes_list | cut -d ' ' -f 1`
+>>
+>> On my non-numa system, it shows that
+>> $ numactl --show | grep nodebind | cut -d ':' -f 2
+>>  0
+>> $ numactl --show | grep nodebind | cut -d ':' -f 2 | cut -d ' ' -f 1
+>>
+>> Then the $Preferred_node is nothing.  Right?
+> 
+> Hi Wanlong,
+> 
+> The command's result executing between inside terminate and file script is different.
+> here `echo` command eat the first blank space ' '
+> 
+> please try the following in non-numa:
+> $ nodes_list=`numactl --show | grep nodebind | cut -d ':' -f 2`
+> $ echo $nodes_list | cut -d ' ' -f 1
+>  0
 
-Can you please paste the setup you performed before running these tests? 
-Also please paste the "output/logs". I'll have a look at them.
+Ok, I see, thank you.
 
-Thanks,
-Shubham
+
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+
+> 
+>>
+>> Thanks,
+>> Wanlong Gao
+> 
 
 
 ------------------------------------------------------------------------------
 Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
 MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
 with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
-MVPs and experts. ON SALE this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122712
+MVPs and experts. SALE $99.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122412
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
