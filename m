@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jshao@redhat.com>) id 1TsSYe-0003rQ-5t
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:21:08 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TsSYc-0001ZD-RS
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:21:08 +0000
-Date: Tue, 8 Jan 2013 14:20:47 +0800
-From: monson <monson@station.monson>
-Message-ID: <20130108062047.GB32247@station.monson>
-References: <1357616084-1705-1-git-send-email-jshao@redhat.com>
-	<20130108054041.GA32247@station.monson>
-	<50EBB4A4.8040103@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TvVUe-0004PJ-Py
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 16:05:36 +0000
+Date: Wed, 16 Jan 2013 17:05:46 +0100
+From: chrubis@suse.cz
+Message-ID: <20130116160546.GI6699@rei>
+References: <1358348055-7882-1-git-send-email-sedat.dilek@gmail.com>
+	<20130116153503.GG6699@rei>
+	<CA+icZUXc7a9r7hi4-+j9Q6U7EJocgsv5cctO7k91fWawfX413g@mail.gmail.com>
+	<20130116155732.GH6699@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <50EBB4A4.8040103@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] containers: delete redundant newline in tst_resm()
+In-Reply-To: <20130116155732.GH6699@rei>
+Subject: Re: [LTP] [PATCH] flock/flock01.c: Trivial: Fix spelling of
+	"succeed"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,60 +28,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Wanlong,
+Hi!
+> > Can you please mention the GitHub repo [0] as an alternative in the
+> > "Code" section @ sf.net [1]?
+> 
+> I'm not sure if this page could be changed at all. My guess is that it
+> couldn't but I will give it a try.
 
-Is there any maitainer still taking care of the containers part? Different namespace
-test cases are in different style and the code is messy. I checked the git log and found
-it seems like be abandoned.
+I've found a knob to change the the SCM instructions but it does so for
+both CVS and GIT, which is unfortunate as the CVS is used for lcov.
 
-Regards,
-monson
-
-On Tue, Jan 08, 2013 at 01:54:44PM +0800, Wanlong Gao wrote:
-> On 01/08/2013 01:40 PM, monson wrote:
-> > Note:
-> >
-> > Some comment lines are modified because there are spaces around tab inside
-> > and my editor automaticly fixed it by the way.
-> >
-> > If it's not acceptable, I would work out another patch without those fixs.
->
-> It's OK. Applied, thank you.
->
-> Wanlong Gao
->
-> >
-> > monson
->
->
-> ------------------------------------------------------------------------------
-> Master SQL Server Development, Administration, T-SQL, SSAS, SSIS, SSRS
-> and more. Get SQL Server skills now (including 2012) with LearnDevNow -
-> 200+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
-> SALE $99.99 this month only - learn more at:
-> http://p.sf.net/sfu/learnmore_122512
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---
-Monson Shao
-Kernel QA
-
-#29 @NAY - Beijing, China - GMT+08:00
-IRC: monson (#kernel-qe, #eng-china)
-Internal:  83 88384
-External: +86 10 6260 8384
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Master SQL Server Development, Administration, T-SQL, SSAS, SSIS, SSRS
-and more. Get SQL Server skills now (including 2012) with LearnDevNow -
-200+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
-SALE $99.99 this month only - learn more at:
-http://p.sf.net/sfu/learnmore_122512
+Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
+and much more. Keep your Java skills current with LearnJavaNow -
+200+ hours of step-by-step video tutorials by Java experts.
+SALE $49.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122612 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
