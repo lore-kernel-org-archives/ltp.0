@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1TtayO-0006bL-Pm
-	for ltp-list@lists.sourceforge.net; Fri, 11 Jan 2013 09:32:24 +0000
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TtayM-0001xu-FD
-	for ltp-list@lists.sourceforge.net; Fri, 11 Jan 2013 09:32:24 +0000
-Received: by mail-pb0-f49.google.com with SMTP id un15so853201pbc.22
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 11 Jan 2013 01:32:16 -0800 (PST)
-Message-ID: <50EFD61C.70808@casparzhang.com>
-Date: Fri, 11 Jan 2013 17:06:36 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TvTeS-0005S9-Pr
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 14:07:37 +0000
+Date: Wed, 16 Jan 2013 15:07:42 +0100
+From: chrubis@suse.cz
+Message-ID: <20130116140742.GB6699@rei>
+References: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
 MIME-Version: 1.0
-References: <1357866925-21275-1-git-send-email-yanl.fnst@cn.fujitsu.com>
-In-Reply-To: <1357866925-21275-1-git-send-email-yanl.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] add \n in end of output
+Content-Disposition: inline
+In-Reply-To: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
+Subject: Re: [LTP] Tarballs in Files section @ sf.net
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,37 +24,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yan Lei <yanl.fnst@cn.fujitsu.com>
+To: Sedat Dilek <sedat.dilek@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 01/11/2013 09:15 AM, Yan Lei wrote:
-> Signed-off-by: Yan Lei <yanl.fnst@cn.fujitsu.com>
-> ---
->   testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-> index fbefa7b..5828ed2 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-> @@ -48,7 +48,7 @@ int main(void)
->   	}
->
->   	if (pa == MAP_FAILED)
-> -		printf("Test FAILED: Expected EINVAL got %s", strerror(errno));
-> +		printf("Test FAILED: Expected EINVAL got %s\n", strerror(errno));
->   	else
->   		printf("Test FAILED: mmap() succedded unexpectedly\n");
->
->
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+Hi!
+> why do you name your BZ2-tarballs with the right and common
+> file-extensions ".tar.bz2"?
+
+That is something that just has been this way longer than anybody could
+remeber. I guess we can change it to tar.bz2 for next releases.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Master HTML5, CSS3, ASP.NET, MVC, AJAX, Knockout.js, Web API and
-much more. Get web development skills now with LearnDevNow -
-350+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
-SALE $99.99 this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122812
+Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
+and much more. Keep your Java skills current with LearnJavaNow -
+200+ hours of step-by-step video tutorials by Java experts.
+SALE $49.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122612 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
