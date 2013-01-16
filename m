@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TsSES-0002O7-8O
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:00:16 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TsSER-0004KG-CO
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:00:16 +0000
-Message-ID: <50EBB555.5060906@cn.fujitsu.com>
-Date: Tue, 08 Jan 2013 13:57:41 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <cover.1357277005.git.zliu@redhat.com>
-	<2a7ebedf19609652dd8a5da772b4575927d6891d.1357277005.git.zliu@redhat.com>
-In-Reply-To: <2a7ebedf19609652dd8a5da772b4575927d6891d.1357277005.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v2 1/2] mm/lib: rewrote create_same_memory()
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sedat.dilek@gmail.com>) id 1TvUNy-00044U-38
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 14:54:38 +0000
+Received: from mail-bk0-f54.google.com ([209.85.214.54])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TvUNu-00020W-La
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 14:54:38 +0000
+Received: by mail-bk0-f54.google.com with SMTP id je9so746699bkc.27
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 16 Jan 2013 06:54:28 -0800 (PST)
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Wed, 16 Jan 2013 15:54:15 +0100
+Message-Id: <1358348055-7882-1-git-send-email-sedat.dilek@gmail.com>
+Subject: [LTP] [PATCH] flock/flock01.c: Trivial: Fix spelling of "succeed"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,49 +24,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 01/04/2013 02:12 PM, Zhouping Liu wrote:
-> create_same_memory() was too large and contained lots of duplicated codes,
-> and it's a little hard-coding, so that it's not easy to read and
-> extend it for new case.
-> 
-> I splited it for five sub-functions:
-> 
->   ksm_child_memset();
->   create_ksm_child();
->   stop_ksm_children();
->   resume_ksm_children();
->   create_smae_memory();
-> 
-> Also I intruduced a data struct to control the mergeable data:
-> 
->   struct ksm_merge_data {
->         char data;
->         int mergeable_size;
->   };
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+While grepping for "succeeded" in my LTP-lite results I noticed
+the different spelling.
 
-I have no objection.
+According to my spell-checker integrated in Firefox v18.x the word
+"succeed" is written with double "e" correctly.
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ testcases/kernel/syscalls/flock/flock01.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Wanlong Gao
-
+diff --git a/testcases/kernel/syscalls/flock/flock01.c b/testcases/kernel/syscalls/flock/flock01.c
+index 9bf4db3..be2e249 100644
+--- a/testcases/kernel/syscalls/flock/flock01.c
++++ b/testcases/kernel/syscalls/flock/flock01.c
+@@ -31,7 +31,7 @@
+  *      (See the parse_opts(3) man page).
+  *
+  *    DESCRIPTION
+- * 	Test to verify flock(2) succeds with all kind of locks.
++ * 	Test to verify flock(2) succeeds with all kind of locks.
+  *	Intends to provide a limited exposure of system call.
+  *    $
+  *	Setup:
+@@ -126,7 +126,7 @@ int main(int argc, char **argv)
+ 				continue;	/*next loop for MTKERNEL  */
+ 			} else {
+ 				tst_resm(TPASS,
+-					 "flock() succeded with %s, returned error number=%d",
++					 "flock() succeeded with %s, returned error number=%d",
+ 					 test_cases[i].opt, TEST_ERRNO);
+ 			}
+ 
+-- 
+1.8.1.1
 
 
 ------------------------------------------------------------------------------
-Master SQL Server Development, Administration, T-SQL, SSAS, SSIS, SSRS
-and more. Get SQL Server skills now (including 2012) with LearnDevNow -
-200+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
-SALE $99.99 this month only - learn more at:
-http://p.sf.net/sfu/learnmore_122512
+Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
+and much more. Keep your Java skills current with LearnJavaNow -
+200+ hours of step-by-step video tutorials by Java experts.
+SALE $49.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122612 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
