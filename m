@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Tqitq-0001u4-C4
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jan 2013 11:23:50 +0000
-Date: Thu, 3 Jan 2013 12:23:57 +0100
-From: chrubis@suse.cz
-Message-ID: <20130103112356.GC4780@rei.Home>
-References: <27EF8FABF41315449203A213FE20131355341D7F@BLR-SJP-MBX-4.wipro.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <27EF8FABF41315449203A213FE20131355341D7F@BLR-SJP-MBX-4.wipro.com>
-Subject: Re: [LTP] Getting User input data not working
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanegomi@gmail.com>) id 1TvVZv-0006fG-9a
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 16:11:03 +0000
+Received: from mail-da0-f51.google.com ([209.85.210.51])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TvVZu-0005om-JS
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 16:11:03 +0000
+Received: by mail-da0-f51.google.com with SMTP id i30so632555dad.24
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 16 Jan 2013 08:10:56 -0800 (PST)
+References: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
+Mime-Version: 1.0 (1.0)
+In-Reply-To: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
+Message-Id: <BD6DAD5B-2967-4A8E-81F6-1BB733AE8A77@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Date: Wed, 16 Jan 2013 08:10:54 -0800
+Subject: Re: [LTP] Tarballs in Files section @ sf.net
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,33 +30,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subashchandra.bose@wipro.com
-Cc: ltp-list@lists.sourceforge.net
+To: "sedat.dilek@gmail.com" <sedat.dilek@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> I am using LTP drop released on ltp-full-20120104 version.
-> I have written a testcase to get user input data and call that testcase using "runltp", the command I use to get user input data is "read -t 10 response"
-> But, when enter user input after running "runltp" it is not working. The same testcase is working fine getting user input from command line.
-> Can any one help me why it is not working in LTP, is there any work around on this?
+On Jan 16, 2013, at 5:43 AM, Sedat Dilek <sedat.dilek@gmail.com> wrote:
 
-Apart form this being a silly idea (LTP is automatic testsuite, you
-install it, run it and go away till it's finished) the tests are
-executed by the test driver process (ltp-pan) that is a process group
-leader so there is no way they could read from standard in.
+> Hi,
+> 
+> why do you name your BZ2-tarballs with the right and common
+> file-extensions ".tar.bz2"?
+> 
+> $ file ltp-full-20130109.bz2
+> ltp-full-20130109.bz2: bzip2 compressed data, block size = 900k
+> 
+> $ bunzip2 ltp-full-20130109.bz2
+> 
+> $ file ltp-full-20130109
+> ltp-full-20130109: POSIX tar archive (GNU)
+> 
+> $ tar -xf ltp-full-20130109
+> 
+> $ ls -l
+> insgesamt 12
+> drwxrwxr-x  3 wearefam wearefam 4096 Jan 16 14:33 ./
+> drwxrwxr-x  3 wearefam wearefam 4096 Jan 16 14:33 ../
+> drwxr-xr-x 16 wearefam wearefam 4096 Jan  9 10:21 ltp-full-20130109/
+> 
+> And why don't you use XZ compressor? Even traditional GNU folks
+> switched to efficient XZ :-).
 
-[This is second attempt to send this mail, the first seems to have
-disapeared somewhere between our mailserver and ltp mailing list]
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
+Xz didn't become popular until the last couple years. Ltp has been around for a while and still supports old releases of Linux. How far back has never really been clearly communicated afaict.
+Thanks,
+-Garrett
 ------------------------------------------------------------------------------
-Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
-MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
-with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
-MVPs and experts. ON SALE this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122712
+Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
+and much more. Keep your Java skills current with LearnJavaNow -
+200+ hours of step-by-step video tutorials by Java experts.
+SALE $49.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122612 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
