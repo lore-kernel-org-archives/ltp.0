@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Shivakumar.Haravi@aricent.com>) id 1TxIb7-0004M9-2K
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jan 2013 14:43:41 +0000
-Received: from jaguar.aricent.com ([180.151.2.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TxIb5-0001gJ-Ms
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jan 2013 14:43:41 +0000
-From: Shivakumar Haravi <Shivakumar.Haravi@aricent.com>
-Date: Mon, 21 Jan 2013 19:43:05 +0530
-Message-ID: <C0DEA5E8FC36694CB7391338195EAAEB05DC9A2F37@GUREXMB02.ASIAN.AD.ARICENT.COM>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: [LTP] LTP queries
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sedat.dilek@gmail.com>) id 1TvZhR-0001zQ-KU
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 20:35:06 +0000
+Received: from mail-bk0-f44.google.com ([209.85.214.44])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TvZhP-00081z-AK
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 20:35:03 +0000
+Received: by mail-bk0-f44.google.com with SMTP id w11so953658bku.3
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 16 Jan 2013 12:34:57 -0800 (PST)
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Wed, 16 Jan 2013 21:34:48 +0100
+Message-Id: <1358368488-5082-1-git-send-email-sedat.dilek@gmail.com>
+Subject: [LTP] [PATCH] realtime/lib: Fix includes in Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,72 +24,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "kumar_haravi@yahoo.com" <kumar_haravi@yahoo.com>
+To: ltp-list@lists.sourceforge.net
 
-Greetings,
+On a freshly cloned ltp-git source-dir and with ltp-full-20130109, executing
+'make distclean' fails with these errors:
 
-I am currently working on LTP.
+testcases/realtime/lib/Makefile:25: ../../../../config.mk: No such file or directory
+make[2]: *** No rule to make target `../../../../config.mk'.  Stop.
 
-My objective of using LTP.  LTP need to be run on target board (Ex: Panda board). I am able to run script as. /RUNLTP. As per my understanding RUNLTP does only do stress and some functional verification of system call. If I am wrong pls. correct me.
+The patch fixes the issue by using env_pre.mk to include config.mk from
+the correct location.
 
-Our next objective is all driver code need to be executed on panda board.
+Tested with ltp-full-20130109 and ltp-git (20130109-5-g385d792).
 
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ testcases/realtime/lib/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Need your guidance to proceed further:
-I). Under device driver folder, Each driver code need to be run independently.
-Our objective is to automated the driver code also (Ex: run this script as ./runltp) device driver code also gets executed. Kindly guide us how to do this?
+diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
+index 8860549..fbbb873 100644
+--- a/testcases/realtime/lib/Makefile
++++ b/testcases/realtime/lib/Makefile
+@@ -22,7 +22,8 @@
+ 
+ top_srcdir		?= ../../..
+ 
+-include $(top_srcdir)/../config.mk
++include $(top_srcdir)/include/mk/env_pre.mk
++include $(abs_srcdir)/../config.mk
+ 
+ CFLAGS			+= -D_GNU_SOURCE
+ 
+-- 
+1.8.1.1
 
-II )
-
-Tried to run one driver code as "agp"
-
-                      1. Able to compile the user_space folder
-                      2. I am not able to compile the kernel_space folder.
-
-Following error was getting displayed.
-shivakumar@shivakumar-Latitude-E6420:~/LTP/LTP_X86/testcases/kernel/device-drivers/agp/kernel_space$ sudo make
-make -C /lib/modules/3.2.0-23-generic/build  SUBDIRS=/home/shivakumar/LTP/LTP_X86/testcases/kernel/device-drivers/agp/kernel_space modules
-make[1]: Entering directory `/usr/src/linux-headers-3.2.0-23-generic'
-scripts/Makefile.build:49: *** CFLAGS was changed in "/home/shivakumar/LTP/LTP_X86/testcases/kernel/device-drivers/agp/kernel_space/Makefile". Fix it to use ccflags-y.  Stop.
-make[1]: *** [_module_/home/shivakumar/LTP/LTP_X86/testcases/kernel/device-drivers/agp/kernel_space] Error 2
-make[1]: Leaving directory `/usr/src/linux-headers-3.2.0-23-generic'
-make: *** [default] Error 2
-===============================================================================
-III) How to integrated our new driver code
-============================================================================
-
-IV) S>>> ./runltp -a kumar_haravi@yahoo.com -f shiva > DEBUGLOG/testmail
-NOTE: "shiva" is my command line file,
-Following error getting displayed:
-./runltp: 882: [: [: unexpected operator
-tar: Removing leading `/' from member names
-tar: Removing leading `/' from member names
-./runltp: 945: ./runltp: ./runltp: 945: ./runltp: uuencode: not foundmail: not found
-==============================================================================
-
-V) I am not able to generate html report also.
-
-Thanks for your advance guidance,
-Shivakumar
-
-
-
-
-===============================================================================
-Please refer to http://www.aricent.com/legal/email_disclaimer.html
-for important disclosures regarding this electronic communication.
-===============================================================================
 
 ------------------------------------------------------------------------------
-Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
-MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
-with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
-MVPs and experts. SALE $99.99 this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122412
+Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
+and much more. Keep your Java skills current with LearnJavaNow -
+200+ hours of step-by-step video tutorials by Java experts.
+SALE $49.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122612 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
