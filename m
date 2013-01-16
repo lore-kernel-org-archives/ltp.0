@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1TyiBt-0000jC-1T
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jan 2013 12:15:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TyiBm-0006rd-Td
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jan 2013 12:15:29 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r0PCFGL8007465
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Jan 2013 07:15:17 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r0PCFFIs022551
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Jan 2013 07:15:16 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 25 Jan 2013 13:15:12 +0100
-Message-Id: <04824307bb134b47b19291f8e3e100447919c496.1359115534.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] aio_fsync/2-1.c: fix race at exit,
-	check if write completed
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TvNEh-0004UM-Af
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 07:16:35 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TvNEf-00067X-78
+	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 07:16:35 +0000
+Message-ID: <50F653D3.9050407@cn.fujitsu.com>
+Date: Wed, 16 Jan 2013 15:16:35 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <d586a4f2cfdf91b3e480c8e275f53fae34a00705.1357732655.git.zliu@redhat.com>
+	<50ED5C7A.2050301@redhat.com>
+In-Reply-To: <50ED5C7A.2050301@redhat.com>
+Subject: Re: [LTP] [PATCH] numa/numa01.sh: fixed errors under noncontinuous
+ numa nodes list
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,78 +27,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-This is same issue as:
-  commit 4558bfae923a715ac78b5b3d3ecdfa16f9424808
-  Author: Jan Stancek <jstancek@redhat.com>
-  Date:   Wed Dec 5 12:49:47 2012 +0100
-      aio_read/7-1.c: fix race at exit
+On 01/09/2013 08:03 PM, Zhouping Liu wrote:
+> On 01/09/2013 07:58 PM, Zhouping Liu wrote:
+>> > The previous code numa01.sh thought all NUMA system had continuous
+>> > numa nodes list, and node id started from 0, but in fact it does not.
+>> >
+>> > There are lots of system contains noncontinuous numa nodes list
+>> >   e.g:
+>> >   # numactl --hardware
+>> >   available: 4 nodes (0,2,4,7)
+>> >   node 0 cpus: 0 4 8 12 16 20 24 28
+>> >   node 0 size: 4061 MB
+>> >   node 0 free: 3756 MB
+>> >   node 2 cpus: 1 5 9 13 17 21 25 29
+>> >   node 2 size: 4096 MB
+>> >   node 2 free: 3196 MB
+>> >   node 4 cpus: 2 6 10 14 18 22 26 30
+>> >   node 4 size: 4096 MB
+>> >   node 4 free: 3885 MB
+>> >   node 7 cpus: 3 7 11 15 19 23 27 31
+>> >   node 7 size: 4095 MB
+>> >   node 7 free: 3947 MB
+>> >   node distances:
+>> >   node   0   2   4   7
+>> >     0:  10  20  20  20
+>> >     2:  20  10  20  20
+>> >     4:  20  20  10  20
+>> >     7:  20  20  20  10
+>> >
+>> > in such discontinuous nodes system, numa01.sh would fail with
+>> > such error log:
+>> >   libnuma: Warning: node argument 1 is out of range
+>> >
+>> > The patch fixed it, and removed some useless/redundancy val/func,
+>> > such as 'max_node' val and 'getmax' func, also make some cleanup.
+> I tested the patch on continuous/non-continuous NUMA system, also did on 
+> non-NUMA system.
 
-This patch waits for aio_fsync to complete, and after that
-checks that previously queued write is also completed.
+Applied, thank you.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../conformance/interfaces/aio_fsync/2-1.c         |   24 ++++++++++++++++---
- 1 files changed, 20 insertions(+), 4 deletions(-)
+Wanlong Gao
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
-index a534513..3a4c7fb 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_fsync/2-1.c
-@@ -27,7 +27,7 @@ int main(void)
- {
- 	char tmpfname[256];
- 	char buf[BUF_SIZE];
--	int fd;
-+	int fd, ret;
- 	struct aiocb aiocb_write;
- 	struct aiocb aiocb_fsync;
- 
-@@ -63,9 +63,25 @@ int main(void)
- 		exit(PTS_FAIL);
- 	}
- 
--	close(fd);
-+	/* wait for aio_fsync */
-+	do {
-+		usleep(10000);
-+		ret = aio_error(&aiocb_fsync);
-+	} while (ret == EINPROGRESS);
- 
--	/* we didn't check if the operation is really performed */
-+	if (aio_return(&aiocb_fsync)) {
-+		printf(TNAME " Error at aio_return()\n");
-+		close(fd);
-+		return PTS_FAIL;
-+	}
- 
--	return PTS_UNTESTED;
-+	/* check that aio_write is completed at this point */
-+	ret = aio_error(&aiocb_write);
-+	if (ret == EINPROGRESS) {
-+		printf(TNAME " aiocb_write error() : %s\n", strerror(ret));
-+		close(fd);
-+		return PTS_FAIL;
-+	}
-+	close(fd);
-+	return PTS_PASS;
- }
--- 
-1.7.1
+> 
+> Thanks,
+> Zhouping
+> 
 
 
 ------------------------------------------------------------------------------
-Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
-MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
-with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
-MVPs and experts. ON SALE this month only -- learn more at:
-http://p.sf.net/sfu/learnnow-d2d
+Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
+and much more. Keep your Java skills current with LearnJavaNow -
+200+ hours of step-by-step video tutorials by Java experts.
+SALE $49.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122612 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
