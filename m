@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TvNEh-0004UM-Af
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 07:16:35 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TvNEf-00067X-78
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 07:16:35 +0000
-Message-ID: <50F653D3.9050407@cn.fujitsu.com>
-Date: Wed, 16 Jan 2013 15:16:35 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TvrR8-0005ug-0u
+	for ltp-list@lists.sourceforge.net; Thu, 17 Jan 2013 15:31:26 +0000
+Date: Thu, 17 Jan 2013 16:31:40 +0100
+From: chrubis@suse.cz
+Message-ID: <20130117153140.GB12851@rei>
+References: <CA+icZUWV1h46fEVYxKr1nd0fGKGsky2JZ4bVas-7yEq3wKcNhQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <d586a4f2cfdf91b3e480c8e275f53fae34a00705.1357732655.git.zliu@redhat.com>
-	<50ED5C7A.2050301@redhat.com>
-In-Reply-To: <50ED5C7A.2050301@redhat.com>
-Subject: Re: [LTP] [PATCH] numa/numa01.sh: fixed errors under noncontinuous
- numa nodes list
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <CA+icZUWV1h46fEVYxKr1nd0fGKGsky2JZ4bVas-7yEq3wKcNhQ@mail.gmail.com>
+Subject: Re: [LTP] Mini-Howto: Building ltp-from-git on Ubuntu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,62 +24,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 01/09/2013 08:03 PM, Zhouping Liu wrote:
-> On 01/09/2013 07:58 PM, Zhouping Liu wrote:
->> > The previous code numa01.sh thought all NUMA system had continuous
->> > numa nodes list, and node id started from 0, but in fact it does not.
->> >
->> > There are lots of system contains noncontinuous numa nodes list
->> >   e.g:
->> >   # numactl --hardware
->> >   available: 4 nodes (0,2,4,7)
->> >   node 0 cpus: 0 4 8 12 16 20 24 28
->> >   node 0 size: 4061 MB
->> >   node 0 free: 3756 MB
->> >   node 2 cpus: 1 5 9 13 17 21 25 29
->> >   node 2 size: 4096 MB
->> >   node 2 free: 3196 MB
->> >   node 4 cpus: 2 6 10 14 18 22 26 30
->> >   node 4 size: 4096 MB
->> >   node 4 free: 3885 MB
->> >   node 7 cpus: 3 7 11 15 19 23 27 31
->> >   node 7 size: 4095 MB
->> >   node 7 free: 3947 MB
->> >   node distances:
->> >   node   0   2   4   7
->> >     0:  10  20  20  20
->> >     2:  20  10  20  20
->> >     4:  20  20  10  20
->> >     7:  20  20  20  10
->> >
->> > in such discontinuous nodes system, numa01.sh would fail with
->> > such error log:
->> >   libnuma: Warning: node argument 1 is out of range
->> >
->> > The patch fixed it, and removed some useless/redundancy val/func,
->> > such as 'max_node' val and 'getmax' func, also make some cleanup.
-> I tested the patch on continuous/non-continuous NUMA system, also did on 
-> non-NUMA system.
 
-Applied, thank you.
-
-Wanlong Gao
-
+Hi!
+> $ cat docs/MINI-HOWTO_BUILDING-LTP-FROM-GIT.txt
 > 
-> Thanks,
-> Zhouping
+> ##### EXPORTS
 > 
+> export LANG=C
+> export LC_ALL=C
+> 
+> ##### VARIABLES
+> 
+> GIT_URL="https://github.com/linux-test-project/ltp.git"
+> 
+> USER="myusername"
+> 
+> PREFIX="/opt/ltp"
+> 
+> BUILD_LOG="build-log_ltp-git.txt"
+> INSTALL_LOG="install-log_ltp-git.txt"
+> 
+> ##### PREREQS ON UBUNTU
+> 
+> sudo apt-get install build-essential
+> sudo apt-get install autoconf automake autotools-dev m4
+> sudo apt-get install git <--- Optional: git-email for sending patches!
+> sudo apt-get install linux-headers-$(uname -r)
+> sudo apt-get install libaio-dev
 
+You can add libcap-dev and libattr-dev (and possibly more, we should
+probably keep a list in some file in doc/ directory).
+
+> ##### WORKING-DIR
+> 
+> mkdir -p $HOME/src/ltp
+> cd $HOME/src/ltp
+> 
+> ##### GET LTP SOURCE
+> 
+> git clone $GIT_URL ltp-git
+> 
+> ##### CONFIGURING LTP
+> 
+> cd ltp-git/
+> make autotools
+> ./configure --prefix=$PREFIX
+> 
+> ##### BUILDING LTP
+> 
+> make 2>&1 | tee ../$BUILD_LOG
+> 
+> ##### INSTALL LTP
+> 
+> sudo mkdir $PREFIX
+> sudo chown $USER:$USER -R $PREFIX
+> 
+> make install 2>&1 | tee ../$INSTALL_LOG
+
+Hmm, the installation is expected to be run as root (and I'm not sure if
+this will work correctly, most of the thigs should, but there may be
+test that expects that particular file is owned by root, etc.).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
-and much more. Keep your Java skills current with LearnJavaNow -
-200+ hours of step-by-step video tutorials by Java experts.
-SALE $49.99 this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122612 
+Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
+MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
+with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
+MVPs and experts. ON SALE this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122712
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
