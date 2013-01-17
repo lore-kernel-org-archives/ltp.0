@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sedat.dilek@gmail.com>) id 1Tvaah-00045l-8Z
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 21:32:11 +0000
-Received: from mail-qa0-f48.google.com ([209.85.216.48])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Tvaag-0001e6-BN
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 21:32:11 +0000
-Received: by mail-qa0-f48.google.com with SMTP id l8so1581793qaq.0
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 16 Jan 2013 13:32:04 -0800 (PST)
+	(envelope-from <metan@suse.de>) id 1TvrAQ-0008D2-HF
+	for ltp-list@lists.sourceforge.net; Thu, 17 Jan 2013 15:14:10 +0000
+Date: Thu, 17 Jan 2013 16:14:26 +0100
+From: chrubis@suse.cz
+Message-ID: <20130117151426.GA12851@rei>
+References: <1358368488-5082-1-git-send-email-sedat.dilek@gmail.com>
 MIME-Version: 1.0
-Date: Wed, 16 Jan 2013 22:32:04 +0100
-Message-ID: <CA+icZUWV1h46fEVYxKr1nd0fGKGsky2JZ4bVas-7yEq3wKcNhQ@mail.gmail.com>
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [LTP]  Mini-Howto: Building ltp-from-git on Ubuntu
-Reply-To: sedat.dilek@gmail.com
+Content-Disposition: inline
+In-Reply-To: <1358368488-5082-1-git-send-email-sedat.dilek@gmail.com>
+Subject: Re: [LTP] [PATCH] realtime/lib: Fix includes in Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,76 +24,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> testcases/realtime/lib/Makefile:25: ../../../../config.mk: No such file or directory
+> make[2]: *** No rule to make target `../../../../config.mk'.  Stop.
+> 
+> The patch fixes the issue by using env_pre.mk to include config.mk from
+> the correct location.
+> 
+> Tested with ltp-full-20130109 and ltp-git (20130109-5-g385d792).
+> 
+> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+> ---
+>  testcases/realtime/lib/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
+> index 8860549..fbbb873 100644
+> --- a/testcases/realtime/lib/Makefile
+> +++ b/testcases/realtime/lib/Makefile
+> @@ -22,7 +22,8 @@
+>  
+>  top_srcdir		?= ../../..
+>  
+> -include $(top_srcdir)/../config.mk
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(abs_srcdir)/../config.mk
+>  
+>  CFLAGS			+= -D_GNU_SOURCE
 
-this Mini-Howto is a bit distro-specific but may help other users.
+I do have similar patch for this issue I've haven't commited yet (I've
+asked for review and the issue faded away).
 
-Regards,
-- Sedat -
+Thanks for reminding, I'll fix this.
 
-$ cat docs/MINI-HOWTO_BUILDING-LTP-FROM-GIT.txt
-
-##### EXPORTS
-
-export LANG=C
-export LC_ALL=C
-
-##### VARIABLES
-
-GIT_URL="https://github.com/linux-test-project/ltp.git"
-
-USER="myusername"
-
-PREFIX="/opt/ltp"
-
-BUILD_LOG="build-log_ltp-git.txt"
-INSTALL_LOG="install-log_ltp-git.txt"
-
-##### PREREQS ON UBUNTU
-
-sudo apt-get install build-essential
-sudo apt-get install autoconf automake autotools-dev m4
-sudo apt-get install git <--- Optional: git-email for sending patches!
-sudo apt-get install linux-headers-$(uname -r)
-sudo apt-get install libaio-dev
-
-##### WORKING-DIR
-
-mkdir -p $HOME/src/ltp
-cd $HOME/src/ltp
-
-##### GET LTP SOURCE
-
-git clone $GIT_URL ltp-git
-
-##### CONFIGURING LTP
-
-cd ltp-git/
-make autotools
-./configure --prefix=$PREFIX
-
-##### BUILDING LTP
-
-make 2>&1 | tee ../$BUILD_LOG
-
-##### INSTALL LTP
-
-sudo mkdir $PREFIX
-sudo chown $USER:$USER -R $PREFIX
-
-make install 2>&1 | tee ../$INSTALL_LOG
-
-
--dileks // 16-Jan-2013
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
-and much more. Keep your Java skills current with LearnJavaNow -
-200+ hours of step-by-step video tutorials by Java experts.
-SALE $49.99 this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122612 
+Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
+MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
+with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
+MVPs and experts. ON SALE this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122712
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
