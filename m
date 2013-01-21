@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1TsSOP-0000ev-QQ
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:10:33 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TsSOO-0004pT-Qi
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 06:10:33 +0000
-Message-ID: <50EBB561.6010708@cn.fujitsu.com>
-Date: Tue, 08 Jan 2013 13:57:53 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1TxLY2-0006sX-FN
+	for ltp-list@lists.sourceforge.net; Mon, 21 Jan 2013 17:52:42 +0000
+Date: Mon, 21 Jan 2013 18:52:59 +0100
+From: chrubis@suse.cz
+Message-ID: <20130121175258.GB12074@rei>
+References: <C0DEA5E8FC36694CB7391338195EAAEB05DC9A2F37@GUREXMB02.ASIAN.AD.ARICENT.COM>
 MIME-Version: 1.0
-References: <cover.1357277005.git.zliu@redhat.com>
-	<ef3e82060d793bdd820b38b6ea669a70ef6bb494.1357277005.git.zliu@redhat.com>
-In-Reply-To: <ef3e82060d793bdd820b38b6ea669a70ef6bb494.1357277005.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v3 2/2] mm/include: removed the global var 'memory'
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <C0DEA5E8FC36694CB7391338195EAAEB05DC9A2F37@GUREXMB02.ASIAN.AD.ARICENT.COM>
+Subject: Re: [LTP] LTP queries
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,24 +24,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Shivakumar Haravi <Shivakumar.Haravi@aricent.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "kumar_haravi@yahoo.com" <kumar_haravi@yahoo.com>
 
-On 01/04/2013 02:12 PM, Zhouping Liu wrote:
-> we don't use the global var 'memory' any more,
-> so removed it, and changed local var 'memory_new'
-> as 'memory'.
+Hi!
+> I am currently working on LTP.
 > 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> My objective of using LTP.  LTP need to be run on target board (Ex: Panda board). I am able to run script as. /RUNLTP. As per my understanding RUNLTP does only do stress and some functional verification of system call. If I am wrong pls. correct me.
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+It does mostly system call/glibc call verifications (both for negative
+and possitive caseds) and some stress tests too.
+
+It's good idea to run the open_posix_testsuite too (it's not compiled
+nor executed by default). These tests utilizes majority of POSIX
+interfaces.
+
+> Our next objective is all driver code need to be executed on panda board.
+> 
+> 
+> Need your guidance to proceed further:
+> I). Under device driver folder, Each driver code need to be run independently.
+> Our objective is to automated the driver code also (Ex: run this script as ./runltp) device driver code also gets executed. Kindly guide us how to do this?
+> 
+> II )
+> 
+> Tried to run one driver code as "agp"
+> 
+>                       1. Able to compile the user_space folder
+>                       2. I am not able to compile the kernel_space folder.
+
+The device-drivers tests are known to be broken and basically
+unmaintained since 2009 (and this is the reason why they are not build by
+default).
+
+> III) How to integrated our new driver code
+
+Sorry you are on your own here. But as usuall patches are welcomed.
+
+> ============================================================================
+> 
+> IV) S>>> ./runltp -a kumar_haravi@yahoo.com -f shiva > DEBUGLOG/testmail
+> NOTE: "shiva" is my command line file,
+> Following error getting displayed:
+> ./runltp: 882: [: [: unexpected operator
+> tar: Removing leading `/' from member names
+> tar: Removing leading `/' from member names
+> ./runltp: 945: ./runltp: ./runltp: 945: ./runltp: uuencode: not foundmail: not found
+> ==============================================================================
+> 
+> V) I am not able to generate html report also.
+
+Well it seems that you are missing some options from [ test operator and
+some binaries. This is most likely caused by your minimal busybox
+installation that doesn't support some flags and by missing mail client
+(looking at the runltp source you need either uuencode+mail binaries or
+mutt installed).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Master SQL Server Development, Administration, T-SQL, SSAS, SSIS, SSRS
-and more. Get SQL Server skills now (including 2012) with LearnDevNow -
-200+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
-SALE $99.99 this month only - learn more at:
-http://p.sf.net/sfu/learnmore_122512
+Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
+MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
+with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
+MVPs and experts. SALE $99.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122412
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
