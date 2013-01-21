@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1TvTcJ-0006JF-AT
-	for ltp-list@lists.sourceforge.net; Wed, 16 Jan 2013 14:05:23 +0000
-Date: Wed, 16 Jan 2013 15:05:29 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1TxJnS-0000cx-42
+	for ltp-list@lists.sourceforge.net; Mon, 21 Jan 2013 16:00:30 +0000
+Date: Mon, 21 Jan 2013 17:00:36 +0100
 From: chrubis@suse.cz
-Message-ID: <20130116140529.GA6699@rei>
-References: <CA+icZUUsDzP+uLWD0i=JpMSiK1Qu3Pdux19rE7wTeJJu+-FaZw@mail.gmail.com>
+Message-ID: <20130121160036.GE3768@rei>
+References: <4ef1b12514c08ad8ee67c571a9a9b79c8c184829.1358783800.git.zliu@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUUsDzP+uLWD0i=JpMSiK1Qu3Pdux19rE7wTeJJu+-FaZw@mail.gmail.com>
-Subject: Re: [LTP] Spelling "succeded" VS. "succeeded"
+In-Reply-To: <4ef1b12514c08ad8ee67c571a9a9b79c8c184829.1358783800.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/sendmsg01: using 'ip' command to replace
+ 'ifconfig'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,71 +25,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> While looking trough the results especially searching for some
-> pattern, I noticed the different spelling of the word "succeeded" VS.
-> "succeded".
-> The spell-checker integrated in Firefox v18.0 tells me "succeeded"
-> with double-e is correct.
+> 'ip' tools is more general than 'ifconfig', and there are some
+> distros don't support to install 'ifconfig' tools under default,
+> which will cause such below error:
 > 
-> [ SUCCEDED - one "E" ]
+>    sh: ifconfig: command not found
+>    sendmsg01    1  TBROK  :  ifconfig failed to bring up loop back device
+>    sendmsg01    2  TBROK  :  Remaining cases broken
 > 
-> $ egrep -i 'error|fail'
-> runltplite-results_3.8.0-rc3-next20130116-2-iniza-generic.txt | egrep
-> -i succeded
-> flock01     1  TPASS  :  flock() succeded with Shared Lock, returned
-> error number=0
-> flock01     2  TPASS  :  flock() succeded with Unlock, returned error number=0
-> flock01     3  TPASS  :  flock() succeded with Exclusive Lock,
-> returned error number=0
-> 
-> [ SUCCEEDED - double "E" ]
-> 
-> $ egrep -i 'error|fail'
-> runltplite-results_3.8.0-rc3-next20130116-2-iniza-generic.txt | egrep
-> -i succeeded
-> madvise02    5  TFAIL  :  madvise succeeded unexpectedly
-> open call succeededopen failed with EACCES as expectedopen call
-> succeeded<<<execution_status>>>
-> 
-> AFAICS flock01.c needs to be corrected:
-> 
-> --- ltp-full-20120903.orig/testcases/kernel/syscalls/flock/flock01.c
->  2012-09-03 06:39:27.000000000 +0200
-> +++ ltp-full-20120903/testcases/kernel/syscalls/flock/flock01.c
-> 2013-01-16 14:12:36.597859952 +0100
-> @@ -128,7 +128,7 @@ int main(int argc, char **argv)
->                                 continue;       /*next loop for MTKERNEL  */
->                         } else {
->                                 tst_resm(TPASS,
-> -                                        "flock() succeded with %s,
-> returned error number=%d",
-> +                                        "flock() succeeded with %s,
-> returned error number=%d",
->                                          test_cases[i].opt, TEST_ERRNO);
->                         }
-> 
-> Not sure if you like that patch sent via git-email as a separate patch?
+> the patch displaced 'ifconfig' using 'ip', and also the case need root
+> permission and checking capture unexpected signal.
 
-There is no need for such elaborate explanation for a patch fixing a typo ;).
-
-The ideal way of sending a patches here is unified diff with
-signed-of-by line (you can generate these by git format-patch or use git
-send-email to mail them directly).
+But this breaks distros that yet doesn't install ip by default. What
+about trying ip and fallback to ifconfig if ip has failed?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Master Java SE, Java EE, Eclipse, Spring, Hibernate, JavaScript, jQuery
-and much more. Keep your Java skills current with LearnJavaNow -
-200+ hours of step-by-step video tutorials by Java experts.
-SALE $49.99 this month only -- learn more at:
-http://p.sf.net/sfu/learnmore_122612 
+Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
+MVC, Windows 8 Apps, JavaScript and much more. Keep your skills current
+with LearnDevNow - 3,200 step-by-step video tutorials by Microsoft
+MVPs and experts. SALE $99.99 this month only -- learn more at:
+http://p.sf.net/sfu/learnmore_122412
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
