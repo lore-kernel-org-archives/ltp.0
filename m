@@ -2,17 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <duynv@tsdv.com.vn>) id 1TsQqo-00020U-DR
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 04:31:46 +0000
-Received: from mail.tsdv.com.vn ([210.245.58.36])
+	(envelope-from <zliu@redhat.com>) id 1TxTCL-0000Sh-3M
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jan 2013 02:02:49 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TsQql-00033a-BV
-	for ltp-list@lists.sourceforge.net; Tue, 08 Jan 2013 04:31:46 +0000
-Message-ID: <50EB99FB.5020100@tsdv.com.vn>
-Date: Tue, 08 Jan 2013 11:00:59 +0700
-From: duynv <duynv@tsdv.com.vn>
-MIME-Version: 1.0
-Subject: [LTP] Question mapping LTP testcases with Kernel setting?
+	id 1TxTCJ-0002Z3-QP
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jan 2013 02:02:49 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r0M22ILu023366
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Jan 2013 21:02:41 -0500
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 22 Jan 2013 10:00:42 +0800
+Message-Id: <92867bc530123caf2e89e05551d79db89cb94e0b.1358819770.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2]] syscalls/sendmsg01: using 'ip' command to replace
+	'ifconfig'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,35 +27,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shubham@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-RGVhciBTaXIhCkknbSBEdXkuCgpJIGFtIHdvcmtpbmcgd2l0aCBMVFAgdG8gdGVzdCBvdXIgbGlu
-dXgga2VybmVsLgp3ZSB3YW50IHRvIGNvbGxlY3QgTFRQIHRlc3QgY2FzZXMgdG8gdGVzdCBvdXIg
-a2VybmVsIGJhc2Ugb24gdGhlIGtlcm5lbCAKc2V0dGluZyhjb25maWd1cmF0aW9uIGZpbGUgY3Jl
-YXRlIGJ5ICJtYWtlIG1lbnVjb25maWciKS4KKHdlIHdhbnQgdG8gb21pdCB1bm5lY2Vzc2FyeSB0
-ZXN0IGNhc2UpCgpCdXQgTFRQIGhhcyBzbyBtYW55IHRlc3QgY2FzZXMuIEkgY2FuJ3QgbWFwcGlu
-ZyBMVFAgdGVzdCBjYXNlIHdpdGggCmFwcHJvcHJpYXRlIGtlcm5lbCBzZXR0aW5nCkNvdWxkIHlv
-dSBwbGVhc2UgdGVsbCBtZSB0aGUgd2F5IHRvIG1ha2UgYSBtYXBwaW5nIGxpc3QgYmV0d2VlbiBM
-VFAgdGVzdCAKY2FzZSB3aXRoIGtlcm5lbCBzZXR0aW5nCgpUaGFuayB5b3UKCi0tIApOZ3V54buF
-biBWxINuIER1eQpUb3NoaWJhIFNvZnR3YXJlIERldmVsb3BtZW5044CAKFZpZXQgTmFtKSBDbywg
-THRkCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKgpBZGQgICA6IDE2dGggRmxvb3IsNTE5IEtpbSBNYSBTdHIgLCBCYSBEaW5oIERpc3QgLCBI
-YSBOb2kKRW1haWwgOmR1eW52QHRzZHYuY29tLnZuCioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgpOb3RlOiBUaGlzIGUtbWFpbCBtZXNzYWdl
-IG1heSBjb250YWluIHBlcnNvbmFsIGluZm9ybWF0aW9uIG9yIGNvbmZpZGVudGlhbCBpbmZvcm1h
-dGlvbi4KSWYgeW91IGFyZSBub3QgdGhlIGFkZHJlc3NlZSBvZiB0aGlzIG1lc3NhZ2UsIHBsZWFz
-ZSBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBraW5kbHkgbm90aWZ5IHRoZSBzZW5kZXIgYXMgc29v
-biBhcyBwb3NzaWJsZSwgZG8gbm90IGNvcHksIHVzZSwgb3IgZGlzY2xvc2UgdGhpcyBtZXNzYWdl
-LgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNYXN0ZXIgU1FMIFNlcnZlciBEZXZlbG9wbWVudCwg
-QWRtaW5pc3RyYXRpb24sIFQtU1FMLCBTU0FTLCBTU0lTLCBTU1JTCmFuZCBtb3JlLiBHZXQgU1FM
-IFNlcnZlciBza2lsbHMgbm93IChpbmNsdWRpbmcgMjAxMikgd2l0aCBMZWFybkRldk5vdyAtCjIw
-MCsgaG91cnMgb2Ygc3RlcC1ieS1zdGVwIHZpZGVvIHR1dG9yaWFscyBieSBNaWNyb3NvZnQgTVZQ
-cyBhbmQgZXhwZXJ0cy4KU0FMRSAkOTkuOTkgdGhpcyBtb250aCBvbmx5IC0gbGVhcm4gbW9yZSBh
-dDoKaHR0cDovL3Auc2YubmV0L3NmdS9sZWFybm1vcmVfMTIyNTEyCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+'ip' tools is more general than 'ifconfig', and there are some
+distros don't support to install 'ifconfig' tools under default,
+which will cause such below error:
+
+   sh: ifconfig: command not found
+   sendmsg01    1  TBROK  :  ifconfig failed to bring up loop back device
+   sendmsg01    2  TBROK  :  Remaining cases broken
+
+the patch displaced 'ifconfig' using 'ip', and also the case need root
+permission and to check capture unexpected signal.
+
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/syscalls/sendmsg/sendmsg01.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+v2: added Cyril's suggestion: try ip and fallback to ifconfig if ip has failed.
+
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+index e1424ca..2a1b2c9 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+@@ -573,6 +573,9 @@ static void setup(void)
+ {
+ 
+ 	int ret = 0;
++
++	tst_require_root(NULL);
++	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
+ 	/* initialize sockaddr's */
+@@ -586,13 +589,16 @@ static void setup(void)
+ 	strcpy(sun1.sun_path, tmpsunpath);
+ 
+ 	/* this test will fail or in some cases hang if no eth or lo is
+-	 * configured, so making sure in setup that atleast lo is up
++	 * configured, so making sure in setup that at least lo is up
+ 	 */
+-	ret = system("ifconfig lo up 127.0.0.1");
++	ret = system("ip link set lo up");
+ 	if (WEXITSTATUS(ret) != 0) {
+-		tst_brkm(TBROK, cleanup,
+-			 "ifconfig failed to bring up loop back device");
+-		tst_exit();
++		ret = system("ifconfig lo up 127.0.0.1");
++		if (WEXITSTATUS(ret) != 0) {
++			tst_brkm(TBROK, cleanup,
++			    "ip/ifconfig failed to bring up loop back device");
++			tst_exit();
++		}
+ 	}
+ 
+ 	pid = start_server(&sin1, &sun1);
+@@ -607,7 +613,6 @@ static void cleanup(void)
+ 	unlink(tmpsunpath);
+ 	TEST_CLEANUP;
+ 	tst_rmdir();
+-
+ }
+ 
+ static void setup0(void)
+-- 
+1.7.11.7
+
+
+------------------------------------------------------------------------------
+Master SQL Server Development, Administration, T-SQL, SSAS, SSIS, SSRS
+and more. Get SQL Server skills now (including 2012) with LearnDevNow -
+200+ hours of step-by-step video tutorials by Microsoft MVPs and experts.
+SALE $99.99 this month only - learn more at:
+http://p.sf.net/sfu/learnmore_122512
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
