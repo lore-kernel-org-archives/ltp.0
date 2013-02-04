@@ -2,20 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UAFtq-0004jp-Uk
-	for ltp-list@lists.sourceforge.net; Tue, 26 Feb 2013 08:28:34 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U2Efa-0004Md-L0
+	for ltp-list@lists.sourceforge.net; Mon, 04 Feb 2013 05:32:42 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UAFtp-00078Q-CY
-	for ltp-list@lists.sourceforge.net; Tue, 26 Feb 2013 08:28:34 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r1Q8R937020299
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Feb 2013 16:27:10 +0800
-Message-ID: <512C716B.9020600@cn.fujitsu.com>
-Date: Tue, 26 Feb 2013 16:25:15 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	id 1U2EfZ-0001KW-3q
+	for ltp-list@lists.sourceforge.net; Mon, 04 Feb 2013 05:32:42 +0000
+Message-ID: <510F47D4.5030000@cn.fujitsu.com>
+Date: Mon, 04 Feb 2013 13:32:04 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] pthread_kill/1-2.c: fix a trivial typo miss
+References: <510F160D.9080503@cn.fujitsu.com>
+	<1359948132-26248-1-git-send-email-eguan@redhat.com>
+In-Reply-To: <1359948132-26248-1-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH v2] syscalls/open11: new open(2) test case
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,38 +29,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Eryu Guan <eguan@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On 02/04/2013 11:22 AM, Eryu Guan wrote:
+> In addition to existing open(2) tests, add more basic tests and make
+> sure open(2) works and handles error conditions correctly.
+> 
+> There are 28 test cases:
+> 1. Open regular file O_RDONLY
+> 2. Open regular file O_WRONLY
+> 3. Open regular file O_RDWR
+> 4. Open regular file O_RDWR | O_SYNC
+> 5. Open regular file O_RDWR | O_TRUNC
+> 6. Open dir O_RDONLY
+> 7. Open dir O_RDWR, expect EISDIR
+> 8. Open regular file O_DIRECTORY, expect ENOTDIR
+> 9. Open hard link file O_RDONLY
+> 10. Open hard link file O_WRONLY
+> 11. Open hard link file O_RDWR
+> 12. Open sym link file O_RDONLY
+> 13. Open sym link file O_WRONLY
+> 14. Open sym link file O_RDWR
+> 15. Open sym link dir O_RDONLY
+> 16. Open sym link dir O_WRONLY, expect EISDIR
+> 17. Open sym link dir O_RDWR, expect EISDIR
+> 18. Open device special file O_RDONLY
+> 19. Open device special file O_WRONLY
+> 20. Open device special file O_RDWR
+> 21. Open non-existing regular file in existing dir
+> 22. Open link file O_RDONLY | O_CREAT
+> 23. Open symlink file O_RDONLY | O_CREAT
+> 24. Open regular file O_RDONLY | O_CREAT
+> 25. Open symlink dir O_RDONLY | O_CREAT, expect EISDIR
+> 26. Open dir O_RDONLY | O_CREAT, expect EISDIR
+> 27. Open regular file O_RDONLY | O_TRUNC, behaviour is undefined but
+>     should not oops or hang
+> 28. Open regular file(non-empty) O_RDONLY | O_TRUNC, behaviour is
+>     undefined but should not oops or hang
+> 
+> Signed-off-by: Eryu Guan <eguan@redhat.com>
 
-fix a trivial typo miss
+Applied, thank you.
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- .../open_posix_testsuite/conformance/interfaces/pthread_kill/1-2.c      | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Wanlong Gao
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/1-2.c
-b/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/1-2.c
-index 3876bd1..cad281e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/1-2.c
-@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
- 		UNRESOLVED(ret, "Failed to empty signal set");
- 	}
-
--	sigaction(SIGUSR2, &sa, 0);
-+	ret = sigaction(SIGUSR2, &sa, 0);
-
- 	if (ret != 0) {
- 		UNRESOLVED(ret, "Failed to set signal handler");
--- 
-1.7.12
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+http://p.sf.net/sfu/appdyn_d2d_jan
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
