@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1U8ndK-0004vg-6m
-	for ltp-list@lists.sourceforge.net; Fri, 22 Feb 2013 08:05:30 +0000
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1U8ndI-0007rv-UJ
-	for ltp-list@lists.sourceforge.net; Fri, 22 Feb 2013 08:05:30 +0000
-Received: by mail-wi0-f173.google.com with SMTP id hq4so570613wib.0
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 22 Feb 2013 00:05:22 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1349794116-5016-1-git-send-email-liuhangbin@gmail.com>
-References: <1349794116-5016-1-git-send-email-liuhangbin@gmail.com>
-Date: Fri, 22 Feb 2013 16:05:21 +0800
-Message-ID: <CAPwn2JTfyOE_N5W=Tr8PdBcBsUU3cyfTpUVk1-hx31fk-NEMMw@mail.gmail.com>
-From: =?GB2312?B?wfW6vbHy?= <liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] testscripts: add appl test in networkstress.sh
+	(envelope-from <jstancek@redhat.com>) id 1U2ku9-0000Uj-Ji
+	for ltp-list@lists.sourceforge.net; Tue, 05 Feb 2013 15:57:53 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1U2ku8-0008L2-Ee
+	for ltp-list@lists.sourceforge.net; Tue, 05 Feb 2013 15:57:53 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r15FvkIY031591
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Feb 2013 10:57:46 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  5 Feb 2013 16:57:30 +0100
+Message-Id: <4452e231891155599a67963415d3828e20947f54.1360079418.git.jstancek@redhat.com>
+In-Reply-To: <cover.1360079418.git.jstancek@redhat.com>
+References: <cover.1360079418.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 2/3] setns: add new syscall test setns01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,133 +28,357 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2314347440497714022=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
---===============2314347440497714022==
-Content-Type: multipart/alternative; boundary=f46d0442829626b5b504d64ba767
-
---f46d0442829626b5b504d64ba767
-Content-Type: text/plain; charset=ISO-8859-1
-
-Sorry for the less standard subject, I will be careful next time.
-
-2012/10/9 Hangbin Liu <liuhangbin@gmail.com>
-
-> We have network_stress.appl in runtest dir. But we didn't include this
-> test in
-> networkstress.sh. Add a new parameter to support appl test.
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  testscripts/networkstress.sh |    4 +++-
->  1 files changed, 3 insertions(+), 1 deletions(-)
->
-> diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
-> index e04a143..68673f4 100755
-> --- a/testscripts/networkstress.sh
-> +++ b/testscripts/networkstress.sh
-> @@ -59,6 +59,7 @@ usage () {
->      echo "---------------------------------------------------------"
->      echo -e "\033[31m $0 [options] \033[0m "
->      echo "---------------------------------------------------------"
-> +    echo " -A|a: Stress test for appl"
->      echo " -E|e: Stress test for interface"
->      echo " -I|i: Stress test for ICMP protocol"
->      echo " -T|t: Stress test for TCP/IP"
-> @@ -76,9 +77,10 @@ usage () {
->      exit 1
->  }
->
-> -while getopts EeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
-> +while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
->  do
->      case $OPTION in
-> +       A|a) TEST_CASE="network_stress.appl";;
->         E|e) TEST_CASE="network_stress.interface";;
->         B|b) TEST_CASE="network_stress.broken_ip";;
->         I|i) TEST_CASE="network_stress.icmp";;
-> --
-> 1.7.7.6
->
->
-
---f46d0442829626b5b504d64ba767
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Sorry for the less standard subject, I will be careful next time.<br><br><d=
-iv class=3D"gmail_quote">2012/10/9 Hangbin Liu <span dir=3D"ltr">&lt;<a hre=
-f=3D"mailto:liuhangbin@gmail.com" target=3D"_blank">liuhangbin@gmail.com</a=
->&gt;</span><br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">We have network_stress.appl in runtest dir. =
-But we didn&#39;t include this test in<br>
-networkstress.sh. Add a new parameter to support appl test.<br>
-<br>
-Signed-off-by: Hangbin Liu &lt;<a href=3D"mailto:liuhangbin@gmail.com">liuh=
-angbin@gmail.com</a>&gt;<br>
----<br>
-=A0testscripts/networkstress.sh | =A0 =A04 +++-<br>
-=A01 files changed, 3 insertions(+), 1 deletions(-)<br>
-<br>
-diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh<br=
->
-index e04a143..68673f4 100755<br>
---- a/testscripts/networkstress.sh<br>
-+++ b/testscripts/networkstress.sh<br>
-@@ -59,6 +59,7 @@ usage () {<br>
-=A0 =A0 =A0echo &quot;-----------------------------------------------------=
-----&quot;<br>
-=A0 =A0 =A0echo -e &quot;\033[31m $0 [options] \033[0m &quot;<br>
-=A0 =A0 =A0echo &quot;-----------------------------------------------------=
-----&quot;<br>
-+ =A0 =A0echo &quot; -A|a: Stress test for appl&quot;<br>
-=A0 =A0 =A0echo &quot; -E|e: Stress test for interface&quot;<br>
-=A0 =A0 =A0echo &quot; -I|i: Stress test for ICMP protocol&quot;<br>
-=A0 =A0 =A0echo &quot; -T|t: Stress test for TCP/IP&quot;<br>
-@@ -76,9 +77,10 @@ usage () {<br>
-=A0 =A0 =A0exit 1<br>
-=A0}<br>
-<br>
--while getopts EeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION<br>
-+while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION<br>
-=A0do<br>
-=A0 =A0 =A0case $OPTION in<br>
-+ =A0 =A0 =A0 A|a) TEST_CASE=3D&quot;network_stress.appl&quot;;;<br>
-=A0 =A0 =A0 =A0 E|e) TEST_CASE=3D&quot;network_stress.interface&quot;;;<br>
-=A0 =A0 =A0 =A0 B|b) TEST_CASE=3D&quot;network_stress.broken_ip&quot;;;<br>
-=A0 =A0 =A0 =A0 I|i) TEST_CASE=3D&quot;network_stress.icmp&quot;;;<br>
-<span class=3D"HOEnZb"><font color=3D"#888888">--<br>
-1.7.7.6<br>
-<br>
-</font></span></blockquote></div><br>
-
---f46d0442829626b5b504d64ba767--
-
-
---===============2314347440497714022==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+errno tests for setns(2) - reassociate thread with a namespace
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ runtest/syscalls                          |    2 +
+ testcases/kernel/syscalls/.gitignore      |    1 +
+ testcases/kernel/syscalls/setns/setns.h   |   41 +++++
+ testcases/kernel/syscalls/setns/setns01.c |  245 +++++++++++++++++++++++++++++
+ 4 files changed, 289 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/setns/setns.h
+ create mode 100644 testcases/kernel/syscalls/setns/setns01.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index db5a075..a881479 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -962,6 +962,8 @@ setitimer01 setitimer01
+ setitimer02 setitimer02
+ setitimer03 setitimer03
+ 
++setns01 setns01
++
+ setpgid01 setpgid01
+ setpgid02 setpgid02
+ setpgid03 setpgid03
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 003c5d0..d3bf8b7 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -763,6 +763,7 @@
+ /setitimer/setitimer01
+ /setitimer/setitimer02
+ /setitimer/setitimer03
++/setns/setns01
+ /setpgid/setpgid01
+ /setpgid/setpgid02
+ /setpgid/setpgid03
+diff --git a/testcases/kernel/syscalls/setns/setns.h b/testcases/kernel/syscalls/setns/setns.h
+new file mode 100644
+index 0000000..1613e6c
+--- /dev/null
++++ b/testcases/kernel/syscalls/setns/setns.h
+@@ -0,0 +1,41 @@
++/*
++ * Copyright (C) 2013 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++static int get_ns_fd(int pid, const char *ns)
++{
++	char tmp[PATH_MAX];
++	struct stat st;
++	int fd = -1;
++
++	sprintf(tmp, "/proc/%d/%s", pid, ns);
++	if (stat(tmp, &st) == 0) {
++		fd = open(tmp, O_RDONLY);
++		if (fd == -1)
++			tst_brkm(TBROK|TERRNO, NULL, "failed to open %s", tmp);
++	} else {
++		if (errno != ENOENT)
++			tst_brkm(TBROK|TERRNO, NULL, "failed to stat %s", tmp);
++	}
++	return fd;
++}
+diff --git a/testcases/kernel/syscalls/setns/setns01.c b/testcases/kernel/syscalls/setns/setns01.c
+new file mode 100644
+index 0000000..6469266
+--- /dev/null
++++ b/testcases/kernel/syscalls/setns/setns01.c
+@@ -0,0 +1,245 @@
++/*
++ * Copyright (C) 2013 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++/*
++ * errno tests for setns(2) - reassociate thread with a namespace
++ */
++#define _GNU_SOURCE
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <sys/types.h>
++#include <errno.h>
++#include <sched.h>
++#include <pwd.h>
++#include <string.h>
++#include "config.h"
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++#include "safe_macros.h"
++
++#define NS_TOTAL 3
++char *TCID = "setns01";
++
++#if defined(__NR_setns) && defined(CLONE_NEWIPC) && defined(CLONE_NEWUTS) \
++	&& defined(CLONE_NEWNET)
++#include "setns.h"
++
++struct testcase_t {
++	const char *msg;
++	int fd;
++	int ns_type;
++	int exp_ret;
++	int exp_errno;
++	int skip;
++	void (*setup) (struct testcase_t *);
++	void (*cleanup) (struct testcase_t *);
++};
++
++static void setup(void);
++static void cleanup(void);
++static void setup1(struct testcase_t *);
++static void setup2(struct testcase_t *);
++static void setup3(struct testcase_t *);
++static void setup4(struct testcase_t *);
++static void cleanup1(struct testcase_t *);
++static void cleanup4(struct testcase_t *);
++
++struct testcase_t tdat[] = {
++	{
++		.msg = "invalid fd",
++		.fd = -1,
++		.ns_type = CLONE_NEWIPC,
++		.exp_ret = -1,
++		.exp_errno = EBADF,
++	},
++	{
++		.msg = "regular file fd",
++		.ns_type = CLONE_NEWIPC,
++		.exp_ret = -1,
++		.exp_errno = EINVAL,
++		.setup = setup1,
++		.cleanup = cleanup1
++	},
++	{
++		.msg = "invalid ns_type",
++		.ns_type = -1,
++		.exp_ret = -1,
++		.exp_errno = EINVAL,
++		.setup = setup2,
++	},
++	{
++		.msg = "mismatch ns_type/fd",
++		.exp_ret = -1,
++		.exp_errno = EINVAL,
++		.setup = setup3,
++	},
++	{
++		.msg = "without CAP_SYS_ADMIN",
++		.exp_ret = -1,
++		.exp_errno = EPERM,
++		.setup = setup4,
++		.cleanup = cleanup4,
++	}
++};
++
++static const char *ns_names[NS_TOTAL] = {"ns/ipc", "ns/net", "ns/uts"};
++static int ns_types[NS_TOTAL] = { CLONE_NEWIPC, CLONE_NEWNET, CLONE_NEWUTS };
++static int ns_fds[NS_TOTAL];
++static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
++static const char nobody_uid[] = "nobody";
++static struct passwd *ltpuser;
++
++static void setup1(struct testcase_t *t)
++{
++	t->fd = open("dummy", O_CREAT);
++	if (t->fd == -1)
++		tst_brkm(TFAIL|TERRNO, cleanup, "setup1:open failed");
++	unlink("dummy");
++}
++
++static void cleanup1(struct testcase_t *t)
++{
++	close(t->fd);
++}
++
++static void setup2(struct testcase_t *t)
++{
++	int i;
++	for (i = 0; i < NS_TOTAL; i++)
++		if (ns_fds[i] != -1) {
++			t->fd = ns_fds[i];
++			return;
++		}
++	t->skip = 1;
++}
++
++static void setup3(struct testcase_t *t)
++{
++	int i;
++	for (i = 0; i < NS_TOTAL; i++)
++		if (ns_fds[i] != -1) {
++			t->fd = ns_fds[i];
++			t->ns_type = ns_types[(i+1) % NS_TOTAL];
++			return;
++		}
++	t->skip = 1;
++}
++
++static void setup4(struct testcase_t *t)
++{
++	if (seteuid(ltpuser->pw_uid) == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "seteuid failed");
++}
++
++static void cleanup4(struct testcase_t *t)
++{
++	if (seteuid(0) == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "seteuid restore failed");
++}
++
++static void test_setns(struct testcase_t *t)
++{
++	int ret;
++
++	if (t->setup)
++		t->setup(t);
++
++	if (t->skip) {
++		tst_resm(TINFO, "skip %s", tdat->msg);
++		return;
++	}
++
++	ret = syscall(__NR_setns, t->fd, t->ns_type);
++	if (ret == t->exp_ret) {
++		if (ret == -1 && errno == t->exp_errno)
++			tst_resm(TPASS, "%s exp_errno=%d", t->msg,
++				t->exp_errno);
++		else
++			tst_resm(TFAIL|TERRNO, "%s exp_errno=%d", t->msg,
++				t->exp_errno);
++	} else {
++		tst_resm(TFAIL, "%s ret=%d expected=%d", t->msg,
++			ret, t->exp_ret);
++	}
++
++	if (t->cleanup)
++		t->cleanup(t);
++}
++
++int main(int argc, char *argv[])
++{
++	int lc, testno;
++	char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		for (testno = 0; testno < TST_TOTAL; testno++)
++			test_setns(&tdat[testno]);
++	}
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	int i;
++
++	tst_require_root(NULL);
++
++	/* runtime check if syscall is supported */
++	syscall(__NR_setns, -1, 0);
++
++	ltpuser = getpwnam(nobody_uid);
++	if (ltpuser == NULL)
++		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
++
++	for (i = 0; i < NS_TOTAL; i++)
++		ns_fds[i] = get_ns_fd(getpid(), ns_names[i]);
++
++	tst_tmpdir();
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	int i;
++
++	for (i = 0; i < NS_TOTAL; i++)
++		if (ns_fds[i] != -1)
++			close(ns_fds[i]);
++	tst_rmdir();
++	TEST_CLEANUP;
++}
++#else
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "__NR_setns, CLONE_NEWIPC, CLONE_NEWNET or "
++		"CLONE_NEWUTS is not defined on your system.");
++
++}
++#endif
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
---===============2314347440497714022==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2314347440497714022==--
-
