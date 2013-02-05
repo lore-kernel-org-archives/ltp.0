@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U7VHz-0005QM-IY
-	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 18:18:07 +0000
-Date: Mon, 18 Feb 2013 19:17:36 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U2hEL-0002As-QF
+	for ltp-list@lists.sourceforge.net; Tue, 05 Feb 2013 12:02:29 +0000
+Date: Tue, 5 Feb 2013 13:02:53 +0100
 From: chrubis@suse.cz
-Message-ID: <20130218181734.GA28740@rei.Home>
-References: <cover.1361196214.git.jstancek@redhat.com>
-	<a5da91845477cb0ddbd59d37eb328175dac90698.1361196214.git.jstancek@redhat.com>
+Message-ID: <20130205120253.GD4130@rei>
+References: <1360049585-6091-1-git-send-email-yanl.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a5da91845477cb0ddbd59d37eb328175dac90698.1361196214.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v3 2/3] setns: add new syscall test setns01
+In-Reply-To: <1360049585-6091-1-git-send-email-yanl.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] fix race at exit by checking if write completed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +24,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Yan Lei <yanl.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +static void setup1(struct testcase_t *t, int i)
-> +{
-> +	t->ns_type = ns_types[i];
-> +	t->fd = open("dummy", O_CREAT);
+> The same issue as:
+>     commit 352358cd9f69f6e8296cc201b14bae938287796e
+>     Author: Jan Stancek <jstancek@redhat.com>
+>     Date: Mon, 28 Jan 2013 11:36:48 +0100
+>     aio_fsync/2-1.c: fix race at exit, check if write completed
+> This patch waits for aio_fsync to complete and after that
+> checks that previously queued write is also completed.
+> 
+> Signed-off-by: Yan Lei <yanl.fnst@cn.fujitsu.com>
 
-While I tried to compile this code, I've got error as open with O_CREAT
-is required to pass the mode.
-
-> +	if (t->fd == -1)
-> +		tst_brkm(TFAIL|TERRNO, cleanup, "setup1:open failed");
-> +	unlink("dummy");
-> +}
+Commited, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-The Go Parallel Website, sponsored by Intel - in partnership with Geeknet, 
-is your hub for all things parallel software development, from weekly thought 
-leadership blogs to news, videos, case studies, tutorials, tech docs, 
-whitepapers, evaluation guides, and opinion stories. Check out the most 
-recent posts - join the conversation now. http://goparallel.sourceforge.net/
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
