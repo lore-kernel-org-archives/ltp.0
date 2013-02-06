@@ -1,19 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1U5cFe-0008AA-CZ
-	for ltp-list@lists.sourceforge.net; Wed, 13 Feb 2013 13:19:54 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1U5cFc-0007bn-Df
-	for ltp-list@lists.sourceforge.net; Wed, 13 Feb 2013 13:19:54 +0000
-From: Markos Chandras <markos.chandras@gmail.com>
-Date: Wed, 13 Feb 2013 13:19:05 +0000
-Message-ID: <1360761545-2443-1-git-send-email-markos.chandras@gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shenlinf@cn.ibm.com>) id 1U330L-0007Jg-Tj
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:17:29 +0000
+Received: from e23smtp06.au.ibm.com ([202.81.31.148])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1U330I-0005Cy-KH
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:17:29 +0000
+Received: from /spool/local
+	by e23smtp06.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <shenlinf@cn.ibm.com>;
+	Wed, 6 Feb 2013 21:12:56 +1000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [9.190.234.120])
+	by d23dlp03.au.ibm.com (Postfix) with ESMTP id B991E3578051
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  6 Feb 2013 22:16:59 +1100 (EST)
+Received: from d23av05.au.ibm.com (d23av05.au.ibm.com [9.190.234.119])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	r16B4uaY29098032
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Feb 2013 22:04:56 +1100
+Received: from d23av05.au.ibm.com (loopback [127.0.0.1])
+	by d23av05.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	r16BGwkO007889
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Feb 2013 22:16:58 +1100
+Received: from d23m0017.cn.ibm.com (cnnco04.cn.ibm.com [9.181.122.142])
+	by d23av05.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+	r16BGvVn007865
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Feb 2013 22:16:58 +1100
+From: Lin Feng Shen <shenlinf@cn.ibm.com>
+Message-ID: <OFF01DEC32.7DFE6571-ON48257B0A.003DF988-48257B0A.003DF988@cn.ibm.com>
+Date: Wed, 6 Feb 2013 19:16:55 +0800
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] open11.c: Define _GNU_SOURCE which is required for
-	O_DIRECTORY
+Subject: [LTP] Lin Feng Shen is out of the office.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,44 +43,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6571199065255889808=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-From: Markos Chandras <markos.chandras@imgtec.com>
+--===============6571199065255889808==
+Content-type: multipart/alternative; 
+	Boundary="0__=C7BBF199DFAE7F188f9e8a93df938690918cC7BBF199DFAE7F18"
+Content-Disposition: inline
 
-O_DIRECTORY is only available if _GNU_SOURCE is defined
-in uClibc toolchains:
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/kernel/syscalls/open/open11.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
-index a042130..8f06948 100644
---- a/testcases/kernel/syscalls/open/open11.c
-+++ b/testcases/kernel/syscalls/open/open11.c
-@@ -59,6 +59,7 @@
-  *     but should not oops or hang
-  */
- 
-+#define _GNU_SOURCE
- #include "config.h"
- #include <sys/types.h>
- #include <sys/stat.h>
--- 
-1.7.1
+--0__=C7BBF199DFAE7F188f9e8a93df938690918cC7BBF199DFAE7F18
+Content-type: text/plain; charset=US-ASCII
 
 
+I will be out of the office starting  02/06/2013 and will not return until
+02/17/2013.
+
+I will respond to your message when I return.
+--0__=C7BBF199DFAE7F188f9e8a93df938690918cC7BBF199DFAE7F18
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+
+<html><body>
+<p><font size="2" face="sans-serif">I will be out of the office starting &nbsp;02/06/2013 and will not return until 02/17/2013.<br>
+</font><font size="2" face="sans-serif"><br>
+</font><font size="2" face="sans-serif">I will respond to your message when I return.</font></body></html>
+--0__=C7BBF199DFAE7F188f9e8a93df938690918cC7BBF199DFAE7F18--
+
+
+
+--===============6571199065255889808==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Free Next-Gen Firewall Hardware Offer
 Buy your Sophos next-gen firewall before the end March 2013 
 and get the hardware for free! Learn more.
 http://p.sf.net/sfu/sophos-d2d-feb
+--===============6571199065255889808==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6571199065255889808==--
+
+
