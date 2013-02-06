@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U2hEL-0002As-QF
-	for ltp-list@lists.sourceforge.net; Tue, 05 Feb 2013 12:02:29 +0000
-Date: Tue, 5 Feb 2013 13:02:53 +0100
-From: chrubis@suse.cz
-Message-ID: <20130205120253.GD4130@rei>
-References: <1360049585-6091-1-git-send-email-yanl.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U30cc-00029O-1l
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 08:44:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1U30cZ-0003fx-MY
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 08:44:50 +0000
+Message-ID: <511217D6.4040305@cn.fujitsu.com>
+Date: Wed, 06 Feb 2013 16:44:06 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1360049585-6091-1-git-send-email-yanl.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] fix race at exit by checking if write completed
+References: <cover.1360079418.git.jstancek@redhat.com>
+	<8f6c9c701655f37363ab8d8476d32e925f62434c.1360079418.git.jstancek@redhat.com>
+In-Reply-To: <8f6c9c701655f37363ab8d8476d32e925f62434c.1360079418.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 3/3] setns: add new syscall test setns02
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,25 +29,300 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yan Lei <yanl.fnst@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> The same issue as:
->     commit 352358cd9f69f6e8296cc201b14bae938287796e
->     Author: Jan Stancek <jstancek@redhat.com>
->     Date: Mon, 28 Jan 2013 11:36:48 +0100
->     aio_fsync/2-1.c: fix race at exit, check if write completed
-> This patch waits for aio_fsync to complete and after that
-> checks that previously queued write is also completed.
+On 02/05/2013 11:57 PM, Jan Stancek wrote:
+> functional test for setns(2) - reassociate thread with a namespace
 > 
-> Signed-off-by: Yan Lei <yanl.fnst@cn.fujitsu.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  runtest/syscalls                          |    1 +
+>  testcases/kernel/syscalls/.gitignore      |    1 +
+>  testcases/kernel/syscalls/setns/setns02.c |  231 +++++++++++++++++++++++++++++
+>  3 files changed, 233 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/setns/setns02.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index a881479..c70bcbd 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -963,6 +963,7 @@ setitimer02 setitimer02
+>  setitimer03 setitimer03
+>  
+>  setns01 setns01
+> +setns02 setns02
+>  
+>  setpgid01 setpgid01
+>  setpgid02 setpgid02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index d3bf8b7..90b521e 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -764,6 +764,7 @@
+>  /setitimer/setitimer02
+>  /setitimer/setitimer03
+>  /setns/setns01
+> +/setns/setns02
+>  /setpgid/setpgid01
+>  /setpgid/setpgid02
+>  /setpgid/setpgid03
+> diff --git a/testcases/kernel/syscalls/setns/setns02.c b/testcases/kernel/syscalls/setns/setns02.c
+> new file mode 100644
+> index 0000000..fa8ea74
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/setns/setns02.c
+> @@ -0,0 +1,231 @@
+> +/*
+> + * Copyright (C) 2013 Linux Test Project, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + */
+> +/*
+> + * functional test for setns(2) - reassociate thread with a namespace
+> + * 1. create child with CLONE_NEWUTS, set different hostname in child,
+> + *    set namespace back to parent ns and check that hostname has changed
+> + * 2. create child with CLONE_NEWIPC, set up shared memory in parent
+> + *    and verify that child can't shmat it, then set namespace
+> + *    back to parent one and verify that child is able to do shmat
+> + */
+> +#define _GNU_SOURCE
+> +#include <sys/ipc.h>
+> +#include <sys/shm.h>
+> +#include <sys/stat.h>
+> +#include <sys/syscall.h>
+> +#include <sys/types.h>
+> +#include <sys/utsname.h>
+> +#include <sys/wait.h>
+> +#include <errno.h>
+> +#include <sched.h>
+> +#include <string.h>
+> +#include "config.h"
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "linux_syscall_numbers.h"
+> +#include "safe_macros.h"
+> +
+> +#define CHILD_STACK_SIZE (1024*1024)
+> +#define CP "(child) "
+> +char *TCID = "setns02";
+> +
+> +#if defined(__NR_setns) && defined(CLONE_NEWIPC) && defined(CLONE_NEWUTS)
+> +#include "setns.h"
+> +
+> +static char *dummy_hostname = "setns_dummy_uts";
+> +static int ns_ipc_fd;
+> +static int ns_uts_fd;
+> +static key_t ipc_key;
+> +static int shmid;
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +static int do_child_newuts(void *arg)
+> +{
+> +	struct utsname uts, uts_parent;
+> +	int ns_flag = *(int *)arg;
+> +
+> +	if (uname(&uts_parent) == -1)
+> +		tst_resm(TFAIL|TERRNO, CP"uname");
+> +	tst_resm(TINFO, CP"hostnane (inherited from parent): %s",
 
-Commited, thanks.
+s/hostnane/hostname/
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +		uts_parent.nodename);
+> +
+> +	if (sethostname(dummy_hostname, strlen(dummy_hostname)) == -1)
+> +		tst_resm(TFAIL|TERRNO, CP"sethostname");
+> +	if (uname(&uts) == -1)
+> +		tst_resm(TFAIL|TERRNO, CP"uname");
+> +
+> +	tst_resm(TINFO, CP"hostname changed to: %s", uts.nodename);
+> +	if (strcmp(uts_parent.nodename, uts.nodename) == 0) {
+> +		tst_resm(TFAIL, CP"expected hostname to be different");
+> +		return 1;
+> +	} else {
+> +		tst_resm(TPASS, CP"hostname is different in parent/child");
+> +	}
+> +
+> +	tst_resm(TINFO, CP"attemping to switch ns back to parent ns");
+
+s/attemping/attempting/
+
+> +	if (syscall(__NR_setns, ns_uts_fd, ns_flag) == -1) {
+> +		tst_resm(TFAIL|TERRNO, CP"setns");
+> +		return 2;
+> +	}
+> +	if (uname(&uts) == -1)
+> +		tst_resm(TFAIL|TERRNO, CP"uname");
+> +
+> +	tst_resm(TINFO, CP"hostname: %s", uts.nodename);
+> +	if (strcmp(uts_parent.nodename, uts.nodename) != 0) {
+> +		tst_resm(TFAIL, CP"expected hostname to match parent");
+> +		return 3;
+> +	} else {
+> +		tst_resm(TPASS, CP"hostname now as expected");
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int do_child_newipc(void *arg)
+> +{
+> +	void *p;
+> +	int ns_flag = *(int *)arg;
+> +
+> +	p = shmat(shmid, NULL, 0);
+> +	if (p == (void *) -1) {
+> +		tst_resm(TPASS|TERRNO, CP"shmat failed as expected");
+> +	} else {
+> +		tst_resm(TFAIL, CP"shmat unexpectedly suceeded");
+> +		shmdt(p);
+> +		return 1;
+> +	}
+> +
+> +	tst_resm(TINFO, CP"attemping to switch ns back to parent ns");
+
+s/attemping/attempting/
+
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+
+
+Thanks,
+Wanlong Gao
+
+
+> +	if (syscall(__NR_setns, ns_ipc_fd, ns_flag) == -1) {
+> +		tst_resm(TFAIL|TERRNO, CP"setns");
+> +		return 2;
+> +	}
+> +
+> +	p = shmat(shmid, NULL, 0);
+> +	if (p == (void *) -1) {
+> +		tst_resm(TFAIL|TERRNO, CP"shmat failed after setns");
+> +		return 3;
+> +	} else {
+> +		tst_resm(TPASS, CP"shmat suceeded");
+> +		shmdt(p);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void test_flag(int clone_flag, int ns_flag, int (*fn) (void *arg))
+> +{
+> +	void *child_stack;
+> +	int ret, status;
+> +
+> +	child_stack = malloc(CHILD_STACK_SIZE);
+> +	if (child_stack == NULL)
+> +		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
+> +
+> +	tst_resm(TINFO, "creating child with clone_flag=0x%x, ns_flag=0x%x",
+> +		clone_flag, ns_flag);
+> +	ret = ltp_clone(SIGCHLD|clone_flag, fn, &ns_flag,
+> +		CHILD_STACK_SIZE, child_stack);
+> +	if (ret == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "ltp_clone");
+> +
+> +	if (waitpid(ret, &status, 0) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +		tst_resm(TFAIL, "child returns %d", status);
+> +	else
+> +		tst_resm(TPASS, "child finished succesfully");
+> +	free(child_stack);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	char *msg;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		if (ns_uts_fd != -1) {
+> +			tst_resm(TINFO, "test_newuts");
+> +			test_flag(CLONE_NEWUTS, CLONE_NEWUTS, do_child_newuts);
+> +			test_flag(CLONE_NEWUTS, 0, do_child_newuts);
+> +		}
+> +		if (ns_ipc_fd != -1) {
+> +			tst_resm(TINFO, "test_newipc");
+> +			test_flag(CLONE_NEWIPC, CLONE_NEWIPC, do_child_newipc);
+> +			test_flag(CLONE_NEWIPC, 0, do_child_newipc);
+> +		}
+> +	}
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	char tmp[PATH_MAX];
+> +
+> +	tst_require_root(NULL);
+> +
+> +	/* runtime check if syscall is supported */
+> +	syscall(__NR_setns, -1, 0);
+> +
+> +	/* check if kernel has CONFIG_*_NS set and exports /proc entries */
+> +	ns_ipc_fd = get_ns_fd(getpid(), "ns/ipc");
+> +	ns_uts_fd = get_ns_fd(getpid(), "ns/uts");
+> +	if (ns_ipc_fd == -1 && ns_uts_fd == -1)
+> +		tst_brkm(TCONF, NULL, "your kernel has CONFIG_IPC_NS, "
+> +			"CONFIG_UTS_NS or CONFIG_PROC disabled");
+> +
+> +	if (getcwd(tmp, PATH_MAX) == NULL)
+> +		tst_brkm(TBROK|TERRNO, NULL, "getcwd");
+> +	ipc_key = ftok(tmp, 65);
+> +	shmid = shmget(ipc_key, getpagesize(), IPC_CREAT | 0666);
+> +	if (shmid == -1)
+> +		tst_brkm(TBROK|TERRNO, NULL, "shmget");
+> +
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (ns_ipc_fd != -1)
+> +		close(ns_ipc_fd);
+> +	if (ns_uts_fd != -1)
+> +		close(ns_uts_fd);
+> +
+> +	shmctl(shmid, IPC_RMID, NULL);
+> +	TEST_CLEANUP;
+> +}
+> +#else
+> +int main(int argc, char *argv[])
+> +{
+> +	tst_brkm(TCONF, NULL, "__NR_setns, CLONE_NEWIPC or CLONE_NEWUTS "
+> +		" is not defined on your system.");
+> +}
+> +#endif
+> 
+
 
 ------------------------------------------------------------------------------
 Free Next-Gen Firewall Hardware Offer
