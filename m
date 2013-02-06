@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1U9rX6-0007dB-PZ
-	for ltp-list@lists.sourceforge.net; Mon, 25 Feb 2013 06:27:28 +0000
-Received: from mail-da0-f43.google.com ([209.85.210.43])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1U9rX3-000348-2e
-	for ltp-list@lists.sourceforge.net; Mon, 25 Feb 2013 06:27:28 +0000
-Received: by mail-da0-f43.google.com with SMTP id u36so201027dak.30
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 24 Feb 2013 22:26:57 -0800 (PST)
-Message-ID: <512AFE56.2020006@casparzhang.com>
-Date: Mon, 25 Feb 2013 14:01:58 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
-MIME-Version: 1.0
-References: <1349794116-5016-1-git-send-email-liuhangbin@gmail.com>
-In-Reply-To: <1349794116-5016-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] testscripts: add appl test in networkstress.sh
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1U33b2-0006Ir-Fz
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:55:24 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1U33b0-0004ZJ-LF
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:55:24 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r16BtGnn001053
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Feb 2013 06:55:16 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  6 Feb 2013 12:55:09 +0100
+Message-Id: <cover.1360149841.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2 0/3] add new syscall test for setns(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,58 +26,129 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 10/09/2012 10:48 PM, Hangbin Liu wrote:
-> We have network_stress.appl in runtest dir. But we didn't include this test in
-> networkstress.sh. Add a new parameter to support appl test.
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Changes in v2:
+- fixed setns01 to work with commit 142e1d1d5f088e7a38659daca6e84a730967774a
+- revamped setns01 to use namespace any fd/types available,
+  at the moment any from: ipc, mnt, net, pid, uts
+- setns01 now runs each test for each namespace type
+- fixed typo errors in setns02
+- tested with 3.7 and 3.8.0-rc6
 
-Comitted, thanks. Sorry for late respond.
+Sample output from 3.8.0-rc6+:
+setns01     0  TINFO  :  ns_fds[0]=3, ns_types[0]=0x8000000
+setns01     0  TINFO  :  ns_fds[1]=4, ns_types[1]=0x20000
+setns01     0  TINFO  :  ns_fds[2]=5, ns_types[2]=0x40000000
+setns01     0  TINFO  :  ns_fds[3]=6, ns_types[3]=0x20000000
+setns01     0  TINFO  :  ns_fds[4]=7, ns_types[4]=0x4000000
+setns01     0  TINFO  :  setns(-1, 0x8000000)
+setns01     1  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x20000)
+setns01     2  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x40000000)
+setns01     3  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x20000000)
+setns01     4  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x4000000)
+setns01     5  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(8, 0x8000000)
+setns01     6  TPASS  :  regular file fd exp_errno=22
+setns01     0  TINFO  :  setns(8, 0x20000)
+setns01     7  TPASS  :  regular file fd exp_errno=22
+setns01     0  TINFO  :  setns(8, 0x40000000)
+setns01     8  TPASS  :  regular file fd exp_errno=22
+setns01     0  TINFO  :  setns(8, 0x20000000)
+setns01     9  TPASS  :  regular file fd exp_errno=22
+setns01     0  TINFO  :  setns(8, 0x4000000)
+setns01    10  TPASS  :  regular file fd exp_errno=22
+setns01     0  TINFO  :  setns(3, 0xffffffff)
+setns01    11  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(4, 0xffffffff)
+setns01    12  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(5, 0xffffffff)
+setns01    13  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(6, 0xffffffff)
+setns01    14  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(7, 0xffffffff)
+setns01    15  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(3, 0x20000)
+setns01    16  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(4, 0x40000000)
+setns01    17  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(5, 0x20000000)
+setns01    18  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(6, 0x4000000)
+setns01    19  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(7, 0x8000000)
+setns01    20  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(3, 0x8000000)
+setns01    21  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(4, 0x20000)
+setns01    22  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(5, 0x40000000)
+setns01    23  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(6, 0x20000000)
+setns01    24  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(7, 0x4000000)
+setns01    25  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
 
-Caspar
+setns02     0  TINFO  :  test_newuts
+setns02     0  TINFO  :  creating child with clone_flag=0x4000000, ns_flag=0x4000000
+setns02     0  TINFO  :  (child) hostname (inherited from parent): dell-pe1950-05.lab.bos.redhat.com
+setns02     0  TINFO  :  (child) hostname changed to: setns_dummy_uts
+setns02     1  TPASS  :  (child) hostname is different in parent/child
+setns02     0  TINFO  :  (child) attempting to switch ns back to parent ns
+setns02     0  TINFO  :  (child) hostname: dell-pe1950-05.lab.bos.redhat.com
+setns02     2  TPASS  :  (child) hostname now as expected
+setns02     1  TPASS  :  child finished succesfully
+setns02     0  TINFO  :  creating child with clone_flag=0x4000000, ns_flag=0x0
+setns02     0  TINFO  :  (child) hostname (inherited from parent): dell-pe1950-05.lab.bos.redhat.com
+setns02     0  TINFO  :  (child) hostname changed to: setns_dummy_uts
+setns02     2  TPASS  :  (child) hostname is different in parent/child
+setns02     0  TINFO  :  (child) attempting to switch ns back to parent ns
+setns02     0  TINFO  :  (child) hostname: dell-pe1950-05.lab.bos.redhat.com
+setns02     3  TPASS  :  (child) hostname now as expected
+setns02     2  TPASS  :  child finished succesfully
+setns02     0  TINFO  :  test_newipc
+setns02     0  TINFO  :  creating child with clone_flag=0x8000000, ns_flag=0x8000000
+setns02     3  TPASS  :  (child) shmat failed as expected: errno=EINVAL(22): Invalid argument
+setns02     0  TINFO  :  (child) attempting to switch ns back to parent ns
+setns02     4  TPASS  :  (child) shmat suceeded
+setns02     3  TPASS  :  child finished succesfully
+setns02     0  TINFO  :  creating child with clone_flag=0x8000000, ns_flag=0x0
+setns02     4  TPASS  :  (child) shmat failed as expected: errno=EINVAL(22): Invalid argument
+setns02     0  TINFO  :  (child) attempting to switch ns back to parent ns
+setns02     5  TPASS  :  (child) shmat suceeded
+setns02     4  TPASS  :  child finished succesfully
 
-> ---
->   testscripts/networkstress.sh |    4 +++-
->   1 files changed, 3 insertions(+), 1 deletions(-)
->
-> diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
-> index e04a143..68673f4 100755
-> --- a/testscripts/networkstress.sh
-> +++ b/testscripts/networkstress.sh
-> @@ -59,6 +59,7 @@ usage () {
->       echo "---------------------------------------------------------"
->       echo -e "\033[31m $0 [options] \033[0m "
->       echo "---------------------------------------------------------"
-> +    echo " -A|a: Stress test for appl"
->       echo " -E|e: Stress test for interface"
->       echo " -I|i: Stress test for ICMP protocol"
->       echo " -T|t: Stress test for TCP/IP"
-> @@ -76,9 +77,10 @@ usage () {
->       exit 1
->   }
->
-> -while getopts EeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
-> +while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
->   do
->       case $OPTION in
-> +	A|a) TEST_CASE="network_stress.appl";;
->   	E|e) TEST_CASE="network_stress.interface";;
->   	B|b) TEST_CASE="network_stress.broken_ip";;
->   	I|i) TEST_CASE="network_stress.icmp";;
->
+Jan Stancek (3):
+  setns: setup directory at kernel/syscalls/setns
+  setns: add new syscall test setns01
+  setns: add new syscall test setns02
+
+ runtest/syscalls                          |    3 +
+ testcases/kernel/syscalls/.gitignore      |    2 +
+ testcases/kernel/syscalls/setns/Makefile  |   23 +++
+ testcases/kernel/syscalls/setns/setns.h   |   89 +++++++++++
+ testcases/kernel/syscalls/setns/setns01.c |  240 +++++++++++++++++++++++++++++
+ testcases/kernel/syscalls/setns/setns02.c |  231 +++++++++++++++++++++++++++
+ 6 files changed, 588 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/setns/Makefile
+ create mode 100644 testcases/kernel/syscalls/setns/setns.h
+ create mode 100644 testcases/kernel/syscalls/setns/setns01.c
+ create mode 100644 testcases/kernel/syscalls/setns/setns02.c
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
