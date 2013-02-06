@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U7HHR-0007kj-K1
-	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 03:20:37 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1U33b2-0004pf-5G
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:55:24 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U7HHP-0003EZ-HA
-	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 03:20:37 +0000
-Message-ID: <51219DC8.3080808@cn.fujitsu.com>
-Date: Mon, 18 Feb 2013 11:19:36 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <02591071dc6cc1bdbb630e4c0d8e349042247fd7.1360919410.git.jstancek@redhat.com>
-In-Reply-To: <02591071dc6cc1bdbb630e4c0d8e349042247fd7.1360919410.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] rename syscall() macro to ltp_syscall()
-Reply-To: gaowanlong@cn.fujitsu.com
+	id 1U33b1-0004ZM-3r
+	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:55:24 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r16BtH23030251
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Feb 2013 06:55:17 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  6 Feb 2013 12:55:10 +0100
+Message-Id: <93eee6d332bfc7f4107524597cc687061bbb2501.1360149841.git.jstancek@redhat.com>
+In-Reply-To: <cover.1360149841.git.jstancek@redhat.com>
+References: <cover.1360149841.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2 1/3] setns: setup directory at kernel/syscalls/setns
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +28,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 02/15/2013 05:16 PM, Jan Stancek wrote:
-> This patch renames syscall() macro defined in linux_syscall_numbers.h
-> to reduce confusion with syscall(2). It also updates all places
-> where it was previously in use.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/setns/Makefile |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/setns/Makefile
 
-Applied, thank you very much for your contribution.
-
-Wanlong Gao
+diff --git a/testcases/kernel/syscalls/setns/Makefile b/testcases/kernel/syscalls/setns/Makefile
+new file mode 100644
+index 0000000..f1b5129
+--- /dev/null
++++ b/testcases/kernel/syscalls/setns/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (C) 2013 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++CPPFLAGS                += -Wno-unused-function
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-The Go Parallel Website, sponsored by Intel - in partnership with Geeknet, 
-is your hub for all things parallel software development, from weekly thought 
-leadership blogs to news, videos, case studies, tutorials, tech docs, 
-whitepapers, evaluation guides, and opinion stories. Check out the most 
-recent posts - join the conversation now. http://goparallel.sourceforge.net/
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
