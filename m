@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1U2ETE-00051y-35
-	for ltp-list@lists.sourceforge.net; Mon, 04 Feb 2013 05:19:56 +0000
-Received: from mail-ie0-f171.google.com ([209.85.223.171])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1U2ETA-0000RD-8d
-	for ltp-list@lists.sourceforge.net; Mon, 04 Feb 2013 05:19:56 +0000
-Received: by mail-ie0-f171.google.com with SMTP id 10so5286580ied.16
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 03 Feb 2013 21:19:47 -0800 (PST)
-Message-ID: <510F3F46.2010205@casparzhang.com>
-Date: Mon, 04 Feb 2013 12:55:34 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U4veY-00010v-13
+	for ltp-list@lists.sourceforge.net; Mon, 11 Feb 2013 15:50:46 +0000
+Date: Mon, 11 Feb 2013 16:51:11 +0100
+From: chrubis@suse.cz
+Message-ID: <20130211155111.GA2753@rei>
+References: <20130211143838.GA2829@rei>
+	<652016734.705678.1360596388811.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <510F160D.9080503@cn.fujitsu.com>
-	<1359948132-26248-1-git-send-email-eguan@redhat.com>
-In-Reply-To: <1359948132-26248-1-git-send-email-eguan@redhat.com>
-Subject: Re: [LTP] [PATCH v2] syscalls/open11: new open(2) test case
+Content-Disposition: inline
+In-Reply-To: <652016734.705678.1360596388811.JavaMail.root@redhat.com>
+Subject: Re: [LTP] open posix testsuite and names of testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,68 +25,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Eryu Guan <eguan@redhat.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 02/04/2013 11:22 AM, Eryu Guan wrote:
->
-> In addition to existing open(2) tests, add more basic tests and make
-> sure open(2) works and handles error conditions correctly.
->
-> There are 28 test cases:
-> 1. Open regular file O_RDONLY
-> 2. Open regular file O_WRONLY
-> 3. Open regular file O_RDWR
-> 4. Open regular file O_RDWR | O_SYNC
-> 5. Open regular file O_RDWR | O_TRUNC
-> 6. Open dir O_RDONLY
-> 7. Open dir O_RDWR, expect EISDIR
-> 8. Open regular file O_DIRECTORY, expect ENOTDIR
-> 9. Open hard link file O_RDONLY
-> 10. Open hard link file O_WRONLY
-> 11. Open hard link file O_RDWR
-> 12. Open sym link file O_RDONLY
-> 13. Open sym link file O_WRONLY
-> 14. Open sym link file O_RDWR
-> 15. Open sym link dir O_RDONLY
-> 16. Open sym link dir O_WRONLY, expect EISDIR
-> 17. Open sym link dir O_RDWR, expect EISDIR
-> 18. Open device special file O_RDONLY
-> 19. Open device special file O_WRONLY
-> 20. Open device special file O_RDWR
-> 21. Open non-existing regular file in existing dir
-> 22. Open link file O_RDONLY | O_CREAT
-> 23. Open symlink file O_RDONLY | O_CREAT
-> 24. Open regular file O_RDONLY | O_CREAT
-> 25. Open symlink dir O_RDONLY | O_CREAT, expect EISDIR
-> 26. Open dir O_RDONLY | O_CREAT, expect EISDIR
-> 27. Open regular file O_RDONLY | O_TRUNC, behaviour is undefined but
->      should not oops or hang
-> 28. Open regular file(non-empty) O_RDONLY | O_TRUNC, behaviour is
->      undefined but should not oops or hang
->
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-> ---
-> v2:
-> 	Remove duplicated open device special test
->
->   runtest/ltplite                         |   1 +
->   runtest/stress.part3                    |   1 +
->   runtest/syscalls                        |   1 +
->   testcases/kernel/syscalls/open/open11.c | 424 ++++++++++++++++++++++++++++++++
->   4 files changed, 427 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/open/open11.c
+Hi!
+> > Just recently I've found that one of the posix tests stays running
+> > after
+> > the testsuite has exited (is reparented to init and runs happily ever
+> > after). Which is another usecase for this rename.
+> > 
+> > But the original patch was rather hack (and it doesn't work for me
+> > anyway).
+> > 
+> > So what about renaming the sources itself? Do we agree on this?
+> 
+> I'm not against renaming sources, just thinking if there is less
+> intrusive way to achieve same result. I believe all Makefiles are generated,
+> so other option that comes to mind would be to modify scripts/generate-makefiles.sh.
+> Any thoughts about this approach?
 
-Looks good to me.
+We can hack the script to generate Makefiles that include the dir name
+into the binary name which would be less intrusive but on the other hand
+that would break the rule that foo.c generates foo.run_test...
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_jan
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
