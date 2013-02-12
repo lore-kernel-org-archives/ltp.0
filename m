@@ -1,21 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UIThg-0008Pt-9c
-	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 00:50:00 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIThe-0003jQ-ON
-	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 00:50:00 +0000
-Message-ID: <514A5980.4060500@cn.fujitsu.com>
-Date: Thu, 21 Mar 2013 08:51:12 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <noreply@sourceforge.net>) id 1U5BNu-0002co-TP
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 08:38:38 +0000
+From: SourceForge.net <noreply@sourceforge.net>
+Date: Tue, 12 Feb 2013 00:38:38 -0800
+Content-Disposition: inline
 MIME-Version: 1.0
-References: <1363772673-14851-2-git-send-email-jstancek@redhat.com>
-In-Reply-To: <1363772673-14851-2-git-send-email-jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] inode01: remove "slash" array
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] [ ltp-Patches-2976171 ] Incorrect testing if 'at' command is
+	installed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +22,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+Message-Id: <E1UC6IC-0000ya-3X@sfs-ml-2.v29.ch3.sourceforge.com>
+To: "SourceForge.net" <noreply@sourceforge.net>
 
-On 03/20/2013 05:44 PM, Jan Stancek wrote:
-> and replace strcats with snprintf.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Patches item #2976171, was opened at 2010-03-24 15:13
+Message generated for change (Comment added) made by nobody
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=2976171&group_id=3382
+
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Testcases
+Group: Commands
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: tstanisl (tstanisl)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: Incorrect testing if 'at' command is installed
+
+Initial Comment:
+Scripts at_allow01 and at_deny01 contain incorrect usage of 'if' command. Command 'type at' returns 0 (true) if 'at' command is installed. Therefore conditional command:
+if type at > /dev/null; then
+         tst_resm TCONF "at command not found on system"
+elif...
+generated communicate  "at command not found on system" when 'at' is actually installed. The attachment contains patch that fixes overmentioned problem.
 
 
-Applied, thank you.
+----------------------------------------------------------------------
 
-Wanlong Gao
+Comment By: Nobody/Anonymous (nobody)
+Date: 2013-02-12 00:38
 
+Message:
+gdEgsL  <a href="http://qnwwhexobrjm.com/">qnwwhexobrjm</a>,
+[url=http://jtnpysagzgvi.com/]jtnpysagzgvi[/url],
+[link=http://zjmekyfrgeag.com/]zjmekyfrgeag[/link],
+http://nnqrdmctqvrm.com/
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=2976171&group_id=3382
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
