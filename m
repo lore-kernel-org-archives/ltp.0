@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UGAwK-0003sY-0Y
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:36 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UGAwI-0007Nr-5A
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:35 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2EGNSda018766
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Mar 2013 12:23:28 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Fri, 15 Mar 2013 00:21:34 +0800
-Message-Id: <cover.1363246555.git.zliu@redhat.com>
-Subject: [LTP] [PATCH 0/5] mm/oom: extend the coverage of OOM
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bogdan.purcareata@gmail.com>) id 1U5E5N-0006EO-3D
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 11:31:41 +0000
+Received: from mail-la0-f41.google.com ([209.85.215.41])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1U5E5M-0003Jc-2Q
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 11:31:41 +0000
+Received: by mail-la0-f41.google.com with SMTP id fo12so6801975lab.14
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Feb 2013 03:31:33 -0800 (PST)
+MIME-Version: 1.0
+Date: Tue, 12 Feb 2013 13:31:33 +0200
+Message-ID: <CAAZGUZdwKLu=b14tV5XiuArAcN1o9ENEpc=Vyw+jdP6_CUzeog@mail.gmail.com>
+From: Bogdan Purcareata <bogdan.purcareata@gmail.com>
+Subject: [LTP] Running LTP on embedded Busybox platforms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,55 +25,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-The patch set updated all OOM testcases, and added a new testcase.
+Hello,
 
-Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
-system, and the combination of CPUSET, MEMCG & NUMA is complex,
-and not clear. Also CPUSET is only used in NUMA system.
+I'm a new user of the LTP and I was wondering if it works on embedded
+platforms with custom Linux distros built with Yocto. I was interested
+in the "containers" set of tests, particularly the network namespace
+ones. I noticed the tests were not working properly on a Busybox
+system, and I've identified some differences between this and running
+LTP on my host Fedora 17 system (which works fine):
+- Busybox's diff outputs in the unified format by default - this
+causes parsing issues in LTP
+- there is no sshd server on my embedded platform - instead I have
+dropbear installed, and the scripts need minor changes to work
+- the networking utils - ping, ip, etc. - are from the inetutils
+package, instead if the expected iputils package
 
-The patch set adjust them, now we can coverage the below tests:
- 1) OOM under normal - oom01
- 2) OOM under all mempolicy - oom02
- 3) OOM under MEMCG - oom03
- 4) OOM under CPUSET - oom04
- 5) OOM under CPUSET & MEMCG - oom05
+I was wondering if these requirements - diff, sshd, iputils package,
+and others - are somewhere listed as prerequisites in the
+documentation (I haven't searched it extensively). Where should I look
+for a complete list of host userspace applications needed by LTP to
+work?
 
-I have tested the patch set, no any regressions found.
+Also, are there any branches of the LTP project designed to work with
+e.g. Busybox by default? I noticed that the ltp-full-20130109.bz2
+arhive is universal and has no mentions of supported host distro
+configuration (or perhaps I didn't look in the right place?).
 
-Zhouping Liu (5):
-  lib/mem: modified _gather_cpus() as _gather_node_cpus()
-  mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
-  mm/oom0[3|4]: added 'OOM for CPUSET' and updated 'OOM with MEMCG &
-    numa'
-  lib/mem: updated testoom() and oom() funcs
-  mm/oom05: new testcase
-
- runtest/mm                         |   1 +
- testcases/kernel/mem/include/mem.h |   6 +-
- testcases/kernel/mem/lib/mem.c     | 101 ++++++++++++++++++-------
- testcases/kernel/mem/oom/oom01.c   |   6 +-
- testcases/kernel/mem/oom/oom02.c   |  20 +++--
- testcases/kernel/mem/oom/oom03.c   |  28 ++++++-
- testcases/kernel/mem/oom/oom04.c   |  63 +++++++---------
- testcases/kernel/mem/oom/oom05.c   | 151 +++++++++++++++++++++++++++++++++++++
- 8 files changed, 296 insertions(+), 80 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/oom05.c
-
--- 
-1.7.11.7
-
+Thank you very much,
+Bogdan P.
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
