@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U4uWJ-0006A6-NE
-	for ltp-list@lists.sourceforge.net; Mon, 11 Feb 2013 14:38:11 +0000
-Date: Mon, 11 Feb 2013 15:38:38 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U5H2k-00009h-Rm
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 14:41:10 +0000
+Date: Tue, 12 Feb 2013 15:41:39 +0100
 From: chrubis@suse.cz
-Message-ID: <20130211143838.GA2829@rei>
-References: <50C08A4C.1090402@redhat.com>
+Message-ID: <20130212144139.GA24255@rei>
+References: <E351E450E8B9F54684A699D42DC5ADF224468DAC@MPBAGVEX02.corp.mphasis.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <50C08A4C.1090402@redhat.com>
-Subject: Re: [LTP] open posix testsuite and names of testcases
+In-Reply-To: <E351E450E8B9F54684A699D42DC5ADF224468DAC@MPBAGVEX02.corp.mphasis.com>
+Subject: Re: [LTP] LTP] [PATCH ]: network stress interfaces part of the LTP
+ stress fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,18 +25,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Bhushan Kumar <Bhushan.Kumar@mphasis.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Just recently I've found that one of the posix tests stays running after
-the testsuite has exited (is reparented to init and runs happily ever
-after). Which is another usecase for this rename.
+>      check_icmpv4_connectivity $lhost_ifname $rhost_ipv4addr
+> 
+> +    sleep 5
+> 
+>      if [ $? -ne 0 ]; then
 
-But the original patch was rather hack (and it doesn't work for me
-anyway).
-
-So what about renaming the sources itself? Do we agree on this?
+This is wrong as you check the return value from the sleep command
+rather than the return value form the check_icmpv4_connectivity.
 
 -- 
 Cyril Hrubis
