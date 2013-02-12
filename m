@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bogdan.purcareata@gmail.com>) id 1U5FIx-00039P-Uc
-	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 12:49:47 +0000
-Received: from mail-lb0-f181.google.com ([209.85.217.181])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1U5FIw-0002Rv-Ln
-	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 12:49:47 +0000
-Received: by mail-lb0-f181.google.com with SMTP id gm6so97509lbb.26
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Feb 2013 04:49:40 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U5HrC-0006AD-PP
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 15:33:18 +0000
+Date: Tue, 12 Feb 2013 16:33:47 +0100
+From: chrubis@suse.cz
+Message-ID: <20130212153347.GA24578@rei>
+References: <E351E450E8B9F54684A699D42DC5ADF224468DAC@MPBAGVEX02.corp.mphasis.com>
+	<20130212144139.GA24255@rei>
+	<E351E450E8B9F54684A699D42DC5ADF224468DBA@MPBAGVEX02.corp.mphasis.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAZGUZdwKLu=b14tV5XiuArAcN1o9ENEpc=Vyw+jdP6_CUzeog@mail.gmail.com>
-References: <CAAZGUZdwKLu=b14tV5XiuArAcN1o9ENEpc=Vyw+jdP6_CUzeog@mail.gmail.com>
-Date: Tue, 12 Feb 2013 14:49:39 +0200
-Message-ID: <CAAZGUZfwzVLPd6HesN26c4uL=ZTug9f-axrkcxHGRveqsjnjyA@mail.gmail.com>
-From: Bogdan Purcareata <bogdan.purcareata@gmail.com>
-Subject: [LTP] Running LTP on embedded Busybox platforms
+Content-Disposition: inline
+In-Reply-To: <E351E450E8B9F54684A699D42DC5ADF224468DBA@MPBAGVEX02.corp.mphasis.com>
+Subject: Re: [LTP] LTP] [PATCH ]: network stress interfaces part of the LTP
+ stress fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,36 +27,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Bhushan Kumar <Bhushan.Kumar@mphasis.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hello,
+Hi!
+> Actually  i relized below mentioned suggetion given by you.Currently i am trying to find out exact root cause for this issue :
+> 
+> The Network stress interfaces part of the LTP stress fails.
+> 
+> network_stress.interface:if4-mtu-change                 FAIL       2   
+> 
+> Below are the cause for failing above mentioned testcase:
+> 
+> if4-mtu-change01    0  TINFO  :  Verify the IPv4 connectivity is not broken when ifconfig command changes MTU 128 times every 5 seconds
+> 
+> if4-mtu-change01    1  TFAIL  :  eth1 is broken.
+> 
+> if4-mtu-change02    0  TINFO  :  Verify the IPv4 connectivity is not broken when ip command changes MTU 128 times every 5 seconds
+> 
+> if4-mtu-change02    2  TBROK  :  Test Link 0 is somthing wrong.
+> 
+> Could u Please provide  me any pointer/suggstion. 
 
-I'm a new user of the LTP and I was wondering if it works on embedded
-platforms with custom Linux distros built with Yocto. I was interested
-in the "containers" set of tests, particularly the network namespace
-ones. I noticed the tests were not working properly on a Busybox
-system, and I've identified some differences between this and running
-LTP on my host Fedora 17 system (which works fine):
-- Busybox's diff outputs in the unified format by default - this
-causes parsing issues in LTP
-- there is no sshd server on my embedded platform - instead I have
-dropbear installed, and the scripts need minor changes to work
-- the networking utils - ping, ip, etc. - are from the inetutils
-package, instead if the expected iputils package
+Sorry, you have to debug this on your own.
 
-I was wondering if these requirements - diff, sshd, iputils package,
-and others - are somewhere listed as prerequisites in the
-documentation (I haven't searched it extensively). Where should I look
-for a complete list of host userspace applications needed by LTP to
-work?
-
-Also, are there any branches of the LTP project designed to work with
-e.g. Busybox by default? I noticed that the ltp-full-20130109.bz2
-arhive is universal and has no mentions of supported host distro
-configuration (or perhaps I didn't look in the right place?).
-
-Thank you very much,
-Bogdan P.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Free Next-Gen Firewall Hardware Offer
