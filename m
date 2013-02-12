@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U88Fz-0000mt-PB
-	for ltp-list@lists.sourceforge.net; Wed, 20 Feb 2013 11:54:39 +0000
-Received: from relay1.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id F169EA50DE
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 20 Feb 2013 12:54:26 +0100 (CET)
-Date: Wed, 20 Feb 2013 12:55:07 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U5FYK-0002OZ-JD
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 13:05:40 +0000
+Date: Tue, 12 Feb 2013 14:06:06 +0100
 From: chrubis@suse.cz
-Message-ID: <20130220115507.GB1422@rei.Home>
+Message-ID: <20130212130606.GC9378@rei>
+References: <CAAZGUZdwKLu=b14tV5XiuArAcN1o9ENEpc=Vyw+jdP6_CUzeog@mail.gmail.com>
+	<CAAZGUZfwzVLPd6HesN26c4uL=ZTug9f-axrkcxHGRveqsjnjyA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] [RFC] replacement for runltp + ltp-pan
+In-Reply-To: <CAAZGUZfwzVLPd6HesN26c4uL=ZTug9f-axrkcxHGRveqsjnjyA@mail.gmail.com>
+Subject: Re: [LTP] Running LTP on embedded Busybox platforms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,95 +25,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Bogdan Purcareata <bogdan.purcareata@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Some time ago I started to think about replacement for the current
-runltp + ltp-pan test execution system, before I start writing any code
-here are a few points that I currently have in mind. Feel free to
-comment on them.
+> I'm a new user of the LTP and I was wondering if it works on embedded
+> platforms with custom Linux distros built with Yocto. I was interested
+> in the "containers" set of tests, particularly the network namespace
+> ones.
 
-Here is what I think that is wrong with the current system:
+Most of the tests should work on embedded platforms and with Busybox but
+I personaly can't guarante that. In other words We are trying not to
+break things for anybody, but some tests may not worked from the start.
 
-* Open Posix Testsuite is not executed by runtest + ltp-pan
-  
-  - technically this should be as easy as translating the return
-    codes and generating runtest files as we build the testsuite
+> I noticed the tests were not working properly on a Busybox
+> system, and I've identified some differences between this and running
+> LTP on my host Fedora 17 system (which works fine):
+> - Busybox's diff outputs in the unified format by default - this
+> causes parsing issues in LTP
+> - there is no sshd server on my embedded platform - instead I have
+> dropbear installed, and the scripts need minor changes to work
+> - the networking utils - ping, ip, etc. - are from the inetutils
+> package, instead if the expected iputils package
 
-* Current system doesn't support timeouts
+As usual patches are welcome.
 
-  - which should be easy to implement but would require change
-    to the runtest file format (one timeout for all doesn't
-    work as we have tests that runs less than second and tests
-    that takes more than ten minutes).
+> I was wondering if these requirements - diff, sshd, iputils package,
+> and others - are somewhere listed as prerequisites in the
+> documentation (I haven't searched it extensively). Where should I look
+> for a complete list of host userspace applications needed by LTP to
+> work?
 
-* The output to stdout is messy
+Sorry the LTP documentation is not in a good shape. On the other hand I
+would be happy to include what you have found into the containers README
+file. Just send a signed patch.
 
-  What I would like is:
+> Also, are there any branches of the LTP project designed to work with
+> e.g. Busybox by default? I noticed that the ltp-full-20130109.bz2
+> arhive is universal and has no mentions of supported host distro
+> configuration (or perhaps I didn't look in the right place?).
 
-  [004/243] getrusage04 .................................. [FAILED]
-  [005/243] getsid01 ..................................... [RUNNING]
-
-* The new tool should be able search runtest files for particular test
-  names, blacklist some tests if needed, etc. Which is now done by
-  grepping runtest files in the hacked together runltp script.
-
-* There are tests that needs a disk partition or loopback image, we
-  should handle that and export right environment variables. This should
-  be designed, documented and fixed.
-
-* The current system doesn't produce usable logs
-
-  Well you get list of testcases that succeeded and list of testcases
-  that has failed, which is better than nothing.
-  
-  But what I'm thinking about is some more structured format that
-  will include test output, possibly test duration and so. I personally
-  think that JSON is good candidate for this job as it's structured,
-  easy to read and widely supported as there are libraries for python,
-  perl, etc.
-
-  Then we could create git repo with reference results. Generate html
-  pages from the repo with results. Write scripts for result comparsion,
-  etc.
-
-  The JSON log may look like:
-
-  "LTP Version": 20130109,
-  "System Info": {
-  	"Kernel Version": "3.7.1",
-	"Hardware": {
-		"Arch": "x86_64",
-		"CPUs": 2,
-		"Ram": 4051840,
-		(more filelds like this follows),
-	},
-  },
-  "Results": [
-  	{
-		"Test Name": "getrusage04",
-		"Test Result": "FAILED",
-		"Test Runtime": 0.011532,
-		"Test CPU Time": 0.003234,
-		"Test Output": [
-			"TINFO : Using 1 as multiply factor for max increment",
-			"TINFO : utime:         0us; stime         0us",
-			"TINFO : utime:         0us; stime      4000us",
-			"TFAIL : stime increased > 2000us",
-		],
-	},
-	(more test results follows),
-  ]
+There are not. We have one archive to run on all flavors of Linux,
+fragmentation would only make things worse.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
