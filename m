@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1U2ga2-0007j3-DI
-	for ltp-list@lists.sourceforge.net; Tue, 05 Feb 2013 11:20:50 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U2ga1-0000hy-6C
-	for ltp-list@lists.sourceforge.net; Tue, 05 Feb 2013 11:20:50 +0000
-Date: Tue, 5 Feb 2013 05:52:03 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1211467206.206361.1360061523796.JavaMail.root@redhat.com>
-In-Reply-To: <1360049585-6091-1-git-send-email-yanl.fnst@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U5F2d-0000lf-Vs
+	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 12:32:56 +0000
+Date: Tue, 12 Feb 2013 13:33:23 +0100
+From: chrubis@suse.cz
+Message-ID: <20130212123323.GA9378@rei>
+References: <cover.1360149841.git.jstancek@redhat.com>
+	<ea4d5250ff8316fa655eac37e5279a2fb611f23a.1360149841.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix race at exit by checking if write completed
+Content-Disposition: inline
+In-Reply-To: <ea4d5250ff8316fa655eac37e5279a2fb611f23a.1360149841.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2 2/3] setns: add new syscall test setns01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,31 +25,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yan Lei <yanl.fnst@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> +#define NS_MAX 5
+> +static int ns_types[NS_MAX];
+> +static int ns_fds[NS_MAX];
+> +static int ns_total;
+> +
+> +static int get_ns_fd(int pid, const char *ns)
+> +{
+> +	char tmp[PATH_MAX];
+> +	struct stat st;
+> +	int fd = -1;
+> +
+> +	sprintf(tmp, "/proc/%d/%s", pid, ns);
+> +	if (stat(tmp, &st) == 0) {
+> +		fd = open(tmp, O_RDONLY);
+> +		if (fd == -1)
+> +			tst_brkm(TBROK|TERRNO, NULL, "failed to open %s", tmp);
+> +	} else {
+> +		if (errno != ENOENT)
+> +			tst_brkm(TBROK|TERRNO, NULL, "failed to stat %s", tmp);
+> +	}
+> +	return fd;
+> +}
+> +
+> +static void init_available_ns()
 
+Missing void in the function parameters.
 
------ Original Message -----
-> From: "Yan Lei" <yanl.fnst@cn.fujitsu.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Yan Lei" <yanl.fnst@cn.fujitsu.com>
-> Sent: Tuesday, 5 February, 2013 8:33:05 AM
-> Subject: [LTP] [PATCH] fix race at exit by checking if write completed
-> 
-> The same issue as:
->     commit 352358cd9f69f6e8296cc201b14bae938287796e
->     Author: Jan Stancek <jstancek@redhat.com>
->     Date: Mon, 28 Jan 2013 11:36:48 +0100
->     aio_fsync/2-1.c: fix race at exit, check if write completed
-> This patch waits for aio_fsync to complete and after that
-> checks that previously queued write is also completed.
-> 
-> Signed-off-by: Yan Lei <yanl.fnst@cn.fujitsu.com>
+> +{
+> +#define INIT_NS_TYPE(clone_type, proc_name) \
+> +{ \
+> +	int fd; \
+> +	fd = get_ns_fd(getpid(), "ns/"proc_name); \
+> +	if (fd != -1) { \
+> +		ns_types[ns_total] = clone_type; \
+> +		ns_fds[ns_total] = fd; \
+> +		tst_resm(TINFO, "ns_fds[%d]=%d, ns_types[%d]=0x%x", ns_total, \
+> +			fd, ns_total, clone_type); \
+> +		ns_total++; \
+> +	} \
+> +}
 
-I wonder why I missed that. Definitely same issue as in 2-1.
+I'm wondering why this is a macro and not regular function. The only
+thing that I see and that wouldn't work is the string
+concatenation, which should have been done before the function is
+called. Or the get_ns_fd() could have additional parameter, since it
+uses sprintf() anyway.
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
+> +#if defined(CLONE_NEWIPC)
+> +	INIT_NS_TYPE(CLONE_NEWIPC, "ipc");
+> +#endif
+> +#if defined(CLONE_NEWNS)
+> +	INIT_NS_TYPE(CLONE_NEWNS, "mnt");
+> +#endif
+> +#if defined(CLONE_NEWNET)
+> +	INIT_NS_TYPE(CLONE_NEWNET, "net");
+> +#endif
+> +#if defined(CLONE_NEWPID)
+> +	INIT_NS_TYPE(CLONE_NEWPID, "pid");
+> +#endif
+> +#if defined(CLONE_NEWUTS)
+> +	INIT_NS_TYPE(CLONE_NEWUTS, "uts");
+> +#endif
+> +
+> +#undef INIT_NS_TYPE
+> +}
+> +
+> +static void close_ns_fds()
+
+Here missing void as well.
+
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ns_total; i++)
+> +		if (ns_fds[i] != -1)
+> +			close(ns_fds[i]);
+> +}
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Free Next-Gen Firewall Hardware Offer
