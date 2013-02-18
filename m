@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UAkWd-0000Z8-Sf
-	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 17:10:39 +0000
-Date: Wed, 27 Feb 2013 18:11:18 +0100
-From: chrubis@suse.cz
-Message-ID: <20130227171118.GB30351@rei>
-References: <605746806.1323310.1360671766487.JavaMail.root@redhat.com>
-	<51218CB1.8040709@cn.fujitsu.com> <20130227143845.GA2178@rei>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20130227143845.GA2178@rei>
-Subject: Re: [LTP] open posix testsuite and names of testcases
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1U7RLh-0007ai-Ed
+	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 14:05:41 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1U7RLf-0002Ik-DP
+	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 14:05:41 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r1IE5XYL020325
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 Feb 2013 09:05:33 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 18 Feb 2013 15:05:15 +0100
+Message-Id: <f065095b014d2db0397996869f0e69a3afaa0841.1361196214.git.jstancek@redhat.com>
+In-Reply-To: <cover.1361196214.git.jstancek@redhat.com>
+References: <cover.1361196214.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v3 1/3] setns: setup directory at kernel/syscalls/setns
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,46 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > I vote to changing the rule of generating the Makefiles, it's simple
-> > and the simple rule change is easy to be accepted. Agree?
-> 
-> Ok. I will look into this and hopefully commit a patch soon enough.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/setns/Makefile |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/setns/Makefile
 
-I tried to change the generate-makefiles.sh script, but there are some
-problems.
-
-Some tests are shell scripts that doesn't have build phase. I've
-workarounded them by adding build rules that just copy them to
-name_x-y.sh in the build phase, which unfortunatelly haven't fixed all
-the problems.
-
-We have quite quite a lot of tests (~270) that are shell scripts that
-prints "This is tested implicitly via assertion xyz" and returns zero.
-I'm quite tempted to remove them. These just increase tests run time,
-log sizes, etc. but doesn't do any actual work.
-
-Then there are more problematic ones, shell tests that calls one binary
-with different parameters. As in sigignore for example. The paths and
-names are obviously hardcoded, which makes them fail. The fix for such
-cases will depend case by case but what I will probably do is to make
-each test self-contained, but I haven't analyzed all the failures yet.
-
+diff --git a/testcases/kernel/syscalls/setns/Makefile b/testcases/kernel/syscalls/setns/Makefile
+new file mode 100644
+index 0000000..f1b5129
+--- /dev/null
++++ b/testcases/kernel/syscalls/setns/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (C) 2013 Linux Test Project, Inc.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++CPPFLAGS                += -Wno-unused-function
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+The Go Parallel Website, sponsored by Intel - in partnership with Geeknet, 
+is your hub for all things parallel software development, from weekly thought 
+leadership blogs to news, videos, case studies, tutorials, tech docs, 
+whitepapers, evaluation guides, and opinion stories. Check out the most 
+recent posts - join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
