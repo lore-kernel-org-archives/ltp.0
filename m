@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U7ckD-0002rw-80
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 02:15:45 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U7HHR-0007kj-K1
+	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 03:20:37 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U7ckC-0001H0-3H
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 02:15:45 +0000
-Message-ID: <5122E00D.7020202@cn.fujitsu.com>
-Date: Tue, 19 Feb 2013 10:14:37 +0800
+	id 1U7HHP-0003EZ-HA
+	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 03:20:37 +0000
+Message-ID: <51219DC8.3080808@cn.fujitsu.com>
+Date: Mon, 18 Feb 2013 11:19:36 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <cover.1361196214.git.jstancek@redhat.com>
-	<f065095b014d2db0397996869f0e69a3afaa0841.1361196214.git.jstancek@redhat.com>
-In-Reply-To: <f065095b014d2db0397996869f0e69a3afaa0841.1361196214.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v3 1/3] setns: setup directory at
-	kernel/syscalls/setns
+References: <02591071dc6cc1bdbb630e4c0d8e349042247fd7.1360919410.git.jstancek@redhat.com>
+In-Reply-To: <02591071dc6cc1bdbb630e4c0d8e349042247fd7.1360919410.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] rename syscall() macro to ltp_syscall()
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -33,23 +31,24 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 02/18/2013 10:05 PM, Jan Stancek wrote:
+On 02/15/2013 05:16 PM, Jan Stancek wrote:
+> This patch renames syscall() macro defined in linux_syscall_numbers.h
+> to reduce confusion with syscall(2). It also updates all places
+> where it was previously in use.
+> 
 > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/setns/Makefile |   23 +++++++++++++++++++++++
->  1 files changed, 23 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/setns/Makefile
 
-Applied, thank you.
+Applied, thank you very much for your contribution.
 
 Wanlong Gao
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+The Go Parallel Website, sponsored by Intel - in partnership with Geeknet, 
+is your hub for all things parallel software development, from weekly thought 
+leadership blogs to news, videos, case studies, tutorials, tech docs, 
+whitepapers, evaluation guides, and opinion stories. Check out the most 
+recent posts - join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
