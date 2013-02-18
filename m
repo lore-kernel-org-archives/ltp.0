@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1U2Cdi-0000xz-Pp
-	for ltp-list@lists.sourceforge.net; Mon, 04 Feb 2013 03:22:38 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1U7RLi-0007GR-5x
+	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 14:05:42 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U2Cde-00073i-Vn
-	for ltp-list@lists.sourceforge.net; Mon, 04 Feb 2013 03:22:38 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r143MTPH028810
+	id 1U7RLf-0006CB-UG
+	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 14:05:42 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r1IE5Y9C029821
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Sun, 3 Feb 2013 22:22:29 -0500
-From: Eryu Guan <eguan@redhat.com>
-Date: Mon,  4 Feb 2013 11:22:12 +0800
-Message-Id: <1359948132-26248-1-git-send-email-eguan@redhat.com>
-In-Reply-To: <510F160D.9080503@cn.fujitsu.com>
-References: <510F160D.9080503@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.8.0.2"
-Subject: [LTP] [PATCH v2] syscalls/open11: new open(2) test case
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 Feb 2013 09:05:34 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 18 Feb 2013 15:05:16 +0100
+Message-Id: <a5da91845477cb0ddbd59d37eb328175dac90698.1361196214.git.jstancek@redhat.com>
+In-Reply-To: <cover.1361196214.git.jstancek@redhat.com>
+References: <cover.1361196214.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v3 2/3] setns: add new syscall test setns01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,114 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------1.8.0.2
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
+errno tests for setns(2) - reassociate thread with a namespace
 
-
-In addition to existing open(2) tests, add more basic tests and make
-sure open(2) works and handles error conditions correctly.
-
-There are 28 test cases:
-1. Open regular file O_RDONLY
-2. Open regular file O_WRONLY
-3. Open regular file O_RDWR
-4. Open regular file O_RDWR | O_SYNC
-5. Open regular file O_RDWR | O_TRUNC
-6. Open dir O_RDONLY
-7. Open dir O_RDWR, expect EISDIR
-8. Open regular file O_DIRECTORY, expect ENOTDIR
-9. Open hard link file O_RDONLY
-10. Open hard link file O_WRONLY
-11. Open hard link file O_RDWR
-12. Open sym link file O_RDONLY
-13. Open sym link file O_WRONLY
-14. Open sym link file O_RDWR
-15. Open sym link dir O_RDONLY
-16. Open sym link dir O_WRONLY, expect EISDIR
-17. Open sym link dir O_RDWR, expect EISDIR
-18. Open device special file O_RDONLY
-19. Open device special file O_WRONLY
-20. Open device special file O_RDWR
-21. Open non-existing regular file in existing dir
-22. Open link file O_RDONLY | O_CREAT
-23. Open symlink file O_RDONLY | O_CREAT
-24. Open regular file O_RDONLY | O_CREAT
-25. Open symlink dir O_RDONLY | O_CREAT, expect EISDIR
-26. Open dir O_RDONLY | O_CREAT, expect EISDIR
-27. Open regular file O_RDONLY | O_TRUNC, behaviour is undefined but
-    should not oops or hang
-28. Open regular file(non-empty) O_RDONLY | O_TRUNC, behaviour is
-    undefined but should not oops or hang
-
-Signed-off-by: Eryu Guan <eguan@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
-v2:
-	Remove duplicated open device special test
+ runtest/syscalls                          |    2 +
+ testcases/kernel/syscalls/.gitignore      |    1 +
+ testcases/kernel/syscalls/setns/setns.h   |   88 +++++++++++
+ testcases/kernel/syscalls/setns/setns01.c |  240 +++++++++++++++++++++++++++++
+ 4 files changed, 331 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/setns/setns.h
+ create mode 100644 testcases/kernel/syscalls/setns/setns01.c
 
- runtest/ltplite                         |   1 +
- runtest/stress.part3                    |   1 +
- runtest/syscalls                        |   1 +
- testcases/kernel/syscalls/open/open11.c | 424 ++++++++++++++++++++++++++++++++
- 4 files changed, 427 insertions(+)
- create mode 100644 testcases/kernel/syscalls/open/open11.c
-
-
---------------1.8.0.2
-Content-Type: text/x-patch;
-	name="0001-syscalls-open11-new-open-2-test-case.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0001-syscalls-open11-new-open-2-test-case.patch"
-
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 95774da..35cbd44 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -539,6 +539,7 @@ open07 open07
- open08 open08
- open09 open09
- open10 open10
-+open11 open11
- 
- mincore01 mincore01
- #mincore02 mincore02 currently hangs and does not exit correctly
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 99eeddc..f3c4287 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -461,6 +461,7 @@ open07 open07
- open08 open08
- open09 open09
- open10 open10
-+open11 open11
- 
- pathconf01 pathconf01
- 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index e2f6b84..db5a075 100644
+index db5a075..a881479 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -680,6 +680,7 @@ open07 open07
- open08 open08
- open09 open09
- open10 open10
-+open11 open11
+@@ -962,6 +962,8 @@ setitimer01 setitimer01
+ setitimer02 setitimer02
+ setitimer03 setitimer03
  
- #openat test cases
- openat01 openat01
-diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
++setns01 setns01
++
+ setpgid01 setpgid01
+ setpgid02 setpgid02
+ setpgid03 setpgid03
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index d661159..4b8bb94 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -764,6 +764,7 @@
+ /setitimer/setitimer01
+ /setitimer/setitimer02
+ /setitimer/setitimer03
++/setns/setns01
+ /setpgid/setpgid01
+ /setpgid/setpgid02
+ /setpgid/setpgid03
+diff --git a/testcases/kernel/syscalls/setns/setns.h b/testcases/kernel/syscalls/setns/setns.h
 new file mode 100644
-index 0000000..ce2ff46
+index 0000000..23bdb2e
 --- /dev/null
-+++ b/testcases/kernel/syscalls/open/open11.c
-@@ -0,0 +1,424 @@
++++ b/testcases/kernel/syscalls/setns/setns.h
+@@ -0,0 +1,88 @@
 +/*
-+ * Copyright (C) 2013 Red Hat, Inc.
++ * Copyright (C) 2013 Linux Test Project, Inc.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of version 2 of the GNU General Public
@@ -160,315 +101,268 @@ index 0000000..ce2ff46
 + * 02110-1301, USA.
 + */
 +
++#define NS_MAX 5
++static int ns_types[NS_MAX];
++static int ns_fds[NS_MAX];
++static int ns_total;
++
++static int get_ns_fd(int pid, const char *ns)
++{
++	char tmp[PATH_MAX];
++	struct stat st;
++	int fd = -1;
++
++	sprintf(tmp, "/proc/%d/ns/%s", pid, ns);
++	if (stat(tmp, &st) == 0) {
++		fd = open(tmp, O_RDONLY);
++		if (fd == -1)
++			tst_brkm(TBROK|TERRNO, NULL, "failed to open %s", tmp);
++	} else {
++		if (errno != ENOENT)
++			tst_brkm(TBROK|TERRNO, NULL, "failed to stat %s", tmp);
++	}
++	return fd;
++}
++
++static void init_ns_type(int clone_type, const char *proc_name)
++{
++	int fd;
++
++	fd = get_ns_fd(getpid(), proc_name);
++	if (fd != -1) {
++		ns_types[ns_total] = clone_type;
++		ns_fds[ns_total] = fd;
++		tst_resm(TINFO, "ns_fds[%d]=%d, ns_types[%d]=0x%x", ns_total,
++			fd, ns_total, clone_type);
++		ns_total++;
++	}
++}
++
++static void init_available_ns(void)
++{
++#if defined(CLONE_NEWIPC)
++	init_ns_type(CLONE_NEWIPC, "ipc");
++#endif
++#if defined(CLONE_NEWNS)
++	init_ns_type(CLONE_NEWNS, "mnt");
++#endif
++#if defined(CLONE_NEWNET)
++	init_ns_type(CLONE_NEWNET, "net");
++#endif
++#if defined(CLONE_NEWPID)
++	init_ns_type(CLONE_NEWPID, "pid");
++#endif
++#if defined(CLONE_NEWUTS)
++	init_ns_type(CLONE_NEWUTS, "uts");
++#endif
++}
++
++static void close_ns_fds(void)
++{
++	int i;
++
++	for (i = 0; i < ns_total; i++)
++		if (ns_fds[i] != -1)
++			close(ns_fds[i]);
++}
+diff --git a/testcases/kernel/syscalls/setns/setns01.c b/testcases/kernel/syscalls/setns/setns01.c
+new file mode 100644
+index 0000000..710ce9b
+--- /dev/null
++++ b/testcases/kernel/syscalls/setns/setns01.c
+@@ -0,0 +1,240 @@
 +/*
-+ * Basic tests for open(2) and make sure open(2) works and handles error
-+ * conditions correctly.
++ * Copyright (C) 2013 Linux Test Project, Inc.
 + *
-+ * There are 28 test cases:
-+ * 1. Open regular file O_RDONLY
-+ * 2. Open regular file O_WRONLY
-+ * 3. Open regular file O_RDWR
-+ * 4. Open regular file O_RDWR | O_SYNC
-+ * 5. Open regular file O_RDWR | O_TRUNC
-+ * 6. Open dir O_RDONLY
-+ * 7. Open dir O_RDWR, expect EISDIR
-+ * 8. Open regular file O_DIRECTORY, expect ENOTDIR
-+ * 9. Open hard link file O_RDONLY
-+ * 10. Open hard link file O_WRONLY
-+ * 11. Open hard link file O_RDWR
-+ * 12. Open sym link file O_RDONLY
-+ * 13. Open sym link file O_WRONLY
-+ * 14. Open sym link file O_RDWR
-+ * 15. Open sym link dir O_RDONLY
-+ * 16. Open sym link dir O_WRONLY, expect EISDIR
-+ * 17. Open sym link dir O_RDWR, expect EISDIR
-+ * 18. Open device special file O_RDONLY
-+ * 19. Open device special file O_WRONLY
-+ * 20. Open device special file O_RDWR
-+ * 21. Open non-existing regular file in existing dir
-+ * 22. Open link file O_RDONLY | O_CREAT
-+ * 23. Open symlink file O_RDONLY | O_CREAT
-+ * 24. Open regular file O_RDONLY | O_CREAT
-+ * 25. Open symlink dir O_RDONLY | O_CREAT, expect EISDIR
-+ * 26. Open dir O_RDONLY | O_CREAT, expect EISDIR
-+ * 27. Open regular file O_RDONLY | O_TRUNC, behaviour is undefined but should
-+ *     not oops or hang
-+ * 28. Open regular file(non-empty) O_RDONLY | O_TRUNC, behaviour is undefined
-+ *     but should not oops or hang
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
 + */
-+
-+#include "config.h"
-+#include <sys/types.h>
++/*
++ * errno tests for setns(2) - reassociate thread with a namespace
++ */
++#define _GNU_SOURCE
 +#include <sys/stat.h>
-+#include <sys/wait.h>
++#include <sys/syscall.h>
++#include <sys/types.h>
 +#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
++#include <sched.h>
++#include <pwd.h>
 +#include <string.h>
-+
++#include "config.h"
 +#include "test.h"
 +#include "usctest.h"
++#include "linux_syscall_numbers.h"
++#include "safe_macros.h"
 +
-+char *TCID = "open11";
++char *TCID = "setns01";
 +
-+/* Define test files */
-+#define T_REG "t_reg"			/* regular file with content */
-+#define T_REG_EMPTY "t_reg_empty"	/* empty regular file */
-+#define T_LINK_REG "t_link_reg"		/* hard link to T_REG */
-+#define T_NEW_REG "t_new_reg"		/* new regular file to be created */
-+#define T_SYMLINK_REG "t_symlink_reg"	/* symlink to T_REG */
-+#define T_DIR "t_dir"			/* test dir */
-+#define T_SYMLINK_DIR "t_symlink_dir"	/* symlink to T_DIR */
-+#define T_DEV "t_dev"			/* test device special file */
++#if defined(__NR_setns)
++#include "setns.h"
 +
-+#define T_MSG "this is a test string"
++struct testcase_t {
++	const char *msg;
++	int fd;
++	int ns_type;
++	int exp_ret;
++	int exp_errno;
++	int skip;
++	void (*setup) (struct testcase_t *, int i);
++	void (*cleanup) (struct testcase_t *);
++};
 +
 +static void setup(void);
 +static void cleanup(void);
++static void setup0(struct testcase_t *, int);
++static void setup1(struct testcase_t *, int);
++static void setup2(struct testcase_t *, int);
++static void setup3(struct testcase_t *, int);
++static void setup4(struct testcase_t *, int);
++static void cleanup1(struct testcase_t *);
++static void cleanup4(struct testcase_t *);
 +
-+struct test_case {
-+	char *desc;
-+	char *path;
-+	int flags;
-+	mode_t mode;
-+	int err;
-+};
-+struct test_case tc[] = {
-+	/*
-+	 * Test open(2) regular file
-+	 */
-+	{	/* open regular file O_RDONLY */
-+		.desc = "Open regular file O_RDONLY",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDONLY,
-+		.mode = 0644,
-+		.err = 0,
++struct testcase_t tdat[] = {
++	{
++		.msg = "invalid fd",
++		.fd = -1,
++		.exp_ret = -1,
++		.exp_errno = EBADF,
++		.setup = setup0,
 +	},
-+	{	/* open regular file O_WRONLY */
-+		.desc = "Open regular file O_WRONLY",
-+		.path = T_REG_EMPTY,
-+		.flags = O_WRONLY,
-+		.mode = 0644,
-+		.err = 0,
++	{
++		.msg = "regular file fd",
++		.exp_ret = -1,
++		.exp_errno = EINVAL,
++		.setup = setup1,
++		.cleanup = cleanup1
 +	},
-+	{	/* open regular file O_RDWR */
-+		.desc = "Open regular file O_RDWR",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDWR,
-+		.mode = 0644,
-+		.err = 0,
++	{
++		.msg = "invalid ns_type",
++		.ns_type = -1,
++		.exp_ret = -1,
++		.exp_errno = EINVAL,
++		.setup = setup2,
 +	},
-+	{	/* open regular file O_RDWR | O_SYNC*/
-+		.desc = "Open regular file O_RDWR | O_SYNC",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDWR | O_SYNC,
-+		.mode = 0644,
-+		.err = 0,
++	{
++		.msg = "mismatch ns_type/fd",
++		.exp_ret = -1,
++		.exp_errno = EINVAL,
++		.setup = setup3,
 +	},
-+	{	/* open regular file O_RDWR | O_TRUNC */
-+		.desc = "Open regular file O_RDWR | O_TRUNC",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDWR | O_TRUNC,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	/*
-+	 * Test open(2) directory
-+	 */
-+	{	/* open dir O_RDONLY */
-+		.desc = "Open dir O_RDONLY",
-+		.path = T_DIR,
-+		.flags = O_RDONLY,
-+		.mode = 0755,
-+		.err = 0,
-+	},
-+	{	/* open dir O_RDWR */
-+		.desc = "Open dir O_RDWR, expect EISDIR",
-+		.path = T_DIR,
-+		.flags = O_RDWR,
-+		.mode = 0755,
-+		.err = EISDIR,
-+	},
-+	{	/* open regular file O_DIRECTORY */
-+		.desc = "Open regular file O_DIRECTORY, expect ENOTDIR",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDONLY | O_DIRECTORY,
-+		.mode = 0644,
-+		.err = ENOTDIR,
-+	},
-+	/*
-+	 * Test open(2) hard link
-+	 */
-+	{	/* open hard link file O_RDONLY */
-+		.desc = "Open hard link file O_RDONLY",
-+		.path = T_LINK_REG,
-+		.flags = O_RDONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open hard link file O_WRONLY */
-+		.desc = "Open hard link file O_WRONLY",
-+		.path = T_LINK_REG,
-+		.flags = O_WRONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open hard link file O_RDWR */
-+		.desc = "Open hard link file O_RDWR",
-+		.path = T_LINK_REG,
-+		.flags = O_RDWR,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	/*
-+	 * Test open(2) sym link
-+	 */
-+	{	/* open sym link file O_RDONLY */
-+		.desc = "Open sym link file O_RDONLY",
-+		.path = T_SYMLINK_REG,
-+		.flags = O_RDONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open sym link file O_WRONLY */
-+		.desc = "Open sym link file O_WRONLY",
-+		.path = T_SYMLINK_REG,
-+		.flags = O_WRONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open sym link file O_RDWR */
-+		.desc = "Open sym link file O_RDWR",
-+		.path = T_SYMLINK_REG,
-+		.flags = O_RDWR,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open sym link dir O_RDONLY */
-+		.desc = "Open sym link dir O_RDONLY",
-+		.path = T_SYMLINK_DIR,
-+		.flags = O_RDONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open sym link dir O_WRONLY */
-+		.desc = "Open sym link dir O_WRONLY, expect EISDIR",
-+		.path = T_SYMLINK_DIR,
-+		.flags = O_WRONLY,
-+		.mode = 0644,
-+		.err = EISDIR,
-+	},
-+	{	/* open sym link dir O_RDWR */
-+		.desc = "Open sym link dir O_RDWR, expect EISDIR",
-+		.path = T_SYMLINK_DIR,
-+		.flags = O_RDWR,
-+		.mode = 0644,
-+		.err = EISDIR,
-+	},
-+	/*
-+	 * Test open(2) device special
-+	 */
-+	{	/* open device special file O_RDONLY */
-+		.desc = "Open device special file O_RDONLY",
-+		.path = T_DEV,
-+		.flags = O_RDONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open device special file O_WRONLY */
-+		.desc = "Open device special file O_WRONLY",
-+		.path = T_DEV,
-+		.flags = O_WRONLY,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open device special file O_RDWR */
-+		.desc = "Open device special file O_RDWR",
-+		.path = T_DEV,
-+		.flags = O_RDWR,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	/*
-+	 * Test open(2) non-existing file
-+	 */
-+	{	/* open non-existing regular file in existing dir */
-+		.desc = "Open non-existing regular file in existing dir",
-+		.path = T_DIR"/"T_NEW_REG,
-+		.flags = O_RDWR | O_CREAT,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	/*
-+	 * test open(2) with O_CREAT
-+	 */
-+	{	/* open hard link file O_RDONLY | O_CREAT */
-+		.desc = "Open link file O_RDONLY | O_CREAT",
-+		.path = T_LINK_REG,
-+		.flags = O_RDONLY | O_CREAT,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open sym link file O_RDONLY | O_CREAT */
-+		.desc = "Open symlink file O_RDONLY | O_CREAT",
-+		.path = T_SYMLINK_REG,
-+		.flags = O_RDONLY | O_CREAT,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open regular file O_RDONLY | O_CREAT */
-+		.desc = "Open regular file O_RDONLY | O_CREAT",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDONLY | O_CREAT,
-+		.mode = 0644,
-+		.err = 0,
-+	},
-+	{	/* open symlink dir O_RDONLY | O_CREAT */
-+		.desc = "Open symlink dir O_RDONLY | O_CREAT, expect EISDIR",
-+		.path = T_SYMLINK_DIR,
-+		.flags = O_RDONLY | O_CREAT,
-+		.mode = 0644,
-+		.err = EISDIR,
-+	},
-+	{	/* open dir O_RDONLY | O_CREAT */
-+		.desc = "Open dir O_RDONLY | O_CREAT, expect EISDIR",
-+		.path = T_DIR,
-+		.flags = O_RDONLY | O_CREAT,
-+		.mode = 0644,
-+		.err = EISDIR,
-+	},
-+	/*
-+	 * Other random open(2) tests
-+	 */
-+	{	/* open regular file O_RDONLY | O_TRUNC */
-+		.desc = "Open regular file O_RDONLY | O_TRUNC, "
-+			"behaviour is undefined but should not oops or hang",
-+		.path = T_REG_EMPTY,
-+		.flags = O_RDONLY | O_TRUNC,
-+		.mode = 0644,
-+		.err = -1,
-+	},
-+	{	/* open regular(non-empty) file O_RDONLY | O_TRUNC */
-+		.desc = "Open regular file(non-empty) O_RDONLY | O_TRUNC, "
-+			"behaviour is undefined but should not oops or hang",
-+		.path = T_REG,
-+		.flags = O_RDONLY | O_TRUNC,
-+		.mode = 0644,
-+		.err = -1,
-+	},
++	{
++		.msg = "without CAP_SYS_ADMIN",
++		.exp_ret = -1,
++		.exp_errno = EPERM,
++		.setup = setup4,
++		.cleanup = cleanup4,
++	}
 +};
 +
-+int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
++static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
++static const char nobody_uid[] = "nobody";
++static struct passwd *ltpuser;
++
++static void setup0(struct testcase_t *t, int i)
++{
++	t->ns_type = ns_types[i];
++}
++
++static void setup1(struct testcase_t *t, int i)
++{
++	t->ns_type = ns_types[i];
++	t->fd = open("dummy", O_CREAT);
++	if (t->fd == -1)
++		tst_brkm(TFAIL|TERRNO, cleanup, "setup1:open failed");
++	unlink("dummy");
++}
++
++static void cleanup1(struct testcase_t *t)
++{
++	close(t->fd);
++}
++
++static void setup2(struct testcase_t *t, int i)
++{
++	t->fd = ns_fds[i];
++}
++
++static void setup3(struct testcase_t *t, int i)
++{
++	if (ns_total < 2) {
++		t->skip = 1;
++		return;
++	}
++
++	t->fd = ns_fds[i];
++	t->ns_type = ns_types[(i+1) % ns_total];
++}
++
++static void setup4(struct testcase_t *t, int i)
++{
++	if (seteuid(ltpuser->pw_uid) == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "seteuid failed");
++
++	t->fd = ns_fds[i];
++	t->ns_type = ns_types[i];
++}
++
++static void cleanup4(struct testcase_t *t)
++{
++	if (seteuid(0) == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "seteuid restore failed");
++}
++
++static void test_setns(struct testcase_t *t)
++{
++	int ret, i;
++
++	for (i = 0; i < ns_total; i++) {
++		if (t->setup)
++			t->setup(t, i);
++
++		if (t->skip) {
++			tst_resm(TINFO, "skip %s", tdat->msg);
++			continue;
++		}
++
++		tst_resm(TINFO, "setns(%d, 0x%x)", t->fd, t->ns_type);
++		ret = syscall(__NR_setns, t->fd, t->ns_type);
++		if (ret == t->exp_ret) {
++			if (ret == -1 && errno == t->exp_errno)
++				tst_resm(TPASS, "%s exp_errno=%d", t->msg,
++						t->exp_errno);
++			else
++				tst_resm(TFAIL|TERRNO, "%s exp_errno=%d",
++					t->msg, t->exp_errno);
++		} else {
++			tst_resm(TFAIL, "%s ret=%d expected=%d", t->msg,
++					ret, t->exp_ret);
++		}
++
++		if (t->cleanup)
++			t->cleanup(t);
++	}
++}
 +
 +int main(int argc, char *argv[])
 +{
-+	int lc;
-+	int i;
-+	int fd;
-+	int ret;
++	int lc, testno;
 +	char *msg;
 +
 +	msg = parse_opts(argc, argv, NULL, NULL);
@@ -476,114 +370,58 @@ index 0000000..ce2ff46
 +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
 +
 +	setup();
-+
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			TEST(open(tc[i].path, tc[i].flags, tc[i].mode));
-+			fd = TEST_RETURN;
-+
-+			if (tc[i].err == -1 || TEST_ERRNO == tc[i].err) {
-+				tst_resm(TPASS, "%s", tc[i].desc);
-+			} else {
-+				tst_resm(TFAIL | TTERRNO,
-+					 "%s - expected errno %d - Got",
-+					 tc[i].desc, tc[i].err);
-+			}
-+			if (fd > 0) {
-+				ret = close(fd);
-+				if (ret < 0)
-+					tst_resm(TWARN, "%s - close failed: %s",
-+						 tc[i].desc, strerror(errno));
-+			}
-+		}
++		for (testno = 0; testno < TST_TOTAL; testno++)
++			test_setns(&tdat[testno]);
 +	}
-+
 +	cleanup();
 +	tst_exit();
 +}
 +
 +static void setup(void)
 +{
-+	int fd;
-+	int ret;
-+
 +	tst_require_root(NULL);
 +
++	/* runtime check if syscall is supported */
++	ltp_syscall(__NR_setns, -1, 0);
++
++	init_available_ns();
++	if (ns_total == 0)
++		tst_brkm(TCONF, NULL, "no ns types/proc entries");
++
++	ltpuser = getpwnam(nobody_uid);
++	if (ltpuser == NULL)
++		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
++
++
 +	tst_tmpdir();
-+
-+	/* Create test files */
-+	fd = open(T_REG, O_WRONLY | O_CREAT, 0644);
-+	if (fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create %s failed", T_REG);
-+	ret = write(fd, T_MSG, sizeof(T_MSG));
-+	if (ret == -1) {
-+		close(fd);
-+		tst_brkm(TBROK | TERRNO, cleanup, "Write %s failed", T_REG);
-+	}
-+	close(fd);
-+
-+	fd = creat(T_REG_EMPTY, 0644);
-+	if (fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create %s failed",
-+			 T_REG_EMPTY);
-+	close(fd);
-+
-+	ret = link(T_REG, T_LINK_REG);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Hard link %s -> %s failed",
-+			 T_REG, T_LINK_REG);
-+
-+	ret = symlink(T_REG, T_SYMLINK_REG);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Symlink %s -> %s failed",
-+			 T_REG, T_SYMLINK_REG);
-+
-+	ret = mkdir(T_DIR, 0755);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "mkdir %s failed", T_DIR);
-+
-+	ret = symlink(T_DIR, T_SYMLINK_DIR);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Symlink %s -> %s failed",
-+			 T_DIR, T_SYMLINK_DIR);
-+
-+	ret = mknod(T_DEV, S_IFCHR, makedev(1, 5));
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Create char dev %s failed",
-+			 T_DEV);
-+
 +	TEST_PAUSE;
 +}
 +
 +static void cleanup(void)
 +{
-+	TEST_CLEANUP;
++	close_ns_fds();
 +	tst_rmdir();
++	TEST_CLEANUP;
 +}
++#else
++int main(int argc, char *argv[])
++{
++	tst_brkm(TCONF, NULL, "__NR_setns is not defined on your system.");
++
++}
++#endif
+-- 
+1.7.1
 
---------------1.8.0.2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_jan
---------------1.8.0.2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+The Go Parallel Website, sponsored by Intel - in partnership with Geeknet, 
+is your hub for all things parallel software development, from weekly thought 
+leadership blogs to news, videos, case studies, tutorials, tech docs, 
+whitepapers, evaluation guides, and opinion stories. Check out the most 
+recent posts - join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.8.0.2--
-
-
-
