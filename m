@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U5H45-0007pU-4K
-	for ltp-list@lists.sourceforge.net; Tue, 12 Feb 2013 14:42:33 +0000
-Date: Tue, 12 Feb 2013 15:43:02 +0100
-From: chrubis@suse.cz
-Message-ID: <20130212144302.GB24255@rei>
-References: <57E53D9CB50FBA49AB1A1E1BF8D5DE5505F56D0619@GUREXMB02.ASIAN.AD.ARICENT.COM>
-	<C0DEA5E8FC36694CB7391338195EAAEB05E7C35377@GUREXMB02.ASIAN.AD.ARICENT.COM>
-	<C0DEA5E8FC36694CB7391338195EAAEB05E7C35378@GUREXMB02.ASIAN.AD.ARICENT.COM>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U7cjm-0000Y1-DR
+	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 02:15:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1U7cjg-0003Oc-2p
+	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 02:15:18 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r1J2F4uE020260
+	for <ltp-list@lists.sourceforge.net>; Tue, 19 Feb 2013 10:15:04 +0800
+Message-ID: <5122DFEE.1040700@cn.fujitsu.com>
+Date: Tue, 19 Feb 2013 10:14:06 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <C0DEA5E8FC36694CB7391338195EAAEB05E7C35378@GUREXMB02.ASIAN.AD.ARICENT.COM>
-Subject: Re: [LTP] Need help
+References: <51219A7B.2020909@cn.fujitsu.com>
+In-Reply-To: <51219A7B.2020909@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] kill/1-2.c: fix potential bug
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,23 +31,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shivakumar Haravi <Shivakumar.Haravi@aricent.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> initiation_status="pan(2415): execvp of 'wifi_test' (tag wifi_test) failed.  errno:2  No such file or directory"
+On 02/18/2013 11:05 AM, DAN LI wrote:
+> If fork() fails,this case will cause unexpected problem when kill(-1,...) called by root.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-It says "No such file or directory", check twice if things are in right place.
+Applied, thank you .
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
-Free Next-Gen Firewall Hardware Offer
-Buy your Sophos next-gen firewall before the end March 2013 
-and get the hardware for free! Learn more.
-http://p.sf.net/sfu/sophos-d2d-feb
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
