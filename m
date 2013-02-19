@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UCtPE-0008S8-Kq
-	for ltp-list@lists.sourceforge.net; Tue, 05 Mar 2013 15:03:52 +0000
-Date: Tue, 5 Mar 2013 16:04:33 +0100
-From: chrubis@suse.cz
-Message-ID: <20130305150433.GA28305@rei>
-References: <51346595.80103@cn.fujitsu.com> <20130305095125.GA13876@rei.Home>
-	<5135CC80.5060800@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <pfonseca@mpi-sws.org>) id 1U7nHc-000684-KQ
+	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 13:30:56 +0000
+Received: from hera.mpi-sb.mpg.de ([139.19.1.49] helo=hera.mpi-klsb.mpg.de)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1U7nHV-0008CK-GD
+	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 13:30:56 +0000
+Message-ID: <51237A44.6080508@mpi-sws.org>
+Date: Tue, 19 Feb 2013 14:12:36 +0100
+From: Pedro Fonseca <pfonseca@mpi-sws.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5135CC80.5060800@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCHv2]pthread_once/1-1.c : cleanup & error checks
+Subject: [LTP] Building LTP in a 64-bit machine for 32-bit target
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,18 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> 2.Replace "posixtest.h" with "testfrmw.h" as the log frame
->   to keep consistent with other cases in the same directory.
+Hi,
 
-The testfrmw is being actively removed, please don't add it.
+I've been trying to cross compile LTP on a 64-bit x86 machine to produce 
+tests for a 32-bit x86 machines. Unfortunately, so far I haven't found a 
+clean way of achieving this.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I've tried configuring with "./configure --host=i386" but this still 
+produces x86-64 binaries.
+
+I've also tried configuring with "CFLAGS=-m32 ./configure CFLAGS=-m32" 
+but it gives compilation errors on some tests (e.g. 
+testcases/kernel/syscalls/chown01_16). I can get past some of the errors 
+by disabling the "/../utils/compat_16.mk" lines in the individual test 
+Makefiles. But is there a better way to compile LTP for 32-bit on a 64-bit?
+
+Thanks,
+Pedro
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
