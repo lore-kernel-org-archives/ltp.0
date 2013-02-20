@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1U7RLh-0007ai-Ed
-	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 14:05:41 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U7RLf-0002Ik-DP
-	for ltp-list@lists.sourceforge.net; Mon, 18 Feb 2013 14:05:41 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r1IE5XYL020325
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Feb 2013 09:05:33 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 18 Feb 2013 15:05:15 +0100
-Message-Id: <f065095b014d2db0397996869f0e69a3afaa0841.1361196214.git.jstancek@redhat.com>
-In-Reply-To: <cover.1361196214.git.jstancek@redhat.com>
-References: <cover.1361196214.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v3 1/3] setns: setup directory at kernel/syscalls/setns
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1U88Fz-0000mt-PB
+	for ltp-list@lists.sourceforge.net; Wed, 20 Feb 2013 11:54:39 +0000
+Received: from relay1.suse.de (unknown [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id F169EA50DE
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 20 Feb 2013 12:54:26 +0100 (CET)
+Date: Wed, 20 Feb 2013 12:55:07 +0100
+From: chrubis@suse.cz
+Message-ID: <20130220115507.GB1422@rei.Home>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [LTP] [RFC] replacement for runltp + ltp-pan
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +23,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/setns/Makefile |   23 +++++++++++++++++++++++
- 1 files changed, 23 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/setns/Makefile
+Hi!
+Some time ago I started to think about replacement for the current
+runltp + ltp-pan test execution system, before I start writing any code
+here are a few points that I currently have in mind. Feel free to
+comment on them.
 
-diff --git a/testcases/kernel/syscalls/setns/Makefile b/testcases/kernel/syscalls/setns/Makefile
-new file mode 100644
-index 0000000..f1b5129
---- /dev/null
-+++ b/testcases/kernel/syscalls/setns/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (C) 2013 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+CPPFLAGS                += -Wno-unused-function
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
+Here is what I think that is wrong with the current system:
+
+* Open Posix Testsuite is not executed by runtest + ltp-pan
+  
+  - technically this should be as easy as translating the return
+    codes and generating runtest files as we build the testsuite
+
+* Current system doesn't support timeouts
+
+  - which should be easy to implement but would require change
+    to the runtest file format (one timeout for all doesn't
+    work as we have tests that runs less than second and tests
+    that takes more than ten minutes).
+
+* The output to stdout is messy
+
+  What I would like is:
+
+  [004/243] getrusage04 .................................. [FAILED]
+  [005/243] getsid01 ..................................... [RUNNING]
+
+* The new tool should be able search runtest files for particular test
+  names, blacklist some tests if needed, etc. Which is now done by
+  grepping runtest files in the hacked together runltp script.
+
+* There are tests that needs a disk partition or loopback image, we
+  should handle that and export right environment variables. This should
+  be designed, documented and fixed.
+
+* The current system doesn't produce usable logs
+
+  Well you get list of testcases that succeeded and list of testcases
+  that has failed, which is better than nothing.
+  
+  But what I'm thinking about is some more structured format that
+  will include test output, possibly test duration and so. I personally
+  think that JSON is good candidate for this job as it's structured,
+  easy to read and widely supported as there are libraries for python,
+  perl, etc.
+
+  Then we could create git repo with reference results. Generate html
+  pages from the repo with results. Write scripts for result comparsion,
+  etc.
+
+  The JSON log may look like:
+
+  "LTP Version": 20130109,
+  "System Info": {
+  	"Kernel Version": "3.7.1",
+	"Hardware": {
+		"Arch": "x86_64",
+		"CPUs": 2,
+		"Ram": 4051840,
+		(more filelds like this follows),
+	},
+  },
+  "Results": [
+  	{
+		"Test Name": "getrusage04",
+		"Test Result": "FAILED",
+		"Test Runtime": 0.011532,
+		"Test CPU Time": 0.003234,
+		"Test Output": [
+			"TINFO : Using 1 as multiply factor for max increment",
+			"TINFO : utime:         0us; stime         0us",
+			"TINFO : utime:         0us; stime      4000us",
+			"TFAIL : stime increased > 2000us",
+		],
+	},
+	(more test results follows),
+  ]
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-The Go Parallel Website, sponsored by Intel - in partnership with Geeknet, 
-is your hub for all things parallel software development, from weekly thought 
-leadership blogs to news, videos, case studies, tutorials, tech docs, 
-whitepapers, evaluation guides, and opinion stories. Check out the most 
-recent posts - join the conversation now. http://goparallel.sourceforge.net/
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
