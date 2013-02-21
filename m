@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U7cjm-0000Y1-DR
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 02:15:18 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U7cjg-0003Oc-2p
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 02:15:18 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r1J2F4uE020260
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Feb 2013 10:15:04 +0800
-Message-ID: <5122DFEE.1040700@cn.fujitsu.com>
-Date: Tue, 19 Feb 2013 10:14:06 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1U8cKx-0004bB-S8
+	for ltp-list@lists.sourceforge.net; Thu, 21 Feb 2013 20:01:47 +0000
+Date: Thu, 21 Feb 2013 21:02:24 +0100
+From: chrubis@suse.cz
+Message-ID: <20130221200224.GA8559@rei.Home>
+References: <1361470250-2489-1-git-send-email-vlee@twitter.com>
 MIME-Version: 1.0
-References: <51219A7B.2020909@cn.fujitsu.com>
-In-Reply-To: <51219A7B.2020909@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] kill/1-2.c: fix potential bug
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1361470250-2489-1-git-send-email-vlee@twitter.com>
+Subject: Re: [LTP] [PATCH] syscalls/getrusage04: Link rt through LDLIBS
+ instead of LDFLAGS.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,18 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Vinson Lee <vlee@twitter.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 02/18/2013 11:05 AM, DAN LI wrote:
-> If fork() fails,this case will cause unexpected problem when kill(-1,...) called by root.
+Hi!
+> Fixes this build error on Ubuntu introduced with commit
+> 07f4e5432dd3e7a60bc0235f13200640c82d8f89.
 > 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> testcases/kernel/syscalls/getrusage/getrusage04.c:186: undefined reference to `clock_getres'
+> 
 
-Applied, thank you .
+Thanks, commited.
 
-Wanlong Gao
+(And sorry that I got it wrong)
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
