@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U7k0a-00047G-Hp
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 10:01:08 +0000
-Date: Tue, 19 Feb 2013 11:01:39 +0100
-From: chrubis@suse.cz
-Message-ID: <20130219100138.GA30515@rei>
-References: <5122E05A.6010507@cn.fujitsu.com>
-	<1360829341.5171174.1361259703806.JavaMail.root@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1360829341.5171174.1361259703806.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH v3 2/3] setns: add new syscall test setns01
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vlee@twitter.com>) id 1U8cCI-0002IP-OQ
+	for ltp-list@lists.sourceforge.net; Thu, 21 Feb 2013 19:52:50 +0000
+Received: from mail-pb0-f41.google.com ([209.85.160.41])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1U8cCH-0005wI-Ui
+	for ltp-list@lists.sourceforge.net; Thu, 21 Feb 2013 19:52:50 +0000
+Received: by mail-pb0-f41.google.com with SMTP id um15so3654135pbc.0
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Feb 2013 11:52:44 -0800 (PST)
+From: Vinson Lee <vlee@twitter.com>
+Date: Thu, 21 Feb 2013 10:10:50 -0800
+Message-Id: <1361470250-2489-1-git-send-email-vlee@twitter.com>
+Subject: [LTP] [PATCH] syscalls/getrusage04: Link rt through LDLIBS instead
+	of LDFLAGS.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,25 +25,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Thanks, that was error for sure. I just wonder what compiler/version
-> Cyril used.
+Fixes this build error on Ubuntu introduced with commit
+07f4e5432dd3e7a60bc0235f13200640c82d8f89.
 
-It's glibc feature. If you turn on FORTIFY_SOURCES the
-/usr/include/fcntl.h includes /usr/include/bits/fcntl2.h which contains
-checks for common open errors.
+testcases/kernel/syscalls/getrusage/getrusage04.c:186: undefined reference to `clock_getres'
 
-And there are other checks it enables too.
+Signed-off-by: Vinson Lee <vlee@twitter.com>
+---
+ testcases/kernel/syscalls/getrusage/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/getrusage/Makefile b/testcases/kernel/syscalls/getrusage/Makefile
+index 6851383..6702f27 100644
+--- a/testcases/kernel/syscalls/getrusage/Makefile
++++ b/testcases/kernel/syscalls/getrusage/Makefile
+@@ -20,6 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-LDFLAGS += -lrt
++LDLIBS += -lrt
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
