@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1U30cp-0005aN-Ei
-	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 08:45:03 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U30co-0006Jr-K1
-	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 08:45:03 +0000
-Message-ID: <511217E6.6070309@cn.fujitsu.com>
-Date: Wed, 06 Feb 2013 16:44:22 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1UAkWd-0000Z8-Sf
+	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 17:10:39 +0000
+Date: Wed, 27 Feb 2013 18:11:18 +0100
+From: chrubis@suse.cz
+Message-ID: <20130227171118.GB30351@rei>
+References: <605746806.1323310.1360671766487.JavaMail.root@redhat.com>
+	<51218CB1.8040709@cn.fujitsu.com> <20130227143845.GA2178@rei>
 MIME-Version: 1.0
-References: <cover.1360079418.git.jstancek@redhat.com>
-	<fb082801509d79e55b15899e25db819e1710b9d6.1360079418.git.jstancek@redhat.com>
-In-Reply-To: <fb082801509d79e55b15899e25db819e1710b9d6.1360079418.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] setns: setup directory at
-	kernel/syscalls/setns
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <20130227143845.GA2178@rei>
+Subject: Re: [LTP] open posix testsuite and names of testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,55 +25,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 02/05/2013 11:57 PM, Jan Stancek wrote:
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-> ---
->  testcases/kernel/syscalls/setns/Makefile |   22 ++++++++++++++++++++++
->  1 files changed, 22 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/setns/Makefile
+Hi!
+> > I vote to changing the rule of generating the Makefiles, it's simple
+> > and the simple rule change is easy to be accepted. Agree?
 > 
-> diff --git a/testcases/kernel/syscalls/setns/Makefile b/testcases/kernel/syscalls/setns/Makefile
-> new file mode 100644
-> index 0000000..b1179c4
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/setns/Makefile
-> @@ -0,0 +1,22 @@
-> +#
-> +#  Copyright (C) 2013 Linux Test Project, Inc.
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> 
+> Ok. I will look into this and hopefully commit a patch soon enough.
 
+I tried to change the generate-makefiles.sh script, but there are some
+problems.
+
+Some tests are shell scripts that doesn't have build phase. I've
+workarounded them by adding build rules that just copy them to
+name_x-y.sh in the build phase, which unfortunatelly haven't fixed all
+the problems.
+
+We have quite quite a lot of tests (~270) that are shell scripts that
+prints "This is tested implicitly via assertion xyz" and returns zero.
+I'm quite tempted to remove them. These just increase tests run time,
+log sizes, etc. but doesn't do any actual work.
+
+Then there are more problematic ones, shell tests that calls one binary
+with different parameters. As in sigignore for example. The paths and
+names are obviously hardcoded, which makes them fail. The fix for such
+cases will depend case by case but what I will probably do is to make
+each test self-contained, but I haven't analyzed all the failures yet.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Free Next-Gen Firewall Hardware Offer
-Buy your Sophos next-gen firewall before the end March 2013 
-and get the hardware for free! Learn more.
-http://p.sf.net/sfu/sophos-d2d-feb
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
