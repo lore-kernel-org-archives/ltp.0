@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1U33b2-0004pf-5G
-	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:55:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UAbtR-0001u1-TQ
+	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 07:57:37 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1U33b1-0004ZM-3r
-	for ltp-list@lists.sourceforge.net; Wed, 06 Feb 2013 11:55:24 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r16BtH23030251
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Feb 2013 06:55:17 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed,  6 Feb 2013 12:55:10 +0100
-Message-Id: <93eee6d332bfc7f4107524597cc687061bbb2501.1360149841.git.jstancek@redhat.com>
-In-Reply-To: <cover.1360149841.git.jstancek@redhat.com>
-References: <cover.1360149841.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2 1/3] setns: setup directory at kernel/syscalls/setns
+	id 1UAbtQ-0003wJ-0S
+	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 07:57:37 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r1R7uNn6013038
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Feb 2013 15:56:23 +0800
+Message-ID: <512DBCA2.4030508@cn.fujitsu.com>
+Date: Wed, 27 Feb 2013 15:58:26 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <512D7ECF.6020007@cn.fujitsu.com>
+In-Reply-To: <512D7ECF.6020007@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] testfrmw/testfrmw.c : include head file
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,56 +28,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/setns/Makefile |   23 +++++++++++++++++++++++
- 1 files changed, 23 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/setns/Makefile
+On 02/27/2013 11:34 AM, DAN LI wrote:
+> Include stdarg.h, since va_start & va_end are called in this src file.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-diff --git a/testcases/kernel/syscalls/setns/Makefile b/testcases/kernel/syscalls/setns/Makefile
-new file mode 100644
-index 0000000..f1b5129
---- /dev/null
-+++ b/testcases/kernel/syscalls/setns/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (C) 2013 Linux Test Project, Inc.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+CPPFLAGS                += -Wno-unused-function
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
--- 
-1.7.1
+Applied, thanks.
+
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
-Free Next-Gen Firewall Hardware Offer
-Buy your Sophos next-gen firewall before the end March 2013 
-and get the hardware for free! Learn more.
-http://p.sf.net/sfu/sophos-d2d-feb
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
