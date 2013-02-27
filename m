@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UAbtR-0001u1-TQ
-	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 07:57:37 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UAbtQ-0003wJ-0S
-	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 07:57:37 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r1R7uNn6013038
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 Feb 2013 15:56:23 +0800
-Message-ID: <512DBCA2.4030508@cn.fujitsu.com>
-Date: Wed, 27 Feb 2013 15:58:26 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UAi90-0000HU-G1
+	for ltp-list@lists.sourceforge.net; Wed, 27 Feb 2013 14:38:06 +0000
+Date: Wed, 27 Feb 2013 15:38:45 +0100
+From: chrubis@suse.cz
+Message-ID: <20130227143845.GA2178@rei>
+References: <605746806.1323310.1360671766487.JavaMail.root@redhat.com>
+	<51218CB1.8040709@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <512D7ECF.6020007@cn.fujitsu.com>
-In-Reply-To: <512D7ECF.6020007@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] testfrmw/testfrmw.c : include head file
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <51218CB1.8040709@cn.fujitsu.com>
+Subject: Re: [LTP] open posix testsuite and names of testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,18 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 02/27/2013 11:34 AM, DAN LI wrote:
-> Include stdarg.h, since va_start & va_end are called in this src file.
+Hi!
+> >>> I'm not against renaming sources, just thinking if there is less
+> >>> intrusive way to achieve same result. I believe all Makefiles are
+> >>> generated,
+> >>> so other option that comes to mind would be to modify
+> >>> scripts/generate-makefiles.sh.
+> >>> Any thoughts about this approach?
+> >>
+> >> We can hack the script to generate Makefiles that include the dir
+> >> name
+> >> into the binary name which would be less intrusive but on the other
+> >> hand
+> >> that would break the rule that foo.c generates foo.run_test...
+> > 
+> > Caspar, Wanlong, any preference / thoughts?
 > 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> I vote to changing the rule of generating the Makefiles, it's simple
+> and the simple rule change is easy to be accepted. Agree?
 
-Applied, thanks.
+Ok. I will look into this and hopefully commit a patch soon enough.
 
-Wanlong Gao
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
