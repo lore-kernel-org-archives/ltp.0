@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UHmvK-0007hB-S0
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:09:14 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UCS26-00034L-8n
+	for ltp-list@lists.sourceforge.net; Mon, 04 Mar 2013 09:50:10 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHmvI-0002PD-AR
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:09:14 +0000
-Message-ID: <5147D723.2060001@cn.fujitsu.com>
-Date: Tue, 19 Mar 2013 11:10:27 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UCS24-0006v8-Ci
+	for ltp-list@lists.sourceforge.net; Mon, 04 Mar 2013 09:50:10 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r249EoH0020434
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Mar 2013 17:14:50 +0800
+Message-ID: <51346595.80103@cn.fujitsu.com>
+Date: Mon, 04 Mar 2013 17:12:53 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <cover.1363579539.git.zliu@redhat.com>
-	<2ccf451c55f261c878bdd388e1e1741d2d9c037c.1363579539.git.zliu@redhat.com>
-In-Reply-To: <2ccf451c55f261c878bdd388e1e1741d2d9c037c.1363579539.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v3 4/7] mm/oom0[3|4]: added 'OOM for CPUSET' and
- moved 'OOM with MEMCG & numa' to oom03
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP]  [PATCH]pthread_once/1-1.c : cleanup & add error checks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,225 +28,125 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 03/18/2013 12:14 PM, Zhouping Liu wrote:
-> OOM with the combination of memcg & numa was moved to oom03,
-> and oom04 is re-design to be used to test 'OOM with CPUSET'.
-> 
-> also used is_numa() instead of the old method.
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->  testcases/kernel/mem/oom/oom02.c |  6 ++--
->  testcases/kernel/mem/oom/oom03.c | 20 ++++++++++++++
->  testcases/kernel/mem/oom/oom04.c | 60 +++++++++++++++-------------------------
->  3 files changed, 46 insertions(+), 40 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-> index 31ec73f..3bc8567 100644
-> --- a/testcases/kernel/mem/oom/oom02.c
-> +++ b/testcases/kernel/mem/oom/oom02.c
-> @@ -35,6 +35,7 @@
->  #include <errno.h>
->  #include <fcntl.h>
->  #include <stdio.h>
-> +#include "numa_helper.h"
->  #include "test.h"
->  #include "usctest.h"
->  #include "mem.h"
-> @@ -44,7 +45,6 @@ int TST_TOTAL = 1;
->  
->  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->  	&& HAVE_MPOL_CONSTANTS
-> -#include <numaif.h>
->  
->  int main(int argc, char *argv[])
->  {
-> @@ -83,8 +83,8 @@ void setup(void)
->  	tst_sig(FORK, DEF_HANDLER, cleanup);
->  	TEST_PAUSE;
->  
-> -	/* Judge a NUMA system through get_a_numa_node */
-> -	get_a_numa_node(NULL);
-> +	if (!is_numa(NULL))
-> +		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
->  
->  	overcommit = get_sys_tune("overcommit_memory");
->  	set_sys_tune("overcommit_memory", 1, 1);
-> diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-> index 95e34d5..c2171fd 100644
-> --- a/testcases/kernel/mem/oom/oom03.c
-> +++ b/testcases/kernel/mem/oom/oom03.c
-> @@ -33,6 +33,7 @@
->  #include <errno.h>
->  #include <fcntl.h>
->  #include <stdio.h>
-> +#include "numa_helper.h"
->  #include "test.h"
->  #include "usctest.h"
->  #include "mem.h"
-> @@ -40,6 +41,9 @@
->  char *TCID = "oom03";
->  int TST_TOTAL = 1;
->  
-> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> +	&& HAVE_MPOL_CONSTANTS
-> +
->  int main(int argc, char *argv[])
->  {
->  	char *msg;
-> @@ -76,6 +80,14 @@ int main(int argc, char *argv[])
->  			write_file(MEMCG_SW_LIMIT, mem);
->  			testoom(0, 1, 0);
->  		}
-> +
-> +		/* OOM for MEMCG with mempolicy */
-> +		if (is_numa(cleanup)) {
-> +			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
-> +			testoom(MPOL_BIND, 0, 1);
-> +			testoom(MPOL_INTERLEAVE, 0, 1);
-> +			testoom(MPOL_PREFERRED, 0, 1);
-> +		}
->  	}
->  	cleanup();
->  	tst_exit();
-> @@ -99,3 +111,11 @@ void cleanup(void)
->  
->  	TEST_CLEANUP;
->  }
-> +
-> +#else
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-> +}
-> +#endif
-> +
 
-Here added a new line at EOF, if you want to just modify the patch,
-please remove this line, and change "@@ -99,3 +111,11" to "@@ -99,3 +111,10".
+1.Make log style keep consistent with other cases in the same directory.
+2.Add error checks to strengthen the robustness of this case.
 
-Thanks,
-Wanlong Gao
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ .../conformance/interfaces/pthread_once/1-1.c      | 70 +++++++++++++++++++---
+ 1 file changed, 61 insertions(+), 9 deletions(-)
 
-> diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-> index bc51046..1ad7334 100644
-> --- a/testcases/kernel/mem/oom/oom04.c
-> +++ b/testcases/kernel/mem/oom/oom04.c
-> @@ -1,5 +1,5 @@
->  /*
-> - * Out Of Memory (OOM) for Memory Resource Controller and NUMA
-> + * Out Of Memory (OOM) for CPUSET
->   *
->   * The program is designed to cope with unpredictable like amount and
->   * system physical memory, swap size and other VMM technology like KSM,
-> @@ -35,6 +35,7 @@
->  #include <errno.h>
->  #include <fcntl.h>
->  #include <stdio.h>
-> +#include "numa_helper.h"
->  #include "test.h"
->  #include "usctest.h"
->  #include "mem.h"
-> @@ -44,12 +45,11 @@ int TST_TOTAL = 1;
->  
->  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->  	&& HAVE_MPOL_CONSTANTS
-> +
->  int main(int argc, char *argv[])
->  {
->  	char *msg;
->  	int lc;
-> -	int swap_acc_on = 1;
-> -	char buf[BUFSIZ], mem[BUFSIZ];
->  
->  	msg = parse_opts(argc, argv, NULL, NULL);
->  	if (msg != NULL)
-> @@ -64,38 +64,19 @@ int main(int argc, char *argv[])
->  	for (lc = 0; TEST_LOOPING(lc); lc++) {
->  		tst_count = 0;
->  
-> -		snprintf(buf, BUFSIZ, "%d", getpid());
-> -		write_file(MEMCG_PATH_NEW "/tasks", buf);
-> -
-> -		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
-> -		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
-> -
-> -		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-> -			if (errno == ENOENT) {
-> -				tst_resm(TCONF,
-> -					 "memcg swap accounting is disabled");
-> -				swap_acc_on = 0;
-> -			} else
-> -				tst_brkm(TBROK | TERRNO, cleanup, "access");
-> -		}
-> -
-> -		tst_resm(TINFO, "process mempolicy.");
-> -		testoom(1, 0, 1);
-> -
-> -		if (swap_acc_on) {
-> -			write_file(MEMCG_SW_LIMIT, mem);
-> -			testoom(1, 1, 1);
-> -		}
-> -
-> -		tst_resm(TINFO, "process cpuset.");
-> -
-> -		if (swap_acc_on)
-> -			write_file(MEMCG_SW_LIMIT, "-1");
-> -		testoom(0, 0, 1);
-> -
-> -		if (swap_acc_on) {
-> -			write_file(MEMCG_SW_LIMIT, mem);
-> -			testoom(0, 1, 1);
-> +		tst_resm(TINFO, "OOM on CPUSET...");
-> +		testoom(0, 0, 0);
-> +
-> +		if (is_numa(cleanup)) {
-> +			/*
-> +			 * Under NUMA system, the migration of cpuset's memory
-> +			 * is in charge of cpuset.memory_migrate, we can write
-> +			 * 1 to cpuset.memory_migrate to enable the migration.
-> +			 */
-> +			write_cpuset_files(CPATH_NEW,
-> +					   "memory_migrate", "1");
-> +			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
-> +			testoom(0, 0, 0);
->  		}
->  	}
->  	cleanup();
-> @@ -110,15 +91,20 @@ void setup(void)
->  
->  	overcommit = get_sys_tune("overcommit_memory");
->  	set_sys_tune("overcommit_memory", 1, 1);
-> +
->  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-> -	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-> +	if (is_numa(cleanup) > 0)
-> +		/* For NUMA system, using the first node for cpuset.mems */
-> +		write_cpusets(get_a_numa_node(cleanup));
-> +	else
-> +		/* For nonNUMA system, using node0 for cpuset.mems */
-> +		write_cpusets(0);
->  }
->  
->  void cleanup(void)
->  {
->  	set_sys_tune("overcommit_memory", overcommit, 0);
->  	umount_mem(CPATH, CPATH_NEW);
-> -	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
->  
->  	TEST_CLEANUP;
->  }
-> 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
+index 3a7c861..03b2875 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
+@@ -21,9 +21,53 @@
+  *   passed to it.  If it does, the test fails.
+  */
 
++/* We are testing conformance to IEEE Std 1003.1, 2003 Edition */
++#define _POSIX_C_SOURCE 200112L
++
++/******************************************************************************/
++/****************************** standard includes *****************************/
++/******************************************************************************/
+ #include <pthread.h>
+ #include <stdio.h>
+-#include "posixtest.h"
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++
++/******************************************************************************/
++/******************************   Test framework   ****************************/
++/******************************************************************************/
++#include "../testfrmw/testfrmw.h"
++#include "../testfrmw/testfrmw.c"
++/* This header is responsible for defining the following macros:
++ * UNRESOLVED(ret, descr);
++ *    where descr is a description of the error and ret is an int
++ *    (error code for example)
++ * FAILED(descr);
++ *    where descr is a short text saying why the test has failed.
++ * PASSED();
++ *    No parameter.
++ *
++ * Both three macros shall terminate the calling process.
++ * The testcase shall not terminate in any other maneer.
++ *
++ * The other file defines the functions
++ * void output_init()
++ * void output(char * string, ...)
++ *
++ * Those may be used to output information.
++ */
++
++/******************************************************************************/
++/******************************** Configuration *******************************/
++/******************************************************************************/
++#ifndef VERBOSE
++#define VERBOSE 1
++#endif
++
++/******************************************************************************/
++/*******************************    Test case   *******************************/
++/******************************************************************************/
++
+
+ /* Keeps track of how many times the init function has been called. */
+ int init_flag;
+@@ -37,23 +81,31 @@ void *an_init_func()
+
+ int main()
+ {
++	int ret = 0;
++
+ 	pthread_once_t once_control = PTHREAD_ONCE_INIT;
+
+ 	init_flag = 0;
+
++	output_init();
++
+ 	/* Call pthread_once, passing it the once_control */
+-	pthread_once(&once_control, (void *)an_init_func);
++	ret = pthread_once(&once_control, (void *)an_init_func);
++	if (ret != 0)
++		UNRESOLVED(ret, "pthread_once failed");
+
+ 	/* Call pthread_once again. The init function should not be
+ 	 * called. */
+-	pthread_once(&once_control, (void *)an_init_func);
++	ret = pthread_once(&once_control, (void *)an_init_func);
++	if (ret != 0)
++		UNRESOLVED(ret, "pthread_once failed");
+
+-	if (init_flag != 1) {
+-		printf("Test FAILED\n");
+-		return PTS_FAIL;
+-	}
++	if (init_flag != 1)
++		FAILED("an_init_func runs two times\n");
+
+-	printf("Test PASSED\n");
+-	return PTS_PASS;
++#if VERBOSE > 0
++	output("TEST PASSED\n");
++#endif
+
++	PASSED;
+ }
+-- 
+1.7.12
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
