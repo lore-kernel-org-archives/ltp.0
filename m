@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UHnRx-0003mx-2q
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:42:57 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHnRv-0000Kp-R1
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:42:57 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2J3gokh028971
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 23:42:50 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Tue, 19 Mar 2013 11:40:48 +0800
-Message-Id: <cover.1363664213.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v4 0/7] mm/oom: extend the coverage of OOM
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UCoip-0005ie-RR
+	for ltp-list@lists.sourceforge.net; Tue, 05 Mar 2013 10:03:47 +0000
+Date: Tue, 5 Mar 2013 10:51:25 +0100
+From: chrubis@suse.cz
+Message-ID: <20130305095125.GA13876@rei.Home>
+References: <51346595.80103@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <51346595.80103@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]pthread_once/1-1.c : cleanup & add error checks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,73 +21,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-changed log from v1 to v2:
- 1. added a new is_numa() function instead of ISNUMA global variable;
- 2. added new patch to remove the prefix underscroe '_' of the
-    internal function name;
- 3. used SAFE_FILE_SCANF() instead of read_file().
- 4. some cleanup...
+Hi!
+> 1.Make log style keep consistent with other cases in the same directory.
+> 2.Add error checks to strengthen the robustness of this case.
 
-changed log from v2 to v3:
- 1. as Jan's suggestion, pass 'nodes=NULL' to get_allowed_nodes_arr()
-    in is_numa(), and free 'nodes' variable when it passed a non-NULL
-    value inside testoom().
-
-changed log from v3 to v4:
- 1. fixed some patch style error
-
-The patch set updated all OOM testcases, and added a new testcase.
-
-Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
-system, and the combination of CPUSET, MEMCG & NUMA is complex,
-and not clear. Also CPUSET is only used in NUMA system.
-
-These patch set adjust them, now we can coverage the below tests:
- 1) OOM under normal - oom01
- 2) OOM under all mempolicy - oom02
- 3) OOM under MEMCG (+ mempolicy) - oom03
- 4) OOM under CPUSET (+ mempolicy)  - oom04
- 5) OOM under CPUSET & MEMCG - oom05
-
-Zhouping Liu (7):
-  lib/mem: modified _gather_cpus() as _gather_node_cpus()
-  mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
-  numa_helper: added a new function is_numa()
-  mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG &
-    numa' to oom03
-  lib/mem: updated testoom() and oom() funcs
-  mm/oom05: new testcase
-  lib/mem: removed the prefix underscore '_' of the internal function
-    name
-
- runtest/mm                             |   1 +
- testcases/kernel/include/numa_helper.h |   1 +
- testcases/kernel/lib/numa_helper.c     |  24 ++++++
- testcases/kernel/mem/include/mem.h     |   4 +-
- testcases/kernel/mem/lib/mem.c         | 147 +++++++++++++++++++++------------
- testcases/kernel/mem/oom/oom01.c       |   6 +-
- testcases/kernel/mem/oom/oom02.c       |  20 +++--
- testcases/kernel/mem/oom/oom03.c       |  23 +++++-
- testcases/kernel/mem/oom/oom04.c       |  60 ++++++--------
- testcases/kernel/mem/oom/oom05.c       | 147 +++++++++++++++++++++++++++++++++
- 10 files changed, 328 insertions(+), 105 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/oom05.c
+Any patches that adds useless comments and/or testfrmw are no-go. Sorry.
 
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+http://p.sf.net/sfu/appdyn_d2d_feb
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
