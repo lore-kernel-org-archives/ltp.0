@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UHxeQ-00070i-75
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 14:36:30 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHxeO-0003HQ-25
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 14:36:29 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2JEaL3I006761
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Mar 2013 10:36:22 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 19 Mar 2013 15:35:24 +0100
-Message-Id: <df80cf17650d9280457b66e44fb09b55c1cdbce4.1363703473.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] inode02: fix "slash" array overrun
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UD4AC-0002q1-LI
+	for ltp-list@lists.sourceforge.net; Wed, 06 Mar 2013 02:33:04 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UD4A9-0000bA-OC
+	for ltp-list@lists.sourceforge.net; Wed, 06 Mar 2013 02:33:04 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r262WsRt004534
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Mar 2013 10:32:54 +0800
+Message-ID: <5136AA61.7030008@cn.fujitsu.com>
+Date: Wed, 06 Mar 2013 10:30:57 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <51346595.80103@cn.fujitsu.com>
+In-Reply-To: <51346595.80103@cn.fujitsu.com>
+Subject: [LTP] [PATCHv3]pthread_once/1-1.c : add error checks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,43 +27,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-testcases/kernel/fs/inode/inode02.c:254 is initializing it as:
-    slash[0] = '/';
-    slash[1] = '\0';
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Add error checks to:
+
+  Make sure this case not slip into one situation that
+  the first pthread_once fails, and the second successes,
+  then the case passes with bypassing its assertion.
+
+  Give more detailed and exact execute result.
+
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/fs/inode/inode02.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ .../conformance/interfaces/pthread_once/1-1.c           | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-index 783edf8..f70c5d8 100644
---- a/testcases/kernel/fs/inode/inode02.c
-+++ b/testcases/kernel/fs/inode/inode02.c
-@@ -80,7 +80,7 @@ int nchild;
- FILE *list_stream = NULL;
- int list_id;
- int file_id;
--char slash[1];
-+char slash[2];
- 
- int increment_name(), get_next_name(), mode(), escrivez(), massmurder();
- int max_depth, max_breadth, file_length;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
+index 3a7c861..3392e6b 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
+@@ -26,7 +26,7 @@
+ #include "posixtest.h"
+
+ /* Keeps track of how many times the init function has been called. */
+-int init_flag;
++static int init_flag;
+
+ /* The init function that pthread_once calls */
+ void *an_init_func()
+@@ -37,16 +37,25 @@ void *an_init_func()
+
+ int main()
+ {
++	int ret;
++
+ 	pthread_once_t once_control = PTHREAD_ONCE_INIT;
+
+ 	init_flag = 0;
+
+ 	/* Call pthread_once, passing it the once_control */
+-	pthread_once(&once_control, (void *)an_init_func);
+-
++	ret = pthread_once(&once_control, (void *)an_init_func);
++	if (ret != 0) {
++		printf("pthread_once failed\n");
++		return PTS_UNRESOLVED;
++	}
+ 	/* Call pthread_once again. The init function should not be
+ 	 * called. */
+-	pthread_once(&once_control, (void *)an_init_func);
++	ret = pthread_once(&once_control, (void *)an_init_func);
++	if (ret != 0) {
++		printf("pthread_once failed\n");
++		return PTS_UNRESOLVED;
++	}
+
+ 	if (init_flag != 1) {
+ 		printf("Test FAILED\n");
 -- 
-1.7.1
-
+1.7.12
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
