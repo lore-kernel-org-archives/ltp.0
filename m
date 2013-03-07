@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UFpwI-0002Rs-Aa
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 17:58:10 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UFpwF-0004bJ-A3
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 17:58:10 +0000
-Date: Wed, 13 Mar 2013 13:58:00 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1482749503.18144192.1363197480299.JavaMail.root@redhat.com>
-In-Reply-To: <1363183294-21203-1-git-send-email-markos.chandras@gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UDWA6-0004g7-7z
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:26:50 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UDWA2-0004Sb-3y
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:26:50 +0000
+Message-ID: <51384EC8.3070608@redhat.com>
+Date: Thu, 07 Mar 2013 16:24:40 +0800
+From: Zhouping Liu <zliu@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] syscalls/getdents: Use getdents64 if
- SYS_getdents	is not defined
+References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+	<0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
+In-Reply-To: <0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 3/3] syscalls/madvise02: fix madvise case due to
+ kernel change
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,103 +26,138 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4476723135542481952=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
+This is a multi-part message in MIME format.
+--===============4476723135542481952==
+Content-Type: multipart/alternative;
+	boundary="------------010904010301050004070807"
 
+This is a multi-part message in MIME format.
+--------------010904010301050004070807
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
------ Original Message -----
-> From: "Markos Chandras" <markos.chandras@gmail.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 13 March, 2013 3:01:34 PM
-> Subject: [LTP] [PATCH 1/2] syscalls/getdents: Use getdents64 if SYS_getdents	is not defined
-> 
-> From: Markos Chandras <markos.chandras@imgtec.com>
-> 
-> New Linux Kernel architectures do not define NR_getdents so we
-> try to use the getdents64 syscall instead
-> 
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+On 03/07/2013 03:38 PM, Caspar Zhang wrote:
+> since kernel commit 1998cc0 (after kernel-3.8 released),
+> madvise(MADV_WILLNEED) to anonymous memory doesn't return -EBADF now, as
+> now we support swap prefetch. Thus the 5th testcase in madvise02 will
+> not pass. This patch fixes this by adding a tst_kvercmp() condition, and
+> will give a pass if kernel is >=3.9 (including the RCs).
+>
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+
+met the issue on 3.9.0-rc1+, and the patch looks good for me,
+so Reviewed-by: Zhouping Liu <zliu@redhat.com>
+
 > ---
->  testcases/kernel/syscalls/getdents/getdents.h |   15 +++++++++++++++
->  1 files changed, 15 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/getdents/getdents.h
-> b/testcases/kernel/syscalls/getdents/getdents.h
-> index 1d5e584..12d2be4 100644
-> --- a/testcases/kernel/syscalls/getdents/getdents.h
-> +++ b/testcases/kernel/syscalls/getdents/getdents.h
-> @@ -38,12 +38,23 @@
->   * declare our own here.  Wheeeeee.
->   */
->  
-> +#ifdef SYS_getdents
->  struct linux_dirent {
->  	unsigned long   d_ino;
->  	unsigned long   d_off;
->  	unsigned short  d_reclen;
->  	char            d_name[];
->  };
-> +#else
-> +/* Use the 64-bit definition */
-> +struct linux_dirent {
-> +	unsigned long long	d_ino;
-> +	long long		d_off;
-> +	unsigned short		d_reclen;
-> +	unsigned char		d_type;
-> +	char			d_name[0];
-> +};
-> +#endif
->  
->  static inline int
->  getdents(unsigned int fd, struct dirent *dirp, unsigned int count)
-> @@ -57,7 +68,11 @@ getdents(unsigned int fd, struct dirent *dirp,
-> unsigned int count)
->  	unsigned int i;
->  
->  	ptrs.buf = buf;
-> +#ifdef SYS_getdents
->  	ret = syscall(SYS_getdents, fd, buf, count);
-> +#else
-> +	ret = syscall(SYS_getdents64, fd, buf, count);
-> +#endif
-
-Just a thought.. What about turning it to runtime check? There could be parameter to switch between
-SYS_getdents/SYS_getdents64 and we can have both (with/without that parameter) in runtest/syscalls.
-If it's supported it runs, if not ends with TCONF. That way we could have both version on arches
-that support both syscalls.
-
-Regards,
-Jan
-
->  	if (ret < 0)
->  		return ret;
->  
-> --
-> 1.7.1
-> 
-> 
-> 
+>   testcases/kernel/syscalls/madvise/madvise02.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+>
+>
+>
 > ------------------------------------------------------------------------------
-> Everyone hates slow websites. So do we.
-> Make your web apps faster with AppDynamics
-> Download AppDynamics Lite for free today:
-> http://p.sf.net/sfu/appdyn_d2d_mar
+> Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester
+> Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the
+> endpoint security space. For insight on selecting the right partner to
+> tackle endpoint security challenges, access the full report.
+> http://p.sf.net/sfu/symantec-dev2dev
+>
+>
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+
+
+--------------010904010301050004070807
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <div class="moz-cite-prefix">On 03/07/2013 03:38 PM, Caspar Zhang
+      wrote:<br>
+    </div>
+    <blockquote
+cite="mid:0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com"
+      type="cite">
+      <pre wrap="">
+since kernel commit 1998cc0 (after kernel-3.8 released),
+madvise(MADV_WILLNEED) to anonymous memory doesn't return -EBADF now, as
+now we support swap prefetch. Thus the 5th testcase in madvise02 will
+not pass. This patch fixes this by adding a tst_kvercmp() condition, and
+will give a pass if kernel is &gt;=3.9 (including the RCs).
+
+Signed-off-by: Caspar Zhang <a class="moz-txt-link-rfc2396E" href="mailto:caspar@casparzhang.com">&lt;caspar@casparzhang.com&gt;</a></pre>
+    </blockquote>
+    <br>
+    met the issue on 3.9.0-rc1+, and the patch looks good for me,<br>
+    so Reviewed-by: Zhouping Liu <a class="moz-txt-link-rfc2396E" href="mailto:zliu@redhat.com">&lt;zliu@redhat.com&gt;</a><br>
+    <br>
+    <blockquote
+cite="mid:0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com"
+      type="cite">
+      <pre wrap="">
+---
+ testcases/kernel/syscalls/madvise/madvise02.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+</pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">------------------------------------------------------------------------------
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/symantec-dev2dev">http://p.sf.net/sfu/symantec-dev2dev</a></pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+</pre>
+    </blockquote>
+    <br>
+  </body>
+</html>
+
+--------------010904010301050004070807--
+
+
+--===============4476723135542481952==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
+--===============4476723135542481952==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4476723135542481952==--
+
