@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UGWBy-0002M1-Lk
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:10 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UGWBw-0007r2-GQ
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:10 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2FF52o0009020
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Mar 2013 11:05:02 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Fri, 15 Mar 2013 23:03:05 +0800
-Message-Id: <cover.1363358877.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v2 0/7] mm/oom: extend the coverage of OOM
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UDW8n-0000dC-72
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:25:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UDW8l-0004hm-8k
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:25:29 +0000
+Message-ID: <51384F5F.4030403@cn.fujitsu.com>
+Date: Thu, 07 Mar 2013 16:27:11 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+	<b1f36450d2c5fd46eabdcee4f268cf7a0a69017b.1362641893.git.caspar@casparzhang.com>
+In-Reply-To: <b1f36450d2c5fd46eabdcee4f268cf7a0a69017b.1362641893.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 2/3] syscalls/madvise: code cleanup
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,67 +26,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-changed log from v1 to v2:
- 1. added a new is_numa() function instead of ISNUMA global variable;
- 2. added new patch to remove the prefix underscroe '_' of the
-    internal function name;
- 3. used SAFE_FILE_SCANF() instead of read_file().
- 4. some cleanup...
+On 03/07/2013 03:38 PM, Caspar Zhang wrote:
+> Just a code cleanup for syscalls/madvise01-04 cases.
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 
-The patch set updated all OOM testcases, and added a new testcase.
+Reviewed-by: Wanlong Gao<gaowanlong@cn.fujitsu.com> 
 
-Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
-system, and the combination of CPUSET, MEMCG & NUMA is complex,
-and not clear. Also CPUSET is only used in NUMA system.
-
-These patch set adjust them, now we can coverage the below tests:
- 1) OOM under normal - oom01
- 2) OOM under all mempolicy - oom02
- 3) OOM under MEMCG (+ mempolicy) - oom03
- 4) OOM under CPUSET (+ mempolicy)  - oom04
- 5) OOM under CPUSET & MEMCG - oom05
-
-tested the V2 patch set, no regression found.
-
-Zhouping Liu (7):
-  lib/mem: modified _gather_cpus() as _gather_node_cpus()
-  mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
-  numa_helper: added a new function is_numa()
-  mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG &
-    numa' to oom03
-  lib/mem: updated testoom() and oom() funcs
-  mm/oom05: new testcase
-  lib/mem: removed the prefix underscore '_' of the internal function
-    name
-
- runtest/mm                             |   1 +
- testcases/kernel/include/numa_helper.h |   1 +
- testcases/kernel/lib/numa_helper.c     |  25 ++++++
- testcases/kernel/mem/include/mem.h     |   4 +-
- testcases/kernel/mem/lib/mem.c         | 145 ++++++++++++++++++++------------
- testcases/kernel/mem/oom/oom01.c       |   6 +-
- testcases/kernel/mem/oom/oom02.c       |  20 +++--
- testcases/kernel/mem/oom/oom03.c       |  24 +++++-
- testcases/kernel/mem/oom/oom04.c       |  60 ++++++--------
- testcases/kernel/mem/oom/oom05.c       | 147 +++++++++++++++++++++++++++++++++
- 10 files changed, 328 insertions(+), 105 deletions(-)
- create mode 100644 testcases/kernel/mem/oom/oom05.c
-
--- 
-1.7.11.7
+> ---
+>  testcases/kernel/syscalls/madvise/madvise01.c |  77 +++--------------
+>  testcases/kernel/syscalls/madvise/madvise02.c | 117 ++++++++------------------
+>  testcases/kernel/syscalls/madvise/madvise03.c |  17 ++--
+>  testcases/kernel/syscalls/madvise/madvise04.c |   5 +-
+>  4 files changed, 58 insertions(+), 158 deletions(-)
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
