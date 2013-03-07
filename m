@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UHa4N-0004kr-SF
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 13:25:43 +0000
-Date: Mon, 18 Mar 2013 14:26:27 +0100
-From: chrubis@suse.cz
-Message-ID: <20130318132626.GD3423@rei>
-References: <20130318121509.GA3423@rei>
-	<1004735862.20216185.1363612313920.JavaMail.root@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1UDWFf-000525-Sg
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:32:35 +0000
+Received: from mail-pa0-f46.google.com ([209.85.220.46])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UDWFf-0004UG-4k
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:32:35 +0000
+Received: by mail-pa0-f46.google.com with SMTP id kp14so292181pab.33
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 07 Mar 2013 00:32:29 -0800 (PST)
+Message-ID: <513850A9.2070807@casparzhang.com>
+Date: Thu, 07 Mar 2013 16:32:41 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1004735862.20216185.1363612313920.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH v4] syscalls/getdents: Add parameter to test
- getdents64 syscall
+References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+	<513850C8.9080905@cn.fujitsu.com>
+In-Reply-To: <513850C8.9080905@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/3] s/Tst_count/tst_count/ to avoid CamelCase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,31 +31,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > You don't need to bother to free the buffers when the next thing the
-> > test does is exit, the whole heap along with malloc data structures
-> > will
-> > be freed (unmapped) by the kernel anyway.
-> 
-> I think it's nice thing to cleanup. Say, if test corrupted heap,
-> free could alert you. Also there are tools, which may complain,
-> that there's a leak now. I think LTP supports at least valgrind.
+On 03/07/2013 04:33 PM, Wanlong Gao wrote:
+> On 03/07/2013 03:38 PM, Caspar Zhang wrote:
+>> when using latest checkpatch.pl, CamelCase variables are not encouraged,
+>> this patch does a batch update to replace all var `Tst_count` with
+>> `tst_count`.
+>>
+>> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+>
+> Hope this won't break anything.
+>
+> Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>
 
-So what about compromise, defining them as variables instead of the
-allocation?
+Tested by compiling all the patched cases, everything seems still working.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Caspar
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
