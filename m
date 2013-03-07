@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UGBMv-00050I-FO
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:51:05 +0000
-Date: Thu, 14 Mar 2013 17:51:43 +0100
-From: chrubis@suse.cz
-Message-ID: <20130314165143.GD8894@rei.suse.cz>
-References: <cover.1363246555.git.zliu@redhat.com>
-	<440365316588480d26f3c7c12fb4366e58d87848.1363246555.git.zliu@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1UDW4K-0004FW-Fz
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:20:52 +0000
+Received: from mail-pa0-f46.google.com ([209.85.220.46])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UDW4J-0003zk-Ky
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:20:52 +0000
+Received: by mail-pa0-f46.google.com with SMTP id kp14so286357pab.5
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 07 Mar 2013 00:20:43 -0800 (PST)
+Message-ID: <51384DE7.8000400@casparzhang.com>
+Date: Thu, 07 Mar 2013 16:20:55 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <440365316588480d26f3c7c12fb4366e58d87848.1363246555.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and
- updated 'OOM with MEMCG & numa'
+References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+	<0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
+	<51384D30.1040003@cn.fujitsu.com>
+In-Reply-To: <51384D30.1040003@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 3/3] syscalls/madvise02: fix madvise case due to
+ kernel change
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,65 +33,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
+To: gaowanlong@cn.fujitsu.com
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
->  testcases/kernel/mem/include/mem.h |  2 ++
->  testcases/kernel/mem/lib/mem.c     |  2 ++
->  testcases/kernel/mem/oom/oom03.c   | 24 +++++++++++++++
->  testcases/kernel/mem/oom/oom04.c   | 63 ++++++++++++++++----------------------
->  4 files changed, 54 insertions(+), 37 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-> index 1233493..de51838 100644
-> --- a/testcases/kernel/mem/include/mem.h
-> +++ b/testcases/kernel/mem/include/mem.h
-> @@ -24,6 +24,8 @@
->  #define MLOCK			3
->  #define KSM			4
->  
-> +extern int ISNUMA;
-> +
->  long overcommit;
->  void oom(int testcase, int mempolicy, int lite);
->  void testoom(int mempolicy, int lite, int numa);
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index a71bc90..e99dae7 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -24,6 +24,8 @@
->  #include "mem.h"
->  #include "numa_helper.h"
->  
-> +int ISNUMA = 0; /* mark a NUMA system */
+On 03/07/2013 04:17 PM, Wanlong Gao wrote:
+> Please s/suuport/support/ when you push this patch.
+>
+> Reviewed-by: Wanlong Gao<gaowanlong@cn.fujitsu.com>
 
-So you have added variable to the library that is initialized in the
-test setup? That is just too messy :(.
+Do-oh!
 
-> +	/* rough estimate a NUMA system through max_node */
-> +	if (numa_max_node() > 0) {
-> +		ISNUMA = 1;
-> +		/* For NUMA system, using the first node for cpuset.mems */
-> +		write_cpusets(get_a_numa_node(cleanup));
-> +	} else {
-> +		/* For nonNUMA system, using node0 for cpuset.mems */
-> +		write_cpusets(0);
-> +	}
+Thanks for reviewing, I'll fix it :-)
 
-Why couldn't we have a function is_numa() in the library that would do
-something like this snippet of code, i.e. return numa_max_node() > 0
-(assuming that the code is needed in other test than this one.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Caspar
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
