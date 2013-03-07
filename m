@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <pfonseca@mpi-sws.org>) id 1U7nHc-000684-KQ
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 13:30:56 +0000
-Received: from hera.mpi-sb.mpg.de ([139.19.1.49] helo=hera.mpi-klsb.mpg.de)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1U7nHV-0008CK-GD
-	for ltp-list@lists.sourceforge.net; Tue, 19 Feb 2013 13:30:56 +0000
-Message-ID: <51237A44.6080508@mpi-sws.org>
-Date: Tue, 19 Feb 2013 14:12:36 +0100
-From: Pedro Fonseca <pfonseca@mpi-sws.org>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UDVzp-0007ax-EI
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:16:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UDVzl-00036M-3K
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:16:13 +0000
+Message-ID: <51384D30.1040003@cn.fujitsu.com>
+Date: Thu, 07 Mar 2013 16:17:52 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] Building LTP in a 64-bit machine for 32-bit target
+References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+	<0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
+In-Reply-To: <0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 3/3] syscalls/madvise02: fix madvise case due to
+ kernel change
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,31 +30,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi,
+On 03/07/2013 03:38 PM, Caspar Zhang wrote:
+> since kernel commit 1998cc0 (after kernel-3.8 released),
+> madvise(MADV_WILLNEED) to anonymous memory doesn't return -EBADF now, as
+> now we support swap prefetch. Thus the 5th testcase in madvise02 will
+> not pass. This patch fixes this by adding a tst_kvercmp() condition, and
+> will give a pass if kernel is >=3.9 (including the RCs).
+> 
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> ---
+>  testcases/kernel/syscalls/madvise/madvise02.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> 
+> 0003-syscalls-madvise02-fix-madvise-case-due-to-kernel-ch.patch
+> 
+> 
+> diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
+> index 87d26c3..f68fb0b 100644
+> --- a/testcases/kernel/syscalls/madvise/madvise02.c
+> +++ b/testcases/kernel/syscalls/madvise/madvise02.c
+> @@ -187,7 +187,15 @@ int main(int argc, char *argv[])
+>  
+>  		TEST(madvise
+>  		     (tmp_memory_allocated, 5 * pagesize, MADV_WILLNEED));
+> -		check_and_print(EBADF);
+> +		if (tst_kvercmp(3, 9, 0) < 0)
+> +			check_and_print(EBADF);
+> +		/* in kernel commit 1998cc0, madvise(MADV_WILLNEED) to anon
+> +		 * mem doesn't return -EBADF now, as now we suuport swap
 
-I've been trying to cross compile LTP on a 64-bit x86 machine to produce 
-tests for a 32-bit x86 machines. Unfortunately, so far I haven't found a 
-clean way of achieving this.
+Please s/suuport/support/ when you push this patch.
 
-I've tried configuring with "./configure --host=i386" but this still 
-produces x86-64 binaries.
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-I've also tried configuring with "CFLAGS=-m32 ./configure CFLAGS=-m32" 
-but it gives compilation errors on some tests (e.g. 
-testcases/kernel/syscalls/chown01_16). I can get past some of the errors 
-by disabling the "/../utils/compat_16.mk" lines in the individual test 
-Makefiles. But is there a better way to compile LTP for 32-bit on a 64-bit?
+> +		 * prefretch.
+> +		 */
+> +		else
+> +			tst_resm(TPASS, "madvise succeeded as expected, see "
+> +					"kernel commit 1998cc0 for details.");
+>  		free((void *)ptr_memory_allocated);
+>  
+>  		close(fd);
+> 
+> 
 
-Thanks,
-Pedro
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
