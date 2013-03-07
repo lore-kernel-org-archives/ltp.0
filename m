@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UHxz7-0005FU-0d
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 14:57:53 +0000
-Date: Tue, 19 Mar 2013 15:58:35 +0100
-From: chrubis@suse.cz
-Message-ID: <20130319145835.GA11291@rei>
-References: <df80cf17650d9280457b66e44fb09b55c1cdbce4.1363703473.git.jstancek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UDWEd-0000wP-7P
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:31:31 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UDWEb-0003p6-Bi
+	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:31:31 +0000
+Message-ID: <513850C8.9080905@cn.fujitsu.com>
+Date: Thu, 07 Mar 2013 16:33:12 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <df80cf17650d9280457b66e44fb09b55c1cdbce4.1363703473.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] inode02: fix "slash" array overrun
+References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+In-Reply-To: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/3] s/Tst_count/tst_count/ to avoid CamelCase
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,42 +28,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> testcases/kernel/fs/inode/inode02.c:254 is initializing it as:
->     slash[0] = '/';
->     slash[1] = '\0';
+On 03/07/2013 03:38 PM, Caspar Zhang wrote:
+> when using latest checkpatch.pl, CamelCase variables are not encouraged,
+> this patch does a batch update to replace all var `Tst_count` with
+> `tst_count`.
 > 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/fs/inode/inode02.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-> index 783edf8..f70c5d8 100644
-> --- a/testcases/kernel/fs/inode/inode02.c
-> +++ b/testcases/kernel/fs/inode/inode02.c
-> @@ -80,7 +80,7 @@ int nchild;
->  FILE *list_stream = NULL;
->  int list_id;
->  int file_id;
-> -char slash[1];
-> +char slash[2];
+> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
 
-Good catch, but could you go ahead and convert the strcats into one
-snprintf() so that the slash array wouldn't be needed at all?
+Hope this won't break anything.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
