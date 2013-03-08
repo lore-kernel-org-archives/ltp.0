@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1UFmG8-0004ip-RO
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 14:02:24 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UFmG5-000604-6K
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 14:02:24 +0000
-From: Markos Chandras <markos.chandras@gmail.com>
-Date: Wed, 13 Mar 2013 14:01:34 +0000
-Message-ID: <1363183294-21203-1-git-send-email-markos.chandras@gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shashi859@gmail.com>) id 1UE0cl-0004wg-0P
+	for ltp-list@lists.sourceforge.net; Fri, 08 Mar 2013 16:58:27 +0000
+Received: from mail-ve0-f178.google.com ([209.85.128.178])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UE0cj-0002Vo-1c
+	for ltp-list@lists.sourceforge.net; Fri, 08 Mar 2013 16:58:26 +0000
+Received: by mail-ve0-f178.google.com with SMTP id db10so1389252veb.23
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 08 Mar 2013 08:58:19 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] syscalls/getdents: Use getdents64 if SYS_getdents
-	is not defined
+In-Reply-To: <CA+icZUX7dHp0P7=Pr_4d9r7a=pBGnQnjUNh_sCSH0nm=9UQYVg@mail.gmail.com>
+References: <51237A44.6080508@mpi-sws.org>
+	<loom.20130307T053207-617@post.gmane.org>
+	<CA+icZUX7dHp0P7=Pr_4d9r7a=pBGnQnjUNh_sCSH0nm=9UQYVg@mail.gmail.com>
+Date: Fri, 8 Mar 2013 22:28:19 +0530
+Message-ID: <CAGKdmMKqAO30TKvyb8c36eVDa-tPsiWRNoKDRDkvn2jxtfL+0g@mail.gmail.com>
+From: shashi kiran <shashi859@gmail.com>
+Subject: Re: [LTP] Building LTP in a 64-bit machine for 32-bit target
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,68 +32,141 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: sedat.dilek@gmail.com
+Cc: ltp-list@lists.sourceforge.net, Pedro Fonseca <pfonseca@mpi-sws.org>
 
-From: Markos Chandras <markos.chandras@imgtec.com>
+On Thu, Mar 7, 2013 at 2:56 PM, Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Thu, Mar 7, 2013 at 9:51 AM, Shashi <shashi859@gmail.com> wrote:
+> > Pedro Fonseca <pfonseca@...> writes:
+> >
+> >>
+> >> Hi,
+> >>
+> >> I've been trying to cross compile LTP on a 64-bit x86 machine to produce
+> >> tests for a 32-bit x86 machines. Unfortunately, so far I haven't found a
+> >> clean way of achieving this.
+> >>
+> >> I've tried configuring with "./configure --host=i386" but this still
+> >> produces x86-64 binaries.
+> >>
+> >> I've also tried configuring with "CFLAGS=-m32 ./configure CFLAGS=-m32"
+> >> but it gives compilation errors on some tests (e.g.
+> >> testcases/kernel/syscalls/chown01_16). I can get past some of the errors
+> >> by disabling the "/../utils/compat_16.mk" lines in the individual test
+> >> Makefiles. But is there a better way to compile LTP for 32-bit on a 64-bit?
+> >>
+> >> Thanks,
+> >> Pedro
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Everyone hates slow websites. So do we.
+> >> Make your web apps faster with AppDynamics
+> >> Download AppDynamics Lite for free today:
+> >> http://p.sf.net/sfu/appdyn_d2d_feb
+> >>
+> >
+> > Hello Pedra Fonseca,
+> >
+> > ./configure --build=i686-pc-linux-gnu --target=i686-pc-linux-gnu "CFLAGS=-m32"
+> > "CPPFLAGS=-m32" "LDFLAGS=-m32"
+> >
+> > I use the above command to build ltp for 32-bit architecture on 64-bit machine.
+> > Once you do run this, you can check the CFLAGS, CPPFLAGS, LDFALGS being set in
+> > config.status file. --target flag is to set target environment if it is
+> > different from build environment.
+> > http://stackoverflow.com/questions/5139403/whats-the-difference-of-configure-option-build-host-and-target
+> >
+> > In fedora-64 bit, to build a 32-bit binary you need following packages
+> > sudo yum install glibc-devel.i686 libgcc.i686
+> >
+> > May be in Ubuntu, you may need these packages or similar kind. If not installed
+> > gcc will throw some error. Let me know if you still find problem.
+> >
+> > Regards,
+> > ShashiKiran
+> >
+>
+> [ CC Pedro ]
+>
+> AFAICS "-m32" is available on gcc, dunno if for example clang supports
+> that, too.
+>
+> Can't say if "-m32" as LDFLAGS makes any sense or to say IOW "-m32"
+> for CC is sufficient.
+> Maybe you can explain that, Shashi?
+>
+> To support "-m32" CFLAGS for gcc on Debian/Ubuntu you need to install
+> 'gcc-multilib' (gcc with biarch-support) package.
+> This installs 'libc6-i386' and 'libc6-i386-dev' packages automatically.
+>
+>      $ sudo apt-get update
+>      $ sudo apt-get install gcc-multilib
+>
+> Another way could be to install multiarch-support if not available
+> (binutils-mutiarch and multiarch-support packages).
+> But I should check Debian's/Ubuntu's wiki pages, again... how to build
+> on amd64 for i386...
+>
+> Hope this helps people reading this ML.
+>
+> Regards,
+> - Sedat -
+>
+> >
+> >
+> >
+> > ------------------------------------------------------------------------------
+> > Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester
+> > Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the
+> > endpoint security space. For insight on selecting the right partner to
+> > tackle endpoint security challenges, access the full report.
+> > http://p.sf.net/sfu/symantec-dev2dev
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-New Linux Kernel architectures do not define NR_getdents so we
-try to use the getdents64 syscall instead
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/kernel/syscalls/getdents/getdents.h |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+Hi ,
 
-diff --git a/testcases/kernel/syscalls/getdents/getdents.h b/testcases/kernel/syscalls/getdents/getdents.h
-index 1d5e584..12d2be4 100644
---- a/testcases/kernel/syscalls/getdents/getdents.h
-+++ b/testcases/kernel/syscalls/getdents/getdents.h
-@@ -38,12 +38,23 @@
-  * declare our own here.  Wheeeeee.
-  */
- 
-+#ifdef SYS_getdents
- struct linux_dirent {
- 	unsigned long   d_ino;
- 	unsigned long   d_off;
- 	unsigned short  d_reclen;
- 	char            d_name[];
- };
-+#else
-+/* Use the 64-bit definition */
-+struct linux_dirent {
-+	unsigned long long	d_ino;
-+	long long		d_off;
-+	unsigned short		d_reclen;
-+	unsigned char		d_type;
-+	char			d_name[0];
-+};
-+#endif
- 
- static inline int
- getdents(unsigned int fd, struct dirent *dirp, unsigned int count)
-@@ -57,7 +68,11 @@ getdents(unsigned int fd, struct dirent *dirp, unsigned int count)
- 	unsigned int i;
- 
- 	ptrs.buf = buf;
-+#ifdef SYS_getdents
- 	ret = syscall(SYS_getdents, fd, buf, count);
-+#else
-+	ret = syscall(SYS_getdents64, fd, buf, count);
-+#endif
- 	if (ret < 0)
- 		return ret;
- 
--- 
-1.7.1
+If "LDFLAGS=-m32" is not set, then following errors is observed while
+building ltp-pan,
 
+      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
+-I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include -c -o
+ltp-bump.o ltp-bump.c
+      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
+-I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include  -c
+-o zoolib.o zoolib.c
+      gcc -L../lib  ltp-bump.o zoolib.o   -lm  -o ltp-bump
 
+     /usr/bin/ld: i386 architecture of input file `ltp-bump.o' is
+incompatible with i386:x86-64 output
+     /usr/bin/ld: i386 architecture of input file `zoolib.o' is
+incompatible with i386:x86-64 output
+      collect2: ld returned 1 exit status
+      make: *** [ltp-bump] Error 1
+
+As per rules set by makefile, gcc trying to build 64bit binary using
+32bit objects. So When LDFLAGS is set to "-m32", gcc will create
+create 32bit binary by linking to 32bit object files.
+
+      gcc -m32  -L../lib  ltp-bump.o zoolib.o   -lm  -o ltp-bump
+      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
+-I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include -c -o
+ltp-pan.o ltp-pan.c
+      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
+-I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include -c -o
+splitstr.o splitstr.c
+      gcc -m32  -L../lib  ltp-pan.o zoolib.o splitstr.o   -lm  -o ltp-pan
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
