@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UHyRg-0005Cw-2S
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 15:27:24 +0000
-Date: Tue, 19 Mar 2013 16:28:05 +0100
-From: chrubis@suse.cz
-Message-ID: <20130319152805.GB11291@rei>
-References: <1437086244.21063924.1363705319128.JavaMail.root@redhat.com>
-	<623806259.21081036.1363706313082.JavaMail.root@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1UFmIy-000546-3v
+	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 14:05:20 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UFmIs-0001xh-Tu
+	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 14:05:20 +0000
+From: Markos Chandras <markos.chandras@gmail.com>
+Date: Wed, 13 Mar 2013 14:04:54 +0000
+Message-ID: <1363183494-20392-1-git-send-email-markos.chandras@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <623806259.21081036.1363706313082.JavaMail.root@redhat.com>
-Subject: Re: [LTP] Coverity report for ltp-20130109
+Subject: [LTP] [PATCH 2/2] ltp: Add support for Imagination Technologies Meta
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +25,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> What is Coverity?
-> Coverity Prevent is commercial enterprise level tool for static analysis
-> (analysis based only on compiling of sources, not based on running of binary)
-> of the C/C++ and Java code.
-> 
-> analyzer coverity
-> analyzer-args --wait-for-license -co BAD_FREE:allow_first_field:true --all
-> analyzer-version Coverity Static Analysis for C/C++ version 6.5.1 on Linux 2.6.32-279.el6.x86_64 x86_64
-> 
-> I ran it for current LTP stable (20130109) (on top of RHEL6.4)
-> and I'm sharing results here:
-> http://jan.stancek.eu/coverity/ltp-20130109-1.el6.err.xz
-> 
-> I looked at results only very briefly so far. The one that caught my
-> eye was actually my previous email: inode02: fix "slash" array overrun.
-> This run includes "--all" parameter, so it's likely there are some false
-> positives.
+From: Markos Chandras <markos.chandras@imgtec.com>
 
-Nice. I will have a look at the data too.
+This patch adds support for Imagination's Meta architecture.
+The Meta Linux kernel port will be included in the Linux Kernel
+v3.9. The Meta stack grows upwards so we need to add the appropriate
+__metag__ macro to the ltp_clone function.
 
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ lib/cloner.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/cloner.c b/lib/cloner.c
+index 3835184..fa18731 100644
+--- a/lib/cloner.c
++++ b/lib/cloner.c
+@@ -54,7 +54,7 @@ ltp_clone(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+ {
+ 	int ret;
+ 
+-#if defined(__hppa__)
++#if defined(__hppa__) || (__metag__)
+ 	ret = clone(fn, stack, clone_flags, arg);
+ #elif defined(__ia64__)
+ 	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
