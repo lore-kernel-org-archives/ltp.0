@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UGtIL-00055w-5L
-	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 15:45:17 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UGtIK-00024Z-B7
-	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 15:45:17 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 16 Mar 2013 11:48:24 -0400
-References: <1363355370-7738-1-git-send-email-markos.chandras@gmail.com>
-In-Reply-To: <1363355370-7738-1-git-send-email-markos.chandras@gmail.com>
-MIME-Version: 1.0
-Message-Id: <201303161148.25654.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] syscalls/getdents: Add parameter to test
-	getdents64 syscall
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UGAwK-0003sY-0Y
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:36 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UGAwI-0007Nr-5A
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:35 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2EGNSda018766
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Mar 2013 12:23:28 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 15 Mar 2013 00:21:34 +0800
+Message-Id: <cover.1363246555.git.zliu@redhat.com>
+Subject: [LTP] [PATCH 0/5] mm/oom: extend the coverage of OOM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,85 +26,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1835638200471784981=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============1835638200471784981==
-Content-Type: multipart/signed; boundary="nextPart2964153.RthFKkcXrN";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2964153.RthFKkcXrN
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Friday 15 March 2013 09:49:30 Markos Chandras wrote:
-> Add new "-l" parameter to test the getdents64 syscall along with
-> the getdents one. Use ltp_syscall() to call the system call to get
-> proper return values when an architecture does not support any of the
-> getdents{,64} syscalls. Modify runtest/syscalls to call getdentsXX tests
-> with and without the "-l" parameter
-
-your patch introduces a lot of warnings.  please verify it on a few arches=
-=20
-first (like x86_64).
-
-> --- a/testcases/kernel/syscalls/getdents/Makefile
-> +++ b/testcases/kernel/syscalls/getdents/Makefile
->=20
-> +CFLAGS +=3D -D_LARGEFILE64_SOURCE
-
-these are CPPFLAGS, not CFLAGS
-=2Dmike
-
---nextPart2964153.RthFKkcXrN
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRRJRJAAoJEEFjO5/oN/WBmnIQAMr2hd3iyiR8F6eFcK2dQD+J
-IEyvu9fF577u9I89TzhOyFCSFm0R0+YabW3RRvsE8eIxiGMXC0flMizJKYBGJySO
-jhUP0HIeeuDIP+tI6cBYus1lMq089wVws+FHjvndnD3l7r1l9MHKVG0+NR+av6pj
-uguS9OfNj3vHGLmq5vtqBiD/Qi6wLmioVg+uoVKhv5LmK/BO9iE74hz9cRjALykD
-eKfrkcHrVAvjjGE8zH48EiNW8ILOyN08gj8H4Xo9VeBhO1r7M/XXzTSWORwg2L1M
-OpLO55MjhoWKte+AmB2SDKLJrnreGcHu0i8OCB37SIlwfq4e7m0vS5ahOW8sObvJ
-pBefyerBtsGlmmsnnf10eqJEgUx5bVi95aTSUn20RF8WjdZVWx2WncnSGFoFp3l+
-3Bk+/lvX9kM1U2m+6MJE8GuAGD6WjmHmpa9roW2umaFazjwUq7XrWptwApRgl7A8
-jYxP3Azxp9rrvAidCBW9ZmSE+MXTMsdHDwX2VFD7JFmgLTfWBdbgtSAQQ6xy/znw
-K8z0FWdcv27TIVOwNnnplV6f4IBp19lYTkiRbhDdrQno14UwV3GYpQqvbsfGpcON
-puaXHisL9JWIQa8Wvd0VHue5gxZBZe00VbBKrfvqN8ZB6r9rtNFm51C+7rDMK7g1
-KrjMVbvh1U8Uzv+2jcjX
-=DmVR
------END PGP SIGNATURE-----
-
---nextPart2964153.RthFKkcXrN--
-
-
---===============1835638200471784981==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+
+The patch set updated all OOM testcases, and added a new testcase.
+
+Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
+system, and the combination of CPUSET, MEMCG & NUMA is complex,
+and not clear. Also CPUSET is only used in NUMA system.
+
+The patch set adjust them, now we can coverage the below tests:
+ 1) OOM under normal - oom01
+ 2) OOM under all mempolicy - oom02
+ 3) OOM under MEMCG - oom03
+ 4) OOM under CPUSET - oom04
+ 5) OOM under CPUSET & MEMCG - oom05
+
+I have tested the patch set, no any regressions found.
+
+Zhouping Liu (5):
+  lib/mem: modified _gather_cpus() as _gather_node_cpus()
+  mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
+  mm/oom0[3|4]: added 'OOM for CPUSET' and updated 'OOM with MEMCG &
+    numa'
+  lib/mem: updated testoom() and oom() funcs
+  mm/oom05: new testcase
+
+ runtest/mm                         |   1 +
+ testcases/kernel/mem/include/mem.h |   6 +-
+ testcases/kernel/mem/lib/mem.c     | 101 ++++++++++++++++++-------
+ testcases/kernel/mem/oom/oom01.c   |   6 +-
+ testcases/kernel/mem/oom/oom02.c   |  20 +++--
+ testcases/kernel/mem/oom/oom03.c   |  28 ++++++-
+ testcases/kernel/mem/oom/oom04.c   |  63 +++++++---------
+ testcases/kernel/mem/oom/oom05.c   | 151 +++++++++++++++++++++++++++++++++++++
+ 8 files changed, 296 insertions(+), 80 deletions(-)
+ create mode 100644 testcases/kernel/mem/oom/oom05.c
+
+-- 
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_d2d_mar
---===============1835638200471784981==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1835638200471784981==--
-
