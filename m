@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shashi859@gmail.com>) id 1UE0cl-0004wg-0P
-	for ltp-list@lists.sourceforge.net; Fri, 08 Mar 2013 16:58:27 +0000
-Received: from mail-ve0-f178.google.com ([209.85.128.178])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UE0cj-0002Vo-1c
-	for ltp-list@lists.sourceforge.net; Fri, 08 Mar 2013 16:58:26 +0000
-Received: by mail-ve0-f178.google.com with SMTP id db10so1389252veb.23
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 08 Mar 2013 08:58:19 -0800 (PST)
+	(envelope-from <metan@suse.de>) id 1UGCwW-00026Y-7U
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 18:31:56 +0000
+Date: Thu, 14 Mar 2013 19:32:33 +0100
+From: chrubis@suse.cz
+Message-ID: <20130314183233.GF8894@rei.suse.cz>
+References: <20130314165143.GD8894@rei.suse.cz>
+	<507561236.18941341.1363282016883.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+icZUX7dHp0P7=Pr_4d9r7a=pBGnQnjUNh_sCSH0nm=9UQYVg@mail.gmail.com>
-References: <51237A44.6080508@mpi-sws.org>
-	<loom.20130307T053207-617@post.gmane.org>
-	<CA+icZUX7dHp0P7=Pr_4d9r7a=pBGnQnjUNh_sCSH0nm=9UQYVg@mail.gmail.com>
-Date: Fri, 8 Mar 2013 22:28:19 +0530
-Message-ID: <CAGKdmMKqAO30TKvyb8c36eVDa-tPsiWRNoKDRDkvn2jxtfL+0g@mail.gmail.com>
-From: shashi kiran <shashi859@gmail.com>
-Subject: Re: [LTP] Building LTP in a 64-bit machine for 32-bit target
+Content-Disposition: inline
+In-Reply-To: <507561236.18941341.1363282016883.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and
+ updated 'OOM with MEMCG & numa'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,141 +26,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: sedat.dilek@gmail.com
-Cc: ltp-list@lists.sourceforge.net, Pedro Fonseca <pfonseca@mpi-sws.org>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Thu, Mar 7, 2013 at 2:56 PM, Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Thu, Mar 7, 2013 at 9:51 AM, Shashi <shashi859@gmail.com> wrote:
-> > Pedro Fonseca <pfonseca@...> writes:
-> >
-> >>
-> >> Hi,
-> >>
-> >> I've been trying to cross compile LTP on a 64-bit x86 machine to produce
-> >> tests for a 32-bit x86 machines. Unfortunately, so far I haven't found a
-> >> clean way of achieving this.
-> >>
-> >> I've tried configuring with "./configure --host=i386" but this still
-> >> produces x86-64 binaries.
-> >>
-> >> I've also tried configuring with "CFLAGS=-m32 ./configure CFLAGS=-m32"
-> >> but it gives compilation errors on some tests (e.g.
-> >> testcases/kernel/syscalls/chown01_16). I can get past some of the errors
-> >> by disabling the "/../utils/compat_16.mk" lines in the individual test
-> >> Makefiles. But is there a better way to compile LTP for 32-bit on a 64-bit?
-> >>
-> >> Thanks,
-> >> Pedro
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Everyone hates slow websites. So do we.
-> >> Make your web apps faster with AppDynamics
-> >> Download AppDynamics Lite for free today:
-> >> http://p.sf.net/sfu/appdyn_d2d_feb
-> >>
-> >
-> > Hello Pedra Fonseca,
-> >
-> > ./configure --build=i686-pc-linux-gnu --target=i686-pc-linux-gnu "CFLAGS=-m32"
-> > "CPPFLAGS=-m32" "LDFLAGS=-m32"
-> >
-> > I use the above command to build ltp for 32-bit architecture on 64-bit machine.
-> > Once you do run this, you can check the CFLAGS, CPPFLAGS, LDFALGS being set in
-> > config.status file. --target flag is to set target environment if it is
-> > different from build environment.
-> > http://stackoverflow.com/questions/5139403/whats-the-difference-of-configure-option-build-host-and-target
-> >
-> > In fedora-64 bit, to build a 32-bit binary you need following packages
-> > sudo yum install glibc-devel.i686 libgcc.i686
-> >
-> > May be in Ubuntu, you may need these packages or similar kind. If not installed
-> > gcc will throw some error. Let me know if you still find problem.
-> >
-> > Regards,
-> > ShashiKiran
-> >
->
-> [ CC Pedro ]
->
-> AFAICS "-m32" is available on gcc, dunno if for example clang supports
-> that, too.
->
-> Can't say if "-m32" as LDFLAGS makes any sense or to say IOW "-m32"
-> for CC is sufficient.
-> Maybe you can explain that, Shashi?
->
-> To support "-m32" CFLAGS for gcc on Debian/Ubuntu you need to install
-> 'gcc-multilib' (gcc with biarch-support) package.
-> This installs 'libc6-i386' and 'libc6-i386-dev' packages automatically.
->
->      $ sudo apt-get update
->      $ sudo apt-get install gcc-multilib
->
-> Another way could be to install multiarch-support if not available
-> (binutils-mutiarch and multiarch-support packages).
-> But I should check Debian's/Ubuntu's wiki pages, again... how to build
-> on amd64 for i386...
->
-> Hope this helps people reading this ML.
->
-> Regards,
-> - Sedat -
->
-> >
-> >
-> >
-> > ------------------------------------------------------------------------------
-> > Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester
-> > Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the
-> > endpoint security space. For insight on selecting the right partner to
-> > tackle endpoint security challenges, access the full report.
-> > http://p.sf.net/sfu/symantec-dev2dev
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+Hi!
+> We added numa_helper library to be able to get number of nodes, as well
+> as list of nodes (with memory, cpu or both). numa_max_node() > 0 doesn't
+> tell you how many nodes you have.
+> 
+> Here's sample use to get just node count:
+> ----------------------------------------------------------------
+> #include <stdio.h>
+> #include "numa_helper.h"
+> 
+> const char *TCID="test";
+> int main()
+> {
+>         int num_nodes;
+>         int ret = get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &num_nodes, NULL);
+>         printf("ret: %d, nodes:%d\n", ret, num_nodes);
+>         return 0;
+> }
+> ----------------------------------------------------------------
+> 
+> We could add a simple function to numa_helper, but I'm not sure what
+> it would return as default, some tests care about nodes with memory.
 
+Maybe we misunderstand about what I see as a problem here. This patch
+adds integer variable to the lib/mem.c library and that variable is then
+only used within the tests. That just looks like wrong desing to me.
 
-Hi ,
+The code snippet "numa_max_node() > 0" was take from one of the tests
+that initializes the variable in question (the pattern seems to repeat
+in them). So I wasn't proposing any functional changes in the code just
+requesting cleaner desing.
 
-If "LDFLAGS=-m32" is not set, then following errors is observed while
-building ltp-pan,
-
-      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
--I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include -c -o
-ltp-bump.o ltp-bump.c
-      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
--I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include  -c
--o zoolib.o zoolib.c
-      gcc -L../lib  ltp-bump.o zoolib.o   -lm  -o ltp-bump
-
-     /usr/bin/ld: i386 architecture of input file `ltp-bump.o' is
-incompatible with i386:x86-64 output
-     /usr/bin/ld: i386 architecture of input file `zoolib.o' is
-incompatible with i386:x86-64 output
-      collect2: ld returned 1 exit status
-      make: *** [ltp-bump] Error 1
-
-As per rules set by makefile, gcc trying to build 64bit binary using
-32bit objects. So When LDFLAGS is set to "-m32", gcc will create
-create 32bit binary by linking to 32bit object files.
-
-      gcc -m32  -L../lib  ltp-bump.o zoolib.o   -lm  -o ltp-bump
-      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
--I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include -c -o
-ltp-pan.o ltp-pan.c
-      gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -m32 -Wno-error
--I/home/user/ltp/ltp-full-20120903/pan -I../include -I../include -c -o
-splitstr.o splitstr.c
-      gcc -m32  -L../lib  ltp-pan.o zoolib.o splitstr.o   -lm  -o ltp-pan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
-Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
-endpoint security space. For insight on selecting the right partner to 
-tackle endpoint security challenges, access the full report. 
-http://p.sf.net/sfu/symantec-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
