@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UHnG7-0002PP-1A
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:30:43 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHnG4-0003nX-Rd
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:30:43 +0000
-Date: Mon, 18 Mar 2013 23:30:31 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1616407140.10102780.1363663831341.JavaMail.root@redhat.com>
-In-Reply-To: <5147D723.2060001@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <markos.chandras@gmail.com>) id 1UGBVB-0004vl-Kh
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:59:37 +0000
+Received: from mail-wi0-f182.google.com ([209.85.212.182])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UGBV8-0003mV-8i
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:59:37 +0000
+Received: by mail-wi0-f182.google.com with SMTP id hi18so2026667wib.3
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Mar 2013 09:59:28 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3 4/7] mm/oom0[3|4]: added 'OOM for CPUSET' and
- moved 'OOM with MEMCG & numa' to oom03
+In-Reply-To: <201303141252.53822.vapier@gentoo.org>
+References: <1363183494-20392-1-git-send-email-markos.chandras@gmail.com>
+	<201303131322.49014.vapier@gentoo.org>
+	<CAG2jQ8hr0paKFEs31uBrmdUNNCewhpZhk=+o6ocvy5X0eKFVbw@mail.gmail.com>
+	<201303141252.53822.vapier@gentoo.org>
+From: Markos Chandras <markos.chandras@gmail.com>
+Date: Thu, 14 Mar 2013 16:59:08 +0000
+Message-ID: <CAG2jQ8icKz_3LrKApzhE09vz1YeLZ-tCXu338DeDcaZeLbnTaQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 2/2] ltp: Add support for Imagination Technologies
+	Meta
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,125 +34,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
+On 14 March 2013 16:52, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Wednesday 13 March 2013 13:28:08 Markos Chandras wrote:
+>> On 13 March 2013 17:22, Mike Frysinger wrote:
+>> >> -#if defined(__hppa__)
+>> >> +#if defined(__hppa__) || (__metag__)
+>> >
+>> > you're missing "defined"
+>>
+>> Looking a couple of lines above this I see the following:
+>>
+>> #if defined (__s390__) || (__s390x__)
+>>
+>> so I assumed this is the desired style for multiple "#if defined"
+>> constructs.
+>
+> nope, that's a bug too
 
+Ok I will fix that too in v2
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Tuesday, March 19, 2013 11:10:27 AM
-> Subject: Re: [LTP] [PATCH v3 4/7] mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG & numa' to oom03
-> 
-> On 03/18/2013 12:14 PM, Zhouping Liu wrote:
-> > OOM with the combination of memcg & numa was moved to oom03,
-> > and oom04 is re-design to be used to test 'OOM with CPUSET'.
-> > 
-> > also used is_numa() instead of the old method.
-> > 
-> > Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> > ---
-> >  testcases/kernel/mem/oom/oom02.c |  6 ++--
-> >  testcases/kernel/mem/oom/oom03.c | 20 ++++++++++++++
-> >  testcases/kernel/mem/oom/oom04.c | 60
-> >  +++++++++++++++-------------------------
-> >  3 files changed, 46 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/mem/oom/oom02.c
-> > b/testcases/kernel/mem/oom/oom02.c
-> > index 31ec73f..3bc8567 100644
-> > --- a/testcases/kernel/mem/oom/oom02.c
-> > +++ b/testcases/kernel/mem/oom/oom02.c
-> > @@ -35,6 +35,7 @@
-> >  #include <errno.h>
-> >  #include <fcntl.h>
-> >  #include <stdio.h>
-> > +#include "numa_helper.h"
-> >  #include "test.h"
-> >  #include "usctest.h"
-> >  #include "mem.h"
-> > @@ -44,7 +45,6 @@ int TST_TOTAL = 1;
-> >  
-> >  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> >  	&& HAVE_MPOL_CONSTANTS
-> > -#include <numaif.h>
-> >  
-> >  int main(int argc, char *argv[])
-> >  {
-> > @@ -83,8 +83,8 @@ void setup(void)
-> >  	tst_sig(FORK, DEF_HANDLER, cleanup);
-> >  	TEST_PAUSE;
-> >  
-> > -	/* Judge a NUMA system through get_a_numa_node */
-> > -	get_a_numa_node(NULL);
-> > +	if (!is_numa(NULL))
-> > +		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
-> >  
-> >  	overcommit = get_sys_tune("overcommit_memory");
-> >  	set_sys_tune("overcommit_memory", 1, 1);
-> > diff --git a/testcases/kernel/mem/oom/oom03.c
-> > b/testcases/kernel/mem/oom/oom03.c
-> > index 95e34d5..c2171fd 100644
-> > --- a/testcases/kernel/mem/oom/oom03.c
-> > +++ b/testcases/kernel/mem/oom/oom03.c
-> > @@ -33,6 +33,7 @@
-> >  #include <errno.h>
-> >  #include <fcntl.h>
-> >  #include <stdio.h>
-> > +#include "numa_helper.h"
-> >  #include "test.h"
-> >  #include "usctest.h"
-> >  #include "mem.h"
-> > @@ -40,6 +41,9 @@
-> >  char *TCID = "oom03";
-> >  int TST_TOTAL = 1;
-> >  
-> > +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> > +	&& HAVE_MPOL_CONSTANTS
-> > +
-> >  int main(int argc, char *argv[])
-> >  {
-> >  	char *msg;
-> > @@ -76,6 +80,14 @@ int main(int argc, char *argv[])
-> >  			write_file(MEMCG_SW_LIMIT, mem);
-> >  			testoom(0, 1, 0);
-> >  		}
-> > +
-> > +		/* OOM for MEMCG with mempolicy */
-> > +		if (is_numa(cleanup)) {
-> > +			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
-> > +			testoom(MPOL_BIND, 0, 1);
-> > +			testoom(MPOL_INTERLEAVE, 0, 1);
-> > +			testoom(MPOL_PREFERRED, 0, 1);
-> > +		}
-> >  	}
-> >  	cleanup();
-> >  	tst_exit();
-> > @@ -99,3 +111,11 @@ void cleanup(void)
-> >  
-> >  	TEST_CLEANUP;
-> >  }
-> > +
-> > +#else
-> > +int main(void)
-> > +{
-> > +	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-> > +}
-> > +#endif
-> > +
-> 
-> Here added a new line at EOF, if you want to just modify the patch,
-> please remove this line, and change "@@ -99,3 +111,11" to "@@ -99,3
-> +111,10".
-> 
+>
+>> >>       ret = clone(fn, stack, clone_flags, arg);
+>> >>
+>> >>  #elif defined(__ia64__)
+>> >>
+>> >>       ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL,
+>> >>       NULL);
+>> >
+>> > i wonder if we could make this into a runtime test.  like declare a
+>> > buffer on the stack, then call alloca(), and compare the resulting
+>> > pointers.
+>>
+>> If you ask me, I prefer the way it is now.
+>
+> the advantage is that the next random person to grow their stock in the
+> opposite direction won't have to update this hard coded list.  and if it was
+> written this way earlier, you wouldn't be here right now either ;).
+>
+> not saying you must do this ... fix the defined checks and we can merge that
+> -mike
 
-Wanlong, thanks for your reviewing, I will prepare V4.
+Ok but we rarely need to touch this list (how often do you see
+explicit #if/defs for new arches in LTP, especially with the stack
+growing upwards?). But sure, making this check during runtime would
+also be nice.
+
+Patch v2 sent.
 
 -- 
-Thanks,
-Zhouping
+Regards,
+Markos Chandras
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
