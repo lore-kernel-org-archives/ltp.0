@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UFqK7-0008Jj-9L
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 18:22:47 +0000
-Date: Wed, 13 Mar 2013 19:23:23 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UGB0y-0003IJ-9H
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:28:24 +0000
+Date: Thu, 14 Mar 2013 17:29:02 +0100
 From: chrubis@suse.cz
-Message-ID: <20130313182323.GA4633@rei>
+Message-ID: <20130314162901.GA8894@rei.suse.cz>
 References: <1363183294-21203-1-git-send-email-markos.chandras@gmail.com>
 	<1482749503.18144192.1363197480299.JavaMail.root@redhat.com>
 	<CAG2jQ8h+u3Ade6ONcde=jBLSipJtF1vzP9q7zE-m3qX-LM1fKQ@mail.gmail.com>
+	<20130313182323.GA4633@rei>
+	<CAG2jQ8hbT_8h8KR0V2=7qzwdSy8cqzOWb_oHt4JJ5Y22yFEeDg@mail.gmail.com>
+	<CAG2jQ8j23+74_JZbrkM55aKg4YG+V-g4G1+NsS4fLGy=efRDjQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAG2jQ8h+u3Ade6ONcde=jBLSipJtF1vzP9q7zE-m3qX-LM1fKQ@mail.gmail.com>
+In-Reply-To: <CAG2jQ8j23+74_JZbrkM55aKg4YG+V-g4G1+NsS4fLGy=efRDjQ@mail.gmail.com>
 Subject: Re: [LTP] [PATCH 1/2] syscalls/getdents: Use getdents64 if
  SYS_getdents is not defined
 List-Id: Linux Test Project General Discussions
@@ -31,32 +34,15 @@ To: Markos Chandras <markos.chandras@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> The problem is that for arches that don't have SYS_getdents defined,
-> you will not be able to compile LTP on them so you really need to
-> hide this codepath from them.
 > 
-> A similar commit that changes the codepath based on whether a
-> particular __NR_XX is defined is this
-> https://github.com/linux-test-project/ltp/commit/75201f160b9aa49af70d8f46fb1f087e63d603dd
+> I wrote patch that does what we talked about.
 > 
-> I don't see an easy way to determine if __NR_XX is defined or not
-> during runtime.
+> https://github.com/hwoarang/ltp/commit/3e361757a9cfd6c6af50a395c2de68777356a4b6
+> 
+> If you are happy with the way it is implemented, I will post it to the
+> mailing list for further review.
 
-There is code that tries to address this issue in
-testcases/kernel/include/linux_syscall_numbers.h
-which defines macro ltp_syscall() that turns undefined
-syscall numbers into ENOSYS.
-
-The idea is to:
-
-1) include sys/syscall.h to get the definitions system definitons
-
-2) if your system headers are older (i.e. particular __NR_xxx is not defined)
-   definitions from arch.in files are used
-
-3) if __NR_xxx is not defined, there are stubs at the end of the header
-   that defines the __NR_xxx to 0 which is then used by the ltp_syscall()
-   macro to return -1 and set errno to ENOSYS
+The patch looks realtive good, please send it to he ML for review.
 
 -- 
 Cyril Hrubis
