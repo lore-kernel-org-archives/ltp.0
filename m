@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UIFmG-00020R-AO
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 09:57:48 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIFmE-0007gn-Qe
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 09:57:48 +0000
-Received: from zmail17.collab.prod.int.phx2.redhat.com
-	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id r2K9veew004313
-	for <ltp-list@lists.sourceforge.net>; Wed, 20 Mar 2013 05:57:40 -0400
-Date: Wed, 20 Mar 2013 05:57:40 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1973851267.21619084.1363773460784.JavaMail.root@redhat.com>
-In-Reply-To: <165189158.21613313.1363773111224.JavaMail.root@redhat.com>
-MIME-Version: 1.0
-Subject: [LTP] Coverity report for ltp-20130320
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UGAwL-0003sh-KY
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:37 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UGAwJ-0006Yz-OU
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:37 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2EGNT21005295
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Mar 2013 12:23:29 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 15 Mar 2013 00:21:35 +0800
+Message-Id: <054d2c7ca1e3c6e4794c0f42f927b555a4273da7.1363246555.git.zliu@redhat.com>
+In-Reply-To: <cover.1363246555.git.zliu@redhat.com>
+References: <cover.1363246555.git.zliu@redhat.com>
+In-Reply-To: <cover.1363246555.git.zliu@redhat.com>
+References: <cover.1363246555.git.zliu@redhat.com>
+Subject: [LTP] [PATCH 1/5] lib/mem: modified _gather_cpus() as
+	_gather_node_cpus()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,28 +31,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi,
+The previous _gather_cpus() tried to collect all the specified
+node's cpus, but it didn't pay attention to the offline cpus,
+if one cpu in the specified node were offline, it can't write
+the cpu number to cgroups/*.cpus, and return -EINVAL.
 
-What is Coverity?
-Coverity Prevent is commercial enterprise level tool for static analysis
-(analysis based only on compiling of sources, not based on running of binary)
-of the C/C++ and Java code.
+The patch fixed it, and modified the function name, as the new
+name make more sense.
 
-analyzer coverity
-analyzer-args --wait-for-license -co BAD_FREE:allow_first_field:true --all
-analyzer-version Coverity Static Analysis for C/C++ version 6.5.1 on Linux 2.6.32-279.el6.x86_64 x86_64
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-This run is with LTP git snapshot from 20130320 (on top of RHEL6.4),
-the results now include also Open Posix testcases:
-http://jan.stancek.eu/coverity/ltp-20130320-1.el6.err.xz
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index a827b25..29de64a 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -481,20 +481,42 @@ void ksm_usage(void)
+ 
+ /* cpuset/memcg */
+ 
+-static void _gather_cpus(char *cpus, long nd)
++static void _gather_node_cpus(char *cpus, long nd)
+ {
+ 	int ncpus = 0;
+-	int i;
++	int fd, i;
++	long online;
+ 	char buf[BUFSIZ];
++	char path[BUFSIZ], path1[BUFSIZ];
+ 
+ 	while (path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
+ 		ncpus++;
+ 
+-	for (i = 0; i < ncpus; i++)
+-		if (path_exist(PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i)) {
++	for (i = 0; i < ncpus; i++) {
++		snprintf(path, BUFSIZ,
++			 PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i);
++		if (path_exist(path, nd, i)) {
++			snprintf(path1, BUFSIZ, "%s/online", path);
++			/*
++			 * No cpu0/online knob, as it can't support to
++			 * on/offline cpu0, so if the 'nd' node contains
++			 * cpu0, it should skip to check cpu0/online's value.
++			 */
++			if (i == 0)
++				goto  next;
++			fd = open(path1, O_RDONLY);
++			if (fd == -1)
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "open %s", path1);
++			read_file(path1, buf);
++			online = SAFE_STRTOL(cleanup, buf, 0, 1);
++			if (online == 0)
++				continue;
++next:
+ 			sprintf(buf, "%d,", i);
+ 			strcat(cpus, buf);
+ 		}
++	}
+ 	/* Remove the trailing comma. */
+ 	cpus[strlen(cpus) - 1] = '\0';
+ }
+@@ -563,7 +585,7 @@ void write_cpusets(long nd)
+ 	snprintf(buf, BUFSIZ, "%ld", nd);
+ 	write_cpuset_files(CPATH_NEW, "mems", buf);
+ 
+-	_gather_cpus(cpus, nd);
++	_gather_node_cpus(cpus, nd);
+ 	write_cpuset_files(CPATH_NEW, "cpus", cpus);
+ 
+ 	snprintf(buf, BUFSIZ, "%d", getpid());
+-- 
+1.7.11.7
 
-Regards,
-Jan
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
