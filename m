@@ -1,19 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UGBHK-0004Xg-BM
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:45:18 +0000
-Date: Thu, 14 Mar 2013 17:45:58 +0100
-From: chrubis@suse.cz
-Message-ID: <20130314164557.GC8894@rei.suse.cz>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UGAwM-0005H3-FH
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:38 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UGAwL-0006Z4-4M
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:23:38 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2EGNVqO017658
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 14 Mar 2013 12:23:31 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 15 Mar 2013 00:21:36 +0800
+Message-Id: <1af53e534fc05433ed20488c27d35bbc519af730.1363246555.git.zliu@redhat.com>
+In-Reply-To: <054d2c7ca1e3c6e4794c0f42f927b555a4273da7.1363246555.git.zliu@redhat.com>
 References: <cover.1363246555.git.zliu@redhat.com>
 	<054d2c7ca1e3c6e4794c0f42f927b555a4273da7.1363246555.git.zliu@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <054d2c7ca1e3c6e4794c0f42f927b555a4273da7.1363246555.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH 1/5] lib/mem: modified _gather_cpus() as
- _gather_node_cpus()
+In-Reply-To: <cover.1363246555.git.zliu@redhat.com>
+References: <cover.1363246555.git.zliu@redhat.com>
+Subject: [LTP] [PATCH 2/5] mm/oom02: modified 'OOM for NUMA' as 'OOM for
+	mempolicy'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,80 +32,171 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> -static void _gather_cpus(char *cpus, long nd)
-> +static void _gather_node_cpus(char *cpus, long nd)
+NUMA mechanism can be interpreted as 'memory policy', there are
+several mempolicys, such as MPOL_BIND, MPOL_INTERLEAVE,
+MPOL_PREFERRED etc, not only MPOL_BIND, so the patch extended OOM
+on NUMA system, added MPOL_INTERLEAVE and MPOL_PREFERRED mempolicy.
 
-I know that the function name starting with underscore was there
-allready but can we please get rid of them (idealy in separate patch
-either before or after this patch).
+And the patch also moved 'set_mempolicy()' from child process, and
+made it executed inside testoom() func, which is easy to control.
 
->  {
->  	int ncpus = 0;
-> -	int i;
-> +	int fd, i;
-> +	long online;
->  	char buf[BUFSIZ];
-> +	char path[BUFSIZ], path1[BUFSIZ];
->  
->  	while (path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
->  		ncpus++;
->  
-> -	for (i = 0; i < ncpus; i++)
-> -		if (path_exist(PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i)) {
-> +	for (i = 0; i < ncpus; i++) {
-> +		snprintf(path, BUFSIZ,
-> +			 PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i);
-> +		if (path_exist(path, nd, i)) {
-> +			snprintf(path1, BUFSIZ, "%s/online", path);
-> +			/*
-> +			 * No cpu0/online knob, as it can't support to
-> +			 * on/offline cpu0, so if the 'nd' node contains
-> +			 * cpu0, it should skip to check cpu0/online's value.
-> +			 */
-> +			if (i == 0)
-> +				goto  next;
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c   | 56 ++++++++++++++++++++++++++++------------
+ testcases/kernel/mem/oom/oom02.c | 20 +++++++++-----
+ 2 files changed, 52 insertions(+), 24 deletions(-)
 
-There are two spaces before the next.
-
-> +			fd = open(path1, O_RDONLY);
-> +			if (fd == -1)
-> +				tst_brkm(TBROK|TERRNO, cleanup,
-> +					 "open %s", path1);
-> +			read_file(path1, buf);
-> +			online = SAFE_STRTOL(cleanup, buf, 0, 1);
-> +			if (online == 0)
-> +				continue;
-
-This part can be done with SAFE_FILE_SCANF() see include/safe_file_ops.h
-
-> +next:
->  			sprintf(buf, "%d,", i);
->  			strcat(cpus, buf);
->  		}
-> +	}
->  	/* Remove the trailing comma. */
->  	cpus[strlen(cpus) - 1] = '\0';
->  }
-> @@ -563,7 +585,7 @@ void write_cpusets(long nd)
->  	snprintf(buf, BUFSIZ, "%ld", nd);
->  	write_cpuset_files(CPATH_NEW, "mems", buf);
->  
-> -	_gather_cpus(cpus, nd);
-> +	_gather_node_cpus(cpus, nd);
->  	write_cpuset_files(CPATH_NEW, "cpus", cpus);
->  
->  	snprintf(buf, BUFSIZ, "%d", getpid());
-
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 29de64a..a71bc90 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -64,32 +64,17 @@ void oom(int testcase, int mempolicy, int lite)
+ {
+ 	pid_t pid;
+ 	int status;
+-#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+-	&& HAVE_MPOL_CONSTANTS
+-	unsigned long nmask = 0;
+-	unsigned int node;
+-
+-	if (mempolicy)
+-		node = get_a_numa_node(cleanup);
+-	nmask += 1 << node;
+-#endif
+ 
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+ 	case 0:
+-#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+-	&& HAVE_MPOL_CONSTANTS
+-		if (mempolicy)
+-			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "set_mempolicy");
+-#endif
+ 		_test_alloc(testcase, lite);
+ 		exit(0);
+ 	default:
+ 		break;
+ 	}
++
+ 	tst_resm(TINFO, "expected victim is %d.", pid);
+ 	if (waitpid(-1, &status, 0) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+@@ -107,7 +92,44 @@ void oom(int testcase, int mempolicy, int lite)
+ 
+ void testoom(int mempolicy, int lite, int numa)
+ {
+-	long nodes[MAXNODES];
++#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
++	&& HAVE_MPOL_CONSTANTS
++	unsigned long nmask = 0;
++	unsigned int num_nodes, nodes[MAXNODES];
++	int ret;
++
++	if (mempolicy) {
++		ret = get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
++		if (ret != 0)
++			tst_brkm(TBROK|TERRNO, cleanup,
++				 "get_allowed_nodes_arr");
++		if (num_nodes < 2) {
++			tst_resm(TINFO, "mempolicy need NUMA system support");
++			return;
++		}
++		switch(mempolicy) {
++		case MPOL_BIND:
++			/* bind the second node */
++			nmask = 1 << nodes[1];
++			break;
++		case MPOL_INTERLEAVE:
++		case MPOL_PREFERRED:
++			if (num_nodes == 2) {
++				tst_resm(TINFO, "The mempolicy need "
++					 "more than 2 numa nodes");
++				return;
++			} else {
++				/* Using the 2nd,3rd node */
++				nmask = (1 << nodes[1]) | (1 << nodes[2]);
++			}
++			break;
++		default:
++			tst_brkm(TBROK|TERRNO, cleanup, "Bad mempolicy mode");
++		}
++		if (set_mempolicy(mempolicy, &nmask, MAXNODES) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
++	}
++#endif
+ 
+ 	if (numa && !mempolicy)
+ 		write_cpusets(get_a_numa_node(cleanup));
+diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
+index abd8aa2..31ec73f 100644
+--- a/testcases/kernel/mem/oom/oom02.c
++++ b/testcases/kernel/mem/oom/oom02.c
+@@ -1,5 +1,5 @@
+ /*
+- * Out Of Memory (OOM) for NUMA
++ * Out Of Memory (OOM) for mempolicy - need NUMA system support
+  *
+  * The program is designed to cope with unpredictable like amount and
+  * system physical memory, swap size and other VMM technology like KSM,
+@@ -44,6 +44,8 @@ int TST_TOTAL = 1;
+ 
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
++#include <numaif.h>
++
+ int main(int argc, char *argv[])
+ {
+ 	char *msg;
+@@ -62,11 +64,14 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		tst_resm(TINFO, "process mempolicy.");
+-		testoom(1, 0, 1);
++		tst_resm(TINFO, "OOM on MPOL_BIND mempolicy...");
++		testoom(MPOL_BIND, 0, 1);
++
++		tst_resm(TINFO, "OOM on MPOL_INTERLEAVE mempolicy...");
++		testoom(MPOL_INTERLEAVE, 0, 1);
+ 
+-		tst_resm(TINFO, "process cpuset.");
+-		testoom(0, 0, 1);
++		tst_resm(TINFO, "OOM on MPOL_PREFERRED mempolicy...");
++		testoom(MPOL_PREFERRED, 0, 1);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+@@ -78,15 +83,16 @@ void setup(void)
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
++	/* Judge a NUMA system through get_a_numa_node */
++	get_a_numa_node(NULL);
++
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+-	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+ }
+ 
+ void cleanup(void)
+ {
+ 	set_sys_tune("overcommit_memory", overcommit, 0);
+-	umount_mem(CPATH, CPATH_NEW);
+ 
+ 	TEST_CLEANUP;
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
