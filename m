@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1UDW4K-0004FW-Fz
-	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:20:52 +0000
-Received: from mail-pa0-f46.google.com ([209.85.220.46])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UDW4J-0003zk-Ky
-	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:20:52 +0000
-Received: by mail-pa0-f46.google.com with SMTP id kp14so286357pab.5
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 07 Mar 2013 00:20:43 -0800 (PST)
-Message-ID: <51384DE7.8000400@casparzhang.com>
-Date: Thu, 07 Mar 2013 16:20:55 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1UGBTK-0007I0-0a
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:57:42 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UGBTI-0003dD-8T
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:57:41 +0000
+From: Markos Chandras <markos.chandras@gmail.com>
+Date: Thu, 14 Mar 2013 16:55:51 +0000
+Message-ID: <1363280151-10623-1-git-send-email-markos.chandras@gmail.com>
 MIME-Version: 1.0
-References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
-	<0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
-	<51384D30.1040003@cn.fujitsu.com>
-In-Reply-To: <51384D30.1040003@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 3/3] syscalls/madvise02: fix madvise case due to
- kernel change
+Subject: [LTP] [PATCH v2] ltp: Add support for Imagination Technologies Meta
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,26 +25,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 03/07/2013 04:17 PM, Wanlong Gao wrote:
-> Please s/suuport/support/ when you push this patch.
->
-> Reviewed-by: Wanlong Gao<gaowanlong@cn.fujitsu.com>
+From: Markos Chandras <markos.chandras@imgtec.com>
 
-Do-oh!
+This patch adds support for Imagination's Meta architecture.
+The Meta Linux kernel port will be included in the Linux Kernel
+v3.9. The Meta stack grows upwards so we need to add the appropriate
+__metag__ macro to the ltp_clone function. Also fix the #if/def
+macro for s390x.
 
-Thanks for reviewing, I'll fix it :-)
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ lib/cloner.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Caspar
+diff --git a/lib/cloner.c b/lib/cloner.c
+index 3835184..a68ff1e 100644
+--- a/lib/cloner.c
++++ b/lib/cloner.c
+@@ -31,7 +31,7 @@
+ 
+ #undef clone			/* we want to use clone() */
+ 
+-#if defined (__s390__) || (__s390x__)
++#if defined (__s390__) || defined(__s390x__)
+ #define clone __clone
+ extern int __clone(int (void *), void *, int, void *);
+ #elif defined(__ia64__)
+@@ -54,7 +54,7 @@ ltp_clone(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+ {
+ 	int ret;
+ 
+-#if defined(__hppa__)
++#if defined(__hppa__) || defined(__metag__)
+ 	ret = clone(fn, stack, clone_flags, arg);
+ #elif defined(__ia64__)
+ 	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
+-- 
+1.7.1
+
+
 
 ------------------------------------------------------------------------------
-Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
-Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
-endpoint security space. For insight on selecting the right partner to 
-tackle endpoint security challenges, access the full report. 
-http://p.sf.net/sfu/symantec-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
