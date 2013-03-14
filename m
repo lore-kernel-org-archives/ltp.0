@@ -1,40 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rameshyr@linux.vnet.ibm.com>) id 1UKYZf-0007ia-PI
-	for ltp-list@lists.sourceforge.net; Tue, 26 Mar 2013 18:26:19 +0000
-Received: from e23smtp02.au.ibm.com ([202.81.31.144])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UKYZd-0000nq-NG
-	for ltp-list@lists.sourceforge.net; Tue, 26 Mar 2013 18:26:19 +0000
-Received: from /spool/local
-	by e23smtp02.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <rameshyr@linux.vnet.ibm.com>;
-	Wed, 27 Mar 2013 03:48:49 +1000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [9.190.234.120])
-	by d23dlp02.au.ibm.com (Postfix) with ESMTP id E55362BB0023
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Mar 2013 04:55:49 +1100 (EST)
-Received: from d23av04.au.ibm.com (d23av04.au.ibm.com [9.190.235.139])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	r2QHgm3O15466552
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 Mar 2013 04:42:49 +1100
-Received: from d23av04.au.ibm.com (loopback [127.0.0.1])
-	by d23av04.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	r2QHtnNw022667
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 Mar 2013 04:55:49 +1100
-Received: from oc8714216728.ibm.com ([9.77.195.205])
-	by d23av04.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	r2QHtl7v022656
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 Mar 2013 04:55:48 +1100
-Message-ID: <5151E122.3090203@linux.vnet.ibm.com>
-Date: Tue, 26 Mar 2013 23:25:46 +0530
-From: Ramesh <rameshyr@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UGBMv-00050I-FO
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:51:05 +0000
+Date: Thu, 14 Mar 2013 17:51:43 +0100
+From: chrubis@suse.cz
+Message-ID: <20130314165143.GD8894@rei.suse.cz>
+References: <cover.1363246555.git.zliu@redhat.com>
+	<440365316588480d26f3c7c12fb4366e58d87848.1363246555.git.zliu@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] syscalls/mount0* and inotify03 tests are getting skipped from
-	runltp
+Content-Disposition: inline
+In-Reply-To: <440365316588480d26f3c7c12fb4366e58d87848.1363246555.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and
+ updated 'OOM with MEMCG & numa'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,54 +26,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-I tried to run syscalls test with ./runltp -f syscalls, it's found that 
-the below tests
-are getting skipped from the run,
------------
-inotify03 inotify03 -D DEVICE -T DEVICE_FS_TYPE
-mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
-mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
-mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
-mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
-umount01 umount01 -D DEVICE -T DEVICE_FS_TYPE
-umount02 umount02 -D DEVICE -T DEVICE_FS_TYPE
-umount03 umount03 -D DEVICE -T DEVICE_FS_TYPE
------------
+Hi!
+>  testcases/kernel/mem/include/mem.h |  2 ++
+>  testcases/kernel/mem/lib/mem.c     |  2 ++
+>  testcases/kernel/mem/oom/oom03.c   | 24 +++++++++++++++
+>  testcases/kernel/mem/oom/oom04.c   | 63 ++++++++++++++++----------------------
+>  4 files changed, 54 insertions(+), 37 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+> index 1233493..de51838 100644
+> --- a/testcases/kernel/mem/include/mem.h
+> +++ b/testcases/kernel/mem/include/mem.h
+> @@ -24,6 +24,8 @@
+>  #define MLOCK			3
+>  #define KSM			4
+>  
+> +extern int ISNUMA;
+> +
+>  long overcommit;
+>  void oom(int testcase, int mempolicy, int lite);
+>  void testoom(int mempolicy, int lite, int numa);
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index a71bc90..e99dae7 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -24,6 +24,8 @@
+>  #include "mem.h"
+>  #include "numa_helper.h"
+>  
+> +int ISNUMA = 0; /* mark a NUMA system */
 
-I didn't get the value of DEVICE & DEVICE_FS_TYPE in any of conf files 
-and also, as
-the tests expect a block device, I executed the tests by specifying a 
-block device
-(-D /dev/sda1 -T ext4), tests passed.
+So you have added variable to the library that is initialized in the
+test setup? That is just too messy :(.
 
-Also,as the DEVICE & DEVICE_FS_TYPE need to be explicitly specifed to 
-all the tests,
-these tests should be commented out in ltp/runtest/syscalls which is 
-used by runltp.
+> +	/* rough estimate a NUMA system through max_node */
+> +	if (numa_max_node() > 0) {
+> +		ISNUMA = 1;
+> +		/* For NUMA system, using the first node for cpuset.mems */
+> +		write_cpusets(get_a_numa_node(cleanup));
+> +	} else {
+> +		/* For nonNUMA system, using node0 for cpuset.mems */
+> +		write_cpusets(0);
+> +	}
 
-Any comments on this issue are appreciated.
+Why couldn't we have a function is_numa() in the library that would do
+something like this snippet of code, i.e. return numa_max_node() > 0
+(assuming that the code is needed in other test than this one.
 
-Also, let me know is there a way by which we can make these tests to run 
-from runltp
-in an automated environment.
-
-
-Regards,
-Ramesh YR
-
-
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Own the Future-Intel&reg; Level Up Game Demo Contest 2013
-Rise to greatness in Intel's independent game demo contest.
-Compete for recognition, cash, and the chance to get your game 
-on Steam. $5K grand prize plus 10 genre and skill prizes. 
-Submit your demo by 6/6/13. http://p.sf.net/sfu/intel_levelupd2d
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
