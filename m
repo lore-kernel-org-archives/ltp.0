@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UHmyT-0005Rn-S4
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:12:29 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHmyS-0006et-Le
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:12:29 +0000
-Message-ID: <5147D7E8.9090703@cn.fujitsu.com>
-Date: Tue, 19 Mar 2013 11:13:44 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UGB3F-0005nM-HA
+	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:30:45 +0000
+Date: Thu, 14 Mar 2013 17:31:24 +0100
+From: chrubis@suse.cz
+Message-ID: <20130314163124.GB8894@rei.suse.cz>
+References: <1363258426-8638-1-git-send-email-markos.chandras@gmail.com>
 MIME-Version: 1.0
-References: <cover.1363579539.git.zliu@redhat.com>
-In-Reply-To: <cover.1363579539.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v3 0/7] mm/oom: extend the coverage of OOM
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1363258426-8638-1-git-send-email-markos.chandras@gmail.com>
+Subject: Re: [LTP] [PATCH] testcases/include/linux_syscall_numbers.h:
+ Include missing "test.h"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,68 +25,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Markos Chandras <markos.chandras@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/18/2013 12:13 PM, Zhouping Liu wrote:
-> changed log from v1 to v2:
->  1. added a new is_numa() function instead of ISNUMA global variable;
->  2. added new patch to remove the prefix underscroe '_' of the
->     internal function name;
->  3. used SAFE_FILE_SCANF() instead of read_file().
->  4. some cleanup...
+Hi!
+> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+> ---
+>  testcases/kernel/include/linux_syscall_numbers.h |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
 > 
-> changed log from v2 to v3:
->  1. as Jan's suggestion, pass 'nodes=NULL' to get_allowed_nodes_arr()
->     in is_numa(), and free 'nodes' variable when it passed a non-NULL
->     value inside testoom().
-> 
-> The patch set updated all OOM testcases, and added a new testcase.
-> 
-> Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
-> system, and the combination of CPUSET, MEMCG & NUMA is complex,
-> and not clear. Also CPUSET is only used in NUMA system.
-> 
-> These patch set adjust them, now we can coverage the below tests:
->  1) OOM under normal - oom01
->  2) OOM under all mempolicy - oom02
->  3) OOM under MEMCG (+ mempolicy) - oom03
->  4) OOM under CPUSET (+ mempolicy)  - oom04
->  5) OOM under CPUSET & MEMCG - oom05
-> 
-> tested the V2 patch set, no regression found.
+> diff --git a/testcases/kernel/include/linux_syscall_numbers.h b/testcases/kernel/include/linux_syscall_numbers.h
+> index 545b420..e43258e 100644
+> --- a/testcases/kernel/include/linux_syscall_numbers.h
+> +++ b/testcases/kernel/include/linux_syscall_numbers.h
+> @@ -16,6 +16,7 @@
+>  #include <errno.h>
+>  #include <sys/syscall.h>
+>  #include "cleanup.c"
+> +#include "test.h"
+>  
+>  #define ltp_syscall(NR, ...) ({ \
+>  	int __ret; \
 
+Hmm, this header gets included after the test.h in the testcases so this
+shouldn't be needed but I don't have strong opinion whether it's better
+with or without it.
 
-For this series,
+Anybody has idea?
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-> 
-> Zhouping Liu (7):
->   lib/mem: modified _gather_cpus() as _gather_node_cpus()
->   mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
->   numa_helper: added a new function is_numa()
->   mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG &
->     numa' to oom03
->   lib/mem: updated testoom() and oom() funcs
->   mm/oom05: new testcase
->   lib/mem: removed the prefix underscore '_' of the internal function
->     name
-> 
->  runtest/mm                             |   1 +
->  testcases/kernel/include/numa_helper.h |   1 +
->  testcases/kernel/lib/numa_helper.c     |  24 ++++++
->  testcases/kernel/mem/include/mem.h     |   4 +-
->  testcases/kernel/mem/lib/mem.c         | 147 +++++++++++++++++++++------------
->  testcases/kernel/mem/oom/oom01.c       |   6 +-
->  testcases/kernel/mem/oom/oom02.c       |  20 +++--
->  testcases/kernel/mem/oom/oom03.c       |  24 +++++-
->  testcases/kernel/mem/oom/oom04.c       |  60 ++++++--------
->  testcases/kernel/mem/oom/oom05.c       | 147 +++++++++++++++++++++++++++++++++
->  10 files changed, 329 insertions(+), 105 deletions(-)
->  create mode 100644 testcases/kernel/mem/oom/oom05.c
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
