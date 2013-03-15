@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1U4veY-00010v-13
-	for ltp-list@lists.sourceforge.net; Mon, 11 Feb 2013 15:50:46 +0000
-Date: Mon, 11 Feb 2013 16:51:11 +0100
-From: chrubis@suse.cz
-Message-ID: <20130211155111.GA2753@rei>
-References: <20130211143838.GA2829@rei>
-	<652016734.705678.1360596388811.JavaMail.root@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1UGMKS-0001WP-KP
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 04:33:16 +0000
+Received: from mail-pb0-f41.google.com ([209.85.160.41])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UGMKN-0001wC-VN
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 04:33:16 +0000
+Received: by mail-pb0-f41.google.com with SMTP id um15so3278471pbc.14
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Mar 2013 21:33:05 -0700 (PDT)
+Message-ID: <5142A491.3020107@casparzhang.com>
+Date: Fri, 15 Mar 2013 12:33:21 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <652016734.705678.1360596388811.JavaMail.root@redhat.com>
-Subject: Re: [LTP] open posix testsuite and names of testcases
+References: <2046829337.8696311.1363319824336.JavaMail.root@redhat.com>
+In-Reply-To: <2046829337.8696311.1363319824336.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 2/5] mm/oom02: modified 'OOM for NUMA' as 'OOM for
+ mempolicy'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +31,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > Just recently I've found that one of the posix tests stays running
-> > after
-> > the testsuite has exited (is reparented to init and runs happily ever
-> > after). Which is another usecase for this rename.
-> > 
-> > But the original patch was rather hack (and it doesn't work for me
-> > anyway).
-> > 
-> > So what about renaming the sources itself? Do we agree on this?
-> 
-> I'm not against renaming sources, just thinking if there is less
-> intrusive way to achieve same result. I believe all Makefiles are generated,
-> so other option that comes to mind would be to modify scripts/generate-makefiles.sh.
-> Any thoughts about this approach?
+On 03/15/2013 11:57 AM, Zhouping Liu wrote:
+>> >you've moved all mempolicy check stuff to testoom(), so you can
+>> >completely remove this variable.
+> I'm not sure which variable you mean, pid and status variable? but they are needed.
+>
+never mind, I see the 4/5 patch that removed this variable :)
 
-We can hack the script to generate Makefiles that include the dir name
-into the binary name which would be less intrusive but on the other hand
-that would break the rule that foo.c generates foo.run_test...
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Caspar
 
 ------------------------------------------------------------------------------
-Free Next-Gen Firewall Hardware Offer
-Buy your Sophos next-gen firewall before the end March 2013 
-and get the hardware for free! Learn more.
-http://p.sf.net/sfu/sophos-d2d-feb
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
