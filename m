@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UHmxk-0007pV-5L
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:11:44 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UGX9X-00072M-6V
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 16:06:43 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHmxh-000132-Vn
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:11:44 +0000
-Message-ID: <5147D7BA.6030100@cn.fujitsu.com>
-Date: Tue, 19 Mar 2013 11:12:58 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	id 1UGX9W-0006PJ-1c
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 16:06:43 +0000
+Date: Fri, 15 Mar 2013 12:06:36 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1896214884.19403599.1363363596369.JavaMail.root@redhat.com>
+In-Reply-To: <302258505.8905505.1363362089669.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <cover.1363579539.git.zliu@redhat.com>
-	<58ec015e0776d3acf326aff30a1ea2cac88d3b08.1363579539.git.zliu@redhat.com>
-In-Reply-To: <58ec015e0776d3acf326aff30a1ea2cac88d3b08.1363579539.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v3 6/7] mm/oom05: new testcase
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and
+ updated 'OOM with MEMCG & numa'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,193 +30,77 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zhouping Liu <zliu@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 03/18/2013 12:14 PM, Zhouping Liu wrote:
-> added a new case to test OOM under the combination
-> of MEMCG and CPUSET.
+
+
+----- Original Message -----
+> From: "Zhouping Liu" <zliu@redhat.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Friday, 15 March, 2013 4:41:29 PM
+> Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and updated 'OOM with MEMCG & numa'
 > 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->  runtest/mm                       |   1 +
->  testcases/kernel/mem/oom/oom05.c | 147 +++++++++++++++++++++++++++++++++++++++
->  2 files changed, 148 insertions(+)
->  create mode 100644 testcases/kernel/mem/oom/oom05.c
 > 
-> diff --git a/runtest/mm b/runtest/mm
-> index a8bd605..56b83f8 100644
-> --- a/runtest/mm
-> +++ b/runtest/mm
-> @@ -77,6 +77,7 @@ oom01 oom01
->  oom02 oom02
->  oom03 oom03
->  oom04 oom04
-> +oom05 oom05
->  
->  swapping01 swapping01 -i 5
->  
-> diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-> new file mode 100644
-> index 0000000..0176d42
-> --- /dev/null
-> +++ b/testcases/kernel/mem/oom/oom05.c
-> @@ -0,0 +1,147 @@
-> +/*
-> + * Out Of Memory (OOM) for MEMCG and CPUSET
-> + *
-> + * The program is designed to cope with unpredictable like amount and
-> + * system physical memory, swap size and other VMM technology like KSM,
-> + * memcg, memory hotplug and so on which may affect the OOM
-> + * behaviours. It simply increase the memory consumption 3G each time
-> + * until all the available memory is consumed and OOM is triggered.
-> + *
-> + * Copyright (C) 2013  Red Hat, Inc.
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +#include "config.h"
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include "numa_helper.h"
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "mem.h"
-> +
-> +char *TCID = "oom05";
-> +int TST_TOTAL = 1;
-> +
-> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> +	&& HAVE_MPOL_CONSTANTS
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char *msg;
-> +	int lc;
-> +	int swap_acc_on = 1;
-> +	char mem[BUFSIZ];
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +#if __WORDSIZE == 32
-> +	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
-> +#endif
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		tst_resm(TINFO, "OOM on CPUSET & MEMCG...");
-> +		testoom(0, 0);
-> +
-> +		/*
-> +		 * Under NUMA system, the migration of cpuset's memory
-> + 		 * is in charge of cpuset.memory_migrate, we can write
-
-This line has a space before tab warning.
-If you should respin the patchset, please fix it, otherwise I can
-fix it by hand when applying the patch.
-
-
-Thanks,
-Wanlong Gao
-
-> +		 * 1 to cpuset.memory_migrate to enable the migration.
-> +		 */
-> +		if (is_numa(cleanup)) {
-> +			write_cpuset_files(CPATH_NEW, "memory_migrate", "1");
-> +			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
-> +					"cpuset.memory_migrate=1");
-> +			testoom(0, 0);
-> +		}
-> +
-> +		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-> +			if (errno == ENOENT) {
-> +				tst_resm(TCONF,
-> +					 "memcg swap accounting is disabled");
-> +				swap_acc_on = 0;
-> +			} else
-> +				tst_brkm(TBROK|TERRNO, cleanup, "access");
-> +		}
-> +
-> +		if (swap_acc_on) {
-> +			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
-> +					"special memswap limitation:");
-> +			snprintf(mem, BUFSIZ, "%ld", TESTMEM);
-> +			write_file(MEMCG_SW_LIMIT, mem);
-> +			testoom(0, 0);
-> +
-> +			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
-> +					"disabled memswap limitation:");
-> +			write_file(MEMCG_SW_LIMIT, "-1");
-> +			testoom(0, 0);
-> +		}
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +void setup(void)
-> +{
-> +	tst_require_root(NULL);
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +
-> +	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-> +	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-> +	write_memcg();
-> +
-> +	set_sys_tune("overcommit_memory", 1, 1);
-> +
-> +	if (is_numa(cleanup))
-> +		/* For NUMA system, using the first node for cpuset.mems */
-> +		write_cpusets(get_a_numa_node(cleanup));
-> +	else
-> +		/* For nonNUMA system, using node0 for cpuset.mems */
-> +		write_cpusets(0);
-> +
-> +	overcommit = get_sys_tune("overcommit_memory");
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	set_sys_tune("overcommit_memory", overcommit, 0);
-> +	umount_mem(CPATH, CPATH_NEW);
-> +	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
-> +
-> +	TEST_CLEANUP;
-> +}
-> +
-> +#else /* no NUMA */
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-> +}
-> +#endif
 > 
+> ----- Original Message -----
+> > From: "Jan Stancek" <jstancek@redhat.com>
+> > To: "Zhouping Liu" <zliu@redhat.com>
+> > Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+> > Sent: Friday, March 15, 2013 5:11:57 PM
+> > Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET'
+> > and updated 'OOM with MEMCG & numa'
+> > 
+> > 
+> > 
+> > ----- Original Message -----
+> > > From: "Zhouping Liu" <zliu@redhat.com>
+> > > To: "Jan Stancek" <jstancek@redhat.com>
+> > > Cc: chrubis@suse.cz, "LTP List" <ltp-list@lists.sourceforge.net>
+> > > Sent: Friday, 15 March, 2013 3:52:26 AM
+> > > Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for
+> > > CPUSET'
+> > > and updated 'OOM with MEMCG & numa'
+> > 
+> > > > We could add a simple function to numa_helper, but I'm not sure
+> > > > what
+> > > > it would return as default, some tests care about nodes with
+> > > > memory.
+> > > 
+> > > yes, what you care about is right, but now we only need a
+> > > function,
+> > > which
+> > > can tell us the system have more than one node, we don't care
+> > > about
+> > > the
+> > > nodes have
+> > > CPUs or memory.
+> > 
+> > What I was wondering is why that comment said "rough estimate",
+> 
+> because in the old version, I just used the max node id to judge a
+> NUMA system,
+> which maybe is not strict.
+> 
+> > it looks quite accurate. Anyway, thanks for clarifying.
+> 
+> in the V2 version, I removed the ISNUMA variable, and added a new
+> function is_numa(),
+> inside the function, the system, which has 1 more than numa node, and
+> each node at
+> least contains memory, is regarded as a numa system. I think it's
+> more reasoned,
+> because NUMA is mainly about memory, more case will fail if the node
+> has no memory.
+> do you agree?
 
+I agree. Some failures on unbalanced NUMA systems led to introducing that check.
+I was looking at our system pool and number of such systems is very low,
+so I don't think we are loosing very much by requiring 2+ nodes with memory.
+
+> 
+> --
+> Thanks,
+> Zhouping
+> 
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
