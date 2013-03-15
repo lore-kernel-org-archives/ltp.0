@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UIFm6-0002Xp-RD
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 09:57:38 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIFm5-0005Wt-Tc
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 09:57:38 +0000
-Message-ID: <5149883A.1060806@cn.fujitsu.com>
-Date: Wed, 20 Mar 2013 17:58:18 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <cover.1363664213.git.zliu@redhat.com>
-In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v4 0/7] mm/oom: extend the coverage of OOM
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UGWBy-0002M1-Lk
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:10 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UGWBw-0007r2-GQ
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:10 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2FF52o0009020
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Mar 2013 11:05:02 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 15 Mar 2013 23:03:05 +0800
+Message-Id: <cover.1363358877.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2 0/7] mm/oom: extend the coverage of OOM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,70 +26,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 03/19/2013 11:40 AM, Zhouping Liu wrote:
-> changed log from v1 to v2:
->  1. added a new is_numa() function instead of ISNUMA global variable;
->  2. added new patch to remove the prefix underscroe '_' of the
->     internal function name;
->  3. used SAFE_FILE_SCANF() instead of read_file().
->  4. some cleanup...
-> 
-> changed log from v2 to v3:
->  1. as Jan's suggestion, pass 'nodes=NULL' to get_allowed_nodes_arr()
->     in is_numa(), and free 'nodes' variable when it passed a non-NULL
->     value inside testoom().
-> 
-> changed log from v3 to v4:
->  1. fixed some patch style error
+changed log from v1 to v2:
+ 1. added a new is_numa() function instead of ISNUMA global variable;
+ 2. added new patch to remove the prefix underscroe '_' of the
+    internal function name;
+ 3. used SAFE_FILE_SCANF() instead of read_file().
+ 4. some cleanup...
 
-Sorry, I mean ACK V4.
+The patch set updated all OOM testcases, and added a new testcase.
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
+system, and the combination of CPUSET, MEMCG & NUMA is complex,
+and not clear. Also CPUSET is only used in NUMA system.
 
-> 
-> The patch set updated all OOM testcases, and added a new testcase.
-> 
-> Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
-> system, and the combination of CPUSET, MEMCG & NUMA is complex,
-> and not clear. Also CPUSET is only used in NUMA system.
-> 
-> These patch set adjust them, now we can coverage the below tests:
->  1) OOM under normal - oom01
->  2) OOM under all mempolicy - oom02
->  3) OOM under MEMCG (+ mempolicy) - oom03
->  4) OOM under CPUSET (+ mempolicy)  - oom04
->  5) OOM under CPUSET & MEMCG - oom05
-> 
-> Zhouping Liu (7):
->   lib/mem: modified _gather_cpus() as _gather_node_cpus()
->   mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
->   numa_helper: added a new function is_numa()
->   mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG &
->     numa' to oom03
->   lib/mem: updated testoom() and oom() funcs
->   mm/oom05: new testcase
->   lib/mem: removed the prefix underscore '_' of the internal function
->     name
-> 
->  runtest/mm                             |   1 +
->  testcases/kernel/include/numa_helper.h |   1 +
->  testcases/kernel/lib/numa_helper.c     |  24 ++++++
->  testcases/kernel/mem/include/mem.h     |   4 +-
->  testcases/kernel/mem/lib/mem.c         | 147 +++++++++++++++++++++------------
->  testcases/kernel/mem/oom/oom01.c       |   6 +-
->  testcases/kernel/mem/oom/oom02.c       |  20 +++--
->  testcases/kernel/mem/oom/oom03.c       |  23 +++++-
->  testcases/kernel/mem/oom/oom04.c       |  60 ++++++--------
->  testcases/kernel/mem/oom/oom05.c       | 147 +++++++++++++++++++++++++++++++++
->  10 files changed, 328 insertions(+), 105 deletions(-)
->  create mode 100644 testcases/kernel/mem/oom/oom05.c
-> 
+These patch set adjust them, now we can coverage the below tests:
+ 1) OOM under normal - oom01
+ 2) OOM under all mempolicy - oom02
+ 3) OOM under MEMCG (+ mempolicy) - oom03
+ 4) OOM under CPUSET (+ mempolicy)  - oom04
+ 5) OOM under CPUSET & MEMCG - oom05
+
+tested the V2 patch set, no regression found.
+
+Zhouping Liu (7):
+  lib/mem: modified _gather_cpus() as _gather_node_cpus()
+  mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
+  numa_helper: added a new function is_numa()
+  mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG &
+    numa' to oom03
+  lib/mem: updated testoom() and oom() funcs
+  mm/oom05: new testcase
+  lib/mem: removed the prefix underscore '_' of the internal function
+    name
+
+ runtest/mm                             |   1 +
+ testcases/kernel/include/numa_helper.h |   1 +
+ testcases/kernel/lib/numa_helper.c     |  25 ++++++
+ testcases/kernel/mem/include/mem.h     |   4 +-
+ testcases/kernel/mem/lib/mem.c         | 145 ++++++++++++++++++++------------
+ testcases/kernel/mem/oom/oom01.c       |   6 +-
+ testcases/kernel/mem/oom/oom02.c       |  20 +++--
+ testcases/kernel/mem/oom/oom03.c       |  24 +++++-
+ testcases/kernel/mem/oom/oom04.c       |  60 ++++++--------
+ testcases/kernel/mem/oom/oom05.c       | 147 +++++++++++++++++++++++++++++++++
+ 10 files changed, 328 insertions(+), 105 deletions(-)
+ create mode 100644 testcases/kernel/mem/oom/oom05.c
+
+-- 
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
