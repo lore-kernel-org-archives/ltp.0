@@ -1,19 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1UHXiv-0000aC-2d
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 10:55:25 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UHXir-00061j-1q
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 10:55:25 +0000
-From: Markos Chandras <markos.chandras@gmail.com>
-Date: Mon, 18 Mar 2013 10:54:53 +0000
-Message-ID: <1363604093-6960-1-git-send-email-markos.chandras@gmail.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v4] syscalls/getdents: Add parameter to test
-	getdents64 syscall
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UGWC8-0004V1-Lf
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:20 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UGWC3-0004Wf-Lv
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:20 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2FF5AJH028166
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Mar 2013 11:05:10 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 15 Mar 2013 23:03:08 +0800
+Message-Id: <5de33faa5b15f22e96d68d1b543eb4bcfc64cfb7.1363358877.git.zliu@redhat.com>
+In-Reply-To: <fd2789e70f79cb525ca7317061adab90f6387530.1363358877.git.zliu@redhat.com>
+References: <cover.1363358877.git.zliu@redhat.com>
+	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363358877.git.zliu@redhat.com>
+	<fd2789e70f79cb525ca7317061adab90f6387530.1363358877.git.zliu@redhat.com>
+In-Reply-To: <cover.1363358877.git.zliu@redhat.com>
+References: <cover.1363358877.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2 3/7] numa_helper: added a new function is_numa()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,563 +32,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-From: Markos Chandras <markos.chandras@imgtec.com>
+Added a new function is_numa(), which is desinged to judge
+whether a system contains more than 1 available numa nodes
+or not, and lots of cases need it.
 
-Add new "-l" parameter to test the getdents64 syscall along with
-the getdents one. Use ltp_syscall() to call the system call to get
-proper return values when an architecture does not support any of the
-getdents{,64} syscalls. Modify runtest/syscalls to call getdentsXX tests
-with and without the "-l" parameter
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- runtest/syscalls                                |    9 ++++
- testcases/kernel/syscalls/getdents/Makefile     |    2 +
- testcases/kernel/syscalls/getdents/getdents.h   |   48 +++++++++++++++++++-
- testcases/kernel/syscalls/getdents/getdents01.c |   56 +++++++++++++++++------
- testcases/kernel/syscalls/getdents/getdents02.c |   45 +++++++++++++++----
- testcases/kernel/syscalls/getdents/getdents03.c |   42 ++++++++++++++---
- testcases/kernel/syscalls/getdents/getdents04.c |   46 +++++++++++++++----
- 7 files changed, 205 insertions(+), 43 deletions(-)
+ testcases/kernel/include/numa_helper.h |  1 +
+ testcases/kernel/lib/numa_helper.c     | 25 +++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index c70bcbd..191ad10 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -331,6 +331,15 @@ getdents03_64 getdents03_64
- getdents04 getdents04
- getdents04_64 getdents04_64
+diff --git a/testcases/kernel/include/numa_helper.h b/testcases/kernel/include/numa_helper.h
+index 8e82d7b..251fd54 100644
+--- a/testcases/kernel/include/numa_helper.h
++++ b/testcases/kernel/include/numa_helper.h
+@@ -34,5 +34,6 @@ unsigned long get_max_node(void);
+ int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
+ int get_allowed_nodes(int flag, int count, ...);
+ void nh_dump_nodes();
++int is_numa(void (*cleanup_fn)(void));
  
-+getdents01_long getdents01 -l
-+getdents01_64_long getdents01_64 -l
-+getdents02_long getdents02 -l
-+getdents02_64_long getdents02_64 -l
-+getdents03_long getdents03 -l
-+getdents03_64_long getdents03_64 -l
-+getdents04_long getdents04 -l
-+getdents04_64_long getdents04_64 -l
+ #endif
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index 4ab8e3c..f9a4c3a 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -265,3 +265,28 @@ void nh_dump_nodes()
+ 	print_node_info(NH_CPUS);
+ 	print_node_info(NH_MEMS | NH_CPUS);
+ }
 +
- getdomainname01 getdomainname01
- 
- getdtablesize01 getdtablesize01
-diff --git a/testcases/kernel/syscalls/getdents/Makefile b/testcases/kernel/syscalls/getdents/Makefile
-index df7b63f..ebcbc4f 100644
---- a/testcases/kernel/syscalls/getdents/Makefile
-+++ b/testcases/kernel/syscalls/getdents/Makefile
-@@ -21,6 +21,8 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../utils/newer_64.mk
- 
-+CPPFLAGS += -D_LARGEFILE64_SOURCE
++/*
++ * is_numa - judge a system is NUMA system or not
++ * NOTE: the function is designed to try to find more than
++ *       1 available node, at least each node contains memory.
++ * WARN: Don't use this func in child, as it calls tst_brkm()
++ * RETURNS:
++ *     0 - it's not a NUMA system
++ *     1 - it's a NUMA system
++ */
++int is_numa(void (*cleanup_fn)(void))
++{
++	int ret;
++	int numa_nodes = 0;
++	int *nodes = NULL;
 +
- %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -DOFF_T=__off64_t
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/getdents/getdents.h b/testcases/kernel/syscalls/getdents/getdents.h
-index 1d5e584..ee19ad0 100644
---- a/testcases/kernel/syscalls/getdents/getdents.h
-+++ b/testcases/kernel/syscalls/getdents/getdents.h
-@@ -25,10 +25,13 @@
- #define __GETDENTS_H	1
- 
- #include <dirent.h>
-+#include <features.h>
- #include <stdio.h>
- #include <string.h>
- #include <unistd.h>
- #include <sys/syscall.h>
-+#include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- /*
-  * The dirent struct that the C library exports is not the same
-@@ -45,6 +48,13 @@ struct linux_dirent {
- 	char            d_name[];
- };
- 
-+struct linux_dirent64 {
-+	unsigned long long	d_ino;
-+	long long		d_off;
-+	unsigned short		d_reclen;
-+	char			d_name[];
-+};
-+
- static inline int
- getdents(unsigned int fd, struct dirent *dirp, unsigned int count)
- {
-@@ -57,7 +67,43 @@ getdents(unsigned int fd, struct dirent *dirp, unsigned int count)
- 	unsigned int i;
- 
- 	ptrs.buf = buf;
--	ret = syscall(SYS_getdents, fd, buf, count);
-+	ret = ltp_syscall(__NR_getdents, fd, buf, count);
++	ret = get_allowed_nodes_arr(NH_MEMS, &numa_nodes, &nodes);
 +	if (ret < 0)
-+		return ret;
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "get_allowed_nodes_arr");
 +
-+#define kdircpy(field) memcpy(&dirp[i].field, &ptrs.dirp->field, sizeof(dirp[i].field))
-+
-+	i = 0;
-+	while (i < count && i < ret) {
-+		unsigned long reclen;
-+
-+		kdircpy(d_ino);
-+		kdircpy(d_reclen);
-+		reclen = dirp[i].d_reclen;
-+		kdircpy(d_off);
-+		strcpy(dirp[i].d_name, ptrs.dirp->d_name);
-+
-+		ptrs.buf += reclen;
-+
-+		i += reclen;
-+	}
-+
-+	return ret;
-+}
-+
-+static inline int
-+getdents64(unsigned int fd, struct dirent64 *dirp, unsigned int count)
-+{
-+	union {
-+		struct linux_dirent64 *dirp;
-+		char *buf;
-+	} ptrs;
-+	char buf[count];
-+	long ret;
-+	unsigned int i;
-+
-+	ptrs.buf = buf;
-+	ret = ltp_syscall(__NR_getdents64, fd, buf, count);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/testcases/kernel/syscalls/getdents/getdents01.c b/testcases/kernel/syscalls/getdents/getdents01.c
-index af0ac1a..b9cd28c 100644
---- a/testcases/kernel/syscalls/getdents/getdents01.c
-+++ b/testcases/kernel/syscalls/getdents/getdents01.c
-@@ -44,10 +44,12 @@
-  *             -f   : Turn off functionality Testing.
-  *	       -i n : Execute test n times.
-  *	       -I x : Execute test for x seconds.
-+ *	       -l   : Test the getdents64 system call.
-  *	       -P x : Pause for x seconds between iterations.
-  *	       -t   : Turn on syscall timing.
-  *
-  * HISTORY
-+ *	03/2013 - Added -l option by Markos Chandras
-  *	03/2001 - Written by Wayne Boyer
-  *
-  * RESTRICTIONS
-@@ -71,6 +73,18 @@ void setup(void);
- char *TCID = "getdents01";
- int TST_TOTAL = 1;
- 
-+static int longsyscall;
-+
-+option_t Options[] = {
-+		{"l", &longsyscall, NULL}, /* -l long option. Tests getdents64 */
-+		{NULL, NULL, NULL}
-+};
-+
-+void help(void)
-+{
-+	printf("  -l      Test the getdents64 system call\n");
-+}
-+
- int main(int ac, char **av)
- {
- 	int lc;
-@@ -79,13 +93,28 @@ int main(int ac, char **av)
- 	int count;
- 	size_t size = 0;
- 	char *dir_name = NULL;
--	struct dirent *dirp;
-+	struct dirent64 *dirp64 = NULL;
-+	struct dirent *dirp = NULL;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	if ((msg = parse_opts(ac, av, Options, &help)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	setup();
- 
-+	/*
-+	 * Set up count to be equal to the sizeof struct dirent,
-+	 * just to pick a decent size.
-+	 */
-+	if (longsyscall) {
-+		if ((dirp64 = malloc(sizeof(struct dirent64))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+		count = (int)sizeof(struct dirent64);
-+	} else {
-+		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+		count = (int)sizeof(struct dirent);
-+	}
-+
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
-@@ -93,20 +122,14 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK, cleanup, "Can not get current "
- 				 "directory name");
- 
--		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
--			tst_brkm(TBROK, cleanup, "malloc failed");
--
--		/*
--		 * Set up count to be equal to the sizeof struct dirent,
--		 * just to pick a decent size.
--		 */
--
--		count = (int)sizeof(struct dirent);
--
- 		if ((fd = open(dir_name, O_RDONLY)) == -1)
- 			tst_brkm(TBROK, cleanup, "open of directory failed");
- 
--		rval = getdents(fd, dirp, count);
-+		if (longsyscall)
-+			rval = getdents64(fd, dirp64, count);
-+		else
-+			rval = getdents(fd, dirp, count);
-+
- 		if (rval < 0) {
- 
- 			TEST_ERROR_LOG(errno);
-@@ -127,12 +150,15 @@ int main(int ac, char **av)
- 		free(dir_name);
- 		dir_name = NULL;
- 
--		free(dirp);
--
- 		if ((rval = close(fd)) == -1)
- 			tst_brkm(TBROK, cleanup, "file close failed");
- 	}
- 
-+	if (longsyscall)
-+		free(dirp64);
++	if (numa_nodes > 1)
++		return 1;
 +	else
-+		free(dirp);
-+
- 	cleanup();
- 
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/getdents/getdents02.c b/testcases/kernel/syscalls/getdents/getdents02.c
-index ee34de2..971b755 100644
---- a/testcases/kernel/syscalls/getdents/getdents02.c
-+++ b/testcases/kernel/syscalls/getdents/getdents02.c
-@@ -40,10 +40,12 @@
-  *             -e   : Turn on errno logging.
-  *	       -i n : Execute test n times.
-  *	       -I x : Execute test for x seconds.
-+ *	       -l   : Test the getdents64 system call.
-  *	       -P x : Pause for x seconds between iterations.
-  *	       -t   : Turn on syscall timing.
-  *
-  * HISTORY
-+ *	03/2013 - Added -l option by Markos Chandras
-  *	03/2001 - Written by Wayne Boyer
-  *
-  * RESTRICTIONS
-@@ -69,6 +71,18 @@ int TST_TOTAL = 1;
- 
- int exp_enos[] = { EBADF, 0 };	/* 0 terminated list of expected errnos */
- 
-+static int longsyscall;
-+
-+option_t Options[] = {
-+		{"l", &longsyscall, NULL}, /* -l long option. Tests getdents64 */
-+		{NULL, NULL, NULL}
-+};
-+
-+void help(void)
-+{
-+	printf("  -l      Test the getdents64 system call\n");
++		return 0;
 +}
-+
- int main(int ac, char **av)
- {
- 	int lc;
-@@ -77,13 +91,24 @@ int main(int ac, char **av)
- 	int count;
- 	size_t size = 0;
- 	char *dir_name = NULL;
--	struct dirent *dirp;
-+	struct dirent64 *dirp64 = NULL;
-+	struct dirent *dirp = NULL;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	if ((msg = parse_opts(ac, av, Options, &help)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	setup();
- 
-+	if (longsyscall) {
-+		if ((dirp64 = malloc(sizeof(struct dirent))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+		count = (int)sizeof(struct dirent64);
-+	} else {
-+		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+		count = (int)sizeof(struct dirent);
-+	}
-+
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
-@@ -91,16 +116,14 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK, cleanup, "Can not get current "
- 				 "directory name");
- 
--		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
--			tst_brkm(TBROK, cleanup, "malloc failed");
--
--		count = (int)sizeof(struct dirent);
--
- 		/* set up a bad file descriptor */
- 
- 		fd = -5;
- 
--		rval = getdents(fd, dirp, count);
-+		if (longsyscall)
-+			rval = getdents64(fd, dirp64, count);
-+		else
-+			rval = getdents(fd, dirp, count);
- 
- 		/*
- 		 * Hopefully we get an error due to the bad file descriptor.
-@@ -124,9 +147,13 @@ int main(int ac, char **av)
- 		free(dir_name);
- 		dir_name = NULL;
- 
--		free(dirp);
- 	}
- 
-+	if (longsyscall)
-+		free(dirp64);
-+	else
-+		free(dirp);
-+
- 	cleanup();
- 
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/getdents/getdents03.c b/testcases/kernel/syscalls/getdents/getdents03.c
-index 700e54b..6b4f88b 100644
---- a/testcases/kernel/syscalls/getdents/getdents03.c
-+++ b/testcases/kernel/syscalls/getdents/getdents03.c
-@@ -43,10 +43,12 @@
-  *             -e   : Turn on errno logging.
-  *	       -i n : Execute test n times.
-  *	       -I x : Execute test for x seconds.
-+ *	       -l   : Test the getdents64 system call.
-  *	       -P x : Pause for x seconds between iterations.
-  *	       -t   : Turn on syscall timing.
-  *
-  * HISTORY
-+ *	03/2013 - Added -l option by Markos Chandras
-  *	03/2001 - Written by Wayne Boyer
-  *
-  * RESTRICTIONS
-@@ -72,6 +74,18 @@ int TST_TOTAL = 1;
- 
- int exp_enos[] = { EINVAL, 0 };	/* 0 terminated list of expected errnos */
- 
-+static int longsyscall;
-+
-+option_t Options[] = {
-+		{"l", &longsyscall, NULL}, /* -l long option. Tests getdents64 */
-+		{NULL, NULL, NULL}
-+};
-+
-+void help(void)
-+{
-+	printf("  -l      Test the getdents64 system call\n");
-+}
-+
- int main(int ac, char **av)
- {
- 	int lc;
-@@ -80,13 +94,22 @@ int main(int ac, char **av)
- 	int count;
- 	size_t size = 0;
- 	char *dir_name = NULL;
--	struct dirent *dirp;
-+	struct dirent64 *dirp64 = NULL;
-+	struct dirent *dirp = NULL;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	if ((msg = parse_opts(ac, av, Options, &help)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	setup();
- 
-+	if (longsyscall) {
-+		if ((dirp64 = malloc(sizeof(struct dirent64))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+	} else {
-+		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+	}
-+
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
-@@ -94,9 +117,6 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK, cleanup, "Can not get current "
- 				 "directory name");
- 
--		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
--			tst_brkm(TBROK, cleanup, "malloc failed");
--
- 		/* Set count to be very small.  The result should be EINVAL */
- 
- 		count = 1;
-@@ -104,7 +124,10 @@ int main(int ac, char **av)
- 		if ((fd = open(dir_name, O_RDONLY)) == -1)
- 			tst_brkm(TBROK, cleanup, "open of directory failed");
- 
--		rval = getdents(fd, dirp, count);
-+		if (longsyscall)
-+			rval = getdents64(fd, dirp64, count);
-+		else
-+			rval = getdents(fd, dirp, count);
- 
- 		/*
- 		 * Hopefully we get an error due to the small buffer.
-@@ -129,12 +152,15 @@ int main(int ac, char **av)
- 		free(dir_name);
- 		dir_name = NULL;
- 
--		free(dirp);
--
- 		if ((rval = close(fd)) == -1)
- 			tst_brkm(TBROK, cleanup, "fd close failed");
- 	}
- 
-+	if (longsyscall)
-+		free(dirp64);
-+	else
-+		free(dirp);
-+
- 	cleanup();
- 
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/getdents/getdents04.c b/testcases/kernel/syscalls/getdents/getdents04.c
-index 89479a4..3dc1030 100644
---- a/testcases/kernel/syscalls/getdents/getdents04.c
-+++ b/testcases/kernel/syscalls/getdents/getdents04.c
-@@ -43,10 +43,12 @@
-  *             -e   : Turn on errno logging.
-  *	       -i n : Execute test n times.
-  *	       -I x : Execute test for x seconds.
-+ *	       -l   : Test the getdents64 system call.
-  *	       -P x : Pause for x seconds between iterations.
-  *	       -t   : Turn on syscall timing.
-  *
-  * HISTORY
-+ *	03/2013 - Added -l option by Markos Chandras
-  *	03/2001 - Written by Wayne Boyer
-  *
-  * RESTRICTIONS
-@@ -73,6 +75,18 @@ int TST_TOTAL = 1;
- 
- int exp_enos[] = { ENOTDIR, 0 };	/* 0 terminated list of expected errnos */
- 
-+static int longsyscall;
-+
-+option_t Options[] = {
-+		{"l", &longsyscall, NULL}, /* -l long option. Tests getdents64 */
-+		{NULL, NULL, NULL}
-+};
-+
-+void help(void)
-+{
-+	printf("  -l      Test the getdents64 system call\n");
-+}
-+
- int main(int ac, char **av)
- {
- 	int lc;
-@@ -80,15 +94,26 @@ int main(int ac, char **av)
- 	int count, rval, fd;
- 	size_t size = 0;
- 	char *dir_name = NULL;
--	struct dirent *dirp;
- 	struct stat *sbuf;
- 	char *newfile;
-+	struct dirent64 *dirp64 = NULL;
-+	struct dirent *dirp = NULL;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	if ((msg = parse_opts(ac, av, Options, &help)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	setup();
- 
-+	if (longsyscall) {
-+		if ((dirp64 = malloc(sizeof(struct dirent64))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+		count = (int)sizeof(struct dirent64);
-+	} else {
-+		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
-+			tst_brkm(TBROK, cleanup, "malloc failed");
-+		count = (int)sizeof(struct dirent);
-+	}
-+
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
-@@ -96,11 +121,6 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK, cleanup, "Can not get current "
- 				 "directory name");
- 
--		if ((dirp = malloc(sizeof(struct dirent))) == NULL)
--			tst_brkm(TBROK, cleanup, "malloc failed");
--
--		count = (int)sizeof(struct dirent);
--
- 		/* set up some space for a file name */
- 		if ((newfile = malloc(sizeof(char) * 20)) == NULL)
- 			tst_brkm(TBROK, cleanup, "newfile malloc failed");
-@@ -123,7 +143,10 @@ int main(int ac, char **av)
- 		if (S_ISDIR(sbuf->st_mode))
- 			tst_brkm(TBROK, cleanup, "fd is a directory");
- 
--		rval = getdents(fd, dirp, count);
-+		if (longsyscall)
-+			rval = getdents64(fd, dirp64, count);
-+		else
-+			rval = getdents(fd, dirp, count);
- 
- 		/*
- 		 * Calling with a non directory file descriptor should give
-@@ -149,14 +172,17 @@ int main(int ac, char **av)
- 		free(dir_name);
- 		dir_name = NULL;
- 
--		free(dirp);
--
- 		if ((rval = close(fd)) == -1)
- 			tst_brkm(TBROK, cleanup, "fd close failed");
- 		if ((rval = unlink(newfile)) == -1)
- 			tst_brkm(TBROK, cleanup, "file unlink failed");
- 	}
- 
-+	if (longsyscall)
-+		free(dirp64);
-+	else
-+		free(dirp);
-+
- 	cleanup();
- 
- 	tst_exit();
 -- 
-1.7.1
-
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
