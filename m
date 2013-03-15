@@ -1,30 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UHRUi-0004DL-Ij
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 04:16:20 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHRUh-0007SO-Kb
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 04:16:20 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2I4GE2u006497
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 00:16:14 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 18 Mar 2013 12:14:01 +0800
-Message-Id: <2ccf451c55f261c878bdd388e1e1741d2d9c037c.1363579539.git.zliu@redhat.com>
-In-Reply-To: <60167c77dc6892bb5a1ae232782cffc107368db8.1363579539.git.zliu@redhat.com>
-References: <cover.1363579539.git.zliu@redhat.com>
-	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363579539.git.zliu@redhat.com>
-	<ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363579539.git.zliu@redhat.com>
-	<60167c77dc6892bb5a1ae232782cffc107368db8.1363579539.git.zliu@redhat.com>
-In-Reply-To: <cover.1363579539.git.zliu@redhat.com>
-References: <cover.1363579539.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v3 4/7] mm/oom0[3|4]: added 'OOM for CPUSET' and moved
-	'OOM with MEMCG & numa' to oom03
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1UGLUh-0001T5-O4
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 03:39:47 +0000
+Received: from mail-pb0-f54.google.com ([209.85.160.54])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UGLUg-0005OI-DF
+	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 03:39:47 +0000
+Received: by mail-pb0-f54.google.com with SMTP id rr4so3199825pbb.13
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Mar 2013 20:39:40 -0700 (PDT)
+Message-ID: <514290ED.2090300@casparzhang.com>
+Date: Fri, 15 Mar 2013 11:09:33 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
+MIME-Version: 1.0
+References: <cover.1363246555.git.zliu@redhat.com>
+	<054d2c7ca1e3c6e4794c0f42f927b555a4273da7.1363246555.git.zliu@redhat.com>
+	<1af53e534fc05433ed20488c27d35bbc519af730.1363246555.git.zliu@redhat.com>
+In-Reply-To: <1af53e534fc05433ed20488c27d35bbc519af730.1363246555.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH 2/5] mm/oom02: modified 'OOM for NUMA' as 'OOM for
+ mempolicy'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,215 +30,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-OOM with the combination of memcg & numa was moved to oom03,
-and oom04 is re-design to be used to test 'OOM with CPUSET'.
+On 03/15/2013 12:21 AM, Zhouping Liu wrote:
+>
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 29de64a..a71bc90 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -64,32 +64,17 @@ void oom(int testcase, int mempolicy, int lite)
 
-also used is_numa() instead of the old method.
+you've moved all mempolicy check stuff to testoom(), so you can 
+completely remove this variable.
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/mem/oom/oom02.c |  6 ++--
- testcases/kernel/mem/oom/oom03.c | 20 ++++++++++++++
- testcases/kernel/mem/oom/oom04.c | 60 +++++++++++++++-------------------------
- 3 files changed, 46 insertions(+), 40 deletions(-)
+>   {
+>   	pid_t pid;
+>   	int status;
+> -#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+> -	&& HAVE_MPOL_CONSTANTS
+> -	unsigned long nmask = 0;
+> -	unsigned int node;
+> -
+> -	if (mempolicy)
+> -		node = get_a_numa_node(cleanup);
+> -	nmask += 1 << node;
+> -#endif
+>
+>   	switch (pid = fork()) {
+>   	case -1:
+>   		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+>   	case 0:
+> -#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+> -	&& HAVE_MPOL_CONSTANTS
+> -		if (mempolicy)
+> -			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+> -				tst_brkm(TBROK | TERRNO, cleanup,
+> -					 "set_mempolicy");
+> -#endif
+>   		_test_alloc(testcase, lite);
+>   		exit(0);
+>   	default:
+>   		break;
+>   	}
+> +
+>   	tst_resm(TINFO, "expected victim is %d.", pid);
+>   	if (waitpid(-1, &status, 0) == -1)
+>   		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+> @@ -107,7 +92,44 @@ void oom(int testcase, int mempolicy, int lite)
+>
+>   void testoom(int mempolicy, int lite, int numa)
+>   {
+> -	long nodes[MAXNODES];
+> +#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+> +	&& HAVE_MPOL_CONSTANTS
+> +	unsigned long nmask = 0;
+> +	unsigned int num_nodes, nodes[MAXNODES];
+> +	int ret;
+> +
+> +	if (mempolicy) {
+> +		ret = get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
+> +		if (ret != 0)
+> +			tst_brkm(TBROK|TERRNO, cleanup,
+> +				 "get_allowed_nodes_arr");
+> +		if (num_nodes < 2) {
+> +			tst_resm(TINFO, "mempolicy need NUMA system support");
+> +			return;
+> +		}
+> +		switch(mempolicy) {
+> +		case MPOL_BIND:
+> +			/* bind the second node */
+> +			nmask = 1 << nodes[1];
+> +			break;
+> +		case MPOL_INTERLEAVE:
+> +		case MPOL_PREFERRED:
+> +			if (num_nodes == 2) {
+> +				tst_resm(TINFO, "The mempolicy need "
+> +					 "more than 2 numa nodes");
+> +				return;
+> +			} else {
+> +				/* Using the 2nd,3rd node */
+> +				nmask = (1 << nodes[1]) | (1 << nodes[2]);
+> +			}
+> +			break;
+> +		default:
+> +			tst_brkm(TBROK|TERRNO, cleanup, "Bad mempolicy mode");
+> +		}
+> +		if (set_mempolicy(mempolicy, &nmask, MAXNODES) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
+> +	}
+> +#endif
+>
+>   	if (numa && !mempolicy)
+>   		write_cpusets(get_a_numa_node(cleanup));
+>
 
-diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-index 31ec73f..3bc8567 100644
---- a/testcases/kernel/mem/oom/oom02.c
-+++ b/testcases/kernel/mem/oom/oom02.c
-@@ -35,6 +35,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <stdio.h>
-+#include "numa_helper.h"
- #include "test.h"
- #include "usctest.h"
- #include "mem.h"
-@@ -44,7 +45,6 @@ int TST_TOTAL = 1;
- 
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
--#include <numaif.h>
- 
- int main(int argc, char *argv[])
- {
-@@ -83,8 +83,8 @@ void setup(void)
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- 
--	/* Judge a NUMA system through get_a_numa_node */
--	get_a_numa_node(NULL);
-+	if (!is_numa(NULL))
-+		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
- 
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index 95e34d5..c2171fd 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -33,6 +33,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <stdio.h>
-+#include "numa_helper.h"
- #include "test.h"
- #include "usctest.h"
- #include "mem.h"
-@@ -40,6 +41,9 @@
- char *TCID = "oom03";
- int TST_TOTAL = 1;
- 
-+#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-+	&& HAVE_MPOL_CONSTANTS
-+
- int main(int argc, char *argv[])
- {
- 	char *msg;
-@@ -76,6 +80,14 @@ int main(int argc, char *argv[])
- 			write_file(MEMCG_SW_LIMIT, mem);
- 			testoom(0, 1, 0);
- 		}
-+
-+		/* OOM for MEMCG with mempolicy */
-+		if (is_numa(cleanup)) {
-+			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
-+			testoom(MPOL_BIND, 0, 1);
-+			testoom(MPOL_INTERLEAVE, 0, 1);
-+			testoom(MPOL_PREFERRED, 0, 1);
-+		}
- 	}
- 	cleanup();
- 	tst_exit();
-@@ -99,3 +111,11 @@ void cleanup(void)
- 
- 	TEST_CLEANUP;
- }
-+
-+#else
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-+}
-+#endif
-+
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index bc51046..1ad7334 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -1,5 +1,5 @@
- /*
-- * Out Of Memory (OOM) for Memory Resource Controller and NUMA
-+ * Out Of Memory (OOM) for CPUSET
-  *
-  * The program is designed to cope with unpredictable like amount and
-  * system physical memory, swap size and other VMM technology like KSM,
-@@ -35,6 +35,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <stdio.h>
-+#include "numa_helper.h"
- #include "test.h"
- #include "usctest.h"
- #include "mem.h"
-@@ -44,12 +45,11 @@ int TST_TOTAL = 1;
- 
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
-+
- int main(int argc, char *argv[])
- {
- 	char *msg;
- 	int lc;
--	int swap_acc_on = 1;
--	char buf[BUFSIZ], mem[BUFSIZ];
- 
- 	msg = parse_opts(argc, argv, NULL, NULL);
- 	if (msg != NULL)
-@@ -64,38 +64,19 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		snprintf(buf, BUFSIZ, "%d", getpid());
--		write_file(MEMCG_PATH_NEW "/tasks", buf);
--
--		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
--		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
--
--		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
--			if (errno == ENOENT) {
--				tst_resm(TCONF,
--					 "memcg swap accounting is disabled");
--				swap_acc_on = 0;
--			} else
--				tst_brkm(TBROK | TERRNO, cleanup, "access");
--		}
--
--		tst_resm(TINFO, "process mempolicy.");
--		testoom(1, 0, 1);
--
--		if (swap_acc_on) {
--			write_file(MEMCG_SW_LIMIT, mem);
--			testoom(1, 1, 1);
--		}
--
--		tst_resm(TINFO, "process cpuset.");
--
--		if (swap_acc_on)
--			write_file(MEMCG_SW_LIMIT, "-1");
--		testoom(0, 0, 1);
--
--		if (swap_acc_on) {
--			write_file(MEMCG_SW_LIMIT, mem);
--			testoom(0, 1, 1);
-+		tst_resm(TINFO, "OOM on CPUSET...");
-+		testoom(0, 0, 0);
-+
-+		if (is_numa(cleanup)) {
-+			/*
-+			 * Under NUMA system, the migration of cpuset's memory
-+			 * is in charge of cpuset.memory_migrate, we can write
-+			 * 1 to cpuset.memory_migrate to enable the migration.
-+			 */
-+			write_cpuset_files(CPATH_NEW,
-+					   "memory_migrate", "1");
-+			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
-+			testoom(0, 0, 0);
- 		}
- 	}
- 	cleanup();
-@@ -110,15 +91,20 @@ void setup(void)
- 
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
-+
- 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-+	if (is_numa(cleanup) > 0)
-+		/* For NUMA system, using the first node for cpuset.mems */
-+		write_cpusets(get_a_numa_node(cleanup));
-+	else
-+		/* For nonNUMA system, using node0 for cpuset.mems */
-+		write_cpusets(0);
- }
- 
- void cleanup(void)
- {
- 	set_sys_tune("overcommit_memory", overcommit, 0);
- 	umount_mem(CPATH, CPATH_NEW);
--	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
- 
- 	TEST_CLEANUP;
- }
--- 
-1.7.11.7
+The remaining concern to me is that, mempolicy set in parent process, 
+can it be inherited by child? I see this patch changed the behavior that 
+in new test, set_mempolicy happen in parent and oom happen in child.
 
+Caspar
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
