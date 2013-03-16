@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UHnS9-0000QI-PJ
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:43:09 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHnS5-0001kd-Fs
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:43:09 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2J3gxOm016971
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 23:42:59 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Tue, 19 Mar 2013 11:40:52 +0800
-Message-Id: <f18d772317c38415040ac76e38e1082dbc6892ec.1363664213.git.zliu@redhat.com>
-In-Reply-To: <60167c77dc6892bb5a1ae232782cffc107368db8.1363664213.git.zliu@redhat.com>
-References: <cover.1363664213.git.zliu@redhat.com>
-	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363664213.git.zliu@redhat.com>
-	<ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363664213.git.zliu@redhat.com>
-	<60167c77dc6892bb5a1ae232782cffc107368db8.1363664213.git.zliu@redhat.com>
-In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
-References: <cover.1363664213.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v4 4/7] mm/oom0[3|4]: added 'OOM for CPUSET' and moved
-	'OOM with MEMCG & numa' to oom03
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UGtDH-0001mE-Bb
+	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 15:40:03 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UGtDF-0001kO-Ir
+	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 15:40:03 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 16 Mar 2013 11:43:03 -0400
+References: <1363280151-10623-1-git-send-email-markos.chandras@gmail.com>
+In-Reply-To: <1363280151-10623-1-git-send-email-markos.chandras@gmail.com>
+MIME-Version: 1.0
+Message-Id: <201303161143.04543.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] ltp: Add support for Imagination Technologies
+	Meta
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,221 +25,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1471796249554363402=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-OOM with the combination of memcg & numa was moved to oom03,
-and oom04 is re-design to be used to test 'OOM with CPUSET'.
+--===============1471796249554363402==
+Content-Type: multipart/signed; boundary="nextPart1795250.nG40HW0yh5";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-also used is_numa() instead of the old method.
+--nextPart1795250.nG40HW0yh5
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/mem/oom/oom02.c |  6 ++--
- testcases/kernel/mem/oom/oom03.c | 19 +++++++++++++
- testcases/kernel/mem/oom/oom04.c | 60 +++++++++++++++-------------------------
- 3 files changed, 45 insertions(+), 40 deletions(-)
+On Thursday 14 March 2013 12:55:51 Markos Chandras wrote:
+> This patch adds support for Imagination's Meta architecture.
+> The Meta Linux kernel port will be included in the Linux Kernel
+> v3.9. The Meta stack grows upwards so we need to add the appropriate
+> __metag__ macro to the ltp_clone function. Also fix the #if/def
+> macro for s390x.
 
-diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-index 31ec73f..3bc8567 100644
---- a/testcases/kernel/mem/oom/oom02.c
-+++ b/testcases/kernel/mem/oom/oom02.c
-@@ -35,6 +35,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <stdio.h>
-+#include "numa_helper.h"
- #include "test.h"
- #include "usctest.h"
- #include "mem.h"
-@@ -44,7 +45,6 @@ int TST_TOTAL = 1;
- 
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
--#include <numaif.h>
- 
- int main(int argc, char *argv[])
- {
-@@ -83,8 +83,8 @@ void setup(void)
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- 
--	/* Judge a NUMA system through get_a_numa_node */
--	get_a_numa_node(NULL);
-+	if (!is_numa(NULL))
-+		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
- 
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index 95e34d5..43ad595 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -33,6 +33,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <stdio.h>
-+#include "numa_helper.h"
- #include "test.h"
- #include "usctest.h"
- #include "mem.h"
-@@ -40,6 +41,9 @@
- char *TCID = "oom03";
- int TST_TOTAL = 1;
- 
-+#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-+	&& HAVE_MPOL_CONSTANTS
-+
- int main(int argc, char *argv[])
- {
- 	char *msg;
-@@ -76,6 +80,14 @@ int main(int argc, char *argv[])
- 			write_file(MEMCG_SW_LIMIT, mem);
- 			testoom(0, 1, 0);
- 		}
-+
-+		/* OOM for MEMCG with mempolicy */
-+		if (is_numa(cleanup)) {
-+			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
-+			testoom(MPOL_BIND, 0, 1);
-+			testoom(MPOL_INTERLEAVE, 0, 1);
-+			testoom(MPOL_PREFERRED, 0, 1);
-+		}
- 	}
- 	cleanup();
- 	tst_exit();
-@@ -99,3 +111,10 @@ void cleanup(void)
- 
- 	TEST_CLEANUP;
- }
-+
-+#else
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-+}
-+#endif
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index bc51046..1ad7334 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -1,5 +1,5 @@
- /*
-- * Out Of Memory (OOM) for Memory Resource Controller and NUMA
-+ * Out Of Memory (OOM) for CPUSET
-  *
-  * The program is designed to cope with unpredictable like amount and
-  * system physical memory, swap size and other VMM technology like KSM,
-@@ -35,6 +35,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <stdio.h>
-+#include "numa_helper.h"
- #include "test.h"
- #include "usctest.h"
- #include "mem.h"
-@@ -44,12 +45,11 @@ int TST_TOTAL = 1;
- 
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
-+
- int main(int argc, char *argv[])
- {
- 	char *msg;
- 	int lc;
--	int swap_acc_on = 1;
--	char buf[BUFSIZ], mem[BUFSIZ];
- 
- 	msg = parse_opts(argc, argv, NULL, NULL);
- 	if (msg != NULL)
-@@ -64,38 +64,19 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		snprintf(buf, BUFSIZ, "%d", getpid());
--		write_file(MEMCG_PATH_NEW "/tasks", buf);
--
--		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
--		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
--
--		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
--			if (errno == ENOENT) {
--				tst_resm(TCONF,
--					 "memcg swap accounting is disabled");
--				swap_acc_on = 0;
--			} else
--				tst_brkm(TBROK | TERRNO, cleanup, "access");
--		}
--
--		tst_resm(TINFO, "process mempolicy.");
--		testoom(1, 0, 1);
--
--		if (swap_acc_on) {
--			write_file(MEMCG_SW_LIMIT, mem);
--			testoom(1, 1, 1);
--		}
--
--		tst_resm(TINFO, "process cpuset.");
--
--		if (swap_acc_on)
--			write_file(MEMCG_SW_LIMIT, "-1");
--		testoom(0, 0, 1);
--
--		if (swap_acc_on) {
--			write_file(MEMCG_SW_LIMIT, mem);
--			testoom(0, 1, 1);
-+		tst_resm(TINFO, "OOM on CPUSET...");
-+		testoom(0, 0, 0);
-+
-+		if (is_numa(cleanup)) {
-+			/*
-+			 * Under NUMA system, the migration of cpuset's memory
-+			 * is in charge of cpuset.memory_migrate, we can write
-+			 * 1 to cpuset.memory_migrate to enable the migration.
-+			 */
-+			write_cpuset_files(CPATH_NEW,
-+					   "memory_migrate", "1");
-+			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
-+			testoom(0, 0, 0);
- 		}
- 	}
- 	cleanup();
-@@ -110,15 +91,20 @@ void setup(void)
- 
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
-+
- 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-+	if (is_numa(cleanup) > 0)
-+		/* For NUMA system, using the first node for cpuset.mems */
-+		write_cpusets(get_a_numa_node(cleanup));
-+	else
-+		/* For nonNUMA system, using node0 for cpuset.mems */
-+		write_cpusets(0);
- }
- 
- void cleanup(void)
- {
- 	set_sys_tune("overcommit_memory", overcommit, 0);
- 	umount_mem(CPATH, CPATH_NEW);
--	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
- 
- 	TEST_CLEANUP;
- }
--- 
-1.7.11.7
+merged, thanks
+-mike
 
+--nextPart1795250.nG40HW0yh5
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRRJMIAAoJEEFjO5/oN/WBgnUP/jim/U2EBtxX+YJCEDuBmUb+
+SpWrUn1lKC5I/uu3tHSOMjOXPJkaZDqS+Oe9qr/doqvOnp01imqCrs4MKhxLr3do
+AxatznwLlrvntHpygVb3+U86XDaMY2177KRt0jFdmaz0WUVMaDKkfzvhN8sfLqE0
+2uEoNaiMpKAXpjhXms4swWvcTvBrH4qlYZ4miMtCfur+p32rp3ahQuotRuZ3S4vU
+J+p/Sui8Idfks3qZheHXWqs8wRJEc2++fsDJ6IQ6nduTywxNQMqgPygUZhJ+KTcK
+sCFklxW9JWN9kXlDez1Re4LToqrniGB41ZHV91JBbTmerEgdzgiXOp6z0cOOQjJg
+zZlX9XAzIh1CLXcsj31qFfdSltd6DPJOZKjRfSJOt2pdN16RCKld8FGGcIk0qa1I
+oM0g1r7vyB8h43bvnS2hubOFiZe53rq/GzbWTBMP8xaiD34dTMew8/aBHouqZbEJ
+6ZDAffxpsdy6dqoFYXX5ufiBSbK4M5iYKUDwWb74aXEBl92CiQ9RN3hXOJci6Wrc
+O09dvoK037lq2jzo1FytB06hOZtUHqCfalV63Hwyr68S9okRYq3UYdaXGa0fJF4u
+ejUTDEtz93EjK7vYnEEUdSkLBu60iOgME8sz75+Q0+LoRv016MBeJFYIVEd5QsQx
+FMvAYtyTI9/L8Bk4l0IB
+=w7h4
+-----END PGP SIGNATURE-----
+
+--nextPart1795250.nG40HW0yh5--
+
+
+--===============1471796249554363402==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_d2d_mar
+--===============1471796249554363402==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1471796249554363402==--
+
