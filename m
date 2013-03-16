@@ -1,27 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1UDVnh-0007y8-1U
-	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:03:41 +0000
-Received: from mail-pa0-f42.google.com ([209.85.220.42])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UDVne-0001fu-KX
-	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:03:41 +0000
-Received: by mail-pa0-f42.google.com with SMTP id kq12so276028pab.15
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <markos.chandras@gmail.com>) id 1UGuEy-0001m0-QA
+	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 16:45:52 +0000
+Received: from mail-wi0-f179.google.com ([209.85.212.179])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UGuEy-0002ao-0A
+	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 16:45:52 +0000
+Received: by mail-wi0-f179.google.com with SMTP id ez12so1423423wid.12
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 07 Mar 2013 00:03:32 -0800 (PST)
-From: Caspar Zhang <caspar@casparzhang.com>
-Date: Thu,  7 Mar 2013 15:38:34 +0800
-Message-Id: <0da7f15cb693ea31f3f5cb1512713ae0562b4f17.1362641893.git.caspar@casparzhang.com>
-In-Reply-To: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
-References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
-In-Reply-To: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
-References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
+	Sat, 16 Mar 2013 09:45:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------1.8.1.4"
-Subject: [LTP] [PATCH 3/3] syscalls/madvise02: fix madvise case due to
-	kernel change
+In-Reply-To: <201303161148.25654.vapier@gentoo.org>
+References: <1363355370-7738-1-git-send-email-markos.chandras@gmail.com>
+	<201303161148.25654.vapier@gentoo.org>
+From: Markos Chandras <markos.chandras@gmail.com>
+Date: Sat, 16 Mar 2013 16:45:24 +0000
+Message-ID: <CAG2jQ8jtkfUw6DZ_iVXwsBz8JHcD37YUogQnrWS-_EHsun4Fuw@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v2] syscalls/getdents: Add parameter to test
+ getdents64 syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,80 +29,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------1.8.1.4
-Content-Type: text/plain; charset=UTF-8; format=fixed
-Content-Transfer-Encoding: 8bit
-
-
-since kernel commit 1998cc0 (after kernel-3.8 released),
-madvise(MADV_WILLNEED) to anonymous memory doesn't return -EBADF now, as
-now we support swap prefetch. Thus the 5th testcase in madvise02 will
-not pass. This patch fixes this by adding a tst_kvercmp() condition, and
-will give a pass if kernel is >=3.9 (including the RCs).
-
-Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
----
- testcases/kernel/syscalls/madvise/madvise02.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-
---------------1.8.1.4
-Content-Type: text/x-patch;
-	name="0003-syscalls-madvise02-fix-madvise-case-due-to-kernel-ch.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
-	filename="0003-syscalls-madvise02-fix-madvise-case-due-to-kernel-ch.patch"
-
-diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
-index 87d26c3..f68fb0b 100644
---- a/testcases/kernel/syscalls/madvise/madvise02.c
-+++ b/testcases/kernel/syscalls/madvise/madvise02.c
-@@ -187,7 +187,15 @@ int main(int argc, char *argv[])
- 
- 		TEST(madvise
- 		     (tmp_memory_allocated, 5 * pagesize, MADV_WILLNEED));
--		check_and_print(EBADF);
-+		if (tst_kvercmp(3, 9, 0) < 0)
-+			check_and_print(EBADF);
-+		/* in kernel commit 1998cc0, madvise(MADV_WILLNEED) to anon
-+		 * mem doesn't return -EBADF now, as now we suuport swap
-+		 * prefretch.
-+		 */
-+		else
-+			tst_resm(TPASS, "madvise succeeded as expected, see "
-+					"kernel commit 1998cc0 for details.");
- 		free((void *)ptr_memory_allocated);
- 
- 		close(fd);
-
---------------1.8.1.4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
+
+On 16 March 2013 15:48, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Friday 15 March 2013 09:49:30 Markos Chandras wrote:
+>> Add new "-l" parameter to test the getdents64 syscall along with
+>> the getdents one. Use ltp_syscall() to call the system call to get
+>> proper return values when an architecture does not support any of the
+>> getdents{,64} syscalls. Modify runtest/syscalls to call getdentsXX tests
+>> with and without the "-l" parameter
+>
+> your patch introduces a lot of warnings.  please verify it on a few arches
+> first (like x86_64).
+
+Yes I see what you mean. I will prepare a new one.
+
+>
+>> --- a/testcases/kernel/syscalls/getdents/Makefile
+>> +++ b/testcases/kernel/syscalls/getdents/Makefile
+>>
+>> +CFLAGS += -D_LARGEFILE64_SOURCE
+>
+> these are CPPFLAGS, not CFLAGS
+> -mike
+
+Indeed. I will fix it too.
+
+-- 
+Regards,
+Markos Chandras
 
 ------------------------------------------------------------------------------
-Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
-Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
-endpoint security space. For insight on selecting the right partner to 
-tackle endpoint security challenges, access the full report. 
-http://p.sf.net/sfu/symantec-dev2dev
---------------1.8.1.4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------1.8.1.4--
-
-
-
