@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <markos.chandras@gmail.com>) id 1UFq22-00043y-NI
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 18:04:06 +0000
-Received: from mail-we0-f174.google.com ([74.125.82.174])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UFq20-000305-Ln
-	for ltp-list@lists.sourceforge.net; Wed, 13 Mar 2013 18:04:06 +0000
-Received: by mail-we0-f174.google.com with SMTP id r6so1292853wey.19
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Mar 2013 11:03:58 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UGtIL-00055w-5L
+	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 15:45:17 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UGtIK-00024Z-B7
+	for ltp-list@lists.sourceforge.net; Sat, 16 Mar 2013 15:45:17 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 16 Mar 2013 11:48:24 -0400
+References: <1363355370-7738-1-git-send-email-markos.chandras@gmail.com>
+In-Reply-To: <1363355370-7738-1-git-send-email-markos.chandras@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1482749503.18144192.1363197480299.JavaMail.root@redhat.com>
-References: <1363183294-21203-1-git-send-email-markos.chandras@gmail.com>
-	<1482749503.18144192.1363197480299.JavaMail.root@redhat.com>
-From: Markos Chandras <markos.chandras@gmail.com>
-Date: Wed, 13 Mar 2013 18:03:36 +0000
-Message-ID: <CAG2jQ8h+u3Ade6ONcde=jBLSipJtF1vzP9q7zE-m3qX-LM1fKQ@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 1/2] syscalls/getdents: Use getdents64 if
- SYS_getdents is not defined
+Message-Id: <201303161148.25654.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] syscalls/getdents: Add parameter to test
+	getdents64 syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,98 +25,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1835638200471784981=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 13 March 2013 17:58, Jan Stancek <jstancek@redhat.com> wrote:
->
->
-> ----- Original Message -----
->> From: "Markos Chandras" <markos.chandras@gmail.com>
->> To: ltp-list@lists.sourceforge.net
->> Sent: Wednesday, 13 March, 2013 3:01:34 PM
->> Subject: [LTP] [PATCH 1/2] syscalls/getdents: Use getdents64 if SYS_getdents  is not defined
->>
->> From: Markos Chandras <markos.chandras@imgtec.com>
->>
->> New Linux Kernel architectures do not define NR_getdents so we
->> try to use the getdents64 syscall instead
->>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> ---
->>  testcases/kernel/syscalls/getdents/getdents.h |   15 +++++++++++++++
->>  1 files changed, 15 insertions(+), 0 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/getdents/getdents.h
->> b/testcases/kernel/syscalls/getdents/getdents.h
->> index 1d5e584..12d2be4 100644
->> --- a/testcases/kernel/syscalls/getdents/getdents.h
->> +++ b/testcases/kernel/syscalls/getdents/getdents.h
->> @@ -38,12 +38,23 @@
->>   * declare our own here.  Wheeeeee.
->>   */
->>
->> +#ifdef SYS_getdents
->>  struct linux_dirent {
->>       unsigned long   d_ino;
->>       unsigned long   d_off;
->>       unsigned short  d_reclen;
->>       char            d_name[];
->>  };
->> +#else
->> +/* Use the 64-bit definition */
->> +struct linux_dirent {
->> +     unsigned long long      d_ino;
->> +     long long               d_off;
->> +     unsigned short          d_reclen;
->> +     unsigned char           d_type;
->> +     char                    d_name[0];
->> +};
->> +#endif
->>
->>  static inline int
->>  getdents(unsigned int fd, struct dirent *dirp, unsigned int count)
->> @@ -57,7 +68,11 @@ getdents(unsigned int fd, struct dirent *dirp,
->> unsigned int count)
->>       unsigned int i;
->>
->>       ptrs.buf = buf;
->> +#ifdef SYS_getdents
->>       ret = syscall(SYS_getdents, fd, buf, count);
->> +#else
->> +     ret = syscall(SYS_getdents64, fd, buf, count);
->> +#endif
->
-> Just a thought.. What about turning it to runtime check? There could be parameter to switch between
-> SYS_getdents/SYS_getdents64 and we can have both (with/without that parameter) in runtest/syscalls.
-> If it's supported it runs, if not ends with TCONF. That way we could have both version on arches
-> that support both syscalls.
->
+--===============1835638200471784981==
+Content-Type: multipart/signed; boundary="nextPart2964153.RthFKkcXrN";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-The problem is that for arches that don't have SYS_getdents defined,
-you will not be able to compile LTP on them so you really need to
-hide this codepath from them.
+--nextPart2964153.RthFKkcXrN
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-A similar commit that changes the codepath based on whether a
-particular __NR_XX is defined is this
-https://github.com/linux-test-project/ltp/commit/75201f160b9aa49af70d8f46fb1f087e63d603dd
+On Friday 15 March 2013 09:49:30 Markos Chandras wrote:
+> Add new "-l" parameter to test the getdents64 syscall along with
+> the getdents one. Use ltp_syscall() to call the system call to get
+> proper return values when an architecture does not support any of the
+> getdents{,64} syscalls. Modify runtest/syscalls to call getdentsXX tests
+> with and without the "-l" parameter
 
-I don't see an easy way to determine if __NR_XX is defined or not
-during runtime.
+your patch introduces a lot of warnings.  please verify it on a few arches=
+=20
+first (like x86_64).
 
--- 
-Regards,
-Markos Chandras
+> --- a/testcases/kernel/syscalls/getdents/Makefile
+> +++ b/testcases/kernel/syscalls/getdents/Makefile
+>=20
+> +CFLAGS +=3D -D_LARGEFILE64_SOURCE
+
+these are CPPFLAGS, not CFLAGS
+=2Dmike
+
+--nextPart2964153.RthFKkcXrN
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRRJRJAAoJEEFjO5/oN/WBmnIQAMr2hd3iyiR8F6eFcK2dQD+J
+IEyvu9fF577u9I89TzhOyFCSFm0R0+YabW3RRvsE8eIxiGMXC0flMizJKYBGJySO
+jhUP0HIeeuDIP+tI6cBYus1lMq089wVws+FHjvndnD3l7r1l9MHKVG0+NR+av6pj
+uguS9OfNj3vHGLmq5vtqBiD/Qi6wLmioVg+uoVKhv5LmK/BO9iE74hz9cRjALykD
+eKfrkcHrVAvjjGE8zH48EiNW8ILOyN08gj8H4Xo9VeBhO1r7M/XXzTSWORwg2L1M
+OpLO55MjhoWKte+AmB2SDKLJrnreGcHu0i8OCB37SIlwfq4e7m0vS5ahOW8sObvJ
+pBefyerBtsGlmmsnnf10eqJEgUx5bVi95aTSUn20RF8WjdZVWx2WncnSGFoFp3l+
+3Bk+/lvX9kM1U2m+6MJE8GuAGD6WjmHmpa9roW2umaFazjwUq7XrWptwApRgl7A8
+jYxP3Azxp9rrvAidCBW9ZmSE+MXTMsdHDwX2VFD7JFmgLTfWBdbgtSAQQ6xy/znw
+K8z0FWdcv27TIVOwNnnplV6f4IBp19lYTkiRbhDdrQno14UwV3GYpQqvbsfGpcON
+puaXHisL9JWIQa8Wvd0VHue5gxZBZe00VbBKrfvqN8ZB6r9rtNFm51C+7rDMK7g1
+KrjMVbvh1U8Uzv+2jcjX
+=DmVR
+-----END PGP SIGNATURE-----
+
+--nextPart2964153.RthFKkcXrN--
+
+
+--===============1835638200471784981==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_d2d_mar
+--===============1835638200471784981==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1835638200471784981==--
+
