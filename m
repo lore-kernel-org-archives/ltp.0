@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UDW8n-0000dC-72
-	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:25:29 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UDW8l-0004hm-8k
-	for ltp-list@lists.sourceforge.net; Thu, 07 Mar 2013 08:25:29 +0000
-Message-ID: <51384F5F.4030403@cn.fujitsu.com>
-Date: Thu, 07 Mar 2013 16:27:11 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UHZBO-0002M4-7X
+	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 12:28:54 +0000
+Date: Mon, 18 Mar 2013 13:29:38 +0100
+From: chrubis@suse.cz
+Message-ID: <20130318122937.GB3423@rei>
+References: <1363604093-6960-1-git-send-email-markos.chandras@gmail.com>
+	<20130318121509.GA3423@rei>
+	<CAG2jQ8gAOvbKsoggS3o1a_9zDfVhUU9WUpxgY0g_Mp-ZcCC99w@mail.gmail.com>
 MIME-Version: 1.0
-References: <499128d9e24439238b64dc1740ee9e7217ec953f.1362641893.git.caspar@casparzhang.com>
-	<b1f36450d2c5fd46eabdcee4f268cf7a0a69017b.1362641893.git.caspar@casparzhang.com>
-In-Reply-To: <b1f36450d2c5fd46eabdcee4f268cf7a0a69017b.1362641893.git.caspar@casparzhang.com>
-Subject: Re: [LTP] [PATCH 2/3] syscalls/madvise: code cleanup
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <CAG2jQ8gAOvbKsoggS3o1a_9zDfVhUU9WUpxgY0g_Mp-ZcCC99w@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v4] syscalls/getdents: Add parameter to test
+ getdents64 syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,30 +27,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Markos Chandras <markos.chandras@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 03/07/2013 03:38 PM, Caspar Zhang wrote:
-> Just a code cleanup for syscalls/madvise01-04 cases.
+Hi!
+> >> +     if (longsyscall)
+> >> +             free(dirp64);
+> >> +     else
+> >> +             free(dirp);
+> >> +
+> >>       cleanup();
+> >>
+> >>       tst_exit();
+> >
+> > You don't need to bother to free the buffers when the next thing the
+> > test does is exit, the whole heap along with malloc data structures will
+> > be freed (unmapped) by the kernel anyway.
+> >
+> > --
+> > Cyril Hrubis
+> > chrubis@suse.cz
 > 
-> Signed-off-by: Caspar Zhang <caspar@casparzhang.com>
+> Hi Cyril,
+> 
+> I understand. Should I send a new patch or maybe you could fix it
+> before committing it?
 
-Reviewed-by: Wanlong Gao<gaowanlong@cn.fujitsu.com> 
+I will fix that.
 
-> ---
->  testcases/kernel/syscalls/madvise/madvise01.c |  77 +++--------------
->  testcases/kernel/syscalls/madvise/madvise02.c | 117 ++++++++------------------
->  testcases/kernel/syscalls/madvise/madvise03.c |  17 ++--
->  testcases/kernel/syscalls/madvise/madvise04.c |   5 +-
->  4 files changed, 58 insertions(+), 158 deletions(-)
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
-Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
-endpoint security space. For insight on selecting the right partner to 
-tackle endpoint security challenges, access the full report. 
-http://p.sf.net/sfu/symantec-dev2dev
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
