@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UHyJE-0004CK-AI
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 15:18:40 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHyJC-0007Zl-Vi
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 15:18:40 +0000
-Received: from zmail17.collab.prod.int.phx2.redhat.com
-	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id r2JFIXr3028626
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Mar 2013 11:18:33 -0400
-Date: Tue, 19 Mar 2013 11:18:33 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <623806259.21081036.1363706313082.JavaMail.root@redhat.com>
-In-Reply-To: <1437086244.21063924.1363705319128.JavaMail.root@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UHeox-0001Gw-H7
+	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 18:30:07 +0000
+Date: Mon, 18 Mar 2013 19:30:49 +0100
+From: chrubis@suse.cz
+Message-ID: <20130318183049.GH3423@rei>
+References: <1363604093-6960-1-git-send-email-markos.chandras@gmail.com>
+	<201303181418.25032.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: [LTP] Coverity report for ltp-20130109
+Content-Disposition: inline
+In-Reply-To: <201303181418.25032.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v4] syscalls/getdents: Add parameter to test
+ getdents64 syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,30 +26,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> this header is not portable.  why do you need to include it explicitly ?  
+> glibc will include it automatically as needed.
 
-What is Coverity?
-Coverity Prevent is commercial enterprise level tool for static analysis
-(analysis based only on compiling of sources, not based on running of binary)
-of the C/C++ and Java code.
+I've rewritten the tests not to do the dirent translation (which was
+causing random segfaults). See latest git commit.
 
-analyzer coverity
-analyzer-args --wait-for-license -co BAD_FREE:allow_first_field:true --all
-analyzer-version Coverity Static Analysis for C/C++ version 6.5.1 on Linux 2.6.32-279.el6.x86_64 x86_64
-
-I ran it for current LTP stable (20130109) (on top of RHEL6.4)
-and I'm sharing results here:
-http://jan.stancek.eu/coverity/ltp-20130109-1.el6.err.xz
-
-I looked at results only very briefly so far. The one that caught my
-eye was actually my previous email: inode02: fix "slash" array overrun.
-This run includes "--all" parameter, so it's likely there are some false
-positives.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
