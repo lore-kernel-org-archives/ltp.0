@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UIrwO-0005Ob-VN
-	for ltp-list@lists.sourceforge.net; Fri, 22 Mar 2013 02:42:49 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIrwN-0000K0-Gs
-	for ltp-list@lists.sourceforge.net; Fri, 22 Mar 2013 02:42:48 +0000
-Message-ID: <514BC563.9020503@cn.fujitsu.com>
-Date: Fri, 22 Mar 2013 10:43:47 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UHZzO-0000du-M3
+	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 13:20:34 +0000
+Date: Mon, 18 Mar 2013 14:21:17 +0100
+From: chrubis@suse.cz
+Message-ID: <20130318132117.GC3423@rei>
+References: <1363604093-6960-1-git-send-email-markos.chandras@gmail.com>
+	<20130318121509.GA3423@rei>
+	<CAG2jQ8gAOvbKsoggS3o1a_9zDfVhUU9WUpxgY0g_Mp-ZcCC99w@mail.gmail.com>
+	<20130318122937.GB3423@rei>
 MIME-Version: 1.0
-References: <e1988db86146bef7ddd363142fbe3174ccecadfd.1363878323.git.jstancek@redhat.com>
-In-Reply-To: <e1988db86146bef7ddd363142fbe3174ccecadfd.1363878323.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] pan: fix potential overrun in tag_report
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <20130318122937.GB3423@rei>
+Subject: Re: [LTP] [PATCH v4] syscalls/getdents: Add parameter to test
+ getdents64 syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,26 +28,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Markos Chandras <markos.chandras@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 03/21/2013 11:08 PM, Jan Stancek wrote:
->   char *cuts_info[5];
->   ...
->   while (tok_num < 5 &&
->       (cuts_info[++tok_num] = strtok(NULL, "\t ")) != NULL) ;
+Hi!
+> > I understand. Should I send a new patch or maybe you could fix it
+> > before committing it?
 > 
-> While above can run for tok_num == 4, in which case:
->   cuts_info[++tok_num] becomes cuts_info[5]
-> and that is outside of cuts_info array.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> I will fix that.
 
+Commited with a few style fixes (in separate patch).
 
-Applied, thank you.
+Make sure not to overflow 80 chars next time (or just start using
+the checkpatch.pl script).
 
-Wanlong Gao
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
