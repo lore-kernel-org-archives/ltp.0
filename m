@@ -1,19 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Nagaraj.Arankal@mphasis.com>) id 1UHqnJ-0003tO-RC
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 07:17:13 +0000
-Received: from [216.39.69.20] (helo=usmail.mphasis.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1UHqnH-0001zr-G3
-	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 07:17:13 +0000
-From: Nagaraj Arankal <Nagaraj.Arankal@mphasis.com>
-Date: Tue, 19 Mar 2013 07:04:07 +0000
-Message-ID: <6E5884E2FD7B14478D60D8585D6CFDE16172A8B9@MPDAMBX01>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: [LTP] Please update LTP SCTP functional tests
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UHnSM-0002sK-G6
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:43:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UHnS6-0001ki-Ju
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:43:22 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2J3h1ht028991
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 23:43:01 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 19 Mar 2013 11:40:53 +0800
+Message-Id: <b686bc8023d3be91d4202ec8554a1280406a70cb.1363664213.git.zliu@redhat.com>
+In-Reply-To: <f18d772317c38415040ac76e38e1082dbc6892ec.1363664213.git.zliu@redhat.com>
+References: <cover.1363664213.git.zliu@redhat.com>
+	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363664213.git.zliu@redhat.com>
+	<ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363664213.git.zliu@redhat.com>
+	<60167c77dc6892bb5a1ae232782cffc107368db8.1363664213.git.zliu@redhat.com>
+	<f18d772317c38415040ac76e38e1082dbc6892ec.1363664213.git.zliu@redhat.com>
+In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
+References: <cover.1363664213.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v4 5/7] lib/mem: updated testoom() and oom() funcs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,263 +34,193 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5079958743958048025=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
---===============5079958743958048025==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_6E5884E2FD7B14478D60D8585D6CFDE16172A8B9MPDAMBX01_"
-
---_000_6E5884E2FD7B14478D60D8585D6CFDE16172A8B9MPDAMBX01_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-In the current version of LTP(ltp-full-20130109), I have seen couple of SCT=
-P Functional tests failures.
-
-
-
-1)test_assoc_abort.c
-2)test_1_to_1_sockopt.c
-
-After adding following patches, both the func_tests passes
-
-1)For test_assoc_abort
-
-
-
-The SCTP_COMM_LOST notification that was a result of an abort
-now contains the additional parameter that includes the error
-from the abort chunk.  Need to account for that when checking
-the received notification.
-
---- a/src/func_tests/test_assoc_abort.c
-+++ b/src/func_tests/test_assoc_abort.c
-@@ -231,7 +231,7 @@ main(int argc, char *argv[])
-                inmessage.msg_controllen =3D sizeof(incmsg);
-                error =3D test_recvmsg(clt_sk[i], &inmessage, MSG_WAITALL);
-                test_check_msg_notification(&inmessage, error,
--                                           sizeof(struct sctp_assoc_change=
-),
-+                                           sizeof(struct sctp_assoc_change=
-)+4,
-                                            SCTP_ASSOC_CHANGE, SCTP_COMM_LO=
-ST);
-
-
-2)For test_1_to_1_sockopt
-test_1_to_1_sockopt: fix deprecated SO_RCVBUF/SO_SNDBUF testcase
-
-Actually, it is not guaranteed, that the rcv/snd buffer size, we send
-is really set by the kernel. For small values, the SOCK_MIN_SNDBUF and
-SOCK_MIN_RCVBUF sizes in include/net/sock.h are used instead. This was
-the sole reason why this test, whose implementation was in 2005, failed.
-Just change it to something bigger is not critical, and we're good to go.
-
-
---- a/src/func_tests/test_1_to_1_sockopt.c
-+++ b/src/func_tests/test_1_to_1_sockopt.c
-@@ -301,7 +301,7 @@ main(void)
-        /* Reducing the SO_RCVBUF value using setsockopt() */
-        /*Minimum value is 128 and hence I am using it*/
-        len =3D sizeof(int);
--       rcvbuf_val_set =3D 128;
-+       rcvbuf_val_set =3D 2048;
-        /* TEST16: Test case for setsockopt SO_RCVBUF */
-        error =3D setsockopt(sk2, SOL_SOCKET, SO_RCVBUF, &rcvbuf_val_set, l=
-en);
-        if (error < 0)@@ -320,7 +320,7 @@ main(void)
-                         "got value differs Set Value=3D%d Get Value=3D%d",
-                         (2*rcvbuf_val_set), rcvbuf_val_get);
--       sndbuf_val_set=3D1024;
-+       sndbuf_val_set =3D 2048;
-        /* TEST17: Test case for setsockopt SO_SNDBUF */
-        error =3D setsockopt(sk2, SOL_SOCKET, SO_SNDBUF, &sndbuf_val_set, l=
-en);
-        if (error < 0)
-
-
-
-It would be nice if the upcoming LTP release could pick up the updated vers=
-ions of the lksctp-tools-1.0.13 tests.
-
-
-
-Thanks,
-Nagaraj Arankal
-
-________________________________
-
-Information transmitted by this e-mail is proprietary to MphasiS, its assoc=
-iated companies and/ or its customers and is intended for use only by the i=
-ndividual or entity to which it is addressed, and may contain information t=
-hat is privileged, confidential or exempt from disclosure under applicable =
-law. If you are not the intended recipient or it appears that this mail has=
- been forwarded to you without proper authority, you are notified that any =
-use or dissemination of this information in any manner is strictly prohibit=
-ed. In such cases, please notify us immediately at mailmaster@mphasis.com a=
-nd delete this mail from your records.
-
---_000_6E5884E2FD7B14478D60D8585D6CFDE16172A8B9MPDAMBX01_
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html dir=3D"ltr">
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
-1">
-<style id=3D"owaParaStyle">
-<!--
-p
-	{margin-top:0px;
-	margin-bottom:0px}
--->
-</style>
-</head>
-<body>
-<div style=3D"direction:ltr; font-family:Tahoma; color:#000000; font-size:1=
-0pt">
-<div>
-<p>Hi,</p>
-<p>In the current version of LTP(ltp-full-20130109), I have seen couple of =
-SCTP Functional tests failures.</p>
-<p>&nbsp;</p>
-<p>1)test_assoc_abort.c<br>
-2)test_1_to_1_sockopt.c<br>
-</p>
-<p>After adding following patches, both the func_tests passes</p>
-<p>1)For test_assoc_abort</p>
-<p>&nbsp;</p>
-<p>The SCTP_COMM_LOST notification that was a result of an abort<br>
-now contains the additional parameter that includes the error<br>
-from the abort chunk.&nbsp; Need to account for that when checking<br>
-the received notification.<br>
-<br>
---- a/src/func_tests/test_assoc_abort.c<br>
-&#43;&#43;&#43; b/src/func_tests/test_assoc_abort.c<br>
-@@ -231,7 &#43;231,7 @@ main(int argc, char *argv[])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp; inmessage.msg_controllen =3D sizeof(incmsg);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp; error =3D test_recvmsg(clt_sk[i], &amp;inmessage, MSG_WAITA=
-LL);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp; test_check_msg_notification(&amp;inmessage, error,<br>
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp; sizeof(struct sctp_assoc_change),<br>
-&#43;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sizeof(struct sctp_assoc_change)&#43;4,<br=
->
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SCTP_ASSOC_CHANGE, SCTP_COMM_LOST);<br>
-<br>
-<br>
-2)For test_1_to_1_sockopt<br>
-test_1_to_1_sockopt: fix deprecated SO_RCVBUF/SO_SNDBUF testcase<br>
-<br>
-Actually, it is not guaranteed, that the rcv/snd buffer size, we send<br>
-is really set by the kernel. For small values, the SOCK_MIN_SNDBUF and<br>
-SOCK_MIN_RCVBUF sizes in include/net/sock.h are used instead. This was<br>
-the sole reason why this test, whose implementation was in 2005, failed.<br=
->
-Just change it to something bigger is not critical, and we're good to go.<b=
-r>
-<br>
-<br>
---- a/src/func_tests/test_1_to_1_sockopt.c<br>
-&#43;&#43;&#43; b/src/func_tests/test_1_to_1_sockopt.c<br>
-@@ -301,7 &#43;301,7 @@ main(void)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Reducing the SO_RCVBUF value =
-using setsockopt() */<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*Minimum value is 128 and hence=
- I am using it*/<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; len =3D sizeof(int);<br>
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rcvbuf_val_set =3D 128;<br>
-&#43;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rcvbuf_val_set =3D 2048;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* TEST16: Test case for setsock=
-opt SO_RCVBUF */<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error =3D setsockopt(sk2, SOL_SO=
-CKET, SO_RCVBUF, &amp;rcvbuf_val_set, len);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (error &lt; 0)@@ -320,7 &#43;=
-320,7 @@ main(void)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot=
-;got value differs Set Value=3D%d Get Value=3D%d&quot;,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2*rc=
-vbuf_val_set), rcvbuf_val_get);<br>
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sndbuf_val_set=3D1024;<br>
-&#43;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sndbuf_val_set =3D 2048;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* TEST17: Test case for setsock=
-opt SO_SNDBUF */<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error =3D setsockopt(sk2, SOL_SO=
-CKET, SO_SNDBUF, &amp;sndbuf_val_set, len);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (error &lt; 0)</p>
-<p>&nbsp;</p>
-<p>It would be nice if the upcoming LTP release could pick up the updated v=
-ersions of the lksctp-tools-1.0.13 tests.</p>
-<p>&nbsp;</p>
-<p>Thanks,</p>
-<div style=3D"font-family:Tahoma; font-size:13px">
-<div><font size=3D"2" face=3D"Tahoma">
-<p class=3D"MsoNormal"><span style=3D"font-family:'Trebuchet MS','sans-seri=
-f'; color:#1f497d; font-size:10pt">Nagaraj Arankal</span></p>
-</font></div>
-</div>
-</div>
-</div>
-<br>
-<hr>
-<font face=3D"Courier New" color=3D"Navy" size=3D"1"><br>
-Information transmitted by this e-mail is proprietary to MphasiS, its assoc=
-iated companies and/ or its customers and is intended for use only by the i=
-ndividual or entity to which it is addressed, and may contain information t=
-hat is privileged, confidential
- or exempt from disclosure under applicable law. If you are not the intende=
-d recipient or it appears that this mail has been forwarded to you without =
-proper authority, you are notified that any use or dissemination of this in=
-formation in any manner is strictly
- prohibited. In such cases, please notify us immediately at mailmaster@mpha=
-sis.com and delete this mail from your records.<br>
-</font>
-</body>
-</html>
-
---_000_6E5884E2FD7B14478D60D8585D6CFDE16172A8B9MPDAMBX01_--
-
-
---===============5079958743958048025==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+
+the 'numa' parameter inside testoom() and 'mempolicy' inside oom()
+were useless, so removed them.
+
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/include/mem.h |  4 ++--
+ testcases/kernel/mem/lib/mem.c     | 13 +++++--------
+ testcases/kernel/mem/oom/oom01.c   |  6 +++---
+ testcases/kernel/mem/oom/oom02.c   |  6 +++---
+ testcases/kernel/mem/oom/oom03.c   | 10 +++++-----
+ testcases/kernel/mem/oom/oom04.c   |  4 ++--
+ 6 files changed, 20 insertions(+), 23 deletions(-)
+
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 1233493..fdf558e 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -25,8 +25,8 @@
+ #define KSM			4
+ 
+ long overcommit;
+-void oom(int testcase, int mempolicy, int lite);
+-void testoom(int mempolicy, int lite, int numa);
++void oom(int testcase, int lite);
++void testoom(int mempolicy, int lite);
+ 
+ /* KSM */
+ 
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 0b8974c..2c2ab5d 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -61,7 +61,7 @@ static void _test_alloc(int testcase, int lite)
+ 				return;
+ }
+ 
+-void oom(int testcase, int mempolicy, int lite)
++void oom(int testcase, int lite)
+ {
+ 	pid_t pid;
+ 	int status;
+@@ -91,7 +91,7 @@ void oom(int testcase, int mempolicy, int lite)
+ 	}
+ }
+ 
+-void testoom(int mempolicy, int lite, int numa)
++void testoom(int mempolicy, int lite)
+ {
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
+@@ -134,20 +134,17 @@ void testoom(int mempolicy, int lite, int numa)
+ 	}
+ #endif
+ 
+-	if (numa && !mempolicy)
+-		write_cpusets(get_a_numa_node(cleanup));
+-
+ 	tst_resm(TINFO, "start normal OOM testing.");
+-	oom(NORMAL, mempolicy, lite);
++	oom(NORMAL, lite);
+ 
+ 	tst_resm(TINFO, "start OOM testing for mlocked pages.");
+-	oom(MLOCK, mempolicy, lite);
++	oom(MLOCK, lite);
+ 
+ 	if (access(PATH_KSM, F_OK) == -1)
+ 		tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+ 
+ 	tst_resm(TINFO, "start OOM testing for KSM pages.");
+-	oom(KSM, mempolicy, lite);
++	oom(KSM, lite);
+ }
+ 
+ /* KSM */
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 0401e31..43a5319 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -61,13 +61,13 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
+ 
+ 		set_sys_tune("overcommit_memory", 2, 1);
+-		oom(OVERCOMMIT, 0, 0);
++		oom(OVERCOMMIT, 0);
+ 
+ 		set_sys_tune("overcommit_memory", 0, 1);
+-		oom(OVERCOMMIT, 0, 0);
++		oom(OVERCOMMIT, 0);
+ 
+ 		set_sys_tune("overcommit_memory", 1, 1);
+-		testoom(0, 0, 0);
++		testoom(0, 0);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
+index 3bc8567..1fd199b 100644
+--- a/testcases/kernel/mem/oom/oom02.c
++++ b/testcases/kernel/mem/oom/oom02.c
+@@ -65,13 +65,13 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
+ 
+ 		tst_resm(TINFO, "OOM on MPOL_BIND mempolicy...");
+-		testoom(MPOL_BIND, 0, 1);
++		testoom(MPOL_BIND, 0);
+ 
+ 		tst_resm(TINFO, "OOM on MPOL_INTERLEAVE mempolicy...");
+-		testoom(MPOL_INTERLEAVE, 0, 1);
++		testoom(MPOL_INTERLEAVE, 0);
+ 
+ 		tst_resm(TINFO, "OOM on MPOL_PREFERRED mempolicy...");
+-		testoom(MPOL_PREFERRED, 0, 1);
++		testoom(MPOL_PREFERRED, 0);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index 43ad595..124e95f 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
+ 
+ 		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
+ 		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
+-		testoom(0, 0, 0);
++		testoom(0, 0);
+ 
+ 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
+ 			if (errno == ENOENT)
+@@ -78,15 +78,15 @@ int main(int argc, char *argv[])
+ 				tst_brkm(TBROK | TERRNO, cleanup, "access");
+ 		} else {
+ 			write_file(MEMCG_SW_LIMIT, mem);
+-			testoom(0, 1, 0);
++			testoom(0, 1);
+ 		}
+ 
+ 		/* OOM for MEMCG with mempolicy */
+ 		if (is_numa(cleanup)) {
+ 			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
+-			testoom(MPOL_BIND, 0, 1);
+-			testoom(MPOL_INTERLEAVE, 0, 1);
+-			testoom(MPOL_PREFERRED, 0, 1);
++			testoom(MPOL_BIND, 0);
++			testoom(MPOL_INTERLEAVE, 0);
++			testoom(MPOL_PREFERRED, 0);
+ 		}
+ 	}
+ 	cleanup();
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 1ad7334..4d3f2f4 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
+ 
+ 		tst_resm(TINFO, "OOM on CPUSET...");
+-		testoom(0, 0, 0);
++		testoom(0, 0);
+ 
+ 		if (is_numa(cleanup)) {
+ 			/*
+@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
+ 			write_cpuset_files(CPATH_NEW,
+ 					   "memory_migrate", "1");
+ 			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
+-			testoom(0, 0, 0);
++			testoom(0, 0);
+ 		}
+ 	}
+ 	cleanup();
+-- 
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
 http://p.sf.net/sfu/appdyn_d2d_mar
---===============5079958743958048025==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5079958743958048025==--
-
