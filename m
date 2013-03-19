@@ -1,23 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1UIGUu-0004cc-1N
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 10:43:56 +0000
-Received: from mail-da0-f53.google.com ([209.85.210.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UIGUs-0001sR-LZ
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 10:43:56 +0000
-Received: by mail-da0-f53.google.com with SMTP id n34so907537dal.26
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 20 Mar 2013 03:43:48 -0700 (PDT)
-Message-ID: <51498D7C.1000600@casparzhang.com>
-Date: Wed, 20 Mar 2013 18:20:44 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
-MIME-Version: 1.0
-References: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
-In-Reply-To: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2] inode02: fix "slash" array overrun
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UHnS2-0003o6-9N
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:43:02 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UHnS1-0003FM-Gv
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:43:02 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2J3gue4007965
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 23:42:56 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 19 Mar 2013 11:40:51 +0800
+Message-Id: <60167c77dc6892bb5a1ae232782cffc107368db8.1363664213.git.zliu@redhat.com>
+In-Reply-To: <ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363664213.git.zliu@redhat.com>
+References: <cover.1363664213.git.zliu@redhat.com>
+	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363664213.git.zliu@redhat.com>
+	<ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363664213.git.zliu@redhat.com>
+In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
+References: <cover.1363664213.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v4 3/7] numa_helper: added a new function is_numa()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,89 +32,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 03/20/2013 05:44 PM, Jan Stancek wrote:
-> Remove "slash" array and convert strcat to snprintf.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Added a new function is_numa(), which is desinged to judge
+whether a system contains more than 1 available numa nodes
+or not, and lots of cases need it.
 
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/include/numa_helper.h |  1 +
+ testcases/kernel/lib/numa_helper.c     | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-> ---
->   testcases/kernel/fs/inode/inode02.c |   26 ++++++++++++++++----------
->   1 files changed, 16 insertions(+), 10 deletions(-)
->
-> diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-> index 783edf8..54e3927 100644
-> --- a/testcases/kernel/fs/inode/inode02.c
-> +++ b/testcases/kernel/fs/inode/inode02.c
-> @@ -80,7 +80,6 @@ int nchild;
->   FILE *list_stream = NULL;
->   int list_id;
->   int file_id;
-> -char slash[1];
->
->   int increment_name(), get_next_name(), mode(), escrivez(), massmurder();
->   int max_depth, max_breadth, file_length;
-> @@ -249,9 +248,7 @@ int tree()
->   	char path_list_string[PATH_STRING_LENGTH + 10];
->   	int len;
->   	int status;
-> -
-> -	slash[0] = '/';
-> -	slash[1] = '\0';
-> +	int snp_ret;
->
->   	/********************************/
->   	/*                              */
-> @@ -287,9 +284,13 @@ int tree()
->   	/*                                      */
->   	/****************************************/
->
-> -	strcpy(path_list_string, path_string);
-> -	strcat(path_list_string, slash);
-> -	strcat(path_list_string, "path_list");
-> +	snp_ret = snprintf(path_list_string, sizeof(path_list_string),
-> +		"%s/path_list",	path_string);
-> +	if (snp_ret < 0 || snp_ret >= sizeof(path_list_string)) {
-> +		tst_resm(TBROK, "snprintf(path_list_string,..) returned %d",
-> +			snp_ret);
-> +		exit(-1);
-> +	}
->   	list_id = creat(path_list_string, FILE_MODE);
->   	if (list_id == -1) {
->   		fprintf(temp,
-> @@ -411,6 +412,7 @@ int level;			/* the tree depth variable */
->   	char new_string[PATH_STRING_LENGTH + 1];
->   	int new_level;
->   	int i, j;		/* iteration counters */
-> +	int snp_ret;
->
->   	switch_flag = level & TRUE;
->   	if (strlen(string) >= MAX_PATH_STRING_LENGTH) {
-> @@ -427,9 +429,13 @@ int level;			/* the tree depth variable */
->   	} else if (level < max_depth) {
->   		for (i = 0; i <= max_breadth; i++) {
->   			get_next_name();
-> -			strcpy(new_string, string);
-> -			strcat(new_string, slash);
-> -			strcat(new_string, name);
-> +			snp_ret = snprintf(new_string, sizeof(new_string),
-> +				"%s/%s", string, name);
-> +			if (snp_ret < 0 || snp_ret >= sizeof(new_string)) {
-> +				tst_resm(TBROK, "snprintf(new_string,..) "
-> +					"returned %d", snp_ret);
-> +				exit(-1);
-> +			}
->
->   			/****************************************/
->   			/*                                      */
->
+diff --git a/testcases/kernel/include/numa_helper.h b/testcases/kernel/include/numa_helper.h
+index 8e82d7b..251fd54 100644
+--- a/testcases/kernel/include/numa_helper.h
++++ b/testcases/kernel/include/numa_helper.h
+@@ -34,5 +34,6 @@ unsigned long get_max_node(void);
+ int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
+ int get_allowed_nodes(int flag, int count, ...);
+ void nh_dump_nodes();
++int is_numa(void (*cleanup_fn)(void));
+ 
+ #endif
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index 4ab8e3c..4157816 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -265,3 +265,27 @@ void nh_dump_nodes()
+ 	print_node_info(NH_CPUS);
+ 	print_node_info(NH_MEMS | NH_CPUS);
+ }
++
++/*
++ * is_numa - judge a system is NUMA system or not
++ * NOTE: the function is designed to try to find more than
++ *       1 available node, at least each node contains memory.
++ * WARN: Don't use this func in child, as it calls tst_brkm()
++ * RETURNS:
++ *     0 - it's not a NUMA system
++ *     1 - it's a NUMA system
++ */
++int is_numa(void (*cleanup_fn)(void))
++{
++	int ret;
++	int numa_nodes = 0;
++
++	ret = get_allowed_nodes_arr(NH_MEMS, &numa_nodes, NULL);
++	if (ret < 0)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "get_allowed_nodes_arr");
++
++	if (numa_nodes > 1)
++		return 1;
++	else
++		return 0;
++}
+-- 
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
