@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UCpO3-0003ZF-CE
-	for ltp-list@lists.sourceforge.net; Tue, 05 Mar 2013 10:46:23 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UHnRy-0003n6-CK
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:42:58 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UCpNz-00082v-Dz
-	for ltp-list@lists.sourceforge.net; Tue, 05 Mar 2013 10:46:22 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r25AkCaJ014238
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Mar 2013 18:46:12 +0800
-Message-ID: <5135CC80.5060800@cn.fujitsu.com>
-Date: Tue, 05 Mar 2013 18:44:16 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <51346595.80103@cn.fujitsu.com> <20130305095125.GA13876@rei.Home>
-In-Reply-To: <20130305095125.GA13876@rei.Home>
-Subject: [LTP] [PATCHv2]pthread_once/1-1.c : cleanup & error checks
+	id 1UHnRx-0000Kw-6o
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 03:42:58 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2J3gpcW013556
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 23:42:51 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 19 Mar 2013 11:40:49 +0800
+Message-Id: <610d014b3e51b301d3f2adca6e8b068e62aba626.1363664213.git.zliu@redhat.com>
+In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
+References: <cover.1363664213.git.zliu@redhat.com>
+In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
+References: <cover.1363664213.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v4 1/7] lib/mem: modified _gather_cpus() as
+	_gather_node_cpus()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,100 +31,96 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
+The previous _gather_cpus() tried to collect all the specified
+node's cpus, but it didn't pay attention to the offline cpus,
+if one cpu in the specified node were offline, it can't write
+the cpu number to cgroups/*.cpus, and return -EINVAL.
 
-1.Add error checks to:
+The patch fixed it, and modified the function name, as the new
+name make more sense.
 
-  Make sure this case not slip into one situation that
-  the first pthread_once fails, and the second successes,
-  then the case passes with bypassing its assertion.
-
-  Give more detailed and exact execute result.
-
-2.Replace "posixtest.h" with "testfrmw.h" as the log frame
-  to keep consistent with other cases in the same directory.
-
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- .../conformance/interfaces/pthread_once/1-1.c      | 32 ++++++++++++++++------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+ testcases/kernel/mem/lib/mem.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
-index 3a7c861..c7ae170 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_once/1-1.c
-@@ -21,9 +21,17 @@
-  *   passed to it.  If it does, the test fails.
-  */
-
-+/* We are testing conformance to IEEE Std 1003.1, 2003 Edition */
-+#define _POSIX_C_SOURCE 200112L
-+
- #include <pthread.h>
- #include <stdio.h>
--#include "posixtest.h"
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+#include "../testfrmw/testfrmw.h"
-+#include "../testfrmw/testfrmw.c"
-
- /* Keeps track of how many times the init function has been called. */
- int init_flag;
-@@ -37,23 +45,29 @@ void *an_init_func()
-
- int main()
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index a827b25..72ac06d 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -20,6 +20,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "safe_file_ops.h"
+ #include "_private.h"
+ #include "mem.h"
+ #include "numa_helper.h"
+@@ -481,20 +482,37 @@ void ksm_usage(void)
+ 
+ /* cpuset/memcg */
+ 
+-static void _gather_cpus(char *cpus, long nd)
++static void _gather_node_cpus(char *cpus, long nd)
  {
-+	int ret = 0;
-+
- 	pthread_once_t once_control = PTHREAD_ONCE_INIT;
-
- 	init_flag = 0;
-
-+	output_init();
-+
- 	/* Call pthread_once, passing it the once_control */
--	pthread_once(&once_control, (void *)an_init_func);
-+	ret = pthread_once(&once_control, (void *)an_init_func);
-+	if (ret != 0)
-+		UNRESOLVED(ret, "pthread_once failed");
-
- 	/* Call pthread_once again. The init function should not be
- 	 * called. */
--	pthread_once(&once_control, (void *)an_init_func);
-+	ret = pthread_once(&once_control, (void *)an_init_func);
-+	if (ret != 0)
-+		UNRESOLVED(ret, "pthread_once failed");
-
--	if (init_flag != 1) {
--		printf("Test FAILED\n");
--		return PTS_FAIL;
--	}
-+	if (init_flag != 1)
-+		FAILED("an_init_func runs two times\n");
-
--	printf("Test PASSED\n");
--	return PTS_PASS;
-+	output("TEST PASSED\n");
-
-+	PASSED;
+ 	int ncpus = 0;
+ 	int i;
++	long online;
+ 	char buf[BUFSIZ];
++	char path[BUFSIZ], path1[BUFSIZ];
+ 
+ 	while (path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
+ 		ncpus++;
+ 
+-	for (i = 0; i < ncpus; i++)
+-		if (path_exist(PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i)) {
++	for (i = 0; i < ncpus; i++) {
++		snprintf(path, BUFSIZ,
++			 PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i);
++		if (path_exist(path, nd, i)) {
++			snprintf(path1, BUFSIZ, "%s/online", path);
++			/*
++			 * No cpu0/online knob, as it can't support to
++			 * on/offline cpu0, so if the 'nd' node contains
++			 * cpu0, it should skip to check cpu0/online's value.
++			 */
++			if (i == 0)
++				goto next;
++			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
++			if (online == 0)
++				continue;
++next:
+ 			sprintf(buf, "%d,", i);
+ 			strcat(cpus, buf);
+ 		}
++	}
+ 	/* Remove the trailing comma. */
+ 	cpus[strlen(cpus) - 1] = '\0';
  }
+@@ -563,7 +581,7 @@ void write_cpusets(long nd)
+ 	snprintf(buf, BUFSIZ, "%ld", nd);
+ 	write_cpuset_files(CPATH_NEW, "mems", buf);
+ 
+-	_gather_cpus(cpus, nd);
++	_gather_node_cpus(cpus, nd);
+ 	write_cpuset_files(CPATH_NEW, "cpus", cpus);
+ 
+ 	snprintf(buf, BUFSIZ, "%d", getpid());
 -- 
-1.7.12
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
 Make your web apps faster with AppDynamics
 Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+http://p.sf.net/sfu/appdyn_d2d_mar
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
