@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UIFZg-0004TS-Kg
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 09:44:48 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIFZd-0000XP-7V
-	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 09:44:48 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2K9idIJ002887
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 20 Mar 2013 05:44:39 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r2K9ic66007625
-	for <ltp-list@lists.sourceforge.net>; Wed, 20 Mar 2013 05:44:38 -0400
+	(envelope-from <jstancek@redhat.com>) id 1UHyJE-0004CK-AI
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 15:18:40 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UHyJC-0007Zl-Vi
+	for ltp-list@lists.sourceforge.net; Tue, 19 Mar 2013 15:18:40 +0000
+Received: from zmail17.collab.prod.int.phx2.redhat.com
+	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
+	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id r2JFIXr3028626
+	for <ltp-list@lists.sourceforge.net>; Tue, 19 Mar 2013 11:18:33 -0400
+Date: Tue, 19 Mar 2013 11:18:33 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 20 Mar 2013 10:44:32 +0100
-Message-Id: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] inode02: fix "slash" array overrun
+Message-ID: <623806259.21081036.1363706313082.JavaMail.root@redhat.com>
+In-Reply-To: <1437086244.21063924.1363705319128.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] Coverity report for ltp-20130109
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,87 +27,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Remove "slash" array and convert strcat to snprintf.
+Hi,
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/fs/inode/inode02.c |   26 ++++++++++++++++----------
- 1 files changed, 16 insertions(+), 10 deletions(-)
+What is Coverity?
+Coverity Prevent is commercial enterprise level tool for static analysis
+(analysis based only on compiling of sources, not based on running of binary)
+of the C/C++ and Java code.
 
-diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-index 783edf8..54e3927 100644
---- a/testcases/kernel/fs/inode/inode02.c
-+++ b/testcases/kernel/fs/inode/inode02.c
-@@ -80,7 +80,6 @@ int nchild;
- FILE *list_stream = NULL;
- int list_id;
- int file_id;
--char slash[1];
- 
- int increment_name(), get_next_name(), mode(), escrivez(), massmurder();
- int max_depth, max_breadth, file_length;
-@@ -249,9 +248,7 @@ int tree()
- 	char path_list_string[PATH_STRING_LENGTH + 10];
- 	int len;
- 	int status;
--
--	slash[0] = '/';
--	slash[1] = '\0';
-+	int snp_ret;
- 
- 	/********************************/
- 	/*                              */
-@@ -287,9 +284,13 @@ int tree()
- 	/*                                      */
- 	/****************************************/
- 
--	strcpy(path_list_string, path_string);
--	strcat(path_list_string, slash);
--	strcat(path_list_string, "path_list");
-+	snp_ret = snprintf(path_list_string, sizeof(path_list_string),
-+		"%s/path_list",	path_string);
-+	if (snp_ret < 0 || snp_ret >= sizeof(path_list_string)) {
-+		tst_resm(TBROK, "snprintf(path_list_string,..) returned %d",
-+			snp_ret);
-+		exit(-1);
-+	}
- 	list_id = creat(path_list_string, FILE_MODE);
- 	if (list_id == -1) {
- 		fprintf(temp,
-@@ -411,6 +412,7 @@ int level;			/* the tree depth variable */
- 	char new_string[PATH_STRING_LENGTH + 1];
- 	int new_level;
- 	int i, j;		/* iteration counters */
-+	int snp_ret;
- 
- 	switch_flag = level & TRUE;
- 	if (strlen(string) >= MAX_PATH_STRING_LENGTH) {
-@@ -427,9 +429,13 @@ int level;			/* the tree depth variable */
- 	} else if (level < max_depth) {
- 		for (i = 0; i <= max_breadth; i++) {
- 			get_next_name();
--			strcpy(new_string, string);
--			strcat(new_string, slash);
--			strcat(new_string, name);
-+			snp_ret = snprintf(new_string, sizeof(new_string),
-+				"%s/%s", string, name);
-+			if (snp_ret < 0 || snp_ret >= sizeof(new_string)) {
-+				tst_resm(TBROK, "snprintf(new_string,..) "
-+					"returned %d", snp_ret);
-+				exit(-1);
-+			}
- 
- 			/****************************************/
- 			/*                                      */
--- 
-1.7.1
+analyzer coverity
+analyzer-args --wait-for-license -co BAD_FREE:allow_first_field:true --all
+analyzer-version Coverity Static Analysis for C/C++ version 6.5.1 on Linux 2.6.32-279.el6.x86_64 x86_64
 
+I ran it for current LTP stable (20130109) (on top of RHEL6.4)
+and I'm sharing results here:
+http://jan.stancek.eu/coverity/ltp-20130109-1.el6.err.xz
+
+I looked at results only very briefly so far. The one that caught my
+eye was actually my previous email: inode02: fix "slash" array overrun.
+This run includes "--all" parameter, so it's likely there are some false
+positives.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
