@@ -2,30 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UGWCI-0004Wd-99
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:30 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UGWCC-0003FA-OV
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:05:30 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2FF5I8M018345
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Mar 2013 11:05:18 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Fri, 15 Mar 2013 23:03:11 +0800
-Message-Id: <6db9a42549e171e950e784135a5d01a53f0b4b4f.1363358877.git.zliu@redhat.com>
-In-Reply-To: <a5d23391d87bdbaa500d500c4677d5a7762f9d1c.1363358877.git.zliu@redhat.com>
-References: <cover.1363358877.git.zliu@redhat.com>
-	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363358877.git.zliu@redhat.com>
-	<fd2789e70f79cb525ca7317061adab90f6387530.1363358877.git.zliu@redhat.com>
-	<5de33faa5b15f22e96d68d1b543eb4bcfc64cfb7.1363358877.git.zliu@redhat.com>
-	<a5ee11cc800fc73683472eeb2ba71cea7472035c.1363358877.git.zliu@redhat.com>
-	<a5d23391d87bdbaa500d500c4677d5a7762f9d1c.1363358877.git.zliu@redhat.com>
-In-Reply-To: <cover.1363358877.git.zliu@redhat.com>
-References: <cover.1363358877.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v2 6/7] mm/oom05: new testcase
+	(envelope-from <caspar@casparzhang.com>) id 1UIGUu-0004cc-1N
+	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 10:43:56 +0000
+Received: from mail-da0-f53.google.com ([209.85.210.53])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UIGUs-0001sR-LZ
+	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 10:43:56 +0000
+Received: by mail-da0-f53.google.com with SMTP id n34so907537dal.26
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 20 Mar 2013 03:43:48 -0700 (PDT)
+Message-ID: <51498D7C.1000600@casparzhang.com>
+Date: Wed, 20 Mar 2013 18:20:44 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
+MIME-Version: 1.0
+References: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
+In-Reply-To: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] inode02: fix "slash" array overrun
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,189 +27,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-added a new case to test OOM under the combination
-of MEMCG and CPUSET.
+On 03/20/2013 05:44 PM, Jan Stancek wrote:
+> Remove "slash" array and convert strcat to snprintf.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- runtest/mm                       |   1 +
- testcases/kernel/mem/oom/oom05.c | 147 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 148 insertions(+)
- create mode 100644 testcases/kernel/mem/oom/oom05.c
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
-diff --git a/runtest/mm b/runtest/mm
-index a8bd605..56b83f8 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -77,6 +77,7 @@ oom01 oom01
- oom02 oom02
- oom03 oom03
- oom04 oom04
-+oom05 oom05
- 
- swapping01 swapping01 -i 5
- 
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-new file mode 100644
-index 0000000..0176d42
---- /dev/null
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -0,0 +1,147 @@
-+/*
-+ * Out Of Memory (OOM) for MEMCG and CPUSET
-+ *
-+ * The program is designed to cope with unpredictable like amount and
-+ * system physical memory, swap size and other VMM technology like KSM,
-+ * memcg, memory hotplug and so on which may affect the OOM
-+ * behaviours. It simply increase the memory consumption 3G each time
-+ * until all the available memory is consumed and OOM is triggered.
-+ *
-+ * Copyright (C) 2013  Red Hat, Inc.
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+#include "config.h"
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include "numa_helper.h"
-+#include "test.h"
-+#include "usctest.h"
-+#include "mem.h"
-+
-+char *TCID = "oom05";
-+int TST_TOTAL = 1;
-+
-+#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-+	&& HAVE_MPOL_CONSTANTS
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	int lc;
-+	int swap_acc_on = 1;
-+	char mem[BUFSIZ];
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+#if __WORDSIZE == 32
-+	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
-+#endif
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		tst_resm(TINFO, "OOM on CPUSET & MEMCG...");
-+		testoom(0, 0);
-+
-+		/*
-+		 * Under NUMA system, the migration of cpuset's memory
-+ 		 * is in charge of cpuset.memory_migrate, we can write
-+		 * 1 to cpuset.memory_migrate to enable the migration.
-+		 */
-+		if (is_numa(cleanup)) {
-+			write_cpuset_files(CPATH_NEW, "memory_migrate", "1");
-+			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
-+					"cpuset.memory_migrate=1");
-+			testoom(0, 0);
-+		}
-+
-+		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-+			if (errno == ENOENT) {
-+				tst_resm(TCONF,
-+					 "memcg swap accounting is disabled");
-+				swap_acc_on = 0;
-+			} else
-+				tst_brkm(TBROK|TERRNO, cleanup, "access");
-+		}
-+
-+		if (swap_acc_on) {
-+			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
-+					"special memswap limitation:");
-+			snprintf(mem, BUFSIZ, "%ld", TESTMEM);
-+			write_file(MEMCG_SW_LIMIT, mem);
-+			testoom(0, 0);
-+
-+			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
-+					"disabled memswap limitation:");
-+			write_file(MEMCG_SW_LIMIT, "-1");
-+			testoom(0, 0);
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	tst_require_root(NULL);
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+
-+	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-+	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-+	write_memcg();
-+
-+	set_sys_tune("overcommit_memory", 1, 1);
-+
-+	if (is_numa(cleanup))
-+		/* For NUMA system, using the first node for cpuset.mems */
-+		write_cpusets(get_a_numa_node(cleanup));
-+	else
-+		/* For nonNUMA system, using node0 for cpuset.mems */
-+		write_cpusets(0);
-+
-+	overcommit = get_sys_tune("overcommit_memory");
-+}
-+
-+void cleanup(void)
-+{
-+	set_sys_tune("overcommit_memory", overcommit, 0);
-+	umount_mem(CPATH, CPATH_NEW);
-+	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
-+
-+	TEST_CLEANUP;
-+}
-+
-+#else /* no NUMA */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-+}
-+#endif
--- 
-1.7.11.7
+> ---
+>   testcases/kernel/fs/inode/inode02.c |   26 ++++++++++++++++----------
+>   1 files changed, 16 insertions(+), 10 deletions(-)
+>
+> diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
+> index 783edf8..54e3927 100644
+> --- a/testcases/kernel/fs/inode/inode02.c
+> +++ b/testcases/kernel/fs/inode/inode02.c
+> @@ -80,7 +80,6 @@ int nchild;
+>   FILE *list_stream = NULL;
+>   int list_id;
+>   int file_id;
+> -char slash[1];
+>
+>   int increment_name(), get_next_name(), mode(), escrivez(), massmurder();
+>   int max_depth, max_breadth, file_length;
+> @@ -249,9 +248,7 @@ int tree()
+>   	char path_list_string[PATH_STRING_LENGTH + 10];
+>   	int len;
+>   	int status;
+> -
+> -	slash[0] = '/';
+> -	slash[1] = '\0';
+> +	int snp_ret;
+>
+>   	/********************************/
+>   	/*                              */
+> @@ -287,9 +284,13 @@ int tree()
+>   	/*                                      */
+>   	/****************************************/
+>
+> -	strcpy(path_list_string, path_string);
+> -	strcat(path_list_string, slash);
+> -	strcat(path_list_string, "path_list");
+> +	snp_ret = snprintf(path_list_string, sizeof(path_list_string),
+> +		"%s/path_list",	path_string);
+> +	if (snp_ret < 0 || snp_ret >= sizeof(path_list_string)) {
+> +		tst_resm(TBROK, "snprintf(path_list_string,..) returned %d",
+> +			snp_ret);
+> +		exit(-1);
+> +	}
+>   	list_id = creat(path_list_string, FILE_MODE);
+>   	if (list_id == -1) {
+>   		fprintf(temp,
+> @@ -411,6 +412,7 @@ int level;			/* the tree depth variable */
+>   	char new_string[PATH_STRING_LENGTH + 1];
+>   	int new_level;
+>   	int i, j;		/* iteration counters */
+> +	int snp_ret;
+>
+>   	switch_flag = level & TRUE;
+>   	if (strlen(string) >= MAX_PATH_STRING_LENGTH) {
+> @@ -427,9 +429,13 @@ int level;			/* the tree depth variable */
+>   	} else if (level < max_depth) {
+>   		for (i = 0; i <= max_breadth; i++) {
+>   			get_next_name();
+> -			strcpy(new_string, string);
+> -			strcat(new_string, slash);
+> -			strcat(new_string, name);
+> +			snp_ret = snprintf(new_string, sizeof(new_string),
+> +				"%s/%s", string, name);
+> +			if (snp_ret < 0 || snp_ret >= sizeof(new_string)) {
+> +				tst_resm(TBROK, "snprintf(new_string,..) "
+> +					"returned %d", snp_ret);
+> +				exit(-1);
+> +			}
+>
+>   			/****************************************/
+>   			/*                                      */
+>
 
 
 ------------------------------------------------------------------------------
