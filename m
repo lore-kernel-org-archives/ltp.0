@@ -1,28 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UHRUe-0005Uv-Nn
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 04:16:16 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHRUd-0004ZU-T1
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 04:16:16 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2I4GA7D009216
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 00:16:10 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 18 Mar 2013 12:14:00 +0800
-Message-Id: <60167c77dc6892bb5a1ae232782cffc107368db8.1363579539.git.zliu@redhat.com>
-In-Reply-To: <ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363579539.git.zliu@redhat.com>
-References: <cover.1363579539.git.zliu@redhat.com>
-	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363579539.git.zliu@redhat.com>
-	<ebfb6ab9d3fba5067be674e22118c4cd4cea4ba8.1363579539.git.zliu@redhat.com>
-In-Reply-To: <cover.1363579539.git.zliu@redhat.com>
-References: <cover.1363579539.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v3 3/7] numa_helper: added a new function is_numa()
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UIIpG-0007bH-9B
+	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 13:13:06 +0000
+Date: Wed, 20 Mar 2013 14:13:46 +0100
+From: chrubis@suse.cz
+Message-ID: <20130320131346.GA11619@rei.suse.cz>
+References: <165189158.21613313.1363773111224.JavaMail.root@redhat.com>
+	<1973851267.21619084.1363773460784.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1973851267.21619084.1363773460784.JavaMail.root@redhat.com>
+Subject: Re: [LTP] Coverity report for ltp-20130320
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,68 +22,25 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Added a new function is_numa(), which is desinged to judge
-whether a system contains more than 1 available numa nodes
-or not, and lots of cases need it.
+Hi!
+> This run is with LTP git snapshot from 20130320 (on top of RHEL6.4),
+> the results now include also Open Posix testcases:
+> http://jan.stancek.eu/coverity/ltp-20130320-1.el6.err.xz
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/include/numa_helper.h |  1 +
- testcases/kernel/lib/numa_helper.c     | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+Looking at the results for open posix testsuite some of the reports
+should have been reported as compilation warnings. I've commited a patch
+that enables warnings in the open posix testsuite. Patches to make it
+less noisy and to fix obvious problems will follow.
 
-diff --git a/testcases/kernel/include/numa_helper.h b/testcases/kernel/include/numa_helper.h
-index 8e82d7b..251fd54 100644
---- a/testcases/kernel/include/numa_helper.h
-+++ b/testcases/kernel/include/numa_helper.h
-@@ -34,5 +34,6 @@ unsigned long get_max_node(void);
- int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes);
- int get_allowed_nodes(int flag, int count, ...);
- void nh_dump_nodes();
-+int is_numa(void (*cleanup_fn)(void));
- 
- #endif
-diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
-index 4ab8e3c..4157816 100644
---- a/testcases/kernel/lib/numa_helper.c
-+++ b/testcases/kernel/lib/numa_helper.c
-@@ -265,3 +265,27 @@ void nh_dump_nodes()
- 	print_node_info(NH_CPUS);
- 	print_node_info(NH_MEMS | NH_CPUS);
- }
-+
-+/*
-+ * is_numa - judge a system is NUMA system or not
-+ * NOTE: the function is designed to try to find more than
-+ *       1 available node, at least each node contains memory.
-+ * WARN: Don't use this func in child, as it calls tst_brkm()
-+ * RETURNS:
-+ *     0 - it's not a NUMA system
-+ *     1 - it's a NUMA system
-+ */
-+int is_numa(void (*cleanup_fn)(void))
-+{
-+	int ret;
-+	int numa_nodes = 0;
-+
-+	ret = get_allowed_nodes_arr(NH_MEMS, &numa_nodes, NULL);
-+	if (ret < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "get_allowed_nodes_arr");
-+
-+	if (numa_nodes > 1)
-+		return 1;
-+	else
-+		return 0;
-+}
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
