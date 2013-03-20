@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UIh6c-0003UB-Qp
-	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 15:08:38 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIh6b-0006N4-1X
-	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 15:08:38 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2LF8VEv013935
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 21 Mar 2013 11:08:31 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 21 Mar 2013 16:08:26 +0100
-Message-Id: <e1988db86146bef7ddd363142fbe3174ccecadfd.1363878323.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] pan: fix potential overrun in tag_report
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1UIGKv-0003Jd-Sm
+	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 10:33:37 +0000
+Received: from mail-pb0-f44.google.com ([209.85.160.44])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UIGKt-0001Ef-PD
+	for ltp-list@lists.sourceforge.net; Wed, 20 Mar 2013 10:33:37 +0000
+Received: by mail-pb0-f44.google.com with SMTP id wz12so1244814pbc.31
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 20 Mar 2013 03:33:29 -0700 (PDT)
+Message-ID: <51498EA1.6060102@casparzhang.com>
+Date: Wed, 20 Mar 2013 18:25:37 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
+MIME-Version: 1.0
+References: <cover.1363664213.git.zliu@redhat.com>
+In-Reply-To: <cover.1363664213.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v4 0/7] mm/oom: extend the coverage of OOM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,42 +27,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-  char *cuts_info[5];
-  ...
-  while (tok_num < 5 &&
-      (cuts_info[++tok_num] = strtok(NULL, "\t ")) != NULL) ;
+On 03/19/2013 11:40 AM, Zhouping Liu wrote:
+> changed log from v1 to v2:
+>   1. added a new is_numa() function instead of ISNUMA global variable;
+>   2. added new patch to remove the prefix underscroe '_' of the
+>      internal function name;
+>   3. used SAFE_FILE_SCANF() instead of read_file().
+>   4. some cleanup...
+>
+> changed log from v2 to v3:
+>   1. as Jan's suggestion, pass 'nodes=NULL' to get_allowed_nodes_arr()
+>      in is_numa(), and free 'nodes' variable when it passed a non-NULL
+>      value inside testoom().
+>
+> changed log from v3 to v4:
+>   1. fixed some patch style error
+>
+> The patch set updated all OOM testcases, and added a new testcase.
+>
+> Inside old version, OOM only test MPOL_MBIND mempolicy in NUMA
+> system, and the combination of CPUSET, MEMCG & NUMA is complex,
+> and not clear. Also CPUSET is only used in NUMA system.
+>
+> These patch set adjust them, now we can coverage the below tests:
+>   1) OOM under normal - oom01
+>   2) OOM under all mempolicy - oom02
+>   3) OOM under MEMCG (+ mempolicy) - oom03
+>   4) OOM under CPUSET (+ mempolicy)  - oom04
+>   5) OOM under CPUSET & MEMCG - oom05
+>
+> Zhouping Liu (7):
+>    lib/mem: modified _gather_cpus() as _gather_node_cpus()
+>    mm/oom02: modified 'OOM for NUMA' as 'OOM for mempolicy'
+>    numa_helper: added a new function is_numa()
+>    mm/oom0[3|4]: added 'OOM for CPUSET' and moved 'OOM with MEMCG &
+>      numa' to oom03
+>    lib/mem: updated testoom() and oom() funcs
+>    mm/oom05: new testcase
+>    lib/mem: removed the prefix underscore '_' of the internal function
+>      name
+>
+>   runtest/mm                             |   1 +
+>   testcases/kernel/include/numa_helper.h |   1 +
+>   testcases/kernel/lib/numa_helper.c     |  24 ++++++
+>   testcases/kernel/mem/include/mem.h     |   4 +-
+>   testcases/kernel/mem/lib/mem.c         | 147 +++++++++++++++++++++------------
+>   testcases/kernel/mem/oom/oom01.c       |   6 +-
+>   testcases/kernel/mem/oom/oom02.c       |  20 +++--
+>   testcases/kernel/mem/oom/oom03.c       |  23 +++++-
+>   testcases/kernel/mem/oom/oom04.c       |  60 ++++++--------
+>   testcases/kernel/mem/oom/oom05.c       | 147 +++++++++++++++++++++++++++++++++
+>   10 files changed, 328 insertions(+), 105 deletions(-)
+>   create mode 100644 testcases/kernel/mem/oom/oom05.c
+>
 
-While above can run for tok_num == 4, in which case:
-  cuts_info[++tok_num] becomes cuts_info[5]
-and that is outside of cuts_info array.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- pan/tag_report.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/pan/tag_report.c b/pan/tag_report.c
-index 473bed1..61caabd 100644
---- a/pan/tag_report.c
-+++ b/pan/tag_report.c
-@@ -425,7 +425,7 @@ SYM tags;
- int cuts_testcase(tag, keys)
- SYM tag, keys;
- {
--	char *cuts_info[5];
-+	char *cuts_info[6];
- 	char key[KEYSIZE];
- 	char *oldresult, *newresult, *worst_case();
- 	int tok_num = 0;
--- 
-1.7.1
-
+Series Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
