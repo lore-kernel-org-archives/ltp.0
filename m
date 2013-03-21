@@ -2,19 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UVyFQ-0007PK-UU
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:04:36 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UVyFP-0002pG-LP
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:04:36 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 27 Apr 2013 02:04:32 -0400
-References: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
-In-Reply-To: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
+	(envelope-from <sgr.m.pdy@gmail.com>) id 1UIZe5-0000Om-7g
+	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 07:10:41 +0000
+Received: from mail-oa0-f47.google.com ([209.85.219.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UIZe3-0001AD-Vi
+	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 07:10:40 +0000
+Received: by mail-oa0-f47.google.com with SMTP id o17so2800632oag.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 Mar 2013 00:10:34 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <201304270204.34020.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
+Date: Thu, 21 Mar 2013 12:40:34 +0530
+Message-ID: <CAFzFL17=aoZ-dWXSv7kY8RUfC8r-b_VU=g5L3w0yfPtwbRZMaQ@mail.gmail.com>
+From: Sagar Padhye <sgr.m.pdy@gmail.com>
+Subject: [LTP] LTP for Android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,126 +25,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6379411247778980547=="
+Content-Type: multipart/mixed; boundary="===============4977714431683286273=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============6379411247778980547==
-Content-Type: multipart/signed; boundary="nextPart2695591.Egq0KCfjLQ";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+--===============4977714431683286273==
+Content-Type: multipart/alternative; boundary=e89a8fb20546eb7d5204d86a0810
 
---nextPart2695591.Egq0KCfjLQ
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+--e89a8fb20546eb7d5204d86a0810
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi,
+I am trying to test android kernel with LTP without any success.
+What I have tried:
+environment setup:
+ARCH=arm-eabi
+CROSS_COMPILER=/home/sagar/mytoolchain/bin/arm-linux-androideabi
+NDK_ROOT=/home/sagar/android-ndk-r8d
+CC=$CROSS_COMPILER-gcc
+LD=$CROSS_COMPILER-ld
+AR=$CROSS_COMPILER-ar
+STRIP=$CROSS_COMPILER-strip
+RANLIB=$CROSS_COMPILER-ranlib
+CFLAGS="-I/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/include
+-D_ANDROID -nostdlib -DDEV_BSIZE=512"
+LDFLAGS="-Wl,-rpath-link=/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/lib
+-L/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/lib"
+LIBS="-lc"
+
+when I do "./configure --host=arm-eabi" & "make", I get
+parse_opts.c:76:24: fatal error: sys/signal.h: No such file or directory
+
+From mailing lists, it looks like somebody has already submitted a patch to
+support Android 2.2, I don't know if it was accepted. Does anybody know if
+LTP supports Android (hopefully 4.x, Which I am trying to test)? If yes,
+what are steps to compile & run LTP?
+
+
+-- 
+Thanks and Regards,
+Sagar
+
+--e89a8fb20546eb7d5204d86a0810
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On Saturday 27 April 2013 00:23:14 Zhouping Liu wrote:
-> The reason is that node0 only contains all CPUs, no any memory,
+<div dir=3D"ltr">Hi,<div>I am trying to test android kernel with LTP withou=
+t any success.</div><div>What I have tried:</div><div>environment setup:</d=
+iv><div><div>ARCH=3Darm-eabi</div><div>CROSS_COMPILER=3D/home/sagar/mytoolc=
+hain/bin/arm-linux-androideabi</div>
+<div>NDK_ROOT=3D/home/sagar/android-ndk-r8d</div><div>CC=3D$CROSS_COMPILER-=
+gcc</div><div>LD=3D$CROSS_COMPILER-ld</div><div>AR=3D$CROSS_COMPILER-ar</di=
+v><div>STRIP=3D$CROSS_COMPILER-strip</div><div>RANLIB=3D$CROSS_COMPILER-ran=
+lib</div>
+<div>CFLAGS=3D&quot;-I/home/sagar/android-ndk-r8d/platforms/android-14/arch=
+-arm/usr/include -D_ANDROID -nostdlib -DDEV_BSIZE=3D512&quot;</div><div>LDF=
+LAGS=3D&quot;-Wl,-rpath-link=3D/home/sagar/android-ndk-r8d/platforms/androi=
+d-14/arch-arm/usr/lib -L/home/sagar/android-ndk-r8d/platforms/android-14/ar=
+ch-arm/usr/lib&quot;</div>
+<div>LIBS=3D&quot;-lc&quot;</div></div><div><br></div><div style>when I do =
+&quot;./configure --host=3Darm-eabi&quot; &amp; &quot;make&quot;, I get</di=
+v><div style>parse_opts.c:76:24: fatal error: sys/signal.h: No such file or=
+ directory<br>
+</div><div><br></div><div style>From mailing lists, it looks like somebody =
+has already submitted a patch to support Android 2.2, I don&#39;t know if i=
+t was accepted. Does anybody know if LTP supports Android (hopefully 4.x, W=
+hich I am trying to test)? If yes, what are steps to compile &amp; run LTP?=
+</div>
+<div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr">Thanks and Re=
+gards,<div>Sagar</div></div>
+</div></div>
 
-no any memory -> no memory
-
-> and node1 contains all memory, but no CPUs, in the previous codes,
-
-change "CPUs, in" to "CPUs. In"
-
-> we only do cpuset testing on a independent node, which caused the
-
-a -> an
-
-> sub-cpuset cgroup only contains CPUs or memory in one node, but
-
-only contains -> to only contain
-
-> that's not permitted in the special machine. The patch fixed it.
-
-what is a "special machine" ?
-
-also, generally there's no need to say "The patch fixed it".  the fact that=
-=20
-you've described a bug and have a patch implies that this fixes things.
-
-> +		tst_resm(TINFO, "None CPUs in the node%ld", nd);
-
-i think you mean "no" instead of "None"
-
-> +		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
-> +				"for the special scenario");
-
-what is "the special scenario" ?
-
->  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-> -	if (is_numa(cleanup) > 0)
-> -		/* For NUMA system, using the first node for cpuset.mems */
-> -		write_cpusets(get_a_numa_node(cleanup));
-> -	else
-> -		/* For nonNUMA system, using node0 for cpuset.mems */
-> -		write_cpusets(0);
-> +
-> +	/*
-> +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
-
-"Not any" -> "No"
-
-"using" -> "use"
-
-> +	 * to get a memory node, the operation also applies to Non-NUMA
-
-change the ", the" to ". This".
-
-> +	 * system.
-
-systems.
-
-> +        /*
-
-looks like you mixed spaces & tabs.  only use tabs.
-
-> +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
-> +	 * to get a memory node, the operation also applies to Non-NUMA
-> +	 * system.
-
-same comments about the grammar here as above
-=2Dmike
-
---nextPart2695591.Egq0KCfjLQ
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRe2pxAAoJEEFjO5/oN/WBC1IQAIy38VA0NSagQlFkNOwLFEIH
-559oEqicP2vWt1QAShr4PjFteC2MBJF1Nohql718kxPkTGGhDcVaNEWjCI4RvD4N
-YiGzGQeC7P/fJAaPMlNB2FzNZkQ3lGSKvwrhVuo52Tv8aT3JEWzXuzr0PWhzOTx4
-7fpWd8l7DwWLXlgm27cBaUVzkScPp0UNDQ2QxWDPDWuRUiYj3sR8V85rNayaUGot
-1bFLGVh5N3QF2Y5wB1nztBTMh/R/n4/R9FWIB3yt3wouNNGcLfdyUXbSENfiJ9s0
-ptPFEdNXuT1bPMUbYUX6xojsTNaweGmKqIZqhrXQYwz6r4QipyNFoTF78zHvh44x
-lQfyRraVJQGyQDRBwPOqnPKnfEdHpdfA9l+oRZENWGZRIv/JGk2cdw1LcRnMT4YO
-K7nkuZeeSwFQpDz84gY5K6YjpfImYxazVCYYI3L4qQfbpbf+0krfeLMwItwXVaC/
-CRnYHNxlRDuWTuWTP8NBHkJGXYkU/05Ae+vAvLKFrYQrOSOh6a/SOZ86RW5iExnB
-NmLDLo+lKzsJXLkXLYKZieLadvAhbY4eGYrHSR50Fb9TZGcMoXHflwphU5oWNPns
-LdIUJmaERL7lRtfNzEUPbwaHBT1hCh7GlmJ7Fpy0DEB/idc9AEAbeONLK1jOBkI6
-s1B/sAFzhgjbKnmz65Gi
-=65g6
------END PGP SIGNATURE-----
-
---nextPart2695591.Egq0KCfjLQ--
+--e89a8fb20546eb7d5204d86a0810--
 
 
---===============6379411247778980547==
+--===============4977714431683286273==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
---===============6379411247778980547==
+Minimize network downtime and maximize team effectiveness.
+Reduce network management and security costs.Learn how to hire 
+the most talented Cisco Certified professionals. Visit the 
+Employer Resources Portal
+http://www.cisco.com/web/learning/employer_resources/index.html
+--===============4977714431683286273==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -154,5 +122,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6379411247778980547==--
+--===============4977714431683286273==--
 
