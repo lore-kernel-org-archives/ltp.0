@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UGB3F-0005nM-HA
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:30:45 +0000
-Date: Thu, 14 Mar 2013 17:31:24 +0100
-From: chrubis@suse.cz
-Message-ID: <20130314163124.GB8894@rei.suse.cz>
-References: <1363258426-8638-1-git-send-email-markos.chandras@gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UITi6-0008St-Mq
+	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 00:50:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UITi4-0002le-M1
+	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 00:50:26 +0000
+Message-ID: <514A5999.7080400@cn.fujitsu.com>
+Date: Thu, 21 Mar 2013 08:51:37 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1363258426-8638-1-git-send-email-markos.chandras@gmail.com>
-Subject: Re: [LTP] [PATCH] testcases/include/linux_syscall_numbers.h:
- Include missing "test.h"
+References: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
+In-Reply-To: <1363772673-14851-1-git-send-email-jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] inode02: fix "slash" array overrun
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,37 +28,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->  testcases/kernel/include/linux_syscall_numbers.h |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+On 03/20/2013 05:44 PM, Jan Stancek wrote:
+> Remove "slash" array and convert strcat to snprintf.
 > 
-> diff --git a/testcases/kernel/include/linux_syscall_numbers.h b/testcases/kernel/include/linux_syscall_numbers.h
-> index 545b420..e43258e 100644
-> --- a/testcases/kernel/include/linux_syscall_numbers.h
-> +++ b/testcases/kernel/include/linux_syscall_numbers.h
-> @@ -16,6 +16,7 @@
->  #include <errno.h>
->  #include <sys/syscall.h>
->  #include "cleanup.c"
-> +#include "test.h"
->  
->  #define ltp_syscall(NR, ...) ({ \
->  	int __ret; \
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Hmm, this header gets included after the test.h in the testcases so this
-shouldn't be needed but I don't have strong opinion whether it's better
-with or without it.
 
-Anybody has idea?
+Applied, thank you.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
