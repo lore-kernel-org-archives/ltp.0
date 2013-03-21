@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UHRUY-0005UB-Hp
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 04:16:10 +0000
+	(envelope-from <jstancek@redhat.com>) id 1UIh6c-0003UB-Qp
+	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 15:08:38 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UHRUX-0004ZA-DJ
-	for ltp-list@lists.sourceforge.net; Mon, 18 Mar 2013 04:16:10 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2I4G2JN019623
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UIh6b-0006N4-1X
+	for ltp-list@lists.sourceforge.net; Thu, 21 Mar 2013 15:08:38 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2LF8VEv013935
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Mar 2013 00:16:03 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 18 Mar 2013 12:13:58 +0800
-Message-Id: <610d014b3e51b301d3f2adca6e8b068e62aba626.1363579539.git.zliu@redhat.com>
-In-Reply-To: <cover.1363579539.git.zliu@redhat.com>
-References: <cover.1363579539.git.zliu@redhat.com>
-In-Reply-To: <cover.1363579539.git.zliu@redhat.com>
-References: <cover.1363579539.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v3 1/7] lib/mem: modified _gather_cpus() as
-	_gather_node_cpus()
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Mar 2013 11:08:31 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 21 Mar 2013 16:08:26 +0100
+Message-Id: <e1988db86146bef7ddd363142fbe3174ccecadfd.1363878323.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] pan: fix potential overrun in tag_report
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,85 +30,37 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-The previous _gather_cpus() tried to collect all the specified
-node's cpus, but it didn't pay attention to the offline cpus,
-if one cpu in the specified node were offline, it can't write
-the cpu number to cgroups/*.cpus, and return -EINVAL.
+  char *cuts_info[5];
+  ...
+  while (tok_num < 5 &&
+      (cuts_info[++tok_num] = strtok(NULL, "\t ")) != NULL) ;
 
-The patch fixed it, and modified the function name, as the new
-name make more sense.
+While above can run for tok_num == 4, in which case:
+  cuts_info[++tok_num] becomes cuts_info[5]
+and that is outside of cuts_info array.
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/mem/lib/mem.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ pan/tag_report.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index a827b25..72ac06d 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -20,6 +20,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "safe_file_ops.h"
- #include "_private.h"
- #include "mem.h"
- #include "numa_helper.h"
-@@ -481,20 +482,37 @@ void ksm_usage(void)
- 
- /* cpuset/memcg */
- 
--static void _gather_cpus(char *cpus, long nd)
-+static void _gather_node_cpus(char *cpus, long nd)
+diff --git a/pan/tag_report.c b/pan/tag_report.c
+index 473bed1..61caabd 100644
+--- a/pan/tag_report.c
++++ b/pan/tag_report.c
+@@ -425,7 +425,7 @@ SYM tags;
+ int cuts_testcase(tag, keys)
+ SYM tag, keys;
  {
- 	int ncpus = 0;
- 	int i;
-+	long online;
- 	char buf[BUFSIZ];
-+	char path[BUFSIZ], path1[BUFSIZ];
- 
- 	while (path_exist(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
- 		ncpus++;
- 
--	for (i = 0; i < ncpus; i++)
--		if (path_exist(PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i)) {
-+	for (i = 0; i < ncpus; i++) {
-+		snprintf(path, BUFSIZ,
-+			 PATH_SYS_SYSTEM "/node/node%ld/cpu%d", nd, i);
-+		if (path_exist(path, nd, i)) {
-+			snprintf(path1, BUFSIZ, "%s/online", path);
-+			/*
-+			 * No cpu0/online knob, as it can't support to
-+			 * on/offline cpu0, so if the 'nd' node contains
-+			 * cpu0, it should skip to check cpu0/online's value.
-+			 */
-+			if (i == 0)
-+				goto next;
-+			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
-+			if (online == 0)
-+				continue;
-+next:
- 			sprintf(buf, "%d,", i);
- 			strcat(cpus, buf);
- 		}
-+	}
- 	/* Remove the trailing comma. */
- 	cpus[strlen(cpus) - 1] = '\0';
- }
-@@ -563,7 +581,7 @@ void write_cpusets(long nd)
- 	snprintf(buf, BUFSIZ, "%ld", nd);
- 	write_cpuset_files(CPATH_NEW, "mems", buf);
- 
--	_gather_cpus(cpus, nd);
-+	_gather_node_cpus(cpus, nd);
- 	write_cpuset_files(CPATH_NEW, "cpus", cpus);
- 
- 	snprintf(buf, BUFSIZ, "%d", getpid());
+-	char *cuts_info[5];
++	char *cuts_info[6];
+ 	char key[KEYSIZE];
+ 	char *oldresult, *newresult, *worst_case();
+ 	int tok_num = 0;
 -- 
-1.7.11.7
+1.7.1
 
 
 ------------------------------------------------------------------------------
