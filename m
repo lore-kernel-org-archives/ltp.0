@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UGQgG-0003J6-ET
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 09:12:04 +0000
+	(envelope-from <jstancek@redhat.com>) id 1UJ37k-0001nU-JZ
+	for ltp-list@lists.sourceforge.net; Fri, 22 Mar 2013 14:39:16 +0000
 Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UGQgF-0005Ih-2s
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 09:12:04 +0000
-Date: Fri, 15 Mar 2013 05:11:57 -0400 (EDT)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UJ37f-0006GU-Kd
+	for ltp-list@lists.sourceforge.net; Fri, 22 Mar 2013 14:39:16 +0000
+Received: from zmail17.collab.prod.int.phx2.redhat.com
+	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id r2MEd5P3007714
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Mar 2013 10:39:05 -0400
+Date: Fri, 22 Mar 2013 10:39:05 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1914766227.19199525.1363338717055.JavaMail.root@redhat.com>
-In-Reply-To: <51428CEA.6030604@redhat.com>
+Message-ID: <625873548.22757137.1363963145611.JavaMail.root@redhat.com>
+In-Reply-To: <e7c2f015e6e46d1eb1aad28001b8794fe7a91a44.1363949441.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and
- updated 'OOM with MEMCG & numa'
+Subject: Re: [LTP] [PATCH] sched_stress: fix matrix inversion routine
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,42 +30,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
 
 
 ----- Original Message -----
-> From: "Zhouping Liu" <zliu@redhat.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: chrubis@suse.cz, "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, 15 March, 2013 3:52:26 AM
-> Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and updated 'OOM with MEMCG & numa'
-
-> > We could add a simple function to numa_helper, but I'm not sure
-> > what
-> > it would return as default, some tests care about nodes with
-> > memory.
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Friday, 22 March, 2013 11:58:12 AM
+> Subject: [LTP] [PATCH] sched_stress: fix matrix inversion routine
 > 
-> yes, what you care about is right, but now we only need a function,
-> which
-> can tell us the system have more than one node, we don't care about
-> the
-> nodes have
-> CPUs or memory.
+> Fix code to not go out of bounds of "matrix_1" array
+> and to do what it's supposed to - calculate inversion matrix.
+> 
 
-What I was wondering is why that comment said "rough estimate",
-it looks quite accurate. Anyway, thanks for clarifying.
+Just to close the loop, this has been committed.
 
 Regards,
 Jan
-
-> 
-> so I will created is_numa() in numa_helper to implement it.
-> 
-> Thanks
-> Zhouping
-> 
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
