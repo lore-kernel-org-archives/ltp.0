@@ -1,30 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UGWUD-0004Cy-UN
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:24:02 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UGWUA-0000KC-BX
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 15:24:01 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r2FFNqKi014586
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Mar 2013 11:23:52 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Fri, 15 Mar 2013 23:03:10 +0800
-Message-Id: <a5d23391d87bdbaa500d500c4677d5a7762f9d1c.1363358877.git.zliu@redhat.com>
-In-Reply-To: <a5ee11cc800fc73683472eeb2ba71cea7472035c.1363358877.git.zliu@redhat.com>
-References: <cover.1363358877.git.zliu@redhat.com>
-	<610d014b3e51b301d3f2adca6e8b068e62aba626.1363358877.git.zliu@redhat.com>
-	<fd2789e70f79cb525ca7317061adab90f6387530.1363358877.git.zliu@redhat.com>
-	<5de33faa5b15f22e96d68d1b543eb4bcfc64cfb7.1363358877.git.zliu@redhat.com>
-	<a5ee11cc800fc73683472eeb2ba71cea7472035c.1363358877.git.zliu@redhat.com>
-In-Reply-To: <cover.1363358877.git.zliu@redhat.com>
-References: <cover.1363358877.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v2 5/7] lib/mem: updated testoom() and oom() funcs
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UKZpM-0003o0-R2
+	for ltp-list@lists.sourceforge.net; Tue, 26 Mar 2013 19:46:36 +0000
+Date: Tue, 26 Mar 2013 20:47:18 +0100
+From: chrubis@suse.cz
+Message-ID: <20130326194718.GA11865@rei.suse.cz>
+References: <5151E122.3090203@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5151E122.3090203@linux.vnet.ibm.com>
+Subject: Re: [LTP] syscalls/mount0* and inotify03 tests are getting skipped
+ from runltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,192 +22,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Ramesh <rameshyr@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-the 'numa' parameter inside testoom() and 'mempolicy' inside oom()
-were useless, so removed them.
+Hi!
+> I tried to run syscalls test with ./runltp -f syscalls, it's found that 
+> the below tests
+> are getting skipped from the run,
+> -----------
+> inotify03 inotify03 -D DEVICE -T DEVICE_FS_TYPE
+> mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
+> mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
+> mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
+> mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
+> umount01 umount01 -D DEVICE -T DEVICE_FS_TYPE
+> umount02 umount02 -D DEVICE -T DEVICE_FS_TYPE
+> umount03 umount03 -D DEVICE -T DEVICE_FS_TYPE
+> -----------
+> 
+> I didn't get the value of DEVICE & DEVICE_FS_TYPE in any of conf files 
+> and also, as
+> the tests expect a block device, I executed the tests by specifying a 
+> block device
+> (-D /dev/sda1 -T ext4), tests passed.
+> 
+> Also,as the DEVICE & DEVICE_FS_TYPE need to be explicitly specifed to 
+> all the tests,
+> these tests should be commented out in ltp/runtest/syscalls which is 
+> used by runltp.
+> 
+> Any comments on this issue are appreciated.
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/mem/include/mem.h |  4 ++--
- testcases/kernel/mem/lib/mem.c     | 13 +++++--------
- testcases/kernel/mem/oom/oom01.c   |  6 +++---
- testcases/kernel/mem/oom/oom02.c   |  6 +++---
- testcases/kernel/mem/oom/oom03.c   | 10 +++++-----
- testcases/kernel/mem/oom/oom04.c   |  4 ++--
- 6 files changed, 20 insertions(+), 23 deletions(-)
+The runtest files are processed before they are executed. See -b DEVICE and
+-B DEVICE_FS_TYPE runltp parameters.
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 1233493..fdf558e 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -25,8 +25,8 @@
- #define KSM			4
- 
- long overcommit;
--void oom(int testcase, int mempolicy, int lite);
--void testoom(int mempolicy, int lite, int numa);
-+void oom(int testcase, int lite);
-+void testoom(int mempolicy, int lite);
- 
- /* KSM */
- 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 15666fb..e47765e 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -61,7 +61,7 @@ static void _test_alloc(int testcase, int lite)
- 				return;
- }
- 
--void oom(int testcase, int mempolicy, int lite)
-+void oom(int testcase, int lite)
- {
- 	pid_t pid;
- 	int status;
-@@ -91,7 +91,7 @@ void oom(int testcase, int mempolicy, int lite)
- 	}
- }
- 
--void testoom(int mempolicy, int lite, int numa)
-+void testoom(int mempolicy, int lite)
- {
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
-@@ -132,20 +132,17 @@ void testoom(int mempolicy, int lite, int numa)
- 	}
- #endif
- 
--	if (numa && !mempolicy)
--		write_cpusets(get_a_numa_node(cleanup));
--
- 	tst_resm(TINFO, "start normal OOM testing.");
--	oom(NORMAL, mempolicy, lite);
-+	oom(NORMAL, lite);
- 
- 	tst_resm(TINFO, "start OOM testing for mlocked pages.");
--	oom(MLOCK, mempolicy, lite);
-+	oom(MLOCK, lite);
- 
- 	if (access(PATH_KSM, F_OK) == -1)
- 		tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
- 
- 	tst_resm(TINFO, "start OOM testing for KSM pages.");
--	oom(KSM, mempolicy, lite);
-+	oom(KSM, lite);
- }
- 
- /* KSM */
-diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
-index 0401e31..43a5319 100644
---- a/testcases/kernel/mem/oom/oom01.c
-+++ b/testcases/kernel/mem/oom/oom01.c
-@@ -61,13 +61,13 @@ int main(int argc, char *argv[])
- 		tst_count = 0;
- 
- 		set_sys_tune("overcommit_memory", 2, 1);
--		oom(OVERCOMMIT, 0, 0);
-+		oom(OVERCOMMIT, 0);
- 
- 		set_sys_tune("overcommit_memory", 0, 1);
--		oom(OVERCOMMIT, 0, 0);
-+		oom(OVERCOMMIT, 0);
- 
- 		set_sys_tune("overcommit_memory", 1, 1);
--		testoom(0, 0, 0);
-+		testoom(0, 0);
- 	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-index 3bc8567..1fd199b 100644
---- a/testcases/kernel/mem/oom/oom02.c
-+++ b/testcases/kernel/mem/oom/oom02.c
-@@ -65,13 +65,13 @@ int main(int argc, char *argv[])
- 		tst_count = 0;
- 
- 		tst_resm(TINFO, "OOM on MPOL_BIND mempolicy...");
--		testoom(MPOL_BIND, 0, 1);
-+		testoom(MPOL_BIND, 0);
- 
- 		tst_resm(TINFO, "OOM on MPOL_INTERLEAVE mempolicy...");
--		testoom(MPOL_INTERLEAVE, 0, 1);
-+		testoom(MPOL_INTERLEAVE, 0);
- 
- 		tst_resm(TINFO, "OOM on MPOL_PREFERRED mempolicy...");
--		testoom(MPOL_PREFERRED, 0, 1);
-+		testoom(MPOL_PREFERRED, 0);
- 	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index c2171fd..d99534b 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
- 
- 		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
- 		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
--		testoom(0, 0, 0);
-+		testoom(0, 0);
- 
- 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
- 			if (errno == ENOENT)
-@@ -78,15 +78,15 @@ int main(int argc, char *argv[])
- 				tst_brkm(TBROK | TERRNO, cleanup, "access");
- 		} else {
- 			write_file(MEMCG_SW_LIMIT, mem);
--			testoom(0, 1, 0);
-+			testoom(0, 1);
- 		}
- 
- 		/* OOM for MEMCG with mempolicy */
- 		if (is_numa(cleanup)) {
- 			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
--			testoom(MPOL_BIND, 0, 1);
--			testoom(MPOL_INTERLEAVE, 0, 1);
--			testoom(MPOL_PREFERRED, 0, 1);
-+			testoom(MPOL_BIND, 0);
-+			testoom(MPOL_INTERLEAVE, 0);
-+			testoom(MPOL_PREFERRED, 0);
- 		}
- 	}
- 	cleanup();
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index 1ad7334..4d3f2f4 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
- 		tst_count = 0;
- 
- 		tst_resm(TINFO, "OOM on CPUSET...");
--		testoom(0, 0, 0);
-+		testoom(0, 0);
- 
- 		if (is_numa(cleanup)) {
- 			/*
-@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
- 			write_cpuset_files(CPATH_NEW,
- 					   "memory_migrate", "1");
- 			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
--			testoom(0, 0, 0);
-+			testoom(0, 0);
- 		}
- 	}
- 	cleanup();
+The current runltp script is more of the hack than solution. I've send a
+RFC email with a description of planned successor to the LTP mailing
+list not that long ago (but I haven't started writing the code yet).
+
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Own the Future-Intel&reg; Level Up Game Demo Contest 2013
+Rise to greatness in Intel's independent game demo contest.
+Compete for recognition, cash, and the chance to get your game 
+on Steam. $5K grand prize plus 10 genre and skill prizes. 
+Submit your demo by 6/6/13. http://p.sf.net/sfu/intel_levelupd2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
