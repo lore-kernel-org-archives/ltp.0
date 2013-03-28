@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UGX9X-00072M-6V
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 16:06:43 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UGX9W-0006PJ-1c
-	for ltp-list@lists.sourceforge.net; Fri, 15 Mar 2013 16:06:43 +0000
-Date: Fri, 15 Mar 2013 12:06:36 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1896214884.19403599.1363363596369.JavaMail.root@redhat.com>
-In-Reply-To: <302258505.8905505.1363362089669.JavaMail.root@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sujeshlx@gmail.com>) id 1ULBsd-00052q-3V
+	for ltp-list@lists.sourceforge.net; Thu, 28 Mar 2013 12:24:31 +0000
+Received: from mail-ve0-f175.google.com ([209.85.128.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ULBsc-0004un-Cd
+	for ltp-list@lists.sourceforge.net; Thu, 28 Mar 2013 12:24:31 +0000
+Received: by mail-ve0-f175.google.com with SMTP id pb11so4857559veb.6
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Mar 2013 05:24:24 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and
- updated 'OOM with MEMCG & numa'
+Date: Thu, 28 Mar 2013 17:54:24 +0530
+Message-ID: <CA+YMQO_xOrCp0B5iS9+ek3kEmk5RUnzrbho0PdEoXfEP88apLQ@mail.gmail.com>
+From: "sujesh.k.p Kp" <sujeshlx@gmail.com>
+Subject: [LTP] how to test gpio driver, usb driver,
+	touch screen driver using ltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,90 +26,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1670349291708834887=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+
+--===============1670349291708834887==
+Content-Type: multipart/alternative; boundary=f46d043891772d1cae04d8fb3ce4
+
+--f46d043891772d1cae04d8fb3ce4
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi,
+  Please tell me how to test gpio diriver,usb  driver,touch screen driver
+using
+  LTP .
+
+Regards sujesh
+
+--f46d043891772d1cae04d8fb3ce4
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi,<br>=A0 Please tell me how to test gpio diriver,usb=A0 driver,touch scre=
+en driver using<br>=A0 LTP .<br><br>Regards sujesh<br>
+
+--f46d043891772d1cae04d8fb3ce4--
 
 
-
------ Original Message -----
-> From: "Zhouping Liu" <zliu@redhat.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, 15 March, 2013 4:41:29 PM
-> Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET' and updated 'OOM with MEMCG & numa'
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Jan Stancek" <jstancek@redhat.com>
-> > To: "Zhouping Liu" <zliu@redhat.com>
-> > Cc: "LTP List" <ltp-list@lists.sourceforge.net>
-> > Sent: Friday, March 15, 2013 5:11:57 PM
-> > Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for CPUSET'
-> > and updated 'OOM with MEMCG & numa'
-> > 
-> > 
-> > 
-> > ----- Original Message -----
-> > > From: "Zhouping Liu" <zliu@redhat.com>
-> > > To: "Jan Stancek" <jstancek@redhat.com>
-> > > Cc: chrubis@suse.cz, "LTP List" <ltp-list@lists.sourceforge.net>
-> > > Sent: Friday, 15 March, 2013 3:52:26 AM
-> > > Subject: Re: [LTP] [PATCH 3/5] mm/oom0[3|4]: added 'OOM for
-> > > CPUSET'
-> > > and updated 'OOM with MEMCG & numa'
-> > 
-> > > > We could add a simple function to numa_helper, but I'm not sure
-> > > > what
-> > > > it would return as default, some tests care about nodes with
-> > > > memory.
-> > > 
-> > > yes, what you care about is right, but now we only need a
-> > > function,
-> > > which
-> > > can tell us the system have more than one node, we don't care
-> > > about
-> > > the
-> > > nodes have
-> > > CPUs or memory.
-> > 
-> > What I was wondering is why that comment said "rough estimate",
-> 
-> because in the old version, I just used the max node id to judge a
-> NUMA system,
-> which maybe is not strict.
-> 
-> > it looks quite accurate. Anyway, thanks for clarifying.
-> 
-> in the V2 version, I removed the ISNUMA variable, and added a new
-> function is_numa(),
-> inside the function, the system, which has 1 more than numa node, and
-> each node at
-> least contains memory, is regarded as a numa system. I think it's
-> more reasoned,
-> because NUMA is mainly about memory, more case will fail if the node
-> has no memory.
-> do you agree?
-
-I agree. Some failures on unbalanced NUMA systems led to introducing that check.
-I was looking at our system pool and number of such systems is very low,
-so I don't think we are loosing very much by requiring 2+ nodes with memory.
-
-> 
-> --
-> Thanks,
-> Zhouping
-> 
+--===============1670349291708834887==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Own the Future-Intel&reg; Level Up Game Demo Contest 2013
+Rise to greatness in Intel's independent game demo contest.
+Compete for recognition, cash, and the chance to get your game 
+on Steam. $5K grand prize plus 10 genre and skill prizes. 
+Submit your demo by 6/6/13. http://p.sf.net/sfu/intel_levelupd2d
+--===============1670349291708834887==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1670349291708834887==--
+
