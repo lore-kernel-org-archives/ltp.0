@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UUaVB-00077b-0v
-	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 10:31:09 +0000
-Date: Tue, 23 Apr 2013 12:32:03 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UNKiT-00010r-C0
+	for ltp-list@lists.sourceforge.net; Wed, 03 Apr 2013 10:14:53 +0000
+Date: Wed, 3 Apr 2013 12:15:38 +0200
 From: chrubis@suse.cz
-Message-ID: <20130423103202.GC28044@rei>
-References: <8805528bb12e73785de99af72fa27fa90e535557.1366705953.git.jstancek@redhat.com>
+Message-ID: <20130403101537.GD1545@rei>
+References: <CAFzFL17=aoZ-dWXSv7kY8RUfC8r-b_VU=g5L3w0yfPtwbRZMaQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <8805528bb12e73785de99af72fa27fa90e535557.1366705953.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] sendmsg02: fix compilation on kernel < 2.6.27
+In-Reply-To: <CAFzFL17=aoZ-dWXSv7kY8RUfC8r-b_VU=g5L3w0yfPtwbRZMaQ@mail.gmail.com>
+Subject: Re: [LTP] LTP for Android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,51 +24,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Sagar Padhye <sgr.m.pdy@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
->  testcases/kernel/syscalls/sendmsg/sendmsg02.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+> I am trying to test android kernel with LTP without any success.
+> What I have tried:
+> environment setup:
+> ARCH=arm-eabi
+> CROSS_COMPILER=/home/sagar/mytoolchain/bin/arm-linux-androideabi
+> NDK_ROOT=/home/sagar/android-ndk-r8d
+> CC=$CROSS_COMPILER-gcc
+> LD=$CROSS_COMPILER-ld
+> AR=$CROSS_COMPILER-ar
+> STRIP=$CROSS_COMPILER-strip
+> RANLIB=$CROSS_COMPILER-ranlib
+> CFLAGS="-I/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/include
+> -D_ANDROID -nostdlib -DDEV_BSIZE=512"
+> LDFLAGS="-Wl,-rpath-link=/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/lib
+> -L/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/lib"
+> LIBS="-lc"
 > 
-> diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg02.c b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-> index 8f38f2c..c38d438 100644
-> --- a/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-> +++ b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-> @@ -88,7 +88,7 @@ static void client(int id, int pipefd[])
->  	mh.msg_iovlen = 1;
->  
->  	do {
-> -		fd = socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0);
-> +		fd = socket(AF_UNIX, SOCK_DGRAM, 0);
->  		write(pipefd[1], &fd, 1);
->  		sendmsg(fd, &mh, MSG_NOSIGNAL);
->  		close(fd);
-> @@ -109,7 +109,7 @@ static void server(int id, int pipefd[])
->  	snprintf(sa.sun_path, sizeof(sa.sun_path), "socket_test%d", id);
->  
->  	do {
-> -		fd = socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0);
-> +		fd = socket(AF_UNIX, SOCK_DGRAM, 0);
->  		unlink(sa.sun_path);
->  		bind(fd, (struct sockaddr *) &sa, sizeof(struct sockaddr_un));
->  		read(pipefd[0], &fd, 1);
+> when I do "./configure --host=arm-eabi" & "make", I get
+> parse_opts.c:76:24: fatal error: sys/signal.h: No such file or directory
 
-This is fine.
+There were several attempts to port LTP on android, some of the patches
+went in but it is not complete.
 
-And sorry that I haven't yet tested the testcase. I will hopefully
-install OpenSUSE with selinux and test it soon.
+To my knowledge devs from mips were working on this, they have forked
+repo on github:
+
+https://github.com/piet-delaney/android-ltp-ndk
+
+But they weren't sending any patches lately so I'm not aware of the
+progress. You should ask them.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Minimize network downtime and maximize team effectiveness.
+Reduce network management and security costs.Learn how to hire 
+the most talented Cisco Certified professionals. Visit the 
+Employer Resources Portal
+http://www.cisco.com/web/learning/employer_resources/index.html
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
