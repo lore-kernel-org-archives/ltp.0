@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UVyGe-0001d0-R3
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:05:52 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UVyGd-0002sm-V5
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:05:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 27 Apr 2013 02:05:48 -0400
-References: <517A31DE.2050003@cn.fujitsu.com>
-In-Reply-To: <517A31DE.2050003@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1UNiwS-0005Va-Bp
+	for ltp-list@lists.sourceforge.net; Thu, 04 Apr 2013 12:06:56 +0000
+Date: Thu, 4 Apr 2013 14:07:38 +0200
+From: chrubis@suse.cz
+Message-ID: <20130404120738.GB7321@rei.suse.cz>
+References: <1365038982.96284.YahooMailClassic@web120802.mail.ne1.yahoo.com>
 MIME-Version: 1.0
-Message-Id: <201304270205.50520.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 1/2] syscalls/mount/mount02.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <1365038982.96284.YahooMailClassic@web120802.mail.ne1.yahoo.com>
+Subject: Re: [LTP] ltp network multicast test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,70 +21,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4861809669084515748=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============4861809669084515748==
-Content-Type: multipart/signed; boundary="nextPart3791477.p9yep0IKWx";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3791477.p9yep0IKWx
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
-
---nextPart3791477.p9yep0IKWx
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRe2q+AAoJEEFjO5/oN/WBpUYP/2Yc63MnN6hSdMTcBXzbPmT1
-GS6MnV0tdGYd1einC15Snwh7u89kITEh+/kkYy6cd3ydM5ETp+CBNb5jtBgX7iyM
-ABUjldmf6L8wFt+rxdt+HEgrUeql7wkw4AetkjqAWbNyZ9LQeK8UrpeU4hDapHLy
-izSHOOYsSzTpIUT7XBpgMggNkM0mO0qAWwsas9YKexBU5FZtk/hrVznsRnhi3UUx
-1JmZ7RzMin8arhTrpYJkbizz+o5LSnTcFjuFcqG/jy9y12mngUGaAFl8cKJg8Hxo
-9ZZQidWUtGE4/5ZHHlbwVTUaNPni3G6A5U+4gCfjGp+pk2fk+8eoMVfzcSyhgoP1
-LBizL52n8y73EiXFNaw67J5b5bKKxkJHHifpBy7ikbXOGqBktpYd2ZUNHxawJHzk
-Or3s79iZa3Q9gFg+doTT4ITfHiRoJr6fdhgz5ELBRIxGmIEIti/+tueNFffddOPf
-N3fosTSSXc6ez3ke+k+ChfvdmjbsYnsFyA1jgZlAGtS5VRaZMhNw3styGUR+3qop
-GZ4khm3SuMr58cWCyd92eZHeOksO2p42Ss4VMeC2jhQvk6IjKH8Vg9abCmbiK2VO
-HAWwuEVSTeKnbMLVXF5WW3Kfa52LQpzJRwDEqSe+QsH/aCzKsyUuzvVmXSBGOeHh
-A+iB2AuUlmsYW+BHYnfe
-=m2It
------END PGP SIGNATURE-----
-
---nextPart3791477.p9yep0IKWx--
-
-
---===============4861809669084515748==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: C Nandi <ccnandi@yahoo.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> ?????????????? /* Control parameters for ECHO replies. */?????????????? net->ipv4.sysctl_icmp_echo_ignore_all = 0;?????????????? net->ipv4.sysctl_icmp_echo_ignore_broadcasts = 1;??In ???mc_cmds??? test case we have code as below:???? ??cat /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts | grep 1 > /dev/null???? if [ $? -eq 0 ]???? then???????????? end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"???? fiHence the test tcase will fail always as icmp_echo_ignore_broadcasts is set to 1(which is default).??Can we go with below patch for this problem???--- mc_cmds.Orig?????????????? 2013-04-03 14:36:14.000000000 -0600+++ mc_cmds???????? 2013-04-03 14:39:02.000000000 -0600@@ -128,6 +128,9 @@?????? if [ $? -eq 0 ]?????? then?????????????? end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"+???????????? echo "Temporarily enable multicast ping for testing
+>  purposes."+???????????? echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts+???????????? icmp_need_reset=1?????? fi???????? # Do the ping tests: Execute ping 224.0.0.1 - Verify that the proper@@ -166,6 +169,10 @@ {?????? $trace_logic?????? echo "$this_file: doing $0."+???? if [ -n "$icmp_need_reset" ]; then+???????????? echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts+???????????? echo "Restored multicast ping setting."+???? fi?????? rm -rf $PING_OUT }??
+
+Looks like the email was mangled, most likely by your mail client.
+
+> --- mc_cmds.Orig        2013-04-03 14:36:14.000000000 -0600
+> +++ mc_cmds     2013-04-03 14:39:02.000000000 -0600
+> @@ -128,6 +128,9 @@
+>     if [ $? -eq 0 ]
+>     then
+>         end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"
+> +       echo "Temporarily enable multicast ping for testing purposes."
+> +       echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+> +       icmp_need_reset=1
+>     fi
+> 
+>     # Do the ping tests: Execute ping 224.0.0.1 - Verify that the proper
+> @@ -166,6 +169,10 @@
+>  {
+>     $trace_logic
+>     echo "$this_file: doing $0."
+> +   if [ -n "$icmp_need_reset" ]; then
+> +       echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+> +       echo "Restored multicast ping setting."
+> +   fi
+>     rm -rf $PING_OUT
+>  }
+
+Could you send these as signed patches in unified diff format with the
+description of the changes in the patch header?
+
+(git can help you create these)
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
---===============4861809669084515748==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Minimize network downtime and maximize team effectiveness.
+Reduce network management and security costs.Learn how to hire 
+the most talented Cisco Certified professionals. Visit the 
+Employer Resources Portal
+http://www.cisco.com/web/learning/employer_resources/index.html
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4861809669084515748==--
-
