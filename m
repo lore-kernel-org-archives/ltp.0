@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1US3Kb-00046f-9a
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:41:45 +0000
-Date: Tue, 16 Apr 2013 12:42:29 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UNg3d-0000pt-QQ
+	for ltp-list@lists.sourceforge.net; Thu, 04 Apr 2013 09:02:09 +0000
+Date: Thu, 4 Apr 2013 11:02:54 +0200
 From: chrubis@suse.cz
-Message-ID: <20130416104228.GA17259@rei>
-References: <cover.1366107814.git.zliu@redhat.com>
-	<a6942bb2d9d35f695b5067a7008620110c769222.1366107814.git.zliu@redhat.com>
+Message-ID: <20130404090254.GA6273@rei.Home>
+References: <1364958179-5410-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20130403115218.GC2002@rei> <515C2398.4060906@cn.fujitsu.com>
+	<20130403125509.GD2002@rei> <515CDA27.9010309@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a6942bb2d9d35f695b5067a7008620110c769222.1366107814.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v5 3/3] mm/thp: add new case thp05
+In-Reply-To: <515CDA27.9010309@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] su01: fix the uncompleted string match
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,59 +26,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-Here is the last nit (the rest of the code looks ok).
+> > I've looked in the expect docs and the syntax for regular expressions
+> > should be '-re "^$USER\r"' (beware not tested).
+> 
+> I tested this and saw that it can't work, because the buffer of expect
+> is not line oriented, the "^" and "$" can't work well at most time.
 
-Applies for the next test as well.
+Thanks for the testing.
 
-> +void setup(void)
-> +{
-> +	char path[BUFSIZ];
-> +
-> +	tst_require_root(NULL);
-> +
-> +	if (access(PATH_THP, F_OK) == -1)
-> +		tst_brkm(TCONF, NULL, "THP is not enabled");
-> +
-> +	if (!is_numa(NULL))
-> +		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
-> +
-> +	SAFE_FILE_SCANF(NULL, PATH_KHPD "scan_sleep_millisecs",
-> +			"%d", &pre_thp_scan_sleep_millisecs);
-> +	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs", "%d", 0);
-> +
-> +	SAFE_FILE_SCANF(NULL, PATH_KHPD "alloc_sleep_millisecs",
-> +			"%d", &pre_thp_alloc_sleep_millisecs);
-> +	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs", "%d", 0);
-
-No need to convert the constant integer via "%d", just pass the "0"
-string.
-
-> +	SAFE_FILE_SCANF(NULL, PATH_THP "enabled", "%[^\n]", pre_thp_enabled);
-> +	SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "%s", "always");
-
-No need to pass the "always" via "%s", just pass it directly.
-
-> +
-> +	tst_sig(FORK, DEF_HANDLER, NULL);
-> +	TEST_PAUSE;
-> +}
-
-
+Lets proceed with the original version.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Minimize network downtime and maximize team effectiveness.
+Reduce network management and security costs.Learn how to hire 
+the most talented Cisco Certified professionals. Visit the 
+Employer Resources Portal
+http://www.cisco.com/web/learning/employer_resources/index.html
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
