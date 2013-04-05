@@ -1,27 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UReJK-0004YE-QK
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 07:58:46 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UReJE-0000TO-DX
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 07:58:46 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3F7wYcR013844
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Apr 2013 03:58:34 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id r3F7wXmO006024
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Apr 2013 03:58:33 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 15 Apr 2013 09:58:29 +0200
-Message-Id: <fd56c3851c2ada9667af4f51b0887282d5e43279.1366012538.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] sendmsg testcase for
-	ded34e0fe8fe8c2d595bfa30626654e4b87621e0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UNyeY-00030V-Cy
+	for ltp-list@lists.sourceforge.net; Fri, 05 Apr 2013 04:53:30 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UNyeX-0000Xs-Bp
+	for ltp-list@lists.sourceforge.net; Fri, 05 Apr 2013 04:53:30 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 5 Apr 2013 00:53:45 -0400
+References: <1365125797-31405-1-git-send-email-gaowanlong@cn.fujitsu.com>
+In-Reply-To: <1365125797-31405-1-git-send-email-gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+Message-Id: <201304050053.46087.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] getdents01: don't compare first entry to "."
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,303 +24,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1261114348206921699=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-reproducer for:
-BUG: unable to handle kernel NULL pointer dereference at 0000000000000250
+--===============1261114348206921699==
+Content-Type: multipart/signed; boundary="nextPart2118563.lS1gHGn4hA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-fixed in 3.9.0-0.rc5:
-  commit ded34e0fe8fe8c2d595bfa30626654e4b87621e0
-  Author: Paul Moore <pmoore@redhat.com>
-  Date:   Mon Mar 25 03:18:33 2013 +0000
-    unix: fix a race condition in unix_release()
+--nextPart2118563.lS1gHGn4hA
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This reproducer should be able to trigger it easily on 4+ CPU systems
-just within couple of seconds.
+On Thursday 04 April 2013 21:36:37 Wanlong Gao wrote:
+> --- a/testcases/kernel/syscalls/getdents/getdents01.c
+> +++ b/testcases/kernel/syscalls/getdents/getdents01.c
+> @@ -75,8 +75,6 @@ int main(int ac, char **av)
+>  	setup();
+>=20
+>  	for (lc =3D 0; TEST_LOOPING(lc); lc++) {
+> -		const char *d_name;
+> -
+>  		tst_count =3D 0;
+>=20
+>  		if ((fd =3D open(".", O_RDONLY)) =3D=3D -1)
+> @@ -102,15 +100,7 @@ int main(int ac, char **av)
+>  			continue;
+>  		}
+>=20
+> -		if (longsyscall)
+> -			d_name =3D dirp64->d_name;
+> -		else
+> -			d_name =3D dirp->d_name;
+> -
+> -		if (strcmp(d_name, "."))
+> -			tst_resm(TFAIL, "First entry is not '.'");
+> -		else
+> -			tst_resm(TPASS, "call succeeded");
+> +		tst_resm(TPASS, "call succeeded");
+>=20
+>  		if (close(fd) =3D=3D -1)
+>  			tst_brkm(TBROK, cleanup, "file close failed");
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- runtest/syscalls                              |    1 +
- testcases/kernel/syscalls/.gitignore          |    1 +
- testcases/kernel/syscalls/sendmsg/sendmsg02.c |  230 +++++++++++++++++++++++++
- 3 files changed, 232 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/sendmsg/sendmsg02.c
+this test isn't really useful after your change.  you've basically validate=
+d=20
+that the a valid fd and a large enough buffer was passed to the kernel and=
+=20
+that's it.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f58b6a1..90b4542 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -908,6 +908,7 @@ sendfile08_64 sendfile08_64
- 
- 
- sendmsg01 sendmsg01
-+sendmsg02 sendmsg02
- 
- sendto01 sendto01
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index ce62f3f..3869193 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -721,6 +721,7 @@
- /sendfile/sendfile08
- /sendfile/sendfile08_64
- /sendmsg/sendmsg01
-+/sendmsg/sendmsg02
- /sendto/sendto01
- /set_robust_list/set_robust_list01
- /set_thread_area/set_thread_area01
-diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg02.c b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-new file mode 100644
-index 0000000..8f38f2c
---- /dev/null
-+++ b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-@@ -0,0 +1,230 @@
-+/*
-+ * Copyright (C) 2013 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+/*
-+ * reproducer for:
-+ * BUG: unable to handle kernel NULL ptr deref in selinux_socket_unix_may_send
-+ * fixed in 3.9.0-0.rc5:
-+ *   commit ded34e0fe8fe8c2d595bfa30626654e4b87621e0
-+ *   Author: Paul Moore <pmoore@redhat.com>
-+ *   Date:   Mon Mar 25 03:18:33 2013 +0000
-+ *     unix: fix a race condition in unix_release()
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/ipc.h>
-+#include <sys/stat.h>
-+#include <sys/sem.h>
-+#include <sys/socket.h>
-+#include <sys/types.h>
-+#include <sys/un.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include "config.h"
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+char *TCID = "sendmsg02";
-+
-+static int sem_id;
-+static int tflag;
-+static char *t_opt;
-+static option_t options[] = {
-+	{"s:", &tflag, &t_opt},
-+	{NULL, NULL, NULL}
-+};
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void client(int id, int pipefd[])
-+{
-+	int fd, semval;
-+	char data[] = "123456789";
-+	struct iovec w;
-+	struct sockaddr_un sa;
-+	struct msghdr mh;
-+	struct cmsghdr cmh;
-+
-+	close(pipefd[0]);
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sun_family = AF_UNIX;
-+	snprintf(sa.sun_path, sizeof(sa.sun_path), "socket_test%d", id);
-+
-+	w.iov_base = data;
-+	w.iov_len = 10;
-+
-+	memset(&cmh, 0, sizeof(cmh));
-+	mh.msg_control = &cmh;
-+	mh.msg_controllen = sizeof(cmh);
-+
-+	memset(&mh, 0, sizeof(mh));
-+	mh.msg_name = &sa;
-+	mh.msg_namelen = sizeof(struct sockaddr_un);
-+	mh.msg_iov = &w;
-+	mh.msg_iovlen = 1;
-+
-+	do {
-+		fd = socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0);
-+		write(pipefd[1], &fd, 1);
-+		sendmsg(fd, &mh, MSG_NOSIGNAL);
-+		close(fd);
-+		semval = semctl(sem_id, 0, GETVAL);
-+	} while (semval != 0);
-+	close(pipefd[1]);
-+}
-+
-+static void server(int id, int pipefd[])
-+{
-+	int fd, semval;
-+	struct sockaddr_un sa;
-+
-+	close(pipefd[1]);
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sun_family = AF_UNIX;
-+	snprintf(sa.sun_path, sizeof(sa.sun_path), "socket_test%d", id);
-+
-+	do {
-+		fd = socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0);
-+		unlink(sa.sun_path);
-+		bind(fd, (struct sockaddr *) &sa, sizeof(struct sockaddr_un));
-+		read(pipefd[0], &fd, 1);
-+		close(fd);
-+		semval = semctl(sem_id, 0, GETVAL);
-+	} while (semval != 0);
-+	close(pipefd[0]);
-+}
-+
-+static void reproduce(int seconds)
-+{
-+	int i, status, pipefd[2];
-+	int child_pairs = sysconf(_SC_NPROCESSORS_ONLN)*4;
-+	int child_count = 0;
-+	int *child_pids;
-+	int child_pid;
-+
-+	child_pids = SAFE_MALLOC(cleanup, sizeof(int) * child_pairs * 2);
-+
-+	if (semctl(sem_id, 0, SETVAL, 1) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "couldn't set semval to 1");
-+
-+	/* fork child for each client/server pair */
-+	for (i = 0; i < child_pairs*2; i++) {
-+		if (i%2 == 0) {
-+			if (pipe(pipefd) < 0) {
-+				tst_resm(TBROK | TERRNO, "pipe failed");
-+				break;
-+			}
-+		}
-+
-+		child_pid = fork();
-+		switch (child_pid) {
-+		case -1:
-+			tst_resm(TBROK | TERRNO, "fork");
-+			break;
-+		case 0:
-+			if (i%2 == 0)
-+				server(i, pipefd);
-+			else
-+				client(i-1, pipefd);
-+			exit(0);
-+		default:
-+			child_pids[child_count++] = child_pid;
-+		};
-+
-+		/* this process can close the pipe now */
-+		if (i%2 == 0) {
-+			close(pipefd[0]);
-+			close(pipefd[1]);
-+		}
-+	}
-+
-+	/* let clients/servers run for a while, then clear semval to signal
-+	 * they should stop running now */
-+	if (child_count == child_pairs*2)
-+		sleep(seconds);
-+
-+	if (semctl(sem_id, 0, SETVAL, 0) == -1) {
-+		/* kill children if setting semval failed */
-+		for (i = 0; i < child_count; i++)
-+			kill(child_pids[i], SIGKILL);
-+		tst_resm(TBROK | TERRNO, "couldn't set semval to 0");
-+	}
-+
-+	for (i = 0; i < child_count; i++) {
-+		if (waitpid(child_pids[i], &status, 0) == -1)
-+			tst_resm(TBROK | TERRNO, "waitpid for %d failed",
-+				child_pids[i]);
-+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "child %d returns %d", i, status);
-+	}
-+	free(child_pids);
-+}
-+
-+static void help(void)
-+{
-+	printf("  -s NUM  Number of seconds to run.\n");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+	long seconds;
-+
-+	msg = parse_opts(argc, argv, options, &help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+	setup();
-+
-+	seconds = tflag ? SAFE_STRTOL(NULL, t_opt, 1, LONG_MAX) : 15;
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		reproduce(seconds);
-+	tst_resm(TPASS, "finished after %ld seconds", seconds);
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	tst_tmpdir();
-+
-+	sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | S_IRWXU);
-+	if (sem_id == -1)
-+		tst_brkm(TBROK | TERRNO, NULL, "Couldn't allocate semaphore");
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	semctl(sem_id, 0, IPC_RMID);
-+	tst_rmdir();
-+}
--- 
-1.7.1
+you should have it walk the results to try and find an "." and ".." entry.
+=2Dmike
 
+--nextPart2118563.lS1gHGn4hA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRXljaAAoJEEFjO5/oN/WBr3kP/iRBClXS/ShnYPYAUs3X+Pma
+W4CBTKzkV94gOzP/iXF4bJ3TuqEAVHcknqwA0wDVIguGpLzzKUwECQH6NG17Vozo
+e4MsTbHGXEoMRKedhf9CyP/iM98cK2Fytj1dqIPn0TMsfCNCeBtffKrirca/pEev
+lvzdUOcniNNWdexhJhRD7n8H743/greM4CtniJLLnA/uroULr4zWPmHoTO0vhatV
+pXpVi1+aoqhYeRGJ1KElUPqzela/A2Wq9f3Mdi54LqgPFp6tD0dtaUCJqkujcxjy
+uehSg8rIfTTQ+Xp0gOp5gvFGIuzfS2geXghV6kQJPX5mqxYZ3SvUqlM5AFoZVU0s
+tgvq0TyWnH2dSPMOC9x03Fiv8hepKZfaKzXGbNnMa7abWS7Z93+kqiKMXqw4syAo
+/0S1dPjTZjCy3hEytUD+fhwXMCICE0k27oTGMRNTSXQlgZGX2D2Q4fg0dOz8dBB5
+YAv3kYfzf2STiO1jUTflA5KR0KsBpOFlG2VO9HQf7AAR4aAed3MnAEGIJ1eb2czV
+OmTT5/Chyv1TMB1KvwA6wrbHxWZe+791npq2HOJaT3r6uuPZhNQaitrfaH8HBQ4C
+JDD9rH0X7CZskcUBO9SUB2VfFHvBKFwOECl+bQiSBrODp2dlzg6ZLfOtFcYJlyG0
++THL+Ps5hZ6/+bjKhf+S
+=8syz
+-----END PGP SIGNATURE-----
+
+--nextPart2118563.lS1gHGn4hA--
+
+
+--===============1261114348206921699==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Minimize network downtime and maximize team effectiveness.
+Reduce network management and security costs.Learn how to hire 
+the most talented Cisco Certified professionals. Visit the 
+Employer Resources Portal
+http://www.cisco.com/web/learning/employer_resources/index.html
+--===============1261114348206921699==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1261114348206921699==--
+
