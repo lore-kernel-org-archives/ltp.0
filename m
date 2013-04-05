@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UNKiT-00010r-C0
-	for ltp-list@lists.sourceforge.net; Wed, 03 Apr 2013 10:14:53 +0000
-Date: Wed, 3 Apr 2013 12:15:38 +0200
+	(envelope-from <metan@suse.de>) id 1UO2cv-00065u-3E
+	for ltp-list@lists.sourceforge.net; Fri, 05 Apr 2013 09:08:05 +0000
+Date: Fri, 5 Apr 2013 11:08:52 +0200
 From: chrubis@suse.cz
-Message-ID: <20130403101537.GD1545@rei>
-References: <CAFzFL17=aoZ-dWXSv7kY8RUfC8r-b_VU=g5L3w0yfPtwbRZMaQ@mail.gmail.com>
+Message-ID: <20130405090851.GC18134@rei.Home>
+References: <1365125797-31405-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<201304050053.46087.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAFzFL17=aoZ-dWXSv7kY8RUfC8r-b_VU=g5L3w0yfPtwbRZMaQ@mail.gmail.com>
-Subject: Re: [LTP] LTP for Android
+In-Reply-To: <201304050053.46087.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] getdents01: don't compare first entry to "."
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,40 +25,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sagar Padhye <sgr.m.pdy@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I am trying to test android kernel with LTP without any success.
-> What I have tried:
-> environment setup:
-> ARCH=arm-eabi
-> CROSS_COMPILER=/home/sagar/mytoolchain/bin/arm-linux-androideabi
-> NDK_ROOT=/home/sagar/android-ndk-r8d
-> CC=$CROSS_COMPILER-gcc
-> LD=$CROSS_COMPILER-ld
-> AR=$CROSS_COMPILER-ar
-> STRIP=$CROSS_COMPILER-strip
-> RANLIB=$CROSS_COMPILER-ranlib
-> CFLAGS="-I/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/include
-> -D_ANDROID -nostdlib -DDEV_BSIZE=512"
-> LDFLAGS="-Wl,-rpath-link=/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/lib
-> -L/home/sagar/android-ndk-r8d/platforms/android-14/arch-arm/usr/lib"
-> LIBS="-lc"
+> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> > -		const char *d_name;
+> > -
+> >  		tst_count = 0;
+> > 
+> >  		if ((fd = open(".", O_RDONLY)) == -1)
+> > @@ -102,15 +100,7 @@ int main(int ac, char **av)
+> >  			continue;
+> >  		}
+> > 
+> > -		if (longsyscall)
+> > -			d_name = dirp64->d_name;
+> > -		else
+> > -			d_name = dirp->d_name;
+> > -
+> > -		if (strcmp(d_name, "."))
+> > -			tst_resm(TFAIL, "First entry is not '.'");
+> > -		else
+> > -			tst_resm(TPASS, "call succeeded");
+> > +		tst_resm(TPASS, "call succeeded");
+> > 
+> >  		if (close(fd) == -1)
+> >  			tst_brkm(TBROK, cleanup, "file close failed");
 > 
-> when I do "./configure --host=arm-eabi" & "make", I get
-> parse_opts.c:76:24: fatal error: sys/signal.h: No such file or directory
+> this test isn't really useful after your change.  you've basically validated 
+> that the a valid fd and a large enough buffer was passed to the kernel and 
+> that's it.
+> 
+> you should have it walk the results to try and find an "." and ".." entry.
 
-There were several attempts to port LTP on android, some of the patches
-went in but it is not complete.
-
-To my knowledge devs from mips were working on this, they have forked
-repo on github:
-
-https://github.com/piet-delaney/android-ltp-ndk
-
-But they weren't sending any patches lately so I'm not aware of the
-progress. You should ask them.
+Yes, that would be even better. Or we can get even more creative and
+create a file or two in the setup and expect them to be in the listing.
 
 -- 
 Cyril Hrubis
