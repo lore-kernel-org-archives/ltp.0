@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UP0PU-0004sD-7M
-	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 00:58:12 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UP87j-0001NA-Gw
+	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 09:12:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UP0PS-0006yg-7L
-	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 00:58:12 +0000
-Message-ID: <51621625.6000507@cn.fujitsu.com>
-Date: Mon, 08 Apr 2013 08:58:13 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <515EA506.8060305@linux.vnet.ibm.com>
-In-Reply-To: <515EA506.8060305@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
- getting skipped from runltp's execution
-Reply-To: gaowanlong@cn.fujitsu.com
+	id 1UP87g-0006O2-FM
+	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 09:12:23 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r389CEcB022169
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Apr 2013 05:12:14 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Mon,  8 Apr 2013 17:10:07 +0800
+Message-Id: <3bc25be7511978a5ccb9faad218e397743d1820b.1365411883.git.zliu@redhat.com>
+In-Reply-To: <cover.1365411883.git.zliu@redhat.com>
+References: <cover.1365411883.git.zliu@redhat.com>
+In-Reply-To: <cover.1365411883.git.zliu@redhat.com>
+References: <cover.1365411883.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2 1/3] mm/thp: new case thp04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,131 +30,408 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ramesh <rameshyr@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/05/2013 06:18 PM, Ramesh wrote:
-> Some of the tests which require a block device for their execution are 
-> skipped
-> when runltp is run without any block device being specified on 
-> commandline.Most
-> of such tests are from syscalls group and as a work around to make these 
-> tests
-> run even when no block device is specified,I have made use of loopback 
-> device
-> to create a block device with ext4 filesystem. So,runltp is modified to 
-> create
-> a block device and set the values for DEVICE and DEVICE_FS_TYPE accordingly.
+The case is desinged to test THP functionality.
 
-I like this change, but seems that your email client wrapped the lines,
-please take care of this issue when you respin the patch.
+when one process allocate hugepage aligned anonymouse pages,
+kernel thread 'khugepaged' controlled by sysfs knobs
+/sys/kernel/mm/transparent_hugepage/* will scan them, and make
+them as transparent hugepage if they are suited, you can find out
+how many transparent hugepages are there in one process from
+/proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
+stand for transparent hugepage.
 
-Thanks,
-Wanlong Gao
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ runtest/mm                         |   3 +
+ testcases/kernel/mem/include/mem.h |  11 +++
+ testcases/kernel/mem/lib/mem.c     | 186 +++++++++++++++++++++++++++++++++++++
+ testcases/kernel/mem/thp/thp04.c   | 136 +++++++++++++++++++++++++++
+ 4 files changed, 336 insertions(+)
+ create mode 100644 testcases/kernel/mem/thp/thp04.c
 
-> 
-> Following are the skipped tests,
-> ----
-> inotify03 inotify03 -D DEVICE -T DEVICE_FS_TYPE
-> mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
-> mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
-> mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
-> mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
-> umount01 umount01 -D DEVICE -T DEVICE_FS_TYPE
-> umount02 umount02 -D DEVICE -T DEVICE_FS_TYPE
-> umount03 umount03 -D DEVICE -T DEVICE_FS_TYPE
-> ----
-> 
-> Please review the patch and let me know if any more changes are needed.
-> 
-> 
-> Signed-off-by: Ramesh YR <rameshyr@linux.vnet.ibm.com>
-> ---
->   runltp |   52 +++++++++++++++++++++++++++++++++++++++++++++++-----
->   1 files changed, 47 insertions(+), 5 deletions(-)
-> 
-> diff --git a/runltp b/runltp
-> index 04cc690..d7e3f0d 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -681,14 +681,22 @@ main()
-> 
->       if [ -n "$DEVICE" ]; then
->           sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
-> +    RC=$?
->       else
-> -        echo "remove test cases which require the block device."
-> -        echo "You can specify it with option -b"
-> -        sed -i "/DEVICE/d"  ${TMP}/alltests
-> +    create_block
-> +    if [ $? -eq 0 ]; then
-> +        sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
-> +        RC=$?
-> +    else
-> +        echo -e "no block device was specified on commandline.\n Block 
-> device could not be created using loopback device"
-> +        echo -e "Tests which require block device are disabled.\n You 
-> can specify it with option -b"
-> +        sed -i "/DEVICE/d"  ${TMP}/alltests
-> +        RC=$?
-> +    fi
->       fi
-> 
-> -    if [ $? -ne 0 ]; then
-> -            echo "FATAL: error during prcessing alltests file by sed"
-> +    if [ $RC -ne 0 ]; then
-> +            echo "FATAL: error during processing alltests file by sed"
->               exit 1
->       fi
-> 
-> @@ -971,8 +979,42 @@ main()
->       exit $VALUE
->   }
-> 
-> +create_block()
-> +{
-> +    #create a block device with ext4 filesystem.
-> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240 &>/dev/null
-> +    if [ $? -ne 0 ]; then
-> +        echo "Failed to create loopback device image,please check disk 
-> space and re-run"
-> +        return 1
-> +    else
-> +        ##search for an unused loop dev
-> +        LOOP_DEV=$(losetup -f)
-> +        if [ $? -ne 0 ]; then
-> +            echo "no unused loop device is found"
-> +            return 1
-> +        else
-> +            ##attach the created file to loop dev.
-> +            losetup $LOOP_DEV ${TMP}/test.img &>/dev/null
-> +            if [ $? -ne 0 ]; then
-> +                echo "losetup failed to create block device"
-> +                return 1
-> +            else
-> +                mkfs.ext4 $LOOP_DEV &>/dev/null
-> +                [ $? -ne 0 ] && (echo "creating a ext4 block device 
-> failed" && return 1)
-> +                #set the values in alltests which require block device.
-> +                DEVICE=$LOOP_DEV
-> +                DEVICE_FS_TYPE="ext4"
-> +                return 0
-> +            fi
-> +        fi
-> +    fi
-> +}
-> +
-> +
->   cleanup()
->   {
-> +    [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
-> +    [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
->       rm -rf ${TMP}
->   }
-> 
+diff --git a/runtest/mm b/runtest/mm
+index 56b83f8..3fbb20f 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -84,6 +84,9 @@ swapping01 swapping01 -i 5
+ thp01 thp01 -I 120
+ thp02 thp02
+ thp03 thp03
++thp04_1 thp04
++thp04_2 thp04 -n 10 -N 20
++thp04_3 thp04 -n 1 -N 300
+ 
+ vma01 vma01
+ vma02 vma02
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index fdf558e..ccae47d 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -32,6 +32,17 @@ void testoom(int mempolicy, int lite);
+ 
+ #define PATH_KSM		"/sys/kernel/mm/ksm/"
+ 
++/* THP */
++
++#define PATH_THP		"/sys/kernel/mm/transparent_hugepage/"
++#define PATH_KHPD		PATH_THP "khugepaged/"
++
++int opt_nr_child, opt_nr_thps;
++char *opt_nr_child_str, *opt_nr_thps_str;
++void test_transparent_hugepage(int nr_child, int nr_thps, int hg_aligned);
++void check_thp_options(int *nr_child, int *nr_thps);
++void thp_usage(void);
++
+ /* HUGETLB */
+ 
+ #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index c9525e5..84b36bc 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -501,6 +501,192 @@ void ksm_usage(void)
+ 	printf("  -u      Memory allocation unit in MB\n");
+ }
+ 
++/* THP */
++
++static int alloc_transparent_hugepages(int nr_thps, int hg_aligned)
++{
++	unsigned long hugepagesize, size;
++	void *addr;
++	int ret;
++
++	hugepagesize = read_meminfo("Hugepagesize:") * KB;
++	size = nr_thps * hugepagesize;
++
++	if (hg_aligned) {
++		ret = posix_memalign(&addr, hugepagesize, size);
++		if (ret != 0) {
++			printf("posix_memalign failed\n");
++			return -1;
++		}
++	} else {
++		addr = mmap(NULL, size, PROT_READ|PROT_WRITE,
++			    MAP_PRIVATE|MAP_ANON, -1, 0);
++		if (addr == MAP_FAILED) {
++			perror("mmap");
++			return -1;
++		}
++	}
++
++	memset(addr, 10, size);
++
++	tst_resm(TINFO, "child[%d] stop here", getpid());
++	/*
++	 * stop here, until the father finish to calculate
++	 * all the transparent hugepages.
++	 */
++	if (raise(SIGSTOP) == -1) {
++		perror("kill");
++		return -1;
++	}
++
++	return 0;
++}
++
++static void khugepaged_scan_done(void)
++{
++	int changing = 1, count = 0;
++	long old_pages_collapsed, old_defrag;
++	long old_max_ptes_none, old_pages_to_scan;
++	long pages_collapsed = 0, pages_to_scan = 0;
++	long defrag = 0, max_ptes_none = 0;
++
++	while (changing) {
++		/*
++		 * as 'khugepaged' run 100% during testing, so 10s
++		 * is an enough for us to recognize if 'khugepaged'
++		 * finish scanning proceses' anonymouse hugepages
++		 * or not.
++		 */
++		sleep(10);
++		count++;
++
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_collapsed",
++			       "%ld", &pages_collapsed);
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "defrag", "%ld", &defrag);
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "max_ptes_none",
++			       "%ld", &max_ptes_none);
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_to_scan",
++			       "%ld", &pages_to_scan);
++
++		if (pages_collapsed != old_pages_collapsed ||
++		    pages_to_scan != old_pages_to_scan ||
++		    max_ptes_none != old_max_ptes_none ||
++		    defrag != old_defrag) {
++			old_pages_collapsed = pages_collapsed;
++			old_pages_to_scan = pages_to_scan;
++			old_max_ptes_none = max_ptes_none;
++			old_defrag = defrag;
++		} else {
++			changing = 0;
++		}
++	}
++
++	tst_resm(TINFO, "khugepaged daemon takes %ds to scan all thp pages",
++		 count * 10);
++}
++
++static void verify_thp_size(int *child, int nr_child, int nr_thps)
++{
++	FILE *fp;
++	char path[BUFSIZ], buf[BUFSIZ], line[BUFSIZ];
++	int i, ret;
++	long expect_thps; /* the amount of per child's transparent hugepages */
++	long val, actual_thps;
++	long hugepagesize;
++
++	hugepagesize = read_meminfo("Hugepagesize:");
++	expect_thps = nr_thps * hugepagesize;
++
++	for (i = 0; i < nr_child; i++) {
++		actual_thps = 0;
++
++		snprintf(path, BUFSIZ, "/proc/%d/smaps", child[i]);
++		fp = fopen(path, "r");
++		while (fgets(line, BUFSIZ, fp) != NULL) {
++			ret = sscanf(line, "%64s %ld", buf, &val);
++			if (ret == 2 && val != 0) {
++				if (strcmp(buf, "AnonHugePages:") == 0)
++					actual_thps += val;
++			}
++		}
++
++		if (actual_thps != expect_thps)
++			tst_resm(TFAIL, "child[%d] got %ldKB thps - expect %ld"
++				"KB thps", getpid(), actual_thps, expect_thps);
++		fclose(fp);
++	}
++}
++
++void test_transparent_hugepage(int nr_child, int nr_thps, int hg_aligned)
++{
++	unsigned long hugepagesize;
++	int i, *pid, ret, status;
++	char path[BUFSIZ];
++
++	hugepagesize = read_meminfo("Hugepagesize:");
++
++	pid = malloc(nr_child * sizeof(int));
++	if (pid == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++
++	for (i = 0; i < nr_child; i++) {
++		switch (pid[i] = fork()) {
++		case -1:
++			tst_brkm(TBROK | TERRNO, cleanup, "fork");
++
++		case 0:
++			ret = alloc_transparent_hugepages(nr_thps, hg_aligned);
++			exit(ret);
++		}
++	}
++
++	tst_resm(TINFO, "Stop all children...");
++	for (i = 0; i < nr_child; i++) {
++		if (waitpid(pid[i], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, cleanup,
++				 "child[%d] was not stoppted", pid[i]);
++	}
++
++	tst_resm(TINFO, "Start to scan all transparent hugepages...");
++	khugepaged_scan_done();
++
++	tst_resm(TINFO, "Start to verify transparent hugepage size...");
++	verify_thp_size(pid, nr_child, nr_thps);
++
++	tst_resm(TINFO, "Wake up all children...");
++	for (i = 0; i < nr_child; i++) {
++		if (kill(pid[i], SIGCONT) == -1)
++			tst_brkm(TBROK | TERRNO, cleanup,
++				 "signal continue child[%d]", pid[i]);
++	}
++
++	/* wait all children finish himself task */
++	for (i = 0; i < nr_child; i++) {
++		if (waitpid(pid[i], &status, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid %d", pid[i]);
++
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "the child[%d] unexpectedly failed:"
++				 " %d", pid[i], status);
++	}
++}
++
++void check_thp_options(int *nr_child, int *nr_thps)
++{
++	if (opt_nr_child)
++		*nr_child = SAFE_STRTOL(NULL, opt_nr_child_str, 0, LONG_MAX);
++	if (opt_nr_thps)
++		*nr_thps = SAFE_STRTOL(NULL, opt_nr_thps_str, 0, LONG_MAX);
++}
++
++void thp_usage(void)
++{
++	printf("  -n      Number of processes\n");
++	printf("  -N      Number of transparent hugepages\n");
++}
++
+ /* cpuset/memcg */
+ 
+ static void gather_node_cpus(char *cpus, long nd)
+diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+new file mode 100644
+index 0000000..0f6c553
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp04.c
+@@ -0,0 +1,136 @@
++/*
++ * Copyright (C) 2013 Linux Test Project
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * The case is designed to test the functionality of transparent
++ * hugepage - THP
++ *
++ * when one process allocate hugepage aligned anonymouse pages,
++ * kernel thread 'khugepaged' controlled by sysfs knobs
++ * /sys/kernel/mm/transparent_hugepage/ will scan them, and make
++ * them as transparent hugepage if they are suited, you can find out
++ * how many transparent hugepages are there in one process from
++ * /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
++ * stand for transparent hugepage.
++ */
++
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include "test.h"
++#include "usctest.h"
++#include "mem.h"
++
++char *TCID = "thp04";
++int TST_TOTAL = 1;
++
++option_t thp_options[] = {
++	{"n:", &opt_nr_child, &opt_nr_child_str},
++	{"N:", &opt_nr_thps, &opt_nr_thps_str},
++	{NULL, NULL, NULL}
++};
++
++static int pre_thp_scan_sleep_millisecs;
++static int pre_thp_alloc_sleep_millisecs;
++static char pre_thp_enabled[BUFSIZ];
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++	int nr_child = 2, nr_thps = 64;
++
++	msg = parse_opts(argc, argv, thp_options, thp_usage);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++	check_thp_options(&nr_child, &nr_thps);
++
++	setup();
++
++	tst_resm(TINFO, "Start to test transparent hugepage...");
++	tst_resm(TINFO, "There are %d children allocating %d "
++			"transparent hugepages", nr_child, nr_thps);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		test_transparent_hugepage(nr_child, nr_thps, 1);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++void setup(void)
++{
++	char path[BUFSIZ];
++
++	tst_require_root(NULL);
++
++	if (access(PATH_THP, F_OK) == -1)
++		tst_brkm(TCONF, NULL, "THP is not enabled");
++
++	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
++	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_scan_sleep_millisecs);
++	/* set 0 to khugepaged/scan_sleep_millisecs to run khugepaged 100% */
++	SAFE_FILE_PRINTF(cleanup, path, "%d", 0);
++
++	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
++	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_alloc_sleep_millisecs);
++	/*
++	 * set 0 to khugepaged/alloc_sleep_millisecs to make sure khugepaged
++	 * don't stop if there's a hugepage allcation failure.
++	 */
++	SAFE_FILE_PRINTF(NULL, path, "%d", 0);
++
++	snprintf(path, BUFSIZ, PATH_THP "enabled");
++	write_file(path, "always");
++
++	tst_sig(FORK, DEF_HANDLER, NULL);
++	TEST_PAUSE;
++}
++
++void cleanup(void)
++{
++	char path[BUFSIZ];
++
++	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
++	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_scan_sleep_millisecs);
++
++	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
++	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_alloc_sleep_millisecs);
++
++	snprintf(path, BUFSIZ, PATH_THP "enabled");
++	write_file(path, pre_thp_enabled);
++
++	TEST_CLEANUP;
++}
+-- 
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
