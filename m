@@ -2,25 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1USP8V-0001RA-TO
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 09:58:43 +0000
-Date: Wed, 17 Apr 2013 11:59:32 +0200
-From: chrubis@suse.cz
-Message-ID: <20130417095931.GB29935@rei.Home>
-References: <fd56c3851c2ada9667af4f51b0887282d5e43279.1366012538.git.jstancek@redhat.com>
-	<1428475737.306249.1366016603320.JavaMail.root@redhat.com>
-	<20130415141743.GA1896@rei>
-	<1471859220.549493.1366042467298.JavaMail.root@redhat.com>
-	<1801607801.575766.1366046157443.JavaMail.root@redhat.com>
-	<20130415175001.GB2405@rei>
-	<1393321377.1420603.1366185041930.JavaMail.root@redhat.com>
-	<20130417094632.GA29935@rei.Home>
-	<525288781.1696712.1366192381562.JavaMail.root@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <525288781.1696712.1366192381562.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH v2] sendmsg testcase for
- ded34e0fe8fe8c2d595bfa30626654e4b87621e0
+	(envelope-from <zliu@redhat.com>) id 1UP87i-0006p8-51
+	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 09:12:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UP87e-0008Tp-Oq
+	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 09:12:22 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r389CChL022163
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Apr 2013 05:12:12 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Mon,  8 Apr 2013 17:10:06 +0800
+Message-Id: <cover.1365411883.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2 0/3] mm/thp: add two new case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,47 +26,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > > > Strange indeed.
-> > > > 
-> > > > Let's get this into LTP git repo already, I will try to bring down some
-> > > > of my testing machines then.
-> > > 
-> > > Pushed. When you tried it, did you have selinux on?
-> > 
-> > No, selinux is not turned on by default on SUSE.
-> > 
-> > And another thing that caught my eye was CONFIG_HZ_1000, as my testing
-> > machines have CONFIG_HZ_250.
-> 
-> That could explain it, since it's supposed to crash in:
-> 
-> security/selinux/hooks.c
->   static int selinux_socket_unix_may_send()
-> 
-> Full backtrace (a bit mangled) can be seen here:
-> http://marc.info/?l=linux-netdev&m=136390436927831&w=2
+The patchset is desinged to test THP functionality.
+    
+when one process allocate hugepage aligned anonymouse pages,
+kernel thread 'khugepaged' controlled by sysfs knobs
+/sys/kernel/mm/transparent_hugepage/* will scan them, and make
+them as transparent hugepage if they are suited, you can find out
+how many transparent hugepages are there in one process from
+/proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
+stand for transparent hugepage.
 
-Ah, I've overlooked the name of the function it crashes in.
+V1 to V2:
+accepted Wanlong's suggestion, added some comment for '10s'
+added 'static' key word for single-file-only variant.
 
-I will turn the selinux on and try again.
+Zhouping Liu (3):
+  mm/thp: new case thp04.c
+  lib/mem: introduce a new function set_global_mempolicy()
+  mm/thp: add new case thp05
+
+ runtest/mm                         |   6 ++
+ testcases/kernel/mem/include/mem.h |  12 +++
+ testcases/kernel/mem/lib/mem.c     | 197 ++++++++++++++++++++++++++++++++++++-
+ testcases/kernel/mem/thp/thp04.c   | 136 +++++++++++++++++++++++++
+ testcases/kernel/mem/thp/thp05.c   | 152 ++++++++++++++++++++++++++++
+ 5 files changed, 502 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/mem/thp/thp04.c
+ create mode 100644 testcases/kernel/mem/thp/thp05.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Minimize network downtime and maximize team effectiveness.
+Reduce network management and security costs.Learn how to hire 
+the most talented Cisco Certified professionals. Visit the 
+Employer Resources Portal
+http://www.cisco.com/web/learning/employer_resources/index.html
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
