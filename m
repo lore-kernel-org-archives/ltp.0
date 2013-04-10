@@ -1,21 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UVCWk-0008Ra-Bo
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 03:07:18 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UVCWf-0007Rf-S0
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 03:07:18 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3P370Gx022546
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Apr 2013 11:07:00 +0800
-Message-ID: <51789D50.1080301@cn.fujitsu.com>
-Date: Thu, 25 Apr 2013 11:04:48 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <noreply@sourceforge.net>) id 1UPszS-0004SN-IS
+	for ltp-list@lists.sourceforge.net; Wed, 10 Apr 2013 11:14:58 +0000
+From: SourceForge.net <noreply@sourceforge.net>
+Date: Wed, 10 Apr 2013 04:14:57 -0700
+Content-Disposition: inline
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH v3 1/2] syscalls/getitimer: cleanup
+Subject: [LTP] [ ltp-Bugs-3609873 ] lcov fails when removing lines from a
+	file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,347 +22,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+Message-Id: <E1UWlec-0002xu-T6@sfs-ml-2.v29.ch3.sourceforge.com>
+To: "SourceForge.net" <noreply@sourceforge.net>
 
+Bugs item #3609873, was opened at 2013-04-03 02:03
+Message generated for change (Comment added) made by 
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3609873&group_id=3382
 
-1. Remove redundant comments
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Tools
+Group: None
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Jookia ()
+Assigned to: Nobody/Anonymous (nobody)
+Summary: lcov fails when removing lines from a file
 
-2. Revise code to follow ltp-code-style
+Initial Comment:
+When compiling a file with GCC, then removing a line and compiling it again, lcov will be unable to read the generated coverage files. I've attached a shell script that does this behaviour.
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/getitimer/getitimer01.c | 115 ++++++----------------
- testcases/kernel/syscalls/getitimer/getitimer02.c | 100 +++++--------------
- 2 files changed, 57 insertions(+), 158 deletions(-)
+I'm on Arch Linux x86_64 with GCC 4.7.2 and lcov 1.10 (although I have tested it with the trunk version and gotten the same results.)
 
-diff --git a/testcases/kernel/syscalls/getitimer/getitimer01.c b/testcases/kernel/syscalls/getitimer/getitimer01.c
-index 56c56e0..03edf2f 100644
---- a/testcases/kernel/syscalls/getitimer/getitimer01.c
-+++ b/testcases/kernel/syscalls/getitimer/getitimer01.c
-@@ -1,55 +1,28 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+----------------------------------------------------------------------
 
- /*
-- * NAME
-- *	getitimer01.c
-- *
-- * DESCRIPTION
-- *	getitimer01 - check that a correct call to getitimer() succeeds
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	allocate needed space
-- *	issue the system call
-- *	check the errno value
-- *	  issue a PASS message if we get zero
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  getitimer01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-- */
-+  HISTORY
-+    03/2001 - Written by Wayne Boyer
-+
-+  TEST ITEMS:
-+    Check that a correct call to getitimer() succeeds.
-+*/
+>Comment By: Jookia ()
+Date: 2013-04-10 04:14
 
- #include "test.h"
- #include "usctest.h"
-@@ -57,8 +30,8 @@
- #include <errno.h>
- #include <sys/time.h>
+Message:
+I *think* I've fixed it, based on the idea that it's garbage left over by
+GCC resizing a file. This patch makes it so if an unhandled record leads to
+the end of a file, it finishes up its stuff, as that's what seems to be
+happening.
 
--void cleanup(void);
--void setup(void);
-+static void cleanup(void);
-+static void setup(void);
+An interesting thing to note is that this doesn't happen with GCC 4.4, on
+the same sytem. I bisected GCC to find the the change happens when BASE_VER
+is updated to 4.7, so I'm curious if there's something going on with the
+new GCC 4.7 compatibility code. Or maybe my test is faulty with bisecting.
 
- char *TCID = "getitimer01";
- int TST_TOTAL = 1;
-@@ -67,37 +40,22 @@ int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
--	struct itimerval *value;
-+	struct itimerval value;
+----------------------------------------------------------------------
 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
+Comment By: Melvin Kicchi (melonstorm)
+Date: 2013-04-04 20:33
 
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
-+	setup();
+Message:
+Confirmed on Linux Mint x86_64 with gcc 4.7.2 and lcov 1.9.
 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
+----------------------------------------------------------------------
 
--		/* allocate space for the itimerval structure */
-+		TEST(getitimer(ITIMER_REAL, &value));
-
--		if ((value = (struct itimerval *)malloc((size_t)
--							sizeof(struct
--							       itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "value malloc failed");
--		}
--
--		/* call the system call with the TEST() macro */
--
--		TEST(getitimer(ITIMER_REAL, value));
--
--		if (TEST_RETURN != 0) {
-+		if (TEST_RETURN != 0)
- 			tst_resm(TFAIL, "call failed - errno = %d - %s",
- 				 TEST_ERRNO, strerror(TEST_ERRNO));
--		}
-
- 		if (STD_FUNCTIONAL_TEST) {
-
-@@ -106,8 +64,8 @@ int main(int ac, char **av)
- 			 * not set it before the getitimer call), the elements
- 			 * in it_value should be zero.
- 			 */
--			if ((value->it_value.tv_sec == 0) &&
--			    (value->it_value.tv_usec == 0)) {
-+			if ((value.it_value.tv_sec == 0) &&
-+			    (value.it_value.tv_usec == 0)) {
- 				tst_resm(TPASS, "functional test passed");
- 			} else {
- 				tst_resm(TFAIL, "timer values are non zero");
-@@ -122,27 +80,14 @@ int main(int ac, char **av)
- 	tst_exit();
- }
-
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
-+static void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
- 	TEST_PAUSE;
- }
-
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
--
- }
-diff --git a/testcases/kernel/syscalls/getitimer/getitimer02.c b/testcases/kernel/syscalls/getitimer/getitimer02.c
-index fcb3d6c..4f87883 100644
---- a/testcases/kernel/syscalls/getitimer/getitimer02.c
-+++ b/testcases/kernel/syscalls/getitimer/getitimer02.c
-@@ -1,55 +1,30 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
-
- /*
-- * NAME
-- *	getitimer02.c
-- *
-- * DESCRIPTION
-- *	getitimer02 - check that a getitimer() call fails as expected
-- *		      with an incorrect second argument.
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	call getitimer() with an incorrect second argument.
-- *	check the errno value
-- *	  issue a PASS message if we get EFAULT - errno 14
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  getitimer02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-- */
-+  HISTORY
-+  03/2001 - Written by Wayne Boyer
-+
-+  TEST ITEMS:
-+  Check that a getitimer() call fails as expected
-+  with an incorrect second argument.
-+*/
-+
-
- #include "test.h"
- #include "usctest.h"
-@@ -62,8 +37,8 @@ int TST_TOTAL = 1;
-
- #if !defined(UCLINUX)
-
--void cleanup(void);
--void setup(void);
-+static void cleanup(void);
-+static void setup(void);
-
- int exp_enos[] = { EFAULT, 0 };
-
-@@ -72,23 +47,15 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
-
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
--
--	setup();		/* global setup */
-
--	/* The following loop checks looping state if -i option given */
-+	setup();
-
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
-
--		/*
--		 * issue the system call with the TEST() macro
--		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
--		 */
--
- 		/* call with a bad address */
- 		TEST(getitimer(ITIMER_REAL, (struct itimerval *)-1));
-
-@@ -118,12 +85,8 @@ int main(int ac, char **av)
- 	tst_exit();
- }
-
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
-+static void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
- 	TEST_EXP_ENOS(exp_enos);
-@@ -131,18 +94,9 @@ void setup(void)
- 	TEST_PAUSE;
- }
-
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
--
- }
-
- #else
--- 
-1.8.1
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=3609873&group_id=3382
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
