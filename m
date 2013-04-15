@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UUXRV-00052M-Sl
-	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 07:15:09 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UUXRT-0001Qo-N1
-	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 07:15:09 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3N7F1WK013957
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Apr 2013 03:15:01 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Tue, 23 Apr 2013 15:12:55 +0800
-Message-Id: <ac28b41ad3d99415f2bc72b14708ad2c24350099.1366700755.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v2] lib/mem: removed read_file() and write_file()
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1URijl-00012A-VF
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 12:42:22 +0000
+Date: Mon, 15 Apr 2013 14:43:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20130415124305.GC1091@rei>
+References: <cover.1366016616.git.zliu@redhat.com>
+	<9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v4 1/3] mm/thp: new case thp04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,377 +22,367 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-SAFE_FILE_SCANF() and SAFE_FILE_PRINTF() can completely displace
-read_file() and write_file(), so removed them.
+Hi!
+> +static void khugepaged_scan_done(void)
+> +{
+> +	int changing = 1, count = 0;
+> +	long old_pages_collapsed, old_max_ptes_none, old_pages_to_scan;
+> +	long pages_collapsed = 0, max_ptes_none = 0, pages_to_scan = 0;
+> +
+> +	while (changing) {
+> +		/*
+> +		 * as 'khugepaged' run 100% during testing, so 10s
+> +		 * is an enough for us to recognize if 'khugepaged'
+> +		 * finish scanning proceses' anonymouse hugepages
+                                                ^
+                                             anonymous
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
+> +		 * or not.
+> +		 */
+> +		sleep(10);
+> +		count++;
+> +
+> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_collapsed",
+> +			       "%ld", &pages_collapsed);
+> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "max_ptes_none",
+> +			       "%ld", &max_ptes_none);
+> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_to_scan",
+> +			       "%ld", &pages_to_scan);
+> +
+> +		if (pages_collapsed != old_pages_collapsed ||
+> +		    max_ptes_none != old_max_ptes_none ||
+> +		    pages_to_scan != old_pages_to_scan) {
+> +			old_pages_collapsed = pages_collapsed;
+> +			old_max_ptes_none = max_ptes_none;
+> +			old_pages_to_scan = pages_to_scan;
+> +		} else {
+> +			changing = 0;
+> +		}
+> +	}
+> +
+> +	tst_resm(TINFO, "khugepaged daemon takes %ds to scan all thp pages",
+> +		 count * 10);
+> +}
 
-v1 - v2:
-made some cleanup, and fixed a little error.
+Ah, so it acutally does polling, this is fine.
 
----
- testcases/kernel/mem/cpuset/cpuset01.c             |  3 +-
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   | 11 +--
- testcases/kernel/mem/include/mem.h                 |  3 +-
- testcases/kernel/mem/lib/mem.c                     | 93 +++++++---------------
- testcases/kernel/mem/oom/oom03.c                   | 11 ++-
- testcases/kernel/mem/oom/oom05.c                   |  6 +-
- 6 files changed, 41 insertions(+), 86 deletions(-)
+How long scanning takes. If it is about 10 seconds, we should poll
+faster so that the testcase has chance to finish reasonably fast.
+(if it takes 10 seconds and we miss the first windows it will sleep
+ doing noting for another ten seconds)
 
-diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-index 99fbb9c..abba489 100644
---- a/testcases/kernel/mem/cpuset/cpuset01.c
-+++ b/testcases/kernel/mem/cpuset/cpuset01.c
-@@ -100,8 +100,7 @@ static void testcpuset(void)
- 	write_cpuset_files(CPATH_NEW, "cpus", buf);
- 	read_cpuset_files(CPATH, "mems", mems);
- 	write_cpuset_files(CPATH_NEW, "mems", mems);
--	snprintf(buf, BUFSIZ, "%d", getpid());
--	write_file(CPATH_NEW "/tasks", buf);
-+	SAFE_FILE_PRINTF(cleanup, CPATH_NEW "/tasks", "%d", getpid());
- 
- 	switch (child = fork()) {
- 	case -1:
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-index 3898618..8cf5cc6 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-@@ -113,7 +113,6 @@ int main(int ac, char **av)
- void setup(void)
- {
- 	long hpage_size;
--	char buf[BUFSIZ];
- 
- 	tst_require_root(NULL);
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-@@ -125,10 +124,8 @@ void setup(void)
- 
- 	shm_size = hpage_size;
- 
--	read_file(PATH_SHMMNI, buf);
--	orig_shmmni = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
--	snprintf(buf, BUFSIZ, "%ld", hugepages / 2);
--	write_file(PATH_SHMMNI, buf);
-+	SAFE_FILE_SCANF(NULL, PATH_SHMMNI, "%ld", &orig_shmmni);
-+	SAFE_FILE_PRINTF(NULL, PATH_SHMMNI, "%ld", hugepages / 2);
- 
- 	/*
- 	 * Use a while loop to create the maximum number of memory segments.
-@@ -156,15 +153,13 @@ void setup(void)
- void cleanup(void)
- {
- 	int i;
--	char buf[BUFSIZ];
- 
- 	TEST_CLEANUP;
- 
- 	for (i = 0; i < num_shms; i++)
- 		rm_shm(shm_id_arr[i]);
- 
--	snprintf(buf, BUFSIZ, "%ld", orig_shmmni);
--	write_file(PATH_SHMMNI, buf);
-+	SAFE_FILE_PRINTF(NULL, PATH_SHMMNI, "%ld", orig_shmmni);
- 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
- 
- 	tst_rmdir();
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 9e96b31..551c73e 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -67,6 +67,7 @@ void ksm_usage(void);
- #define CPATH_NEW		CPATH "/1"
- #define MEMCG_PATH		"/dev/cgroup"
- #define MEMCG_PATH_NEW		MEMCG_PATH "/1"
-+#define MEMCG_LIMIT		MEMCG_PATH_NEW "/memory.limit_in_bytes"
- #define MEMCG_SW_LIMIT		MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes"
- #if HAVE_SYS_EVENTFD_H
- #define PATH_OOMCTRL		MEMCG_PATH_NEW "/memory.oom_control"
-@@ -85,8 +86,6 @@ int  path_exist(const char *path, ...);
- long read_meminfo(char *item);
- void set_sys_tune(char *sys_file, long tune, int check);
- long get_sys_tune(char *sys_file);
--void write_file(char *filename, char *buf);
--void read_file(char *filename, char *retbuf);
- void cleanup(void);
- void setup(void);
- 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index da98552..5397177 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -157,13 +157,11 @@ void testoom(int mempolicy, int lite)
- 
- static void check(char *path, long int value)
- {
--	FILE *fp;
--	char buf[BUFSIZ], fullpath[BUFSIZ];
-+	char fullpath[BUFSIZ];
- 	long actual_val;
- 
--	snprintf(fullpath, BUFSIZ, "%s%s", PATH_KSM, path);
--	read_file(fullpath, buf);
--	actual_val = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
-+	snprintf(fullpath, BUFSIZ, PATH_KSM "%s", path);
-+	SAFE_FILE_SCANF(cleanup, fullpath, "%ld", &actual_val);
- 
- 	tst_resm(TINFO, "%s is %ld.", path, actual_val);
- 	if (actual_val != value)
-@@ -172,7 +170,6 @@ static void check(char *path, long int value)
- 
- static void wait_ksmd_done(void)
- {
--	char buf[BUFSIZ];
- 	long pages_shared, pages_sharing, pages_volatile, pages_unshared;
- 	long old_pages_shared = 0, old_pages_sharing = 0;
- 	long old_pages_volatile = 0, old_pages_unshared = 0;
-@@ -182,17 +179,17 @@ static void wait_ksmd_done(void)
- 		sleep(10);
- 		count++;
- 
--		read_file(PATH_KSM "pages_shared", buf);
--		pages_shared = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
-+		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_shared",
-+				"%ld", &pages_shared);
- 
--		read_file(PATH_KSM "pages_sharing", buf);
--		pages_sharing = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
-+		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_sharing",
-+				"%ld", &pages_sharing);
- 
--		read_file(PATH_KSM "pages_volatile", buf);
--		pages_volatile = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
-+		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_volatile",
-+				"%ld", &pages_volatile);
- 
--		read_file(PATH_KSM "pages_unshared", buf);
--		pages_unshared = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
-+		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_unshared",
-+				"%ld", &pages_unshared);
- 
- 		if (pages_shared != old_pages_shared ||
- 		    pages_sharing != old_pages_sharing ||
-@@ -254,13 +251,9 @@ static void verify(char **memory, char value, int proc,
- 
- void write_memcg(void)
- {
--	char buf[BUFSIZ], mem[BUFSIZ];
--
--	snprintf(mem, BUFSIZ, "%ld", TESTMEM);
--	write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
-+	SAFE_FILE_PRINTF(NULL, MEMCG_LIMIT, "%ld", TESTMEM);
- 
--	snprintf(buf, BUFSIZ, "%d", getpid());
--	write_file(MEMCG_PATH_NEW "/tasks", buf);
-+	SAFE_FILE_PRINTF(NULL, MEMCG_PATH_NEW "/tasks", "%d", getpid());
- }
- 
- static struct ksm_merge_data {
-@@ -377,7 +370,6 @@ static void resume_ksm_children(int *child, int num)
- 
- void create_same_memory(int size, int num, int unit)
- {
--	char buf[BUFSIZ];
- 	int i, j, status, *child;
- 	unsigned long ps, pages;
- 	struct ksm_merge_data **ksm_data;
-@@ -437,10 +429,10 @@ void create_same_memory(int size, int num, int unit)
- 	stop_ksm_children(child, num);
- 
- 	tst_resm(TINFO, "KSM merging...");
--	write_file(PATH_KSM "run", "1");
--	snprintf(buf, BUFSIZ, "%ld", size * pages * num);
--	write_file(PATH_KSM "pages_to_scan", buf);
--	write_file(PATH_KSM "sleep_millisecs", "0");
-+	SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
-+	SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
-+			 size * pages *num);
-+	SAFE_FILE_PRINTF(cleanup, PATH_KSM "sleep_millisecs", "0");
- 
- 	resume_ksm_children(child, num);
- 	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
-@@ -460,13 +452,13 @@ void create_same_memory(int size, int num, int unit)
- 	stop_ksm_children(child, num);
- 
- 	tst_resm(TINFO, "KSM unmerging...");
--	write_file(PATH_KSM "run", "2");
-+	SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "2");
- 
- 	resume_ksm_children(child, num);
- 	group_check(2, 0, 0, 0, 0, 0, size * pages * num);
- 
- 	tst_resm(TINFO, "stop KSM.");
--	write_file(PATH_KSM "run", "0");
-+	SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "0");
- 	group_check(0, 0, 0, 0, 0, 0, size * pages * num);
- 
- 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
-@@ -624,7 +616,6 @@ void test_transparent_hugepage(int nr_children, int nr_thps,
- {
- 	unsigned long hugepagesize, memfree;
- 	int i, *pids, ret, status;
--	char path[BUFSIZ];
- 
- 	if (mempolicy)
- 		set_global_mempolicy(mempolicy);
-@@ -803,8 +794,7 @@ void write_cpusets(long nd)
- 	gather_node_cpus(cpus, nd);
- 	write_cpuset_files(CPATH_NEW, "cpus", cpus);
- 
--	snprintf(buf, BUFSIZ, "%d", getpid());
--	write_file(CPATH_NEW "/tasks", buf);
-+	SAFE_FILE_PRINTF(NULL, CPATH_NEW "/tasks", "%d", getpid());
- }
- 
- void umount_mem(char *path, char *path_new)
-@@ -932,13 +922,12 @@ long read_meminfo(char *item)
- void set_sys_tune(char *sys_file, long tune, int check)
- {
- 	long val;
--	char buf[BUFSIZ], path[BUFSIZ];
-+	char path[BUFSIZ];
- 
- 	tst_resm(TINFO, "set %s to %ld", sys_file, tune);
- 
--	snprintf(path, BUFSIZ, "%s%s", PATH_SYSVM, sys_file);
--	snprintf(buf, BUFSIZ, "%ld", tune);
--	write_file(path, buf);
-+	snprintf(path, BUFSIZ, PATH_SYSVM "%s", sys_file);
-+	SAFE_FILE_PRINTF(NULL, path, "%ld", tune);
- 
- 	if (check) {
- 		val = get_sys_tune(sys_file);
-@@ -950,44 +939,20 @@ void set_sys_tune(char *sys_file, long tune, int check)
- 
- long get_sys_tune(char *sys_file)
- {
--	char buf[BUFSIZ], path[BUFSIZ];
--
--	snprintf(path, BUFSIZ, "%s%s", PATH_SYSVM, sys_file);
--	read_file(path, buf);
--	return SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
--}
--
--void write_file(char *filename, char *buf)
--{
--	int fd;
--
--	fd = open(filename, O_WRONLY);
--	if (fd == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "open %s", filename);
--	if (write(fd, buf, strlen(buf)) != strlen(buf))
--		tst_brkm(TBROK | TERRNO, cleanup, "write %s", filename);
--	close(fd);
--}
-+	char path[BUFSIZ];
-+	long tune;
- 
--void read_file(char *filename, char *retbuf)
--{
--	int fd;
-+	snprintf(path, BUFSIZ, PATH_SYSVM "%s", sys_file);
-+	SAFE_FILE_SCANF(NULL, path, "%ld", &tune);
- 
--	fd = open(filename, O_RDONLY);
--	if (fd == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "open %s", filename);
--	if (read(fd, retbuf, BUFSIZ) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "read %s", filename);
--	close(fd);
-+	return tune;
- }
- 
- void update_shm_size(size_t * shm_size)
- {
--	char buf[BUFSIZ];
- 	size_t shmmax;
- 
--	read_file(PATH_SHMMAX, buf);
--	shmmax = SAFE_STRTOUL(cleanup, buf, 0, ULONG_MAX);
-+	SAFE_FILE_SCANF(cleanup, PATH_SHMMAX, "%ld", &shmmax);
- 	if (*shm_size > shmmax) {
- 		tst_resm(TINFO, "Set shm_size to shmmax: %ld", shmmax);
- 		*shm_size = shmmax;
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index 124e95f..8faa3cd 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
- {
- 	char *msg;
- 	int lc;
--	char buf[BUFSIZ], mem[BUFSIZ];
- 
- 	msg = parse_opts(argc, argv, NULL, NULL);
- 	if (msg != NULL)
-@@ -63,11 +62,10 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		snprintf(buf, BUFSIZ, "%d", getpid());
--		write_file(MEMCG_PATH_NEW "/tasks", buf);
-+		SAFE_FILE_PRINTF(cleanup, MEMCG_PATH_NEW "/tasks",
-+				 "%d", getpid());
-+		SAFE_FILE_PRINTF(cleanup, MEMCG_LIMIT, "%ld", TESTMEM);
- 
--		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
--		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
- 		testoom(0, 0);
- 
- 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-@@ -77,7 +75,8 @@ int main(int argc, char *argv[])
- 			else
- 				tst_brkm(TBROK | TERRNO, cleanup, "access");
- 		} else {
--			write_file(MEMCG_SW_LIMIT, mem);
-+			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT,
-+					 "%ld", TESTMEM);
- 			testoom(0, 1);
- 		}
- 
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-index cd45f08..15feba5 100644
---- a/testcases/kernel/mem/oom/oom05.c
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
- 	char *msg;
- 	int lc;
- 	int swap_acc_on = 1;
--	char mem[BUFSIZ];
- 
- 	msg = parse_opts(argc, argv, NULL, NULL);
- 	if (msg != NULL)
-@@ -93,13 +92,12 @@ int main(int argc, char *argv[])
- 		if (swap_acc_on) {
- 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
- 					"special memswap limitation:");
--			snprintf(mem, BUFSIZ, "%ld", TESTMEM);
--			write_file(MEMCG_SW_LIMIT, mem);
-+			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "%ld", TESTMEM);
- 			testoom(0, 0);
- 
- 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
- 					"disabled memswap limitation:");
--			write_file(MEMCG_SW_LIMIT, "-1");
-+			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "-1");
- 			testoom(0, 0);
- 		}
- 	}
+> +static void verify_thp_size(int *child, int nr_child, int nr_thps)
+> +{
+> +	FILE *fp;
+> +	char path[BUFSIZ], buf[BUFSIZ], line[BUFSIZ];
+> +	int i, ret;
+> +	long expect_thps; /* the amount of per child's transparent hugepages */
+> +	long val, actual_thps;
+> +	long hugepagesize;
+> +
+> +	hugepagesize = read_meminfo("Hugepagesize:");
+> +	expect_thps = nr_thps * hugepagesize;
+> +
+> +	for (i = 0; i < nr_child; i++) {
+> +		actual_thps = 0;
+> +
+> +		snprintf(path, BUFSIZ, "/proc/%d/smaps", child[i]);
+> +		fp = fopen(path, "r");
+> +		while (fgets(line, BUFSIZ, fp) != NULL) {
+> +			ret = sscanf(line, "%64s %ld", buf, &val);
+> +			if (ret == 2 && val != 0) {
+> +				if (strcmp(buf, "AnonHugePages:") == 0)
+> +					actual_thps += val;
+> +			}
+> +		}
+> +
+> +		if (actual_thps != expect_thps)
+> +			tst_resm(TFAIL, "child[%d] got %ldKB thps - expect %ld"
+> +				"KB thps", getpid(), actual_thps, expect_thps);
+> +		fclose(fp);
+> +	}
+> +}
+> +
+> +void test_transparent_hugepage(int nr_child, int nr_thps, int hg_aligned)
+> +{
+> +	unsigned long hugepagesize, memfree;
+> +	int i, *pid, ret, status;
+> +	char path[BUFSIZ];
+> +
+> +	memfree = read_meminfo("MemFree:");
+> +	tst_resm(TINFO, "The current MemFree is %luMB", memfree / KB);
+> +	if (memfree < MB)
+> +		tst_resm(TWARN, "The system has low memory, which maybe "
+> +				"cause the case failed");
+
+Hmm, TWARN is most likely wrong here, as it gets propagated into the
+test return value. If it is known to fail on low memory, I would just
+exit with TCONF and "Not enough memory for testing" message. Comments
+anybody?
+
+> +	hugepagesize = read_meminfo("Hugepagesize:");
+> +
+> +	pid = malloc(nr_child * sizeof(int));
+> +	if (pid == NULL)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
+
+This is really small nit, but I would have named this array as 'pids'.
+
+> +	for (i = 0; i < nr_child; i++) {
+> +		switch (pid[i] = fork()) {
+> +		case -1:
+> +			tst_brkm(TBROK | TERRNO, cleanup, "fork");
+> +
+> +		case 0:
+> +			ret = alloc_transparent_hugepages(nr_thps, hg_aligned);
+> +			exit(ret);
+> +		}
+> +	}
+> +
+> +	tst_resm(TINFO, "Stop all children...");
+> +	for (i = 0; i < nr_child; i++) {
+> +		if (waitpid(pid[i], &status, WUNTRACED) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +		if (!WIFSTOPPED(status))
+> +			tst_brkm(TBROK, cleanup,
+> +				 "child[%d] was not stoppted", pid[i]);
+> +	}
+> +
+> +	tst_resm(TINFO, "Start to scan all transparent hugepages...");
+> +	khugepaged_scan_done();
+> +
+> +	tst_resm(TINFO, "Start to verify transparent hugepage size...");
+> +	verify_thp_size(pid, nr_child, nr_thps);
+> +
+> +	tst_resm(TINFO, "Wake up all children...");
+> +	for (i = 0; i < nr_child; i++) {
+> +		if (kill(pid[i], SIGCONT) == -1)
+> +			tst_brkm(TBROK | TERRNO, cleanup,
+> +				 "signal continue child[%d]", pid[i]);
+> +	}
+> +
+> +	/* wait all children finish himself task */
+                                       ^
+				    their tasks
+
+> +	for (i = 0; i < nr_child; i++) {
+> +		if (waitpid(pid[i], &status, 0) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid %d", pid[i]);
+> +
+> +		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +			tst_resm(TFAIL, "the child[%d] unexpectedly failed:"
+> +				 " %d", pid[i], status);
+> +	}
+> +}
+> +
+> +void check_thp_options(int *nr_child, int *nr_thps)
+> +{
+> +	if (opt_nr_child)
+> +		*nr_child = SAFE_STRTOL(NULL, opt_nr_child_str, 0, LONG_MAX);
+> +	if (opt_nr_thps)
+> +		*nr_thps = SAFE_STRTOL(NULL, opt_nr_thps_str, 0, LONG_MAX);
+> +}
+> +
+> +void thp_usage(void)
+> +{
+> +	printf("  -n      Number of processes\n");
+> +	printf("  -N      Number of transparent hugepages\n");
+> +}
+> +
+>  /* cpuset/memcg */
+>  
+>  static void gather_node_cpus(char *cpus, long nd)
+> diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+> new file mode 100644
+> index 0000000..0f6c553
+> --- /dev/null
+> +++ b/testcases/kernel/mem/thp/thp04.c
+> @@ -0,0 +1,136 @@
+> +/*
+> + * Copyright (C) 2013 Linux Test Project
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + */
+> +
+> +/*
+> + * The case is designed to test the functionality of transparent
+> + * hugepage - THP
+> + *
+> + * when one process allocate hugepage aligned anonymouse pages,
+> + * kernel thread 'khugepaged' controlled by sysfs knobs
+> + * /sys/kernel/mm/transparent_hugepage/ will scan them, and make
+> + * them as transparent hugepage if they are suited, you can find out
+> + * how many transparent hugepages are there in one process from
+> + * /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
+> + * stand for transparent hugepage.
+> + */
+> +
+> +#include <sys/types.h>
+> +#include <sys/mman.h>
+> +#include <sys/stat.h>
+> +#include <sys/wait.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "mem.h"
+> +
+> +char *TCID = "thp04";
+> +int TST_TOTAL = 1;
+> +
+> +option_t thp_options[] = {
+> +	{"n:", &opt_nr_child, &opt_nr_child_str},
+> +	{"N:", &opt_nr_thps, &opt_nr_thps_str},
+> +	{NULL, NULL, NULL}
+> +};
+> +
+> +static int pre_thp_scan_sleep_millisecs;
+> +static int pre_thp_alloc_sleep_millisecs;
+> +static char pre_thp_enabled[BUFSIZ];
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	char *msg;
+> +	int nr_child = 2, nr_thps = 64;
+> +
+> +	msg = parse_opts(argc, argv, thp_options, thp_usage);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
+> +	check_thp_options(&nr_child, &nr_thps);
+> +
+> +	setup();
+> +
+> +	tst_resm(TINFO, "Start to test transparent hugepage...");
+> +	tst_resm(TINFO, "There are %d children allocating %d "
+> +			"transparent hugepages", nr_child, nr_thps);
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		test_transparent_hugepage(nr_child, nr_thps, 1);
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +void setup(void)
+> +{
+> +	char path[BUFSIZ];
+> +
+> +	tst_require_root(NULL);
+> +
+> +	if (access(PATH_THP, F_OK) == -1)
+> +		tst_brkm(TCONF, NULL, "THP is not enabled");
+> +
+> +	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
+> +	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_scan_sleep_millisecs);
+
+The PATH_KPHD and "scan_sleep_millisecs" are both static strings and are
+merged before they are passed to the snprintf() at compile time, which
+results in printf format string __without__ any characters to
+substitute. This is really weird.
+
+> +	/* set 0 to khugepaged/scan_sleep_millisecs to run khugepaged 100% */
+> +	SAFE_FILE_PRINTF(cleanup, path, "%d", 0);
+
+I'm confused here, this is the only function in the setup that takes a
+pointer to the cleanup defined bellow.
+
+> +	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
+> +	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_alloc_sleep_millisecs);
+> +	/*
+> +	 * set 0 to khugepaged/alloc_sleep_millisecs to make sure khugepaged
+> +	 * don't stop if there's a hugepage allcation failure.
+> +	 */
+> +	SAFE_FILE_PRINTF(NULL, path, "%d", 0);
+> +
+> +	snprintf(path, BUFSIZ, PATH_THP "enabled");
+
+Here as well.
+
+> +	write_file(path, "always");
+
+Where this came from? Does the function check for failures? Why not to
+use SAFE_FILE_PRINTF() as the rest of the file?
+
+> +	tst_sig(FORK, DEF_HANDLER, NULL);
+> +	TEST_PAUSE;
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	char path[BUFSIZ];
+> +
+> +	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
+> +	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_scan_sleep_millisecs);
+> +
+> +	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
+> +	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_alloc_sleep_millisecs);
+> +
+> +	snprintf(path, BUFSIZ, PATH_THP "enabled");
+> +	write_file(path, pre_thp_enabled);
+> +
+
+Same here.
+
+> +	TEST_CLEANUP;
+> +}
+> -- 
+> 1.7.11.7
+> 
+> 
+> ------------------------------------------------------------------------------
+> Precog is a next-generation analytics platform capable of advanced
+> analytics on semi-structured data. The platform includes APIs for building
+> apps and a phenomenal toolset for data science. Developers can use
+> our toolset for easy data analysis & visualization. Get a free account!
+> http://www2.precog.com/precogplatform/slashdotnewsletter
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
