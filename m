@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1URmEK-00039k-5E
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 16:26:08 +0000
-Date: Mon, 15 Apr 2013 18:26:51 +0200
-From: chrubis@suse.cz
-Message-ID: <20130415162650.GA2405@rei>
-References: <cover.1366016616.git.zliu@redhat.com>
-	<9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
-	<20130415124305.GC1091@rei> <516C211C.1040105@redhat.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UReqL-0007kj-J6
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 08:32:53 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UReqJ-0002W3-5C
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 08:32:53 +0000
+Message-ID: <516BB803.6000603@cn.fujitsu.com>
+Date: Mon, 15 Apr 2013 16:19:15 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <516C211C.1040105@redhat.com>
-Subject: Re: [LTP] [PATCH v4 1/3] mm/thp: new case thp04.c
+References: <fd56c3851c2ada9667af4f51b0887282d5e43279.1366012538.git.jstancek@redhat.com>
+In-Reply-To: <fd56c3851c2ada9667af4f51b0887282d5e43279.1366012538.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] sendmsg testcase for
+	ded34e0fe8fe8c2d595bfa30626654e4b87621e0
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,78 +29,208 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> +		 * or not.
-> >> +		 */
-> >> +		sleep(10);
-> >> +		count++;
-> >> +
-> >> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_collapsed",
-> >> +			       "%ld", &pages_collapsed);
-> >> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "max_ptes_none",
-> >> +			       "%ld", &max_ptes_none);
-> >> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_to_scan",
-> >> +			       "%ld", &pages_to_scan);
-> >> +
-> >> +		if (pages_collapsed != old_pages_collapsed ||
-> >> +		    max_ptes_none != old_max_ptes_none ||
-> >> +		    pages_to_scan != old_pages_to_scan) {
-> >> +			old_pages_collapsed = pages_collapsed;
-> >> +			old_max_ptes_none = max_ptes_none;
-> >> +			old_pages_to_scan = pages_to_scan;
-> >> +		} else {
-> >> +			changing = 0;
-> >> +		}
-> >> +	}
-> >> +
-> >> +	tst_resm(TINFO, "khugepaged daemon takes %ds to scan all thp pages",
-> >> +		 count * 10);
-> >> +}
-> > Ah, so it acutally does polling, this is fine.
-> >
-> > How long scanning takes. If it is about 10 seconds, we should poll
-> > faster so that the testcase has chance to finish reasonably fast.
-> > (if it takes 10 seconds and we miss the first windows it will sleep
-> >   doing noting for another ten seconds)
+On 04/15/2013 03:58 PM, Jan Stancek wrote:
+> reproducer for:
+> BUG: unable to handle kernel NULL pointer dereference at 0000000000000250
 > 
-> so how about 5 seconds? I will test the value on different systems.
-
-If the scan takes 10 seconds to finish I would go for 2 seconds sleep as
-that can increase the duration maximally by 20%, which is not as bad as
-100% or 50%. The overhead of opening and reading a file should be really
-small.
-
-> >> +	write_file(path, "always");
-> > Where this came from? Does the function check for failures? Why not to
-> > use SAFE_FILE_PRINTF() as the rest of the file?
+> fixed in 3.9.0-0.rc5:
+>   commit ded34e0fe8fe8c2d595bfa30626654e4b87621e0
+>   Author: Paul Moore <pmoore@redhat.com>
+>   Date:   Mon Mar 25 03:18:33 2013 +0000
+>     unix: fix a race condition in unix_release()
 > 
-> yes, there's some confused issue here.
-> 
-> but I have tried to use SAFE_FILE_PRINTF, but it didn't work fine for 
-> transparent_hugepage/enabled,
-> if # cat /sys/kernel/mm/transparent_hugepage/enabled
->        always [madvise] never
-> SAFE_FILE_PRINTF only get 'always', expected 'madvise'
-> if # cat /sys/kernel/mm/transparent_hugepage/enabled
-> [always] madvise never
-> SAFE_FILE_PRINTF get '[always]', expected 'always'
-> 
-> I didn't find the reason why SAFE_FILE_PRINTF couldn't get the expected 
-> value?
+> This reproducer should be able to trigger it easily on 4+ CPU systems
+> just within couple of seconds.
 
-That is strange, the only difference is that SAFE_FILE_PRINTF() uses
-FILE interface while write_file() uses file descriptor directly.
-Otherwise they should do exactly the same in this case. If they don't
-something is broken.
+I didn't get panic on my v3.9-rc4 system by this test case.
 
-Do you have a snipped of code that misbehaves this way?
+# ./runltp -s sendmsg02
+INFO: creating /opt/ltp/results directory
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+    INFO: no command files were provided. Will execute the following
+          runtest scenario files:
+
+syscalls fs fs_perms_simple fsx dio io mm ipc sched math nptl pty containers fs_bind controllers filecaps cap_bounds fcntl-locktests connectors admin_tools timers power_management_tests numa hugetlb commands hyperthreading 
+
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+ 
+Fedora release 18 (Spherical Cow)
+NAME=Fedora
+VERSION="18 (Spherical Cow)"
+ID=fedora
+VERSION_ID=18
+PRETTY_NAME="Fedora 18 (Spherical Cow)"
+ANSI_COLOR="0;34"
+CPE_NAME="cpe:/o:fedoraproject:fedora:18"
+Fedora release 18 (Spherical Cow)
+Fedora release 18 (Spherical Cow)
+Linux gaowanlong 3.9.0-rc4 #1 SMP Thu Mar 28 10:31:53 CST 2013 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Gnu C                  gcc (GCC) 4.7.2 20121109 (Red Hat 4.7.2-8)
+Gnu make               3.82
+util-linux             linux 2.22.2
+mount                  linux 2.22.2 (libmount 2.22.0: selinux, debug)
+modutils               12
+e2fsprogs              1.42.5
+PPP                    2.4.5
+isdn4k-utils           3.13
+Linux C Library        > libc.2.16
+Dynamic linker (ldd)   2.16
+Procps                 3.3.3-20120807git
+Net-tools              2.0
+iproute2              iproute2-ss121001
+Kbd                    1.15.3wip
+Sh-utils               8.17
+Modules Loaded         fuse ebtable_nat ebtables bridge lockd xt_CHECKSUM stp llc iptable_mangle ip6t_REJECT ipt_MASQUERADE nf_conntrack_ipv6 iptable_nat bnep nf_defrag_ipv6 nf_conntrack_ipv4 sunrpc bluetooth nf_defrag_ipv4 nf_nat_ipv4 nf_nat xt_conntrack nf_conntrack ip6table_filter rfkill ip6_tables snd_hda_codec_realtek snd_hda_intel snd_hda_codec snd_hwdep snd_seq snd_seq_device snd_pcm snd_page_alloc snd_timer vhost_net coretemp snd tun crc32c_intel macvtap ghash_clmulni_intel macvlan r8169 iTCO_wdt kvm_intel iTCO_vendor_support soundcore microcode serio_raw i2c_i801 mei kvm mii lpc_ich pcspkr mfd_core wmi uinput i915 video i2c_algo_bit drm_kms_helper drm i2c_core
+
+free reports:
+             total       used       free     shared    buffers     cached
+Mem:       8024996    3635968    4389028          0      88820    2838688
+-/+ buffers/cache:     708460    7316536
+Swap:      4194300          0    4194300
+
+/proc/cpuinfo
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
+stepping	: 7
+microcode	: 0x28
+cpu MHz		: 1600.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6185.66
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
+stepping	: 7
+microcode	: 0x28
+cpu MHz		: 1600.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6185.66
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
+stepping	: 7
+microcode	: 0x28
+cpu MHz		: 1600.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6185.66
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
+stepping	: 7
+microcode	: 0x28
+cpu MHz		: 1600.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6185.66
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+remove test cases which require the block device.
+You can specify it with option -b
+COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 7867     -n 7867  -p  -f /tmp/ltp-3oA1m2ZbEN/alltests -l /opt/ltp/results/LTP_RUN_ON-2013_Apr_15-16h_17m_52s.log  -C /opt/ltp/output/LTP_RUN_ON-2013_Apr_15-16h_17m_52s.failed
+INFO: Restricted to sendmsg02
+LOG File: /opt/ltp/results/LTP_RUN_ON-2013_Apr_15-16h_17m_52s.log
+FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2013_Apr_15-16h_17m_52s.failed
+Running tests.......
+<<<test_start>>>
+tag=sendmsg02 stime=1366013872
+cmdline="sendmsg02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+sendmsg02    1  TPASS  :  finished after 15 seconds
+<<<execution_status>>>
+initiation_status="ok"
+duration=15 termination_type=exited termination_id=0 corefile=no
+cutime=315 cstime=5436
+<<<test_end>>>
+INFO: ltp-pan reported all tests PASS
+LTP Version: 20120903-189-g3e5f790
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20120903-189-g3e5f790
+       ###############################################################
+
+
+Thanks,
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
