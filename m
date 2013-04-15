@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UUDYZ-0005Oi-2w
-	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 10:01:07 +0000
-Date: Mon, 22 Apr 2013 12:01:58 +0200
-From: chrubis@suse.cz
-Message-ID: <20130422100158.GA3214@rei>
-References: <515EA506.8060305@linux.vnet.ibm.com>
-	<51621625.6000507@cn.fujitsu.com>
-	<5163BCCC.90909@linux.vnet.ibm.com>
-	<516CABFB.3030602@cn.fujitsu.com>
-	<5174F86B.20601@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1URZq7-0002wV-BC
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:12:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1URZq5-0007wn-Ek
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:12:19 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3F3C4Z4007051
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Apr 2013 11:12:05 +0800
+Message-ID: <516B7026.8070106@cn.fujitsu.com>
+Date: Mon, 15 Apr 2013 11:12:38 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5174F86B.20601@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
- getting skipped from runltp's execution
+References: <5163C37E.9@cn.fujitsu.com> <5163CA00.9040505@cn.fujitsu.com>
+In-Reply-To: <5163CA00.9040505@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCHv2] testscripts/test_fs_bind.sh: adapt to system
+ which marks mount point as "shared" defaultly
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,21 +32,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ramesh <rameshyr@linux.vnet.ibm.com>
+To: DAN LI <li.dan@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> I think History part in runltp script needs to be updated to reflect the 
-> changes.
+On 04/09/2013 03:57 PM, DAN LI wrote:
+> Linux kernel does not allow to move a mount residing under a
+> shared mount.
+> 
+> This patch tries to make sure test cases of "move" run under
+> a private mount.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-Since we started to use git and make sure the commit messages describe
-the change well the "History" stored in the files are not that relevant
-anymore. If there is history that could not be found by 'git log filename'
-it is kept. For new changes is updating the "History" is not recomended.
+Applied, thank you.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
