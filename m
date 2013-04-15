@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lans.zhang2008@gmail.com>) id 1UCNF1-0006lt-If
-	for ltp-list@lists.sourceforge.net; Mon, 04 Mar 2013 04:43:11 +0000
-Received: from mail-da0-f51.google.com ([209.85.210.51])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UCNF0-0006vS-OC
-	for ltp-list@lists.sourceforge.net; Mon, 04 Mar 2013 04:43:11 +0000
-Received: by mail-da0-f51.google.com with SMTP id z17so2339219dal.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 03 Mar 2013 20:43:05 -0800 (PST)
-Message-ID: <513427E9.3000807@gmail.com>
-Date: Mon, 04 Mar 2013 12:49:45 +0800
-From: gmail <lans.zhang2008@gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1URZtM-0002uJ-7V
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:15:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1URZtK-00087Z-96
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:15:40 +0000
+Message-ID: <516B70F5.8080100@cn.fujitsu.com>
+Date: Mon, 15 Apr 2013 11:16:05 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]  Fix short of nodemask array.
+References: <515EA506.8060305@linux.vnet.ibm.com>
+	<51621625.6000507@cn.fujitsu.com>
+	<5163BCCC.90909@linux.vnet.ibm.com>
+In-Reply-To: <5163BCCC.90909@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
+ getting skipped from runltp's execution
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,145 +32,232 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Ramesh <rameshyr@linux.vnet.ibm.com>
 
-In kernel, when the user specified more nodes, e.g, 512 nodes, than
-supported, e.g, 4 nodes, just check if the non supported part is all
-zero. If user space just specified the nodemask array with only one
-element, which makes the check in kernel actually become invalid.
-In addition, some test cases in current implement doesn't consider
-if a node number is greater than sizeof(unsigned long) * 8 - 1.
+On 04/09/2013 03:01 PM, Ramesh wrote:
+> On 04/08/2013 06:28 AM, Wanlong Gao wrote:
+>> On 04/05/2013 06:18 PM, Ramesh wrote:
+>>> Some of the tests which require a block device for their execution are
+>>> skipped
+>>> when runltp is run without any block device being specified on
+>>> commandline.Most
+>>> of such tests are from syscalls group and as a work around to make these
+>>> tests
+>>> run even when no block device is specified,I have made use of loopback
+>>> device
+>>> to create a block device with ext4 filesystem. So,runltp is modified to
+>>> create
+>>> a block device and set the values for DEVICE and DEVICE_FS_TYPE accordingly.
+>>
+>> I like this change, but seems that your email client wrapped the lines,
+>> please take care of this issue when you respin the patch.
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>
+>>> Following are the skipped tests,
+>>> ----
+>>> inotify03 inotify03 -D DEVICE -T DEVICE_FS_TYPE
+>>> mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
+>>> mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
+>>> mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
+>>> mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
+>>> umount01 umount01 -D DEVICE -T DEVICE_FS_TYPE
+>>> umount02 umount02 -D DEVICE -T DEVICE_FS_TYPE
+>>> umount03 umount03 -D DEVICE -T DEVICE_FS_TYPE
+>>> ----
+>>>
+>>> Please review the patch and let me know if any more changes are needed.
+>>>
+>>>
+>>> Signed-off-by: Ramesh YR<rameshyr@linux.vnet.ibm.com>
+>>> ---
+>>>    runltp |   52 +++++++++++++++++++++++++++++++++++++++++++++++-----
+>>>    1 files changed, 47 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/runltp b/runltp
+>>> index 04cc690..d7e3f0d 100755
+>>> --- a/runltp
+>>> +++ b/runltp
+>>> @@ -681,14 +681,22 @@ main()
+>>>
+>>>        if [ -n "$DEVICE" ]; then
+>>>            sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
+>>> +    RC=$?
+>>>        else
+>>> -        echo "remove test cases which require the block device."
+>>> -        echo "You can specify it with option -b"
+>>> -        sed -i "/DEVICE/d"  ${TMP}/alltests
+>>> +    create_block
+>>> +    if [ $? -eq 0 ]; then
+>>> +        sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
+>>> +        RC=$?
+>>> +    else
+>>> +        echo -e "no block device was specified on commandline.\n Block
+>>> device could not be created using loopback device"
+>>> +        echo -e "Tests which require block device are disabled.\n You
+>>> can specify it with option -b"
+>>> +        sed -i "/DEVICE/d"  ${TMP}/alltests
+>>> +        RC=$?
+>>> +    fi
+>>>        fi
+>>>
+>>> -    if [ $? -ne 0 ]; then
+>>> -            echo "FATAL: error during prcessing alltests file by sed"
+>>> +    if [ $RC -ne 0 ]; then
+>>> +            echo "FATAL: error during processing alltests file by sed"
+>>>                exit 1
+>>>        fi
+>>>
+>>> @@ -971,8 +979,42 @@ main()
+>>>        exit $VALUE
+>>>    }
+>>>
+>>> +create_block()
+>>> +{
+>>> +    #create a block device with ext4 filesystem.
+>>> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240&>/dev/null
+>>> +    if [ $? -ne 0 ]; then
+>>> +        echo "Failed to create loopback device image,please check disk
+>>> space and re-run"
+>>> +        return 1
+>>> +    else
+>>> +        ##search for an unused loop dev
+>>> +        LOOP_DEV=$(losetup -f)
+>>> +        if [ $? -ne 0 ]; then
+>>> +            echo "no unused loop device is found"
+>>> +            return 1
+>>> +        else
+>>> +            ##attach the created file to loop dev.
+>>> +            losetup $LOOP_DEV ${TMP}/test.img&>/dev/null
+>>> +            if [ $? -ne 0 ]; then
+>>> +                echo "losetup failed to create block device"
+>>> +                return 1
+>>> +            else
+>>> +                mkfs.ext4 $LOOP_DEV&>/dev/null
+>>> +                [ $? -ne 0 ]&&  (echo "creating a ext4 block device
+>>> failed"&&  return 1)
+>>> +                #set the values in alltests which require block device.
+>>> +                DEVICE=$LOOP_DEV
+>>> +                DEVICE_FS_TYPE="ext4"
+>>> +                return 0
+>>> +            fi
+>>> +        fi
+>>> +    fi
+>>> +}
+>>> +
+>>> +
+>>>    cleanup()
+>>>    {
+>>> +    [ -e "${TEMP}/test.img" ]&&  rm -f ${TEMP}/test.img
+>>> +    [ "$LOOP_DEV" ]&&  losetup -d $LOOP_DEV
+>>>        rm -rf ${TMP}
+>>>    }
+>>>
+>>
+> Hi,
+> 
+> I have corrected few indentation flaws and I think this patch should be fine to commit.
+> Please let me know if you are still facing any issues in extracting this patch for commit.
+> 
+> 
+> Signed-off-by: Ramesh YR <rameshyr@linux.vnet.ibm.com>
 
-Signed-off-by: Lans Zhang <lans.zhang2008@gmail.com>
----
-  testcases/kernel/mem/cpuset/cpuset01.c |    6 +++---
-  testcases/kernel/mem/ksm/ksm02.c       |    6 +++---
-  testcases/kernel/mem/ksm/ksm04.c       |    6 +++---
-  testcases/kernel/mem/lib/mem.c         |    6 +++---
-  4 files changed, 12 insertions(+), 12 deletions(-)
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-index b473e45..e459306 100644
---- a/testcases/kernel/mem/cpuset/cpuset01.c
-+++ b/testcases/kernel/mem/cpuset/cpuset01.c
-@@ -93,7 +93,7 @@ static void testcpuset(void)
-  {
-  	int lc;
-  	int child, i, status;
--	unsigned long nmask = 0;
-+	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-  	char mems[BUFSIZ], buf[BUFSIZ];
 
-  	read_cpuset_files(CPATH, "cpus", buf);
-@@ -108,8 +108,8 @@ static void testcpuset(void)
-  		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-  	case 0:
-  		for (i = 0; i < nnodes; i++)
--			nmask += 1 << nodes[i];
--		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
-+			nmask[i / (8*sizeof(unsigned long))] |= 1 << (i % (8*sizeof(unsigned long)));
-+		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
-  			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
-  		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
-  	}
-diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
-index be9ff96..9d2d142 100644
---- a/testcases/kernel/mem/ksm/ksm02.c
-+++ b/testcases/kernel/mem/ksm/ksm02.c
-@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
-  	int lc;
-  	char *msg;
-  	int size = 128, num = 3, unit = 1;
--	unsigned long nmask = 0;
-+	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-  	unsigned int node;
+Any other objections?
 
-  	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
-@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
-  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+Thanks,
+Wanlong Gao
 
-  	node = get_a_numa_node(tst_exit);
--	nmask = 1 << node;
-+	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned long)));
+> ---
+>  runltp |   51 ++++++++++++++++++++++++++++++++++++++++++++++-----
+>  1 files changed, 46 insertions(+), 5 deletions(-)
+> 
+> diff --git a/runltp b/runltp
+> index 04cc690..5562b9c 100755
+> --- a/runltp
+> +++ b/runltp
+> @@ -681,14 +681,22 @@ main()
+> 
+>      if [ -n "$DEVICE" ]; then
+>          sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
+> +        RC=$?
+>      else
+> -        echo "remove test cases which require the block device."
+> -        echo "You can specify it with option -b"
+> -        sed -i "/DEVICE/d"  ${TMP}/alltests
+> +        create_block
+> +        if [ $? -eq 0 ]; then
+> +            sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
+> +            RC=$?
+> +        else
+> +            echo -e "no block device was specified on commandline.\n Block device could not be created using loopback device"
+> +            echo -e "Tests which require block device are disabled.\n You can specify it with option -b"
+> +            sed -i "/DEVICE/d"  ${TMP}/alltests
+> +            RC=$?
+> +        fi
+>      fi
+> 
+> -    if [ $? -ne 0 ]; then
+> -            echo "FATAL: error during prcessing alltests file by sed"
+> +    if [ $RC -ne 0 ]; then
+> +            echo "FATAL: error during processing alltests file by sed"
+>              exit 1
+>      fi
+> 
+> @@ -971,8 +979,41 @@ main()
+>      exit $VALUE
+>  }
+> 
+> +create_block()
+> +{
+> +    #create a block device with ext4 filesystem.
+> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240 &>/dev/null
+> +    if [ $? -ne 0 ]; then
+> +        echo "Failed to create loopback device image,please check disk space and re-run"
+> +        return 1
+> +    else
+> +        ##search for an unused loop dev
+> +        LOOP_DEV=$(losetup -f)
+> +        if [ $? -ne 0 ]; then
+> +            echo "no unused loop device is found"
+> +            return 1
+> +        else
+> +            ##attach the created file to loop dev.
+> +            losetup $LOOP_DEV ${TMP}/test.img &>/dev/null
+> +            if [ $? -ne 0 ]; then
+> +                echo "losetup failed to create block device"
+> +                return 1
+> +            else
+> +                mkfs.ext4 $LOOP_DEV &>/dev/null
+> +                [ $? -ne 0 ] && (echo "creating a ext4 block device failed" && return 1)
+> +                #set the values in alltests which require block device.
+> +                DEVICE=$LOOP_DEV
+> +                DEVICE_FS_TYPE="ext4"
+> +                return 0
+> +            fi
+> +        fi
+> +    fi
+> +}
+> +
+>  cleanup()
+>  {
+> +    [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
+> +    [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
+>      rm -rf ${TMP}
+>  }
+> 
 
-  	setup();
-
-@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
-  		Tst_count = 0;
-  		check_ksm_options(&size, &num, &unit);
-
--		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-+		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
-  			if (errno != ENOSYS)
-  				tst_brkm(TBROK | TERRNO, cleanup,
-  					 "set_mempolicy");
-diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
-index e4aa417..7829afd 100644
---- a/testcases/kernel/mem/ksm/ksm04.c
-+++ b/testcases/kernel/mem/ksm/ksm04.c
-@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
-  	int lc;
-  	char *msg;
-  	int size = 128, num = 3, unit = 1;
--	unsigned long nmask = 0;
-+	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-  	unsigned int node;
-
-  	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
-@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
-  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-
-  	node = get_a_numa_node(tst_exit);
--	nmask = 1 << node;
-+	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned long)));
-
-  	setup();
-
-@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
-
-  		write_memcg();
-
--		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-+		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
-  			if (errno != ENOSYS)
-  				tst_brkm(TBROK | TERRNO, cleanup,
-  					 "set_mempolicy");
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index f095fe1..abe29fd 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -66,12 +66,12 @@ void oom(int testcase, int mempolicy, int lite)
-  	int status;
-  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-  	&& HAVE_MPOL_CONSTANTS
--	unsigned long nmask = 0;
-+	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-  	unsigned int node;
-
-  	if (mempolicy)
-  		node = get_a_numa_node(cleanup);
--	nmask += 1 << node;
-+	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned long)));
-  #endif
-
-  	switch (pid = fork()) {
-@@ -81,7 +81,7 @@ void oom(int testcase, int mempolicy, int lite)
-  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-  	&& HAVE_MPOL_CONSTANTS
-  		if (mempolicy)
--			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
-+			if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
-  				tst_brkm(TBROK | TERRNO, cleanup,
-  					 "set_mempolicy");
-  #endif
--- 
-1.7.8.110.g4cb5d
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
