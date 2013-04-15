@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1URZtM-0002uJ-7V
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:15:40 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URZtK-00087Z-96
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:15:40 +0000
-Message-ID: <516B70F5.8080100@cn.fujitsu.com>
-Date: Mon, 15 Apr 2013 11:16:05 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1URmEK-00039k-5E
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 16:26:08 +0000
+Date: Mon, 15 Apr 2013 18:26:51 +0200
+From: chrubis@suse.cz
+Message-ID: <20130415162650.GA2405@rei>
+References: <cover.1366016616.git.zliu@redhat.com>
+	<9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
+	<20130415124305.GC1091@rei> <516C211C.1040105@redhat.com>
 MIME-Version: 1.0
-References: <515EA506.8060305@linux.vnet.ibm.com>
-	<51621625.6000507@cn.fujitsu.com>
-	<5163BCCC.90909@linux.vnet.ibm.com>
-In-Reply-To: <5163BCCC.90909@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
- getting skipped from runltp's execution
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <516C211C.1040105@redhat.com>
+Subject: Re: [LTP] [PATCH v4 1/3] mm/thp: new case thp04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,226 +26,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Ramesh <rameshyr@linux.vnet.ibm.com>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/09/2013 03:01 PM, Ramesh wrote:
-> On 04/08/2013 06:28 AM, Wanlong Gao wrote:
->> On 04/05/2013 06:18 PM, Ramesh wrote:
->>> Some of the tests which require a block device for their execution are
->>> skipped
->>> when runltp is run without any block device being specified on
->>> commandline.Most
->>> of such tests are from syscalls group and as a work around to make these
->>> tests
->>> run even when no block device is specified,I have made use of loopback
->>> device
->>> to create a block device with ext4 filesystem. So,runltp is modified to
->>> create
->>> a block device and set the values for DEVICE and DEVICE_FS_TYPE accordingly.
->>
->> I like this change, but seems that your email client wrapped the lines,
->> please take care of this issue when you respin the patch.
->>
->> Thanks,
->> Wanlong Gao
->>
->>>
->>> Following are the skipped tests,
->>> ----
->>> inotify03 inotify03 -D DEVICE -T DEVICE_FS_TYPE
->>> mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
->>> mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
->>> mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
->>> mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
->>> umount01 umount01 -D DEVICE -T DEVICE_FS_TYPE
->>> umount02 umount02 -D DEVICE -T DEVICE_FS_TYPE
->>> umount03 umount03 -D DEVICE -T DEVICE_FS_TYPE
->>> ----
->>>
->>> Please review the patch and let me know if any more changes are needed.
->>>
->>>
->>> Signed-off-by: Ramesh YR<rameshyr@linux.vnet.ibm.com>
->>> ---
->>>    runltp |   52 +++++++++++++++++++++++++++++++++++++++++++++++-----
->>>    1 files changed, 47 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/runltp b/runltp
->>> index 04cc690..d7e3f0d 100755
->>> --- a/runltp
->>> +++ b/runltp
->>> @@ -681,14 +681,22 @@ main()
->>>
->>>        if [ -n "$DEVICE" ]; then
->>>            sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
->>> +    RC=$?
->>>        else
->>> -        echo "remove test cases which require the block device."
->>> -        echo "You can specify it with option -b"
->>> -        sed -i "/DEVICE/d"  ${TMP}/alltests
->>> +    create_block
->>> +    if [ $? -eq 0 ]; then
->>> +        sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
->>> +        RC=$?
->>> +    else
->>> +        echo -e "no block device was specified on commandline.\n Block
->>> device could not be created using loopback device"
->>> +        echo -e "Tests which require block device are disabled.\n You
->>> can specify it with option -b"
->>> +        sed -i "/DEVICE/d"  ${TMP}/alltests
->>> +        RC=$?
->>> +    fi
->>>        fi
->>>
->>> -    if [ $? -ne 0 ]; then
->>> -            echo "FATAL: error during prcessing alltests file by sed"
->>> +    if [ $RC -ne 0 ]; then
->>> +            echo "FATAL: error during processing alltests file by sed"
->>>                exit 1
->>>        fi
->>>
->>> @@ -971,8 +979,42 @@ main()
->>>        exit $VALUE
->>>    }
->>>
->>> +create_block()
->>> +{
->>> +    #create a block device with ext4 filesystem.
->>> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240&>/dev/null
->>> +    if [ $? -ne 0 ]; then
->>> +        echo "Failed to create loopback device image,please check disk
->>> space and re-run"
->>> +        return 1
->>> +    else
->>> +        ##search for an unused loop dev
->>> +        LOOP_DEV=$(losetup -f)
->>> +        if [ $? -ne 0 ]; then
->>> +            echo "no unused loop device is found"
->>> +            return 1
->>> +        else
->>> +            ##attach the created file to loop dev.
->>> +            losetup $LOOP_DEV ${TMP}/test.img&>/dev/null
->>> +            if [ $? -ne 0 ]; then
->>> +                echo "losetup failed to create block device"
->>> +                return 1
->>> +            else
->>> +                mkfs.ext4 $LOOP_DEV&>/dev/null
->>> +                [ $? -ne 0 ]&&  (echo "creating a ext4 block device
->>> failed"&&  return 1)
->>> +                #set the values in alltests which require block device.
->>> +                DEVICE=$LOOP_DEV
->>> +                DEVICE_FS_TYPE="ext4"
->>> +                return 0
->>> +            fi
->>> +        fi
->>> +    fi
->>> +}
->>> +
->>> +
->>>    cleanup()
->>>    {
->>> +    [ -e "${TEMP}/test.img" ]&&  rm -f ${TEMP}/test.img
->>> +    [ "$LOOP_DEV" ]&&  losetup -d $LOOP_DEV
->>>        rm -rf ${TMP}
->>>    }
->>>
->>
-> Hi,
+Hi!
+> >> +		 * or not.
+> >> +		 */
+> >> +		sleep(10);
+> >> +		count++;
+> >> +
+> >> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_collapsed",
+> >> +			       "%ld", &pages_collapsed);
+> >> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "max_ptes_none",
+> >> +			       "%ld", &max_ptes_none);
+> >> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_to_scan",
+> >> +			       "%ld", &pages_to_scan);
+> >> +
+> >> +		if (pages_collapsed != old_pages_collapsed ||
+> >> +		    max_ptes_none != old_max_ptes_none ||
+> >> +		    pages_to_scan != old_pages_to_scan) {
+> >> +			old_pages_collapsed = pages_collapsed;
+> >> +			old_max_ptes_none = max_ptes_none;
+> >> +			old_pages_to_scan = pages_to_scan;
+> >> +		} else {
+> >> +			changing = 0;
+> >> +		}
+> >> +	}
+> >> +
+> >> +	tst_resm(TINFO, "khugepaged daemon takes %ds to scan all thp pages",
+> >> +		 count * 10);
+> >> +}
+> > Ah, so it acutally does polling, this is fine.
+> >
+> > How long scanning takes. If it is about 10 seconds, we should poll
+> > faster so that the testcase has chance to finish reasonably fast.
+> > (if it takes 10 seconds and we miss the first windows it will sleep
+> >   doing noting for another ten seconds)
 > 
-> I have corrected few indentation flaws and I think this patch should be fine to commit.
-> Please let me know if you are still facing any issues in extracting this patch for commit.
-> 
-> 
-> Signed-off-by: Ramesh YR <rameshyr@linux.vnet.ibm.com>
+> so how about 5 seconds? I will test the value on different systems.
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+If the scan takes 10 seconds to finish I would go for 2 seconds sleep as
+that can increase the duration maximally by 20%, which is not as bad as
+100% or 50%. The overhead of opening and reading a file should be really
+small.
 
+> >> +	write_file(path, "always");
+> > Where this came from? Does the function check for failures? Why not to
+> > use SAFE_FILE_PRINTF() as the rest of the file?
+> 
+> yes, there's some confused issue here.
+> 
+> but I have tried to use SAFE_FILE_PRINTF, but it didn't work fine for 
+> transparent_hugepage/enabled,
+> if # cat /sys/kernel/mm/transparent_hugepage/enabled
+>        always [madvise] never
+> SAFE_FILE_PRINTF only get 'always', expected 'madvise'
+> if # cat /sys/kernel/mm/transparent_hugepage/enabled
+> [always] madvise never
+> SAFE_FILE_PRINTF get '[always]', expected 'always'
+> 
+> I didn't find the reason why SAFE_FILE_PRINTF couldn't get the expected 
+> value?
 
-Any other objections?
+That is strange, the only difference is that SAFE_FILE_PRINTF() uses
+FILE interface while write_file() uses file descriptor directly.
+Otherwise they should do exactly the same in this case. If they don't
+something is broken.
 
-Thanks,
-Wanlong Gao
+Do you have a snipped of code that misbehaves this way?
 
-> ---
->  runltp |   51 ++++++++++++++++++++++++++++++++++++++++++++++-----
->  1 files changed, 46 insertions(+), 5 deletions(-)
-> 
-> diff --git a/runltp b/runltp
-> index 04cc690..5562b9c 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -681,14 +681,22 @@ main()
-> 
->      if [ -n "$DEVICE" ]; then
->          sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
-> +        RC=$?
->      else
-> -        echo "remove test cases which require the block device."
-> -        echo "You can specify it with option -b"
-> -        sed -i "/DEVICE/d"  ${TMP}/alltests
-> +        create_block
-> +        if [ $? -eq 0 ]; then
-> +            sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
-> +            RC=$?
-> +        else
-> +            echo -e "no block device was specified on commandline.\n Block device could not be created using loopback device"
-> +            echo -e "Tests which require block device are disabled.\n You can specify it with option -b"
-> +            sed -i "/DEVICE/d"  ${TMP}/alltests
-> +            RC=$?
-> +        fi
->      fi
-> 
-> -    if [ $? -ne 0 ]; then
-> -            echo "FATAL: error during prcessing alltests file by sed"
-> +    if [ $RC -ne 0 ]; then
-> +            echo "FATAL: error during processing alltests file by sed"
->              exit 1
->      fi
-> 
-> @@ -971,8 +979,41 @@ main()
->      exit $VALUE
->  }
-> 
-> +create_block()
-> +{
-> +    #create a block device with ext4 filesystem.
-> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240 &>/dev/null
-> +    if [ $? -ne 0 ]; then
-> +        echo "Failed to create loopback device image,please check disk space and re-run"
-> +        return 1
-> +    else
-> +        ##search for an unused loop dev
-> +        LOOP_DEV=$(losetup -f)
-> +        if [ $? -ne 0 ]; then
-> +            echo "no unused loop device is found"
-> +            return 1
-> +        else
-> +            ##attach the created file to loop dev.
-> +            losetup $LOOP_DEV ${TMP}/test.img &>/dev/null
-> +            if [ $? -ne 0 ]; then
-> +                echo "losetup failed to create block device"
-> +                return 1
-> +            else
-> +                mkfs.ext4 $LOOP_DEV &>/dev/null
-> +                [ $? -ne 0 ] && (echo "creating a ext4 block device failed" && return 1)
-> +                #set the values in alltests which require block device.
-> +                DEVICE=$LOOP_DEV
-> +                DEVICE_FS_TYPE="ext4"
-> +                return 0
-> +            fi
-> +        fi
-> +    fi
-> +}
-> +
->  cleanup()
->  {
-> +    [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
-> +    [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
->      rm -rf ${TMP}
->  }
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
