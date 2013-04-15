@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UO2cv-00065u-3E
-	for ltp-list@lists.sourceforge.net; Fri, 05 Apr 2013 09:08:05 +0000
-Date: Fri, 5 Apr 2013 11:08:52 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1URiOW-0000XF-Q1
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 12:20:24 +0000
+Date: Mon, 15 Apr 2013 14:21:12 +0200
 From: chrubis@suse.cz
-Message-ID: <20130405090851.GC18134@rei.Home>
-References: <1365125797-31405-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<201304050053.46087.vapier@gentoo.org>
+Message-ID: <20130415122112.GB1091@rei>
+References: <cover.1365402799.git.zliu@redhat.com>
+	<6b9bfe6944adbbb2963d6e18cad373a309956f90.1365402799.git.zliu@redhat.com>
+	<51627C9C.9060200@cn.fujitsu.com> <51628513.4000702@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201304050053.46087.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] getdents01: don't compare first entry to "."
+In-Reply-To: <51628513.4000702@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] mm/thp: new case thp04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > -		const char *d_name;
-> > -
-> >  		tst_count = 0;
-> > 
-> >  		if ((fd = open(".", O_RDONLY)) == -1)
-> > @@ -102,15 +100,7 @@ int main(int ac, char **av)
-> >  			continue;
-> >  		}
-> > 
-> > -		if (longsyscall)
-> > -			d_name = dirp64->d_name;
-> > -		else
-> > -			d_name = dirp->d_name;
-> > -
-> > -		if (strcmp(d_name, "."))
-> > -			tst_resm(TFAIL, "First entry is not '.'");
-> > -		else
-> > -			tst_resm(TPASS, "call succeeded");
-> > +		tst_resm(TPASS, "call succeeded");
-> > 
-> >  		if (close(fd) == -1)
-> >  			tst_brkm(TBROK, cleanup, "file close failed");
+> here 10s is similar with one inside wait_ksmd_done() (see lib/mem.c)
 > 
-> this test isn't really useful after your change.  you've basically validated 
-> that the a valid fd and a large enough buffer was passed to the kernel and 
-> that's it.
-> 
-> you should have it walk the results to try and find an "." and ".." entry.
+> 10s is an interval for khugepaged to finish scan process's transparent
+> hugepages, and at the beginning, 
+> khugepaged/[scan_sleep_millisecs|alloc_sleep_millisecs]
+> are all be set 0, so 'khugepaged' always run 100% during the testing, 
+> depending on
+> this, I choose an optional value 10s to khugepaged, and I think the 
+> interval is enough
+> to recognise whether khugepaged finished scanning process's anonymous 
+> hugepage or not.
 
-Yes, that would be even better. Or we can get even more creative and
-create a file or two in the setup and expect them to be in the listing.
+Hardcoded constants tend to break from time to time. Is there any
+interface that could give you information about the state of the scan?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
