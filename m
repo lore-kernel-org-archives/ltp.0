@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UT7iJ-0001L0-2N
-	for ltp-list@lists.sourceforge.net; Fri, 19 Apr 2013 09:34:39 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UT7iH-0002zk-Kn
-	for ltp-list@lists.sourceforge.net; Fri, 19 Apr 2013 09:34:39 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3J9YaXW016049
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Apr 2013 17:34:36 +0800
-Message-ID: <51710FC0.2040706@cn.fujitsu.com>
-Date: Fri, 19 Apr 2013 17:34:56 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1URaTm-0004Jw-3v
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:53:18 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1URaTi-0001tH-Fi
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:53:18 +0000
+Message-ID: <516B7911.7040403@redhat.com>
+Date: Mon, 15 Apr 2013 11:50:41 +0800
+From: Zhouping Liu <zliu@redhat.com>
 MIME-Version: 1.0
-References: <5170BAC7.1010202@cn.fujitsu.com> <5170BBCE.3090503@cn.fujitsu.com>
-In-Reply-To: <5170BBCE.3090503@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH]syscalls/adjtimex01.c: Test for mode
-	ADJ_OFFSET_SINGLESHOT
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <cover.1365411883.git.zliu@redhat.com>
+	<3bc25be7511978a5ccb9faad218e397743d1820b.1365411883.git.zliu@redhat.com>
+	<516B52DB.2000004@cn.fujitsu.com> <516B7077.1000001@redhat.com>
+	<516B7420.5010002@cn.fujitsu.com>
+In-Reply-To: <516B7420.5010002@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 1/3] mm/thp: new case thp04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,65 +30,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/19/2013 11:36 AM, DAN LI wrote:
-> 
-> Additional test for mode ADJ_OFFSET_SINGLESHOT.
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+On 04/15/2013 11:29 AM, Wanlong Gao wrote:
+> On 04/15/2013 11:13 AM, Zhouping Liu wrote:
+>> depending on your system's memory info:
+>>
+>> free reports:
+>>               total       used       free     shared    buffers     cached
+>> Mem:       8025000    7563668     461332          0     730920    4891316
+>> -/+ buffers/cache:    1941432    6083568
+>> Swap:      4194300      16212    4178088
+>>
+>> your system has 8Gb RAM and there's 460Mb memory left when you start to test thp04 serial cases.
+>> I guess the cases failed because of the low memory.
+>>
+>> can you re-test them on the system with enough memory? and provide the value of /proc/sys/vm/min_free_kbytes,
+>> I think 1Gb memory left is enough to test the new THP case.
+>>
+>> also I'm very confused why the above case didn't get any THPs, maybe there's some performance issues...
+> Yes, that's passed after my reboot.
 
-Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Thanks again for your tests :)
 
-> ---
->  testcases/kernel/syscalls/adjtimex/adjtimex01.c | 24 ++++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-> index b995e8e..d16a5f3 100644
-> --- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-> +++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-> @@ -42,7 +42,7 @@ static void setup(void);
->  static void cleanup(void);
-> 
->  char *TCID = "adjtimex01";
-> -int TST_TOTAL = 1;
-> +int TST_TOTAL = 2;
-> 
->  static struct timex tim_save;
-> 
-> @@ -66,10 +66,26 @@ int main(int ac, char **av)
->  		TEST(adjtimex(&tim_save));
-> 
->  		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
-> -			tst_resm(TPASS, "adjtimex() returned %ld", TEST_RETURN);
-> +			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
-> +				 SET_MODE, TEST_RETURN);
->  		} else {
-> -			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
-> -				 "returned %ld", TEST_RETURN);
-> +			tst_resm(TFAIL | TTERRNO,
-> +				"Test Failed, adjtimex() with mode %u "
-> +				"returned %ld", SET_MODE, TEST_RETURN);
-> +		}
-> +
-> +		/* Call adjtimex(2) */
-> +		tim_save.modes = ADJ_OFFSET_SINGLESHOT;
-> +
-> +		TEST(adjtimex(&tim_save));
-> +
-> +		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
-> +			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
-> +				 ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
-> +		} else {
-> +			tst_resm(TFAIL | TTERRNO,
-> +				"Test Failed, adjtimex() with mode %u returned "
-> +				"%ld", ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
->  		}
->  	}
-> 
+the case needs most memory is 'thp0[4|5]_3 -n 1 -N 300', which require 
+300 huge pages(600Mb memory) at least,
+also there's some memory limitation, such as 
+/proc/sys/vm/min_free_kbytes, so I think 1Gb free memory is enough
+to test the serial cases, it's better to give some kind comments when 
+memory is low, what I can think of is to print out
+the MemFree when starting to test:
 
+e.g:
+memfree= read_meminfo("MemFree:");
+tst_resm(TINFO, "The system has %ld memory left before starting", memfree);
+if (memfree < 1G)
+     tst_resm(TINFO, "The system has low memory, which will cause the 
+case fail");
+
+I'll send v3 to include it.
+
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
