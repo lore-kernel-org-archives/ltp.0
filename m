@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1URe7P-0000bY-Uy
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 07:46:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URe7O-00086t-CH
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 07:46:27 +0000
-Message-ID: <516BB063.3060801@cn.fujitsu.com>
-Date: Mon, 15 Apr 2013 15:46:43 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1URnWp-0002qw-SZ
+	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 17:49:19 +0000
+Date: Mon, 15 Apr 2013 19:50:03 +0200
+From: chrubis@suse.cz
+Message-ID: <20130415175001.GB2405@rei>
+References: <fd56c3851c2ada9667af4f51b0887282d5e43279.1366012538.git.jstancek@redhat.com>
+	<516BB803.6000603@cn.fujitsu.com>
+	<1428475737.306249.1366016603320.JavaMail.root@redhat.com>
+	<20130415141743.GA1896@rei>
+	<1471859220.549493.1366042467298.JavaMail.root@redhat.com>
+	<1801607801.575766.1366046157443.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <cover.1366005109.git.zliu@redhat.com>
-In-Reply-To: <cover.1366005109.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v3 0/3] mm/thp: add two new case
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1801607801.575766.1366046157443.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH v2] sendmsg testcase for
+ ded34e0fe8fe8c2d595bfa30626654e4b87621e0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +30,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Zhouping:
-> The patchset is desinged to test THP functionality.
-> 
-> when one process allocate hugepage aligned anonymouse pages,
-> kernel thread 'khugepaged' controlled by sysfs knobs
-> /sys/kernel/mm/transparent_hugepage/* will scan them, and make
-> them as transparent hugepage if they are suited, you can find out
-> how many transparent hugepages are there in one process from
-> /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-> stand for transparent hugepage.
-> 
-> V1 to V2:
-> accepted Wanlong's suggestion, added some comment for '10s'
-> added 'static' key word for single-file-only variant.
-> 
-> V2 to V3:
-> added some comments for low memory system.
+Hi!
+> 2 more random systems with Fedora 18 GOLD and kernel-3.6.10-4.fc18 hit it almost instantly too:
+> Romley-EP CPU: Ivy Bridge-EP L-1, 40 CPU, Genuine Intel(R) CPU @ 2.10GHz
+> HP ProLiant BL495c G5, 4 CPU, Quad-Core AMD Opteron(tm) Processor 2347 HE
 
-I just see that on the kernel before v2.6.39, the "defrag"
-interface is "[yes] no" or "yes [no]"(eg. RHEL6). While it's changed
-to boolean after commit e27e6151b154 in v2.6.39-rc4.
+Strange indeed.
 
-So, you should deal with the multi-style interface of this "defrag",
+Let's get this into LTP git repo already, I will try to bring down some
+of my testing machines then.
 
-+		SAFE_FILE_SCANF(cleanup, PATH_KHPD "defrag", "%ld", &defrag);
-
-Thanks,
-Wanlong Gao
-
-> 
-> Wanlong, I included you into 'Tested-by' thread, thanks for
-> your reviewing and testing the patchset.
-> 
-> Zhouping Liu (3):
->   mm/thp: new case thp04.c
->   lib/mem: introduce a new function set_global_mempolicy()
->   mm/thp: add new case thp05
-> 
->  runtest/mm                         |   6 ++
->  testcases/kernel/mem/include/mem.h |  12 +++
->  testcases/kernel/mem/lib/mem.c     | 203 ++++++++++++++++++++++++++++++++++++-
->  testcases/kernel/mem/thp/thp04.c   | 136 +++++++++++++++++++++++++
->  testcases/kernel/mem/thp/thp05.c   | 152 +++++++++++++++++++++++++++
->  5 files changed, 508 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/kernel/mem/thp/thp04.c
->  create mode 100644 testcases/kernel/mem/thp/thp05.c
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
