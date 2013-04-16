@@ -1,28 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1URfld-00015K-To
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 09:32:05 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1US6vx-0004kL-4J
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 14:32:33 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URflc-0000hy-Td
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 09:32:05 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3F9VxG1031695
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1US6vw-0004Ix-7X
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 14:32:33 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3GEWQfX014531
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Apr 2013 05:31:59 -0400
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 10:32:26 -0400
 From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 15 Apr 2013 17:29:33 +0800
-Message-Id: <6ef835ef36aa173ec83872bddf13673a6aa47f18.1366016616.git.zliu@redhat.com>
-In-Reply-To: <330072533654f4936f4531f90fb60c3132b7671f.1366016616.git.zliu@redhat.com>
-References: <cover.1366016616.git.zliu@redhat.com>
-	<9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
-	<330072533654f4936f4531f90fb60c3132b7671f.1366016616.git.zliu@redhat.com>
-In-Reply-To: <cover.1366016616.git.zliu@redhat.com>
-References: <cover.1366016616.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v4 3/3] mm/thp: add new case thp05
+Date: Tue, 16 Apr 2013 22:30:08 +0800
+Message-Id: <62abc460e11a9bcda7756f922990c3288b0146c4.1366122425.git.zliu@redhat.com>
+In-Reply-To: <dd64e0b40d9fa774595bb6b58cd8f1ff75de6286.1366122425.git.zliu@redhat.com>
+References: <cover.1366122425.git.zliu@redhat.com>
+	<dd64e0b40d9fa774595bb6b58cd8f1ff75de6286.1366122425.git.zliu@redhat.com>
+In-Reply-To: <cover.1366122425.git.zliu@redhat.com>
+References: <cover.1366122425.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v4 2/3] lib/mem: introduce a new function
+	set_global_mempolicy()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,62 +38,66 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: LTP List <ltp-list@lists.sourceforge.net>
 
-added new case thp05, which is used to test transparent hugepage
-under mempolicy.
+Fork out a new function set_global_mempolicy() from the
+previous testoom() func, which will be useful for other func.
 
 Tested-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- runtest/mm                         |   3 +
- testcases/kernel/mem/include/mem.h |   3 +-
- testcases/kernel/mem/lib/mem.c     |   6 +-
- testcases/kernel/mem/thp/thp04.c   |   2 +-
- testcases/kernel/mem/thp/thp05.c   | 152 +++++++++++++++++++++++++++++++++++++
- 5 files changed, 163 insertions(+), 3 deletions(-)
- create mode 100644 testcases/kernel/mem/thp/thp05.c
+ testcases/kernel/mem/include/mem.h |  3 ++-
+ testcases/kernel/mem/lib/mem.c     | 13 +++++++++++--
+ testcases/kernel/mem/thp/thp04.c   |  2 +-
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/runtest/mm b/runtest/mm
-index 3fbb20f..7c7abf1 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -87,6 +87,9 @@ thp03 thp03
- thp04_1 thp04
- thp04_2 thp04 -n 10 -N 20
- thp04_3 thp04 -n 1 -N 300
-+thp05_1 thp05
-+thp05_2 thp05 -n 10 -N 20
-+thp05_3 thp05 -n 1 -N 300
- 
- vma01 vma01
- vma02 vma02
 diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index ccae47d..6b020af 100644
+index cc8b86c..c9e0540 100644
 --- a/testcases/kernel/mem/include/mem.h
 +++ b/testcases/kernel/mem/include/mem.h
 @@ -39,7 +39,8 @@ void testoom(int mempolicy, int lite);
  
- int opt_nr_child, opt_nr_thps;
- char *opt_nr_child_str, *opt_nr_thps_str;
--void test_transparent_hugepage(int nr_child, int nr_thps, int hg_aligned);
-+void test_transparent_hugepage(int nr_child, int nr_thps,
+ int opt_nr_children, opt_nr_thps;
+ char *opt_nr_children_str, *opt_nr_thps_str;
+-void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned);
++void test_transparent_hugepage(int nr_children, int nr_thps,
 +			       int hg_aligned, int mempolicy);
- void check_thp_options(int *nr_child, int *nr_thps);
+ void check_thp_options(int *nr_children, int *nr_thps);
  void thp_usage(void);
  
 diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 35e8bc2..0361eba 100644
+index fa5694a..f6aa351 100644
 --- a/testcases/kernel/mem/lib/mem.c
 +++ b/testcases/kernel/mem/lib/mem.c
-@@ -617,12 +617,16 @@ static void verify_thp_size(int *child, int nr_child, int nr_thps)
+@@ -91,7 +91,7 @@ void oom(int testcase, int lite)
  	}
  }
  
--void test_transparent_hugepage(int nr_child, int nr_thps, int hg_aligned)
-+void test_transparent_hugepage(int nr_child, int nr_thps,
+-void testoom(int mempolicy, int lite)
++static void set_global_mempolicy(int mempolicy)
+ {
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
+@@ -133,6 +133,11 @@ void testoom(int mempolicy, int lite)
+ 			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
+ 	}
+ #endif
++}
++
++void testoom(int mempolicy, int lite)
++{
++	set_global_mempolicy(mempolicy);
+ 
+ 	tst_resm(TINFO, "start normal OOM testing.");
+ 	oom(NORMAL, lite);
+@@ -613,12 +618,16 @@ static void verify_thp_size(int *children, int nr_children, int nr_thps)
+ 	}
+ }
+ 
+-void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned)
++void test_transparent_hugepage(int nr_children, int nr_thps,
 +			       int hg_aligned, int mempolicy)
  {
  	unsigned long hugepagesize, memfree;
- 	int i, *pid, ret, status;
+ 	int i, *pids, ret, status;
  	char path[BUFSIZ];
  
 +	if (mempolicy)
@@ -103,176 +107,18 @@ index 35e8bc2..0361eba 100644
  	tst_resm(TINFO, "The current MemFree is %luMB", memfree / KB);
  	if (memfree < MB)
 diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
-index 0f6c553..ff41f75 100644
+index 0c70634..d84a3f5 100644
 --- a/testcases/kernel/mem/thp/thp04.c
 +++ b/testcases/kernel/mem/thp/thp04.c
 @@ -83,7 +83,7 @@ int main(int argc, char *argv[])
  	for (lc = 0; TEST_LOOPING(lc); lc++) {
  		tst_count = 0;
  
--		test_transparent_hugepage(nr_child, nr_thps, 1);
-+		test_transparent_hugepage(nr_child, nr_thps, 1, 0);
+-		test_transparent_hugepage(nr_children, nr_thps, 1);
++		test_transparent_hugepage(nr_children, nr_thps, 1, 0);
  	}
  
  	cleanup();
-diff --git a/testcases/kernel/mem/thp/thp05.c b/testcases/kernel/mem/thp/thp05.c
-new file mode 100644
-index 0000000..182ff73
---- /dev/null
-+++ b/testcases/kernel/mem/thp/thp05.c
-@@ -0,0 +1,152 @@
-+/*
-+ * Copyright (C) 2013 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ */
-+
-+/*
-+ * The case is designed to test the functionality of transparent
-+ * hugepage - THP under mempolicy (NUMA)
-+ *
-+ * when one process allocate hugepage aligned anonymouse pages,
-+ * kernel thread 'khugepaged' controlled by sysfs knobs
-+ * /sys/kernel/mm/transparent_hugepage/ will scan them, and make
-+ * them as transparent hugepage if they are suited, you can find out
-+ * how many transparent hugepages are there in one process from
-+ * /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-+ * stand for transparent hugepage.
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include "numa_helper.h"
-+#include "test.h"
-+#include "usctest.h"
-+#include "mem.h"
-+
-+char *TCID = "thp05";
-+int TST_TOTAL = 1;
-+
-+#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-+		&& HAVE_MPOL_CONSTANTS
-+
-+option_t thp_options[] = {
-+	{"n:", &opt_nr_child, &opt_nr_child_str},
-+	{"N:", &opt_nr_thps, &opt_nr_thps_str},
-+	{NULL, NULL, NULL}
-+};
-+
-+static int pre_thp_scan_sleep_millisecs;
-+static int pre_thp_alloc_sleep_millisecs;
-+static char pre_thp_enabled[BUFSIZ];
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+	int nr_child = 2, nr_thps = 64;
-+
-+	msg = parse_opts(argc, argv, thp_options, thp_usage);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-+	check_thp_options(&nr_child, &nr_thps);
-+
-+	setup();
-+
-+	tst_resm(TINFO, "Start to test transparent hugepage...");
-+	tst_resm(TINFO, "There are %d children allocating %d "
-+			"transparent hugepages", nr_child, nr_thps);
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		tst_resm(TINFO, "THP on MPOL_BIND mempolicy...");
-+		test_transparent_hugepage(nr_child, nr_thps, 1, MPOL_BIND);
-+
-+		tst_resm(TINFO, "THP on MPOL_INTERLEAVE mempolicy...");
-+		test_transparent_hugepage(nr_child, nr_thps, 1,
-+					  MPOL_INTERLEAVE);
-+
-+		tst_resm(TINFO, "THP on MPOL_PREFERRED mempolicy...");
-+		test_transparent_hugepage(nr_child, nr_thps, 1, MPOL_PREFERRED);
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	char path[BUFSIZ];
-+
-+	tst_require_root(NULL);
-+
-+	if (access(PATH_THP, F_OK) == -1)
-+		tst_brkm(TCONF, NULL, "THP is not enabled");
-+
-+	if (!is_numa(NULL))
-+		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
-+
-+	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
-+	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_scan_sleep_millisecs);
-+	SAFE_FILE_PRINTF(cleanup, path, "%d", 0);
-+
-+	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
-+	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_alloc_sleep_millisecs);
-+	SAFE_FILE_PRINTF(NULL, path, "%d", 0);
-+
-+	snprintf(path, BUFSIZ, PATH_THP "enabled");
-+	write_file(path, "always");
-+
-+	tst_sig(FORK, DEF_HANDLER, NULL);
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	char path[BUFSIZ];
-+
-+	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
-+	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_scan_sleep_millisecs);
-+
-+	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
-+	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_alloc_sleep_millisecs);
-+
-+	snprintf(path, BUFSIZ, PATH_THP "enabled");
-+	write_file(path, pre_thp_enabled);
-+
-+	TEST_CLEANUP;
-+}
-+
-+#else /* no NUMA */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
-+}
-+#endif
 -- 
 1.7.11.7
 
