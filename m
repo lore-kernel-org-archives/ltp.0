@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UWhHN-0006yN-79
-	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:09:37 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UWhHL-00034H-MM
-	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:09:37 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3T69Tmk028575
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1US104-0008Oq-LX
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 08:12:24 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1US103-0005YS-Ln
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 08:12:24 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r3G8CGrQ015488
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 29 Apr 2013 02:09:29 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 29 Apr 2013 14:07:17 +0800
-Message-Id: <a0a4d2664223afca4bca2b3350c7b068ae794e9c.1367215327.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v3] mem/oom: fixed a cpuset error
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 08:12:17 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r3G8CGHd011690
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 08:12:17 GMT
+Received: from abhmt101.oracle.com (abhmt101.oracle.com [141.146.116.53])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r3G8CGAs017420
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 08:12:16 GMT
+From: shuang.qiu@oracle.com
+Date: Tue, 16 Apr 2013 16:09:51 +0800
+Message-Id: <1366099791-14020-1-git-send-email-shuang.qiu@oracle.com>
+In-Reply-To: <shuang.qiu@oracle.com>
+References: <shuang.qiu@oracle.com>
+Subject: [LTP] [PATCH] Replace "-E" option for sed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,162 +41,39 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-For the below special NUMA system, oom0[4|5] failed:
- # numactl -H
- available: 2 nodes (0-1)
- node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
- node 0 size: 0 MB
- node 0 free: 0 MB
- node 1 cpus:
- node 1 size: 16384 MB
- node 1 free: 14173 MB
- node distances:
- node   0   1
-   0:  10  40
-   1:  40  10
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-failed log:
- oom04       1  TBROK  :  write /dev/cpuset/1/cpuset.mems: errno=EINVAL(22): Invalid argument
-
-The reason is that node0 only contains all CPUs, no any memory,
-and node1 contains all memory, but no CPUs. In the previous codes,
-we only do cpuset testing on an independent node, which caused the
-sub-cpuset cgroup to only contain CPUs or memory in one node, but
-that's not permitted in the scenario described above.
-
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
-Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
+The '-E' option is obsoleted and is no longer supported by sed in most
+Linux distributions.  Use '-r' instead.
 ---
-Change log:
- v1 - v2:
-    fixed some grammar errors, and updated some comments.
- v2 - v3:
-    amended some comment messages.
+ .../kernel/syscalls/utimensat/utimensat_tests.sh   |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
- testcases/kernel/mem/lib/mem.c   | 13 ++++++++++++-
- testcases/kernel/mem/oom/oom04.c | 20 ++++++++++++++------
- testcases/kernel/mem/oom/oom05.c | 26 ++++++++++++++++----------
- 3 files changed, 42 insertions(+), 17 deletions(-)
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 5397177..1232b4f 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -792,7 +792,18 @@ void write_cpusets(long nd)
- 	write_cpuset_files(CPATH_NEW, "mems", buf);
- 
- 	gather_node_cpus(cpus, nd);
--	write_cpuset_files(CPATH_NEW, "cpus", cpus);
-+	/*
-+	 * If the 'nd' node doesn't contain any CPUs,
-+	 * the first ID of CPU '0' will be used as
-+	 * the value of cpuset.cpus.
-+	 */
-+	if (strlen(cpus) != 0) {
-+		write_cpuset_files(CPATH_NEW, "cpus", cpus);
-+	} else {
-+		tst_resm(TINFO, "No CPUs in the node%ld; "
-+				"using only CPU0", nd);
-+		write_cpuset_files(CPATH_NEW, "cpus", "0");
-+	}
- 
- 	SAFE_FILE_PRINTF(NULL, CPATH_NEW "/tasks", "%d", getpid());
- }
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index 4d3f2f4..ac48c36 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
- 
- void setup(void)
- {
-+	int memnode, ret;
-+
- 	tst_require_root(NULL);
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
-@@ -93,12 +95,18 @@ void setup(void)
- 	set_sys_tune("overcommit_memory", 1, 1);
- 
- 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	if (is_numa(cleanup) > 0)
--		/* For NUMA system, using the first node for cpuset.mems */
--		write_cpusets(get_a_numa_node(cleanup));
--	else
--		/* For nonNUMA system, using node0 for cpuset.mems */
--		write_cpusets(0);
-+
-+	/*
-+	 * Some nodes do not contain memory, so use
-+	 * get_allowed_nodes(NH_MEMS) to get a memory
-+	 * node. This operation also applies to Non-NUMA
-+	 * systems.
-+	 */
-+	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
-+	if (ret < 0)
-+		tst_brkm(TBROK, NULL, "Failed to get a memory node "
-+				      "using get_allowed_nodes()");
-+	write_cpusets(memnode);
- }
- 
- void cleanup(void)
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-index 15feba5..545b5f0 100644
---- a/testcases/kernel/mem/oom/oom05.c
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -108,24 +108,30 @@ int main(int argc, char *argv[])
- 
- void setup(void)
- {
-+	int ret, memnode;
-+
- 	tst_require_root(NULL);
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
- 
-+	overcommit = get_sys_tune("overcommit_memory");
-+	set_sys_tune("overcommit_memory", 1, 1);
-+
- 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
- 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
- 	write_memcg();
- 
--	set_sys_tune("overcommit_memory", 1, 1);
--
--	if (is_numa(cleanup))
--		/* For NUMA system, using the first node for cpuset.mems */
--		write_cpusets(get_a_numa_node(cleanup));
--	else
--		/* For nonNUMA system, using node0 for cpuset.mems */
--		write_cpusets(0);
--
--	overcommit = get_sys_tune("overcommit_memory");
-+	/*
-+	 * Some nodes do not contain memory, so use
-+	 * get_allowed_nodes(NH_MEMS) to get a memory
-+	 * node. This operation also applies to Non-NUMA
-+	 * systems.
-+	 */
-+	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
-+	if (ret < 0)
-+		tst_brkm(TBROK, NULL, "Failed to get a memory node "
-+				      "using get_allowed_nodes()");
-+	write_cpusets(memnode);
- }
- 
- void cleanup(void)
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index 6776087..b8eba51 100755
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -260,7 +260,7 @@ fi
+ pattern="[[:space:]]*Defaults[[:space:]]*requiretty.*"
+ if grep -q "^${pattern}" $sudoers; then
+ 	tst_resm TINFO "Comment requiretty in $sudoers for automated testing systems"
+-	if ! sed -E -i.$$ -e "s/^($pattern)/#\1/" $sudoers; then
++	if ! sed -r -i.$$ -e "s/^($pattern)/#\1/" $sudoers; then
+ 		tst_resm TBROK "failed to mangle $sudoers properly"
+ 		exit 1
+ 	fi
 -- 
-1.7.11.7
+1.7.7
 
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
