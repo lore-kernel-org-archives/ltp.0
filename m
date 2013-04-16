@@ -1,17 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UUw3W-00028E-99
-	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 09:32:02 +0000
-Date: Wed, 24 Apr 2013 11:32:56 +0200
-From: chrubis@suse.cz
-Message-ID: <20130424093255.GA5674@rei>
-References: <5177684F.7060204@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5177684F.7060204@cn.fujitsu.com>
-Subject: Re: [LTP] question about a license
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1US6vv-0000kV-PW
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 14:32:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1US6vu-0005Kz-Ct
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 14:32:31 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3GEWOON014510
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 10:32:24 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 16 Apr 2013 22:30:07 +0800
+Message-Id: <dd64e0b40d9fa774595bb6b58cd8f1ff75de6286.1366122425.git.zliu@redhat.com>
+In-Reply-To: <cover.1366122425.git.zliu@redhat.com>
+References: <cover.1366122425.git.zliu@redhat.com>
+In-Reply-To: <cover.1366122425.git.zliu@redhat.com>
+References: <cover.1366122425.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v4 1/3] mm/thp: new case thp04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,53 +30,425 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> When trying to cleanup syscalls/getitimer03.c, i meet a strange license. It says:
-> 
-> *********************************************************************
-> 
-> /*
->  * $Copyright: $
->  * Copyright (c) 1984-2000
->  * Sequent Computer Systems, Inc.   All rights reserved.
->  *$
->  * This software is furnished under a license and may be used
->  * only in accordance with the terms of that license and with the
->  * inclusion of the above copyright notice.   This software may not
->  * be provided or otherwise made available to, or used by, any
->  * other person.  No title to or ownership of the software is
->  * hereby transferred.
->  */
-> 
-> *********************************************************************
-> 
-> Here is my question,
-> 1. Can i change this license to GPL2? or
-> 2. Can i modify code of the case under this license?
-> 
-> Could you please provide me any pointer/suggstion. :)
+The case is desinged to test THP functionality.
 
-Given that the testcases is a few lines that calls getitimer() with
-invalid value, I would play safe and rewrite it from scratch.
+when one process allocate hugepage aligned anonymous pages,
+kernel thread 'khugepaged' controlled by sysfs knobs
+/sys/kernel/mm/transparent_hugepage/* will scan them, and make
+them as transparent hugepage if they are suited, you can find out
+how many transparent hugepages are there in one process from
+/proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
+stand for transparent hugepage.
 
-Anybody has different opinion?
+Tested-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ runtest/mm                         |   3 +
+ testcases/kernel/mem/include/mem.h |  11 +++
+ testcases/kernel/mem/lib/mem.c     | 188 +++++++++++++++++++++++++++++++++++++
+ testcases/kernel/mem/thp/thp04.c   | 142 ++++++++++++++++++++++++++++
+ 4 files changed, 344 insertions(+)
+ create mode 100644 testcases/kernel/mem/thp/thp04.c
 
+diff --git a/runtest/mm b/runtest/mm
+index 56b83f8..3fbb20f 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -84,6 +84,9 @@ swapping01 swapping01 -i 5
+ thp01 thp01 -I 120
+ thp02 thp02
+ thp03 thp03
++thp04_1 thp04
++thp04_2 thp04 -n 10 -N 20
++thp04_3 thp04 -n 1 -N 300
+ 
+ vma01 vma01
+ vma02 vma02
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index fdf558e..cc8b86c 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -32,6 +32,17 @@ void testoom(int mempolicy, int lite);
+ 
+ #define PATH_KSM		"/sys/kernel/mm/ksm/"
+ 
++/* THP */
++
++#define PATH_THP		"/sys/kernel/mm/transparent_hugepage/"
++#define PATH_KHPD		PATH_THP "khugepaged/"
++
++int opt_nr_children, opt_nr_thps;
++char *opt_nr_children_str, *opt_nr_thps_str;
++void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned);
++void check_thp_options(int *nr_children, int *nr_thps);
++void thp_usage(void);
++
+ /* HUGETLB */
+ 
+ #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index c9525e5..fa5694a 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -501,6 +501,194 @@ void ksm_usage(void)
+ 	printf("  -u      Memory allocation unit in MB\n");
+ }
+ 
++/* THP */
++
++static int alloc_transparent_hugepages(int nr_thps, int hg_aligned)
++{
++	unsigned long hugepagesize, size;
++	void *addr;
++	int ret;
++
++	hugepagesize = read_meminfo("Hugepagesize:") * KB;
++	size = nr_thps * hugepagesize;
++
++	if (hg_aligned) {
++		ret = posix_memalign(&addr, hugepagesize, size);
++		if (ret != 0) {
++			printf("posix_memalign failed\n");
++			return -1;
++		}
++	} else {
++		addr = mmap(NULL, size, PROT_READ|PROT_WRITE,
++			    MAP_PRIVATE|MAP_ANON, -1, 0);
++		if (addr == MAP_FAILED) {
++			perror("mmap");
++			return -1;
++		}
++	}
++
++	memset(addr, 10, size);
++
++	tst_resm(TINFO, "child[%d] stop here", getpid());
++	/*
++	 * stop here, until the father finish to calculate
++	 * all the transparent hugepages.
++	 */
++	if (raise(SIGSTOP) == -1) {
++		perror("kill");
++		return -1;
++	}
++
++	return 0;
++}
++
++static void khugepaged_scan_done(void)
++{
++	int changing = 1, count = 0, interval;
++	long old_pages_collapsed, old_max_ptes_none, old_pages_to_scan;
++	long pages_collapsed = 0, max_ptes_none = 0, pages_to_scan = 0;
++
++	/*
++	 * as 'khugepaged' run 100% during testing, so 5s is an
++	 * enough interval for us to recognize if 'khugepaged'
++	 * finish scanning proceses' anonymous hugepages or not.
++	 */
++	interval = 5;
++
++	while (changing) {
++		sleep(interval);
++		count++;
++
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_collapsed",
++			       "%ld", &pages_collapsed);
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "max_ptes_none",
++			       "%ld", &max_ptes_none);
++		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_to_scan",
++			       "%ld", &pages_to_scan);
++
++		if (pages_collapsed != old_pages_collapsed ||
++		    max_ptes_none != old_max_ptes_none ||
++		    pages_to_scan != old_pages_to_scan) {
++			old_pages_collapsed = pages_collapsed;
++			old_max_ptes_none = max_ptes_none;
++			old_pages_to_scan = pages_to_scan;
++		} else {
++			changing = 0;
++		}
++	}
++
++	tst_resm(TINFO, "khugepaged daemon takes %ds to scan all thp pages",
++		 count * interval);
++}
++
++static void verify_thp_size(int *children, int nr_children, int nr_thps)
++{
++	FILE *fp;
++	char path[BUFSIZ], buf[BUFSIZ], line[BUFSIZ];
++	int i, ret;
++	long expect_thps; /* the amount of per child's transparent hugepages */
++	long val, actual_thps;
++	long hugepagesize;
++
++	hugepagesize = read_meminfo("Hugepagesize:");
++	expect_thps = nr_thps * hugepagesize;
++
++	for (i = 0; i < nr_children; i++) {
++		actual_thps = 0;
++
++		snprintf(path, BUFSIZ, "/proc/%d/smaps", children[i]);
++		fp = fopen(path, "r");
++		while (fgets(line, BUFSIZ, fp) != NULL) {
++			ret = sscanf(line, "%64s %ld", buf, &val);
++			if (ret == 2 && val != 0) {
++				if (strcmp(buf, "AnonHugePages:") == 0)
++					actual_thps += val;
++			}
++		}
++
++		if (actual_thps != expect_thps)
++			tst_resm(TFAIL, "child[%d] got %ldKB thps - expect %ld"
++				"KB thps", getpid(), actual_thps, expect_thps);
++		fclose(fp);
++	}
++}
++
++void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned)
++{
++	unsigned long hugepagesize, memfree;
++	int i, *pids, ret, status;
++	char path[BUFSIZ];
++
++	memfree = read_meminfo("MemFree:");
++	tst_resm(TINFO, "The current MemFree is %luMB", memfree / KB);
++	if (memfree < MB)
++		tst_resm(TCONF, "Not enough memory for testing");
++
++	hugepagesize = read_meminfo("Hugepagesize:");
++
++	pids = malloc(nr_children * sizeof(int));
++	if (pids == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++
++	for (i = 0; i < nr_children; i++) {
++		switch (pids[i] = fork()) {
++		case -1:
++			tst_brkm(TBROK | TERRNO, cleanup, "fork");
++
++		case 0:
++			ret = alloc_transparent_hugepages(nr_thps, hg_aligned);
++			exit(ret);
++		}
++	}
++
++	tst_resm(TINFO, "Stop all children...");
++	for (i = 0; i < nr_children; i++) {
++		if (waitpid(pids[i], &status, WUNTRACED) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
++		if (!WIFSTOPPED(status))
++			tst_brkm(TBROK, cleanup,
++				 "child[%d] was not stoppted", pids[i]);
++	}
++
++	tst_resm(TINFO, "Start to scan all transparent hugepages...");
++	khugepaged_scan_done();
++
++	tst_resm(TINFO, "Start to verify transparent hugepage size...");
++	verify_thp_size(pids, nr_children, nr_thps);
++
++	tst_resm(TINFO, "Wake up all children...");
++	for (i = 0; i < nr_children; i++) {
++		if (kill(pids[i], SIGCONT) == -1)
++			tst_brkm(TBROK | TERRNO, cleanup,
++				 "signal continue child[%d]", pids[i]);
++	}
++
++	/* wait all children finish their task */
++	for (i = 0; i < nr_children; i++) {
++		if (waitpid(pids[i], &status, 0) == -1)
++			tst_brkm(TBROK|TERRNO, cleanup, "waitpid %d", pids[i]);
++
++		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "the child[%d] unexpectedly failed:"
++				 " %d", pids[i], status);
++	}
++}
++
++void check_thp_options(int *nr_children, int *nr_thps)
++{
++	if (opt_nr_children)
++		*nr_children = SAFE_STRTOL(NULL, opt_nr_children_str,
++					   0, LONG_MAX);
++	if (opt_nr_thps)
++		*nr_thps = SAFE_STRTOL(NULL, opt_nr_thps_str, 0, LONG_MAX);
++}
++
++void thp_usage(void)
++{
++	printf("  -n      Number of processes\n");
++	printf("  -N      Number of transparent hugepages\n");
++}
++
+ /* cpuset/memcg */
+ 
+ static void gather_node_cpus(char *cpus, long nd)
+diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+new file mode 100644
+index 0000000..0c70634
+--- /dev/null
++++ b/testcases/kernel/mem/thp/thp04.c
+@@ -0,0 +1,142 @@
++/*
++ * Copyright (C) 2013 Linux Test Project
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * The case is designed to test the functionality of transparent
++ * hugepage - THP
++ *
++ * when one process allocate hugepage aligned anonymous pages,
++ * kernel thread 'khugepaged' controlled by sysfs knobs
++ * /sys/kernel/mm/transparent_hugepage/ will scan them, and make
++ * them as transparent hugepage if they are suited, you can find out
++ * how many transparent hugepages are there in one process from
++ * /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
++ * stand for transparent hugepage.
++ */
++
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include "test.h"
++#include "usctest.h"
++#include "mem.h"
++
++char *TCID = "thp04";
++int TST_TOTAL = 1;
++
++option_t thp_options[] = {
++	{"n:", &opt_nr_children, &opt_nr_children_str},
++	{"N:", &opt_nr_thps, &opt_nr_thps_str},
++	{NULL, NULL, NULL}
++};
++
++static int pre_thp_scan_sleep_millisecs;
++static int pre_thp_alloc_sleep_millisecs;
++static char pre_thp_enabled[BUFSIZ];
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
++	int nr_children = 2, nr_thps = 64;
++
++	msg = parse_opts(argc, argv, thp_options, thp_usage);
++	if (msg != NULL)
++		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
++	check_thp_options(&nr_children, &nr_thps);
++
++	setup();
++
++	tst_resm(TINFO, "Start to test transparent hugepage...");
++	tst_resm(TINFO, "There are %d children allocating %d "
++			"transparent hugepages", nr_children, nr_thps);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		test_transparent_hugepage(nr_children, nr_thps, 1);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++void setup(void)
++{
++	tst_require_root(NULL);
++
++	if (access(PATH_THP, F_OK) == -1)
++		tst_brkm(TCONF, NULL, "THP is not enabled");
++
++	SAFE_FILE_SCANF(NULL, PATH_KHPD "scan_sleep_millisecs",
++			"%d", &pre_thp_scan_sleep_millisecs);
++	/* set 0 to khugepaged/scan_sleep_millisecs to run khugepaged 100% */
++	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs", "0");
++
++	SAFE_FILE_SCANF(NULL, PATH_KHPD "alloc_sleep_millisecs",
++			"%d", &pre_thp_alloc_sleep_millisecs);
++	/*
++	 * set 0 to khugepaged/alloc_sleep_millisecs to make sure khugepaged
++	 * don't stop if there's a hugepage allcation failure.
++	 */
++	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs", "0");
++
++	SAFE_FILE_SCANF(NULL, PATH_THP "enabled", "%[^\n]", pre_thp_enabled);
++	/* open khugepaged as 'always' mode */
++	SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "always");
++
++	tst_sig(FORK, DEF_HANDLER, NULL);
++	TEST_PAUSE;
++}
++
++void cleanup(void)
++{
++	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs",
++			 "%d", pre_thp_scan_sleep_millisecs);
++
++	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs",
++			 "%d", pre_thp_alloc_sleep_millisecs);
++
++	/*
++	 * The value of transparent_hugepage/enabled is speical,
++	 * we need to recover the previous value one by one for
++	 * the three mode: always, madvise, never.
++	 */
++	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0)
++		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "always");
++	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0)
++		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "madvise");
++	else
++		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "never");
++
++	TEST_CLEANUP;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
