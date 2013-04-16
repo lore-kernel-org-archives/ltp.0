@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1URzqx-0005fk-BW
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 06:58:55 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URzqv-0002Lk-BK
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 06:58:55 +0000
-Date: Tue, 16 Apr 2013 02:58:38 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2046993339.742574.1366095518611.JavaMail.root@redhat.com>
-In-Reply-To: <414861962.834600.1366086893127.JavaMail.root@redhat.com>
-References: <513427E9.3000807@gmail.com>
-	<414861962.834600.1366086893127.JavaMail.root@redhat.com>
+	(envelope-from <sunildev_63@rediffmail.com>) id 1URzkT-0005Fb-Nh
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 06:52:13 +0000
+Received: from f5mail-224-131.rediffmail.com ([114.31.224.131]
+	helo=rediffmail.com) by sog-mx-1.v43.ch3.sourceforge.com with smtp 
+	(Exim 4.76) id 1URzkS-0006y8-0Q
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 06:52:13 +0000
+Date: 16 Apr 2013 06:52:02 -0000
+Message-ID: <20130416065202.9634.qmail@f5mail-224-131.rediffmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
+From: "devaraja b v" <sunildev_63@rediffmail.com>
+Subject: [LTP] =?utf-8?q?Pre_requisites_needed_to_run_LTP_on_Embedded_devi?=
+	=?utf-8?q?ces?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,244 +23,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3995825550276328424=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, gmail <lans.zhang2008@gmail.com>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+--===============3995825550276328424==
+Content-Type: multipart/alternative;
+	boundary="=_61e4b5193c1c16d048cbd3979d5eb433"
+
+--=_61e4b5193c1c16d048cbd3979d5eb433
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Team,
+Please treat this request on high importance and do the needful.I need to run LTP on one of my Embedded device,which is having 2GB of free RAM.While running some of the LTP test cases in syscalls group, system will go for Out of memory and the device will be rebooted. So I would like to know what is the minimum amount of free memory required to run LTP on the device?I heard that there is a separate configuration or settings needs to be done for embedded systems.Could you please point me to that link/page?It is good if you can put the Pre-requisite details under http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3&nbsp;Before you Begin section. No where I got such information.Could you please add this detail and let me know?Thanks much in advance.
+
+Thanks &amp; Regards
+Devraj
++91-9900516693
+--=_61e4b5193c1c16d048cbd3979d5eb433
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="UTF-8"
+
+<div>Hi Team,</div><div><br></div><div>Please treat this request on high im=
+portance and do the needful.</div><div>I need to run LTP on one of my Embed=
+ded device,which is having 2GB of free RAM.</div><div>While running some of=
+ the LTP test cases in syscalls group, system will go for Out of memory and=
+ the device will be rebooted. So I would like to know what is the minimum a=
+mount of free memory required to run LTP on the device?</div><div><div>I he=
+ard that there is a separate configuration or settings needs to be done for=
+ embedded systems.</div><div>Could you please point me to that link/page?</=
+div></div><div>It is good if you can put the Pre-requisite details under <a=
+ href=3D"http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3">http:/=
+/ltp.sourceforge.net/documentation/how-to/ltp.php#_3</a>&nbsp;Before you Be=
+gin section. No where I got such information.Could you please add this deta=
+il and let me know?</div><div>Thanks much in advance.</div><div><br></div><=
+div><br></div>Thanks &amp; Regards<br>Devraj<br>+91-9900516693<br><A HREF=
+=3D"http://sigads.rediff.com/RealMedia/ads/click_nx.ads/www.rediffmail.com/=
+signatureline.htm@Middle?" target=3D"_blank"><IMG SRC=3D"http://sigads.redi=
+ff.com/RealMedia/ads/adstream_nx.ads/www.rediffmail.com/signatureline.htm@M=
+iddle"></A><br><div style=3D"font-family:Arial, Helvetica, sans-serif; font=
+-size:14px">Get your own <span style=3D"font-size:12px; font-family:Arial, =
+Helvetica, sans-serif;background-color:#C00; color:#FFF; padding: 0 3px;"><=
+b>FREE</b></span> website and domain with business email solutions, <a href=
+=3D"http://track.rediff.com/click?url=3D___http://hosting.rediff.com/rediff=
+mailpro/business-email?sc_cid=3Dsig___&cmp=3Dsig&lnk=3Dsig&nsrv1=3Dhost">cl=
+ick here</a></div>
+--=_61e4b5193c1c16d048cbd3979d5eb433--
 
 
-
-
-
------ Original Message -----
-> From: "Zhouping Liu" <zliu@redhat.com>
-> To: "gmail" <lans.zhang2008@gmail.com>
-> Cc: ltp-list@lists.sourceforge.net, "Wanlong Gao" <gaowanlong@cn.fujitsu.com>, "Jan Stancek" <jstancek@redhat.com>
-> Sent: Tuesday, 16 April, 2013 6:34:53 AM
-> Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
-> 
-> Hi Lans,
-> 
-> ----- Original Message -----
-> > From: "gmail" <lans.zhang2008@gmail.com>
-> > To: ltp-list@lists.sourceforge.net
-> > Sent: Monday, March 4, 2013 12:49:45 PM
-> > Subject: [LTP] [PATCH]  Fix short of nodemask array.
-> > 
-> > In kernel, when the user specified more nodes, e.g, 512 nodes, than
-> > supported, e.g, 4 nodes, just check if the non supported part is all
-> > zero. If user space just specified the nodemask array with only one
-> > element, which makes the check in kernel actually become invalid.
-> 
-> I think the comments here is not clear, you should explain more details
-> about the 'one element' or the reason why the checking in kernel will
-> be invalid.
-
-I think what it says is that we are overrunning "nmask", whose length is
-shorter than MAXNODES.
-
-> 
-> > In addition, some test cases in current implement doesn't consider
-> > if a node number is greater than sizeof(unsigned long) * 8 - 1.
-> 
-> yes, you are right, we don't care the system which has more than 512 numa
-> nodes.
-> and the current code only support 64 numa nodes, only one unsigned long node
-> mask.
-> 
-> I checked kernel code in RHEL6, CONFIG_NODES_SHIFT=9, so 512 is the biggest
-> value to support in RHEL6 for x86_64, and I didn't meet any large NUMA system
-> which have 512+ numa nodes so far.
-> 
-> > 
-> > Signed-off-by: Lans Zhang <lans.zhang2008@gmail.com>
-> > ---
-> >   testcases/kernel/mem/cpuset/cpuset01.c |    6 +++---
-> >   testcases/kernel/mem/ksm/ksm02.c       |    6 +++---
-> >   testcases/kernel/mem/ksm/ksm04.c       |    6 +++---
-> >   testcases/kernel/mem/lib/mem.c         |    6 +++---
-> >   4 files changed, 12 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
-> > b/testcases/kernel/mem/cpuset/cpuset01.c
-> > index b473e45..e459306 100644
-> > --- a/testcases/kernel/mem/cpuset/cpuset01.c
-> > +++ b/testcases/kernel/mem/cpuset/cpuset01.c
-> > @@ -93,7 +93,7 @@ static void testcpuset(void)
-> >   {
-> >   	int lc;
-> >   	int child, i, status;
-> > -	unsigned long nmask = 0;
-> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-> >   	char mems[BUFSIZ], buf[BUFSIZ];
-> > 
-> >   	read_cpuset_files(CPATH, "cpus", buf);
-> > @@ -108,8 +108,8 @@ static void testcpuset(void)
-> >   		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-> >   	case 0:
-> >   		for (i = 0; i < nnodes; i++)
-> > -			nmask += 1 << nodes[i];
-> > -		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
-> > +			nmask[i / (8*sizeof(unsigned long))] |= 1 << (i % (8*sizeof(unsigned
-> > long)));
-> > +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
-> >   			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
-> >   		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
-> >   	}
-> > diff --git a/testcases/kernel/mem/ksm/ksm02.c
-> > b/testcases/kernel/mem/ksm/ksm02.c
-> > index be9ff96..9d2d142 100644
-> > --- a/testcases/kernel/mem/ksm/ksm02.c
-> > +++ b/testcases/kernel/mem/ksm/ksm02.c
-> > @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
-> >   	int lc;
-> >   	char *msg;
-> >   	int size = 128, num = 3, unit = 1;
-> > -	unsigned long nmask = 0;
-> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-> >   	unsigned int node;
-> > 
-> >   	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
-> > @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
-> >   		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> > 
-> >   	node = get_a_numa_node(tst_exit);
-> > -	nmask = 1 << node;
-> > +	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned
-> > long)));
-> 
-> I found '1 << (node % (8*sizeof(unsigned long)))' is used frequently, I
-> suggest we
-> can create a macro, such as:
-> # define GET_NODE_MASK(nid) 1 << (nid % (8*sizeof(unsigned long)))
-
-I agree, also 'nmask[i / (8*sizeof(unsigned long))]' is there often.
-How about something like:
-
-#define bitsperlong (8 * sizeof(unsigned long))
-void set_bit(unsigned long *b, unsigned int n, unsigned int v)
-{
-        if (v)
-                b[n / bitsperlong] |= 1UL << (n % bitsperlong);
-        else
-                b[n / bitsperlong] &= ~(1UL << (n % bitsperlong));
-}
-set_bit(nmask, node, 1);
-
-Regards,
-Jan
-
-> 
-> also please update the patch, as there's some updates before your patch in
-> lib/mem.c,
-> which makes some conflict with the latest tree.
-> 
-> Thanks,
-> Zhouping
-> 
-> > 
-> >   	setup();
-> > 
-> > @@ -103,7 +103,7 @@ int main(int argc, char *argv[])
-> >   		Tst_count = 0;
-> >   		check_ksm_options(&size, &num, &unit);
-> > 
-> > -		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-> > +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
-> >   			if (errno != ENOSYS)
-> >   				tst_brkm(TBROK | TERRNO, cleanup,
-> >   					 "set_mempolicy");
-> > diff --git a/testcases/kernel/mem/ksm/ksm04.c
-> > b/testcases/kernel/mem/ksm/ksm04.c
-> > index e4aa417..7829afd 100644
-> > --- a/testcases/kernel/mem/ksm/ksm04.c
-> > +++ b/testcases/kernel/mem/ksm/ksm04.c
-> > @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
-> >   	int lc;
-> >   	char *msg;
-> >   	int size = 128, num = 3, unit = 1;
-> > -	unsigned long nmask = 0;
-> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-> >   	unsigned int node;
-> > 
-> >   	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
-> > @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
-> >   		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> > 
-> >   	node = get_a_numa_node(tst_exit);
-> > -	nmask = 1 << node;
-> > +	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned
-> > long)));
-> > 
-> >   	setup();
-> > 
-> > @@ -105,7 +105,7 @@ int main(int argc, char *argv[])
-> > 
-> >   		write_memcg();
-> > 
-> > -		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
-> > +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
-> >   			if (errno != ENOSYS)
-> >   				tst_brkm(TBROK | TERRNO, cleanup,
-> >   					 "set_mempolicy");
-> > diff --git a/testcases/kernel/mem/lib/mem.c
-> > b/testcases/kernel/mem/lib/mem.c
-> > index f095fe1..abe29fd 100644
-> > --- a/testcases/kernel/mem/lib/mem.c
-> > +++ b/testcases/kernel/mem/lib/mem.c
-> > @@ -66,12 +66,12 @@ void oom(int testcase, int mempolicy, int lite)
-> >   	int status;
-> >   #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> >   	&& HAVE_MPOL_CONSTANTS
-> > -	unsigned long nmask = 0;
-> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
-> >   	unsigned int node;
-> > 
-> >   	if (mempolicy)
-> >   		node = get_a_numa_node(cleanup);
-> > -	nmask += 1 << node;
-> > +	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned
-> > long)));
-> >   #endif
-> > 
-> >   	switch (pid = fork()) {
-> > @@ -81,7 +81,7 @@ void oom(int testcase, int mempolicy, int lite)
-> >   #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-> >   	&& HAVE_MPOL_CONSTANTS
-> >   		if (mempolicy)
-> > -			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
-> > +			if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
-> >   				tst_brkm(TBROK | TERRNO, cleanup,
-> >   					 "set_mempolicy");
-> >   #endif
-> > --
-> > 1.7.8.110.g4cb5d
-> > 
-> > ------------------------------------------------------------------------------
-> > Minimize network downtime and maximize team effectiveness.
-> > Reduce network management and security costs.Learn how to hire
-> > the most talented Cisco Certified professionals. Visit the
-> > Employer Resources Portal
-> > http://www.cisco.com/web/learning/employer_resources/index.html
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> 
-> --
-> Thanks,
-> Zhouping
-> 
+--===============3995825550276328424==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--===============3995825550276328424==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3995825550276328424==--
+
