@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1URijl-00012A-VF
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 12:42:22 +0000
-Date: Mon, 15 Apr 2013 14:43:05 +0200
-From: chrubis@suse.cz
-Message-ID: <20130415124305.GC1091@rei>
-References: <cover.1366016616.git.zliu@redhat.com>
-	<9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
+	(envelope-from <jstancek@redhat.com>) id 1URzqx-0005fk-BW
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 06:58:55 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1URzqv-0002Lk-BK
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 06:58:55 +0000
+Date: Tue, 16 Apr 2013 02:58:38 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2046993339.742574.1366095518611.JavaMail.root@redhat.com>
+In-Reply-To: <414861962.834600.1366086893127.JavaMail.root@redhat.com>
+References: <513427E9.3000807@gmail.com>
+	<414861962.834600.1366086893127.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <9ef6222c6ec4ae13864cb6983a907fe41704cb16.1366016616.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v4 1/3] mm/thp: new case thp04.c
+Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,356 +29,232 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net, gmail <lans.zhang2008@gmail.com>
 
-Hi!
-> +static void khugepaged_scan_done(void)
-> +{
-> +	int changing = 1, count = 0;
-> +	long old_pages_collapsed, old_max_ptes_none, old_pages_to_scan;
-> +	long pages_collapsed = 0, max_ptes_none = 0, pages_to_scan = 0;
-> +
-> +	while (changing) {
-> +		/*
-> +		 * as 'khugepaged' run 100% during testing, so 10s
-> +		 * is an enough for us to recognize if 'khugepaged'
-> +		 * finish scanning proceses' anonymouse hugepages
-                                                ^
-                                             anonymous
 
-> +		 * or not.
-> +		 */
-> +		sleep(10);
-> +		count++;
-> +
-> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_collapsed",
-> +			       "%ld", &pages_collapsed);
-> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "max_ptes_none",
-> +			       "%ld", &max_ptes_none);
-> +		SAFE_FILE_SCANF(cleanup, PATH_KHPD "pages_to_scan",
-> +			       "%ld", &pages_to_scan);
-> +
-> +		if (pages_collapsed != old_pages_collapsed ||
-> +		    max_ptes_none != old_max_ptes_none ||
-> +		    pages_to_scan != old_pages_to_scan) {
-> +			old_pages_collapsed = pages_collapsed;
-> +			old_max_ptes_none = max_ptes_none;
-> +			old_pages_to_scan = pages_to_scan;
-> +		} else {
-> +			changing = 0;
-> +		}
-> +	}
-> +
-> +	tst_resm(TINFO, "khugepaged daemon takes %ds to scan all thp pages",
-> +		 count * 10);
-> +}
 
-Ah, so it acutally does polling, this is fine.
 
-How long scanning takes. If it is about 10 seconds, we should poll
-faster so that the testcase has chance to finish reasonably fast.
-(if it takes 10 seconds and we miss the first windows it will sleep
- doing noting for another ten seconds)
 
-> +static void verify_thp_size(int *child, int nr_child, int nr_thps)
-> +{
-> +	FILE *fp;
-> +	char path[BUFSIZ], buf[BUFSIZ], line[BUFSIZ];
-> +	int i, ret;
-> +	long expect_thps; /* the amount of per child's transparent hugepages */
-> +	long val, actual_thps;
-> +	long hugepagesize;
-> +
-> +	hugepagesize = read_meminfo("Hugepagesize:");
-> +	expect_thps = nr_thps * hugepagesize;
-> +
-> +	for (i = 0; i < nr_child; i++) {
-> +		actual_thps = 0;
-> +
-> +		snprintf(path, BUFSIZ, "/proc/%d/smaps", child[i]);
-> +		fp = fopen(path, "r");
-> +		while (fgets(line, BUFSIZ, fp) != NULL) {
-> +			ret = sscanf(line, "%64s %ld", buf, &val);
-> +			if (ret == 2 && val != 0) {
-> +				if (strcmp(buf, "AnonHugePages:") == 0)
-> +					actual_thps += val;
-> +			}
-> +		}
-> +
-> +		if (actual_thps != expect_thps)
-> +			tst_resm(TFAIL, "child[%d] got %ldKB thps - expect %ld"
-> +				"KB thps", getpid(), actual_thps, expect_thps);
-> +		fclose(fp);
-> +	}
-> +}
-> +
-> +void test_transparent_hugepage(int nr_child, int nr_thps, int hg_aligned)
-> +{
-> +	unsigned long hugepagesize, memfree;
-> +	int i, *pid, ret, status;
-> +	char path[BUFSIZ];
-> +
-> +	memfree = read_meminfo("MemFree:");
-> +	tst_resm(TINFO, "The current MemFree is %luMB", memfree / KB);
-> +	if (memfree < MB)
-> +		tst_resm(TWARN, "The system has low memory, which maybe "
-> +				"cause the case failed");
-
-Hmm, TWARN is most likely wrong here, as it gets propagated into the
-test return value. If it is known to fail on low memory, I would just
-exit with TCONF and "Not enough memory for testing" message. Comments
-anybody?
-
-> +	hugepagesize = read_meminfo("Hugepagesize:");
-> +
-> +	pid = malloc(nr_child * sizeof(int));
-> +	if (pid == NULL)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
-
-This is really small nit, but I would have named this array as 'pids'.
-
-> +	for (i = 0; i < nr_child; i++) {
-> +		switch (pid[i] = fork()) {
-> +		case -1:
-> +			tst_brkm(TBROK | TERRNO, cleanup, "fork");
-> +
-> +		case 0:
-> +			ret = alloc_transparent_hugepages(nr_thps, hg_aligned);
-> +			exit(ret);
-> +		}
-> +	}
-> +
-> +	tst_resm(TINFO, "Stop all children...");
-> +	for (i = 0; i < nr_child; i++) {
-> +		if (waitpid(pid[i], &status, WUNTRACED) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +		if (!WIFSTOPPED(status))
-> +			tst_brkm(TBROK, cleanup,
-> +				 "child[%d] was not stoppted", pid[i]);
-> +	}
-> +
-> +	tst_resm(TINFO, "Start to scan all transparent hugepages...");
-> +	khugepaged_scan_done();
-> +
-> +	tst_resm(TINFO, "Start to verify transparent hugepage size...");
-> +	verify_thp_size(pid, nr_child, nr_thps);
-> +
-> +	tst_resm(TINFO, "Wake up all children...");
-> +	for (i = 0; i < nr_child; i++) {
-> +		if (kill(pid[i], SIGCONT) == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "signal continue child[%d]", pid[i]);
-> +	}
-> +
-> +	/* wait all children finish himself task */
-                                       ^
-				    their tasks
-
-> +	for (i = 0; i < nr_child; i++) {
-> +		if (waitpid(pid[i], &status, 0) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "waitpid %d", pid[i]);
-> +
-> +		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> +			tst_resm(TFAIL, "the child[%d] unexpectedly failed:"
-> +				 " %d", pid[i], status);
-> +	}
-> +}
-> +
-> +void check_thp_options(int *nr_child, int *nr_thps)
-> +{
-> +	if (opt_nr_child)
-> +		*nr_child = SAFE_STRTOL(NULL, opt_nr_child_str, 0, LONG_MAX);
-> +	if (opt_nr_thps)
-> +		*nr_thps = SAFE_STRTOL(NULL, opt_nr_thps_str, 0, LONG_MAX);
-> +}
-> +
-> +void thp_usage(void)
-> +{
-> +	printf("  -n      Number of processes\n");
-> +	printf("  -N      Number of transparent hugepages\n");
-> +}
-> +
->  /* cpuset/memcg */
->  
->  static void gather_node_cpus(char *cpus, long nd)
-> diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
-> new file mode 100644
-> index 0000000..0f6c553
-> --- /dev/null
-> +++ b/testcases/kernel/mem/thp/thp04.c
-> @@ -0,0 +1,136 @@
-> +/*
-> + * Copyright (C) 2013 Linux Test Project
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +/*
-> + * The case is designed to test the functionality of transparent
-> + * hugepage - THP
-> + *
-> + * when one process allocate hugepage aligned anonymouse pages,
-> + * kernel thread 'khugepaged' controlled by sysfs knobs
-> + * /sys/kernel/mm/transparent_hugepage/ will scan them, and make
-> + * them as transparent hugepage if they are suited, you can find out
-> + * how many transparent hugepages are there in one process from
-> + * /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-> + * stand for transparent hugepage.
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/mman.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <signal.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "mem.h"
-> +
-> +char *TCID = "thp04";
-> +int TST_TOTAL = 1;
-> +
-> +option_t thp_options[] = {
-> +	{"n:", &opt_nr_child, &opt_nr_child_str},
-> +	{"N:", &opt_nr_thps, &opt_nr_thps_str},
-> +	{NULL, NULL, NULL}
-> +};
-> +
-> +static int pre_thp_scan_sleep_millisecs;
-> +static int pre_thp_alloc_sleep_millisecs;
-> +static char pre_thp_enabled[BUFSIZ];
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	char *msg;
-> +	int nr_child = 2, nr_thps = 64;
-> +
-> +	msg = parse_opts(argc, argv, thp_options, thp_usage);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, tst_exit, "OPTION PARSING ERROR - %s", msg);
-> +	check_thp_options(&nr_child, &nr_thps);
-> +
-> +	setup();
-> +
-> +	tst_resm(TINFO, "Start to test transparent hugepage...");
-> +	tst_resm(TINFO, "There are %d children allocating %d "
-> +			"transparent hugepages", nr_child, nr_thps);
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		test_transparent_hugepage(nr_child, nr_thps, 1);
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +void setup(void)
-> +{
-> +	char path[BUFSIZ];
-> +
-> +	tst_require_root(NULL);
-> +
-> +	if (access(PATH_THP, F_OK) == -1)
-> +		tst_brkm(TCONF, NULL, "THP is not enabled");
-> +
-> +	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
-> +	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_scan_sleep_millisecs);
-
-The PATH_KPHD and "scan_sleep_millisecs" are both static strings and are
-merged before they are passed to the snprintf() at compile time, which
-results in printf format string __without__ any characters to
-substitute. This is really weird.
-
-> +	/* set 0 to khugepaged/scan_sleep_millisecs to run khugepaged 100% */
-> +	SAFE_FILE_PRINTF(cleanup, path, "%d", 0);
-
-I'm confused here, this is the only function in the setup that takes a
-pointer to the cleanup defined bellow.
-
-> +	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
-> +	SAFE_FILE_SCANF(NULL, path, "%d", &pre_thp_alloc_sleep_millisecs);
-> +	/*
-> +	 * set 0 to khugepaged/alloc_sleep_millisecs to make sure khugepaged
-> +	 * don't stop if there's a hugepage allcation failure.
-> +	 */
-> +	SAFE_FILE_PRINTF(NULL, path, "%d", 0);
-> +
-> +	snprintf(path, BUFSIZ, PATH_THP "enabled");
-
-Here as well.
-
-> +	write_file(path, "always");
-
-Where this came from? Does the function check for failures? Why not to
-use SAFE_FILE_PRINTF() as the rest of the file?
-
-> +	tst_sig(FORK, DEF_HANDLER, NULL);
-> +	TEST_PAUSE;
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	char path[BUFSIZ];
-> +
-> +	snprintf(path, BUFSIZ, PATH_KHPD "scan_sleep_millisecs");
-> +	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_scan_sleep_millisecs);
-> +
-> +	snprintf(path, BUFSIZ, PATH_KHPD "alloc_sleep_millisecs");
-> +	SAFE_FILE_PRINTF(NULL, path, "%d", pre_thp_alloc_sleep_millisecs);
-> +
-> +	snprintf(path, BUFSIZ, PATH_THP "enabled");
-> +	write_file(path, pre_thp_enabled);
-> +
-
-Same here.
-
-> +	TEST_CLEANUP;
-> +}
-> -- 
-> 1.7.11.7
+----- Original Message -----
+> From: "Zhouping Liu" <zliu@redhat.com>
+> To: "gmail" <lans.zhang2008@gmail.com>
+> Cc: ltp-list@lists.sourceforge.net, "Wanlong Gao" <gaowanlong@cn.fujitsu.com>, "Jan Stancek" <jstancek@redhat.com>
+> Sent: Tuesday, 16 April, 2013 6:34:53 AM
+> Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
 > 
+> Hi Lans,
 > 
-> ------------------------------------------------------------------------------
-> Precog is a next-generation analytics platform capable of advanced
-> analytics on semi-structured data. The platform includes APIs for building
-> apps and a phenomenal toolset for data science. Developers can use
-> our toolset for easy data analysis & visualization. Get a free account!
-> http://www2.precog.com/precogplatform/slashdotnewsletter
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> ----- Original Message -----
+> > From: "gmail" <lans.zhang2008@gmail.com>
+> > To: ltp-list@lists.sourceforge.net
+> > Sent: Monday, March 4, 2013 12:49:45 PM
+> > Subject: [LTP] [PATCH]  Fix short of nodemask array.
+> > 
+> > In kernel, when the user specified more nodes, e.g, 512 nodes, than
+> > supported, e.g, 4 nodes, just check if the non supported part is all
+> > zero. If user space just specified the nodemask array with only one
+> > element, which makes the check in kernel actually become invalid.
+> 
+> I think the comments here is not clear, you should explain more details
+> about the 'one element' or the reason why the checking in kernel will
+> be invalid.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I think what it says is that we are overrunning "nmask", whose length is
+shorter than MAXNODES.
+
+> 
+> > In addition, some test cases in current implement doesn't consider
+> > if a node number is greater than sizeof(unsigned long) * 8 - 1.
+> 
+> yes, you are right, we don't care the system which has more than 512 numa
+> nodes.
+> and the current code only support 64 numa nodes, only one unsigned long node
+> mask.
+> 
+> I checked kernel code in RHEL6, CONFIG_NODES_SHIFT=9, so 512 is the biggest
+> value to support in RHEL6 for x86_64, and I didn't meet any large NUMA system
+> which have 512+ numa nodes so far.
+> 
+> > 
+> > Signed-off-by: Lans Zhang <lans.zhang2008@gmail.com>
+> > ---
+> >   testcases/kernel/mem/cpuset/cpuset01.c |    6 +++---
+> >   testcases/kernel/mem/ksm/ksm02.c       |    6 +++---
+> >   testcases/kernel/mem/ksm/ksm04.c       |    6 +++---
+> >   testcases/kernel/mem/lib/mem.c         |    6 +++---
+> >   4 files changed, 12 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
+> > b/testcases/kernel/mem/cpuset/cpuset01.c
+> > index b473e45..e459306 100644
+> > --- a/testcases/kernel/mem/cpuset/cpuset01.c
+> > +++ b/testcases/kernel/mem/cpuset/cpuset01.c
+> > @@ -93,7 +93,7 @@ static void testcpuset(void)
+> >   {
+> >   	int lc;
+> >   	int child, i, status;
+> > -	unsigned long nmask = 0;
+> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+> >   	char mems[BUFSIZ], buf[BUFSIZ];
+> > 
+> >   	read_cpuset_files(CPATH, "cpus", buf);
+> > @@ -108,8 +108,8 @@ static void testcpuset(void)
+> >   		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+> >   	case 0:
+> >   		for (i = 0; i < nnodes; i++)
+> > -			nmask += 1 << nodes[i];
+> > -		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+> > +			nmask[i / (8*sizeof(unsigned long))] |= 1 << (i % (8*sizeof(unsigned
+> > long)));
+> > +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
+> >   			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
+> >   		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
+> >   	}
+> > diff --git a/testcases/kernel/mem/ksm/ksm02.c
+> > b/testcases/kernel/mem/ksm/ksm02.c
+> > index be9ff96..9d2d142 100644
+> > --- a/testcases/kernel/mem/ksm/ksm02.c
+> > +++ b/testcases/kernel/mem/ksm/ksm02.c
+> > @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
+> >   	int lc;
+> >   	char *msg;
+> >   	int size = 128, num = 3, unit = 1;
+> > -	unsigned long nmask = 0;
+> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+> >   	unsigned int node;
+> > 
+> >   	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
+> > @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
+> >   		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> > 
+> >   	node = get_a_numa_node(tst_exit);
+> > -	nmask = 1 << node;
+> > +	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned
+> > long)));
+> 
+> I found '1 << (node % (8*sizeof(unsigned long)))' is used frequently, I
+> suggest we
+> can create a macro, such as:
+> # define GET_NODE_MASK(nid) 1 << (nid % (8*sizeof(unsigned long)))
+
+I agree, also 'nmask[i / (8*sizeof(unsigned long))]' is there often.
+How about something like:
+
+#define bitsperlong (8 * sizeof(unsigned long))
+void set_bit(unsigned long *b, unsigned int n, unsigned int v)
+{
+        if (v)
+                b[n / bitsperlong] |= 1UL << (n % bitsperlong);
+        else
+                b[n / bitsperlong] &= ~(1UL << (n % bitsperlong));
+}
+set_bit(nmask, node, 1);
+
+Regards,
+Jan
+
+> 
+> also please update the patch, as there's some updates before your patch in
+> lib/mem.c,
+> which makes some conflict with the latest tree.
+> 
+> Thanks,
+> Zhouping
+> 
+> > 
+> >   	setup();
+> > 
+> > @@ -103,7 +103,7 @@ int main(int argc, char *argv[])
+> >   		Tst_count = 0;
+> >   		check_ksm_options(&size, &num, &unit);
+> > 
+> > -		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
+> > +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
+> >   			if (errno != ENOSYS)
+> >   				tst_brkm(TBROK | TERRNO, cleanup,
+> >   					 "set_mempolicy");
+> > diff --git a/testcases/kernel/mem/ksm/ksm04.c
+> > b/testcases/kernel/mem/ksm/ksm04.c
+> > index e4aa417..7829afd 100644
+> > --- a/testcases/kernel/mem/ksm/ksm04.c
+> > +++ b/testcases/kernel/mem/ksm/ksm04.c
+> > @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
+> >   	int lc;
+> >   	char *msg;
+> >   	int size = 128, num = 3, unit = 1;
+> > -	unsigned long nmask = 0;
+> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+> >   	unsigned int node;
+> > 
+> >   	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
+> > @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
+> >   		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> > 
+> >   	node = get_a_numa_node(tst_exit);
+> > -	nmask = 1 << node;
+> > +	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned
+> > long)));
+> > 
+> >   	setup();
+> > 
+> > @@ -105,7 +105,7 @@ int main(int argc, char *argv[])
+> > 
+> >   		write_memcg();
+> > 
+> > -		if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1) {
+> > +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
+> >   			if (errno != ENOSYS)
+> >   				tst_brkm(TBROK | TERRNO, cleanup,
+> >   					 "set_mempolicy");
+> > diff --git a/testcases/kernel/mem/lib/mem.c
+> > b/testcases/kernel/mem/lib/mem.c
+> > index f095fe1..abe29fd 100644
+> > --- a/testcases/kernel/mem/lib/mem.c
+> > +++ b/testcases/kernel/mem/lib/mem.c
+> > @@ -66,12 +66,12 @@ void oom(int testcase, int mempolicy, int lite)
+> >   	int status;
+> >   #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+> >   	&& HAVE_MPOL_CONSTANTS
+> > -	unsigned long nmask = 0;
+> > +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+> >   	unsigned int node;
+> > 
+> >   	if (mempolicy)
+> >   		node = get_a_numa_node(cleanup);
+> > -	nmask += 1 << node;
+> > +	nmask[node / (8*sizeof(unsigned long))] = 1 << (node % (8*sizeof(unsigned
+> > long)));
+> >   #endif
+> > 
+> >   	switch (pid = fork()) {
+> > @@ -81,7 +81,7 @@ void oom(int testcase, int mempolicy, int lite)
+> >   #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+> >   	&& HAVE_MPOL_CONSTANTS
+> >   		if (mempolicy)
+> > -			if (set_mempolicy(MPOL_BIND, &nmask, MAXNODES) == -1)
+> > +			if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
+> >   				tst_brkm(TBROK | TERRNO, cleanup,
+> >   					 "set_mempolicy");
+> >   #endif
+> > --
+> > 1.7.8.110.g4cb5d
+> > 
+> > ------------------------------------------------------------------------------
+> > Minimize network downtime and maximize team effectiveness.
+> > Reduce network management and security costs.Learn how to hire
+> > the most talented Cisco Certified professionals. Visit the
+> > Employer Resources Portal
+> > http://www.cisco.com/web/learning/employer_resources/index.html
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> 
+> --
+> Thanks,
+> Zhouping
+> 
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
