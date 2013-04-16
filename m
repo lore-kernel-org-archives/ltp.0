@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1URusC-0001Bi-GH
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 01:39:52 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URusA-0005MZ-TX
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 01:39:52 +0000
-Message-ID: <516CABFB.3030602@cn.fujitsu.com>
-Date: Tue, 16 Apr 2013 09:40:11 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1US3vl-0005s1-1x
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 11:20:09 +0000
+Date: Tue, 16 Apr 2013 13:20:56 +0200
+From: chrubis@suse.cz
+Message-ID: <20130416112055.GA17493@rei>
+References: <shuang.qiu@oracle.com>
+	<1366099791-14020-1-git-send-email-shuang.qiu@oracle.com>
 MIME-Version: 1.0
-References: <515EA506.8060305@linux.vnet.ibm.com>
-	<51621625.6000507@cn.fujitsu.com>
-	<5163BCCC.90909@linux.vnet.ibm.com>
-In-Reply-To: <5163BCCC.90909@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
- getting skipped from runltp's execution
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1366099791-14020-1-git-send-email-shuang.qiu@oracle.com>
+Subject: Re: [LTP] [PATCH] Replace "-E" option for sed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,23 +25,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ramesh <rameshyr@linux.vnet.ibm.com>
+To: shuang.qiu@oracle.com
 Cc: ltp-list@lists.sourceforge.net
 
-On 04/09/2013 03:01 PM, Ramesh wrote:
-> Hi,
+Hi!
+> The '-E' option is obsoleted and is no longer supported by sed in most
+> Linux distributions.  Use '-r' instead.
+> ---
+>  .../kernel/syscalls/utimensat/utimensat_tests.sh   |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> I have corrected few indentation flaws and I think this patch should be fine to commit.
-> Please let me know if you are still facing any issues in extracting this patch for commit.
-> 
-> 
-> Signed-off-by: Ramesh YR <rameshyr@linux.vnet.ibm.com>
+> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+> index 6776087..b8eba51 100755
+> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+> @@ -260,7 +260,7 @@ fi
+>  pattern="[[:space:]]*Defaults[[:space:]]*requiretty.*"
+>  if grep -q "^${pattern}" $sudoers; then
+>  	tst_resm TINFO "Comment requiretty in $sudoers for automated testing systems"
+> -	if ! sed -E -i.$$ -e "s/^($pattern)/#\1/" $sudoers; then
+> +	if ! sed -r -i.$$ -e "s/^($pattern)/#\1/" $sudoers; then
+>  		tst_resm TBROK "failed to mangle $sudoers properly"
+>  		exit 1
+>  	fi
 
-Applied with the long-line-echo fixed, thank you.
+Strangely enough both -E and -r were working on all my testing machines
+but SLES9. Looking at bussybox documentation only -r is supported for
+sed applet.
 
+Commited, thanks.
 
-Wanlong Gao
+(Please add Signed-off-by: line next time.)
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
