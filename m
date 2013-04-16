@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UP87i-0006p8-51
-	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 09:12:22 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UP87e-0008Tp-Oq
-	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 09:12:22 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r389CChL022163
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Apr 2013 05:12:12 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon,  8 Apr 2013 17:10:06 +0800
-Message-Id: <cover.1365411883.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v2 0/3] mm/thp: add two new case
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1US3Kb-00046f-9a
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:41:45 +0000
+Date: Tue, 16 Apr 2013 12:42:29 +0200
+From: chrubis@suse.cz
+Message-ID: <20130416104228.GA17259@rei>
+References: <cover.1366107814.git.zliu@redhat.com>
+	<a6942bb2d9d35f695b5067a7008620110c769222.1366107814.git.zliu@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <a6942bb2d9d35f695b5067a7008620110c769222.1366107814.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v5 3/3] mm/thp: add new case thp05
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,50 +22,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-The patchset is desinged to test THP functionality.
-    
-when one process allocate hugepage aligned anonymouse pages,
-kernel thread 'khugepaged' controlled by sysfs knobs
-/sys/kernel/mm/transparent_hugepage/* will scan them, and make
-them as transparent hugepage if they are suited, you can find out
-how many transparent hugepages are there in one process from
-/proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-stand for transparent hugepage.
+Hi!
+Here is the last nit (the rest of the code looks ok).
 
-V1 to V2:
-accepted Wanlong's suggestion, added some comment for '10s'
-added 'static' key word for single-file-only variant.
+Applies for the next test as well.
 
-Zhouping Liu (3):
-  mm/thp: new case thp04.c
-  lib/mem: introduce a new function set_global_mempolicy()
-  mm/thp: add new case thp05
+> +void setup(void)
+> +{
+> +	char path[BUFSIZ];
+> +
+> +	tst_require_root(NULL);
+> +
+> +	if (access(PATH_THP, F_OK) == -1)
+> +		tst_brkm(TCONF, NULL, "THP is not enabled");
+> +
+> +	if (!is_numa(NULL))
+> +		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
+> +
+> +	SAFE_FILE_SCANF(NULL, PATH_KHPD "scan_sleep_millisecs",
+> +			"%d", &pre_thp_scan_sleep_millisecs);
+> +	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs", "%d", 0);
+> +
+> +	SAFE_FILE_SCANF(NULL, PATH_KHPD "alloc_sleep_millisecs",
+> +			"%d", &pre_thp_alloc_sleep_millisecs);
+> +	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs", "%d", 0);
 
- runtest/mm                         |   6 ++
- testcases/kernel/mem/include/mem.h |  12 +++
- testcases/kernel/mem/lib/mem.c     | 197 ++++++++++++++++++++++++++++++++++++-
- testcases/kernel/mem/thp/thp04.c   | 136 +++++++++++++++++++++++++
- testcases/kernel/mem/thp/thp05.c   | 152 ++++++++++++++++++++++++++++
- 5 files changed, 502 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/mem/thp/thp04.c
- create mode 100644 testcases/kernel/mem/thp/thp05.c
+No need to convert the constant integer via "%d", just pass the "0"
+string.
+
+> +	SAFE_FILE_SCANF(NULL, PATH_THP "enabled", "%[^\n]", pre_thp_enabled);
+> +	SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "%s", "always");
+
+No need to pass the "always" via "%s", just pass it directly.
+
+> +
+> +	tst_sig(FORK, DEF_HANDLER, NULL);
+> +	TEST_PAUSE;
+> +}
+
+
 
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
