@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UNM97-0006sh-86
-	for ltp-list@lists.sourceforge.net; Wed, 03 Apr 2013 11:46:29 +0000
-Date: Wed, 3 Apr 2013 13:47:14 +0200
-From: chrubis@suse.cz
-Message-ID: <20130403114714.GB2002@rei>
-References: <5151E122.3090203@linux.vnet.ibm.com>
-	<20130326194718.GA11865@rei.suse.cz>
-	<51529266.2080906@linux.vnet.ibm.com>
-	<20130327102829.GB11865@rei.suse.cz>
-	<515C133C.6030803@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <515C133C.6030803@linux.vnet.ibm.com>
-Subject: Re: [LTP] syscalls/mount0* and inotify03 tests are getting skipped
- from runltp
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1US38H-0007hj-1k
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:29:01 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1US38G-0002RA-A0
+	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:29:01 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3GASsmA031399
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 06:28:54 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 16 Apr 2013 18:26:32 +0800
+Message-Id: <231291fe0dff5b700bdd3f3a01c9cb7c9a96f73a.1366107814.git.zliu@redhat.com>
+In-Reply-To: <4c3dabc00aa1d0ff3b4cf06b8b5004e39f76199c.1366107814.git.zliu@redhat.com>
+References: <cover.1366107814.git.zliu@redhat.com>
+	<4c3dabc00aa1d0ff3b4cf06b8b5004e39f76199c.1366107814.git.zliu@redhat.com>
+In-Reply-To: <cover.1366107814.git.zliu@redhat.com>
+References: <cover.1366107814.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v5 2/3] lib/mem: introduce a new function
+	set_global_mempolicy()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,113 +32,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ramesh <rameshyr@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> I would like to share a work around which I have tried to make the tests 
-> to run
-> by default when -b and -B arguments are not specified.Please share your 
-> thoughts
-> on this and also let me know if there is any disadvantage in using a 
-> loop device
-> as I have made use of it in my changes. Also, suggest me an alternate 
-> way to use
-> this work around if the changes in runltp is not a better idea.
+Fork out a new function set_global_mempolicy() from the
+previous testoom() func, which will be useful for other func.
 
+Tested-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/include/mem.h |  3 ++-
+ testcases/kernel/mem/lib/mem.c     | 13 +++++++++++--
+ testcases/kernel/mem/thp/thp04.c   |  2 +-
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
-The runltp script is considered a hack rather than proper solution but
-we don't have replacement yet, so we have to live with it as it is now.
-
-The patch looks realtively good. Comments bellow.
-
-> Here is the work around that I tried,
-> 
-> +++ runltp    2013-04-02 16:42:47.836836402 +0530
-> @@ -681,17 +681,43 @@ main()
-> 
->       if [ -n "$DEVICE" ]; then
->           sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
-> +         RC=$?
->       else
-> -        echo "remove test cases which require the block device."
-> -        echo "You can specify it with option -b"
-> -        sed -i "/DEVICE/d"  ${TMP}/alltests
-> +         #create a block device with ext4 filesystem.
-> +        dd if=/dev/zero of=${TMP}/test.img bs=1 count=10MB &>/dev/null
-
-If I'm not mistaken the bs=1 would make the whole process way too slow.
-
-Also I'm not sure if 10MB is enough for ext4.
-
-> +        if [ $? -ne 0 ]; then
-> +            echo "Please check for disk space and re-run"
-> +            exit 1
-> +        else
-> +            ##search for an unused loop dev
-> +            LOOP_DEV=$(losetup -f)
-> +            if [ $? -ne 0 ]; then
-> +                echo "no unused loop device is found"
-> +                exit 1
-
-There may be embeded systems without the loopback driver in kernel and
-we should work on these too. So rather than aborting here, we should
-disable the testcases in question.
-
-> +            else
-> +                ##attach the created file to loop dev.
-> +                losetup $LOOP_DEV ${TMP}/test.img &>/dev/null
-> +                if [ $? -ne 0 ]; then
-> +                     echo "losetup failed to create block device"
-> +                     exit 1
-> +                else
-> +                    ##format the block dev with ext4 filesystem.
-> +                    mkfs.ext4 $LOOP_DEV &>/dev/null
-> +                    #set the values in alltests which require block device.
-> +                     DEVICE=$LOOP_DEV
-> +                     DEVICE_FS_TYPE="ext4"
-> +                    sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
-> +                     RC=$?
-> +                fi
-> +            fi
-> +          fi
->       fi
-> 
-> -    if [ $? -ne 0 ]; then
-> +    if [ $RC -ne 0 ]; then
->               echo "FATAL: error during prcessing alltests file by sed"
->               exit 1
->       fi
-> -
-> +
->       if [ -n "$DEVICE" ]; then
->           mnt_pnt=`mktemp -d "${TMP}/mnt_pnt.XXXXXX"`
->           if [ -n "$DEVICE_FS_TYPE" ]; then
-> @@ -973,6 +999,8 @@ main()
-> 
->   cleanup()
->   {
-> +    [ -e "${TMP}/test.img" ] && rm -f ${TMP}/test.img
-> +    [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
->       rm -rf ${TMP}
->   }
-
-Also please send a signed patch in unified diff format next time (git
-can create these for your).
-
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index cc8b86c..c9e0540 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -39,7 +39,8 @@ void testoom(int mempolicy, int lite);
+ 
+ int opt_nr_children, opt_nr_thps;
+ char *opt_nr_children_str, *opt_nr_thps_str;
+-void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned);
++void test_transparent_hugepage(int nr_children, int nr_thps,
++			       int hg_aligned, int mempolicy);
+ void check_thp_options(int *nr_children, int *nr_thps);
+ void thp_usage(void);
+ 
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index fa5694a..f6aa351 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -91,7 +91,7 @@ void oom(int testcase, int lite)
+ 	}
+ }
+ 
+-void testoom(int mempolicy, int lite)
++static void set_global_mempolicy(int mempolicy)
+ {
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
+@@ -133,6 +133,11 @@ void testoom(int mempolicy, int lite)
+ 			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
+ 	}
+ #endif
++}
++
++void testoom(int mempolicy, int lite)
++{
++	set_global_mempolicy(mempolicy);
+ 
+ 	tst_resm(TINFO, "start normal OOM testing.");
+ 	oom(NORMAL, lite);
+@@ -613,12 +618,16 @@ static void verify_thp_size(int *children, int nr_children, int nr_thps)
+ 	}
+ }
+ 
+-void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned)
++void test_transparent_hugepage(int nr_children, int nr_thps,
++			       int hg_aligned, int mempolicy)
+ {
+ 	unsigned long hugepagesize, memfree;
+ 	int i, *pids, ret, status;
+ 	char path[BUFSIZ];
+ 
++	if (mempolicy)
++		set_global_mempolicy(mempolicy);
++
+ 	memfree = read_meminfo("MemFree:");
+ 	tst_resm(TINFO, "The current MemFree is %luMB", memfree / KB);
+ 	if (memfree < MB)
+diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+index 7988c8b..4232cf0 100644
+--- a/testcases/kernel/mem/thp/thp04.c
++++ b/testcases/kernel/mem/thp/thp04.c
+@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		test_transparent_hugepage(nr_children, nr_thps, 1);
++		test_transparent_hugepage(nr_children, nr_thps, 1, 0);
+ 	}
+ 
+ 	cleanup();
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
