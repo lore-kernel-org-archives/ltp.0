@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UUtaf-0002CY-Bf
-	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 06:54:05 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UUtad-0008Oh-AR
-	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 06:54:05 +0000
-Date: Wed, 24 Apr 2013 02:53:52 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1865305189.2143033.1366786432951.JavaMail.root@redhat.com>
-In-Reply-To: <201304231213.33013.vapier@gentoo.org>
-References: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
-	<201304231213.33013.vapier@gentoo.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lans.zhang2008@gmail.com>) id 1USORB-0002PG-A9
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 09:13:57 +0000
+Received: from mail-ie0-f173.google.com ([209.85.223.173])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1USOR8-00030W-1K
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 09:13:57 +0000
+Received: by mail-ie0-f173.google.com with SMTP id k5so1595607iea.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Apr 2013 02:13:48 -0700 (PDT)
+Message-ID: <516E68D0.205@gmail.com>
+Date: Wed, 17 Apr 2013 17:18:08 +0800
+From: Lans Zhang <lans.zhang2008@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
+References: <516E2E6C.2000408@gmail.com>
+	<849990288.1414874.1366184255066.JavaMail.root@redhat.com>
+	<516E5ED8.10909@gmail.com>
+	<1121191719.1741118.1366189004522.JavaMail.root@redhat.com>
+In-Reply-To: <1121191719.1741118.1366189004522.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH V2] Fix short of nodemask array.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,33 +33,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Zhouping Liu <zliu@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
+On 04/17/2013 04:56 PM, Zhouping Liu wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Lans Zhang"<lans.zhang2008@gmail.com>
+>> To: "Jan Stancek"<jstancek@redhat.com>
+>> Cc: "Zhouping Liu"<zliu@redhat.com>, "Wanlong Gao"<gaowanlong@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+>> Sent: Wednesday, April 17, 2013 4:35:36 PM
+>> Subject: Re: [LTP][PATCH V2] Fix short of nodemask array.
+>>
+>> On 04/17/2013 03:37 PM, Jan Stancek wrote:
+>>>
+>>>
+>>>
+>>>
+>>> ----- Original Message -----
+>>>> From: "Lans Zhang"<lans.zhang2008@gmail.com>
+>>>> To: "Zhouping Liu"<zliu@redhat.com>, "Jan Stancek"<jstancek@redhat.com>
+>>>> Cc: "Wanlong Gao"<gaowanlong@cn.fujitsu.com>,
+>>>> ltp-list@lists.sourceforge.net
+>>>> Sent: Wednesday, 17 April, 2013 7:09:00 AM
+>>>> Subject: [LTP][PATCH V2] Fix short of nodemask array.
+>>>>
+>>>> Changes since V1:
+>>>> 1. Enhance patch header.
+>>>> 2. Use BITS_PER_LONG and set_node() to simplify the logic.
+>>>>
+>>>> In kernel, if user specified more nodes, e.g, 512 nodes, than the
+>>>> supported, e.g, 4 nodes, kernel will check if the non supported
+>>>> part, e.g, 508 nodes, is all zeroed in node bitmap. Currently, we
+>>>> are overrunning "nmask", whose length is shorter than MAXNODES,
+>>>> and where the unsupported bits should be cleared to pass the check.
+>>>>
+>>>> Signed-off-by: Lans Zhang<lans.zhang2008@gmail.com>
+>>>
+>>> Hi,
+>>>
+>>> 'v' should be probably dropped here, since it's not used and rest
+>>> of patch uses 2 parameters anyway:
+>>>
+>>>> +static inline void set_node(unsigned long *array, unsigned int node,
+>>>> +                            unsigned int v)
+>>>> +{
+>>>> +	array[node / BITS_PER_LONG] |= 1UL<<   (node % BITS_PER_LONG);
+>>>> +}
+>>>>
+>>>
+>>> Other than that, it looks good to me.
+>>
+>> I will send a V3 if Zhouping Liu also gatekeep V2 except this minor
+>> change.
+>
+> I'm also fine for the rest.
+> just one reminder: commit 0b3419364 modified lib/mem.c, which caused conflicts
+> with your patch, please prepare a new patch based on the latest tree, in order
+> to push it easily for maintainer.
 
+NP. V3 will be based on the latest git tree.
 
------ Original Message -----
-> From: "Mike Frysinger" <vapier@gentoo.org>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Jan Stancek" <jstancek@redhat.com>
-> Sent: Tuesday, 23 April, 2013 6:13:31 PM
-> Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
-> 
-> On Tuesday 23 April 2013 04:17:15 Jan Stancek wrote:
-> > __NR_process_vm_readv / __NR_process_vm_writev defined doesn't
-> > guarantee, that kernel supports these syscalls. Add check to setup(),
-> > which uses ltp_syscall(). If syscall isn't supported it will
-> > end the testcase with TCONF.
-> 
-> delete all the "#else" branches since you're now using
-> linux_syscall_numbers.h
+Thanks,
+lz
 
-Without that check in parent, you can end up in situation where some child
-aborts first and then parent reports failure. By doing it early in setup() you can
-avoid allocating resources that won't go away when process later terminates with TCONF.
+>
 
-Regards,
-Jan
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
