@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UVyIG-0001rY-TY
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:07:33 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UVyIG-0002yJ-5m
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:07:32 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 27 Apr 2013 02:07:31 -0400
-References: <517A31DE.2050003@cn.fujitsu.com> <517A3282.2050809@cn.fujitsu.com>
-In-Reply-To: <517A3282.2050809@cn.fujitsu.com>
+	(envelope-from <sulfurfff@gmail.com>) id 1USW4j-0007nz-UB
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 17:23:17 +0000
+Received: from mail-wg0-f46.google.com ([74.125.82.46])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1USW4j-0002kO-5q
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 17:23:17 +0000
+Received: by mail-wg0-f46.google.com with SMTP id e11so1838205wgh.1
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Apr 2013 10:23:11 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <201304270207.32914.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/mount/mount02.c: modify array
-	"exp_enos"
+Date: Wed, 17 Apr 2013 12:23:10 -0500
+Message-ID: <CANXECd6HvF8LTCfkhjv_nn_gC1zgOJ_u_4401k_LptG9WUuzYA@mail.gmail.com>
+From: =?UTF-8?Q?Ismael_Farf=C3=A1n?= <sulfurfff@gmail.com>
+Subject: [LTP] Is running from a read-only path supported?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,74 +25,142 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5173541055121750746=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============5173541055121750746==
-Content-Type: multipart/signed; boundary="nextPart3989077.FBLQmvpZeE";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hello guys,
 
---nextPart3989077.FBLQmvpZeE
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+First of, thanks for your effort writing all this bunch of tests, It's
+really helpful.
 
-On Friday 26 April 2013 03:53:38 DAN LI wrote:
-> Expected errno setted in array "exp_enos" do not match
-> echo test item rightly, leading to two problems:
+We are running LTP to test the correct behavior of a FileSystem
+mounted in /mnt, however I installed ltp in /read/only/NFS/export/ltp.
 
-what is "echo test item" ?
--mike
+I've already changed ltprun [1] so that it writes the failed log in
+TMP (which should point to /mnt) instead of LTPBIN, but there are a
+bunch of tests creating files in "." instead of TMPDIR, and for what
+I've seen "." is actually LTPBIN for some tests which in our case is
+read-only.
 
---nextPart3989077.FBLQmvpZeE
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRe2skAAoJEEFjO5/oN/WBiLAQAJBUH/8ucudnGIb6R7hE5cEc
-OorSQcGKzm4aR57PESWle1c20/HEBN4tdgUaEibFq47Az+MSj7vHifna40MvU38V
-4h1sLUorz+ZVUWA3g7C3T4+73fMCEGWNsDVYu9z4BGexpYFf9vcHKuE40ru5tGPn
-NKDf3S1YHTuWoVcEg17p+QDqU4puc304PKhbSfXTPC3aqkzbpY5QwH0kMZHfa/dD
-3u/FnVpgvhYahNr7v1CT1SasuUE6+QEgVeI7yMwPMQxYOnD+1yofS/qbLVWG9xh4
-JPMhSPU1FYJMIKjGbUPm1WYgShzehWh25JIqNtdduJ4UH6Dx+Squ34bCvsubw/+2
-AdYKiFvEbPefqzKqbLhtgooOhH3z2IYf+3HECRlW+ntgktXBpK0Y5erFG2lSjnPF
-+02+fnU8prVyty7/HkJ7todClu2diB0xaHaxSWRhdPvSvb9T62yFTZNok21eapMA
-A0Rl0wzCopbyVaB+JICNrngviHJzf1rSWFvOhM/V3/7IHuh5ZPN7d53lLv8o8ffZ
-x+RXkQO1kG/WLiXClv5t6S50jIwMxZGoauYwy2Pv1itjxLtKrchgjjqQPKXYnQrq
-+T3eGrer89BBEBZSkhKCgxLahism7PMPrKfjtW8RGPje/1LD5VaPEACIgs+9uMp7
-zoilwLhP0IBm5s8e0ReB
-=JoqJ
------END PGP SIGNATURE-----
-
---nextPart3989077.FBLQmvpZeE--
+Also, I can't pass a base directory to run on to many of the tests,
+take [2] as example where I patched it to write to TMPDIR.
 
 
---===============5173541055121750746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Question:
+Is running form a read-only path supported?
+
+
+How can I make it create files only is /mnt instead of random places
+trough the LTPDIR and /tmp?
+
+
+Thanks
+
+
+
+
+[1]
+
+:~/ltp-full-20130109$ git diff runltp
+diff --git a/runltp b/runltp
+index 04cc690..8819548 100755
+--- a/runltp
++++ b/runltp
+@@ -740,7 +740,7 @@ main()
+     fi
+
+     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
+-    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES
+$DURATION -a $$ \
++    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES
+$DURATION -a ${TMP}.$$
+     -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE"
+     echo "COMMAND:    $PAN_COMMAND"
+     if [ ! -z "$TAG_RESTRICT_STRING" ] ; then
+@@ -833,7 +833,7 @@ main()
+        fi
+     # Some tests need to run inside the "bin" directory.
+     cd "${LTPROOT}/testcases/bin"
+-    "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION
+-a $$ -n $$ $PRETTY_PRT
++    "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION
+-a ${TMP}.$$ -n $$ $PRET
+
+     if [ $? -eq 0 ]; then
+       echo "INFO: ltp-pan reported all tests PASS"
+
+
+
+
+
+[2]
+
+:~/ltp-full-20130109$ git diff testcases/kernel/syscalls/dup/dup07.c
+diff --git a/testcases/kernel/syscalls/dup/dup07.c
+b/testcases/kernel/syscalls/dup/dup
+index c9ddaf0..008e154 100644
+--- a/testcases/kernel/syscalls/dup/dup07.c
++++ b/testcases/kernel/syscalls/dup/dup07.c
+@@ -48,7 +48,9 @@ int local_flag;
+ #define PASSED 1
+ #define FAILED 0
+
+-char testfile[40] = "";
++char testfile[240] = "";
++char *tmpdir = NULL;
++
+
+ /*--------------------------------------------------------------------*/
+ int main(int ac, char **av)
+@@ -63,6 +65,7 @@ int main(int ac, char **av)
+        int lc;
+        char *msg;
+
++
+        /*
+         * parse standard options
+         */
+@@ -71,11 +74,22 @@ int main(int ac, char **av)
+                tst_exit();
+        }
+
++       tmpdir = getenv("TMPDIR");
++       if (tmpdir == NULL){
++               printf("INFO: Couldn't get the environment variable TMPDIR the"
++                       "files will be created in the current directory\n");
++       }
++
+        local_flag = PASSED;
+
+        for (lc = 0; TEST_LOOPING(lc); lc++) {
+
+-               sprintf(testfile, "dup07.%d", getpid());
++               if (tmpdir == NULL) {
++                       sprintf(testfile, "dup07.%d", getpid());
++               } else {
++                       sprintf(testfile, "%s/dup07.%d", tmpdir, getpid());
++               }
++
+                if ((rdoret = creat(testfile, 0444)) == -1) {
+                        tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
+                        local_flag = FAILED;
+
+
+
+--
+Do not let me induce you to satisfy my curiosity, from an expectation,
+that I shall gratify yours. What I may judge proper to conceal, does
+not concern myself alone.
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
---===============5173541055121750746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5173541055121750746==--
-
