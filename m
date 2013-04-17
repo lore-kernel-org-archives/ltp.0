@@ -2,21 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UVBVH-0007KA-3W
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 02:01:43 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UVBVG-0000kP-5L
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 02:01:43 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 24 Apr 2013 22:01:29 -0400
-References: <5177684F.7060204@cn.fujitsu.com>
-	<201304241207.31644.vapier@gentoo.org>
-	<20130425011303.GB30114@us.ibm.com>
-In-Reply-To: <20130425011303.GB30114@us.ibm.com>
+	(envelope-from <lans.zhang2008@gmail.com>) id 1USIk0-0007K7-VA
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:09:01 +0000
+Received: from mail-ia0-f169.google.com ([209.85.210.169])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1USIjz-0006mO-BD
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:09:00 +0000
+Received: by mail-ia0-f169.google.com with SMTP id h23so1057503iae.0
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 16 Apr 2013 20:08:54 -0700 (PDT)
+Message-ID: <516E1347.7070007@gmail.com>
+Date: Wed, 17 Apr 2013 11:13:11 +0800
+From: Lans Zhang <lans.zhang2008@gmail.com>
 MIME-Version: 1.0
-Message-Id: <201304242201.31244.vapier@gentoo.org>
-Subject: Re: [LTP] question about a license
+References: <513427E9.3000807@gmail.com>
+	<414861962.834600.1366086893127.JavaMail.root@redhat.com>
+	<2046993339.742574.1366095518611.JavaMail.root@redhat.com>
+In-Reply-To: <2046993339.742574.1366095518611.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,118 +29,248 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0291047345290918814=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: James Takahashi <takahash@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, wboyer@us.ibm.com
-
---===============0291047345290918814==
-Content-Type: multipart/signed; boundary="nextPart8557961.JgqQgoh0UP";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart8557961.JgqQgoh0UP
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday 24 April 2013 21:13:04 James Takahashi wrote:
-> On Wed, 24 Apr 2013 12:07, Mike Frysinger <vapier@gentoo.org> wrote:
-> > On Wednesday 24 April 2013 05:32:56 chrubis@suse.cz wrote:
-> > > > When trying to cleanup syscalls/getitimer03.c, i meet a strange
-> > > > license. It says:
-> > > >=20
-> > > > *******************************************************************=
-**
-> > > >=20
-> > > > /*
-> > > >=20
-> > > >  * $Copyright: $
-> > > >  * Copyright (c) 1984-2000
-> > > >  * Sequent Computer Systems, Inc.   All rights reserved.
-> > > >  *$
-> > > >  * This software is furnished under a license and may be used
-> > > >  * only in accordance with the terms of that license and with the
-> > > >  * inclusion of the above copyright notice.   This software may not
-> > > >  * be provided or otherwise made available to, or used by, any
-> > > >  * other person.  No title to or ownership of the software is
-> > > >  * hereby transferred.
-> > > >  */
-> > > >=20
-> > > > *******************************************************************=
-**
-> > > >=20
-> > > > Here is my question,
-> > > > 1. Can i change this license to GPL2? or
-> > > > 2. Can i modify code of the case under this license?
-> > > >=20
-> > > > Could you please provide me any pointer/suggstion. :)
-> > >=20
-> > > Given that the testcases is a few lines that calls getitimer() with
-> > > invalid value, I would play safe and rewrite it from scratch.
-> > >=20
-> > > Anybody has different opinion?
-> >=20
-> > there are four such files:
-> > 	testcases/kernel/syscalls/getitimer/getitimer03.c
-> > 	testcases/kernel/syscalls/getresgid/getresgid01.c
-> > 	testcases/kernel/syscalls/nftw/Makefile
-> > 	testcases/kernel/syscalls/nftw/nftw64.h
-> >=20
-> > the Makefile has at least be rewritten enough that i think we can change
-> > things as the code has largely been written by Garrett Cooper now
-> >=20
-> > if we can't locate someone (Wayne Boyer?) for the tests, i suggest
-> > looking at what they test (just read the comment block), then delete the
-> > file and write a new test from scratch.
-> >=20
-> > the header file i think might be accidental as none of the nftw files
-> > look that way.  instead, they have the ibm copyright.  so i'd just
-> > change it to that. -mike
->=20
-> Wayne is still at IBM (Sequent was acquired by IBM).  I have CC'd him
-> on this thread.
->=20
-> If you'd elaborate on what sort of permission/assistance you need for
-> this copyright issue, I'm sure Wayne would be happy to cooperate.
-
-the code says Wayne wrote it.  if Wayne can confirm that, and if he can con=
-firm=20
-that we want to change the copyright to the standard ibm ones (found in man=
-y=20
-other files) and license it similarly.
-=2Dmike
-
---nextPart8557961.JgqQgoh0UP
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJReI57AAoJEEFjO5/oN/WByVEP/izx5gmxHuAPUhEnZ2Akf4cd
-41kzTt9ZeW7F0w6IsKx8d7CAuqDF4VvMKpNEuuk3in9qMT8wG/r24acxmk5I08WN
-ZN77fvW5lGhGhXYK9Z4hyUaAN+mDJEqrRnaqSzYrU5N7DFG2awgQjnwhIo2B+pK3
-Nywy6I9SGT2wBktiumOfV6LfNUmXzZMNPQJsAkwMJm/+NWIGJqCa8LBNDNInBrod
-i2eUy43AuLcap6WXuPCYhEsdrI/EV8sdzU6YfF6fqRMEhJ01bwPJwMN7ecslhz+F
-aqqNzSLdhGcV9lJNhrD/RZ2jGmFdXGZR1kQSnjejL5nGibosqQUQ7tiAFsJ/J9Ai
-Wv3nrnqnxbr9kVXaC23Td7FgYlmRqD2228Sp3rlFFVu1hSpSGcUI54k66jX6mro/
-1lNkHiL76yEEZp1DwslyJZyH/Zk0SuYeQ5l4/n/rGEo+pdcOGfu5Ey2cX60FbqE8
-mm7/EwLH6yP9OLBynNPt5Rb2M7e8hJ5IIDqb+W8rWQW/6W7Ja4Q0IeTUYWvgvBf/
-45/79ZsM808bwWf34pXqJ/kN8tk38l7KB/bugvuQ7qAl7yueCHavX+5idJOKMhYq
-uc1FN1Y3/tH7/uVO52dZkttdxG6uWVsOy9IpMfMFilwcZ+rsGtaQQaOEAn6tKoN8
-Iq4dqpJIlLD5uku1Tbu7
-=nNPc
------END PGP SIGNATURE-----
-
---nextPart8557961.JgqQgoh0UP--
-
-
---===============0291047345290918814==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On 04/16/2013 02:58 PM, Jan Stancek wrote:
+>
+>
+>
+>
+> ----- Original Message -----
+>> From: "Zhouping Liu"<zliu@redhat.com>
+>> To: "gmail"<lans.zhang2008@gmail.com>
+>> Cc: ltp-list@lists.sourceforge.net, "Wanlong Gao"<gaowanlong@cn.fujitsu.com>, "Jan Stancek"<jstancek@redhat.com>
+>> Sent: Tuesday, 16 April, 2013 6:34:53 AM
+>> Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
+>>
+>> Hi Lans,
+>>
+>> ----- Original Message -----
+>>> From: "gmail"<lans.zhang2008@gmail.com>
+>>> To: ltp-list@lists.sourceforge.net
+>>> Sent: Monday, March 4, 2013 12:49:45 PM
+>>> Subject: [LTP] [PATCH]  Fix short of nodemask array.
+>>>
+>>> In kernel, when the user specified more nodes, e.g, 512 nodes, than
+>>> supported, e.g, 4 nodes, just check if the non supported part is all
+>>> zero. If user space just specified the nodemask array with only one
+>>> element, which makes the check in kernel actually become invalid.
+>>
+>> I think the comments here is not clear, you should explain more details
+>> about the 'one element' or the reason why the checking in kernel will
+>> be invalid.
+>
+> I think what it says is that we are overrunning "nmask", whose length is
+> shorter than MAXNODES.
+
+Correct.
+
+>
+>>
+>>> In addition, some test cases in current implement doesn't consider
+>>> if a node number is greater than sizeof(unsigned long) * 8 - 1.
+>>
+>> yes, you are right, we don't care the system which has more than 512 numa
+>> nodes.
+>> and the current code only support 64 numa nodes, only one unsigned long node
+>> mask.
+>>
+>> I checked kernel code in RHEL6, CONFIG_NODES_SHIFT=9, so 512 is the biggest
+>> value to support in RHEL6 for x86_64, and I didn't meet any large NUMA system
+>> which have 512+ numa nodes so far.
+>>
+>>>
+>>> Signed-off-by: Lans Zhang<lans.zhang2008@gmail.com>
+>>> ---
+>>>    testcases/kernel/mem/cpuset/cpuset01.c |    6 +++---
+>>>    testcases/kernel/mem/ksm/ksm02.c       |    6 +++---
+>>>    testcases/kernel/mem/ksm/ksm04.c       |    6 +++---
+>>>    testcases/kernel/mem/lib/mem.c         |    6 +++---
+>>>    4 files changed, 12 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
+>>> b/testcases/kernel/mem/cpuset/cpuset01.c
+>>> index b473e45..e459306 100644
+>>> --- a/testcases/kernel/mem/cpuset/cpuset01.c
+>>> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
+>>> @@ -93,7 +93,7 @@ static void testcpuset(void)
+>>>    {
+>>>    	int lc;
+>>>    	int child, i, status;
+>>> -	unsigned long nmask = 0;
+>>> +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+>>>    	char mems[BUFSIZ], buf[BUFSIZ];
+>>>
+>>>    	read_cpuset_files(CPATH, "cpus", buf);
+>>> @@ -108,8 +108,8 @@ static void testcpuset(void)
+>>>    		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+>>>    	case 0:
+>>>    		for (i = 0; i<  nnodes; i++)
+>>> -			nmask += 1<<  nodes[i];
+>>> -		if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1)
+>>> +			nmask[i / (8*sizeof(unsigned long))] |= 1<<  (i % (8*sizeof(unsigned
+>>> long)));
+>>> +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
+>>>    			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
+>>>    		exit(mem_hog_cpuset(ncpus>  1 ? ncpus : 1));
+>>>    	}
+>>> diff --git a/testcases/kernel/mem/ksm/ksm02.c
+>>> b/testcases/kernel/mem/ksm/ksm02.c
+>>> index be9ff96..9d2d142 100644
+>>> --- a/testcases/kernel/mem/ksm/ksm02.c
+>>> +++ b/testcases/kernel/mem/ksm/ksm02.c
+>>> @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
+>>>    	int lc;
+>>>    	char *msg;
+>>>    	int size = 128, num = 3, unit = 1;
+>>> -	unsigned long nmask = 0;
+>>> +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+>>>    	unsigned int node;
+>>>
+>>>    	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
+>>> @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
+>>>    		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>>>
+>>>    	node = get_a_numa_node(tst_exit);
+>>> -	nmask = 1<<  node;
+>>> +	nmask[node / (8*sizeof(unsigned long))] = 1<<  (node % (8*sizeof(unsigned
+>>> long)));
+>>
+>> I found '1<<  (node % (8*sizeof(unsigned long)))' is used frequently, I
+>> suggest we
+>> can create a macro, such as:
+>> # define GET_NODE_MASK(nid) 1<<  (nid % (8*sizeof(unsigned long)))
+>
+> I agree, also 'nmask[i / (8*sizeof(unsigned long))]' is there often.
+> How about something like:
+>
+> #define bitsperlong (8 * sizeof(unsigned long))
+> void set_bit(unsigned long *b, unsigned int n, unsigned int v)
+> {
+>          if (v)
+>                  b[n / bitsperlong] |= 1UL<<  (n % bitsperlong);
+>          else
+>                  b[n / bitsperlong]&= ~(1UL<<  (n % bitsperlong));
+> }
+> set_bit(nmask, node, 1);
+
+Looks better. I will use this style in V2.
+
+Thanks,
+lz
+
+>
+> Regards,
+> Jan
+>
+>>
+>> also please update the patch, as there's some updates before your patch in
+>> lib/mem.c,
+>> which makes some conflict with the latest tree.
+>>
+>> Thanks,
+>> Zhouping
+>>
+>>>
+>>>    	setup();
+>>>
+>>> @@ -103,7 +103,7 @@ int main(int argc, char *argv[])
+>>>    		Tst_count = 0;
+>>>    		check_ksm_options(&size,&num,&unit);
+>>>
+>>> -		if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1) {
+>>> +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
+>>>    			if (errno != ENOSYS)
+>>>    				tst_brkm(TBROK | TERRNO, cleanup,
+>>>    					 "set_mempolicy");
+>>> diff --git a/testcases/kernel/mem/ksm/ksm04.c
+>>> b/testcases/kernel/mem/ksm/ksm04.c
+>>> index e4aa417..7829afd 100644
+>>> --- a/testcases/kernel/mem/ksm/ksm04.c
+>>> +++ b/testcases/kernel/mem/ksm/ksm04.c
+>>> @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
+>>>    	int lc;
+>>>    	char *msg;
+>>>    	int size = 128, num = 3, unit = 1;
+>>> -	unsigned long nmask = 0;
+>>> +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+>>>    	unsigned int node;
+>>>
+>>>    	msg = parse_opts(argc, argv, ksm_options, ksm_usage);
+>>> @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
+>>>    		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>>>
+>>>    	node = get_a_numa_node(tst_exit);
+>>> -	nmask = 1<<  node;
+>>> +	nmask[node / (8*sizeof(unsigned long))] = 1<<  (node % (8*sizeof(unsigned
+>>> long)));
+>>>
+>>>    	setup();
+>>>
+>>> @@ -105,7 +105,7 @@ int main(int argc, char *argv[])
+>>>
+>>>    		write_memcg();
+>>>
+>>> -		if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1) {
+>>> +		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
+>>>    			if (errno != ENOSYS)
+>>>    				tst_brkm(TBROK | TERRNO, cleanup,
+>>>    					 "set_mempolicy");
+>>> diff --git a/testcases/kernel/mem/lib/mem.c
+>>> b/testcases/kernel/mem/lib/mem.c
+>>> index f095fe1..abe29fd 100644
+>>> --- a/testcases/kernel/mem/lib/mem.c
+>>> +++ b/testcases/kernel/mem/lib/mem.c
+>>> @@ -66,12 +66,12 @@ void oom(int testcase, int mempolicy, int lite)
+>>>    	int status;
+>>>    #if HAVE_NUMA_H&&  HAVE_LINUX_MEMPOLICY_H&&  HAVE_NUMAIF_H \
+>>>    	&&  HAVE_MPOL_CONSTANTS
+>>> -	unsigned long nmask = 0;
+>>> +	unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
+>>>    	unsigned int node;
+>>>
+>>>    	if (mempolicy)
+>>>    		node = get_a_numa_node(cleanup);
+>>> -	nmask += 1<<  node;
+>>> +	nmask[node / (8*sizeof(unsigned long))] = 1<<  (node % (8*sizeof(unsigned
+>>> long)));
+>>>    #endif
+>>>
+>>>    	switch (pid = fork()) {
+>>> @@ -81,7 +81,7 @@ void oom(int testcase, int mempolicy, int lite)
+>>>    #if HAVE_NUMA_H&&  HAVE_LINUX_MEMPOLICY_H&&  HAVE_NUMAIF_H \
+>>>    	&&  HAVE_MPOL_CONSTANTS
+>>>    		if (mempolicy)
+>>> -			if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1)
+>>> +			if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
+>>>    				tst_brkm(TBROK | TERRNO, cleanup,
+>>>    					 "set_mempolicy");
+>>>    #endif
+>>> --
+>>> 1.7.8.110.g4cb5d
+>>>
+>>> ------------------------------------------------------------------------------
+>>> Minimize network downtime and maximize team effectiveness.
+>>> Reduce network management and security costs.Learn how to hire
+>>> the most talented Cisco Certified professionals. Visit the
+>>> Employer Resources Portal
+>>> http://www.cisco.com/web/learning/employer_resources/index.html
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>
+>>
+>> --
+>> Thanks,
+>> Zhouping
+>>
+>
+
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
@@ -145,16 +278,7 @@ New Relic is the only SaaS-based application performance monitoring service
 that delivers powerful full stack analytics. Optimize and monitor your
 browser, app, & servers with just a few lines of code. Try New Relic
 and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
---===============0291047345290918814==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0291047345290918814==--
-
