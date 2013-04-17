@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UVAqi-0005bR-Ol
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 01:19:48 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UVAqh-00063Y-8s
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 01:19:48 +0000
-Message-ID: <517884B4.7060500@cn.fujitsu.com>
-Date: Thu, 25 Apr 2013 09:19:48 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lans.zhang2008@gmail.com>) id 1USNm0-0000JI-RT
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 08:31:24 +0000
+Received: from mail-ie0-f171.google.com ([209.85.223.171])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1USNly-0007Hk-Hk
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 08:31:24 +0000
+Received: by mail-ie0-f171.google.com with SMTP id e11so1629097iej.30
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Apr 2013 01:31:17 -0700 (PDT)
+Message-ID: <516E5ED8.10909@gmail.com>
+Date: Wed, 17 Apr 2013 16:35:36 +0800
+From: Lans Zhang <lans.zhang2008@gmail.com>
 MIME-Version: 1.0
-References: <5177684F.7060204@cn.fujitsu.com> <20130424093255.GA5674@rei>
-	<201304241207.31644.vapier@gentoo.org>
-	<20130425011303.GB30114@us.ibm.com>
-In-Reply-To: <20130425011303.GB30114@us.ibm.com>
-Subject: Re: [LTP] question about a license
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <516E2E6C.2000408@gmail.com>
+	<849990288.1414874.1366184255066.JavaMail.root@redhat.com>
+In-Reply-To: <849990288.1414874.1366184255066.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH V2] Fix short of nodemask array.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,83 +31,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: James Takahashi <takahash@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, wboyer@us.ibm.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 04/25/2013 09:13 AM, James Takahashi wrote:
-> On Wed, 24 Apr 2013 12:07, Mike Frysinger <vapier@gentoo.org> wrote:
->> On Wednesday 24 April 2013 05:32:56 chrubis@suse.cz wrote:
->>>> When trying to cleanup syscalls/getitimer03.c, i meet a strange license.
->>>> It says:
->>>>
->>>> *********************************************************************
->>>>
->>>> /*
->>>>  * $Copyright: $
->>>>  * Copyright (c) 1984-2000
->>>>  * Sequent Computer Systems, Inc.   All rights reserved.
->>>>  *$
->>>>  * This software is furnished under a license and may be used
->>>>  * only in accordance with the terms of that license and with the
->>>>  * inclusion of the above copyright notice.   This software may not
->>>>  * be provided or otherwise made available to, or used by, any
->>>>  * other person.  No title to or ownership of the software is
->>>>  * hereby transferred.
->>>>  */
->>>>
->>>> *********************************************************************
->>>>
->>>> Here is my question,
->>>> 1. Can i change this license to GPL2? or
->>>> 2. Can i modify code of the case under this license?
->>>>
->>>> Could you please provide me any pointer/suggstion. :)
->>>
->>> Given that the testcases is a few lines that calls getitimer() with
->>> invalid value, I would play safe and rewrite it from scratch.
->>>
->>> Anybody has different opinion?
+On 04/17/2013 03:37 PM, Jan Stancek wrote:
+>
+>
+>
+>
+> ----- Original Message -----
+>> From: "Lans Zhang"<lans.zhang2008@gmail.com>
+>> To: "Zhouping Liu"<zliu@redhat.com>, "Jan Stancek"<jstancek@redhat.com>
+>> Cc: "Wanlong Gao"<gaowanlong@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+>> Sent: Wednesday, 17 April, 2013 7:09:00 AM
+>> Subject: [LTP][PATCH V2] Fix short of nodemask array.
 >>
->> there are four such files:
->> 	testcases/kernel/syscalls/getitimer/getitimer03.c
->> 	testcases/kernel/syscalls/getresgid/getresgid01.c
->> 	testcases/kernel/syscalls/nftw/Makefile
->> 	testcases/kernel/syscalls/nftw/nftw64.h
+>> Changes since V1:
+>> 1. Enhance patch header.
+>> 2. Use BITS_PER_LONG and set_node() to simplify the logic.
 >>
->> the Makefile has at least be rewritten enough that i think we can change things 
->> as the code has largely been written by Garrett Cooper now
+>> In kernel, if user specified more nodes, e.g, 512 nodes, than the
+>> supported, e.g, 4 nodes, kernel will check if the non supported
+>> part, e.g, 508 nodes, is all zeroed in node bitmap. Currently, we
+>> are overrunning "nmask", whose length is shorter than MAXNODES,
+>> and where the unsupported bits should be cleared to pass the check.
 >>
->> if we can't locate someone (Wayne Boyer?) for the tests, i suggest looking at 
->> what they test (just read the comment block), then delete the file and write a 
->> new test from scratch.
+>> Signed-off-by: Lans Zhang<lans.zhang2008@gmail.com>
+>
+> Hi,
+>
+> 'v' should be probably dropped here, since it's not used and rest
+> of patch uses 2 parameters anyway:
+>
+>> +static inline void set_node(unsigned long *array, unsigned int node,
+>> +                            unsigned int v)
+>> +{
+>> +	array[node / BITS_PER_LONG] |= 1UL<<  (node % BITS_PER_LONG);
+>> +}
 >>
->> the header file i think might be accidental as none of the nftw files look that 
->> way.  instead, they have the ibm copyright.  so i'd just change it to that.
->> -mike
-> 
-> Wayne is still at IBM (Sequent was acquired by IBM).  I have CC'd him
-> on this thread.
-> 
-> If you'd elaborate on what sort of permission/assistance you need for
-> this copyright issue, I'm sure Wayne would be happy to cooperate.
+>
+> Other than that, it looks good to me.
 
-Thank you very much James. ;)
+I will send a V3 if Zhouping Liu also gatekeep V2 except this minor
+change.
 
-Regards,
-Wanlong Gao
+Thanks,
+lz
 
-> 
-> ------------------------------------------------------------------------------
-> Try New Relic Now & We'll Send You this Cool Shirt
-> New Relic is the only SaaS-based application performance monitoring service 
-> that delivers powerful full stack analytics. Optimize and monitor your
-> browser, app, & servers with just a few lines of code. Try New Relic
-> and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+>
+> Regards,
+> Jan
+>
 
 
 ------------------------------------------------------------------------------
