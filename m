@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1US38B-0005lv-9S
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:28:55 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1US38A-0001Cc-5Q
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:28:55 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3GASm4f019799
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 06:28:48 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Tue, 16 Apr 2013 18:26:30 +0800
-Message-Id: <cover.1366107814.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v5 0/3] mm/thp: add two new case
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1USWmB-0005LE-Q0
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 18:08:11 +0000
+Date: Wed, 17 Apr 2013 20:09:01 +0200
+From: chrubis@suse.cz
+Message-ID: <20130417180901.GA30553@rei>
+References: <CANXECd6HvF8LTCfkhjv_nn_gC1zgOJ_u_4401k_LptG9WUuzYA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CANXECd6HvF8LTCfkhjv_nn_gC1zgOJ_u_4401k_LptG9WUuzYA@mail.gmail.com>
+Subject: Re: [LTP] Is running from a read-only path supported?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,58 +21,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Ismael Farf??n <sulfurfff@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The patchset is desinged to test THP functionality.
+Hi!
+> First of, thanks for your effort writing all this bunch of tests, It's
+> really helpful.
+> 
+> We are running LTP to test the correct behavior of a FileSystem
+> mounted in /mnt, however I installed ltp in /read/only/NFS/export/ltp.
+> 
+> I've already changed ltprun [1] so that it writes the failed log in
+> TMP (which should point to /mnt) instead of LTPBIN, but there are a
+> bunch of tests creating files in "." instead of TMPDIR, and for what
+> I've seen "." is actually LTPBIN for some tests which in our case is
+> read-only.
 
-when one process allocate hugepage aligned anonymous pages,
-kernel thread 'khugepaged' controlled by sysfs knobs
-/sys/kernel/mm/transparent_hugepage/* will scan them, and make
-them as transparent hugepage if they are suited, you can find out
-how many transparent hugepages are there in one process from
-/proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-stand for transparent hugepage.
+Such tests are buggy and needs to be fixed.
 
-v1 to v2:
-accepted Wanlong's suggestion, added some comment for '10s'
-added 'static' key word for single-file-only variant.
+Just send a patch against latest git with Signed-off-by line and I will
+apply it right away.
 
-v2 to v3:
-added some comments for low memory system.
+> Also, I can't pass a base directory to run on to many of the tests,
+> take [2] as example where I patched it to write to TMPDIR.
 
-v3 to v4:
-Wanglong point out that the value of khugepaged/defrag is string type,
-not a numeric before applying the commit e27e6151b154 in v2.6.39-rc4,
-and I checked the code again, found the current cases thp0* don't be
-effected by khugepaged/defrag, so I removed the checking of
-khugepaged/defrag from khugepaged_scan_done().
+We have a interface that automatically setups temporary directory for
+the test. All that is needed is that the test calls tst_tmpdir() at the
+start and tst_rmdir() at the end and, if needed, in the cleanup().
 
-v4 to v5:
- 1. made some cleaup
- 2. updated 10s to 5s for each checking in khugepaged_scan_done()
- 3. used SAFE_FILE_SCANF|PRINTF() instead of write_file()
-
-Zhouping Liu (3):
-  mm/thp: new case thp04.c
-  lib/mem: introduce a new function set_global_mempolicy()
-  mm/thp: add new case thp05
-
- runtest/mm                         |   6 ++
- testcases/kernel/mem/include/mem.h |  12 +++
- testcases/kernel/mem/lib/mem.c     | 199 ++++++++++++++++++++++++++++++++++++-
- testcases/kernel/mem/thp/thp04.c   | 142 ++++++++++++++++++++++++++
- testcases/kernel/mem/thp/thp05.c   | 155 +++++++++++++++++++++++++++++
- 5 files changed, 513 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/mem/thp/thp04.c
- create mode 100644 testcases/kernel/mem/thp/thp05.c
+See include/test.h for details.
 
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
