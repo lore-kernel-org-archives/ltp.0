@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lans.zhang2008@gmail.com>) id 1USORB-0002PG-A9
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 09:13:57 +0000
-Received: from mail-ie0-f173.google.com ([209.85.223.173])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1USOR8-00030W-1K
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 09:13:57 +0000
-Received: by mail-ie0-f173.google.com with SMTP id k5so1595607iea.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Apr 2013 02:13:48 -0700 (PDT)
-Message-ID: <516E68D0.205@gmail.com>
-Date: Wed, 17 Apr 2013 17:18:08 +0800
-From: Lans Zhang <lans.zhang2008@gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1USJQ6-0004r2-Mk
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:52:30 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1USJQ4-0002ZD-Ke
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:52:30 +0000
+Date: Tue, 16 Apr 2013 23:52:14 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <580855074.1538065.1366170734748.JavaMail.root@redhat.com>
+In-Reply-To: <516E1673.6090902@cn.fujitsu.com>
+References: <cover.1366122425.git.zliu@redhat.com>
+	<516E1673.6090902@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <516E2E6C.2000408@gmail.com>
-	<849990288.1414874.1366184255066.JavaMail.root@redhat.com>
-	<516E5ED8.10909@gmail.com>
-	<1121191719.1741118.1366189004522.JavaMail.root@redhat.com>
-In-Reply-To: <1121191719.1741118.1366189004522.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH V2] Fix short of nodemask array.
+Subject: Re: [LTP] [PATCH v5 0/3] mm/thp: add two new case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,80 +28,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/17/2013 04:56 PM, Zhouping Liu wrote:
->
->
-> ----- Original Message -----
->> From: "Lans Zhang"<lans.zhang2008@gmail.com>
->> To: "Jan Stancek"<jstancek@redhat.com>
->> Cc: "Zhouping Liu"<zliu@redhat.com>, "Wanlong Gao"<gaowanlong@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
->> Sent: Wednesday, April 17, 2013 4:35:36 PM
->> Subject: Re: [LTP][PATCH V2] Fix short of nodemask array.
->>
->> On 04/17/2013 03:37 PM, Jan Stancek wrote:
->>>
->>>
->>>
->>>
->>> ----- Original Message -----
->>>> From: "Lans Zhang"<lans.zhang2008@gmail.com>
->>>> To: "Zhouping Liu"<zliu@redhat.com>, "Jan Stancek"<jstancek@redhat.com>
->>>> Cc: "Wanlong Gao"<gaowanlong@cn.fujitsu.com>,
->>>> ltp-list@lists.sourceforge.net
->>>> Sent: Wednesday, 17 April, 2013 7:09:00 AM
->>>> Subject: [LTP][PATCH V2] Fix short of nodemask array.
->>>>
->>>> Changes since V1:
->>>> 1. Enhance patch header.
->>>> 2. Use BITS_PER_LONG and set_node() to simplify the logic.
->>>>
->>>> In kernel, if user specified more nodes, e.g, 512 nodes, than the
->>>> supported, e.g, 4 nodes, kernel will check if the non supported
->>>> part, e.g, 508 nodes, is all zeroed in node bitmap. Currently, we
->>>> are overrunning "nmask", whose length is shorter than MAXNODES,
->>>> and where the unsupported bits should be cleared to pass the check.
->>>>
->>>> Signed-off-by: Lans Zhang<lans.zhang2008@gmail.com>
->>>
->>> Hi,
->>>
->>> 'v' should be probably dropped here, since it's not used and rest
->>> of patch uses 2 parameters anyway:
->>>
->>>> +static inline void set_node(unsigned long *array, unsigned int node,
->>>> +                            unsigned int v)
->>>> +{
->>>> +	array[node / BITS_PER_LONG] |= 1UL<<   (node % BITS_PER_LONG);
->>>> +}
->>>>
->>>
->>> Other than that, it looks good to me.
->>
->> I will send a V3 if Zhouping Liu also gatekeep V2 except this minor
->> change.
->
-> I'm also fine for the rest.
-> just one reminder: commit 0b3419364 modified lib/mem.c, which caused conflicts
-> with your patch, please prepare a new patch based on the latest tree, in order
-> to push it easily for maintainer.
 
-NP. V3 will be based on the latest git tree.
 
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, April 17, 2013 11:26:43 AM
+> Subject: Re: [LTP] [PATCH v5 0/3] mm/thp: add two new case
+> 
+> On 04/16/2013 10:30 PM, Zhouping Liu wrote:
+> > The patchset is desinged to test THP functionality.
+> > 
+> > when one process allocate hugepage aligned anonymous pages,
+> > kernel thread 'khugepaged' controlled by sysfs knobs
+> > /sys/kernel/mm/transparent_hugepage/* will scan them, and make
+> > them as transparent hugepage if they are suited, you can find out
+> > how many transparent hugepages are there in one process from
+> > /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
+> > stand for transparent hugepage.
+> > 
+> > v1 to v2:
+> > accepted Wanlong's suggestion, added some comment for '10s'
+> > added 'static' key word for single-file-only variant.
+> > 
+> > v2 to v3:
+> > added some comments for low memory system.
+> > 
+> > v3 to v4:
+> > Wanglong point out that the value of khugepaged/defrag is string type,
+> > not a numeric before applying the commit e27e6151b154 in v2.6.39-rc4,
+> > and I checked the code again, found the current cases thp0* don't be
+> > effected by khugepaged/defrag, so I removed the checking of
+> > khugepaged/defrag from khugepaged_scan_done().
+> > 
+> > v4 to v5:
+> >  1. made some cleaup
+> >  2. updated 10s to 5s for each checking in khugepaged_scan_done()
+> >  3. used SAFE_FILE_SCANF|PRINTF() instead of write_file()
+> > 
+> > v5 to v6:
+> > made a little cleanup.
+> 
+> Applied this V6, thank you.
+> 
+> You may use the wrong --subject-prefix
+
+yeah, thanks for your friendly correcting, I used the history command :(
+
+-- 
 Thanks,
-lz
-
->
-
+Zhouping
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
