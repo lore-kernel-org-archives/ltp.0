@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sulfurfff@gmail.com>) id 1USW4j-0007nz-UB
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 17:23:17 +0000
-Received: from mail-wg0-f46.google.com ([74.125.82.46])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1USW4j-0002kO-5q
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 17:23:17 +0000
-Received: by mail-wg0-f46.google.com with SMTP id e11so1838205wgh.1
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Apr 2013 10:23:11 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1USJ0r-0003mY-1z
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:26:25 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1USJ0p-0000Tt-Jo
+	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:26:25 +0000
+Message-ID: <516E1673.6090902@cn.fujitsu.com>
+Date: Wed, 17 Apr 2013 11:26:43 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Wed, 17 Apr 2013 12:23:10 -0500
-Message-ID: <CANXECd6HvF8LTCfkhjv_nn_gC1zgOJ_u_4401k_LptG9WUuzYA@mail.gmail.com>
-From: =?UTF-8?Q?Ismael_Farf=C3=A1n?= <sulfurfff@gmail.com>
-Subject: [LTP] Is running from a read-only path supported?
+References: <cover.1366122425.git.zliu@redhat.com>
+In-Reply-To: <cover.1366122425.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v5 0/3] mm/thp: add two new case
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,131 +28,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hello guys,
+On 04/16/2013 10:30 PM, Zhouping Liu wrote:
+> The patchset is desinged to test THP functionality.
+> 
+> when one process allocate hugepage aligned anonymous pages,
+> kernel thread 'khugepaged' controlled by sysfs knobs
+> /sys/kernel/mm/transparent_hugepage/* will scan them, and make
+> them as transparent hugepage if they are suited, you can find out
+> how many transparent hugepages are there in one process from
+> /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
+> stand for transparent hugepage.
+> 
+> v1 to v2:
+> accepted Wanlong's suggestion, added some comment for '10s'
+> added 'static' key word for single-file-only variant.
+> 
+> v2 to v3:
+> added some comments for low memory system.
+> 
+> v3 to v4:
+> Wanglong point out that the value of khugepaged/defrag is string type,
+> not a numeric before applying the commit e27e6151b154 in v2.6.39-rc4,
+> and I checked the code again, found the current cases thp0* don't be
+> effected by khugepaged/defrag, so I removed the checking of
+> khugepaged/defrag from khugepaged_scan_done().
+> 
+> v4 to v5:
+>  1. made some cleaup
+>  2. updated 10s to 5s for each checking in khugepaged_scan_done()
+>  3. used SAFE_FILE_SCANF|PRINTF() instead of write_file()
+> 
+> v5 to v6:
+> made a little cleanup.
 
-First of, thanks for your effort writing all this bunch of tests, It's
-really helpful.
+Applied this V6, thank you.
 
-We are running LTP to test the correct behavior of a FileSystem
-mounted in /mnt, however I installed ltp in /read/only/NFS/export/ltp.
+You may use the wrong --subject-prefix
 
-I've already changed ltprun [1] so that it writes the failed log in
-TMP (which should point to /mnt) instead of LTPBIN, but there are a
-bunch of tests creating files in "." instead of TMPDIR, and for what
-I've seen "." is actually LTPBIN for some tests which in our case is
-read-only.
+Wanlong Gao
 
-Also, I can't pass a base directory to run on to many of the tests,
-take [2] as example where I patched it to write to TMPDIR.
+> 
+> Zhouping Liu (3):
+>   mm/thp: new case thp04.c
+>   lib/mem: introduce a new function set_global_mempolicy()
+>   mm/thp: add new case thp05
+> 
+>  runtest/mm                         |   6 ++
+>  testcases/kernel/mem/include/mem.h |  12 +++
+>  testcases/kernel/mem/lib/mem.c     | 199 ++++++++++++++++++++++++++++++++++++-
+>  testcases/kernel/mem/thp/thp04.c   | 142 ++++++++++++++++++++++++++
+>  testcases/kernel/mem/thp/thp05.c   | 153 ++++++++++++++++++++++++++++
+>  5 files changed, 511 insertions(+), 1 deletion(-)
+>  create mode 100644 testcases/kernel/mem/thp/thp04.c
+>  create mode 100644 testcases/kernel/mem/thp/thp05.c
+> 
 
-
-Question:
-Is running form a read-only path supported?
-
-
-How can I make it create files only is /mnt instead of random places
-trough the LTPDIR and /tmp?
-
-
-Thanks
-
-
-
-
-[1]
-
-:~/ltp-full-20130109$ git diff runltp
-diff --git a/runltp b/runltp
-index 04cc690..8819548 100755
---- a/runltp
-+++ b/runltp
-@@ -740,7 +740,7 @@ main()
-     fi
-
-     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
--    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES
-$DURATION -a $$ \
-+    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES
-$DURATION -a ${TMP}.$$
-     -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE"
-     echo "COMMAND:    $PAN_COMMAND"
-     if [ ! -z "$TAG_RESTRICT_STRING" ] ; then
-@@ -833,7 +833,7 @@ main()
-        fi
-     # Some tests need to run inside the "bin" directory.
-     cd "${LTPROOT}/testcases/bin"
--    "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION
--a $$ -n $$ $PRETTY_PRT
-+    "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION
--a ${TMP}.$$ -n $$ $PRET
-
-     if [ $? -eq 0 ]; then
-       echo "INFO: ltp-pan reported all tests PASS"
-
-
-
-
-
-[2]
-
-:~/ltp-full-20130109$ git diff testcases/kernel/syscalls/dup/dup07.c
-diff --git a/testcases/kernel/syscalls/dup/dup07.c
-b/testcases/kernel/syscalls/dup/dup
-index c9ddaf0..008e154 100644
---- a/testcases/kernel/syscalls/dup/dup07.c
-+++ b/testcases/kernel/syscalls/dup/dup07.c
-@@ -48,7 +48,9 @@ int local_flag;
- #define PASSED 1
- #define FAILED 0
-
--char testfile[40] = "";
-+char testfile[240] = "";
-+char *tmpdir = NULL;
-+
-
- /*--------------------------------------------------------------------*/
- int main(int ac, char **av)
-@@ -63,6 +65,7 @@ int main(int ac, char **av)
-        int lc;
-        char *msg;
-
-+
-        /*
-         * parse standard options
-         */
-@@ -71,11 +74,22 @@ int main(int ac, char **av)
-                tst_exit();
-        }
-
-+       tmpdir = getenv("TMPDIR");
-+       if (tmpdir == NULL){
-+               printf("INFO: Couldn't get the environment variable TMPDIR the"
-+                       "files will be created in the current directory\n");
-+       }
-+
-        local_flag = PASSED;
-
-        for (lc = 0; TEST_LOOPING(lc); lc++) {
-
--               sprintf(testfile, "dup07.%d", getpid());
-+               if (tmpdir == NULL) {
-+                       sprintf(testfile, "dup07.%d", getpid());
-+               } else {
-+                       sprintf(testfile, "%s/dup07.%d", tmpdir, getpid());
-+               }
-+
-                if ((rdoret = creat(testfile, 0444)) == -1) {
-                        tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
-                        local_flag = FAILED;
-
-
-
---
-Do not let me induce you to satisfy my curiosity, from an expectation,
-that I shall gratify yours. What I may judge proper to conceal, does
-not concern myself alone.
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
