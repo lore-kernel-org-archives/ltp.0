@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1URjNj-0007QX-Qb
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 13:23:39 +0000
-Date: Mon, 15 Apr 2013 15:24:21 +0200
-From: chrubis@suse.cz
-Message-ID: <20130415132421.GE1091@rei>
-References: <515EA506.8060305@linux.vnet.ibm.com>
-	<51621625.6000507@cn.fujitsu.com>
-	<5163BCCC.90909@linux.vnet.ibm.com>
-	<516B70F5.8080100@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1USh6K-0004hM-E8
+	for ltp-list@lists.sourceforge.net; Thu, 18 Apr 2013 05:09:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1USh6I-0001oH-9e
+	for ltp-list@lists.sourceforge.net; Thu, 18 Apr 2013 05:09:40 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3I59Ufh029794
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Apr 2013 13:09:31 +0800
+Message-ID: <516F7F88.30707@cn.fujitsu.com>
+Date: Thu, 18 Apr 2013 13:07:20 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <516B70F5.8080100@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
- getting skipped from runltp's execution
+Subject: [LTP] [PATCH]syscalls/adjtimex: Test for mode ADJ_OFFSET_SINGLESHOT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,26 +28,174 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Ramesh <rameshyr@linux.vnet.ibm.com>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > Signed-off-by: Ramesh YR <rameshyr@linux.vnet.ibm.com>
-> 
-> Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> 
-> 
-> Any other objections?
 
-The patch logic looks fine.
+Additional test for mode ADJ_OFFSET_SINGLESHOT.
 
-The only thing that doesn't look 100% right are the overly long lines
-(which could be fixed by splitting the messages and print each sentence
- with it's own echo).
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/adjtimex/adjtimex01.c | 107 +++++++++---------------
+ 1 file changed, 38 insertions(+), 69 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+index 000a979..f55f33b 100644
+--- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
++++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+@@ -12,57 +12,18 @@
+  * You should have received a copy of the GNU General Public License along
+  * with this program; if not, write the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER	: adjtimex01
+- *
+- *    EXECUTED BY	: root / superuser
+- *
+- *    TEST TITLE	: Basic test for adjtimex(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	This is a Phase I test for the adjtimex(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *	  Save current parameters in tim_save
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  call adjtimex with saved timex structure
+- *	  Check return value is between 0 & 5
+- *		Test passed
+- *	  Otherwise
+- *		Test failed
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * adjtimex01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
+- *
+- ****************************************************************/
++
++/*
++  AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
++  EXECUTED BY: root / superuser
++
++  TEST ITEMS:
++   1. Check to see if adjtimex succeed with mode combination :
++      ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR |
++      ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK
++   2. Check to see if adjtimex succeed with mode ADJ_OFFSET_SINGLESHOT
++*/
+
+ #if defined UCLINUX && !__THROW
+ /* workaround for libc bug causing failure in sys/timex.h */
+@@ -74,20 +35,19 @@
+ #include "test.h"
+ #include "usctest.h"
+
+-#define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
+-	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
++#define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
++	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
+
+-static void setup();
+-static void cleanup();
++static void setup(void);
++static void cleanup(void);
+
+ char *TCID = "adjtimex01";
+-int TST_TOTAL = 1;
++int TST_TOTAL = 2;
+
+ static struct timex tim_save;
+
+ int main(int ac, char **av)
+ {
+-
+ 	int lc;
+ 	char *msg;
+
+@@ -106,7 +66,26 @@ int main(int ac, char **av)
+ 		TEST(adjtimex(&tim_save));
+
+ 		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
+-			tst_resm(TPASS, "adjtimex() returned %ld", TEST_RETURN);
++			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
++				 SET_MODE, TEST_RETURN);
++		} else {
++			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
++				 "returned %ld", TEST_RETURN);
++		}
++	}
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
++
++		/* Call adjtimex(2) */
++		tim_save.modes = ADJ_OFFSET_SINGLESHOT;
++
++		TEST(adjtimex(&tim_save));
++
++		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
++			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
++				 ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
+ 		} else {
+ 			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
+ 				 "returned %ld", TEST_RETURN);
+@@ -118,10 +97,8 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup()
++static void setup(void)
+ {
+-
+ 	tst_require_root(NULL);
+
+ 	tim_save.modes = 0;
+@@ -136,15 +113,7 @@ void setup()
+ 			 "failed to save current parameters");
+ }
+
+-/*
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup()
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
