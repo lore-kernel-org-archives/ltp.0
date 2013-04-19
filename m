@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UV24P-0005J0-PQ
-	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 15:57:21 +0000
-Date: Wed, 24 Apr 2013 17:58:11 +0200
-From: chrubis@suse.cz
-Message-ID: <20130424155811.GA12406@rei.suse.cz>
-References: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
-	<201304231213.33013.vapier@gentoo.org>
-	<1865305189.2143033.1366786432951.JavaMail.root@redhat.com>
-	<201304241152.47110.vapier@gentoo.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UT261-0006lR-HJ
+	for ltp-list@lists.sourceforge.net; Fri, 19 Apr 2013 03:34:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UT25x-0005tx-VU
+	for ltp-list@lists.sourceforge.net; Fri, 19 Apr 2013 03:34:45 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3J3YYMk015777
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Apr 2013 11:34:34 +0800
+Message-ID: <5170BAC7.1010202@cn.fujitsu.com>
+Date: Fri, 19 Apr 2013 11:32:23 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201304241152.47110.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
+Subject: [LTP]  [PATCH]syscalls/adjtimex01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,38 +28,151 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > > delete all the "#else" branches since you're now using
-> > > linux_syscall_numbers.h
-> > 
-> > Without that check in parent, you can end up in situation where some child
-> > aborts first and then parent reports failure. By doing it early in setup()
-> > you can avoid allocating resources that won't go away when process later
-> > terminates with TCONF.
-> 
-> by including linux_syscall_numbers.h, you've guaranteed that 
-> __NR_process_vm_readv will always be defined, thus the code under "#ifndef 
-> __NR_process_vm_readv" will never be run, thus you should delete it.
 
-Not until these are added to at least one of the in files and
-linux_syscall_numbers.h are regenerated.
+cleanup for syscalls/adjtimex01.c
 
-Which is why we started to fiddle with the kernel/include directory in
-the first place.
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/adjtimex/adjtimex01.c | 84 +++++--------------------
+ 1 file changed, 17 insertions(+), 67 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+index 000a979..b995e8e 100644
+--- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
++++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+@@ -12,57 +12,18 @@
+  * You should have received a copy of the GNU General Public License along
+  * with this program; if not, write the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER	: adjtimex01
+- *
+- *    EXECUTED BY	: root / superuser
+- *
+- *    TEST TITLE	: Basic test for adjtimex(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	This is a Phase I test for the adjtimex(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *	  Save current parameters in tim_save
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  call adjtimex with saved timex structure
+- *	  Check return value is between 0 & 5
+- *		Test passed
+- *	  Otherwise
+- *		Test failed
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * adjtimex01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
+- *
+- ****************************************************************/
++
++/*
++  AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
++  EXECUTED BY: root / superuser
++
++  TEST ITEMS:
++   1. Check to see if adjtimex succeed with mode combination :
++      ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR |
++      ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK
++   2. Check to see if adjtimex succeed with mode ADJ_OFFSET_SINGLESHOT
++*/
+
+ #if defined UCLINUX && !__THROW
+ /* workaround for libc bug causing failure in sys/timex.h */
+@@ -74,11 +35,11 @@
+ #include "test.h"
+ #include "usctest.h"
+
+-#define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
+-	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
++#define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
++	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
+
+-static void setup();
+-static void cleanup();
++static void setup(void);
++static void cleanup(void);
+
+ char *TCID = "adjtimex01";
+ int TST_TOTAL = 1;
+@@ -87,7 +48,6 @@ static struct timex tim_save;
+
+ int main(int ac, char **av)
+ {
+-
+ 	int lc;
+ 	char *msg;
+
+@@ -118,10 +78,8 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup()
++static void setup(void)
+ {
+-
+ 	tst_require_root(NULL);
+
+ 	tim_save.modes = 0;
+@@ -136,15 +94,7 @@ void setup()
+ 			 "failed to save current parameters");
+ }
+
+-/*
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup()
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
