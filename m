@@ -1,17 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UUw6z-0004hP-Su
-	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 09:35:37 +0000
-Date: Wed, 24 Apr 2013 11:36:32 +0200
-From: chrubis@suse.cz
-Message-ID: <20130424093631.GB5674@rei>
-References: <5177866B.8040606@cn.fujitsu.com> <51778C84.1050500@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UU6Hz-0005Dz-O4
+	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 02:15:31 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UU6Hx-0005Tk-77
+	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 02:15:31 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3M2FL7n021224
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Apr 2013 10:15:22 +0800
+Message-ID: <51749D4A.9030305@cn.fujitsu.com>
+Date: Mon, 22 Apr 2013 10:15:38 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51778C84.1050500@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] syscalls/getitimer: cleanup
+References: <5170BAC7.1010202@cn.fujitsu.com> <5170BBCE.3090503@cn.fujitsu.com>
+In-Reply-To: <5170BBCE.3090503@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH]syscalls/adjtimex01.c: Test for mode
+	ADJ_OFFSET_SINGLESHOT
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,38 +32,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > -		/* reset tst_count in case we are looping */
-> >  		tst_count = 0;
-> > 
-> >  		/* allocate space for the itimerval structure */
-> > -
-> > -		if ((value = (struct itimerval *)malloc((size_t)
-> > -							sizeof(struct
-> > -							       itimerval))) ==
-> > -		    NULL) {
-> > +		value = (struct itimerval *)malloc(
-> > +					(size_t)sizeof(struct itimerval));
+On 04/19/2013 11:36 AM, DAN LI wrote:
 > 
-> The type cast here is not necessary, right?
+> Additional test for mode ADJ_OFFSET_SINGLESHOT.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-The itimerval structure is about 32 bytes long. I would just declare it 
-on the stack and pass &value to the call.
+Applied, thank you.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Wanlong Gao
+
+> ---
+>  testcases/kernel/syscalls/adjtimex/adjtimex01.c | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+> index b995e8e..d16a5f3 100644
+> --- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+> +++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
+> @@ -42,7 +42,7 @@ static void setup(void);
+>  static void cleanup(void);
+> 
+>  char *TCID = "adjtimex01";
+> -int TST_TOTAL = 1;
+> +int TST_TOTAL = 2;
+> 
+>  static struct timex tim_save;
+> 
+> @@ -66,10 +66,26 @@ int main(int ac, char **av)
+>  		TEST(adjtimex(&tim_save));
+> 
+>  		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
+> -			tst_resm(TPASS, "adjtimex() returned %ld", TEST_RETURN);
+> +			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
+> +				 SET_MODE, TEST_RETURN);
+>  		} else {
+> -			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
+> -				 "returned %ld", TEST_RETURN);
+> +			tst_resm(TFAIL | TTERRNO,
+> +				"Test Failed, adjtimex() with mode %u "
+> +				"returned %ld", SET_MODE, TEST_RETURN);
+> +		}
+> +
+> +		/* Call adjtimex(2) */
+> +		tim_save.modes = ADJ_OFFSET_SINGLESHOT;
+> +
+> +		TEST(adjtimex(&tim_save));
+> +
+> +		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
+> +			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
+> +				 ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
+> +		} else {
+> +			tst_resm(TFAIL | TTERRNO,
+> +				"Test Failed, adjtimex() with mode %u returned "
+> +				"%ld", ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
+>  		}
+>  	}
+> 
+
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
