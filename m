@@ -2,17 +2,40 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1US3vl-0005s1-1x
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 11:20:09 +0000
-Date: Tue, 16 Apr 2013 13:20:56 +0200
-From: chrubis@suse.cz
-Message-ID: <20130416112055.GA17493@rei>
-References: <shuang.qiu@oracle.com>
-	<1366099791-14020-1-git-send-email-shuang.qiu@oracle.com>
+	(envelope-from <rameshyr@linux.vnet.ibm.com>) id 1UUCaI-0003sL-AP
+	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 08:58:50 +0000
+Received: from e23smtp07.au.ibm.com ([202.81.31.140])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UUCaF-0003oi-V8
+	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 08:58:50 +0000
+Received: from /spool/local
+	by e23smtp07.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <rameshyr@linux.vnet.ibm.com>;
+	Mon, 22 Apr 2013 18:49:15 +1000
+Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [9.190.235.152])
+	by d23dlp02.au.ibm.com (Postfix) with ESMTP id 444122BB0085
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Apr 2013 18:51:31 +1000 (EST)
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	r3M8UorK51904552
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Apr 2013 18:30:51 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+	r3M8iUHR014672
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Apr 2013 18:44:31 +1000
+Message-ID: <5174F86B.20601@linux.vnet.ibm.com>
+Date: Mon, 22 Apr 2013 14:14:27 +0530
+From: Ramesh <rameshyr@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1366099791-14020-1-git-send-email-shuang.qiu@oracle.com>
-Subject: Re: [LTP] [PATCH] Replace "-E" option for sed.
+References: <515EA506.8060305@linux.vnet.ibm.com>
+	<51621625.6000507@cn.fujitsu.com>
+	<5163BCCC.90909@linux.vnet.ibm.com>
+	<516CABFB.3030602@cn.fujitsu.com>
+In-Reply-To: <516CABFB.3030602@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
+ getting skipped from runltp's execution
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +48,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang.qiu@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
 
-Hi!
-> The '-E' option is obsoleted and is no longer supported by sed in most
-> Linux distributions.  Use '-r' instead.
-> ---
->  .../kernel/syscalls/utimensat/utimensat_tests.sh   |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> index 6776087..b8eba51 100755
-> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> @@ -260,7 +260,7 @@ fi
->  pattern="[[:space:]]*Defaults[[:space:]]*requiretty.*"
->  if grep -q "^${pattern}" $sudoers; then
->  	tst_resm TINFO "Comment requiretty in $sudoers for automated testing systems"
-> -	if ! sed -E -i.$$ -e "s/^($pattern)/#\1/" $sudoers; then
-> +	if ! sed -r -i.$$ -e "s/^($pattern)/#\1/" $sudoers; then
->  		tst_resm TBROK "failed to mangle $sudoers properly"
->  		exit 1
->  	fi
+On 04/16/2013 07:10 AM, Wanlong Gao wrote:
+> On 04/09/2013 03:01 PM, Ramesh wrote:
+>> Hi,
+>>
+>> I have corrected few indentation flaws and I think this patch should be fine to commit.
+>> Please let me know if you are still facing any issues in extracting this patch for commit.
+>>
+>>
+>> Signed-off-by: Ramesh YR<rameshyr@linux.vnet.ibm.com>
+> Applied with the long-line-echo fixed, thank you.
+>
+>
+> Wanlong Gao
+>
+Thanks Wanlong !
 
-Strangely enough both -E and -r were working on all my testing machines
-but SLES9. Looking at bussybox documentation only -r is supported for
-sed applet.
+I think History part in runltp script needs to be updated to reflect the 
+changes.
 
-Commited, thanks.
 
-(Please add Signed-off-by: line next time.)
+Regards,
+Ramesh
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Precog is a next-generation analytics platform capable of advanced
