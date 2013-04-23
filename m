@@ -1,41 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rameshyr@linux.vnet.ibm.com>) id 1UUCaI-0003sL-AP
-	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 08:58:50 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UUCaF-0003oi-V8
-	for ltp-list@lists.sourceforge.net; Mon, 22 Apr 2013 08:58:50 +0000
-Received: from /spool/local
-	by e23smtp07.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <rameshyr@linux.vnet.ibm.com>;
-	Mon, 22 Apr 2013 18:49:15 +1000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [9.190.235.152])
-	by d23dlp02.au.ibm.com (Postfix) with ESMTP id 444122BB0085
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Apr 2013 18:51:31 +1000 (EST)
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	r3M8UorK51904552
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Apr 2013 18:30:51 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
-	r3M8iUHR014672
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Apr 2013 18:44:31 +1000
-Message-ID: <5174F86B.20601@linux.vnet.ibm.com>
-Date: Mon, 22 Apr 2013 14:14:27 +0530
-From: Ramesh <rameshyr@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UUfqf-00026C-W7
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 16:13:42 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UUfqe-0001j4-Se
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 16:13:41 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 23 Apr 2013 12:13:31 -0400
+References: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
+In-Reply-To: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <515EA506.8060305@linux.vnet.ibm.com>
-	<51621625.6000507@cn.fujitsu.com>
-	<5163BCCC.90909@linux.vnet.ibm.com>
-	<516CABFB.3030602@cn.fujitsu.com>
-In-Reply-To: <516CABFB.3030602@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] runltp: syscalls/mount0* and inotify03 tests are
- getting skipped from runltp's execution
+Message-Id: <201304231213.33013.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,42 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2175703007824262596=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 04/16/2013 07:10 AM, Wanlong Gao wrote:
-> On 04/09/2013 03:01 PM, Ramesh wrote:
->> Hi,
->>
->> I have corrected few indentation flaws and I think this patch should be fine to commit.
->> Please let me know if you are still facing any issues in extracting this patch for commit.
->>
->>
->> Signed-off-by: Ramesh YR<rameshyr@linux.vnet.ibm.com>
-> Applied with the long-line-echo fixed, thank you.
->
->
-> Wanlong Gao
->
-Thanks Wanlong !
+--===============2175703007824262596==
+Content-Type: multipart/signed; boundary="nextPart1518673.6dP3JKfrVq";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I think History part in runltp script needs to be updated to reflect the 
-changes.
+--nextPart1518673.6dP3JKfrVq
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+On Tuesday 23 April 2013 04:17:15 Jan Stancek wrote:
+> __NR_process_vm_readv / __NR_process_vm_writev defined doesn't
+> guarantee, that kernel supports these syscalls. Add check to setup(),
+> which uses ltp_syscall(). If syscall isn't supported it will
+> end the testcase with TCONF.
+
+delete all the "#else" branches since you're now using linux_syscall_numbers.h
+-mike
+
+--nextPart1518673.6dP3JKfrVq
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRdrMsAAoJEEFjO5/oN/WBI7EP/ix3V2iWMbf5BK9xkmQSrqKX
+lLFMwJRDjvTQUz1eOdwZFZPqUMN4uMYY2ADXE4p3OBrmAH4/voYA+dEK5LV349tR
+u516V701yqenHKwdcsZNbTaNBvBOQvmxyrFytldec10bPrawmFGfcPrH8anmrNhs
+D7W5rMfK0Oq3F6aHoQQJmiLyWbomiOGtJI4BRSuQoouXhp51ZsvrR+pN1snG298L
+Ui4KG8SCzrnHvTxB2xQS7kiq0hp/amFd97qWkf6qobchIrjhM6k24CD3p0BnmrAK
+SCJFZE4aY1HjTYnI1MyfxThC99X3j0dxltlpSpVa8XDK6Dv8JIiXKgF0s21DrD/L
+IQ5T57VuC0/w2VJPyUir5RM+WtYylMLpNgEGhL5+KwScyEfzBBzF251u0bdR2mBo
+aKUB9ltZMFy6QAWegWyjI0oaeACWtVvffnd7M1AovOacsxjEdM5ge1Z2L5ruwiZd
+0zjGX86RapyhmC2+dAh104jlsbg8kBDowyobL7FVgi3Kh2Wf8n35WcJY+SjeCBHp
+nAEqXDFKGnrKkR86JALSg0TOfgRGabfgvJL9yK9K0EDIrSJzWIj97JxiwPg47MPJ
+OgkpSGdEe7V20DHjTK3cB/lq+NQyZNLywr2ggiapkro1qXJtH7Hy8iAo/L0Tq3xc
+doqMqxw5d18Gu+VK43zK
+=tI92
+-----END PGP SIGNATURE-----
+
+--nextPart1518673.6dP3JKfrVq--
 
 
-Regards,
-Ramesh
-
+--===============2175703007824262596==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--===============2175703007824262596==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2175703007824262596==--
+
