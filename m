@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UWloa-0005is-TQ
-	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 11:00:12 +0000
-Date: Mon, 29 Apr 2013 13:01:10 +0200
+	(envelope-from <metan@suse.de>) id 1UUdZX-0000ba-M4
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 13:47:51 +0000
+Date: Tue, 23 Apr 2013 15:48:45 +0200
 From: chrubis@suse.cz
-Message-ID: <20130429110110.GB5569@rei>
-References: <20130416065202.9634.qmail@f5mail-224-131.rediffmail.com>
+Message-ID: <20130423134844.GE28044@rei>
+References: <605746806.1323310.1360671766487.JavaMail.root@redhat.com>
+	<51218CB1.8040709@cn.fujitsu.com> <20130227143845.GA2178@rei>
+	<20130227171118.GB30351@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20130416065202.9634.qmail@f5mail-224-131.rediffmail.com>
-Subject: Re: [LTP] Pre requisites needed to run LTP on Embedded devices
+In-Reply-To: <20130227171118.GB30351@rei>
+Subject: Re: [LTP] open posix testsuite and names of testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,29 +26,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: devaraja b v <sunildev_63@rediffmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Please treat this request on high importance and do the needful.I need
-> to run LTP on one of my Embedded device,which is having 2GB of free
-> RAM.While running some of the LTP test cases in syscalls group, system
-> will go for Out of memory and the device will be rebooted. So I would
-> like to know what is the minimum amount of free memory required to run
-> LTP on the device?I heard that there is a separate configuration or
-> settings needs to be done for embedded systems.Could you please point
-> me to that link/page?It is good if you can put the Pre-requisite
-> details under
-> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3&nbsp;Before
-> you Begin section. No where I got such information.Could you please
-> add this detail and let me know?Thanks much in advance.
+> I tried to change the generate-makefiles.sh script, but there are some
+> problems.
+> 
+> Some tests are shell scripts that doesn't have build phase. I've
+> workarounded them by adding build rules that just copy them to
+> name_x-y.sh in the build phase, which unfortunatelly haven't fixed all
+> the problems.
+> 
+> We have quite quite a lot of tests (~270) that are shell scripts that
+> prints "This is tested implicitly via assertion xyz" and returns zero.
+> I'm quite tempted to remove them. These just increase tests run time,
+> log sizes, etc. but doesn't do any actual work.
+> 
+> Then there are more problematic ones, shell tests that calls one binary
+> with different parameters. As in sigignore for example. The paths and
+> names are obviously hardcoded, which makes them fail. The fix for such
+> cases will depend case by case but what I will probably do is to make
+> each test self-contained, but I haven't analyzed all the failures yet.
 
-Having 2GB of memory should be more than enough, I run the testsuite
-regulary on x86 machines with less than that regulary.
 
-Do you have a swap partition set up?
+Good news everyone, I've just commited a patch that modifies the script
+that generates the Makefiles (since I've fixed all the issues that
+blocked this change).
 
-Do you know which testcase is causing this?
+Now the test binaries and scripts are prefixed with the directory such
+as 'sigaction_'. I've did some testruns and everything seems fine.
+
+Please tests.
 
 -- 
 Cyril Hrubis
