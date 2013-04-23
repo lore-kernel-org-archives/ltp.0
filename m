@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UNiwS-0005Va-Bp
-	for ltp-list@lists.sourceforge.net; Thu, 04 Apr 2013 12:06:56 +0000
-Date: Thu, 4 Apr 2013 14:07:38 +0200
-From: chrubis@suse.cz
-Message-ID: <20130404120738.GB7321@rei.suse.cz>
-References: <1365038982.96284.YahooMailClassic@web120802.mail.ne1.yahoo.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1365038982.96284.YahooMailClassic@web120802.mail.ne1.yahoo.com>
-Subject: Re: [LTP] ltp network multicast test cases
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UUTwu-0004tb-9X
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 03:31:20 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UUTwo-0004uZ-Q3
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 03:31:19 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3N3V8Qt004959
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Apr 2013 23:31:08 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 23 Apr 2013 11:29:03 +0800
+Message-Id: <5b868b8363fdb792d3f39e130161e692a20748aa.1366610374.git.zliu@redhat.com>
+Subject: [LTP] [PATCH] lib/mem: removed read_file() and write_file()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,56 +26,370 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: C Nandi <ccnandi@yahoo.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> ?????????????? /* Control parameters for ECHO replies. */?????????????? net->ipv4.sysctl_icmp_echo_ignore_all = 0;?????????????? net->ipv4.sysctl_icmp_echo_ignore_broadcasts = 1;??In ???mc_cmds??? test case we have code as below:???? ??cat /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts | grep 1 > /dev/null???? if [ $? -eq 0 ]???? then???????????? end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"???? fiHence the test tcase will fail always as icmp_echo_ignore_broadcasts is set to 1(which is default).??Can we go with below patch for this problem???--- mc_cmds.Orig?????????????? 2013-04-03 14:36:14.000000000 -0600+++ mc_cmds???????? 2013-04-03 14:39:02.000000000 -0600@@ -128,6 +128,9 @@?????? if [ $? -eq 0 ]?????? then?????????????? end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"+???????????? echo "Temporarily enable multicast ping for testing
->  purposes."+???????????? echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts+???????????? icmp_need_reset=1?????? fi???????? # Do the ping tests: Execute ping 224.0.0.1 - Verify that the proper@@ -166,6 +169,10 @@ {?????? $trace_logic?????? echo "$this_file: doing $0."+???? if [ -n "$icmp_need_reset" ]; then+???????????? echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts+???????????? echo "Restored multicast ping setting."+???? fi?????? rm -rf $PING_OUT }??
+SAFE_FILE_SCANF() and SAFE_FILE_PRINTF() can completely displace
+read_file() and write_file(), so removed them.
 
-Looks like the email was mangled, most likely by your mail client.
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/mem/cpuset/cpuset01.c             |  3 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   | 11 +--
+ testcases/kernel/mem/include/mem.h                 |  3 +-
+ testcases/kernel/mem/lib/mem.c                     | 87 +++++++---------------
+ testcases/kernel/mem/oom/oom03.c                   | 11 ++-
+ testcases/kernel/mem/oom/oom05.c                   |  6 +-
+ 6 files changed, 38 insertions(+), 83 deletions(-)
 
-> --- mc_cmds.Orig        2013-04-03 14:36:14.000000000 -0600
-> +++ mc_cmds     2013-04-03 14:39:02.000000000 -0600
-> @@ -128,6 +128,9 @@
->     if [ $? -eq 0 ]
->     then
->         end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"
-> +       echo "Temporarily enable multicast ping for testing purposes."
-> +       echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> +       icmp_need_reset=1
->     fi
-> 
->     # Do the ping tests: Execute ping 224.0.0.1 - Verify that the proper
-> @@ -166,6 +169,10 @@
->  {
->     $trace_logic
->     echo "$this_file: doing $0."
-> +   if [ -n "$icmp_need_reset" ]; then
-> +       echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> +       echo "Restored multicast ping setting."
-> +   fi
->     rm -rf $PING_OUT
->  }
-
-Could you send these as signed patches in unified diff format with the
-description of the changes in the patch header?
-
-(git can help you create these)
-
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index 99fbb9c..abba489 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -100,8 +100,7 @@ static void testcpuset(void)
+ 	write_cpuset_files(CPATH_NEW, "cpus", buf);
+ 	read_cpuset_files(CPATH, "mems", mems);
+ 	write_cpuset_files(CPATH_NEW, "mems", mems);
+-	snprintf(buf, BUFSIZ, "%d", getpid());
+-	write_file(CPATH_NEW "/tasks", buf);
++	SAFE_FILE_PRINTF(cleanup, CPATH_NEW "/tasks", "%d", getpid());
+ 
+ 	switch (child = fork()) {
+ 	case -1:
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index 3898618..8cf5cc6 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -113,7 +113,6 @@ int main(int ac, char **av)
+ void setup(void)
+ {
+ 	long hpage_size;
+-	char buf[BUFSIZ];
+ 
+ 	tst_require_root(NULL);
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+@@ -125,10 +124,8 @@ void setup(void)
+ 
+ 	shm_size = hpage_size;
+ 
+-	read_file(PATH_SHMMNI, buf);
+-	orig_shmmni = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
+-	snprintf(buf, BUFSIZ, "%ld", hugepages / 2);
+-	write_file(PATH_SHMMNI, buf);
++	SAFE_FILE_SCANF(NULL, PATH_SHMMNI, "%ld", &orig_shmmni);
++	SAFE_FILE_PRINTF(NULL, PATH_SHMMNI, "%ld", hugepages / 2);
+ 
+ 	/*
+ 	 * Use a while loop to create the maximum number of memory segments.
+@@ -156,15 +153,13 @@ void setup(void)
+ void cleanup(void)
+ {
+ 	int i;
+-	char buf[BUFSIZ];
+ 
+ 	TEST_CLEANUP;
+ 
+ 	for (i = 0; i < num_shms; i++)
+ 		rm_shm(shm_id_arr[i]);
+ 
+-	snprintf(buf, BUFSIZ, "%ld", orig_shmmni);
+-	write_file(PATH_SHMMNI, buf);
++	SAFE_FILE_PRINTF(NULL, PATH_SHMMNI, "%ld", orig_shmmni);
+ 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
+ 
+ 	tst_rmdir();
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 9e96b31..551c73e 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -67,6 +67,7 @@ void ksm_usage(void);
+ #define CPATH_NEW		CPATH "/1"
+ #define MEMCG_PATH		"/dev/cgroup"
+ #define MEMCG_PATH_NEW		MEMCG_PATH "/1"
++#define MEMCG_LIMIT		MEMCG_PATH_NEW "/memory.limit_in_bytes"
+ #define MEMCG_SW_LIMIT		MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes"
+ #if HAVE_SYS_EVENTFD_H
+ #define PATH_OOMCTRL		MEMCG_PATH_NEW "/memory.oom_control"
+@@ -85,8 +86,6 @@ int  path_exist(const char *path, ...);
+ long read_meminfo(char *item);
+ void set_sys_tune(char *sys_file, long tune, int check);
+ long get_sys_tune(char *sys_file);
+-void write_file(char *filename, char *buf);
+-void read_file(char *filename, char *retbuf);
+ void cleanup(void);
+ void setup(void);
+ 
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index da98552..bc86021 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -157,13 +157,11 @@ void testoom(int mempolicy, int lite)
+ 
+ static void check(char *path, long int value)
+ {
+-	FILE *fp;
+-	char buf[BUFSIZ], fullpath[BUFSIZ];
++	char fullpath[BUFSIZ];
+ 	long actual_val;
+ 
+ 	snprintf(fullpath, BUFSIZ, "%s%s", PATH_KSM, path);
+-	read_file(fullpath, buf);
+-	actual_val = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++	SAFE_FILE_SCANF(cleanup, fullpath, "%ld", &actual_val);
+ 
+ 	tst_resm(TINFO, "%s is %ld.", path, actual_val);
+ 	if (actual_val != value)
+@@ -172,7 +170,6 @@ static void check(char *path, long int value)
+ 
+ static void wait_ksmd_done(void)
+ {
+-	char buf[BUFSIZ];
+ 	long pages_shared, pages_sharing, pages_volatile, pages_unshared;
+ 	long old_pages_shared = 0, old_pages_sharing = 0;
+ 	long old_pages_volatile = 0, old_pages_unshared = 0;
+@@ -182,17 +179,17 @@ static void wait_ksmd_done(void)
+ 		sleep(10);
+ 		count++;
+ 
+-		read_file(PATH_KSM "pages_shared", buf);
+-		pages_shared = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_shared",
++				"%ld", &pages_shared);
+ 
+-		read_file(PATH_KSM "pages_sharing", buf);
+-		pages_sharing = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_sharing",
++				"%ld", &pages_sharing);
+ 
+-		read_file(PATH_KSM "pages_volatile", buf);
+-		pages_volatile = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_volatile",
++				"%ld", &pages_volatile);
+ 
+-		read_file(PATH_KSM "pages_unshared", buf);
+-		pages_unshared = SAFE_STRTOL(cleanup, buf, 0, LONG_MAX);
++		SAFE_FILE_SCANF(cleanup, PATH_KSM "pages_unshared",
++				"%ld", &pages_unshared);
+ 
+ 		if (pages_shared != old_pages_shared ||
+ 		    pages_sharing != old_pages_sharing ||
+@@ -254,13 +251,9 @@ static void verify(char **memory, char value, int proc,
+ 
+ void write_memcg(void)
+ {
+-	char buf[BUFSIZ], mem[BUFSIZ];
+-
+-	snprintf(mem, BUFSIZ, "%ld", TESTMEM);
+-	write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
++	SAFE_FILE_PRINTF(NULL, MEMCG_LIMIT, "%ld", TESTMEM);
+ 
+-	snprintf(buf, BUFSIZ, "%d", getpid());
+-	write_file(MEMCG_PATH_NEW "/tasks", buf);
++	SAFE_FILE_PRINTF(NULL, MEMCG_PATH_NEW "/tasks", "%d", getpid());
+ }
+ 
+ static struct ksm_merge_data {
+@@ -377,7 +370,6 @@ static void resume_ksm_children(int *child, int num)
+ 
+ void create_same_memory(int size, int num, int unit)
+ {
+-	char buf[BUFSIZ];
+ 	int i, j, status, *child;
+ 	unsigned long ps, pages;
+ 	struct ksm_merge_data **ksm_data;
+@@ -437,10 +429,10 @@ void create_same_memory(int size, int num, int unit)
+ 	stop_ksm_children(child, num);
+ 
+ 	tst_resm(TINFO, "KSM merging...");
+-	write_file(PATH_KSM "run", "1");
+-	snprintf(buf, BUFSIZ, "%ld", size * pages * num);
+-	write_file(PATH_KSM "pages_to_scan", buf);
+-	write_file(PATH_KSM "sleep_millisecs", "0");
++	SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
++	SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
++			 size * pages *num);
++	SAFE_FILE_PRINTF(cleanup, PATH_KSM "sleep_millisecs", "0");
+ 
+ 	resume_ksm_children(child, num);
+ 	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+@@ -460,13 +452,13 @@ void create_same_memory(int size, int num, int unit)
+ 	stop_ksm_children(child, num);
+ 
+ 	tst_resm(TINFO, "KSM unmerging...");
+-	write_file(PATH_KSM "run", "2");
++	SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "2");
+ 
+ 	resume_ksm_children(child, num);
+ 	group_check(2, 0, 0, 0, 0, 0, size * pages * num);
+ 
+ 	tst_resm(TINFO, "stop KSM.");
+-	write_file(PATH_KSM "run", "0");
++	SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "0");
+ 	group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+ 
+ 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
+@@ -624,7 +616,6 @@ void test_transparent_hugepage(int nr_children, int nr_thps,
+ {
+ 	unsigned long hugepagesize, memfree;
+ 	int i, *pids, ret, status;
+-	char path[BUFSIZ];
+ 
+ 	if (mempolicy)
+ 		set_global_mempolicy(mempolicy);
+@@ -803,8 +794,7 @@ void write_cpusets(long nd)
+ 	gather_node_cpus(cpus, nd);
+ 	write_cpuset_files(CPATH_NEW, "cpus", cpus);
+ 
+-	snprintf(buf, BUFSIZ, "%d", getpid());
+-	write_file(CPATH_NEW "/tasks", buf);
++	SAFE_FILE_PRINTF(NULL, CPATH_NEW "/tasks", "%d", getpid());
+ }
+ 
+ void umount_mem(char *path, char *path_new)
+@@ -932,13 +922,12 @@ long read_meminfo(char *item)
+ void set_sys_tune(char *sys_file, long tune, int check)
+ {
+ 	long val;
+-	char buf[BUFSIZ], path[BUFSIZ];
++	char path[BUFSIZ];
+ 
+ 	tst_resm(TINFO, "set %s to %ld", sys_file, tune);
+ 
+ 	snprintf(path, BUFSIZ, "%s%s", PATH_SYSVM, sys_file);
+-	snprintf(buf, BUFSIZ, "%ld", tune);
+-	write_file(path, buf);
++	SAFE_FILE_PRINTF(NULL, path, "%ld", tune);
+ 
+ 	if (check) {
+ 		val = get_sys_tune(sys_file);
+@@ -950,44 +939,20 @@ void set_sys_tune(char *sys_file, long tune, int check)
+ 
+ long get_sys_tune(char *sys_file)
+ {
+-	char buf[BUFSIZ], path[BUFSIZ];
++	char path[BUFSIZ];
++	long tune;
+ 
+ 	snprintf(path, BUFSIZ, "%s%s", PATH_SYSVM, sys_file);
+-	read_file(path, buf);
+-	return SAFE_STRTOL(cleanup, buf, LONG_MIN, LONG_MAX);
+-}
+-
+-void write_file(char *filename, char *buf)
+-{
+-	int fd;
++	SAFE_FILE_SCANF(NULL, path, "%ld", &tune);
+ 
+-	fd = open(filename, O_WRONLY);
+-	if (fd == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "open %s", filename);
+-	if (write(fd, buf, strlen(buf)) != strlen(buf))
+-		tst_brkm(TBROK | TERRNO, cleanup, "write %s", filename);
+-	close(fd);
+-}
+-
+-void read_file(char *filename, char *retbuf)
+-{
+-	int fd;
+-
+-	fd = open(filename, O_RDONLY);
+-	if (fd == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "open %s", filename);
+-	if (read(fd, retbuf, BUFSIZ) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "read %s", filename);
+-	close(fd);
++	return tune;
+ }
+ 
+ void update_shm_size(size_t * shm_size)
+ {
+-	char buf[BUFSIZ];
+ 	size_t shmmax;
+ 
+-	read_file(PATH_SHMMAX, buf);
+-	shmmax = SAFE_STRTOUL(cleanup, buf, 0, ULONG_MAX);
++	SAFE_FILE_SCANF(cleanup, PATH_SHMMAX, "%ld", shmmax);
+ 	if (*shm_size > shmmax) {
+ 		tst_resm(TINFO, "Set shm_size to shmmax: %ld", shmmax);
+ 		*shm_size = shmmax;
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index 124e95f..8faa3cd 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
+ {
+ 	char *msg;
+ 	int lc;
+-	char buf[BUFSIZ], mem[BUFSIZ];
+ 
+ 	msg = parse_opts(argc, argv, NULL, NULL);
+ 	if (msg != NULL)
+@@ -63,11 +62,10 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		snprintf(buf, BUFSIZ, "%d", getpid());
+-		write_file(MEMCG_PATH_NEW "/tasks", buf);
++		SAFE_FILE_PRINTF(cleanup, MEMCG_PATH_NEW "/tasks",
++				 "%d", getpid());
++		SAFE_FILE_PRINTF(cleanup, MEMCG_LIMIT, "%ld", TESTMEM);
+ 
+-		snprintf(mem, BUFSIZ, "%ld", TESTMEM);
+-		write_file(MEMCG_PATH_NEW "/memory.limit_in_bytes", mem);
+ 		testoom(0, 0);
+ 
+ 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
+@@ -77,7 +75,8 @@ int main(int argc, char *argv[])
+ 			else
+ 				tst_brkm(TBROK | TERRNO, cleanup, "access");
+ 		} else {
+-			write_file(MEMCG_SW_LIMIT, mem);
++			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT,
++					 "%ld", TESTMEM);
+ 			testoom(0, 1);
+ 		}
+ 
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index cd45f08..15feba5 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
+ 	char *msg;
+ 	int lc;
+ 	int swap_acc_on = 1;
+-	char mem[BUFSIZ];
+ 
+ 	msg = parse_opts(argc, argv, NULL, NULL);
+ 	if (msg != NULL)
+@@ -93,13 +92,12 @@ int main(int argc, char *argv[])
+ 		if (swap_acc_on) {
+ 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
+ 					"special memswap limitation:");
+-			snprintf(mem, BUFSIZ, "%ld", TESTMEM);
+-			write_file(MEMCG_SW_LIMIT, mem);
++			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "%ld", TESTMEM);
+ 			testoom(0, 0);
+ 
+ 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
+ 					"disabled memswap limitation:");
+-			write_file(MEMCG_SW_LIMIT, "-1");
++			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "-1");
+ 			testoom(0, 0);
+ 		}
+ 	}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
