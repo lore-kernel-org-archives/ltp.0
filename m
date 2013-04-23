@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1USMwB-0006Lc-VZ
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 07:37:52 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1USMwA-0002YR-4D
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 07:37:51 +0000
-Date: Wed, 17 Apr 2013 03:37:35 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <849990288.1414874.1366184255066.JavaMail.root@redhat.com>
-In-Reply-To: <516E2E6C.2000408@gmail.com>
-References: <516E2E6C.2000408@gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UUgLl-00032n-20
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 16:45:49 +0000
+Date: Tue, 23 Apr 2013 18:46:42 +0200
+From: chrubis@suse.cz
+Message-ID: <20130423164641.GI28044@rei>
+References: <8a051675195eceda293d88d157163083d7886570.1366724682.git.jstancek@redhat.com>
+	<201304231211.28293.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] Fix short of nodemask array.
+Content-Disposition: inline
+In-Reply-To: <201304231211.28293.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] remove linux_syscall_numbers.h from tree
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,55 +25,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Lans Zhang <lans.zhang2008@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> is keeping it in the tree a big deal ?  i think it's pretty common for
+> people to go into specific subdirs and run `make` and today, our
+> subdirs don't declare a dependency on this file so it'll get
+> automatically regenerated (nor do i think they should even bother).
 
+You need to regenerate the file after each change to the *.in files,
+and that means that people will forget from time to time.
 
+It would be better to add another rule to testcases.mk similiar to the
+one for LIBLTP.
 
-
------ Original Message -----
-> From: "Lans Zhang" <lans.zhang2008@gmail.com>
-> To: "Zhouping Liu" <zliu@redhat.com>, "Jan Stancek" <jstancek@redhat.com>
-> Cc: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 17 April, 2013 7:09:00 AM
-> Subject: [LTP][PATCH V2] Fix short of nodemask array.
-> 
-> Changes since V1:
-> 1. Enhance patch header.
-> 2. Use BITS_PER_LONG and set_node() to simplify the logic.
-> 
-> In kernel, if user specified more nodes, e.g, 512 nodes, than the
-> supported, e.g, 4 nodes, kernel will check if the non supported
-> part, e.g, 508 nodes, is all zeroed in node bitmap. Currently, we
-> are overrunning "nmask", whose length is shorter than MAXNODES,
-> and where the unsupported bits should be cleared to pass the check.
-> 
-> Signed-off-by: Lans Zhang <lans.zhang2008@gmail.com>
-
-Hi,
-
-'v' should be probably dropped here, since it's not used and rest
-of patch uses 2 parameters anyway:
-
-> +static inline void set_node(unsigned long *array, unsigned int node,
-> +                            unsigned int v)
-> +{
-> +	array[node / BITS_PER_LONG] |= 1UL << (node % BITS_PER_LONG);
-> +}
-> 
-
-Other than that, it looks good to me.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
