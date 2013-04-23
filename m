@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1USJ0r-0003mY-1z
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:26:25 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1USJ0p-0000Tt-Jo
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:26:25 +0000
-Message-ID: <516E1673.6090902@cn.fujitsu.com>
-Date: Wed, 17 Apr 2013 11:26:43 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UUfof-00013y-7k
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 16:11:37 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UUfoe-0001d8-6d
+	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 16:11:37 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 23 Apr 2013 12:11:26 -0400
+References: <8a051675195eceda293d88d157163083d7886570.1366724682.git.jstancek@redhat.com>
+In-Reply-To: <8a051675195eceda293d88d157163083d7886570.1366724682.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <cover.1366122425.git.zliu@redhat.com>
-In-Reply-To: <cover.1366122425.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v5 0/3] mm/thp: add two new case
-Reply-To: gaowanlong@cn.fujitsu.com
+Message-Id: <201304231211.28293.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] remove linux_syscall_numbers.h from tree
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,75 +24,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0616652845213925619=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 04/16/2013 10:30 PM, Zhouping Liu wrote:
-> The patchset is desinged to test THP functionality.
-> 
-> when one process allocate hugepage aligned anonymous pages,
-> kernel thread 'khugepaged' controlled by sysfs knobs
-> /sys/kernel/mm/transparent_hugepage/* will scan them, and make
-> them as transparent hugepage if they are suited, you can find out
-> how many transparent hugepages are there in one process from
-> /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-> stand for transparent hugepage.
-> 
-> v1 to v2:
-> accepted Wanlong's suggestion, added some comment for '10s'
-> added 'static' key word for single-file-only variant.
-> 
-> v2 to v3:
-> added some comments for low memory system.
-> 
-> v3 to v4:
-> Wanglong point out that the value of khugepaged/defrag is string type,
-> not a numeric before applying the commit e27e6151b154 in v2.6.39-rc4,
-> and I checked the code again, found the current cases thp0* don't be
-> effected by khugepaged/defrag, so I removed the checking of
-> khugepaged/defrag from khugepaged_scan_done().
-> 
-> v4 to v5:
->  1. made some cleaup
->  2. updated 10s to 5s for each checking in khugepaged_scan_done()
->  3. used SAFE_FILE_SCANF|PRINTF() instead of write_file()
-> 
-> v5 to v6:
-> made a little cleanup.
+--===============0616652845213925619==
+Content-Type: multipart/signed; boundary="nextPart6009561.Z7sHuvWZJU";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Applied this V6, thank you.
+--nextPart6009561.Z7sHuvWZJU
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-You may use the wrong --subject-prefix
+On Tuesday 23 April 2013 09:53:28 Jan Stancek wrote:
+> It will be generated as part of the build by:
+>   testcases/kernel/include/regen.sh
 
-Wanlong Gao
+is keeping it in the tree a big deal ?  i think it's pretty common for peop=
+le=20
+to go into specific subdirs and run `make` and today, our subdirs don't dec=
+lare=20
+a dependency on this file so it'll get automatically regenerated (nor do i=
+=20
+think they should even bother).
+=2Dmike
 
-> 
-> Zhouping Liu (3):
->   mm/thp: new case thp04.c
->   lib/mem: introduce a new function set_global_mempolicy()
->   mm/thp: add new case thp05
-> 
->  runtest/mm                         |   6 ++
->  testcases/kernel/mem/include/mem.h |  12 +++
->  testcases/kernel/mem/lib/mem.c     | 199 ++++++++++++++++++++++++++++++++++++-
->  testcases/kernel/mem/thp/thp04.c   | 142 ++++++++++++++++++++++++++
->  testcases/kernel/mem/thp/thp05.c   | 153 ++++++++++++++++++++++++++++
->  5 files changed, 511 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/kernel/mem/thp/thp04.c
->  create mode 100644 testcases/kernel/mem/thp/thp05.c
-> 
+--nextPart6009561.Z7sHuvWZJU
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRdrKwAAoJEEFjO5/oN/WBELsQAN+HdoyeSb02PxR98qqHFEiR
+M191wW6JELudHT2uj/fVY+gwN0ldVeduaU5+Kn8THvsn8g8BPquqtE8VTTJ13fc+
+mXgje67HkjhzE/xHbNoqXX7vrcjKB1/bg649gbBxmnglaCz/5LYztpvhnSs4s0uE
+1385EacNQycBOWVtwd3Jth/9/pvYgm5htVh41ZidTtyIj9YjsIEkGA/BdXnnHgBx
+rSXLxOW7V85AvOasayGVlgc5MZqnHUFpmnUDUoMYF13yNTkI/bkdw0e2FQU/pCLV
+/v44dTrQpnMhjDG2vRslqOGwFbN9OTZ7tZ/xgQzU5ZndwSTPFlQdLCc05Bbg6ZWN
+SFTcGWRq4y9yXTV/pmFwYJQ00kL0KBKsaN6xljDCVyac0rcYn5E/iV/HTUVKuF7+
+iTWN+FwugA99b0lqqJpwM1P6ZG8lJxveFo7gaMT5U6XWXKijxYQXQP0Zkvqz8bch
+QrblMur4qev00GQ1VPXphNtcyL2BwGv7xqoi8iq5FXWbLjh72GFnrzBD9viz8fRv
+v4hoa8E0yoFZ0r8xLVO7xpNK5r89oCUm+wscmPv1FSlWG2f9Ey3zzchVJlgR62va
+iza/1qL5CROY5xsbTuhvB1G6MIHo6iNVgCnZnV4JOMWPM5BcbqRrgqS0T0PKHH/J
+ffR52wgEzEMyBMaGZE/9
+=5qwZ
+-----END PGP SIGNATURE-----
+
+--nextPart6009561.Z7sHuvWZJU--
+
+
+--===============0616652845213925619==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--===============0616652845213925619==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0616652845213925619==--
+
