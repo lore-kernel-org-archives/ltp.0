@@ -2,20 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1USSGE-0001Ap-Gc
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 13:18:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1USSGC-0007MZ-Nv
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 13:18:54 +0000
-Message-ID: <516EA14E.1020407@cn.fujitsu.com>
-Date: Wed, 17 Apr 2013 21:19:10 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <vapier@gentoo.org>) id 1UV20A-0002oe-1b
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 15:52:58 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UV209-00020e-1Q
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 15:52:58 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 24 Apr 2013 11:52:45 -0400
+References: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
+	<201304231213.33013.vapier@gentoo.org>
+	<1865305189.2143033.1366786432951.JavaMail.root@redhat.com>
+In-Reply-To: <1865305189.2143033.1366786432951.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <516E68ED.3040507@gmail.com>
-In-Reply-To: <516E68ED.3040507@gmail.com>
-Subject: Re: [LTP] [PATCH V3]  Fix short of nodemask array.
-Reply-To: gaowanlong@cn.fujitsu.com
+Message-Id: <201304241152.47110.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +26,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0606296820633123017=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Lans Zhang <lans.zhang2008@gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 04/17/2013 05:18 PM, Lans Zhang wrote:
-> Changes since V2:
-> remove unused parameter in set_node()
-> 
-> In kernel, if user specified more nodes, e.g, 512 nodes, than the
-> supported, e.g, 4 nodes, kernel will check if the non supported
-> part, e.g, 508 nodes, is all zeroed in node bitmap. Currently, we
-> are overrunning "nmask", whose length is shorter than MAXNODES,
-> and where the unsupported bits should be cleared to pass the check.
-> 
-> Signed-off-by: Lans Zhang <lans.zhang2008@gmail.com>
+--===============0606296820633123017==
+Content-Type: multipart/signed; boundary="nextPart1464552.WFekEN2WUc";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Applied, thank you all involved.
+--nextPart1464552.WFekEN2WUc
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Wanlong Gao
+On Wednesday 24 April 2013 02:53:52 Jan Stancek wrote:
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> > On Tuesday 23 April 2013 04:17:15 Jan Stancek wrote:
+> > > __NR_process_vm_readv / __NR_process_vm_writev defined doesn't
+> > > guarantee, that kernel supports these syscalls. Add check to setup(),
+> > > which uses ltp_syscall(). If syscall isn't supported it will
+> > > end the testcase with TCONF.
+> >=20
+> > delete all the "#else" branches since you're now using
+> > linux_syscall_numbers.h
+>=20
+> Without that check in parent, you can end up in situation where some child
+> aborts first and then parent reports failure. By doing it early in setup()
+> you can avoid allocating resources that won't go away when process later
+> terminates with TCONF.
 
+by including linux_syscall_numbers.h, you've guaranteed that=20
+__NR_process_vm_readv will always be defined, thus the code under "#ifndef=
+=20
+__NR_process_vm_readv" will never be run, thus you should delete it.
+=2Dmike
+
+--nextPart1464552.WFekEN2WUc
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRd//PAAoJEEFjO5/oN/WBYJ0QANtV4x4PPsj7HHroT4sdgWQV
+ZXJieEy4nrG96MlEBN9mqNa9NtKsIoXTYwKHNqa3hfExQT57tV3LSd2uQsYUFaSl
+Y/xaHDyD8ysFtuv0snol1vuhlrS1HXKesveKvJ1lzgADRzw8Wae3UwsWO9wyNG0C
+YzS2h6DNQfRUM1hwFgLsz9oDi+vdw20xI/WrKd1NAR16/g85C7NjQDo7uazmHDCb
+HqxdDSnNv+6+dSfDUWMVj/EHEO53w5oZ3Y2ImTPUy+zOJCZtEoZO8sng1xt+QUQ5
+deFMIZ3Qn9UWepmPS+kOzxVWp5qAVuR/b4Xq0KG/7v/SDOek/rZoSg9XZ6xrCg0E
+bF74VbqigevyeqPaRYflIggqIbX+l2AehjRNqNm3BA4E20PxrwyffpI2dVvdUq+z
+tMRAwt+06x/G2p4VT4cMuKFdhC7Yyp29CW0A/pVfVdfVJeVLOkdNfDO6sPH/1QFk
+5LrnVDBXa3Bk9qdlIdMVQL1q8vytHjxuquWT+vC5nCmknSBbHSjemI9N09si/iTp
+p8RO4B25K8oe3d1q9UuyRPBlprqigt0TBphe7hgI1AJr9LrJQCKGzWqDLFLUZV0Q
+WiL3RfMSu704KuX3sBX7D1ZpliQRIIMFt3c4zRE4JQVOLovbiC40OTSR0t3V9qOY
+wr9S0+aM0f/U2C6OKKsn
+=m+FQ
+-----END PGP SIGNATURE-----
+
+--nextPart1464552.WFekEN2WUc--
+
+
+--===============0606296820633123017==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--===============0606296820633123017==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0606296820633123017==--
+
