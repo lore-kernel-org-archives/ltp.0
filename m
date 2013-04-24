@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UO2VJ-0005j7-KD
-	for ltp-list@lists.sourceforge.net; Fri, 05 Apr 2013 09:00:13 +0000
-Date: Fri, 5 Apr 2013 11:00:59 +0200
-From: chrubis@suse.cz
-Message-ID: <20130405090059.GB18134@rei.Home>
-References: <201304050053.46087.vapier@gentoo.org>
-	<1365142365-4089-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UUtaf-0002CY-Bf
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 06:54:05 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UUtad-0008Oh-AR
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 06:54:05 +0000
+Date: Wed, 24 Apr 2013 02:53:52 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1865305189.2143033.1366786432951.JavaMail.root@redhat.com>
+In-Reply-To: <201304231213.33013.vapier@gentoo.org>
+References: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
+	<201304231213.33013.vapier@gentoo.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1365142365-4089-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2] getdents01: compare "." or ".." to the first
-	entry
+Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,28 +28,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> If dir_index feature is enabled on ext3/4, the first entry may
-> not be ".". So fix to compare "." or ".." to the first entry.
+
+
+----- Original Message -----
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "Jan Stancek" <jstancek@redhat.com>
+> Sent: Tuesday, 23 April, 2013 6:13:31 PM
+> Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
 > 
-> Reported-by: DAN LI <li.dan@cn.fujitsu.com>
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> On Tuesday 23 April 2013 04:17:15 Jan Stancek wrote:
+> > __NR_process_vm_readv / __NR_process_vm_writev defined doesn't
+> > guarantee, that kernel supports these syscalls. Add check to setup(),
+> > which uses ltp_syscall(). If syscall isn't supported it will
+> > end the testcase with TCONF.
+> 
+> delete all the "#else" branches since you're now using
+> linux_syscall_numbers.h
 
-Acked.
+Without that check in parent, you can end up in situation where some child
+aborts first and then parent reports failure. By doing it early in setup() you can
+avoid allocating resources that won't go away when process later terminates with TCONF.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
