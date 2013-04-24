@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1USIwa-0006IR-Ty
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:22:00 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1USIwY-0000Tg-OC
-	for ltp-list@lists.sourceforge.net; Wed, 17 Apr 2013 03:22:00 +0000
-Message-ID: <516E156A.1000807@cn.fujitsu.com>
-Date: Wed, 17 Apr 2013 11:22:18 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <513427E9.3000807@gmail.com>
-	<414861962.834600.1366086893127.JavaMail.root@redhat.com>
-	<516E15C3.5080507@gmail.com>
-In-Reply-To: <516E15C3.5080507@gmail.com>
-Subject: Re: [LTP] [PATCH]  Fix short of nodemask array.
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UUq0J-0001Ph-Jp
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 03:04:19 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UUq0H-0001lb-Hj
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 03:04:19 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3O34Bxt012341
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Apr 2013 23:04:11 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Wed, 24 Apr 2013 11:02:04 +0800
+Message-Id: <78191d90d19975e03308f3c05d0bf66fd1471ba5.1366772430.git.zliu@redhat.com>
+Subject: [LTP] [PATCH] mem/oom: fixed a cpuset error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,269 +26,159 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Lans Zhang <lans.zhang2008@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-On 04/17/2013 11:23 AM, Lans Zhang wrote:
+For the below special NUMA system, oom0[4|5] failed:
+ # numactl -H
+ available: 2 nodes (0-1)
+ node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+ node 0 size: 0 MB
+ node 0 free: 0 MB
+ node 1 cpus:
+ node 1 size: 16384 MB
+ node 1 free: 14173 MB
+ node distances:
+ node   0   1
+   0:  10  40
+   1:  40  10
 
-Please CC the ltp-list when reply.
+failed log:
+ oom04       1  TBROK  :  write /dev/cpuset/1/cpuset.mems: errno=EINVAL(22): Invalid argument
 
-Thanks,
-Wanlong Gao
+The reason is that node0 only contains all CPUs, no any memory,
+and node1 contains all memory, but no CPUs, in the previous codes,
+we only do cpuset testing on a independent node, which caused the
+sub-cpuset only contains CPUs or memory in one node, that's not
+permitted. The patch fixed it.
 
-> On 04/16/2013 12:34 PM, Zhouping Liu wrote:
->> Hi Lans,
->>
->> ----- Original Message -----
->>> From: "gmail"<lans.zhang2008@gmail.com>
->>> To: ltp-list@lists.sourceforge.net
->>> Sent: Monday, March 4, 2013 12:49:45 PM
->>> Subject: [LTP] [PATCH]  Fix short of nodemask array.
->>>
->>> In kernel, when the user specified more nodes, e.g, 512 nodes, than
->>> supported, e.g, 4 nodes, just check if the non supported part is all
->>> zero. If user space just specified the nodemask array with only one
->>> element, which makes the check in kernel actually become invalid.
->>
->> I think the comments here is not clear, you should explain more details
->> about the 'one element' or the reason why the checking in kernel will
->> be invalid.
-> 
-> kernel requires the bits in nmask being longer than MAX_NUMNODES defined in kernel
-> must be cleared:
-> 
-> /* Copy a node mask from user space. */
-> static int get_nodes(nodemask_t *nodes, const unsigned long __user *nmask,
->                      unsigned long maxnode)
-> {
->         unsigned long k;
->         unsigned long nlongs;
->         unsigned long endmask;
-> 
->         --maxnode;
->         nodes_clear(*nodes);
->         if (maxnode == 0 || !nmask)
->                 return 0;
->         if (maxnode > PAGE_SIZE*BITS_PER_BYTE)
->                 return -EINVAL;
-> 
->         nlongs = BITS_TO_LONGS(maxnode);
->         if ((maxnode % BITS_PER_LONG) == 0)
->                 endmask = ~0UL;
->         else
->                 endmask = (1UL << (maxnode % BITS_PER_LONG)) - 1;
-> 
->         /* When the user specified more nodes than supported just check
->            if the non supported part is all zero. */
->         if (nlongs > BITS_TO_LONGS(MAX_NUMNODES)) {
->                 if (nlongs > PAGE_SIZE/sizeof(long))
->                         return -EINVAL;
->                 for (k = BITS_TO_LONGS(MAX_NUMNODES); k < nlongs; k++) {
->                         unsigned long t;
->                         if (get_user(t, nmask + k))
->                                 return -EFAULT;
->                         if (k == nlongs - 1) {
->                                 if (t & endmask)
->                                         return -EINVAL;
->                         } else if (t)   <--- failed here.
->                                 return -EINVAL;
->                 }
->                 nlongs = BITS_TO_LONGS(MAX_NUMNODES);
->                 endmask = ~0UL;
->         }
-> 
-> As what you concern, the patch header should be read more clear. I would
-> use Jan Stancek's suggestion:
-> 
-> I think what it says is that we are overrunning "nmask", whose length is
-> shorter than MAXNODES.
-> 
->>
->>> In addition, some test cases in current implement doesn't consider
->>> if a node number is greater than sizeof(unsigned long) * 8 - 1.
->>
->> yes, you are right, we don't care the system which has more than 512 numa nodes.
->> and the current code only support 64 numa nodes, only one unsigned long node mask.
->>
->> I checked kernel code in RHEL6, CONFIG_NODES_SHIFT=9, so 512 is the biggest
->> value to support in RHEL6 for x86_64, and I didn't meet any large NUMA system
->> which have 512+ numa nodes so far.
->>
->>>
->>> Signed-off-by: Lans Zhang<lans.zhang2008@gmail.com>
->>> ---
->>>    testcases/kernel/mem/cpuset/cpuset01.c |    6 +++---
->>>    testcases/kernel/mem/ksm/ksm02.c       |    6 +++---
->>>    testcases/kernel/mem/ksm/ksm04.c       |    6 +++---
->>>    testcases/kernel/mem/lib/mem.c         |    6 +++---
->>>    4 files changed, 12 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
->>> b/testcases/kernel/mem/cpuset/cpuset01.c
->>> index b473e45..e459306 100644
->>> --- a/testcases/kernel/mem/cpuset/cpuset01.c
->>> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
->>> @@ -93,7 +93,7 @@ static void testcpuset(void)
->>>    {
->>>        int lc;
->>>        int child, i, status;
->>> -    unsigned long nmask = 0;
->>> +    unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
->>>        char mems[BUFSIZ], buf[BUFSIZ];
->>>
->>>        read_cpuset_files(CPATH, "cpus", buf);
->>> @@ -108,8 +108,8 @@ static void testcpuset(void)
->>>            tst_brkm(TBROK | TERRNO, cleanup, "fork");
->>>        case 0:
->>>            for (i = 0; i<  nnodes; i++)
->>> -            nmask += 1<<  nodes[i];
->>> -        if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1)
->>> +            nmask[i / (8*sizeof(unsigned long))] |= 1<<  (i % (8*sizeof(unsigned
->>> long)));
->>> +        if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
->>>                tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
->>>            exit(mem_hog_cpuset(ncpus>  1 ? ncpus : 1));
->>>        }
->>> diff --git a/testcases/kernel/mem/ksm/ksm02.c
->>> b/testcases/kernel/mem/ksm/ksm02.c
->>> index be9ff96..9d2d142 100644
->>> --- a/testcases/kernel/mem/ksm/ksm02.c
->>> +++ b/testcases/kernel/mem/ksm/ksm02.c
->>> @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
->>>        int lc;
->>>        char *msg;
->>>        int size = 128, num = 3, unit = 1;
->>> -    unsigned long nmask = 0;
->>> +    unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
->>>        unsigned int node;
->>>
->>>        msg = parse_opts(argc, argv, ksm_options, ksm_usage);
->>> @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
->>>            tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->>>
->>>        node = get_a_numa_node(tst_exit);
->>> -    nmask = 1<<  node;
->>> +    nmask[node / (8*sizeof(unsigned long))] = 1<<  (node % (8*sizeof(unsigned
->>> long)));
->>
->> I found '1<<  (node % (8*sizeof(unsigned long)))' is used frequently, I suggest we
->> can create a macro, such as:
->> # define GET_NODE_MASK(nid) 1<<  (nid % (8*sizeof(unsigned long)))
->>
->> also please update the patch, as there's some updates before your patch in lib/mem.c,
->> which makes some conflict with the latest tree.
-> 
-> OK.
-> 
-> Thanks,
-> lz
-> 
->>
->> Thanks,
->> Zhouping
->>
->>>
->>>        setup();
->>>
->>> @@ -103,7 +103,7 @@ int main(int argc, char *argv[])
->>>            Tst_count = 0;
->>>            check_ksm_options(&size,&num,&unit);
->>>
->>> -        if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1) {
->>> +        if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
->>>                if (errno != ENOSYS)
->>>                    tst_brkm(TBROK | TERRNO, cleanup,
->>>                         "set_mempolicy");
->>> diff --git a/testcases/kernel/mem/ksm/ksm04.c
->>> b/testcases/kernel/mem/ksm/ksm04.c
->>> index e4aa417..7829afd 100644
->>> --- a/testcases/kernel/mem/ksm/ksm04.c
->>> +++ b/testcases/kernel/mem/ksm/ksm04.c
->>> @@ -87,7 +87,7 @@ int main(int argc, char *argv[])
->>>        int lc;
->>>        char *msg;
->>>        int size = 128, num = 3, unit = 1;
->>> -    unsigned long nmask = 0;
->>> +    unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
->>>        unsigned int node;
->>>
->>>        msg = parse_opts(argc, argv, ksm_options, ksm_usage);
->>> @@ -95,7 +95,7 @@ int main(int argc, char *argv[])
->>>            tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->>>
->>>        node = get_a_numa_node(tst_exit);
->>> -    nmask = 1<<  node;
->>> +    nmask[node / (8*sizeof(unsigned long))] = 1<<  (node % (8*sizeof(unsigned
->>> long)));
->>>
->>>        setup();
->>>
->>> @@ -105,7 +105,7 @@ int main(int argc, char *argv[])
->>>
->>>            write_memcg();
->>>
->>> -        if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1) {
->>> +        if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
->>>                if (errno != ENOSYS)
->>>                    tst_brkm(TBROK | TERRNO, cleanup,
->>>                         "set_mempolicy");
->>> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
->>> index f095fe1..abe29fd 100644
->>> --- a/testcases/kernel/mem/lib/mem.c
->>> +++ b/testcases/kernel/mem/lib/mem.c
->>> @@ -66,12 +66,12 @@ void oom(int testcase, int mempolicy, int lite)
->>>        int status;
->>>    #if HAVE_NUMA_H&&  HAVE_LINUX_MEMPOLICY_H&&  HAVE_NUMAIF_H \
->>>        &&  HAVE_MPOL_CONSTANTS
->>> -    unsigned long nmask = 0;
->>> +    unsigned long nmask[MAXNODES / (8*sizeof(unsigned long))] = { 0 };
->>>        unsigned int node;
->>>
->>>        if (mempolicy)
->>>            node = get_a_numa_node(cleanup);
->>> -    nmask += 1<<  node;
->>> +    nmask[node / (8*sizeof(unsigned long))] = 1<<  (node % (8*sizeof(unsigned
->>> long)));
->>>    #endif
->>>
->>>        switch (pid = fork()) {
->>> @@ -81,7 +81,7 @@ void oom(int testcase, int mempolicy, int lite)
->>>    #if HAVE_NUMA_H&&  HAVE_LINUX_MEMPOLICY_H&&  HAVE_NUMAIF_H \
->>>        &&  HAVE_MPOL_CONSTANTS
->>>            if (mempolicy)
->>> -            if (set_mempolicy(MPOL_BIND,&nmask, MAXNODES) == -1)
->>> +            if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
->>>                    tst_brkm(TBROK | TERRNO, cleanup,
->>>                         "set_mempolicy");
->>>    #endif
->>> -- 
->>> 1.7.8.110.g4cb5d
->>>
->>> ------------------------------------------------------------------------------
->>> Minimize network downtime and maximize team effectiveness.
->>> Reduce network management and security costs.Learn how to hire
->>> the most talented Cisco Certified professionals. Visit the
->>> Employer Resources Portal
->>> http://www.cisco.com/web/learning/employer_resources/index.html
->>> _______________________________________________
->>> Ltp-list mailing list
->>> Ltp-list@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>>
->>
-> 
-> 
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+
+Tested on serveral machines, all PASSed.
+---
+ testcases/kernel/mem/lib/mem.c   | 13 ++++++++++++-
+ testcases/kernel/mem/oom/oom04.c | 19 +++++++++++++------
+ testcases/kernel/mem/oom/oom05.c | 25 +++++++++++++++----------
+ 3 files changed, 40 insertions(+), 17 deletions(-)
+
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 5397177..b2ad562 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -792,7 +792,18 @@ void write_cpusets(long nd)
+ 	write_cpuset_files(CPATH_NEW, "mems", buf);
+ 
+ 	gather_node_cpus(cpus, nd);
+-	write_cpuset_files(CPATH_NEW, "cpus", cpus);
++	/*
++	 * If the 'nd' node didn't contains any CPUs,
++	 * the CPU0 will be used as the cpuset.cpus.
++	 */
++	if (strlen(cpus) != 0) {
++		write_cpuset_files(CPATH_NEW, "cpus", cpus);
++	} else {
++		tst_resm(TINFO, "No any CPUs in node%ld", nd);
++		tst_resm(TINFO, "Using CPU0 to cpuset.cpus "
++				"for the special scenario");
++		write_cpuset_files(CPATH_NEW, "cpus", "0");
++	}
+ 
+ 	SAFE_FILE_PRINTF(NULL, CPATH_NEW "/tasks", "%d", getpid());
+ }
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 4d3f2f4..40c1198 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	int memnode, ret;
++
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+@@ -93,12 +95,17 @@ void setup(void)
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+-	if (is_numa(cleanup) > 0)
+-		/* For NUMA system, using the first node for cpuset.mems */
+-		write_cpusets(get_a_numa_node(cleanup));
+-	else
+-		/* For nonNUMA system, using node0 for cpuset.mems */
+-		write_cpusets(0);
++
++	/*
++	 * Not any nodes contains memory, so using get_allowed_nodes()
++	 * to get a memory node, the operation is also appropriate for
++	 * NonNUMA system.
++	 */
++	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
++	if (ret < 0)
++		tst_brkm(TBROK, NULL, "Got one memory node failed "
++				      "using get_allowed_nodes()");
++	write_cpusets(memnode);
+ }
+ 
+ void cleanup(void)
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 15feba5..520d657 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -108,24 +108,29 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	int ret, memnode;
++
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
++	overcommit = get_sys_tune("overcommit_memory");
++	set_sys_tune("overcommit_memory", 1, 1);
++
+ 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+ 	write_memcg();
+ 
+-	set_sys_tune("overcommit_memory", 1, 1);
+-
+-	if (is_numa(cleanup))
+-		/* For NUMA system, using the first node for cpuset.mems */
+-		write_cpusets(get_a_numa_node(cleanup));
+-	else
+-		/* For nonNUMA system, using node0 for cpuset.mems */
+-		write_cpusets(0);
+-
+-	overcommit = get_sys_tune("overcommit_memory");
++        /*
++	 * Not any nodes contains memory, so using get_allowed_nodes()
++	 * to get a memory node, the operation is also appropriate for
++	 * NonNUMA system.
++	 */
++	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
++	if (ret < 0)
++		tst_brkm(TBROK, NULL, "Got one memory node failed "
++				      "using get_allowed_nodes()");
++	write_cpusets(memnode);
+ }
+ 
+ void cleanup(void)
+-- 
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
