@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UVGyW-0005sc-3o
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 07:52:16 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UVGyU-0006NQ-MT
-	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 07:52:15 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3P7q87a001543
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Apr 2013 03:52:08 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id r3P7q7VS010478
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Apr 2013 03:52:08 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 25 Apr 2013 09:52:05 +0200
-Message-Id: <fdb7e0ad0d65e56c7a1d6ad41a3e7c51400549a0.1366875899.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] setns01: add CLONE_NEWUSER to test
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UUuK0-0008M6-LD
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 07:40:56 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UUuJy-0000sz-O4
+	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 07:40:56 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3O7ehME014396
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Apr 2013 15:40:43 +0800
+Message-ID: <51778C84.1050500@cn.fujitsu.com>
+Date: Wed, 24 Apr 2013 15:40:52 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <5177866B.8040606@cn.fujitsu.com>
+In-Reply-To: <5177866B.8040606@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/2] syscalls/getitimer: cleanup
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,169 +28,341 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-This adds user type namespaces to errno test. Noteworthy difference
-is in testcase 4, because re-entering this type of namespace is not
-allowed. Test spawns a child, which will have different user ID than
-parent calling setns().
+On 04/24/2013 03:14 PM, DAN LI wrote:
+> 
+> cleanup syscalls/getitimer01.c getitimer02.c
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/getitimer/getitimer01.c | 106 ++++++----------------
+>  testcases/kernel/syscalls/getitimer/getitimer02.c |  96 +++++---------------
+>  2 files changed, 53 insertions(+), 149 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getitimer/getitimer01.c b/testcases/kernel/syscalls/getitimer/getitimer01.c
+> index 56c56e0..54aa5bb 100644
+> --- a/testcases/kernel/syscalls/getitimer/getitimer01.c
+> +++ b/testcases/kernel/syscalls/getitimer/getitimer01.c
+> @@ -1,55 +1,28 @@
+>  /*
+> + * Copyright (c) International Business Machines  Corp., 2001
+>   *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+>   *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+>   *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program;  if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+> 
+>  /*
+> - * NAME
+> - *	getitimer01.c
+> - *
+> - * DESCRIPTION
+> - *	getitimer01 - check that a correct call to getitimer() succeeds
+> - *
+> - * ALGORITHM
+> - *	loop if that option was specified
+> - *	allocate needed space
+> - *	issue the system call
+> - *	check the errno value
+> - *	  issue a PASS message if we get zero
+> - *	otherwise, the tests fails
+> - *	  issue a FAIL message
+> - *	  break any remaining tests
+> - *	  call cleanup
+> - *
+> - * USAGE:  <for command-line>
+> - *  getitimer01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -f   : Turn off functionality Testing.
+> - *	       -i n : Execute test n times.
+> - *	       -I x : Execute test for x seconds.
+> - *	       -P x : Pause for x seconds between iterations.
+> - *	       -t   : Turn on syscall timing.
+> - *
+> - * HISTORY
+> - *	03/2001 - Written by Wayne Boyer
+> - *
+> - * RESTRICTIONS
+> - *	none
+> - */
+> +  HISTORY
+> +    03/2001 - Written by Wayne Boyer
+> +
+> +  TEST ITEMS:
+> +    Check that a correct call to getitimer() succeeds.
+> +*/
+> 
+>  #include "test.h"
+>  #include "usctest.h"
+> @@ -57,8 +30,8 @@
+>  #include <errno.h>
+>  #include <sys/time.h>
+> 
+> -void cleanup(void);
+> -void setup(void);
+> +static void cleanup(void);
+> +static void setup(void);
+> 
+>  char *TCID = "getitimer01";
+>  int TST_TOTAL = 1;
+> @@ -69,35 +42,25 @@ int main(int ac, char **av)
+>  	char *msg;
+>  	struct itimerval *value;
+> 
+> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
 
-CLONE_NEWUSER flag will be used in test only if kernel is compiled
-with CONFIG_USER_NS=y and provides /proc/<pid>/ns/user.
+ERROR: do not use assignment in if condition
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/setns/setns.h   |    3 +
- testcases/kernel/syscalls/setns/setns01.c |   77 ++++++++++++++++++++++++++++-
- 2 files changed, 78 insertions(+), 2 deletions(-)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> -	}
+> -
+> -	setup();		/* global setup */
+> 
+> -	/* The following loop checks looping state if -i option given */
+> +	setup();
+> 
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		/* reset tst_count in case we are looping */
+>  		tst_count = 0;
+> 
+>  		/* allocate space for the itimerval structure */
+> -
+> -		if ((value = (struct itimerval *)malloc((size_t)
+> -							sizeof(struct
+> -							       itimerval))) ==
+> -		    NULL) {
+> +		value = (struct itimerval *)malloc(
+> +					(size_t)sizeof(struct itimerval));
 
-diff --git a/testcases/kernel/syscalls/setns/setns.h b/testcases/kernel/syscalls/setns/setns.h
-index 23bdb2e..df64013 100644
---- a/testcases/kernel/syscalls/setns/setns.h
-+++ b/testcases/kernel/syscalls/setns/setns.h
-@@ -76,6 +76,9 @@ static void init_available_ns(void)
- #if defined(CLONE_NEWUTS)
- 	init_ns_type(CLONE_NEWUTS, "uts");
- #endif
-+#if defined(CLONE_NEWUSER)
-+	init_ns_type(CLONE_NEWUSER, "user");
-+#endif
- }
- 
- static void close_ns_fds(void)
-diff --git a/testcases/kernel/syscalls/setns/setns01.c b/testcases/kernel/syscalls/setns/setns01.c
-index 74525b9..67056c8 100644
---- a/testcases/kernel/syscalls/setns/setns01.c
-+++ b/testcases/kernel/syscalls/setns/setns01.c
-@@ -28,6 +28,7 @@
- #include <sys/stat.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
-+#include <sys/wait.h>
- #include <errno.h>
- #include <sched.h>
- #include <pwd.h>
-@@ -42,6 +43,7 @@ char *TCID = "setns01";
- 
- #if defined(__NR_setns)
- #include "setns.h"
-+#define CHILD_STACK_SIZE (1024*1024)
- 
- struct testcase_t {
- 	const char *msg;
-@@ -50,6 +52,9 @@ struct testcase_t {
- 	int exp_ret;
- 	int exp_errno;
- 	int skip;
-+	int child_pid;
-+	void *child_stack;
-+	int pipefd[2];
- 	void (*setup) (struct testcase_t *, int i);
- 	void (*cleanup) (struct testcase_t *);
- };
-@@ -105,6 +110,17 @@ static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
- static const char nobody_uid[] = "nobody";
- static struct passwd *ltpuser;
- 
-+static void wait4child(int child_pid)
-+{
-+	int status;
-+	if (waitpid(child_pid, &status, 0) == -1)
-+		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+		tst_resm(TFAIL, "child returns %d", status);
-+	else
-+		tst_resm(TPASS, "child finished succesfully");
-+}
-+
- static void setup0(struct testcase_t *t, int i)
- {
- 	t->ns_type = ns_types[i];
-@@ -140,19 +156,76 @@ static void setup3(struct testcase_t *t, int i)
- 	t->ns_type = ns_types[(i+1) % ns_total];
- }
- 
-+static int do_child04(void *arg)
-+{
-+	int dummy;
-+	struct testcase_t *t = (struct testcase_t *) arg;
-+
-+	read(t->pipefd[0], &dummy, 1);
-+	return 0;
-+}
-+
- static void setup4(struct testcase_t *t, int i)
- {
--	if (seteuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "seteuid failed");
-+	int tmp, ns_user_fd;
- 
- 	t->fd = ns_fds[i];
- 	t->ns_type = ns_types[i];
-+	t->child_stack = NULL;
-+	t->child_pid = 0;
-+
-+#if defined(CLONE_NEWUSER)
-+	/* re-entering same user ns is not allowed, we need new one */
-+	ns_user_fd = get_ns_fd(getpid(), "user");
-+	if (t->ns_type == CLONE_NEWUSER && ns_user_fd != -1) {
-+		t->child_stack = malloc(CHILD_STACK_SIZE);
-+		if (t->child_stack == NULL)
-+			tst_brkm(TBROK, cleanup, "Cannot allocate stack");
-+
-+		if (pipe(t->pipefd) == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "pipe");
-+
-+		tmp = ltp_clone(SIGCHLD|CLONE_NEWUSER, do_child04, t,
-+			CHILD_STACK_SIZE, t->child_stack);
-+		if (tmp == -1)
-+			tst_brkm(TBROK|TERRNO, cleanup, "ltp_clone");
-+		t->child_pid = tmp;
-+
-+		t->fd = get_ns_fd(t->child_pid, "user");
-+		tst_resm(TINFO, "child's ns/user fd %d", t->fd);
-+		if (t->fd == -1) {
-+			write(t->pipefd[1], "", 1);
-+			wait4child(t->child_pid);
-+			tst_brkm(TBROK, cleanup, "could not open child's"
-+				"/proc/pid/ns/user");
-+		}
-+	}
-+	close(ns_user_fd);
-+#endif
-+	if (seteuid(ltpuser->pw_uid) == -1) {
-+		if (t->child_pid) {
-+			tmp = errno;
-+			write(t->pipefd[1], "", 1);
-+			wait4child(t->child_pid);
-+			errno = tmp;
-+		}
-+		tst_brkm(TBROK | TERRNO, cleanup, "seteuid failed");
-+	}
- }
- 
- static void cleanup4(struct testcase_t *t)
- {
- 	if (seteuid(0) == -1)
- 		tst_brkm(TBROK | TERRNO, NULL, "seteuid restore failed");
-+	if (t->child_pid) {
-+		/* signal child to exit */
-+		write(t->pipefd[1], "", 1);
-+		wait4child(t->child_pid);
-+		free(t->child_stack);
-+		close(t->fd);
-+		close(t->pipefd[0]);
-+		close(t->pipefd[1]);
-+	}
- }
- 
- static void test_setns(struct testcase_t *t)
--- 
-1.7.1
+The type cast here is not necessary, right?
+
+
+Thanks,
+Wanlong Gao
+
+
+> +		if (value == NULL)
+>  			tst_brkm(TBROK, cleanup, "value malloc failed");
+> -		}
+> -
+> -		/* call the system call with the TEST() macro */
+> 
+>  		TEST(getitimer(ITIMER_REAL, value));
+> 
+> -		if (TEST_RETURN != 0) {
+> +		if (TEST_RETURN != 0)
+>  			tst_resm(TFAIL, "call failed - errno = %d - %s",
+>  				 TEST_ERRNO, strerror(TEST_ERRNO));
+> -		}
+> 
+>  		if (STD_FUNCTIONAL_TEST) {
+> 
+> @@ -122,27 +85,14 @@ int main(int ac, char **av)
+>  	tst_exit();
+>  }
+> 
+> -/*
+> - * setup() - performs all the ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> +static void setup(void)
+>  {
+> -
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> 
+>  	TEST_PAUSE;
+>  }
+> 
+> -/*
+> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
+> - * 	       or premature exit.
+> - */
+> -void cleanup(void)
+> +static void cleanup(void)
+>  {
+> -	/*
+> -	 * print timing stats if that option was specified.
+> -	 * print errno log if that option was specified.
+> -	 */
+>  	TEST_CLEANUP;
+> -
+>  }
+> diff --git a/testcases/kernel/syscalls/getitimer/getitimer02.c b/testcases/kernel/syscalls/getitimer/getitimer02.c
+> index fcb3d6c..eab40ae 100644
+> --- a/testcases/kernel/syscalls/getitimer/getitimer02.c
+> +++ b/testcases/kernel/syscalls/getitimer/getitimer02.c
+> @@ -1,55 +1,30 @@
+>  /*
+> + * Copyright (c) International Business Machines  Corp., 2001
+>   *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+>   *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+>   *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program;  if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+> 
+>  /*
+> - * NAME
+> - *	getitimer02.c
+> - *
+> - * DESCRIPTION
+> - *	getitimer02 - check that a getitimer() call fails as expected
+> - *		      with an incorrect second argument.
+> - *
+> - * ALGORITHM
+> - *	loop if that option was specified
+> - *	call getitimer() with an incorrect second argument.
+> - *	check the errno value
+> - *	  issue a PASS message if we get EFAULT - errno 14
+> - *	otherwise, the tests fails
+> - *	  issue a FAIL message
+> - *	  break any remaining tests
+> - *	  call cleanup
+> - *
+> - * USAGE:  <for command-line>
+> - *  getitimer02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -e   : Turn on errno logging.
+> - *	       -i n : Execute test n times.
+> - *	       -I x : Execute test for x seconds.
+> - *	       -P x : Pause for x seconds between iterations.
+> - *	       -t   : Turn on syscall timing.
+> - *
+> - * HISTORY
+> - *	03/2001 - Written by Wayne Boyer
+> - *
+> - * RESTRICTIONS
+> - *	none
+> - */
+> +  HISTORY
+> +  03/2001 - Written by Wayne Boyer
+> +
+> +  TEST ITEMS:
+> +  Check that a getitimer() call fails as expected
+> +  with an incorrect second argument.
+> +*/
+> +
+> 
+>  #include "test.h"
+>  #include "usctest.h"
+> @@ -62,8 +37,8 @@ int TST_TOTAL = 1;
+> 
+>  #if !defined(UCLINUX)
+> 
+> -void cleanup(void);
+> -void setup(void);
+> +static void cleanup(void);
+> +static void setup(void);
+> 
+>  int exp_enos[] = { EFAULT, 0 };
+> 
+> @@ -76,19 +51,11 @@ int main(int ac, char **av)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>  	}
+> 
+> -	setup();		/* global setup */
+> -
+> -	/* The following loop checks looping state if -i option given */
+> +	setup();
+> 
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		/* reset tst_count in case we are looping */
+>  		tst_count = 0;
+> 
+> -		/*
+> -		 * issue the system call with the TEST() macro
+> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+> -		 */
+> -
+>  		/* call with a bad address */
+>  		TEST(getitimer(ITIMER_REAL, (struct itimerval *)-1));
+> 
+> @@ -118,12 +85,8 @@ int main(int ac, char **av)
+>  	tst_exit();
+>  }
+> 
+> -/*
+> - * setup() - performs all the ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> +static void setup(void)
+>  {
+> -
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> 
+>  	TEST_EXP_ENOS(exp_enos);
+> @@ -131,18 +94,9 @@ void setup(void)
+>  	TEST_PAUSE;
+>  }
+> 
+> -/*
+> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
+> - * 	       or premature exit.
+> - */
+> -void cleanup(void)
+> +static void cleanup(void)
+>  {
+> -	/*
+> -	 * print timing stats if that option was specified.
+> -	 * print errno log if that option was specified.
+> -	 */
+>  	TEST_CLEANUP;
+> -
+>  }
+> 
+>  #else
+> 
 
 
 ------------------------------------------------------------------------------
