@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UVydU-0001Js-75
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:29:28 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UVBVH-0007KA-3W
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 02:01:43 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UVydT-0006n7-1O
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:29:28 +0000
-Received: from vapier.localnet (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 241F233DF68
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 27 Apr 2013 06:29:15 +0000 (UTC)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UVBVG-0000kP-5L
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 02:01:43 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 27 Apr 2013 02:29:20 -0400
-References: <8a051675195eceda293d88d157163083d7886570.1366724682.git.jstancek@redhat.com>
-	<20130425143406.GA3084@rei.suse.cz>
-	<201304251532.46436.vapier@gentoo.org>
-In-Reply-To: <201304251532.46436.vapier@gentoo.org>
+Date: Wed, 24 Apr 2013 22:01:29 -0400
+References: <5177684F.7060204@cn.fujitsu.com>
+	<201304241207.31644.vapier@gentoo.org>
+	<20130425011303.GB30114@us.ibm.com>
+In-Reply-To: <20130425011303.GB30114@us.ibm.com>
 MIME-Version: 1.0
-Message-Id: <201304270229.21748.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] remove linux_syscall_numbers.h from tree
+Message-Id: <201304242201.31244.vapier@gentoo.org>
+Subject: Re: [LTP] question about a license
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,90 +26,114 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1746611133267694472=="
+Content-Type: multipart/mixed; boundary="===============0291047345290918814=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: James Takahashi <takahash@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, wboyer@us.ibm.com
 
---===============1746611133267694472==
-Content-Type: multipart/signed; boundary="nextPart2154465.encs2ogFVT";
+--===============0291047345290918814==
+Content-Type: multipart/signed; boundary="nextPart8557961.JgqQgoh0UP";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart2154465.encs2ogFVT
+--nextPart8557961.JgqQgoh0UP
 Content-Type: Text/Plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Thursday 25 April 2013 15:32:45 Mike Frysinger wrote:
-> On Thursday 25 April 2013 10:34:07 chrubis@suse.cz wrote:
-> > > > > is keeping it in the tree a big deal ?  i think it's pretty common
-> > > > > for people to go into specific subdirs and run `make` and today,
-> > > > > our subdirs don't declare a dependency on this file so it'll get
-> > > > > automatically regenerated (nor do i think they should even
-> > > > > bother).
+On Wednesday 24 April 2013 21:13:04 James Takahashi wrote:
+> On Wed, 24 Apr 2013 12:07, Mike Frysinger <vapier@gentoo.org> wrote:
+> > On Wednesday 24 April 2013 05:32:56 chrubis@suse.cz wrote:
+> > > > When trying to cleanup syscalls/getitimer03.c, i meet a strange
+> > > > license. It says:
 > > > >=20
-> > > > You need to regenerate the file after each change to the *.in files,
-> > > > and that means that people will forget from time to time.
+> > > > *******************************************************************=
+**
+> > > >=20
+> > > > /*
+> > > >=20
+> > > >  * $Copyright: $
+> > > >  * Copyright (c) 1984-2000
+> > > >  * Sequent Computer Systems, Inc.   All rights reserved.
+> > > >  *$
+> > > >  * This software is furnished under a license and may be used
+> > > >  * only in accordance with the terms of that license and with the
+> > > >  * inclusion of the above copyright notice.   This software may not
+> > > >  * be provided or otherwise made available to, or used by, any
+> > > >  * other person.  No title to or ownership of the software is
+> > > >  * hereby transferred.
+> > > >  */
+> > > >=20
+> > > > *******************************************************************=
+**
+> > > >=20
+> > > > Here is my question,
+> > > > 1. Can i change this license to GPL2? or
+> > > > 2. Can i modify code of the case under this license?
+> > > >=20
+> > > > Could you please provide me any pointer/suggstion. :)
 > > >=20
-> > > so people aren't testing their commits ;)
+> > > Given that the testcases is a few lines that calls getitimer() with
+> > > invalid value, I would play safe and rewrite it from scratch.
+> > >=20
+> > > Anybody has different opinion?
 > >=20
-> > Aparently they don't, I've reruned the script and the result is that git
-> > diff shows 6125 lines of changes. And the last time the *.in files were
-> > changed was 2010...
+> > there are four such files:
+> > 	testcases/kernel/syscalls/getitimer/getitimer03.c
+> > 	testcases/kernel/syscalls/getresgid/getresgid01.c
+> > 	testcases/kernel/syscalls/nftw/Makefile
+> > 	testcases/kernel/syscalls/nftw/nftw64.h
 > >=20
-> > Which is another reason why we need proper solution.
+> > the Makefile has at least be rewritten enough that i think we can change
+> > things as the code has largely been written by Garrett Cooper now
 > >=20
-> > What about we:
-> >  1) Commit the up to date linux_syscall_numbers.h
-> > =20
-> >  2) Add linux_syscall_numbers.h dependency on *.in
-> > =20
-> >     - that would regenerate the file on change, but only
-> >    =20
-> >       from the top make and will catch the change
-> >       most of the time
+> > if we can't locate someone (Wayne Boyer?) for the tests, i suggest
+> > looking at what they test (just read the comment block), then delete the
+> > file and write a new test from scratch.
 > >=20
-> > Which would IMHO be good short term fix and figure out something better
-> > later.
+> > the header file i think might be accidental as none of the nftw files
+> > look that way.  instead, they have the ibm copyright.  so i'd just
+> > change it to that. -mike
 >=20
-> it used to depend on the *.in files (i added it way back in 2008 with
-> d885d4ae1037aa4aa8bb12f374776188867903d3 and
-> 89ba1191d6c592e2f6d16824caa78b09fc714811).  looks like the overhaul in
-> commit ef77253961f909f87e82e6d2b620e87af33e9665 broke that.  in the follow
-> up 1bf1c2ad7b4e25c4f09479378314c9a4dd2b3a78, the commit message indicates
-> it had meant to fix this, but it seems to not have.
+> Wayne is still at IBM (Sequent was acquired by IBM).  I have CC'd him
+> on this thread.
 >=20
-> so yes, let's add *.in and commit the regenerated file.
+> If you'd elaborate on what sort of permission/assistance you need for
+> this copyright issue, I'm sure Wayne would be happy to cooperate.
 
-i've fixed & pushed this now
+the code says Wayne wrote it.  if Wayne can confirm that, and if he can con=
+firm=20
+that we want to change the copyright to the standard ibm ones (found in man=
+y=20
+other files) and license it similarly.
 =2Dmike
 
---nextPart2154465.encs2ogFVT
+--nextPart8557961.JgqQgoh0UP
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.17 (GNU/Linux)
 
-iQIcBAABAgAGBQJRe3BBAAoJEEFjO5/oN/WBPXkQAMC9aE4mWnJctuVz1oaAB9As
-LmCVrUyiFJfXJVImGQ39+y5A1pIVctmTop2CgCfXKvLCr4jly+3fEK+7GI2HwFn4
-sREa1SprRrT+XmCuiExjF4aMiE8iBQBOKCXv/etUzuRGF3pgZ7z0whph4LFEDBnK
-lBLy0KjlpreTLdejBA3mTE2yFkRJJS0lPfPP/I6oV3T5H8xLySrF5Giqgr+4+frH
-BUpcjy0IHJTAmBm7j+osweBfqkszU9lUZGewZYzFbL2p11RGePm+LJ6pUCMPxuUg
-6QsjyU2GE+1Q3/Xw3AYf6ErcmSpnOvxR2nX6v0RwsUwfdypNvAyqo5Hk+K0lyQGz
-vWHcP2QzswedR6TZnDZW0V5h2YJFelurbjK0/ymS5fKByB5iPUrpicgMYO1IdbiX
-Z5pojHAZHW7ZDaZq0Y4RB6CBDNIRG1d+RKszMGq/Ut8MD0xEAGhJd0VuYHFKxM5z
-IIanyZRL7CU+rV6hhpZVZe2lu6OSbXSgJWTdymK27JvV2kkFnr7tpgjGThX+cM3I
-jeVUWHdFxIFjCx15DKliIepLapJKGuIKtXGzwiWr42vG9yZ6h4hsjnlVlbJ2ug9s
-GOdJL8eOe0F4OrQFgPj11+N8ATgcI442mM2YE8O/D0ULNwJsE0+omdZMnieT5OnH
-k9T+Obkg0XRw64TDpW3z
-=MYHG
+iQIcBAABAgAGBQJReI57AAoJEEFjO5/oN/WByVEP/izx5gmxHuAPUhEnZ2Akf4cd
+41kzTt9ZeW7F0w6IsKx8d7CAuqDF4VvMKpNEuuk3in9qMT8wG/r24acxmk5I08WN
+ZN77fvW5lGhGhXYK9Z4hyUaAN+mDJEqrRnaqSzYrU5N7DFG2awgQjnwhIo2B+pK3
+Nywy6I9SGT2wBktiumOfV6LfNUmXzZMNPQJsAkwMJm/+NWIGJqCa8LBNDNInBrod
+i2eUy43AuLcap6WXuPCYhEsdrI/EV8sdzU6YfF6fqRMEhJ01bwPJwMN7ecslhz+F
+aqqNzSLdhGcV9lJNhrD/RZ2jGmFdXGZR1kQSnjejL5nGibosqQUQ7tiAFsJ/J9Ai
+Wv3nrnqnxbr9kVXaC23Td7FgYlmRqD2228Sp3rlFFVu1hSpSGcUI54k66jX6mro/
+1lNkHiL76yEEZp1DwslyJZyH/Zk0SuYeQ5l4/n/rGEo+pdcOGfu5Ey2cX60FbqE8
+mm7/EwLH6yP9OLBynNPt5Rb2M7e8hJ5IIDqb+W8rWQW/6W7Ja4Q0IeTUYWvgvBf/
+45/79ZsM808bwWf34pXqJ/kN8tk38l7KB/bugvuQ7qAl7yueCHavX+5idJOKMhYq
+uc1FN1Y3/tH7/uVO52dZkttdxG6uWVsOy9IpMfMFilwcZ+rsGtaQQaOEAn6tKoN8
+Iq4dqpJIlLD5uku1Tbu7
+=nNPc
 -----END PGP SIGNATURE-----
 
---nextPart2154465.encs2ogFVT--
+--nextPart8557961.JgqQgoh0UP--
 
 
---===============1746611133267694472==
+--===============0291047345290918814==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -125,7 +145,7 @@ New Relic is the only SaaS-based application performance monitoring service
 that delivers powerful full stack analytics. Optimize and monitor your
 browser, app, & servers with just a few lines of code. Try New Relic
 and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
---===============1746611133267694472==
+--===============0291047345290918814==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -136,5 +156,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============1746611133267694472==--
+--===============0291047345290918814==--
 
