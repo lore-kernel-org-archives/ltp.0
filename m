@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1USh6K-0004hM-E8
-	for ltp-list@lists.sourceforge.net; Thu, 18 Apr 2013 05:09:40 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UVH7J-0007I9-Nb
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 08:01:21 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1USh6I-0001oH-9e
-	for ltp-list@lists.sourceforge.net; Thu, 18 Apr 2013 05:09:40 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3I59Ufh029794
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Apr 2013 13:09:31 +0800
-Message-ID: <516F7F88.30707@cn.fujitsu.com>
-Date: Thu, 18 Apr 2013 13:07:20 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	id 1UVH7H-0008Vx-KU
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 08:01:21 +0000
+Message-ID: <5178E2CF.3030502@cn.fujitsu.com>
+Date: Thu, 25 Apr 2013 16:01:19 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]syscalls/adjtimex: Test for mode ADJ_OFFSET_SINGLESHOT
+References: <fdb7e0ad0d65e56c7a1d6ad41a3e7c51400549a0.1366875899.git.jstancek@redhat.com>
+In-Reply-To: <fdb7e0ad0d65e56c7a1d6ad41a3e7c51400549a0.1366875899.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] setns01: add CLONE_NEWUSER to test
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,181 +28,177 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On 04/25/2013 03:52 PM, Jan Stancek wrote:
+> This adds user type namespaces to errno test. Noteworthy difference
+> is in testcase 4, because re-entering this type of namespace is not
+> allowed. Test spawns a child, which will have different user ID than
+> parent calling setns().
+> 
+> CLONE_NEWUSER flag will be used in test only if kernel is compiled
+> with CONFIG_USER_NS=y and provides /proc/<pid>/ns/user.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Additional test for mode ADJ_OFFSET_SINGLESHOT.
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/adjtimex/adjtimex01.c | 107 +++++++++---------------
- 1 file changed, 38 insertions(+), 69 deletions(-)
+> ---
+>  testcases/kernel/syscalls/setns/setns.h   |    3 +
+>  testcases/kernel/syscalls/setns/setns01.c |   77 ++++++++++++++++++++++++++++-
+>  2 files changed, 78 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/setns/setns.h b/testcases/kernel/syscalls/setns/setns.h
+> index 23bdb2e..df64013 100644
+> --- a/testcases/kernel/syscalls/setns/setns.h
+> +++ b/testcases/kernel/syscalls/setns/setns.h
+> @@ -76,6 +76,9 @@ static void init_available_ns(void)
+>  #if defined(CLONE_NEWUTS)
+>  	init_ns_type(CLONE_NEWUTS, "uts");
+>  #endif
+> +#if defined(CLONE_NEWUSER)
+> +	init_ns_type(CLONE_NEWUSER, "user");
+> +#endif
+>  }
+>  
+>  static void close_ns_fds(void)
+> diff --git a/testcases/kernel/syscalls/setns/setns01.c b/testcases/kernel/syscalls/setns/setns01.c
+> index 74525b9..67056c8 100644
+> --- a/testcases/kernel/syscalls/setns/setns01.c
+> +++ b/testcases/kernel/syscalls/setns/setns01.c
+> @@ -28,6 +28,7 @@
+>  #include <sys/stat.h>
+>  #include <sys/syscall.h>
+>  #include <sys/types.h>
+> +#include <sys/wait.h>
+>  #include <errno.h>
+>  #include <sched.h>
+>  #include <pwd.h>
+> @@ -42,6 +43,7 @@ char *TCID = "setns01";
+>  
+>  #if defined(__NR_setns)
+>  #include "setns.h"
+> +#define CHILD_STACK_SIZE (1024*1024)
+>  
+>  struct testcase_t {
+>  	const char *msg;
+> @@ -50,6 +52,9 @@ struct testcase_t {
+>  	int exp_ret;
+>  	int exp_errno;
+>  	int skip;
+> +	int child_pid;
+> +	void *child_stack;
+> +	int pipefd[2];
+>  	void (*setup) (struct testcase_t *, int i);
+>  	void (*cleanup) (struct testcase_t *);
+>  };
+> @@ -105,6 +110,17 @@ static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
+>  static const char nobody_uid[] = "nobody";
+>  static struct passwd *ltpuser;
+>  
+> +static void wait4child(int child_pid)
+> +{
+> +	int status;
+> +	if (waitpid(child_pid, &status, 0) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
+> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +		tst_resm(TFAIL, "child returns %d", status);
+> +	else
+> +		tst_resm(TPASS, "child finished succesfully");
+> +}
+> +
+>  static void setup0(struct testcase_t *t, int i)
+>  {
+>  	t->ns_type = ns_types[i];
+> @@ -140,19 +156,76 @@ static void setup3(struct testcase_t *t, int i)
+>  	t->ns_type = ns_types[(i+1) % ns_total];
+>  }
+>  
+> +static int do_child04(void *arg)
+> +{
+> +	int dummy;
+> +	struct testcase_t *t = (struct testcase_t *) arg;
+> +
+> +	read(t->pipefd[0], &dummy, 1);
+> +	return 0;
+> +}
+> +
+>  static void setup4(struct testcase_t *t, int i)
+>  {
+> -	if (seteuid(ltpuser->pw_uid) == -1)
+> -		tst_brkm(TBROK | TERRNO, NULL, "seteuid failed");
+> +	int tmp, ns_user_fd;
+>  
+>  	t->fd = ns_fds[i];
+>  	t->ns_type = ns_types[i];
+> +	t->child_stack = NULL;
+> +	t->child_pid = 0;
+> +
+> +#if defined(CLONE_NEWUSER)
+> +	/* re-entering same user ns is not allowed, we need new one */
+> +	ns_user_fd = get_ns_fd(getpid(), "user");
+> +	if (t->ns_type == CLONE_NEWUSER && ns_user_fd != -1) {
+> +		t->child_stack = malloc(CHILD_STACK_SIZE);
+> +		if (t->child_stack == NULL)
+> +			tst_brkm(TBROK, cleanup, "Cannot allocate stack");
+> +
+> +		if (pipe(t->pipefd) == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "pipe");
+> +
+> +		tmp = ltp_clone(SIGCHLD|CLONE_NEWUSER, do_child04, t,
+> +			CHILD_STACK_SIZE, t->child_stack);
+> +		if (tmp == -1)
+> +			tst_brkm(TBROK|TERRNO, cleanup, "ltp_clone");
+> +		t->child_pid = tmp;
+> +
+> +		t->fd = get_ns_fd(t->child_pid, "user");
+> +		tst_resm(TINFO, "child's ns/user fd %d", t->fd);
+> +		if (t->fd == -1) {
+> +			write(t->pipefd[1], "", 1);
+> +			wait4child(t->child_pid);
+> +			tst_brkm(TBROK, cleanup, "could not open child's"
+> +				"/proc/pid/ns/user");
+> +		}
+> +	}
+> +	close(ns_user_fd);
+> +#endif
+> +	if (seteuid(ltpuser->pw_uid) == -1) {
+> +		if (t->child_pid) {
+> +			tmp = errno;
+> +			write(t->pipefd[1], "", 1);
+> +			wait4child(t->child_pid);
+> +			errno = tmp;
+> +		}
+> +		tst_brkm(TBROK | TERRNO, cleanup, "seteuid failed");
+> +	}
+>  }
+>  
+>  static void cleanup4(struct testcase_t *t)
+>  {
+>  	if (seteuid(0) == -1)
+>  		tst_brkm(TBROK | TERRNO, NULL, "seteuid restore failed");
+> +	if (t->child_pid) {
+> +		/* signal child to exit */
+> +		write(t->pipefd[1], "", 1);
+> +		wait4child(t->child_pid);
+> +		free(t->child_stack);
+> +		close(t->fd);
+> +		close(t->pipefd[0]);
+> +		close(t->pipefd[1]);
+> +	}
+>  }
+>  
+>  static void test_setns(struct testcase_t *t)
+> 
 
-diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-index 000a979..f55f33b 100644
---- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-+++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-@@ -12,57 +12,18 @@
-  * You should have received a copy of the GNU General Public License along
-  * with this program; if not, write the Free Software Foundation, Inc.,
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-  */
--/**********************************************************
-- *
-- *    TEST IDENTIFIER	: adjtimex01
-- *
-- *    EXECUTED BY	: root / superuser
-- *
-- *    TEST TITLE	: Basic test for adjtimex(2)
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This is a Phase I test for the adjtimex(2) system call.
-- *	It is intended to provide a limited exposure of the system call.
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *	  Save current parameters in tim_save
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  call adjtimex with saved timex structure
-- *	  Check return value is between 0 & 5
-- *		Test passed
-- *	  Otherwise
-- *		Test failed
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- * adjtimex01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *			where,  -c n : Run n copies concurrently.
-- *				-e   : Turn on errno logging.
-- *				-h   : Show help screen
-- *				-f   : Turn off functional testing
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
-- *
-- ****************************************************************/
-+
-+/*
-+  AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
-+  EXECUTED BY: root / superuser
-+
-+  TEST ITEMS:
-+   1. Check to see if adjtimex succeed with mode combination :
-+      ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR |
-+      ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK
-+   2. Check to see if adjtimex succeed with mode ADJ_OFFSET_SINGLESHOT
-+*/
-
- #if defined UCLINUX && !__THROW
- /* workaround for libc bug causing failure in sys/timex.h */
-@@ -74,20 +35,19 @@
- #include "test.h"
- #include "usctest.h"
-
--#define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
--	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
-+#define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
-+	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
-
--static void setup();
--static void cleanup();
-+static void setup(void);
-+static void cleanup(void);
-
- char *TCID = "adjtimex01";
--int TST_TOTAL = 1;
-+int TST_TOTAL = 2;
-
- static struct timex tim_save;
-
- int main(int ac, char **av)
- {
--
- 	int lc;
- 	char *msg;
-
-@@ -106,7 +66,26 @@ int main(int ac, char **av)
- 		TEST(adjtimex(&tim_save));
-
- 		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
--			tst_resm(TPASS, "adjtimex() returned %ld", TEST_RETURN);
-+			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
-+				 SET_MODE, TEST_RETURN);
-+		} else {
-+			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
-+				 "returned %ld", TEST_RETURN);
-+		}
-+	}
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
-+		tst_count = 0;
-+
-+		/* Call adjtimex(2) */
-+		tim_save.modes = ADJ_OFFSET_SINGLESHOT;
-+
-+		TEST(adjtimex(&tim_save));
-+
-+		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
-+			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
-+				 ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
- 		} else {
- 			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
- 				 "returned %ld", TEST_RETURN);
-@@ -118,10 +97,8 @@ int main(int ac, char **av)
- 	tst_exit();
- }
-
--/* setup() - performs all ONE TIME setup for this test */
--void setup()
-+static void setup(void)
- {
--
- 	tst_require_root(NULL);
-
- 	tim_save.modes = 0;
-@@ -136,15 +113,7 @@ void setup()
- 			 "failed to save current parameters");
- }
-
--/*
-- *cleanup() -  performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
--void cleanup()
-+static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
- }
--- 
-1.8.1
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
