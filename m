@@ -1,27 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UP5l1-0000JP-Ll
-	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 06:40:47 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UP5ky-0005R3-Hh
-	for ltp-list@lists.sourceforge.net; Mon, 08 Apr 2013 06:40:47 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r386edkT018422
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Apr 2013 02:40:39 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Mon,  8 Apr 2013 14:38:32 +0800
-Message-Id: <e2ecc5924651c64152b3b65ba767a614b54bc56e.1365402799.git.zliu@redhat.com>
-In-Reply-To: <6b9bfe6944adbbb2963d6e18cad373a309956f90.1365402799.git.zliu@redhat.com>
-References: <6b9bfe6944adbbb2963d6e18cad373a309956f90.1365402799.git.zliu@redhat.com>
-In-Reply-To: <cover.1365402799.git.zliu@redhat.com>
-References: <cover.1365402799.git.zliu@redhat.com>
-Subject: [LTP] [PATCH 2/3] lib/mem: introduce a new function
-	set_global_mempolicy()
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UVNEW-0000mJ-EK
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 14:33:12 +0000
+Date: Thu, 25 Apr 2013 16:34:07 +0200
+From: chrubis@suse.cz
+Message-ID: <20130425143406.GA3084@rei.suse.cz>
+References: <8a051675195eceda293d88d157163083d7886570.1366724682.git.jstancek@redhat.com>
+	<201304231211.28293.vapier@gentoo.org> <20130423164641.GI28044@rei>
+	<201304231342.02090.vapier@gentoo.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <201304231342.02090.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] remove linux_syscall_numbers.h from tree
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,55 +23,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Fork out a new function set_global_mempolicy() from the
-previous testoom() func, which will be useful for other func.
+Hi!
+> > > is keeping it in the tree a big deal ?  i think it's pretty common for
+> > > people to go into specific subdirs and run `make` and today, our
+> > > subdirs don't declare a dependency on this file so it'll get
+> > > automatically regenerated (nor do i think they should even bother).
+> > 
+> > You need to regenerate the file after each change to the *.in files,
+> > and that means that people will forget from time to time.
+> 
+> so people aren't testing their commits ;)
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/mem/lib/mem.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Aparently they don't, I've reruned the script and the result is that git
+diff shows 6125 lines of changes. And the last time the *.in files were
+changed was 2010...
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 491afe8..39fa99a 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -91,7 +91,7 @@ void oom(int testcase, int lite)
- 	}
- }
- 
--void testoom(int mempolicy, int lite)
-+static void set_global_mempolicy(int mempolicy)
- {
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
-@@ -133,6 +133,11 @@ void testoom(int mempolicy, int lite)
- 			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
- 	}
- #endif
-+}
-+
-+void testoom(int mempolicy, int lite)
-+{
-+	set_global_mempolicy(mempolicy);
- 
- 	tst_resm(TINFO, "start normal OOM testing.");
- 	oom(NORMAL, lite);
+Which is another reason why we need proper solution.
+
+
+What about we:
+
+ 1) Commit the up to date linux_syscall_numbers.h
+
+ 2) Add linux_syscall_numbers.h dependency on *.in
+    
+    - that would regenerate the file on change, but only
+      from the top make and will catch the change
+      most of the time
+
+Which would IMHO be good short term fix and figure out something better
+later.
+
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Minimize network downtime and maximize team effectiveness.
-Reduce network management and security costs.Learn how to hire 
-the most talented Cisco Certified professionals. Visit the 
-Employer Resources Portal
-http://www.cisco.com/web/learning/employer_resources/index.html
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
