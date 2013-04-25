@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UWhJr-00019W-Ip
-	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:12:11 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UWhJq-0003CX-AY
-	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:12:11 +0000
-Date: Mon, 29 Apr 2013 02:12:02 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1362519405.3534552.1367215922797.JavaMail.root@redhat.com>
-In-Reply-To: <201304282008.05044.vapier@gentoo.org>
-References: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
-	<201304270204.34020.vapier@gentoo.org>
-	<1655733918.3290321.1367044489461.JavaMail.root@redhat.com>
-	<201304282008.05044.vapier@gentoo.org>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UVCWk-0008Ra-Bo
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 03:07:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UVCWf-0007Rf-S0
+	for ltp-list@lists.sourceforge.net; Thu, 25 Apr 2013 03:07:18 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3P370Gx022546
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Apr 2013 11:07:00 +0800
+Message-ID: <51789D50.1080301@cn.fujitsu.com>
+Date: Thu, 25 Apr 2013 11:04:48 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
+Subject: [LTP]  [PATCH v3 1/2] syscalls/getitimer: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,95 +28,347 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
 
+1. Remove redundant comments
 
------ Original Message -----
-> From: "Mike Frysinger" <vapier@gentoo.org>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Monday, April 29, 2013 8:08:03 AM
-> Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
-> 
-> On Saturday 27 April 2013 02:34:49 Zhouping Liu wrote:
-> > From: "Mike Frysinger" <vapier@gentoo.org>
-> > > On Saturday 27 April 2013 00:23:14 Zhouping Liu wrote:
-> > > > sub-cpuset cgroup only contains CPUs or memory in one node, but
-> > > 
-> > > only contains -> to only contain
-> > 
-> > why 'contain', I think it should be 'contains', isn't it?
-> 
-> when you add the "to", it changes to "contain"
+2. Revise code to follow ltp-code-style
 
-yes, I didn't catch the "to" :(
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/getitimer/getitimer01.c | 115 ++++++----------------
+ testcases/kernel/syscalls/getitimer/getitimer02.c | 100 +++++--------------
+ 2 files changed, 57 insertions(+), 158 deletions(-)
 
-> 
-> > > > that's not permitted in the special machine. The patch fixed it.
-> > > 
-> > > what is a "special machine" ?
-> > 
-> > the special machine is that it has such nodes(describe above),
-> > in which there's only CPUs or memory.
-> > 
-> > how about this:
-> > 
-> > "that's not permitted in the such above special machine."
-> 
-> i would use:
-> that's not permitted in the scenario described above.
+diff --git a/testcases/kernel/syscalls/getitimer/getitimer01.c b/testcases/kernel/syscalls/getitimer/getitimer01.c
+index 56c56e0..03edf2f 100644
+--- a/testcases/kernel/syscalls/getitimer/getitimer01.c
++++ b/testcases/kernel/syscalls/getitimer/getitimer01.c
+@@ -1,55 +1,28 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
 
-Agreed.
+ /*
+- * NAME
+- *	getitimer01.c
+- *
+- * DESCRIPTION
+- *	getitimer01 - check that a correct call to getitimer() succeeds
+- *
+- * ALGORITHM
+- *	loop if that option was specified
+- *	allocate needed space
+- *	issue the system call
+- *	check the errno value
+- *	  issue a PASS message if we get zero
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	  break any remaining tests
+- *	  call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  getitimer01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
+- */
++  HISTORY
++    03/2001 - Written by Wayne Boyer
++
++  TEST ITEMS:
++    Check that a correct call to getitimer() succeeds.
++*/
 
-> 
-> > > > +		tst_resm(TINFO, "None CPUs in the node%ld", nd);
-> > > 
-> > > i think you mean "no" instead of "None"
-> > > 
-> > > > +		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
-> > > > +				"for the special scenario");
-> > > 
-> > > what is "the special scenario" ?
-> > 
-> > the special scenario is "no CPUs in the node%ld", I think it's clear in log
-> > message.
-> 
-> when you say "Only use", that's a command to the user.  i think you meant to
-> say "Only using".
-> 
-> i think the two messages can be combined into one then:
-> 	tst_resm(TINFO, "No CPUs in node%ld; using only CPU0", nd);
+ #include "test.h"
+ #include "usctest.h"
+@@ -57,8 +30,8 @@
+ #include <errno.h>
+ #include <sys/time.h>
 
-It sounds better, agreed.
+-void cleanup(void);
+-void setup(void);
++static void cleanup(void);
++static void setup(void);
 
-> 
-> > > >  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-> > > > 
-> > > > -	if (is_numa(cleanup) > 0)
-> > > > -		/* For NUMA system, using the first node for cpuset.mems */
-> > > > -		write_cpusets(get_a_numa_node(cleanup));
-> > > > -	else
-> > > > -		/* For nonNUMA system, using node0 for cpuset.mems */
-> > > > -		write_cpusets(0);
-> > > > +
-> > > > +	/*
-> > > > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
-> > > 
-> > > "Not any" -> "No"
-> > 
-> > it's not that meaning, what I meant here is that there's not any nodes
-> > contain memory in a NUMA system, Some nodes contain memory, but some nodes
-> > don't.
-> 
-> ok, so i think you want to say instead:
-> 	Some nodes do not contain memory, ....
+ char *TCID = "getitimer01";
+ int TST_TOTAL = 1;
+@@ -67,37 +40,22 @@ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	char *msg;
+-	struct itimerval *value;
++	struct itimerval value;
 
-Yes, I have updated it, please review v3.
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
 
-Thanks,
-Zhouping
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
++	setup();
+
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+
+-		/* allocate space for the itimerval structure */
++		TEST(getitimer(ITIMER_REAL, &value));
+
+-		if ((value = (struct itimerval *)malloc((size_t)
+-							sizeof(struct
+-							       itimerval))) ==
+-		    NULL) {
+-			tst_brkm(TBROK, cleanup, "value malloc failed");
+-		}
+-
+-		/* call the system call with the TEST() macro */
+-
+-		TEST(getitimer(ITIMER_REAL, value));
+-
+-		if (TEST_RETURN != 0) {
++		if (TEST_RETURN != 0)
+ 			tst_resm(TFAIL, "call failed - errno = %d - %s",
+ 				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		}
+
+ 		if (STD_FUNCTIONAL_TEST) {
+
+@@ -106,8 +64,8 @@ int main(int ac, char **av)
+ 			 * not set it before the getitimer call), the elements
+ 			 * in it_value should be zero.
+ 			 */
+-			if ((value->it_value.tv_sec == 0) &&
+-			    (value->it_value.tv_usec == 0)) {
++			if ((value.it_value.tv_sec == 0) &&
++			    (value.it_value.tv_usec == 0)) {
+ 				tst_resm(TPASS, "functional test passed");
+ 			} else {
+ 				tst_resm(TFAIL, "timer values are non zero");
+@@ -122,27 +80,14 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
++static void setup(void)
+ {
+-
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+
+ 	TEST_PAUSE;
+ }
+
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+ }
+diff --git a/testcases/kernel/syscalls/getitimer/getitimer02.c b/testcases/kernel/syscalls/getitimer/getitimer02.c
+index fcb3d6c..4f87883 100644
+--- a/testcases/kernel/syscalls/getitimer/getitimer02.c
++++ b/testcases/kernel/syscalls/getitimer/getitimer02.c
+@@ -1,55 +1,30 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+
+ /*
+- * NAME
+- *	getitimer02.c
+- *
+- * DESCRIPTION
+- *	getitimer02 - check that a getitimer() call fails as expected
+- *		      with an incorrect second argument.
+- *
+- * ALGORITHM
+- *	loop if that option was specified
+- *	call getitimer() with an incorrect second argument.
+- *	check the errno value
+- *	  issue a PASS message if we get EFAULT - errno 14
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	  break any remaining tests
+- *	  call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  getitimer02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
+- */
++  HISTORY
++  03/2001 - Written by Wayne Boyer
++
++  TEST ITEMS:
++  Check that a getitimer() call fails as expected
++  with an incorrect second argument.
++*/
++
+
+ #include "test.h"
+ #include "usctest.h"
+@@ -62,8 +37,8 @@ int TST_TOTAL = 1;
+
+ #if !defined(UCLINUX)
+
+-void cleanup(void);
+-void setup(void);
++static void cleanup(void);
++static void setup(void);
+
+ int exp_enos[] = { EFAULT, 0 };
+
+@@ -72,23 +47,15 @@ int main(int ac, char **av)
+ 	int lc;
+ 	char *msg;
+
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
+-
+-	setup();		/* global setup */
+
+-	/* The following loop checks looping state if -i option given */
++	setup();
+
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+
+-		/*
+-		 * issue the system call with the TEST() macro
+-		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+-		 */
+-
+ 		/* call with a bad address */
+ 		TEST(getitimer(ITIMER_REAL, (struct itimerval *)-1));
+
+@@ -118,12 +85,8 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
++static void setup(void)
+ {
+-
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+
+ 	TEST_EXP_ENOS(exp_enos);
+@@ -131,18 +94,9 @@ void setup(void)
+ 	TEST_PAUSE;
+ }
+
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+ }
+
+ #else
+-- 
+1.8.1
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
