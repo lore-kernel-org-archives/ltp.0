@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1USsrf-00024R-H1
-	for ltp-list@lists.sourceforge.net; Thu, 18 Apr 2013 17:43:19 +0000
-Date: Thu, 18 Apr 2013 19:44:06 +0200
-From: chrubis@suse.cz
-Message-ID: <20130418174406.GA1425@rei.suse.cz>
-References: <516F7F88.30707@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <danyeal.ip@gmail.com>) id 1UW1bk-000828-95
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 09:39:52 +0000
+Received: from mail-pa0-f65.google.com ([209.85.220.65])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UW1bj-0000Qm-JU
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 09:39:52 +0000
+Received: by mail-pa0-f65.google.com with SMTP id bh4so3188999pad.8
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 27 Apr 2013 02:39:45 -0700 (PDT)
+Message-ID: <517AAD94.1050507@gmail.com>
+Date: Sat, 27 Apr 2013 00:38:44 +0800
+From: DAN LI <danyeal.ip@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <516F7F88.30707@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH]syscalls/adjtimex: Test for mode
- ADJ_OFFSET_SINGLESHOT
+Subject: Re: [LTP] [PATCH 2/2] syscalls/mount/mount02.c: modify array
+	"exp_enos"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,80 +29,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: vapier@gentoo.org
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
->  #if defined UCLINUX && !__THROW
->  /* workaround for libc bug causing failure in sys/timex.h */
-> @@ -74,20 +35,19 @@
->  #include "test.h"
->  #include "usctest.h"
-> 
-> -#define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
-> -	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
-> +#define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
-> +	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
-> 
-> -static void setup();
-> -static void cleanup();
-> +static void setup(void);
-> +static void cleanup(void);
-> 
->  char *TCID = "adjtimex01";
-> -int TST_TOTAL = 1;
-> +int TST_TOTAL = 2;
-> 
->  static struct timex tim_save;
-> 
->  int main(int ac, char **av)
->  {
-> -
->  	int lc;
->  	char *msg;
-> 
-> @@ -106,7 +66,26 @@ int main(int ac, char **av)
->  		TEST(adjtimex(&tim_save));
-> 
->  		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
-> -			tst_resm(TPASS, "adjtimex() returned %ld", TEST_RETURN);
-> +			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
-> +				 SET_MODE, TEST_RETURN);
-> +		} else {
-> +			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
-> +				 "returned %ld", TEST_RETURN);
-> +		}
-> +	}
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +
-> +		tst_count = 0;
-> +
-> +		/* Call adjtimex(2) */
-> +		tim_save.modes = ADJ_OFFSET_SINGLESHOT;
-> +
-> +		TEST(adjtimex(&tim_save));
-> +
-> +		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
-> +			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
-> +				 ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
->  		} else {
->  			tst_resm(TFAIL | TTERRNO, "Test Failed, adjtimex()"
->  				 "returned %ld", TEST_RETURN);
+> >Expected errno setted in array "exp_enos" do not match
+> >echo test item rightly, leading to two problems:
+>
+>what is "echo test item" ?
 
-I think that doing the test loop twice would fail at least for '-i' and
-'-I'. My guess is that the second loop would not be exectuted at all.
+Sorry for this type error confused you ...
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+s/echo/each
+
+Thanks,
+DAN LI
+
+>-mike
+
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
