@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1US38H-0007hj-1k
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:29:01 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1US38G-0002RA-A0
-	for ltp-list@lists.sourceforge.net; Tue, 16 Apr 2013 10:29:01 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3GASsmA031399
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Apr 2013 06:28:54 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Tue, 16 Apr 2013 18:26:32 +0800
-Message-Id: <231291fe0dff5b700bdd3f3a01c9cb7c9a96f73a.1366107814.git.zliu@redhat.com>
-In-Reply-To: <4c3dabc00aa1d0ff3b4cf06b8b5004e39f76199c.1366107814.git.zliu@redhat.com>
-References: <cover.1366107814.git.zliu@redhat.com>
-	<4c3dabc00aa1d0ff3b4cf06b8b5004e39f76199c.1366107814.git.zliu@redhat.com>
-In-Reply-To: <cover.1366107814.git.zliu@redhat.com>
-References: <cover.1366107814.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v5 2/3] lib/mem: introduce a new function
-	set_global_mempolicy()
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UVdVe-0001cv-Pe
+	for ltp-list@lists.sourceforge.net; Fri, 26 Apr 2013 07:55:58 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UVdVd-0007ck-L5
+	for ltp-list@lists.sourceforge.net; Fri, 26 Apr 2013 07:55:58 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r3Q7tpqA002343
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Apr 2013 15:55:51 +0800
+Message-ID: <517A3282.2050809@cn.fujitsu.com>
+Date: Fri, 26 Apr 2013 15:53:38 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <517A31DE.2050003@cn.fujitsu.com>
+In-Reply-To: <517A31DE.2050003@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2] syscalls/mount/mount02.c: modify array "exp_enos"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,103 +27,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Fork out a new function set_global_mempolicy() from the
-previous testoom() func, which will be useful for other func.
+Expected errno setted in array "exp_enos" do not match
+echo test item rightly, leading to two problems:
 
-Tested-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
+* Not every test item in mount02 is executed.
+     There are 13 test items in mount02 currently to test error:
+     ENODEV, ENOTBLK, EBUSY, EBUSY, EINVAL, EINVAL, EINVAL, EFAULT,
+     EFAULT, ENAMETOOLONG, ENOENT, ENOENT, ENOTDIR
+
+     But, only 8 of them are tested as specified in array "exp_enos":
+     ENODEV, ENOTBLK, EBUSY, EINVAL, EFAULT, ENAMETOOLONG,
+     ENOENT, ENOTDIR
+
+* For test item which is executed, its errno returned is maybe not
+the one expected.
+
+This patch modifies array "exp_enos" to make it one-to-one correspondent
+with echo test item, to fix above problems.
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/mem/include/mem.h |  3 ++-
- testcases/kernel/mem/lib/mem.c     | 13 +++++++++++--
- testcases/kernel/mem/thp/thp04.c   |  2 +-
- 3 files changed, 14 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/mount/mount02.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index cc8b86c..c9e0540 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -39,7 +39,8 @@ void testoom(int mempolicy, int lite);
- 
- int opt_nr_children, opt_nr_thps;
- char *opt_nr_children_str, *opt_nr_thps_str;
--void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned);
-+void test_transparent_hugepage(int nr_children, int nr_thps,
-+			       int hg_aligned, int mempolicy);
- void check_thp_options(int *nr_children, int *nr_thps);
- void thp_usage(void);
- 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index fa5694a..f6aa351 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -91,7 +91,7 @@ void oom(int testcase, int lite)
- 	}
- }
- 
--void testoom(int mempolicy, int lite)
-+static void set_global_mempolicy(int mempolicy)
- {
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
-@@ -133,6 +133,11 @@ void testoom(int mempolicy, int lite)
- 			tst_brkm(TBROK|TERRNO, cleanup, "set_mempolicy");
- 	}
- #endif
-+}
-+
-+void testoom(int mempolicy, int lite)
-+{
-+	set_global_mempolicy(mempolicy);
- 
- 	tst_resm(TINFO, "start normal OOM testing.");
- 	oom(NORMAL, lite);
-@@ -613,12 +618,16 @@ static void verify_thp_size(int *children, int nr_children, int nr_thps)
- 	}
- }
- 
--void test_transparent_hugepage(int nr_children, int nr_thps, int hg_aligned)
-+void test_transparent_hugepage(int nr_children, int nr_thps,
-+			       int hg_aligned, int mempolicy)
- {
- 	unsigned long hugepagesize, memfree;
- 	int i, *pids, ret, status;
- 	char path[BUFSIZ];
- 
-+	if (mempolicy)
-+		set_global_mempolicy(mempolicy);
-+
- 	memfree = read_meminfo("MemFree:");
- 	tst_resm(TINFO, "The current MemFree is %luMB", memfree / KB);
- 	if (memfree < MB)
-diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
-index 7988c8b..4232cf0 100644
---- a/testcases/kernel/mem/thp/thp04.c
-+++ b/testcases/kernel/mem/thp/thp04.c
-@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		test_transparent_hugepage(nr_children, nr_thps, 1);
-+		test_transparent_hugepage(nr_children, nr_thps, 1, 0);
- 	}
- 
- 	cleanup();
+diff --git a/testcases/kernel/syscalls/mount/mount02.c b/testcases/kernel/syscalls/mount/mount02.c
+index 8dcf8de..95796f2 100644
+--- a/testcases/kernel/syscalls/mount/mount02.c
++++ b/testcases/kernel/syscalls/mount/mount02.c
+@@ -81,8 +81,10 @@ static char *device;
+ static int Tflag;
+ static int Dflag;
+
+-static int exp_enos[] = { ENODEV, ENOTBLK, EBUSY, EINVAL, EFAULT, ENAMETOOLONG,
+-	ENOENT, ENOTDIR, 0
++static int exp_enos[] = {
++	ENODEV, ENOTBLK, EBUSY, EBUSY, EINVAL,
++	EINVAL, EINVAL, EFAULT, EFAULT, ENAMETOOLONG,
++	ENOENT, ENOENT, ENOTDIR, 0
+ };
+
+ int TST_TOTAL = (sizeof(exp_enos) / sizeof(exp_enos[0])) - 1;
 -- 
-1.7.11.7
-
+1.8.1
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
