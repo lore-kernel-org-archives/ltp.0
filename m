@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1UGBTK-0007I0-0a
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:57:42 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UGBTI-0003dD-8T
-	for ltp-list@lists.sourceforge.net; Thu, 14 Mar 2013 16:57:41 +0000
-From: Markos Chandras <markos.chandras@gmail.com>
-Date: Thu, 14 Mar 2013 16:55:51 +0000
-Message-ID: <1363280151-10623-1-git-send-email-markos.chandras@gmail.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] ltp: Add support for Imagination Technologies Meta
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UVwhX-0006C3-13
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 04:25:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UVwhV-0007yZ-Ij
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 04:25:31 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3R4PNLo023779
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Sat, 27 Apr 2013 00:25:23 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Sat, 27 Apr 2013 12:23:14 +0800
+Message-Id: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,56 +26,164 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-From: Markos Chandras <markos.chandras@imgtec.com>
+For the below special NUMA system, oom0[4|5] failed:
+ # numactl -H
+ available: 2 nodes (0-1)
+ node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+ node 0 size: 0 MB
+ node 0 free: 0 MB
+ node 1 cpus:
+ node 1 size: 16384 MB
+ node 1 free: 14173 MB
+ node distances:
+ node   0   1
+   0:  10  40
+   1:  40  10
 
-This patch adds support for Imagination's Meta architecture.
-The Meta Linux kernel port will be included in the Linux Kernel
-v3.9. The Meta stack grows upwards so we need to add the appropriate
-__metag__ macro to the ltp_clone function. Also fix the #if/def
-macro for s390x.
+failed log:
+ oom04       1  TBROK  :  write /dev/cpuset/1/cpuset.mems: errno=EINVAL(22): Invalid argument
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+The reason is that node0 only contains all CPUs, no any memory,
+and node1 contains all memory, but no CPUs, in the previous codes,
+we only do cpuset testing on a independent node, which caused the
+sub-cpuset cgroup only contains CPUs or memory in one node, but
+that's not permitted in the special machine. The patch fixed it.
+
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 ---
- lib/cloner.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Change log:
+ v1 - v2:
+    fixed some grammar errors, and updated some comments.
+   
 
-diff --git a/lib/cloner.c b/lib/cloner.c
-index 3835184..a68ff1e 100644
---- a/lib/cloner.c
-+++ b/lib/cloner.c
-@@ -31,7 +31,7 @@
+ testcases/kernel/mem/lib/mem.c   | 14 +++++++++++++-
+ testcases/kernel/mem/oom/oom04.c | 19 +++++++++++++------
+ testcases/kernel/mem/oom/oom05.c | 25 +++++++++++++++----------
+ 3 files changed, 41 insertions(+), 17 deletions(-)
+
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 5397177..62bbc95 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -792,7 +792,19 @@ void write_cpusets(long nd)
+ 	write_cpuset_files(CPATH_NEW, "mems", buf);
  
- #undef clone			/* we want to use clone() */
+ 	gather_node_cpus(cpus, nd);
+-	write_cpuset_files(CPATH_NEW, "cpus", cpus);
++	/*
++	 * If the 'nd' node doesn't contain any CPUs,
++	 * the first ID of CPU '0' will be used as
++	 * the value of cpuset.cpus.
++	 */
++	if (strlen(cpus) != 0) {
++		write_cpuset_files(CPATH_NEW, "cpus", cpus);
++	} else {
++		tst_resm(TINFO, "None CPUs in the node%ld", nd);
++		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
++				"for the special scenario");
++		write_cpuset_files(CPATH_NEW, "cpus", "0");
++	}
  
--#if defined (__s390__) || (__s390x__)
-+#if defined (__s390__) || defined(__s390x__)
- #define clone __clone
- extern int __clone(int (void *), void *, int, void *);
- #elif defined(__ia64__)
-@@ -54,7 +54,7 @@ ltp_clone(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+ 	SAFE_FILE_PRINTF(NULL, CPATH_NEW "/tasks", "%d", getpid());
+ }
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 4d3f2f4..dd9acd1 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
  {
- 	int ret;
++	int memnode, ret;
++
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+@@ -93,12 +95,17 @@ void setup(void)
+ 	set_sys_tune("overcommit_memory", 1, 1);
  
--#if defined(__hppa__)
-+#if defined(__hppa__) || defined(__metag__)
- 	ret = clone(fn, stack, clone_flags, arg);
- #elif defined(__ia64__)
- 	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+-	if (is_numa(cleanup) > 0)
+-		/* For NUMA system, using the first node for cpuset.mems */
+-		write_cpusets(get_a_numa_node(cleanup));
+-	else
+-		/* For nonNUMA system, using node0 for cpuset.mems */
+-		write_cpusets(0);
++
++	/*
++	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
++	 * to get a memory node, the operation also applies to Non-NUMA
++	 * system.
++	 */
++	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
++	if (ret < 0)
++		tst_brkm(TBROK, NULL, "Failed to get a memory node "
++				      "using get_allowed_nodes()");
++	write_cpusets(memnode);
+ }
+ 
+ void cleanup(void)
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 15feba5..fd1b671 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -108,24 +108,29 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	int ret, memnode;
++
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
++	overcommit = get_sys_tune("overcommit_memory");
++	set_sys_tune("overcommit_memory", 1, 1);
++
+ 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+ 	write_memcg();
+ 
+-	set_sys_tune("overcommit_memory", 1, 1);
+-
+-	if (is_numa(cleanup))
+-		/* For NUMA system, using the first node for cpuset.mems */
+-		write_cpusets(get_a_numa_node(cleanup));
+-	else
+-		/* For nonNUMA system, using node0 for cpuset.mems */
+-		write_cpusets(0);
+-
+-	overcommit = get_sys_tune("overcommit_memory");
++        /*
++	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
++	 * to get a memory node, the operation also applies to Non-NUMA
++	 * system.
++	 */
++	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
++	if (ret < 0)
++		tst_brkm(TBROK, NULL, "Failed to get a memory node "
++				      "using get_allowed_nodes()");
++	write_cpusets(memnode);
+ }
+ 
+ void cleanup(void)
 -- 
-1.7.1
-
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
