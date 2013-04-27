@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UV1t8-0002Kq-8K
-	for ltp-list@lists.sourceforge.net; Wed, 24 Apr 2013 15:45:42 +0000
-Date: Wed, 24 Apr 2013 17:46:35 +0200
-From: chrubis@suse.cz
-Message-ID: <20130424154635.GA11115@rei.suse.cz>
-References: <87c63b9c1371d07c7efce77a68ec459d6c51fbdf.1366639814.git.jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UVyiq-0002ng-VS
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:35:01 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UVyip-0004pc-Si
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:35:00 +0000
+Date: Sat, 27 Apr 2013 02:34:49 -0400 (EDT)
+From: Zhouping Liu <zliu@redhat.com>
+Message-ID: <1655733918.3290321.1367044489461.JavaMail.root@redhat.com>
+In-Reply-To: <201304270204.34020.vapier@gentoo.org>
+References: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
+	<201304270204.34020.vapier@gentoo.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87c63b9c1371d07c7efce77a68ec459d6c51fbdf.1366639814.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] setns01: add CLONE_NEWUSER to test
+Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,179 +28,125 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> This adds user type namespaces to errno test. Noteworthy difference
-> is in testcase 4, because re-entering this type of namespace is not
-> allowed. Test spawns a child, which will have different user ID than
-> parent calling setns().
+
+
+----- Original Message -----
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "Zhouping Liu" <zliu@redhat.com>
+> Sent: Saturday, April 27, 2013 2:04:32 PM
+> Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
 > 
-> CLONE_NEWUSER flag will be used in test only if kernel is compiled
-> with CONFIG_USER_NS=y and provides /proc/<pid>/ns/user.
+> On Saturday 27 April 2013 00:23:14 Zhouping Liu wrote:
+> > The reason is that node0 only contains all CPUs, no any memory,
 > 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/setns/setns.h   |    3 +
->  testcases/kernel/syscalls/setns/setns01.c |   77 ++++++++++++++++++++++++++++-
->  2 files changed, 78 insertions(+), 2 deletions(-)
+> no any memory -> no memory
+
+OK.
+
 > 
-> diff --git a/testcases/kernel/syscalls/setns/setns.h b/testcases/kernel/syscalls/setns/setns.h
-> index 23bdb2e..df64013 100644
-> --- a/testcases/kernel/syscalls/setns/setns.h
-> +++ b/testcases/kernel/syscalls/setns/setns.h
-> @@ -76,6 +76,9 @@ static void init_available_ns(void)
->  #if defined(CLONE_NEWUTS)
->  	init_ns_type(CLONE_NEWUTS, "uts");
->  #endif
-> +#if defined(CLONE_NEWUSER)
-> +	init_ns_type(CLONE_NEWUSER, "user");
-> +#endif
->  }
->  
->  static void close_ns_fds(void)
-> diff --git a/testcases/kernel/syscalls/setns/setns01.c b/testcases/kernel/syscalls/setns/setns01.c
-> index 74525b9..179f574 100644
-> --- a/testcases/kernel/syscalls/setns/setns01.c
-> +++ b/testcases/kernel/syscalls/setns/setns01.c
-> @@ -28,6 +28,7 @@
->  #include <sys/stat.h>
->  #include <sys/syscall.h>
->  #include <sys/types.h>
-> +#include <sys/wait.h>
->  #include <errno.h>
->  #include <sched.h>
->  #include <pwd.h>
-> @@ -42,6 +43,7 @@ char *TCID = "setns01";
->  
->  #if defined(__NR_setns)
->  #include "setns.h"
-> +#define CHILD_STACK_SIZE (1024*1024)
->  
->  struct testcase_t {
->  	const char *msg;
-> @@ -50,6 +52,9 @@ struct testcase_t {
->  	int exp_ret;
->  	int exp_errno;
->  	int skip;
-> +	int child_pid;
-> +	void *child_stack;
-> +	int pipefd[2];
->  	void (*setup) (struct testcase_t *, int i);
->  	void (*cleanup) (struct testcase_t *);
->  };
-> @@ -105,6 +110,17 @@ static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
->  static const char nobody_uid[] = "nobody";
->  static struct passwd *ltpuser;
->  
-> +static void wait4child(int child_pid)
-> +{
-> +	int status;
-> +	if (waitpid(child_pid, &status, 0) == -1)
-> +		tst_brkm(TBROK|TERRNO, cleanup, "waitpid");
-> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> +		tst_resm(TFAIL, "child returns %d", status);
-> +	else
-> +		tst_resm(TPASS, "child finished succesfully");
-> +}
-> +
->  static void setup0(struct testcase_t *t, int i)
->  {
->  	t->ns_type = ns_types[i];
-> @@ -140,19 +156,76 @@ static void setup3(struct testcase_t *t, int i)
->  	t->ns_type = ns_types[(i+1) % ns_total];
->  }
->  
-> +static int do_child04(void *arg)
-> +{
-> +	int dummy;
-> +	struct testcase_t *t = (struct testcase_t *) arg;
-> +
-> +	read(t->pipefd[0], &dummy, 1);
-> +	return 0;
-> +}
-> +
->  static void setup4(struct testcase_t *t, int i)
->  {
-> -	if (seteuid(ltpuser->pw_uid) == -1)
-> -		tst_brkm(TBROK | TERRNO, NULL, "seteuid failed");
-> +	int tmp, ns_user_fd;
->  
->  	t->fd = ns_fds[i];
->  	t->ns_type = ns_types[i];
-> +	t->child_stack = NULL;
-> +	t->child_pid = 0;
-> +
-> +#if defined(CLONE_NEWUSER)
-> +	/* re-entering same user ns is not allowed, we need new one */
-> +	ns_user_fd = get_ns_fd(getpid(), "user");
-> +	if (t->ns_type == CLONE_NEWUSER && ns_user_fd != -1) {
-> +		t->child_stack = malloc(CHILD_STACK_SIZE);
-> +		if (t->child_stack == NULL)
-> +			tst_brkm(TBROK, cleanup, "Cannot allocate stack");
-> +
-> +		if (pipe(t->pipefd) == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "pipe");
-> +
-> +		tmp = ltp_clone(SIGCHLD|CLONE_NEWUSER, do_child04, t,
-> +			CHILD_STACK_SIZE, t->child_stack);
-> +		if (tmp == -1)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "ltp_clone");
-> +		t->child_pid = tmp;
-> +
-> +		t->fd = get_ns_fd(t->child_pid, "user");
-> +		tst_resm(TINFO, "child's ns/user fd %d", t->fd);
-> +		if (t->fd == -1) {
-> +			write(t->pipefd[1], &tmp, 1);
+> > and node1 contains all memory, but no CPUs, in the previous codes,
+> 
+> change "CPUs, in" to "CPUs. In"
 
-Passing random variable to the write is little confusing. I would rather
-do something as:
+OK.
 
-write(t->pipefd[1], "", 1);
+> 
+> > we only do cpuset testing on a independent node, which caused the
+> 
+> a -> an
 
+OK.
 
-> +			wait4child(t->child_pid);
-> +			tst_brkm(TBROK, cleanup, "could not open child's"
-> +				"/proc/pid/ns/user");
-> +		}
-> +	}
-> +	close(ns_user_fd);
-> +#endif
-> +	if (seteuid(ltpuser->pw_uid) == -1) {
-> +		if (t->child_pid) {
-> +			tmp = errno;
-> +			write(t->pipefd[1], &tmp, 1);
-> +			wait4child(t->child_pid);
-> +			errno = tmp;
-> +		}
-> +		tst_brkm(TBROK | TERRNO, cleanup, "seteuid failed");
-> +	}
->  }
->  
->  static void cleanup4(struct testcase_t *t)
->  {
->  	if (seteuid(0) == -1)
->  		tst_brkm(TBROK | TERRNO, NULL, "seteuid restore failed");
-> +	if (t->child_pid) {
-> +		/* signal child to exit */
-> +		write(t->pipefd[1], t, 1);
+> 
+> > sub-cpuset cgroup only contains CPUs or memory in one node, but
+> 
+> only contains -> to only contain
 
-Here as well.
+why 'contain', I think it should be 'contains', isn't it?
 
-> +		wait4child(t->child_pid);
-> +		free(t->child_stack);
-> +		close(t->fd);
-> +		close(t->pipefd[0]);
-> +		close(t->pipefd[1]);
-> +	}
->  }
+> 
+> > that's not permitted in the special machine. The patch fixed it.
+> 
+> what is a "special machine" ?
 
-The rest of the code is OK.
+the special machine is that it has such nodes(describe above),
+in which there's only CPUs or memory.
+
+how about this:
+
+"that's not permitted in the such above special machine."
+
+> 
+> also, generally there's no need to say "The patch fixed it".  the fact that
+> you've described a bug and have a patch implies that this fixes things.
+> 
+> > +		tst_resm(TINFO, "None CPUs in the node%ld", nd);
+> 
+> i think you mean "no" instead of "None"
+> 
+> > +		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
+> > +				"for the special scenario");
+> 
+> what is "the special scenario" ?
+
+the special scenario is "no CPUs in the node%ld", I think it's clear in log message.
+
+> 
+> >  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+> > -	if (is_numa(cleanup) > 0)
+> > -		/* For NUMA system, using the first node for cpuset.mems */
+> > -		write_cpusets(get_a_numa_node(cleanup));
+> > -	else
+> > -		/* For nonNUMA system, using node0 for cpuset.mems */
+> > -		write_cpusets(0);
+> > +
+> > +	/*
+> > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
+> 
+> "Not any" -> "No"
+
+it's not that meaning, what I meant here is that there's not any nodes contain
+memory in a NUMA system, Some nodes contain memory, but some nodes don't.
+
+> 
+> "using" -> "use"
+
+OK.
+
+> 
+> > +	 * to get a memory node, the operation also applies to Non-NUMA
+> 
+> change the ", the" to ". This".
+
+OK
+
+> 
+> > +	 * system.
+> 
+> systems.
+> 
+> > +        /*
+> 
+> looks like you mixed spaces & tabs.  only use tabs.
+
+OK.
+
+> 
+> > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
+> > +	 * to get a memory node, the operation also applies to Non-NUMA
+> > +	 * system.
+> 
+> same comments about the grammar here as above
+> -mike
+> 
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
