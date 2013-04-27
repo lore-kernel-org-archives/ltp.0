@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UVyiq-0002ng-VS
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:35:01 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UVyip-0004pc-Si
-	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:35:00 +0000
-Date: Sat, 27 Apr 2013 02:34:49 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1655733918.3290321.1367044489461.JavaMail.root@redhat.com>
-In-Reply-To: <201304270204.34020.vapier@gentoo.org>
-References: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
-	<201304270204.34020.vapier@gentoo.org>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UVydU-0001Js-75
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:29:28 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UVydT-0006n7-1O
+	for ltp-list@lists.sourceforge.net; Sat, 27 Apr 2013 06:29:28 +0000
+Received: from vapier.localnet (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 241F233DF68
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 27 Apr 2013 06:29:15 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 27 Apr 2013 02:29:20 -0400
+References: <8a051675195eceda293d88d157163083d7886570.1366724682.git.jstancek@redhat.com>
+	<20130425143406.GA3084@rei.suse.cz>
+	<201304251532.46436.vapier@gentoo.org>
+In-Reply-To: <201304251532.46436.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
+Message-Id: <201304270229.21748.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] remove linux_syscall_numbers.h from tree
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,128 +30,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1746611133267694472=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+--===============1746611133267694472==
+Content-Type: multipart/signed; boundary="nextPart2154465.encs2ogFVT";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart2154465.encs2ogFVT
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thursday 25 April 2013 15:32:45 Mike Frysinger wrote:
+> On Thursday 25 April 2013 10:34:07 chrubis@suse.cz wrote:
+> > > > > is keeping it in the tree a big deal ?  i think it's pretty common
+> > > > > for people to go into specific subdirs and run `make` and today,
+> > > > > our subdirs don't declare a dependency on this file so it'll get
+> > > > > automatically regenerated (nor do i think they should even
+> > > > > bother).
+> > > >=20
+> > > > You need to regenerate the file after each change to the *.in files,
+> > > > and that means that people will forget from time to time.
+> > >=20
+> > > so people aren't testing their commits ;)
+> >=20
+> > Aparently they don't, I've reruned the script and the result is that git
+> > diff shows 6125 lines of changes. And the last time the *.in files were
+> > changed was 2010...
+> >=20
+> > Which is another reason why we need proper solution.
+> >=20
+> > What about we:
+> >  1) Commit the up to date linux_syscall_numbers.h
+> > =20
+> >  2) Add linux_syscall_numbers.h dependency on *.in
+> > =20
+> >     - that would regenerate the file on change, but only
+> >    =20
+> >       from the top make and will catch the change
+> >       most of the time
+> >=20
+> > Which would IMHO be good short term fix and figure out something better
+> > later.
+>=20
+> it used to depend on the *.in files (i added it way back in 2008 with
+> d885d4ae1037aa4aa8bb12f374776188867903d3 and
+> 89ba1191d6c592e2f6d16824caa78b09fc714811).  looks like the overhaul in
+> commit ef77253961f909f87e82e6d2b620e87af33e9665 broke that.  in the follow
+> up 1bf1c2ad7b4e25c4f09479378314c9a4dd2b3a78, the commit message indicates
+> it had meant to fix this, but it seems to not have.
+>=20
+> so yes, let's add *.in and commit the regenerated file.
+
+i've fixed & pushed this now
+=2Dmike
+
+--nextPart2154465.encs2ogFVT
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRe3BBAAoJEEFjO5/oN/WBPXkQAMC9aE4mWnJctuVz1oaAB9As
+LmCVrUyiFJfXJVImGQ39+y5A1pIVctmTop2CgCfXKvLCr4jly+3fEK+7GI2HwFn4
+sREa1SprRrT+XmCuiExjF4aMiE8iBQBOKCXv/etUzuRGF3pgZ7z0whph4LFEDBnK
+lBLy0KjlpreTLdejBA3mTE2yFkRJJS0lPfPP/I6oV3T5H8xLySrF5Giqgr+4+frH
+BUpcjy0IHJTAmBm7j+osweBfqkszU9lUZGewZYzFbL2p11RGePm+LJ6pUCMPxuUg
+6QsjyU2GE+1Q3/Xw3AYf6ErcmSpnOvxR2nX6v0RwsUwfdypNvAyqo5Hk+K0lyQGz
+vWHcP2QzswedR6TZnDZW0V5h2YJFelurbjK0/ymS5fKByB5iPUrpicgMYO1IdbiX
+Z5pojHAZHW7ZDaZq0Y4RB6CBDNIRG1d+RKszMGq/Ut8MD0xEAGhJd0VuYHFKxM5z
+IIanyZRL7CU+rV6hhpZVZe2lu6OSbXSgJWTdymK27JvV2kkFnr7tpgjGThX+cM3I
+jeVUWHdFxIFjCx15DKliIepLapJKGuIKtXGzwiWr42vG9yZ6h4hsjnlVlbJ2ug9s
+GOdJL8eOe0F4OrQFgPj11+N8ATgcI442mM2YE8O/D0ULNwJsE0+omdZMnieT5OnH
+k9T+Obkg0XRw64TDpW3z
+=MYHG
+-----END PGP SIGNATURE-----
+
+--nextPart2154465.encs2ogFVT--
 
 
-
------ Original Message -----
-> From: "Mike Frysinger" <vapier@gentoo.org>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Zhouping Liu" <zliu@redhat.com>
-> Sent: Saturday, April 27, 2013 2:04:32 PM
-> Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
-> 
-> On Saturday 27 April 2013 00:23:14 Zhouping Liu wrote:
-> > The reason is that node0 only contains all CPUs, no any memory,
-> 
-> no any memory -> no memory
-
-OK.
-
-> 
-> > and node1 contains all memory, but no CPUs, in the previous codes,
-> 
-> change "CPUs, in" to "CPUs. In"
-
-OK.
-
-> 
-> > we only do cpuset testing on a independent node, which caused the
-> 
-> a -> an
-
-OK.
-
-> 
-> > sub-cpuset cgroup only contains CPUs or memory in one node, but
-> 
-> only contains -> to only contain
-
-why 'contain', I think it should be 'contains', isn't it?
-
-> 
-> > that's not permitted in the special machine. The patch fixed it.
-> 
-> what is a "special machine" ?
-
-the special machine is that it has such nodes(describe above),
-in which there's only CPUs or memory.
-
-how about this:
-
-"that's not permitted in the such above special machine."
-
-> 
-> also, generally there's no need to say "The patch fixed it".  the fact that
-> you've described a bug and have a patch implies that this fixes things.
-> 
-> > +		tst_resm(TINFO, "None CPUs in the node%ld", nd);
-> 
-> i think you mean "no" instead of "None"
-> 
-> > +		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
-> > +				"for the special scenario");
-> 
-> what is "the special scenario" ?
-
-the special scenario is "no CPUs in the node%ld", I think it's clear in log message.
-
-> 
-> >  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-> > -	if (is_numa(cleanup) > 0)
-> > -		/* For NUMA system, using the first node for cpuset.mems */
-> > -		write_cpusets(get_a_numa_node(cleanup));
-> > -	else
-> > -		/* For nonNUMA system, using node0 for cpuset.mems */
-> > -		write_cpusets(0);
-> > +
-> > +	/*
-> > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
-> 
-> "Not any" -> "No"
-
-it's not that meaning, what I meant here is that there's not any nodes contain
-memory in a NUMA system, Some nodes contain memory, but some nodes don't.
-
-> 
-> "using" -> "use"
-
-OK.
-
-> 
-> > +	 * to get a memory node, the operation also applies to Non-NUMA
-> 
-> change the ", the" to ". This".
-
-OK
-
-> 
-> > +	 * system.
-> 
-> systems.
-> 
-> > +        /*
-> 
-> looks like you mixed spaces & tabs.  only use tabs.
-
-OK.
-
-> 
-> > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
-> > +	 * to get a memory node, the operation also applies to Non-NUMA
-> > +	 * system.
-> 
-> same comments about the grammar here as above
-> -mike
-> 
-
--- 
-Thanks,
-Zhouping
+--===============1746611133267694472==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
@@ -154,7 +125,16 @@ New Relic is the only SaaS-based application performance monitoring service
 that delivers powerful full stack analytics. Optimize and monitor your
 browser, app, & servers with just a few lines of code. Try New Relic
 and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--===============1746611133267694472==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1746611133267694472==--
+
