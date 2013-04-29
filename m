@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UPTTM-0003vO-1o
-	for ltp-list@lists.sourceforge.net; Tue, 09 Apr 2013 08:00:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UPTTK-00086n-DC
-	for ltp-list@lists.sourceforge.net; Tue, 09 Apr 2013 08:00:08 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r397xxF4011613
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Apr 2013 15:59:59 +0800
-Message-ID: <5163CA00.9040505@cn.fujitsu.com>
-Date: Tue, 09 Apr 2013 15:57:52 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <5163C37E.9@cn.fujitsu.com>
-In-Reply-To: <5163C37E.9@cn.fujitsu.com>
-Subject: [LTP] [PATCHv2] testscripts/test_fs_bind.sh: adapt to system which
- marks mount point as "shared" defaultly
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UWhHN-0006yN-79
+	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:09:37 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UWhHL-00034H-MM
+	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:09:37 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3T69Tmk028575
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 29 Apr 2013 02:09:29 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Mon, 29 Apr 2013 14:07:17 +0800
+Message-Id: <a0a4d2664223afca4bca2b3350c7b068ae794e9c.1367215327.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v3] mem/oom: fixed a cpuset error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,95 +26,166 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Linux kernel does not allow to move a mount residing under a
-shared mount.
+For the below special NUMA system, oom0[4|5] failed:
+ # numactl -H
+ available: 2 nodes (0-1)
+ node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+ node 0 size: 0 MB
+ node 0 free: 0 MB
+ node 1 cpus:
+ node 1 size: 16384 MB
+ node 1 free: 14173 MB
+ node distances:
+ node   0   1
+   0:  10  40
+   1:  40  10
 
-This patch tries to make sure test cases of "move" run under
-a private mount.
+failed log:
+ oom04       1  TBROK  :  write /dev/cpuset/1/cpuset.mems: errno=EINVAL(22): Invalid argument
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+The reason is that node0 only contains all CPUs, no any memory,
+and node1 contains all memory, but no CPUs. In the previous codes,
+we only do cpuset testing on an independent node, which caused the
+sub-cpuset cgroup to only contain CPUs or memory in one node, but
+that's not permitted in the scenario described above.
+
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Reviewed-by: Caspar Zhang <caspar@casparzhang.com>
 ---
- testscripts/test_fs_bind.sh | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+Change log:
+ v1 - v2:
+    fixed some grammar errors, and updated some comments.
+ v2 - v3:
+    amended some comment messages.
 
-diff --git a/testscripts/test_fs_bind.sh b/testscripts/test_fs_bind.sh
-index 92c51a1..792fff2 100755
---- a/testscripts/test_fs_bind.sh
-+++ b/testscripts/test_fs_bind.sh
-@@ -107,6 +107,18 @@ test_prereqs()
- 		exit -1
- 	fi
+ testcases/kernel/mem/lib/mem.c   | 13 ++++++++++++-
+ testcases/kernel/mem/oom/oom04.c | 20 ++++++++++++++------
+ testcases/kernel/mem/oom/oom05.c | 26 ++++++++++++++++----------
+ 3 files changed, 42 insertions(+), 17 deletions(-)
 
-+	mount --bind "${sandbox}" "${sandbox}" >& /dev/null
-+	if [ $? -ne 0 ]; then
-+		tst_brkm TBROK true "$0: failed to perform bind mount on directory \"${sandbox}\""
-+		exit 1
-+	fi
-+
-+	mount --make-private "${sandbox}" >& /dev/null
-+	if [ $? -ne 0 ]; then
-+		tst_brkm TBROK true "$0: failed to make private mountpoint on directory \"${sandbox}\""
-+		exit 1
-+	fi
-+
- 	local mnt_bind=1
- 	local mnt_move=1
-
-@@ -153,17 +165,11 @@ test_prereqs()
- 		tst_resm TINFO "$0: kernel >= 2.6.15 detected -- continuing"
- 	fi
-
--	mount --bind "${sandbox}" "${sandbox}" && {
--		mount --make-shared "${sandbox}" > /dev/null 2>&1 || "${FS_BIND_ROOT}/bin/smount" "${sandbox}" shared
--		umount "${sandbox}" || {
--			tst_resm TFAIL "$0: failed to umount simplest shared subtree"
--			exit 1
--		}
--	} || {
--		tst_brkm TBROK true "$0: failed to perform bind mount"
-+	mount --make-shared "${sandbox}" > /dev/null 2>&1 || "${FS_BIND_ROOT}/bin/smount" "${sandbox}" shared
-+	umount "${sandbox}" || {
-+		tst_resm TFAIL "$0: failed to umount simplest shared subtree"
- 		exit 1
- 	}
--
- 	tst_resm TPASS "$0: umounted simplest shared subtree"
-
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 5397177..1232b4f 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -792,7 +792,18 @@ void write_cpusets(long nd)
+ 	write_cpuset_files(CPATH_NEW, "mems", buf);
+ 
+ 	gather_node_cpus(cpus, nd);
+-	write_cpuset_files(CPATH_NEW, "cpus", cpus);
++	/*
++	 * If the 'nd' node doesn't contain any CPUs,
++	 * the first ID of CPU '0' will be used as
++	 * the value of cpuset.cpus.
++	 */
++	if (strlen(cpus) != 0) {
++		write_cpuset_files(CPATH_NEW, "cpus", cpus);
++	} else {
++		tst_resm(TINFO, "No CPUs in the node%ld; "
++				"using only CPU0", nd);
++		write_cpuset_files(CPATH_NEW, "cpus", "0");
++	}
+ 
+ 	SAFE_FILE_PRINTF(NULL, CPATH_NEW "/tasks", "%d", getpid());
  }
-@@ -428,6 +434,9 @@ run_test()
- 	save_sandbox "$tname" "$resdir/$tname" || do_break=1
- 	save_mounts "$tname" "$resdir/$tname" || do_break=1
- 	save_proc_mounts "$tname" "$resdir/$tname" || do_break=1
-+	mount --bind "${sandbox}" "${sandbox}" >& /dev/null || do_break=1
-+	mount --make-private "${sandbox}" >& /dev/null || do_break=1
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 4d3f2f4..ac48c36 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	int memnode, ret;
 +
- 	if [ $do_break -eq 1 ]; then
- 		tst_brkm TBROK true "$tname: failed to save pre-test state of \"${sandbox}\""
- 		return 2
-@@ -453,6 +462,7 @@ run_test()
- 		#echo "SUCCEEDED"
- 		((nsucceeded++))
- 	fi
-+	umount -l "${sandbox}" >& /dev/null
- 	check_proc_mounts "$tname" "$resdir/$tname" || \
- 	restore_proc_mounts "$tname" "$resdir/$tname" || do_break=1
- 	check_mounts "$tname" "$resdir/$tname" || \
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+@@ -93,12 +95,18 @@ void setup(void)
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+-	if (is_numa(cleanup) > 0)
+-		/* For NUMA system, using the first node for cpuset.mems */
+-		write_cpusets(get_a_numa_node(cleanup));
+-	else
+-		/* For nonNUMA system, using node0 for cpuset.mems */
+-		write_cpusets(0);
++
++	/*
++	 * Some nodes do not contain memory, so use
++	 * get_allowed_nodes(NH_MEMS) to get a memory
++	 * node. This operation also applies to Non-NUMA
++	 * systems.
++	 */
++	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
++	if (ret < 0)
++		tst_brkm(TBROK, NULL, "Failed to get a memory node "
++				      "using get_allowed_nodes()");
++	write_cpusets(memnode);
+ }
+ 
+ void cleanup(void)
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 15feba5..545b5f0 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -108,24 +108,30 @@ int main(int argc, char *argv[])
+ 
+ void setup(void)
+ {
++	int ret, memnode;
++
+ 	tst_require_root(NULL);
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
+ 
++	overcommit = get_sys_tune("overcommit_memory");
++	set_sys_tune("overcommit_memory", 1, 1);
++
+ 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+ 	write_memcg();
+ 
+-	set_sys_tune("overcommit_memory", 1, 1);
+-
+-	if (is_numa(cleanup))
+-		/* For NUMA system, using the first node for cpuset.mems */
+-		write_cpusets(get_a_numa_node(cleanup));
+-	else
+-		/* For nonNUMA system, using node0 for cpuset.mems */
+-		write_cpusets(0);
+-
+-	overcommit = get_sys_tune("overcommit_memory");
++	/*
++	 * Some nodes do not contain memory, so use
++	 * get_allowed_nodes(NH_MEMS) to get a memory
++	 * node. This operation also applies to Non-NUMA
++	 * systems.
++	 */
++	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
++	if (ret < 0)
++		tst_brkm(TBROK, NULL, "Failed to get a memory node "
++				      "using get_allowed_nodes()");
++	write_cpusets(memnode);
+ }
+ 
+ void cleanup(void)
 -- 
-1.8.1
-
+1.7.11.7
 
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
