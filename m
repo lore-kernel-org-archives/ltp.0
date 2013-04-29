@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1URZuI-0002xC-8y
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:16:38 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URZuG-0008Pf-BU
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 03:16:38 +0000
-Message-ID: <516B7077.1000001@redhat.com>
-Date: Mon, 15 Apr 2013 11:13:59 +0800
-From: Zhouping Liu <zliu@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UWbdm-0000XX-Gg
+	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 00:08:22 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UWbdl-000840-3s
+	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 00:08:22 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sun, 28 Apr 2013 20:08:03 -0400
+References: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
+	<201304270204.34020.vapier@gentoo.org>
+	<1655733918.3290321.1367044489461.JavaMail.root@redhat.com>
+In-Reply-To: <1655733918.3290321.1367044489461.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <cover.1365411883.git.zliu@redhat.com>
-	<3bc25be7511978a5ccb9faad218e397743d1820b.1365411883.git.zliu@redhat.com>
-	<516B52DB.2000004@cn.fujitsu.com>
-In-Reply-To: <516B52DB.2000004@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/3] mm/thp: new case thp04.c
+Message-Id: <201304282008.05044.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,304 +26,135 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3243685090739479676=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 04/15/2013 09:07 AM, Wanlong Gao wrote:
-> On 04/08/2013 05:10 PM, Zhouping Liu wrote:
->> The case is desinged to test THP functionality.
->>
->> when one process allocate hugepage aligned anonymouse pages,
->> kernel thread 'khugepaged' controlled by sysfs knobs
->> /sys/kernel/mm/transparent_hugepage/* will scan them, and make
->> them as transparent hugepage if they are suited, you can find out
->> how many transparent hugepages are there in one process from
->> /proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
->> stand for transparent hugepage.
-> # ./runltp -s thp04
-> INFO: creating /opt/ltp/results directory
->
->      INFO: no command files were provided. Will execute the following
->            runtest scenario files:
->
-> syscalls fs fs_perms_simple fsx dio io mm ipc sched math nptl pty containers fs_bind controllers filecaps cap_bounds fcntl-locktests connectors admin_tools timers power_management_tests numa hugetlb commands hyperthreading
->
-> If some fields are empty or look unusual you may have an old version.
-> Compare to the current minimal requirements in Documentation/Changes.
->   
-> Fedora release 18 (Spherical Cow)
-> NAME=Fedora
-> VERSION="18 (Spherical Cow)"
-> ID=fedora
-> VERSION_ID=18
-> PRETTY_NAME="Fedora 18 (Spherical Cow)"
-> ANSI_COLOR="0;34"
-> CPE_NAME="cpe:/o:fedoraproject:fedora:18"
-> Fedora release 18 (Spherical Cow)
-> Fedora release 18 (Spherical Cow)
-> Linux gaowanlong 3.9.0-rc6 #1 SMP Mon Apr 8 16:03:08 CST 2013 x86_64 x86_64 x86_64 GNU/Linux
->   
-> Gnu C                  gcc (GCC) 4.7.2 20121109 (Red Hat 4.7.2-8)
-> Gnu make               3.82
-> util-linux             linux 2.22.2
-> mount                  linux 2.22.2 (libmount 2.22.0: selinux, debug)
-> modutils               12
-> e2fsprogs              1.42.5
-> PPP                    2.4.5
-> isdn4k-utils           3.13
-> Linux C Library        > libc.2.16
-> Dynamic linker (ldd)   2.16
-> Procps                 3.3.3-20120807git
-> Net-tools              2.0
-> iproute2              iproute2-ss121001
-> Kbd                    1.15.3wip
-> Sh-utils               8.17
-> Modules Loaded         tcp_lp fuse ebtable_nat ebtables bridge stp llc lockd bnep sunrpc bluetooth rfkill xt_CHECKSUM iptable_mangle ipt_MASQUERADE ip6t_REJECT iptable_nat nf_conntrack_ipv4 nf_conntrack_ipv6 nf_defrag_ipv4 nf_nat_ipv4 nf_defrag_ipv6 nf_nat xt_conntrack nf_conntrack ip6table_filter ip6_tables snd_hda_codec_realtek snd_hda_intel snd_hda_codec snd_hwdep snd_seq coretemp snd_seq_device crc32c_intel vhost_net snd_pcm ghash_clmulni_intel tun iTCO_wdt iTCO_vendor_support macvtap snd_page_alloc microcode macvlan snd_timer kvm_intel pcspkr i2c_i801 serio_raw snd r8169 kvm lpc_ich mei mii mfd_core soundcore wmi uinput i915 video i2c_algo_bit drm_kms_helper drm i2c_core
->
-> free reports:
->               total       used       free     shared    buffers     cached
-> Mem:       8025000    7563668     461332          0     730920    4891316
-> -/+ buffers/cache:    1941432    6083568
-> Swap:      4194300      16212    4178088
->
-> /proc/cpuinfo
-> processor	: 0
-> vendor_id	: GenuineIntel
-> cpu family	: 6
-> model		: 42
-> model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
-> stepping	: 7
-> microcode	: 0x28
-> cpu MHz		: 1600.000
-> cache size	: 6144 KB
-> physical id	: 0
-> siblings	: 4
-> core id		: 0
-> cpu cores	: 4
-> apicid		: 0
-> initial apicid	: 0
-> fpu		: yes
-> fpu_exception	: yes
-> cpuid level	: 13
-> wp		: yes
-> flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
-> bogomips	: 6185.61
-> clflush size	: 64
-> cache_alignment	: 64
-> address sizes	: 36 bits physical, 48 bits virtual
-> power management:
->
-> processor	: 1
-> vendor_id	: GenuineIntel
-> cpu family	: 6
-> model		: 42
-> model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
-> stepping	: 7
-> microcode	: 0x28
-> cpu MHz		: 1600.000
-> cache size	: 6144 KB
-> physical id	: 0
-> siblings	: 4
-> core id		: 1
-> cpu cores	: 4
-> apicid		: 2
-> initial apicid	: 2
-> fpu		: yes
-> fpu_exception	: yes
-> cpuid level	: 13
-> wp		: yes
-> flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
-> bogomips	: 6185.61
-> clflush size	: 64
-> cache_alignment	: 64
-> address sizes	: 36 bits physical, 48 bits virtual
-> power management:
->
-> processor	: 2
-> vendor_id	: GenuineIntel
-> cpu family	: 6
-> model		: 42
-> model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
-> stepping	: 7
-> microcode	: 0x28
-> cpu MHz		: 1700.000
-> cache size	: 6144 KB
-> physical id	: 0
-> siblings	: 4
-> core id		: 2
-> cpu cores	: 4
-> apicid		: 4
-> initial apicid	: 4
-> fpu		: yes
-> fpu_exception	: yes
-> cpuid level	: 13
-> wp		: yes
-> flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
-> bogomips	: 6185.61
-> clflush size	: 64
-> cache_alignment	: 64
-> address sizes	: 36 bits physical, 48 bits virtual
-> power management:
->
-> processor	: 3
-> vendor_id	: GenuineIntel
-> cpu family	: 6
-> model		: 42
-> model name	: Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
-> stepping	: 7
-> microcode	: 0x28
-> cpu MHz		: 3101.000
-> cache size	: 6144 KB
-> physical id	: 0
-> siblings	: 4
-> core id		: 3
-> cpu cores	: 4
-> apicid		: 6
-> initial apicid	: 6
-> fpu		: yes
-> fpu_exception	: yes
-> cpuid level	: 13
-> wp		: yes
-> flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
-> bogomips	: 6185.61
-> clflush size	: 64
-> cache_alignment	: 64
-> address sizes	: 36 bits physical, 48 bits virtual
-> power management:
->
-> remove test cases which require the block device.
-> You can specify it with option -b
-> COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 7824     -n 7824  -p  -f /tmp/ltp-n5AW6K9C4X/alltests -l /opt/ltp/results/LTP_RUN_ON-2013_Apr_15-09h_03m_29s.log  -C /opt/ltp/output/LTP_RUN_ON-2013_Apr_15-09h_03m_29s.failed
-> INFO: Restricted to thp04
-> LOG File: /opt/ltp/results/LTP_RUN_ON-2013_Apr_15-09h_03m_29s.log
-> FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2013_Apr_15-09h_03m_29s.failed
-> Running tests.......
-> <<<test_start>>>
-> tag=thp04_1 stime=1365987809
-> cmdline="thp04"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> thp04       0  TINFO  :  Start to test transparent hugepage...
-> thp04       0  TINFO  :  There are 2 children allocating 64 transparent hugepages
-> thp04       0  TINFO  :  Stop all children...
-> thp04       0  TINFO  :  child[7966] stop here
-> thp04       0  TINFO  :  child[7965] stop here
-> thp04       0  TINFO  :  Start to scan all transparent hugepages...
-> thp04       0  TINFO  :  khugepaged daemon takes 20s to scan all thp pages
-> thp04       0  TINFO  :  Start to verify transparent hugepage size...
-> thp04       1  TFAIL  :  child[7964] got 0KB thps - expect 131072KB thps
-> thp04       2  TFAIL  :  child[7964] got 0KB thps - expect 131072KB thps
-> thp04       0  TINFO  :  Wake up all children...
+--===============3243685090739479676==
+Content-Type: multipart/signed; boundary="nextPart14875921.UStS426zSA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-depending on your system's memory info:
+--nextPart14875921.UStS426zSA
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-free reports:
-              total       used       free     shared    buffers     cached
-Mem:       8025000    7563668     461332          0     730920    4891316
--/+ buffers/cache:    1941432    6083568
-Swap:      4194300      16212    4178088
+On Saturday 27 April 2013 02:34:49 Zhouping Liu wrote:
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> > On Saturday 27 April 2013 00:23:14 Zhouping Liu wrote:
+> > > sub-cpuset cgroup only contains CPUs or memory in one node, but
+> >=20
+> > only contains -> to only contain
+>=20
+> why 'contain', I think it should be 'contains', isn't it?
 
-your system has 8Gb RAM and there's 460Mb memory left when you start to 
-test thp04 serial cases.
-I guess the cases failed because of the low memory.
+when you add the "to", it changes to "contain"
 
-can you re-test them on the system with enough memory? and provide the 
-value of /proc/sys/vm/min_free_kbytes,
-I think 1Gb memory left is enough to test the new THP case.
+> > > that's not permitted in the special machine. The patch fixed it.
+> >=20
+> > what is a "special machine" ?
+>=20
+> the special machine is that it has such nodes(describe above),
+> in which there's only CPUs or memory.
+>=20
+> how about this:
+>=20
+> "that's not permitted in the such above special machine."
 
-also I'm very confused why the above case didn't get any THPs, maybe 
-there's some performance issues...
+i would use:
+that's not permitted in the scenario described above.
 
-Thanks,
-Zhouping
+> > > +		tst_resm(TINFO, "None CPUs in the node%ld", nd);
+> >=20
+> > i think you mean "no" instead of "None"
+> >=20
+> > > +		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
+> > > +				"for the special scenario");
+> >=20
+> > what is "the special scenario" ?
+>=20
+> the special scenario is "no CPUs in the node%ld", I think it's clear in l=
+og
+> message.
 
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=20 termination_type=exited termination_id=1 corefile=no
-> cutime=4 cstime=12
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=thp04_2 stime=1365987829
-> cmdline="thp04 -n 10 -N 20"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> thp04       0  TINFO  :  Start to test transparent hugepage...
-> thp04       0  TINFO  :  There are 10 children allocating 20 transparent hugepages
-> thp04       0  TINFO  :  Stop all children...
-> thp04       0  TINFO  :  child[7970] stop here
-> thp04       0  TINFO  :  child[7979] stop here
-> thp04       0  TINFO  :  child[7973] stop here
-> thp04       0  TINFO  :  child[7978] stop here
-> thp04       0  TINFO  :  child[7974] stop here
-> thp04       0  TINFO  :  child[7972] stop here
-> thp04       0  TINFO  :  child[7975] stop here
-> thp04       0  TINFO  :  child[7971] stop here
-> thp04       0  TINFO  :  child[7977] stop here
-> thp04       0  TINFO  :  child[7976] stop here
-> thp04       0  TINFO  :  Start to scan all transparent hugepages...
-> thp04       0  TINFO  :  khugepaged daemon takes 30s to scan all thp pages
-> thp04       0  TINFO  :  Start to verify transparent hugepage size...
-> thp04       1  TFAIL  :  child[7969] got 6144KB thps - expect 40960KB thps
-> thp04       2  TFAIL  :  child[7969] got 4096KB thps - expect 40960KB thps
-> thp04       3  TFAIL  :  child[7969] got 24576KB thps - expect 40960KB thps
-> thp04       4  TFAIL  :  child[7969] got 14336KB thps - expect 40960KB thps
-> thp04       5  TFAIL  :  child[7969] got 12288KB thps - expect 40960KB thps
-> thp04       6  TFAIL  :  child[7969] got 4096KB thps - expect 40960KB thps
-> thp04       7  TFAIL  :  child[7969] got 8192KB thps - expect 40960KB thps
-> thp04       8  TFAIL  :  child[7969] got 8192KB thps - expect 40960KB thps
-> thp04       9  TFAIL  :  child[7969] got 6144KB thps - expect 40960KB thps
-> thp04      10  TFAIL  :  child[7969] got 16384KB thps - expect 40960KB thps
-> thp04       0  TINFO  :  Wake up all children...
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=30 termination_type=exited termination_id=1 corefile=no
-> cutime=7 cstime=30
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=thp04_3 stime=1365987859
-> cmdline="thp04 -n 1 -N 300"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> thp04       0  TINFO  :  Start to test transparent hugepage...
-> thp04       0  TINFO  :  There are 1 children allocating 300 transparent hugepages
-> thp04       0  TINFO  :  Stop all children...
-> thp04       0  TINFO  :  child[7990] stop here
-> thp04       0  TINFO  :  Start to scan all transparent hugepages...
-> thp04       0  TINFO  :  khugepaged daemon takes 20s to scan all thp pages
-> thp04       0  TINFO  :  Start to verify transparent hugepage size...
-> thp04       1  TFAIL  :  child[7989] got 77824KB thps - expect 614400KB thps
-> thp04       0  TINFO  :  Wake up all children...
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=20 termination_type=exited termination_id=1 corefile=no
-> cutime=8 cstime=34
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: 20120903-189-g3e5f790
->
->         ###############################################################
->
->              Done executing testcases.
->              LTP Version:  20120903-189-g3e5f790
->         ###############################################################
->
->
+when you say "Only use", that's a command to the user.  i think you meant t=
+o=20
+say "Only using".
 
+i think the two messages can be combined into one then:
+	tst_resm(TINFO, "No CPUs in node%ld; using only CPU0", nd);
+
+> > >  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+> > >=20
+> > > -	if (is_numa(cleanup) > 0)
+> > > -		/* For NUMA system, using the first node for cpuset.mems */
+> > > -		write_cpusets(get_a_numa_node(cleanup));
+> > > -	else
+> > > -		/* For nonNUMA system, using node0 for cpuset.mems */
+> > > -		write_cpusets(0);
+> > > +
+> > > +	/*
+> > > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
+> >=20
+> > "Not any" -> "No"
+>=20
+> it's not that meaning, what I meant here is that there's not any nodes
+> contain memory in a NUMA system, Some nodes contain memory, but some nodes
+> don't.
+
+ok, so i think you want to say instead:
+	Some nodes do not contain memory, ....
+=2Dmike
+
+--nextPart14875921.UStS426zSA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRfbnkAAoJEEFjO5/oN/WBrd8P/3pGww6HQmizZVQrP0qQB7KH
+E35VQX9/yBcuthJI2+m+owj19WIJR3jMzaeOI2IoHXoRg7HVUfmK6gZcIKVECBB0
+wpUvi1/UD2xaF3r/2U7pvzjpOsAe3/l3ZHYrut/vI/u3oZrPL0PIkOFK0jyT/HMX
+iGxuqZ6eJYXyj2WvnFUwNM+TJngcuEUVfwP1YqMvwgGyDr/JZm+MFToKr6nSLYS+
+FvQJqk3B9nr0/xGyfHfNYBJcmtViV2CzBYcrVh6caEv4BBcgQHY/05LitA5Yo7T1
+jUdYCKHdCUgdYjpo2iln0SEVgVY5MBMKYQXOGAeyzPmduAW2OCznBU5g0MFQRlA9
+ordBk73xVTm3qsFIxrbDFq/cLyNx12bNiL4pCtY0bD43tzO3bNTxxv+ZX0N7Gfbb
+4Omjr59LMp5EXY/xC6FRLJbVRm2NE9qgSeaodaqMoOvWyb35xL0DezVOkIrBQxkP
+Ws7zEbRYi7ciSS7CQ7uTS89SZOE0UsNHqjl+DgMxzG2VAlUlELIQ5tQDMz9+j49R
+nC6eTH9URSEGFz58C5HkI+ITQOansPF5vgEtc1TbMvafpvj+KqZUD33vOGFgN6rl
+vFmpLSI3lAYplyW21lvbaVIdpNj8dmmvxr7AsXKUblcznt8V17OsFIXUtZ+8Cc4T
+dRJCmcvEoiIJYgmVktcI
+=rO1z
+-----END PGP SIGNATURE-----
+
+--nextPart14875921.UStS426zSA--
+
+
+--===============3243685090739479676==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--===============3243685090739479676==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3243685090739479676==--
+
