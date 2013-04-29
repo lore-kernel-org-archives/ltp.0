@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1URcTm-0000CE-Q1
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 06:01:26 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1URcTl-00010P-Iu
-	for ltp-list@lists.sourceforge.net; Mon, 15 Apr 2013 06:01:26 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r3F61JvL004319
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Apr 2013 02:01:19 -0400
+	(envelope-from <zliu@redhat.com>) id 1UWhJr-00019W-Ip
+	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:12:11 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UWhJq-0003CX-AY
+	for ltp-list@lists.sourceforge.net; Mon, 29 Apr 2013 06:12:11 +0000
+Date: Mon, 29 Apr 2013 02:12:02 -0400 (EDT)
 From: Zhouping Liu <zliu@redhat.com>
-Date: Mon, 15 Apr 2013 13:59:02 +0800
-Message-Id: <cover.1366005109.git.zliu@redhat.com>
-Subject: [LTP] [PATCH v3 0/3] mm/thp: add two new case
+Message-ID: <1362519405.3534552.1367215922797.JavaMail.root@redhat.com>
+In-Reply-To: <201304282008.05044.vapier@gentoo.org>
+References: <bc3a8ce458b93dd36e09ea01c3001513f00462c4.1367036468.git.zliu@redhat.com>
+	<201304270204.34020.vapier@gentoo.org>
+	<1655733918.3290321.1367044489461.JavaMail.root@redhat.com>
+	<201304282008.05044.vapier@gentoo.org>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,56 +27,105 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-The patchset is desinged to test THP functionality.
 
-when one process allocate hugepage aligned anonymouse pages,
-kernel thread 'khugepaged' controlled by sysfs knobs
-/sys/kernel/mm/transparent_hugepage/* will scan them, and make
-them as transparent hugepage if they are suited, you can find out
-how many transparent hugepages are there in one process from
-/proc/<pid>/smaps, among the file contents, 'AnonHugePages' entry
-stand for transparent hugepage.
 
-V1 to V2:
-accepted Wanlong's suggestion, added some comment for '10s'
-added 'static' key word for single-file-only variant.
+----- Original Message -----
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> To: "Zhouping Liu" <zliu@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Monday, April 29, 2013 8:08:03 AM
+> Subject: Re: [LTP] [PATCH v2] mem/oom: fixed a cpuset error
+> 
+> On Saturday 27 April 2013 02:34:49 Zhouping Liu wrote:
+> > From: "Mike Frysinger" <vapier@gentoo.org>
+> > > On Saturday 27 April 2013 00:23:14 Zhouping Liu wrote:
+> > > > sub-cpuset cgroup only contains CPUs or memory in one node, but
+> > > 
+> > > only contains -> to only contain
+> > 
+> > why 'contain', I think it should be 'contains', isn't it?
+> 
+> when you add the "to", it changes to "contain"
 
-V2 to V3:
-added some comments for low memory system.
+yes, I didn't catch the "to" :(
 
-Wanlong, I included you into 'Tested-by' thread, thanks for
-your reviewing and testing the patchset.
+> 
+> > > > that's not permitted in the special machine. The patch fixed it.
+> > > 
+> > > what is a "special machine" ?
+> > 
+> > the special machine is that it has such nodes(describe above),
+> > in which there's only CPUs or memory.
+> > 
+> > how about this:
+> > 
+> > "that's not permitted in the such above special machine."
+> 
+> i would use:
+> that's not permitted in the scenario described above.
 
-Zhouping Liu (3):
-  mm/thp: new case thp04.c
-  lib/mem: introduce a new function set_global_mempolicy()
-  mm/thp: add new case thp05
+Agreed.
 
- runtest/mm                         |   6 ++
- testcases/kernel/mem/include/mem.h |  12 +++
- testcases/kernel/mem/lib/mem.c     | 203 ++++++++++++++++++++++++++++++++++++-
- testcases/kernel/mem/thp/thp04.c   | 136 +++++++++++++++++++++++++
- testcases/kernel/mem/thp/thp05.c   | 152 +++++++++++++++++++++++++++
- 5 files changed, 508 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/mem/thp/thp04.c
- create mode 100644 testcases/kernel/mem/thp/thp05.c
+> 
+> > > > +		tst_resm(TINFO, "None CPUs in the node%ld", nd);
+> > > 
+> > > i think you mean "no" instead of "None"
+> > > 
+> > > > +		tst_resm(TINFO, "Only use CPU0 in the cpuset cgroup "
+> > > > +				"for the special scenario");
+> > > 
+> > > what is "the special scenario" ?
+> > 
+> > the special scenario is "no CPUs in the node%ld", I think it's clear in log
+> > message.
+> 
+> when you say "Only use", that's a command to the user.  i think you meant to
+> say "Only using".
+> 
+> i think the two messages can be combined into one then:
+> 	tst_resm(TINFO, "No CPUs in node%ld; using only CPU0", nd);
 
--- 
-1.7.11.7
+It sounds better, agreed.
 
+> 
+> > > >  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
+> > > > 
+> > > > -	if (is_numa(cleanup) > 0)
+> > > > -		/* For NUMA system, using the first node for cpuset.mems */
+> > > > -		write_cpusets(get_a_numa_node(cleanup));
+> > > > -	else
+> > > > -		/* For nonNUMA system, using node0 for cpuset.mems */
+> > > > -		write_cpusets(0);
+> > > > +
+> > > > +	/*
+> > > > +	 * Not any nodes contain memory, so using get_allowed_nodes(NH_MEMS)
+> > > 
+> > > "Not any" -> "No"
+> > 
+> > it's not that meaning, what I meant here is that there's not any nodes
+> > contain memory in a NUMA system, Some nodes contain memory, but some nodes
+> > don't.
+> 
+> ok, so i think you want to say instead:
+> 	Some nodes do not contain memory, ....
+
+Yes, I have updated it, please review v3.
+
+Thanks,
+Zhouping
 
 ------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
