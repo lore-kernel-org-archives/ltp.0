@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UUaSo-00070S-Bh
-	for ltp-list@lists.sourceforge.net; Tue, 23 Apr 2013 10:28:42 +0000
-Date: Tue, 23 Apr 2013 12:29:36 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UXCaR-0007mj-DD
+	for ltp-list@lists.sourceforge.net; Tue, 30 Apr 2013 15:35:23 +0000
+Date: Tue, 30 Apr 2013 17:36:21 +0200
 From: chrubis@suse.cz
-Message-ID: <20130423102935.GB28044@rei>
-References: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
+Message-ID: <20130430153621.GB1367@rei>
+References: <fdb7e0ad0d65e56c7a1d6ad41a3e7c51400549a0.1366875899.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <8a4fb5929c599b2dec955086713069c20f95c466.1366704928.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/cma: add runtime check to setup()
+In-Reply-To: <fdb7e0ad0d65e56c7a1d6ad41a3e7c51400549a0.1366875899.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] setns01: add CLONE_NEWUSER to test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,36 +27,23 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
->  static void setup(void)
-> @@ -191,9 +191,11 @@ static void setup(void)
->  	    sflag ? SAFE_STRTOL(NULL, sz_opt, 1, LONG_MAX - PADDING_SIZE * 2)
->  	    : 100000;
->  
-> -#if !defined(__NR_process_vm_readv)
-> +#if !defined(__NR_process_vm_writev)
->  	tst_brkm(TCONF, NULL, "process_vm_writev does not exist "
->  		 "on your system");
-> +#else
-> +	ltp_syscall(__NR_process_vm_writev, 0, NULL, 0, NULL, 0, 0);
->  #endif
->  	semid = init_sem(1);
+> This adds user type namespaces to errno test. Noteworthy difference
+> is in testcase 4, because re-entering this type of namespace is not
+> allowed. Test spawns a child, which will have different user ID than
+> parent calling setns().
 
-If you add the __NR_process_vm_writev to at least one of the
-testscases/kernel/include/*.in and run regen script (make clean && make
-in the corresponding dir), the linux_syscall_numbers.h will contain at
-least stubs and ltp_syscall() will be able to handle both situations.
+Acked as well.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
