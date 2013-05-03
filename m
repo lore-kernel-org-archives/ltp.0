@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1UcUyD-0002ZE-SI
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 06:13:49 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UcUyB-0003vH-WE
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 06:13:49 +0000
-Date: Wed, 15 May 2013 14:13:24 +0800
-From: Eryu Guan <eguan@redhat.com>
-Message-ID: <20130515061324.GG2460@eguan-t400.nay.redhat.com>
-References: <5191A1F3.3040407@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5191A1F3.3040407@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2 1/2] mount/mount03.c: cleanup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <riku.voipio@linaro.org>) id 1UYGXS-0002nS-1D
+	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:42 +0000
+Received: from afflict.kos.to ([92.243.29.197])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UYGXQ-0003Rd-B0
+	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:41 +0000
+From: riku.voipio@linaro.org
+Date: Fri,  3 May 2013 16:45:15 +0300
+Message-Id: <1367588717-18162-2-git-send-email-riku.voipio@linaro.org>
+Subject: [LTP] [PATCH 1/3] Add aarch64 support
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,484 +21,305 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Tue, May 14, 2013 at 10:31:15AM +0800, DAN LI wrote:
-> 
-> 1. Remove useless comments
-> 
-> 2. Revise code to follow ltp-code-style
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+From: Riku Voipio <riku.voipio@linaro.org>
 
-Looks good to me.
+Basic commit to support Aarch64, 64-bit Arm platform
 
-Reviewed-by: Eryu Guan <eguan@redhat.com>
-> ---
->  testcases/kernel/syscalls/mount/mount03.c | 213 +++++++++++++-----------------
->  1 file changed, 90 insertions(+), 123 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-> index 04570b9..eea2de7 100644
-> --- a/testcases/kernel/syscalls/mount/mount03.c
-> +++ b/testcases/kernel/syscalls/mount/mount03.c
-> @@ -14,10 +14,8 @@
->   * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->   *
->   */
-> -/**************************************************************************
-> - *
-> - *    TEST IDENTIFIER	: mount03
-> - *
-> +
-> +/*
->   *    EXECUTED BY	: root / superuser
->   *
->   *    TEST TITLE	: Test for checking mount(2) flags
-> @@ -26,10 +24,6 @@
->   *
->   *    AUTHOR		: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
->   *
-> - *    SIGNALS
-> - * 	Uses SIGUSR1 to pause before test if option set.
-> - * 	(See the parse_opts(3) man page).
-> - *
->   *    DESCRIPTION
->   *	Check for basic mount(2) system call flags.
->   *
-> @@ -42,13 +36,13 @@
->   *	5) MS_REMOUNT - alter flags of a mounted FS.
->   *	6) MS_NOSUID - ignore suid and sgid bits.
->   *
-> - * 	Setup:
-> + *	Setup:
->   *	  Setup signal handling.
->   *	  Create a mount point.
->   *	  Pause for SIGUSR1 if option specified.
->   *
-> - * 	Test:
-> - *	 Loop if the proper options are given.
-> + *	Test:
-> + *	  Loop if the proper options are given.
->   *	  Execute mount system call for each flag
->   *	  Validate each flag setting. if validation fails
->   *		Delete the mount point.
-> @@ -56,22 +50,10 @@
->   *	  Delete the mount point.
->   *	  Otherwise, Issue a PASS message.
->   *
-> - * 	Cleanup:
-> - * 	  Print errno log and/or timing stats if options given
-> + *	Cleanup:
-> + *	  Print errno log and/or timing stats if options given
->   *	  Delete the temporary directory(s)/file(s) created.
->   *
-> - * USAGE:  <for command-line>
-> - *  mount03 [-T type] -D device [-e] [-i n] [-I x] [-p x] [-t]
-> - *			where,  -T type : specifies the type of filesystem to
-> - *					  be mounted. Default ext2.
-> - *				-D device : device to be mounted.
-> - *				-e   : Turn on errno logging.
-> - *				-i n : Execute test n times.
-> - *				-I x : Execute test for x seconds.
-> - *				-p   : Pause for SIGUSR1 before starting
-> - *				-P x : Pause for x seconds between iterations.
-> - *				-t   : Turn on syscall timing.
-> - *
->   * RESTRICTIONS
->   *	test must run with the -D option
->   *	test doesn't support -c option to run it in parallel, as mount
-> @@ -102,30 +84,29 @@ static int setup_uid(void);
-> 
->  char *TCID = "mount03";
->  int TST_TOTAL = 6;
-> -extern char **environ;		/* pointer to this processes env */
-> 
->  #define DEFAULT_FSTYPE	"ext2"
->  #define TEMP_FILE	"temp_file"
->  #define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
-> -#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
-> +#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-> +			 S_IXGRP|S_IROTH|S_IXOTH)
->  #define SUID_MODE	(S_ISUID|S_IRUSR|S_IXUSR|S_IXGRP|S_IXOTH)
-> 
-> -static char *Fstype;
-> +static char *fs_type;
-> 
->  static char mntpoint[20];
->  static char *fstype;
->  static char *device;
-> -static int Tflag = 0;
-> -static int Dflag = 0;
-> -
-> -static char write_buffer[BUFSIZ];	/* buffer used to write data to file */
-> -static char read_buffer[BUFSIZ];	/* buffer used to read data from file */
-> -static int fildes;		/* file descriptor for temporary file */
-> -static char *Cmd_buffer[3];	/* Buffer to hold command string */
-> -static char Path_name[PATH_MAX];	/* Buffer to hold command string */
-> -static char testhome_path[PATH_MAX];	/* Test home Path                */
-> -static char file[PATH_MAX];	/* Temporary file                */
-> -static char cmd[] = "cp";
-> +static int tflag;
-> +static int dflag;
-> +static int fildes;
-> +
-> +static char write_buffer[BUFSIZ];
-> +static char read_buffer[BUFSIZ];
-> +static char path_name[PATH_MAX];
-> +static char testhome_path[PATH_MAX];
-> +static char file[PATH_MAX];
-> +static char *cmd = "cp";
-> 
->  long rwflags[] = {
->  	MS_RDONLY,
-> @@ -136,41 +117,41 @@ long rwflags[] = {
->  	MS_NOSUID,
->  };
-> 
-> -static option_t options[] = {	/* options supported by mount03 test */
-> -	{"T:", &Tflag, &fstype},	/* -T type of filesystem        */
-> -	{"D:", &Dflag, &device},	/* -D device used for mounting  */
-> +static option_t options[] = {
-> +	{"T:", &tflag, &fstype},
-> +	{"D:", &dflag, &device},
->  	{NULL, NULL, NULL}
->  };
-> 
-> -int main(int ac, char **av)
-> +int main(int argc, char *argv[])
->  {
->  	int lc, i;
->  	char *msg;
-> 
-> -	if ((msg = parse_opts(ac, av, options, &help)) != NULL)
-> +	msg = parse_opts(argc, argv, options, &help);
-> +	if (msg != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> 
->  	/* Check for mandatory option of the testcase */
-> -	if (!Dflag) {
-> +	if (!dflag)
->  		tst_brkm(TBROK, NULL,
->  			 "you must specify the device used for mounting with -D "
->  			 "option");
-> -	}
-> 
-> -	if (Tflag) {
-> -		Fstype = (char *)malloc(strlen(fstype) + 1);
-> -		if (Fstype == NULL) {
-> +	if (tflag) {
-> +		fs_type = malloc(strlen(fstype) + 1);
-> +		if (fs_type == NULL)
->  			tst_brkm(TBROK | TERRNO, NULL, "malloc failed");
-> -		}
-> -		Fstype[strlen(fstype)] = '\0';
-> -		strncpy(Fstype, fstype, strlen(fstype));
-> +
-> +		fs_type[strlen(fstype)] = '\0';
-> +		strncpy(fs_type, fstype, strlen(fstype));
->  	} else {
-> -		Fstype = (char *)malloc(strlen(DEFAULT_FSTYPE) + 1);
-> -		if (Fstype == NULL) {
-> +		fs_type = malloc(strlen(DEFAULT_FSTYPE) + 1);
-> +		if (fs_type == NULL)
->  			tst_brkm(TBROK | TERRNO, NULL, "malloc failed");
-> -		}
-> -		strncpy(Fstype, DEFAULT_FSTYPE, strlen(DEFAULT_FSTYPE));
-> -		Fstype[strlen(DEFAULT_FSTYPE)] = '\0';
-> +
-> +		strncpy(fs_type, DEFAULT_FSTYPE, strlen(DEFAULT_FSTYPE));
-> +		fs_type[strlen(DEFAULT_FSTYPE)] = '\0';
->  	}
-> 
->  	if (STD_COPIES != 1) {
-> @@ -189,7 +170,8 @@ int main(int ac, char **av)
->  		for (i = 0; i < TST_TOTAL; ++i) {
-> 
->  			/* Call mount(2) */
-> -			TEST(mount(device, mntpoint, Fstype, rwflags[i], NULL));
-> +			TEST(mount(device, mntpoint, fs_type, rwflags[i],
-> +				   NULL));
-> 
->  			/* check return code */
->  			if (TEST_RETURN != 0) {
-> @@ -198,22 +180,20 @@ int main(int ac, char **av)
->  			}
-> 
->  			/* Validate the rwflag */
-> -			if (test_rwflag(i, lc) == 1) {
-> +			if (test_rwflag(i, lc) == 1)
->  				tst_resm(TFAIL, "mount(2) failed while"
->  					 " validating %ld", rwflags[i]);
-> -			} else {
-> +			else
->  				tst_resm(TPASS, "mount(2) passed with "
->  					 "rwflag = %ld", rwflags[i]);
-> -			}
-> +
->  			TEST(umount(mntpoint));
-> -			if (TEST_RETURN != 0) {
-> +			if (TEST_RETURN != 0)
->  				tst_brkm(TBROK | TTERRNO, cleanup,
->  					 "umount(2) failed for %s", mntpoint);
-> -			}
->  		}
->  	}
-> 
-> -	/* cleanup and exit */
->  	cleanup();
-> 
->  	tst_exit();
-> @@ -234,8 +214,9 @@ int test_rwflag(int i, int cnt)
->  	case 0:
->  		/* Validate MS_RDONLY flag of mount call */
-> 
-> -		snprintf(file, PATH_MAX, "%stmp", Path_name);
-> -		if ((fd = open(file, O_CREAT | O_RDWR, S_IRWXU)) == -1) {
-> +		snprintf(file, PATH_MAX, "%stmp", path_name);
-> +		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
-> +		if (fd == -1) {
->  			if (errno == EROFS) {
->  				return 0;
->  			} else {
-> @@ -249,10 +230,11 @@ int test_rwflag(int i, int cnt)
->  	case 1:
->  		/* Validate MS_NODEV flag of mount call */
-> 
-> -		snprintf(file, PATH_MAX, "%smynod_%d_%d", Path_name, getpid(),
-> +		snprintf(file, PATH_MAX, "%smynod_%d_%d", path_name, getpid(),
->  			 cnt);
->  		if (mknod(file, S_IFBLK | 0777, 0) == 0) {
-> -			if ((fd = open(file, O_RDWR, S_IRWXU)) == -1) {
-> +			fd = open(file, O_RDWR, S_IRWXU);
-> +			if (fd == -1) {
->  				if (errno == EACCES) {
->  					return 0;
->  				} else {
-> @@ -271,8 +253,9 @@ int test_rwflag(int i, int cnt)
->  	case 2:
->  		/* Validate MS_NOEXEC flag of mount call */
-> 
-> -		snprintf(file, PATH_MAX, "%stmp1", Path_name);
-> -		if ((fd = open(file, O_CREAT | O_RDWR, S_IRWXU)) == -1) {
-> +		snprintf(file, PATH_MAX, "%stmp1", path_name);
-> +		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
-> +		if (fd == -1) {
->  			tst_resm(TWARN | TERRNO, "opening %s failed", file);
->  		} else {
->  			close(fd);
-> @@ -288,9 +271,9 @@ int test_rwflag(int i, int cnt)
->  		strcpy(write_buffer, "abcdefghijklmnopqrstuvwxyz");
-> 
->  		/* Creat a temporary file under above directory */
-> -		snprintf(file, PATH_MAX, "%s%s", Path_name, TEMP_FILE);
-> -		if ((fildes = open(file, O_RDWR | O_CREAT, FILE_MODE))
-> -		    == -1) {
-> +		snprintf(file, PATH_MAX, "%s%s", path_name, TEMP_FILE);
-> +		fildes = open(file, O_RDWR | O_CREAT, FILE_MODE);
-> +		if (fildes == -1) {
->  			tst_resm(TWARN | TERRNO,
->  				 "open(%s, O_RDWR|O_CREAT, %#o) failed",
->  				 file, FILE_MODE);
-> @@ -333,14 +316,14 @@ int test_rwflag(int i, int cnt)
->  	case 4:
->  		/* Validate MS_REMOUNT flag of mount call */
-> 
-> -		TEST(mount(device, mntpoint, Fstype, MS_REMOUNT, NULL));
-> +		TEST(mount(device, mntpoint, fs_type, MS_REMOUNT, NULL));
->  		if (TEST_RETURN != 0) {
->  			tst_resm(TWARN | TTERRNO, "mount(2) failed to remount");
->  			return 1;
->  		} else {
-> -			snprintf(file, PATH_MAX, "%stmp2", Path_name);
-> -			if ((fd = open(file, O_CREAT | O_RDWR, S_IRWXU))
-> -			    == -1) {
-> +			snprintf(file, PATH_MAX, "%stmp2", path_name);
-> +			fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
-> +			if (fd == -1) {
->  				tst_resm(TWARN, "open(%s) on readonly "
->  					 "filesystem passed", file);
->  				return 1;
-> @@ -356,23 +339,23 @@ int test_rwflag(int i, int cnt)
->  			tst_resm(TBROK | TERRNO, "setup_uid failed");
->  			return 1;
->  		}
-> -		switch (pid = fork()) {
-> +		pid = fork();
-> +		switch (pid) {
->  		case -1:
->  			tst_resm(TBROK | TERRNO, "fork failed");
->  			return 1;
->  		case 0:
-> -			snprintf(file, PATH_MAX, "%ssetuid_test", Path_name);
-> -			if (chmod(file, SUID_MODE) != 0) {
-> +			snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
-> +			if (chmod(file, SUID_MODE) != 0)
->  				tst_resm(TWARN, "chmod(%s, %#o) failed",
->  					 file, SUID_MODE);
-> -			}
-> 
->  			ltpuser = getpwnam(nobody_uid);
-> -			if (setreuid(ltpuser->pw_uid, ltpuser->pw_uid) == -1) {
-> +			if (setreuid(ltpuser->pw_uid, ltpuser->pw_uid) == -1)
->  				tst_resm(TWARN | TERRNO,
->  					 "seteuid() failed to change euid to %d",
->  					 ltpuser->pw_uid);
-> -			}
-> +
->  			execlp(file, basename(file), NULL);
->  			exit(1);
->  		default:
-> @@ -395,24 +378,21 @@ int setup_uid()
->  	int pid, status;
->  	char command[PATH_MAX];
-> 
-> -	switch (pid = fork()) {
-> +	pid = fork();
-> +	switch (pid) {
->  	case -1:
->  		tst_resm(TWARN | TERRNO, "fork failed");
->  		return 1;
->  	case 0:
-> -		Cmd_buffer[0] = cmd;
-> -		Cmd_buffer[1] = testhome_path;
-> -		Cmd_buffer[2] = Path_name;
-> -
->  		/* Put command into string */
-> -		sprintf(command, "%s %s %s", cmd, testhome_path, Path_name);
-> +		sprintf(command, "%s %s %s", cmd, testhome_path, path_name);
-> 
->  		/* Run command to cp file to right spot */
-> -		if (system(command) == 0) {
-> +		if (system(command) == 0)
->  			execlp(file, basename(file), NULL);
-> -		} else {
-> +		else
->  			printf("call to %s failed\n", command);
-> -		}
-> +
->  		exit(1);
->  	default:
->  		waitpid(pid, &status, 0);
-> @@ -428,61 +408,56 @@ int setup_uid()
->  	}
->  }
-> 
-> -/* setup() - performs all ONE TIME setup for this test */
->  void setup()
->  {
-> -	char *test_home;	/* variable to hold TESTHOME env */
-> +	char *test_home;
->  	struct stat setuid_test_stat;
-> 
->  	tst_sig(FORK, DEF_HANDLER, cleanup);
-> 
->  	/* Check whether we are root */
->  	if (geteuid() != 0) {
-> -		free(Fstype);
-> +		free(fs_type);
->  		tst_brkm(TBROK, NULL, "Test must be run as root");
->  	}
-> 
-> -	/* Test home directory */
->  	test_home = get_current_dir_name();
-> 
-> -	/* make a temp directory */
->  	tst_tmpdir();
-> 
-> -	/* Unique mount point */
-> -	(void)sprintf(mntpoint, "mnt_%d", getpid());
-> +	sprintf(mntpoint, "mnt_%d", getpid());
-> 
-> -	if (mkdir(mntpoint, DIR_MODE)) {
-> +	if (mkdir(mntpoint, DIR_MODE))
->  		tst_brkm(TBROK | TERRNO, cleanup, "mkdir(%s, %#o) failed",
->  			 mntpoint, DIR_MODE);
-> -	}
-> +
->  	/* Get the current working directory of the process */
-> -	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {
-> +	if (getcwd(path_name, sizeof(path_name)) == NULL)
->  		tst_brkm(TBROK, cleanup, "getcwd failed");
-> -	}
-> -	if (chmod(Path_name, DIR_MODE) != 0) {
-> +
-> +	if (chmod(path_name, DIR_MODE) != 0)
->  		tst_brkm(TBROK, cleanup, "chmod(%s, %#o) failed",
-> -			 Path_name, DIR_MODE);
-> -	}
-> -	snprintf(file, PATH_MAX, "%ssetuid_test", Path_name);
-> +			 path_name, DIR_MODE);
-> +
-> +	snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
->  	if (stat(file, &setuid_test_stat) < 0) {
->  		tst_brkm(TBROK, cleanup, "stat for setuid_test failed");
->  	} else {
->  		if ((setuid_test_stat.st_uid || setuid_test_stat.st_gid) &&
-> -		    chown(file, 0, 0) < 0) {
-> +		    chown(file, 0, 0) < 0)
->  			tst_brkm(TBROK, cleanup,
->  				 "chown for setuid_test failed");
-> -		}
-> +
->  		if (setuid_test_stat.st_mode != SUID_MODE &&
-> -		    chmod(file, SUID_MODE) < 0) {
-> +		    chmod(file, SUID_MODE) < 0)
->  			tst_brkm(TBROK, cleanup,
->  				 "setuid for setuid_test failed");
-> -		}
->  	}
-> 
->  	/*
->  	 * under temporary directory
->  	 */
-> -	snprintf(Path_name, PATH_MAX, "%s/%s/", Path_name, mntpoint);
-> +	snprintf(path_name, PATH_MAX, "%s/%s/", path_name, mntpoint);
-> 
->  	strcpy(testhome_path, test_home);
->  	strcat(testhome_path, "/setuid_test");
-> @@ -491,18 +466,10 @@ void setup()
-> 
->  }
-> 
-> -/*
-> - *cleanup() -  performs all ONE TIME cleanup for this test at
-> - *		completion or premature exit.
-> - */
->  void cleanup()
->  {
-> -	free(Fstype);
-> +	free(fs_type);
-> 
-> -	/*
-> -	 * print timing stats if that option was specified.
-> -	 * print errno log if that option was specified.
-> -	 */
->  	TEST_CLEANUP;
-> 
->  	tst_rmdir();
-> @@ -514,6 +481,6 @@ void cleanup()
->  void help()
->  {
->  	printf("-T type	  : specifies the type of filesystem to be mounted."
-> -	       " Default ext2. \n");
-> -	printf("-D device : device used for mounting \n");
-> +	       " Default ext2.\n");
-> +	printf("-D device : device used for mounting.\n");
->  }
-> -- 
-> 1.8.1
+Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
+---
+ testcases/kernel/include/aarch64.in |  257 +++++++++++++++++++++++++++++++++++
+ testcases/kernel/include/order      |    1 +
+ 2 files changed, 258 insertions(+)
+ create mode 100644 testcases/kernel/include/aarch64.in
+
+diff --git a/testcases/kernel/include/aarch64.in b/testcases/kernel/include/aarch64.in
+new file mode 100644
+index 0000000..a845be0
+--- /dev/null
++++ b/testcases/kernel/include/aarch64.in
+@@ -0,0 +1,257 @@
++io_setup 0
++io_destroy 1
++io_submit 2
++io_cancel 3
++io_getevents 4
++setxattr 5
++lsetxattr 6
++fsetxattr 7
++getxattr 8
++lgetxattr 9
++fgetxattr 10
++listxattr 11
++llistxattr 12
++flistxattr 13
++removexattr 14
++lremovexattr 15
++fremovexattr 16
++getcwd 17
++lookup_dcookie 18
++eventfd2 19
++epoll_create1 20
++epoll_ctl 21
++epoll_pwait 22
++dup 23
++dup3 24
++fcntl 25
++inotify_init1 26
++inotify_add_watch 27
++inotify_rm_watch 28
++ioctl 29
++ioprio_set 30
++ioprio_get 31
++flock 32
++mknodat 33
++mkdirat 34
++unlinkat 35
++symlinkat 36
++linkat 37
++renameat 38
++umount2 39
++mount 40
++pivot_root 41
++nfsservctl 42
++statfs 43
++fstatfs 44
++truncate 45
++ftruncate 46
++fallocate 47
++faccessat 48
++chdir 49
++fchdir 50
++chroot 51
++fchmod 52
++fchmodat 53
++fchownat 54
++fchown 55
++openat 56
++close 57
++vhangup 58
++pipe2 59
++quotactl 60
++getdents64 61
++lseek 62
++read 63
++write 64
++readv 65
++writev 66
++pread64 67
++pwrite64 68
++preadv 69
++pwritev 70
++sendfile 71
++pselect6 72
++ppoll 73
++signalfd4 74
++vmsplice 75
++splice 76
++tee 77
++readlinkat 78
++fstatat 79
++fstat 80
++sync 81
++fsync 82
++fdatasync 83
++sync_file_range2 84
++sync_file_range 84
++timerfd_create 85
++timerfd_settime 86
++timerfd_gettime 87
++utimensat 88
++acct 89
++capget 90
++capset 91
++personality 92
++exit 93
++exit_group 94
++waitid 95
++set_tid_address 96
++unshare 97
++futex 98
++set_robust_list 99
++get_robust_list 100
++nanosleep 101
++getitimer 102
++setitimer 103
++kexec_load 104
++init_module 105
++delete_module 106
++timer_create 107
++timer_gettime 108
++timer_getoverrun 109
++timer_settime 110
++timer_delete 111
++clock_settime 112
++clock_gettime 113
++clock_getres 114
++clock_nanosleep 115
++syslog 116
++ptrace 117
++sched_setparam 118
++sched_setscheduler 119
++sched_getscheduler 120
++sched_getparam 121
++sched_setaffinity 122
++sched_getaffinity 123
++sched_yield 124
++sched_get_priority_max 125
++sched_get_priority_min 126
++sched_rr_get_interval 127
++restart_syscall 128
++kill 129
++tkill 130
++tgkill 131
++sigaltstack 132
++rt_sigsuspend 133
++rt_sigaction 134
++rt_sigprocmask 135
++rt_sigpending 136
++rt_sigtimedwait 137
++rt_sigqueueinfo 138
++rt_sigreturn 139
++setpriority 140
++getpriority 141
++reboot 142
++setregid 143
++setgid 144
++setreuid 145
++setuid 146
++setresuid 147
++getresuid 148
++setresgid 149
++getresgid 150
++setfsuid 151
++setfsgid 152
++times 153
++setpgid 154
++getpgid 155
++getsid 156
++setsid 157
++getgroups 158
++setgroups 159
++uname 160
++sethostname 161
++setdomainname 162
++getrlimit 163
++setrlimit 164
++getrusage 165
++umask 166
++prctl 167
++getcpu 168
++gettimeofday 169
++settimeofday 170
++adjtimex 171
++getpid 172
++getppid 173
++getuid 174
++geteuid 175
++getgid 176
++getegid 177
++gettid 178
++sysinfo 179
++mq_open 180
++mq_unlink 181
++mq_timedsend 182
++mq_timedreceive 183
++mq_notify 184
++mq_getsetattr 185
++msgget 186
++msgctl 187
++msgrcv 188
++msgsnd 189
++semget 190
++semctl 191
++semtimedop 192
++semop 193
++shmget 194
++shmctl 195
++shmat 196
++shmdt 197
++socket 198
++socketpair 199
++bind 200
++listen 201
++accept 202
++connect 203
++getsockname 204
++getpeername 205
++sendto 206
++recvfrom 207
++setsockopt 208
++getsockopt 209
++shutdown 210
++sendmsg 211
++recvmsg 212
++readahead 213
++brk 214
++munmap 215
++mremap 216
++add_key 217
++request_key 218
++keyctl 219
++clone 220
++execve 221
++mmap 222
++fadvise64 223
++swapon 224
++swapoff 225
++mprotect 226
++msync 227
++mlock 228
++munlock 229
++mlockall 230
++munlockall 231
++mincore 232
++madvise 233
++remap_file_pages 234
++mbind 235
++get_mempolicy 236
++set_mempolicy 237
++migrate_pages 238
++move_pages 239
++rt_tgsigqueueinfo 240
++perf_event_open 241
++accept4 242
++recvmmsg 243
++wait4 260
++prlimit64 261
++fanotify_init 262
++fanotify_mark 263
++name_to_handle_at 264
++open_by_handle_at 265
++clock_adjtime 266
++syncfs 267
++setns 268
++sendmmsg 269
++cacheflush 0x1002
++set_tls 0x1005
+diff --git a/testcases/kernel/include/order b/testcases/kernel/include/order
+index 3e2bd96..5455cbc 100644
+--- a/testcases/kernel/include/order
++++ b/testcases/kernel/include/order
+@@ -1,3 +1,4 @@
++aarch64
+ arm
+ hppa
+ i386
+-- 
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Get 100% visibility into Java/.NET code with AppDynamics Lite
+It's a free troubleshooting tool designed for production
+Get down to code-level detail for bottlenecks, with <2% overhead.
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
