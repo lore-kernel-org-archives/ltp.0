@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UepT8-0007Um-0a
-	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 16:31:22 +0000
-Date: Tue, 21 May 2013 18:32:30 +0200
-From: chrubis@suse.cz
-Message-ID: <20130521163230.GA32292@rei.suse.cz>
-References: <1369066734-17683-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130521124905.GC28186@rei> <519B8E4E.1010105@oracle.com>
-	<20130521154615.GA31574@rei.suse.cz> <519B9B8D.6050004@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <519B9B8D.6050004@oracle.com>
-Subject: Re: [LTP] [PATCH] Create a function tst_resm_hexd to print a buffer
- in hex
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <riku.voipio@linaro.org>) id 1UYGXT-0000mp-9i
+	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:43 +0000
+Received: from afflict.kos.to ([92.243.29.197])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UYGXR-0002yA-71
+	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:43 +0000
+From: riku.voipio@linaro.org
+Date: Fri,  3 May 2013 16:45:14 +0300
+Message-Id: <1367588717-18162-1-git-send-email-riku.voipio@linaro.org>
+Subject: [LTP] [PATCH 0/3] Add Aarch64 support to ltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,38 +21,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > Okay what about priting the content of the buffer on several lines
-> > unsing several tst_res() calls if the size of the message overflows some
-> > size (possibly 80 chars)?
-> >
-> > test_name   0 TINFO: 'message passed to the tst res'
-> > test_name   0 TINFO: 57 41 52 4e 49 4e 47 20 2a 20 57 41 52 4e 49 4e
-> > test_name   0 TINFO: 57 41 52 4e 49 4e 47 20 2a 20 57 41 52 4e 49 4e
-> > ...
-> > (till the end of the buffer)
-> >
-> I agree, moreover, can we do it by default? At least bytes will be 
-> aligned correctly.
+From: Riku Voipio <riku.voipio@linaro.org>
 
-Ok.
+Hi,
+
+The following patches add support for Aarch64 in LTP. 
+
+Riku Voipio (3):
+  Add aarch64 support
+  Set invalid syscall as -1 instead of 0
+  set 16kb incrediment for Aarch64
+
+ testcases/kernel/include/aarch64.in |  257 +++++++++++++++++++++++++++++++++++
+ testcases/kernel/include/order      |    1 +
+ testcases/kernel/include/regen.sh   |    5 +-
+ testcases/kernel/mem/shmt/shmt09.c  |    4 +-
+ 4 files changed, 263 insertions(+), 4 deletions(-)
+ create mode 100644 testcases/kernel/include/aarch64.in
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+Get 100% visibility into Java/.NET code with AppDynamics Lite
+It's a free troubleshooting tool designed for production
+Get down to code-level detail for bottlenecks, with <2% overhead.
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap2
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
