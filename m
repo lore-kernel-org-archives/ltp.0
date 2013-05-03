@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UapEk-0000Kn-Hi
-	for ltp-list@lists.sourceforge.net; Fri, 10 May 2013 15:27:58 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UYIRy-0001RK-5L
+	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 16:03:10 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UapEj-0005lt-GV
-	for ltp-list@lists.sourceforge.net; Fri, 10 May 2013 15:27:58 +0000
+	(Exim 4.76) id 1UYIRw-0005Tb-Km
+	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 16:03:09 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 10 May 2013 11:27:48 -0400
-References: <518B618F.80400@cn.fujitsu.com>
-	<201305091222.52821.vapier@gentoo.org>
-	<518C5CE3.9070702@cn.fujitsu.com>
-In-Reply-To: <518C5CE3.9070702@cn.fujitsu.com>
+Date: Fri, 3 May 2013 12:02:51 -0400
+References: <1367588717-18162-3-git-send-email-riku.voipio@linaro.org>
+In-Reply-To: <1367588717-18162-3-git-send-email-riku.voipio@linaro.org>
 MIME-Version: 1.0
-Message-Id: <201305101127.49679.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 1/2]semctl/semctl01.c: cleanup
+Message-Id: <201305031202.52664.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 2/3] Set invalid syscall as -1 instead of 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,114 +24,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8968758539409202527=="
+Content-Type: multipart/mixed; boundary="===============0368463075401304391=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: riku.voipio@linaro.org
 
---===============8968758539409202527==
-Content-Type: multipart/signed; boundary="nextPart2370095.0C1fli2Vo6";
+--===============0368463075401304391==
+Content-Type: multipart/signed; boundary="nextPart1747855.7j11QBv4Tn";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart2370095.0C1fli2Vo6
+--nextPart1747855.7j11QBv4Tn
 Content-Type: Text/Plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Thursday 09 May 2013 22:35:15 DAN LI wrote:
-> On 05/10/2013 12:22 AM, Mike Frysinger wrote:
-> > On Thursday 09 May 2013 04:42:55 DAN LI wrote:
-> >> --- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-> >> +++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-> >>=20
-> >>  /*
-> >>=20
-> >> @@ -24,32 +23,6 @@
-> >>=20
-> >>   * DESCRIPTION
-> >>   *	semctl01 - test the 10 possible semctl() commands
-> >>   *
-> >>=20
-> >> - * ALGORITHM
-> >> - *	create a semaphore set with read and alter permissions
-> >> - *	loop if that option was specified
-> >> - *	  loop through the test cases
-> >> - *	    do any setup required for the test case
-> >> - *	    make the semctl() call using the TEST() macro
-> >> - *	    check the return code
-> >> - *	      if failure, issue a FAIL message.
-> >> - *	    otherwise,
-> >> - *	      if doing functionality testing
-> >> - *		call the appropriate test function
-> >> - *	  	if correct,
-> >> - *			issue a PASS message
-> >> - *		otherwise
-> >> - *			issue a FAIL message
-> >> - *	call cleanup
-> >=20
-> > i don't see high level DESCRIPTION/ALGORITHM as "useless".  why do you ?
->=20
-> In my opinion, "ALGORITHM" section of many ltp testcases follows one
-> format: ------------------------------------------------
-> setup()
-> loop test frame
-> 	loop all test cases
-> 		TEST(call)
-> 		if call failed
-> 			log the errno
-> 		else
-> 			if functionality is ok
-> 				case PASS
-> 			else
-> 				case FAIL
-> cleanup()
-> ------------------------------------------------
->=20
-> So, i think this section is redundant and useless once someone has
-> learned the test frame.
+On Friday 03 May 2013 09:45:16 riku.voipio@linaro.org wrote:
+> System call number 0 might be in use in selected syscalls.
 
-and if you delete all the sections, then what are people going to refer to ?
-=2Dmike
+this patch is against an old git repo.  you need to rebase.
+-mike
 
---nextPart2370095.0C1fli2Vo6
+--nextPart1747855.7j11QBv4Tn
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.17 (GNU/Linux)
 
-iQIcBAABAgAGBQJRjRH1AAoJEEFjO5/oN/WBSOQP/1eHTdBEgnX0M71pRjyASp7l
-0WYxee3mYxmDal89rQp0t8sETec3EWb+U403y/Pm6N6kJy8W/h9lE/mYLCalVQH3
-L4NeGS+NKL47BydHAFAasn5641CRE8RrcGPa9SV7fMtNHHNlbXtBsfkBNcvm0AWB
-pIs2AtZw+w7P7dTiNeYKuH0EeSthIK7BpcFHGokCAOMbMRZwjAZutiSQSiGq2FHz
-REXsGW+WI1XAesapNXNJH6jmC1z+BZ3um8ltwe63H/pm8oArDhJGGXiVpI2q+NIR
-V4qunYc7XJog1EJ7fqGT/0U0/aFsfWYgr6C63yQor34W2GrgMUQL7EMAjqCyi8H/
-q6e0CZ6Spo/BV755Ow2kbdmlpmmHDXUceh6z9/hC9f4+KEFLBdflqlRFQ04Ehvgl
-+HMQ5lftd8Axg8gGGoG3p0VLn4OFAMOUq7aew532LVXi7KU4uIbnCR+WXc1xE1lE
-xVK2PhJQqEVw94jJL3Ss9puKVFGFuKUSZSEcd9U5ly/mua6SiMPiw/Jr9apPDxcs
-pUAlAOsR4/CkcTN6Milp0f0+i1l79CZoGzEXPxeVcMgz3zDCdjmNE6HlFFgw5JZe
-VFxwiqLxi9gg1rZAUUTNnc0dXwU+Hw17n9EE1Bjk/GqQ2jZ41Q36zJmW6Zs3kmZw
-+9Qvuy3giNOsf4S1MH3o
-=re4j
+iQIcBAABAgAGBQJRg9+sAAoJEEFjO5/oN/WBp6QP/1r2y8qQrQRjzConGhGTi60T
+qETGQMiF3t7sdt6mJfI4CjogUqm9T2cPVz7mwZEEDgos2NwuUTN8QiCa+QU9Won0
+Vo9irNGt6Qk8StBLx1zcmMAGoFvyGFnXuJ+mrRBDxH5Ov6C4ARjhqwxN6nT++MJj
+T5+69cyGcjCfUzmU3LUZ9sOClCAWh0jKEz/08Jfd3gojJDZ1rxyHIOI5tt21yaVm
+1+brsEOBbMDa7QGDCE2v7w+T7ozBW2UZ8BblQBqPg3+pDoEFiJCBkF+T37epReCk
+h0egRxBRaSYtP+uF2RA7RA++QOOo2tX4fuw00Ma+KuBaVufhWECHIF25GKhJXt9D
+/sF/pKeZ66UpJfYiSDY7UAZgnwl0J3L43exiJDqxMW3bHfJiK4N0Vfknllf2W50Y
+IGh4Am9x3vSga9N7nTXL1iqaVK0/we5aOBdwYYD9S0IReTZGymfLpi5J3zLxgFcC
+4MxEkZVqcjY9bCjyHKVi1KNDB4BSktYyexq3jHbzxNHUA6p9cJqHyTVAcOR2DiWE
+i7zfw0Mj8i3c9k5t5yI/NdAWVCGpng2PRPbem8wbQl2ymE6Km2+ENh2JLpKiecEo
+aRcLDH8ZkKgIpI9Be2Fmk44KtoycvXbz+sql5S9Qv3OjdAmZH7UfVRtvAJIYn1uN
+8V/CQI+wmdrShbOyanUT
+=oSuC
 -----END PGP SIGNATURE-----
 
---nextPart2370095.0C1fli2Vo6--
+--nextPart1747855.7j11QBv4Tn--
 
 
---===============8968758539409202527==
+--===============0368463075401304391==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and 
-their applications. This 200-page book is written by three acclaimed 
-leaders in the field. The early access version is available now. 
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
---===============8968758539409202527==
+Get 100% visibility into Java/.NET code with AppDynamics Lite
+It's a free troubleshooting tool designed for production
+Get down to code-level detail for bottlenecks, with <2% overhead.
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap2
+--===============0368463075401304391==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -144,5 +93,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============8968758539409202527==--
+--===============0368463075401304391==--
 
