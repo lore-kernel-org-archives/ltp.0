@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ugyt2-0002RR-Da
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 14:59:00 +0000
-Date: Mon, 27 May 2013 17:00:14 +0200
-From: chrubis@suse.cz
-Message-ID: <20130527150014.GA31382@rei.suse.cz>
-References: <1369537062-26852-1-git-send-email-jin.li@windriver.com>
-	<1369537062-26852-2-git-send-email-jin.li@windriver.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UZNdj-0005zs-Er
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 15:47:47 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UZNdi-00009j-4e
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 15:47:47 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 6 May 2013 11:47:33 -0400
+References: <1367846581-18599-1-git-send-email-riku.voipio@linaro.org>
+In-Reply-To: <1367846581-18599-1-git-send-email-riku.voipio@linaro.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1369537062-26852-2-git-send-email-jin.li@windriver.com>
-Subject: Re: [LTP] [PATCH] Add test groups into POSIX execution script
+Message-Id: <201305061147.34140.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 0/4 v2] Add Aarch64 support to ltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,61 +24,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5028678648815125631=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jin.li@windriver.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> fsync, fork, getpid
-> 
-> Signed-off-by: Jin Li <jin.li@windriver.com>
-> ---
->  .../bin/run-posix-option-group-test.sh             |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-> index 17f6e49..977d805 100755
-> --- a/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-> +++ b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-> @@ -33,6 +33,7 @@ AIO)
->  	echo "Executing asynchronous I/O tests"
->  	run_option_group_tests "$BASEDIR/aio_*"
->  	run_option_group_tests "$BASEDIR/lio_listio"
-> +	run_option_group_tests "$BASEDIR/fsync"
->  	;;
->  SIG)
->  	echo "Executing signals tests"
-> @@ -65,6 +66,8 @@ MSG)
->  TPS)
->  	echo "Executing process and thread scheduling tests"
->  	run_option_group_tests "$BASEDIR/*sched*"
-> +	run_option_group_tests "$BASEDIR/fork"
-> +	run_option_group_tests "$BASEDIR/getpid"
->  	;;
->  MEM)
->  	echo "Executing mapped, process and shared memory tests"
+--===============5028678648815125631==
+Content-Type: multipart/signed; boundary="nextPart1568868.fyDL0FLt2B";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-The problem with this patch is that the tests in the script are sorted
-by codes for the particular POSIX extension while the tests you are
-adding are part of the core POSIX (not sure if all of them but at least
-most of them).
+--nextPart1568868.fyDL0FLt2B
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-If you just want to execute all openposix tests run 'make test' in the
-testcases/open_posix_testsuite/ directory.
+On Monday 06 May 2013 09:22:57 riku.voipio@linaro.org wrote:
+> The following patches add support for Aarch64 in LTP.
+> v2: adapt to latest upstream code and include generated
+> linux_syscall_numbers.h
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+puuuuuuuuuuuuuuuuuushed
+-mike
+
+--nextPart1568868.fyDL0FLt2B
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRh9CWAAoJEEFjO5/oN/WBymwP/R9b3ueLjK4h0o6td77IOWFv
+7kwv4ac4LkXmFKOdrc+eMs6mhLwLaK/tnLVj0qaR3z8e+CK4RD0Y/huT6pb1p9YZ
+tS5mhIOWSCF0oOZzbx4dLAA2/BjXnkt619wMUCNxEK0V+Z2VTo5EVQ5ZCFzWc3jE
+h9UqWmhkEhICBlBAEtb+hXEs6deo/opQWhffNnquB4Q12x5XNiTJztuXWJbyyT5V
+PRAUKUFX6LsxQWja564qB1AfpeDePbvFGIwIVZ158JjhTd9DtvEs9tYApcD4mFyI
+bNuknDem4EiTngptpJt5k+0tMheVEf/4LIT1EA3FTFNouOciTKrKvX36J9atIJnu
+NedjBzWbM/wqb/7so7YKtc8lrDHLuY5LHzWg3XBYQ9mc2Hc/GlqmL3Pzmy5kOtO8
+4Y9hPlaJCdH1Py1mI5J4gkvkqvWnanSrQvxQznwi5UAix5PhmrKDt8V9gBq0e1oq
+6tu8sQvF1CntA+V2FoHkvZrIVspmEhOzwm+PcPjrOAhSYpakw5FxCmYWtEMVvVix
+nz19n3j3MviY5+N5sq07NJhFrzgFFGBEsqouM7qPWCc7vR1EQhhSjKv76oPths9+
+/eslaRtpT7rKrBDGlSolEd1Sm2IDxkCOarMShWtE6+VojtLz9l50rL+ivyWwFS4m
+dMZGWuOk/wdKorWklhbB
+=GkY4
+-----END PGP SIGNATURE-----
+
+--nextPart1568868.fyDL0FLt2B--
+
+
+--===============5028678648815125631==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
+--===============5028678648815125631==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5028678648815125631==--
+
