@@ -1,28 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Uh0od-0000cw-6k
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 17:02:35 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uh0oZ-0003fO-K1
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 17:02:35 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r4RH2PRu013421
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 13:02:25 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r4RH2OT3003317
-	for <ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 13:02:24 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 27 May 2013 19:02:21 +0200
-Message-Id: <08bd7d0a39261aa522898a80ea56bc494d6c985e.1369673996.git.jstancek@redhat.com>
-In-Reply-To: <f9e681d1d404dd60c51ddcc12d4aefe7bb633f93.1369297122.git.jstancek@redhat.com>
-References: <f9e681d1d404dd60c51ddcc12d4aefe7bb633f93.1369297122.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v4 2/2] waitid02: split code into separate testcases
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <riku.voipio@linaro.org>) id 1UZLNn-000671-Na
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 13:23:11 +0000
+Received: from afflict.kos.to ([92.243.29.197])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UZLNm-0005yy-Fy
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 13:23:11 +0000
+From: riku.voipio@linaro.org
+Date: Mon,  6 May 2013 16:22:58 +0300
+Message-Id: <1367846581-18599-2-git-send-email-riku.voipio@linaro.org>
+Subject: [LTP] [PATCH 1/4] Add aarch64 support
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,410 +27,299 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Previous code in main was:
-- using sleep for synchronization
-  The sleep make take longer if run in overcommitted
-  z/VM environment with considerably high steal time, which
-  causes testcase to hang.
-- missing wait for last child
+From: Riku Voipio <riku.voipio@linaro.org>
 
-This patch splits code from main() into separate testcases,
-each with its own setup/cleanup and expected outcome.
+Basic commit to support Aarch64, 64-bit Arm platform
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
 ---
- testcases/kernel/syscalls/waitid/waitid02.c |  345 +++++++++++++++++----------
- 1 files changed, 215 insertions(+), 130 deletions(-)
+ testcases/kernel/include/aarch64.in |  257 +++++++++++++++++++++++++++++++++++
+ testcases/kernel/include/order      |    1 +
+ 2 files changed, 258 insertions(+)
+ create mode 100644 testcases/kernel/include/aarch64.in
 
-diff --git a/testcases/kernel/syscalls/waitid/waitid02.c b/testcases/kernel/syscalls/waitid/waitid02.c
-index e265c32..d4806b4 100644
---- a/testcases/kernel/syscalls/waitid/waitid02.c
-+++ b/testcases/kernel/syscalls/waitid/waitid02.c
-@@ -50,31 +50,234 @@
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
- 
-+struct testcase_t {
-+	const char *msg;
-+	idtype_t idtype;
-+	id_t id;
-+	pid_t child;
-+	int options;
-+	int exp_ret;
-+	int exp_errno;
-+	void (*setup) (struct testcase_t *);
-+	void (*cleanup) (struct testcase_t *);
-+};
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void setup2(struct testcase_t *);
-+static void setup3(struct testcase_t *);
-+static void setup4(struct testcase_t *);
-+static void setup5(struct testcase_t *);
-+static void setup6(struct testcase_t *);
-+static void cleanup2(struct testcase_t *);
-+static void cleanup5(struct testcase_t *);
-+static void cleanup6(struct testcase_t *);
-+
-+struct testcase_t tdat[] = {
-+	{
-+		.msg = "WNOHANG",
-+		.idtype = P_ALL,
-+		.id = 0,
-+		.options = WNOHANG,
-+		.exp_ret = -1,
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.msg = "WNOHANG | WEXITED no child",
-+		.idtype = P_ALL,
-+		.id = 0,
-+		.options = WNOHANG | WEXITED,
-+		.exp_ret = -1,
-+		.exp_errno = ECHILD,
-+	},
-+	{
-+		.msg = "WNOHANG | WEXITED with child",
-+		.idtype = P_ALL,
-+		.id = 0,
-+		.options = WNOHANG | WEXITED,
-+		.exp_ret = 0,
-+		.setup = setup2,
-+		.cleanup = cleanup2
-+	},
-+	{
-+		.msg = "P_PGID, WEXITED wait for child",
-+		.idtype = P_PGID,
-+		.options = WEXITED,
-+		.exp_ret = 0,
-+		.setup = setup3,
-+	},
-+	{
-+		.msg = "P_PID, WEXITED wait for child",
-+		.idtype = P_PID,
-+		.options = WEXITED,
-+		.exp_ret = 0,
-+		.setup = setup4,
-+	},
-+	{
-+		.msg = "P_PID, WSTOPPED | WNOWAIT",
-+		.idtype = P_PID,
-+		.options = WSTOPPED | WNOWAIT,
-+		.exp_ret = 0,
-+		.setup = setup5,
-+		.cleanup = cleanup5
-+	},
-+	{
-+		.msg = "P_PID, WCONTINUED",
-+		.idtype = P_PID,
-+		.options = WCONTINUED,
-+		.exp_ret = 0,
-+		.setup = setup6,
-+		.cleanup = cleanup6
-+	},
-+
-+};
-+
- char *TCID = "waitid02";
--int testno;
--int TST_TOTAL = 4;
-+static int TST_TOTAL = ARRAY_SIZE(tdat);
-+static struct tst_checkpoint checkpoint;
- 
--static void cleanup(void)
-+static void makechild(struct testcase_t *t, void (*childfn)(void))
- {
--	TEST_CLEANUP;
--	tst_rmdir();
-+	t->child = fork();
-+	switch (t->child) {
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+		break;
-+	case 0:
-+		childfn();
-+		exit(0);
-+	}
-+}
- 
--	tst_exit();
-+static void wait4child(pid_t pid)
-+{
-+	int status;
-+	if (waitpid(pid, &status, 0) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+		tst_resm(TFAIL, "child returns %d", status);
-+}
-+
-+static void dummy_child(void)
-+{
-+}
-+
-+static void waiting_child(void)
-+{
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
-+}
-+
-+static void stopped_child(void)
-+{
-+	kill(getpid(), SIGSTOP);
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
-+}
-+
-+static void setup2(struct testcase_t *t)
-+{
-+	makechild(t, waiting_child);
-+}
-+
-+static void cleanup2(struct testcase_t *t)
-+{
-+	TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
-+	wait4child(t->child);
-+}
-+
-+static void setup3(struct testcase_t *t)
-+{
-+	t->id = getpgid(0);
-+	makechild(t, dummy_child);
-+}
-+
-+static void setup4(struct testcase_t *t)
-+{
-+	makechild(t, dummy_child);
-+	t->id = t->child;
-+}
-+
-+static void setup5(struct testcase_t *t)
-+{
-+	makechild(t, stopped_child);
-+	t->id = t->child;
-+}
-+
-+static void cleanup5(struct testcase_t *t)
-+{
-+	kill(t->child, SIGCONT);
-+	TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
-+	wait4child(t->child);
-+}
-+
-+static void setup6(struct testcase_t *t)
-+{
-+	siginfo_t infop;
-+	makechild(t, stopped_child);
-+	t->id = t->child;
-+	if (waitid(P_PID, t->child, &infop, WSTOPPED) != 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "waitpid setup6");
-+	kill(t->child, SIGCONT);
-+}
-+
-+static void cleanup6(struct testcase_t *t)
-+{
-+	TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
-+	wait4child(t->child);
- }
- 
- static void setup(void)
- {
- 	TEST_PAUSE;
- 	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(&checkpoint);
- }
- 
--int main(int ac, char **av)
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+	tst_exit();
-+}
-+
-+static void test_waitid(struct testcase_t *t)
- {
--	id_t pgid;
--	id_t id1, id2, id3;
- 	siginfo_t infop;
- 
--	int lc;
-+	if (t->setup)
-+		t->setup(t);
-+
-+	tst_resm(TINFO, "%s", t->msg);
-+	tst_resm(TINFO, "(%d) waitid(%d, %d, %p, %d)", getpid(), t->idtype,
-+			t->id, &infop, t->options);
-+	memset(&infop, 0, sizeof(infop));
-+
-+	TEST(waitid(t->idtype, t->id, &infop, t->options));
-+	if (TEST_RETURN == t->exp_ret) {
-+		if (TEST_RETURN == -1) {
-+			if (TEST_ERRNO == t->exp_errno)
-+				tst_resm(TPASS, "exp_errno=%d", t->exp_errno);
-+			else
-+				tst_resm(TFAIL|TTERRNO, "exp_errno=%d",
-+					t->exp_errno);
-+		} else {
-+			tst_resm(TPASS, "ret: %d", t->exp_ret);
-+		}
-+	} else {
-+		tst_resm(TFAIL|TTERRNO, "ret=%ld expected=%d",
-+			TEST_RETURN, t->exp_ret);
-+	}
-+	tst_resm(TINFO, "si_pid = %d ; si_code = %d ; si_status = %d",
-+			infop.si_pid, infop.si_code,
-+			infop.si_status);
-+
-+	if (t->cleanup)
-+		t->cleanup(t);
-+}
-+
-+int main(int ac, char **av)
-+{
-+	int lc, testno;
- 	char *msg;
- 
- 	msg = parse_opts(ac, av, NULL, NULL);
-@@ -84,127 +287,9 @@ int main(int ac, char **av)
- 	}
- 
- 	setup();
--
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--
--			TEST(waitid(P_ALL, 0, &infop, WNOHANG));
--			if (TEST_RETURN == -1)
--				tst_resm(TPASS, "Success1 ... -1 is returned."
--					" error is %d.", TEST_ERRNO);
--			else {
--				tst_resm(TFAIL, "%s Failed1 ...", TCID);
--			}
--
--			/* option == WEXITED | WCONTINUED | WSTOPPED |
--			 * WNOHANG | WNOWAIT */
--
--			TEST(id1 = fork());
--			if (TEST_RETURN == 0) {
--				tst_resm(TINFO,
--					 "I'm a child 1,my id is %d,gpid is %d",
--					 id1 = getpid(), __getpgid(0));
--				sleep(1);
--				exit(5);
--			}
--
--			TEST(id2 = fork());
--			if (TEST_RETURN == 0) {
--				sleep(3);
--				tst_resm(TINFO,
--					 "I'm a child 2,my id is %d,gpid is %d",
--					 id2 = getpid(), __getpgid(0));
--				exit(7);
--			}
--
--			TEST(id3 = fork());
--			if (TEST_RETURN == 0) {
--				sleep(2);
--				TEST(kill(id2, SIGCONT));
--				tst_resm(TINFO,
--					 "I'm a child 3,my id is %d,gpid is %d",
--					 id3 = getpid(), __getpgid(0));
--				exit(6);
--			}
--
--			TEST(waitid(P_ALL, 0, &infop, WNOHANG | WEXITED));
--			if (TEST_RETURN == 0)
--				tst_resm(TPASS, "Success 2 ...0 is returned.."
--					" error is %d.", TEST_ERRNO);
--			else {
--				tst_resm(TFAIL | TTERRNO, "%s Failed 2", TCID);
--				tst_exit();
--			}
--
--			tst_resm(TINFO, "I'm a Parent,my id is %d,gpid is %d",
--				 getpid(), pgid = __getpgid(0));
--
--			TEST(waitid(P_PGID, pgid, &infop, WEXITED));
--			if (TEST_RETURN == 0) {
--				tst_resm(TPASS, "Success3 ... 0 is returned.");
--				tst_resm(TINFO, "si_pid = %d ; si_code = %d ;"
--					" si_status = %d",
--					 infop.si_pid, infop.si_code,
--					 infop.si_status);
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "Fail3 ...  %ld is returned",
--					 TEST_RETURN);
--				tst_exit();
--			}
--
--			TEST(kill(id2, SIGSTOP));
--
--			TEST(waitid(P_PID, id2, &infop, WSTOPPED | WNOWAIT));
--			if (TEST_RETURN == 0) {
--				/*EINVAL*/
--				tst_resm(TINFO,	"si_pid = %d, si_code = %d,"
--					" si_status = %d",
--					infop.si_pid, infop.si_code,
--					infop.si_status);
--				tst_resm(TPASS, "Success4 ... 0 is returned");
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					"Fail4 ...  %ld is returned",
--					TEST_RETURN);
--				tst_exit();
--			}
--
--			TEST(waitid(P_PID, id3, &infop, WEXITED));
--			if (TEST_RETURN == 0) {
--				/*NOCHILD*/
--				tst_resm(TINFO,
--					"si_pid = %d, si_code = %d, "
--					"si_status = %d",
--					infop.si_pid, infop.si_code,
--					infop.si_status);
--				tst_resm(TPASS, "Success5 ... 0 is returned");
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "Fail5 ...  %ld is returned",
--					 TEST_RETURN);
--				tst_exit();
--			}
--
--			TEST(waitid(P_PID, id2, &infop, WCONTINUED));
--			if (TEST_RETURN == 0) {
--				/*EINVAL*/
--				tst_resm(TINFO,
--					"si_pid = %d, si_code = %d, "
--					"si_status = %d",
--					infop.si_pid, infop.si_code,
--					infop.si_status);
--				tst_resm(TPASS, "Success6 ... 0 is returned");
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "Fail6 ...  %ld is returned",
--					 TEST_RETURN);
--				tst_exit();
--			}
--
--			sleep(3);
--		}
-+		for (testno = 0; testno < TST_TOTAL; testno++)
-+			test_waitid(&tdat[testno]);
- 	}
- 	cleanup();
- 	tst_exit();
+diff --git a/testcases/kernel/include/aarch64.in b/testcases/kernel/include/aarch64.in
+new file mode 100644
+index 0000000..a845be0
+--- /dev/null
++++ b/testcases/kernel/include/aarch64.in
+@@ -0,0 +1,257 @@
++io_setup 0
++io_destroy 1
++io_submit 2
++io_cancel 3
++io_getevents 4
++setxattr 5
++lsetxattr 6
++fsetxattr 7
++getxattr 8
++lgetxattr 9
++fgetxattr 10
++listxattr 11
++llistxattr 12
++flistxattr 13
++removexattr 14
++lremovexattr 15
++fremovexattr 16
++getcwd 17
++lookup_dcookie 18
++eventfd2 19
++epoll_create1 20
++epoll_ctl 21
++epoll_pwait 22
++dup 23
++dup3 24
++fcntl 25
++inotify_init1 26
++inotify_add_watch 27
++inotify_rm_watch 28
++ioctl 29
++ioprio_set 30
++ioprio_get 31
++flock 32
++mknodat 33
++mkdirat 34
++unlinkat 35
++symlinkat 36
++linkat 37
++renameat 38
++umount2 39
++mount 40
++pivot_root 41
++nfsservctl 42
++statfs 43
++fstatfs 44
++truncate 45
++ftruncate 46
++fallocate 47
++faccessat 48
++chdir 49
++fchdir 50
++chroot 51
++fchmod 52
++fchmodat 53
++fchownat 54
++fchown 55
++openat 56
++close 57
++vhangup 58
++pipe2 59
++quotactl 60
++getdents64 61
++lseek 62
++read 63
++write 64
++readv 65
++writev 66
++pread64 67
++pwrite64 68
++preadv 69
++pwritev 70
++sendfile 71
++pselect6 72
++ppoll 73
++signalfd4 74
++vmsplice 75
++splice 76
++tee 77
++readlinkat 78
++fstatat 79
++fstat 80
++sync 81
++fsync 82
++fdatasync 83
++sync_file_range2 84
++sync_file_range 84
++timerfd_create 85
++timerfd_settime 86
++timerfd_gettime 87
++utimensat 88
++acct 89
++capget 90
++capset 91
++personality 92
++exit 93
++exit_group 94
++waitid 95
++set_tid_address 96
++unshare 97
++futex 98
++set_robust_list 99
++get_robust_list 100
++nanosleep 101
++getitimer 102
++setitimer 103
++kexec_load 104
++init_module 105
++delete_module 106
++timer_create 107
++timer_gettime 108
++timer_getoverrun 109
++timer_settime 110
++timer_delete 111
++clock_settime 112
++clock_gettime 113
++clock_getres 114
++clock_nanosleep 115
++syslog 116
++ptrace 117
++sched_setparam 118
++sched_setscheduler 119
++sched_getscheduler 120
++sched_getparam 121
++sched_setaffinity 122
++sched_getaffinity 123
++sched_yield 124
++sched_get_priority_max 125
++sched_get_priority_min 126
++sched_rr_get_interval 127
++restart_syscall 128
++kill 129
++tkill 130
++tgkill 131
++sigaltstack 132
++rt_sigsuspend 133
++rt_sigaction 134
++rt_sigprocmask 135
++rt_sigpending 136
++rt_sigtimedwait 137
++rt_sigqueueinfo 138
++rt_sigreturn 139
++setpriority 140
++getpriority 141
++reboot 142
++setregid 143
++setgid 144
++setreuid 145
++setuid 146
++setresuid 147
++getresuid 148
++setresgid 149
++getresgid 150
++setfsuid 151
++setfsgid 152
++times 153
++setpgid 154
++getpgid 155
++getsid 156
++setsid 157
++getgroups 158
++setgroups 159
++uname 160
++sethostname 161
++setdomainname 162
++getrlimit 163
++setrlimit 164
++getrusage 165
++umask 166
++prctl 167
++getcpu 168
++gettimeofday 169
++settimeofday 170
++adjtimex 171
++getpid 172
++getppid 173
++getuid 174
++geteuid 175
++getgid 176
++getegid 177
++gettid 178
++sysinfo 179
++mq_open 180
++mq_unlink 181
++mq_timedsend 182
++mq_timedreceive 183
++mq_notify 184
++mq_getsetattr 185
++msgget 186
++msgctl 187
++msgrcv 188
++msgsnd 189
++semget 190
++semctl 191
++semtimedop 192
++semop 193
++shmget 194
++shmctl 195
++shmat 196
++shmdt 197
++socket 198
++socketpair 199
++bind 200
++listen 201
++accept 202
++connect 203
++getsockname 204
++getpeername 205
++sendto 206
++recvfrom 207
++setsockopt 208
++getsockopt 209
++shutdown 210
++sendmsg 211
++recvmsg 212
++readahead 213
++brk 214
++munmap 215
++mremap 216
++add_key 217
++request_key 218
++keyctl 219
++clone 220
++execve 221
++mmap 222
++fadvise64 223
++swapon 224
++swapoff 225
++mprotect 226
++msync 227
++mlock 228
++munlock 229
++mlockall 230
++munlockall 231
++mincore 232
++madvise 233
++remap_file_pages 234
++mbind 235
++get_mempolicy 236
++set_mempolicy 237
++migrate_pages 238
++move_pages 239
++rt_tgsigqueueinfo 240
++perf_event_open 241
++accept4 242
++recvmmsg 243
++wait4 260
++prlimit64 261
++fanotify_init 262
++fanotify_mark 263
++name_to_handle_at 264
++open_by_handle_at 265
++clock_adjtime 266
++syncfs 267
++setns 268
++sendmmsg 269
++cacheflush 0x1002
++set_tls 0x1005
+diff --git a/testcases/kernel/include/order b/testcases/kernel/include/order
+index 3e2bd96..5455cbc 100644
+--- a/testcases/kernel/include/order
++++ b/testcases/kernel/include/order
+@@ -1,3 +1,4 @@
++aarch64
+ arm
+ hppa
+ i386
 -- 
-1.7.1
+1.7.10.4
 
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
