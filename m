@@ -2,25 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UajRW-0002Ak-Tr
-	for ltp-list@lists.sourceforge.net; Fri, 10 May 2013 09:16:46 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UajRO-0004is-K4
-	for ltp-list@lists.sourceforge.net; Fri, 10 May 2013 09:16:46 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r4A9GWik031864
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 May 2013 05:16:33 -0400
-From: Zhouping Liu <zliu@redhat.com>
-Date: Fri, 10 May 2013 17:13:58 +0800
-Message-Id: <25673a6d4dd7b2b6cd5ccf23308706256cd3c49c.1368177082.git.zliu@redhat.com>
-In-Reply-To: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-References: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-In-Reply-To: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-References: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-Subject: [LTP] [PATCH 2/3] mem: introduce clean_node() func
+	(envelope-from <metan@suse.de>) id 1UZPAD-0007kK-V3
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 17:25:26 +0000
+Date: Mon, 6 May 2013 19:26:26 +0200
+From: chrubis@suse.cz
+Message-ID: <20130506172626.GA15198@rei.suse.cz>
+References: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
+	<20130116140742.GB6699@rei>
+	<CA+icZUUneR2cuZeYGq64=Ffh0UsFzd3KmbO9FmC97zWj6zTpxQ@mail.gmail.com>
+	<20130506092822.GC4388@rei> <5187E6FB.1070603@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5187E6FB.1070603@linux.vnet.ibm.com>
+Subject: Re: [LTP] Tarballs in Files section @ sf.net
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,49 +24,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: shubham <shubham@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-There's set_node func introduced in commit cb2967b27a65, but we
-don't have a func to clean the node mask yet.
+Hi!
+> >> First, I was really happy when I wanted today to stress my Linux-Next
+> >> (next-20130503) kernels.
+> >>
+> >> 4 hours ago LTP-full 2013-05-03 was released.
+> >> Cool, I said.
+> >>
+> >> Looking at ltp-full-20130503.bz2 ...
+> >>
+> >> ...is still a TAR-archive when unpacked.
+> >>
+> >> An XZ-Tar-archive as demanded by me and promised by you was NOT prepared.
+> >>
+> >> That makes me a bit of Grrr...
+> >> Hereby my reminder, again!
+> > I mailed Shubham from IBM (who does the releases) to include the xz and
+> > rename the bz2 just a few minutes ago (even before I've read this mail).
+> > Hopefully he will fix this during the day.
+> >
+> 
+> I replaced the sf.net download file to "ltp-full-20130503.tar.xz". Hope 
+> this helps...
 
-Signed-off-by: Zhouping Liu <zliu@redhat.com>
----
- testcases/kernel/mem/include/mem.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thanks.
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 551c73e..e31783e 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -21,6 +21,14 @@ static inline void set_node(unsigned long *array, unsigned int node)
- 	array[node / BITS_PER_LONG] |= 1UL << (node % BITS_PER_LONG);
- }
- 
-+static inline void clean_node(unsigned long *array)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAXNODES / BITS_PER_LONG; i++)
-+		array[i] &= 0UL;
-+}
-+
- /* OOM */
- 
- #define LENGTH			(3UL<<30)
+Could you please also rename the ltp-full-20130503.bz2 to
+ltp-full-20130503.tar.bz2 to reflect its content?
+
 -- 
-1.7.11.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and 
-their applications. This 200-page book is written by three acclaimed 
-leaders in the field. The early access version is available now. 
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
