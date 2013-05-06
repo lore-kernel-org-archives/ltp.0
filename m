@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Ubnd3-0000N7-Bp
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 07:57:05 +0000
-Received: from mail-da0-f48.google.com ([209.85.210.48])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Ubnd2-0000W8-I5
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 07:57:05 +0000
-Received: by mail-da0-f48.google.com with SMTP id h32so2170012dak.21
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 13 May 2013 00:56:58 -0700 (PDT)
-Message-ID: <51909CD7.9050408@casparzhang.com>
-Date: Mon, 13 May 2013 15:57:11 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UZOU5-0005aV-0C
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 16:41:53 +0000
+Date: Mon, 6 May 2013 18:42:53 +0200
+From: chrubis@suse.cz
+Message-ID: <20130506164253.GA15114@rei.suse.cz>
+References: <1367833278-18177-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130506134721.GE4388@rei> <5187D15B.7080106@oracle.com>
 MIME-Version: 1.0
-References: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-In-Reply-To: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] mm/ksm: set the merge_across_nodes knob
- before testing
+Content-Disposition: inline
+In-Reply-To: <5187D15B.7080106@oracle.com>
+Subject: Re: [LTP] [PATCH] New core test of hardlinks and symlinks
+ restrictions added in Linux 3.6. Disabled by default in Linux 3.7.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,28 +26,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 05/10/2013 05:13 PM, Zhouping Liu wrote:
-> +		/*
-> +		 * Save the current value of merge_across_nodes knob,
-> +		 * and make it perform as the default behavior.
-> +		 */
+Hi!
+> > Use tabs for indentation. And look for lines over 80 chars. Please use
+> > checkpatch.pl from linux kernel sources to check the patch next time.
+> I used checkpatch.pl on this code, but considered 80 chars limit as not 
+> strict warning, I will fix it.
 
-This comment is unnecessary. it's not difficult to know it's a 
-save/recover operation. I think you can remove it or give a short 
-comment of where does this new sysfile come from (e.g. kernel ver/commit 
-id, etc)
+Okay.
 
-Caspar
+> >> +static void create_test_user(void)
+> >> +{
+> >> +	char cmd[MAX_CMD_LEN];
+> >> +	snprintf(cmd, MAX_CMD_LEN, "%s %s", "useradd", users[TEST_USER].name);
+> > You can change the format string to "useradd %s" ;)
+> that's right :), at first I thought to use it as a function parameter to 
+> pass "useradd" or "userdel -r"
+
+That would work as well.
+
+> >> +	char *cwd = get_tst_tmpdir();
+> >> +	cwd_offset = strlen(cwd);
+> >> +
+> >> +	mode_t mode = S_IRWXU | S_IRWXG | S_IRWXO;
+> >> +	chmod(cwd, mode);
+> >> +
+> >> +	struct dir_params *bdir = bdirs;
+> >> +	strcpy(bdir->path, cwd);
+> >> +	free(cwd);
+> > Do you really need the global path to the tst tmp dir? The call to
+> > tst_tmpdir() changes your CWD to it, so at least the subdirs could be
+> > created with local paths.
+> It's simplify hardlinks and symlinks creation, otherwise I have to 
+> construct relative paths that a bit more complicated.
+> Also, some test-cases can be added to deal with files which are outside 
+> of test tmpdir.
+
+What about using relative paths where they are easier to use? 
+
+> Thank you for your comments!
+> 
+> Could you please tell me how should I send the corrected patch, just in 
+> the same way?
+
+Yes please, the LTP mailing list is right place to post patches for review.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and 
-their applications. This 200-page book is written by three acclaimed 
-leaders in the field. The early access version is available now. 
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
