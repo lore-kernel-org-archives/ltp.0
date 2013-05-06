@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UdGVl-0007h2-Ri
-	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 08:59:37 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UdGVk-0006Tl-DD
-	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 08:59:37 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r4H8xUo1007655
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 17 May 2013 04:59:30 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r4H8xTSv018909
-	for <ltp-list@lists.sourceforge.net>; Fri, 17 May 2013 04:59:29 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 17 May 2013 10:59:21 +0200
-Message-Id: <4e8cb837f8dd19db77ca70bd3b0094b060b0b0a0.1368780870.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 1/2] waitid02: cleanup
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UZPYg-0002D5-CS
+	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 17:50:42 +0000
+Date: Mon, 6 May 2013 19:51:42 +0200
+From: chrubis@suse.cz
+Message-ID: <20130506175142.GB15141@rei.suse.cz>
+References: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
+	<20130116140742.GB6699@rei>
+	<CA+icZUUneR2cuZeYGq64=Ffh0UsFzd3KmbO9FmC97zWj6zTpxQ@mail.gmail.com>
+	<20130506092822.GC4388@rei> <5187E6FB.1070603@linux.vnet.ibm.com>
+	<20130506172626.GA15198@rei.suse.cz>
+	<5187E99F.9030600@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5187E99F.9030600@linux.vnet.ibm.com>
+Subject: Re: [LTP] Tarballs in Files section @ sf.net
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,222 +26,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: shubham <shubham@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Remove useless comments, convert spaces to tabs
-and fix long lines.
+Hi!
+> >>>> First, I was really happy when I wanted today to stress my Linux-Next
+> >>>> (next-20130503) kernels.
+> >>>>
+> >>>> 4 hours ago LTP-full 2013-05-03 was released.
+> >>>> Cool, I said.
+> >>>>
+> >>>> Looking at ltp-full-20130503.bz2 ...
+> >>>>
+> >>>> ...is still a TAR-archive when unpacked.
+> >>>>
+> >>>> An XZ-Tar-archive as demanded by me and promised by you was NOT prepared.
+> >>>>
+> >>>> That makes me a bit of Grrr...
+> >>>> Hereby my reminder, again!
+> >>> I mailed Shubham from IBM (who does the releases) to include the xz and
+> >>> rename the bz2 just a few minutes ago (even before I've read this mail).
+> >>> Hopefully he will fix this during the day.
+> >>>
+> >> I replaced the sf.net download file to "ltp-full-20130503.tar.xz". Hope
+> >> this helps...
+> > Thanks.
+> >
+> > Could you please also rename the ltp-full-20130503.bz2 to
+> > ltp-full-20130503.tar.bz2 to reflect its content?
+> >
+> 
+> I already did that. The download file name is "ltp-full-20130503.tar.xz" 
+> now. I think this is better than "ltp-full-20130503.tar.bz2".
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/waitid/waitid02.c |  104 +++++++++------------------
- 1 files changed, 33 insertions(+), 71 deletions(-)
+Sure, but we decided to serve both files the .bz2 and .xz for
+compatibility with older distros. But the bz2 had historically wrong
+suffix (missing the .tar). I would like to have that one fixed too, and
+from what I can say the sourceforge serves me still the
+ltp-full-20130503.bz2. Or is this intentional to stay backwards
+compatible?
 
-diff --git a/testcases/kernel/syscalls/waitid/waitid02.c b/testcases/kernel/syscalls/waitid/waitid02.c
-index 98bf3ea..e265c32 100644
---- a/testcases/kernel/syscalls/waitid/waitid02.c
-+++ b/testcases/kernel/syscalls/waitid/waitid02.c
-@@ -11,9 +11,9 @@
- /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
- /* the GNU General Public License for more details.                           */
- /*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
-+/* You should have received a copy of the GNU General Public License along    */
-+/* with this program; if not, write to the Free Software Foundation,  Inc.,   */
-+/* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA                 */
- /*                                                                            */
- /******************************************************************************/
- /******************************************************************************/
-@@ -54,55 +54,16 @@ char *TCID = "waitid02";
- int testno;
- int TST_TOTAL = 4;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--extern void cleanup()
-+static void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
- 
- 	tst_exit();
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup()
-+static void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
-@@ -112,7 +73,6 @@ int main(int ac, char **av)
- 	id_t pgid;
- 	id_t id1, id2, id3;
- 	siginfo_t infop;
--	int i = 0;
- 
- 	int lc;
- 	char *msg;
-@@ -131,14 +91,14 @@ int main(int ac, char **av)
- 
- 			TEST(waitid(P_ALL, 0, &infop, WNOHANG));
- 			if (TEST_RETURN == -1)
--				tst_resm(TPASS,
--					 "Success1 ... -1 is returned. error is %d.",
--					 TEST_ERRNO);
-+				tst_resm(TPASS, "Success1 ... -1 is returned."
-+					" error is %d.", TEST_ERRNO);
- 			else {
- 				tst_resm(TFAIL, "%s Failed1 ...", TCID);
- 			}
- 
--			/* option == WEXITED | WCONTINUED | WSTOPPED | WNOHANG | WNOWAIT */
-+			/* option == WEXITED | WCONTINUED | WSTOPPED |
-+			 * WNOHANG | WNOWAIT */
- 
- 			TEST(id1 = fork());
- 			if (TEST_RETURN == 0) {
-@@ -170,9 +130,8 @@ int main(int ac, char **av)
- 
- 			TEST(waitid(P_ALL, 0, &infop, WNOHANG | WEXITED));
- 			if (TEST_RETURN == 0)
--				tst_resm(TPASS,
--					 "Success 2 ...0 is returned.. error is %d.",
--					 TEST_ERRNO);
-+				tst_resm(TPASS, "Success 2 ...0 is returned.."
-+					" error is %d.", TEST_ERRNO);
- 			else {
- 				tst_resm(TFAIL | TTERRNO, "%s Failed 2", TCID);
- 				tst_exit();
-@@ -184,8 +143,8 @@ int main(int ac, char **av)
- 			TEST(waitid(P_PGID, pgid, &infop, WEXITED));
- 			if (TEST_RETURN == 0) {
- 				tst_resm(TPASS, "Success3 ... 0 is returned.");
--				tst_resm(TINFO,
--					 "si_pid = %d ; si_code = %d ; si_status = %d",
-+				tst_resm(TINFO, "si_pid = %d ; si_code = %d ;"
-+					" si_status = %d",
- 					 infop.si_pid, infop.si_code,
- 					 infop.si_status);
- 			} else {
-@@ -197,28 +156,29 @@ int main(int ac, char **av)
- 
- 			TEST(kill(id2, SIGSTOP));
- 
--			TEST(i =
--			     waitid(P_PID, id2, &infop, WSTOPPED | WNOWAIT));
-+			TEST(waitid(P_PID, id2, &infop, WSTOPPED | WNOWAIT));
- 			if (TEST_RETURN == 0) {
- 				/*EINVAL*/
--				    tst_resm(TINFO,
--					     "si_pid = %d, si_code = %d, si_status = %d",
--					     infop.si_pid, infop.si_code,
--					     infop.si_status);
-+				tst_resm(TINFO,	"si_pid = %d, si_code = %d,"
-+					" si_status = %d",
-+					infop.si_pid, infop.si_code,
-+					infop.si_status);
- 				tst_resm(TPASS, "Success4 ... 0 is returned");
- 			} else {
- 				tst_resm(TFAIL | TTERRNO,
--					 "Fail4 ...  %d is returned", i);
-+					"Fail4 ...  %ld is returned",
-+					TEST_RETURN);
- 				tst_exit();
- 			}
- 
- 			TEST(waitid(P_PID, id3, &infop, WEXITED));
- 			if (TEST_RETURN == 0) {
- 				/*NOCHILD*/
--				    tst_resm(TINFO,
--					     "si_pid = %d, si_code = %d, si_status = %d",
--					     infop.si_pid, infop.si_code,
--					     infop.si_status);
-+				tst_resm(TINFO,
-+					"si_pid = %d, si_code = %d, "
-+					"si_status = %d",
-+					infop.si_pid, infop.si_code,
-+					infop.si_status);
- 				tst_resm(TPASS, "Success5 ... 0 is returned");
- 			} else {
- 				tst_resm(TFAIL | TTERRNO,
-@@ -227,17 +187,19 @@ int main(int ac, char **av)
- 				tst_exit();
- 			}
- 
--			TEST(i = waitid(P_PID, id2, &infop, WCONTINUED));
-+			TEST(waitid(P_PID, id2, &infop, WCONTINUED));
- 			if (TEST_RETURN == 0) {
- 				/*EINVAL*/
--				    tst_resm(TINFO,
--					     "si_pid = %d, si_code = %d, si_status = %d",
--					     infop.si_pid, infop.si_code,
--					     infop.si_status);
-+				tst_resm(TINFO,
-+					"si_pid = %d, si_code = %d, "
-+					"si_status = %d",
-+					infop.si_pid, infop.si_code,
-+					infop.si_status);
- 				tst_resm(TPASS, "Success6 ... 0 is returned");
- 			} else {
- 				tst_resm(TFAIL | TTERRNO,
--					 "Fail6 ...  %d is returned", i);
-+					 "Fail6 ...  %ld is returned",
-+					 TEST_RETURN);
- 				tst_exit();
- 			}
- 
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
