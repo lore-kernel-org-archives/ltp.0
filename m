@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UeONl-0000le-E4
-	for ltp-list@lists.sourceforge.net; Mon, 20 May 2013 11:36:01 +0000
-Date: Mon, 20 May 2013 13:37:05 +0200
-From: chrubis@suse.cz
-Message-ID: <20130520113704.GA19493@rei>
-References: <001701ce5200$6bdfcdb0$439f6910$@lge.com>
-	<6A7E2981-DEB3-4402-B0C8-7AE7FCD85236@gmail.com>
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UaMXE-0005X6-EP
+	for ltp-list@lists.sourceforge.net; Thu, 09 May 2013 08:49:08 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UaMXC-0003RF-Vr
+	for ltp-list@lists.sourceforge.net; Thu, 09 May 2013 08:49:08 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r498n0ZA011923
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 May 2013 16:49:00 +0800
+Message-ID: <518B6271.2030707@cn.fujitsu.com>
+Date: Thu, 09 May 2013 16:46:41 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6A7E2981-DEB3-4402-B0C8-7AE7FCD85236@gmail.com>
-Subject: Re: [LTP] Regarding LTP contribution
+References: <518B618F.80400@cn.fujitsu.com>
+In-Reply-To: <518B618F.80400@cn.fujitsu.com>
+Subject: [LTP]  [PATCH 2/2]semctl/semctl01.c: Test features IPC_INFO,
+ SEM_INFO and SEM_STAT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,34 +31,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Jungsoo Son <jungsoo.son@lge.com>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > My name is jungsoo son who is in charge of kernel development on my company.
-> > I want to send my patch to upstream of Linux Test Project.
-> > Could you give me some information about how to push git commit ?
-> 
-> Hi jungsoo son!
->     I recommend following up on ltp-list requesting these details. Also, these details should be updated in any documentation attached to the project (I think there's some IIRC).
 
-There is quick howto at the end of doc/style-guide.txt but it's far from
-complete (I really should get some time to review and update the docs).
+Additional tests for features IPC_INFO, SEM_INFO and SEM_STAT.
 
-Generally if you want to contribute to LTP send your patch to the LTP
-malinling list for review. It will be pushed to LTP git once it passes
-the review phase by one of our developers.
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ipc/semctl/semctl01.c | 45 +++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl01.c b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+index 93d7cd7..8e5c907 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+@@ -32,11 +32,19 @@
+  *        system. Fix this by using pipes to synchronize processes.
+  */
+
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
+ #include "ipcsem.h"
+ #include "libtestsuite.h"
+
+ char *TCID = "semctl01";
++
++#ifdef __linux__
++int TST_TOTAL = 13;
++#else
+ int TST_TOTAL = 10;
++#endif
+
+ static int sem_id_1 = -1;
+
+@@ -57,8 +65,14 @@ static void func_sval(void);
+ static void func_rmid(void);
+ static void child_cnt(void);
+ static void child_pid(void);
++#ifdef __linux__
++static void func_iinfo(int);
++static void func_sinfo(void);
++static void func_sstat(int);
++#endif
+
+ static struct semid_ds buf;
++static struct seminfo ipc_buf;
+ static unsigned short array[PSEMS];
+ static struct sembuf sops;
+
+@@ -98,6 +112,11 @@ static struct test_case_t {
+ 	{SEM4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
+ 	{0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
+ 	{SEM4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
++#ifdef __linux__
++	{0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
++	{0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
++	{0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
++#endif
+ 	{0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
+ };
+
+@@ -161,6 +180,8 @@ int main(int argc, char *argv[])
+ 					case GETZCNT:
+ 					case GETPID:
+ 					case GETVAL:
++					case IPC_INFO:
++					case SEM_STAT:
+ 						(*TC[i].func_test)
+ 						    (TEST_RETURN);
+ 						break;
+@@ -536,6 +557,30 @@ static void func_rmid(void)
+ 	sem_id_1 = -1;
+ }
+
++static void func_iinfo(int hidx)
++{
++	if (hidx >= 0)
++		tst_resm(TPASS, "the highest index is correct");
++	else
++		tst_resm(TFAIL, "the highest index is incorrect");
++}
++
++static void func_sinfo(void)
++{
++	if (ipc_buf.semusz < 1)
++		tst_resm(TFAIL, "number of semaphore sets is incorrect");
++	else
++		tst_resm(TPASS, "number of semaphore sets is correct");
++}
++
++static void func_sstat(int semidx)
++{
++	if (semidx >= 0)
++		tst_resm(TPASS, "id of the semaphore set is correct");
++	else
++		tst_resm(TFAIL, "id of the semaphore set is incorrect");
++}
++
+ void setup(void)
+ {
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1
+
+
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and 
+their applications. This 200-page book is written by three acclaimed 
+leaders in the field. The early access version is available now. 
+Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
