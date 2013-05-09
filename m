@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <R65777@freescale.com>) id 1UhAdt-0000wl-BJ
-	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 03:32:09 +0000
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
-	helo=ch1outboundpool.messaging.microsoft.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1UhAdq-0008PA-5s
-	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 03:32:09 +0000
-From: Bhushan Bharat-R65777 <R65777@freescale.com>
-Date: Tue, 28 May 2013 03:31:39 +0000
-Message-ID: <6A3DF150A5B70D4F9B66A25E3F7C888D07043EB8@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
-	<1184534312.8345309.1369679597424.JavaMail.root@redhat.com> 
-Content-Language: en-US
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UaTcb-0003Fl-Nv
+	for ltp-list@lists.sourceforge.net; Thu, 09 May 2013 16:23:09 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UaTcb-0003lt-1W
+	for ltp-list@lists.sourceforge.net; Thu, 09 May 2013 16:23:09 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 9 May 2013 12:22:51 -0400
+References: <518B618F.80400@cn.fujitsu.com>
+In-Reply-To: <518B618F.80400@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] LTP: Compilation error for powerpc
+Message-Id: <201305091222.52821.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 1/2]semctl/semctl01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,177 +24,100 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7652368171346113660=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bhushan Bharat-R65777 <R65777@freescale.com>, Jan Stancek <jstancek@redhat.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+
+--===============7652368171346113660==
+Content-Type: multipart/signed; boundary="nextPart1597626.Qo76rEhSt6";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1597626.Qo76rEhSt6
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+On Thursday 09 May 2013 04:42:55 DAN LI wrote:
+> --- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+> +++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+>=20
+>  /*
+> @@ -24,32 +23,6 @@
+>   * DESCRIPTION
+>   *	semctl01 - test the 10 possible semctl() commands
+>   *
+> - * ALGORITHM
+> - *	create a semaphore set with read and alter permissions
+> - *	loop if that option was specified
+> - *	  loop through the test cases
+> - *	    do any setup required for the test case
+> - *	    make the semctl() call using the TEST() macro
+> - *	    check the return code
+> - *	      if failure, issue a FAIL message.
+> - *	    otherwise,
+> - *	      if doing functionality testing
+> - *		call the appropriate test function
+> - *	  	if correct,
+> - *			issue a PASS message
+> - *		otherwise
+> - *			issue a FAIL message
+> - *	call cleanup
+
+i don't see high level DESCRIPTION/ALGORITHM as "useless".  why do you ?
+
+>   * HISTORY
+
+on the flip side, HISTORY is pretty useless.  that's what `git log` is for.
+=2Dmike
+
+--nextPart1597626.Qo76rEhSt6
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRi81cAAoJEEFjO5/oN/WBdvoQAJcJCwus2SS3cnlJ20z47H9C
+fsP5uJTiH/y+GDmiISsxkUpTgOjXMC0Bc1eCXav8ZAVOn2R5TMrFGW/Y9OXNjsQB
+PpHQpZCKRV+CnsgmkTY00j8WJ+OsaLmATetufUWrMcDc+MLWlKXf6XrA2MAxmPI2
+Jx3a58mHcXNSMYXY/y5W4hTJYQ4GK+eR2lJRPf8xYcZghPSbTO4gLZWxYGH231YC
+oO65U9Q0eq5ZJ8sg1bOm0ktbFzL0j+k7FrnJucP4pFSlSotsferr0OE39NJoAqWN
+WYTPy2xxKF8rr/udzFxf28/U6Lt1I4IgVGynIEi9HDEq5AOvYU3YpRJh4zm82kXm
+rig6SxIUXFiJNuwmGP3Ojcx6GCwKV00DNjxVDi//MPVVNbtIDaHc+n7LaIJ/ggZp
+YSgxWSIun7Hkfx/VYHmJswamYZZMTa2xsMt4lNkEH9qYw5exApefPHDFPY3MjQsM
+4glCWtddFiDrV2gGIQ91hNCTzB/5Ps1tHLws/kp41ss540G7/UqQ01OYb6lWTnNv
+6CNJitx94qitQ/lTcZG/qCrLu5z5w/CFv3iNZd9TEkFIiIn1HkgnztK1EOhXiPmJ
+5mdUeG6pCCAg99LCyRxaiRRwUXMbs6lKBAAiqG0sqzf40YsCKaGm1uRfxQ6IxV42
+W0wios28Si+oc9Iq/zkG
+=PQs1
+-----END PGP SIGNATURE-----
+
+--nextPart1597626.Qo76rEhSt6--
 
 
-
-> -----Original Message-----
-> From: Bhushan Bharat-R65777
-> Sent: Tuesday, May 28, 2013 8:47 AM
-> To: 'Jan Stancek'
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: RE: [LTP] LTP: Compilation error for powerpc
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Jan Stancek [mailto:jstancek@redhat.com]
-> > Sent: Tuesday, May 28, 2013 12:03 AM
-> > To: Bhushan Bharat-R65777
-> > Cc: ltp-list@lists.sourceforge.net
-> > Subject: Re: [LTP] LTP: Compilation error for powerpc
-> >
-> >
-> >
-> >
-> >
-> > ----- Original Message -----
-> > > From: "Bhushan Bharat-R65777" <R65777@freescale.com>
-> > > To: ltp-list@lists.sourceforge.net
-> > > Sent: Monday, 27 May, 2013 1:32:32 PM
-> > > Subject: [LTP] LTP: Compilation error for powerpc
-> > >
-> > > Hi All,
-> > >
-> > > There are a number of good test cases which we run to test various
-> > > features ( like ptrace/memory etc). I tried below steps and failed
-> > > to compile
-> > > successfully:
-> >
-> > I (or rather automated testing) compile it directly on powerpc as:
-> > # make autotools
-> 
-> I get bellow error with "make autotools"
-> 
-> r65777@perfidc-01:~/LTP/try$ make autotools sed -n '1{s:LTP-
-> :m4_define([LTP_VERSION],[:;s:$:]):;p;q}' ChangeLog > m4/ltp-version.m4 aclocal
-> -I m4
-> /usr/share/aclocal/snacc.m4:24: warning: underquoted definition of AM_PATH_SNACC
-> /usr/share/aclocal/snacc.m4:24:   run info '(automake)Extending aclocal'
-> /usr/share/aclocal/snacc.m4:24:   or see
-> http://sources.redhat.com/automake/automake.html#Extending-aclocal
-> autoconf
-> autoheader
-> make: *** No rule to make target `m4/Makefile.am', needed by `m4/Makefile.in'.
-> Stop.
-> r65777@perfidc-01:~/LTP/try$ cd m4/
-
-I did a fresh clone and followed the steps mentioned here. Now it is building nicely now.
-
-Thank a lot
--Bharat
-
-> 
-> Thanks
-> -Bharat
-> 
-> > # ./configure
-> > # make
-> >
-> > Base on that gcc path, I'm guessing you are cross-compiling it on x86_64.
-> > I tried that just now and built OK:
-> > # make autotools
-> > # env
-> > CC=/opt/crosstool/gcc-4.4.7-20120601-glibc-2.12-2-gc4ccff1/powerpc64-
-> > unknown-linux-gnu/bin/powerpc64-unknown-linux-gnu-gcc \
-> >
-> > LD=/opt/crosstool/gcc-4.4.7-20120601-glibc-2.12-2-gc4ccff1/powerpc64-
-> > unknown-linux-gnu/bin/powerpc64-unknown-linux-gnu-ld \
-> >
-> > STRIP=/opt/crosstool/gcc-4.4.7-20120601-glibc-2.12-2-gc4ccff1/powerpc6
-> > 4- unknown-linux-gnu/bin/powerpc64-unknown-linux-gnu-strip \
-> >       ./configure --host=ppc64
-> > ...
-> > # file testcases/kernel/syscalls/open/open01
-> > testcases/kernel/syscalls/open/open01: ELF 64-bit MSB executable,
-> > 64-bit PowerPC or cisco 7500, version 1 (SYSV), dynamically linked
-> > (uses shared libs), for GNU/Linux 2.6.4, not stripped
-> >
-> > Regards,
-> > Jan
-> >
-> > >
-> > > 1)
-> > > cp include/mk/config.mk.default include/mk/config.mk
-> > >
-> > > 2)
-> > > vi include/mk/config.mk
-> > > -AR                      := ar
-> > > -CC                      := gcc
-> > > +AR                      :=
-> > > /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu
-> > > /b
-> > > in/powerpc-linux-gnu-ar
-> > > +CC                      :=
-> > > /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu
-> > > /b
-> > > in/powerpc-linux-gnu-gcc
-> > >
-> > > 3)
-> > > cp include/config.h.default include/config.h
-> > >
-> > > 4)
-> > > cd include/mk
-> > > cp generic_leaf_target.inc generic_leaf_target.mk cp
-> > > generic_trunk_target.inc generic_trunk_target.mk cd ../../
-> > >
-> > > 5)
-> > > Make
-> > >
-> > > Getting error :
-> > >
-> > > make[4]: Entering directory
-> > > `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-> > > /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu
-> > > /b in/powerpc-linux-gnu-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe
-> > > -Wall -I/home/r65777/LTP/try/testcases/kernel/include  -c -o
-> > > libclone.o libclone.c In file included from libclone.h:31:0,
-> > >                  from libclone.c:17:
-> > > /home/r65777/LTP/try/testcases/kernel/include/linux_syscall_numbers.h:18:21:
-> > > fatal error: cleanup.c: No such file or directory compilation terminated.
-> > > make[4]: *** [libclone.o] Error 1
-> > > make[4]: Leaving directory
-> > > `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-> > > make[3]: *** [libclone/libclone.a] Error 2
-> > > make[3]: Leaving directory
-> `/home/r65777/LTP/try/testcases/kernel/containers'
-> > > make[2]: *** [all] Error 2
-> > > make[2]: Leaving directory `/home/r65777/LTP/try/testcases/kernel'
-> > > make[1]: *** [all] Error 2
-> > > make[1]: Leaving directory `/home/r65777/LTP/try/testcases'
-> > > make: *** [testcases-all] Error 2
-> > >
-> > > -------------------------
-> > >
-> > > Thanks
-> > > -Bharat
-> > >
-> > >
-> > > --------------------------------------------------------------------
-> > > --
-> > > -------- Try New Relic Now & We'll Send You this Cool Shirt New
-> > > Relic is the only SaaS-based application performance monitoring
-> > > service that delivers powerful full stack analytics. Optimize and
-> > > monitor your browser, app, & servers with just a few lines of code.
-> > > Try New Relic and get this awesome Nerd Life shirt!
-> > > http://p.sf.net/sfu/newrelic_d2d_may
-> > > _______________________________________________
-> > > Ltp-list mailing list
-> > > Ltp-list@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > >
+--===============7652368171346113660==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
-Get 100% visibility into your production application - at no cost.
-Code-level diagnostics for performance bottlenecks with <2% overhead
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap1
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and 
+their applications. This 200-page book is written by three acclaimed 
+leaders in the field. The early access version is available now. 
+Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+--===============7652368171346113660==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7652368171346113660==--
+
