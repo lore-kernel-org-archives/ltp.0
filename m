@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <riku.voipio@linaro.org>) id 1UYGXT-0002nY-Ak
-	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:43 +0000
-Received: from afflict.kos.to ([92.243.29.197])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UYGXR-0002y9-71
-	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:43 +0000
-From: riku.voipio@linaro.org
-Date: Fri,  3 May 2013 16:45:16 +0300
-Message-Id: <1367588717-18162-3-git-send-email-riku.voipio@linaro.org>
-Subject: [LTP] [PATCH 2/3] Set invalid syscall as -1 instead of 0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UadDM-00084b-Tl
+	for ltp-list@lists.sourceforge.net; Fri, 10 May 2013 02:37:44 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UadDJ-00056A-Ku
+	for ltp-list@lists.sourceforge.net; Fri, 10 May 2013 02:37:44 +0000
+Message-ID: <518C5CE3.9070702@cn.fujitsu.com>
+Date: Fri, 10 May 2013 10:35:15 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <518B618F.80400@cn.fujitsu.com>
+	<201305091222.52821.vapier@gentoo.org>
+In-Reply-To: <201305091222.52821.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 1/2]semctl/semctl01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,58 +25,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Riku Voipio <riku.voipio@linaro.org>
+On 05/10/2013 12:22 AM, Mike Frysinger wrote:
+> On Thursday 09 May 2013 04:42:55 DAN LI wrote:
+>> --- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+>> +++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+>>
+>>  /*
+>> @@ -24,32 +23,6 @@
+>>   * DESCRIPTION
+>>   *	semctl01 - test the 10 possible semctl() commands
+>>   *
+>> - * ALGORITHM
+>> - *	create a semaphore set with read and alter permissions
+>> - *	loop if that option was specified
+>> - *	  loop through the test cases
+>> - *	    do any setup required for the test case
+>> - *	    make the semctl() call using the TEST() macro
+>> - *	    check the return code
+>> - *	      if failure, issue a FAIL message.
+>> - *	    otherwise,
+>> - *	      if doing functionality testing
+>> - *		call the appropriate test function
+>> - *	  	if correct,
+>> - *			issue a PASS message
+>> - *		otherwise
+>> - *			issue a FAIL message
+>> - *	call cleanup
+> 
+> i don't see high level DESCRIPTION/ALGORITHM as "useless".  why do you ?
 
-System call number 0 might be in use in selected syscalls.
+In my opinion, "ALGORITHM" section of many ltp testcases follows one format:
+------------------------------------------------
+setup()
+loop test frame
+	loop all test cases
+		TEST(call)
+		if call failed
+			log the errno
+		else
+			if functionality is ok
+				case PASS
+			else
+				case FAIL
+cleanup()
+------------------------------------------------
 
-Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
----
- testcases/kernel/include/regen.sh |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+So, i think this section is redundant and useless once someone has
+learned the test frame.
 
-diff --git a/testcases/kernel/include/regen.sh b/testcases/kernel/include/regen.sh
-index 86cdc09..08a2669 100755
---- a/testcases/kernel/include/regen.sh
-+++ b/testcases/kernel/include/regen.sh
-@@ -27,7 +27,7 @@ cat << EOF > "${output_pid}"
- 
- #define ltp_syscall(NR, ...) ({ \\
- 	int __ret; \\
--	if (NR == 0) { \\
-+	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
- 		errno = ENOSYS; \\
- 		__ret = -1; \\
- 	} else { \\
-@@ -71,11 +71,12 @@ done
- echo -n "Generating stub list ... "
- echo "" >> "${output_pid}"
- echo "/* Common stubs */" >> "${output_pid}"
-+echo "#define __LTP__NR_INVALID_SYSCALL -1" >> "${output_pid}"
- for nr in $(awk '{print $1}' "${srcdir}/"*.in | sort -u) ; do
- 	nr="__NR_$nr"
- 	cat <<-EOF >> "${output_pid}"
- 	# ifndef $nr
--	#  define $nr 0
-+	#  define $nr __LTP__NR_INVALID_SYSCALL
- 	# endif
- 	EOF
- done
--- 
-1.7.10.4
+> 
+>>   * HISTORY
+> 
+> on the flip side, HISTORY is pretty useless.  that's what `git log` is for.
+
+Agreed.
+
+I'll send a V2 to fix it.
+
+Thanks,
+DAN LI
+> -mike
+> 
+
 
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite
-It's a free troubleshooting tool designed for production
-Get down to code-level detail for bottlenecks, with <2% overhead.
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap2
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and 
+their applications. This 200-page book is written by three acclaimed 
+leaders in the field. The early access version is available now. 
+Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
