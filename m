@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UaROI-0003sb-S1
-	for ltp-list@lists.sourceforge.net; Thu, 09 May 2013 14:00:14 +0000
-Date: Thu, 9 May 2013 16:01:17 +0200
-From: chrubis@suse.cz
-Message-ID: <20130509140117.GD4255@rei.suse.cz>
-References: <201305082355.14183.vapier@gentoo.org>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Ub7zK-00079X-4R
+	for ltp-list@lists.sourceforge.net; Sat, 11 May 2013 11:29:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ub7zG-0004Rz-03
+	for ltp-list@lists.sourceforge.net; Sat, 11 May 2013 11:29:18 +0000
+Message-ID: <518E2B58.3020608@cn.fujitsu.com>
+Date: Sat, 11 May 2013 19:28:24 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201305082355.14183.vapier@gentoo.org>
-Subject: Re: [LTP] new sub-project proposal of utility commands for poking
- funcs/syscalls directly
+References: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
+	<518CC158.20108@cn.fujitsu.com>
+	<1293337679.9710631.1368181080556.JavaMail.root@redhat.com>
+In-Reply-To: <1293337679.9710631.1368181080556.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] mm/ksm: set the merge_across_nodes knob
+ before testing
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,51 +31,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Zhouping Liu <zliu@redhat.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> i wrote a testsuite for the Gentoo sandbox project.  for people unfamiliar 
-> with this project, it's similar to fakeroot.  a readme with more details:
-> http://git.overlays.gentoo.org/gitweb/?p=proj/sandbox.git;a=blob;f=README
+On 05/10/2013 06:18 PM, Zhouping Liu wrote:
+> Hi Wanlong,
 > 
-> in order to test this project, i need to be able to easily & quickly run 
-> specific C library funcs and syscalls.  writing small C files with the right 
-> args is a pain and doesn't scale at all.  so i wrote a framework from scratch 
-> which allows poking funcs from the command line:
-> http://git.overlays.gentoo.org/gitweb/?p=proj/sandbox.git;a=tree;f=tests
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Zhouping Liu" <zliu@redhat.com>
+>> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
+>> Sent: Friday, May 10, 2013 5:43:52 PM
+>> Subject: Re: [LTP] [PATCH 1/3] mm/ksm: set the merge_across_nodes knob before testing
+>>
+>> On 05/10/2013 05:13 PM, Zhouping Liu wrote:
+>>> This kernel commit 90bd6fd31c809(ksm: allow trees per NUMA node)
+>>> introduced a new KSM sysfs knob /sys/kernel/mm/ksm/merge_across_nodes,
+>>> when it is set to zero, only pages from the same node are merged,
+>>> which is different with the previous behavior, and ksm test cases
+>>> sometimes will fail in NUMA system.
+>>>
+>>> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+>>
+>> While how about wrap the set and reset "merge_across_nodes" value to
+>> functions,
+>> so that we can reduce the dup code and dup comments?
 > 
-> strace has need of pretty much the same thing.  atm, it's running higher level 
-> tools like `stat` and `dd` and `find`, but this gets unmanageable quickly as we 
-> try to scale to more arches and tests.
+> yeah, it sounds good, but... look at the codes again:
 > 
-> rather than hosting the tests in the sandbox or the strace repo (and trying to 
-> import into the other), it seemed more natural to start a new sub-project 
-> under the LTP umbrella.  we wouldn't want it to be in the main LTP repo since 
-> we can't check out subdirs w/git, so it'd have to be a new one.
+> ...
+>  void cleanup(void)
+>  {
+> +       if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
+> +               /* recover the old value */
+> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "merge_across_nodes",
+> +                                "%d", merge_across_nodes);
+> 
+> resetting "merge_across_nodes" only needs one statement.
+> 
+> +
+>         umount_mem(CPATH, CPATH_NEW);
+>         TEST_CLEANUP;
+>  }
+> @@ -136,6 +143,16 @@ void setup(void)
+>         if (access(PATH_KSM, F_OK) == -1)
+>                 tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+> 
+> +       if (access(PATH_KSM "merge_across_nodes", F_OK) == 0) {
+> +               /*
+> +                * Save the current value of merge_across_nodes knob,
+> +                * and make it perform as the default behavior.
+> +                */
+> +               SAFE_FILE_SCANF(NULL, PATH_KSM "merge_across_nodes",
+> +                               "%d", &merge_across_nodes);
+> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "merge_across_nodes", "1");
+> 
+> and setting the value only needs three statements, and it looks easy to understand,
+> I can remove the comments from ksm02.c ksm03.c ksm04.c to reduce the duplicated comments.
+> 
+> also "merge_across_nodes" is a long string, I can't think of a better function name to
+> implement set/unset merge_across_nodes, so... IMO, the current codes is good, do you think so?
 
-From a technical point it's quite easy, we can create a repo on github
-under linux-test-project and possibly link it as git submodule to the
-main LTP git. But you probably have a solution like this in mind.
+OK to me.
 
-> what do people think ?  any suggestions on a name ?  how about "foker", the 
-> function poker ?
+Thanks,
+Wanlong Gao
 
-It seems to be nice tool. And the name is fine (it's slightly negative
-according to urban dict, but not as bad as Gimp).
+> 
+> +       }
+> +
+> ...
+>  
+> 
 
-It may be off topic, but similar system could be used to generate quite
-a lot of LTP testcases. There are far too many cases where the test just
-calls a function and checks that it succeded and actually did what it
-should. Given the definition of the API are in separate files (perhaps
-slightly edhanced) generating LTP testcases should be as easy as
-including different skeleton. We can even anotate negative testcases as
-well, for example in case invalid fd is passed, make sure the call
-returns EBADFD (which may be even usefull for generating strace tests).
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
