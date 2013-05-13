@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UhcGA-0003wJ-Ds
-	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 09:01:30 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UhcG7-0002UW-W7
-	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 09:01:30 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4T91GgZ027919
-	for <ltp-list@lists.sourceforge.net>; Wed, 29 May 2013 17:01:16 +0800
-Message-ID: <51A5C347.4020202@cn.fujitsu.com>
-Date: Wed, 29 May 2013 16:58:47 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach SHM_NORESERVE
- to shmflg
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1UboOa-0007FR-6H
+	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 08:46:12 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UboOZ-0002dU-Er
+	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 08:46:12 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r4D8k5DU019003
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 May 2013 04:46:06 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Mon, 13 May 2013 16:43:27 +0800
+Message-Id: <6e4f2cc0db6d6544478fe24fe00f04755b617119.1368434507.git.zliu@redhat.com>
+In-Reply-To: <45b6ebc4e0b5f2848c107c26ba144822bed090a1.1368434507.git.zliu@redhat.com>
+References: <45b6ebc4e0b5f2848c107c26ba144822bed090a1.1368434507.git.zliu@redhat.com>
+In-Reply-To: <45b6ebc4e0b5f2848c107c26ba144822bed090a1.1368434507.git.zliu@redhat.com>
+References: <45b6ebc4e0b5f2848c107c26ba144822bed090a1.1368434507.git.zliu@redhat.com>
+Subject: [LTP] [PATCH v2 2/3] mem: introduce clean_node() func
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,194 +30,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
+There's set_node func introduced in commit cb2967b27a65, but we
+don't have a func to clean the node mask yet.
 
-1. Remove useless comments
-
-2. Revise code to follow ltp-code-style
-
-3. Add SHM_NORESERVE to shmflg to test
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
 ---
- testcases/kernel/syscalls/ipc/shmget/shmget01.c | 87 +++++++------------------
- 1 file changed, 22 insertions(+), 65 deletions(-)
+ testcases/kernel/mem/include/mem.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget01.c b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-index 38dbee7..c36fb8e 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-@@ -1,20 +1,19 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
-
- /*
-@@ -33,27 +32,12 @@
-  *	  if doing functionality testing
-  *		stat the shared memory resource
-  *		check the size, creator pid and mode
-- *	  	if correct,
-+ *		if correct,
-  *			issue a PASS message
-  *		otherwise
-  *			issue a FAIL message
-  *	  else issue a PASS message
-  *	call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  shmget01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-  */
-
- #include "ipcshm.h"
-@@ -61,31 +45,25 @@
- char *TCID = "shmget01";
- int TST_TOTAL = 1;
-
--int shm_id_1 = -1;
-+static int shm_id_1 = -1;
-
--int main(int ac, char **av)
-+int main(int argc, char *argv[])
- {
- 	int lc;
- 	char *msg;
- 	struct shmid_ds buf;
-
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
-
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
-+	setup();
-
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
-
--		/*
--		 * Use TEST macro to make the call
--		 */
--
--		TEST(shmget(shmkey, SHM_SIZE, (IPC_CREAT | IPC_EXCL | SHM_RW)));
-+		TEST(shmget(shmkey, SHM_SIZE,
-+			    (IPC_CREAT | IPC_EXCL | SHM_RW | SHM_NORESERVE)));
-
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL, "%s call failed - errno = %d : %s",
-@@ -131,11 +109,10 @@ int main(int ac, char **av)
- 		/*
- 		 * clean up things in case we are looping
- 		 */
--		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1) {
-+		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1)
- 			tst_resm(TBROK, "couldn't remove shared memory");
--		} else {
-+		else
- 			shm_id_1 = -1;
--		}
- 	}
-
- 	cleanup();
-@@ -143,42 +120,22 @@ int main(int ac, char **av)
- 	tst_exit();
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 551c73e..e31783e 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -21,6 +21,14 @@ static inline void set_node(unsigned long *array, unsigned int node)
+ 	array[node / BITS_PER_LONG] |= 1UL << (node % BITS_PER_LONG);
  }
-
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
- void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
- 	TEST_PAUSE;
-
--	/*
--	 * Create a temporary directory and cd into it.
--	 * This helps to ensure that a unique msgkey is created.
--	 * See ../lib/libipc.c for more information.
--	 */
- 	tst_tmpdir();
-
--	/* get an IPC resource key */
- 	shmkey = getipckey();
- }
-
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
- void cleanup(void)
- {
--	/* if it exists, remove the shared memory resource */
- 	rm_shm(shm_id_1);
-
- 	tst_rmdir();
-
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
--
- }
+ 
++static inline void clean_node(unsigned long *array)
++{
++	int i;
++
++	for (i = 0; i < MAXNODES / BITS_PER_LONG; i++)
++		array[i] &= 0UL;
++}
++
+ /* OOM */
+ 
+ #define LENGTH			(3UL<<30)
 -- 
-1.8.1
+1.7.11.7
+
 
 ------------------------------------------------------------------------------
-Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
-Get 100% visibility into your production application - at no cost.
-Code-level diagnostics for performance bottlenecks with <2% overhead
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap1
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and 
+their applications. This 200-page book is written by three acclaimed 
+leaders in the field. The early access version is available now. 
+Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
