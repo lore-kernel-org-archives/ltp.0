@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1UboJ6-000700-9h
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 08:40:32 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UboJ4-0002MO-IZ
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 08:40:32 +0000
-Date: Mon, 13 May 2013 04:40:20 -0400 (EDT)
-From: Zhouping Liu <zliu@redhat.com>
-Message-ID: <1284641591.353244.1368434420898.JavaMail.root@redhat.com>
-In-Reply-To: <51909CD7.9050408@casparzhang.com>
-References: <83efca15b955541cfdd6a0d7a07bd303381e5ed4.1368177082.git.zliu@redhat.com>
-	<51909CD7.9050408@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ubqpr-00078e-R4
+	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 11:22:31 +0000
+Date: Mon, 13 May 2013 13:23:30 +0200
+From: chrubis@suse.cz
+Message-ID: <20130513112329.GA4114@rei>
+References: <518B618F.80400@cn.fujitsu.com>
+	<201305091222.52821.vapier@gentoo.org>
+	<518C5CE3.9070702@cn.fujitsu.com>
+	<201305101127.49679.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] mm/ksm: set the merge_across_nodes knob
- before testing
+Content-Disposition: inline
+In-Reply-To: <201305101127.49679.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 1/2]semctl/semctl01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,53 +27,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
------ Original Message -----
-> From: "Caspar Zhang" <caspar@casparzhang.com>
-> To: "Zhouping Liu" <zliu@redhat.com>
-> Cc: "LTP List" <ltp-list@lists.sourceforge.net>
-> Sent: Monday, May 13, 2013 3:57:11 PM
-> Subject: Re: [LTP] [PATCH 1/3] mm/ksm: set the merge_across_nodes knob before testing
+Hi!
+> > > i don't see high level DESCRIPTION/ALGORITHM as "useless".  why do you ?
+> > 
+> > In my opinion, "ALGORITHM" section of many ltp testcases follows one
+> > format: ------------------------------------------------
+> > setup()
+> > loop test frame
+> > 	loop all test cases
+> > 		TEST(call)
+> > 		if call failed
+> > 			log the errno
+> > 		else
+> > 			if functionality is ok
+> > 				case PASS
+> > 			else
+> > 				case FAIL
+> > cleanup()
+> > ------------------------------------------------
+> > 
+> > So, i think this section is redundant and useless once someone has
+> > learned the test frame.
 > 
-> On 05/10/2013 05:13 PM, Zhouping Liu wrote:
-> > +		/*
-> > +		 * Save the current value of merge_across_nodes knob,
-> > +		 * and make it perform as the default behavior.
-> > +		 */
-> 
-> This comment is unnecessary. it's not difficult to know it's a
-> save/recover operation. I think you can remove it or give a short
-> comment of where does this new sysfile come from (e.g. kernel ver/commit
-> id, etc)
+> and if you delete all the sections, then what are people going to refer to ?
 
-OK, as merge_across_nodes is new for us, I think we should give some useful
-comments, so I updated the comment like below:
+I usually end up with less structured but IMHO more readable
+description. Having the descriptions in form of pseudocode seems to be
+useless as the actual code is right bellow it. I tend to rewrite these
+into something like:
 
-+       /*
-+        * kernel commit 90bd6fd introduced a new KSM sysfs knob
-+        * /sys/kernel/mm/ksm/merge_across_nodes, setting it to '0'
-+        * will prevent KSM pages being merged across numa nodes,
-+        * which will cause the case fail, so we need to make sure
-+        * it is enabled before testing.
-+        */ 
-+       if (access(PATH_KSM "merge_across_nodes", F_OK) == 0) {
-+               SAFE_FILE_SCANF(NULL, PATH_KSM "merge_across_nodes",
-+                               "%d", &merge_across_nodes);
-+               SAFE_FILE_PRINTF(NULL, PATH_KSM "merge_across_nodes", "1");
-+       }
-+
+'Call foo with bar options and check for xyz result.'
 
-and the comment message only appear once in ksm01.c, removed it from ksm0[2|3|4].c.
-
-please review V2.
+Which shortens the description into one sentence but all the important
+information is preserved.
 
 -- 
-Thanks,
-Zhouping
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
