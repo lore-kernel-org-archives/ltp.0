@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1UhAoU-0004JI-Qb
-	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 03:43:06 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UhAoR-0000Pb-1j
-	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 03:43:06 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r4S3gses019422
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 May 2013 03:42:55 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r4S3gtKk023987
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 May 2013 03:42:56 GMT
-Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r4S3gtZO006476
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 May 2013 03:42:55 GMT
-From: shuang.qiu@oracle.com
-Date: Tue, 28 May 2013 11:42:08 +0800
-Message-Id: <1369712528-9454-1-git-send-email-shuang.qiu@oracle.com>
-Subject: [LTP]  [PATCH] mmapstress10:Close the file descriptor
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UbiTh-0001bW-BY
+	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 02:27:05 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UbiTf-0006Qg-R4
+	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 02:27:05 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4D2QrbS013234
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 May 2013 10:26:53 +0800
+Message-ID: <51904EE1.9020309@cn.fujitsu.com>
+Date: Mon, 13 May 2013 10:24:33 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <51904E37.9090906@cn.fujitsu.com>
+In-Reply-To: <51904E37.9090906@cn.fujitsu.com>
+Subject: [LTP] [PATCH V2 2/2]semctl/semctl01.c: Test features IPC_INFO,
+ SEM_INFO and SEM_STAT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,48 +28,113 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
 
-It does not close the file descriptor before return 1 in fileokey()
-function which may cause the following warning with nfs as TMPDIR:
-0  TWARN  :  tst_rmdir: rmobj(/mnt/nfsv3/ltp-SDrfq17456/mmaq7TOqt)
-failed:
-unlink(/mnt/nfsv3/ltp-SDrfq17456/mmaq7TOqt/.nfs000000000110cb3600000004)
-failed; errno=16: Device or resource busy
+Additional tests for features IPC_INFO, SEM_INFO and SEM_STAT.
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/mem/mmapstress/mmapstress10.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ testcases/kernel/syscalls/ipc/semctl/semctl01.c | 39 ++++++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/mmapstress/mmapstress10.c b/testcases/kernel/mem/mmapstress/mmapstress10.c
-index baddaff..8ee7c87 100644
---- a/testcases/kernel/mem/mmapstress/mmapstress10.c
-+++ b/testcases/kernel/mem/mmapstress/mmapstress10.c
-@@ -876,6 +876,7 @@ int fileokay(char *file, uchar_t * expbuf)
- 		}
- 	}
- 
-+	close(fd);
- 	return 1;
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl01.c b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+index ff734f8..687d909 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
+@@ -41,11 +41,15 @@
+  *	call cleanup
+  */
+
++
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
+ #include "ipcsem.h"
+ #include "libtestsuite.h"
+
+ char *TCID = "semctl01";
+-int TST_TOTAL = 10;
++int TST_TOTAL = 13;
+
+ static int sem_id_1 = -1;
+
+@@ -66,8 +70,12 @@ static void func_sval(void);
+ static void func_rmid(void);
+ static void child_cnt(void);
+ static void child_pid(void);
++static void func_iinfo(int);
++static void func_sinfo(void);
++static void func_sstat(int);
+
+ static struct semid_ds buf;
++static struct seminfo ipc_buf;
+ static unsigned short array[PSEMS];
+ static struct sembuf sops;
+
+@@ -107,6 +115,9 @@ static struct test_case_t {
+ 	{SEM4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
+ 	{0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
+ 	{SEM4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
++	{0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
++	{0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
++	{0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
+ 	{0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
+ };
+
+@@ -170,6 +181,8 @@ int main(int argc, char *argv[])
+ 					case GETZCNT:
+ 					case GETPID:
+ 					case GETVAL:
++					case IPC_INFO:
++					case SEM_STAT:
+ 						(*TC[i].func_test)
+ 						    (TEST_RETURN);
+ 						break;
+@@ -545,6 +558,30 @@ static void func_rmid(void)
+ 	sem_id_1 = -1;
  }
- 
--- 
-1.7.7
 
++static void func_iinfo(int hidx)
++{
++	if (hidx >= 0)
++		tst_resm(TPASS, "the highest index is correct");
++	else
++		tst_resm(TFAIL, "the highest index is incorrect");
++}
++
++static void func_sinfo(void)
++{
++	if (ipc_buf.semusz < 1)
++		tst_resm(TFAIL, "number of semaphore sets is incorrect");
++	else
++		tst_resm(TPASS, "number of semaphore sets is correct");
++}
++
++static void func_sstat(int semidx)
++{
++	if (semidx >= 0)
++		tst_resm(TPASS, "id of the semaphore set is correct");
++	else
++		tst_resm(TFAIL, "id of the semaphore set is incorrect");
++}
++
+ void setup(void)
+ {
+
+-- 
+1.8.3
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and 
+their applications. This 200-page book is written by three acclaimed 
+leaders in the field. The early access version is available now. 
+Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
