@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Uflzx-0007iR-Ki
-	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 07:01:09 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uflzv-00044r-Py
-	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 07:01:09 +0000
-Message-ID: <519F0FF6.1000403@cn.fujitsu.com>
-Date: Fri, 24 May 2013 15:00:06 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ucd7L-0007AU-8A
+	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 14:55:47 +0000
+Date: Wed, 15 May 2013 16:56:52 +0200
+From: chrubis@suse.cz
+Message-ID: <20130515145652.GB25137@rei.suse.cz>
+References: <1368610801-25821-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130515123826.GA22782@rei> <51939CB6.3020808@oracle.com>
 MIME-Version: 1.0
-References: <1369364619-24704-1-git-send-email-shuang.qiu@oracle.com>
-In-Reply-To: <1369364619-24704-1-git-send-email-shuang.qiu@oracle.com>
-Subject: Re: [LTP] [PATCH] dup07:Close the file before unlink it.
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <51939CB6.3020808@oracle.com>
+Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,36 +25,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang.qiu@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 05/24/2013 11:03 AM, shuang.qiu@oracle.com wrote:
-> From: Shuang Qiu <shuang.qiu@oracle.com>
-> 
-> When unlink() a file in nfs environment,it will rename the file to a
-> .nfs<xxxxx> file if any process still has that file open.And this file
-> could not be deleted until it is closed.So we always get the following
-> warning which makes testcase "dup07" failed:
-> 0  TWARN  :  tst_rmdir: rmobj(/mnt/nfsv3/ltp-ZtzSE27611/dupKuEr3H)
-> failed:
-> unlink(/mnt/nfsv3/ltp-ZtzSE27611/dupKuEr3H/.nfs000000000110cb3800000066)
-> failed; errno=16: Device or resource busy
-> 
-> Close the created/dup file before unlink() it to fix this issue.
-> 
-> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+Hi!
+> > What is this fflush() for?
+> >
+> kernels 3.7 can crash while unmounting cgroups with xattr,
+> so just to make sure all buffered data written before it happens
 
-Applied, thank you.
+Ok, let's add simlilar comment to the code as well.
 
-Wanlong Gao
+And it would be better to call tst_flush() as you are using tst_resm()
+interface.
 
+> > This function is too ugly. You should rather do something like
+> > print_xattr() that would both preprare the string and call the
+> > tst_resm() so that you don't need to pass allocated buffers around.
+> >
+> > void print_xattr(const char *msg, const char *val, size_t size)
+> > {
+> > 	char buf[size + sybm_num + 1];
+> > 	...
+> >
+> > 	tst_resm(TINFO, "%s%s", msg, buf);
+> > }
+> >
+> > Or we can create a tst_xxx function to print a buffer of bytes, I guess
+> > that there are more cases where such function could be used. But that
+> > would require a little more work to desing the interface right.
+> >
+> I agree, let's do that
+
+Ok, lets address that in separate patch. I would go for simple function
+that would take prefix in printf() format and would dump the hex values
+after that. Something like tst_resm_buf(flags, buf, buf_len, fmt, ...)
+but perhaps we can come up with better name and/or API.
+
+I do not want to add custom printf() format strings on purpose, as that
+would:
+
+1) create confusion
+
+2) possibly break the checks on the format done by compiler
+
+Anybody else has better idea?
+
+> >> +static void fill_test_value(char *id, struct tst_val *val)
+> >> +{
+> >> +	int i;
+> >> +	for (i = 0; i<  VALUE_SIZE; ++i)
+> >> +		val->buf[i] = *id;
+> > What about using memset()?
+> Ok :) further may be remove this function completely and just use memset 
+> instead?
+
+Sounds good.
+
+> > What about just defining the id in the walk functions and incrementing
+> > it each time fill_test_value() was called?
+> >
+> The point is to make unique key's values among all hierarchies (there 
+> was a bug when files with the same name share the same struct)
+> Would it be better to use global id that is incrementing each time when 
+> fill_test_value() called,
+> and resetting to init value between set and get walk functions?
+
+Global id sounds better to me.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
