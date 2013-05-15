@@ -2,19 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UeRsm-0004uw-0N
-	for ltp-list@lists.sourceforge.net; Mon, 20 May 2013 15:20:16 +0000
-Date: Mon, 20 May 2013 17:21:24 +0200
-From: chrubis@suse.cz
-Message-ID: <20130520152124.GA21509@rei.suse.cz>
-References: <4e8cb837f8dd19db77ca70bd3b0094b060b0b0a0.1368780870.git.jstancek@redhat.com>
-	<f86dfe8123738c73c9dc2fd08309bfbe09e925e6.1368780870.git.jstancek@redhat.com>
-	<20130520144827.GB21016@rei.suse.cz>
-	<1279126164.4640384.1369062925009.JavaMail.root@redhat.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UcViJ-0000BG-LV
+	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 07:01:27 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UcViI-0001D7-Js
+	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 07:01:27 +0000
+Message-ID: <5193329C.4040205@cn.fujitsu.com>
+Date: Wed, 15 May 2013 15:00:44 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1279126164.4640384.1369062925009.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] waitid02: split code into separate testcases
+References: <45b6ebc4e0b5f2848c107c26ba144822bed090a1.1368434507.git.zliu@redhat.com>
+	<6e4f2cc0db6d6544478fe24fe00f04755b617119.1368434507.git.zliu@redhat.com>
+In-Reply-To: <6e4f2cc0db6d6544478fe24fe00f04755b617119.1368434507.git.zliu@redhat.com>
+Subject: Re: [LTP] [PATCH v2 2/3] mem: introduce clean_node() func
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,28 +29,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi! 
-> I recall that we talked about limitation of single checkpoint per test and
-> since there were 3 children it somehow got stuck in my head that I need pipes.
-> But as I split it into separate testcases that should no longer apply.
-> I'll look into converting it to use TST_CHECKPOINT().
+On 05/13/2013 04:43 PM, Zhouping Liu wrote:
+> There's set_node func introduced in commit cb2967b27a65, but we
+> don't have a func to clean the node mask yet.
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 
-There could be one instance of the checkpoint active at the time but
-that is only because the TST_CHECKPOINT_INIT() does not take the FIFO
-name as a parameter. The rest of the code does mostly what the pipe()
-does but includes the timeout detection and has more strict error
-condition checks.
 
-If you create one checkpoint at global setup, you can reuse it in the
-rest of the testcases given that WAIT and SIGNAL is called exacly once
-for each test and test are not executed in parallel.
+Applied, thank you.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
 AlienVault Unified Security Management (USM) platform delivers complete
