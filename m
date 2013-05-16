@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UbjDp-0005XY-IN
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 03:14:45 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UbjDo-0008Ix-4B
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 03:14:45 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4D3EVcI016609
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 May 2013 11:14:31 +0800
-Message-ID: <51905A0B.5020508@cn.fujitsu.com>
-Date: Mon, 13 May 2013 11:12:11 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ucv42-0007zo-NZ
+	for ltp-list@lists.sourceforge.net; Thu, 16 May 2013 10:05:34 +0000
+Date: Thu, 16 May 2013 12:06:41 +0200
+From: chrubis@suse.cz
+Message-ID: <20130516100641.GA31245@rei.Home>
+References: <1368610801-25821-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130515123826.GA22782@rei> <51939CB6.3020808@oracle.com>
+	<20130515145652.GB25137@rei.suse.cz> <5194838B.2060104@oracle.com>
+	<20130516083923.GA31149@rei> <5194A887.3010204@oracle.com>
 MIME-Version: 1.0
-References: <519052E3.9040801@cn.fujitsu.com>
-In-Reply-To: <519052E3.9040801@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 2/2]mount/mount03.c:  fix several issues
+Content-Disposition: inline
+In-Reply-To: <5194A887.3010204@oracle.com>
+Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,106 +27,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Make following fixes:
-1. In setup():
-      Create the file before calling stat(file).
-      Call get_current_dir_name() after tst_tmpdir().
-      Fix incorrect using of snprintf().
+Hi!
+> >> Since we're going to print buf in hex, may be we can use
+> >> tst_resm_hex(flags, buf, buf_len, fmt, ...) to make it more descriptive?
+> > Naming things right is hard. I agree that 'hex' should be part of the
+> > name but ideally something like 'dump' or 'buf' should be there as well
+> > at least in form of the first letter (to keep the name reasonably short).
+> >
+> > tst_resm_bhex() or tst_resm_dhex() ?
+> >
+> tst_resm_hexd()? to make name similar to hexdump and od utilities.
 
-2. For MS_NOEXEC test, change judgement method to
-      If errno is set to EACCES after execlp(exec-file), this case passes.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/mount/mount03.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index ea4b0e9..1dc39f2 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
-
- int test_rwflag(int i, int cnt)
- {
--	int fd, pid, status;
-+	int ret, fd, pid, status;
- 	char nobody_uid[] = "nobody";
- 	struct passwd *ltpuser;
-
-@@ -259,7 +259,9 @@ int test_rwflag(int i, int cnt)
- 			tst_resm(TWARN | TERRNO, "opening %s failed", file);
- 		} else {
- 			close(fd);
--			execlp(file, basename(file), NULL);
-+			ret = execlp(file, basename(file), NULL);
-+			if ((ret == -1) && (errno == EACCES))
-+				return 0;
- 		}
- 		return 1;
- 	case 3:
-@@ -410,6 +412,8 @@ int setup_uid()
-
- void setup()
- {
-+	int fd;
-+	char path[PATH_MAX];
- 	char *test_home;
- 	struct stat setuid_test_stat;
-
-@@ -421,12 +425,12 @@ void setup()
- 		tst_brkm(TBROK, NULL, "Test must be run as root");
- 	}
-
--	/* Test home directory */
--	test_home = get_current_dir_name();
--
- 	/* make a temp directory */
- 	tst_tmpdir();
-
-+	/* Test home directory */
-+	test_home = get_current_dir_name();
-+
- 	/* Unique mount point */
- 	(void)sprintf(mntpoint, "mnt_%d", getpid());
-
-@@ -442,7 +446,12 @@ void setup()
- 		tst_brkm(TBROK, cleanup, "chmod(%s, %#o) failed",
- 			 path_name, DIR_MODE);
-
--	snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
-+	snprintf(file, PATH_MAX, "%s/setuid_test", path_name);
-+	fd = open(file, O_CREAT | O_TRUNC);
-+	if (fd == -1)
-+		tst_brkm(TBROK, cleanup, "open file failed");
-+	close(fd);
-+
- 	if (stat(file, &setuid_test_stat) < 0) {
- 		tst_brkm(TBROK, cleanup, "stat for setuid_test failed");
- 	} else {
-@@ -460,8 +469,8 @@ void setup()
- 	/*
- 	 * under temporary directory
- 	 */
--	snprintf(path_name, PATH_MAX, "%s/%s/", path_name, mntpoint);
--
-+	strncpy(path, path_name, PATH_MAX);
-+	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
- 	strcpy(testhome_path, test_home);
- 	strcat(testhome_path, "/setuid_test");
+Sounds good.
 
 -- 
-1.8.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and 
-their applications. This 200-page book is written by three acclaimed 
-leaders in the field. The early access version is available now. 
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
