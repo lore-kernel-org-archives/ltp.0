@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UeyBy-0001HW-9s
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 01:50:14 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Ucobv-00057Z-1l
+	for ltp-list@lists.sourceforge.net; Thu, 16 May 2013 03:12:07 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UeyBw-0006cX-HA
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 01:50:14 +0000
-Message-ID: <519C23B6.1030000@cn.fujitsu.com>
-Date: Wed, 22 May 2013 09:47:34 +0800
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ucobt-0004Xk-9i
+	for ltp-list@lists.sourceforge.net; Thu, 16 May 2013 03:12:07 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4G3BvJi008514
+	for <ltp-list@lists.sourceforge.net>; Thu, 16 May 2013 11:11:58 +0800
+Message-ID: <51944DF0.3080506@cn.fujitsu.com>
+Date: Thu, 16 May 2013 11:09:36 +0800
 From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <519B35A9.8090300@cn.fujitsu.com>
-	<464527248.5091039.1369131720554.JavaMail.root@redhat.com>
-In-Reply-To: <464527248.5091039.1369131720554.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] semctl01.c: Pass the correct parameter
+References: <51944C16.5080607@cn.fujitsu.com>
+In-Reply-To: <51944C16.5080607@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2] shmat/shmat01.c: Test for specifying NULL to
+	shmaddr
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,43 +28,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-T24gMDUvMjEvMjAxMyAwNjoyMiBQTSwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4gCj4gCj4gCj4gCj4g
-LS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAiREFOIExJIiA8bGkuZGFuQGNu
-LmZ1aml0c3UuY29tPgo+PiBUbzogIkxUUCBsaXN0IiA8bHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Pgo+PiBTZW50OiBUdWVzZGF5LCAyMSBNYXksIDIwMTMgMTA6NTE6NTMgQU0KPj4gU3Vi
-amVjdDogW0xUUF0gIFtQQVRDSF0gc2VtY3RsMDEuYzogUGFzcyB0aGUgY29ycmVjdCBwYXJhbWV0
-ZXIKPj4KPj4KPj4gRm9yIFNFTV9TVEFULCB0aGUgc2VtaWQgYXJndW1lbnQgaXMgbm90IGEgc2Vt
-YXBob3JlIGlkZW50aWZpZXIsICBidXQgaW5zdGVhZAo+PiBhbgo+PiBpbmRleCBpbnRvIHRoZSBr
-ZXJuZWzigJlzIGludGVybmFsIGFycmF5IHRoYXQgbWFpbnRhaW5zIGluZm9ybWF0aW9uIGFib3V0
-IGFsbAo+PiBzZW1hcGhvcmUgc2V0cyBvbiB0aGUgc3lzdGVtLgo+Pgo+PiBQYXNzIGEgY29ycmVj
-dCBpbmRleCBvZiB0aGUga2VybmVsJyBpbnRlcm5hbCBhcnJheSBpbnRlYWQgb2YgYSBzZW1hcGhv
-cmVzIGlkCj4+IHdoZW4KPj4gdGVzdGluZyBmZWF0dXJlIFNFTV9TVEFULgo+Pgo+PiBTaWduZWQt
-b2ZmLWJ5OiBEQU4gTEkgPGxpLmRhbkBjbi5mdWppdHN1LmNvbT4KPj4gLS0tCj4gCj4gSGksCj4g
-Cj4gdGhhdCBiYWNrdXAvcmVzdG9yZSBvZiBnbG9iYWwgdmFyaWFibGUgaW4gc2V0dXAvY2xlYW51
-cCBmdW5jcwo+IGJldHdlZW4gdGVzdGNhc2VzIGxvb2tzIGEgYml0IG9kZCB0byBtZS4KPiAKPiBI
-b3cgYWJvdXQgYWRkaW5nIG5ldyBmaWVsZCB0byB0ZXN0X2Nhc2VfdD8KPiAKPiArc3RhdGljIGlu
-dCBzZW1faW5kZXggPSAwOwo+ICBzdGF0aWMgc3RydWN0IHRlc3RfY2FzZV90IHsKPiArICAgICAg
-IGludCAqc2VtaWQ7Cj4gLi4uCj4gLSAgICAgICAgICAgICAgICAgICAgICAgVEVTVChzZW1jdGwo
-c2VtX2lkXzEsIFRDW2ldLnNlbW51bSwgVENbaV0uY21kLAo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIFRFU1Qoc2VtY3RsKCooVENbaV0uc2VtaWQpLCBUQ1tpXS5zZW1udW0sIFRDW2ldLmNtZCwK
-PiAKPiBUaGVzZSB5b3UgY291bGQgaW5pdGlhbGlzZSBpbiBUQ1tdIGRlZmluaXRpb24gdG8gZWl0
-aGVyICZzZW1faWRfMSBvciAmc2VtX2luZGV4Cj4gYW5kIGF2b2lkIGFsbCB0aGF0IGJhY2t1cC9y
-ZXN0b3JlIG9mIHNlbV9pZF8xLgo+IAo+IFdoYXQgZG8geW91IHRoaW5rPwoKU291bmRzIGJldHRl
-ci47KQoKVGhhbmsgeW91IGZvciByZXZpZXdpbmcuCgpSZWdhcmRzLApEQU4gTEkKPiAKPiBSZWdh
-cmRzLAo+IEphbgo+IAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVHJ5IE5ldyBSZWxpYyBOb3cg
-JiBXZSdsbCBTZW5kIFlvdSB0aGlzIENvb2wgU2hpcnQKTmV3IFJlbGljIGlzIHRoZSBvbmx5IFNh
-YVMtYmFzZWQgYXBwbGljYXRpb24gcGVyZm9ybWFuY2UgbW9uaXRvcmluZyBzZXJ2aWNlIAp0aGF0
-IGRlbGl2ZXJzIHBvd2VyZnVsIGZ1bGwgc3RhY2sgYW5hbHl0aWNzLiBPcHRpbWl6ZSBhbmQgbW9u
-aXRvciB5b3VyCmJyb3dzZXIsIGFwcCwgJiBzZXJ2ZXJzIHdpdGgganVzdCBhIGZldyBsaW5lcyBv
-ZiBjb2RlLiBUcnkgTmV3IFJlbGljCmFuZCBnZXQgdGhpcyBhd2Vzb21lIE5lcmQgTGlmZSBzaGly
-dCEgaHR0cDovL3Auc2YubmV0L3NmdS9uZXdyZWxpY19kMmRfbWF5Cl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+
+Test for statement:
+"If shmaddr is NULL, the system chooses a suitable (unused) address
+at which to attach the segment."
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ipc/shmat/shmat01.c | 41 ++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 13 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+index 3461782..13c9b1b 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+@@ -46,7 +46,7 @@
+ #define CASE1		20
+
+ char *TCID = "shmat01";
+-int TST_TOTAL = 3;
++int TST_TOTAL = 4;
+
+ int shm_id_1 = -1;
+
+@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
+ {
+ 	int lc, i;
+ 	char *msg;
++	void *attchaddr;
+
+ 	msg = parse_opts(argc, argv, NULL, NULL);
+ 	if (msg != NULL)
+@@ -85,10 +86,10 @@ int main(int argc, char *argv[])
+
+ 			base_addr = probe_free_addr();
+
+-			addr = shmat(*(TC[i].shmid), base_addr + TC[i].offset,
+-				     TC[i].flags);
+-			TEST_ERRNO = errno;
++			attchaddr = (i ? base_addr + TC[i].offset : NULL);
++			addr = shmat(*(TC[i].shmid), attchaddr, TC[i].flags);
+
++			TEST_ERRNO = errno;
+ 			if (addr == (void *)-1) {
+ 				tst_brkm(TFAIL | TTERRNO, cleanup,
+ 					 "shmat call failed");
+@@ -148,11 +149,20 @@ static void check_functionality(int i)
+ 		 * If this fails the program will get a SIGSEGV, dump
+ 		 * core and exit.
+ 		 */
+-
+ 		*shared = CASE0;
+ 		break;
+ 	case 1:
+ 		/*
++		 * Check the functionality of the first call by simply
++		 * "writing" a value to the shared memory space.
++		 * If this fails the program will get a SIGSEGV, dump
++		 * core and exit.
++		 */
++
++		*shared = CASE0;
++		break;
++	case 2:
++		/*
+ 		 * Check the functionality of the second call by writing
+ 		 * a value to the shared memory space and then checking
+ 		 * that the original address given was rounded down as
+@@ -167,7 +177,7 @@ static void check_functionality(int i)
+ 			fail = 1;
+ 		}
+ 		break;
+-	case 2:
++	case 3:
+ 		/*
+ 		 * This time the shared memory is read only.  Read the value
+ 		 * and check that it is equal to the value set in case #2,
+@@ -195,20 +205,25 @@ void setup(void)
+ 	if (TC == NULL)
+ 		tst_brkm(TFAIL | TERRNO, cleanup, "failed to allocate memory");
+
+-	/* a straight forward read/write attach */
++	/* set NULL as attaching address*/
+ 	TC[0].shmid = &shm_id_1;
+ 	TC[0].offset = 0;
+ 	TC[0].flags = 0;
+
+-	/* an attach using unaligned memory */
++	/* a straight forward read/write attach */
+ 	TC[1].shmid = &shm_id_1;
+-	TC[1].offset = SHMLBA - 1;
+-	TC[1].flags = SHM_RND;
++	TC[1].offset = 0;
++	TC[1].flags = 0;
+
+-	/* a read only attach */
++	/* an attach using unaligned memory */
+ 	TC[2].shmid = &shm_id_1;
+-	TC[2].offset = 0;
+-	TC[2].flags = SHM_RDONLY;
++	TC[2].offset = SHMLBA - 1;
++	TC[2].flags = SHM_RND;
++
++	/* a read only attach */
++	TC[3].shmid = &shm_id_1;
++	TC[3].offset = 0;
++	TC[3].flags = SHM_RDONLY;
+
+ 	tst_tmpdir();
+
+-- 
+1.8.1
+
+
+
+
+------------------------------------------------------------------------------
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
