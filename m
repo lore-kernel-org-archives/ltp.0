@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1UfiHI-0005ix-4r
-	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 03:02:48 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UfiHG-0000Ev-Ux
-	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 03:02:48 +0000
-Message-ID: <519ED835.80100@oracle.com>
-Date: Fri, 24 May 2013 11:02:13 +0800
-From: Shuang Qiu <shuang.qiu@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UdEWe-0001f6-Mn
+	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 06:52:24 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UdEWd-0003l6-6z
+	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 06:52:24 +0000
+Date: Fri, 17 May 2013 02:52:14 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1972450536.3202700.1368773534954.JavaMail.root@redhat.com>
+In-Reply-To: <519596B0.2010807@cn.fujitsu.com>
+References: <519596B0.2010807@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1369292947-20445-1-git-send-email-shuang.qiu@oracle.com>
-	<818728049.6400472.1369296422448.JavaMail.root@redhat.com>
-In-Reply-To: <818728049.6400472.1369296422448.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] dup07:Close the file before unlink it.
+Subject: Re: [LTP] [PATCH] mem.c: check whether MADV_MERGEABLE is available
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,80 +24,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-T24gMDUvMjMvMjAxMyAwNDowNyBQTSwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4gLS0tLS0gT3JpZ2lu
-YWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAic2h1YW5nIHFpdSIgPHNodWFuZy5xaXVAb3JhY2xl
-LmNvbT4KPj4gVG86IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+PiBTZW50OiBUaHVy
-c2RheSwgMjMgTWF5LCAyMDEzIDk6MDk6MDcgQU0KPj4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBk
-dXAwNzpDbG9zZSB0aGUgZmlsZSBiZWZvcmUgdW5saW5rIGl0Lgo+Pgo+PiBGcm9tOiBTaHVhbmcg
-UWl1IDxzaHVhbmcucWl1QG9yYWNsZS5jb20+Cj4+Cj4+IFdoZW4gdW5saW5rKCkgYSBmaWxlIGlu
-IG5mcyBlbnZpcm9ubWVudCxpdCB3aWxsIHJlbmFtZSB0aGUgZmlsZSB0byBhCj4+IC5uZnM8eHh4
-eHg+IGZpbGUgaWYgYW55IHByb2Nlc3Mgc3RpbGwgaGFzIHRoYXQgZmlsZSBvcGVuLkFuZCB0aGlz
-IGZpbGUKPj4gY291bGQgbm90IGJlIGRlbGV0ZWQgdW50aWwgaXQgaXMgY2xvc2VkLlNvIHdlIGFs
-d2F5cyBnZXQgdGhlIGZvbGxvd2luZwo+PiB3YXJuaW5nIHdoaWNoIG1ha2VzIHRlc3RjYXNlICJk
-dXAwNyIgZmFpbGVkOgo+PiAwICBUV0FSTiAgOiAgdHN0X3JtZGlyOiBybW9iaigvbW50L25mc3Yz
-L2x0cC1adHpTRTI3NjExL2R1cEt1RXIzSCkKPj4gZmFpbGVkOgo+PiB1bmxpbmsoL21udC9uZnN2
-My9sdHAtWnR6U0UyNzYxMS9kdXBLdUVyM0gvLm5mczAwMDAwMDAwMDExMGNiMzgwMDAwMDA2NikK
-Pj4gZmFpbGVkOyBlcnJubz0xNjogRGV2aWNlIG9yIHJlc291cmNlIGJ1c3kKPj4KPj4gQ2xvc2Ug
-dGhlIGNyZWF0ZWQvZHVwIGZpbGUgYmVmb3JlIHVubGluaygpIGl0IHRvIGZpeCB0aGlzIGlzc3Vl
-Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNsZS5jb20+
-Cj4gSGksCj4KPiB0aGlzIGlzIGludHJvZHVjaW5nIHNvbWUgd2FybmluZ3M6Cj4gZHVwMDcuYzo1
-Mzogd2FybmluZzog4oCYZHVwcmRv4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhp
-cyBmdW5jdGlvbgo+IGR1cDA3LmM6NTM6IHdhcm5pbmc6IOKAmGR1cHdyb+KAmSBtYXkgYmUgdXNl
-ZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24KPiBkdXAwNy5jOjUzOiB3YXJuaW5nOiDi
-gJhkdXByZHdy4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgo+
-Cj4gUmF0aGVyIHRoYW4gaW5pdGlhbGl6aW5nIHRoZXNlIHRvIC0xLCBJJ2Qgc3VnZ2VzdCB0byBt
-b3ZlIHRob3NlIGNsb3NlKCkgY2FsbHMKPiB0byBlbHNlIGJyYW5jaGVzOgo+IEBAIC03Nyw3ICs3
-Nyw5IEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgdHN0X3Jlc20oVFBBU1MsCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiUGFzc2VkIGluIHJlYWQgbW9kZS4iKTsK
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBjbG9zZShkdXByZG8pOwo+ICAgICAgICAgICAgICAgICAgICAgICAgICB9
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgY2xvc2UocmRvcmV0KTsKPiAgICAgICAgICAgICAg
-ICAgIH0KQWdyZWUsd2lsbCB1cGRhdGUgdGhlIHBhdGNoLgoKVGhhbmtzClNodWFuZwo+IFJlZ2Fy
-ZHMsCj4gSmFuCj4KPj4gLS0tCj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9kdXAvZHVw
-MDcuYyB8ICAgMTIgKysrKysrKysrKysrCj4+ICAgMSBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRp
-b25zKCspLCAwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9kdXAvZHVwMDcuYwo+PiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZHVw
-L2R1cDA3LmMKPj4gaW5kZXggMDNiMGJhNC4uMTljZDc1MSAxMDA2NDQKPj4gLS0tIGEvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9kdXAvZHVwMDcuYwo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4+IEBAIC04MCw2ICs4MCwxMCBAQCBpbnQgbWFpbihpbnQg
-YWMsIGNoYXIgKiphdikKPj4gICAJCQl9Cj4+ICAgCQl9Cj4+ICAgCj4+ICsJCWlmIChkdXByZG8g
-IT0gLTEpCj4+ICsJCQljbG9zZShkdXByZG8pOwo+PiArCQlpZiAocmRvcmV0ICE9IC0xKQo+PiAr
-CQkJY2xvc2UocmRvcmV0KTsKPj4gICAJCXVubGluayh0ZXN0ZmlsZSk7Cj4+ICAgCQkKPj4gICAJ
-CWlmICgod3JvcmV0ID0gY3JlYXQodGVzdGZpbGUsIDAyMjIpKSA9PSAtMSkgewo+PiBAQCAtMTAw
-LDYgKzEwNCwxMCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPj4gICAJCQl9Cj4+ICAg
-CQl9Cj4+ICAgCj4+ICsJCWlmIChkdXB3cm8gIT0gLTEpCj4+ICsJCQljbG9zZShkdXB3cm8pOwo+
-PiArCQlpZiAod3JvcmV0ICE9IC0xKQo+PiArCQkJY2xvc2Uod3JvcmV0KTsKPj4gICAJCXVubGlu
-ayh0ZXN0ZmlsZSk7Cj4+ICAgCj4+ICAgCQlpZiAoKHJkd3JldCA9IGNyZWF0KHRlc3RmaWxlLCAw
-NjY2KSkgPT0gLTEpIHsKPj4gQEAgLTEyMCw2ICsxMjgsMTAgQEAgaW50IG1haW4oaW50IGFjLCBj
-aGFyICoqYXYpCj4+ICAgCQkJfQo+PiAgIAkJfQo+PiAgIAkJCj4+ICsJCWlmIChkdXByZHdyICE9
-IC0xKQo+PiArCQkJY2xvc2UoZHVwcmR3cik7Cj4+ICsJCWlmIChyZHdyZXQgIT0gLTEpCj4+ICsJ
-CQljbG9zZShyZHdyZXQpOwo+PiAgIAkJdW5saW5rKHRlc3RmaWxlKTsKPj4gICAJfQo+PiAgIAo+
-PiAtLQo+PiAxLjcuNwo+Pgo+Pgo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gVHJ5IE5ldyBS
-ZWxpYyBOb3cgJiBXZSdsbCBTZW5kIFlvdSB0aGlzIENvb2wgU2hpcnQKPj4gTmV3IFJlbGljIGlz
-IHRoZSBvbmx5IFNhYVMtYmFzZWQgYXBwbGljYXRpb24gcGVyZm9ybWFuY2UgbW9uaXRvcmluZyBz
-ZXJ2aWNlCj4+IHRoYXQgZGVsaXZlcnMgcG93ZXJmdWwgZnVsbCBzdGFjayBhbmFseXRpY3MuIE9w
-dGltaXplIGFuZCBtb25pdG9yIHlvdXIKPj4gYnJvd3NlciwgYXBwLCAmIHNlcnZlcnMgd2l0aCBq
-dXN0IGEgZmV3IGxpbmVzIG9mIGNvZGUuIFRyeSBOZXcgUmVsaWMKPj4gYW5kIGdldCB0aGlzIGF3
-ZXNvbWUgTmVyZCBMaWZlIHNoaXJ0ISBodHRwOi8vcC5zZi5uZXQvc2Z1L25ld3JlbGljX2QyZF9t
-YXkKPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4g
-THRwLWxpc3QgbWFpbGluZyBsaXN0Cj4+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+
-PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+
-PgoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVHJ5IE5ldyBSZWxpYyBOb3cgJiBXZSdsbCBTZW5k
-IFlvdSB0aGlzIENvb2wgU2hpcnQKTmV3IFJlbGljIGlzIHRoZSBvbmx5IFNhYVMtYmFzZWQgYXBw
-bGljYXRpb24gcGVyZm9ybWFuY2UgbW9uaXRvcmluZyBzZXJ2aWNlIAp0aGF0IGRlbGl2ZXJzIHBv
-d2VyZnVsIGZ1bGwgc3RhY2sgYW5hbHl0aWNzLiBPcHRpbWl6ZSBhbmQgbW9uaXRvciB5b3VyCmJy
-b3dzZXIsIGFwcCwgJiBzZXJ2ZXJzIHdpdGgganVzdCBhIGZldyBsaW5lcyBvZiBjb2RlLiBUcnkg
-TmV3IFJlbGljCmFuZCBnZXQgdGhpcyBhd2Vzb21lIE5lcmQgTGlmZSBzaGlydCEgaHR0cDovL3Au
-c2YubmV0L3NmdS9uZXdyZWxpY19kMmRfbWF5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+
+
+----- Original Message -----
+> From: "DAN LI" <li.dan@cn.fujitsu.com>
+> To: "LTP list" <ltp-list@lists.sourceforge.net>
+> Sent: Friday, 17 May, 2013 4:32:16 AM
+> Subject: [LTP]  [PATCH] mem.c: check whether MADV_MERGEABLE is available
+> 
+> Before using MADV_MERGEABLE, check whether it's available by macro
+> HAVE_MADV_MERGEABLE.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+
+Small and straightforward change.
+
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+
+> ---
+>  testcases/kernel/mem/lib/mem.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 7cda3c5..9bc926e 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -494,8 +494,10 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+>  			    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
+>  		if (memory[i] == MAP_FAILED)
+>  			tst_brkm(TBROK|TERRNO, tst_exit, "mmap");
+> +#ifdef HAVE_MADV_MERGEABLE
+>  		if (madvise(memory[i], length, MADV_MERGEABLE) == -1)
+>  			tst_brkm(TBROK|TERRNO, tst_exit, "madvise");
+> +#endif
+> 
+>  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+>  	&& HAVE_MPOL_CONSTANTS
+> --
+> 1.7.11.rc0
+> 
+> ------------------------------------------------------------------------------
+> AlienVault Unified Security Management (USM) platform delivers complete
+> security visibility with the essential security capabilities. Easily and
+> efficiently configure, manage, and operate all of your security controls
+> from a single console and one unified framework. Download a free trial.
+> http://p.sf.net/sfu/alienvault_d2d
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+------------------------------------------------------------------------------
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
