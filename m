@@ -1,31 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1Ugqx8-00084j-6r
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 06:30:42 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ugqx6-0003v1-Bz
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 06:30:42 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r4R6UXwf015384
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 06:30:34 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r4R6UWw7024169
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 06:30:33 GMT
-Received: from abhmt116.oracle.com (abhmt116.oracle.com [141.146.116.68])
-	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r4R6UWPo006136
-	for <ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 06:30:32 GMT
-From: shuang.qiu@oracle.com
-Date: Mon, 27 May 2013 14:29:42 +0800
-Message-Id: <1369636182-4730-1-git-send-email-shuang.qiu@oracle.com>
-Subject: [LTP]  [PATCH] Unmap the mapped address region
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vlee@freedesktop.org>) id 1UdPpl-0005qe-5O
+	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 18:56:53 +0000
+Received: from gabe.freedesktop.org ([131.252.210.177])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UdPpj-0007b9-RZ
+	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 18:56:53 +0000
+From: Vinson Lee <vlee@freedesktop.org>
+Date: Fri, 17 May 2013 11:56:46 -0700
+Message-Id: <1368817006-7581-1-git-send-email-vlee@freedesktop.org>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] mount/mount03.c: Add mode argument to open call.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,54 +22,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
-
-It does not unmap the mapped address region,so we sometimes still get
-such
-warning when cleanup with nfs as TMPDIR although the file descriptor is
-closed:
-0  TWARN  :  tst_rmdir: rmobj(/mnt/nfsv3/ltp-MOeIFH7102/vma4FwRqb)
-failed:
-unlink(/mnt/nfsv3/ltp-MOeIFH7102/vma4FwRqb/.nfs000000000110cb3600000001)
-failed; errno=16: Device or resource busy
-
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- testcases/kernel/mem/vma/vma03.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
-index 54f605a..6af9960 100644
---- a/testcases/kernel/mem/vma/vma03.c
-+++ b/testcases/kernel/mem/vma/vma03.c
-@@ -101,8 +101,10 @@ int main(int argc, char *argv[])
- 				tst_resm(TPASS, "mremap failed as expected.");
- 			else
- 				tst_resm(TFAIL | TERRNO, "mremap");
-+			munmap(map, pgsz);
- 		} else {
- 			tst_resm(TFAIL, "mremap succeeded unexpectedly.");
-+			munmap(remap, 2 * pgsz);
- 		}
- 
- 		close(fd);
--- 
-1.7.7
-
-
-------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+RnJvbTogVmluc29uIExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KClRoaXMgcGF0Y2ggZml4ZXMgdGhp
+cyBidWlsZCBlcnJvciBvbiBVYnVudHUgaW50cm9kdWNlZCB3aXRoIGNvbW1pdAoyNDMyNGFkNWRh
+ZTcxMTcyMTI1MDYwYjgyNTgwNDg2YjBmM2QzN2RhLgoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC91
+c3IvaW5jbHVkZS9mY250bC5oOjI1MjowLAogICAgICAgICAgICAgICAgIGZyb20gbW91bnQwMy5j
+OjczOgpJbiBmdW5jdGlvbiDigJhvcGVu4oCZLAogICAgaW5saW5lZCBmcm9tIOKAmHNldHVw4oCZ
+IGF0IG1vdW50MDMuYzo0NDc6NToKL3Vzci9pbmNsdWRlL3g4Nl82NC1saW51eC1nbnUvYml0cy9m
+Y250bDIuaDo1MToyNDogZXJyb3I6IGNhbGwgdG8g4oCYX19vcGVuX21pc3NpbmdfbW9kZeKAmSBk
+ZWNsYXJlZCB3aXRoIGF0dHJpYnV0ZSBlcnJvcjogb3BlbiB3aXRoIE9fQ1JFQVQgaW4gc2Vjb25k
+IGFyZ3VtZW50IG5lZWRzIDMgYXJndW1lbnRzCgpTaWduZWQtb2ZmLWJ5OiBWaW5zb24gTGVlIDx2
+bGVlQHR3aXR0ZXIuY29tPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW91bnQvbW91
+bnQwMy5jIHwgICAgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
+aW9uKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tb3VudC9tb3Vu
+dDAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21vdW50L21vdW50MDMuYwppbmRleCAy
+OTViNmRhLi5iMWFhNzFmIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21v
+dW50L21vdW50MDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21vdW50L21vdW50
+MDMuYwpAQCAtNDQ0LDcgKzQ0NCw3IEBAIHZvaWQgc2V0dXAoKQogCQkJIHBhdGhfbmFtZSwgRElS
+X01PREUpOwogCiAJc25wcmludGYoZmlsZSwgUEFUSF9NQVgsICIlcy9zZXR1aWRfdGVzdCIsIHBh
+dGhfbmFtZSk7Ci0JZmQgPSBvcGVuKGZpbGUsIE9fQ1JFQVQgfCBPX1RSVU5DKTsKKwlmZCA9IG9w
+ZW4oZmlsZSwgT19DUkVBVCB8IE9fVFJVTkMsIFNfSVJXWFUpOwogCWlmIChmZCA9PSAtMSkKIAkJ
+dHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJvcGVuIGZpbGUgZmFpbGVkIik7CiAJY2xvc2UoZmQp
+OwotLSAKMS43LjkuNQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbGllblZhdWx0IFVuaWZpZWQg
+U2VjdXJpdHkgTWFuYWdlbWVudCAoVVNNKSBwbGF0Zm9ybSBkZWxpdmVycyBjb21wbGV0ZQpzZWN1
+cml0eSB2aXNpYmlsaXR5IHdpdGggdGhlIGVzc2VudGlhbCBzZWN1cml0eSBjYXBhYmlsaXRpZXMu
+IEVhc2lseSBhbmQKZWZmaWNpZW50bHkgY29uZmlndXJlLCBtYW5hZ2UsIGFuZCBvcGVyYXRlIGFs
+bCBvZiB5b3VyIHNlY3VyaXR5IGNvbnRyb2xzCmZyb20gYSBzaW5nbGUgY29uc29sZSBhbmQgb25l
+IHVuaWZpZWQgZnJhbWV3b3JrLiBEb3dubG9hZCBhIGZyZWUgdHJpYWwuCmh0dHA6Ly9wLnNmLm5l
+dC9zZnUvYWxpZW52YXVsdF9kMmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAt
+bGlzdAo=
