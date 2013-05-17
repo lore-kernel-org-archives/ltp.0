@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UbrZd-0002XC-Th
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 12:09:49 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UbrZc-00010s-0T
-	for ltp-list@lists.sourceforge.net; Mon, 13 May 2013 12:09:49 +0000
-Date: Mon, 13 May 2013 08:09:41 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1761588100.736663.1368446981907.JavaMail.root@redhat.com>
-In-Reply-To: <1763657579.728071.1368446381686.JavaMail.root@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UdF2M-0005ZG-KR
+	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 07:25:10 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UdF27-0000jL-9b
+	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 07:25:10 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4H7OmuN016347
+	for <ltp-list@lists.sourceforge.net>; Fri, 17 May 2013 15:24:48 +0800
+Message-ID: <5195DB16.6050202@cn.fujitsu.com>
+Date: Fri, 17 May 2013 15:24:06 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] Coverity report for ltp-20130503
+References: <51944C16.5080607@cn.fujitsu.com> <5195C294.2040809@cn.fujitsu.com>
+In-Reply-To: <5195C294.2040809@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V2 2/2] shmat/shmat01.c: Test for specifying NULL
+ to shmaddr
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,32 +32,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi,
+On 05/17/2013 01:39 PM, DAN LI wrote:
+> Test for statement:
+> "If shmaddr is NULL, the system chooses a suitable (unused) address
+> at which to attach the segment."
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-What is Coverity?
-Coverity Prevent is commercial enterprise level tool for static analysis
-(analysis based only on compiling of sources, not based on running of binary)
-of the C/C++ and Java code.
+Applied, thank you.
 
-analyzer: coverity
-analyzer-args: --wait-for-license -co BAD_FREE:allow_first_field:true
-analyzer-version: Coverity Static Analysis for C/C++ version 6.5.2 on Linux 2.6.32-279.el6.x86_64 x86_64
+Wanlong Gao
 
-This run includes snapshot of LTP git tree from 20130503 (on top of RHEL6.4).
-Results include also Open Posix testcases and use default coverity flags:
-http://jan.stancek.eu/coverity/ltp-20130503-1.el6.err.xz
-
-Regards,
-Jan
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and 
-their applications. This 200-page book is written by three acclaimed 
-leaders in the field. The early access version is available now. 
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
