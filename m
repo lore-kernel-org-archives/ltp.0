@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <riku.voipio@linaro.org>) id 1UZLNo-0007WL-GG
-	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 13:23:12 +0000
-Received: from afflict.kos.to ([92.243.29.197])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UZLNn-00081u-Op
-	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 13:23:12 +0000
-From: riku.voipio@linaro.org
-Date: Mon,  6 May 2013 16:23:01 +0300
-Message-Id: <1367846581-18599-5-git-send-email-riku.voipio@linaro.org>
-Subject: [LTP] [PATCH 4/4] set 16kb incrediment for Aarch64
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UeSD1-0000Jd-AZ
+	for ltp-list@lists.sourceforge.net; Mon, 20 May 2013 15:41:11 +0000
+Date: Mon, 20 May 2013 17:42:15 +0200
+From: chrubis@suse.cz
+Message-ID: <20130520154215.GB21671@rei.suse.cz>
+References: <4e8cb837f8dd19db77ca70bd3b0094b060b0b0a0.1368780870.git.jstancek@redhat.com>
+	<f86dfe8123738c73c9dc2fd08309bfbe09e925e6.1368780870.git.jstancek@redhat.com>
+	<20130520144827.GB21016@rei.suse.cz>
+	<1279126164.4640384.1369062925009.JavaMail.root@redhat.com>
+	<20130520152124.GA21509@rei.suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20130520152124.GA21509@rei.suse.cz>
+Subject: Re: [LTP] [PATCH 2/2] waitid02: split code into separate testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,52 +25,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Riku Voipio <riku.voipio@linaro.org>
+Hi!
+> There could be one instance of the checkpoint active at the time but
+> that is only because the TST_CHECKPOINT_INIT() does not take the FIFO
+> name as a parameter. The rest of the code does mostly what the pipe()
+> does but includes the timeout detection and has more strict error
+> condition checks.
+> 
+> If you create one checkpoint at global setup, you can reuse it in the
+> rest of the testcases given that WAIT and SIGNAL is called exacly once
+> for each test and test are not executed in parallel.
 
+And I forgett to add, if the interface does not work for you, feel free
+to propose changes (there is not much of tests that use this interface
+yet so it is realtively easy to modify the API and fix the few usages).
 
-Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
----
- testcases/kernel/mem/shmt/shmt09.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/mem/shmt/shmt09.c b/testcases/kernel/mem/shmt/shmt09.c
-index 5e7e52e..8f8c3c7 100644
---- a/testcases/kernel/mem/shmt/shmt09.c
-+++ b/testcases/kernel/mem/shmt/shmt09.c
-@@ -61,7 +61,7 @@ int TST_TOTAL = 4;		/* Total number of test cases. */
- #define INCREMENT 		8388608	/* 8Mb */
- #elif defined (__mips__)  ||  defined (__hppa__) || defined (__sparc__)
- #define INCREMENT		262144	/* 256Kb */
--#elif defined __sh__ || defined (__arm__)
-+#elif defined __sh__ || defined (__arm__) || defined(__aarch64__)
- #define INCREMENT 		16384	/* 16kb */
- #else
- #define INCREMENT 		SHMLBA
-@@ -162,7 +162,7 @@ int main()
- 	tst_resm(TPASS, "sbrk, shmat");
- 
- /*--------------------------------------------------------*/
--#if defined (__ia64__) || defined(__mips__) || defined(__hppa__) || defined(__arm__)
-+#if defined (__ia64__) || defined(__mips__) || defined(__hppa__) || defined(__arm__) || defined(__aarch64__)
- 	while ((vp = sbrk(INCREMENT)) != (void *)-1) ;
- 	if (errno != ENOMEM) {
- 		tst_resm(TFAIL, "Error: sbrk failed, errno = %d\n", errno);
 -- 
-1.7.10.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
-Get 100% visibility into your production application - at no cost.
-Code-level diagnostics for performance bottlenecks with <2% overhead
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap1
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
