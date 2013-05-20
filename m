@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UedXE-00034o-2J
-	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 03:46:48 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UedXC-0007VO-Nw
-	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 03:46:48 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4L3kYKl006287
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 May 2013 11:46:35 +0800
-Message-ID: <519AEDEB.9090109@cn.fujitsu.com>
-Date: Tue, 21 May 2013 11:45:47 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UeONl-0000le-E4
+	for ltp-list@lists.sourceforge.net; Mon, 20 May 2013 11:36:01 +0000
+Date: Mon, 20 May 2013 13:37:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20130520113704.GA19493@rei>
+References: <001701ce5200$6bdfcdb0$439f6910$@lge.com>
+	<6A7E2981-DEB3-4402-B0C8-7AE7FCD85236@gmail.com>
 MIME-Version: 1.0
-References: <519477E5.4030807@cn.fujitsu.com>
-In-Reply-To: <519477E5.4030807@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] prot_hsymlinks.c: remove the unnecessary calling
- of cleanup
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <6A7E2981-DEB3-4402-B0C8-7AE7FCD85236@gmail.com>
+Subject: Re: [LTP] Regarding LTP contribution
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,25 +25,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Jungsoo Son <jungsoo.son@lge.com>
 
-On 05/16/2013 02:08 PM, DAN LI wrote:
-> Should not call cleanup here since nothing was setted by setup.
+Hi!
+> > My name is jungsoo son who is in charge of kernel development on my company.
+> > I want to send my patch to upstream of Linux Test Project.
+> > Could you give me some information about how to push git commit ?
 > 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> Hi jungsoo son!
+>     I recommend following up on ltp-list requesting these details. Also, these details should be updated in any documentation attached to the project (I think there's some IIRC).
 
-Applied, thank you.
+There is quick howto at the end of doc/style-guide.txt but it's far from
+complete (I really should get some time to review and update the docs).
 
-Wanlong Gao
+Generally if you want to contribute to LTP send your patch to the LTP
+malinling list for review. It will be pushed to LTP git once it passes
+the review phase by one of our developers.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+AlienVault Unified Security Management (USM) platform delivers complete
+security visibility with the essential security capabilities. Easily and
+efficiently configure, manage, and operate all of your security controls
+from a single console and one unified framework. Download a free trial.
+http://p.sf.net/sfu/alienvault_d2d
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
