@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UcrPJ-00073h-U4
-	for ltp-list@lists.sourceforge.net; Thu, 16 May 2013 06:11:18 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UcrPF-0005fM-S8
-	for ltp-list@lists.sourceforge.net; Thu, 16 May 2013 06:11:17 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4G6AxJn018878
-	for <ltp-list@lists.sourceforge.net>; Thu, 16 May 2013 14:11:00 +0800
-Message-ID: <519477E5.4030807@cn.fujitsu.com>
-Date: Thu, 16 May 2013 14:08:37 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UeRMv-0005X4-SK
+	for ltp-list@lists.sourceforge.net; Mon, 20 May 2013 14:47:21 +0000
+Date: Mon, 20 May 2013 16:48:27 +0200
+From: chrubis@suse.cz
+Message-ID: <20130520144827.GB21016@rei.suse.cz>
+References: <4e8cb837f8dd19db77ca70bd3b0094b060b0b0a0.1368780870.git.jstancek@redhat.com>
+	<f86dfe8123738c73c9dc2fd08309bfbe09e925e6.1368780870.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] prot_hsymlinks.c: remove the unnecessary calling of
- cleanup
+Content-Disposition: inline
+In-Reply-To: <f86dfe8123738c73c9dc2fd08309bfbe09e925e6.1368780870.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] waitid02: split code into separate testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,37 +25,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> +static void waiting_child(struct testcase_t *t)
+> +{
+> +	int dummy;
+> +	read(t->pipefd[0], &dummy, 1);
+> +}
+> +
+> +static void stopped_child(struct testcase_t *t)
+> +{
+> +	int dummy;
+> +	kill(getpid(), SIGSTOP);
+> +	read(t->pipefd[0], &dummy, 1);
+> +}
+> +
+> +static void setup2(struct testcase_t *t)
+> +{
+> +	if (pipe(t->pipefd) == -1)
+> +		tst_brkm(TBROK|TERRNO, cleanup, "pipe");
+> +	makechild(t, waiting_child);
 
-Should not call cleanup here since nothing was setted by setup.
+I wonder if it would be better to use the TST_CHECKPOINT() interface
+that I have written to address synchronization issues.
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Have you used pipes because you wanted to avoid tst_tmpdir() and the
+FIFO that the code uses? Unfortunately the checkpoint interface must use
+fifo instead of pipes to be usable for cases where the file descriptors
+cannot be propagated to child because it does exec() right after
+fork()... If that is the issue, I can rewrite the checkpoint interface
+in a way that would allow either pipe or fifo depending on
+initialization parameters.
 
-diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-index 1eec0f9..82bc770 100644
---- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-+++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-@@ -196,10 +196,9 @@ static void setup(int argc, char *argv[])
-
- 	tst_require_root(NULL);
-
--	if (tst_kvercmp(3, 7, 0) < 0) {
--		tst_brkm(TCONF, cleanup,
-+	if (tst_kvercmp(3, 7, 0) < 0)
-+		tst_brkm(TCONF, NULL,
- 			"Test must be run with kernel 3.7 or newer");
--	}
-
- 	/* initialize user names */
- 	strcpy(users[ROOT].name, "root");
 -- 
-1.7.11.rc0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 AlienVault Unified Security Management (USM) platform delivers complete
