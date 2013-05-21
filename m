@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <riku.voipio@linaro.org>) id 1UYGXT-0000mp-9i
-	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:43 +0000
-Received: from afflict.kos.to ([92.243.29.197])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UYGXR-0002yA-71
-	for ltp-list@lists.sourceforge.net; Fri, 03 May 2013 14:00:43 +0000
-From: riku.voipio@linaro.org
-Date: Fri,  3 May 2013 16:45:14 +0300
-Message-Id: <1367588717-18162-1-git-send-email-riku.voipio@linaro.org>
-Subject: [LTP] [PATCH 0/3] Add Aarch64 support to ltp
+	(envelope-from <metan@suse.de>) id 1Uejrl-0005Zl-4f
+	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 10:32:25 +0000
+Date: Tue, 21 May 2013 12:33:19 +0200
+From: chrubis@suse.cz
+Message-ID: <20130521103319.GA28186@rei>
+References: <006901ce5601$42cc89e0$c8659da0$@lge.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <006901ce5601$42cc89e0$c8659da0$@lge.com>
+Subject: Re: [LTP] [PATCH] Makefile: Disable parallel build for
+ $(CRITICAL_MAKEFILES)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,40 +22,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jungsoo Son <jungsoo.son@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Riku Voipio <riku.voipio@linaro.org>
+Hi!
+> This patch fixes parallel build error. When use parallel build
+> 
+> with -j16 or -j8, $(CRITICAL_MAKEFILES) are created as empty file
+> 
+> because generate-makefiles is called several times. So need to
+> 
+> disable parallel build.
+> 
+> The following code can guarantee sequencial building.
+> 
+> .NOTPARALLEL: $(CRITICAL_MAKEFILES)
 
-Hi,
-
-The following patches add support for Aarch64 in LTP. 
-
-Riku Voipio (3):
-  Add aarch64 support
-  Set invalid syscall as -1 instead of 0
-  set 16kb incrediment for Aarch64
-
- testcases/kernel/include/aarch64.in |  257 +++++++++++++++++++++++++++++++++++
- testcases/kernel/include/order      |    1 +
- testcases/kernel/include/regen.sh   |    5 +-
- testcases/kernel/mem/shmt/shmt09.c  |    4 +-
- 4 files changed, 263 insertions(+), 4 deletions(-)
- create mode 100644 testcases/kernel/include/aarch64.in
+The problem is that Open Posix Testsuite should stuck with POSIX make.
+At least we promise that we will not break it actively. Now the 2008
+POSIX make still does not support the idea of parallel build. I will
+have a look what will other than GNU make implementations do with such
+rule. If it would be ignored then we are fine adding it, if not we will
+have to figure out how to detect GNU make and add the line accordingly.
 
 -- 
-1.7.10.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite
-It's a free troubleshooting tool designed for production
-Get down to code-level detail for bottlenecks, with <2% overhead.
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap2
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
