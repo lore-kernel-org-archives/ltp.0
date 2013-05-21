@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Uf4rC-0001n7-1V
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 08:57:14 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uf4r7-0005dY-TW
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 08:57:13 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4M8v0Rb010354
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 May 2013 16:57:00 +0800
-Message-ID: <519C882B.40100@cn.fujitsu.com>
-Date: Wed, 22 May 2013 16:56:11 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uelyt-0007BJ-RO
+	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 12:47:55 +0000
+Date: Tue, 21 May 2013 14:49:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20130521124905.GC28186@rei>
+References: <1369066734-17683-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-References: <519C24C9.9070807@cn.fujitsu.com>
-In-Reply-To: <519C24C9.9070807@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2] semctl01.c: Pass the correct parameter
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1369066734-17683-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] Create a function tst_resm_hexd to print a buffer
+ in hex
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,27 +22,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-T24gMDUvMjIvMjAxMyAwOTo1MiBBTSwgREFOIExJIHdyb3RlOgo+IEZvciBTRU1fU1RBVCwgdGhl
-IHNlbWlkIGFyZ3VtZW50IGlzIG5vdCBhIHNlbWFwaG9yZSBpZGVudGlmaWVyLCAgYnV0IGluc3Rl
-YWQgYW4KPiBpbmRleCBpbnRvIHRoZSBrZXJuZWzigJlzIGludGVybmFsIGFycmF5IHRoYXQgbWFp
-bnRhaW5zIGluZm9ybWF0aW9uIGFib3V0IGFsbAo+IHNlbWFwaG9yZSBzZXRzIG9uIHRoZSBzeXN0
-ZW0uCj4gCj4gUGFzcyBhIGNvcnJlY3QgaW5kZXggb2YgdGhlIGtlcm5lbCcgaW50ZXJuYWwgYXJy
-YXkgaW50ZWFkIG9mIGEgc2VtYXBob3JlcyBpZCB3aGVuCj4gdGVzdGluZyBmZWF0dXJlIFNFTV9T
-VEFULgo+IAo+IFNpZ25lZC1vZmYtYnk6IERBTiBMSSA8bGkuZGFuQGNuLmZ1aml0c3UuY29tPgoK
-QXBwbGllZCwgdGhhbmsgeW91LgoKV2FubG9uZyBHYW8KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-VHJ5IE5ldyBSZWxpYyBOb3cgJiBXZSdsbCBTZW5kIFlvdSB0aGlzIENvb2wgU2hpcnQKTmV3IFJl
-bGljIGlzIHRoZSBvbmx5IFNhYVMtYmFzZWQgYXBwbGljYXRpb24gcGVyZm9ybWFuY2UgbW9uaXRv
-cmluZyBzZXJ2aWNlIAp0aGF0IGRlbGl2ZXJzIHBvd2VyZnVsIGZ1bGwgc3RhY2sgYW5hbHl0aWNz
-LiBPcHRpbWl6ZSBhbmQgbW9uaXRvciB5b3VyCmJyb3dzZXIsIGFwcCwgJiBzZXJ2ZXJzIHdpdGgg
-anVzdCBhIGZldyBsaW5lcyBvZiBjb2RlLiBUcnkgTmV3IFJlbGljCmFuZCBnZXQgdGhpcyBhd2Vz
-b21lIE5lcmQgTGlmZSBzaGlydCEgaHR0cDovL3Auc2YubmV0L3NmdS9uZXdyZWxpY19kMmRfbWF5
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0
-IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+A little more detailed description of the new function here please.
+
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+> @@ -40,6 +40,7 @@
+>   *    FUNCTION NAME     :
+>   *      tst_res() -       Print result message (include file contents)
+>   *      tst_resm() -      Print result message
+> + *      tst_resm_hexd() - Print result message (add buffer contents in hex)
+>   *      tst_brk() -       Print result message (include file contents)
+>   *                        and break remaining test cases
+>   *      tst_brkm() -      Print result message and break remaining test
+> @@ -62,6 +63,12 @@
+>   *      int  ttype;
+>   *      char *tmesg;
+>   *
+> + *      void tst_resm_hexd(ttype, buf, size, tmesg [,arg]...)
+> + *      int  ttype;
+> + *      const void *buf;
+> + *      size_t size;
+> + *      char *tmesg;
+
+This part of the comment is IMHO useless as nobody will read the C code
+when looking for documentation and evenmore this does not add more
+information than the prototype in header. (I made a note to clean these
+up later).
+
+>   *      void tst_brk(ttype, fname, cleanup, tmesg, [,argv]...)
+>   *      int  ttype;
+>   *      char *fname;
+> @@ -675,6 +682,47 @@ void tst_resm(int ttype, char *arg_fmt, ...)
+>  }
+>  
+>  /*
+> + * tst_resm_hexd() - Interface to tst_res(), with no filename.
+> + * Also, dump specified buffer in hex.
+> + */
+> +void tst_resm_hexd(int ttype, const void *buf, size_t size, char *arg_fmt, ...)
+> +{
+> +	char tmesg[USERMESG];
+> +
+> +#if DEBUG
+> +	printf("IN tst_resm_hexd\n");
+> +	fflush(stdout);
+> +#endif
+> +
+> +	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
+> +
+> +	static const char msg_end[] = " ...";
+> +	static const size_t symb_num = 3; /* space + xx */
+> +	size_t end_num = strlen(msg_end);
+
+I think that todays compilers can avoid the call to strlen() on static
+string but I would either hardcode the size of the string below or even
+better use sizeof() which returns strlen() + 1 in this case.
+
+> +	size_t offset = strlen(tmesg);
+> +	int size_changed = 0;
+> +
+> +	if ((offset + symb_num * size + 1) >= USERMESG) {
+> +		size = (USERMESG - offset) / symb_num - end_num - 1;
+
+(USERMESG - offset - sizeof(msg_end)) / symb_num ?
+
+> +		size_changed = 1;
+> +	}
+> +
+> +	char *pmesg = tmesg + offset;
+> +
+> +	size_t i;
+> +	for (i = 0; i < size; ++i) {
+> +		sprintf(pmesg, " %02x", ((unsigned char *)buf)[i]);
+> +		pmesg += symb_num;
+> +	}
+> +
+> +	if (size_changed)
+> +		strcat(pmesg, msg_end);
+
+Shouldn't strcpy() suffice here?
+
+> +	tst_res(ttype, NULL, "%s", tmesg);
+> +}
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
