@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UhdcF-0006rc-Rl
-	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 10:28:23 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UeiL5-0002w3-Br
+	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 08:54:35 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UhdcE-0004Fj-7s
-	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 10:28:23 +0000
-Message-ID: <51A5D7A9.3070801@cn.fujitsu.com>
-Date: Wed, 29 May 2013 18:25:45 +0800
+	id 1UeiL3-0003GZ-Rw
+	for ltp-list@lists.sourceforge.net; Tue, 21 May 2013 08:54:35 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4L8sFIn031885
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 May 2013 16:54:21 +0800
+Message-ID: <519B35A9.8090300@cn.fujitsu.com>
+Date: Tue, 21 May 2013 16:51:53 +0800
 From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <51A5C347.4020202@cn.fujitsu.com>
-	<1098836685.51729.1369819107988.JavaMail.root@redhat.com>
-In-Reply-To: <1098836685.51729.1369819107988.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach
- SHM_NORESERVE to shmflg
+Subject: [LTP]  [PATCH] semctl01.c: Pass the correct parameter
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,53 +25,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 05/29/2013 05:18 PM, Jan Stancek wrote:
-> 
-> ----- Original Message -----
->> From: "DAN LI" <li.dan@cn.fujitsu.com>
->> To: "LTP list" <ltp-list@lists.sourceforge.net>
->> Sent: Wednesday, 29 May, 2013 10:58:47 AM
->> Subject: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach SHM_NORESERVE to shmflg
->>
->>
->> 1. Remove useless comments
->>
->> 2. Revise code to follow ltp-code-style
->>
->> 3. Add SHM_NORESERVE to shmflg to test
-> 
-> Can you add some description why you are adding this flag?
-
-Actually, we are trying to complete test cases and expand
-the test scope of LTP.
-
-So, it is just for completeness of this case.
-
-Regards,
-DAN LI
-
-> 
->>
->> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
->> ---
-> 
-> 
-
-
-
-------------------------------------------------------------------------------
-Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
-Get 100% visibility into your production application - at no cost.
-Code-level diagnostics for performance bottlenecks with <2% overhead
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap1
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CkZvciBTRU1fU1RBVCwgdGhlIHNlbWlkIGFyZ3VtZW50IGlzIG5vdCBhIHNlbWFwaG9yZSBpZGVu
+dGlmaWVyLCAgYnV0IGluc3RlYWQgYW4KaW5kZXggaW50byB0aGUga2VybmVs4oCZcyBpbnRlcm5h
+bCBhcnJheSB0aGF0IG1haW50YWlucyBpbmZvcm1hdGlvbiBhYm91dCBhbGwKc2VtYXBob3JlIHNl
+dHMgb24gdGhlIHN5c3RlbS4KClBhc3MgYSBjb3JyZWN0IGluZGV4IG9mIHRoZSBrZXJuZWwnIGlu
+dGVybmFsIGFycmF5IGludGVhZCBvZiBhIHNlbWFwaG9yZXMgaWQgd2hlbgp0ZXN0aW5nIGZlYXR1
+cmUgU0VNX1NUQVQuCgpTaWduZWQtb2ZmLWJ5OiBEQU4gTEkgPGxpLmRhbkBjbi5mdWppdHN1LmNv
+bT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDEuYyB8
+IDI4ICsrKysrKysrKysrKysrKysrKystLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMiBpbnNlcnRp
+b25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+cGMvc2VtY3RsL3NlbWN0bDAxLmMKaW5kZXggNjg3ZDkwOS4uYWVlNmNjZiAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAxLmMKKysrIGIvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAxLmMKQEAgLTUyLDYgKzUy
+LDggQEAgY2hhciAqVENJRCA9ICJzZW1jdGwwMSI7CiBpbnQgVFNUX1RPVEFMID0gMTM7Cgogc3Rh
+dGljIGludCBzZW1faWRfMSA9IC0xOworc3RhdGljIGludCBzZW1faWQ7CitzdGF0aWMgaW50IHNl
+bV9pbmRleDsKCiBzdGF0aWMgaW50IHN5bmNfcGlwZXNbMl07CgpAQCAtNjcsMTIgKzY5LDEyIEBA
+IHN0YXRpYyB2b2lkIHBpZF9zZXR1cCh2b2lkKSwgZnVuY19waWQoaW50KTsKIHN0YXRpYyB2b2lk
+IGZ1bmNfZ3ZhbChpbnQpOwogc3RhdGljIHZvaWQgc2FsbF9zZXR1cCh2b2lkKSwgZnVuY19zYWxs
+KHZvaWQpOwogc3RhdGljIHZvaWQgZnVuY19zdmFsKHZvaWQpOwotc3RhdGljIHZvaWQgZnVuY19y
+bWlkKHZvaWQpOworc3RhdGljIHZvaWQgcm1pZF9zZXR1cCh2b2lkKSwgZnVuY19ybWlkKHZvaWQp
+Owogc3RhdGljIHZvaWQgY2hpbGRfY250KHZvaWQpOwogc3RhdGljIHZvaWQgY2hpbGRfcGlkKHZv
+aWQpOwogc3RhdGljIHZvaWQgZnVuY19paW5mbyhpbnQpOwogc3RhdGljIHZvaWQgZnVuY19zaW5m
+byh2b2lkKTsKLXN0YXRpYyB2b2lkIGZ1bmNfc3N0YXQoaW50KTsKK3N0YXRpYyB2b2lkIHNzdGF0
+X3NldHVwKHZvaWQpLCBmdW5jX3NzdGF0KGludCk7Cgogc3RhdGljIHN0cnVjdCBzZW1pZF9kcyBi
+dWY7CiBzdGF0aWMgc3RydWN0IHNlbWluZm8gaXBjX2J1ZjsKQEAgLTExNyw4ICsxMTksOCBAQCBz
+dGF0aWMgc3RydWN0IHRlc3RfY2FzZV90IHsKIAl7U0VNNCwgU0VUVkFMLCBmdW5jX3N2YWwsIFNF
+TVVOX0NBU1QgSU5DVkFMLCBOVUxMfSwKIAl7MCwgSVBDX0lORk8sIGZ1bmNfaWluZm8sIFNFTVVO
+X0NBU1QgJiBpcGNfYnVmLCBOVUxMfSwKIAl7MCwgU0VNX0lORk8sIGZ1bmNfc2luZm8sIFNFTVVO
+X0NBU1QgJiBpcGNfYnVmLCBOVUxMfSwKLQl7MCwgU0VNX1NUQVQsIGZ1bmNfc3N0YXQsIFNFTVVO
+X0NBU1QgJiBidWYsIE5VTEx9LAotCXswLCBJUENfUk1JRCwgZnVuY19ybWlkLCBTRU1VTl9DQVNU
+ICYgYnVmLCBOVUxMfSwKKwl7MCwgU0VNX1NUQVQsIGZ1bmNfc3N0YXQsIFNFTVVOX0NBU1QgJiBi
+dWYsIHNzdGF0X3NldHVwfSwKKwl7MCwgSVBDX1JNSUQsIGZ1bmNfcm1pZCwgU0VNVU5fQ0FTVCAm
+IGJ1Ziwgcm1pZF9zZXR1cH0sCiB9OwoKIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10p
+CkBAIC01MzgsNiArNTQwLDExIEBAIHN0YXRpYyB2b2lkIGZ1bmNfc3ZhbCh2b2lkKQogCQl0c3Rf
+cmVzbShUUEFTUywgInNlbWFwaG9yZSB2YWx1ZSBpcyBjb3JyZWN0Iik7CiB9Cgorc3RhdGljIHZv
+aWQgcm1pZF9zZXR1cCh2b2lkKQoreworCXNlbV9pZF8xID0gc2VtX2lkOworfQorCiAvKgogICog
+ZnVuY19ybWlkKCkgLSBjaGVjayB0aGUgZnVuY3Rpb25hbGl0eSBvZiB0aGUgSVBDX1JNSUQgY29t
+bWFuZCB3aXRoIHNlbWN0bCgpCiAgKi8KQEAgLTU2MCwxMCArNTY3LDEzIEBAIHN0YXRpYyB2b2lk
+IGZ1bmNfcm1pZCh2b2lkKQoKIHN0YXRpYyB2b2lkIGZ1bmNfaWluZm8oaW50IGhpZHgpCiB7Ci0J
+aWYgKGhpZHggPj0gMCkKKwlpZiAoaGlkeCA+PSAwKSB7CisJCXNlbV9pbmRleCA9IGhpZHg7CiAJ
+CXRzdF9yZXNtKFRQQVNTLCAidGhlIGhpZ2hlc3QgaW5kZXggaXMgY29ycmVjdCIpOwotCWVsc2UK
+Kwl9IGVsc2UgeworCQlzZW1faW5kZXggPSAwOwogCQl0c3RfcmVzbShURkFJTCwgInRoZSBoaWdo
+ZXN0IGluZGV4IGlzIGluY29ycmVjdCIpOworCX0KIH0KCiBzdGF0aWMgdm9pZCBmdW5jX3NpbmZv
+KHZvaWQpCkBAIC01NzQsNiArNTg0LDEyIEBAIHN0YXRpYyB2b2lkIGZ1bmNfc2luZm8odm9pZCkK
+IAkJdHN0X3Jlc20oVFBBU1MsICJudW1iZXIgb2Ygc2VtYXBob3JlIHNldHMgaXMgY29ycmVjdCIp
+OwogfQoKK3N0YXRpYyB2b2lkIHNzdGF0X3NldHVwKHZvaWQpCit7CisJc2VtX2lkID0gc2VtX2lk
+XzE7CisJc2VtX2lkXzEgPSBzZW1faW5kZXg7Cit9CisKIHN0YXRpYyB2b2lkIGZ1bmNfc3N0YXQo
+aW50IHNlbWlkeCkKIHsKIAlpZiAoc2VtaWR4ID49IDApCi0tIAoxLjcuMTEucmMwCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KVHJ5IE5ldyBSZWxpYyBOb3cgJiBXZSdsbCBTZW5kIFlvdSB0aGlzIENv
+b2wgU2hpcnQKTmV3IFJlbGljIGlzIHRoZSBvbmx5IFNhYVMtYmFzZWQgYXBwbGljYXRpb24gcGVy
+Zm9ybWFuY2UgbW9uaXRvcmluZyBzZXJ2aWNlIAp0aGF0IGRlbGl2ZXJzIHBvd2VyZnVsIGZ1bGwg
+c3RhY2sgYW5hbHl0aWNzLiBPcHRpbWl6ZSBhbmQgbW9uaXRvciB5b3VyCmJyb3dzZXIsIGFwcCwg
+JiBzZXJ2ZXJzIHdpdGgganVzdCBhIGZldyBsaW5lcyBvZiBjb2RlLiBUcnkgTmV3IFJlbGljCmFu
+ZCBnZXQgdGhpcyBhd2Vzb21lIE5lcmQgTGlmZSBzaGlydCEgaHR0cDovL3Auc2YubmV0L3NmdS9u
+ZXdyZWxpY19kMmRfbWF5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
