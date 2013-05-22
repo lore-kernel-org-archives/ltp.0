@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uh0RA-0003zD-PL
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 16:38:20 +0000
-Date: Mon, 27 May 2013 18:39:33 +0200
-From: chrubis@suse.cz
-Message-ID: <20130527163932.GA32583@rei>
-References: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Uf3D0-0007gn-NP
+	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 07:11:38 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uf3Cz-0006t1-4Z
+	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 07:11:38 +0000
+Date: Wed, 22 May 2013 03:11:21 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <579338756.5630570.1369206681507.JavaMail.root@redhat.com>
+In-Reply-To: <519C24C9.9070807@cn.fujitsu.com>
+References: <519C24C9.9070807@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
-Subject: Re: [LTP] LTP: Compilation error for powerpc
+Subject: Re: [LTP] [PATCH V2] semctl01.c: Pass the correct parameter
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,76 +24,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bhushan Bharat-R65777 <R65777@freescale.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> There are a number of good test cases which we run to test various
-> features ( like ptrace/memory etc). I tried below steps and failed to
-> compile successfully:
-> 
-> 1)
-> cp include/mk/config.mk.default include/mk/config.mk
-> 
-> 2)
-> vi include/mk/config.mk
-> -AR                      := ar
-> -CC                      := gcc
-> +AR                      := /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-ar
-> +CC                      := /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc
-> 
-> 3)
-> cp include/config.h.default include/config.h
-
-Hmm you stil need a to set path to the headers and libraries. Unlike
-kernel LTP needs libc headers and libraries to build.
-
-There are some configure parameters for that but I do not know how to
-set these. Perhaps somebody on the list knows better.
-
-> 4)
-> cd include/mk
-> cp generic_leaf_target.inc generic_leaf_target.mk cp generic_trunk_target.inc generic_trunk_target.mk cd ../../
-
-This is certainly wrong thing to do. The inc files are included from the
-mk files.
-
-> 5)
-> Make
-> 
-> Getting error :
-> 
-> make[4]: Entering directory `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-> /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/home/r65777/LTP/try/testcases/kernel/include  -c -o libclone.o libclone.c In file included from libclone.h:31:0,
->                  from libclone.c:17:
-> /home/r65777/LTP/try/testcases/kernel/include/linux_syscall_numbers.h:18:21: fatal error: cleanup.c: No such file or directory compilation terminated.
-> make[4]: *** [libclone.o] Error 1
-> make[4]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-> make[3]: *** [libclone/libclone.a] Error 2
-> make[3]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/home/r65777/LTP/try/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/home/r65777/LTP/try/testcases'
-> make: *** [testcases-all] Error 2
-
-That may be caused by the damage done by copying the inc files over the
-mk files or anything else.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiREFOIExJIiA8bGkuZGFuQGNu
+LmZ1aml0c3UuY29tPgo+IFRvOiAiTFRQIGxpc3QiIDxsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQ+Cj4gQ2M6ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4gU2VudDog
+V2VkbmVzZGF5LCAyMiBNYXksIDIwMTMgMzo1MjowOSBBTQo+IFN1YmplY3Q6IFtMVFBdIFtQQVRD
+SCBWMl0gc2VtY3RsMDEuYzogUGFzcyB0aGUgY29ycmVjdCBwYXJhbWV0ZXIKPiAKPiAKPiBGb3Ig
+U0VNX1NUQVQsIHRoZSBzZW1pZCBhcmd1bWVudCBpcyBub3QgYSBzZW1hcGhvcmUgaWRlbnRpZmll
+ciwgIGJ1dCBpbnN0ZWFkCj4gYW4KPiBpbmRleCBpbnRvIHRoZSBrZXJuZWzigJlzIGludGVybmFs
+IGFycmF5IHRoYXQgbWFpbnRhaW5zIGluZm9ybWF0aW9uIGFib3V0IGFsbAo+IHNlbWFwaG9yZSBz
+ZXRzIG9uIHRoZSBzeXN0ZW0uCj4gCj4gUGFzcyBhIGNvcnJlY3QgaW5kZXggb2YgdGhlIGtlcm5l
+bCcgaW50ZXJuYWwgYXJyYXkgaW50ZWFkIG9mIGEgc2VtYXBob3JlcyBpZAo+IHdoZW4KPiB0ZXN0
+aW5nIGZlYXR1cmUgU0VNX1NUQVQuCj4gCj4gU2lnbmVkLW9mZi1ieTogREFOIExJIDxsaS5kYW5A
+Y24uZnVqaXRzdS5jb20+CgpMb29rcyBnb29kIHRvIG1lLiBzZW1faW5kZXggPT0gMCB3b3VsZCB3
+b3JrIHRvbywgSSdtIGFzc3VtaW5nIHlvdQp3ZW50IHdpdGggaGlkeCBhcyBhIGNvcm5lciBjYXNl
+LCB3aGljaCBpcyBhbHNvIHZhbGlkIHZhbHVlLgoKUmV2aWV3ZWQtYnk6IEphbiBTdGFuY2VrIDxq
+c3RhbmNla0ByZWRoYXQuY29tPgoKUmVnYXJkcywKSmFuCgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDEuYyB8IDM3Cj4gICsrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDE2IGRlbGV0
+aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9z
+ZW1jdGwvc2VtY3RsMDEuYwo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3Rs
+L3NlbWN0bDAxLmMKPiBpbmRleCA2ODdkOTA5Li4wMzk5ODQyIDEwMDY0NAo+IC0tLSBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwMS5jCj4gKysrIGIvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAxLmMKPiBAQCAtNTIsNiArNTIs
+NyBAQCBjaGFyICpUQ0lEID0gInNlbWN0bDAxIjsKPiAgaW50IFRTVF9UT1RBTCA9IDEzOwo+IAo+
+ICBzdGF0aWMgaW50IHNlbV9pZF8xID0gLTE7Cj4gK3N0YXRpYyBpbnQgc2VtX2luZGV4Owo+IAo+
+ICBzdGF0aWMgaW50IHN5bmNfcGlwZXNbMl07Cj4gCj4gQEAgLTEwMCwyNSArMTAxLDI2IEBAIHN0
+YXRpYyBpbnQgc2VtX29wOwo+ICAjZW5kaWYKPiAKPiAgc3RhdGljIHN0cnVjdCB0ZXN0X2Nhc2Vf
+dCB7Cj4gKwlpbnQgKnNlbWlkOwo+ICAJaW50IHNlbW51bTsKPiAgCWludCBjbWQ7Cj4gIAl2b2lk
+ICgqZnVuY190ZXN0KSAoKTsKPiAgCXVuaW9uIHNlbXVuIGFyZzsKPiAgCXZvaWQgKCpmdW5jX3Nl
+dHVwKSAoKTsKPiAgfSBUQ1tdID0gewo+IC0JezAsIElQQ19TVEFULCBmdW5jX3N0YXQsIFNFTVVO
+X0NBU1QgJiBidWYsIE5VTEx9LAo+IC0JezAsIElQQ19TRVQsIGZ1bmNfc2V0LCBTRU1VTl9DQVNU
+ICYgYnVmLCBzZXRfc2V0dXB9LAo+IC0JezAsIEdFVEFMTCwgZnVuY19nYWxsLCBTRU1VTl9DQVNU
+IGFycmF5LCBOVUxMfSwKPiAtCXtTRU00LCBHRVROQ05ULCBmdW5jX2NudCwgU0VNVU5fQ0FTVCAm
+IGJ1ZiwgY250X3NldHVwfSwKPiAtCXtTRU0yLCBHRVRQSUQsIGZ1bmNfcGlkLCBTRU1VTl9DQVNU
+ICYgYnVmLCBwaWRfc2V0dXB9LAo+IC0Je1NFTTIsIEdFVFZBTCwgZnVuY19ndmFsLCBTRU1VTl9D
+QVNUICYgYnVmLCBOVUxMfSwKPiAtCXtTRU00LCBHRVRaQ05ULCBmdW5jX2NudCwgU0VNVU5fQ0FT
+VCAmIGJ1ZiwgY250X3NldHVwfSwKPiAtCXswLCBTRVRBTEwsIGZ1bmNfc2FsbCwgU0VNVU5fQ0FT
+VCBhcnJheSwgc2FsbF9zZXR1cH0sCj4gLQl7U0VNNCwgU0VUVkFMLCBmdW5jX3N2YWwsIFNFTVVO
+X0NBU1QgSU5DVkFMLCBOVUxMfSwKPiAtCXswLCBJUENfSU5GTywgZnVuY19paW5mbywgU0VNVU5f
+Q0FTVCAmIGlwY19idWYsIE5VTEx9LAo+IC0JezAsIFNFTV9JTkZPLCBmdW5jX3NpbmZvLCBTRU1V
+Tl9DQVNUICYgaXBjX2J1ZiwgTlVMTH0sCj4gLQl7MCwgU0VNX1NUQVQsIGZ1bmNfc3N0YXQsIFNF
+TVVOX0NBU1QgJiBidWYsIE5VTEx9LAo+IC0JezAsIElQQ19STUlELCBmdW5jX3JtaWQsIFNFTVVO
+X0NBU1QgJiBidWYsIE5VTEx9LAo+ICsJeyZzZW1faWRfMSwgMCwgSVBDX1NUQVQsIGZ1bmNfc3Rh
+dCwgU0VNVU5fQ0FTVCAmIGJ1ZiwgTlVMTH0sCj4gKwl7JnNlbV9pZF8xLCAwLCBJUENfU0VULCBm
+dW5jX3NldCwgU0VNVU5fQ0FTVCAmIGJ1Ziwgc2V0X3NldHVwfSwKPiArCXsmc2VtX2lkXzEsIDAs
+IEdFVEFMTCwgZnVuY19nYWxsLCBTRU1VTl9DQVNUIGFycmF5LCBOVUxMfSwKPiArCXsmc2VtX2lk
+XzEsIFNFTTQsIEdFVE5DTlQsIGZ1bmNfY250LCBTRU1VTl9DQVNUICYgYnVmLCBjbnRfc2V0dXB9
+LAo+ICsJeyZzZW1faWRfMSwgU0VNMiwgR0VUUElELCBmdW5jX3BpZCwgU0VNVU5fQ0FTVCAmIGJ1
+ZiwgcGlkX3NldHVwfSwKPiArCXsmc2VtX2lkXzEsIFNFTTIsIEdFVFZBTCwgZnVuY19ndmFsLCBT
+RU1VTl9DQVNUICYgYnVmLCBOVUxMfSwKPiArCXsmc2VtX2lkXzEsIFNFTTQsIEdFVFpDTlQsIGZ1
+bmNfY250LCBTRU1VTl9DQVNUICYgYnVmLCBjbnRfc2V0dXB9LAo+ICsJeyZzZW1faWRfMSwgMCwg
+U0VUQUxMLCBmdW5jX3NhbGwsIFNFTVVOX0NBU1QgYXJyYXksIHNhbGxfc2V0dXB9LAo+ICsJeyZz
+ZW1faWRfMSwgU0VNNCwgU0VUVkFMLCBmdW5jX3N2YWwsIFNFTVVOX0NBU1QgSU5DVkFMLCBOVUxM
+fSwKPiArCXsmc2VtX2lkXzEsIDAsIElQQ19JTkZPLCBmdW5jX2lpbmZvLCBTRU1VTl9DQVNUICYg
+aXBjX2J1ZiwgTlVMTH0sCj4gKwl7JnNlbV9pZF8xLCAwLCBTRU1fSU5GTywgZnVuY19zaW5mbywg
+U0VNVU5fQ0FTVCAmIGlwY19idWYsIE5VTEx9LAo+ICsJeyZzZW1faW5kZXgsIDAsIFNFTV9TVEFU
+LCBmdW5jX3NzdGF0LCBTRU1VTl9DQVNUICYgYnVmLCBOVUxMfSwKPiArCXsmc2VtX2lkXzEsIDAs
+IElQQ19STUlELCBmdW5jX3JtaWQsIFNFTVVOX0NBU1QgJiBidWYsIE5VTEx9LAo+ICB9Owo+IAo+
+ICBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+IEBAIC0xNjIsNyArMTY0LDcgQEAg
+aW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPiAgCQkJCX0KPiAgCQkJfQo+IAo+IC0J
+CQlURVNUKHNlbWN0bChzZW1faWRfMSwgVENbaV0uc2VtbnVtLCBUQ1tpXS5jbWQsCj4gKwkJCVRF
+U1Qoc2VtY3RsKCooVENbaV0uc2VtaWQpLCBUQ1tpXS5zZW1udW0sIFRDW2ldLmNtZCwKPiAgCQkJ
+CSAgICBUQ1tpXS5hcmcpKTsKPiAKPiAgCQkJaWYgKFRFU1RfUkVUVVJOID09IC0xKSB7Cj4gQEAg
+LTU2MCwxMCArNTYyLDEzIEBAIHN0YXRpYyB2b2lkIGZ1bmNfcm1pZCh2b2lkKQo+IAo+ICBzdGF0
+aWMgdm9pZCBmdW5jX2lpbmZvKGludCBoaWR4KQo+ICB7Cj4gLQlpZiAoaGlkeCA+PSAwKQo+ICsJ
+aWYgKGhpZHggPj0gMCkgewo+ICsJCXNlbV9pbmRleCA9IGhpZHg7Cj4gIAkJdHN0X3Jlc20oVFBB
+U1MsICJ0aGUgaGlnaGVzdCBpbmRleCBpcyBjb3JyZWN0Iik7Cj4gLQllbHNlCj4gKwl9IGVsc2Ug
+ewo+ICsJCXNlbV9pbmRleCA9IDA7Cj4gIAkJdHN0X3Jlc20oVEZBSUwsICJ0aGUgaGlnaGVzdCBp
+bmRleCBpcyBpbmNvcnJlY3QiKTsKPiArCX0KPiAgfQo+IAo+ICBzdGF0aWMgdm9pZCBmdW5jX3Np
+bmZvKHZvaWQpCj4gLS0KPiAxLjguMQo+IAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRyeSBOZXcg
+UmVsaWMgTm93ICYgV2UnbGwgU2VuZCBZb3UgdGhpcyBDb29sIFNoaXJ0Ck5ldyBSZWxpYyBpcyB0
+aGUgb25seSBTYWFTLWJhc2VkIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlIG1vbml0b3Jpbmcgc2Vy
+dmljZSAKdGhhdCBkZWxpdmVycyBwb3dlcmZ1bCBmdWxsIHN0YWNrIGFuYWx5dGljcy4gT3B0aW1p
+emUgYW5kIG1vbml0b3IgeW91cgpicm93c2VyLCBhcHAsICYgc2VydmVycyB3aXRoIGp1c3QgYSBm
+ZXcgbGluZXMgb2YgY29kZS4gVHJ5IE5ldyBSZWxpYwphbmQgZ2V0IHRoaXMgYXdlc29tZSBOZXJk
+IExpZmUgc2hpcnQhIGh0dHA6Ly9wLnNmLm5ldC9zZnUvbmV3cmVsaWNfZDJkX21heQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
+IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
