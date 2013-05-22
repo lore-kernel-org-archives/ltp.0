@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Uh2EZ-0006XA-Hw
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 18:33:27 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uh2EX-0004ai-C2
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 18:33:27 +0000
-Date: Mon, 27 May 2013 14:33:17 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1184534312.8345309.1369679597424.JavaMail.root@redhat.com>
-In-Reply-To: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UfAXb-0002ha-TG
+	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 15:01:23 +0000
+Date: Wed, 22 May 2013 17:02:34 +0200
+From: chrubis@suse.cz
+Message-ID: <20130522150234.GA9737@rei.suse.cz>
+References: <f86dfe8123738c73c9dc2fd08309bfbe09e925e6.1368780870.git.jstancek@redhat.com>
+	<4ea3e87b9e1000e948e77a117c7cd77dd3c9ccda.1369120163.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] LTP: Compilation error for powerpc
+Content-Disposition: inline
+In-Reply-To: <4ea3e87b9e1000e948e77a117c7cd77dd3c9ccda.1369120163.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2 2/2] waitid02: split code into separate
+	testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,107 +26,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Bhushan Bharat-R65777 <R65777@freescale.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> -int TST_TOTAL = 4;
+> +static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
 
+You can use ARRAY_SIZE() macro we have. ;)
 
+> -		}
+> +		/* setup alarm for unlikely event that test blocks */
+> +		alarm(5);
 
+I'm slightly against adding timeouts to tests in this fashion.
 
------ Original Message -----
-> From: "Bhushan Bharat-R65777" <R65777@freescale.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 27 May, 2013 1:32:32 PM
-> Subject: [LTP] LTP: Compilation error for powerpc
-> 
-> Hi All,
-> 
-> There are a number of good test cases which we run to test various features (
-> like ptrace/memory etc). I tried below steps and failed to compile
-> successfully:
+The correct solution for this would be making the test driver to kill
+the test after some timeout. Which is what I want to solve with new test
+execution framework (that unfortunately does not exist at the moment).
 
-I (or rather automated testing) compile it directly on powerpc as:
-# make autotools
-# ./configure
-# make
+I guess that we can hack around some default timeout (30 mins or
+something equally big) into ltp-pan.c for the time being. Which would at
+least assure that the testsuite will not hang forever. We can't do
+anything smarter without anotating long lived testcases (more than five
+minutes or so) with proper timeouts in the runtest files though :(.
 
-Base on that gcc path, I'm guessing you are cross-compiling it on x86_64.
-I tried that just now and built OK:
-# make autotools
-# env CC=/opt/crosstool/gcc-4.4.7-20120601-glibc-2.12-2-gc4ccff1/powerpc64-unknown-linux-gnu/bin/powerpc64-unknown-linux-gnu-gcc \
-      LD=/opt/crosstool/gcc-4.4.7-20120601-glibc-2.12-2-gc4ccff1/powerpc64-unknown-linux-gnu/bin/powerpc64-unknown-linux-gnu-ld \
-      STRIP=/opt/crosstool/gcc-4.4.7-20120601-glibc-2.12-2-gc4ccff1/powerpc64-unknown-linux-gnu/bin/powerpc64-unknown-linux-gnu-strip \
-      ./configure --host=ppc64
-...
-# file testcases/kernel/syscalls/open/open01
-testcases/kernel/syscalls/open/open01: ELF 64-bit MSB executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.4, not stripped
+>  	cleanup();
+>  	tst_exit();
 
-Regards,
-Jan
+The rest is fine.
 
-> 
-> 1)
-> cp include/mk/config.mk.default include/mk/config.mk
-> 
-> 2)
-> vi include/mk/config.mk
-> -AR                      := ar
-> -CC                      := gcc
-> +AR                      :=
-> /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-ar
-> +CC                      :=
-> /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc
-> 
-> 3)
-> cp include/config.h.default include/config.h
-> 
-> 4)
-> cd include/mk
-> cp generic_leaf_target.inc generic_leaf_target.mk cp generic_trunk_target.inc
-> generic_trunk_target.mk cd ../../
-> 
-> 5)
-> Make
-> 
-> Getting error :
-> 
-> make[4]: Entering directory
-> `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-> /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc
-> -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/r65777/LTP/try/testcases/kernel/include  -c -o libclone.o
-> libclone.c In file included from libclone.h:31:0,
->                  from libclone.c:17:
-> /home/r65777/LTP/try/testcases/kernel/include/linux_syscall_numbers.h:18:21:
-> fatal error: cleanup.c: No such file or directory compilation terminated.
-> make[4]: *** [libclone.o] Error 1
-> make[4]: Leaving directory
-> `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-> make[3]: *** [libclone/libclone.a] Error 2
-> make[3]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/home/r65777/LTP/try/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/home/r65777/LTP/try/testcases'
-> make: *** [testcases-all] Error 2
-> 
-> -------------------------
->  
-> Thanks
-> -Bharat
-> 
-> 
-> ------------------------------------------------------------------------------
-> Try New Relic Now & We'll Send You this Cool Shirt
-> New Relic is the only SaaS-based application performance monitoring service
-> that delivers powerful full stack analytics. Optimize and monitor your
-> browser, app, & servers with just a few lines of code. Try New Relic
-> and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
