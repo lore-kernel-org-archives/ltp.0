@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1UccWo-0007TY-MZ
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 14:18:02 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UccWn-00027a-D3
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 14:18:02 +0000
-From: Markos Chandras <markos.chandras@gmail.com>
-Date: Wed, 15 May 2013 15:17:44 +0100
-Message-ID: <1368627464-10750-1-git-send-email-markos.chandras@gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UfQYJ-0006zM-3Z
+	for ltp-list@lists.sourceforge.net; Thu, 23 May 2013 08:07:11 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UfQYH-0005Pl-Ls
+	for ltp-list@lists.sourceforge.net; Thu, 23 May 2013 08:07:11 +0000
+Date: Thu, 23 May 2013 04:07:02 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <818728049.6400472.1369296422448.JavaMail.root@redhat.com>
+In-Reply-To: <1369292947-20445-1-git-send-email-shuang.qiu@oracle.com>
+References: <1369292947-20445-1-git-send-email-shuang.qiu@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] prot_hsymlinks.c: Define _GNU_SOURCE which is
-	required for O_DIRECTORY
+Subject: Re: [LTP] [PATCH] dup07:Close the file before unlink it.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,48 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: shuang qiu <shuang.qiu@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Markos Chandras <markos.chandras@imgtec.com>
-
-O_DIRECTORY is only available if _GNU_SOURCE is defined
-in uClibc toolchains.
-
-This is similar to 0d0c695c8c6657710d1a8ecb4f1264dcd405276b
-"open11.c: Define _GNU_SOURCE which is required for O_DIRECTORY"
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-index 8feef99..1eec0f9 100644
---- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-+++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-@@ -31,6 +31,7 @@
-  * of the file or he doesn't have write access to the file.
-  */
- 
-+#define _GNU_SOURCE
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <pwd.h>
--- 
-1.8.2.1
-
-
-
-------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAic2h1YW5nIHFpdSIgPHNodWFu
+Zy5xaXVAb3JhY2xlLmNvbT4KPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
+U2VudDogVGh1cnNkYXksIDIzIE1heSwgMjAxMyA5OjA5OjA3IEFNCj4gU3ViamVjdDogW0xUUF0g
+W1BBVENIXSBkdXAwNzpDbG9zZSB0aGUgZmlsZSBiZWZvcmUgdW5saW5rIGl0Lgo+IAo+IEZyb206
+IFNodWFuZyBRaXUgPHNodWFuZy5xaXVAb3JhY2xlLmNvbT4KPiAKPiBXaGVuIHVubGluaygpIGEg
+ZmlsZSBpbiBuZnMgZW52aXJvbm1lbnQsaXQgd2lsbCByZW5hbWUgdGhlIGZpbGUgdG8gYQo+IC5u
+ZnM8eHh4eHg+IGZpbGUgaWYgYW55IHByb2Nlc3Mgc3RpbGwgaGFzIHRoYXQgZmlsZSBvcGVuLkFu
+ZCB0aGlzIGZpbGUKPiBjb3VsZCBub3QgYmUgZGVsZXRlZCB1bnRpbCBpdCBpcyBjbG9zZWQuU28g
+d2UgYWx3YXlzIGdldCB0aGUgZm9sbG93aW5nCj4gd2FybmluZyB3aGljaCBtYWtlcyB0ZXN0Y2Fz
+ZSAiZHVwMDciIGZhaWxlZDoKPiAwICBUV0FSTiAgOiAgdHN0X3JtZGlyOiBybW9iaigvbW50L25m
+c3YzL2x0cC1adHpTRTI3NjExL2R1cEt1RXIzSCkKPiBmYWlsZWQ6Cj4gdW5saW5rKC9tbnQvbmZz
+djMvbHRwLVp0elNFMjc2MTEvZHVwS3VFcjNILy5uZnMwMDAwMDAwMDAxMTBjYjM4MDAwMDAwNjYp
+Cj4gZmFpbGVkOyBlcnJubz0xNjogRGV2aWNlIG9yIHJlc291cmNlIGJ1c3kKPiAKPiBDbG9zZSB0
+aGUgY3JlYXRlZC9kdXAgZmlsZSBiZWZvcmUgdW5saW5rKCkgaXQgdG8gZml4IHRoaXMgaXNzdWUu
+Cj4gCj4gU2lnbmVkLW9mZi1ieTogU2h1YW5nIFFpdSA8c2h1YW5nLnFpdUBvcmFjbGUuY29tPgoK
+SGksCgp0aGlzIGlzIGludHJvZHVjaW5nIHNvbWUgd2FybmluZ3M6CmR1cDA3LmM6NTM6IHdhcm5p
+bmc6IOKAmGR1cHJkb+KAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rp
+b24KZHVwMDcuYzo1Mzogd2FybmluZzog4oCYZHVwd3Jv4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlh
+bGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgpkdXAwNy5jOjUzOiB3YXJuaW5nOiDigJhkdXByZHdy4oCZ
+IG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgoKUmF0aGVyIHRoYW4g
+aW5pdGlhbGl6aW5nIHRoZXNlIHRvIC0xLCBJJ2Qgc3VnZ2VzdCB0byBtb3ZlIHRob3NlIGNsb3Nl
+KCkgY2FsbHMKdG8gZWxzZSBicmFuY2hlczoKQEAgLTc3LDcgKzc3LDkgQEAgaW50IG1haW4oaW50
+IGFjLCBjaGFyICoqYXYpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0
+c3RfcmVzbShUUEFTUywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICJQYXNzZWQgaW4gcmVhZCBtb2RlLiIpOwogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIH0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9zZShkdXByZG8pOwog
+ICAgICAgICAgICAgICAgICAgICAgICB9CisgICAgICAgICAgICAgICAgICAgICAgIGNsb3NlKHJk
+b3JldCk7CiAgICAgICAgICAgICAgICB9CgpSZWdhcmRzLApKYW4gCgo+IC0tLQo+ICB0ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jIHwgICAxMiArKysrKysrKysrKysKPiAgMSBm
+aWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYg
+LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4gYi90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4gaW5kZXggMDNiMGJhNC4uMTljZDc1MSAx
+MDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4gKysr
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9kdXAvZHVwMDcuYwo+IEBAIC04MCw2ICs4MCwx
+MCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPiAgCQkJfQo+ICAJCX0KPiAgCj4gKwkJ
+aWYgKGR1cHJkbyAhPSAtMSkKPiArCQkJY2xvc2UoZHVwcmRvKTsKPiArCQlpZiAocmRvcmV0ICE9
+IC0xKQo+ICsJCQljbG9zZShyZG9yZXQpOwo+ICAJCXVubGluayh0ZXN0ZmlsZSk7Cj4gIAkJCj4g
+IAkJaWYgKCh3cm9yZXQgPSBjcmVhdCh0ZXN0ZmlsZSwgMDIyMikpID09IC0xKSB7Cj4gQEAgLTEw
+MCw2ICsxMDQsMTAgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4gIAkJCX0KPiAgCQl9
+Cj4gIAo+ICsJCWlmIChkdXB3cm8gIT0gLTEpCj4gKwkJCWNsb3NlKGR1cHdybyk7Cj4gKwkJaWYg
+KHdyb3JldCAhPSAtMSkKPiArCQkJY2xvc2Uod3JvcmV0KTsKPiAgCQl1bmxpbmsodGVzdGZpbGUp
+Owo+ICAKPiAgCQlpZiAoKHJkd3JldCA9IGNyZWF0KHRlc3RmaWxlLCAwNjY2KSkgPT0gLTEpIHsK
+PiBAQCAtMTIwLDYgKzEyOCwxMCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPiAgCQkJ
+fQo+ICAJCX0KPiAgCQkKPiArCQlpZiAoZHVwcmR3ciAhPSAtMSkKPiArCQkJY2xvc2UoZHVwcmR3
+cik7Cj4gKwkJaWYgKHJkd3JldCAhPSAtMSkKPiArCQkJY2xvc2UocmR3cmV0KTsKPiAgCQl1bmxp
+bmsodGVzdGZpbGUpOwo+ICAJfQo+ICAKPiAtLQo+IDEuNy43Cj4gCj4gCj4gLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCj4gVHJ5IE5ldyBSZWxpYyBOb3cgJiBXZSdsbCBTZW5kIFlvdSB0aGlzIENvb2wg
+U2hpcnQKPiBOZXcgUmVsaWMgaXMgdGhlIG9ubHkgU2FhUy1iYXNlZCBhcHBsaWNhdGlvbiBwZXJm
+b3JtYW5jZSBtb25pdG9yaW5nIHNlcnZpY2UKPiB0aGF0IGRlbGl2ZXJzIHBvd2VyZnVsIGZ1bGwg
+c3RhY2sgYW5hbHl0aWNzLiBPcHRpbWl6ZSBhbmQgbW9uaXRvciB5b3VyCj4gYnJvd3NlciwgYXBw
+LCAmIHNlcnZlcnMgd2l0aCBqdXN0IGEgZmV3IGxpbmVzIG9mIGNvZGUuIFRyeSBOZXcgUmVsaWMK
+PiBhbmQgZ2V0IHRoaXMgYXdlc29tZSBOZXJkIExpZmUgc2hpcnQhIGh0dHA6Ly9wLnNmLm5ldC9z
+ZnUvbmV3cmVsaWNfZDJkX21heQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUcnkgTmV3IFJlbGljIE5vdyAm
+IFdlJ2xsIFNlbmQgWW91IHRoaXMgQ29vbCBTaGlydApOZXcgUmVsaWMgaXMgdGhlIG9ubHkgU2Fh
+Uy1iYXNlZCBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSBtb25pdG9yaW5nIHNlcnZpY2UgCnRoYXQg
+ZGVsaXZlcnMgcG93ZXJmdWwgZnVsbCBzdGFjayBhbmFseXRpY3MuIE9wdGltaXplIGFuZCBtb25p
+dG9yIHlvdXIKYnJvd3NlciwgYXBwLCAmIHNlcnZlcnMgd2l0aCBqdXN0IGEgZmV3IGxpbmVzIG9m
+IGNvZGUuIFRyeSBOZXcgUmVsaWMKYW5kIGdldCB0aGlzIGF3ZXNvbWUgTmVyZCBMaWZlIHNoaXJ0
+ISBodHRwOi8vcC5zZi5uZXQvc2Z1L25ld3JlbGljX2QyZF9tYXkKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
+aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
