@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <R65777@freescale.com>) id 1UgvuL-0004sv-3F
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 11:48:09 +0000
-Received: from co9ehsobe001.messaging.microsoft.com ([207.46.163.24]
-	helo=co9outboundpool.messaging.microsoft.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1UgvuI-00064d-AH
-	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 11:48:09 +0000
-Received: from mail193-co9 (localhost [127.0.0.1])	by
-	mail193-co9-R.bigfish.com (Postfix) with ESMTP id 99E09660221	for
-	<ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 11:32:53 +0000 (UTC)
-Received: from CO9EHSMHS012.bigfish.com (unknown [10.236.132.254])	by
-	mail193-co9.bigfish.com (Postfix) with ESMTP id A6E109A004E	for
-	<ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 11:32:51 +0000 (UTC)
-From: Bhushan Bharat-R65777 <R65777@freescale.com>
-Date: Mon, 27 May 2013 11:32:32 +0000
-Message-ID: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
-Content-Language: en-US
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Ufog3-0007c4-KA
+	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 09:52:47 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ufofz-0001IM-A5
+	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 09:52:47 +0000
+Message-ID: <519F37CF.4030209@cn.fujitsu.com>
+Date: Fri, 24 May 2013 17:50:07 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] LTP: Compilation error for powerpc
+References: <519DD4ED.3090907@cn.fujitsu.com>
+In-Reply-To: <519DD4ED.3090907@cn.fujitsu.com>
+Subject: [LTP]  [PATCH V3 2/2] shmctl/shmctl01.c: Test features IPC_INFO,
+ SHM_STAT, SHM_LOCK and SHM_UNLOCK.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,53 +28,210 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi All,
 
-There are a number of good test cases which we run to test various features ( like ptrace/memory etc). I tried below steps and failed to compile successfully:
 
-1)
-cp include/mk/config.mk.default include/mk/config.mk
+Additional tests for features IPC_INFO, SHM_STAT, SHM_LOCK and SHM_UNLOCK.
 
-2)
-vi include/mk/config.mk
--AR                      := ar
--CC                      := gcc
-+AR                      := /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-ar
-+CC                      := /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc
 
-3)
-cp include/config.h.default include/config.h
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 96 +++++++++++++++++++++----
+ 1 file changed, 81 insertions(+), 15 deletions(-)
 
-4)
-cd include/mk
-cp generic_leaf_target.inc generic_leaf_target.mk cp generic_trunk_target.inc generic_trunk_target.mk cd ../../
+Hi,
+Jan
 
-5)
-Make
+How about this V3?
 
-Getting error :
+Regards,
+DAN LI
 
-make[4]: Entering directory `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-/opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/home/r65777/LTP/try/testcases/kernel/include  -c -o libclone.o libclone.c In file included from libclone.h:31:0,
-                 from libclone.c:17:
-/home/r65777/LTP/try/testcases/kernel/include/linux_syscall_numbers.h:18:21: fatal error: cleanup.c: No such file or directory compilation terminated.
-make[4]: *** [libclone.o] Error 1
-make[4]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
-make[3]: *** [libclone/libclone.a] Error 2
-make[3]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/r65777/LTP/try/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/r65777/LTP/try/testcases'
-make: *** [testcases-all] Error 2
 
--------------------------
- 
-Thanks
--Bharat
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+index 34ff30c..cba1a1d 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+@@ -43,13 +43,18 @@
+  *	call cleanup
+  */
 
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
+ #include "ipcshm.h"
+ #include "libtestsuite.h"
+
+ char *TCID = "shmctl01";
+
+ static int shm_id_1 = -1;
++static int shm_index;
+ static struct shmid_ds buf;
++static struct shminfo info;
+ static long save_time;
+
+ #define FIRST	0
+@@ -64,34 +69,52 @@ static pid_t pid_arr[N_ATTACH];
+ static int sync_pipes[2];
+
+ /* Setup, cleanup and check routines for IPC_STAT */
+-static void stat_setup(void), func_stat(void);
++static void stat_setup(void), func_istat(int ret);
+ static void stat_cleanup(void);
+
+ /* Setup and check routines for IPC_SET */
+-static void set_setup(void), func_set(void);
++static void set_setup(void), func_set(int ret);
++
++/* Check routine for IPC_INFO */
++static void func_info(int ret);
++
++/* Check routine for SHM_STAT */
++static void func_sstat(int ret);
++
++/* Check routine for SHM_LOCK */
++static void func_lock(int ret);
++
++/* Check routine for SHM_UNLOCK */
++static void func_unlock(int ret);
+
+ /* Check routine for IPC_RMID */
+-static void func_rmid(void);
++static void func_rmid(int ret);
+
+ /* Child function */
+ static void do_child(void);
+
+ static struct test_case_t {
++	int *shmid;
+ 	int cmd;
+-	void (*func_test) ();
+-	void (*func_setup) ();
++	struct shmid_ds *arg;
++	void (*func_test) (int);
++	void (*func_setup) (void);
+ } TC[] = {
+-	{IPC_STAT, func_stat, stat_setup},
++	{&shm_id_1, IPC_STAT, &buf, func_istat, stat_setup},
+ #ifndef UCLINUX
+ 	    /*
+ 	     * The second test is not applicable to uClinux;
+ 	     * shared memory segments are detached on exec(),
+ 	     * so cannot be passed to uClinux children.
+ 	     */
+-	{IPC_STAT, func_stat, stat_setup},
++	{&shm_id_1, IPC_STAT, &buf, func_istat, stat_setup},
+ #endif
+-	{IPC_SET, func_set, set_setup},
+-	{IPC_RMID, func_rmid, NULL},
++	{&shm_id_1, IPC_SET, &buf, func_set, set_setup},
++	{&shm_id_1, IPC_INFO, (struct shmid_ds *) &info, func_info, NULL},
++	{&shm_index, SHM_STAT, &buf, func_sstat, NULL},
++	{&shm_id_1, SHM_LOCK, NULL, func_lock, NULL},
++	{&shm_id_1, SHM_UNLOCK, NULL, func_unlock, NULL},
++	{&shm_id_1, IPC_RMID, NULL, func_rmid, NULL},
+ };
+
+ static int TST_TOTAL = ARRAY_SIZE(TC);
+@@ -146,7 +169,7 @@ int main(int argc, char *argv[])
+ 			if (TC[i].func_setup != NULL)
+ 				(*TC[i].func_setup) ();
+
+-			TEST(shmctl(shm_id_1, TC[i].cmd, &buf));
++			TEST(shmctl(*(TC[i].shmid), TC[i].cmd, TC[i].arg));
+
+ 			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL, "%s call failed - errno "
+@@ -155,7 +178,7 @@ int main(int argc, char *argv[])
+ 				continue;
+ 			}
+ 			if (STD_FUNCTIONAL_TEST) {
+-				(*TC[i].func_test) ();
++				(*TC[i].func_test) (TEST_RETURN);
+ 			} else {
+ 				tst_resm(TPASS, "call succeeded");
+
+@@ -294,11 +317,11 @@ void do_child(void)
+ }
+
+ /*
+- * func_stat() - check the functionality of the IPC_STAT command with shmctl()
++ * func_istat() - check the functionality of the IPC_STAT command with shmctl()
+  *		 by looking at the pid of the creator, the segement size,
+  *		 the number of attaches and the mode.
+  */
+-void func_stat(void)
++void func_istat(int ret)
+ {
+ 	int fail = 0;
+ 	pid_t pid;
+@@ -392,7 +415,7 @@ void set_setup(void)
+ /*
+  * func_set() - check the functionality of the IPC_SET command with shmctl()
+  */
+-void func_set(void)
++void func_set(int ret)
+ {
+ 	int fail = 0;
+
+@@ -419,10 +442,53 @@ void func_set(void)
+ 	tst_resm(TPASS, "new mode and change time are correct");
+ }
+
++static void func_info(int ret)
++{
++	if (info.shmmin != 1)
++		tst_resm(TFAIL, "value of shmmin is incorrect");
++	else
++		tst_resm(TPASS, "get correct shared memory limits");
++}
++
++static void func_sstat(int ret)
++{
++	if (ret >= 0)
++		tst_resm(TPASS, "get correct shared memory id");
++	else
++		tst_resm(TFAIL, "shared memory id is incorrect");
++}
++
++static void func_lock(int ret)
++{
++	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
++		tst_resm(TBROK, "stat failed in func_lock()");
++		return;
++	}
++
++	if (buf.shm_perm.mode & SHM_LOCKED)
++		tst_resm(TPASS, "SHM_LOCK is set");
++	else
++		tst_resm(TFAIL, "SHM_LOCK is cleared");
++}
++
++static void func_unlock(int ret)
++{
++	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
++		tst_resm(TBROK, "stat failed in func_unlock()");
++		return;
++	}
++
++	if (buf.shm_perm.mode & SHM_LOCKED)
++		tst_resm(TFAIL, "SHM_LOCK is set");
++	else
++		tst_resm(TPASS, "SHM_LOCK is cleared");
++}
++
++
+ /*
+  * func_rmid() - check the functionality of the IPC_RMID command with shmctl()
+  */
+-void func_rmid(void)
++void func_rmid(int ret)
+ {
+ 	/* Do another shmctl() - we should get EINVAL */
+ 	if (shmctl(shm_id_1, IPC_STAT, &buf) != -1)
+-- 
+1.8.1
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
