@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UZNdj-0005zs-Er
-	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 15:47:47 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UZNdi-00009j-4e
-	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 15:47:47 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 6 May 2013 11:47:33 -0400
-References: <1367846581-18599-1-git-send-email-riku.voipio@linaro.org>
-In-Reply-To: <1367846581-18599-1-git-send-email-riku.voipio@linaro.org>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1UfiHI-0005ix-4r
+	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 03:02:48 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UfiHG-0000Ev-Ux
+	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 03:02:48 +0000
+Message-ID: <519ED835.80100@oracle.com>
+Date: Fri, 24 May 2013 11:02:13 +0800
+From: Shuang Qiu <shuang.qiu@oracle.com>
 MIME-Version: 1.0
-Message-Id: <201305061147.34140.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 0/4 v2] Add Aarch64 support to ltp
+References: <1369292947-20445-1-git-send-email-shuang.qiu@oracle.com>
+	<818728049.6400472.1369296422448.JavaMail.root@redhat.com>
+In-Reply-To: <818728049.6400472.1369296422448.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] dup07:Close the file before unlink it.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,75 +25,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5028678648815125631=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============5028678648815125631==
-Content-Type: multipart/signed; boundary="nextPart1568868.fyDL0FLt2B";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1568868.fyDL0FLt2B
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-On Monday 06 May 2013 09:22:57 riku.voipio@linaro.org wrote:
-> The following patches add support for Aarch64 in LTP.
-> v2: adapt to latest upstream code and include generated
-> linux_syscall_numbers.h
-
-puuuuuuuuuuuuuuuuuushed
--mike
-
---nextPart1568868.fyDL0FLt2B
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRh9CWAAoJEEFjO5/oN/WBymwP/R9b3ueLjK4h0o6td77IOWFv
-7kwv4ac4LkXmFKOdrc+eMs6mhLwLaK/tnLVj0qaR3z8e+CK4RD0Y/huT6pb1p9YZ
-tS5mhIOWSCF0oOZzbx4dLAA2/BjXnkt619wMUCNxEK0V+Z2VTo5EVQ5ZCFzWc3jE
-h9UqWmhkEhICBlBAEtb+hXEs6deo/opQWhffNnquB4Q12x5XNiTJztuXWJbyyT5V
-PRAUKUFX6LsxQWja564qB1AfpeDePbvFGIwIVZ158JjhTd9DtvEs9tYApcD4mFyI
-bNuknDem4EiTngptpJt5k+0tMheVEf/4LIT1EA3FTFNouOciTKrKvX36J9atIJnu
-NedjBzWbM/wqb/7so7YKtc8lrDHLuY5LHzWg3XBYQ9mc2Hc/GlqmL3Pzmy5kOtO8
-4Y9hPlaJCdH1Py1mI5J4gkvkqvWnanSrQvxQznwi5UAix5PhmrKDt8V9gBq0e1oq
-6tu8sQvF1CntA+V2FoHkvZrIVspmEhOzwm+PcPjrOAhSYpakw5FxCmYWtEMVvVix
-nz19n3j3MviY5+N5sq07NJhFrzgFFGBEsqouM7qPWCc7vR1EQhhSjKv76oPths9+
-/eslaRtpT7rKrBDGlSolEd1Sm2IDxkCOarMShWtE6+VojtLz9l50rL+ivyWwFS4m
-dMZGWuOk/wdKorWklhbB
-=GkY4
------END PGP SIGNATURE-----
-
---nextPart1568868.fyDL0FLt2B--
-
-
---===============5028678648815125631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
-Get 100% visibility into your production application - at no cost.
-Code-level diagnostics for performance bottlenecks with <2% overhead
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap1
---===============5028678648815125631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5028678648815125631==--
-
+T24gMDUvMjMvMjAxMyAwNDowNyBQTSwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4gLS0tLS0gT3JpZ2lu
+YWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAic2h1YW5nIHFpdSIgPHNodWFuZy5xaXVAb3JhY2xl
+LmNvbT4KPj4gVG86IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+PiBTZW50OiBUaHVy
+c2RheSwgMjMgTWF5LCAyMDEzIDk6MDk6MDcgQU0KPj4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBk
+dXAwNzpDbG9zZSB0aGUgZmlsZSBiZWZvcmUgdW5saW5rIGl0Lgo+Pgo+PiBGcm9tOiBTaHVhbmcg
+UWl1IDxzaHVhbmcucWl1QG9yYWNsZS5jb20+Cj4+Cj4+IFdoZW4gdW5saW5rKCkgYSBmaWxlIGlu
+IG5mcyBlbnZpcm9ubWVudCxpdCB3aWxsIHJlbmFtZSB0aGUgZmlsZSB0byBhCj4+IC5uZnM8eHh4
+eHg+IGZpbGUgaWYgYW55IHByb2Nlc3Mgc3RpbGwgaGFzIHRoYXQgZmlsZSBvcGVuLkFuZCB0aGlz
+IGZpbGUKPj4gY291bGQgbm90IGJlIGRlbGV0ZWQgdW50aWwgaXQgaXMgY2xvc2VkLlNvIHdlIGFs
+d2F5cyBnZXQgdGhlIGZvbGxvd2luZwo+PiB3YXJuaW5nIHdoaWNoIG1ha2VzIHRlc3RjYXNlICJk
+dXAwNyIgZmFpbGVkOgo+PiAwICBUV0FSTiAgOiAgdHN0X3JtZGlyOiBybW9iaigvbW50L25mc3Yz
+L2x0cC1adHpTRTI3NjExL2R1cEt1RXIzSCkKPj4gZmFpbGVkOgo+PiB1bmxpbmsoL21udC9uZnN2
+My9sdHAtWnR6U0UyNzYxMS9kdXBLdUVyM0gvLm5mczAwMDAwMDAwMDExMGNiMzgwMDAwMDA2NikK
+Pj4gZmFpbGVkOyBlcnJubz0xNjogRGV2aWNlIG9yIHJlc291cmNlIGJ1c3kKPj4KPj4gQ2xvc2Ug
+dGhlIGNyZWF0ZWQvZHVwIGZpbGUgYmVmb3JlIHVubGluaygpIGl0IHRvIGZpeCB0aGlzIGlzc3Vl
+Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNsZS5jb20+
+Cj4gSGksCj4KPiB0aGlzIGlzIGludHJvZHVjaW5nIHNvbWUgd2FybmluZ3M6Cj4gZHVwMDcuYzo1
+Mzogd2FybmluZzog4oCYZHVwcmRv4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhp
+cyBmdW5jdGlvbgo+IGR1cDA3LmM6NTM6IHdhcm5pbmc6IOKAmGR1cHdyb+KAmSBtYXkgYmUgdXNl
+ZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24KPiBkdXAwNy5jOjUzOiB3YXJuaW5nOiDi
+gJhkdXByZHdy4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgo+
+Cj4gUmF0aGVyIHRoYW4gaW5pdGlhbGl6aW5nIHRoZXNlIHRvIC0xLCBJJ2Qgc3VnZ2VzdCB0byBt
+b3ZlIHRob3NlIGNsb3NlKCkgY2FsbHMKPiB0byBlbHNlIGJyYW5jaGVzOgo+IEBAIC03Nyw3ICs3
+Nyw5IEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgdHN0X3Jlc20oVFBBU1MsCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiUGFzc2VkIGluIHJlYWQgbW9kZS4iKTsK
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBjbG9zZShkdXByZG8pOwo+ICAgICAgICAgICAgICAgICAgICAgICAgICB9
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgY2xvc2UocmRvcmV0KTsKPiAgICAgICAgICAgICAg
+ICAgIH0KQWdyZWUsd2lsbCB1cGRhdGUgdGhlIHBhdGNoLgoKVGhhbmtzClNodWFuZwo+IFJlZ2Fy
+ZHMsCj4gSmFuCj4KPj4gLS0tCj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9kdXAvZHVw
+MDcuYyB8ICAgMTIgKysrKysrKysrKysrCj4+ICAgMSBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRp
+b25zKCspLCAwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9kdXAvZHVwMDcuYwo+PiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZHVw
+L2R1cDA3LmMKPj4gaW5kZXggMDNiMGJhNC4uMTljZDc1MSAxMDA2NDQKPj4gLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9kdXAvZHVwMDcuYwo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4+IEBAIC04MCw2ICs4MCwxMCBAQCBpbnQgbWFpbihpbnQg
+YWMsIGNoYXIgKiphdikKPj4gICAJCQl9Cj4+ICAgCQl9Cj4+ICAgCj4+ICsJCWlmIChkdXByZG8g
+IT0gLTEpCj4+ICsJCQljbG9zZShkdXByZG8pOwo+PiArCQlpZiAocmRvcmV0ICE9IC0xKQo+PiAr
+CQkJY2xvc2UocmRvcmV0KTsKPj4gICAJCXVubGluayh0ZXN0ZmlsZSk7Cj4+ICAgCQkKPj4gICAJ
+CWlmICgod3JvcmV0ID0gY3JlYXQodGVzdGZpbGUsIDAyMjIpKSA9PSAtMSkgewo+PiBAQCAtMTAw
+LDYgKzEwNCwxMCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPj4gICAJCQl9Cj4+ICAg
+CQl9Cj4+ICAgCj4+ICsJCWlmIChkdXB3cm8gIT0gLTEpCj4+ICsJCQljbG9zZShkdXB3cm8pOwo+
+PiArCQlpZiAod3JvcmV0ICE9IC0xKQo+PiArCQkJY2xvc2Uod3JvcmV0KTsKPj4gICAJCXVubGlu
+ayh0ZXN0ZmlsZSk7Cj4+ICAgCj4+ICAgCQlpZiAoKHJkd3JldCA9IGNyZWF0KHRlc3RmaWxlLCAw
+NjY2KSkgPT0gLTEpIHsKPj4gQEAgLTEyMCw2ICsxMjgsMTAgQEAgaW50IG1haW4oaW50IGFjLCBj
+aGFyICoqYXYpCj4+ICAgCQkJfQo+PiAgIAkJfQo+PiAgIAkJCj4+ICsJCWlmIChkdXByZHdyICE9
+IC0xKQo+PiArCQkJY2xvc2UoZHVwcmR3cik7Cj4+ICsJCWlmIChyZHdyZXQgIT0gLTEpCj4+ICsJ
+CQljbG9zZShyZHdyZXQpOwo+PiAgIAkJdW5saW5rKHRlc3RmaWxlKTsKPj4gICAJfQo+PiAgIAo+
+PiAtLQo+PiAxLjcuNwo+Pgo+Pgo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gVHJ5IE5ldyBS
+ZWxpYyBOb3cgJiBXZSdsbCBTZW5kIFlvdSB0aGlzIENvb2wgU2hpcnQKPj4gTmV3IFJlbGljIGlz
+IHRoZSBvbmx5IFNhYVMtYmFzZWQgYXBwbGljYXRpb24gcGVyZm9ybWFuY2UgbW9uaXRvcmluZyBz
+ZXJ2aWNlCj4+IHRoYXQgZGVsaXZlcnMgcG93ZXJmdWwgZnVsbCBzdGFjayBhbmFseXRpY3MuIE9w
+dGltaXplIGFuZCBtb25pdG9yIHlvdXIKPj4gYnJvd3NlciwgYXBwLCAmIHNlcnZlcnMgd2l0aCBq
+dXN0IGEgZmV3IGxpbmVzIG9mIGNvZGUuIFRyeSBOZXcgUmVsaWMKPj4gYW5kIGdldCB0aGlzIGF3
+ZXNvbWUgTmVyZCBMaWZlIHNoaXJ0ISBodHRwOi8vcC5zZi5uZXQvc2Z1L25ld3JlbGljX2QyZF9t
+YXkKPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4g
+THRwLWxpc3QgbWFpbGluZyBsaXN0Cj4+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+
+PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+
+PgoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVHJ5IE5ldyBSZWxpYyBOb3cgJiBXZSdsbCBTZW5k
+IFlvdSB0aGlzIENvb2wgU2hpcnQKTmV3IFJlbGljIGlzIHRoZSBvbmx5IFNhYVMtYmFzZWQgYXBw
+bGljYXRpb24gcGVyZm9ybWFuY2UgbW9uaXRvcmluZyBzZXJ2aWNlIAp0aGF0IGRlbGl2ZXJzIHBv
+d2VyZnVsIGZ1bGwgc3RhY2sgYW5hbHl0aWNzLiBPcHRpbWl6ZSBhbmQgbW9uaXRvciB5b3VyCmJy
+b3dzZXIsIGFwcCwgJiBzZXJ2ZXJzIHdpdGgganVzdCBhIGZldyBsaW5lcyBvZiBjb2RlLiBUcnkg
+TmV3IFJlbGljCmFuZCBnZXQgdGhpcyBhd2Vzb21lIE5lcmQgTGlmZSBzaGlydCEgaHR0cDovL3Au
+c2YubmV0L3NmdS9uZXdyZWxpY19kMmRfbWF5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vbHRwLWxpc3QK
