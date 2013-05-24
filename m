@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UdF2M-0005ZG-KR
-	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 07:25:10 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UfrPr-0006WA-51
+	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 12:48:15 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UdF27-0000jL-9b
-	for ltp-list@lists.sourceforge.net; Fri, 17 May 2013 07:25:10 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UfrPo-0006Mx-Qb
+	for ltp-list@lists.sourceforge.net; Fri, 24 May 2013 12:48:15 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4H7OmuN016347
-	for <ltp-list@lists.sourceforge.net>; Fri, 17 May 2013 15:24:48 +0800
-Message-ID: <5195DB16.6050202@cn.fujitsu.com>
-Date: Fri, 17 May 2013 15:24:06 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4OCm6Mb010579
+	for <ltp-list@lists.sourceforge.net>; Fri, 24 May 2013 20:48:06 +0800
+Message-ID: <519F6153.5030506@cn.fujitsu.com>
+Date: Fri, 24 May 2013 20:47:15 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <51944C16.5080607@cn.fujitsu.com> <5195C294.2040809@cn.fujitsu.com>
-In-Reply-To: <5195C294.2040809@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2 2/2] shmat/shmat01.c: Test for specifying NULL
- to shmaddr
+References: <519DD4ED.3090907@cn.fujitsu.com> <519F37CF.4030209@cn.fujitsu.com>
+In-Reply-To: <519F37CF.4030209@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V3 2/2] shmctl/shmctl01.c: Test features IPC_INFO,
+ SHM_STAT, SHM_LOCK and SHM_UNLOCK.
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -33,12 +33,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-On 05/17/2013 01:39 PM, DAN LI wrote:
-> Test for statement:
-> "If shmaddr is NULL, the system chooses a suitable (unused) address
-> at which to attach the segment."
+On 05/24/2013 05:50 PM, DAN LI wrote:
+> Additional tests for features IPC_INFO, SHM_STAT, SHM_LOCK and SHM_UNLOCK.
+> 
 > 
 > Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
@@ -48,11 +47,11 @@ Wanlong Gao
 
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
