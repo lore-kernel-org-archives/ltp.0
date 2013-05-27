@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ucd7L-0007AU-8A
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 14:55:47 +0000
-Date: Wed, 15 May 2013 16:56:52 +0200
-From: chrubis@suse.cz
-Message-ID: <20130515145652.GB25137@rei.suse.cz>
-References: <1368610801-25821-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130515123826.GA22782@rei> <51939CB6.3020808@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <R65777@freescale.com>) id 1UgvuL-0004sv-3F
+	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 11:48:09 +0000
+Received: from co9ehsobe001.messaging.microsoft.com ([207.46.163.24]
+	helo=co9outboundpool.messaging.microsoft.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1UgvuI-00064d-AH
+	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 11:48:09 +0000
+Received: from mail193-co9 (localhost [127.0.0.1])	by
+	mail193-co9-R.bigfish.com (Postfix) with ESMTP id 99E09660221	for
+	<ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 11:32:53 +0000 (UTC)
+Received: from CO9EHSMHS012.bigfish.com (unknown [10.236.132.254])	by
+	mail193-co9.bigfish.com (Postfix) with ESMTP id A6E109A004E	for
+	<ltp-list@lists.sourceforge.net>; Mon, 27 May 2013 11:32:51 +0000 (UTC)
+From: Bhushan Bharat-R65777 <R65777@freescale.com>
+Date: Mon, 27 May 2013 11:32:32 +0000
+Message-ID: <6A3DF150A5B70D4F9B66A25E3F7C888D070433E5@039-SN2MPN1-013.039d.mgd.msft.net>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51939CB6.3020808@oracle.com>
-Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
+Subject: [LTP] LTP: Compilation error for powerpc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,84 +33,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > What is this fflush() for?
-> >
-> kernels 3.7 can crash while unmounting cgroups with xattr,
-> so just to make sure all buffered data written before it happens
+Hi All,
 
-Ok, let's add simlilar comment to the code as well.
+There are a number of good test cases which we run to test various features ( like ptrace/memory etc). I tried below steps and failed to compile successfully:
 
-And it would be better to call tst_flush() as you are using tst_resm()
-interface.
+1)
+cp include/mk/config.mk.default include/mk/config.mk
 
-> > This function is too ugly. You should rather do something like
-> > print_xattr() that would both preprare the string and call the
-> > tst_resm() so that you don't need to pass allocated buffers around.
-> >
-> > void print_xattr(const char *msg, const char *val, size_t size)
-> > {
-> > 	char buf[size + sybm_num + 1];
-> > 	...
-> >
-> > 	tst_resm(TINFO, "%s%s", msg, buf);
-> > }
-> >
-> > Or we can create a tst_xxx function to print a buffer of bytes, I guess
-> > that there are more cases where such function could be used. But that
-> > would require a little more work to desing the interface right.
-> >
-> I agree, let's do that
+2)
+vi include/mk/config.mk
+-AR                      := ar
+-CC                      := gcc
++AR                      := /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-ar
++CC                      := /opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc
 
-Ok, lets address that in separate patch. I would go for simple function
-that would take prefix in printf() format and would dump the hex values
-after that. Something like tst_resm_buf(flags, buf, buf_len, fmt, ...)
-but perhaps we can come up with better name and/or API.
+3)
+cp include/config.h.default include/config.h
 
-I do not want to add custom printf() format strings on purpose, as that
-would:
+4)
+cd include/mk
+cp generic_leaf_target.inc generic_leaf_target.mk cp generic_trunk_target.inc generic_trunk_target.mk cd ../../
 
-1) create confusion
+5)
+Make
 
-2) possibly break the checks on the format done by compiler
+Getting error :
 
-Anybody else has better idea?
+make[4]: Entering directory `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
+/opt/freescale/usr/local/gcc-4.5.55-eglibc-2.11.55/powerpc-linux-gnu/bin/powerpc-linux-gnu-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/home/r65777/LTP/try/testcases/kernel/include  -c -o libclone.o libclone.c In file included from libclone.h:31:0,
+                 from libclone.c:17:
+/home/r65777/LTP/try/testcases/kernel/include/linux_syscall_numbers.h:18:21: fatal error: cleanup.c: No such file or directory compilation terminated.
+make[4]: *** [libclone.o] Error 1
+make[4]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers/libclone'
+make[3]: *** [libclone/libclone.a] Error 2
+make[3]: Leaving directory `/home/r65777/LTP/try/testcases/kernel/containers'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/home/r65777/LTP/try/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/r65777/LTP/try/testcases'
+make: *** [testcases-all] Error 2
 
-> >> +static void fill_test_value(char *id, struct tst_val *val)
-> >> +{
-> >> +	int i;
-> >> +	for (i = 0; i<  VALUE_SIZE; ++i)
-> >> +		val->buf[i] = *id;
-> > What about using memset()?
-> Ok :) further may be remove this function completely and just use memset 
-> instead?
+-------------------------
+ 
+Thanks
+-Bharat
 
-Sounds good.
-
-> > What about just defining the id in the walk functions and incrementing
-> > it each time fill_test_value() was called?
-> >
-> The point is to make unique key's values among all hierarchies (there 
-> was a bug when files with the same name share the same struct)
-> Would it be better to use global id that is incrementing each time when 
-> fill_test_value() called,
-> and resetting to init value between set and get walk functions?
-
-Global id sounds better to me.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
