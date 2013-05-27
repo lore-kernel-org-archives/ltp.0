@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ucv42-0007zo-NZ
-	for ltp-list@lists.sourceforge.net; Thu, 16 May 2013 10:05:34 +0000
-Date: Thu, 16 May 2013 12:06:41 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uh124-0005qh-KY
+	for ltp-list@lists.sourceforge.net; Mon, 27 May 2013 17:16:28 +0000
+Date: Mon, 27 May 2013 19:17:40 +0200
 From: chrubis@suse.cz
-Message-ID: <20130516100641.GA31245@rei.Home>
-References: <1368610801-25821-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130515123826.GA22782@rei> <51939CB6.3020808@oracle.com>
-	<20130515145652.GB25137@rei.suse.cz> <5194838B.2060104@oracle.com>
-	<20130516083923.GA31149@rei> <5194A887.3010204@oracle.com>
+Message-ID: <20130527171740.GB866@rei>
+References: <f9e681d1d404dd60c51ddcc12d4aefe7bb633f93.1369297122.git.jstancek@redhat.com>
+	<08bd7d0a39261aa522898a80ea56bc494d6c985e.1369673996.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5194A887.3010204@oracle.com>
-Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
+In-Reply-To: <08bd7d0a39261aa522898a80ea56bc494d6c985e.1369673996.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v4 2/2] waitid02: split code into separate
+	testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,32 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> Since we're going to print buf in hex, may be we can use
-> >> tst_resm_hex(flags, buf, buf_len, fmt, ...) to make it more descriptive?
-> > Naming things right is hard. I agree that 'hex' should be part of the
-> > name but ideally something like 'dump' or 'buf' should be there as well
-> > at least in form of the first letter (to keep the name reasonably short).
-> >
-> > tst_resm_bhex() or tst_resm_dhex() ?
-> >
-> tst_resm_hexd()? to make name similar to hexdump and od utilities.
+> Previous code in main was:
+> - using sleep for synchronization
+>   The sleep make take longer if run in overcommitted
+>   z/VM environment with considerably high steal time, which
+>   causes testcase to hang.
+> - missing wait for last child
+> 
+> This patch splits code from main() into separate testcases,
+> each with its own setup/cleanup and expected outcome.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Sounds good.
+You should have just commited this one. The change is cosmetic and the
+previous version was available for reviews (on the list) long enough.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
