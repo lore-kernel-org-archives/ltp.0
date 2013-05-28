@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UZOU5-0005aV-0C
-	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 16:41:53 +0000
-Date: Mon, 6 May 2013 18:42:53 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UhL0N-0001Y5-Ml
+	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 14:36:03 +0000
+Date: Tue, 28 May 2013 16:37:08 +0200
 From: chrubis@suse.cz
-Message-ID: <20130506164253.GA15114@rei.suse.cz>
-References: <1367833278-18177-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130506134721.GE4388@rei> <5187D15B.7080106@oracle.com>
+Message-ID: <20130528143707.GA4229@rei>
+References: <1369398051-2772-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5187D15B.7080106@oracle.com>
-Subject: Re: [LTP] [PATCH] New core test of hardlinks and symlinks
- restrictions added in Linux 3.6. Disabled by default in Linux 3.7.
+In-Reply-To: <1369398051-2772-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,63 +24,180 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> > Use tabs for indentation. And look for lines over 80 chars. Please use
-> > checkpatch.pl from linux kernel sources to check the patch next time.
-> I used checkpatch.pl on this code, but considered 80 chars limit as not 
-> strict warning, I will fix it.
+> +void setup(int argc, char *argv[])
+> +{
+> +	char *msg;
+> +	msg = parse_opts(argc, argv, options, help);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	tst_require_root(NULL);
+> +
+> +	if (access("/proc/cgroups", F_OK) == -1)
+> +		tst_brkm(TCONF, NULL, "Kernel doesn't support for cgroups");
+                                                     ^         ^
+				               Either add have here or
+					       remove the for
 
-Okay.
+> +	/* initialize test value */
+> +	val.size = value_size;
+> +	val.buf = SAFE_MALLOC(NULL, value_size);
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	tst_tmpdir();
+> +
+> +	make_cgroup_options();
+> +
+> +	int any_mounted = 0;
+> +	int i;
+> +	for (i = 0; i < cgrp_opt_num; ++i) {
+> +		char dir[MAX_DIR_NAME];
+> +		snprintf(cgrp_opt[i].dir, MAX_DIR_NAME, "cgx_%d",
+> +			cgrp_opt[i].hier);
+> +		SAFE_MKDIR(cleanup, cgrp_opt[i].dir, 0755);
+> +		if (mount(cgrp_opt[i].dir, cgrp_opt[i].dir, "cgroup", 0,
+> +			cgrp_opt[i].opt) == -1) {
+> +			tst_resm(TINFO, "Can't mount: %s", dir);
+> +			continue;
+> +		}
+> +
+> +		any_mounted = 1;
+> +		cgrp_opt[i].mounted = 1;
+> +
+> +		/* create new hierarchy */
+> +		SAFE_CHDIR(cleanup, cgrp_opt[i].dir);
+> +		SAFE_MKDIR(cleanup, subdir_name, 0755);
+> +		cgrp_opt[i].subdir = 1;
+> +		SAFE_CHDIR(cleanup, "..");
+> +	}
 
-> >> +static void create_test_user(void)
-> >> +{
-> >> +	char cmd[MAX_CMD_LEN];
-> >> +	snprintf(cmd, MAX_CMD_LEN, "%s %s", "useradd", users[TEST_USER].name);
-> > You can change the format string to "useradd %s" ;)
-> that's right :), at first I thought to use it as a function parameter to 
-> pass "useradd" or "userdel -r"
+I would keep the mounting code in the function that parses the cgroups
+proc file, that way we can have simple:
 
-That would work as well.
+	if (!mount_cgroups())
+		tst_brkm(TBROK, cleanup, "Nothing mounted");
 
-> >> +	char *cwd = get_tst_tmpdir();
-> >> +	cwd_offset = strlen(cwd);
-> >> +
-> >> +	mode_t mode = S_IRWXU | S_IRWXG | S_IRWXO;
-> >> +	chmod(cwd, mode);
-> >> +
-> >> +	struct dir_params *bdir = bdirs;
-> >> +	strcpy(bdir->path, cwd);
-> >> +	free(cwd);
-> > Do you really need the global path to the tst tmp dir? The call to
-> > tst_tmpdir() changes your CWD to it, so at least the subdirs could be
-> > created with local paths.
-> It's simplify hardlinks and symlinks creation, otherwise I have to 
-> construct relative paths that a bit more complicated.
-> Also, some test-cases can be added to deal with files which are outside 
-> of test tmpdir.
+in the setup and keep all the details in the function.
 
-What about using relative paths where they are easier to use? 
+> +	if (!any_mounted)
+> +		tst_brkm(TBROK, cleanup, "Mounted nothing");
 
-> Thank you for your comments!
-> 
-> Could you please tell me how should I send the corrected patch, just in 
-> the same way?
+This should be TCONF.
 
-Yes please, the LTP mailing list is right place to post patches for review.
+> +}
+> +
+> +void make_cgroup_options(void)
+> +{
+> +	/* detect subsystems */
+> +	FILE *fd = fopen("/proc/cgroups", "r");
+> +	if (fd == NULL)
+> +		tst_brkm(TBROK, cleanup, "Failed to read /proc/cgroups");
+> +
+> +	char str[MAX_DIR_NAME];
+> +	char name[MAX_DIR_NAME];
+> +	int	hier	= 0,
+> +		num	= 0,
+> +		enabled	= 0,
+> +		first	= 1;
+
+I would keep these at one line, which would save vertical space, but
+that is purely cosmetic change.
+
+> +	while ((fgets(str, MAX_DIR_NAME, fd)) != NULL) {
+> +		/* skip first line */
+> +		if (first) {
+> +			first = 0;
+> +			continue;
+> +		}
+> +		if (sscanf(str, "%s\t%d\t%d\t%d",
+> +			name, &hier, &num, &enabled) != 4)
+> +			tst_brkm(TBROK, cleanup, "Can't parse /proc/cgroups");
+> +
+> +		if (!enabled)
+> +			continue;
+> +
+> +		/* BUG WORKAROUND
+> +		 * Only mount those subsystems, which are not mounted yet.
+> +		 * It's a workaround to a bug when mount doesn't
+> +		 * return any err code while mounting already mounted
+> +		 * subsystems, but with additional "xattr" option.
+> +		 * In that case, mount will succeed, but xattr won't be
+> +		 * supported in the new mount anyway.
+> +		 * Should be removed as soon as a fix committed to upstream.
+> +		 */
+> +		if (hier != 0)
+> +			continue;
+> +		/* end of workaround */
+
+Remove the /* end of workaround */ please.
+
+> +		int found = 0;
+> +		int i;
+> +		for (i = 0; i < cgrp_opt_num; ++i) {
+> +			if (cgrp_opt[i].hier == hier) {
+> +				found = 1;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!found) {
+> +			i = cgrp_opt_num++;
+> +			cgrp_opt[i].hier = hier;
+> +		}
+> +
+> +		int len = strlen(cgrp_opt[i].opt);
+> +		if (len == 0) {
+
+                Could also be if (cgrp_opt[i].opt[0] == '\0') {
+		(or something similar)
+
+> +			strcpy(cgrp_opt[i].opt, "xattr");
+> +			len = strlen(cgrp_opt[i].opt);
+
+                        len == 5 in this case ;)
+
+> +		}
+> +
+> +		sprintf(cgrp_opt[i].opt + len, ",%s", name);
+
+So we create a list of subsystem by hierarchy here, and try to mount
+them with xattr later?
+
+Ah but due to bug in kernel (hier == 0 when we got to this part) we end
+up only with these that are not mounted at the moment, right?
+
+That looks OK. Hopefully the kernel gets fixed. Will the kernel support
+mouting the subsystems with additional xattr flags or will the mount
+return an error (on my machine all mounted subsystems are mounted
+without xattr)?
+
+> +	}
+> +	fclose(fd);
+> +
+> +	int i;
+> +	for (i = 0; i < cgrp_opt_num; ++i) {
+> +		tst_resm(TINFO, "mount options %d: %s (hier = %d)",
+> +			i, cgrp_opt[i].opt, cgrp_opt[i].hier);
+> +	}
+> +}
+> +
+
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
-Get 100% visibility into your production application - at no cost.
-Code-level diagnostics for performance bottlenecks with <2% overhead
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap1
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
