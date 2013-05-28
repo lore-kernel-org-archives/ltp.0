@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UfR66-00041B-CH
-	for ltp-list@lists.sourceforge.net; Thu, 23 May 2013 08:42:06 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UfR64-0006tf-UB
-	for ltp-list@lists.sourceforge.net; Thu, 23 May 2013 08:42:06 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4N8fr59026259
-	for <ltp-list@lists.sourceforge.net>; Thu, 23 May 2013 16:41:53 +0800
-Message-ID: <519DD5C0.107@cn.fujitsu.com>
-Date: Thu, 23 May 2013 16:39:28 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <519DD4ED.3090907@cn.fujitsu.com>
-In-Reply-To: <519DD4ED.3090907@cn.fujitsu.com>
-Subject: [LTP]  [PATCH 2/2] shmctl/shmctl01.c: Test features IPC_INFO,
- SHM_STAT, SHM_LOCK and SHM_UNLOCK.
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1UhAoU-0004JI-Qb
+	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 03:43:06 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UhAoR-0000Pb-1j
+	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 03:43:06 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r4S3gses019422
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 May 2013 03:42:55 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r4S3gtKk023987
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 May 2013 03:42:56 GMT
+Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r4S3gtZO006476
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 May 2013 03:42:55 GMT
+From: shuang.qiu@oracle.com
+Date: Tue, 28 May 2013 11:42:08 +0800
+Message-Id: <1369712528-9454-1-git-send-email-shuang.qiu@oracle.com>
+Subject: [LTP]  [PATCH] mmapstress10:Close the file descriptor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,177 +35,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-Additional tests for features IPC_INFO, SHM_STAT, SHM_LOCK and SHM_UNLOCK.
+It does not close the file descriptor before return 1 in fileokey()
+function which may cause the following warning with nfs as TMPDIR:
+0  TWARN  :  tst_rmdir: rmobj(/mnt/nfsv3/ltp-SDrfq17456/mmaq7TOqt)
+failed:
+unlink(/mnt/nfsv3/ltp-SDrfq17456/mmaq7TOqt/.nfs000000000110cb3600000004)
+failed; errno=16: Device or resource busy
 
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
 ---
- testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 83 ++++++++++++++++++++++---
- 1 file changed, 75 insertions(+), 8 deletions(-)
+ testcases/kernel/mem/mmapstress/mmapstress10.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-index 34ff30c..c0f2c81 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-@@ -43,13 +43,18 @@
-  *	call cleanup
-  */
-
-+#ifndef _GNU_SOURCE
-+#define _GNU_SOURCE
-+#endif
- #include "ipcshm.h"
- #include "libtestsuite.h"
-
- char *TCID = "shmctl01";
-
- static int shm_id_1 = -1;
-+static int shm_index;
- static struct shmid_ds buf;
-+static struct shminfo info;
- static long save_time;
-
- #define FIRST	0
-@@ -64,12 +69,24 @@ static pid_t pid_arr[N_ATTACH];
- static int sync_pipes[2];
-
- /* Setup, cleanup and check routines for IPC_STAT */
--static void stat_setup(void), func_stat(void);
-+static void stat_setup(void), func_istat(void);
- static void stat_cleanup(void);
-
- /* Setup and check routines for IPC_SET */
- static void set_setup(void), func_set(void);
-
-+/* Check routine for IPC_INFO */
-+static void func_info(void);
-+
-+/* Check routine for SHM_STAT */
-+static void func_sstat(void);
-+
-+/* Check routine for SHM_LOCK */
-+static void func_lock(void);
-+
-+/* Check routine for SHM_UNLOCK */
-+static void func_unlock(void);
-+
- /* Check routine for IPC_RMID */
- static void func_rmid(void);
-
-@@ -77,21 +94,27 @@ static void func_rmid(void);
- static void do_child(void);
-
- static struct test_case_t {
-+	int *shmid;
- 	int cmd;
-+	struct shmid_ds *arg;
- 	void (*func_test) ();
- 	void (*func_setup) ();
- } TC[] = {
--	{IPC_STAT, func_stat, stat_setup},
-+	{&shm_id_1, IPC_STAT, &buf, func_istat, stat_setup},
- #ifndef UCLINUX
- 	    /*
- 	     * The second test is not applicable to uClinux;
- 	     * shared memory segments are detached on exec(),
- 	     * so cannot be passed to uClinux children.
- 	     */
--	{IPC_STAT, func_stat, stat_setup},
-+	{&shm_id_1, IPC_STAT, &buf, func_istat, stat_setup},
- #endif
--	{IPC_SET, func_set, set_setup},
--	{IPC_RMID, func_rmid, NULL},
-+	{&shm_id_1, IPC_SET, &buf, func_set, set_setup},
-+	{&shm_id_1, IPC_INFO, (struct shmid_ds *) &info, func_info, NULL},
-+	{&shm_index, SHM_STAT, &buf, func_sstat, NULL},
-+	{&shm_id_1, SHM_LOCK, &buf, func_lock, NULL},
-+	{&shm_id_1, SHM_UNLOCK, &buf, func_unlock, NULL},
-+	{&shm_id_1, IPC_RMID, &buf, func_rmid, NULL},
- };
-
- static int TST_TOTAL = ARRAY_SIZE(TC);
-@@ -146,7 +169,7 @@ int main(int argc, char *argv[])
- 			if (TC[i].func_setup != NULL)
- 				(*TC[i].func_setup) ();
-
--			TEST(shmctl(shm_id_1, TC[i].cmd, &buf));
-+			TEST(shmctl(*(TC[i].shmid), TC[i].cmd, TC[i].arg));
-
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL, "%s call failed - errno "
-@@ -294,11 +317,11 @@ void do_child(void)
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress10.c b/testcases/kernel/mem/mmapstress/mmapstress10.c
+index baddaff..8ee7c87 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress10.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress10.c
+@@ -876,6 +876,7 @@ int fileokay(char *file, uchar_t * expbuf)
+ 		}
+ 	}
+ 
++	close(fd);
+ 	return 1;
  }
-
- /*
-- * func_stat() - check the functionality of the IPC_STAT command with shmctl()
-+ * func_istat() - check the functionality of the IPC_STAT command with shmctl()
-  *		 by looking at the pid of the creator, the segement size,
-  *		 the number of attaches and the mode.
-  */
--void func_stat(void)
-+void func_istat(void)
- {
- 	int fail = 0;
- 	pid_t pid;
-@@ -419,6 +442,50 @@ void func_set(void)
- 	tst_resm(TPASS, "new mode and change time are correct");
- }
-
-+
-+static void func_info(void)
-+{
-+	if (info.shmmin != 1)
-+		tst_resm(TFAIL, "value of shmmin is incorrect");
-+	else
-+		tst_resm(TPASS, "get correct shared memory limits");
-+}
-+
-+static void func_sstat(void)
-+{
-+	if (buf.shm_segsz != SHM_SIZE)
-+		tst_resm(TFAIL, "segment size is incorrect");
-+	else
-+		tst_resm(TPASS, "size of attache is correct");
-+}
-+
-+static void func_lock(void)
-+{
-+	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
-+		tst_resm(TBROK, "stat failed in func_lock()");
-+		return;
-+	}
-+
-+	if (buf.shm_perm.mode & SHM_LOCKED)
-+		tst_resm(TPASS, "SHM_LOCK is setted");
-+	else
-+		tst_resm(TFAIL, "SHM_LOCK is not setted");
-+}
-+
-+static void func_unlock(void)
-+{
-+	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
-+		tst_resm(TBROK, "stat failed in func_unlock()");
-+		return;
-+	}
-+
-+	if (buf.shm_perm.mode & SHM_LOCKED)
-+		tst_resm(TFAIL, "SHM_LOCK is not cleared");
-+	else
-+		tst_resm(TPASS, "SHM_LOCK is cleared");
-+}
-+
-+
- /*
-  * func_rmid() - check the functionality of the IPC_RMID command with shmctl()
-  */
+ 
 -- 
-1.8.1
+1.7.7
+
 
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
