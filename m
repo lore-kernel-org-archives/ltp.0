@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UfQYJ-0006zM-3Z
-	for ltp-list@lists.sourceforge.net; Thu, 23 May 2013 08:07:11 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UhEoV-00040I-JU
+	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 07:59:23 +0000
 Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UfQYH-0005Pl-Ls
-	for ltp-list@lists.sourceforge.net; Thu, 23 May 2013 08:07:11 +0000
-Date: Thu, 23 May 2013 04:07:02 -0400 (EDT)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UhEoP-0002Nt-5z
+	for ltp-list@lists.sourceforge.net; Tue, 28 May 2013 07:59:23 +0000
+Date: Tue, 28 May 2013 03:59:10 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <818728049.6400472.1369296422448.JavaMail.root@redhat.com>
-In-Reply-To: <1369292947-20445-1-git-send-email-shuang.qiu@oracle.com>
-References: <1369292947-20445-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <603409954.8691174.1369727950680.JavaMail.root@redhat.com>
+In-Reply-To: <1369712528-9454-1-git-send-email-shuang.qiu@oracle.com>
+References: <1369712528-9454-1-git-send-email-shuang.qiu@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] dup07:Close the file before unlink it.
+Subject: Re: [LTP] [PATCH] mmapstress10:Close the file descriptor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,76 +24,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: shuang qiu <shuang.qiu@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAic2h1YW5nIHFpdSIgPHNodWFu
-Zy5xaXVAb3JhY2xlLmNvbT4KPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
-U2VudDogVGh1cnNkYXksIDIzIE1heSwgMjAxMyA5OjA5OjA3IEFNCj4gU3ViamVjdDogW0xUUF0g
-W1BBVENIXSBkdXAwNzpDbG9zZSB0aGUgZmlsZSBiZWZvcmUgdW5saW5rIGl0Lgo+IAo+IEZyb206
-IFNodWFuZyBRaXUgPHNodWFuZy5xaXVAb3JhY2xlLmNvbT4KPiAKPiBXaGVuIHVubGluaygpIGEg
-ZmlsZSBpbiBuZnMgZW52aXJvbm1lbnQsaXQgd2lsbCByZW5hbWUgdGhlIGZpbGUgdG8gYQo+IC5u
-ZnM8eHh4eHg+IGZpbGUgaWYgYW55IHByb2Nlc3Mgc3RpbGwgaGFzIHRoYXQgZmlsZSBvcGVuLkFu
-ZCB0aGlzIGZpbGUKPiBjb3VsZCBub3QgYmUgZGVsZXRlZCB1bnRpbCBpdCBpcyBjbG9zZWQuU28g
-d2UgYWx3YXlzIGdldCB0aGUgZm9sbG93aW5nCj4gd2FybmluZyB3aGljaCBtYWtlcyB0ZXN0Y2Fz
-ZSAiZHVwMDciIGZhaWxlZDoKPiAwICBUV0FSTiAgOiAgdHN0X3JtZGlyOiBybW9iaigvbW50L25m
-c3YzL2x0cC1adHpTRTI3NjExL2R1cEt1RXIzSCkKPiBmYWlsZWQ6Cj4gdW5saW5rKC9tbnQvbmZz
-djMvbHRwLVp0elNFMjc2MTEvZHVwS3VFcjNILy5uZnMwMDAwMDAwMDAxMTBjYjM4MDAwMDAwNjYp
-Cj4gZmFpbGVkOyBlcnJubz0xNjogRGV2aWNlIG9yIHJlc291cmNlIGJ1c3kKPiAKPiBDbG9zZSB0
-aGUgY3JlYXRlZC9kdXAgZmlsZSBiZWZvcmUgdW5saW5rKCkgaXQgdG8gZml4IHRoaXMgaXNzdWUu
-Cj4gCj4gU2lnbmVkLW9mZi1ieTogU2h1YW5nIFFpdSA8c2h1YW5nLnFpdUBvcmFjbGUuY29tPgoK
-SGksCgp0aGlzIGlzIGludHJvZHVjaW5nIHNvbWUgd2FybmluZ3M6CmR1cDA3LmM6NTM6IHdhcm5p
-bmc6IOKAmGR1cHJkb+KAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rp
-b24KZHVwMDcuYzo1Mzogd2FybmluZzog4oCYZHVwd3Jv4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlh
-bGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgpkdXAwNy5jOjUzOiB3YXJuaW5nOiDigJhkdXByZHdy4oCZ
-IG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgoKUmF0aGVyIHRoYW4g
-aW5pdGlhbGl6aW5nIHRoZXNlIHRvIC0xLCBJJ2Qgc3VnZ2VzdCB0byBtb3ZlIHRob3NlIGNsb3Nl
-KCkgY2FsbHMKdG8gZWxzZSBicmFuY2hlczoKQEAgLTc3LDcgKzc3LDkgQEAgaW50IG1haW4oaW50
-IGFjLCBjaGFyICoqYXYpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0
-c3RfcmVzbShUUEFTUywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICJQYXNzZWQgaW4gcmVhZCBtb2RlLiIpOwogICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIH0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9zZShkdXByZG8pOwog
-ICAgICAgICAgICAgICAgICAgICAgICB9CisgICAgICAgICAgICAgICAgICAgICAgIGNsb3NlKHJk
-b3JldCk7CiAgICAgICAgICAgICAgICB9CgpSZWdhcmRzLApKYW4gCgo+IC0tLQo+ICB0ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jIHwgICAxMiArKysrKysrKysrKysKPiAgMSBm
-aWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYg
-LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4gYi90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4gaW5kZXggMDNiMGJhNC4uMTljZDc1MSAx
-MDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2R1cC9kdXAwNy5jCj4gKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9kdXAvZHVwMDcuYwo+IEBAIC04MCw2ICs4MCwx
-MCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPiAgCQkJfQo+ICAJCX0KPiAgCj4gKwkJ
-aWYgKGR1cHJkbyAhPSAtMSkKPiArCQkJY2xvc2UoZHVwcmRvKTsKPiArCQlpZiAocmRvcmV0ICE9
-IC0xKQo+ICsJCQljbG9zZShyZG9yZXQpOwo+ICAJCXVubGluayh0ZXN0ZmlsZSk7Cj4gIAkJCj4g
-IAkJaWYgKCh3cm9yZXQgPSBjcmVhdCh0ZXN0ZmlsZSwgMDIyMikpID09IC0xKSB7Cj4gQEAgLTEw
-MCw2ICsxMDQsMTAgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4gIAkJCX0KPiAgCQl9
-Cj4gIAo+ICsJCWlmIChkdXB3cm8gIT0gLTEpCj4gKwkJCWNsb3NlKGR1cHdybyk7Cj4gKwkJaWYg
-KHdyb3JldCAhPSAtMSkKPiArCQkJY2xvc2Uod3JvcmV0KTsKPiAgCQl1bmxpbmsodGVzdGZpbGUp
-Owo+ICAKPiAgCQlpZiAoKHJkd3JldCA9IGNyZWF0KHRlc3RmaWxlLCAwNjY2KSkgPT0gLTEpIHsK
-PiBAQCAtMTIwLDYgKzEyOCwxMCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPiAgCQkJ
-fQo+ICAJCX0KPiAgCQkKPiArCQlpZiAoZHVwcmR3ciAhPSAtMSkKPiArCQkJY2xvc2UoZHVwcmR3
-cik7Cj4gKwkJaWYgKHJkd3JldCAhPSAtMSkKPiArCQkJY2xvc2UocmR3cmV0KTsKPiAgCQl1bmxp
-bmsodGVzdGZpbGUpOwo+ICAJfQo+ICAKPiAtLQo+IDEuNy43Cj4gCj4gCj4gLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCj4gVHJ5IE5ldyBSZWxpYyBOb3cgJiBXZSdsbCBTZW5kIFlvdSB0aGlzIENvb2wg
-U2hpcnQKPiBOZXcgUmVsaWMgaXMgdGhlIG9ubHkgU2FhUy1iYXNlZCBhcHBsaWNhdGlvbiBwZXJm
-b3JtYW5jZSBtb25pdG9yaW5nIHNlcnZpY2UKPiB0aGF0IGRlbGl2ZXJzIHBvd2VyZnVsIGZ1bGwg
-c3RhY2sgYW5hbHl0aWNzLiBPcHRpbWl6ZSBhbmQgbW9uaXRvciB5b3VyCj4gYnJvd3NlciwgYXBw
-LCAmIHNlcnZlcnMgd2l0aCBqdXN0IGEgZmV3IGxpbmVzIG9mIGNvZGUuIFRyeSBOZXcgUmVsaWMK
-PiBhbmQgZ2V0IHRoaXMgYXdlc29tZSBOZXJkIExpZmUgc2hpcnQhIGh0dHA6Ly9wLnNmLm5ldC9z
-ZnUvbmV3cmVsaWNfZDJkX21heQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUcnkgTmV3IFJlbGljIE5vdyAm
-IFdlJ2xsIFNlbmQgWW91IHRoaXMgQ29vbCBTaGlydApOZXcgUmVsaWMgaXMgdGhlIG9ubHkgU2Fh
-Uy1iYXNlZCBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSBtb25pdG9yaW5nIHNlcnZpY2UgCnRoYXQg
-ZGVsaXZlcnMgcG93ZXJmdWwgZnVsbCBzdGFjayBhbmFseXRpY3MuIE9wdGltaXplIGFuZCBtb25p
-dG9yIHlvdXIKYnJvd3NlciwgYXBwLCAmIHNlcnZlcnMgd2l0aCBqdXN0IGEgZmV3IGxpbmVzIG9m
-IGNvZGUuIFRyeSBOZXcgUmVsaWMKYW5kIGdldCB0aGlzIGF3ZXNvbWUgTmVyZCBMaWZlIHNoaXJ0
-ISBodHRwOi8vcC5zZi5uZXQvc2Z1L25ld3JlbGljX2QyZF9tYXkKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
-aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+
+
+
+
+----- Original Message -----
+> From: "shuang qiu" <shuang.qiu@oracle.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 28 May, 2013 5:42:08 AM
+> Subject: [LTP]  [PATCH] mmapstress10:Close the file descriptor
+> 
+> From: Shuang Qiu <shuang.qiu@oracle.com>
+> 
+> It does not close the file descriptor before return 1 in fileokey()
+> function which may cause the following warning with nfs as TMPDIR:
+> 0  TWARN  :  tst_rmdir: rmobj(/mnt/nfsv3/ltp-SDrfq17456/mmaq7TOqt)
+> failed:
+> unlink(/mnt/nfsv3/ltp-SDrfq17456/mmaq7TOqt/.nfs000000000110cb3600000004)
+> failed; errno=16: Device or resource busy
+> 
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+
+Looks good to me.
+commit 76a720a381f351b33eb203c7c519e6f44bbe7219 added some to error paths,
+but missed this one.
+
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+
+> ---
+>  testcases/kernel/mem/mmapstress/mmapstress10.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/mmapstress/mmapstress10.c
+> b/testcases/kernel/mem/mmapstress/mmapstress10.c
+> index baddaff..8ee7c87 100644
+> --- a/testcases/kernel/mem/mmapstress/mmapstress10.c
+> +++ b/testcases/kernel/mem/mmapstress/mmapstress10.c
+> @@ -876,6 +876,7 @@ int fileokay(char *file, uchar_t * expbuf)
+>  		}
+>  	}
+>  
+> +	close(fd);
+>  	return 1;
+>  }
+>  
+> --
+> 1.7.7
+> 
+> 
+> ------------------------------------------------------------------------------
+> Try New Relic Now & We'll Send You this Cool Shirt
+> New Relic is the only SaaS-based application performance monitoring service
+> that delivers powerful full stack analytics. Optimize and monitor your
+> browser, app, & servers with just a few lines of code. Try New Relic
+> and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+------------------------------------------------------------------------------
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
