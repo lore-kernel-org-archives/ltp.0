@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uf9yy-00032D-EH
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 14:25:36 +0000
-Date: Wed, 22 May 2013 16:26:46 +0200
-From: chrubis@suse.cz
-Message-ID: <20130522142645.GD7373@rei>
-References: <1369218265-27999-1-git-send-email-alexey.kodanev@oracle.com>
+	(envelope-from <jstancek@redhat.com>) id 1UhdsC-0006TW-N1
+	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 10:44:52 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UhdsB-0005Ee-Az
+	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 10:44:52 +0000
+Date: Wed, 29 May 2013 06:44:43 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <577470418.347391.1369824283490.JavaMail.root@redhat.com>
+In-Reply-To: <51A5D7A9.3070801@cn.fujitsu.com>
+References: <51A5C347.4020202@cn.fujitsu.com>
+	<1098836685.51729.1369819107988.JavaMail.root@redhat.com>
+	<51A5D7A9.3070801@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1369218265-27999-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
+Subject: Re: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach
+ SHM_NORESERVE to shmflg
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,32 +30,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
-
-Hi!
-> Support of extended attributes in cgroups was added in Linux 3.7.
-> +		/* get xattr value */
-> +		char xval[size];
-> +		if (getxattr(file, tkeys[i].name, (void *)xval, size) == -1) {
-
-The conversion from char * to void * should be automatic so the cast to
-(void *) shouldn't be needed, or not?
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 
-The rest if fine. Waiting for resping of the tst_resm_hexd() patch
-before aplying this one.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+
+----- Original Message -----
+> From: "DAN LI" <li.dan@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "LTP list" <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, 29 May, 2013 12:25:45 PM
+> Subject: Re: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach SHM_NORESERVE to shmflg
+> 
+> On 05/29/2013 05:18 PM, Jan Stancek wrote:
+> > 
+> > ----- Original Message -----
+> >> From: "DAN LI" <li.dan@cn.fujitsu.com>
+> >> To: "LTP list" <ltp-list@lists.sourceforge.net>
+> >> Sent: Wednesday, 29 May, 2013 10:58:47 AM
+> >> Subject: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach SHM_NORESERVE
+> >> to shmflg
+> >>
+> >>
+> >> 1. Remove useless comments
+> >>
+> >> 2. Revise code to follow ltp-code-style
+> >>
+> >> 3. Add SHM_NORESERVE to shmflg to test
+> > 
+> > Can you add some description why you are adding this flag?
+> 
+> Actually, we are trying to complete test cases and expand
+> the test scope of LTP.
+> 
+> So, it is just for completeness of this case.
+
+My concern here is:
+So if we add this flag, we cover SHM_NORESERVE path.
+Do we have a testcase which still covers current non-SHM_NORESERVE path?
+
+Regards,
+Jan
+
+> 
+> Regards,
+> DAN LI
+> 
+> > 
+> >>
+> >> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> >> ---
+> > 
+> > 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
