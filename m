@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UcViJ-0000BG-LV
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 07:01:27 +0000
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UhZZU-0002uf-0m
+	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 06:09:16 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UcViI-0001D7-Js
-	for ltp-list@lists.sourceforge.net; Wed, 15 May 2013 07:01:27 +0000
-Message-ID: <5193329C.4040205@cn.fujitsu.com>
-Date: Wed, 15 May 2013 15:00:44 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UhZZS-0002Vz-Gl
+	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 06:09:15 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4T690fN011916
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 May 2013 14:09:05 +0800
+Message-ID: <51A59AE7.60006@cn.fujitsu.com>
+Date: Wed, 29 May 2013 14:06:31 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <45b6ebc4e0b5f2848c107c26ba144822bed090a1.1368434507.git.zliu@redhat.com>
-	<6e4f2cc0db6d6544478fe24fe00f04755b617119.1368434507.git.zliu@redhat.com>
-In-Reply-To: <6e4f2cc0db6d6544478fe24fe00f04755b617119.1368434507.git.zliu@redhat.com>
-Subject: Re: [LTP] [PATCH v2 2/3] mem: introduce clean_node() func
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP]  [PATCH] su/su01_s1: fix mismatched double quotation marks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,27 +28,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 05/13/2013 04:43 PM, Zhouping Liu wrote:
-> There's set_node func introduced in commit cb2967b27a65, but we
-> don't have a func to clean the node mask yet.
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
+Expect code
+* spawn su -c "/bin/su root -c \"echo \"\\\$TEST_LINE > $TEST_ENV_FILE\"\""
+will be translated to
+* spawn su -c /bin/su root -c "echo "\$TEST_LINE > /tmp/TEST_ENV_FILE_ROOT""
+which actually should be
+* spawn su -c /bin/su root -c "echo \$TEST_LINE > /tmp/TEST_ENV_FILE_ROOT"
 
 
-Applied, thank you.
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/commands/su/su01_s1 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Wanlong Gao
-
+diff --git a/testcases/commands/su/su01_s1 b/testcases/commands/su/su01_s1
+index b50ebdf..fd2e485 100755
+--- a/testcases/commands/su/su01_s1
++++ b/testcases/commands/su/su01_s1
+@@ -145,7 +145,7 @@ set exit_code [lindex $codes 3]
+ set i_have_env 0
+ set test_env_var " "
+ if { $i_am_root==1 } {
+-	spawn su -c "/bin/su root -c \"echo \"\\\$TEST_LINE > $TEST_ENV_FILE\"\""
++	spawn su -c "/bin/su root -c \"echo \\\$TEST_LINE > $TEST_ENV_FILE\""
+ 	expect {
+ 		 "Password:" {
+ 			send "$PASSWD\r"
+-- 
+1.8.1
 
 ------------------------------------------------------------------------------
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
