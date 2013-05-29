@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Uf3D0-0007gn-NP
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 07:11:38 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uf3Cz-0006t1-4Z
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 07:11:38 +0000
-Date: Wed, 22 May 2013 03:11:21 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <579338756.5630570.1369206681507.JavaMail.root@redhat.com>
-In-Reply-To: <519C24C9.9070807@cn.fujitsu.com>
-References: <519C24C9.9070807@cn.fujitsu.com>
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UhcGA-0003wJ-Ds
+	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 09:01:30 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UhcG7-0002UW-W7
+	for ltp-list@lists.sourceforge.net; Wed, 29 May 2013 09:01:30 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r4T91GgZ027919
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 May 2013 17:01:16 +0800
+Message-ID: <51A5C347.4020202@cn.fujitsu.com>
+Date: Wed, 29 May 2013 16:58:47 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] semctl01.c: Pass the correct parameter
+Subject: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach SHM_NORESERVE
+ to shmflg
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,88 +26,195 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiREFOIExJIiA8bGkuZGFuQGNu
-LmZ1aml0c3UuY29tPgo+IFRvOiAiTFRQIGxpc3QiIDxsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQ+Cj4gQ2M6ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4gU2VudDog
-V2VkbmVzZGF5LCAyMiBNYXksIDIwMTMgMzo1MjowOSBBTQo+IFN1YmplY3Q6IFtMVFBdIFtQQVRD
-SCBWMl0gc2VtY3RsMDEuYzogUGFzcyB0aGUgY29ycmVjdCBwYXJhbWV0ZXIKPiAKPiAKPiBGb3Ig
-U0VNX1NUQVQsIHRoZSBzZW1pZCBhcmd1bWVudCBpcyBub3QgYSBzZW1hcGhvcmUgaWRlbnRpZmll
-ciwgIGJ1dCBpbnN0ZWFkCj4gYW4KPiBpbmRleCBpbnRvIHRoZSBrZXJuZWzigJlzIGludGVybmFs
-IGFycmF5IHRoYXQgbWFpbnRhaW5zIGluZm9ybWF0aW9uIGFib3V0IGFsbAo+IHNlbWFwaG9yZSBz
-ZXRzIG9uIHRoZSBzeXN0ZW0uCj4gCj4gUGFzcyBhIGNvcnJlY3QgaW5kZXggb2YgdGhlIGtlcm5l
-bCcgaW50ZXJuYWwgYXJyYXkgaW50ZWFkIG9mIGEgc2VtYXBob3JlcyBpZAo+IHdoZW4KPiB0ZXN0
-aW5nIGZlYXR1cmUgU0VNX1NUQVQuCj4gCj4gU2lnbmVkLW9mZi1ieTogREFOIExJIDxsaS5kYW5A
-Y24uZnVqaXRzdS5jb20+CgpMb29rcyBnb29kIHRvIG1lLiBzZW1faW5kZXggPT0gMCB3b3VsZCB3
-b3JrIHRvbywgSSdtIGFzc3VtaW5nIHlvdQp3ZW50IHdpdGggaGlkeCBhcyBhIGNvcm5lciBjYXNl
-LCB3aGljaCBpcyBhbHNvIHZhbGlkIHZhbHVlLgoKUmV2aWV3ZWQtYnk6IEphbiBTdGFuY2VrIDxq
-c3RhbmNla0ByZWRoYXQuY29tPgoKUmVnYXJkcywKSmFuCgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDEuYyB8IDM3Cj4gICsrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDE2IGRlbGV0
-aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9z
-ZW1jdGwvc2VtY3RsMDEuYwo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3Rs
-L3NlbWN0bDAxLmMKPiBpbmRleCA2ODdkOTA5Li4wMzk5ODQyIDEwMDY0NAo+IC0tLSBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwMS5jCj4gKysrIGIvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAxLmMKPiBAQCAtNTIsNiArNTIs
-NyBAQCBjaGFyICpUQ0lEID0gInNlbWN0bDAxIjsKPiAgaW50IFRTVF9UT1RBTCA9IDEzOwo+IAo+
-ICBzdGF0aWMgaW50IHNlbV9pZF8xID0gLTE7Cj4gK3N0YXRpYyBpbnQgc2VtX2luZGV4Owo+IAo+
-ICBzdGF0aWMgaW50IHN5bmNfcGlwZXNbMl07Cj4gCj4gQEAgLTEwMCwyNSArMTAxLDI2IEBAIHN0
-YXRpYyBpbnQgc2VtX29wOwo+ICAjZW5kaWYKPiAKPiAgc3RhdGljIHN0cnVjdCB0ZXN0X2Nhc2Vf
-dCB7Cj4gKwlpbnQgKnNlbWlkOwo+ICAJaW50IHNlbW51bTsKPiAgCWludCBjbWQ7Cj4gIAl2b2lk
-ICgqZnVuY190ZXN0KSAoKTsKPiAgCXVuaW9uIHNlbXVuIGFyZzsKPiAgCXZvaWQgKCpmdW5jX3Nl
-dHVwKSAoKTsKPiAgfSBUQ1tdID0gewo+IC0JezAsIElQQ19TVEFULCBmdW5jX3N0YXQsIFNFTVVO
-X0NBU1QgJiBidWYsIE5VTEx9LAo+IC0JezAsIElQQ19TRVQsIGZ1bmNfc2V0LCBTRU1VTl9DQVNU
-ICYgYnVmLCBzZXRfc2V0dXB9LAo+IC0JezAsIEdFVEFMTCwgZnVuY19nYWxsLCBTRU1VTl9DQVNU
-IGFycmF5LCBOVUxMfSwKPiAtCXtTRU00LCBHRVROQ05ULCBmdW5jX2NudCwgU0VNVU5fQ0FTVCAm
-IGJ1ZiwgY250X3NldHVwfSwKPiAtCXtTRU0yLCBHRVRQSUQsIGZ1bmNfcGlkLCBTRU1VTl9DQVNU
-ICYgYnVmLCBwaWRfc2V0dXB9LAo+IC0Je1NFTTIsIEdFVFZBTCwgZnVuY19ndmFsLCBTRU1VTl9D
-QVNUICYgYnVmLCBOVUxMfSwKPiAtCXtTRU00LCBHRVRaQ05ULCBmdW5jX2NudCwgU0VNVU5fQ0FT
-VCAmIGJ1ZiwgY250X3NldHVwfSwKPiAtCXswLCBTRVRBTEwsIGZ1bmNfc2FsbCwgU0VNVU5fQ0FT
-VCBhcnJheSwgc2FsbF9zZXR1cH0sCj4gLQl7U0VNNCwgU0VUVkFMLCBmdW5jX3N2YWwsIFNFTVVO
-X0NBU1QgSU5DVkFMLCBOVUxMfSwKPiAtCXswLCBJUENfSU5GTywgZnVuY19paW5mbywgU0VNVU5f
-Q0FTVCAmIGlwY19idWYsIE5VTEx9LAo+IC0JezAsIFNFTV9JTkZPLCBmdW5jX3NpbmZvLCBTRU1V
-Tl9DQVNUICYgaXBjX2J1ZiwgTlVMTH0sCj4gLQl7MCwgU0VNX1NUQVQsIGZ1bmNfc3N0YXQsIFNF
-TVVOX0NBU1QgJiBidWYsIE5VTEx9LAo+IC0JezAsIElQQ19STUlELCBmdW5jX3JtaWQsIFNFTVVO
-X0NBU1QgJiBidWYsIE5VTEx9LAo+ICsJeyZzZW1faWRfMSwgMCwgSVBDX1NUQVQsIGZ1bmNfc3Rh
-dCwgU0VNVU5fQ0FTVCAmIGJ1ZiwgTlVMTH0sCj4gKwl7JnNlbV9pZF8xLCAwLCBJUENfU0VULCBm
-dW5jX3NldCwgU0VNVU5fQ0FTVCAmIGJ1Ziwgc2V0X3NldHVwfSwKPiArCXsmc2VtX2lkXzEsIDAs
-IEdFVEFMTCwgZnVuY19nYWxsLCBTRU1VTl9DQVNUIGFycmF5LCBOVUxMfSwKPiArCXsmc2VtX2lk
-XzEsIFNFTTQsIEdFVE5DTlQsIGZ1bmNfY250LCBTRU1VTl9DQVNUICYgYnVmLCBjbnRfc2V0dXB9
-LAo+ICsJeyZzZW1faWRfMSwgU0VNMiwgR0VUUElELCBmdW5jX3BpZCwgU0VNVU5fQ0FTVCAmIGJ1
-ZiwgcGlkX3NldHVwfSwKPiArCXsmc2VtX2lkXzEsIFNFTTIsIEdFVFZBTCwgZnVuY19ndmFsLCBT
-RU1VTl9DQVNUICYgYnVmLCBOVUxMfSwKPiArCXsmc2VtX2lkXzEsIFNFTTQsIEdFVFpDTlQsIGZ1
-bmNfY250LCBTRU1VTl9DQVNUICYgYnVmLCBjbnRfc2V0dXB9LAo+ICsJeyZzZW1faWRfMSwgMCwg
-U0VUQUxMLCBmdW5jX3NhbGwsIFNFTVVOX0NBU1QgYXJyYXksIHNhbGxfc2V0dXB9LAo+ICsJeyZz
-ZW1faWRfMSwgU0VNNCwgU0VUVkFMLCBmdW5jX3N2YWwsIFNFTVVOX0NBU1QgSU5DVkFMLCBOVUxM
-fSwKPiArCXsmc2VtX2lkXzEsIDAsIElQQ19JTkZPLCBmdW5jX2lpbmZvLCBTRU1VTl9DQVNUICYg
-aXBjX2J1ZiwgTlVMTH0sCj4gKwl7JnNlbV9pZF8xLCAwLCBTRU1fSU5GTywgZnVuY19zaW5mbywg
-U0VNVU5fQ0FTVCAmIGlwY19idWYsIE5VTEx9LAo+ICsJeyZzZW1faW5kZXgsIDAsIFNFTV9TVEFU
-LCBmdW5jX3NzdGF0LCBTRU1VTl9DQVNUICYgYnVmLCBOVUxMfSwKPiArCXsmc2VtX2lkXzEsIDAs
-IElQQ19STUlELCBmdW5jX3JtaWQsIFNFTVVOX0NBU1QgJiBidWYsIE5VTEx9LAo+ICB9Owo+IAo+
-ICBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+IEBAIC0xNjIsNyArMTY0LDcgQEAg
-aW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPiAgCQkJCX0KPiAgCQkJfQo+IAo+IC0J
-CQlURVNUKHNlbWN0bChzZW1faWRfMSwgVENbaV0uc2VtbnVtLCBUQ1tpXS5jbWQsCj4gKwkJCVRF
-U1Qoc2VtY3RsKCooVENbaV0uc2VtaWQpLCBUQ1tpXS5zZW1udW0sIFRDW2ldLmNtZCwKPiAgCQkJ
-CSAgICBUQ1tpXS5hcmcpKTsKPiAKPiAgCQkJaWYgKFRFU1RfUkVUVVJOID09IC0xKSB7Cj4gQEAg
-LTU2MCwxMCArNTYyLDEzIEBAIHN0YXRpYyB2b2lkIGZ1bmNfcm1pZCh2b2lkKQo+IAo+ICBzdGF0
-aWMgdm9pZCBmdW5jX2lpbmZvKGludCBoaWR4KQo+ICB7Cj4gLQlpZiAoaGlkeCA+PSAwKQo+ICsJ
-aWYgKGhpZHggPj0gMCkgewo+ICsJCXNlbV9pbmRleCA9IGhpZHg7Cj4gIAkJdHN0X3Jlc20oVFBB
-U1MsICJ0aGUgaGlnaGVzdCBpbmRleCBpcyBjb3JyZWN0Iik7Cj4gLQllbHNlCj4gKwl9IGVsc2Ug
-ewo+ICsJCXNlbV9pbmRleCA9IDA7Cj4gIAkJdHN0X3Jlc20oVEZBSUwsICJ0aGUgaGlnaGVzdCBp
-bmRleCBpcyBpbmNvcnJlY3QiKTsKPiArCX0KPiAgfQo+IAo+ICBzdGF0aWMgdm9pZCBmdW5jX3Np
-bmZvKHZvaWQpCj4gLS0KPiAxLjguMQo+IAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRyeSBOZXcg
-UmVsaWMgTm93ICYgV2UnbGwgU2VuZCBZb3UgdGhpcyBDb29sIFNoaXJ0Ck5ldyBSZWxpYyBpcyB0
-aGUgb25seSBTYWFTLWJhc2VkIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlIG1vbml0b3Jpbmcgc2Vy
-dmljZSAKdGhhdCBkZWxpdmVycyBwb3dlcmZ1bCBmdWxsIHN0YWNrIGFuYWx5dGljcy4gT3B0aW1p
-emUgYW5kIG1vbml0b3IgeW91cgpicm93c2VyLCBhcHAsICYgc2VydmVycyB3aXRoIGp1c3QgYSBm
-ZXcgbGluZXMgb2YgY29kZS4gVHJ5IE5ldyBSZWxpYwphbmQgZ2V0IHRoaXMgYXdlc29tZSBOZXJk
-IExpZmUgc2hpcnQhIGh0dHA6Ly9wLnNmLm5ldC9zZnUvbmV3cmVsaWNfZDJkX21heQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+
+1. Remove useless comments
+
+2. Revise code to follow ltp-code-style
+
+3. Add SHM_NORESERVE to shmflg to test
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ipc/shmget/shmget01.c | 87 +++++++------------------
+ 1 file changed, 22 insertions(+), 65 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget01.c b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
+index 38dbee7..c36fb8e 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget01.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
+@@ -1,20 +1,19 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+
+ /*
+@@ -33,27 +32,12 @@
+  *	  if doing functionality testing
+  *		stat the shared memory resource
+  *		check the size, creator pid and mode
+- *	  	if correct,
++ *		if correct,
+  *			issue a PASS message
+  *		otherwise
+  *			issue a FAIL message
+  *	  else issue a PASS message
+  *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  shmget01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
+  */
+
+ #include "ipcshm.h"
+@@ -61,31 +45,25 @@
+ char *TCID = "shmget01";
+ int TST_TOTAL = 1;
+
+-int shm_id_1 = -1;
++static int shm_id_1 = -1;
+
+-int main(int ac, char **av)
++int main(int argc, char *argv[])
+ {
+ 	int lc;
+ 	char *msg;
+ 	struct shmid_ds buf;
+
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
+
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
++	setup();
+
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+
+-		/*
+-		 * Use TEST macro to make the call
+-		 */
+-
+-		TEST(shmget(shmkey, SHM_SIZE, (IPC_CREAT | IPC_EXCL | SHM_RW)));
++		TEST(shmget(shmkey, SHM_SIZE,
++			    (IPC_CREAT | IPC_EXCL | SHM_RW | SHM_NORESERVE)));
+
+ 		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL, "%s call failed - errno = %d : %s",
+@@ -131,11 +109,10 @@ int main(int ac, char **av)
+ 		/*
+ 		 * clean up things in case we are looping
+ 		 */
+-		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1) {
++		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1)
+ 			tst_resm(TBROK, "couldn't remove shared memory");
+-		} else {
++		else
+ 			shm_id_1 = -1;
+-		}
+ 	}
+
+ 	cleanup();
+@@ -143,42 +120,22 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+ void setup(void)
+ {
+-
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+
+ 	TEST_PAUSE;
+
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+ 	tst_tmpdir();
+
+-	/* get an IPC resource key */
+ 	shmkey = getipckey();
+ }
+
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+ void cleanup(void)
+ {
+-	/* if it exists, remove the shared memory resource */
+ 	rm_shm(shm_id_1);
+
+ 	tst_rmdir();
+
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+ }
+-- 
+1.8.1
+
+------------------------------------------------------------------------------
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
