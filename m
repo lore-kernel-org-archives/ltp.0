@@ -2,20 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ashagow@gmail.com>) id 1Uf8MT-0000Cy-8F
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 12:41:45 +0000
-Received: from mail-we0-f180.google.com ([74.125.82.180])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Uf8MR-0006Bf-HB
-	for ltp-list@lists.sourceforge.net; Wed, 22 May 2013 12:41:45 +0000
-Received: by mail-we0-f180.google.com with SMTP id t60so219070wes.11
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 22 May 2013 05:41:37 -0700 (PDT)
+	(envelope-from <metan@suse.de>) id 1Ui7zZ-0004th-Tt
+	for ltp-list@lists.sourceforge.net; Thu, 30 May 2013 18:54:29 +0000
+Date: Thu, 30 May 2013 20:55:45 +0200
+From: chrubis@suse.cz
+Message-ID: <20130530185545.GA1254@rei.suse.cz>
+References: <1369823309-29965-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Date: Wed, 22 May 2013 18:11:37 +0530
-Message-ID: <CADqC_Hr9RkvE3feZZiAo5GLnh=OsB9Hvp146ZE0RS=gsDKAvkQ@mail.gmail.com>
-From: Asha Gowda <ashagow@gmail.com>
-Subject: [LTP] LTP Information
+Content-Disposition: inline
+In-Reply-To: <1369823309-29965-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] New core test of cgroups and extended attributes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,78 +21,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4580866417304259657=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============4580866417304259657==
-Content-Type: multipart/alternative; boundary=f46d043bdf9cfe403604dd4de2d5
-
---f46d043bdf9cfe403604dd4de2d5
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-
-
-I would like to know the difference between January LTP packages and the
-MAY packages.
-
-That is list of extra features supported in the current release.
-
-
-
-Please help
-
- Thanks,
-
-Asha
-
---f46d043bdf9cfe403604dd4de2d5
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><p class=3D"">Hi,</p>
-
-<p class=3D"">=A0</p>
-
-<p class=3D"">I would like to know the difference between January LTP
-packages and the MAY packages.</p>
-
-<p class=3D"">That is list of extra features supported in the current
-release.</p>
-
-<p class=3D"">=A0</p>
-
-<p class=3D"">Please help</p>
-
-<p class=3D"" style>=A0Thanks,</p><p class=3D"" style>Asha</p></div>
-
---f46d043bdf9cfe403604dd4de2d5--
-
-
---===============4580866417304259657==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+Hi!
+> Support of extended attributes in cgroups was added in Linux 3.7.
+> 
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  runtest/controllers                                |    1 +
+>  .../kernel/controllers/cgroup_xattr/.gitignore     |    1 +
+>  testcases/kernel/controllers/cgroup_xattr/Makefile |   19 +
+>  testcases/kernel/controllers/cgroup_xattr/README   |   25 ++
+>  .../kernel/controllers/cgroup_xattr/cgroup_xattr.c |  435 ++++++++++++++++++++
+>  5 files changed, 481 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/controllers/cgroup_xattr/.gitignore
+>  create mode 100644 testcases/kernel/controllers/cgroup_xattr/Makefile
+>  create mode 100644 testcases/kernel/controllers/cgroup_xattr/README
+>  create mode 100644 testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+
+Pushed after removing trailing whitespace from the Makefile, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
---===============4580866417304259657==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Introducing AppDynamics Lite, a free troubleshooting tool for Java/.NET
+Get 100% visibility into your production application - at no cost.
+Code-level diagnostics for performance bottlenecks with <2% overhead
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap1
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4580866417304259657==--
-
