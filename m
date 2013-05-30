@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UZHha-0000pK-NV
-	for ltp-list@lists.sourceforge.net; Mon, 06 May 2013 09:27:22 +0000
-Date: Mon, 6 May 2013 11:28:23 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ui2Uf-0004Gp-KV
+	for ltp-list@lists.sourceforge.net; Thu, 30 May 2013 13:02:13 +0000
+Date: Thu, 30 May 2013 15:03:25 +0200
 From: chrubis@suse.cz
-Message-ID: <20130506092822.GC4388@rei>
-References: <CA+icZUVOgWZ+B41Hyb2_J-YCXu_c8ucad43H5ts5xsP4uisi7w@mail.gmail.com>
-	<20130116140742.GB6699@rei>
-	<CA+icZUUneR2cuZeYGq64=Ffh0UsFzd3KmbO9FmC97zWj6zTpxQ@mail.gmail.com>
+Message-ID: <20130530130325.GA5552@rei.suse.cz>
+References: <006901ce5601$42cc89e0$c8659da0$@lge.com>
+	<20130521103319.GA28186@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUUneR2cuZeYGq64=Ffh0UsFzd3KmbO9FmC97zWj6zTpxQ@mail.gmail.com>
-Subject: Re: [LTP] Tarballs in Files section @ sf.net
+In-Reply-To: <20130521103319.GA28186@rei>
+Subject: Re: [LTP] [PATCH] Makefile: Disable parallel build for
+ $(CRITICAL_MAKEFILES)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,28 +26,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
+To: Jungsoo Son <jungsoo.son@lge.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> First, I was really happy when I wanted today to stress my Linux-Next
-> (next-20130503) kernels.
+> > This patch fixes parallel build error. When use parallel build
+> > 
+> > with -j16 or -j8, $(CRITICAL_MAKEFILES) are created as empty file
+> > 
+> > because generate-makefiles is called several times. So need to
+> > 
+> > disable parallel build.
+> > 
+> > The following code can guarantee sequencial building.
+> > 
+> > .NOTPARALLEL: $(CRITICAL_MAKEFILES)
 > 
-> 4 hours ago LTP-full 2013-05-03 was released.
-> Cool, I said.
-> 
-> Looking at ltp-full-20130503.bz2 ...
-> 
-> ...is still a TAR-archive when unpacked.
-> 
-> An XZ-Tar-archive as demanded by me and promised by you was NOT prepared.
-> 
-> That makes me a bit of Grrr...
-> Hereby my reminder, again!
+> The problem is that Open Posix Testsuite should stuck with POSIX make.
+> At least we promise that we will not break it actively. Now the 2008
+> POSIX make still does not support the idea of parallel build. I will
+> have a look what will other than GNU make implementations do with such
+> rule. If it would be ignored then we are fine adding it, if not we will
+> have to figure out how to detect GNU make and add the line accordingly.
 
-I mailed Shubham from IBM (who does the releases) to include the xz and
-rename the bz2 just a few minutes ago (even before I've read this mail).
-Hopefully he will fix this during the day.
+I got a an idea how to fix this in portable fashion. The key is the
+order of filenames the make looks for.
+
+The gnu make tries GNUmakefile first, then makefile or Makefile.
+
+So if we create GNUmakefile, which would include the Makefile and adds
+the .NOTPARALLEL: target it should work both with both GNU make and any
+other POSIX conforming make out there.
 
 -- 
 Cyril Hrubis
