@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sedat.dilek@gmail.com>) id 1Uqk2f-00064T-0Y
-	for ltp-list@lists.sourceforge.net; Sun, 23 Jun 2013 13:09:17 +0000
-Received: from mail-wi0-f180.google.com ([209.85.212.180])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Uqk2e-0002uP-3Q
-	for ltp-list@lists.sourceforge.net; Sun, 23 Jun 2013 13:09:16 +0000
-Received: by mail-wi0-f180.google.com with SMTP id c10so1772213wiw.7
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 23 Jun 2013 06:09:09 -0700 (PDT)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Ujn2R-00064F-Ae
+	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 08:56:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ujn2P-0005WT-1m
+	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 08:56:19 +0000
+Message-ID: <51ADAB0F.7060802@cn.fujitsu.com>
+Date: Tue, 04 Jun 2013 16:53:35 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Sun, 23 Jun 2013 15:09:09 +0200
-Message-ID: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [LTP] How to run only a specific test series like for example IPC?
-Reply-To: sedat.dilek@gmail.com
+References: <51AD55F0.8030402@cn.fujitsu.com>
+	<51AD95E8.9000002@casparzhang.com>
+In-Reply-To: <51AD95E8.9000002@casparzhang.com>
+Subject: Re: [LTP] [PATCH v2] shmget/shmget01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,73 +28,214 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi,
+On 06/04/2013 03:23 PM, Caspar Zhang wrote:
+> On 06/04/2013 10:50 AM, DAN LI wrote:
+>> 1. Remove useless comments
+>>
+>> 2. Revise code to follow ltp-code-style
+>>
+>> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> 
+> overall looks good to me, yet I think there are some more comments could be removed. like:
+> 
+> 
+> /* if we get here, everything looks good */
+> 
+> and
+> 
+> 108                 /*
+> 109                  * clean up things in case we are looping
+> 110                  */
+> 
+> Thoughts?
+> 
 
-I wanted to only run the IPC tests as I have troubles with IPC(-MSG)
-in Linux-Next.
+Agree.
 
-This is what I did...
+DAN LI
 
-root# cd /opt/ltp/
+> Caspar
+> 
+>> ---
+>>   testcases/kernel/syscalls/ipc/shmget/shmget01.c |   86 ++++++-----------------
+>>   1 files changed, 21 insertions(+), 65 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget01.c b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
+>> index 38dbee7..aa2c78b 100644
+>> --- a/testcases/kernel/syscalls/ipc/shmget/shmget01.c
+>> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
+>> @@ -1,20 +1,19 @@
+>>   /*
+>> + * Copyright (c) International Business Machines  Corp., 2001
+>>    *
+>> - *   Copyright (c) International Business Machines  Corp., 2001
+>> + * This program is free software;  you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>>    *
+>> - *   This program is free software;  you can redistribute it and/or modify
+>> - *   it under the terms of the GNU General Public License as published by
+>> - *   the Free Software Foundation; either version 2 of the License, or
+>> - *   (at your option) any later version.
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> + * the GNU General Public License for more details.
+>>    *
+>> - *   This program is distributed in the hope that it will be useful,
+>> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> - *   the GNU General Public License for more details.
+>> - *
+>> - *   You should have received a copy of the GNU General Public License
+>> - *   along with this program;  if not, write to the Free Software
+>> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program;  if not, write to the Free Software
+>> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>>    */
+>>
+>>   /*
+>> @@ -33,27 +32,12 @@
+>>    *      if doing functionality testing
+>>    *        stat the shared memory resource
+>>    *        check the size, creator pid and mode
+>> - *          if correct,
+>> + *        if correct,
+>>    *            issue a PASS message
+>>    *        otherwise
+>>    *            issue a FAIL message
+>>    *      else issue a PASS message
+>>    *    call cleanup
+>> - *
+>> - * USAGE:  <for command-line>
+>> - *  shmget01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+>> - *     where,  -c n : Run n copies concurrently.
+>> - *             -f   : Turn off functionality Testing.
+>> - *           -i n : Execute test n times.
+>> - *           -I x : Execute test for x seconds.
+>> - *           -P x : Pause for x seconds between iterations.
+>> - *           -t   : Turn on syscall timing.
+>> - *
+>> - * HISTORY
+>> - *    03/2001 - Written by Wayne Boyer
+>> - *
+>> - * RESTRICTIONS
+>> - *    none
+>>    */
+>>
+>>   #include "ipcshm.h"
+>> @@ -61,31 +45,24 @@
+>>   char *TCID = "shmget01";
+>>   int TST_TOTAL = 1;
+>>
+>> -int shm_id_1 = -1;
+>> +static int shm_id_1 = -1;
+>>
+>> -int main(int ac, char **av)
+>> +int main(int argc, char *argv[])
+>>   {
+>>       int lc;
+>>       char *msg;
+>>       struct shmid_ds buf;
+>>
+>> -    if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+>> +    msg = parse_opts(argc, argv, NULL, NULL);
+>> +    if (msg != NULL)
+>>           tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>> -    }
+>>
+>> -    setup();        /* global setup */
+>> -
+>> -    /* The following loop checks looping state if -i option given */
+>> +    setup();
+>>
+>>       for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> -        /* reset tst_count in case we are looping */
+>>           tst_count = 0;
+>>
+>> -        /*
+>> -         * Use TEST macro to make the call
+>> -         */
+>> -
+>> -        TEST(shmget(shmkey, SHM_SIZE, (IPC_CREAT | IPC_EXCL | SHM_RW)));
+>> +        TEST(shmget(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW));
+>>
+>>           if (TEST_RETURN == -1) {
+>>               tst_resm(TFAIL, "%s call failed - errno = %d : %s",
+>> @@ -131,11 +108,10 @@ int main(int ac, char **av)
+>>           /*
+>>            * clean up things in case we are looping
+>>            */
+>> -        if (shmctl(shm_id_1, IPC_RMID, NULL) == -1) {
+>> +        if (shmctl(shm_id_1, IPC_RMID, NULL) == -1)
+>>               tst_resm(TBROK, "couldn't remove shared memory");
+>> -        } else {
+>> +        else
+>>               shm_id_1 = -1;
+>> -        }
+>>       }
+>>
+>>       cleanup();
+>> @@ -143,42 +119,22 @@ int main(int ac, char **av)
+>>       tst_exit();
+>>   }
+>>
+>> -/*
+>> - * setup() - performs all the ONE TIME setup for this test.
+>> - */
+>>   void setup(void)
+>>   {
+>> -
+>>       tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>>
+>>       TEST_PAUSE;
+>>
+>> -    /*
+>> -     * Create a temporary directory and cd into it.
+>> -     * This helps to ensure that a unique msgkey is created.
+>> -     * See ../lib/libipc.c for more information.
+>> -     */
+>>       tst_tmpdir();
+>>
+>> -    /* get an IPC resource key */
+>>       shmkey = getipckey();
+>>   }
+>>
+>> -/*
+>> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
+>> - *            or premature exit.
+>> - */
+>>   void cleanup(void)
+>>   {
+>> -    /* if it exists, remove the shared memory resource */
+>>       rm_shm(shm_id_1);
+>>
+>>       tst_rmdir();
+>>
+>> -    /*
+>> -     * print timing stats if that option was specified.
+>> -     * print errno log if that option was specified.
+>> -     */
+>>       TEST_CLEANUP;
+>> -
+>>   }
+>>
+> 
+> 
 
-root# ./runltp ./runtest/ipc
 
-...is that the correct way? Wrong?
-
-Unfortunately, this fails due to EXT4-fs troubles...
-...
-mke2fs 1.42 (29-Nov-2011)
-Filesystem label=
-OS type: Linux
-Block size=1024 (log=0)
-Fragment size=1024 (log=0)
-Stride=0 blocks, Stripe width=0 blocks
-32 inodes, 236 blocks
-11 blocks (4.66%) reserved for the super user
-First data block=1
-1 block group
-8192 blocks per group, 8192 fragments per group
-32 inodes per group
-
-Allocating group tables: done
-Writing inode tables: done
-
-Filesystem too small for a journal <--- ???
-Writing superblocks and filesystem accounting information: mount:
-/dev/loop1 already mounted or /tmp/ltp-p5uaFntNJE/mnt_pnt.u44xDV busy
-FATAL: can't mount block device /dev/loop1.
-root@fambox:/opt/ltp# done
-
-10240+0 records in
-10240+0 records out
-10240000 bytes (10 MB) copied, 0.260004 s, 39.4 MB/s
-^C
-
-root# dmesg | tail
-
-[   78.095907] EXT4-fs (loop1): VFS: Can't find ext4 filesystem <--- ???
-
-root# grep -i ext4 /boot/config-$(uname -r)
-CONFIG_EXT4_FS=y
-CONFIG_EXT4_FS_POSIX_ACL=y
-CONFIG_EXT4_FS_SECURITY=y
-# CONFIG_EXT4_DEBUG is not set
-
-IMPORTANT NOTE: Here, I am running Ubuntu/precise as a WUBI installation.
-
-Regards,
-- Sedat -
-
-[1] https://wiki.ubuntu.com/WubiGuide
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+How ServiceNow helps IT people transform IT departments:
+1. A cloud service to automate IT design, transition and operations
+2. Dashboards that offer high-level views of enterprise services
+3. A single system of record for all IT processes
+http://p.sf.net/sfu/servicenow-d2d-j
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
