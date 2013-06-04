@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UsD4F-0007fs-PB
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 14:20:59 +0000
-Date: Thu, 27 Jun 2013 16:22:30 +0200
-From: chrubis@suse.cz
-Message-ID: <20130627142230.GB21873@rei.suse.cz>
-References: <1372264605-29259-1-git-send-email-alexey.kodanev@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ccnandi@yahoo.com>) id 1UjzXv-0004I1-9M
+	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 22:17:39 +0000
+Received: from nm41-vm8.bullet.mail.ne1.yahoo.com ([98.138.120.212])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UjzXu-0006Rh-Dl
+	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 22:17:39 +0000
+Message-ID: <1370384252.14316.YahooMailClassic@web120802.mail.ne1.yahoo.com>
+Date: Tue, 4 Jun 2013 15:17:32 -0700 (PDT)
+From: C Nandi <ccnandi@yahoo.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1372264605-29259-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v3] lib: tst_module: add library functions for
- kernel modules
+Subject: [LTP] Test suite for the t-core kernel patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,168 +25,128 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +/*
-> + * Load a module using insmod program.
-> + *
-> + * @argv: an array of pointers to null-terminated strings that represent the
-> + * additional parameters to the module. The array of pointers  should be
-> + * terminated by a NULL pointer. If argv points to NULL, it will be ignored.
+Hi,
 
-Again should vs must.
+Is this test suite for t-core kernel patch still valid?
+If yes, can we avoid invoking following function, and go with the following patch? I believe "/proc/sys/kernel/core_dumps_threads" file will not get created by latest kernel.
 
-> + * In case of insmod failure, test will call cleanup_fn and exit with TBROK
-> + * return value.
-> + */
-> +void tst_module_load(void (cleanup_fn)(void),
-> +	const char *mod_name, char *const argv[]);
-> +
-> +/*
-> + * Unload a module using rmmod program. In case of failure, test will call
-> + * cleanup_fn and exit with TBROK return value.
-> + */
-> +void tst_module_unload(void (cleanup_fn)(void), const char *mod_name);
-> +
-> +#endif /* TST_MODULE */
-> diff --git a/lib/tst_module.c b/lib/tst_module.c
-> new file mode 100644
-> index 0000000..2538777
-> --- /dev/null
-> +++ b/lib/tst_module.c
-> @@ -0,0 +1,108 @@
-> +/*
-> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + *
-> + * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-> + *
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +
-> +#include "test.h"
-> +#include "ltp_priv.h"
-> +#include "tst_module.h"
-> +
-> +void tst_module_exists(void (cleanup_fn)(void),
-> +	const char *mod_name, char **mod_path)
-> +{
-> +	/* check current working directory */
-> +	if (access(mod_name, F_OK) == 0) {
-> +		if (mod_path != NULL)
-> +			*mod_path = strdup(mod_name);
-> +		return;
-> +	}
-> +	char *buf = NULL;
-> +	int err = -1;
-> +	/* check LTP installation path */
-> +	const char *ltproot = getenv("LTPROOT");
-> +	if (ltproot != NULL) {
-> +		if (asprintf(&buf, "%s/testcases/bin/%s",
-> +			ltproot, mod_name) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				"asprintf failed at %s:%d",
-> +				__FILE__, __LINE__);
-> +		}
-> +		err = access(buf, F_OK);
-> +	}
-> +	/* check start working directory */
-> +	if (err == -1 && tst_tmpdir_created()) {
-> +		free(buf);
-> +		if (asprintf(&buf, "%s/%s", tst_get_startwd(),
-> +			mod_name) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				"asprintf failed at %s:%d",
-> +				__FILE__, __LINE__);
-> +		}
-> +		err = access(buf, F_OK);
-> +	}
-> +
-> +	if (err != 0) {
-> +		free(buf);
-> +		tst_brkm(TCONF, cleanup_fn, "Failed to find module '%s'",
-> +			mod_name);
-> +	}
-> +
-> +	if (mod_path != NULL)
-> +		*mod_path = buf;
-> +	else
-> +		free(buf);
-> +}
+File: testcases/misc/tcore_patch_test_suites/tcore.sh
 
-So you expect that the '.ko' suffix is part of the module name. It
-should be written in the comment in the header. Because at least I
-expect the module name to be the name that is returned by lsmod.
+check_install()
+{
+        if [ -f /proc/sys/kernel/core_dumps_threads ];then
+                pass=`expr $pass + 1`
+                return 0
+        else
+                fail=`expr $fail + 1`
+                return 1
+        fi
+}
 
-> +void tst_module_load(void (cleanup_fn)(void),
-> +	const char *mod_name, char *const argv[])
-> +{
-> +	char *mod_path = NULL;
-> +	tst_module_exists(cleanup_fn, mod_name, &mod_path);
-> +
-> +	static int offset = 2; /* command name & module path */
-> +	int size = 0;
-> +	while (argv && argv[size])
-> +		++size;
-> +	size += offset;
-> +	char *mod_argv[size + 1]; /* + NULL in the end */
-> +	mod_argv[size] = NULL;
-> +	mod_argv[0] = "insmod";
-> +	mod_argv[1] = mod_path;
-> +
-> +	int i;
-> +	for (i = offset; i < size; ++i)
-> +		mod_argv[i] = argv[i - offset];
-> +
-> +	tst_run_cmd(cleanup_fn, mod_argv);
-> +	free(mod_path);
-> +}
-> +
-> +void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
-> +{
-> +	char *mod_path = NULL;
-> +	tst_module_exists(cleanup_fn, mod_name, &mod_path);
-> +	char *const argv[] = { "rmmod", mod_path, NULL };
+=========
 
-Hmm, man rmmod suggest that it takes module name (not module path) as
-parameter i.e. the string without the path and the '.ko' suffix. Does it
-work with module path too?
 
-> +	tst_run_cmd(cleanup_fn, argv);
-> +	free(mod_path);
-> +}
 
-The rest is fine.
+diff -urN org/tcore.exp mod/tcore.exp
+--- org/tcore.exp       2013-05-17 15:08:09.000000000 -0600
++++ mod/tcore.exp       2013-05-17 14:07:37.000000000 -0600
+@@ -39,7 +39,7 @@
+     set istrue 0
+     send "info threads\n"
+     expect {
+-               -re " \[0-9\]+ process .*(gdb)" {
++               -re " \[0-9\]+ Thread .*(gdb)" {
+        set buf $expect_out(0,string)
+        }
+        timeout {
+@@ -47,7 +47,7 @@
+                return 1
+        }
+     }
+-    set curr_thread [check_buf $buf "process"]
++    set curr_thread [check_buf $buf "Thread"]
+     if { $curr_thread == 0 } {
+        send_user "check_threads (no current thread)\n"
+        return 1
+@@ -76,7 +76,7 @@
+                                  return 1
+                         }
+                 }
+-                set number1 [check_buf $buf "(process"]
++                set number1 [check_buf $buf "(Thread"]
+                 send "bt\n"
+                 expect {
+                         -re  " bt.*#\[0-9\]+ .*(gdb)" {
+@@ -101,13 +101,13 @@
+ }
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+ proc check_fpu {num} {
++       exp_internal 1
+        global expect_out
+        global pass
+-       send "\n"
+-       send "info register\n"
+-       send "\n"
++       send "set pagination off\n"
++       send "info all-register\n"
+        expect {
+-               -re "xmm$num\[\t \]+\{f \= .*\}+\[\t \]+\{f \= .*\}" {
++               -re "xmm$num\[\t \]+\{.*f.* \= .*\}" {
+                        set buf $expect_out(0,string)
+                }
+                timeout {
+@@ -130,8 +130,8 @@
+        }
+ }
+ set GDB gdb
+-set binfile ./tcore
+-set corefile  ./corefile
++set binfile  [lindex $argv 0]
++set corefile [lindex $argv 1]
+
+ spawn $GDB ${binfile} ${corefile}
+ check_fpu 5
+diff -urN org/tcore.sh mod/tcore.sh
+--- org/tcore.sh        2013-05-17 15:08:09.000000000 -0600
++++ mod/tcore.sh        2013-05-17 14:08:05.000000000 -0600
+@@ -125,19 +125,22 @@
+        prepare_gdb
+        mv -f $TEST_DIR/core.* $TEST_DIR/corefile >/dev/null 2>&1
+        echo "Test whether the core support bt,fpu and threads commands "
+-       expect $BIN_DIR/tcore.exp
++       expect $BIN_DIR/tcore.exp $BIN_DIR/tcore $TEST_DIR/corefile
+        return=$?
+        pass=`expr $pass + $return`
++echo $pass,$return,$fail
+        fail=`expr 3 - $return + $fail`
+ }
+
+ echo "Test Tcore patch "
+-check_install
++# Avoid check for /proc/sys/kernel/core_dumps_threads
++# This is not supported by latest kernels
++#check_install
+ Test_gen_core
+ Test_core_file
+ echo "Linux Tcore test results" > results
+ echo "Total pass fail" >>  results
+-echo "  5      $pass   $fail" >> results
++echo "  4      $pass   $fail" >> results
+ cleanup $fail
+
+
+Thanks,
+Nandi
+
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+How ServiceNow helps IT people transform IT departments:
+1. A cloud service to automate IT design, transition and operations
+2. Dashboards that offer high-level views of enterprise services
+3. A single system of record for all IT processes
+http://p.sf.net/sfu/servicenow-d2d-j
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
