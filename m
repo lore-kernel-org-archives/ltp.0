@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UkGHz-0000fW-Gw
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 16:10:19 +0000
-Date: Wed, 5 Jun 2013 18:11:28 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UkFfj-0004zv-Jw
+	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 15:30:47 +0000
+Date: Wed, 5 Jun 2013 17:32:05 +0200
 From: chrubis@suse.cz
-Message-ID: <20130605161128.GA1197@rei>
-References: <006901ce5601$42cc89e0$c8659da0$@lge.com>
-	<20130521103319.GA28186@rei> <20130530130325.GA5552@rei.suse.cz>
-	<006901ce5dda$30547c60$90fd7520$@lge.com>
-	<20130603130105.GA4074@rei>
+Message-ID: <20130605153204.GA611@rei>
+References: <009401ce6193$609aaf40$21d00dc0$@lge.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20130603130105.GA4074@rei>
-Subject: Re: [LTP] [PATCH] Makefile: Disable parallel build for
- $(CRITICAL_MAKEFILES)
+In-Reply-To: <009401ce6193$609aaf40$21d00dc0$@lge.com>
+Subject: Re: [LTP] [PATCH] syscalls/chmod02: Fix wrong address of buf for
+ write()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,33 +29,31 @@ To: Jungsoo Son <jungsoo.son@lge.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > > I got a an idea how to fix this in portable fashion. The key is the order
-> > > of filenames the make looks for.
-> > > 
-> > > The gnu make tries GNUmakefile first, then makefile or Makefile.
-> > > 
-> > > So if we create GNUmakefile, which would include the Makefile and adds
-> > > the .NOTPARALLEL: target it should work both with both GNU make and any
-> > > other POSIX conforming make out there.
-> > 
-> > I think your idea is good. 
-> > But I think that the code to distinguish GNU make and other POSIX will makes
-> > the Makefile to be more complex.
-> > I do not wish to complicate the Makefile more than is necessary.
-> > How about using '-j1' without '.NOTPARALLEL:' option as follows.
+> Signed-off-by: jungsoo.son <jungsoo.son@lge.com>
+> ---
+>  testcases/kernel/syscalls/chmod/chmod02.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Again the same problem as previously. The POSIX specification does not
-> require the -j option to exist as the standard does not take parallel
-> build into the account at all. And for the Open Posix part of LTP we
-> need to stick to the POSIX.
-> 
-> And looking at the POSIX spec again, the POSIX make does not even
-> support including files. So the only way how to fix this is to copy the
-> top level Makefile to GNUmakefile and add the line. :(
+> diff --git a/testcases/kernel/syscalls/chmod/chmod02.c
+> b/testcases/kernel/syscalls/chmod/chmod02.c
+> index 242cbd3..904c5e8 100644
+> --- a/testcases/kernel/syscalls/chmod/chmod02.c
+> +++ b/testcases/kernel/syscalls/chmod/chmod02.c
+> @@ -187,9 +187,9 @@ void setup()
+>  	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+>  		tst_brkm(TBROK | TERRNO, cleanup,
+>  			 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
+> -	} else if (write(fd, &buf, strlen(buf)) == -1) {
+> +	} else if (write(fd, buf, strlen(buf)) == -1) {
+>  		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "write(%s, &buf, strlen(buf)) failed", fname);
+> +			 "write(%s, buf, strlen(buf)) failed", fname);
+>  	} else if (close(fd) == -1) {
+>  		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed",
+> fname);
 
-I've looked into the openposix Makefile and it allready contains non
-conforming '-j1' options. I will have closer look at the build scripts
-and Makefiles.
+I've replaced the the code that creates the file with single
+SAFE_FILE_PRINTF(). Thanks for the report.
 
 -- 
 Cyril Hrubis
