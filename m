@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UsDhK-0006v8-4D
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 15:01:22 +0000
-Date: Thu, 27 Jun 2013 17:02:52 +0200
+	(envelope-from <metan@suse.de>) id 1UkG1C-0003UO-M7
+	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 15:52:58 +0000
+Date: Wed, 5 Jun 2013 17:54:15 +0200
 From: chrubis@suse.cz
-Message-ID: <20130627150252.GA22545@rei.suse.cz>
-References: <1372344742-5138-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20130605155415.GA1059@rei>
+References: <1370433977-6944-1-git-send-email-alexey.kodanev@oracle.com>
+	<271133424.4337328.1370446643439.JavaMail.root@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372344742-5138-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v3] lib: tst_run_cmd: add tst_run_cmd() to exec
- specified program
+In-Reply-To: <271133424.4337328.1370446643439.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,34 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
 Hi!
-> vfork() + execvp() specified program.
+> > This test checks that from kernel 3.7 firmware can be loaded directly
+> > (by-pass udev) or as usual. The test consists of the two parts: userspace
+> > and kernelspace.
+> > 
+> > Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  include/test.h    |    9 +++++++++
->  lib/tst_run_cmd.c |   52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 61 insertions(+), 0 deletions(-)
->  create mode 100644 lib/tst_run_cmd.c
+> Hi,
+> 
+> This patch tries to build kernel module also on kernels < 3.7, which seems
+> unnecessary, because the test won't run. And for very old kernels it won't
+> build at all. 
+> 
+> I know some people still build/run LTP on kernels as old as 2.6.18, which is why
+> I would rather go with WITH_MODULES="no" as default, if more kernel modules
+> become part of the build.
 
-This one looks fine to me.
-
-Let's wait a day or two to give other people chance to look at the code.
-And if nobody object I will start pushing the patches in the order.
+Right, we should at least limit the module build to kernel versions that
+are known to work. In this particular case I would limit it to 3.7+
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+How ServiceNow helps IT people transform IT departments:
+1. A cloud service to automate IT design, transition and operations
+2. Dashboards that offer high-level views of enterprise services
+3. A single system of record for all IT processes
+http://p.sf.net/sfu/servicenow-d2d-j
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
