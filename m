@@ -1,29 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Ujlnm-0002SV-HT
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 07:37:06 +0000
-Received: from mail-pb0-f53.google.com ([209.85.160.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Ujlnl-0001jD-2G
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 07:37:06 +0000
-Received: by mail-pb0-f53.google.com with SMTP id un4so6870513pbc.12
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 04 Jun 2013 00:36:59 -0700 (PDT)
-Message-ID: <51AD9784.3080605@casparzhang.com>
-Date: Tue, 04 Jun 2013 15:30:12 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UkGHz-0000fW-Gw
+	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 16:10:19 +0000
+Date: Wed, 5 Jun 2013 18:11:28 +0200
+From: chrubis@suse.cz
+Message-ID: <20130605161128.GA1197@rei>
+References: <006901ce5601$42cc89e0$c8659da0$@lge.com>
+	<20130521103319.GA28186@rei> <20130530130325.GA5552@rei.suse.cz>
+	<006901ce5dda$30547c60$90fd7520$@lge.com>
+	<20130603130105.GA4074@rei>
 MIME-Version: 1.0
-References: <51A5C347.4020202@cn.fujitsu.com>
-	<1098836685.51729.1369819107988.JavaMail.root@redhat.com>
-	<51A5D7A9.3070801@cn.fujitsu.com>
-	<577470418.347391.1369824283490.JavaMail.root@redhat.com>
-	<51A84F5A.9060708@cn.fujitsu.com>
-	<1492205844.3281606.1370292459997.JavaMail.root@redhat.com>
-In-Reply-To: <1492205844.3281606.1370292459997.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] shmget/shmget01.c: cleanup and attach
- SHM_NORESERVE to shmflg
+Content-Disposition: inline
+In-Reply-To: <20130603130105.GA4074@rei>
+Subject: Re: [LTP] [PATCH] Makefile: Disable parallel build for
+ $(CRITICAL_MAKEFILES)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,58 +28,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jungsoo Son <jungsoo.son@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 06/04/2013 04:47 AM, Jan Stancek wrote:
->>>>>> > >>>>
->>>>>> > >>>>3. Add SHM_NORESERVE to shmflg to test
->>>>> > >>>
->>>>> > >>>Can you add some description why you are adding this flag?
->>>> > >>
->>>> > >>Actually, we are trying to complete test cases and expand
->>>> > >>the test scope of LTP.
->>>> > >>
->>>> > >>So, it is just for completeness of this case.
->>> > >
->>> > >My concern here is:
->>> > >So if we add this flag, we cover SHM_NORESERVE path.
->>> > >Do we have a testcase which still covers current non-SHM_NORESERVE path?
->> >
->> >Hi Jan,
->> >
->> >Sorry for the late reply.:)
->> >
->> >In my opinion, SHM_NORESERVE is an independent feature of others and should
->> >have
->> >no effect on them, so we do not need a non-SHM_NORESERVE path.
->> >They are like two branches of a river, one branch can do nothing on the other
->> >one,
->> >but if either of them goes wrong, the river will get feedback.
-> Presence of that flag has some effect, absence has different one.
-> To follow up on river metaphore, Are crocodiles in this river?
->
-> Anyway, we cover that path in other testcases, so unless
-> someone else objects, I'm OK with adding that flag.
->
+Hi!
+> > > I got a an idea how to fix this in portable fashion. The key is the order
+> > > of filenames the make looks for.
+> > > 
+> > > The gnu make tries GNUmakefile first, then makefile or Makefile.
+> > > 
+> > > So if we create GNUmakefile, which would include the Makefile and adds
+> > > the .NOTPARALLEL: target it should work both with both GNU make and any
+> > > other POSIX conforming make out there.
+> > 
+> > I think your idea is good. 
+> > But I think that the code to distinguish GNU make and other POSIX will makes
+> > the Makefile to be more complex.
+> > I do not wish to complicate the Makefile more than is necessary.
+> > How about using '-j1' without '.NOTPARALLEL:' option as follows.
+> 
+> Again the same problem as previously. The POSIX specification does not
+> require the -j option to exist as the standard does not take parallel
+> build into the account at all. And for the Open Posix part of LTP we
+> need to stick to the POSIX.
+> 
+> And looking at the POSIX spec again, the POSIX make does not even
+> support including files. So the only way how to fix this is to copy the
+> top level Makefile to GNUmakefile and add the line. :(
 
-Crocodile spotted:
+I've looked into the openposix Makefile and it allready contains non
+conforming '-j1' options. I will have closer look at the build scripts
+and Makefiles.
 
-in fact in this patch, SHM_NORESERVE doesn't get fully tested. from the 
-man page:
-
-     SHM_NORESERVE (since Linux 2.6.15)
-         [snip]When swap space is not reserved one might get SIGSEGV 
-upon a write if no physical memory is available. [snip]
-
-We could design such a new testcase if we really want to cover the 
-SHM_NORESERVE branch of river (and the RESERVE branch as well) by set 
-the flag and fill the memory, check the result to see if a SIGSEGV is 
-triggered.
-
-Thoughts?
-
-Caspar
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 How ServiceNow helps IT people transform IT departments:
