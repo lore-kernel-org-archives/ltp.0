@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sedat.dilek@gmail.com>) id 1UrU4W-0004lB-Cu
-	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 14:18:16 +0000
-Received: from mail-wg0-f53.google.com ([74.125.82.53])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UrU4V-0006NB-HP
-	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 14:18:16 +0000
-Received: by mail-wg0-f53.google.com with SMTP id y10so9352820wgg.8
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 25 Jun 2013 07:18:09 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UkXvO-0005b5-21
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jun 2013 11:00:10 +0000
+Date: Thu, 6 Jun 2013 13:01:30 +0200
+From: chrubis@suse.cz
+Message-ID: <20130606110129.GB23876@rei>
+References: <1370433977-6944-1-git-send-email-alexey.kodanev@oracle.com>
+	<271133424.4337328.1370446643439.JavaMail.root@redhat.com>
+	<20130605155415.GA1059@rei>
 MIME-Version: 1.0
-Date: Tue, 25 Jun 2013 16:18:09 +0200
-Message-ID: <CA+icZUXjY1QAWk80FqnENt=S1H+x+MaREjoHMuOmoq-QMnT3+A@mail.gmail.com>
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [LTP] [ltp-full-20130503] runltp and dash-bug
-Reply-To: sedat.dilek@gmail.com
+Content-Disposition: inline
+In-Reply-To: <20130605155415.GA1059@rei>
+Subject: Re: [LTP] [PATCH] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,35 +26,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
 Hi,
+> > 
+> > This patch tries to build kernel module also on kernels < 3.7, which seems
+> > unnecessary, because the test won't run. And for very old kernels it won't
+> > build at all. 
+> > 
+> > I know some people still build/run LTP on kernels as old as 2.6.18, which is why
+> > I would rather go with WITH_MODULES="no" as default, if more kernel modules
+> > become part of the build.
+> 
+> Right, we should at least limit the module build to kernel versions that
+> are known to work. In this particular case I would limit it to 3.7+
 
-just an info to all Debian/Ubuntu users who want to use the latest
-official LTP-full release (03-May-2013) as DASH is the default shell.
-Again, we have some BASHISM to kill.
-You need the fix from ltp master GIT [1].
+Or even better to be both forward and backward compatible, we should not
+stop the build when kernel module has failed to build. We should carry
+on with the build, install etc. and return TCONF when the particula test
+was called.
 
-commit b88fa5b6ec5a29834a0e52df7b22b9bb47fe0379
-"runltp: Fix bashism"
-
-Discovered when trying to run the IPC test-suite on Ubuntu/precise:
-
-     root# ./runltp -f ipc
-
-Hope this helps by warning.
-
-Regards,
-- Sedat -
-
-[1] https://github.com/linux-test-project/ltp/commit/b88fa5b6ec5a29834a0e52df7b22b9bb47fe0379
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+How ServiceNow helps IT people transform IT departments:
+1. A cloud service to automate IT design, transition and operations
+2. Dashboards that offer high-level views of enterprise services
+3. A single system of record for all IT processes
+http://p.sf.net/sfu/servicenow-d2d-j
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
