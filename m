@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jungsoo.son@lge.com>) id 1Ul9IY-00076R-Uo
-	for ltp-list@lists.sourceforge.net; Sat, 08 Jun 2013 02:54:34 +0000
-Received: from lgemrelse7q.lge.com ([156.147.1.151])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ul9IX-0006NW-Eg
-	for ltp-list@lists.sourceforge.net; Sat, 08 Jun 2013 02:54:34 +0000
-From: "Jungsoo Son" <jungsoo.son@lge.com>
-Date: Sat, 8 Jun 2013 11:54:26 +0900
-Message-ID: <00f801ce63f3$7d4cc8f0$77e65ad0$@lge.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UkZ4r-0003Oy-NC
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jun 2013 12:14:01 +0000
+Date: Thu, 6 Jun 2013 14:15:20 +0200
+From: chrubis@suse.cz
+Message-ID: <20130606121520.GC23876@rei>
+References: <1370384252.14316.YahooMailClassic@web120802.mail.ne1.yahoo.com>
 MIME-Version: 1.0
-Content-Language: ko
-Subject: [LTP] [PATCH] syscalls/chown01: Fix test file creation
+Content-Disposition: inline
+In-Reply-To: <1370384252.14316.YahooMailClassic@web120802.mail.ne1.yahoo.com>
+Subject: Re: [LTP] Test suite for the t-core kernel patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,79 +24,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: C Nandi <ccnandi@yahoo.com>
+Cc: ltp-list@lists.sourceforge.net
 
-There is a bug in the code to create the file and the code is
-very intricate. So replace it with SAFE_FILE_PRINTF().
+Hi!
+> Is this test suite for t-core kernel patch still valid?
+> If yes, can we avoid invoking following function, and go with the following patch? I believe "/proc/sys/kernel/core_dumps_threads" file will not get created by latest kernel.
+> 
+> File: testcases/misc/tcore_patch_test_suites/tcore.sh
+> 
+> check_install()
+> {
+>         if [ -f /proc/sys/kernel/core_dumps_threads ];then
+>                 pass=`expr $pass + 1`
+>                 return 0
+>         else
+>                 fail=`expr $fail + 1`
+>                 return 1
+>         fi
+> }
+> 
+> =========
+> 
 
-Signed-off-by: jungsoo.son <jungsoo.son@lge.com>
----
- testcases/kernel/syscalls/chown/chown01.c |   24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
+I did a little bit of archeology and it seems that patch which
+introduced this file never got accepted into mainline linux kernel.
+(Found some discussion about it around linux 2.4 and 2.5 development.)
 
-diff --git a/testcases/kernel/syscalls/chown/chown01.c
-b/testcases/kernel/syscalls/chown/chown01.c
-index 50b9ea5..14b699b 100644
---- a/testcases/kernel/syscalls/chown/chown01.c
-+++ b/testcases/kernel/syscalls/chown/chown01.c
-@@ -116,9 +116,7 @@
- #include <signal.h>
- #include "test.h"
- #include "usctest.h"
--
--void setup();
--void cleanup();
-+#include "safe_macros.h"
- 
- char *TCID = "chown01";
- int TST_TOTAL = 1;
-@@ -126,8 +124,10 @@ int TST_TOTAL = 1;
- int exp_enos[] = { 0, 0 };
- 
- char fname[255];
--int fd, uid, gid;
--char *buf = "davef";
-+int uid, gid;
-+
-+static void setup();
-+static void cleanup();
- 
- int main(int ac, char **av)
- {
-@@ -163,7 +163,7 @@ int main(int ac, char **av)
- 
- }
- 
--void setup()
-+static void setup()
- {
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-@@ -176,17 +176,11 @@ void setup()
- 	gid = getegid();
- 
- 	sprintf(fname, "t_%d", getpid());
--	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
--	else if (write(fd, &buf, strlen(buf)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "write(%s, &buf, strlen(buf)) failed", fname);
--	else if (close(fd) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed",
-fname);
-+
-+	SAFE_FILE_PRINTF(cleanup, fname, "davef");
- }
- 
--void cleanup()
-+static void cleanup()
- {
- 	TEST_CLEANUP;
- 
+So it looks like this test was never working.
+
+> 
+> diff -urN org/tcore.exp mod/tcore.exp
+> --- org/tcore.exp       2013-05-17 15:08:09.000000000 -0600
+> +++ mod/tcore.exp       2013-05-17 14:07:37.000000000 -0600
+> @@ -39,7 +39,7 @@
+>      set istrue 0
+>      send "info threads\n"
+>      expect {
+> -               -re " \[0-9\]+ process .*(gdb)" {
+> +               -re " \[0-9\]+ Thread .*(gdb)" {
+>         set buf $expect_out(0,string)
+>         }
+>         timeout {
+> @@ -47,7 +47,7 @@
+>                 return 1
+>         }
+>      }
+> -    set curr_thread [check_buf $buf "process"]
+> +    set curr_thread [check_buf $buf "Thread"]
+>      if { $curr_thread == 0 } {
+>         send_user "check_threads (no current thread)\n"
+>         return 1
+> @@ -76,7 +76,7 @@
+>                                   return 1
+>                          }
+>                  }
+> -                set number1 [check_buf $buf "(process"]
+> +                set number1 [check_buf $buf "(Thread"]
+>                  send "bt\n"
+>                  expect {
+>                          -re  " bt.*#\[0-9\]+ .*(gdb)" {
+> @@ -101,13 +101,13 @@
+>  }
+
+This part of the test is quite fragile. This will break if LANG is not
+set to English language. Moreover this change will break the older gdb,
+do you know in which gdb version were these messages changed?
+
+>  proc check_fpu {num} {
+> +       exp_internal 1
+>         global expect_out
+>         global pass
+> -       send "\n"
+> -       send "info register\n"
+> -       send "\n"
+> +       send "set pagination off\n"
+> +       send "info all-register\n"
+>         expect {
+> -               -re "xmm$num\[\t \]+\{f \= .*\}+\[\t \]+\{f \= .*\}" {
+> +               -re "xmm$num\[\t \]+\{.*f.* \= .*\}" {
+>                         set buf $expect_out(0,string)
+>                 }
+>                 timeout {
+> @@ -130,8 +130,8 @@
+>         }
+>  }
+
+Aargh, even more fragile.
+
+I doubt that this part works with anything else but the gdb version it
+was written for.
+
+
+
+Given the state of the test and the uncertain functionality I would vote
+for removal. Anybody else has better idea?
+
 -- 
-1.7.9.5
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 How ServiceNow helps IT people transform IT departments:
