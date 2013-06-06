@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UrUM2-000184-Mn
-	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 14:36:22 +0000
-Date: Tue, 25 Jun 2013 16:37:51 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ukaf3-00023k-9Z
+	for ltp-list@lists.sourceforge.net; Thu, 06 Jun 2013 13:55:29 +0000
+Date: Thu, 6 Jun 2013 15:56:47 +0200
 From: chrubis@suse.cz
-Message-ID: <20130625143751.GL31268@rei>
-References: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
-	<20130624115313.GA1638@rei>
-	<CA+icZUU_kFw76obbvVHtiHNL0HK7D7avAZnbZcfSHZQECAZjCQ@mail.gmail.com>
+Message-ID: <20130606135647.GA29348@rei.suse.cz>
+References: <1370433674-6838-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130606105736.GA23876@rei> <51B0716B.2090107@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUU_kFw76obbvVHtiHNL0HK7D7avAZnbZcfSHZQECAZjCQ@mail.gmail.com>
-Subject: Re: [LTP] How to run only a specific test series like for example
- IPC?
+In-Reply-To: <51B0716B.2090107@oracle.com>
+Subject: Re: [LTP] [PATCH] configure: add configure checks to compile kernel
+ modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,45 +26,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> >> I wanted to only run the IPC tests as I have troubles with IPC(-MSG)
-> >> in Linux-Next.
+> >> There're new configure options added to tune modules building process.
+> >> New m4 function tries to determine if kernel-devel package is available
+> >> and sets makefile's variables (WITH_MODULES, ...) accordingly.
 > >>
-> >> This is what I did...
-> >>
-> >> root# cd /opt/ltp/
-> >>
-> >> root# ./runltp ./runtest/ipc
-> >>
-> >> ...is that the correct way? Wrong?
+> >> Signed-off-by: Alexey Kodanev<alexey.kodanev@oracle.com>
+> > This part looks fine.
 > >
-> > I belive that the syntax is ./runltp -f ipc
+> > Maybe it would be better to include detected kernel version in the
+> > configure output as well, but apart from that it's ok.
 > >
-> > Also there are additional tests for POSIX IPC in open_posix_testsuite
-> > that are not executed by the runltp script.
-> >
-> 
-> How do I run the "POSIX IPC"?
+> Sure, I will add VERSION and PATCHLEVEL variables from 
+> .../build/Makefile to configure. Then we can use these variables 
+> (WITH_MODULES, KERNEL_VERSION and KERNEL_PATCHLEVEL) to determine 
+> whether to compile specific modules or not. Also, would it be better to 
+> use KBUILD_VERSION, KBUILD_PATCHLEVEL, KBUILD_RELEASE names?
 
-Look into testcases/open_posix_testsuite/ directory, the openposix
-testcases are currently not executed from the runltp script and needs to
-be compiled and executed separetely. Do 'make' and 'make test' to
-compile and run the testsuite (it contains testcases for POSIX
-semaphores, message queues and shared memory).
+Sounds better to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+How ServiceNow helps IT people transform IT departments:
+1. A cloud service to automate IT design, transition and operations
+2. Dashboards that offer high-level views of enterprise services
+3. A single system of record for all IT processes
+http://p.sf.net/sfu/servicenow-d2d-j
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
