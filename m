@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UnVFY-0000Vs-KF
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 14:45:12 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UnVFW-00079A-Rw
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 14:45:12 +0000
-Message-ID: <51BB2C58.4040405@oracle.com>
-Date: Fri, 14 Jun 2013 18:44:40 +0400
-From: alexey.kodanev@oracle.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jungsoo.son@lge.com>) id 1UmBdg-0007ox-2y
+	for ltp-list@lists.sourceforge.net; Mon, 10 Jun 2013 23:36:40 +0000
+Received: from lgemrelse7q.lge.com ([156.147.1.151])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UmBdd-0001Yr-Q5
+	for ltp-list@lists.sourceforge.net; Mon, 10 Jun 2013 23:36:40 +0000
+From: "Jungsoo Son" <jungsoo.son@lge.com>
+References: <00f801ce63f3$7d4cc8f0$77e65ad0$@lge.com>
+	<690761261.792664.1370873255744.JavaMail.root@redhat.com>
+In-Reply-To: <690761261.792664.1370873255744.JavaMail.root@redhat.com>
+Date: Tue, 11 Jun 2013 08:36:29 +0900
+Message-ID: <012501ce6633$55508a70$fff19f50$@lge.com>
 MIME-Version: 1.0
-References: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
-	<104332332.3007867.1371217696167.JavaMail.root@redhat.com>
-In-Reply-To: <104332332.3007867.1371217696167.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH v2] fw_load: new test of device firmware loading
+Content-Language: ko
+Subject: Re: [LTP] [PATCH] syscalls/chown01: Fix test file creation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,56 +26,206 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: 'Jan Stancek' <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-SGkhCgpPbiAwNi8xNC8yMDEzIDA1OjQ4IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPiBIaSwKPgo+
-IEkgcmFuIHRoaXMgb24gb2xkZXIga2VybmVsLCB3aGljaCB3b3JrZWQgZmluZSAtIGl0IHNraXBw
-ZWQgdGhlIGJ1aWxkLgo+IFRoZW4gSSB0cmllZCBSSEVMNyBhbHBoYSwgd2hpY2ggaGFzIG1vcmUg
-cmVjZW50IGtlcm5lbDogMy4xMC4wLTAucmM0LAo+IGJ1dCBpdCBmYWlsZWQ6Cj4KPiAjIC4vZndf
-bG9hZAo+IGNwOiBjYW5ub3Qgc3RhdCDigJgvbGliL3VkZXYvcnVsZXMuZC81MC1maXJtd2FyZS5y
-dWxlc+KAmTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+IGZ3X2xvYWQgICAgIDEgIFRCUk9L
-ICA6ICBGYWlsZWQgdG8gY29weSAnL2xpYi91ZGV2L3J1bGVzLmQvNTAtZmlybXdhcmUucnVsZXMn
-IHRvICcvZXRjL3VkZXYvcnVsZXMuZC8nIGF0IGZ3X2xvYWQuYzoxNjQKPiBmd19sb2FkICAgICAy
-ICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgo+IGZ3X2xvYWQgICAgIDAgIFRXQVJO
-ICA6ICB0c3Rfcm1kaXI6IFRFU1RESVIgd2FzIE5VTEw7IG5vIHJlbW92YWwgYXR0ZW1wdGVkCj4K
-PiBJJ2xsIHNlZSBpZiBJIGNhbiBmaW5kIG91dCB3aGF0IGhhcHBlbmVkIHRvIDUwLWZpcm13YXJl
-LnJ1bGVzLAo+IGl0IGNvdWxkIHNvbWUgc2lkZS1lZmZlY3Qgb2Ygc3lzdGVtZC4KPgpXb3VsZCBp
-dCBiZSBiZXR0ZXIgdG8gY2hhbmdlIGZhaWxlZCBjb3B5IGNvbW1hbmQgdG8ganVzdCBUV0FSTiwg
-YW5kIApjb250aW51ZSB0ZXN0aW5nPyBBZnRlciB0aGF0LCB0ZXN0IHdpbGwgY29tcGxldGVkIHdp
-dGggdWRldiBmYWlsZWQgCnRlc3QtY2FzZXMsIG9yIGlmIHVkZXYgaGFzIHRob3NlIHJ1bGVzIGlu
-IHRoZSBvdGhlciBjb25maWd1cmF0aW9uIGZpbGVzLCAKZXZlcnl0aGluZyB3aWxsIGJlIGZpbmUu
-CkkganVzdCBjaGVja2VkIGl0IG9uIG15IG1hY2hpbmUsIG91dHB1dCB3aWxsIGJlOgpmd19sb2Fk
-ICAgICAxICBUUEFTUyAgOiAgRXhwZWN0OiBjYW4gbG9hZCBmaXJtd2FyZSAnLi4uL24wX2xvYWRf
-dHN0LmZ3JywgCmtlcm5lbCB1c2VkCmZ3X2xvYWQgICAgIDIgIFRQQVNTICA6ICBFeHBlY3Q6IGNh
-biBsb2FkIGZpcm13YXJlICcuLi4vbjFfbG9hZF90c3QuZncnLCAKa2VybmVsIHVzZWQKZndfbG9h
-ZCAgICAgMyAgVFBBU1MgIDogIEV4cGVjdDogY2FuIGxvYWQgZmlybXdhcmUgJy4uLi9uMl9sb2Fk
-X3RzdC5mdycsIAprZXJuZWwgdXNlZApmd19sb2FkICAgICA0ICBUUEFTUyAgOiAgRXhwZWN0OiBj
-YW4gbG9hZCBmaXJtd2FyZSAnLi4uL24zX2xvYWRfdHN0LmZ3JywgCmtlcm5lbCB1c2VkCmZ3X2xv
-YWQgICAgIDUgIFRGQUlMICA6ICBFeHBlY3Q6IGNhbiBsb2FkIGZpcm13YXJlICcuLi4vbjRfbG9h
-ZF90c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQgICAgIDYgIFRGQUlMICA6ICBFeHBlY3Q6IGNh
-biBsb2FkIGZpcm13YXJlICcuLi4vbjVfbG9hZF90c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQg
-ICAgIDcgIFRGQUlMICA6ICBFeHBlY3Q6IGNhbiBsb2FkIGZpcm13YXJlICcuLi4vbjZfbG9hZF90
-c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQgICAgIDggIFRGQUlMICA6ICBFeHBlY3Q6IGNhbiBs
-b2FkIGZpcm13YXJlICcuLi4vbjdfbG9hZF90c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQgICAg
-IDkgIFRQQVNTICA6ICBFeHBlY3Q6IGNhbid0IGxvYWQgZmlybXdhcmUgCicuLi5uOF9sb2FkX3Rz
-dC5mdycsIHVkZXYgdXNlZAoKSW50ZXJlc3RpbmdseSwgYnV0IGluIHRoYXQgY2FzZSAodWRldiBk
-b2Vzbid0IGhhdmUgYWRkIGZpcm13YXJlIHJ1bGUpIAp1ZGV2IGRvaW5nIGl0IHNvIGxvbmcgKHRl
-c3QtY2FzZXMgNSAtIDkpLCBpdCBpcyBub3Qgc3VycHJpc2luZ2x5IHRoYXQgCnJpZ2h0IG5vdyBm
-aXJtd2FyZSBsb2FkaW5nIGJ5LXBhc3MgdWRldiEKPiBJIGZvdW5kIHRoaXMgaW5pdGlhbGl6YXRp
-b24gYSBsaXR0bGUgY29uZnVzaW5nLCBzaW5jZSB5b3VyIHRlc3QKPiBhbHdheXMgcmVsaWVzIG9u
-IHBhc3NpbmcgaXQgZnJvbSB1c2VyLXNwYWNlICh3aGljaCBwYXNzZXMgOSk6Cj4KPj4gK3N0YXRp
-YyBpbnQgZndfbnVtCT0gODsKSXQgaXMgZGVmYXVsdCB2YWx1ZSwgYW5kIG5ldmVyIHVzZWQgaW4g
-dGhlIHRlc3QgKGFsd2F5cyByZXBsYWNlZCBieSAKbW9kdWxlIHBhcmFtZXRlcikuLi4gT0ssIEkg
-d2lsbCBjaGFuZ2UgaXQsIGFsc28gSSB3aWxsIHNraXAgZndfbnVtIApwYXJhbWV0ZXIgaW4gdGhl
-IHVzZXJzcGFjZSB0ZXN0IGFzIGl0IHdpbGwgYmVjb21lIHVzZWxlc3MuCgpUaGFua3MsCkFsZXhl
-eQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBi
-eSBXaW5kb3dzOgoKQnVpbGQgZm9yIFdpbmRvd3MgU3RvcmUuCgpodHRwOi8vcC5zZi5uZXQvc2Z1
-L3dpbmRvd3MtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-Cg==
+I added 'void' to setup() and cleanup() as your mention.
+
+
+There is a bug in the code to create the file and the code is
+very intricate. So replace it with SAFE_FILE_PRINTF().
+
+Signed-off-by: jungsoo.son <jungsoo.son@lge.com>
+---
+ testcases/kernel/syscalls/chown/chown01.c |   24 +++++++++---------------
+ 1 file changed, 9 insertions(+), 15 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/chown/chown01.c b/testcases/kernel/syscalls/chown/chown01.c
+index 50b9ea5..d95564e 100644
+--- a/testcases/kernel/syscalls/chown/chown01.c
++++ b/testcases/kernel/syscalls/chown/chown01.c
+@@ -116,9 +116,7 @@
+ #include <signal.h>
+ #include "test.h"
+ #include "usctest.h"
+-
+-void setup();
+-void cleanup();
++#include "safe_macros.h"
+ 
+ char *TCID = "chown01";
+ int TST_TOTAL = 1;
+@@ -126,8 +124,10 @@ int TST_TOTAL = 1;
+ int exp_enos[] = { 0, 0 };
+ 
+ char fname[255];
+-int fd, uid, gid;
+-char *buf = "davef";
++int uid, gid;
++
++static void setup(void);
++static void cleanup(void);
+ 
+ int main(int ac, char **av)
+ {
+@@ -163,7 +163,7 @@ int main(int ac, char **av)
+ 
+ }
+ 
+-void setup()
++static void setup(void)
+ {
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+@@ -176,17 +176,11 @@ void setup()
+ 	gid = getegid();
+ 
+ 	sprintf(fname, "t_%d", getpid());
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
+-	else if (write(fd, &buf, strlen(buf)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "write(%s, &buf, strlen(buf)) failed", fname);
+-	else if (close(fd) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed", fname);
++
++	SAFE_FILE_PRINTF(cleanup, fname, "davef");
+ }
+ 
+-void cleanup()
++static void cleanup(void)
+ {
+ 	TEST_CLEANUP;
+ 
+-- 
+1.7.9.5
+
+
+> -----Original Message-----
+> From: Jan Stancek [mailto:jstancek@redhat.com]
+> Sent: Monday, June 10, 2013 11:08 PM
+> To: Jungsoo Son
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] [PATCH] syscalls/chown01: Fix test file creation
+> 
+> 
+> ----- Original Message -----
+> > From: "Jungsoo Son" <jungsoo.son@lge.com>
+> > To: ltp-list@lists.sourceforge.net
+> > Sent: Saturday, 8 June, 2013 4:54:26 AM
+> > Subject: [LTP] [PATCH] syscalls/chown01: Fix test file creation
+> >
+> > There is a bug in the code to create the file and the code is very
+> > intricate. So replace it with SAFE_FILE_PRINTF().
+> >
+> > Signed-off-by: jungsoo.son <jungsoo.son@lge.com>
+> 
+> Please add void to setup()/cleanup(). The rest looks OK.
+> 
+> Regards,
+> Jan
+> 
+> > ---
+> >  testcases/kernel/syscalls/chown/chown01.c |   24 +++++++++--------------
+> -
+> >  1 file changed, 9 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/chown/chown01.c
+> > b/testcases/kernel/syscalls/chown/chown01.c
+> > index 50b9ea5..14b699b 100644
+> > --- a/testcases/kernel/syscalls/chown/chown01.c
+> > +++ b/testcases/kernel/syscalls/chown/chown01.c
+> > @@ -116,9 +116,7 @@
+> >  #include <signal.h>
+> >  #include "test.h"
+> >  #include "usctest.h"
+> > -
+> > -void setup();
+> > -void cleanup();
+> > +#include "safe_macros.h"
+> >
+> >  char *TCID = "chown01";
+> >  int TST_TOTAL = 1;
+> > @@ -126,8 +124,10 @@ int TST_TOTAL = 1;  int exp_enos[] = { 0, 0 };
+> >
+> >  char fname[255];
+> > -int fd, uid, gid;
+> > -char *buf = "davef";
+> > +int uid, gid;
+> > +
+> > +static void setup();
+> > +static void cleanup();
+> 
+> in these two above ^^
+> 
+> >
+> >  int main(int ac, char **av)
+> >  {
+> > @@ -163,7 +163,7 @@ int main(int ac, char **av)
+> >
+> >  }
+> >
+> > -void setup()
+> > +static void setup()
+> 
+> here
+> 
+> >  {
+> >
+> >  	tst_sig(NOFORK, DEF_HANDLER, cleanup); @@ -176,17 +176,11 @@ void
+> > setup()
+> >  	gid = getegid();
+> >
+> >  	sprintf(fname, "t_%d", getpid());
+> > -	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
+> > -		tst_brkm(TBROK | TERRNO, cleanup,
+> > -			 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
+> > -	else if (write(fd, &buf, strlen(buf)) == -1)
+> > -		tst_brkm(TBROK | TERRNO, cleanup,
+> > -			 "write(%s, &buf, strlen(buf)) failed", fname);
+> > -	else if (close(fd) == -1)
+> > -		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed",
+> > fname);
+> > +
+> > +	SAFE_FILE_PRINTF(cleanup, fname, "davef");
+> >  }
+> >
+> > -void cleanup()
+> > +static void cleanup()
+> 
+> and here.
+> 
+> >  {
+> >  	TEST_CLEANUP;
+> >
+> > --
+> > 1.7.9.5
+> >
+> >
+> > ----------------------------------------------------------------------
+> > -------- How ServiceNow helps IT people transform IT departments:
+> > 1. A cloud service to automate IT design, transition and operations 2.
+> > Dashboards that offer high-level views of enterprise services 3. A
+> > single system of record for all IT processes
+> > http://p.sf.net/sfu/servicenow-d2d-j
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >
+
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
