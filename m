@@ -2,31 +2,30 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UpH0z-0007yS-0H
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 11:57:29 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	(envelope-from <alexey.kodanev@oracle.com>) id 1UmLKc-0001bD-A1
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jun 2013 09:57:38 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UpH0v-0005SA-9T
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 11:57:28 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r5JBp0E2005391
+	(Exim 4.76) id 1UmLKb-0007d0-Ep
+	for ltp-list@lists.sourceforge.net; Tue, 11 Jun 2013 09:57:38 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r5B9vUxL008510
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 11:51:01 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5JBvH6s025316
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jun 2013 09:57:31 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5B9vUWX001123
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 11:57:18 GMT
-Received: from abhmt102.oracle.com (abhmt102.oracle.com [141.146.116.54])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5JBvHtJ025312
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 11:57:17 GMT
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jun 2013 09:57:30 GMT
+Received: from abhmt108.oracle.com (abhmt108.oracle.com [141.146.116.60])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5B9vT93001110
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Jun 2013 09:57:30 GMT
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 19 Jun 2013 15:56:43 +0400
-Message-Id: <1371643003-23373-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v3] configure: add configure checks to compile kernel
-	modules
+Date: Tue, 11 Jun 2013 13:56:10 +0400
+Message-Id: <1370944570-5215-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] prot_hsymlinks & cgroup_xattr: fix copyright header
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,144 +42,79 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-There're new configure options added to tune modules building process.
-New m4 function tries to determine if kernel-devel package is available
-and sets makefile's variables (WITH_MODULES, ...) accordingly.
-
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- configure.ac                 |    1 +
- include/mk/config.mk.default |    6 +++
- include/mk/config.mk.in      |    6 +++
- m4/ltp-kernel_devel.m4       |   76 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 89 insertions(+), 0 deletions(-)
- create mode 100644 m4/ltp-kernel_devel.m4
+ testcases/kernel/controllers/cgroup_xattr/Makefile |    3 ++-
+ .../kernel/controllers/cgroup_xattr/cgroup_xattr.c |    3 ++-
+ testcases/kernel/security/prot_hsymlinks/Makefile  |    5 +++--
+ .../security/prot_hsymlinks/prot_hsymlinks.c       |    3 ++-
+ 4 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index f217f50..f0fc6b0 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -167,5 +167,6 @@ LTP_CHECK_MADVISE
- LTP_CHECK_ACL_SUPPORT
- LTP_CHECK_FS_IOC_FLAGS
- LTP_CHECK_MREMAP_FIXED
-+LTP_CHECK_KERNEL_DEVEL
+diff --git a/testcases/kernel/controllers/cgroup_xattr/Makefile b/testcases/kernel/controllers/cgroup_xattr/Makefile
+index 2d75069..effd5da 100644
+--- a/testcases/kernel/controllers/cgroup_xattr/Makefile
++++ b/testcases/kernel/controllers/cgroup_xattr/Makefile
+@@ -2,7 +2,8 @@
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+-# published by the Free Software Foundation.
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
+ #
+ # This program is distributed in the hope that it would be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+diff --git a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+index 20473d4..512d505 100644
+--- a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
++++ b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+@@ -3,7 +3,8 @@
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation.
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
+  *
+  * This program is distributed in the hope that it would be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+diff --git a/testcases/kernel/security/prot_hsymlinks/Makefile b/testcases/kernel/security/prot_hsymlinks/Makefile
+index cd49588..effd5da 100644
+--- a/testcases/kernel/security/prot_hsymlinks/Makefile
++++ b/testcases/kernel/security/prot_hsymlinks/Makefile
+@@ -2,7 +2,8 @@
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+-# published by the Free Software Foundation.
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
+ #
+ # This program is distributed in the hope that it would be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+@@ -11,7 +12,7 @@
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program; if not, write the Free Software Foundation,
+-# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA 
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
- AC_OUTPUT
-diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
-index bd364a6..953747c 100644
---- a/include/mk/config.mk.default
-+++ b/include/mk/config.mk.default
-@@ -73,4 +73,10 @@ LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
+ top_srcdir		?= ../../../..
  
-+LINUX_VERSION		:=
-+LINUX_DIR		:=
-+LINUX_VERSION_MAJOR	:=
-+LINUX_VERSION_PATCH	:=
-+WITH_MODULES		:= no
-+
- export datarootdir includedir libdir mandir prefix
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index b835c86..96633f1 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -75,6 +75,12 @@ LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
- 
-+LINUX_VERSION		:= @LINUX_VERSION@
-+LINUX_DIR		:= @LINUX_DIR@
-+LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
-+LINUX_VERSION_PATCH	:= @LINUX_VERSION_PATCH@
-+WITH_MODULES		:= @WITH_MODULES@
-+
- ifeq ($(strip $(prefix)),)
- $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
- endif
-diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
-new file mode 100644
-index 0000000..ba53bc1
---- /dev/null
-+++ b/m4/ltp-kernel_devel.m4
-@@ -0,0 +1,76 @@
-+dnl Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+dnl
-+dnl This program is free software; you can redistribute it and/or
-+dnl modify it under the terms of the GNU General Public License as
-+dnl published by the Free Software Foundation; either version 2 of
-+dnl the License, or (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it would be useful,
-+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+dnl GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program; if not, write the Free Software Foundation,
-+dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+dnl
-+dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_KERNEL_DEVEL
-+dnl ----------------------------
-+dnl Building kernel modules
-+dnl requires kernel-devel installed
-+dnl
-+
-+AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[dnl
-+
-+AC_MSG_CHECKING([for kernel-devel])
-+AC_ARG_WITH(
-+	[linux-version],
-+	[AC_HELP_STRING([--with-linux-version=VERSION],
-+			[specify the Linux version to build modules for])],
-+	[LINUX_VERSION="${withval}"],
-+	AS_IF([test "$cross_compiling" = "no"],
-+		[LINUX_VERSION=`uname -r`]))
-+
-+AC_SUBST(LINUX_VERSION)
-+
-+AC_ARG_WITH([linux-dir],
-+	[AC_HELP_STRING([--with-linux-dir=DIR],
-+			[specify path to kernel-devel directory])],
-+	[LINUX_DIR="${withval}"],
-+	AS_IF([test -n "$LINUX_VERSION"],
-+		[LINUX_DIR="/lib/modules/$LINUX_VERSION/build"]))
-+
-+AC_SUBST(LINUX_DIR)
-+
-+if test -f "$LINUX_DIR/Makefile"; then
-+	LINUX_VERSION_MAJOR=`sed -n '0,/^VERSION = [[0-9]]*/s,\
-+^VERSION = ,,p' ${LINUX_DIR}/Makefile`
-+
-+	LINUX_VERSION_PATCH=`sed -n '0,/^PATCHLEVEL = [[0-9]]*/s,\
-+^PATCHLEVEL = ,,p' ${LINUX_DIR}/Makefile`
-+fi
-+
-+if [[ -n "$LINUX_VERSION_MAJOR" -a -n "$LINUX_VERSION_PATCH" ]]; then
-+	WITH_MODULES="yes"
-+else
-+	WITH_MODULES="no"
-+fi
-+
-+AC_SUBST(LINUX_VERSION_MAJOR)
-+AC_SUBST(LINUX_VERSION_PATCH)
-+
-+AC_MSG_RESULT([$WITH_MODULES])
-+
-+AC_ARG_WITH(
-+	[modules],
-+	[AC_HELP_STRING([--without-modules],
-+			[disable auto-building kernel modules])],
-+			[WITH_MODULES="no"],
-+			[])
-+
-+AC_SUBST(WITH_MODULES)
-+])
+diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+index 82bc770..558681a 100644
+--- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
++++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+@@ -3,7 +3,8 @@
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation.
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
+  *
+  * This program is distributed in the hope that it would be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
 -- 
 1.7.1
 
