@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UsB9q-00066l-6s
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 12:18:38 +0000
-Date: Thu, 27 Jun 2013 14:20:07 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UmrMX-00075Y-8Y
+	for ltp-list@lists.sourceforge.net; Wed, 12 Jun 2013 20:09:45 +0000
+Date: Wed, 12 Jun 2013 22:11:09 +0200
 From: chrubis@suse.cz
-Message-ID: <20130627122007.GB5384@rei>
-References: <1372304589-16585-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20130612201109.GB19266@rei.suse.cz>
+References: <CANXECd4nytMbMBtrnnD+aaEaE1NMQ8+x=gO7qCFrEFcFBGBUCg@mail.gmail.com>
+	<880296419.1609038.1371019910126.JavaMail.root@redhat.com>
+	<CANXECd7uzb9Rc2H1LMDuBXcExC6RHbHhJ2rv-tEz9uOcDW+Vhw@mail.gmail.com>
+	<602677798.1890199.1371052049559.JavaMail.root@redhat.com>
+	<CANXECd5nFxsJsTTnrFdXAnGpEX0VBAzPMsO=HKKrcjkMqvDoeA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372304589-16585-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] clock_settime03: don't test PROCESS_CPUTIME_ID
- and THREAD_CPUTIME_ID
+In-Reply-To: <CANXECd5nFxsJsTTnrFdXAnGpEX0VBAzPMsO=HKKrcjkMqvDoeA@mail.gmail.com>
+Subject: Re: [LTP] Help compiling in AIX 6.1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,52 +28,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Ismael Farf??n <sulfurfff@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> PROCESS_CPUTIME_ID and THREAD_CPUTIME_ID are not supported before
-> kernel 2.6.12, and changed back since 2.6.38. And they are
-> thought improper supported on Linux, so we just remove them
-> from the test of clock_settime and remain them be untested.
+> > --- a/include/mk/env_pre.mk
+> > +++ b/include/mk/env_pre.mk
+> > @@ -74,6 +74,8 @@ else
+> >  abs_top_builddir               := $(abspath $(top_builddir))
+> >  endif
+> >
+> > +$(warning abs dirs: $(abs_top_srcdir) $(abs_top_builddir))
+> > +
+> >  # Where's the root object directory?
+> >  builddir                       := .
+> >
+> > Regards,
+> > Jan
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  testcases/kernel/timers/clock_settime/clock_settime03.c | 15 ---------------
->  1 file changed, 15 deletions(-)
+> I'm using gmake 3.8
 > 
-> diff --git a/testcases/kernel/timers/clock_settime/clock_settime03.c b/testcases/kernel/timers/clock_settime/clock_settime03.c
-> index a949303..3693395 100644
-> --- a/testcases/kernel/timers/clock_settime/clock_settime03.c
-> +++ b/testcases/kernel/timers/clock_settime/clock_settime03.c
-> @@ -37,8 +37,6 @@ clockid_t clocks[] = {
->  	CLOCK_REALTIME,
->  	CLOCK_REALTIME,
->  	CLOCK_REALTIME,
-> -	CLOCK_PROCESS_CPUTIME_ID,
-> -	CLOCK_THREAD_CPUTIME_ID
->  };
->  
->  int testcases[] = {
-> @@ -49,8 +47,6 @@ int testcases[] = {
->  	EINVAL,			/* Invalid timespec     */
->  	EINVAL,			/* NSEC_PER_SEC + 1     */
->  	EPERM,			/* non-root user        */
-> -	0,
-> -	0,
->  };
+> I got this new line from gmake after the patch:
+> /tmp/ltp-full-20130109/include/mk/env_pre.mk:77: abs dirs: -n
+> /tmp/ltp-full-20130109 -n /tmp/ltp-full-20130109
+> 
+> The appended "-n" looks kind of suspicious?
 
-What is the exact issue here?
+Looks like the -n gets there from scripts/abspath.sh that is used from
+include/mk/functions.mk in MAKE_3_80_abspath which is used to emulate
+abspath which is implemented in newer GNU make.
 
-I suspect that the problem is that the errno values are not stable
-between kernel versions but AFAIK the PROCESS_CPUTIME clocks were never
-setable but that shouldn't stop us from trying to set them and expect
-failure. So what about we change the code to expect failure with
-unspecified errno or add a list of expected errnos broad enough to cover
-all kernel versions?
-
-And btw, the Linux implementation is POSIXly correct as the ability to
-set these clocks is left open to implementation.
+If I'm right fixing the script to call echo that supports -n or getting
+GNU make that supports abspath should help.
 
 -- 
 Cyril Hrubis
