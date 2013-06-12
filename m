@@ -2,30 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UrpIe-000525-EQ
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jun 2013 12:58:16 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UrpIc-0006Ql-KK
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jun 2013 12:58:16 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r5QCpnZb015414
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Jun 2013 12:51:49 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5QCw75j006071
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Jun 2013 12:58:07 GMT
-Received: from abhmt105.oracle.com (abhmt105.oracle.com [141.146.116.57])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5QCw7us026783
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Jun 2013 12:58:07 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 26 Jun 2013 16:57:37 +0400
-Message-Id: <1372251457-25602-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] lib: safe_macros: add SAFE_EXECVP()
+	(envelope-from <jstancek@redhat.com>) id 1UmeuV-0005Wj-8W
+	for ltp-list@lists.sourceforge.net; Wed, 12 Jun 2013 06:51:59 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UmeuT-0006e2-LM
+	for ltp-list@lists.sourceforge.net; Wed, 12 Jun 2013 06:51:59 +0000
+Date: Wed, 12 Jun 2013 02:51:50 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <880296419.1609038.1371019910126.JavaMail.root@redhat.com>
+In-Reply-To: <CANXECd4nytMbMBtrnnD+aaEaE1NMQ8+x=gO7qCFrEFcFBGBUCg@mail.gmail.com>
+References: <CANXECd4nytMbMBtrnnD+aaEaE1NMQ8+x=gO7qCFrEFcFBGBUCg@mail.gmail.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] Help compiling in AIX 6.1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,86 +24,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Ismael =?utf-8?Q?Farf=C3=A1n?= <sulfurfff@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- include/safe_macros.h |    5 +++++
- lib/safe_macros.c     |   26 ++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 0 deletions(-)
-
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index 3a26df6..8ef5113 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -184,5 +184,10 @@ int safe_fclose(const char *file, const int lineno, void (cleanup_fn)(void),
- #define SAFE_FCLOSE(cleanup_fn, f) \
- 	safe_fclose(__FILE__, __LINE__, cleanup_fn, f)
- 
-+void safe_execvp(const char *file, const int lineno, void (cleanup_fn)(void),
-+                 char *const argv[]);
-+#define SAFE_EXECVP(cleanup_fn, argv) \
-+	safe_execvp(__FILE__, __LINE__, cleanup_fn, argv)
-+
- #endif /* __SAFE_MACROS_H__ */
- #endif /* __TEST_H__ */
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index fb02796..58e6f6a 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -2,6 +2,7 @@
- #include <sys/mman.h>
- #include <sys/resource.h>
- #include <sys/stat.h>
-+#include <sys/wait.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <libgen.h>
-@@ -467,3 +468,28 @@ int safe_fclose(const char *file, const int lineno, void (cleanup_fn)(void),
- 
- 	return ret;
- }
-+
-+void safe_execvp(const char *file, const int lineno, void (cleanup_fn)(void),
-+                 char *const argv[])
-+{
-+	if (argv == NULL || ARRAY_SIZE(argv) == 0) {
-+		tst_brkm(TBROK, cleanup_fn,
-+			"argument list is empty at %s:%d", file, lineno);
-+	}
-+
-+	pid_t pid = vfork();
-+	if (pid == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "fork failed at %s:%d",
-+			file, lineno);
-+	}
-+	if (!pid)
-+		_exit(execvp(argv[0], argv));
-+
-+	int ret = -1;
-+	waitpid(pid, &ret, 0);
-+
-+	if (ret != 0) {
-+		tst_brkm(TBROK, cleanup_fn, "failed to exec cmd '%s' at %s:%d",
-+			argv[0], file, lineno);
-+	}
-+}
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiSXNtYWVsIEZhcmbDoW4i
+IDxzdWxmdXJmZmZAZ21haWwuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKPiBTZW50OiBUdWVzZGF5LCAxMSBKdW5lLCAyMDEzIDEwOjM3OjM2IFBNCj4gU3ViamVjdDog
+W0xUUF0gSGVscCBjb21waWxpbmcgaW4gQUlYIDYuMQo+IAo+IEhlbGxvIGxpc3QKPiAKPiBXZSBo
+YXZlIHRoaXMgQUlYIDYuMSBib3ggcnVubmluZyBMVFAgMjAwNS1zb21ldGhpbmcuIE5vdyBJJ20g
+dHJ5aW5nIHRvCj4gY29tcGlsZSAyMDEzMDEwOSB3aXRob3V0IG11Y2ggbHVjay4KPiAKPiBJJ20g
+cnVubmluZyB0aGlzIHdpdGhvdXQgbXVjaCBsdWNrOgo+IAo+IC4vY29uZmlndXJlCj4gZ21ha2UK
+PiAKPiBBbnkgaWRlYXM/CgppbmNsdWRlL21rL2Vudl9wcmUubWs6MTAwIGlzIGluY2x1ZGUgb2Yg
+IiQoYWJzX3RvcF9idWlsZGRpcikvaW5jbHVkZS9tay9jb25maWcubWsiLApzbyBJJ20gZ3Vlc3Np
+bmcgc29tZXRoaW5nIHdlbnQgd3Jvbmcgd2l0aCAuL2NvbmZpZ3VyZS4KQ2FuIHlvdSBzZW5kIG91
+dHB1dCBvZiAiLi9jb25maWd1cmUiPwoKUmVnYXJkcywKSmFuCgo+IAo+IAo+IAo+IGx0cC1mdWxs
+LTIwMTMwMTA5LyB+JCBnbWFrZQo+IC90bXAvbHRwLWZ1bGwtMjAxMzAxMDkvaW5jbHVkZS9tay9l
+bnZfcHJlLm1rOjEwMDogLW46IEEgZmlsZSBvcgo+IGRpcmVjdG9yeSBpbiB0aGUgcGF0aCBuYW1l
+IGRvZXMgbm90IGV4aXN0Lgo+IC90bXAvbHRwLWZ1bGwtMjAxMzAxMDkvaW5jbHVkZS9tay9lbnZf
+cHJlLm1rOjEwMTogLW46IEEgZmlsZSBvcgo+IGRpcmVjdG9yeSBpbiB0aGUgcGF0aCBuYW1lIGRv
+ZXMgbm90IGV4aXN0Lgo+IC90bXAvbHRwLWZ1bGwtMjAxMzAxMDkvaW5jbHVkZS9tay9hdXRvbWFr
+ZS5tazoxMTU6IHRhcmdldCBgLW4nIGdpdmVuCj4gbW9yZSB0aGFuIG9uY2UgaW4gdGhlIHNhbWUg
+cnVsZS4KPiBNYWtlZmlsZToxMDc6IHdhcm5pbmc6IG92ZXJyaWRpbmcgY29tbWFuZHMgZm9yIHRh
+cmdldCBgLW4nCj4gL3RtcC9sdHAtZnVsbC0yMDEzMDEwOS9pbmNsdWRlL21rL2F1dG9tYWtlLm1r
+OjExNzogd2FybmluZzogaWdub3JpbmcKPiBvbGQgY29tbWFuZHMgZm9yIHRhcmdldCBgLW4nCj4g
+TWFrZWZpbGU6MTgyOiB3YXJuaW5nOiBvdmVycmlkaW5nIGNvbW1hbmRzIGZvciB0YXJnZXQgYC1u
+Jwo+IE1ha2VmaWxlOjEwNzogd2FybmluZzogaWdub3Jpbmcgb2xkIGNvbW1hbmRzIGZvciB0YXJn
+ZXQgYC1uJwo+IE1ha2VmaWxlOjE4ODogd2FybmluZzogb3ZlcnJpZGluZyBjb21tYW5kcyBmb3Ig
+dGFyZ2V0IGAtbicKPiBNYWtlZmlsZToxODI6IHdhcm5pbmc6IGlnbm9yaW5nIG9sZCBjb21tYW5k
+cyBmb3IgdGFyZ2V0IGAtbicKPiBNYWtlZmlsZToxODc6IHRhcmdldCBgLW4nIGdpdmVuIG1vcmUg
+dGhhbiBvbmNlIGluIHRoZSBzYW1lIHJ1bGUuCj4gTWFrZWZpbGU6MTg3OiB0YXJnZXQgYC1uJyBn
+aXZlbiBtb3JlIHRoYW4gb25jZSBpbiB0aGUgc2FtZSBydWxlLgo+IE1ha2VmaWxlOjE4NzogdGFy
+Z2V0IGAtbicgZ2l2ZW4gbW9yZSB0aGFuIG9uY2UgaW4gdGhlIHNhbWUgcnVsZS4KPiBNYWtlZmls
+ZToxODc6IHRhcmdldCBgLW4nIGdpdmVuIG1vcmUgdGhhbiBvbmNlIGluIHRoZSBzYW1lIHJ1bGUu
+Cj4gaWYgZ2l0IGRlc2NyaWJlID4vZGV2L251bGwgMj4mMTsgdGhlbiBcCj4gICAgICAgICBnaXQg
+ZGVzY3JpYmUgPiAiVmVyc2lvbiI7IFwKPiBlbHNlIFwKPiAgICAgICAgIGNwIFZFUlNJT04gIlZl
+cnNpb24iOyBcCj4gZmkKPiBnbWFrZTogQ2lyY3VsYXIgLW4gPC0gLW4gZGVwZW5kZW5jeSBkcm9w
+cGVkLgo+IGdtYWtlOiBDaXJjdWxhciAtbiA8LSAtbiBkZXBlbmRlbmN5IGRyb3BwZWQuCj4gZ21h
+a2U6IENpcmN1bGFyIC1uIDwtIC1uIGRlcGVuZGVuY3kgZHJvcHBlZC4KPiBnbWFrZTogQ2lyY3Vs
+YXIgLW4gPC0gLW4gZGVwZW5kZW5jeSBkcm9wcGVkLgo+IGdtYWtlOiBDaXJjdWxhciAtbiA8LSAt
+biBkZXBlbmRlbmN5IGRyb3BwZWQuCj4gZ21ha2U6IENpcmN1bGFyIC1uIDwtIC1uIGRlcGVuZGVu
+Y3kgZHJvcHBlZC4KPiBpbnN0YWxsIC1tIDAwNzU1ICIvdG1wL2x0cC1mdWxsLTIwMTMwMTA5Ly1u
+IiAiLW4iCj4gaW5zdGFsbDogMDY1My0yMzMgRmlsZSAwMDc1NSB3YXMgbm90IGZvdW5kLgo+IGdt
+YWtlOiAqKiogWy1uXSBFcnJvciAyCj4gCj4gCj4gCj4gCj4gLS0KPiBEbyBub3QgbGV0IG1lIGlu
+ZHVjZSB5b3UgdG8gc2F0aXNmeSBteSBjdXJpb3NpdHksIGZyb20gYW4gZXhwZWN0YXRpb24sCj4g
+dGhhdCBJIHNoYWxsIGdyYXRpZnkgeW91cnMuIFdoYXQgSSBtYXkganVkZ2UgcHJvcGVyIHRvIGNv
+bmNlYWwsIGRvZXMKPiBub3QgY29uY2VybiBteXNlbGYgYWxvbmUuCj4gCj4gLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCj4gVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IFdpbmRvd3M6Cj4g
+Cj4gQnVpbGQgZm9yIFdpbmRvd3MgU3RvcmUuCj4gCj4gaHR0cDovL3Auc2YubmV0L3NmdS93aW5k
+b3dzLWRldjJkZXYKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNv
+cmVkIGJ5IFdpbmRvd3M6CgpCdWlsZCBmb3IgV2luZG93cyBTdG9yZS4KCmh0dHA6Ly9wLnNmLm5l
+dC9zZnUvd2luZG93cy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRw
+LWxpc3QK
