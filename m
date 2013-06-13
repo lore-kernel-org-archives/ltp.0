@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UmDSH-0006AD-6i
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jun 2013 01:33:01 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UmDSG-0004YK-92
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jun 2013 01:33:01 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 10 Jun 2013 21:32:58 -0400
-References: <1370528507-15313-1-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1370528507-15313-1-git-send-email-alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-Message-Id: <201306102132.59648.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] configure: add configure checks to compile kernel
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Un7a4-0002vu-Jr
+	for ltp-list@lists.sourceforge.net; Thu, 13 Jun 2013 13:28:48 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Un7a1-00087q-6x
+	for ltp-list@lists.sourceforge.net; Thu, 13 Jun 2013 13:28:48 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r5DDSYT3012717
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 13 Jun 2013 13:28:34 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5DDSZmM000472
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 13 Jun 2013 13:28:36 GMT
+Received: from abhmt116.oracle.com (abhmt116.oracle.com [141.146.116.68])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5DDSZbp007067
+	for <ltp-list@lists.sourceforge.net>; Thu, 13 Jun 2013 13:28:35 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 13 Jun 2013 17:28:03 +0400
+Message-Id: <1371130083-5923-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v2] configure: add configure checks to compile kernel
 	modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -25,67 +36,160 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7858286890169465097=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, vasily.isaenko@oracle.com
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
---===============7858286890169465097==
-Content-Type: multipart/signed; boundary="nextPart1498864.ppetHQkQee";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+There're new configure options added to tune modules building process.
+New m4 function tries to determine if kernel-devel package is available
+and sets makefile's variables (WITH_MODULES, ...) accordingly.
 
---nextPart1498864.ppetHQkQee
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ configure.ac                 |    1 +
+ include/mk/config.mk.default |    6 +++
+ include/mk/config.mk.in      |    6 +++
+ m4/ltp-kernel_devel.m4       |   82 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 95 insertions(+), 0 deletions(-)
+ create mode 100644 m4/ltp-kernel_devel.m4
 
-On Thursday 06 June 2013 10:21:47 Alexey Kodanev wrote:
-> There're new configure options added to tune modules building process.
-> New m4 function tries to determine if kernel-devel package is available
-> and sets makefile's variables (WITH_MODULES, ...) accordingly.
+diff --git a/configure.ac b/configure.ac
+index f217f50..f0fc6b0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -167,5 +167,6 @@ LTP_CHECK_MADVISE
+ LTP_CHECK_ACL_SUPPORT
+ LTP_CHECK_FS_IOC_FLAGS
+ LTP_CHECK_MREMAP_FIXED
++LTP_CHECK_KERNEL_DEVEL
+ 
+ AC_OUTPUT
+diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
+index bd364a6..a84f42a 100644
+--- a/include/mk/config.mk.default
++++ b/include/mk/config.mk.default
+@@ -73,4 +73,10 @@ LDFLAGS			+= $(WLDFLAGS)
+ CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
+ CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
+ 
++LINUX_VERSION		:=
++LINUX_DIR		:=
++LINUX_VERSION_MAJOR	:=
++LINUX_PATCHLEVEL	:=
++WITH_MODULES		:= no
++
+ export datarootdir includedir libdir mandir prefix
+diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+index b835c86..71a8d8e 100644
+--- a/include/mk/config.mk.in
++++ b/include/mk/config.mk.in
+@@ -75,6 +75,12 @@ LDFLAGS			+= $(WLDFLAGS)
+ CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
+ CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
+ 
++LINUX_VERSION		:= @LINUX_VERSION@
++LINUX_DIR		:= @LINUX_DIR@
++LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
++LINUX_PATCHLEVEL	:= @LINUX_PATCHLEVEL@
++WITH_MODULES		:= @WITH_MODULES@
++
+ ifeq ($(strip $(prefix)),)
+ $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
+ endif
+diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
+new file mode 100644
+index 0000000..2015ea9
+--- /dev/null
++++ b/m4/ltp-kernel_devel.m4
+@@ -0,0 +1,82 @@
++dnl Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++dnl
++dnl This program is free software; you can redistribute it and/or
++dnl modify it under the terms of the GNU General Public License as
++dnl published by the Free Software Foundation; either version 2 of
++dnl the License, or (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it would be useful,
++dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++dnl GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program; if not, write the Free Software Foundation,
++dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++dnl
++dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++dnl
++
++dnl
++dnl LTP_CHECK_KERNEL_DEVEL
++dnl ----------------------------
++dnl Building kernel modules
++dnl requires kernel-devel installed
++dnl
++
++AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[dnl
++
++AC_MSG_CHECKING([for kernel-devel])
++AC_ARG_WITH(
++	[linux-version],
++	[AC_HELP_STRING([--with-linux-version=VERSION],
++			[specify the Linux version to build modules for])],
++	[LINUX_VERSION="${withval}"],
++	AS_IF([test "$cross_compiling" = "no"],
++		[LINUX_VERSION=`uname -r`]))
++
++AC_SUBST(LINUX_VERSION)
++
++AC_ARG_WITH([linux-dir],
++	[AC_HELP_STRING([--with-linux-dir=DIR],
++			[specify path to kernel-devel directory])],
++	[LINUX_DIR="${withval}"],
++	AS_IF([test -n "$LINUX_VERSION"],
++		[LINUX_DIR="/lib/modules/$LINUX_VERSION/build"]))
++
++AC_SUBST(LINUX_DIR)
++
++if test -f "$LINUX_DIR/Makefile"; then
++	LINUX_VERSION_MAJOR=`sed -n '0,/^VERSION = [[0-9]]*/s,\
++^VERSION = ,,p' ${LINUX_DIR}/Makefile`
++
++	LINUX_PATCHLEVEL=`sed -n '0,/^PATCHLEVEL = [[0-9]]*/s,\
++^PATCHLEVEL = ,,p' ${LINUX_DIR}/Makefile`
++fi
++
++if [[ -n "$LINUX_VERSION_MAJOR" -a -n "$LINUX_PATCHLEVEL" ]]; then
++	WITH_MODULES="yes"
++else
++	WITH_MODULES="no"
++	if test -n "$LINUX_VERSION"; then
++		LINUX_VERSION_MAJOR=`echo "$LINUX_VERSION" | \
++sed -n 's/\([[0-9]]\).*$/\1/p'`
++		LINUX_PATCHLEVEL=`echo "$LINUX_VERSION" | \
++sed -n 's/^[[0-9]]*.\([[0-9]]\).*$/\1/p'`
++	fi
++fi
++
++AC_SUBST(LINUX_VERSION_MAJOR)
++AC_SUBST(LINUX_PATCHLEVEL)
++
++AC_MSG_RESULT([$WITH_MODULES])
++
++AC_ARG_WITH(
++	[modules],
++	[AC_HELP_STRING([--without-modules],
++			[disable auto-building kernel modules])],
++			[WITH_MODULES="no"],
++			[])
++
++AC_SUBST(WITH_MODULES)
++])
+-- 
+1.7.1
 
-also, please version your patches in standard git style.  the first one is:
-	[PATCH] configure: ....
-then the second one (perhaps with the reply-to set to the fist patch) is:
-	[PATCH v2] configure: ...
-and so on
-
-having multiple threads starting off with the same subject is really hard t=
-o=20
-follow
-=2Dmike
-
---nextPart1498864.ppetHQkQee
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRtn5LAAoJEEFjO5/oN/WBN2EP+wQECGnx7v/ljS0UCYScERDB
-E3E4F0rMSm0cqTMjYNktyJbE3EewNPqLokLLIXGjg0iRfgAe18Uy+i93izPudqp9
-JIK4MZlzf1W/fH0Pm9TGaYrlgsRnC4DmnSCpPBqwQ48ZJv5JcV0ERGy6TT1J+vXT
-Cee9sXbg+560CR3Xeqpc8Ux3OWXcvMzCRyyHs199fEbEWFeM9bJ03uDcJHG8EnX/
-+JVaLvgAaz9jBUGwKWQKTm5+gaK4PC0he5IMWtW4Pd2oYYSHYXu4ukiWok3N6Zuo
-ynSdmoB92AWEAGvQ109VChiPPDzNXHVoH9tVEkFVuE1O8xJ01oQNRQk6lK/R7nLg
-VilLzmqpEMFzmQ3MY7e2slvZ1unht6Iqn7uv2uXvcFB4a/TY9fZwYqJDdeTHQ44M
-czy4Nv5rjFgGNihPnhucY/Rv6BYG7tvhDTiZ9LZ1AEZiHOHvzYHqEc32qIjE01tS
-vATjamsi9mPzQDK/lEeL9etFhnNd8XZwWatxYJMjI9NrX1jhctKhHazwv7/Ro4ju
-HklJqNT2TwnEyKuQbMi2oO9ZrtPfp1zCdvfwOT+M/5wfYQt/OuUp4XZRVDY086+k
-P+Ot37wtSGb2uYMl52SKMaL8HkHOKrYXFZAQ25e6CKrMCrLg4iSNSkw1juDfPKTd
-Cq6R4vrPlkdSfht3Ti8H
-=l4/p
------END PGP SIGNATURE-----
-
---nextPart1498864.ppetHQkQee--
-
-
---===============7858286890169465097==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
@@ -93,16 +197,7 @@ This SF.net email is sponsored by Windows:
 Build for Windows Store.
 
 http://p.sf.net/sfu/windows-dev2dev
---===============7858286890169465097==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7858286890169465097==--
-
