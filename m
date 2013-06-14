@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UkFfj-0004zv-Jw
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 15:30:47 +0000
-Date: Wed, 5 Jun 2013 17:32:05 +0200
-From: chrubis@suse.cz
-Message-ID: <20130605153204.GA611@rei>
-References: <009401ce6193$609aaf40$21d00dc0$@lge.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UnUMZ-0005h8-UO
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 13:48:23 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UnUMY-0007BJ-5P
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 13:48:23 +0000
+Date: Fri, 14 Jun 2013 09:48:16 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <104332332.3007867.1371217696167.JavaMail.root@redhat.com>
+In-Reply-To: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <009401ce6193$609aaf40$21d00dc0$@lge.com>
-Subject: Re: [LTP] [PATCH] syscalls/chmod02: Fix wrong address of buf for
- write()
+Subject: Re: [LTP] [PATCH v2] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,50 +24,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jungsoo Son <jungsoo.son@lge.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: jungsoo.son <jungsoo.son@lge.com>
-> ---
->  testcases/kernel/syscalls/chmod/chmod02.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/chmod/chmod02.c
-> b/testcases/kernel/syscalls/chmod/chmod02.c
-> index 242cbd3..904c5e8 100644
-> --- a/testcases/kernel/syscalls/chmod/chmod02.c
-> +++ b/testcases/kernel/syscalls/chmod/chmod02.c
-> @@ -187,9 +187,9 @@ void setup()
->  	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
->  		tst_brkm(TBROK | TERRNO, cleanup,
->  			 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
-> -	} else if (write(fd, &buf, strlen(buf)) == -1) {
-> +	} else if (write(fd, buf, strlen(buf)) == -1) {
->  		tst_brkm(TBROK | TERRNO, cleanup,
-> -			 "write(%s, &buf, strlen(buf)) failed", fname);
-> +			 "write(%s, buf, strlen(buf)) failed", fname);
->  	} else if (close(fd) == -1) {
->  		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed",
-> fname);
-
-I've replaced the the code that creates the file with single
-SAFE_FILE_PRINTF(). Thanks for the report.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksCgpJIHJhbiB0aGlzIG9uIG9sZGVyIGtlcm5lbCwgd2hpY2ggd29ya2VkIGZpbmUgLSBpdCBz
+a2lwcGVkIHRoZSBidWlsZC4KVGhlbiBJIHRyaWVkIFJIRUw3IGFscGhhLCB3aGljaCBoYXMgbW9y
+ZSByZWNlbnQga2VybmVsOiAzLjEwLjAtMC5yYzQsCmJ1dCBpdCBmYWlsZWQ6CgojIC4vZndfbG9h
+ZCAKY3A6IGNhbm5vdCBzdGF0IOKAmC9saWIvdWRldi9ydWxlcy5kLzUwLWZpcm13YXJlLnJ1bGVz
+4oCZOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5CmZ3X2xvYWQgICAgIDEgIFRCUk9LICA6ICBG
+YWlsZWQgdG8gY29weSAnL2xpYi91ZGV2L3J1bGVzLmQvNTAtZmlybXdhcmUucnVsZXMnIHRvICcv
+ZXRjL3VkZXYvcnVsZXMuZC8nIGF0IGZ3X2xvYWQuYzoxNjQKZndfbG9hZCAgICAgMiAgVEJST0sg
+IDogIFJlbWFpbmluZyBjYXNlcyBicm9rZW4KZndfbG9hZCAgICAgMCAgVFdBUk4gIDogIHRzdF9y
+bWRpcjogVEVTVERJUiB3YXMgTlVMTDsgbm8gcmVtb3ZhbCBhdHRlbXB0ZWQKCkknbGwgc2VlIGlm
+IEkgY2FuIGZpbmQgb3V0IHdoYXQgaGFwcGVuZWQgdG8gNTAtZmlybXdhcmUucnVsZXMsCml0IGNv
+dWxkIHNvbWUgc2lkZS1lZmZlY3Qgb2Ygc3lzdGVtZC4KCkkgZm91bmQgdGhpcyBpbml0aWFsaXph
+dGlvbiBhIGxpdHRsZSBjb25mdXNpbmcsIHNpbmNlIHlvdXIgdGVzdAphbHdheXMgcmVsaWVzIG9u
+IHBhc3NpbmcgaXQgZnJvbSB1c2VyLXNwYWNlICh3aGljaCBwYXNzZXMgOSk6Cgo+ICtzdGF0aWMg
+aW50IGZ3X251bQk9IDg7CgpSZWdhcmRzLApKYW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlz
+IFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkgV2luZG93czoKCkJ1aWxkIGZvciBXaW5kb3dz
+IFN0b3JlLgoKaHR0cDovL3Auc2YubmV0L3NmdS93aW5kb3dzLWRldjJkZXYKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0
+Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
+Lm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
