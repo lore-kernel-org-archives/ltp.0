@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Ur3b8-0001Sl-Qh
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 10:02:10 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1UnVFY-0000Vs-KF
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 14:45:12 +0000
 Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ur3b7-0007Lp-4G
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 10:02:10 +0000
-Message-ID: <51C81903.2030905@oracle.com>
-Date: Mon, 24 Jun 2013 14:01:39 +0400
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UnVFW-00079A-Rw
+	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 14:45:12 +0000
+Message-ID: <51BB2C58.4040405@oracle.com>
+Date: Fri, 14 Jun 2013 18:44:40 +0400
 From: alexey.kodanev@oracle.com
 MIME-Version: 1.0
-References: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
-	<201306221415.17130.vapier@gentoo.org>
-In-Reply-To: <201306221415.17130.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] tst_module: create new library functions for
- kernel modules
+References: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
+	<104332332.3007867.1371217696167.JavaMail.root@redhat.com>
+In-Reply-To: <104332332.3007867.1371217696167.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH v2] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,33 +25,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-On 06/22/2013 10:15 PM, Mike Frysinger wrote:
->
->> +/* declared in tst_tmpdir.c */
->> +const char *tst_get_startwd(void);
-> use a proper header instead.  extern func decls only leads to bit rot and hard
-> to debug crashes.
-But, there is no header for this function in LTP, it is declared inside 
-c file, and I
-used it in the same way as it was already used in tst_resource.c.
-
-Thanks,
-Alexey
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkhCgpPbiAwNi8xNC8yMDEzIDA1OjQ4IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPiBIaSwKPgo+
+IEkgcmFuIHRoaXMgb24gb2xkZXIga2VybmVsLCB3aGljaCB3b3JrZWQgZmluZSAtIGl0IHNraXBw
+ZWQgdGhlIGJ1aWxkLgo+IFRoZW4gSSB0cmllZCBSSEVMNyBhbHBoYSwgd2hpY2ggaGFzIG1vcmUg
+cmVjZW50IGtlcm5lbDogMy4xMC4wLTAucmM0LAo+IGJ1dCBpdCBmYWlsZWQ6Cj4KPiAjIC4vZndf
+bG9hZAo+IGNwOiBjYW5ub3Qgc3RhdCDigJgvbGliL3VkZXYvcnVsZXMuZC81MC1maXJtd2FyZS5y
+dWxlc+KAmTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+IGZ3X2xvYWQgICAgIDEgIFRCUk9L
+ICA6ICBGYWlsZWQgdG8gY29weSAnL2xpYi91ZGV2L3J1bGVzLmQvNTAtZmlybXdhcmUucnVsZXMn
+IHRvICcvZXRjL3VkZXYvcnVsZXMuZC8nIGF0IGZ3X2xvYWQuYzoxNjQKPiBmd19sb2FkICAgICAy
+ICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgo+IGZ3X2xvYWQgICAgIDAgIFRXQVJO
+ICA6ICB0c3Rfcm1kaXI6IFRFU1RESVIgd2FzIE5VTEw7IG5vIHJlbW92YWwgYXR0ZW1wdGVkCj4K
+PiBJJ2xsIHNlZSBpZiBJIGNhbiBmaW5kIG91dCB3aGF0IGhhcHBlbmVkIHRvIDUwLWZpcm13YXJl
+LnJ1bGVzLAo+IGl0IGNvdWxkIHNvbWUgc2lkZS1lZmZlY3Qgb2Ygc3lzdGVtZC4KPgpXb3VsZCBp
+dCBiZSBiZXR0ZXIgdG8gY2hhbmdlIGZhaWxlZCBjb3B5IGNvbW1hbmQgdG8ganVzdCBUV0FSTiwg
+YW5kIApjb250aW51ZSB0ZXN0aW5nPyBBZnRlciB0aGF0LCB0ZXN0IHdpbGwgY29tcGxldGVkIHdp
+dGggdWRldiBmYWlsZWQgCnRlc3QtY2FzZXMsIG9yIGlmIHVkZXYgaGFzIHRob3NlIHJ1bGVzIGlu
+IHRoZSBvdGhlciBjb25maWd1cmF0aW9uIGZpbGVzLCAKZXZlcnl0aGluZyB3aWxsIGJlIGZpbmUu
+CkkganVzdCBjaGVja2VkIGl0IG9uIG15IG1hY2hpbmUsIG91dHB1dCB3aWxsIGJlOgpmd19sb2Fk
+ICAgICAxICBUUEFTUyAgOiAgRXhwZWN0OiBjYW4gbG9hZCBmaXJtd2FyZSAnLi4uL24wX2xvYWRf
+dHN0LmZ3JywgCmtlcm5lbCB1c2VkCmZ3X2xvYWQgICAgIDIgIFRQQVNTICA6ICBFeHBlY3Q6IGNh
+biBsb2FkIGZpcm13YXJlICcuLi4vbjFfbG9hZF90c3QuZncnLCAKa2VybmVsIHVzZWQKZndfbG9h
+ZCAgICAgMyAgVFBBU1MgIDogIEV4cGVjdDogY2FuIGxvYWQgZmlybXdhcmUgJy4uLi9uMl9sb2Fk
+X3RzdC5mdycsIAprZXJuZWwgdXNlZApmd19sb2FkICAgICA0ICBUUEFTUyAgOiAgRXhwZWN0OiBj
+YW4gbG9hZCBmaXJtd2FyZSAnLi4uL24zX2xvYWRfdHN0LmZ3JywgCmtlcm5lbCB1c2VkCmZ3X2xv
+YWQgICAgIDUgIFRGQUlMICA6ICBFeHBlY3Q6IGNhbiBsb2FkIGZpcm13YXJlICcuLi4vbjRfbG9h
+ZF90c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQgICAgIDYgIFRGQUlMICA6ICBFeHBlY3Q6IGNh
+biBsb2FkIGZpcm13YXJlICcuLi4vbjVfbG9hZF90c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQg
+ICAgIDcgIFRGQUlMICA6ICBFeHBlY3Q6IGNhbiBsb2FkIGZpcm13YXJlICcuLi4vbjZfbG9hZF90
+c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQgICAgIDggIFRGQUlMICA6ICBFeHBlY3Q6IGNhbiBs
+b2FkIGZpcm13YXJlICcuLi4vbjdfbG9hZF90c3QuZncnLCAKdWRldiB1c2VkCmZ3X2xvYWQgICAg
+IDkgIFRQQVNTICA6ICBFeHBlY3Q6IGNhbid0IGxvYWQgZmlybXdhcmUgCicuLi5uOF9sb2FkX3Rz
+dC5mdycsIHVkZXYgdXNlZAoKSW50ZXJlc3RpbmdseSwgYnV0IGluIHRoYXQgY2FzZSAodWRldiBk
+b2Vzbid0IGhhdmUgYWRkIGZpcm13YXJlIHJ1bGUpIAp1ZGV2IGRvaW5nIGl0IHNvIGxvbmcgKHRl
+c3QtY2FzZXMgNSAtIDkpLCBpdCBpcyBub3Qgc3VycHJpc2luZ2x5IHRoYXQgCnJpZ2h0IG5vdyBm
+aXJtd2FyZSBsb2FkaW5nIGJ5LXBhc3MgdWRldiEKPiBJIGZvdW5kIHRoaXMgaW5pdGlhbGl6YXRp
+b24gYSBsaXR0bGUgY29uZnVzaW5nLCBzaW5jZSB5b3VyIHRlc3QKPiBhbHdheXMgcmVsaWVzIG9u
+IHBhc3NpbmcgaXQgZnJvbSB1c2VyLXNwYWNlICh3aGljaCBwYXNzZXMgOSk6Cj4KPj4gK3N0YXRp
+YyBpbnQgZndfbnVtCT0gODsKSXQgaXMgZGVmYXVsdCB2YWx1ZSwgYW5kIG5ldmVyIHVzZWQgaW4g
+dGhlIHRlc3QgKGFsd2F5cyByZXBsYWNlZCBieSAKbW9kdWxlIHBhcmFtZXRlcikuLi4gT0ssIEkg
+d2lsbCBjaGFuZ2UgaXQsIGFsc28gSSB3aWxsIHNraXAgZndfbnVtIApwYXJhbWV0ZXIgaW4gdGhl
+IHVzZXJzcGFjZSB0ZXN0IGFzIGl0IHdpbGwgYmVjb21lIHVzZWxlc3MuCgpUaGFua3MsCkFsZXhl
+eQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBi
+eSBXaW5kb3dzOgoKQnVpbGQgZm9yIFdpbmRvd3MgU3RvcmUuCgpodHRwOi8vcC5zZi5uZXQvc2Z1
+L3dpbmRvd3MtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
