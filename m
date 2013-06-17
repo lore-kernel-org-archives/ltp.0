@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UpdSU-0007EK-Qv
-	for ltp-list@lists.sourceforge.net; Thu, 20 Jun 2013 11:55:22 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UpdSQ-00062n-Jp
-	for ltp-list@lists.sourceforge.net; Thu, 20 Jun 2013 11:55:22 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r5KBms61013543
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Jun 2013 11:48:55 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5KBtAOf029085
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Jun 2013 11:55:11 GMT
-Received: from abhmt108.oracle.com (abhmt108.oracle.com [141.146.116.60])
-	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5KBtAgr014193
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Jun 2013 11:55:10 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 20 Jun 2013 15:54:37 +0400
-Message-Id: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] tst_module: create new library functions for kernel
-	modules
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UoV94-0006Sm-2o
+	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 08:50:38 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UoV92-0008Aq-Kp
+	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 08:50:38 +0000
+Date: Mon, 17 Jun 2013 04:50:29 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <610555826.3622499.1371459029864.JavaMail.root@redhat.com>
+In-Reply-To: <51BECB27.2000104@oracle.com>
+References: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
+	<104332332.3007867.1371217696167.JavaMail.root@redhat.com>
+	<51BB2C58.4040405@oracle.com>
+	<2134219040.3111091.1371222971601.JavaMail.root@redhat.com>
+	<51BECB27.2000104@oracle.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,227 +28,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: alexey kodanev <alexey.kodanev@oracle.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-There are new functions: tst_module_exists(), tst_module_load() and
-tst_module_unload(). These functions help to load and unload kernel
-modules in the tests.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- include/tst_module.h |   72 +++++++++++++++++++++++++++++++++
- lib/tst_module.c     |  107 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 179 insertions(+), 0 deletions(-)
- create mode 100644 include/tst_module.h
- create mode 100644 lib/tst_module.c
-
-diff --git a/include/tst_module.h b/include/tst_module.h
-new file mode 100644
-index 0000000..0eb7dd5
---- /dev/null
-+++ b/include/tst_module.h
-@@ -0,0 +1,72 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author:
-+ * Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ * These functions help to load and unload kernel modules in the tests.
-+ *
-+ * tst_module_load and tst_module_unload functions already include
-+ * tst_module_exists function, which is checking the following possible
-+ * module's locations:
-+ *
-+ * 1. Current working directory
-+ *
-+ * 2. LTP installation path (using env LTPROOT, which is usally /opt/ltp)
-+ *
-+ * 3. If tmp directory created, it'll look at the test start working directory
-+ *
-+ */
-+
-+#ifndef TST_MODULE
-+#define TST_MODULE
-+
-+/*
-+ * Check module existence.
-+ *
-+ * @res_path: if this pointer isn't NULL, found module's path will be written
-+ * to it.
-+ *
-+ * In case of failure, test'll call cleanup_fn and exit with TCONF return value.
-+ */
-+void tst_module_exist(void (*cleanup_fn)(void), const char *mod_name,
-+	char *res_path, size_t max_path);
-+
-+/*
-+ * Load a module using insmod program.
-+ *
-+ * @mod_opt: pointer to a character string containing additional module's
-+ * params. This character string can contain a format that follows the same
-+ * specifications as format in printf. If this pointer is NULL, it will be
-+ * ignored.
-+ *
-+ * This function may expect additional arguments to replace a format specifier
-+ * in the mod_opt string.
-+ *
-+ * In case of insmod failure, test will call cleanup_fn and exit with TBROK
-+ * return value.
-+ */
-+void tst_module_load(void (*cleanup_fn)(void),
-+	const char *mod_name, char *mod_opt, ...);
-+
-+/*
-+ * Unload a module using rmmod program. In case of failure, test will call
-+ * cleanup_fn and exit with TBROK return value.
-+ */
-+void tst_module_unload(void (*cleanup_fn)(void), const char *mod_name);
-+
-+#endif /* TST_MODULE */
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-new file mode 100644
-index 0000000..0c6062f
---- /dev/null
-+++ b/lib/tst_module.c
-@@ -0,0 +1,107 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ */
-+
-+#include <assert.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <stdarg.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "tst_module.h"
-+
-+/* declared in tst_tmpdir.c */
-+const char *tst_get_startwd(void);
-+
-+void tst_module_exists(void (*cleanup_fn)(void),
-+	const char *mod_name, char *res_path, size_t max_path)
-+{
-+	/* check current working directory */
-+	if (access(mod_name, F_OK) == 0) {
-+		if (res_path != NULL)
-+			snprintf(res_path, max_path, "%s", mod_name);
-+		return;
-+	}
-+
-+	int err = -1;
-+	char buf[PATH_MAX];
-+	/* check LTP installation path */
-+	const char *ltproot = getenv("LTPROOT");
-+	if (ltproot != NULL) {
-+		snprintf(buf, PATH_MAX, "%s/testcases/bin/%s",
-+			ltproot, mod_name);
-+		err = access(buf, F_OK);
-+	}
-+	/* check start working directory */
-+	if (err == -1 && tst_tmpdir_created()) {
-+		snprintf(buf, PATH_MAX, "%s/%s", tst_get_startwd(),
-+			mod_name);
-+		err = access(buf, F_OK);
-+	}
-+
-+	if (err == 0) {
-+		if (res_path != NULL)
-+			snprintf(res_path, max_path, "%s", buf);
-+	} else {
-+		tst_brkm(TCONF, cleanup_fn, "Failed to find module '%s'",
-+			mod_name);
-+	}
-+}
-+
-+void tst_module_load(void (*cleanup_fn)(void),
-+	const char *mod_name, char *mod_opt, ...)
-+{
-+	char mod_path[PATH_MAX];
-+
-+	tst_module_exists(cleanup_fn, mod_name, mod_path, PATH_MAX);
-+
-+	char params[PATH_MAX];
-+	params[0] = '\0';
-+
-+	if (mod_opt != NULL) {
-+		va_list ap;
-+		va_start(ap, mod_opt);
-+		vsnprintf(params, PATH_MAX, mod_opt, ap);
-+		va_end(ap);
-+	}
-+
-+	char cmd[strlen(mod_path) + strlen(params) + 9];
-+	snprintf(cmd, sizeof(cmd), "insmod %s %s", mod_path, params);
-+
-+	if (system(cmd) != 0) {
-+		tst_brkm(TBROK, cleanup_fn, "Failed to load module '%s'",
-+			mod_name);
-+	}
-+}
-+
-+void tst_module_unload(void (*cleanup_fn)(void), const char *mod_name)
-+{
-+	char mod_path[PATH_MAX];
-+
-+	tst_module_exists(cleanup_fn, mod_name, mod_path, PATH_MAX);
-+
-+	char cmd[strlen(mod_path) + 7];
-+	snprintf(cmd, sizeof(cmd), "rmmod %s", mod_path);
-+	if (system(cmd) != 0) {
-+		tst_brkm(TBROK, cleanup_fn, "Failed to unload module '%s'",
-+			mod_name);
-+	}
-+}
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiYWxleGV5IGtvZGFuZXYi
+IDxhbGV4ZXkua29kYW5ldkBvcmFjbGUuY29tPgo+IFRvOiAiSmFuIFN0YW5jZWsiIDxqc3RhbmNl
+a0ByZWRoYXQuY29tPgo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQsICJ2YXNp
+bHkgaXNhZW5rbyIgPHZhc2lseS5pc2FlbmtvQG9yYWNsZS5jb20+Cj4gU2VudDogTW9uZGF5LCAx
+NyBKdW5lLCAyMDEzIDEwOjM5OjAzIEFNCj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSCB2Ml0g
+ZndfbG9hZDogbmV3IHRlc3Qgb2YgZGV2aWNlIGZpcm13YXJlIGxvYWRpbmcKPiAKPiAKPiBPbiAw
+Ni8xNC8yMDEzIDA3OjE2IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPiA+Cj4gPj4+IEkgcmFuIHRo
+aXMgb24gb2xkZXIga2VybmVsLCB3aGljaCB3b3JrZWQgZmluZSAtIGl0IHNraXBwZWQgdGhlIGJ1
+aWxkLgo+ID4+PiBUaGVuIEkgdHJpZWQgUkhFTDcgYWxwaGEsIHdoaWNoIGhhcyBtb3JlIHJlY2Vu
+dCBrZXJuZWw6IDMuMTAuMC0wLnJjNCwKPiA+Pj4gYnV0IGl0IGZhaWxlZDoKPiA+Pj4KPiA+Pj4g
+IyAuL2Z3X2xvYWQKPiA+Pj4gY3A6IGNhbm5vdCBzdGF0IOKAmC9saWIvdWRldi9ydWxlcy5kLzUw
+LWZpcm13YXJlLnJ1bGVz4oCZOiBObyBzdWNoIGZpbGUgb3IKPiA+Pj4gZGlyZWN0b3J5Cj4gPj4+
+IGZ3X2xvYWQgICAgIDEgIFRCUk9LICA6ICBGYWlsZWQgdG8gY29weQo+ID4+PiAnL2xpYi91ZGV2
+L3J1bGVzLmQvNTAtZmlybXdhcmUucnVsZXMnIHRvICcvZXRjL3VkZXYvcnVsZXMuZC8nIGF0Cj4g
+Pj4+IGZ3X2xvYWQuYzoxNjQKPiA+Pj4gZndfbG9hZCAgICAgMiAgVEJST0sgIDogIFJlbWFpbmlu
+ZyBjYXNlcyBicm9rZW4KPiA+Pj4gZndfbG9hZCAgICAgMCAgVFdBUk4gIDogIHRzdF9ybWRpcjog
+VEVTVERJUiB3YXMgTlVMTDsgbm8gcmVtb3ZhbAo+ID4+PiBhdHRlbXB0ZWQKPiA+Pj4KPiA+Pj4g
+SSdsbCBzZWUgaWYgSSBjYW4gZmluZCBvdXQgd2hhdCBoYXBwZW5lZCB0byA1MC1maXJtd2FyZS5y
+dWxlcywKPiA+Pj4gaXQgY291bGQgc29tZSBzaWRlLWVmZmVjdCBvZiBzeXN0ZW1kLgo+ID4+Pgo+
+ID4+IFdvdWxkIGl0IGJlIGJldHRlciB0byBjaGFuZ2UgZmFpbGVkIGNvcHkgY29tbWFuZCB0byBq
+dXN0IFRXQVJOLCBhbmQKPiA+PiBjb250aW51ZSB0ZXN0aW5nPyBBZnRlciB0aGF0LCB0ZXN0IHdp
+bGwgY29tcGxldGVkIHdpdGggdWRldiBmYWlsZWQKPiA+PiB0ZXN0LWNhc2VzLCBvciBpZiB1ZGV2
+IGhhcyB0aG9zZSBydWxlcyBpbiB0aGUgb3RoZXIgY29uZmlndXJhdGlvbiBmaWxlcywKPiA+PiBl
+dmVyeXRoaW5nIHdpbGwgYmUgZmluZS4KPiA+IEknZCBnbyB3aXRoIFRDT05GIG9yIHNraXAgdWRl
+diB0ZXN0Y2FzZXMgaWYgd2UgY2FuJ3QgYmUgc3VyZSB0aGF0IHVkZXYgaXMKPiA+IHJ1bm5pbmcK
+PiA+IGFuZCBwcm9wZXJseSBjb25maWd1cmVkLgo+ID4KPiA+IEknbSBhbHNvIG1pc3NpbmcgZmly
+bXdhcmUuc2gsIGluIG5ldyB1ZGV2IChub3cgbWVyZ2VkIHdpdGggc3lzdGVtZCB0cmVlKSwKPiA+
+IDUwLWZpcm13YXJlLnJ1bGVzIGZpbGUgZGVwZW5kcyBvbiBzb21lIGNvbXBpbGUgc3dpdGNoLiBF
+dmVuIHdoZW4gZW5hYmxlZAo+ID4gdGhlIHJ1bGUgbG9va3MgbGlrZSB0aGlzOgo+ID4gaHR0cDov
+L2NnaXQuZnJlZWRlc2t0b3Aub3JnL3N5c3RlbWQvc3lzdGVtZC90cmVlL3J1bGVzLzUwLWZpcm13
+YXJlLnJ1bGVzCj4gPgo+ID4gZmlybXdhcmUuc2ggYXBwZWFycyB0byBiZSBjb252ZXJ0ZWQgdG8g
+LmMgbm93Ogo+ID4gaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL3N5c3RlbWQvc3lzdGVtZC90
+cmVlL3NyYy91ZGV2L3VkZXYtYnVpbHRpbi1maXJtd2FyZS4KPiBJIHNlZSBub3csIEkgdGhpbmsg
+aXQgaXMgYmV0dGVyIHRvIHNraXAgdWRldiBpbiB0aGUgdGVzdCBlbnRpcmVseSwKPiBiZWNhdXNl
+IHRoZXJlIGlzIGEgdGVuZGVuY3kKPiBpbiBrZXJuZWwgY29tbXVuaXR5IHRvIGRpc2FibGUgdXNl
+ci1tb2RlIGhlbHBlciBmaXJtd2FyZSBsb2FkaW5nICh1ZGV2KS4KPiBJdCBpcyBhbHJlYWR5IGd1
+YXJkZWQgd2l0aAo+IENPTkZJR19GV19MT0FERVJfVVNFUl9IRUxQRVIgb3B0aW9uIGluIGZpcm13
+YXJlIGNvZGU6IGZpcm13YXJlOiBNYWtlCj4gdXNlci1tb2RlIGhlbHBlciBvcHRpb25hbAo+IDxo
+dHRwOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
+LmdpdC9jb21taXQvP2lkPTdiMTI2OWY3Nzg3ODJkMmY0Mjk5NGE3NGJmNDAxNGQwY2JlYmJmOWY+
+Lgo+IFRoZXJlIGlzIG9ubHkgb25lIHVzZSBvZiBpdDogbG9hZGluZyBmaXJtd2FyZSBmcm9tIG5v
+bi1zdGFuZGFyZCBwYXRoLiBJdAo+IG1pZ2h0IGFsc28gZ28gYXdheSBhcyBzb29uIGFzCj4gY29u
+ZmlndXJpbmcgcGF0aHMgc3VwcG9ydCBoYWQgYmVlbiBhZGRlZCB0byBrZXJuZWwuCgpJIG5vdGlj
+ZWQgdGhhdCB0b28sIGJlY2F1c2UgbXkgdWRldiB3YXNuJ3QgZ2V0dGluZyBhbnkgZXZlbnRzIC0g
+Cmtlcm5lbCBJJ20gdXNpbmcgaGFzIHRoYXQgb3B0aW9uIHR1cm5lZCBvZmYuCgpJIGFsc28gY2Ft
+ZSBhY3Jvc3MgdGhpcyBhcnRpY2xlOiBodHRwOi8vbHduLm5ldC9BcnRpY2xlcy81MTg5NDIvCndo
+aWNoIHNheXM6ICJObyBldmVudHMgZm9yIGEgc3BlY2lmaWMgZGV2aWNlLCB0aGV5IGRlY2lkZWQs
+CndvdWxkIGJlIHByb2Nlc3NlZCB1bnRpbCB0aGUgcHJvY2VzcyBvZiBsb2FkaW5nIHRoZSBkcml2
+ZXIgbW9kdWxlCmZvciB0aGF0IGRldmljZSBoYWQgY29tcGxldGVkIiwgYnV0IHRoaXMgb25lIGNv
+dWxkIGJlIGZpeGVkIGVhc2lseQppbiBmd19sb2FkIGtlcm5lbCBtb2R1bGUuCgpSZWdhcmRzLApK
+YW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQg
+YnkgV2luZG93czoKCkJ1aWxkIGZvciBXaW5kb3dzIFN0b3JlLgoKaHR0cDovL3Auc2YubmV0L3Nm
+dS93aW5kb3dzLWRldjJkZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
+dAo=
