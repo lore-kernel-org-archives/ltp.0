@@ -1,32 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Un7a4-0002vu-Jr
-	for ltp-list@lists.sourceforge.net; Thu, 13 Jun 2013 13:28:48 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Un7a1-00087q-6x
-	for ltp-list@lists.sourceforge.net; Thu, 13 Jun 2013 13:28:48 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r5DDSYT3012717
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Jun 2013 13:28:34 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5DDSZmM000472
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Jun 2013 13:28:36 GMT
-Received: from abhmt116.oracle.com (abhmt116.oracle.com [141.146.116.68])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r5DDSZbp007067
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Jun 2013 13:28:35 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 13 Jun 2013 17:28:03 +0400
-Message-Id: <1371130083-5923-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] configure: add configure checks to compile kernel
-	modules
+	(envelope-from <metan@suse.de>) id 1Uoc9Y-00047c-Bb
+	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 16:19:36 +0000
+Date: Mon, 17 Jun 2013 18:21:04 +0200
+From: chrubis@suse.cz
+Message-ID: <20130617162103.GC2053@rei>
+References: <7258543eb9e994c30bac3c3b9547178c1a1f88f7.1370958327.git.jstancek@redhat.com>
+	<20130617151358.GA2053@rei>
+	<790434361.3815720.1371483737505.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <790434361.3815720.1371483737505.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] new testcase: kmsg01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,160 +23,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-There're new configure options added to tune modules building process.
-New m4 function tries to determine if kernel-devel package is available
-and sets makefile's variables (WITH_MODULES, ...) accordingly.
+Hi!
+> > > +static void test_read_returns_first_message(void)
+> > > +{
+> > > +	char msg[NUM_READ_MSGS][MAX_MSGSIZE];
+> > > +	int msgs_match = 1;
+> > > +	int i;
+> > > +
+> > > +	tst_resm(TINFO, "TEST: mult. readers will get same first message");
+> > > +	for (i = 0; i < NUM_READ_MSGS; i++) {
+> > > +		if (find_msg(-1, "", msg[i], MAX_MSGSIZE, 1) != 0)
+> > > +			tst_resm(TFAIL, "failed to find any message");
+> > > +	}
+> > > +
+> > > +	for (i = 0; i < NUM_READ_MSGS-1; i++)
+> > > +		if (strlen(msg[i]) > 0 && strcmp(msg[i], msg[i+1]) != 0)
+> > > +			msgs_match = 0;
+> > > +	if (msgs_match)
+> > > +		tst_resm(TPASS, "all readers got same message on first read");
+> > > +	else
+> > > +		tst_resm(TFAIL, "readers got different messages");
+> > 
+> > Is here a chance that the log would be overwritten by a kernel writing
+> > urelated message? We do fill the log with a bunch of messages (126)
+> > before this test, how much of the kernel log is filled by this? Looking
+> > in the kernel .config I have LOG_BUF_SHIFT=18 which is 256KB which
+> > should be large enough, but it could be set as low as 12 which is 4KB.
+> 
+> It is. Let's open extra fd, which we attempt to read only at the end.
+> If reads fails with EPIPE we know that first message was overwritten.
+> If that happens we can retry for NUM_READ_RETRY and repeat the test.
+> If we get EPIPE in each attempt we can report TWARN.
+> 
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- configure.ac                 |    1 +
- include/mk/config.mk.default |    6 +++
- include/mk/config.mk.in      |    6 +++
- m4/ltp-kernel_devel.m4       |   82 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 95 insertions(+), 0 deletions(-)
- create mode 100644 m4/ltp-kernel_devel.m4
+Souns good.
 
-diff --git a/configure.ac b/configure.ac
-index f217f50..f0fc6b0 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -167,5 +167,6 @@ LTP_CHECK_MADVISE
- LTP_CHECK_ACL_SUPPORT
- LTP_CHECK_FS_IOC_FLAGS
- LTP_CHECK_MREMAP_FIXED
-+LTP_CHECK_KERNEL_DEVEL
- 
- AC_OUTPUT
-diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
-index bd364a6..a84f42a 100644
---- a/include/mk/config.mk.default
-+++ b/include/mk/config.mk.default
-@@ -73,4 +73,10 @@ LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
- 
-+LINUX_VERSION		:=
-+LINUX_DIR		:=
-+LINUX_VERSION_MAJOR	:=
-+LINUX_PATCHLEVEL	:=
-+WITH_MODULES		:= no
-+
- export datarootdir includedir libdir mandir prefix
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index b835c86..71a8d8e 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -75,6 +75,12 @@ LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
- 
-+LINUX_VERSION		:= @LINUX_VERSION@
-+LINUX_DIR		:= @LINUX_DIR@
-+LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
-+LINUX_PATCHLEVEL	:= @LINUX_PATCHLEVEL@
-+WITH_MODULES		:= @WITH_MODULES@
-+
- ifeq ($(strip $(prefix)),)
- $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
- endif
-diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
-new file mode 100644
-index 0000000..2015ea9
---- /dev/null
-+++ b/m4/ltp-kernel_devel.m4
-@@ -0,0 +1,82 @@
-+dnl Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+dnl
-+dnl This program is free software; you can redistribute it and/or
-+dnl modify it under the terms of the GNU General Public License as
-+dnl published by the Free Software Foundation; either version 2 of
-+dnl the License, or (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it would be useful,
-+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+dnl GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program; if not, write the Free Software Foundation,
-+dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+dnl
-+dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_KERNEL_DEVEL
-+dnl ----------------------------
-+dnl Building kernel modules
-+dnl requires kernel-devel installed
-+dnl
-+
-+AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[dnl
-+
-+AC_MSG_CHECKING([for kernel-devel])
-+AC_ARG_WITH(
-+	[linux-version],
-+	[AC_HELP_STRING([--with-linux-version=VERSION],
-+			[specify the Linux version to build modules for])],
-+	[LINUX_VERSION="${withval}"],
-+	AS_IF([test "$cross_compiling" = "no"],
-+		[LINUX_VERSION=`uname -r`]))
-+
-+AC_SUBST(LINUX_VERSION)
-+
-+AC_ARG_WITH([linux-dir],
-+	[AC_HELP_STRING([--with-linux-dir=DIR],
-+			[specify path to kernel-devel directory])],
-+	[LINUX_DIR="${withval}"],
-+	AS_IF([test -n "$LINUX_VERSION"],
-+		[LINUX_DIR="/lib/modules/$LINUX_VERSION/build"]))
-+
-+AC_SUBST(LINUX_DIR)
-+
-+if test -f "$LINUX_DIR/Makefile"; then
-+	LINUX_VERSION_MAJOR=`sed -n '0,/^VERSION = [[0-9]]*/s,\
-+^VERSION = ,,p' ${LINUX_DIR}/Makefile`
-+
-+	LINUX_PATCHLEVEL=`sed -n '0,/^PATCHLEVEL = [[0-9]]*/s,\
-+^PATCHLEVEL = ,,p' ${LINUX_DIR}/Makefile`
-+fi
-+
-+if [[ -n "$LINUX_VERSION_MAJOR" -a -n "$LINUX_PATCHLEVEL" ]]; then
-+	WITH_MODULES="yes"
-+else
-+	WITH_MODULES="no"
-+	if test -n "$LINUX_VERSION"; then
-+		LINUX_VERSION_MAJOR=`echo "$LINUX_VERSION" | \
-+sed -n 's/\([[0-9]]\).*$/\1/p'`
-+		LINUX_PATCHLEVEL=`echo "$LINUX_VERSION" | \
-+sed -n 's/^[[0-9]]*.\([[0-9]]\).*$/\1/p'`
-+	fi
-+fi
-+
-+AC_SUBST(LINUX_VERSION_MAJOR)
-+AC_SUBST(LINUX_PATCHLEVEL)
-+
-+AC_MSG_RESULT([$WITH_MODULES])
-+
-+AC_ARG_WITH(
-+	[modules],
-+	[AC_HELP_STRING([--without-modules],
-+			[disable auto-building kernel modules])],
-+			[WITH_MODULES="no"],
-+			[])
-+
-+AC_SUBST(WITH_MODULES)
-+])
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
