@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1UpFeo-0003pr-Ua
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 10:30:30 +0000
-Received: from mail-pa0-f54.google.com ([209.85.220.54])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UpFek-0004cG-ML
-	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 10:30:30 +0000
-Received: by mail-pa0-f54.google.com with SMTP id kx10so4994634pab.41
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 19 Jun 2013 03:30:20 -0700 (PDT)
-Message-ID: <51C18279.7000607@casparzhang.com>
-Date: Wed, 19 Jun 2013 18:05:45 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UpCHB-0003Mh-37
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 06:53:53 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UpCH8-0000m4-UM
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 06:53:53 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r5J6rdjF011161
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 14:53:43 +0800
+Message-ID: <51C1553B.7090600@cn.fujitsu.com>
+Date: Wed, 19 Jun 2013 14:52:43 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <51C1553B.7090600@cn.fujitsu.com>
-In-Reply-To: <51C1553B.7090600@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mmap/mmap12.c: new case to test MAP_POPULATE of
- mmap
+Subject: [LTP] [PATCH] mmap/mmap12.c: new case to test MAP_POPULATE of mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,28 +28,194 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 06/19/2013 02:52 PM, DAN LI wrote:
-> +			ret = sysinfo(&info);
-> +			if (ret != 0)
-> +				tst_brkm(TFAIL, cleanup, "sysinfo failed");
-> +			freeram_after =
-> +				(unsigned long long)info.freeram *
-> +				(unsigned long long)info.mem_unit;
 
-man sysinfo:
+Create test case for MAP_POPULATE of mmap.
 
-        This function is Linux-specific, and should not be used in 
-programs intended to be portable.
+Verify the following statement
+"For a file mapping,this causes read-ahead on the file.
+ Later accesses to the mapping will not be blocked by page faults."
+by mmap-ing a file with specified size and checking change of memory size.
 
-We're expecting all LTP tests are POSIX-compatible, sysinfo is 
-Linux-specific, would it better to read the info from /proc/meminfo 
-directly?
 
-Thanks,
-Caspar
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mmap/mmap12.c | 163 ++++++++++++++++++++++++++++++++
+ 1 file changed, 163 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap12.c
+
+diff --git a/testcases/kernel/syscalls/mmap/mmap12.c b/testcases/kernel/syscalls/mmap/mmap12.c
+new file mode 100644
+index 0000000..4092806
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap12.c
+@@ -0,0 +1,163 @@
++/*
++ * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++/*
++ * Test Description:
++ *  Verify MAP_POPULATE works fine.
++ *  "For a file mapping, this causes read-ahead on the file.
++ *   Later accesses to the mapping will not be blocked by page faults"
++ *
++ * Expected Result:
++ *  mmap() with MAP_POPULATE should succeed returning the address of the
++ *  mapped region and this file has been read into RAM, so RAM should
++ *  is reduced by at least size of file.
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <signal.h>
++#include <stdint.h>
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/shm.h>
++#include <sys/sysinfo.h>
++
++#include "test.h"
++#include "usctest.h"
++
++#define TEMPFILE	"mmapfile"
++#define MMAPSIZE	(400UL<<20)
++#define FLUCTUATION	(50UL<<20)
++
++char *TCID = "mmap12";
++int TST_TOTAL = 1;
++
++static char *addr;
++static int fildes;
++static struct sysinfo info;
++static unsigned long long freeram_before;
++static unsigned long long freeram_after;
++
++static void loop_setup(void);
++static void loop_cleanup(void);
++static void setup(void);
++static void cleanup(void);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++	int ret = 0;
++	char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
++
++		loop_setup();
++
++		errno = 0;
++		addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
++			    MAP_FILE | MAP_PRIVATE | MAP_POPULATE, fildes, 0);
++
++		if (addr == MAP_FAILED) {
++			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
++			continue;
++		}
++
++		if (STD_FUNCTIONAL_TEST) {
++			ret = sysinfo(&info);
++			if (ret != 0)
++				tst_brkm(TFAIL, cleanup, "sysinfo failed");
++			freeram_after =
++				(unsigned long long)info.freeram *
++				(unsigned long long)info.mem_unit;
++
++			if ((freeram_before - freeram_after) >=
++			    (MMAPSIZE - FLUCTUATION))
++				tst_resm(TPASS,
++					 "Functionality of mmap() successful");
++			else
++				tst_resm(TFAIL,
++					 "Seems read-ahead do not work");
++		}
++		loop_cleanup();
++	}
++
++	cleanup();
++	tst_exit();
++
++}
++
++static void loop_setup(void)
++{
++	int ret;
++
++	fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666);
++	if (fildes < 0)
++		tst_brkm(TFAIL, cleanup, "opening %s failed", TEMPFILE);
++
++
++	if (ftruncate(fildes, MMAPSIZE) < 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "ftruncate file failed");
++
++	ret = sysinfo(&info);
++	if (ret != 0)
++		tst_brkm(TFAIL, cleanup, "sysinfo failed");
++
++	freeram_before =
++		(unsigned long long)info.freeram *
++		(unsigned long long)info.mem_unit;
++}
++
++static void loop_cleanup(void)
++{
++	if (munmap(addr, MMAPSIZE) != 0)
++		tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
++
++	close(fildes);
++}
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	if ((tst_kvercmp(2, 6, 23)) < 0)
++		tst_brkm(TCONF, NULL,
++			"This test can only run on kernels that are 2.6.23 and "
++			"higher");
++
++	TEST_PAUSE;
++
++	tst_tmpdir();
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++	tst_rmdir();
++}
+-- 
+1.8.1
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
