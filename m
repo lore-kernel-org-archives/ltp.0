@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UnVjg-0001PD-Pa
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 15:16:20 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UnVjd-0000TK-UM
-	for ltp-list@lists.sourceforge.net; Fri, 14 Jun 2013 15:16:20 +0000
-Date: Fri, 14 Jun 2013 11:16:11 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2134219040.3111091.1371222971601.JavaMail.root@redhat.com>
-In-Reply-To: <51BB2C58.4040405@oracle.com>
-References: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
-	<104332332.3007867.1371217696167.JavaMail.root@redhat.com>
-	<51BB2C58.4040405@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UpGnI-0007Zy-4a
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 11:43:20 +0000
+Date: Wed, 19 Jun 2013 13:44:46 +0200
+From: chrubis@suse.cz
+Message-ID: <20130619114446.GC24520@rei>
+References: <1371474097-17589-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130618122850.GB6464@rei.suse.cz> <51C064BD.1040104@oracle.com>
+	<20130618142118.GA15772@rei.suse.cz> <51C180F6.7040204@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] fw_load: new test of device firmware loading
+Content-Disposition: inline
+In-Reply-To: <51C180F6.7040204@oracle.com>
+Subject: Re: [LTP] [PATCH v3] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,72 +23,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey kodanev <alexey.kodanev@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiYWxleGV5IGtvZGFuZXYi
-IDxhbGV4ZXkua29kYW5ldkBvcmFjbGUuY29tPgo+IFRvOiAiSmFuIFN0YW5jZWsiIDxqc3RhbmNl
-a0ByZWRoYXQuY29tPgo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQsICJ2YXNp
-bHkgaXNhZW5rbyIgPHZhc2lseS5pc2FlbmtvQG9yYWNsZS5jb20+Cj4gU2VudDogRnJpZGF5LCAx
-NCBKdW5lLCAyMDEzIDQ6NDQ6NDAgUE0KPiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIIHYyXSBm
-d19sb2FkOiBuZXcgdGVzdCBvZiBkZXZpY2UgZmlybXdhcmUgbG9hZGluZwo+IAo+IEhpIQo+IAo+
-IE9uIDA2LzE0LzIwMTMgMDU6NDggUE0sIEphbiBTdGFuY2VrIHdyb3RlOgo+ID4gSGksCj4gPgo+
-ID4gSSByYW4gdGhpcyBvbiBvbGRlciBrZXJuZWwsIHdoaWNoIHdvcmtlZCBmaW5lIC0gaXQgc2tp
-cHBlZCB0aGUgYnVpbGQuCj4gPiBUaGVuIEkgdHJpZWQgUkhFTDcgYWxwaGEsIHdoaWNoIGhhcyBt
-b3JlIHJlY2VudCBrZXJuZWw6IDMuMTAuMC0wLnJjNCwKPiA+IGJ1dCBpdCBmYWlsZWQ6Cj4gPgo+
-ID4gIyAuL2Z3X2xvYWQKPiA+IGNwOiBjYW5ub3Qgc3RhdCDigJgvbGliL3VkZXYvcnVsZXMuZC81
-MC1maXJtd2FyZS5ydWxlc+KAmTogTm8gc3VjaCBmaWxlIG9yCj4gPiBkaXJlY3RvcnkKPiA+IGZ3
-X2xvYWQgICAgIDEgIFRCUk9LICA6ICBGYWlsZWQgdG8gY29weQo+ID4gJy9saWIvdWRldi9ydWxl
-cy5kLzUwLWZpcm13YXJlLnJ1bGVzJyB0byAnL2V0Yy91ZGV2L3J1bGVzLmQvJyBhdAo+ID4gZndf
-bG9hZC5jOjE2NAo+ID4gZndfbG9hZCAgICAgMiAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
-cm9rZW4KPiA+IGZ3X2xvYWQgICAgIDAgIFRXQVJOICA6ICB0c3Rfcm1kaXI6IFRFU1RESVIgd2Fz
-IE5VTEw7IG5vIHJlbW92YWwgYXR0ZW1wdGVkCj4gPgo+ID4gSSdsbCBzZWUgaWYgSSBjYW4gZmlu
-ZCBvdXQgd2hhdCBoYXBwZW5lZCB0byA1MC1maXJtd2FyZS5ydWxlcywKPiA+IGl0IGNvdWxkIHNv
-bWUgc2lkZS1lZmZlY3Qgb2Ygc3lzdGVtZC4KPiA+Cj4gV291bGQgaXQgYmUgYmV0dGVyIHRvIGNo
-YW5nZSBmYWlsZWQgY29weSBjb21tYW5kIHRvIGp1c3QgVFdBUk4sIGFuZAo+IGNvbnRpbnVlIHRl
-c3Rpbmc/IEFmdGVyIHRoYXQsIHRlc3Qgd2lsbCBjb21wbGV0ZWQgd2l0aCB1ZGV2IGZhaWxlZAo+
-IHRlc3QtY2FzZXMsIG9yIGlmIHVkZXYgaGFzIHRob3NlIHJ1bGVzIGluIHRoZSBvdGhlciBjb25m
-aWd1cmF0aW9uIGZpbGVzLAo+IGV2ZXJ5dGhpbmcgd2lsbCBiZSBmaW5lLgoKSSdkIGdvIHdpdGgg
-VENPTkYgb3Igc2tpcCB1ZGV2IHRlc3RjYXNlcyBpZiB3ZSBjYW4ndCBiZSBzdXJlIHRoYXQgdWRl
-diBpcyBydW5uaW5nCmFuZCBwcm9wZXJseSBjb25maWd1cmVkLgoKSSdtIGFsc28gbWlzc2luZyBm
-aXJtd2FyZS5zaCwgaW4gbmV3IHVkZXYgKG5vdyBtZXJnZWQgd2l0aCBzeXN0ZW1kIHRyZWUpLAo1
-MC1maXJtd2FyZS5ydWxlcyBmaWxlIGRlcGVuZHMgb24gc29tZSBjb21waWxlIHN3aXRjaC4gRXZl
-biB3aGVuIGVuYWJsZWQKdGhlIHJ1bGUgbG9va3MgbGlrZSB0aGlzOgpodHRwOi8vY2dpdC5mcmVl
-ZGVza3RvcC5vcmcvc3lzdGVtZC9zeXN0ZW1kL3RyZWUvcnVsZXMvNTAtZmlybXdhcmUucnVsZXMK
-CmZpcm13YXJlLnNoIGFwcGVhcnMgdG8gYmUgY29udmVydGVkIHRvIC5jIG5vdzoKaHR0cDovL2Nn
-aXQuZnJlZWRlc2t0b3Aub3JnL3N5c3RlbWQvc3lzdGVtZC90cmVlL3NyYy91ZGV2L3VkZXYtYnVp
-bHRpbi1maXJtd2FyZS5jCgpSZWdhcmRzLApKYW4KCj4gSSBqdXN0IGNoZWNrZWQgaXQgb24gbXkg
-bWFjaGluZSwgb3V0cHV0IHdpbGwgYmU6Cj4gZndfbG9hZCAgICAgMSAgVFBBU1MgIDogIEV4cGVj
-dDogY2FuIGxvYWQgZmlybXdhcmUgJy4uLi9uMF9sb2FkX3RzdC5mdycsCj4ga2VybmVsIHVzZWQK
-PiBmd19sb2FkICAgICAyICBUUEFTUyAgOiAgRXhwZWN0OiBjYW4gbG9hZCBmaXJtd2FyZSAnLi4u
-L24xX2xvYWRfdHN0LmZ3JywKPiBrZXJuZWwgdXNlZAo+IGZ3X2xvYWQgICAgIDMgIFRQQVNTICA6
-ICBFeHBlY3Q6IGNhbiBsb2FkIGZpcm13YXJlICcuLi4vbjJfbG9hZF90c3QuZncnLAo+IGtlcm5l
-bCB1c2VkCj4gZndfbG9hZCAgICAgNCAgVFBBU1MgIDogIEV4cGVjdDogY2FuIGxvYWQgZmlybXdh
-cmUgJy4uLi9uM19sb2FkX3RzdC5mdycsCj4ga2VybmVsIHVzZWQKPiBmd19sb2FkICAgICA1ICBU
-RkFJTCAgOiAgRXhwZWN0OiBjYW4gbG9hZCBmaXJtd2FyZSAnLi4uL240X2xvYWRfdHN0LmZ3JywK
-PiB1ZGV2IHVzZWQKPiBmd19sb2FkICAgICA2ICBURkFJTCAgOiAgRXhwZWN0OiBjYW4gbG9hZCBm
-aXJtd2FyZSAnLi4uL241X2xvYWRfdHN0LmZ3JywKPiB1ZGV2IHVzZWQKPiBmd19sb2FkICAgICA3
-ICBURkFJTCAgOiAgRXhwZWN0OiBjYW4gbG9hZCBmaXJtd2FyZSAnLi4uL242X2xvYWRfdHN0LmZ3
-JywKPiB1ZGV2IHVzZWQKPiBmd19sb2FkICAgICA4ICBURkFJTCAgOiAgRXhwZWN0OiBjYW4gbG9h
-ZCBmaXJtd2FyZSAnLi4uL243X2xvYWRfdHN0LmZ3JywKPiB1ZGV2IHVzZWQKPiBmd19sb2FkICAg
-ICA5ICBUUEFTUyAgOiAgRXhwZWN0OiBjYW4ndCBsb2FkIGZpcm13YXJlCj4gJy4uLm44X2xvYWRf
-dHN0LmZ3JywgdWRldiB1c2VkCj4gCj4gSW50ZXJlc3RpbmdseSwgYnV0IGluIHRoYXQgY2FzZSAo
-dWRldiBkb2Vzbid0IGhhdmUgYWRkIGZpcm13YXJlIHJ1bGUpCj4gdWRldiBkb2luZyBpdCBzbyBs
-b25nICh0ZXN0LWNhc2VzIDUgLSA5KSwgaXQgaXMgbm90IHN1cnByaXNpbmdseSB0aGF0Cj4gcmln
-aHQgbm93IGZpcm13YXJlIGxvYWRpbmcgYnktcGFzcyB1ZGV2IQo+ID4gSSBmb3VuZCB0aGlzIGlu
-aXRpYWxpemF0aW9uIGEgbGl0dGxlIGNvbmZ1c2luZywgc2luY2UgeW91ciB0ZXN0Cj4gPiBhbHdh
-eXMgcmVsaWVzIG9uIHBhc3NpbmcgaXQgZnJvbSB1c2VyLXNwYWNlICh3aGljaCBwYXNzZXMgOSk6
-Cj4gPgo+ID4+ICtzdGF0aWMgaW50IGZ3X251bQk9IDg7Cj4gSXQgaXMgZGVmYXVsdCB2YWx1ZSwg
-YW5kIG5ldmVyIHVzZWQgaW4gdGhlIHRlc3QgKGFsd2F5cyByZXBsYWNlZCBieQo+IG1vZHVsZSBw
-YXJhbWV0ZXIpLi4uIE9LLCBJIHdpbGwgY2hhbmdlIGl0LCBhbHNvIEkgd2lsbCBza2lwIGZ3X251
-bQo+IHBhcmFtZXRlciBpbiB0aGUgdXNlcnNwYWNlIHRlc3QgYXMgaXQgd2lsbCBiZWNvbWUgdXNl
-bGVzcy4KPiAKPiBUaGFua3MsCj4gQWxleGV5Cj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhp
-cyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IFdpbmRvd3M6CgpCdWlsZCBmb3IgV2luZG93
-cyBTdG9yZS4KCmh0dHA6Ly9wLnNmLm5ldC9zZnUvd2luZG93cy1kZXYyZGV2Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+> >>> What about creating module_exists() module_load() and module_unload()
+> >>> library functions?
+> >> Yeah, it is possible. Could I use tst_resource files for that? Or perhaps,
+> >> would it be better to create tst_modules files?
+> > Start a separate source file for that, tst_module(s) is OK.
+> >
+> I would like to implement tst_module_load() function with variable 
+> argument list
+> (use for command line parameters of the insmod command).
+> There is a macro EXPAND_VAR_ARGS defined in tst_res.c, which might be 
+> used by
+> that function. Is it possible to move it outside of the tst_res.c file, 
+> where it can be
+> easily accessed by other c files?
+
+The standard way for this is to create internal header named common.h or
+similar stored under the lib/ directory for the common macros/internal
+only API.
+
+But looking at the body of the macro, there is assert(strlen(buf) > 0)
+which would mean that we can't pass empty parameters to the
+module_load() function (given that the interface is module_load(const
+char *module_name, const char *params, ...) or similar). So the easiest
+way would IMHO be just copy part of the macro into the new code or write
+it from scratch.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
