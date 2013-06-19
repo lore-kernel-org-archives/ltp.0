@@ -1,18 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UsCeL-0007EK-TP
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 13:54:13 +0000
-Date: Thu, 27 Jun 2013 15:55:44 +0200
-From: chrubis@suse.cz
-Message-ID: <20130627135544.GA21873@rei.suse.cz>
-References: <1372259224-27804-1-git-send-email-alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1372259224-27804-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2] lib: tst_run_cmd: add tst_run_cmd() to exec
- specified program
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1UpH0z-0007yS-0H
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 11:57:29 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UpH0v-0005SA-9T
+	for ltp-list@lists.sourceforge.net; Wed, 19 Jun 2013 11:57:28 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r5JBp0E2005391
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 11:51:01 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5JBvH6s025316
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 11:57:18 GMT
+Received: from abhmt102.oracle.com (abhmt102.oracle.com [141.146.116.54])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5JBvHtJ025312
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Jun 2013 11:57:17 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 19 Jun 2013 15:56:43 +0400
+Message-Id: <1371643003-23373-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v3] configure: add configure checks to compile kernel
+	modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,122 +36,154 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi!
-> vfork() + execvp() specified program.
-> 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  include/test.h    |    9 +++++++++
->  lib/tst_run_cmd.c |   49 +++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 58 insertions(+), 0 deletions(-)
->  create mode 100644 lib/tst_run_cmd.c
-> 
-> diff --git a/include/test.h b/include/test.h
-> index c922230..e85a783 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -282,6 +282,15 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
->  long tst_ncpus(void);
->  long tst_ncpus_max(void);
->  
-> +/* lib/tst_run_cmd.c
-> + *
-> + * vfork() + execvp() specified program.
-> + * @argv: a list of two (at least program name + NULL) or more pointers that
-> + * represent the argument list to the new program. The array of pointers
-> + * should be terminated by a NULL pointer.
+There're new configure options added to tune modules building process.
+New m4 function tries to determine if kernel-devel package is available
+and sets makefile's variables (WITH_MODULES, ...) accordingly.
 
-must be terminaled by a NULL pointer.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ configure.ac                 |    1 +
+ include/mk/config.mk.default |    6 +++
+ include/mk/config.mk.in      |    6 +++
+ m4/ltp-kernel_devel.m4       |   76 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 89 insertions(+), 0 deletions(-)
+ create mode 100644 m4/ltp-kernel_devel.m4
 
-(if it's not, the program will crash)
-
-> + */
-> +void tst_run_cmd(void (cleanup_fn)(void), char *const argv[]);
-> +
->  #ifdef TST_USE_COMPAT16_SYSCALL
->  #define TCID_BIT_SUFFIX "_16"
->  #elif  TST_USE_NEWER64_SYSCALL
-> diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
-> new file mode 100644
-> index 0000000..9a7f426
-> --- /dev/null
-> +++ b/lib/tst_run_cmd.c
-> @@ -0,0 +1,49 @@
-> +/*
-> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + *
-> + * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-> + *
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +
-> +void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
-> +{
-> +	if (argv == NULL || argv[0] == NULL) {
-> +		tst_brkm(TBROK, cleanup_fn,
-> +			"argument list is empty at %s:%d", __FILE__, __LINE__);
-> +	}
-> +
-> +	pid_t pid = vfork();
-> +	if (pid == -1) {
-> +		tst_brkm(TBROK | TERRNO, cleanup_fn, "vfork failed at %s:%d",
-> +			__FILE__, __LINE__);
-> +	}
-> +	if (!pid)
-> +		_exit(execvp(argv[0], argv));
-> +
-> +	int ret = -1;
-> +	waitpid(pid, &ret, 0);
-> +
-> +	if (ret != 0) {
-> +		tst_brkm(TBROK, cleanup_fn, "failed to exec cmd '%s' at %s:%d",
-> +			argv[0], __FILE__, __LINE__);
-> +	}
-> +}
-
-This version looks nearly fine. I would check the return value from
-waitpid() too, just for the sake of completness.
-
-And looking at the waitpid() documentation it states that it uses only
-two bytes from ret (in reality it's cleared to zero but that is not
-promised in specification).
-
-I would change the last condition to:
-
-if (!WIFEXITED(ret) || WEXITSTATUS(ret) != 0) {
-
-}
-
-After these minor changes it's fine.
-
-
+diff --git a/configure.ac b/configure.ac
+index f217f50..f0fc6b0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -167,5 +167,6 @@ LTP_CHECK_MADVISE
+ LTP_CHECK_ACL_SUPPORT
+ LTP_CHECK_FS_IOC_FLAGS
+ LTP_CHECK_MREMAP_FIXED
++LTP_CHECK_KERNEL_DEVEL
+ 
+ AC_OUTPUT
+diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
+index bd364a6..953747c 100644
+--- a/include/mk/config.mk.default
++++ b/include/mk/config.mk.default
+@@ -73,4 +73,10 @@ LDFLAGS			+= $(WLDFLAGS)
+ CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
+ CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
+ 
++LINUX_VERSION		:=
++LINUX_DIR		:=
++LINUX_VERSION_MAJOR	:=
++LINUX_VERSION_PATCH	:=
++WITH_MODULES		:= no
++
+ export datarootdir includedir libdir mandir prefix
+diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+index b835c86..96633f1 100644
+--- a/include/mk/config.mk.in
++++ b/include/mk/config.mk.in
+@@ -75,6 +75,12 @@ LDFLAGS			+= $(WLDFLAGS)
+ CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
+ CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
+ 
++LINUX_VERSION		:= @LINUX_VERSION@
++LINUX_DIR		:= @LINUX_DIR@
++LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
++LINUX_VERSION_PATCH	:= @LINUX_VERSION_PATCH@
++WITH_MODULES		:= @WITH_MODULES@
++
+ ifeq ($(strip $(prefix)),)
+ $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
+ endif
+diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
+new file mode 100644
+index 0000000..ba53bc1
+--- /dev/null
++++ b/m4/ltp-kernel_devel.m4
+@@ -0,0 +1,76 @@
++dnl Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++dnl
++dnl This program is free software; you can redistribute it and/or
++dnl modify it under the terms of the GNU General Public License as
++dnl published by the Free Software Foundation; either version 2 of
++dnl the License, or (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it would be useful,
++dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++dnl GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program; if not, write the Free Software Foundation,
++dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++dnl
++dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++dnl
++
++dnl
++dnl LTP_CHECK_KERNEL_DEVEL
++dnl ----------------------------
++dnl Building kernel modules
++dnl requires kernel-devel installed
++dnl
++
++AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[dnl
++
++AC_MSG_CHECKING([for kernel-devel])
++AC_ARG_WITH(
++	[linux-version],
++	[AC_HELP_STRING([--with-linux-version=VERSION],
++			[specify the Linux version to build modules for])],
++	[LINUX_VERSION="${withval}"],
++	AS_IF([test "$cross_compiling" = "no"],
++		[LINUX_VERSION=`uname -r`]))
++
++AC_SUBST(LINUX_VERSION)
++
++AC_ARG_WITH([linux-dir],
++	[AC_HELP_STRING([--with-linux-dir=DIR],
++			[specify path to kernel-devel directory])],
++	[LINUX_DIR="${withval}"],
++	AS_IF([test -n "$LINUX_VERSION"],
++		[LINUX_DIR="/lib/modules/$LINUX_VERSION/build"]))
++
++AC_SUBST(LINUX_DIR)
++
++if test -f "$LINUX_DIR/Makefile"; then
++	LINUX_VERSION_MAJOR=`sed -n '0,/^VERSION = [[0-9]]*/s,\
++^VERSION = ,,p' ${LINUX_DIR}/Makefile`
++
++	LINUX_VERSION_PATCH=`sed -n '0,/^PATCHLEVEL = [[0-9]]*/s,\
++^PATCHLEVEL = ,,p' ${LINUX_DIR}/Makefile`
++fi
++
++if [[ -n "$LINUX_VERSION_MAJOR" -a -n "$LINUX_VERSION_PATCH" ]]; then
++	WITH_MODULES="yes"
++else
++	WITH_MODULES="no"
++fi
++
++AC_SUBST(LINUX_VERSION_MAJOR)
++AC_SUBST(LINUX_VERSION_PATCH)
++
++AC_MSG_RESULT([$WITH_MODULES])
++
++AC_ARG_WITH(
++	[modules],
++	[AC_HELP_STRING([--without-modules],
++			[disable auto-building kernel modules])],
++			[WITH_MODULES="no"],
++			[])
++
++AC_SUBST(WITH_MODULES)
++])
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
