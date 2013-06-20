@@ -1,31 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <chrivers@iversen-net.dk>) id 1Uoabm-0005qF-0J
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 14:40:38 +0000
-Received: from mail.sikkerhed.org ([93.176.89.22])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uoabk-0002hJ-55
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 14:40:37 +0000
-Received: from localhost (mailscan.sikkerhed.org [93.176.89.24])
-	by mail.sikkerhed.org (Postfix) with ESMTP id 830231668
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jun 2013 16:23:51 +0200 (CEST)
-Received: from mail.sikkerhed.org ([93.176.89.22])
-	by localhost (mailscan.sikkerhed.org [93.176.89.24]) (amavisd-new,
-	port 10024)
-	with LMTP id Qt2LX-XuytPZ for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jun 2013 16:23:46 +0200 (CEST)
-Received: from [192.168.20.168] (unknown [86.58.254.98])
-	by mail.sikkerhed.org (Postfix) with ESMTPSA id E2986165C
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Jun 2013 16:23:46 +0200 (CEST)
-Message-ID: <51BF1BF2.1060006@iversen-net.dk>
-Date: Mon, 17 Jun 2013 16:23:46 +0200
-From: Christian Iversen <chrivers@iversen-net.dk>
-MIME-Version: 1.0
-Subject: [LTP] Patch for disktest: Handle long filenames more reasonably
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1UpdSU-0007EK-Qv
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jun 2013 11:55:22 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UpdSQ-00062n-Jp
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jun 2013 11:55:22 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r5KBms61013543
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Jun 2013 11:48:55 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5KBtAOf029085
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Jun 2013 11:55:11 GMT
+Received: from abhmt108.oracle.com (abhmt108.oracle.com [141.146.116.60])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5KBtAgr014193
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Jun 2013 11:55:10 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 20 Jun 2013 15:54:37 +0400
+Message-Id: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] tst_module: create new library functions for kernel
+	modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,52 +36,219 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi all (please CC as I'm not on the list)
+There are new functions: tst_module_exists(), tst_module_load() and
+tst_module_unload(). These functions help to load and unload kernel
+modules in the tests.
 
-I've been using disktest, but I found a less than optimal piece of code 
-regarding the device names.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ include/tst_module.h |   72 +++++++++++++++++++++++++++++++++
+ lib/tst_module.c     |  107 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 179 insertions(+), 0 deletions(-)
+ create mode 100644 include/tst_module.h
+ create mode 100644 lib/tst_module.c
 
-I'd like to contribute the following patch:
-
---- main2.h     2013-06-17 16:21:26.585825912 +0200
-+++ main.h      2013-06-17 16:10:08.725310241 +0200
-@@ -54,7 +54,7 @@
-  #define BLKGETSIZE _IO(0x12,96)                /* IOCTL for getting 
-the device size */
-  #define BLKSSZGET  _IO(0x12,104)       /* ALT IOCTL for getting the 
-device size */
-
--#define DEV_NAME_LEN           80              /* max character for 
-target name */
-+#define DEV_NAME_LEN           256             /* max character for 
-target name */
-  #define MAX_ARG_LEN                    160             /* max length 
-of command line arguments for startarg display */
-  #define HOSTNAME_SIZE          16              /* number of hostname 
-characters used in mark header */
-  #define BLK_SIZE                       512             /* default size 
-of an LBA in bytes */
-
-
-(or perhaps simply use PATH_MAX)
-
-80 characters is way too much for devices like /dev/sdc, but easily too 
-little for 
-"/dev/disk/by-path/ip-172.16.15.51:3260-iscsi-iqn.2013-01.com.synology:srvnas1.02-lun-0" 
-(that's a real device name, btw)
-
-I know, iSCSI names are really long, but disktest should be able to 
-handle it more gracefully. I got a really odd error ("could not open 
-device") because the last handful of characters has been cut out.
-
+diff --git a/include/tst_module.h b/include/tst_module.h
+new file mode 100644
+index 0000000..0eb7dd5
+--- /dev/null
++++ b/include/tst_module.h
+@@ -0,0 +1,72 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author:
++ * Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ * These functions help to load and unload kernel modules in the tests.
++ *
++ * tst_module_load and tst_module_unload functions already include
++ * tst_module_exists function, which is checking the following possible
++ * module's locations:
++ *
++ * 1. Current working directory
++ *
++ * 2. LTP installation path (using env LTPROOT, which is usally /opt/ltp)
++ *
++ * 3. If tmp directory created, it'll look at the test start working directory
++ *
++ */
++
++#ifndef TST_MODULE
++#define TST_MODULE
++
++/*
++ * Check module existence.
++ *
++ * @res_path: if this pointer isn't NULL, found module's path will be written
++ * to it.
++ *
++ * In case of failure, test'll call cleanup_fn and exit with TCONF return value.
++ */
++void tst_module_exist(void (*cleanup_fn)(void), const char *mod_name,
++	char *res_path, size_t max_path);
++
++/*
++ * Load a module using insmod program.
++ *
++ * @mod_opt: pointer to a character string containing additional module's
++ * params. This character string can contain a format that follows the same
++ * specifications as format in printf. If this pointer is NULL, it will be
++ * ignored.
++ *
++ * This function may expect additional arguments to replace a format specifier
++ * in the mod_opt string.
++ *
++ * In case of insmod failure, test will call cleanup_fn and exit with TBROK
++ * return value.
++ */
++void tst_module_load(void (*cleanup_fn)(void),
++	const char *mod_name, char *mod_opt, ...);
++
++/*
++ * Unload a module using rmmod program. In case of failure, test will call
++ * cleanup_fn and exit with TBROK return value.
++ */
++void tst_module_unload(void (*cleanup_fn)(void), const char *mod_name);
++
++#endif /* TST_MODULE */
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+new file mode 100644
+index 0000000..0c6062f
+--- /dev/null
++++ b/lib/tst_module.c
+@@ -0,0 +1,107 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ */
++
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "tst_module.h"
++
++/* declared in tst_tmpdir.c */
++const char *tst_get_startwd(void);
++
++void tst_module_exists(void (*cleanup_fn)(void),
++	const char *mod_name, char *res_path, size_t max_path)
++{
++	/* check current working directory */
++	if (access(mod_name, F_OK) == 0) {
++		if (res_path != NULL)
++			snprintf(res_path, max_path, "%s", mod_name);
++		return;
++	}
++
++	int err = -1;
++	char buf[PATH_MAX];
++	/* check LTP installation path */
++	const char *ltproot = getenv("LTPROOT");
++	if (ltproot != NULL) {
++		snprintf(buf, PATH_MAX, "%s/testcases/bin/%s",
++			ltproot, mod_name);
++		err = access(buf, F_OK);
++	}
++	/* check start working directory */
++	if (err == -1 && tst_tmpdir_created()) {
++		snprintf(buf, PATH_MAX, "%s/%s", tst_get_startwd(),
++			mod_name);
++		err = access(buf, F_OK);
++	}
++
++	if (err == 0) {
++		if (res_path != NULL)
++			snprintf(res_path, max_path, "%s", buf);
++	} else {
++		tst_brkm(TCONF, cleanup_fn, "Failed to find module '%s'",
++			mod_name);
++	}
++}
++
++void tst_module_load(void (*cleanup_fn)(void),
++	const char *mod_name, char *mod_opt, ...)
++{
++	char mod_path[PATH_MAX];
++
++	tst_module_exists(cleanup_fn, mod_name, mod_path, PATH_MAX);
++
++	char params[PATH_MAX];
++	params[0] = '\0';
++
++	if (mod_opt != NULL) {
++		va_list ap;
++		va_start(ap, mod_opt);
++		vsnprintf(params, PATH_MAX, mod_opt, ap);
++		va_end(ap);
++	}
++
++	char cmd[strlen(mod_path) + strlen(params) + 9];
++	snprintf(cmd, sizeof(cmd), "insmod %s %s", mod_path, params);
++
++	if (system(cmd) != 0) {
++		tst_brkm(TBROK, cleanup_fn, "Failed to load module '%s'",
++			mod_name);
++	}
++}
++
++void tst_module_unload(void (*cleanup_fn)(void), const char *mod_name)
++{
++	char mod_path[PATH_MAX];
++
++	tst_module_exists(cleanup_fn, mod_name, mod_path, PATH_MAX);
++
++	char cmd[strlen(mod_path) + 7];
++	snprintf(cmd, sizeof(cmd), "rmmod %s", mod_path);
++	if (system(cmd) != 0) {
++		tst_brkm(TBROK, cleanup_fn, "Failed to unload module '%s'",
++			mod_name);
++	}
++}
 -- 
-Med venlig hilsen
-Christian Iversen
+1.7.1
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
