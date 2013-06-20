@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UkZ4r-0003Oy-NC
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jun 2013 12:14:01 +0000
-Date: Thu, 6 Jun 2013 14:15:20 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UphS9-0005r0-HY
+	for ltp-list@lists.sourceforge.net; Thu, 20 Jun 2013 16:11:17 +0000
+Date: Thu, 20 Jun 2013 18:12:42 +0200
 From: chrubis@suse.cz
-Message-ID: <20130606121520.GC23876@rei>
-References: <1370384252.14316.YahooMailClassic@web120802.mail.ne1.yahoo.com>
+Message-ID: <20130620161242.GA3781@rei>
+References: <51C2D643.1040807@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1370384252.14316.YahooMailClassic@web120802.mail.ne1.yahoo.com>
-Subject: Re: [LTP] Test suite for the t-core kernel patch
+In-Reply-To: <51C2D643.1040807@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mmap/mmap13.c: new case to test SIGBUS error of
+ mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,112 +25,213 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: C Nandi <ccnandi@yahoo.com>
-Cc: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Is this test suite for t-core kernel patch still valid?
-> If yes, can we avoid invoking following function, and go with the following patch? I believe "/proc/sys/kernel/core_dumps_threads" file will not get created by latest kernel.
+> Test SIGBUS error by accessing to a portion of the buffer that does not
+> correspond to the file.
 > 
-> File: testcases/misc/tcore_patch_test_suites/tcore.sh
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                        |   1 +
+>  testcases/kernel/syscalls/mmap/mmap13.c | 155 ++++++++++++++++++++++++++++++++
+>  2 files changed, 156 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/mmap/mmap13.c
 > 
-> check_install()
-> {
->         if [ -f /proc/sys/kernel/core_dumps_threads ];then
->                 pass=`expr $pass + 1`
->                 return 0
->         else
->                 fail=`expr $fail + 1`
->                 return 1
->         fi
-> }
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index e6ce29c..eba0200 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -561,6 +561,7 @@ mmap06 mmap06
+>  mmap07 mmap07
+>  mmap08 mmap08
+>  mmap09 mmap09
+> +mmap13 mmap13
+>  # test is broken, mask it for now.
+>  #mmap11 mmap11 -i 30000
 > 
-> =========
-> 
+> diff --git a/testcases/kernel/syscalls/mmap/mmap13.c b/testcases/kernel/syscalls/mmap/mmap13.c
+> new file mode 100644
+> index 0000000..6aaa8ad
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/mmap/mmap13.c
+> @@ -0,0 +1,155 @@
+> +/*
+> + * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
+> + *
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program;  if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + */
+> +
+> +/*
+> + * Test Description:
+> + *  Verify error signal SIGBUS.
+> + *  "Attempted access to a portion of the buffer that does not correspond
+> + *   to the file."
+> + *
+> + * Expected Result:
+> + *  mmap() should succeed returning the address of the mapped region,
+> + *  and an attempt to access the memory which does not correspond to the file
+> + *  should rise the signal SIGBUS.
+> + */
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/types.h>
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <string.h>
+> +#include <signal.h>
+> +#include <sys/stat.h>
+> +#include <sys/mman.h>
+> +#include <setjmp.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +#define TEMPFILE	"mmapfile"
+> +
+> +char *TCID = "mmap13";
+> +int TST_TOTAL = 1;
+> +
+> +static size_t page_sz;
+> +static char *addr;
+> +static int fildes;
+> +static int pass;
 
-I did a little bit of archeology and it seems that patch which
-introduced this file never got accepted into mainline linux kernel.
-(Found some discussion about it around linux 2.4 and 2.5 development.)
+This should really be volatile or even better
+'static volatile sig_atomic_t pass' because otherwise
+the compiler may optimize out the if (pass) in the main loop.
 
-So it looks like this test was never working.
+> +static sigjmp_buf env;
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +static void sig_handler(int sig);
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	char *ch;
+> +	char *msg;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		addr = mmap(0, page_sz * 2, PROT_READ | PROT_WRITE,
+> +			    MAP_FILE | MAP_SHARED, fildes, 0);
+> +
+> +		if (addr == MAP_FAILED) {
+> +			tst_resm(TFAIL | TERRNO, "mmap() failed on %s",
+> +				 TEMPFILE);
+> +			continue;
+> +		}
+> +
+> +		if (STD_FUNCTIONAL_TEST) {
+> +
+> +			if (sigsetjmp(env, 1) == 0) {
+> +				ch = addr + page_sz + 1;
+> +				*ch = 0;
+> +
+> +				if (pass)
+> +					tst_resm(TPASS, "Got SIGSEGV"
+> +							"as expected");
+> +				else
+> +					tst_resm(TFAIL, "Invalid access not"
+> +							"rise SIGSEGV");
+> +			}
+> +
+> +		} else {
+> +			tst_resm(TPASS, "call succeeded");
+> +		}
+> +
+> +		if (munmap(addr, page_sz * 2) != 0)
+> +			tst_brkm(TFAIL | TERRNO, cleanup,
+> +				 "failed to unmap the mmapped pages");
+> +
+> +		pass = 0;
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(NOFORK, sig_handler, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	page_sz = getpagesize();
+> +
+> +	tst_tmpdir();
+> +
+> +	fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0766);
+> +	if (fildes < 0)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "opening %s failed",
+> +			 TEMPFILE);
+> +
+> +	if (ftruncate(fildes, page_sz / 2) == -1)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "ftruncate %s failed",
+> +			 TEMPFILE);
+> +}
+> +
+> +/*
+> + *   This function gets executed when the test process receives
+> + *   the signal SIGBUS while trying to access the memory which
+> + *   does not correspond to the file.
+> + */
+> +static void sig_handler(int sig)
+> +{
+> +	if (sig == SIGBUS) {
+> +		pass = 1;
+> +		tst_resm(TPASS, "Got SIGBUS as expected");
 
-> 
-> diff -urN org/tcore.exp mod/tcore.exp
-> --- org/tcore.exp       2013-05-17 15:08:09.000000000 -0600
-> +++ mod/tcore.exp       2013-05-17 14:07:37.000000000 -0600
-> @@ -39,7 +39,7 @@
->      set istrue 0
->      send "info threads\n"
->      expect {
-> -               -re " \[0-9\]+ process .*(gdb)" {
-> +               -re " \[0-9\]+ Thread .*(gdb)" {
->         set buf $expect_out(0,string)
->         }
->         timeout {
-> @@ -47,7 +47,7 @@
->                 return 1
->         }
->      }
-> -    set curr_thread [check_buf $buf "process"]
-> +    set curr_thread [check_buf $buf "Thread"]
->      if { $curr_thread == 0 } {
->         send_user "check_threads (no current thread)\n"
->         return 1
-> @@ -76,7 +76,7 @@
->                                   return 1
->                          }
->                  }
-> -                set number1 [check_buf $buf "(process"]
-> +                set number1 [check_buf $buf "(Thread"]
->                  send "bt\n"
->                  expect {
->                          -re  " bt.*#\[0-9\]+ .*(gdb)" {
-> @@ -101,13 +101,13 @@
->  }
+Calling the tst_resm() interface may not be save from signal context. We
+should rather resort only to setting the variable here.
 
-This part of the test is quite fragile. This will break if LANG is not
-set to English language. Moreover this change will break the older gdb,
-do you know in which gdb version were these messages changed?
-
->  proc check_fpu {num} {
-> +       exp_internal 1
->         global expect_out
->         global pass
-> -       send "\n"
-> -       send "info register\n"
-> -       send "\n"
-> +       send "set pagination off\n"
-> +       send "info all-register\n"
->         expect {
-> -               -re "xmm$num\[\t \]+\{f \= .*\}+\[\t \]+\{f \= .*\}" {
-> +               -re "xmm$num\[\t \]+\{.*f.* \= .*\}" {
->                         set buf $expect_out(0,string)
->                 }
->                 timeout {
-> @@ -130,8 +130,8 @@
->         }
->  }
-
-Aargh, even more fragile.
-
-I doubt that this part works with anything else but the gdb version it
-was written for.
-
-
-
-Given the state of the test and the uncertain functionality I would vote
-for removal. Anybody else has better idea?
+> +		siglongjmp(env, 1);
+> +	} else {
+> +		tst_brkm(TBROK, cleanup, "received an unexpected signal");
+> +	}
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	close(fildes);
+> +	TEST_CLEANUP;
+> +	tst_rmdir();
+> +}
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
