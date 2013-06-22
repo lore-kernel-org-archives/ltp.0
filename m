@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UjUMW-0006AJ-2Y
-	for ltp-list@lists.sourceforge.net; Mon, 03 Jun 2013 12:59:48 +0000
-Date: Mon, 3 Jun 2013 15:01:05 +0200
-From: chrubis@suse.cz
-Message-ID: <20130603130105.GA4074@rei>
-References: <006901ce5601$42cc89e0$c8659da0$@lge.com>
-	<20130521103319.GA28186@rei> <20130530130325.GA5552@rei.suse.cz>
-	<006901ce5dda$30547c60$90fd7520$@lge.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1UqSLS-0006JI-7p
+	for ltp-list@lists.sourceforge.net; Sat, 22 Jun 2013 18:15:30 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UqSLQ-0001iq-FL
+	for ltp-list@lists.sourceforge.net; Sat, 22 Jun 2013 18:15:30 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 22 Jun 2013 14:15:15 -0400
+References: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <006901ce5dda$30547c60$90fd7520$@lge.com>
-Subject: Re: [LTP] [PATCH] Makefile: Disable parallel build for
- $(CRITICAL_MAKEFILES)
+Message-Id: <201306221415.17130.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] tst_module: create new library functions for
+	kernel modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,48 +25,116 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0546718321859582273=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jungsoo Son <jungsoo.son@lge.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, vasily.isaenko@oracle.com
 
-Hi!
-> > I got a an idea how to fix this in portable fashion. The key is the order
-> > of filenames the make looks for.
-> > 
-> > The gnu make tries GNUmakefile first, then makefile or Makefile.
-> > 
-> > So if we create GNUmakefile, which would include the Makefile and adds
-> > the .NOTPARALLEL: target it should work both with both GNU make and any
-> > other POSIX conforming make out there.
-> 
-> I think your idea is good. 
-> But I think that the code to distinguish GNU make and other POSIX will makes
-> the Makefile to be more complex.
-> I do not wish to complicate the Makefile more than is necessary.
-> How about using '-j1' without '.NOTPARALLEL:' option as follows.
+--===============0546718321859582273==
+Content-Type: multipart/signed; boundary="nextPart5321927.aXMgjiqtG9";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Again the same problem as previously. The POSIX specification does not
-require the -j option to exist as the standard does not take parallel
-build into the account at all. And for the Open Posix part of LTP we
-need to stick to the POSIX.
+--nextPart5321927.aXMgjiqtG9
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-And looking at the POSIX spec again, the POSIX make does not even
-support including files. So the only way how to fix this is to copy the
-top level Makefile to GNUmakefile and add the line. :(
+On Thursday 20 June 2013 07:54:37 Alexey Kodanev wrote:
+> +/*
+> + * Check module existence.
+> + *
+> + * @res_path: if this pointer isn't NULL, found module's path will be
+> + * written to it.
+> + *
+> + * In case of failure, test'll call cleanup_fn and exit with TCONF return
+> + */
+> +void tst_module_exist(void (*cleanup_fn)(void), const char *mod_name,
+> +	char *res_path, size_t max_path);
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+i hate APIs like this.  they're so 1990 :P.
+
+look at the getline() func and behave like that instead (take char **res_pa=
+th=20
+and size_t *max_path instead)
+
+> +/* declared in tst_tmpdir.c */
+> +const char *tst_get_startwd(void);
+
+use a proper header instead.  extern func decls only leads to bit rot and h=
+ard=20
+to debug crashes.
+
+> +	char buf[PATH_MAX];
+
+PATH_MAX should be taken out back and shot.  there's no reason to use it=20
+anymore when we have things like asprintf().  plus, it isn't portable --=20
+there's no guarantee it'll be defined.  i know the irony complaining about=
+=20
+portability with PATH_MAX when asprintf() isn't in POSIX either, but the=20
+difference is, we have an asprintf() fallback already in lib/, and we have =
+code=20
+using it today.
+
+> +	char cmd[strlen(mod_path) + strlen(params) + 9];
+> +	snprintf(cmd, sizeof(cmd), "insmod %s %s", mod_path, params);
+> +
+> +	if (system(cmd) !=3D 0) {
+
+use fork()+execvp() instead.  there's no need to normalize to a string and=
+=20
+then run through a shell.
+
+wonder if we should add a util func for this ...
+=2Dmike
+
+--nextPart5321927.aXMgjiqtG9
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRxem1AAoJEEFjO5/oN/WBJuUQAJDrh2kySiXjKuF9Ap5Q8gij
+sSmYs1lttVQD29fngHzy8EyXWbGpuENt75lJQETimZVxuNQMo1MhwbxdgTlEif3o
+IDy9RmySFXteVcfqq95E7A56Rcj3g2cbk3ZOngh1tiVs1S9jHRDsAvs+FwR94gzM
+gVk36Rp9ucq8qTY1BePm0KxSbYBQ5cUCmNTD78YAJfkqs73rbk/9c2SFIzifv6wK
+vy2gbWqx/DH9bVZG4nIdXkHCYK1kaEyYBYUj984Clrogz+YSaqKdRRaYSPoNLtHv
+yDA2Sn+9OJFkpDrigN5nRK7+2qF/BQoMyThcznxd/I7XalStu5TlcLegofCOGwpJ
+oETJLhVoX3tHfYFYZ7OXBmMEUS+/lHCldWJMKPselLEfdKvUVF358ReDsPhanPWE
+BpQOywDufc/a99kS3lKRnOk1HFqOJC87wT8T70svbVTxf8AbU1v2ms+TUqrLxz2g
+UOOn4deXKjR/URNIxX0/5GpygeWRvbyK2+MUQ/rzssECs3yzO/hYAL58MA9VdYbL
+ZPTPQwknhkdic9V8XS3fclMdlxlIihpcsrY0+iCJ6x29hAuGES/UB2jxJvCRtLMl
+flFxsv6zF31S0Sy5mcOGyWTMvrDqohL9GgBqja0GTdplBJA5YMev254nB2gZh9ta
++HdGf0B17195bOurX5yc
+=JEJJ
+-----END PGP SIGNATURE-----
+
+--nextPart5321927.aXMgjiqtG9--
+
+
+--===============0546718321859582273==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite
-It's a free troubleshooting tool designed for production
-Get down to code-level detail for bottlenecks, with <2% overhead.
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap2
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
+--===============0546718321859582273==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0546718321859582273==--
+
