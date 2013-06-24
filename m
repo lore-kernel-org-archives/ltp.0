@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ur5JD-0007Li-25
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 11:51:47 +0000
-Date: Mon, 24 Jun 2013 13:53:14 +0200
-From: chrubis@suse.cz
-Message-ID: <20130624115313.GA1638@rei>
-References: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
-Subject: Re: [LTP] How to run only a specific test series like for example
- IPC?
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1Ur924-0004iA-EX
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:50:20 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ur922-0002pS-Je
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:50:20 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r5OFoBSZ026071
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jun 2013 11:50:13 -0400
+From: Eryu Guan <eguan@redhat.com>
+Date: Mon, 24 Jun 2013 23:49:43 +0800
+Message-Id: <1372088983-29843-1-git-send-email-eguan@redhat.com>
+In-Reply-To: <1372086727-27722-1-git-send-email-eguan@redhat.com>
+References: <1372086727-27722-1-git-send-email-eguan@redhat.com>
+Subject: [LTP] [PATCH v2] dup2/dup205: close all fds before tst_rmdir()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,87 +28,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> I wanted to only run the IPC tests as I have troubles with IPC(-MSG)
-> in Linux-Next.
-> 
-> This is what I did...
-> 
-> root# cd /opt/ltp/
-> 
-> root# ./runltp ./runtest/ipc
-> 
-> ...is that the correct way? Wrong?
+Close all open fds before calling tst_rmdir() to avoid TWARN caused by
+NFS silly rename when removing temp dir.
 
-I belive that the syntax is ./runltp -f ipc
+dup205      0  TWARN  :  tst_rmdir: rmobj(/mnt/nfs/dupbA5J5i) failed: unlink(/mnt/nfs/dupbA5J5i/.nfs0000000000f4805b00000005) failed; errno=16: Device or resource busy
 
-Also there are additional tests for POSIX IPC in open_posix_testsuite
-that are not executed by the runltp script.
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+v2: Correct commit message.
 
-> Unfortunately, this fails due to EXT4-fs troubles...
-> ...
-> mke2fs 1.42 (29-Nov-2011)
-> Filesystem label=
-> OS type: Linux
-> Block size=1024 (log=0)
-> Fragment size=1024 (log=0)
-> Stride=0 blocks, Stripe width=0 blocks
-> 32 inodes, 236 blocks
-> 11 blocks (4.66%) reserved for the super user
-> First data block=1
-> 1 block group
-> 8192 blocks per group, 8192 fragments per group
-> 32 inodes per group
-> 
-> Allocating group tables: done
-> Writing inode tables: done
-> 
-> Filesystem too small for a journal <--- ???
-> Writing superblocks and filesystem accounting information: mount:
-> /dev/loop1 already mounted or /tmp/ltp-p5uaFntNJE/mnt_pnt.u44xDV busy
-> FATAL: can't mount block device /dev/loop1.
-> root@fambox:/opt/ltp# done
+ testcases/kernel/syscalls/dup2/dup205.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-There are certain testcases that needs a separate filesystem partition
-to play with, if you don't pass physical disk partition to the runtest
-script a loopback device is created, formatted and mounted.
-
-> 10240+0 records in
-> 10240+0 records out
-> 10240000 bytes (10 MB) copied, 0.260004 s, 39.4 MB/s
-> ^C
-> 
-> root# dmesg | tail
-> 
-> [   78.095907] EXT4-fs (loop1): VFS: Can't find ext4 filesystem <--- ???
-
-This simply looks like the 10MB image is not enough for the ext4 journal
-for some reason.
-
-Try following patch that increases the size to 100MB.
-
-diff --git a/runltp b/runltp
-index a8bf404..7955f44 100755
---- a/runltp
-+++ b/runltp
-@@ -984,7 +984,7 @@ main()
- create_block()
- {
-     #create a block device with ext4 filesystem.
--    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240 &>/dev/null
-+    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=102400 &>/dev/null
-     if [ $? -ne 0 ]; then
-         echo "Failed to create loopback device image, please check disk space and re-run"
-         return 1
+diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
+index c728fcc..0528beb 100644
+--- a/testcases/kernel/syscalls/dup2/dup205.c
++++ b/testcases/kernel/syscalls/dup2/dup205.c
+@@ -112,8 +112,8 @@ int main(int ac, char *av[])
+ 			}
+ 		}
+ 		unlink(pfilname);
+-		if (ifile > 0)
+-			close(fildes[ifile - 1]);
++		for (ifile = fildes[0]; ifile < min + 10; ifile++)
++			close(fildes[ifile]);
+ 		if (local_flag == PASSED) {
+ 			tst_resm(TPASS, "Test passed.");
+ 		} else {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
