@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1Ur924-0004iA-EX
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:50:20 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ur922-0002pS-Je
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:50:20 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r5OFoBSZ026071
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jun 2013 11:50:13 -0400
-From: Eryu Guan <eguan@redhat.com>
-Date: Mon, 24 Jun 2013 23:49:43 +0800
-Message-Id: <1372088983-29843-1-git-send-email-eguan@redhat.com>
-In-Reply-To: <1372086727-27722-1-git-send-email-eguan@redhat.com>
-References: <1372086727-27722-1-git-send-email-eguan@redhat.com>
-Subject: [LTP] [PATCH v2] dup2/dup205: close all fds before tst_rmdir()
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Ur3b8-0001Sl-Qh
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 10:02:10 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ur3b7-0007Lp-4G
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 10:02:10 +0000
+Message-ID: <51C81903.2030905@oracle.com>
+Date: Mon, 24 Jun 2013 14:01:39 +0400
+From: alexey.kodanev@oracle.com
+MIME-Version: 1.0
+References: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
+	<201306221415.17130.vapier@gentoo.org>
+In-Reply-To: <201306221415.17130.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] tst_module: create new library functions for
+ kernel modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +26,25 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Close all open fds before calling tst_rmdir() to avoid TWARN caused by
-NFS silly rename when removing temp dir.
+Hi!
+On 06/22/2013 10:15 PM, Mike Frysinger wrote:
+>
+>> +/* declared in tst_tmpdir.c */
+>> +const char *tst_get_startwd(void);
+> use a proper header instead.  extern func decls only leads to bit rot and hard
+> to debug crashes.
+But, there is no header for this function in LTP, it is declared inside 
+c file, and I
+used it in the same way as it was already used in tst_resource.c.
 
-dup205      0  TWARN  :  tst_rmdir: rmobj(/mnt/nfs/dupbA5J5i) failed: unlink(/mnt/nfs/dupbA5J5i/.nfs0000000000f4805b00000005) failed; errno=16: Device or resource busy
-
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
-v2: Correct commit message.
-
- testcases/kernel/syscalls/dup2/dup205.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
-index c728fcc..0528beb 100644
---- a/testcases/kernel/syscalls/dup2/dup205.c
-+++ b/testcases/kernel/syscalls/dup2/dup205.c
-@@ -112,8 +112,8 @@ int main(int ac, char *av[])
- 			}
- 		}
- 		unlink(pfilname);
--		if (ifile > 0)
--			close(fildes[ifile - 1]);
-+		for (ifile = fildes[0]; ifile < min + 10; ifile++)
-+			close(fildes[ifile]);
- 		if (local_flag == PASSED) {
- 			tst_resm(TPASS, "Test passed.");
- 		} else {
--- 
-1.8.3.1
-
+Thanks,
+Alexey
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
