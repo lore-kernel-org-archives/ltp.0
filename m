@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UkXre-0007ba-1h
-	for ltp-list@lists.sourceforge.net; Thu, 06 Jun 2013 10:56:18 +0000
-Date: Thu, 6 Jun 2013 12:57:36 +0200
+	(envelope-from <metan@suse.de>) id 1Ur8tA-0003sW-AL
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:41:08 +0000
+Date: Mon, 24 Jun 2013 17:42:32 +0200
 From: chrubis@suse.cz
-Message-ID: <20130606105736.GA23876@rei>
-References: <1370433674-6838-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20130624154231.GA2808@rei>
+References: <51C7FD6D.4010904@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1370433674-6838-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] configure: add configure checks to compile kernel
- modules
+In-Reply-To: <51C7FD6D.4010904@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mmap/mmap13.c: new case to test SIGBUS error
+ of mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,31 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> There're new configure options added to tune modules building process.
-> New m4 function tries to determine if kernel-devel package is available
-> and sets makefile's variables (WITH_MODULES, ...) accordingly.
+> Test SIGBUS error by accessing to a portion of the buffer that does not
+> correspond to the file.
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                        |   1 +
+>  testcases/kernel/syscalls/mmap/mmap13.c | 152 ++++++++++++++++++++++++++++++++
+>  2 files changed, 153 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/mmap/mmap13.c
 
-This part looks fine.
+...
 
-Maybe it would be better to include detected kernel version in the
-configure output as well, but apart from that it's ok.
+> +
+> +		addr = mmap(0, page_sz * 2, PROT_READ | PROT_WRITE,
+> +			    MAP_FILE | MAP_SHARED, fildes, 0);
+
+The first parameter should really have been NULL, pushed with that
+change, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
