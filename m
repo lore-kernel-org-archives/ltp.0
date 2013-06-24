@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UsEwn-0003bE-8z
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 16:21:25 +0000
-Date: Thu, 27 Jun 2013 18:22:51 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ur9Ca-0001qt-Fu
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 16:01:13 +0000
+Date: Mon, 24 Jun 2013 18:02:40 +0200
 From: chrubis@suse.cz
-Message-ID: <20130627162250.GC22757@rei.suse.cz>
-References: <1372208571-9642-1-git-send-email-sedat.dilek@gmail.com>
+Message-ID: <20130624160240.GA3492@rei>
+References: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
+	<201306221415.17130.vapier@gentoo.org> <20130624115635.GB1638@rei>
+	<201306241136.07004.vapier@gentoo.org> <20130624154333.GB2808@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372208571-9642-1-git-send-email-sedat.dilek@gmail.com>
-Subject: Re: [LTP] [PATCH] runtest: Add new syscalls-ipc test-suite
+In-Reply-To: <20130624154333.GB2808@rei>
+Subject: Re: [LTP] [PATCH] tst_module: create new library functions for
+ kernel modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,15 +27,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, ltp-list@lists.sourceforge.net, vasily.isaenko@oracle.com
 
 Hi!
-> Run via './runltp -f syscalls-ipc'.
+> > > This is internal only API for the LTP lib that does not have a proper
+> > > header (I was too lazy to create a header for the function that is used
+> > > only once). I can fix that if desired.
+> > 
+> > if it's meant as an internal-to-the-lib func, then we should start a
+> > header to hold that kind of code.  we can easily enforce it too by
+> > having the lib Makefile define some macro that the header will check
+> > and error out if it isn't present.
 > 
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Agreed, I will fix that ASAP.
 
-I've pushed this version for now.
+Fixed in git. (I've added ltp_priv.h header into lib/ and moved the
+definition there).
+
+Alexey: Make use of the header.
 
 -- 
 Cyril Hrubis
