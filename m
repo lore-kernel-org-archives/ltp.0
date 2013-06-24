@@ -1,20 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Us6mw-0004V8-9L
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 07:38:42 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Us6mu-0005Co-3r
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 07:38:42 +0000
-Date: Thu, 27 Jun 2013 03:38:27 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1685865585.461109.1372318707448.JavaMail.root@redhat.com>
-In-Reply-To: <51CBAFB7.8000508@cn.fujitsu.com>
-References: <51CBAFB7.8000508@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mmap/mmap14.c: new case to test MAP_LOCKED of mmap
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Ur36Q-0007YU-50
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 09:30:26 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Ur36A-0007Qr-Ca
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 09:30:26 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r5O9U4jM013375
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jun 2013 09:30:04 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5O9U3eF029505
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jun 2013 09:30:04 GMT
+Received: from abhmt120.oracle.com (abhmt120.oracle.com [141.146.116.72])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r5O9U2Rq029011
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Jun 2013 09:30:03 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 24 Jun 2013 13:29:55 +0400
+Message-Id: <1372066195-18166-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] syscalls/swapon: fix for variable page size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,221 +36,229 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
+From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
+mkswap refuses files of size < 10*(page size).
 
------ Original Message -----
-> From: "DAN LI" <li.dan@cn.fujitsu.com>
-> To: "LTP list" <ltp-list@lists.sourceforge.net>
-> Sent: Thursday, 27 June, 2013 5:21:27 AM
-> Subject: [LTP]  [PATCH] mmap/mmap14.c: new case to test MAP_LOCKED of mmap
-> 
-> 
-> 
-> Create test case for MAP_LOCKED of mmap.
-> 
-> Verify pages are locked by checking section "VmLck" of /proc/<pid>/status.
-> 
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+On systems with 8192 page size swapon02, swapon03 tests fail because
+they try to use files of size 41920 (< 81920).
 
-Hi,
+Modified swapon02, swapon03 so they operate on files of size
+10*(page size).
 
-few small comments inline. Overall it looks good to me.
+In swapon01 test size of swap file is predefined. For unification
+modified this test the same way.
 
+Verified on systems with 4096 and 8192 page sizes.
 
-> ---
->  runtest/syscalls                        |   1 +
->  testcases/kernel/syscalls/mmap/mmap14.c | 133
->  ++++++++++++++++++++++++++++++++
->  2 files changed, 134 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/mmap/mmap14.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index eba0200..4865375 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -562,6 +562,7 @@ mmap07 mmap07
->  mmap08 mmap08
->  mmap09 mmap09
->  mmap13 mmap13
-> +mmap14 mmap14
->  # test is broken, mask it for now.
->  #mmap11 mmap11 -i 30000
-> 
-> diff --git a/testcases/kernel/syscalls/mmap/mmap14.c
-> b/testcases/kernel/syscalls/mmap/mmap14.c
-> new file mode 100644
-> index 0000000..d279df0
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mmap/mmap14.c
-> @@ -0,0 +1,133 @@
-> +/*
-> + * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program;  if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-> USA
-> + */
-> +
-> +/*
-> + * Test Description:
-> + *  Verify MAP_LOCKED works fine.
-> + *  "Lock the pages of the mapped region into memory in the manner of
-> mlock(2)."
-> + *
-> + * Expected Result:
-> + *  mmap() should succeed returning the address of the mapped region,
-> + *  and this region should be locked into memory.
-> + */
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/types.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <stdint.h>
-> +#include <sys/stat.h>
-> +#include <sys/mman.h>
-> +#include <sys/shm.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +#define TEMPFILE        "mmapfile"
-> +#define MMAPSIZE        (1UL<<20)
-> +#define LINELEN         256
-> +
-> +char *TCID = "mmap14";
-> +int TST_TOTAL = 1;
-> +
-> +static char *addr;
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	int ret;
-> +	int lock_sz;
-> +	char *msg;
-> +	char line[LINELEN];
-> +	FILE *fstatus = NULL;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +
-> +		tst_count = 0;
-> +
-> +		addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
-> +			    MAP_FILE | MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS,
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/swapon/swapon01.c |   19 +++++-
+ testcases/kernel/syscalls/swapon/swapon02.c |   84 ++++++++++++---------------
+ testcases/kernel/syscalls/swapon/swapon03.c |   17 +-----
+ 3 files changed, 55 insertions(+), 65 deletions(-)
 
-MAP_FILE doesn't seem to belong here.
+diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+index 11a49f9..05f1579 100644
+--- a/testcases/kernel/syscalls/swapon/swapon01.c
++++ b/testcases/kernel/syscalls/swapon/swapon01.c
+@@ -132,6 +132,10 @@ int main(int ac, char **av)
+ /* setup() - performs all ONE TIME setup for this test */
+ void setup()
+ {
++	char cmd_buffer[256];
++
++	long bs = sysconf(_SC_PAGESIZE);
++	int count = 10;
+ 
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+@@ -154,15 +158,22 @@ void setup()
+ 			 "Cannot do swapon on a file located on a nfs filesystem");
+ 	}
+ 
+-	if (!tst_cwd_has_free(65536)) {
++	if (!tst_cwd_has_free(bs*count)) {
+ 		tst_brkm(TBROK, cleanup,
+ 			 "Insufficient disk space to create swap file");
+ 	}
+ 
+ 	/*create file */
+-	if (system("dd if=/dev/zero of=swapfile01 bs=1024 count=65536 >"
+-		   " tmpfile 2>&1") != 0) {
+-		tst_brkm(TBROK, cleanup, "Failed to create file for swap");
++	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
++			"dd if=/dev/zero of=swapfile01 bs=%li "
++			"count=%i > /tmp/file 2>&1", bs, count) < 0) {
++		tst_brkm(TBROK, cleanup, 
++			"sprintf() failed to create command string");
++	}
++
++	if (system(cmd_buffer) != 0) {
++		tst_brkm(TBROK, cleanup, "dd command failed to create file via "
++			"command: %s", cmd_buffer);
+ 	}
+ 
+ 	/* make above file a swap file */
+diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
+index d44d6c3..c334350 100644
+--- a/testcases/kernel/syscalls/swapon/swapon02.c
++++ b/testcases/kernel/syscalls/swapon/swapon02.c
+@@ -102,6 +102,7 @@
+ 
+ static void setup();
+ static void cleanup();
++static int create_zeroed_file(const char *zeroedfile);
+ static int setup01();
+ static int cleanup01();
+ static int setup02();
+@@ -213,34 +214,43 @@ int main(int ac, char **av)
+ }				/*End of main */
+ 
+ /*
++ * create_zeroed_file() - This function creates zeroed file
++ * of minimum size to use as a swap file
++ */
++int create_zeroed_file(const char *zeroedfile)
++{
++	char cmd_buffer[256];
++
++	long bs = sysconf(_SC_PAGESIZE);
++
++	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
++			"dd if=/dev/zero of=%s bs=%li "
++			"count=10 > /tmp/file 2>&1", zeroedfile, bs) < 0) {
++		tst_resm(TWARN, 
++			"sprintf() failed to create command string");
++
++		return -1;
++	}
++
++	if (system(cmd_buffer) != 0) {
++		tst_resm(TWARN, "dd command failed to create file via "
++			"command: %s", cmd_buffer);
++
++		return -1;
++	}
++
++	return 0;
++}
++
++
++/*
+  * setup01() - This function creates the file and sets the user as nobody
+  */
+ int setup01()
+ {
+-	int pagesize = getpagesize();
+-
+-	/*create file */
+-	if ((strncmp(kmachine, "ia64", 4)) == 0) {
+-		if (system
+-		    ("dd if=/dev/zero of=swapfile01 bs=1024  count=65536 > tmpfile"
+-		     " 2>&1") != 0) {
+-			tst_brkm(TBROK, cleanup,
+-				 "Failed to create file for swap");
+-		}
+-	} else if (pagesize == 65536) {
+-		if (system
+-		    ("dd if=/dev/zero of=swapfile01 bs=1048  count=655 > tmpfile"
+-		     " 2>&1") != 0) {
+-			tst_brkm(TBROK, cleanup,
+-				 "Failed to create file for swap");
+-		}
+-	} else {
+-		if (system
+-		    ("dd if=/dev/zero of=swapfile01 bs=1048  count=40 > tmpfile"
+-		     " 2>&1") != 0) {
+-			tst_brkm(TBROK, cleanup,
+-				 "Failed to create file for swap");
+-		}
++	/* create zeroed file */
++	if (create_zeroed_file("swapfile01") != 0) {
++		tst_brkm(TBROK, cleanup, "Failed to create file for swap");
+ 	}
+ 
+ 	/* make above file a swap file */
+@@ -293,31 +303,11 @@ int setup02()
+  */
+ int setup03()
+ {
+-	int pagesize = getpagesize();
+ 	int res = 0;
+ 
+-	/*create file */
+-	if ((strncmp(kmachine, "ia64", 4)) == 0) {
+-		if (system
+-		    ("dd if=/dev/zero of=alreadyused bs=1024  count=65536 > tmpfile"
+-		     " 2>&1") != 0) {
+-			tst_brkm(TBROK, cleanup,
+-				 "Failed to create file for swap");
+-		}
+-	} else if (pagesize == 65536) {
+-		if (system
+-		    ("dd if=/dev/zero of=alreadyused bs=1048  count=655 > tmpfile"
+-		     " 2>&1") != 0) {
+-			tst_brkm(TBROK, cleanup,
+-				 "Failed to create file for swap");
+-		}
+-	} else {
+-		if (system
+-		    ("dd if=/dev/zero of=alreadyused bs=1048  count=40 > tmpfile"
+-		     " 2>&1") != 0) {
+-			tst_brkm(TBROK, cleanup,
+-				 "Failed to create file for swap");
+-		}
++	/* create zeroed file */
++	if (create_zeroed_file("alreadyused") != 0) {
++		tst_brkm(TBROK, cleanup, "Failed to create file for swap");
+ 	}
+ 
+ 	/* make above file a swap file */
+diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+index 3dbc998..75e93e5 100644
+--- a/testcases/kernel/syscalls/swapon/swapon03.c
++++ b/testcases/kernel/syscalls/swapon/swapon03.c
+@@ -208,8 +208,9 @@ int setup_swap()
+ 	pid_t pid;
+ 	int j, fd;		/*j is loop counter, fd is file descriptor */
+ 	int status;		/* used for fork */
+-	int res = 0, pagesize = getpagesize();
+-	int bs, count;
++	int res = 0;
++	int count = 10;
++	long bs = sysconf(_SC_PAGESIZE);
+ 	char filename[15];	/* array to store new filename */
+ 	char buf[BUFSIZ + 1];	/* temp buffer for reading /proc/swaps */
+ 
+@@ -254,18 +255,6 @@ int setup_swap()
+ 		swapfiles = MAX_SWAPFILES;
+ 	}
+ 
+-	/* args for dd */
+-	if ((strncmp(kmachine, "ia64", 4)) == 0) {
+-		bs = 1024;
+-		count = 1024;
+-	} else if (pagesize == 65536) {
+-		bs = 1048;
+-		count = 655;
+-	} else {
+-		bs = 1048;
+-		count = 40;
+-	}
+-
+ 	pid = FORK_OR_VFORK();
+ 	if (pid == 0) {
+ 		/*create and turn on remaining swapfiles */
+-- 
+1.7.1
 
-> +			    -1, 0);
-> +
-> +		if (addr == MAP_FAILED) {
-> +			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
-> +			continue;
-> +		}
-> +
-> +		if (STD_FUNCTIONAL_TEST) {
-> +
-> +			fstatus = fopen("/proc/self/status", "r");
-> +			if (fstatus == NULL)
-> +				tst_brkm(TFAIL | TERRNO, NULL, "Open dev "
-> +							       "status failed");
-> +
-> +			while (fgets(line, LINELEN, fstatus) != NULL)
-> +				if (strstr(line, "VmLck") != NULL)
-> +					break;
-> +
-> +			ret = sscanf(line, "%*[^0-9]%d%*[^0-9]", &lock_sz);
-> +			if (ret != 1)
-> +				tst_brkm(TFAIL | TERRNO, NULL, "Get lock "
-> +							       "size failed");
-> +
-> +			if (lock_sz == MMAPSIZE / 1024)
-
-Can you also print lock_sz if this condition fails?
-
-> +				tst_resm(TPASS, "Functionality of mmap() "
-> +						"successful");
-> +			else
-> +				tst_resm(TFAIL, "Pages are not locked");
-> +
-> +		} else {
-> +			tst_resm(TPASS, "call succeeded");
-> +		}
-> +
-> +		fclose(fstatus);
-> +		if (munmap(addr, MMAPSIZE) != 0)
-> +			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-
-Is tmp dir used for anything?
-
-Regards,
-Jan
-
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +}
-> --
-> 1.8.1
-> 
-> ------------------------------------------------------------------------------
-> This SF.net email is sponsored by Windows:
-> 
-> Build for Windows Store.
-> 
-> http://p.sf.net/sfu/windows-dev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
