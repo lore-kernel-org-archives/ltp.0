@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UowlC-0004TN-9o
-	for ltp-list@lists.sourceforge.net; Tue, 18 Jun 2013 14:19:50 +0000
-Date: Tue, 18 Jun 2013 16:21:18 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ur418-0002aD-Uh
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 10:29:02 +0000
+Date: Mon, 24 Jun 2013 12:30:29 +0200
 From: chrubis@suse.cz
-Message-ID: <20130618142118.GA15772@rei.suse.cz>
-References: <1371474097-17589-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130618122850.GB6464@rei.suse.cz> <51C064BD.1040104@oracle.com>
+Message-ID: <20130624103029.GB1160@rei>
+References: <1372067584-353-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51C064BD.1040104@oracle.com>
-Subject: Re: [LTP] [PATCH v3] fw_load: new test of device firmware loading
+In-Reply-To: <1372067584-353-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] getrusage03: disable the test when kernel before
+	2.6.32
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +25,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> I thought it is not necessary because WITH_MODULES won't be set if make
-> target is clean.
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/getrusage/getrusage03.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> index 202356c..2670316 100644
+> --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
+> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> @@ -71,6 +71,13 @@ int main(int argc, char *argv[])
+>  	int lc;
+>  	char *msg;
+>  
+> +	/* Disable test if the version of the kernel is less than 2.6.32 */
+> +	if ((tst_kvercmp(2, 6, 32)) < 0) {
+> +		tst_resm(TWARN, "This ru_maxrss behaviors is not supported");
+> +		tst_resm(TWARN, "before kernel 2.6.32");
+> +		exit(0);
 
-Ah, the config.mk is include omited on 'make clean'. However I think
-that depending on this is too confusing.
+Also why exit() and not tst_exit()?
 
-> >> +	if (access(module_name, F_OK) == -1) {
-> >> +		tst_brkm(TCONF, NULL,
-> >> +			"Test requires kernel module '%s'", module_name);
-> >> +	}
-> > Here you expect that the module is in current directory, which is not
-> > robust enough.
-> >
-> > What about creating module_exists() module_load() and module_unload()
-> > library functions?
-> Yeah, it is possible. Could I use tst_resource files for that? Or perhaps,
-> would it be better to create tst_modules files?
+And the usuall place where these checks are added is setup() (not that
+having it before parse_opts is wrong, just unusuall).
 
-Start a separate source file for that, tst_module(s) is OK.
-
-> > The path to the module should be determined from LTPROOT env variable,
-> > see lib/tst_resource.c and lib/tst_resource.h that handles similar
-> > situation for files needed by the tests.
-> >
-> >
-> >> +
-> >> +static void cleanup(void)
-> >> +{
-> >> +	if (skip_cleanup)
-> >> +		return;
-> >> +	int i;
-> >> +	for (i = fw_num - 1; i>= 0; --i) {
-> > Is there any reason for the loop going backward?
-> >
-> It is the only way to successfully remove created directories.
-> I need to start from the last created file or/and directory and move
-> upward.
-
-I see, some of the dirs are subdirs of previously created dirs. What
-about adding a short comment explaining that?
+> +	}
+> +
+>  	msg = parse_opts(argc, argv, NULL, NULL);
+>  	if (msg != NULL)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> -- 
+> 1.8.3.1.448.gfb7dfaa
+> 
 
 -- 
 Cyril Hrubis
