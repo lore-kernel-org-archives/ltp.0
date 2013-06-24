@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ceh@ti.com>) id 1Ur52Q-0005ni-5v
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 11:34:26 +0000
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ur52O-0005wO-Ab
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 11:34:26 +0000
-Message-ID: <51C82EB9.1060107@ti.com>
-Date: Mon, 24 Jun 2013 07:34:17 -0400
-From: Carlos Hernandez <ceh@ti.com>
+	(envelope-from <caspar@casparzhang.com>) id 1Ur9EN-0004JM-Sw
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 16:03:03 +0000
+Received: from mail-pb0-f48.google.com ([209.85.160.48])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Ur9EL-0005cj-Te
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 16:03:03 +0000
+Received: by mail-pb0-f48.google.com with SMTP id ma3so11099209pbc.7
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 24 Jun 2013 09:02:56 -0700 (PDT)
+Message-ID: <51C86DBD.7060205@casparzhang.com>
+Date: Tue, 25 Jun 2013 00:03:09 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
-In-Reply-To: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
-Subject: Re: [LTP] How to run only a specific test series like for example
- IPC?
+References: <1372086727-27722-1-git-send-email-eguan@redhat.com>
+	<1372088983-29843-1-git-send-email-eguan@redhat.com>
+In-Reply-To: <1372088983-29843-1-git-send-email-eguan@redhat.com>
+Subject: Re: [LTP] [PATCH v2] dup2/dup205: close all fds before tst_rmdir()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,76 +28,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4092609717389573397=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: sedat.dilek@gmail.com
+To: Eryu Guan <eguan@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============4092609717389573397==
-Content-Type: multipart/alternative;
-	boundary="------------090808000909080100090201"
-
---------------090808000909080100090201
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 06/23/2013 09:09 AM, Sedat Dilek wrote:
-> Hi,
+On 06/24/2013 11:49 PM, Eryu Guan wrote:
+> Close all open fds before calling tst_rmdir() to avoid TWARN caused by
+> NFS silly rename when removing temp dir.
 >
-> I wanted to only run the IPC tests as I have troubles with IPC(-MSG)
-> in Linux-Next.
+> dup205      0  TWARN  :  tst_rmdir: rmobj(/mnt/nfs/dupbA5J5i) failed: unlink(/mnt/nfs/dupbA5J5i/.nfs0000000000f4805b00000005) failed; errno=16: Device or resource busy
 >
-> This is what I did...
+> Signed-off-by: Eryu Guan <eguan@redhat.com>
+
+Looks good to me.
+
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
+
+> ---
+> v2: Correct commit message.
 >
-> root# cd/opt/ltp/
+>   testcases/kernel/syscalls/dup2/dup205.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> root# ./runltp ./runtest/ipc
+> diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
+> index c728fcc..0528beb 100644
+> --- a/testcases/kernel/syscalls/dup2/dup205.c
+> +++ b/testcases/kernel/syscalls/dup2/dup205.c
+> @@ -112,8 +112,8 @@ int main(int ac, char *av[])
+>   			}
+>   		}
+>   		unlink(pfilname);
+> -		if (ifile > 0)
+> -			close(fildes[ifile - 1]);
+> +		for (ifile = fildes[0]; ifile < min + 10; ifile++)
+> +			close(fildes[ifile]);
+>   		if (local_flag == PASSED) {
+>   			tst_resm(TPASS, "Test passed.");
+>   		} else {
 >
-> ...is that the correct way? Wrong?
-./runltp -f ipc  should work
 
---------------090808000909080100090201
-Content-Type: text/html; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">On 06/23/2013 09:09 AM, Sedat Dilek
-      wrote:<br>
-    </div>
-    <blockquote
-cite="mid:CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com"
-      type="cite">
-      <pre wrap="">Hi,
-
-I wanted to only run the IPC tests as I have troubles with IPC(-MSG)
-in Linux-Next.
-
-This is what I did...
-
-root# cd <i class="moz-txt-slash"><span class="moz-txt-tag">/</span>opt/ltp<span class="moz-txt-tag">/</span></i>
-
-root# ./runltp ./runtest/ipc
-
-...is that the correct way? Wrong?
-</pre>
-    </blockquote>
-    ./runltp -f ipc&nbsp; should work<br>
-  </body>
-</html>
-
---------------090808000909080100090201--
-
-
---===============4092609717389573397==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
@@ -102,16 +76,7 @@ This SF.net email is sponsored by Windows:
 Build for Windows Store.
 
 http://p.sf.net/sfu/windows-dev2dev
---===============4092609717389573397==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4092609717389573397==--
-
