@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UrTnm-0007Ua-Ph
-	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 14:00:58 +0000
-Received: from relay1.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 4F1FBA6D5D
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 25 Jun 2013 16:00:52 +0200 (CEST)
-Date: Tue, 25 Jun 2013 16:02:28 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ur8u7-0003w5-Dl
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:42:07 +0000
+Date: Mon, 24 Jun 2013 17:43:33 +0200
 From: chrubis@suse.cz
-Message-ID: <20130625140228.GJ31268@rei>
+Message-ID: <20130624154333.GB2808@rei>
+References: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
+	<201306221415.17130.vapier@gentoo.org> <20130624115635.GB1638@rei>
+	<201306241136.07004.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] LTP Commits mailing list
+In-Reply-To: <201306241136.07004.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] tst_module: create new library functions for
+ kernel modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,15 +27,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, ltp-list@lists.sourceforge.net, vasily.isaenko@oracle.com
 
 Hi!
-It looks like git commit hook that sends emails to the ltp commits
-mailing list stopped working some time ago (I suspect the repo
-migrations on sf net caused this).
+> > > use a proper header instead.  extern func decls only leads to bit rot and
+> > > hard to debug crashes.
+> > 
+> > This is internal only API for the LTP lib that does not have a proper
+> > header (I was too lazy to create a header for the function that is used
+> > only once). I can fix that if desired.
+> 
+> if it's meant as an internal-to-the-lib func, then we should start a
+> header to hold that kind of code.  we can easily enforce it too by
+> having the lib Makefile define some macro that the header will check
+> and error out if it isn't present.
 
-So the question is was this usefull? And should I invest time into
-fixing this?
+Agreed, I will fix that ASAP.
 
 -- 
 Cyril Hrubis
