@@ -1,32 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UkCPs-0005Xr-Us
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 12:02:13 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UkCPr-0004Ei-Ss
-	for ltp-list@lists.sourceforge.net; Wed, 05 Jun 2013 12:02:12 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r55C23a6029886
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Jun 2013 12:02:03 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r55C24mJ001670
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Jun 2013 12:02:05 GMT
-Received: from abhmt109.oracle.com (abhmt109.oracle.com [141.146.116.61])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r55C24Hv026350
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Jun 2013 12:02:04 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  5 Jun 2013 16:01:14 +0400
-Message-Id: <1370433674-6838-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] configure: add configure checks to compile kernel
-	modules
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ur7Cr-0004hE-G6
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 13:53:21 +0000
+Date: Mon, 24 Jun 2013 15:54:47 +0200
+From: chrubis@suse.cz
+Message-ID: <20130624135447.GA2557@rei>
+References: <016bca5a3f28e308234e5b1028a831e5fa50fda6.1371736603.git.jstancek@redhat.com>
+	<20130624132249.GC1638@rei>
+	<2114792229.1514957.1372081597213.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2114792229.1514957.1372081597213.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH v2] new testcase: kmsg01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,142 +23,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-There're new configure options added to tune modules building process.
-New m4 function tries to determine if kernel-devel package is available
-and sets makefile's variables (WITH_MODULES, ...) accordingly.
+Hi!
+> > > +static void test_seek(void)
+> > > +{
+> > > +	int k, j = NUM_READ_RETRY, fd;
+> > > +	char msg[MAX_MSGSIZE];
+> > > +	unsigned long seqno[2];
+> > > +
+> > > +	/* 1. read() after SEEK_SET 0 returns same (first) message */
+> > > +	tst_resm(TINFO, "TEST: seek SEEK_SET 0");
+> > > +
+> > > +	fd = open("/dev/kmsg", O_RDONLY | O_NONBLOCK);
+> > > +	if (fd < 0)
+> > > +		tst_brkm(TBROK|TERRNO, cleanup,	"failed to open /dev/kmsg");
+> > > +
+> > > +	while (j) {
+> > > +		for (k = 0; k < 2; k++) {
+> > > +			TEST(read(fd, msg, sizeof(msg)));
+> > > +			if (TEST_RETURN == -1) {
+> > > +				if (errno == EPIPE)
+> > > +					break;
+> > > +				else
+> > > +					tst_brkm(TBROK|TTERRNO, cleanup,
+> > > +						"failed to read /dev/kmsg");
+> > > +			}
+> > > +			if (get_msg_fields(msg, NULL, &seqno[k]) != 0)
+> > > +				tst_resm(TFAIL, "failed to parse seqid: %s",
+> > > +					msg);
+> > > +			if (k == 0)
+> > > +				if (lseek(fd, 0, SEEK_SET) == -1)
+> > > +					tst_resm(TFAIL|TERRNO,
+> > > +						"SEEK_SET 0 failed");
+> > > +		}
+> > > +
+> > > +		if (TEST_RETURN != -1)
+> > > +			break;
+> > > +
+> > > +		/* give a second to whoever overwrote first message to finish */
+> > > +		sleep(1);
+> > > +		j--;
+> > > +
+> > > +		/* read returned EPIPE, reopen fd and try again */
+> > > +		SAFE_CLOSE(cleanup, fd);
+> > > +		fd = open("/dev/kmsg", O_RDONLY | O_NONBLOCK);
+> > > +		if (fd < 0)
+> > > +			tst_brkm(TBROK|TERRNO, cleanup,
+> > > +				"failed to open /dev/kmsg");
+> > 
+> > I guess that the comment says something different than the code, there
+> > is no read involved here.
+> 
+> Read mentioned here is the one at the beginning of for loop. This line can only
+> be reached if that read returned EPIPE. Other failures will end with TBROK.
+> If read succeeded this line is never reached, "if (TEST_RETURN != -1)" above
+> will break the while loop.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- configure.ac                 |    1 +
- include/mk/config.mk.default |    4 +++
- include/mk/config.mk.in      |    4 +++
- m4/ltp-kernel_devel.m4       |   61 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 70 insertions(+), 0 deletions(-)
- create mode 100644 m4/ltp-kernel_devel.m4
+Ah it could be read as imperative sentence too, which confused me
+slightly.
 
-diff --git a/configure.ac b/configure.ac
-index f217f50..f0fc6b0 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -167,5 +167,6 @@ LTP_CHECK_MADVISE
- LTP_CHECK_ACL_SUPPORT
- LTP_CHECK_FS_IOC_FLAGS
- LTP_CHECK_MREMAP_FIXED
-+LTP_CHECK_KERNEL_DEVEL
- 
- AC_OUTPUT
-diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
-index bd364a6..8eec868 100644
---- a/include/mk/config.mk.default
-+++ b/include/mk/config.mk.default
-@@ -73,4 +73,8 @@ LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
- 
-+KERNEL_RELEASE		:=
-+KERNEL_DEVEL_DIR	:=
-+WITH_MODULES		:= no
-+
- export datarootdir includedir libdir mandir prefix
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index b835c86..4edd22a 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -75,6 +75,10 @@ LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- CXXFLAGS		+= $(DEBUG_CXXFLAGS) $(OPT_CXXFLAGS) $(WCXXFLAGS)
- 
-+KERNEL_RELEASE		:= @KERNEL_RELEASE@
-+KERNEL_DEVEL_DIR	:= @KERNEL_DEVEL_DIR@
-+WITH_MODULES		:= @WITH_MODULES@
-+
- ifeq ($(strip $(prefix)),)
- $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
- endif
-diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
-new file mode 100644
-index 0000000..f58ee2e
---- /dev/null
-+++ b/m4/ltp-kernel_devel.m4
-@@ -0,0 +1,61 @@
-+dnl Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+dnl
-+dnl This program is free software; you can redistribute it and/or
-+dnl modify it under the terms of the GNU General Public License as
-+dnl published by the Free Software Foundation.
-+dnl
-+dnl This program is distributed in the hope that it would be useful,
-+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+dnl GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program; if not, write the Free Software Foundation,
-+dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+dnl
-+dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_KERNEL_DEVEL
-+dnl ----------------------------
-+dnl Building kernel modules
-+dnl requires kernel-devel installed
-+dnl
-+
-+AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],
-+[
-+AC_ARG_WITH(
-+	    [kernel-release],
-+	    [AC_HELP_STRING([--with-kernel-release=RELEASE],
-+			    [specify the kernel release to build modules for])],
-+	    [KERNEL_RELEASE="${withval}"],
-+	    [KERNEL_RELEASE=`uname -r`])
-+
-+AC_SUBST(KERNEL_RELEASE)
-+
-+AC_ARG_WITH([kernel-devel],
-+	    [AC_HELP_STRING([--with-kernel-devel=DIR],
-+			    [specify path to kernel-devel directory])],
-+	    [KERNEL_DEVEL_DIR="${withval}"],
-+	    [KERNEL_DEVEL_DIR="/lib/modules/$KERNEL_RELEASE/build"])
-+
-+AC_SUBST(KERNEL_DEVEL_DIR)
-+
-+if test -f "$KERNEL_DEVEL_DIR/Makefile"; then
-+	WITH_MODULES="yes"
-+else
-+	WITH_MODULES="no"
-+fi
-+
-+AC_MSG_RESULT([checking for kernel-devel... $WITH_MODULES])
-+
-+AC_ARG_WITH(
-+	    [modules],
-+	    [AC_HELP_STRING([--without-modules],
-+			    [disable auto-building kernel modules])],
-+			    [WITH_MODULES="no"],
-+			    [])
-+
-+AC_SUBST(WITH_MODULES)
-+])
+I guess that "read has returned EPIPE" would be clearer...
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
