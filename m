@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UjhPX-0001H5-N4
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 02:55:47 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eguan@redhat.com>) id 1Ur8ur-0003zC-F6
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:42:53 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UjhPW-0008TI-Ce
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 02:55:47 +0000
-Message-ID: <51AD568E.7090402@cn.fujitsu.com>
-Date: Tue, 04 Jun 2013 10:53:02 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	id 1Ur8uj-0002Se-Cp
+	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:42:53 +0000
+Date: Mon, 24 Jun 2013 23:42:33 +0800
+From: Eryu Guan <eguan@redhat.com>
+Message-ID: <20130624154233.GO2542@dhcp-13-216.nay.redhat.com>
+References: <1372086727-27722-1-git-send-email-eguan@redhat.com>
+	<201306241134.32158.vapier@gentoo.org>
 MIME-Version: 1.0
-References: <51AD55F0.8030402@cn.fujitsu.com>
-In-Reply-To: <51AD55F0.8030402@cn.fujitsu.com>
-Subject: [LTP] [PATCH v2] shmget/shmget01.c: attach SHM_NORESERVE to shmflg
+Content-Disposition: inline
+In-Reply-To: <201306241134.32158.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] dup2/dup205: close all fds before tst_rmdir()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +29,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
+
+On Mon, Jun 24, 2013 at 11:34:31AM -0400, Mike Frysinger wrote:
+> On Monday 24 June 2013 11:12:07 Eryu Guan wrote:
+> > Close all open fds before calling tst_rmdir() to avoid TWARN caused by
+> > NFS silly rename when removing temp dir caused by NFS silly rename.
+> 
+> "NFS silly rename" duplicated by accident ?
+
+Oh, forgot to remove one "NFS silly rename" when editing commit
+message.. Will send v2. Thanks for the review!
+
+Eryu Guan
+> 
+> code looks fine to me
+> -mike
 
 
-Add SHM_NORESERVE to shmflg to test
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ipc/shmget/shmget01.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget01.c b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-index aa2c78b..a4ac172 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-@@ -62,7 +62,8 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
-
--		TEST(shmget(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW));
-+		TEST(shmget(shmkey, SHM_SIZE,
-+			    IPC_CREAT | IPC_EXCL | SHM_RW | SHM_NORESERVE));
-
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL, "%s call failed - errno = %d : %s",
--- 
-1.7.1
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
