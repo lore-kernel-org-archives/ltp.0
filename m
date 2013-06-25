@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ur8u7-0003w5-Dl
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:42:07 +0000
-Date: Mon, 24 Jun 2013 17:43:33 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UrWhO-00074n-8M
+	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 17:06:36 +0000
+Date: Tue, 25 Jun 2013 19:08:02 +0200
 From: chrubis@suse.cz
-Message-ID: <20130624154333.GB2808@rei>
-References: <1371729277-12450-1-git-send-email-alexey.kodanev@oracle.com>
-	<201306221415.17130.vapier@gentoo.org> <20130624115635.GB1638@rei>
-	<201306241136.07004.vapier@gentoo.org>
+Message-ID: <20130625170802.GA29135@rei>
+References: <CA+icZUXjY1QAWk80FqnENt=S1H+x+MaREjoHMuOmoq-QMnT3+A@mail.gmail.com>
+	<201306251229.46574.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201306241136.07004.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] tst_module: create new library functions for
- kernel modules
+In-Reply-To: <201306251229.46574.vapier@gentoo.org>
+Subject: Re: [LTP] [ltp-full-20130503] runltp and dash-bug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,22 +26,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mike Frysinger <vapier@gentoo.org>
-Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, ltp-list@lists.sourceforge.net, vasily.isaenko@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > > use a proper header instead.  extern func decls only leads to bit rot and
-> > > hard to debug crashes.
-> > 
-> > This is internal only API for the LTP lib that does not have a proper
-> > header (I was too lazy to create a header for the function that is used
-> > only once). I can fix that if desired.
-> 
-> if it's meant as an internal-to-the-lib func, then we should start a
-> header to hold that kind of code.  we can easily enforce it too by
-> having the lib Makefile define some macro that the header will check
-> and error out if it isn't present.
+> if the output really should be silenced, it should be changed to:
+> 	>/dev/null 2>&1
+> rather than just deleting it
 
-Agreed, I will fix that ASAP.
+It is better withtout the redirections. The runltp output is a few lines
+longer but it will include output from losetup and mkfs if something has
+failed and withtout that debugging is close to impossible.
 
 -- 
 Cyril Hrubis
