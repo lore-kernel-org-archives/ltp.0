@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UmNOQ-0004Xc-KA
-	for ltp-list@lists.sourceforge.net; Tue, 11 Jun 2013 12:09:42 +0000
-Date: Tue, 11 Jun 2013 14:11:06 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UrSds-00005E-KD
+	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 12:46:40 +0000
+Date: Tue, 25 Jun 2013 14:48:04 +0200
 From: chrubis@suse.cz
-Message-ID: <20130611121106.GA8061@rei>
-References: <1370433977-6944-1-git-send-email-alexey.kodanev@oracle.com>
-	<271133424.4337328.1370446643439.JavaMail.root@redhat.com>
-	<20130605155415.GA1059@rei> <20130606110129.GB23876@rei>
-	<51B706F8.9070303@oracle.com>
+Message-ID: <20130625124803.GC31268@rei>
+References: <CA+icZUXJ_PAUPTrJqF013yowkpDgGtrOgnTnDy0Qj_iNCokorA@mail.gmail.com>
+	<20130624115313.GA1638@rei>
+	<CA+icZUXgSW5Ha8ZQSepZXQzFx35nrR96AQ7SZun5zRrHFN_j-w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51B706F8.9070303@oracle.com>
-Subject: Re: [LTP] [PATCH] fw_load: new test of device firmware loading
+In-Reply-To: <CA+icZUXgSW5Ha8ZQSepZXQzFx35nrR96AQ7SZun5zRrHFN_j-w@mail.gmail.com>
+Subject: Re: [LTP] How to run only a specific test series like for example
+ IPC?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,40 +27,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> Right, we should at least limit the module build to kernel versions that
-> >> are known to work. In this particular case I would limit it to 3.7+
-> > Or even better to be both forward and backward compatible, we should not
-> > stop the build when kernel module has failed to build. We should carry
-> > on with the build, install etc. and return TCONF when the particula test
-> > was called.
+> > There are certain testcases that needs a separate filesystem partition
+> > to play with, if you don't pass physical disk partition to the runtest
+> > script a loopback device is created, formatted and mounted.
 > >
-> As I understand from the last comment, userspace test should check 
-> availability
-> of module.ko. If it didn't find the module, the test must return TCONF,
-> further, no need to check modules build against kernel version. Is it 
-> correct?
+> >> 10240+0 records in
+> >> 10240+0 records out
+> >> 10240000 bytes (10 MB) copied, 0.260004 s, 39.4 MB/s
+> >> ^C
+> >>
+> >> root# dmesg | tail
+> >>
+> >> [   78.095907] EXT4-fs (loop1): VFS: Can't find ext4 filesystem <--- ???
+> >
+> > This simply looks like the 10MB image is not enough for the ext4 journal
+> > for some reason.
+> >
+> > Try following patch that increases the size to 100MB.
+> >
+> > diff --git a/runltp b/runltp
+> > index a8bf404..7955f44 100755
+> > --- a/runltp
+> > +++ b/runltp
+> > @@ -984,7 +984,7 @@ main()
+> >  create_block()
+> >  {
+> >      #create a block device with ext4 filesystem.
+> > -    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240 &>/dev/null
+> > +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=102400 &>/dev/null
+> >      if [ $? -ne 0 ]; then
+> >          echo "Failed to create loopback device image, please check disk space and re-run"
+> >          return 1
+> > --
+> 
+> Hmm, that did not help.
 
-The insmod or modprobe will return error when you try to insert kernel
-module build against different kerenel (i.e. version magic is
-different).
+What was the error message, same as previous?
 
-So I would do the logick as:
+> How much disc-space someone need on the partition where LTP resides
+> (where the tests are performed)?
 
-1. Is there foo.ko?
-   
-   if not -> module wasn't build -> TCONF
+Not much, I do not know the precise number but about gigabyte should be
+enough (and far less when you omit aio and fs stress tests).
 
-2. Try to insmod/modprobe module
+> $ LANG=C LC_ALL=C df -T
+> Filesystem     Type     1K-blocks      Used Available Use% Mounted on
+> rootfs         rootfs    17753424  12825524   4003024  77% /
+> udev           devtmpfs   1960968         4   1960964   1% /dev
+> tmpfs          tmpfs       788020       888    787132   1% /run
+> /dev/sda2      fuseblk  465546236 107358584 358187652  24% /host
+> /dev/loop0     ext4      17753424  12825524   4003024  77% /
+> none           tmpfs         5120         0      5120   0% /run/lock
+> none           tmpfs      1970048       156   1969892   1% /run/shm
+> 
+> Can I use a different partition where I have more disc-space available?
 
-   if failure -> most likely module not compatible with kernel -> TBROK
-
-3. do actual test
-
-...
+LTP uses TMPDIR env variable for that (and defaults to /tmp/ when TMPDIR
+is not set).
 
 -- 
 Cyril Hrubis
