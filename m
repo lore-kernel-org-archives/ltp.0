@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Us2nH-0005oU-GE
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 03:22:47 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Us2nF-0000MK-KJ
-	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 03:22:47 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r5R3MW3x015394
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Jun 2013 11:22:38 +0800
-Message-ID: <51CBAFB7.8000508@cn.fujitsu.com>
-Date: Thu, 27 Jun 2013 11:21:27 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH] mmap/mmap14.c: new case to test MAP_LOCKED of mmap
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1UrO01-0002y2-Ml
+	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 07:49:13 +0000
+Received: from mail-pb0-f44.google.com ([209.85.160.44])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UrNzz-0001OH-AK
+	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 07:49:13 +0000
+Received: by mail-pb0-f44.google.com with SMTP id uo1so12233313pbc.17
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 25 Jun 2013 00:49:05 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Tue, 25 Jun 2013 15:48:52 +0800
+Message-Id: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the
+	test case after timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,178 +25,281 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: LTP list <ltp-list@lists.sourceforge.net>
 
+In some old machines or guests, the system may not have the ability to set up
+all the connections, e.g. 4000 tcp connections, quickly. Then the system will
+take lots of time to try setup the connections or just huang there.
 
+I think we should just kill all the connections after testing timeout, no
+matter how many connections we have setup. So mv the connecting setup while
+loop into whatchdog while loop.
 
-Create test case for MAP_LOCKED of mmap.
-
-Verify pages are locked by checking section "VmLck" of /proc/<pid>/status.
-
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- runtest/syscalls                        |   1 +
- testcases/kernel/syscalls/mmap/mmap14.c | 133 ++++++++++++++++++++++++++++++++
- 2 files changed, 134 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap14.c
+ .../stress/tcp/multi-diffip/tcp4-multi-diffip01    | 62 ++++++++++-----------
+ .../stress/tcp/multi-diffnic/tcp4-multi-diffnic01  | 28 +++++-----
+ .../tcp/multi-diffport/tcp4-multi-diffport01       | 64 +++++++++++-----------
+ .../tcp/multi-sameport/tcp4-multi-sameport01       | 33 +++++------
+ 4 files changed, 94 insertions(+), 93 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index eba0200..4865375 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -562,6 +562,7 @@ mmap07 mmap07
- mmap08 mmap08
- mmap09 mmap09
- mmap13 mmap13
-+mmap14 mmap14
- # test is broken, mask it for now.
- #mmap11 mmap11 -i 30000
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap14.c b/testcases/kernel/syscalls/mmap/mmap14.c
-new file mode 100644
-index 0000000..d279df0
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap14.c
-@@ -0,0 +1,133 @@
-+/*
-+ * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ */
+diff --git a/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01 b/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
+index 8b9652c..58fdde7 100644
+--- a/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
++++ b/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
+@@ -389,41 +389,41 @@ done
+ server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+ rm -f $info_file
+ 
+-# Make connections
+ connection_num=0
+-while [ $connection_num -lt $ipaddr_pair_num ]; do
+-    # IP addresses
+-    x=`expr $connection_num \/ 255 % 255`
+-    y=`expr $connection_num % 255`
+-
+-    case $IP_VER in
+-	4)
+-	lhost_addr="10.${x}.${y}.2"
+-	;;
+-
+-	6)
+-	hex_x=`printf %x $x`
+-	hex_y=`printf %x $y`
+-	lhost_addr="fd00:1:${hex_x}:${hex_y}::2"
+-	;;
+-    esac
+-
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run any client"
+-		exit 1
+-	else
+-	    tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	fi
+-	break
+-    fi
+-    connection_num=`expr $connection_num + 1`
+-done
+-
+ # Watch the TCP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	# Make connections
++	if [ $connection_num -lt $ipaddr_pair_num ]; then
++		# IP addresses
++		x=`expr $connection_num \/ 255 % 255`
++		y=`expr $connection_num % 255`
 +
-+/*
-+ * Test Description:
-+ *  Verify MAP_LOCKED works fine.
-+ *  "Lock the pages of the mapped region into memory in the manner of mlock(2)."
-+ *
-+ * Expected Result:
-+ *  mmap() should succeed returning the address of the mapped region,
-+ *  and this region should be locked into memory.
-+ */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/types.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <stdint.h>
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+#include <sys/shm.h>
++		case $IP_VER in
++			4)
++				lhost_addr="10.${x}.${y}.2"
++				;;
 +
-+#include "test.h"
-+#include "usctest.h"
++			6)
++				hex_x=`printf %x $x`
++				hex_y=`printf %x $y`
++				lhost_addr="fd00:1:${hex_x}:${hex_y}::2"
++				;;
++		esac
 +
-+#define TEMPFILE        "mmapfile"
-+#define MMAPSIZE        (1UL<<20)
-+#define LINELEN         256
-+
-+char *TCID = "mmap14";
-+int TST_TOTAL = 1;
-+
-+static char *addr;
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	int ret;
-+	int lock_sz;
-+	char *msg;
-+	char line[LINELEN];
-+	FILE *fstatus = NULL;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
-+		tst_count = 0;
-+
-+		addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
-+			    MAP_FILE | MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS,
-+			    -1, 0);
-+
-+		if (addr == MAP_FAILED) {
-+			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
-+			continue;
-+		}
-+
-+		if (STD_FUNCTIONAL_TEST) {
-+
-+			fstatus = fopen("/proc/self/status", "r");
-+			if (fstatus == NULL)
-+				tst_brkm(TFAIL | TERRNO, NULL, "Open dev "
-+							       "status failed");
-+
-+			while (fgets(line, LINELEN, fstatus) != NULL)
-+				if (strstr(line, "VmLck") != NULL)
-+					break;
-+
-+			ret = sscanf(line, "%*[^0-9]%d%*[^0-9]", &lock_sz);
-+			if (ret != 1)
-+				tst_brkm(TFAIL | TERRNO, NULL, "Get lock "
-+							       "size failed");
-+
-+			if (lock_sz == MMAPSIZE / 1024)
-+				tst_resm(TPASS, "Functionality of mmap() "
-+						"successful");
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port' ; echo $?'`
++		if [ $ret -ne 0 ]; then
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run any client"
++				exit 1
 +			else
-+				tst_resm(TFAIL, "Pages are not locked");
++				tst_resm TINFO "$connection_num seems the maximum number of the client"
++			fi
++			break
++		fi
++		connection_num=`expr $connection_num + 1`
++	fi
 +
-+		} else {
-+			tst_resm(TPASS, "call succeeded");
-+		}
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+ 
+diff --git a/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01 b/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
+index dc9e784..6a5a72c 100644
+--- a/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
++++ b/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
+@@ -340,24 +340,24 @@ done
+ server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+ rm -f $info_file
+ 
+-# Main loop
+ connection_num=0
+-while [ $connection_num -lt $link_total ]; do
+-    field=`expr $connection_num + 1`
+-    lhost_addr=`echo $lhost_addrs | cut -d ' ' -f $field`
+-
+-    # Run a client
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port'; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	tst_resm TFAIL "Failed to run client on Link${connection_num}"
+-	exit 1
+-    fi
+-    connection_num=`expr $connection_num + 1`
+-done
+-
+ # Watch the TCP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	# Main loop
++	if [ $connection_num -lt $link_total ]; then
++		field=`expr $connection_num + 1`
++		lhost_addr=`echo $lhost_addrs | cut -d ' ' -f $field`
 +
-+		fclose(fstatus);
-+		if (munmap(addr, MMAPSIZE) != 0)
-+			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
-+	}
++		# Run a client
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port'; echo $?'`
++		if [ $ret -ne 0 ]; then
++			tst_resm TFAIL "Failed to run client on Link${connection_num}"
++			exit 1
++		fi
++		connection_num=`expr $connection_num + 1`
++	fi
 +
-+	cleanup();
-+	tst_exit();
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+ 
+diff --git a/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01 b/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+index e260d35..1b9f342 100644
+--- a/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
++++ b/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+@@ -320,44 +320,44 @@ fi
+ start_port=`echo $portbundle | cut -f 1 -d '-'`
+ end_port=`echo $portbundle | cut -f 2 -d '-'`
+ 
+-# Making connections
+ connection_num=0
+ current_port=$start_port
+-while [ $current_port -le $end_port ]; do
+-    # Run a server
+-    ns-tcpserver -b -f $IP_VER -p $current_port
+-    if [ $? -ne 0 ]; then
+-	# Failed to start no server
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run a server"
+-	    exit 1
+-	fi
+-	# Failed to start a server
+-	tst_resm TINFO "$connection_num seems the maximum number of the server"
+-	break
+-    fi
+-
+-    # Run a clinet
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $current_port' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	# Failed to start any client
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run any client."
+-	    exit 1
+-	fi
+-	# Failed to start a client
+-	tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	break
+-    fi
+-
+-    current_port=`expr $current_port + 1`
+-    connection_num=`expr $connection_num + 1`
+-done
+-
+ 
+ # Watch the TCP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	# Making connections
++	if [ $current_port -le $end_port ]; then
++		# Run a server
++		ns-tcpserver -b -f $IP_VER -p $current_port
++		if [ $? -ne 0 ]; then
++			# Failed to start no server
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run a server"
++				exit 1
++			fi
++			# Failed to start a server
++			tst_resm TINFO "$connection_num seems the maximum number of the server"
++			break
++		fi
 +
-+}
++		# Run a clinet
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $current_port' ; echo $?'`
++		if [ $ret -ne 0 ]; then
++			# Failed to start any client
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run any client."
++				exit 1
++			fi
++			# Failed to start a client
++			tst_resm TINFO "$connection_num seems the maximum number of the client"
++			break
++		fi
 +
-+static void setup(void)
-+{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
++		current_port=`expr $current_port + 1`
++		connection_num=`expr $connection_num + 1`
++	fi
 +
-+	TEST_PAUSE;
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+     if [ $elapse_epoc -ge $NS_DURATION ]; then
+diff --git a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01 b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+index aff2481..206a0d1 100644
+--- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
++++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+@@ -334,27 +334,28 @@ done
+ server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+ rm -f $info_file
+ 
+-# Making connections
+ connection_num=0
+-while [ $connection_num -lt $CONNECTION_TOTAL ]; do
+-    # Run a client
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	# Failed to start any client
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run any client"
+-	    exit 1
+-	fi
+-	# Failed to start a client
+-	tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	break
+-    fi
+-    connection_num=`expr $connection_num + 1`
+-done
+ 
+ # Watch the TCP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	# Making connections
++	if [ $connection_num -lt $CONNECTION_TOTAL ]; then
++		# Run a client
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port' ; echo $?'`
++		if [ $ret -ne 0 ]; then
++			# Failed to start any client
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run any client"
++				exit 1
++			fi
++			# Failed to start a client
++			tst_resm TINFO "$connection_num seems the maximum number of the client"
++			break
++		fi
++		connection_num=`expr $connection_num + 1`
++	fi
 +
-+	tst_tmpdir();
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	tst_rmdir();
-+}
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+ 
 -- 
-1.8.1
+1.8.1.4
+
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
