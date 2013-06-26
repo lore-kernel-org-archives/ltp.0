@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1UjhN1-0001Av-T6
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 02:53:11 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UjhMz-0005Cu-Lw
-	for ltp-list@lists.sourceforge.net; Tue, 04 Jun 2013 02:53:11 +0000
-Message-ID: <51AD55F0.8030402@cn.fujitsu.com>
-Date: Tue, 04 Jun 2013 10:50:24 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Urq3j-0007lc-Ek
+	for ltp-list@lists.sourceforge.net; Wed, 26 Jun 2013 13:46:55 +0000
+Date: Wed, 26 Jun 2013 15:48:23 +0200
+From: chrubis@suse.cz
+Message-ID: <20130626134823.GD16146@rei.suse.cz>
+References: <1372251457-25602-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130626132135.GA16146@rei.suse.cz> <51CAEFD8.8000107@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH v2] shmget/shmget01.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <51CAEFD8.8000107@oracle.com>
+Subject: Re: [LTP] [PATCH] lib: safe_macros: add SAFE_EXECVP()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,187 +25,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-1. Remove useless comments
+Hi!
+> > Well it is not execvp as the code does vfork + execvp, which is
+> > confusing as the rest of the functions in this header does only what the
+> > original function does + error checks. We should rather name this as
+> > tst_run_cmd() or so.
+> So, leave it in safe_macros, but named it as tst_run_cmd, right?
 
-2. Revise code to follow ltp-code-style
+I would start a separate source file under lib and add either separate
+header or add it to the test.h (as rest of the tst_interface does).
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ipc/shmget/shmget01.c |   86 ++++++-----------------
- 1 files changed, 21 insertions(+), 65 deletions(-)
+> >> +void safe_execvp(const char *file, const int lineno, void (cleanup_fn)(void),
+> >> +                 char *const argv[])
+> >> +{
+> >> +	if (argv == NULL || ARRAY_SIZE(argv) == 0) {
+> >> +		tst_brkm(TBROK, cleanup_fn,
+> >> +			"argument list is empty at %s:%d", file, lineno);
+> >> +	}
+> > I do not think that the ARRAY_SIZE() works here (there are actually two
+> > reasons for that). You cannot create zero leght array in C as array is a
+> > pointer to memory (this is why we have NULL in C) and the second is that
+> > ARRAY_SIZE() macro works only for arrays for which sizeof() returns size
+> > of the object, if you have allocated array or pass it as a fuction
+> > argument the sizeof() has no chance of determining the object size.
+> >
+> I see, then replace it with argv[0] != NULL, right?
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget01.c b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-index 38dbee7..aa2c78b 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget01.c
-@@ -1,20 +1,19 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+Yes, if you settle for NULL-terminated array.
 
- /*
-@@ -33,27 +32,12 @@
-  *	  if doing functionality testing
-  *		stat the shared memory resource
-  *		check the size, creator pid and mode
-- *	  	if correct,
-+ *		if correct,
-  *			issue a PASS message
-  *		otherwise
-  *			issue a FAIL message
-  *	  else issue a PASS message
-  *	call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  shmget01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-  */
-
- #include "ipcshm.h"
-@@ -61,31 +45,24 @@
- char *TCID = "shmget01";
- int TST_TOTAL = 1;
-
--int shm_id_1 = -1;
-+static int shm_id_1 = -1;
-
--int main(int ac, char **av)
-+int main(int argc, char *argv[])
- {
- 	int lc;
- 	char *msg;
- 	struct shmid_ds buf;
-
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
-
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
-+	setup();
-
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
-
--		/*
--		 * Use TEST macro to make the call
--		 */
--
--		TEST(shmget(shmkey, SHM_SIZE, (IPC_CREAT | IPC_EXCL | SHM_RW)));
-+		TEST(shmget(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW));
-
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL, "%s call failed - errno = %d : %s",
-@@ -131,11 +108,10 @@ int main(int ac, char **av)
- 		/*
- 		 * clean up things in case we are looping
- 		 */
--		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1) {
-+		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1)
- 			tst_resm(TBROK, "couldn't remove shared memory");
--		} else {
-+		else
- 			shm_id_1 = -1;
--		}
- 	}
-
- 	cleanup();
-@@ -143,42 +119,22 @@ int main(int ac, char **av)
- 	tst_exit();
- }
-
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
- void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
- 	TEST_PAUSE;
-
--	/*
--	 * Create a temporary directory and cd into it.
--	 * This helps to ensure that a unique msgkey is created.
--	 * See ../lib/libipc.c for more information.
--	 */
- 	tst_tmpdir();
-
--	/* get an IPC resource key */
- 	shmkey = getipckey();
- }
-
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
- void cleanup(void)
- {
--	/* if it exists, remove the shared memory resource */
- 	rm_shm(shm_id_1);
-
- 	tst_rmdir();
-
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
--
- }
 -- 
-1.7.1
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
