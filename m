@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UrSXL-0003FQ-4I
-	for ltp-list@lists.sourceforge.net; Tue, 25 Jun 2013 12:39:55 +0000
-Date: Tue, 25 Jun 2013 14:41:23 +0200
+	(envelope-from <metan@suse.de>) id 1UsDhK-0006v8-4D
+	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 15:01:22 +0000
+Date: Thu, 27 Jun 2013 17:02:52 +0200
 From: chrubis@suse.cz
-Message-ID: <20130625124123.GB31268@rei>
-References: <1372124030-16256-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20130627150252.GA22545@rei.suse.cz>
+References: <1372344742-5138-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372124030-16256-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2] getrusage03: disable the test when kernel
- before 2.6.32
+In-Reply-To: <1372344742-5138-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v3] lib: tst_run_cmd: add tst_run_cmd() to exec
+ specified program
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,15 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Kernel commit 1f10206c is first introduced in 2.6.32, this
-> ru_maxrss behaviors will not be supported before kernel 2.6.32,
-> so disable the test when kernel version is before 2.6.32.
+> vfork() + execvp() specified program.
+> 
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  include/test.h    |    9 +++++++++
+>  lib/tst_run_cmd.c |   52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 61 insertions(+), 0 deletions(-)
+>  create mode 100644 lib/tst_run_cmd.c
 
-Pushed, thanks.
+This one looks fine to me.
+
+Let's wait a day or two to give other people chance to look at the code.
+And if nobody object I will start pushing the patches in the order.
 
 -- 
 Cyril Hrubis
