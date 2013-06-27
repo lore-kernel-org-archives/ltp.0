@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Urpsv-0006sC-9a
-	for ltp-list@lists.sourceforge.net; Wed, 26 Jun 2013 13:35:45 +0000
-Date: Wed, 26 Jun 2013 15:37:08 +0200
-From: chrubis@suse.cz
-Message-ID: <20130626133707.GC16146@rei.suse.cz>
-References: <1372252361-26179-1-git-send-email-alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UsF0x-0006yY-8m
+	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 16:25:43 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UsF0v-000539-5u
+	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 16:25:43 +0000
+Date: Thu, 27 Jun 2013 12:25:34 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <538407137.757498.1372350334215.JavaMail.root@redhat.com>
+In-Reply-To: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
+References: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1372252361-26179-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2] lib: tst_module: add library functions for
- kernel modules
+Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill
+	the	test case after timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,234 +28,324 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> There are new functions: tst_module_exists(), tst_module_load() and
-> tst_module_unload(). These functions help to load and unload kernel
-> modules in the tests.
+----- Original Message -----
+> From: "Hangbin Liu" <liuhangbin@gmail.com>
+> To: "LTP list" <ltp-list@lists.sourceforge.net>
+> Sent: Tuesday, 25 June, 2013 9:48:52 AM
+> Subject: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the	test case after timeout
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> In some old machines or guests, the system may not have the ability to set up
+> all the connections, e.g. 4000 tcp connections, quickly. Then the system will
+> take lots of time to try setup the connections or just huang there.
+> 
+> I think we should just kill all the connections after testing timeout, no
+> matter how many connections we have setup. So mv the connecting setup while
+> loop into whatchdog while loop.
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+
+Hi,
+
+correct me if I'm reading this wrong.
+
+By moving it to watchdog loop you allow only 1 connection per second,
+then taking your example number (4000), it is going to take 4000 seconds.
+Should we also lower that sleep?
+
+Regards,
+Jan
+
 > ---
->  include/tst_module.h |   68 +++++++++++++++++++++++++++++++
->  lib/tst_module.c     |  109 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 177 insertions(+), 0 deletions(-)
->  create mode 100644 include/tst_module.h
->  create mode 100644 lib/tst_module.c
+>  .../stress/tcp/multi-diffip/tcp4-multi-diffip01    | 62
+>  ++++++++++-----------
+>  .../stress/tcp/multi-diffnic/tcp4-multi-diffnic01  | 28 +++++-----
+>  .../tcp/multi-diffport/tcp4-multi-diffport01       | 64
+>  +++++++++++-----------
+>  .../tcp/multi-sameport/tcp4-multi-sameport01       | 33 +++++------
+>  4 files changed, 94 insertions(+), 93 deletions(-)
 > 
-> diff --git a/include/tst_module.h b/include/tst_module.h
-> new file mode 100644
-> index 0000000..90d7cf1
-> --- /dev/null
-> +++ b/include/tst_module.h
-> @@ -0,0 +1,68 @@
-> +/*
-> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + *
-> + * Author:
-> + * Alexey Kodanev <alexey.kodanev@oracle.com>
-> + *
-> + * These functions help to load and unload kernel modules in the tests.
-> + *
-> + * tst_module_load and tst_module_unload functions already include
-> + * tst_module_exists function, which is checking the following possible
-> + * module's locations:
-> + *
-> + * 1. Current working directory
-> + *
-> + * 2. LTP installation path (using env LTPROOT, which is usually /opt/ltp)
-> + *
-> + * 3. If tmp directory created, it'll look at the test start working directory
-> + *
-> + */
+> diff --git a/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
+> b/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
+> index 8b9652c..58fdde7 100644
+> --- a/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
+> +++ b/testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
+> @@ -389,41 +389,41 @@ done
+>  server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+>  rm -f $info_file
+>  
+> -# Make connections
+>  connection_num=0
+> -while [ $connection_num -lt $ipaddr_pair_num ]; do
+> -    # IP addresses
+> -    x=`expr $connection_num \/ 255 % 255`
+> -    y=`expr $connection_num % 255`
+> -
+> -    case $IP_VER in
+> -	4)
+> -	lhost_addr="10.${x}.${y}.2"
+> -	;;
+> -
+> -	6)
+> -	hex_x=`printf %x $x`
+> -	hex_y=`printf %x $y`
+> -	lhost_addr="fd00:1:${hex_x}:${hex_y}::2"
+> -	;;
+> -    esac
+> -
+> -    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $server_port' ; echo $?'`
+> -    if [ $ret -ne 0 ]; then
+> -	if [ $connection_num -eq 0 ]; then
+> -	    tst_resm TFAIL "Failed to run any client"
+> -		exit 1
+> -	else
+> -	    tst_resm TINFO "$connection_num seems the maximum number of the client"
+> -	fi
+> -	break
+> -    fi
+> -    connection_num=`expr $connection_num + 1`
+> -done
+> -
+>  # Watch the TCP traffic server
+>  start_epoc=`date +%s`
+>  while true ; do
+> +	# Make connections
+> +	if [ $connection_num -lt $ipaddr_pair_num ]; then
+> +		# IP addresses
+> +		x=`expr $connection_num \/ 255 % 255`
+> +		y=`expr $connection_num % 255`
 > +
-> +#ifndef TST_MODULE
-> +#define TST_MODULE
+> +		case $IP_VER in
+> +			4)
+> +				lhost_addr="10.${x}.${y}.2"
+> +				;;
 > +
-> +/*
-> + * Check module existence.
-> + *
-> + * @mod_path: if it is not NULL, then tst_module_exists places the found
-> + * module's path into the location pointed to by *mod_path. It must be freed
-> + * with free() when it is no longer needed.
-> + *
-> + * In case of failure, test'll call cleanup_fn and exit with TCONF return value.
-> + */
-> +void tst_module_exist(void (cleanup_fn)(void), const char *mod_name,
-> +	char **mod_path);
+> +			6)
+> +				hex_x=`printf %x $x`
+> +				hex_y=`printf %x $y`
+> +				lhost_addr="fd00:1:${hex_x}:${hex_y}::2"
+> +				;;
+> +		esac
 > +
-> +/*
-> + * Load a module using insmod program.
-> + *
-> + * @argv: an array of pointers to null-terminated strings that represent the
-> + * additional parameters to the module. If it is NULL, it will be ignored.
-> + *
-> + * In case of insmod failure, test will call cleanup_fn and exit with TBROK
-> + * return value.
-> + */
-> +void tst_module_load(void (cleanup_fn)(void),
-> +	const char *mod_name, char *const argv[]);
+> +		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $server_port' ; echo $?'`
+> +		if [ $ret -ne 0 ]; then
+> +			if [ $connection_num -eq 0 ]; then
+> +				tst_resm TFAIL "Failed to run any client"
+> +				exit 1
+> +			else
+> +				tst_resm TINFO "$connection_num seems the maximum number of the client"
+> +			fi
+> +			break
+> +		fi
+> +		connection_num=`expr $connection_num + 1`
+> +	fi
 > +
-> +/*
-> + * Unload a module using rmmod program. In case of failure, test will call
-> + * cleanup_fn and exit with TBROK return value.
-> + */
-> +void tst_module_unload(void (cleanup_fn)(void), const char *mod_name);
+>      current_epoc=`date +%s`
+>      elapse_epoc=`expr $current_epoc - $start_epoc`
+>  
+> diff --git a/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
+> b/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
+> index dc9e784..6a5a72c 100644
+> --- a/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
+> +++ b/testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
+> @@ -340,24 +340,24 @@ done
+>  server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+>  rm -f $info_file
+>  
+> -# Main loop
+>  connection_num=0
+> -while [ $connection_num -lt $link_total ]; do
+> -    field=`expr $connection_num + 1`
+> -    lhost_addr=`echo $lhost_addrs | cut -d ' ' -f $field`
+> -
+> -    # Run a client
+> -    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $server_port'; echo $?'`
+> -    if [ $ret -ne 0 ]; then
+> -	tst_resm TFAIL "Failed to run client on Link${connection_num}"
+> -	exit 1
+> -    fi
+> -    connection_num=`expr $connection_num + 1`
+> -done
+> -
+>  # Watch the TCP traffic server
+>  start_epoc=`date +%s`
+>  while true ; do
+> +	# Main loop
+> +	if [ $connection_num -lt $link_total ]; then
+> +		field=`expr $connection_num + 1`
+> +		lhost_addr=`echo $lhost_addrs | cut -d ' ' -f $field`
 > +
-> +#endif /* TST_MODULE */
-> diff --git a/lib/tst_module.c b/lib/tst_module.c
-> new file mode 100644
-> index 0000000..20a73bf
-> --- /dev/null
-> +++ b/lib/tst_module.c
-> @@ -0,0 +1,109 @@
-> +/*
-> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + *
-> + * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-> + *
-> + */
+> +		# Run a client
+> +		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $server_port'; echo $?'`
+> +		if [ $ret -ne 0 ]; then
+> +			tst_resm TFAIL "Failed to run client on Link${connection_num}"
+> +			exit 1
+> +		fi
+> +		connection_num=`expr $connection_num + 1`
+> +	fi
 > +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <stdarg.h>
+>      current_epoc=`date +%s`
+>      elapse_epoc=`expr $current_epoc - $start_epoc`
+>  
+> diff --git
+> a/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+> b/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+> index e260d35..1b9f342 100644
+> --- a/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+> +++ b/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+> @@ -320,44 +320,44 @@ fi
+>  start_port=`echo $portbundle | cut -f 1 -d '-'`
+>  end_port=`echo $portbundle | cut -f 2 -d '-'`
+>  
+> -# Making connections
+>  connection_num=0
+>  current_port=$start_port
+> -while [ $current_port -le $end_port ]; do
+> -    # Run a server
+> -    ns-tcpserver -b -f $IP_VER -p $current_port
+> -    if [ $? -ne 0 ]; then
+> -	# Failed to start no server
+> -	if [ $connection_num -eq 0 ]; then
+> -	    tst_resm TFAIL "Failed to run a server"
+> -	    exit 1
+> -	fi
+> -	# Failed to start a server
+> -	tst_resm TINFO "$connection_num seems the maximum number of the server"
+> -	break
+> -    fi
+> -
+> -    # Run a clinet
+> -    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $current_port' ; echo $?'`
+> -    if [ $ret -ne 0 ]; then
+> -	# Failed to start any client
+> -	if [ $connection_num -eq 0 ]; then
+> -	    tst_resm TFAIL "Failed to run any client."
+> -	    exit 1
+> -	fi
+> -	# Failed to start a client
+> -	tst_resm TINFO "$connection_num seems the maximum number of the client"
+> -	break
+> -    fi
+> -
+> -    current_port=`expr $current_port + 1`
+> -    connection_num=`expr $connection_num + 1`
+> -done
+> -
+>  
+>  # Watch the TCP traffic server
+>  start_epoc=`date +%s`
+>  while true ; do
+> +	# Making connections
+> +	if [ $current_port -le $end_port ]; then
+> +		# Run a server
+> +		ns-tcpserver -b -f $IP_VER -p $current_port
+> +		if [ $? -ne 0 ]; then
+> +			# Failed to start no server
+> +			if [ $connection_num -eq 0 ]; then
+> +				tst_resm TFAIL "Failed to run a server"
+> +				exit 1
+> +			fi
+> +			# Failed to start a server
+> +			tst_resm TINFO "$connection_num seems the maximum number of the server"
+> +			break
+> +		fi
 > +
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +#include "ltp_priv.h"
-> +#include "tst_module.h"
+> +		# Run a clinet
+> +		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $current_port' ; echo $?'`
+> +		if [ $ret -ne 0 ]; then
+> +			# Failed to start any client
+> +			if [ $connection_num -eq 0 ]; then
+> +				tst_resm TFAIL "Failed to run any client."
+> +				exit 1
+> +			fi
+> +			# Failed to start a client
+> +			tst_resm TINFO "$connection_num seems the maximum number of the client"
+> +			break
+> +		fi
 > +
-> +void tst_module_exists(void (cleanup_fn)(void),
-> +	const char *mod_name, char **mod_path)
-> +{
-> +	/* check current working directory */
-> +	if (access(mod_name, F_OK) == 0) {
-> +		if (mod_path != NULL)
-> +			*mod_path = strdup(mod_name);
-> +		return;
-> +	}
-> +	char *buf = NULL;
-> +	int err = -1;
-> +	/* check LTP installation path */
-> +	const char *ltproot = getenv("LTPROOT");
-> +	if (ltproot != NULL) {
-> +		if (asprintf(&buf, "%s/testcases/bin/%s",
-> +			ltproot, mod_name) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				"asprintf failed at %s:%d",
-> +				__FILE__, __LINE__);
-> +		}
-> +		err = access(buf, F_OK);
-> +	}
-> +	/* check start working directory */
-> +	if (err == -1 && tst_tmpdir_created()) {
-> +		if (buf != NULL)
-> +			free(buf);
-
-The if is redundant here as free() can handle NULL pointers just fine.
-
-> +		if (asprintf(&buf, "%s/%s", tst_get_startwd(),
-> +			mod_name) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				"asprintf failed at %s:%d",
-> +				__FILE__, __LINE__);
-> +		}
-> +		err = access(buf, F_OK);
-> +	}
+> +		current_port=`expr $current_port + 1`
+> +		connection_num=`expr $connection_num + 1`
+> +	fi
 > +
-> +	if (err != 0) {
-> +		if (buf != NULL)
-> +			free(buf);
-
-Here as well.
-
-> +		tst_brkm(TCONF, cleanup_fn, "Failed to find module '%s'",
-> +			mod_name);
-> +	}
+>      current_epoc=`date +%s`
+>      elapse_epoc=`expr $current_epoc - $start_epoc`
+>      if [ $elapse_epoc -ge $NS_DURATION ]; then
+> diff --git
+> a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> index aff2481..206a0d1 100644
+> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> @@ -334,27 +334,28 @@ done
+>  server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+>  rm -f $info_file
+>  
+> -# Making connections
+>  connection_num=0
+> -while [ $connection_num -lt $CONNECTION_TOTAL ]; do
+> -    # Run a client
+> -    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $server_port' ; echo $?'`
+> -    if [ $ret -ne 0 ]; then
+> -	# Failed to start any client
+> -	if [ $connection_num -eq 0 ]; then
+> -	    tst_resm TFAIL "Failed to run any client"
+> -	    exit 1
+> -	fi
+> -	# Failed to start a client
+> -	tst_resm TINFO "$connection_num seems the maximum number of the client"
+> -	break
+> -    fi
+> -    connection_num=`expr $connection_num + 1`
+> -done
+>  
+>  # Watch the TCP traffic server
+>  start_epoc=`date +%s`
+>  while true ; do
+> +	# Making connections
+> +	if [ $connection_num -lt $CONNECTION_TOTAL ]; then
+> +		# Run a client
+> +		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER
+> -S $lhost_addr -p $server_port' ; echo $?'`
+> +		if [ $ret -ne 0 ]; then
+> +			# Failed to start any client
+> +			if [ $connection_num -eq 0 ]; then
+> +				tst_resm TFAIL "Failed to run any client"
+> +				exit 1
+> +			fi
+> +			# Failed to start a client
+> +			tst_resm TINFO "$connection_num seems the maximum number of the client"
+> +			break
+> +		fi
+> +		connection_num=`expr $connection_num + 1`
+> +	fi
 > +
-> +	if (mod_path != NULL)
-> +		*mod_path = buf;
-> +	else
-> +		free(buf);
-> +}
-> +
-> +void tst_module_load(void (cleanup_fn)(void),
-> +	const char *mod_name, char *const argv[])
-> +{
-> +	char *mod_path = NULL;
-> +	tst_module_exists(cleanup_fn, mod_name, &mod_path);
-> +
-> +	/* add command name, module name and NULL to array */
-> +	static int offset = 2;
-> +	int size = offset;
-> +	if (argv != NULL)
-> +		size += ARRAY_SIZE(argv);
-
-Again same problem. If you pas array of pointers in C you have two
-options either to NULL terminate the array or pass it's size as
-parameter. I would settle for NULL terminated in this case.
-
-> +	char *mod_argv[size + 1];
-> +	mod_argv[size] = NULL;
-> +	mod_argv[0] = "insmod";
-> +	mod_argv[1] = strdupa(mod_path);
-> +	free(mod_path);
-
-Hmm what about removing the strdupa() and freeing the mod_path after the
-command is executed. If that fails the program exits anyway and whole
-malloc heap is thrown away on program exit.
-
-> +	int i;
-> +	for (i = offset; i < size; ++i)
-> +		mod_argv[i] = argv[i - offset];
-> +	SAFE_EXECVP(cleanup_fn, mod_argv);
-> +}
-> +
-> +void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
-> +{
-> +	char *mod_path = NULL;
-> +	tst_module_exists(cleanup_fn, mod_name, &mod_path);
-> +	char *const argv[] = { "rmmod", strdupa(mod_path), NULL };
-
-Same here.
-
-> +	free(mod_path);
-> +	SAFE_EXECVP(cleanup_fn, argv);
-> +}
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>      current_epoc=`date +%s`
+>      elapse_epoc=`expr $current_epoc - $start_epoc`
+>  
+> --
+> 1.8.1.4
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF.net email is sponsored by Windows:
+> 
+> Build for Windows Store.
+> 
+> http://p.sf.net/sfu/windows-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
