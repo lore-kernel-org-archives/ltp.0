@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1UoV94-0006Sm-2o
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 08:50:38 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UoV92-0008Aq-Kp
-	for ltp-list@lists.sourceforge.net; Mon, 17 Jun 2013 08:50:38 +0000
-Date: Mon, 17 Jun 2013 04:50:29 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <610555826.3622499.1371459029864.JavaMail.root@redhat.com>
-In-Reply-To: <51BECB27.2000104@oracle.com>
-References: <1371208652-25804-1-git-send-email-alexey.kodanev@oracle.com>
-	<104332332.3007867.1371217696167.JavaMail.root@redhat.com>
-	<51BB2C58.4040405@oracle.com>
-	<2134219040.3111091.1371222971601.JavaMail.root@redhat.com>
-	<51BECB27.2000104@oracle.com>
+	(envelope-from <metan@suse.de>) id 1UsE4m-0002e9-Ai
+	for ltp-list@lists.sourceforge.net; Thu, 27 Jun 2013 15:25:36 +0000
+Date: Thu, 27 Jun 2013 17:27:07 +0200
+From: chrubis@suse.cz
+Message-ID: <20130627152707.GA22757@rei.suse.cz>
+References: <1372345762-5425-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] fw_load: new test of device firmware loading
+Content-Disposition: inline
+In-Reply-To: <1372345762-5425-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v4] lib: tst_module: add library functions for
+ kernel modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,66 +22,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey kodanev <alexey.kodanev@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiYWxleGV5IGtvZGFuZXYi
-IDxhbGV4ZXkua29kYW5ldkBvcmFjbGUuY29tPgo+IFRvOiAiSmFuIFN0YW5jZWsiIDxqc3RhbmNl
-a0ByZWRoYXQuY29tPgo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQsICJ2YXNp
-bHkgaXNhZW5rbyIgPHZhc2lseS5pc2FlbmtvQG9yYWNsZS5jb20+Cj4gU2VudDogTW9uZGF5LCAx
-NyBKdW5lLCAyMDEzIDEwOjM5OjAzIEFNCj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSCB2Ml0g
-ZndfbG9hZDogbmV3IHRlc3Qgb2YgZGV2aWNlIGZpcm13YXJlIGxvYWRpbmcKPiAKPiAKPiBPbiAw
-Ni8xNC8yMDEzIDA3OjE2IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPiA+Cj4gPj4+IEkgcmFuIHRo
-aXMgb24gb2xkZXIga2VybmVsLCB3aGljaCB3b3JrZWQgZmluZSAtIGl0IHNraXBwZWQgdGhlIGJ1
-aWxkLgo+ID4+PiBUaGVuIEkgdHJpZWQgUkhFTDcgYWxwaGEsIHdoaWNoIGhhcyBtb3JlIHJlY2Vu
-dCBrZXJuZWw6IDMuMTAuMC0wLnJjNCwKPiA+Pj4gYnV0IGl0IGZhaWxlZDoKPiA+Pj4KPiA+Pj4g
-IyAuL2Z3X2xvYWQKPiA+Pj4gY3A6IGNhbm5vdCBzdGF0IOKAmC9saWIvdWRldi9ydWxlcy5kLzUw
-LWZpcm13YXJlLnJ1bGVz4oCZOiBObyBzdWNoIGZpbGUgb3IKPiA+Pj4gZGlyZWN0b3J5Cj4gPj4+
-IGZ3X2xvYWQgICAgIDEgIFRCUk9LICA6ICBGYWlsZWQgdG8gY29weQo+ID4+PiAnL2xpYi91ZGV2
-L3J1bGVzLmQvNTAtZmlybXdhcmUucnVsZXMnIHRvICcvZXRjL3VkZXYvcnVsZXMuZC8nIGF0Cj4g
-Pj4+IGZ3X2xvYWQuYzoxNjQKPiA+Pj4gZndfbG9hZCAgICAgMiAgVEJST0sgIDogIFJlbWFpbmlu
-ZyBjYXNlcyBicm9rZW4KPiA+Pj4gZndfbG9hZCAgICAgMCAgVFdBUk4gIDogIHRzdF9ybWRpcjog
-VEVTVERJUiB3YXMgTlVMTDsgbm8gcmVtb3ZhbAo+ID4+PiBhdHRlbXB0ZWQKPiA+Pj4KPiA+Pj4g
-SSdsbCBzZWUgaWYgSSBjYW4gZmluZCBvdXQgd2hhdCBoYXBwZW5lZCB0byA1MC1maXJtd2FyZS5y
-dWxlcywKPiA+Pj4gaXQgY291bGQgc29tZSBzaWRlLWVmZmVjdCBvZiBzeXN0ZW1kLgo+ID4+Pgo+
-ID4+IFdvdWxkIGl0IGJlIGJldHRlciB0byBjaGFuZ2UgZmFpbGVkIGNvcHkgY29tbWFuZCB0byBq
-dXN0IFRXQVJOLCBhbmQKPiA+PiBjb250aW51ZSB0ZXN0aW5nPyBBZnRlciB0aGF0LCB0ZXN0IHdp
-bGwgY29tcGxldGVkIHdpdGggdWRldiBmYWlsZWQKPiA+PiB0ZXN0LWNhc2VzLCBvciBpZiB1ZGV2
-IGhhcyB0aG9zZSBydWxlcyBpbiB0aGUgb3RoZXIgY29uZmlndXJhdGlvbiBmaWxlcywKPiA+PiBl
-dmVyeXRoaW5nIHdpbGwgYmUgZmluZS4KPiA+IEknZCBnbyB3aXRoIFRDT05GIG9yIHNraXAgdWRl
-diB0ZXN0Y2FzZXMgaWYgd2UgY2FuJ3QgYmUgc3VyZSB0aGF0IHVkZXYgaXMKPiA+IHJ1bm5pbmcK
-PiA+IGFuZCBwcm9wZXJseSBjb25maWd1cmVkLgo+ID4KPiA+IEknbSBhbHNvIG1pc3NpbmcgZmly
-bXdhcmUuc2gsIGluIG5ldyB1ZGV2IChub3cgbWVyZ2VkIHdpdGggc3lzdGVtZCB0cmVlKSwKPiA+
-IDUwLWZpcm13YXJlLnJ1bGVzIGZpbGUgZGVwZW5kcyBvbiBzb21lIGNvbXBpbGUgc3dpdGNoLiBF
-dmVuIHdoZW4gZW5hYmxlZAo+ID4gdGhlIHJ1bGUgbG9va3MgbGlrZSB0aGlzOgo+ID4gaHR0cDov
-L2NnaXQuZnJlZWRlc2t0b3Aub3JnL3N5c3RlbWQvc3lzdGVtZC90cmVlL3J1bGVzLzUwLWZpcm13
-YXJlLnJ1bGVzCj4gPgo+ID4gZmlybXdhcmUuc2ggYXBwZWFycyB0byBiZSBjb252ZXJ0ZWQgdG8g
-LmMgbm93Ogo+ID4gaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL3N5c3RlbWQvc3lzdGVtZC90
-cmVlL3NyYy91ZGV2L3VkZXYtYnVpbHRpbi1maXJtd2FyZS4KPiBJIHNlZSBub3csIEkgdGhpbmsg
-aXQgaXMgYmV0dGVyIHRvIHNraXAgdWRldiBpbiB0aGUgdGVzdCBlbnRpcmVseSwKPiBiZWNhdXNl
-IHRoZXJlIGlzIGEgdGVuZGVuY3kKPiBpbiBrZXJuZWwgY29tbXVuaXR5IHRvIGRpc2FibGUgdXNl
-ci1tb2RlIGhlbHBlciBmaXJtd2FyZSBsb2FkaW5nICh1ZGV2KS4KPiBJdCBpcyBhbHJlYWR5IGd1
-YXJkZWQgd2l0aAo+IENPTkZJR19GV19MT0FERVJfVVNFUl9IRUxQRVIgb3B0aW9uIGluIGZpcm13
-YXJlIGNvZGU6IGZpcm13YXJlOiBNYWtlCj4gdXNlci1tb2RlIGhlbHBlciBvcHRpb25hbAo+IDxo
-dHRwOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
-LmdpdC9jb21taXQvP2lkPTdiMTI2OWY3Nzg3ODJkMmY0Mjk5NGE3NGJmNDAxNGQwY2JlYmJmOWY+
-Lgo+IFRoZXJlIGlzIG9ubHkgb25lIHVzZSBvZiBpdDogbG9hZGluZyBmaXJtd2FyZSBmcm9tIG5v
-bi1zdGFuZGFyZCBwYXRoLiBJdAo+IG1pZ2h0IGFsc28gZ28gYXdheSBhcyBzb29uIGFzCj4gY29u
-ZmlndXJpbmcgcGF0aHMgc3VwcG9ydCBoYWQgYmVlbiBhZGRlZCB0byBrZXJuZWwuCgpJIG5vdGlj
-ZWQgdGhhdCB0b28sIGJlY2F1c2UgbXkgdWRldiB3YXNuJ3QgZ2V0dGluZyBhbnkgZXZlbnRzIC0g
-Cmtlcm5lbCBJJ20gdXNpbmcgaGFzIHRoYXQgb3B0aW9uIHR1cm5lZCBvZmYuCgpJIGFsc28gY2Ft
-ZSBhY3Jvc3MgdGhpcyBhcnRpY2xlOiBodHRwOi8vbHduLm5ldC9BcnRpY2xlcy81MTg5NDIvCndo
-aWNoIHNheXM6ICJObyBldmVudHMgZm9yIGEgc3BlY2lmaWMgZGV2aWNlLCB0aGV5IGRlY2lkZWQs
-CndvdWxkIGJlIHByb2Nlc3NlZCB1bnRpbCB0aGUgcHJvY2VzcyBvZiBsb2FkaW5nIHRoZSBkcml2
-ZXIgbW9kdWxlCmZvciB0aGF0IGRldmljZSBoYWQgY29tcGxldGVkIiwgYnV0IHRoaXMgb25lIGNv
-dWxkIGJlIGZpeGVkIGVhc2lseQppbiBmd19sb2FkIGtlcm5lbCBtb2R1bGUuCgpSZWdhcmRzLApK
-YW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQg
-YnkgV2luZG93czoKCkJ1aWxkIGZvciBXaW5kb3dzIFN0b3JlLgoKaHR0cDovL3Auc2YubmV0L3Nm
-dS93aW5kb3dzLWRldjJkZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAo=
+Hi!
+> There are new functions: tst_module_exists(), tst_module_load() and
+> tst_module_unload(). These functions help to load and unload kernel
+> modules in the tests.
+> 
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+
+This one looks also fine.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
