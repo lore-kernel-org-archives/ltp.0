@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1UqSNF-0001c8-DI
-	for ltp-list@lists.sourceforge.net; Sat, 22 Jun 2013 18:17:21 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UqSND-0004FI-Hh
-	for ltp-list@lists.sourceforge.net; Sat, 22 Jun 2013 18:17:21 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 22 Jun 2013 14:17:03 -0400
-References: <016bca5a3f28e308234e5b1028a831e5fa50fda6.1371736603.git.jstancek@redhat.com>
-In-Reply-To: <016bca5a3f28e308234e5b1028a831e5fa50fda6.1371736603.git.jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1UsSsa-0005pR-5p
+	for ltp-list@lists.sourceforge.net; Fri, 28 Jun 2013 07:14:00 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UsSsX-00013u-UF
+	for ltp-list@lists.sourceforge.net; Fri, 28 Jun 2013 07:13:59 +0000
+Date: Fri, 28 Jun 2013 03:13:50 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1243201217.946751.1372403630876.JavaMail.root@redhat.com>
+In-Reply-To: <CAPwn2JTuF3EVb8_XoWkFk=qZc61FhNHenNDmdR7b6xrZFf9x1g@mail.gmail.com>
+References: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
+	<538407137.757498.1372350334215.JavaMail.root@redhat.com>
+	<CAPwn2JTuF3EVb8_XoWkFk=qZc61FhNHenNDmdR7b6xrZFf9x1g@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <201306221417.04276.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] new testcase: kmsg01
+Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the
+ test case after timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,63 +27,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3202572398822548341=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============3202572398822548341==
-Content-Type: multipart/signed; boundary="nextPart3237859.LjaZSNSQHW";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3237859.LjaZSNSQHW
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-On Thursday 20 June 2013 10:12:47 Jan Stancek wrote:
-> Test /dev/kmsg based on kernel doc: Documentation/ABI/testing/dev-kmsg
->  - read() blocks
->  - non-blocking read() fails with EAGAIN
->  - partial read fails (buffer smaller than message)
->  - can write to /dev/kmsg and message seqno grows
->  - first read() after open() returns same message
->  - if messages get overwritten, read() returns -EPIPE
->  - device supports SEEK_SET, SEEK_END, SEEK_DATA
-
-lgtm
--mike
-
---nextPart3237859.LjaZSNSQHW
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRxeogAAoJEEFjO5/oN/WBpicQAIeobECHH1n2xtHE1ciukUWP
-WFUoQbiBdUCqdHiN34OiZyjoi0x6vDa5gHUrVCkOxYzJyHIWG3HqfK8xc9FN0S51
-gjsV3RyFQapPPSxJnnX1HI7tj/ueCCXPiowtIHYRZxZR2PWyKdHMrqW9aQil5wOU
-L2ARmcdBtDGWGMpwsiWUq+SXB/6sRo4E4o+F+Y+iDJZL/gv4GeRCUhEzoiavxBrZ
-g0UFkcwDWm1V2xQA0V008UIxzlQC1ZmlJqqfr/lKdVZmas4Dcfs64tAJe/9ZFkru
-G2WwGvfYjjugkL7V+s/akUv0j6cRYRPaFimFoh2LkSi6xw5t6yr2ynRHIsa8eTgc
-DKBg5et8ohmu1xmR1vjzVqQhgTFPOpYhVkbVR0EXe6ScMmaU1svPiVnFWTNEoluZ
-gBoc3wycMe6eMRAtPRz4ozR5surqNYD157LY6J/euhJr2pO+/CKljatm4SJRGtum
-iBc0IS5UM0iERRYhp/orc5FUpVCyhUnxHD9TsD2xQ5fWigsfwmpEwRQGCgJcg0rZ
-F54fEOQWPbrULKzPv+SNXNquhoI2Va22ntXtzukSjkQXqsx1LieY5DtN99tI0ca+
-YmWsaHqZlZvIQJ0noM2aXbnVkKiCwqBQIJAouw25qYIIsLa3LKJp2xaXNhTwEdgN
-TcPXgHhF35duO7sellKv
-=SXZc
------END PGP SIGNATURE-----
-
---nextPart3237859.LjaZSNSQHW--
-
-
---===============3202572398822548341==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
+
+
+
+
+
+----- Original Message -----
+> From: "Hangbin Liu" <liuhangbin@gmail.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Sent: Friday, 28 June, 2013 8:36:05 AM
+> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the test case after timeout
+> 
+> No, we can set up $CONNECTION_TOTAL connections as soon as possible, and also
+> transmit tcp data at the same time.
+
+Where does this happen?
+
+I'm looking at the while loop, and I see it creates 1 connection each
+iteration, then it sleeps for 1 second. 
+
+Am I missing something here?
+
+while true ; do
+        # Making connections
+        if [ $connection_num -lt $CONNECTION_TOTAL ]; then
+                # make new connection
+                ...
+                connection_num=`expr $connection_num + 1`
+        fi
+
+    # check time
+    ...
+    sleep 1
+done
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
@@ -88,16 +75,7 @@ This SF.net email is sponsored by Windows:
 Build for Windows Store.
 
 http://p.sf.net/sfu/windows-dev2dev
---===============3202572398822548341==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3202572398822548341==--
-
