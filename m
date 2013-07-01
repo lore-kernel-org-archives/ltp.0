@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Ux5SS-0006op-ID
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 01:14:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ux5SR-0008LQ-IL
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 01:14:08 +0000
-Message-ID: <51DE06DF.4080002@cn.fujitsu.com>
-Date: Thu, 11 Jul 2013 09:14:07 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UteY9-0004qv-OL
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 13:53:49 +0000
+Date: Mon, 1 Jul 2013 15:55:19 +0200
+From: chrubis@suse.cz
+Message-ID: <20130701135519.GA21561@rei.suse.cz>
+References: <1372662230-6993-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20130701094958.GA12050@rei.suse.cz>
+	<51D17373.3080908@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1373356491-15338-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<51DD9B64.7050802@casparzhang.com>
-	<1212845049.2016896.1373481206257.JavaMail.root@redhat.com>
-In-Reply-To: <1212845049.2016896.1373481206257.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH V3] lib: add tst_kvercmp2 to compare specific
- vendor extra kernel versions
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <51D17373.3080908@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] lib: add tst_rh_kvercmp to test RHEL kernel
+	version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,115 +27,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-On 07/11/2013 02:33 AM, Jan Stancek wrote:
+Hi!
+> Yes, for inotify04 on RHEL5. Below commit is back-ported to RHEL5 updated
+> version, so then inotify will send IN_ATTRIB events when link count changes.
+> But in test case, we only judge the kernel version 2.6.25 to add IN_ATTRIB
+> event.
+
+> commit ece95912db94d98e202cbedb8f35206deb29d83d
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Feb 6 01:37:13 2008 -0800
+
+<snip>
+
+> RHEL5 changelog:
+> - [fs] inotify: send IN_ATTRIB event on link count changes (Eric Paris ) [471893]
 > 
 > 
-> ----- Original Message -----
->> From: "Caspar Zhang" <caspar@casparzhang.com>
->> To: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> Cc: "LTP" <ltp-list@lists.sourceforge.net>, "Cyril Hrubis" <chrubis@suse.cz>, "Garrett Cooper" <yanegomi@gmail.com>,
->> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com
->> Sent: Wednesday, 10 July, 2013 7:35:32 PM
->> Subject: Re: [PATCH V3] lib: add tst_kvercmp2 to compare specific vendor extra kernel versions
->>
->> On 07/09/2013 03:54 PM, Wanlong Gao wrote:
->>> We can now test specific verdor kernel versions in
->>> test cases like:
->>>
->>> static struct tst_kern_exv exv[] = {
->>> 	{"RHEL6", "234"},
->>> 	{"SLES10", "0.91"},
->>> 	{NULL, NULL}
->>> };
->>>
->>> ...
->>>
->>> 	if (tst_kvercmp2(2, 6, 25, exv) < 0)
->>> 		...
->>> ...
->>>
->>> Thank you for Cyril's suggestion.
->>>
->>>
->>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->>> ---
->>>   include/test.h    |  7 +++++++
->>>   lib/tst_kvercmp.c | 46 +++++++++++++++++++++++++++++++++++++++++++---
->>>   2 files changed, 50 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/include/test.h b/include/test.h
->>> index ee3efc3..a76fafc 100644
->>> --- a/include/test.h
->>> +++ b/include/test.h
->>> @@ -173,6 +173,13 @@ char *get_high_address(void);
->>>   void tst_getkver(int *k1, int *k2, int *k3);
->>>   int tst_kvercmp(int r1, int r2, int r3);
->>>
->>> +struct tst_kern_exv {
->>> +	char *dist_name;
->>> +	char *extra_ver;
->>> +};
->>> +
->>> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
->>> +
->>>   /* lib/tst_is_cwd.c */
->>>   int tst_is_cwd_nfs(void);
->>>   int tst_is_cwd_v9fs(void);
->>> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
->>> index cb4fd67..15fb571 100644
->>> --- a/lib/tst_kvercmp.c
->>> +++ b/lib/tst_kvercmp.c
->>> @@ -34,15 +34,13 @@
->>>   #include <unistd.h>
->>>   #include <string.h>
->>>   #include <sys/utsname.h>
->>> +#include "test.h"
->>>
->>>   void get_kver(int *k1, int *k2, int *k3)
->>>   {
->>>   	struct utsname uval;
->>>   	char *kver;
->>>   	char *r1, *r2, *r3;
->>> -#if !defined(linux)
->>> -	extern char *strsep();	/* shut up some compilers */
->>> -#endif
->>>
->>>   	uname(&uval);
->>>   	kver = uval.release;
->>> @@ -66,3 +64,45 @@ int tst_kvercmp(int r1, int r2, int r3)
->>>
->>>   	return currver - testver;
->>>   }
->>> +
->>> +static int tst_kexvcmp(char *tst_exv, char *cur_ver)
->>> +{
->>> +	int c1 = 0, c2 = 0, t1 = 0, t2 = 0;
->>> +	int ret;
->>> +
->>> +	sscanf(cur_ver, "%*d.%*d.%*d-%d.%d", &c1, &c2);
->>> +	sscanf(tst_exv, "%d.%d", &t1, &t2);
->>> +	if ((ret = c1 - t1))
->>
->> not sure if the brackets are duplicated...
+> The man page of inotify said that:
+> IN_ATTRIB         Metadata changed, e.g., permissions, timestamps, extended attributes, link count (since Linux 2.6.25), UID, GID, etc. (*).
 > 
-> What caught my (and checkpatch's) eye is that these are assignments in if condition,
-> but I'm not sure how strictly we take checkpatch output.
+> So, in the test case, we judge that if the kernel version is less than 2.6.25, we
+> assume that the IN_ATTRIB will not be sent in the event. But after back-port
+> this patch, RHEL5 includes this event when the link count changes.
+> 
+> There are many test cases are suffering such situation, because sometimes the patch
+> back-port may break our kernel version check. So I considering introduce some
+> vendor specific kernel version check like RHEL and SLES.
 
-Adding one more parenthesis just shut down the gcc warning here.
+So the case here is that the test is disabled because the we think that
+it will not work. I'm fine with adding more information to the
+tst_kvercmp() but we should do it more extensible and data driven
+manner.
 
-Thanks,
-Wanlong Gao
+What about we create an array with extra version strings per
+distribution that gets passed to tst_kvercmp2() function and is used
+when particular distribution is detected?
 
+Roughly something as:
+
+In the LTP lib:
+
+struct tst_kern_extraver {
+	char *dist_name;
+	char *extra_ver;
+};
+
+int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_extraver *vers);
+
+
+In the testcase:
+
+static struct tst_kern_extraver exver[] = {
+	{"RHEL6", "234"},
+	{"SLES10", "0.91"},
+	{NULL, NULL}
+};
+
+
+...
+
+	if (tst_kvercmp2(2, 6, 25, exver) < 0)
+		...
+...
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
