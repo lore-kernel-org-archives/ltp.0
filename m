@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <benoit.marcot@arm.com>) id 1V45Ma-0000L5-JX
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 08:33:00 +0000
-Received: from service88.mimecast.com ([195.130.217.12])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V45MW-0007W5-Sx
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 08:33:00 +0000
-From: Benoit Marcot <Benoit.Marcot@arm.com>
-Date: Tue, 30 Jul 2013 09:32:49 +0100
-Message-ID: <1C23526A7C42DB45BBF55B662C7C530E25B49F550D@BUNGLE.Emea.Arm.com>
-References: <51F7338D.4060804@cn.fujitsu.com>
-	<51F735B2.5030007@cn.fujitsu.com> <51F73E13.9040802@cn.fujitsu.com>
-	<1C23526A7C42DB45BBF55B662C7C530E25B49F54B3@BUNGLE.Emea.Arm.com>
-In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B49F54B3@BUNGLE.Emea.Arm.com>
-Content-Language: en-US
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1UtZWK-0005w4-K8
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:31:36 +0000
+Received: from mail-we0-f178.google.com ([74.125.82.178])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UtZWI-0001wX-ST
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:31:36 +0000
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
+In-Reply-To: <606017700.1063130.1372417612499.JavaMail.root@redhat.com>
+References: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
+	<538407137.757498.1372350334215.JavaMail.root@redhat.com>
+	<CAPwn2JTuF3EVb8_XoWkFk=qZc61FhNHenNDmdR7b6xrZFf9x1g@mail.gmail.com>
+	<1243201217.946751.1372403630876.JavaMail.root@redhat.com>
+	<CAPwn2JRYRWDEvn090NdtM1K178R=yQSasmBX3ZoKymVtcRWPXw@mail.gmail.com>
+	<606017700.1063130.1372417612499.JavaMail.root@redhat.com>
+Date: Mon, 1 Jul 2013 16:31:28 +0800
+Message-ID: <CAPwn2JQ+ri=T9Fs6JWdF+v_8x9Nk5wPqo5aTrzb1A9ERr2DgEQ@mail.gmail.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the
+ test case after timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,130 +33,166 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-In the other hand Dan's patch gives a hint about *why* it's failing to compile, which is nice.
+Hi Jan,
+The problem is the connection won't  fail, but only need too much
+time. For example:
+On a guest:  on cpu process, 2G memory
+# for i in `seq 4000`; do ./ns-tcpclient -b -f 4 -S 10.66.87.216 -p
+9999; echo "The $i connection : `date`"; done
+The 1 connection : Mon Jul  1 04:03:05 EDT 2013
+The 2 connection : Mon Jul  1 04:03:05 EDT 2013
+The 3 connection : Mon Jul  1 04:03:05 EDT 2013
+The 4 connection : Mon Jul  1 04:03:06 EDT 2013
+<snip>
+The 19 connection : Mon Jul  1 04:04:46 EDT 2013
+<snip>
+The 30 connection : Mon Jul  1 04:06:34 EDT 2013
+The 31 connection : Mon Jul  1 04:07:52 EDT 2013
+<snip>
+The 45 connection : Mon Jul  1 04:10:11 EDT 2013
+<snip>
+The 50 connection : Mon Jul  1 04:12:05 EDT 2013
 
-> -----Original Message-----
-> From: Benoit Marcot [mailto:Benoit.Marcot@arm.com]
-> Sent: 30 July 2013 09:19
-> To: DAN LI; gaowanlong@cn.fujitsu.com
-> Cc: LTP list
-> Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
->
-> Hi!
->
-> I had the same problem to compile the latest commits; I patched in the same
-> way as testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c:
->
-> #ifndef MS_MOVE
-> #define MS_MOVE         8192
-> #endif
->
-> Benoit
->
-> > -----Original Message-----
-> > From: DAN LI [mailto:li.dan@cn.fujitsu.com]
-> > Sent: 30 July 2013 05:16
-> > To: gaowanlong@cn.fujitsu.com
-> > Cc: LTP list
-> > Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
-> >
-> > On 07/30/2013 11:40 AM, Wanlong Gao wrote:
-> > > On 07/30/2013 11:31 AM, DAN LI wrote:
-> > >>
-> > >> The definitions of MS_PRIVATE and MS_MOVE were only added to glibc
-> > >> headers in version 2.12.
-> > >>
-> > >> If the version of glibc is older than 2.12, define these two flags.
-> > >>
-> > >> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> > >> ---
-> > >>  testcases/kernel/syscalls/mount/mount06.c |    5 +++++
-> > >>  1 files changed, 5 insertions(+), 0 deletions(-)
-> > >>
-> > >> diff --git a/testcases/kernel/syscalls/mount/mount06.c
-> > >> b/testcases/kernel/syscalls/mount/mount06.c
-> > >> index acfb22d..ab1a472 100644
-> > >> --- a/testcases/kernel/syscalls/mount/mount06.c
-> > >> +++ b/testcases/kernel/syscalls/mount/mount06.c
-> > >> @@ -31,6 +31,11 @@
-> > >>  #include "usctest.h"
-> > >>  #include "safe_macros.h"
-> > >>
-> > >> +#if !(__GLIBC_PREREQ(2, 12))
-> > >
-> > > Why not do like below?
-> >
-> > I think it also clearly shows the reason why this definition should
-> > exist here(glibc version related).
-> >
-> > Regards,
-> > DAN LI
-> >
-> > > #ifndef MS_MOVE
-> > > #define xxx
-> > > #define xxx
-> > > #endif
-> > >
-> > > Wanlong Gao
-> > >
-> > >> +#define MS_MOVE   8192
-> > >> +#define MS_PRIVATE        (1 << 18)
-> > >> +#endif
-> > >> +
-> > >>  #define MNTPOINT_SRC      "mnt_src"
-> > >>  #define MNTPOINT_DES      "mnt_des"
-> > >>  #define LINELENGTH        256
-> > >>
-> > >
-> > >
-> >
-> >
-> >
-> > ----------------------------------------------------------------------
-> > -------- Get your SQL database under version control now!
-> > Version control is standard for application code, but databases havent
-> > caught up. So what steps can you take to put your SQL databases under
-> > version control? Why should you start doing it? Read more to find out.
-> > http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.c
-> > lk
-> > trk
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
-> -- IMPORTANT NOTICE: The contents of this email and any attachments are
-> confidential and may also be privileged. If you are not the intended recipient,
-> please notify the sender immediately and do not disclose the contents to any
-> other person, use it for any purpose, or store or copy the information in any
-> medium.  Thank you.
->
->
-> ------------------------------------------------------------------------------
-> Get your SQL database under version control now!
-> Version control is standard for application code, but databases havent caught
-> up. So what steps can you take to put your SQL databases under version
-> control? Why should you start doing it? Read more to find out.
-> http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clk
-> trk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+You can saw we took 9 minutes to set up 50 tcp connections.
 
+But on a powerful physical machine,
+The 1 connection : Mon Jul  1 04:21:08 EDT 2013
+The 2 connection : Mon Jul  1 04:21:08 EDT 2013
+<snip>
+The 499 connection : Mon Jul  1 04:24:35 EDT 2013
+The 500 connection : Mon Jul  1 04:24:35 EDT 2013
 
--- IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium.  Thank you.
+It only use 3 minutest to set up 500 connections.
 
+So we can't just continue on success, but should check the time after
+some connections.
+
+Thanks and Best regards
+Hangbin Liu
+
+2013/6/28 Jan Stancek <jstancek@redhat.com>:
+>
+>
+> ----- Original Message -----
+>> From: "Hangbin Liu" <liuhangbin@gmail.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Sent: Friday, 28 June, 2013 11:30:02 AM
+>> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the test case after timeout
+>>
+>
+> Hangbin,
+>
+> just fyi, your replies are not going to list.
+>
+>> Opps, My mistake.  Didn't find there is a sleep 1...
+>>
+>> I will send another patch for this issue. How about check
+>> $connection_num every 100 times. like
+>
+> I'd go with new variable to count each attempt, not just successful ones.
+>
+> Or something like this (on top your patch):
+> Skip the sleep and continue on success, if we hit issue sleep and retry as watchdog allows.
+>
+> diff --git a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01 b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> index 206a0d1..649c60b 100644
+> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+> @@ -351,9 +351,10 @@ while true ; do
+>                         fi
+>                         # Failed to start a client
+>                         tst_resm TINFO "$connection_num seems the maximum number of the client"
+> -                       break
+> +               else
+> +                       connection_num=`expr $connection_num + 1`
+> +                       continue;
+>                 fi
+> -               connection_num=`expr $connection_num + 1`
+>         fi
+>
+>      current_epoc=`date +%s`
+>
+> Regards,
+> Jan
+>
+>>
+>> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+>> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+>> @@ -340,7 +340,7 @@ connection_num=0
+>>  start_epoc=`date +%s`
+>>  while true ; do
+>>         # Making connections
+>> -       if [ $connection_num -lt $CONNECTION_TOTAL ]; then
+>> +       while [ $connection_num -lt $CONNECTION_TOTAL ]; do
+>>                 # Run a client
+>>                 ret=`$LTP_RSH $RHOST
+>> ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p
+>> $server_port' ; ec
+>>                 if [ $ret -ne 0 ]; then
+>> @@ -354,7 +354,12 @@ while true ; do
+>>                         break
+>>                 fi
+>>                 connection_num=`expr $connection_num + 1`
+>> -       fi
+>> +
+>> +               # check timeout every 100 times
+>> +               if [ $(($connection_num % 100)) -eq 0 ];then
+>> +                       break
+>> +               fi
+>> +       done
+>>
+>>      current_epoc=`date +%s`
+>>      elapse_epoc=`expr $current_epoc - $start_epoc`
+>>
+>> 2013/6/28 Jan Stancek <jstancek@redhat.com>:
+>> >
+>> >
+>> >
+>> >
+>> > ----- Original Message -----
+>> >> From: "Hangbin Liu" <liuhangbin@gmail.com>
+>> >> To: "Jan Stancek" <jstancek@redhat.com>
+>> >> Sent: Friday, 28 June, 2013 8:36:05 AM
+>> >> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill
+>> >> the test case after timeout
+>> >>
+>> >> No, we can set up $CONNECTION_TOTAL connections as soon as possible, and
+>> >> also
+>> >> transmit tcp data at the same time.
+>> >
+>> > Where does this happen?
+>> >
+>> > I'm looking at the while loop, and I see it creates 1 connection each
+>> > iteration, then it sleeps for 1 second.
+>> >
+>> > Am I missing something here?
+>> >
+>> > while true ; do
+>> >         # Making connections
+>> >         if [ $connection_num -lt $CONNECTION_TOTAL ]; then
+>> >                 # make new connection
+>> >                 ...
+>> >                 connection_num=`expr $connection_num + 1`
+>> >         fi
+>> >
+>> >     # check time
+>> >     ...
+>> >     sleep 1
+>> > done
+>> >
+>> > Regards,
+>> > Jan
+>>
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
