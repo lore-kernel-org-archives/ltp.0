@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwveV-00009y-1I
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 14:45:55 +0000
-Date: Wed, 10 Jul 2013 16:47:32 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UtcdJ-0008No-Qr
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 11:51:01 +0000
+Date: Mon, 1 Jul 2013 13:52:32 +0200
 From: chrubis@suse.cz
-Message-ID: <20130710144731.GG19178@rei.suse.cz>
-References: <51DA513C.2040403@cn.fujitsu.com>
+Message-ID: <20130701115232.GA15035@rei.suse.cz>
+References: <51D160D2.4070806@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51DA513C.2040403@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] mount/mount06.c: new case to test MS_MOVE of
- mount
+In-Reply-To: <51D160D2.4070806@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mount/mount03.c: Test feature MS_NOATIME of
+ mount(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,58 +29,49 @@ To: DAN LI <li.dan@cn.fujitsu.com>
 Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> +		SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
+> +	case 6:
+> +		/* Validate MS_NOATIME flag of mount call */
 > +
-> +		TEST(mount(mntpoint_src, mntpoint_des, fs_type, MS_MOVE, NULL));
-> +
-> +		if (TEST_RETURN != 0) {
-> +			tst_resm(TFAIL | TTERRNO, "mount(2) failed");
-> +		} else {
-> +
-> +			if (open(file_des, O_CREAT | O_EXCL) == -1 &&
-> +			    errno == EEXIST)
-> +				tst_resm(TPASS, "move mount is ok");
-> +			else
-> +				tst_resm(TFAIL, "file %s is not available",
-> +					 file_des);
-> +
-> +			TEST(umount(mntpoint_des));
-> +			if (TEST_RETURN != 0)
-> +				tst_brkm(TBROK | TTERRNO, cleanup,
-> +					 "umount(2) failed");
-
-I still think that we should make this check more robust...
-
+> +		snprintf(file, PATH_MAX, "%satime", path_name);
+> +		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
+> +		if (fd == -1) {
+> +			tst_resm(TWARN | TERRNO, "opening %s failed", file);
+> +			return 1;
 > +		}
-> +	}
-> +	cleanup();
 > +
-> +	tst_exit();
-> +}
+> +		if (write(fd, "TEST_MS_NOATIME", 15) != 15) {
+> +			tst_resm(TWARN | TERRNO, "write %s failed", file);
+> +			return 1;
+> +		}
 > +
-> +void cleanup(void)
-> +{
-> +	if (umount(path_name) != 0)
-> +		tst_brkm(TBROK | TTERRNO, NULL, "umount(2) %s failed",
-> +			 path_name);
+> +		if (fstat(fd, &file_stat) == -1) {
+> +			tst_resm(TWARN | TERRNO, "stat %s failed #1", file);
+> +			return 1;
+> +		}
+> +
+> +		atime = file_stat.st_atime;
+> +
 
-I think that the TTERRNO is a typo here and it should be TERRNO.
+The time_t, if I'm not mistaken, has resolution in seconds, so you need
+to sleep a second here before you call the read() bellow to be sure
+timestamp is different at the time you try to read.
 
-> +	TEST_CLEANUP;
-> +
-> +	tst_rmdir();
-> +}
+
+Moreover the whole testcase should better be cleaned up (it doesn't use
+the tst_require_root() and does some strange/unnecessary things in the
+temp dir).
+
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
