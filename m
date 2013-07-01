@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UtZsw-0002QO-Gl
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:54:58 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UtZsu-0000yQ-9p
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:54:58 +0000
-Message-ID: <51D14343.6080003@cn.fujitsu.com>
-Date: Mon, 01 Jul 2013 16:52:19 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Utaij-0000YU-Tt
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 09:48:29 +0000
+Date: Mon, 1 Jul 2013 11:49:58 +0200
+From: chrubis@suse.cz
+Message-ID: <20130701094958.GA12050@rei.suse.cz>
+References: <1372662230-6993-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1372668159-3932-1-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1372668159-3932-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v5] lib: tst_module: add library functions for
- kernel modules
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1372662230-6993-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] lib: add tst_rh_kvercmp to test RHEL kernel
+	version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,20 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-On 07/01/2013 04:42 PM, Alexey Kodanev wrote:
-> There are new functions: tst_module_exists(), tst_module_load() and
-> tst_module_unload(). These functions help to load and unload kernel
-> modules in the tests.
-> 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Hi!
+> Add an additional kernel version field compare is more sane.
+> But the RHEL version number like "2.6.18-248" is not common.
+> So we add this specific version number check function *_rh_*
+> only for RHEL use. Further more, we can add addition specific
+> kernel version number check functions for SLES and so on if needed.
 
-Applied, thank you.
+What is the expected usage?
 
-Wanlong Gao
+Do we have a test that started to fail due to change that has been
+introduced in some RHEL kernel update that changed only the last number
+in version?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
