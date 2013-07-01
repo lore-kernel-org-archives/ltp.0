@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Uwjie-0008Og-Hr
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:01:24 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uwjic-0001vu-GY
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:01:24 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6A21Ew4021762
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jul 2013 10:01:15 +0800
-Message-ID: <51DCC074.3030002@cn.fujitsu.com>
-Date: Wed, 10 Jul 2013 10:01:24 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Utcu5-00030g-Kj
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 12:08:21 +0000
+Date: Mon, 1 Jul 2013 14:09:47 +0200
+From: chrubis@suse.cz
+Message-ID: <20130701120946.GA15036@rei.suse.cz>
+References: <51C7FD6D.4010904@cn.fujitsu.com>
+	<990668294.1913615.1372679398858.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <1373359002-17618-1-git-send-email-penght@cn.fujitsu.com>
-In-Reply-To: <1373359002-17618-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] sssd-lib.sh: Use lib to restart sssd service
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <990668294.1913615.1372679398858.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH v2] mmap/mmap13.c: new case to test SIGBUS error
+ of mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,25 +26,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/09/2013 04:36 PM, Peng Haitao wrote:
-> Use restart_daemon() to restart sssd service.
+Hi!
+> > Test SIGBUS error by accessing to a portion of the buffer that does not
+> > correspond to the file.
+> > 
+> > Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
+> 
+> v2 looks good to me. As for others, ../.gitignore is missing "mmap13",
+> but I think comitter can add that.
+> 
 
-Applied, thank you.
+I've commited this one allready (along with another patch to add it to
+gitignore (as I noticed this later)).
 
-Wanlong Gao
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
