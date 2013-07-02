@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UuI1b-0004jv-TH
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 08:02:51 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UuI1Z-0000Sf-MG
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 08:02:51 +0000
-Message-ID: <51D3DA8A.5020602@oracle.com>
-Date: Wed, 03 Jul 2013 12:02:18 +0400
-From: alexey.kodanev@oracle.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uu0ta-0003gt-Pv
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 13:45:26 +0000
+Date: Tue, 2 Jul 2013 15:46:54 +0200
+From: chrubis@suse.cz
+Message-ID: <20130702134654.GA6453@rei.suse.cz>
+References: <1372662230-6993-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20130701094958.GA12050@rei.suse.cz>
+	<51D17373.3080908@cn.fujitsu.com>
+	<20130701135519.GA21561@rei.suse.cz>
+	<51D2CD13.7050002@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1372765421-2934-1-git-send-email-alexey.kodanev@oracle.com>
-	<201307021650.56483.vapier@gentoo.org>
-In-Reply-To: <201307021650.56483.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v6] fw_load: new test of device firmware loading
+Content-Disposition: inline
+In-Reply-To: <51D2CD13.7050002@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] lib: add tst_rh_kvercmp to test RHEL kernel
+	version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,35 +29,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
+> > So the case here is that the test is disabled because the we think that
+> > it will not work. I'm fine with adding more information to the
+> > tst_kvercmp() but we should do it more extensible and data driven
+> > manner.
+> > 
+> > What about we create an array with extra version strings per
+> > distribution that gets passed to tst_kvercmp2() function and is used
+> > when particular distribution is detected?
+> 
+> RHEL kernel with a suffix like ".el5" on RHEL5 and ".el6" on RHEL6,
+> I wonder how to detect SLES kernels?
 
-On 07/03/2013 12:50 AM, Mike Frysinger wrote:
->> --- /dev/null
->> >  +++ b/testcases/kernel/firmware/fw_load_kernel/Makefile
->> >
->> >  +MAKE_TARGETS	:= ltp_fw_load.ko
->> >  +ltp_fw_load.ko: ltp_fw_load.c
->> >  +	-$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir)
->> >  +	-mv ltp_fw_load.ko ltp_fw_load.ko~
->> >  +	-$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir) clean
->> >  +	-mv ltp_fw_load.ko~ ltp_fw_load.ko
-> what's with ignoring the exit status of all these ?  and why clean when you're
-> done ?  doesn't seem like you'd want to do either of these.
->
-Ignoring the exit status, allow to proceed with the LTP build, despite 
-of any error during the module's build. Then, user-space test will 
-return TCONF, if it doesn't find the module.
+We can use '/proc/version' and '/etc/SuSE-release' to identify SUSE
+kernel running on the top of SLES userspace, which should be good enough
+heuristics.
 
-There are a lot of files that left after module's build and If I don't 
-clean there, I have to manually add files to the clean target and 
-perhaps, even more.
+I can write that part of the code once we have the code for RHEL in
+place.
 
-Thanks,
-Alexey
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
