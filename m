@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Uw4Og-0003Wj-DA
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 05:54:02 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Utu0z-00082p-Je
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 06:24:37 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uw4Oe-0007Lm-6T
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 05:54:02 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Utu0x-0006NB-OZ
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 06:24:37 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r685rqSo016782
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Jul 2013 13:53:52 +0800
-Message-ID: <51DA53FE.8050109@cn.fujitsu.com>
-Date: Mon, 08 Jul 2013 13:54:06 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r626OSm3020002
+	for <ltp-list@lists.sourceforge.net>; Tue, 2 Jul 2013 14:24:28 +0800
+Message-ID: <51D271DA.7040906@cn.fujitsu.com>
+Date: Tue, 02 Jul 2013 14:23:22 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <51DA4DCA.5080300@cn.fujitsu.com>
-In-Reply-To: <51DA4DCA.5080300@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3] mount/mount05.c: new case to test MS_BIND of
- mount
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <51D27187.2060003@cn.fujitsu.com>
+In-Reply-To: <51D27187.2060003@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2] mount/mount03.c: Test feature MS_NOATIME of
+	mount(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,21 +31,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/08/2013 01:27 PM, DAN LI wrote:
-> Create new test case for MS_BIND of mount.
-> 
-> Checking if file is visible from target mountpoint after bind mount.
-> 
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-Applied, thank you.
+Additional test for features MS_NOATIME.
 
-Wanlong Gao
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mount/mount03.c | 46 +++++++++++++++++++++++++++++--
+ 1 file changed, 44 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
+index 8b2d3e4..cb99887 100644
+--- a/testcases/kernel/syscalls/mount/mount03.c
++++ b/testcases/kernel/syscalls/mount/mount03.c
+@@ -20,7 +20,7 @@
+  *
+  *    TEST TITLE	: Test for checking mount(2) flags
+  *
+- *    TEST CASE TOTAL	: 6
++ *    TEST CASE TOTAL	: 7
+  *
+  *    AUTHOR		: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
+  *
+@@ -35,6 +35,7 @@
+  *	4) MS_SYNCHRONOUS - writes are synced at once.
+  *	5) MS_REMOUNT - alter flags of a mounted FS.
+  *	6) MS_NOSUID - ignore suid and sgid bits.
++ *	7) MS_NOATIME - do not update access times.
+  *
+  *	Setup:
+  *	  Setup signal handling.
+@@ -83,7 +84,7 @@ static int test_rwflag(int, int);
+ static int setup_uid(void);
+
+ char *TCID = "mount03";
+-int TST_TOTAL = 6;
++int TST_TOTAL = 7;
+
+ #define EXEC_COMMAND	"cp"
+ #define DEFAULT_FSTYPE	"ext2"
+@@ -115,6 +116,7 @@ long rwflags[] = {
+ 	MS_SYNCHRONOUS,
+ 	MS_RDONLY,
+ 	MS_NOSUID,
++	MS_NOATIME,
+ };
+
+ static option_t options[] = {
+@@ -208,6 +210,8 @@ int test_rwflag(int i, int cnt)
+ {
+ 	int ret, fd, pid, status;
+ 	char nobody_uid[] = "nobody";
++	time_t atime;
++	struct stat file_stat;
+ 	struct passwd *ltpuser;
+
+ 	switch (i) {
+@@ -370,6 +374,44 @@ int test_rwflag(int i, int cnt)
+ 					return 1;
+ 			}
+ 		}
++	case 6:
++		/* Validate MS_NOATIME flag of mount call */
++
++		snprintf(file, PATH_MAX, "%satime", path_name);
++		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
++		if (fd == -1) {
++			tst_resm(TWARN | TERRNO, "opening %s failed", file);
++			return 1;
++		}
++
++		if (write(fd, "TEST_MS_NOATIME", 15) != 15) {
++			tst_resm(TWARN | TERRNO, "write %s failed", file);
++			return 1;
++		}
++
++		if (fstat(fd, &file_stat) == -1) {
++			tst_resm(TWARN | TERRNO, "stat %s failed #1", file);
++			return 1;
++		}
++
++		atime = file_stat.st_atime;
++
++		if (read(fd, NULL, 20) == -1) {
++			tst_resm(TWARN | TERRNO, "read %s failed", file);
++			return 1;
++		}
++
++		if (fstat(fd, &file_stat) == -1) {
++			tst_resm(TWARN | TERRNO, "stat %s failed #2", file);
++			return 1;
++		}
++		close(fd);
++
++		if (file_stat.st_atime != atime) {
++			tst_resm(TWARN, "access time is updated");
++			return 1;
++		}
++		return 0;
+ 	}
+ 	return 0;
+ }
+-- 
+1.8.1
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
