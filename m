@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UtZiM-0001u7-8Z
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:44:02 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UtZiJ-0000Xi-KG
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:44:02 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r618bX40018438
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Jul 2013 08:37:33 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r618hqkp016452
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Jul 2013 08:43:52 GMT
-Received: from abhmt103.oracle.com (abhmt103.oracle.com [141.146.116.55])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r618hqUm016439
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Jul 2013 08:43:52 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon,  1 Jul 2013 12:42:39 +0400
-Message-Id: <1372668159-3932-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v5] lib: tst_module: add library functions for kernel
-	modules
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Utpqa-000632-Q2
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 01:57:36 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UtpqY-0000tO-Lc
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 01:57:36 +0000
+Message-ID: <51D23341.1060000@cn.fujitsu.com>
+Date: Tue, 02 Jul 2013 09:56:17 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v3] mmap/mmap14.c: new case to test MAP_LOCKED of mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,225 +22,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-There are new functions: tst_module_exists(), tst_module_load() and
-tst_module_unload(). These functions help to load and unload kernel
-modules in the tests.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- include/tst_module.h |   72 ++++++++++++++++++++++++++++++++++
- lib/tst_module.c     |  105 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 177 insertions(+), 0 deletions(-)
- create mode 100644 include/tst_module.h
- create mode 100644 lib/tst_module.c
-
-diff --git a/include/tst_module.h b/include/tst_module.h
-new file mode 100644
-index 0000000..c50efec
---- /dev/null
-+++ b/include/tst_module.h
-@@ -0,0 +1,72 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author:
-+ * Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ * These functions help to load and unload kernel modules in the tests.
-+ *
-+ * tst_module_load function already includes tst_module_exists function,
-+ * which is checking the following possible module's locations:
-+ *
-+ * 1. Current working directory
-+ *
-+ * 2. LTP installation path (using env LTPROOT, which is usually /opt/ltp)
-+ *
-+ * 3. If tmp directory created, it'll look at the test start working directory
-+ *
-+ */
-+
-+#ifndef TST_MODULE
-+#define TST_MODULE
-+
-+/*
-+ * Check module existence.
-+ *
-+ * @mod_name: module's file name.
-+ * @mod_path: if it is not NULL, then tst_module_exists places the found
-+ * module's path into the location pointed to by *mod_path. It must be freed
-+ * with free() when it is no longer needed.
-+ *
-+ * In case of failure, test'll call cleanup_fn and exit with TCONF return value.
-+ */
-+void tst_module_exist(void (cleanup_fn)(void), const char *mod_name,
-+	char **mod_path);
-+
-+/*
-+ * Load a module using insmod program.
-+ *
-+ * @mod_name: module's file name.
-+ * @argv: an array of pointers to null-terminated strings that represent the
-+ * additional parameters to the module. The array of pointers  must be
-+ * terminated by a NULL pointer. If argv points to NULL, it will be ignored.
-+ *
-+ * In case of insmod failure, test will call cleanup_fn and exit with TBROK
-+ * return value.
-+ */
-+void tst_module_load(void (cleanup_fn)(void),
-+	const char *mod_name, char *const argv[]);
-+
-+/*
-+ * Unload a module using rmmod program. In case of failure, test will call
-+ * cleanup_fn and exit with TBROK return value.
-+ *
-+ * @mod_name: can be module name or module's file name.
-+ */
-+void tst_module_unload(void (cleanup_fn)(void), const char *mod_name);
-+
-+#endif /* TST_MODULE */
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-new file mode 100644
-index 0000000..832da27
---- /dev/null
-+++ b/lib/tst_module.c
-@@ -0,0 +1,105 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+
-+#include "test.h"
-+#include "ltp_priv.h"
-+#include "tst_module.h"
-+
-+void tst_module_exists(void (cleanup_fn)(void),
-+	const char *mod_name, char **mod_path)
-+{
-+	/* check current working directory */
-+	if (access(mod_name, F_OK) == 0) {
-+		if (mod_path != NULL)
-+			*mod_path = strdup(mod_name);
-+		return;
-+	}
-+	char *buf = NULL;
-+	int err = -1;
-+	/* check LTP installation path */
-+	const char *ltproot = getenv("LTPROOT");
-+	if (ltproot != NULL) {
-+		if (asprintf(&buf, "%s/testcases/bin/%s",
-+			ltproot, mod_name) == -1) {
-+			tst_brkm(TBROK | TERRNO, cleanup_fn,
-+				"asprintf failed at %s:%d",
-+				__FILE__, __LINE__);
-+		}
-+		err = access(buf, F_OK);
-+	}
-+	/* check start working directory */
-+	if (err == -1 && tst_tmpdir_created()) {
-+		free(buf);
-+		if (asprintf(&buf, "%s/%s", tst_get_startwd(),
-+			mod_name) == -1) {
-+			tst_brkm(TBROK | TERRNO, cleanup_fn,
-+				"asprintf failed at %s:%d",
-+				__FILE__, __LINE__);
-+		}
-+		err = access(buf, F_OK);
-+	}
-+
-+	if (err != 0) {
-+		free(buf);
-+		tst_brkm(TCONF, cleanup_fn, "Failed to find module '%s'",
-+			mod_name);
-+	}
-+
-+	if (mod_path != NULL)
-+		*mod_path = buf;
-+	else
-+		free(buf);
-+}
-+
-+void tst_module_load(void (cleanup_fn)(void),
-+	const char *mod_name, char *const argv[])
-+{
-+	char *mod_path = NULL;
-+	tst_module_exists(cleanup_fn, mod_name, &mod_path);
-+
-+	const int offset = 2; /* command name & module path */
-+	int size = 0;
-+	while (argv && argv[size])
-+		++size;
-+	size += offset;
-+	char *mod_argv[size + 1]; /* + NULL in the end */
-+	mod_argv[size] = NULL;
-+	mod_argv[0] = "insmod";
-+	mod_argv[1] = mod_path;
-+
-+	int i;
-+	for (i = offset; i < size; ++i)
-+		mod_argv[i] = argv[i - offset];
-+
-+	tst_run_cmd(cleanup_fn, mod_argv);
-+	free(mod_path);
-+}
-+
-+void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
-+{
-+	char *const argv[] = { "rmmod", mod_name, NULL };
-+	tst_run_cmd(cleanup_fn, argv);
-+}
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgpDcmVhdGUgdGVzdCBjYXNlIGZvciBNQVBfTE9DS0VEIG9mIG1tYXAuCgpWZXJpZnkgcGFnZXMg
+YXJlIGxvY2tlZCBieSBjaGVja2luZyBzZWN0aW9uICJWbUxjayIgb2YgL3Byb2MvPHBpZD4vc3Rh
+dHVzLgoKClNpZ25lZC1vZmYtYnk6IERBTiBMSSA8bGkuZGFuQGNuLmZ1aml0c3UuY29tPgotLS0K
+IHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCiB0ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzLy5naXRpZ25vcmUgICAgfCAgIDEgKwogdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9tbWFwL21tYXAxNC5jIHwgMTQ1ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDE0NyBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNC5jCgpIaSBKYW7vvIwK
+CnYzOgogIEFkZCByb290IGNoZWNrLgogIEFkZCBtbWFwMTQgdG8gLi4vLmdpdGlnbm9yZS4KClJl
+Z2FyZHMsCkRBTiBMSQoKCgpkaWZmIC0tZ2l0IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qv
+c3lzY2FsbHMKaW5kZXggM2FiMTlmNS4uYmViODc4MiAxMDA2NDQKLS0tIGEvcnVudGVzdC9zeXNj
+YWxscworKysgYi9ydW50ZXN0L3N5c2NhbGxzCkBAIC01NjMsNiArNTYzLDcgQEAgbW1hcDA4IG1t
+YXAwOAogbW1hcDA5IG1tYXAwOQogbW1hcDEyIG1tYXAxMgogbW1hcDEzIG1tYXAxMworbW1hcDE0
+IG1tYXAxNAogIyB0ZXN0IGlzIGJyb2tlbiwgbWFzayBpdCBmb3Igbm93LgogI21tYXAxMSBtbWFw
+MTEgLWkgMzAwMDAKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRp
+Z25vcmUgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRpZ25vcmUKaW5kZXggZmVkZTE0
+NS4uMThkMDNkNCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy8uZ2l0aWdu
+b3JlCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvLmdpdGlnbm9yZQpAQCAtNTE1LDYg
+KzUxNSw3IEBACiAvbW1hcC9tbWFwMTEKIC9tbWFwL21tYXAxMgogL21tYXAvbW1hcDEzCisvbW1h
+cC9tbWFwMTQKIC9tb2RpZnlfbGR0L21vZGlmeV9sZHQwMQogL21vZGlmeV9sZHQvbW9kaWZ5X2xk
+dDAyCiAvbW91bnQvbW91bnQwMQpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9tbWFwL21tYXAxNC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNC5j
+Cm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjI1YmM0OGQKLS0tIC9kZXYvbnVs
+bAorKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDE0LmMKQEAgLTAsMCAr
+MSwxNDUgQEAKKy8qCisgKiBDb3B5cmlnaHQgKGMpIDIwMTMgRk5TVCwgREFOIExJIDxsaS5kYW5A
+Y24uZnVqaXRzdS5jb20+CisgKgorICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5
+b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisgKiBpdCB1bmRlciB0aGUgdGVy
+bXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQorICog
+dGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGlj
+ZW5zZSwgb3IKKyAqIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisgKgorICog
+VGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1
+c2VmdWwsCisgKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGlt
+cGxpZWQgd2FycmFudHkgb2YKKyAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBB
+UlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQorICogdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
+IGZvciBtb3JlIGRldGFpbHMuCisgKgorICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29w
+eSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKKyAqIGFsb25nIHdpdGggdGhpcyBw
+cm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQorICogRm91bmRhdGlv
+biwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjEx
+MC0xMzAxIFVTQQorICovCisKKy8qCisgKiBUZXN0IERlc2NyaXB0aW9uOgorICogIFZlcmlmeSBN
+QVBfTE9DS0VEIHdvcmtzIGZpbmUuCisgKiAgIkxvY2sgdGhlIHBhZ2VzIG9mIHRoZSBtYXBwZWQg
+cmVnaW9uIGludG8gbWVtb3J5IGluIHRoZSBtYW5uZXIgb2YgbWxvY2soMikuIgorICoKKyAqIEV4
+cGVjdGVkIFJlc3VsdDoKKyAqICBtbWFwKCkgc2hvdWxkIHN1Y2NlZWQgcmV0dXJuaW5nIHRoZSBh
+ZGRyZXNzIG9mIHRoZSBtYXBwZWQgcmVnaW9uLAorICogIGFuZCB0aGlzIHJlZ2lvbiBzaG91bGQg
+YmUgbG9ja2VkIGludG8gbWVtb3J5LgorICovCisjaW5jbHVkZSA8c3RkaW8uaD4KKyNpbmNsdWRl
+IDxzdGRsaWIuaD4KKyNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KKyNpbmNsdWRlIDxlcnJuby5oPgor
+I2luY2x1ZGUgPHVuaXN0ZC5oPgorI2luY2x1ZGUgPGZjbnRsLmg+CisjaW5jbHVkZSA8c3RyaW5n
+Lmg+CisjaW5jbHVkZSA8c2lnbmFsLmg+CisjaW5jbHVkZSA8c3RkaW50Lmg+CisjaW5jbHVkZSA8
+c3lzL3N0YXQuaD4KKyNpbmNsdWRlIDxzeXMvbW1hbi5oPgorI2luY2x1ZGUgPHN5cy9zaG0uaD4K
+KworI2luY2x1ZGUgInRlc3QuaCIKKyNpbmNsdWRlICJ1c2N0ZXN0LmgiCisKKyNkZWZpbmUgVEVN
+UEZJTEUgICAgICAgICJtbWFwZmlsZSIKKyNkZWZpbmUgTU1BUFNJWkUgICAgICAgICgxVUw8PDIw
+KQorI2RlZmluZSBMSU5FTEVOICAgICAgICAgMjU2CisKK2NoYXIgKlRDSUQgPSAibW1hcDE0IjsK
+K2ludCBUU1RfVE9UQUwgPSAxOworCitzdGF0aWMgY2hhciAqYWRkcjsKKworc3RhdGljIHZvaWQg
+Z2V0dm1sY2sodW5zaWduZWQgaW50ICpsb2NrX3N6KTsKK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQp
+Oworc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKKworaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
+KmFyZ3ZbXSkKK3sKKwlpbnQgbGM7CisJY2hhciAqbXNnOworCXVuc2lnbmVkIGludCBzel9iZWZv
+cmU7CisJdW5zaWduZWQgaW50IHN6X2FmdGVyOworCXVuc2lnbmVkIGludCBzel9jaDsKKworCW1z
+ZyA9IHBhcnNlX29wdHMoYXJnYywgYXJndiwgTlVMTCwgTlVMTCk7CisJaWYgKG1zZyAhPSBOVUxM
+KQorCQl0c3RfYnJrbShUQlJPSywgTlVMTCwgIk9QVElPTiBQQVJTSU5HIEVSUk9SIC0gJXMiLCBt
+c2cpOworCisJc2V0dXAoKTsKKworCWZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysr
+KSB7CisKKwkJdHN0X2NvdW50ID0gMDsKKworCQlnZXR2bWxjaygmc3pfYmVmb3JlKTsKKworCQlh
+ZGRyID0gbW1hcChOVUxMLCBNTUFQU0laRSwgUFJPVF9SRUFEIHwgUFJPVF9XUklURSwKKwkJCSAg
+ICBNQVBfUFJJVkFURSB8IE1BUF9MT0NLRUQgfCBNQVBfQU5PTllNT1VTLAorCQkJICAgIC0xLCAw
+KTsKKworCQlpZiAoYWRkciA9PSBNQVBfRkFJTEVEKSB7CisJCQl0c3RfcmVzbShURkFJTCB8IFRF
+UlJOTywgIm1tYXAgb2YgJXMgZmFpbGVkIiwgVEVNUEZJTEUpOworCQkJY29udGludWU7CisJCX0K
+KworCQlpZiAoU1REX0ZVTkNUSU9OQUxfVEVTVCkgeworCisJCQlnZXR2bWxjaygmc3pfYWZ0ZXIp
+OworCisJCQlzel9jaCA9IHN6X2FmdGVyIC0gc3pfYmVmb3JlOworCQkJaWYgKHN6X2NoID09IE1N
+QVBTSVpFIC8gMTAyNCkKKwkJCQl0c3RfcmVzbShUUEFTUywgIkZ1bmN0aW9uYWxpdHkgb2YgbW1h
+cCgpICIKKwkJCQkJCSJzdWNjZXNzZnVsIik7CisJCQllbHNlCisJCQkJdHN0X3Jlc20oVEZBSUws
+ICJFeHBlY3RlZCAlbHVLIGxvY2tlZCwgIgorCQkJCQkJImdldCAldUsgbG9ja2VkIiwKKwkJCQkJ
+CU1NQVBTSVpFIC8gMTAyNCwgc3pfY2gpOworCisJCX0gZWxzZSB7CisJCQl0c3RfcmVzbShUUEFT
+UywgImNhbGwgc3VjY2VlZGVkIik7CisJCX0KKworCQlpZiAobXVubWFwKGFkZHIsIE1NQVBTSVpF
+KSAhPSAwKQorCQkJdHN0X2Jya20oVEZBSUwgfCBURVJSTk8sIE5VTEwsICJtdW5tYXAgZmFpbGVk
+Iik7CisJfQorCisJY2xlYW51cCgpOworCXRzdF9leGl0KCk7CisKK30KKwordm9pZCBnZXR2bWxj
+ayh1bnNpZ25lZCBpbnQgKmxvY2tfc3opCit7CisJaW50IHJldDsKKwljaGFyIGxpbmVbTElORUxF
+Tl07CisJRklMRSAqZnN0YXR1cyA9IE5VTEw7CisKKwlmc3RhdHVzID0gZm9wZW4oIi9wcm9jL3Nl
+bGYvc3RhdHVzIiwgInIiKTsKKwlpZiAoZnN0YXR1cyA9PSBOVUxMKQorCQl0c3RfYnJrbShURkFJ
+TCB8IFRFUlJOTywgTlVMTCwgIk9wZW4gZGV2IHN0YXR1cyBmYWlsZWQiKTsKKworCXdoaWxlIChm
+Z2V0cyhsaW5lLCBMSU5FTEVOLCBmc3RhdHVzKSAhPSBOVUxMKQorCQlpZiAoc3Ryc3RyKGxpbmUs
+ICJWbUxjayIpICE9IE5VTEwpCisJCQlicmVhazsKKworCXJldCA9IHNzY2FuZihsaW5lLCAiJSpb
+XjAtOV0lZCUqW14wLTldIiwgbG9ja19zeik7CisJaWYgKHJldCAhPSAxKQorCQl0c3RfYnJrbShU
+RkFJTCB8IFRFUlJOTywgTlVMTCwgIkdldCBsb2NrIHNpemUgZmFpbGVkIik7CisKKwlmY2xvc2Uo
+ZnN0YXR1cyk7Cit9CisKK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpCit7CisJdHN0X3JlcXVpcmVf
+cm9vdChOVUxMKTsKKworCXRzdF9zaWcoRk9SSywgREVGX0hBTkRMRVIsIGNsZWFudXApOworCisJ
+VEVTVF9QQVVTRTsKK30KKworc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQoreworCVRFU1RfQ0xF
+QU5VUDsKK30KLS0gCjEuOC4xCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1h
+aWwgaXMgc3BvbnNvcmVkIGJ5IFdpbmRvd3M6CgpCdWlsZCBmb3IgV2luZG93cyBTdG9yZS4KCmh0
+dHA6Ly9wLnNmLm5ldC9zZnUvd2luZG93cy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QK
