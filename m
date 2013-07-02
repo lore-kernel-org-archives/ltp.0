@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwWD8-0001TP-IL
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 11:35:58 +0000
-Date: Tue, 9 Jul 2013 13:37:32 +0200
+	(envelope-from <metan@suse.de>) id 1UtzZL-0003XU-VA
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 12:20:28 +0000
+Date: Tue, 2 Jul 2013 14:21:58 +0200
 From: chrubis@suse.cz
-Message-ID: <20130709113732.GC30721@rei>
-References: <1373361927-18695-1-git-send-email-penght@cn.fujitsu.com>
+Message-ID: <20130702122158.GB4922@rei>
+References: <1372650052-2470-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1373361927-18695-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] cron02: Use lib to restart crond service
+In-Reply-To: <1372650052-2470-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] inotify04: add more comments about this bug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,35 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> +# Check to see if cron or crond exists
-> +CROND_DAEMON=""
-> +if command -v crond >/dev/null 2>&1; then
-> +	CROND_DAEMON="crond"
-> +elif command -v cron >/dev/null 2>&1; then
-> +	CROND_DAEMON="cron"
-> +fi
+> If the kernel version is less than 2.6.25, but this kernel back
+> ported the kernel commit ece95912 to send IN_ATTRIB events when
+> link count changes, this test may fail because we assume that
+> there is no event IN_ATTRIB is sent.
 
-This one is not going to work for Gentoo where you can install different
-cron daemons and the init scripts are named accordingly to the package
-names...
+Are we going to implement the kvercmp extraversion?
 
-However the previous code did the same and this is a good cleanup so I'm
-fine with the change.
+If so, I think that this patch is irrelevant.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
