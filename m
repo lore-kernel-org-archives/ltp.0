@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1V1b0V-00047I-Ml
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 11:43:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V1b0U-00047k-9W
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 11:43:55 +0000
-Message-ID: <51EE6C97.1050502@cn.fujitsu.com>
-Date: Tue, 23 Jul 2013 19:44:23 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uu0AB-0006IV-1E
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 12:58:31 +0000
+Date: Tue, 2 Jul 2013 15:00:00 +0200
+From: chrubis@suse.cz
+Message-ID: <20130702130000.GC4922@rei>
+References: <51D23341.1060000@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1374575324-26149-1-git-send-email-zliu@redhat.com>
-In-Reply-To: <1374575324-26149-1-git-send-email-zliu@redhat.com>
-Subject: Re: [LTP] [PATCH] lib/tst_kvercmp: fixed a compiling error
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <51D23341.1060000@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3] mmap/mmap14.c: new case to test MAP_LOCKED of
+ mmap
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,48 +22,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-T24gMDcvMjMvMjAxMyAwNjoyOCBQTSwgWmhvdXBpbmcgTGl1IHdyb3RlOgo+IGNvbW1pdCAxOGY3
-YmU3ZWIgaW50cm9kdWNlZCB0aGUgZm9sbG93aW5nIGNvbXBpbGluZyBlcnJvcjoKPiAKPiBtYWtl
-WzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0
-cC9naXRfdGVzdC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL2xpYmNsb25lJwo+IGdj
-YyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uLy4u
-Ly4uL2luY2x1ZGUgLUkuLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi9saWIgIGNoZWNrX2Zv
-cl91bnNoYXJlLmMgIC1sZGwgLWxsdHAgLW8gY2hlY2tfZm9yX3Vuc2hhcmUKPiBjaGVja19mb3Jf
-dW5zaGFyZS5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgo+IGNoZWNrX2Zvcl91bnNoYXJlLmM6
-MzU6ODogd2FybmluZzogdmFyaWFibGUg4oCYcmV04oCZIHNldCBidXQgbm90IHVzZWQgWy1XdW51
-c2VkLWJ1dC1zZXQtdmFyaWFibGVdCj4gICB2b2lkICpyZXQ7Cj4gICAgICAgICBeCj4gLi4vLi4v
-Li4vbGliL2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGBjYXRfZmlsZSc6Cj4gL21u
-dC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMu
-Yzo3Nzc6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYFRDSUQnCj4gL21udC90ZXN0cy9rZXJuZWwv
-ZGlzdHJpYnV0aW9uL2x0cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMuYzo3ODc6IHVuZGVmaW5l
-ZCByZWZlcmVuY2UgdG8gYFRDSUQnCj4gL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0
-cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMuYzo3OTU6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
-YFRDSUQnCj4gLi4vLi4vLi4vbGliL2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGB0
-c3RfcmVzJzoKPiAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0L2x0
-cC9saWIvdHN0X3Jlcy5jOjMwMTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKPiAvbW50
-L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0L2x0cC9saWIvdHN0X3Jlcy5j
-OjMxNzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKPiAuLi8uLi8uLi9saWIvbGlibHRw
-LmEodHN0X3Jlcy5vKTovbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0
-L2x0cC9saWIvdHN0X3Jlcy5jOjM3MDogbW9yZSB1bmRlZmluZWQgcmVmZXJlbmNlcyB0byBgVENJ
-RCcgZm9sbG93Cj4gY29sbGVjdDI6IGVycm9yOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4g
-bWFrZTogKioqIFtjaGVja19mb3JfdW5zaGFyZV0gRXJyb3IgMQo+IAo+IHRoYXQncyBiZWNhdXNl
-IGNvbW1pdCAxOGY3YmU3ZWIgdXNlZCBMVFAgbGliIGZ1bmN0aW9uIHRzdF9yZXNtKCksIHVzaW5n
-IHByaW50ZigpIGluc3RlYWQgY2FuIGF2b2lkIGl0Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IFpob3Vw
-aW5nIExpdSA8emxpdUByZWRoYXQuY29tPgoKCk9vcHMsIGl0J3MgbXkgZmF1bHQuIFRoYW5rIHlv
-dSwgYXBwbGllZC4KCldhbmxvbmcgR2FvCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNlZSBldmVy
-eXRoaW5nIGZyb20gdGhlIGJyb3dzZXIgdG8gdGhlIGRhdGFiYXNlIHdpdGggQXBwRHluYW1pY3MK
-R2V0IGVuZC10by1lbmQgdmlzaWJpbGl0eSB3aXRoIGFwcGxpY2F0aW9uIG1vbml0b3JpbmcgZnJv
-bSBBcHBEeW5hbWljcwpJc29sYXRlIGJvdHRsZW5lY2tzIGFuZCBkaWFnbm9zZSByb290IGNhdXNl
-IGluIHNlY29uZHMuClN0YXJ0IHlvdXIgZnJlZSB0cmlhbCBvZiBBcHBEeW5hbWljcyBQcm8gdG9k
-YXkhCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD00ODgwODgz
-MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+Hi!
+> Create test case for MAP_LOCKED of mmap.
+> 
+> Verify pages are locked by checking section "VmLck" of /proc/<pid>/status.
+> 
+
+Revieved-by: Cyril Hrubis <chrubis@suse.cz>
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
