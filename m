@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1V08B1-0002lF-BJ
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jul 2013 10:44:43 +0000
-Received: from mail-la0-f45.google.com ([209.85.215.45])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V08Ax-00019h-QC
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jul 2013 10:44:43 +0000
-Received: by mail-la0-f45.google.com with SMTP id ev20so1572896lab.32
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 19 Jul 2013 03:44:33 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Fri, 19 Jul 2013 12:44:19 +0200
-Message-Id: <1374230659-21101-2-git-send-email-anders.roxell@linaro.org>
-In-Reply-To: <1374230659-21101-1-git-send-email-anders.roxell@linaro.org>
-References: <1374230659-21101-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCH] realtime-testsuite: update the install rule
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UuGzb-0001v0-UN
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 06:56:43 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UuGzZ-0004hU-FF
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 06:56:43 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r636uXOi015029
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 14:56:33 +0800
+Message-ID: <51D3CADF.3070000@cn.fujitsu.com>
+Date: Wed, 03 Jul 2013 14:55:27 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP]  [PATCH] mount/mount06.c: new case to test MS_MOVE of mount
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,502 +25,261 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-func/*/Makefile: added INSTALL_TARGETS
-func/*/run.sh -> func/*/run_auto.sh to autorun those tests when running
-    the test_realtime.sh script.
-run.sh scripts/run_c_files.sh: if installed no need to rebuild tests
-testscritps/test_realtime.sh: remove java from the "all" target and
-    do not rebuild lib if running from installed path
 
-New files, needed to run the realtime-testsuite from a installed path
-profiles/Makefile and scripts/Makefile
+Create new test case "mount06.c" for MS_MOVE of mount.
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Checking if file is visible from the new location after move mount.
+
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/realtime/func/async_handler/Makefile     |  1 +
- testcases/realtime/func/gtod_latency/Makefile      |  1 +
- testcases/realtime/func/hrtimer-prio/Makefile      |  1 +
- testcases/realtime/func/hrtimer-prio/run.sh        | 12 ----------
- testcases/realtime/func/hrtimer-prio/run_auto.sh   | 10 +++++++++
- testcases/realtime/func/matrix_mult/Makefile       |  1 +
- testcases/realtime/func/measurement/Makefile       |  1 +
- testcases/realtime/func/measurement/run.sh         | 19 ----------------
- testcases/realtime/func/measurement/run_auto.sh    | 19 ++++++++++++++++
- testcases/realtime/func/periodic_cpu_load/Makefile |  1 +
- testcases/realtime/func/pi-tests/Makefile          |  1 +
- testcases/realtime/func/pi_perf/Makefile           |  1 +
- testcases/realtime/func/prio-preempt/Makefile      |  1 +
- testcases/realtime/func/prio-wake/Makefile         |  1 +
- .../realtime/func/pthread_kill_latency/Makefile    |  1 +
- testcases/realtime/func/rt-migrate/Makefile        |  1 +
- testcases/realtime/func/sched_football/Makefile    |  1 +
- testcases/realtime/func/sched_jitter/Makefile      |  1 +
- testcases/realtime/func/sched_latency/Makefile     |  1 +
- testcases/realtime/func/thread_clock/Makefile      |  1 +
- testcases/realtime/perf/latency/Makefile           |  1 +
- testcases/realtime/profiles/Makefile               | 26 ++++++++++++++++++++++
- testcases/realtime/run.sh                          | 16 ++++++++-----
- testcases/realtime/scripts/Makefile                | 26 ++++++++++++++++++++++
- testcases/realtime/scripts/run_c_files.sh          |  7 ++++--
- testscripts/test_realtime.sh                       | 18 +++++++++------
- 26 files changed, 124 insertions(+), 46 deletions(-)
- delete mode 100644 testcases/realtime/func/hrtimer-prio/run.sh
- create mode 100644 testcases/realtime/func/hrtimer-prio/run_auto.sh
- delete mode 100644 testcases/realtime/func/measurement/run.sh
- create mode 100644 testcases/realtime/func/measurement/run_auto.sh
- create mode 100644 testcases/realtime/profiles/Makefile
- create mode 100644 testcases/realtime/scripts/Makefile
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/.gitignore      |   1 +
+ testcases/kernel/syscalls/mount/mount06.c | 197 ++++++++++++++++++++++++++++++
+ 3 files changed, 199 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mount/mount06.c
 
-diff --git a/testcases/realtime/func/async_handler/Makefile b/testcases/realtime/func/async_handler/Makefile
-index faf4fa9..f334cfa 100644
---- a/testcases/realtime/func/async_handler/Makefile
-+++ b/testcases/realtime/func/async_handler/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/gtod_latency/Makefile b/testcases/realtime/func/gtod_latency/Makefile
-index bd67ed6..89d82c9 100644
---- a/testcases/realtime/func/gtod_latency/Makefile
-+++ b/testcases/realtime/func/gtod_latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/hrtimer-prio/Makefile b/testcases/realtime/func/hrtimer-prio/Makefile
-index 0a1872c..d294ee2 100644
---- a/testcases/realtime/func/hrtimer-prio/Makefile
-+++ b/testcases/realtime/func/hrtimer-prio/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/hrtimer-prio/run.sh b/testcases/realtime/func/hrtimer-prio/run.sh
-deleted file mode 100644
-index b45e76b..0000000
---- a/testcases/realtime/func/hrtimer-prio/run.sh
-+++ /dev/null
-@@ -1,12 +0,0 @@
--#! /bin/bash
--
--if [ ! $SCRIPTS_DIR ]; then
--        # assume we're running standalone
--        export SCRIPTS_DIR=../../scripts/
--fi
--
--source $SCRIPTS_DIR/setenv.sh
--
--$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
--
--
-diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 3ab19f5..9468d81 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -578,6 +578,7 @@ mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
+ mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
+ mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
+ mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
++mount06 mount06 -D DEVICE -T DEVICE_FS_TYPE
+
+ move_pages01 move_pages.sh 01
+ move_pages02 move_pages.sh 02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index fede145..4ed5a9a 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -521,6 +521,7 @@
+ /mount/mount02
+ /mount/mount03
+ /mount/mount04
++/mount/mount06
+ /mount/setuid_test
+ /move_pages/move_pages01
+ /move_pages/move_pages02
+diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
 new file mode 100644
-index 0000000..366e746
+index 0000000..79def55
 --- /dev/null
-+++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-@@ -0,0 +1,10 @@
-+#! /bin/bash
++++ b/testcases/kernel/syscalls/mount/mount06.c
+@@ -0,0 +1,197 @@
++/*
++ * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ */
++/**************************************************************************
++ *
++ *    EXECUTED BY	: root / superuser
++ *
++ *    DESCRIPTION
++ *	Test for feature MS_MOVE of mount.
++ *	"Move a subtree"
++ *
++ *	Setup:
++ *	  Setup signal handling.
++ *	  Create a mount point.
++ *	  Pause for SIGUSR1 if option specified.
++ *
++ *	Test:
++ *	 Loop if the proper options are given.
++ *	  Execute system call
++ *	  Check return code, if system call failed (return=-1)
++ *		Log the errno and Issue a FAIL message.
++ *	  Otherwise, Issue a PASS message.
++ *
++ *	Cleanup:
++ *	  Delete the mount point.
++ *
++ *    RESTRICTIONS
++ *	test must run with the -D option
++ *	test doesn't support -c option to run it in parallel, as mount
++ *	syscall is not supposed to run in parallel.
++ *****************************************************************************/
 +
-+if [ ! $SCRIPTS_DIR ]; then
-+        # assume we're running standalone
-+        export SCRIPTS_DIR=../../scripts/
-+fi
++#include <errno.h>
++#include <sys/mount.h>
++#include <unistd.h>
++#include <fcntl.h>
 +
-+source $SCRIPTS_DIR/setenv.sh
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
 +
-+$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
-diff --git a/testcases/realtime/func/matrix_mult/Makefile b/testcases/realtime/func/matrix_mult/Makefile
-index c19cad1..3d89133 100644
---- a/testcases/realtime/func/matrix_mult/Makefile
-+++ b/testcases/realtime/func/matrix_mult/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/measurement/Makefile b/testcases/realtime/func/measurement/Makefile
-index fdad2c5..36343e9 100644
---- a/testcases/realtime/func/measurement/Makefile
-+++ b/testcases/realtime/func/measurement/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/measurement/run.sh b/testcases/realtime/func/measurement/run.sh
-deleted file mode 100644
-index 3011964..0000000
---- a/testcases/realtime/func/measurement/run.sh
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#! /bin/bash
--
--if [ ! $SCRIPTS_DIR ]; then
--        # assume we're running standalone
--        export SCRIPTS_DIR=../../scripts/
--fi
--
--source $SCRIPTS_DIR/setenv.sh
--
--
--# This is a temporary workaround for previous
--# loop support patch which seems to be having
--# issues right now.
--
--LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
--$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
--
--LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
--$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
-diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
-new file mode 100644
-index 0000000..3011964
---- /dev/null
-+++ b/testcases/realtime/func/measurement/run_auto.sh
-@@ -0,0 +1,19 @@
-+#! /bin/bash
++#define MNTPOINT_SRC	"mnt_src"
++#define MNTPOINT_DES	"mnt_des"
++#define TMP_FILE	"tstfile"
++#define DIR_MODE	(S_IRWXU | S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP)
 +
-+if [ ! $SCRIPTS_DIR ]; then
-+        # assume we're running standalone
-+        export SCRIPTS_DIR=../../scripts/
-+fi
++static void help(void);
++static void setup(void);
++static void cleanup(void);
 +
-+source $SCRIPTS_DIR/setenv.sh
++char *TCID = "mount06";
++int TST_TOTAL = 1;
 +
++static const char *fs_type = "ext2";
 +
-+# This is a temporary workaround for previous
-+# loop support patch which seems to be having
-+# issues right now.
++static int tflag;
++static int dflag;
++static char *fstype;
++static char *device;
++static char path_name[PATH_MAX];
++static char file_src[PATH_MAX];
++static char file_des[PATH_MAX];
++static char mntpoint_src[PATH_MAX];
++static char mntpoint_des[PATH_MAX];
 +
-+LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
-+$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
++static option_t options[] = {
++	{"T:", &tflag, &fstype},
++	{"D:", &dflag, &device},
++	{NULL, NULL, NULL},
++};
 +
-+LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
-+$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
-diff --git a/testcases/realtime/func/periodic_cpu_load/Makefile b/testcases/realtime/func/periodic_cpu_load/Makefile
-index 275eb06..e7ec8fc 100644
---- a/testcases/realtime/func/periodic_cpu_load/Makefile
-+++ b/testcases/realtime/func/periodic_cpu_load/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/pi-tests/Makefile b/testcases/realtime/func/pi-tests/Makefile
-index eb9cca3..7a7a57a 100644
---- a/testcases/realtime/func/pi-tests/Makefile
-+++ b/testcases/realtime/func/pi-tests/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh parse-testpi1.py parse-testpi2.py
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- 
-diff --git a/testcases/realtime/func/pi_perf/Makefile b/testcases/realtime/func/pi_perf/Makefile
-index fbceaba..196fca8 100644
---- a/testcases/realtime/func/pi_perf/Makefile
-+++ b/testcases/realtime/func/pi_perf/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/prio-preempt/Makefile b/testcases/realtime/func/prio-preempt/Makefile
-index 6da3504..b4c0b2e 100644
---- a/testcases/realtime/func/prio-preempt/Makefile
-+++ b/testcases/realtime/func/prio-preempt/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/prio-wake/Makefile b/testcases/realtime/func/prio-wake/Makefile
-index 256f5fb..6cea976 100644
---- a/testcases/realtime/func/prio-wake/Makefile
-+++ b/testcases/realtime/func/prio-wake/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/pthread_kill_latency/Makefile b/testcases/realtime/func/pthread_kill_latency/Makefile
-index b07d8de..fd3a059 100644
---- a/testcases/realtime/func/pthread_kill_latency/Makefile
-+++ b/testcases/realtime/func/pthread_kill_latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/rt-migrate/Makefile b/testcases/realtime/func/rt-migrate/Makefile
-index b48f48a..ae4f610 100644
---- a/testcases/realtime/func/rt-migrate/Makefile
-+++ b/testcases/realtime/func/rt-migrate/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/sched_football/Makefile b/testcases/realtime/func/sched_football/Makefile
-index 1b2a480..a5117fd 100644
---- a/testcases/realtime/func/sched_football/Makefile
-+++ b/testcases/realtime/func/sched_football/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/sched_jitter/Makefile b/testcases/realtime/func/sched_jitter/Makefile
-index 95bc9a9..827a0db 100644
---- a/testcases/realtime/func/sched_jitter/Makefile
-+++ b/testcases/realtime/func/sched_jitter/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/sched_latency/Makefile b/testcases/realtime/func/sched_latency/Makefile
-index 564d42f..b7327df 100644
---- a/testcases/realtime/func/sched_latency/Makefile
-+++ b/testcases/realtime/func/sched_latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/thread_clock/Makefile b/testcases/realtime/func/thread_clock/Makefile
-index b94b897..5cac451 100644
---- a/testcases/realtime/func/thread_clock/Makefile
-+++ b/testcases/realtime/func/thread_clock/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/perf/latency/Makefile b/testcases/realtime/perf/latency/Makefile
-index 6b1ad58..0ce86a3 100644
---- a/testcases/realtime/perf/latency/Makefile
-+++ b/testcases/realtime/perf/latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= cpunoise.sh cpunoise2000.sh disknoise.sh run.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/profiles/Makefile b/testcases/realtime/profiles/Makefile
-new file mode 100644
-index 0000000..c231f31
---- /dev/null
-+++ b/testcases/realtime/profiles/Makefile
-@@ -0,0 +1,26 @@
-+#
-+#    realtime/profiles test suite Makefile.
-+#
-+#    Copyright 2013 Linaro Limited
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
++int main(int argc, char *argv[])
++{
++	int lc;
++	char *msg;
 +
-+top_srcdir		?= ../../..
++	msg = parse_opts(argc, argv, options, &help);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(abs_srcdir)/../config.mk
-+INSTALL_TARGETS		:= default
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/run.sh b/testcases/realtime/run.sh
-index 77e8d68..a66e4e5 100755
---- a/testcases/realtime/run.sh
-+++ b/testcases/realtime/run.sh
-@@ -185,12 +185,16 @@ if [ $# -lt 1 ]; then
- fi
- pushd $TESTS_DIR >/dev/null
- 
--#Only build the library, most of the tests depend upon.
--#The Individual tests will be built, just before they run.
--pushd lib
--make
--check_error make
--popd
-+# if INSTALL_DIR != top_srcdir assume the individual tests are built and installed.
-+# So no need to build lib
-+if [[ -d lib ]]; then
-+    #Only build the library, most of the tests depend upon.
-+    #The Individual tests will be built, just before they run.
-+    pushd lib
-+    make
-+    check_error make
-+    popd
-+fi
- 
- ISLOOP=0
- index=0
-diff --git a/testcases/realtime/scripts/Makefile b/testcases/realtime/scripts/Makefile
-new file mode 100644
-index 0000000..28bf88e
---- /dev/null
-+++ b/testcases/realtime/scripts/Makefile
-@@ -0,0 +1,26 @@
-+#
-+#    realtime/scripts test suite Makefile.
-+#
-+#    Copyright 2013 Linaro Limited
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
++	/* Check for mandatory option of the testcase */
++	if (!dflag)
++		tst_brkm(TBROK, NULL,
++			 "you must specify the device used for mounting with "
++			 "the -D option");
 +
-+top_srcdir		?= ../../..
++	if (tflag)
++		fs_type = fstype;
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(abs_srcdir)/../config.mk
-+INSTALL_TARGETS		:= run_c_files.sh setenv.sh __init__.py parser.py
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/scripts/run_c_files.sh b/testcases/realtime/scripts/run_c_files.sh
-index 3ab52ec..6e73f38 100755
---- a/testcases/realtime/scripts/run_c_files.sh
-+++ b/testcases/realtime/scripts/run_c_files.sh
-@@ -20,8 +20,11 @@ profile_path=$PROFILES_DIR/$profile
- # Does profile exist?
- [ ! -f "$profile_path" ] && { echo >&2 "$0: Could not find profile ($profile_path)" ; exit 1 ; }
- 
--# Compile the test cases to support stand alone runs.
--make
-+# if INSTALL_DIR != top_srcdir assume the individual tests are built and installed.
-+if [[ -f Makefile ]]; then
-+    # Compile the test cases to support stand alone runs.
-+    make
-+fi
- 
- 
- # Run the test case
-diff --git a/testscripts/test_realtime.sh b/testscripts/test_realtime.sh
-index 22c3692..0d424fc 100755
---- a/testscripts/test_realtime.sh
-+++ b/testscripts/test_realtime.sh
-@@ -128,7 +128,7 @@ find_test()
-             ;;
-         all)
-         # Run all tests which have run_auto.sh
--            TESTLIST="func stress java perf"
-+            TESTLIST="func stress perf"
-             ;;
-         list)
-         # This will only display subdirs which have run_auto.sh
-@@ -176,12 +176,16 @@ if [ ! -e "logs" ]; then
-         chmod -R 775 logs
- fi
- 
--#Only build the library, most of the tests depend upon.
--#The Individual tests will be built, just before they run.
--pushd lib
--make
--check_error make
--popd
-+# if INSTALL_DIR != top_srcdir assume the individual tests are built and installed.
-+# So no need to build lib
-+if [[ -d lib ]]; then
-+    #Only build the library, most of the tests depend upon.
-+    #The Individual tests will be built, just before they run.
-+    pushd lib
-+    make
-+    check_error make
-+    popd
-+fi
- 
- ISLOOP=0
- index=0
++	if (STD_COPIES != 1) {
++		tst_resm(TINFO, "-c option has no effect for this testcase - "
++			 "%s doesn't allow running more than one instance "
++			 "at a time", TCID);
++		STD_COPIES = 1;
++	}
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
++
++		if (mount(device, mntpoint_src, fs_type, 0, NULL) == -1)
++			tst_brkm(TBROK | TERRNO, cleanup, "mount %s failed",
++				 mntpoint_src);
++
++		SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
++
++		TEST(mount(mntpoint_src, mntpoint_des, fs_type, MS_MOVE, NULL));
++
++		if (TEST_RETURN != 0) {
++			tst_resm(TFAIL | TTERRNO, "mount(2) failed");
++		} else {
++
++			if (open(file_des, O_CREAT | O_EXCL) == -1 &&
++			    errno == EEXIST)
++				tst_resm(TPASS, "move mount is ok");
++			else
++				tst_resm(TFAIL, "file %s is not available",
++					 file_des);
++
++			TEST(umount(mntpoint_des));
++			if (TEST_RETURN != 0)
++				tst_brkm(TBROK | TTERRNO, cleanup,
++					 "umount(2) failed");
++		}
++	}
++	cleanup();
++
++	tst_exit();
++}
++
++void setup(void)
++{
++	tst_require_root(NULL);
++
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	tst_tmpdir();
++
++	if (getcwd(path_name, sizeof(path_name)) == NULL)
++		tst_brkm(TBROK, cleanup, "getcwd failed");
++
++	/*
++	 * Turn current dir into a private mount point being a parent
++	 * mount which is required by move mount.
++	 */
++	if (mount(path_name, path_name, "none", MS_BIND, NULL) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "bind mount failed");
++
++	if (mount("none", path_name, "none", MS_PRIVATE, NULL) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "mount private failed");
++
++	snprintf(mntpoint_src, PATH_MAX, "%s/%s", path_name, MNTPOINT_SRC);
++	snprintf(mntpoint_des, PATH_MAX, "%s/%s", path_name, MNTPOINT_DES);
++
++	snprintf(file_src, PATH_MAX, "%s/%s/%s",
++		 path_name, MNTPOINT_SRC, TMP_FILE);
++	snprintf(file_des, PATH_MAX, "%s/%s/%s",
++		 path_name, MNTPOINT_DES, TMP_FILE);
++
++	SAFE_MKDIR(cleanup, mntpoint_src, DIR_MODE);
++	SAFE_MKDIR(cleanup, mntpoint_des, DIR_MODE);
++
++	TEST_PAUSE;
++}
++
++void cleanup(void)
++{
++	if (umount(path_name) != 0)
++		tst_brkm(TBROK | TTERRNO, NULL, "umount(2) %s failed",
++			 path_name);
++
++	TEST_CLEANUP;
++
++	tst_rmdir();
++}
++
++void help(void)
++{
++	printf("-T type	  : specifies the type of filesystem to be mounted. "
++	       "Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
++}
 -- 
-1.8.1.2
-
+1.8.1
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
