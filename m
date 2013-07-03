@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwAnJ-0003ot-K7
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 12:43:53 +0000
-Date: Mon, 8 Jul 2013 14:45:28 +0200
-From: chrubis@suse.cz
-Message-ID: <20130708124528.GE23579@rei.Home>
-References: <1372930628-27064-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sedat.dilek@gmail.com>) id 1UuHcJ-0002Vo-9F
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 07:36:43 +0000
+Received: from mail-we0-f178.google.com ([74.125.82.178])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UuHcH-0007Af-87
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 07:36:43 +0000
+Received: by mail-we0-f178.google.com with SMTP id u53so4855690wes.23
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 03 Jul 2013 00:36:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1372930628-27064-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2] lib: add tst_kvercmp2 to compare specific
- vendor extra kernel versions
+In-Reply-To: <51D38924.8090400@oracle.com>
+References: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
+	<51D38924.8090400@oracle.com>
+Date: Wed, 3 Jul 2013 09:36:34 +0200
+Message-ID: <CA+icZUW=dX6NLpAWRA8neeJDZ7XP1bNhui-CtLLySP+Mfy6XMQ@mail.gmail.com>
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
+Reply-To: sedat.dilek@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,141 +32,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Eko <hong.sun@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  include/test.h    |  7 ++++++
->  lib/tst_kvercmp.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
->  2 files changed, 69 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/test.h b/include/test.h
-> index ee3efc3..a76fafc 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -173,6 +173,13 @@ char *get_high_address(void);
->  void tst_getkver(int *k1, int *k2, int *k3);
->  int tst_kvercmp(int r1, int r2, int r3);
->  
-> +struct tst_kern_exv {
-> +	char *dist_name;
-> +	char *extra_ver;
-> +};
-> +
-> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
-> +
->  /* lib/tst_is_cwd.c */
->  int tst_is_cwd_nfs(void);
->  int tst_is_cwd_v9fs(void);
-> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
-> index cb4fd67..5ca9e21 100644
-> --- a/lib/tst_kvercmp.c
-> +++ b/lib/tst_kvercmp.c
-> @@ -34,15 +34,13 @@
->  #include <unistd.h>
->  #include <string.h>
->  #include <sys/utsname.h>
-> +#include "test.h"
->  
->  void get_kver(int *k1, int *k2, int *k3)
->  {
->  	struct utsname uval;
->  	char *kver;
->  	char *r1, *r2, *r3;
-> -#if !defined(linux)
-> -	extern char *strsep();	/* shut up some compilers */
-> -#endif
->  
->  	uname(&uval);
->  	kver = uval.release;
-> @@ -66,3 +64,64 @@ int tst_kvercmp(int r1, int r2, int r3)
->  
->  	return currver - testver;
->  }
-> +
-> +static int tst_kexvcmp(char *tst_exv)
-> +{
-> +	struct utsname uval;
-> +	char *kver;
-> +	char *cur_exv;
-> +	int c1, c2, t1, t2;
-> +	int ret;
-> +	char *cur_exv1;
-> +
-> +	uname(&uval);
-> +	kver = uval.release;
-> +	cur_exv = strchr(kver, '-');
-> +	if (!cur_exv)
-> +		return -1;
-> +	cur_exv++;
-> +	sscanf(tst_exv, "%d.%d", &t1, &t2);
-
-The sscanf returns numer of succesfull conversions, make use of that.
-
-Moreover we can avoid some of the strchr on cur_exv with supression
-modifier '*' and make the version detection more robust at the same
-time.
-
-Following statement can parse kernel version, fill the extra version
-into c1 and c2 and the return value should cointain number of assigned
-conversion (2 if both c1 and c2 were filled).
-
-	ret = sscanf(cur_exv, "%*d.%*d.%*d-%d.%d", &c1, &c2);
-
-> +	cur_exv1 = strsep(&cur_exv, ".");
-> +	c1 = atoi(cur_exv1);
-> +	if ((ret = c1 - t1)) {
-> +		return ret;
-> +	} else if (!cur_exv && !t2) {
-> +		return 0;
-> +	} else if (!cur_exv) {
-> +		return -1;
-> +	} else if (!t2) {
-> +		return 1;
-> +	} else {
-> +		c2 = atoi(cur_exv);
-> +		return c2 - t2;
-> +	}
-> +}
+On Wed, Jul 3, 2013 at 4:15 AM, Eko <hong.sun@oracle.com> wrote:
+> hi,
 >
-> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers)
-> +{
-> +	int ret;
-> +	int i;
-> +	struct utsname uval;
-> +	char *kver;
-> +	const char *cur_dist_name = NULL;
-> +
-> +	if ((ret = tst_kvercmp(r1, r2, r3)))
-> +		return ret;
-> +
-> +	uname(&uval);
-> +	kver = uval.release;
-> +	if (strstr(kver, ".el5")) {
-> +		cur_dist_name = "RHEL5";
-> +	} else if (strstr(kver, ".el6")) {
-> +		cur_dist_name = "RHEL6";
-> +	} else {
-> +		return ret;
-> +	}
-> +
-> +	for (i = 0; vers[i].dist_name; i++) {
-> +		if (!strcmp(vers[i].dist_name, cur_dist_name))
-> +			return tst_kexvcmp(vers[i].extra_ver);
-> +	}
-> +
-> +	return ret;
-> +}
+>  I executed runltp command in my box, everything is OK, but when cleaning
+> the environment, got following errors:
+>
+>        ###############################################################
+>             Done executing testcases.
+>             LTP Version:  20130503
+>        ###############################################################
+> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458': Device or
+> resource busy
+> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/sandbox': Device or resource busy
+>
+>
+> Because  /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458 and
+> /tmp/ltp-9NAwvmAbI5/sandbox are still mounted, so can't delete them, the
+> best way is:
+> # umount /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458
+> # umount /tmp/ltp-9NAwvmAbI5/sandbox
+>
+> and then:
+>
+>     [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
+>     [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
+>     rm -rf ${TMP}
+>
+>
 
-This part looks Ok. I don't like that uname() is called twice
-unnecessarily I would just pass the result from the first one to the
-tst_kexvcmp, but that is very minor.
+I have seen the same when dealing with a mount/ext4-fs issue (turned
+out to be a BASHISM) and reading the code.
+$TEMP is never used, it should be $TMP.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+BTW, this line - which needs to be corrected...
+
+[ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
+
+...makes no real sense, when doing...
+
+rm -rf ${TMP}
+
+...afterwards :-).
+
+If you look at the code, for me it was not clear what $TMP
+reflects/is, please look closer.
+I remember darkly, it was swapped somewhere...
+
+BTW, I have seen a lot of discrepancy in coding-style, beginning with
+comments, etc.
+The code was touched by different coders, so everyone seems to leave a
+bit from his/her style.
+
+    # DO NOT INDENT/DEDENT!
+    # ^^DO NOT INDENT/DEDENT!^^
+
+That should be changed to sth like "DO NOT INDENT/DEDENT - OR I KILL
+YOU!" <--- /me just kidding
+
+Unfortunately, I had a wait.h-issue in Linux-next to go through.
+
+Anyway, runltp needs some more love.
+
+- Sedat -
+
+> --
+> Best Regards,
+> Eko
+> --
+>
+>
+> ------------------------------------------------------------------------------
+> This SF.net email is sponsored by Windows:
+>
+> Build for Windows Store.
+>
+> http://p.sf.net/sfu/windows-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
