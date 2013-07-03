@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1UwUBG-0006Og-PX
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 09:25:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UwUBE-0004JN-IW
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 09:25:54 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r699Pic0025443
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jul 2013 17:25:44 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Tue, 9 Jul 2013 17:25:27 +0800
-Message-Id: <1373361927-18695-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH] cron02: Use lib to restart crond service
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hong.sun@oracle.com>) id 1UuDkS-00027a-CI
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 03:28:52 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UuDkO-0003bA-Vo
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 03:28:52 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r633SgU6009488
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 03:28:43 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r633Sfc0017893
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 03:28:42 GMT
+Received: from abhmt116.oracle.com (abhmt116.oracle.com [141.146.116.68])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r633SfDU017882
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 03:28:41 GMT
+Message-ID: <51D39AC5.7030700@oracle.com>
+Date: Wed, 03 Jul 2013 11:30:13 +0800
+From: Eko <hong.sun@oracle.com>
+MIME-Version: 1.0
+References: <mailman.81986.1372818525.14365.ltp-list@lists.sourceforge.net>
+In-Reply-To: <mailman.81986.1372818525.14365.ltp-list@lists.sourceforge.net>
+Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,95 +38,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Use restart_daemon() to restart crond service.
+--- runltp.bak  2013-07-03 10:18:28.375259716 +0800
++++ runltp      2013-07-03 10:32:22.958314831 +0800
+@@ -1014,6 +1014,11 @@
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
----
- testcases/commands/cron/cron02 | 27 +++++----------------------
- testcases/lib/cmdlib.sh        |  8 ++++++++
- 2 files changed, 13 insertions(+), 22 deletions(-)
+  cleanup()
+  {
++    for file in ${TMP}/*
++    do
++        umount $file > /dev/null 2>&1
++    done
++
+      [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
+      [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
+      rm -rf ${TMP}
 
-diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cron02
-index f8615dc..16b425d 100755
---- a/testcases/commands/cron/cron02
-+++ b/testcases/commands/cron/cron02
-@@ -52,29 +52,10 @@ do_setup(){
-         }
-         fi
- 
--	# running under systemd?
--	if command -v systemctl >/dev/null 2>&1; then
--		HAVE_SYSTEMCTL=true
-+	if [ -n "$CROND_DAEMON" ]; then
-+		restart_daemon $CROND_DAEMON
- 	else
--		HAVE_SYSTEMCTL=false
--	fi
--
--	# restart cron daemon
--	# Red Hat uses crond, SuSE/Other uses cron.
--	if [ -x /etc/init.d/crond ]; then
--		/etc/init.d/crond restart
--	elif [ -x /etc/init.d/cron ]; then
--		/etc/init.d/cron restart
--	elif $HAVE_SYSTEMCTL; then
--		for crond in "crond" "cron"; do
--			if systemctl is-enabled $crond.service >/dev/null 2>&1; then
--				systemctl restart $crond.service
--				break
--			fi
--		done
--	else
--		echo "Could not determine cron init.d script."
--		exit 1
-+		tst_brkm TBROK "Couldn't find crond or cron"
- 	fi
- }
- 
-@@ -90,6 +71,8 @@ do_cleanup(){
- #-----------------------------------------------------------------------
- # FUNCTION:  MAIN
- #-----------------------------------------------------------------------
-+. cmdlib.sh
-+
- do_setup
- cron_pos_tests.sh $TEST_USER
- EXIT_CODE=$?
-diff --git a/testcases/lib/cmdlib.sh b/testcases/lib/cmdlib.sh
-index b1ea15e..d6f43d2 100644
---- a/testcases/lib/cmdlib.sh
-+++ b/testcases/lib/cmdlib.sh
-@@ -168,6 +168,14 @@ elif command -v rsyslogd >/dev/null 2>&1; then
- 	SYSLOG_DAEMON="rsyslog"
- fi
- 
-+# Check to see if cron or crond exists
-+CROND_DAEMON=""
-+if command -v crond >/dev/null 2>&1; then
-+	CROND_DAEMON="crond"
-+elif command -v cron >/dev/null 2>&1; then
-+	CROND_DAEMON="cron"
-+fi
-+
- start_daemon()
- {
- 	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
+
 -- 
-1.8.3.1
+Best Regards,
+Eko
+--
 
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
