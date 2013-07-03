@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1V40nP-00069g-00
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 03:40:23 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V40nN-00070B-4V
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 03:40:22 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6U3eE1H024742
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jul 2013 11:40:14 +0800
-Message-ID: <51F735B2.5030007@cn.fujitsu.com>
-Date: Tue, 30 Jul 2013 11:40:34 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UuKLl-0006yy-Gu
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 10:31:49 +0000
+Date: Wed, 3 Jul 2013 12:33:21 +0200
+From: chrubis@suse.cz
+Message-ID: <20130703103321.GA2906@rei>
+References: <1372765421-2934-1-git-send-email-alexey.kodanev@oracle.com>
+	<201307021650.56483.vapier@gentoo.org>
+	<51D3DA8A.5020602@oracle.com>
 MIME-Version: 1.0
-References: <51F7338D.4060804@cn.fujitsu.com>
-In-Reply-To: <51F7338D.4060804@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <51D3DA8A.5020602@oracle.com>
+Subject: Re: [LTP] [PATCH v6] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,55 +26,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-On 07/30/2013 11:31 AM, DAN LI wrote:
-> 
-> The definitions of MS_PRIVATE and MS_MOVE were only added to glibc headers
-> in version 2.12.
-> 
-> If the version of glibc is older than 2.12, define these two flags.
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/mount/mount06.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
-> index acfb22d..ab1a472 100644
-> --- a/testcases/kernel/syscalls/mount/mount06.c
-> +++ b/testcases/kernel/syscalls/mount/mount06.c
-> @@ -31,6 +31,11 @@
->  #include "usctest.h"
->  #include "safe_macros.h"
-> 
-> +#if !(__GLIBC_PREREQ(2, 12))
+Hi!
+> >> >  +++ b/testcases/kernel/firmware/fw_load_kernel/Makefile
+> >> >
+> >> >  +MAKE_TARGETS	:= ltp_fw_load.ko
+> >> >  +ltp_fw_load.ko: ltp_fw_load.c
+> >> >  +	-$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir)
+> >> >  +	-mv ltp_fw_load.ko ltp_fw_load.ko~
+> >> >  +	-$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir) clean
+> >> >  +	-mv ltp_fw_load.ko~ ltp_fw_load.ko
+> > what's with ignoring the exit status of all these ?  and why clean when you're
+> > done ?  doesn't seem like you'd want to do either of these.
+> >
+> Ignoring the exit status, allow to proceed with the LTP build, despite 
+> of any error during the module's build. Then, user-space test will 
+> return TCONF, if it doesn't find the module.
 
-Why not do like below?
-#ifndef MS_MOVE
-#define xxx
-#define xxx
-#endif
+This is done so that LTP is forward compatible with kernel internal API
+changes. The test tries to load the module and returns TCONF if module
+was not found (i.e. wasn't build either due to kernel-devel missing or
+module build failure).
 
-Wanlong Gao
+> There are a lot of files that left after module's build and If I don't 
+> clean there, I have to manually add files to the clean target and 
+> perhaps, even more.
 
-> +#define MS_MOVE	8192
-> +#define MS_PRIVATE	(1 << 18)
-> +#endif
-> +
->  #define MNTPOINT_SRC	"mnt_src"
->  #define MNTPOINT_DES	"mnt_des"
->  #define LINELENGTH	256
-> 
+Making make clean work would be better, but I'm not sure how to make
+that work, the kernel build leaves various files there and I'm not sure
+if these have stable names, but we can do some effort to clean up all
+the *.cmd.o and maybe some of the rest of them.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
