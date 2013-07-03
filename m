@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uw97F-0000H6-AV
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 10:56:21 +0000
-Date: Mon, 8 Jul 2013 12:57:57 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UuJlE-0001oL-Oh
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 09:54:04 +0000
+Date: Wed, 3 Jul 2013 11:55:30 +0200
 From: chrubis@suse.cz
-Message-ID: <20130708105756.GC23579@rei.Home>
-References: <1372912287-8610-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20130703095530.GA2715@rei>
+References: <1372842546-4596-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372912287-8610-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] vma01: check kernel version
+In-Reply-To: <1372842546-4596-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH RFC] lib: add tst_kvercmp2 to compare specific
+ vendor extra kernel versions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,36 +29,132 @@ To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> This is just a kernel behaviour change to avoid the possible
-> scalability issue, not a real kernel bug. So, check the kernel
-> version.
-> 
 > Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 > ---
->  testcases/kernel/mem/vma/vma01.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  include/test.h    |  5 +++++
+>  lib/tst_kvercmp.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 72 insertions(+)
 > 
-> diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
-> index 7cd22c0..c6cb1f5 100644
-> --- a/testcases/kernel/mem/vma/vma01.c
-> +++ b/testcases/kernel/mem/vma/vma01.c
-> @@ -192,7 +192,13 @@ static void check_status(int status)
->  		tst_resm(TPASS, "two 3*ps VMAs found.");
->  		break;
->  	case 1:
-> -		tst_resm(TFAIL, "A single 6*ps VMA found.");
-> +		if (tst_kvercmp(3, 0, 0) < 0) {
-> +			tst_resm(TCONF, "A single 6*ps VMA found. You may need"
-> +					" to back port kernel commit 965f55d "
-> +					"to fix this scalability issue.");
-> +		} else {
-> +			tst_resm(TFAIL, "A single 6*ps VMA found.");
-> +		}
->  		break;
->  	default:
->  		tst_brkm(TBROK, cleanup, "unexpected VMA found.");
+> diff --git a/include/test.h b/include/test.h
+> index ee3efc3..a8e462b 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -172,6 +172,11 @@ char *get_high_address(void);
+>  /* lib/tst_kvercmp.c */
+>  void tst_getkver(int *k1, int *k2, int *k3);
+>  int tst_kvercmp(int r1, int r2, int r3);
+> +struct tst_kern_exv {
+> +	char *dist_name;
+> +	char *extra_ver;
+> +};
+> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
 
-This one looks fine.
+I would add newlines around the structure definition to keep it readable
+but that is very minor.
+
+>  /* lib/tst_is_cwd.c */
+>  int tst_is_cwd_nfs(void);
+> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+> index cb4fd67..d791df0 100644
+> --- a/lib/tst_kvercmp.c
+> +++ b/lib/tst_kvercmp.c
+> @@ -34,6 +34,7 @@
+>  #include <unistd.h>
+>  #include <string.h>
+>  #include <sys/utsname.h>
+> +#include "test.h"
+>  
+>  void get_kver(int *k1, int *k2, int *k3)
+>  {
+> @@ -66,3 +67,69 @@ int tst_kvercmp(int r1, int r2, int r3)
+>  
+>  	return currver - testver;
+>  }
+> +
+> +static int tst_kexvcmp(char *tst_exv)
+> +{
+> +	struct utsname uval;
+> +	char *kver;
+> +	char *cur_exv;
+> +	int c1, c2, t1, t2;
+> +	int ret;
+> +	char *cur_exv1, *tst_exv1;
+> +#if !defined(linux)
+> +	extern char *strsep();
+> +	extern char *strchr();
+> +#endif
+
+Please refrain yourself from adding these workarounds for non Linux
+systems. It does not make any sense to add them into the code that
+parses Linux kernel version. :)
+
+(And feel free to clean these from the rest of the file)
+
+> +	uname(&uval);
+> +	kver = uval.release;
+> +	cur_exv = strchr(kver, '-');
+> +	if (!cur_exv)
+> +		return -1;
+> +	cur_exv++;
+> +	cur_exv1 = strsep(&cur_exv, ".");
+> +	c1 = atoi(cur_exv1);
+> +	tst_exv1 = strsep(&tst_exv, ".");
+> +	t1 = atoi(tst_exv1);
+> +	if ((ret = c1 - t1)) {
+> +		return ret;
+> +	} else if (!cur_exv && !tst_exv) {
+> +		return 0;
+> +	} else if (!cur_exv) {
+> +		return -1;
+> +	} else if (!tst_exv) {
+> +		return 1;
+> +	} else {
+> +		c2 = atoi(cur_exv);
+> +		t2 = atoi(tst_exv);
+> +		return c2 - t2;
+> +	}
+> +}
+
+I wonder if we can simplify this with a sscanf() and clever format
+string...
+
+> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers)
+> +{
+> +	int ret;
+> +	int i;
+> +	struct utsname uval;
+> +	char *kver;
+> +	const char *cur_dist_name = NULL;
+> +
+> +	if ((ret = tst_kvercmp(r1, r2, r3)))
+> +		return ret;
+> +
+> +	uname(&uval);
+> +	kver = uval.release;
+> +	if (strstr(kver, ".el5")) {
+> +		cur_dist_name = "RHEL5";
+> +	} else if (strstr(kver, ".el6")) {
+> +		cur_dist_name = "RHEL6";
+> +	} else {
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; vers[i].dist_name; i++) {
+> +		if (!strcmp(vers[i].dist_name, cur_dist_name))
+> +			return tst_kexvcmp(vers[i].extra_ver);
+> +	}
+> +
+> +	return ret;
+> +}
+
+This part looks Ok.
+
+But perhaps we sould add a override mode too. It may happen that a fix
+that arrived to vanilla x.y.c was backported to RHEL or SLES kernel
+x.y.a so the extra version would not help. But adding this should be as
+simple as adding over_ver into the extra version structure and using
+that instead of the passed integers if it is not NULL. We may also add
+this one later once we find such testcase.
 
 -- 
 Cyril Hrubis
