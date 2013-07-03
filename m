@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V4Df1-0000Ar-0u
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 17:24:35 +0000
-Date: Tue, 30 Jul 2013 19:24:27 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UuKjO-0006Vz-Ea
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 10:56:14 +0000
+Date: Wed, 3 Jul 2013 12:57:46 +0200
 From: chrubis@suse.cz
-Message-ID: <20130730172427.GB1999@rei.scz.novell.com>
-References: <1C23526A7C42DB45BBF55B662C7C530E25B461FD20@BUNGLE.Emea.Arm.com>
+Message-ID: <20130703105746.GB2906@rei>
+References: <51D38B82.5060709@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B461FD20@BUNGLE.Emea.Arm.com>
-Subject: Re: [LTP] Where is defined TEST_ERRNO when 'make UCLINUX=1'?
+In-Reply-To: <51D38B82.5060709@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mount/mount05.c: new case to test MS_BIND of
+ mount
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,55 +25,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Benoit Marcot <Benoit.Marcot@arm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> I am building LTP for UCLINUX, and I went through an undefined symbol TEST_ERRNO with 'make UCLINUX=1'.
+> Create new test case for MS_BIND of mount.
 > 
-> As far as I understand, making with 'UCLINUX=1' defines also _USC_LIB_ in lib/Makefile:
+> Checking if file is visible from target mountpoint after bind mount.
 > 
-> ifeq ($(UCLINUX),1)
-> CFLAGS                  += -D_USC_LIB_
-> endif
-> 
-> In include/usctest.h, if _USC_LIB_ is defined then TEST_ERRNO is declared as extern, hence still not defined:
-> 
-> #ifdef  _USC_LIB_
-> extern int TEST_ERRNO;
-> #else
+> +/**************************************************************************
+> + *
+> + *    EXECUTED BY	: root / superuser
+> + *
+> + *    DESCRIPTION
+> + *	Test for feature MS_BIND of mount.
+> + *	"Perform a bind mount, making a file or a directory subtree visible
+> + *	 at another point within a file system."
+> + *
+> + *	Setup:
+> + *	  Setup signal handling.
+> + *	  Create a mount point.
+> + *	  Pause for SIGUSR1 if option specified.
+> + *
+> + *	Test:
+> + *	 Loop if the proper options are given.
+> + *	  Execute system call
+> + *	  Check return code, if system call failed (return=-1)
+> + *		Log the errno and Issue a FAIL message.
+> + *	  Otherwise, Issue a PASS message.
+> + *
+> + *	Cleanup:
+> + *	  Delete the mount point.
+> + *
+> + *    RESTRICTIONS
+> + *	test must run with the -D option
 
-That seems to be really messed up, so without UCLINUX the TEST_ERRNO is
-defined in the header which is included in the test and in the library.
-I wonder how that passes through the linker, that looks like
-redefinition to me...
+Now this part of the comment is not relevant anymore. Which is the
+reason we should comment only information that is not easily seen from
+the test itself.
 
-And with UCLINUX it's does not look to be defined anywhere.
+If some options are required the test must print error when these are
+not passed. Adding these to comments too only creates room for outdated
+and misleading informations.
 
-Hmm, we should really clean up this part.
+I would just keep the description here which nicely tells what the test
+does in one sentence, the rest of the comment is mostly useless.
 
-> Finally, the last place where TEST_ERRNO could be defined is in lib/parse_opts.c; if UNIT_TEST is somewhere defined:
-> 
-> #if UNIT_TEST
-> int TEST_ERRNO;
-> ...
-> 
-> So my questions are: should I compile with CFLAGS += -DUNIT_TEST=1? How to use parse_opts.c?
-> 
+> + *	test doesn't support -c option to run it in parallel, as mount
+> + *	syscall is not supposed to run in parallel.
+> + *****************************************************************************/
 
-If you define the UNIT_TEST the parse_opts.c will contain main() (it's
-intended for testing the LTP lib interface only).
+The test code looks fine to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
