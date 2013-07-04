@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1UuwPS-0005eV-42
-	for ltp-list@lists.sourceforge.net; Fri, 05 Jul 2013 03:10:10 +0000
-Received: from mail-we0-f169.google.com ([74.125.82.169])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UuwPQ-0004JV-3A
-	for ltp-list@lists.sourceforge.net; Fri, 05 Jul 2013 03:10:10 +0000
-Received: by mail-we0-f169.google.com with SMTP id n57so1577531wev.28
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lingyun.xie@bj.cs2c.com.cn>) id 1Uujzj-0002Du-2Z
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 13:54:47 +0000
+Received: from smtpwcom.263xmail.com ([63.217.87.10])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uujza-0008Gx-1O
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 13:54:47 +0000
+Received: from mail-pb0-f53.google.com (localhost [127.0.0.1])
+	by smtpwcom.263xmail.com (Postfix) with ESMTP id D7FE64CD
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Jul 2013 20:10:01 -0700 (PDT)
+	Thu,  4 Jul 2013 21:31:29 +0800 (CST)
+Received: by mail-pb0-f53.google.com with SMTP id xb12so1229824pbc.26
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Jul 2013 06:31:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALGiYOHOBY+3ygqrNz7-DX_d5xCMhMww1H4iRco4NzBDr0-11w@mail.gmail.com>
-References: <CALGiYOH4uhAoPgEQ+-p889GbjTazpXkyXabXs021xdmOTbYkoA@mail.gmail.com>
-	<51D58003.1020500@casparzhang.com>
-	<CAPwn2JRzDE2U_kcbEEJobW9zFsE+KRqme_6QFhp+6jB-D2ZU-A@mail.gmail.com>
-	<51D62E5E.3050207@casparzhang.com>
-	<CALGiYOHOBY+3ygqrNz7-DX_d5xCMhMww1H4iRco4NzBDr0-11w@mail.gmail.com>
-Date: Fri, 5 Jul 2013 11:10:01 +0800
-Message-ID: <CAPwn2JQwgX7x1d3TkxW48pFL3btMSDhGt1_GNhqrS3tpH-6D0Q@mail.gmail.com>
-From: Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH]xinetd/xinetd_tests.sh:disable the IPV6 localhost
+From: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Date: Thu, 4 Jul 2013 21:30:58 +0800
+Message-ID: <CALGiYOH4uhAoPgEQ+-p889GbjTazpXkyXabXs021xdmOTbYkoA@mail.gmail.com>
+Content-Type: multipart/mixed; boundary=047d7b2ed9b30f04f804e0af99fd
+Subject: [LTP] [PATCH]xinetd/xinetd_tests.sh:disable the IPV6 localhost
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,122 +30,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-But I think we should also make sure xinetd can support IPv6,  to
-prevent the situation that xinetd only block IPv4 TCP connection but
-allowed IPv6 TCP connection.
+--047d7b2ed9b30f04f804e0af99fd
+Content-Type: multipart/alternative; boundary=047d7b2ed9b30f04f504e0af99fb
 
-Regards
-Hangbin Liu
+--047d7b2ed9b30f04f504e0af99fb
+Content-Type: text/plain; charset=ISO-8859-1
 
-2013/7/5 Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>:
-> I think that change telnet service on/off is to test the different xinetd
-> config file. So only IPV4 test of telnet is enough.
->
->
->
-> Thanks,
-> Lingyun Xie
->
->
-> 2013/7/5 Caspar Zhang <caspar@casparzhang.com>
->>
->> +list
->>
->> On 07/05/2013 10:20 AM, Hangbin Liu wrote:
->>>
->>> I didn't run xinetd before, but It do have this issue.  when we call
->>> getaddrinfo(3) to get host name's IP address. It will return multiple
->>> answers, and prefer v6 to v4. So this patch make sence. But I
->>> recommend we can add IPv6 test for xinetd, not just disable it.
->>>
->>> 2013/7/4 Caspar Zhang <caspar@casparzhang.com>:
->>>
->>>> Hangbin, have you executed such tests before, and/or met any ipv4/v6
->>>> issue?
->>>>
->>>> Thanks,
->>>> Caspar
->>>>
->>>>
->>>>
->>>> On 07/04/2013 09:30 PM, Xie Lingyun wrote:
->>>>>
->>>>>
->>>>> If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet
->>>>> 127.0.0.1.
->>>>> The first one makes the command output different from the expected
->>>>> result.
->>>>>
->>>>>
->>>>> Thanks,
->>>>> Lingyun Xie
->>>>>
->>>>> 0001-xinetd-xinetd_tests.sh-disable-the-IPV6-localhost.patch
->>>>>
->>>>>
->>>>>   From 75c79721c095cce27548e74260c1e42681e1a267 Mon Sep 17 00:00:00
->>>>> 2001
->>>>> From: mellonwand<mellonwand@gmail.com>
->>>>> Date: Thu, 4 Jul 2013 16:42:42 +0800
->>>>> Subject: [PATCH] xinetd/xinetd_tests.sh:disable the IPV6 localhost
->>>>>
->>>>> If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet
->>>>> 127.0.0.1. The first one makes the command's output different from the
->>>>> expected output.
->>>>>
->>>>> Signed-off-by: Xie Lingyun<lingyun.xie@bj.cs2c.com.cn>
->>>>> ---
->>>>>    testcases/network/xinetd/xinetd_tests.sh | 5 +++--
->>>>>    1 file changed, 3 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/testcases/network/xinetd/xinetd_tests.sh
->>>>> b/testcases/network/xinetd/xinetd_tests.sh
->>>>> index 83eb8a7..d2c851d 100755
->>>>> --- a/testcases/network/xinetd/xinetd_tests.sh
->>>>> +++ b/testcases/network/xinetd/xinetd_tests.sh
->>>>> @@ -128,6 +128,7 @@ init()
->>>>>
->>>>>        # Create expected file with telnet disabled.
->>>>>        cat > $LTPTMP/tst_xinetd.exp.1 <<-EOF || RC=$?
->>>>> +       telnet: connect to address 127.0.0.1: Connection refused
->>>>>          telnet: Unable to connect to remote host: Connection refused
->>>>>          EOF
->>>>>
->>>>> @@ -263,7 +264,7 @@ test01()
->>>>>
->>>>>          # Not checking for exit code from telnet command because
->>>>> telnet is
->>>>>          # not terminated by the test gracefully.
->>>>> -       echo " " | telnet localhost 2>$LTPTMP/tst_xinetd.out
->>>>> 1>/dev/null
->>>>> +       echo " " | telnet 127.0.0.1 2>$LTPTMP/tst_xinetd.out
->>>>> 1>/dev/null
->>>>>          diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
->>>>>                  > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
->>>>>        if [ $RC -ne 0 ]
->>>>> @@ -312,7 +313,7 @@ test01()
->>>>>
->>>>>          # Not checking for exit code from telnet command because
->>>>> telnet is
->>>>>          # not terminated by the test gracefully.
->>>>> -       echo " " | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
->>>>> +       echo " " | telnet 127.0.0.1 > $LTPTMP/tst_xinetd.out 2>&1
->>>>>
->>>>>          diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
->>>>>                  > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
->>>>> -- 1.8.3.1
->>>>>
->>>>
->>
->>
->>
->
+If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet 127.0.0.1
+.
+The first one makes the command output different from the expected result.
+
+
+Thanks,
+Lingyun Xie
+
+--047d7b2ed9b30f04f504e0af99fb
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:simsun,s=
+erif"><span style=3D"color:rgb(34,34,34);font-size:14px">If IPV6 is enabled=
+,</span><font color=3D"#000000" face=3D"simsun, serif" style=3D"color:rgb(0=
+,0,0);font-size:14px">=A0telnet localhost becomes</font><span style=3D"colo=
+r:rgb(34,34,34);font-size:14px">=A0telnet ::1 and telnet 127.0.0.1</span><s=
+pan style=3D"font-size:14px"><font color=3D"#000000">.=A0</font></span></di=
+v>
+
+<div class=3D"gmail_default" style=3D"font-family:simsun,serif"><span style=
+=3D"font-size:14px"><font color=3D"#000000">The first one makes the command=
+ output different from the expected result.</font></span></div><br clear=3D=
+"all">
+
+<div><div dir=3D"ltr"><div><br></div><div>Thanks,<br><div class=3D"gmail_de=
+fault" style=3D"font-family:simsun,serif;color:rgb(0,0,0)">Lingyun Xie</div=
+></div></div></div>
+</div>
+
+--047d7b2ed9b30f04f504e0af99fb--
+
+--047d7b2ed9b30f04f804e0af99fd
+Content-Type: application/octet-stream; 
+	name="0001-xinetd-xinetd_tests.sh-disable-the-IPV6-localhost.patch"
+Content-Disposition: attachment; 
+	filename="0001-xinetd-xinetd_tests.sh-disable-the-IPV6-localhost.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hipzq6ke0
+
+RnJvbSA3NWM3OTcyMWMwOTVjY2UyNzU0OGU3NDI2MGMxZTQyNjgxZTFhMjY3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBtZWxsb253YW5kIDxtZWxsb253YW5kQGdtYWlsLmNvbT4KRGF0
+ZTogVGh1LCA0IEp1bCAyMDEzIDE2OjQyOjQyICswODAwClN1YmplY3Q6IFtQQVRDSF0geGluZXRk
+L3hpbmV0ZF90ZXN0cy5zaDpkaXNhYmxlIHRoZSBJUFY2IGxvY2FsaG9zdAoKSWYgSVBWNiBpcyBl
+bmFibGVkLCB0ZWxuZXQgbG9jYWxob3N0IGJlY29tZXMgdGVsbmV0IDo6MSBhbmQgdGVsbmV0IDEy
+Ny4wLjAuMS4gVGhlIGZpcnN0IG9uZSBtYWtlcyB0aGUgY29tbWFuZCdzIG91dHB1dCBkaWZmZXJl
+bnQgZnJvbSB0aGUgZXhwZWN0ZWQgb3V0cHV0LgoKU2lnbmVkLW9mZi1ieTogWGllIExpbmd5dW4g
+PGxpbmd5dW4ueGllQGJqLmNzMmMuY29tLmNuPgotLS0KIHRlc3RjYXNlcy9uZXR3b3JrL3hpbmV0
+ZC94aW5ldGRfdGVzdHMuc2ggfCA1ICsrKy0tCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25z
+KCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9uZXR3b3JrL3hpbmV0
+ZC94aW5ldGRfdGVzdHMuc2ggYi90ZXN0Y2FzZXMvbmV0d29yay94aW5ldGQveGluZXRkX3Rlc3Rz
+LnNoCmluZGV4IDgzZWI4YTcuLmQyYzg1MWQgMTAwNzU1Ci0tLSBhL3Rlc3RjYXNlcy9uZXR3b3Jr
+L3hpbmV0ZC94aW5ldGRfdGVzdHMuc2gKKysrIGIvdGVzdGNhc2VzL25ldHdvcmsveGluZXRkL3hp
+bmV0ZF90ZXN0cy5zaApAQCAtMTI4LDYgKzEyOCw3IEBAIGluaXQoKQogCiAgICAgIyBDcmVhdGUg
+ZXhwZWN0ZWQgZmlsZSB3aXRoIHRlbG5ldCBkaXNhYmxlZC4KICAgICBjYXQgPiAkTFRQVE1QL3Rz
+dF94aW5ldGQuZXhwLjEgPDwtRU9GIHx8IFJDPSQ/CisJdGVsbmV0OiBjb25uZWN0IHRvIGFkZHJl
+c3MgMTI3LjAuMC4xOiBDb25uZWN0aW9uIHJlZnVzZWQKIAl0ZWxuZXQ6IFVuYWJsZSB0byBjb25u
+ZWN0IHRvIHJlbW90ZSBob3N0OiBDb25uZWN0aW9uIHJlZnVzZWQKIAlFT0YKIApAQCAtMjYzLDcg
+KzI2NCw3IEBAIHRlc3QwMSgpCiAKIAkjIE5vdCBjaGVja2luZyBmb3IgZXhpdCBjb2RlIGZyb20g
+dGVsbmV0IGNvbW1hbmQgYmVjYXVzZSB0ZWxuZXQgaXMKIAkjIG5vdCB0ZXJtaW5hdGVkIGJ5IHRo
+ZSB0ZXN0IGdyYWNlZnVsbHkuCi0JZWNobyAiBCIgfCB0ZWxuZXQgbG9jYWxob3N0IDI+JExUUFRN
+UC90c3RfeGluZXRkLm91dCAxPi9kZXYvbnVsbAorCWVjaG8gIgQiIHwgdGVsbmV0IDEyNy4wLjAu
+MSAyPiRMVFBUTVAvdHN0X3hpbmV0ZC5vdXQgMT4vZGV2L251bGwKIAlkaWZmIC1pd0IgJExUUFRN
+UC90c3RfeGluZXRkLm91dCAgJExUUFRNUC90c3RfeGluZXRkLmV4cC4xIFwKIAkJPiAkTFRQVE1Q
+L3RzdF94aW5ldGQuZXJyIDI+JjEgfHwgUkM9JD8KICAgICBpZiBbICRSQyAtbmUgMCBdCkBAIC0z
+MTIsNyArMzEzLDcgQEAgdGVzdDAxKCkKIAogCSMgTm90IGNoZWNraW5nIGZvciBleGl0IGNvZGUg
+ZnJvbSB0ZWxuZXQgY29tbWFuZCBiZWNhdXNlIHRlbG5ldCBpcwogCSMgbm90IHRlcm1pbmF0ZWQg
+YnkgdGhlIHRlc3QgZ3JhY2VmdWxseS4KLQllY2hvICIEIiB8IHRlbG5ldCBsb2NhbGhvc3QgPiAk
+TFRQVE1QL3RzdF94aW5ldGQub3V0IDI+JjEKKwllY2hvICIEIiB8IHRlbG5ldCAxMjcuMC4wLjEg
+PiAkTFRQVE1QL3RzdF94aW5ldGQub3V0IDI+JjEKIAogCWRpZmYgLWl3QiAkTFRQVE1QL3RzdF94
+aW5ldGQub3V0ICAkTFRQVE1QL3RzdF94aW5ldGQuZXhwLjIgXAogCQk+ICRMVFBUTVAvdHN0X3hp
+bmV0ZC5lcnIgMj4mMSB8fCBSQz0kPwotLSAKMS44LjMuMQoK
+--047d7b2ed9b30f04f804e0af99fd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
@@ -154,7 +124,16 @@ This SF.net email is sponsored by Windows:
 Build for Windows Store.
 
 http://p.sf.net/sfu/windows-dev2dev
+--047d7b2ed9b30f04f804e0af99fd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--047d7b2ed9b30f04f804e0af99fd--
+
