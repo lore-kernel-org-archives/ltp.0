@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1UwTmW-00029V-Hs
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 09:00:20 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UwTmV-00061E-HC
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 09:00:20 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r698b0NK021859
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jul 2013 16:37:06 +0800
-From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Tue, 9 Jul 2013 16:36:41 +0800
-Message-Id: <1373359002-17618-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH 1/2] sssd-lib.sh: Use lib to restart sssd service
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1Uuwz5-0000u6-Lp
+	for ltp-list@lists.sourceforge.net; Fri, 05 Jul 2013 03:46:59 +0000
+Received: from mail-pb0-f54.google.com ([209.85.160.54])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Uuwz3-0007AQ-Pp
+	for ltp-list@lists.sourceforge.net; Fri, 05 Jul 2013 03:46:59 +0000
+Received: by mail-pb0-f54.google.com with SMTP id ro2so1737168pbb.41
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Jul 2013 20:46:51 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Fri,  5 Jul 2013 11:46:35 +0800
+Message-Id: <1372995995-8270-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [Patch v2] networking/stress: make sure we will kill the test
+	case after timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,102 +29,243 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Use restart_daemon() to restart sssd service.
+In some old machines or guests, the system may not have the ability to set up
+all the connections, e.g. 4000 tcp connections, quickly. Then the system will
+take lots of time to try setup the connections or just huang there.
 
-Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+I think we should just kill all the connections after testing timeout, no
+matter how many connections we have setup.
+
+So mv the connecting setup while loop into whatchdog while loop. If we check
+timeout every connection, it will spend too much time on sleep 1. So we only
+check timeout every 100 connections.
+
+Also, I will only modify tcp/udp4-multi-diffport01, tcp4-multi-sameport01. For
+other tests like tcp4-multi-diffip01 or diffnic, these tests only setup total
+ip/nic connections, which will be only 1 or 2 normally.
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- testcases/commands/sssd/sssd-lib.sh | 41 +++----------------------------------
- 1 file changed, 3 insertions(+), 38 deletions(-)
+ .../tcp/multi-diffport/tcp4-multi-diffport01       | 67 ++++++++++++----------
+ .../tcp/multi-sameport/tcp4-multi-sameport01       | 36 +++++++-----
+ .../udp/multi-diffport/udp4-multi-diffport01       | 55 ++++++++++--------
+ 3 files changed, 87 insertions(+), 71 deletions(-)
 
-diff --git a/testcases/commands/sssd/sssd-lib.sh b/testcases/commands/sssd/sssd-lib.sh
-index e434efe..b001904 100755
---- a/testcases/commands/sssd/sssd-lib.sh
-+++ b/testcases/commands/sssd/sssd-lib.sh
-@@ -39,21 +39,10 @@ readonly TRAP_SIGS="2 3 6 11 15"
- 
- CONFIG_FILE="/etc/sssd/sssd.conf"
- NSS_CONFIG_FILE="/etc/nsswitch.conf"
--SSSD_INIT_SCRIPT="/etc/init.d/sssd"
--
--# Command to restart sssd daemon.
--SSSD_RESTART_CMD=
- 
- # number of seconds to wait for another sssd test to complete
- WAIT_COUNT=30
- 
--# running under systemd?
--if command -v systemctl >/dev/null 2>&1; then
--	HAVE_SYSTEMCTL=1
--else
--	HAVE_SYSTEMCTL=0
--fi
--
- cleanup()
- {
- 	disable_traps
-@@ -98,30 +87,6 @@ setup()
- 		cleanup	0
- 	fi
- 
--	SVCNAME=$(basename $SSSD_INIT_SCRIPT)
--	if [ $HAVE_SYSTEMCTL == 1 ]; then
--		for svc in "$SVCNAME" "sssd"; do
--			if systemctl is-enabled $svc.service >/dev/null 2>&1
--			then
--				SSSD_RESTART_CMD="systemctl restart $svc.service"
--				break
--			fi
--		done
--	else
--		for SSSD_INIT_SCRIPT in "$SSSD_INIT_SCRIPT" "/etc/init.d/sssd"
--		do
--			if [ -x "$SSSD_INIT_SCRIPT" ]; then
--				SSSD_RESTART_CMD="$SSSD_INIT_SCRIPT restart"
--				break
--			fi
--		done
+diff --git a/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01 b/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+index e260d35..a77fc8c 100644
+--- a/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
++++ b/testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
+@@ -323,41 +323,46 @@ end_port=`echo $portbundle | cut -f 2 -d '-'`
+ # Making connections
+ connection_num=0
+ current_port=$start_port
+-while [ $current_port -le $end_port ]; do
+-    # Run a server
+-    ns-tcpserver -b -f $IP_VER -p $current_port
+-    if [ $? -ne 0 ]; then
+-	# Failed to start no server
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run a server"
+-	    exit 1
 -	fi
+-	# Failed to start a server
+-	tst_resm TINFO "$connection_num seems the maximum number of the server"
+-	break
+-    fi
 -
--	if [ -z "$SSSD_RESTART_CMD" ]; then
--		tst_resm TBROK "Don't know how to restart $SVCNAME"
--		cleanup 1
+-    # Run a clinet
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $current_port' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	# Failed to start any client
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run any client."
+-	    exit 1
 -	fi
+-	# Failed to start a client
+-	tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	break
+-    fi
 -
- 	# Back up configuration file
- 	if [ -f "$CONFIG_FILE" ]; then
- 		# Pause if another LTP sssd test is running
-@@ -163,8 +128,8 @@ restart_sssd_daemon()
- 		cleanup_command=$1
- 	fi
+-    current_port=`expr $current_port + 1`
+-    connection_num=`expr $connection_num + 1`
+-done
+-
  
--	tst_resm TINFO "restarting sssd daemon via $SSSD_RESTART_CMD"
--	$SSSD_RESTART_CMD > /dev/null 2>&1
-+	tst_resm TINFO "restarting sssd daemon"
-+	restart_daemon sssd
- 	if [ $? -eq 0 ]; then
- 		# wait sssd restart success.
- 		sleep 1
-@@ -201,7 +166,7 @@ make_config_file
- sed -i -e "/\[domain\/LOCAL\]/ a\override_gid = error" $CONFIG_FILE
- # make sure config file is OK
- sleep 1
--$SSSD_RESTART_CMD > /dev/null 2>&1
-+restart_daemon sssd
+ # Watch the TCP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	while [ $current_port -le $end_port ]; do
++		# Run a server
++		ns-tcpserver -b -f $IP_VER -p $current_port
++		if [ $? -ne 0 ]; then
++			# Failed to start no server
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run a server"
++				exit 1
++			fi
++			# Failed to start a server
++			tst_resm TINFO "$connection_num seems the maximum number of the server"
++			break
++		fi
++
++		# Run a clinet
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $current_port' ; echo $?'`
++		if [ $ret -ne 0 ]; then
++			# Failed to start any client
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run any client."
++				exit 1
++			fi
++			# Failed to start a client
++			tst_resm TINFO "$connection_num seems the maximum number of the client"
++			break
++		fi
++
++		current_port=`expr $current_port + 1`
++		connection_num=`expr $connection_num + 1`
++
++		# check timeout every 100 times
++		if [ $(($connection_num % 100)) -eq 0 ]; then
++			break
++		fi
++	done
++
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+     if [ $elapse_epoc -ge $NS_DURATION ]; then
+diff --git a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01 b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+index aff2481..b8a5204 100644
+--- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
++++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
+@@ -336,25 +336,31 @@ rm -f $info_file
  
- if [ $? -ne 1 ]; then
- 	tst_resm TCONF "override_gid does not exist. Skipping all testcases"
+ # Making connections
+ connection_num=0
+-while [ $connection_num -lt $CONNECTION_TOTAL ]; do
+-    # Run a client
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	# Failed to start any client
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run any client"
+-	    exit 1
+-	fi
+-	# Failed to start a client
+-	tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	break
+-    fi
+-    connection_num=`expr $connection_num + 1`
+-done
+ 
+ # Watch the TCP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	while [ $connection_num -lt $CONNECTION_TOTAL ]; do
++		# Run a client
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p $server_port' ; echo $?'`
++		if [ $ret -ne 0 ]; then
++			# Failed to start any client
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run any client"
++				exit 1
++			fi
++			# Failed to start a client
++			tst_resm TINFO "$connection_num seems the maximum number of the client"
++			break
++		fi
++		connection_num=`expr $connection_num + 1`
++
++		# check timeout every 100 times
++		if [ $(($connection_num % 100)) -eq 0 ]; then
++			break
++		fi
++	done
++
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+ 
+diff --git a/testcases/network/stress/udp/multi-diffport/udp4-multi-diffport01 b/testcases/network/stress/udp/multi-diffport/udp4-multi-diffport01
+index d130ff9..7df2b3d 100644
+--- a/testcases/network/stress/udp/multi-diffport/udp4-multi-diffport01
++++ b/testcases/network/stress/udp/multi-diffport/udp4-multi-diffport01
+@@ -291,35 +291,40 @@ end_port=`echo $portbundle | cut -f 2 -d '-'`
+ # Run the pair of server and client
+ connection_num=0
+ current_port=$start_port
+-while [ $current_port -le $end_port ]; do
+-    # Run a UDP traffic server
+-    ns-udpserver -b -f $IP_VER -p $current_port
+-    if [ $? -ne 0 ]; then
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run a server"
+-	    exit 1
+-	fi
+-	tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	break
+-    fi
+-
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-udpclient -b -f $IP_VER -S $lhost_addr -p $current_port'; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	if [ $connection_num -eq 0 ]; then
+-	    tst_resm TFAIL "Failed to run a client"
+-	    exit 1
+-	fi
+-	tst_resm TINFO "$connection_num seems the maximum number of the client"
+-	break
+-    fi
+-    current_port=`expr $current_port + 1`
+-    connection_num=`expr $connection_num + 1`
+-done
+-
+ 
+ # Watch the UDP traffic server
+ start_epoc=`date +%s`
+ while true ; do
++	while [ $current_port -le $end_port ]; do
++		# Run a UDP traffic server
++		ns-udpserver -b -f $IP_VER -p $current_port
++		if [ $? -ne 0 ]; then
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run a server"
++				exit 1
++			fi
++			tst_resm TINFO "$connection_num seems the maximum number of the client"
++			break
++		fi
++
++		ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-udpclient -b -f $IP_VER -S $lhost_addr -p $current_port'; echo $?'`
++		if [ $ret -ne 0 ]; then
++			if [ $connection_num -eq 0 ]; then
++				tst_resm TFAIL "Failed to run a client"
++				exit 1
++			fi
++			tst_resm TINFO "$connection_num seems the maximum number of the client"
++			break
++		fi
++		current_port=`expr $current_port + 1`
++		connection_num=`expr $connection_num + 1`
++
++		# check timeout every 100 times
++		if [ $(($connection_num % 100)) -eq 0 ]; then
++			break
++		fi
++	done
++
+     current_epoc=`date +%s`
+     elapse_epoc=`expr $current_epoc - $start_epoc`
+     if [ $elapse_epoc -ge $NS_DURATION ]; then
 -- 
-1.8.3.1
+1.8.1.4
 
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
