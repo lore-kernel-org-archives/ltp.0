@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uu5ER-00041r-RO
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 18:23:15 +0000
-Date: Tue, 2 Jul 2013 20:24:33 +0200
+	(envelope-from <metan@suse.de>) id 1Uw9Y7-0001gF-6J
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 11:24:07 +0000
+Date: Mon, 8 Jul 2013 13:25:41 +0200
 From: chrubis@suse.cz
-Message-ID: <20130702182433.GA990@rei.Home>
-References: <1372765421-2934-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20130708112541.GD23579@rei.Home>
+References: <1373014297-30962-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372765421-2934-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v6] fw_load: new test of device firmware loading
+In-Reply-To: <1373014297-30962-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] runltp: try to create ext3 loop device if
+ creating ext4 failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,28 +25,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> This test checks the device firmware loading. Since Linux 3.7 it can be loaded
-> directly (by-pass udev). The test consists of the two parts: userspace and
-> kernelspace.
+> Try to create ext3 loop device if creating ext4 failed since
+> some old system can't support ext4 file system or the root
+> file system still use ext3 file system.
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> ---
+>  runltp | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/runltp b/runltp
+> index 1309d0a..2c13b56 100755
+> --- a/runltp
+> +++ b/runltp
+> @@ -1002,7 +1002,8 @@ create_block()
+>                  return 1
+>              else
+>                  mkfs.ext4 $LOOP_DEV
+> -                [ $? -ne 0 ] && (echo "creating a ext4 block device failed" && return 1)
+> +                [ $? -ne 0 ] && (mkfs.ext3 $LOOP_DEV)
+> +                [ $? -ne 0 ] && (echo "creating a ext4/3 block device failed" && return 1)
+>                  #set the values in alltests which require block device.
+>                  DEVICE=$LOOP_DEV
+>                  DEVICE_FS_TYPE="ext4"
+                         ^
+Hmm, you should set the DEVICE_FS_TYPE accordingly too. I wonder if
+leaving it set to ext4 will work, have you tested the change?
 
-This version looks good to me.
-
-But there is one catch there, as we divided the module load function
-into the load_module and run_cmd functions the testcase will end up with
-TBROK rather than with TCONF when the kernel module couldn't be loaded
-due to version mismatch and I would preffer the TCONF in this case.
-
-But that does not block the inclusion of this testcase (and the
-configure patch that needs to be applied beforhand) and if we agree that
-TCONF is better we can fix the module_load later. One solution that
-seems easy enough is to make the run_cmd() return the wait status (as
-system() does).
+Otherwise I'm fine with the change.
 
 -- 
 Cyril Hrubis
