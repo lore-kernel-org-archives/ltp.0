@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1V4Mgr-00032o-Sk
-	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 03:03:05 +0000
-Received: from mail-pa0-f42.google.com ([209.85.220.42])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V4Mgp-0005LM-7T
-	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 03:03:05 +0000
-Received: by mail-pa0-f42.google.com with SMTP id lj1so312759pab.15
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jul 2013 20:02:57 -0700 (PDT)
-Message-ID: <51F87E66.2020004@casparzhang.com>
-Date: Wed, 31 Jul 2013 11:03:02 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UwAnJ-0003ot-K7
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 12:43:53 +0000
+Date: Mon, 8 Jul 2013 14:45:28 +0200
+From: chrubis@suse.cz
+Message-ID: <20130708124528.GE23579@rei.Home>
+References: <1372930628-27064-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] max_map_count: corrected max_map_count condition
+Content-Disposition: inline
+In-Reply-To: <1372930628-27064-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V2] lib: add tst_kvercmp2 to compare specific
+ vendor extra kernel versions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,116 +25,148 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: ltp-list@lists.sourceforge.net, bob.picco@oracle.com
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-On 07/30/2013 09:47 PM, Stanislav Kholmanskikh wrote:
-> From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
->
-> * kernel test for max_map_count_sysctl is:
->     /* Too many mappings? */
->     if (mm->map_count > sysctl_max_map_count)
->       return -ENOMEM;
->    so in LTP test map_count should be greater than max_map_count by 1
->
-> * only [vsyscall] is allocated without incrementing mm->map_count
->
-> Author: Bob Picco <bob.picco@oracle.com>
->
-> Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
-
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
-
+Hi!
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 > ---
->   testcases/kernel/mem/tunable/max_map_count.c |   41 +++++++++++++++++--------
->   1 files changed, 28 insertions(+), 13 deletions(-)
->
-> diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-> index e948868..01fbe5e 100644
-> --- a/testcases/kernel/mem/tunable/max_map_count.c
-> +++ b/testcases/kernel/mem/tunable/max_map_count.c
-> @@ -14,20 +14,16 @@
->    * The program trys to invoke mmap() endless until triggering MAP_FAILED,
->    * then read the process's maps file /proc/[pid]/maps, save the line number
->    * to map_count variable, and compare it with /proc/sys/vm/max_map_count,
-> - * map_count should less than max_map_count.
-> - * Note: There are two special vmas VDSO and VSYSCALL, which are allocated
-> - * via install_special_mapping(), install_specail_mapping() allows the VMAs
-> - * to be allocated and inserted without checking the sysctl_map_map_count,
-> - * and each /proc/<pid>/maps has both at the end:
-> - * # cat /proc/self/maps
-> + * map_count should be greater than max_map_count by 1;
-> + *
-> + * Note: On some architectures there is a special vma VSYSCALL, which
-> + * is allocated without incrementing mm->map_count variable. On these
-> + * architectures each /proc/<pid>/maps has at the end:
->    * ...
->    * ...
-> - * 7fff7b9ff000-7fff7ba00000 r-xp 00000000 00:00 0           [vdso]
->    * ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0   [vsyscall]
->    *
-> - * so during comparing with map_count and /proc/sys/vm/max_map_count,
-> - * we should except the two special vmas from map_count:
-> - * map_count -= 2;
-> + * so we ignore this line during /proc/[pid]/maps reading.
->    *
->    * ********************************************************************
->    * Copyright (C) 2012 Red Hat, Inc.
-> @@ -121,6 +117,21 @@ void cleanup(void)
->   	TEST_CLEANUP;
->   }
->
-> +/* This is a filter to exclude map entries which aren't accounted
-> + * for in the vm_area_struct's map_count.
-> + */
-> +#if defined(__x86_64__) || defined(__x86__)
-> +static int filter_map(char *buf)
-> +{
-> +	return strcmp(buf, "[vsyscall]") == 0;
-> +}
-> +#else
-> +static int filter_map(char *buf)
-> +{
-> +	return 0;
-> +}
-> +#endif
+>  include/test.h    |  7 ++++++
+>  lib/tst_kvercmp.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 69 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/test.h b/include/test.h
+> index ee3efc3..a76fafc 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -173,6 +173,13 @@ char *get_high_address(void);
+>  void tst_getkver(int *k1, int *k2, int *k3);
+>  int tst_kvercmp(int r1, int r2, int r3);
+>  
+> +struct tst_kern_exv {
+> +	char *dist_name;
+> +	char *extra_ver;
+> +};
 > +
->   static long count_maps(pid_t pid)
->   {
->   	FILE *fp;
-> @@ -136,8 +147,7 @@ static long count_maps(pid_t pid)
->   	while (getline(&line, &len, fp) != -1) {
->   		/* exclude vdso and vsyscall */
->   		if (sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf) ==
-> -		    1 && ((strcmp(buf, "[vdso]") == 0) ||
-> -			  (strcmp(buf, "[vsyscall]") == 0)))
-> +				1 && filter_map(buf))
->   			continue;
->   		map_count++;
->   	}
-> @@ -202,7 +212,12 @@ static void max_map_count_test(void)
->   			tst_brkm(TBROK, cleanup, "child did not stopped");
->
->   		map_count = count_maps(pid);
-> -		if (map_count == max_maps)
-> +		/* Note max_maps will be exceeded by one for
-> +		 * the sysctl setting of max_map_count. This
-> +		 * is the mm failure point at the time of
-> +		 * writing this COMMENT!
-> +		*/
-> +		if (map_count == (max_maps + 1))
->   			tst_resm(TPASS, "%ld map entries in total "
->   				 "as expected.", max_maps);
->   		else
->
+> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
+> +
+>  /* lib/tst_is_cwd.c */
+>  int tst_is_cwd_nfs(void);
+>  int tst_is_cwd_v9fs(void);
+> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+> index cb4fd67..5ca9e21 100644
+> --- a/lib/tst_kvercmp.c
+> +++ b/lib/tst_kvercmp.c
+> @@ -34,15 +34,13 @@
+>  #include <unistd.h>
+>  #include <string.h>
+>  #include <sys/utsname.h>
+> +#include "test.h"
+>  
+>  void get_kver(int *k1, int *k2, int *k3)
+>  {
+>  	struct utsname uval;
+>  	char *kver;
+>  	char *r1, *r2, *r3;
+> -#if !defined(linux)
+> -	extern char *strsep();	/* shut up some compilers */
+> -#endif
+>  
+>  	uname(&uval);
+>  	kver = uval.release;
+> @@ -66,3 +64,64 @@ int tst_kvercmp(int r1, int r2, int r3)
+>  
+>  	return currver - testver;
+>  }
+> +
+> +static int tst_kexvcmp(char *tst_exv)
+> +{
+> +	struct utsname uval;
+> +	char *kver;
+> +	char *cur_exv;
+> +	int c1, c2, t1, t2;
+> +	int ret;
+> +	char *cur_exv1;
+> +
+> +	uname(&uval);
+> +	kver = uval.release;
+> +	cur_exv = strchr(kver, '-');
+> +	if (!cur_exv)
+> +		return -1;
+> +	cur_exv++;
+> +	sscanf(tst_exv, "%d.%d", &t1, &t2);
 
+The sscanf returns numer of succesfull conversions, make use of that.
+
+Moreover we can avoid some of the strchr on cur_exv with supression
+modifier '*' and make the version detection more robust at the same
+time.
+
+Following statement can parse kernel version, fill the extra version
+into c1 and c2 and the return value should cointain number of assigned
+conversion (2 if both c1 and c2 were filled).
+
+	ret = sscanf(cur_exv, "%*d.%*d.%*d-%d.%d", &c1, &c2);
+
+> +	cur_exv1 = strsep(&cur_exv, ".");
+> +	c1 = atoi(cur_exv1);
+> +	if ((ret = c1 - t1)) {
+> +		return ret;
+> +	} else if (!cur_exv && !t2) {
+> +		return 0;
+> +	} else if (!cur_exv) {
+> +		return -1;
+> +	} else if (!t2) {
+> +		return 1;
+> +	} else {
+> +		c2 = atoi(cur_exv);
+> +		return c2 - t2;
+> +	}
+> +}
+>
+> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers)
+> +{
+> +	int ret;
+> +	int i;
+> +	struct utsname uval;
+> +	char *kver;
+> +	const char *cur_dist_name = NULL;
+> +
+> +	if ((ret = tst_kvercmp(r1, r2, r3)))
+> +		return ret;
+> +
+> +	uname(&uval);
+> +	kver = uval.release;
+> +	if (strstr(kver, ".el5")) {
+> +		cur_dist_name = "RHEL5";
+> +	} else if (strstr(kver, ".el6")) {
+> +		cur_dist_name = "RHEL6";
+> +	} else {
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; vers[i].dist_name; i++) {
+> +		if (!strcmp(vers[i].dist_name, cur_dist_name))
+> +			return tst_kexvcmp(vers[i].extra_ver);
+> +	}
+> +
+> +	return ret;
+> +}
+
+This part looks Ok. I don't like that uname() is called twice
+unnecessarily I would just pass the result from the first one to the
+tst_kexvcmp, but that is very minor.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+This SF.net email is sponsored by Windows:
+
+Build for Windows Store.
+
+http://p.sf.net/sfu/windows-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
