@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1UtZWK-0005w4-K8
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:31:36 +0000
-Received: from mail-we0-f178.google.com ([74.125.82.178])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UtZWI-0001wX-ST
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:31:36 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1Uw15w-0004Fn-TT
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 02:22:28 +0000
+Received: from mail-wi0-f170.google.com ([209.85.212.170])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Uw15t-0005sl-9G
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 02:22:28 +0000
+Received: by mail-wi0-f170.google.com with SMTP id ey16so9581677wid.3
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 07 Jul 2013 19:22:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <606017700.1063130.1372417612499.JavaMail.root@redhat.com>
-References: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
-	<538407137.757498.1372350334215.JavaMail.root@redhat.com>
-	<CAPwn2JTuF3EVb8_XoWkFk=qZc61FhNHenNDmdR7b6xrZFf9x1g@mail.gmail.com>
-	<1243201217.946751.1372403630876.JavaMail.root@redhat.com>
-	<CAPwn2JRYRWDEvn090NdtM1K178R=yQSasmBX3ZoKymVtcRWPXw@mail.gmail.com>
-	<606017700.1063130.1372417612499.JavaMail.root@redhat.com>
-Date: Mon, 1 Jul 2013 16:31:28 +0800
-Message-ID: <CAPwn2JQ+ri=T9Fs6JWdF+v_8x9Nk5wPqo5aTrzb1A9ERr2DgEQ@mail.gmail.com>
+Date: Mon, 8 Jul 2013 10:22:19 +0800
+Message-ID: <CAPwn2JQ6bZtXkmvY-73U8njMHJ-LWeJyd9qqmbwuV8p7oqsJaQ@mail.gmail.com>
 From: Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the
- test case after timeout
+Subject: Re: [LTP] [PATCH]xinetd/xinetd_tests.sh:disable the IPV6 localhost
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,159 +28,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi Jan,
-The problem is the connection won't  fail, but only need too much
-time. For example:
-On a guest:  on cpu process, 2G memory
-# for i in `seq 4000`; do ./ns-tcpclient -b -f 4 -S 10.66.87.216 -p
-9999; echo "The $i connection : `date`"; done
-The 1 connection : Mon Jul  1 04:03:05 EDT 2013
-The 2 connection : Mon Jul  1 04:03:05 EDT 2013
-The 3 connection : Mon Jul  1 04:03:05 EDT 2013
-The 4 connection : Mon Jul  1 04:03:06 EDT 2013
-<snip>
-The 19 connection : Mon Jul  1 04:04:46 EDT 2013
-<snip>
-The 30 connection : Mon Jul  1 04:06:34 EDT 2013
-The 31 connection : Mon Jul  1 04:07:52 EDT 2013
-<snip>
-The 45 connection : Mon Jul  1 04:10:11 EDT 2013
-<snip>
-The 50 connection : Mon Jul  1 04:12:05 EDT 2013
+2013/7/6 Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>:
+> I'm so sorry for the previous email.
+> The telnet on my test environment points to /usr/kerberos/bin/telnet, not
+> the same as /usr/bin/telnet on Fedora 19.
+> I will modify the telnet command in xinetd_test.sh to /usr/bin/telnet, and
+> remove the "Unable to " line.
+> I also want to add the IPv6 test for xinetd separately.
 
-You can saw we took 9 minutes to set up 50 tcp connections.
+Good.
 
-But on a powerful physical machine,
-The 1 connection : Mon Jul  1 04:21:08 EDT 2013
-The 2 connection : Mon Jul  1 04:21:08 EDT 2013
-<snip>
-The 499 connection : Mon Jul  1 04:24:35 EDT 2013
-The 500 connection : Mon Jul  1 04:24:35 EDT 2013
++ list
 
-It only use 3 minutest to set up 500 connections.
-
-So we can't just continue on success, but should check the time after
-some connections.
-
-Thanks and Best regards
-Hangbin Liu
-
-2013/6/28 Jan Stancek <jstancek@redhat.com>:
+>
+> Thank
+> you for your help
+> ,
+>
+> Lingyun Xie
 >
 >
-> ----- Original Message -----
->> From: "Hangbin Liu" <liuhangbin@gmail.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Sent: Friday, 28 June, 2013 11:30:02 AM
->> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the test case after timeout
+> 2013/7/5 Hangbin Liu <liuhangbin@gmail.com>
 >>
->
-> Hangbin,
->
-> just fyi, your replies are not going to list.
->
->> Opps, My mistake.  Didn't find there is a sleep 1...
+>> If you cloned the ltp repo with git, you can use git reset --hard
+>> $commit_id to the latest commit. If you download the tar ball, then
+>> just download a new one.
 >>
->> I will send another patch for this issue. How about check
->> $connection_num every 100 times. like
->
-> I'd go with new variable to count each attempt, not just successful ones.
->
-> Or something like this (on top your patch):
-> Skip the sleep and continue on success, if we hit issue sleep and retry as watchdog allows.
->
-> diff --git a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01 b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> index 206a0d1..649c60b 100644
-> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> @@ -351,9 +351,10 @@ while true ; do
->                         fi
->                         # Failed to start a client
->                         tst_resm TINFO "$connection_num seems the maximum number of the client"
-> -                       break
-> +               else
-> +                       connection_num=`expr $connection_num + 1`
-> +                       continue;
->                 fi
-> -               connection_num=`expr $connection_num + 1`
->         fi
->
->      current_epoc=`date +%s`
->
-> Regards,
-> Jan
->
->>
->> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> @@ -340,7 +340,7 @@ connection_num=0
->>  start_epoc=`date +%s`
->>  while true ; do
->>         # Making connections
->> -       if [ $connection_num -lt $CONNECTION_TOTAL ]; then
->> +       while [ $connection_num -lt $CONNECTION_TOTAL ]; do
->>                 # Run a client
->>                 ret=`$LTP_RSH $RHOST
->> ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p
->> $server_port' ; ec
->>                 if [ $ret -ne 0 ]; then
->> @@ -354,7 +354,12 @@ while true ; do
->>                         break
->>                 fi
->>                 connection_num=`expr $connection_num + 1`
->> -       fi
->> +
->> +               # check timeout every 100 times
->> +               if [ $(($connection_num % 100)) -eq 0 ];then
->> +                       break
->> +               fi
->> +       done
->>
->>      current_epoc=`date +%s`
->>      elapse_epoc=`expr $current_epoc - $start_epoc`
->>
->> 2013/6/28 Jan Stancek <jstancek@redhat.com>:
+>> 2013/7/5 Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>:
+>> > Sorry, I didn't test the telnet command in latest version.
+>> > The "Unable to connect to remote host" line comes out in previous
+>> > version.
+>> > Is there any better way to fix the test script?
 >> >
 >> >
 >> >
+>> > Thanks,
+>> > Lingyun Xie
 >> >
->> > ----- Original Message -----
->> >> From: "Hangbin Liu" <liuhangbin@gmail.com>
->> >> To: "Jan Stancek" <jstancek@redhat.com>
->> >> Sent: Friday, 28 June, 2013 8:36:05 AM
->> >> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill
->> >> the test case after timeout
+>> >
+>> > 2013/7/5 Hangbin Liu <liuhangbin@gmail.com>
 >> >>
->> >> No, we can set up $CONNECTION_TOTAL connections as soon as possible, and
->> >> also
->> >> transmit tcp data at the same time.
+>> >> 2013/7/4 Caspar Zhang <caspar@casparzhang.com>:
+>> >> > Hangbin, have you executed such tests before, and/or met any ipv4/v6
+>> >> > issue?
+>> >> >
+>> >> > Thanks,
+>> >> > Caspar
+>> >> >
+>> >> >
+>> >> >
+>> >> > On 07/04/2013 09:30 PM, Xie Lingyun wrote:
+>> >> >>
+>> >> >> If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet
+>> >> >> 127.0.0.1.
+>> >> >> The first one makes the command output different from the expected
+>> >> >> result.
+>> >> >>
+>> >> >>
+>> >> >> Thanks,
+>> >> >> Lingyun Xie
+>> >> >>
+>> >> >> 0001-xinetd-xinetd_tests.sh-disable-the-IPV6-localhost.patch
+>> >> >>
+>> >> >>
+>> >> >>  From 75c79721c095cce27548e74260c1e42681e1a267 Mon Sep 17 00:00:00
+>> >> >> 2001
+>> >> >> From: mellonwand<mellonwand@gmail.com>
+>> >> >> Date: Thu, 4 Jul 2013 16:42:42 +0800
+>> >> >> Subject: [PATCH] xinetd/xinetd_tests.sh:disable the IPV6 localhost
+>> >> >>
+>> >> >> If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet
+>> >> >> 127.0.0.1. The first one makes the command's output different from
+>> >> >> the
+>> >> >> expected output.
+>> >> >>
+>> >> >> Signed-off-by: Xie Lingyun<lingyun.xie@bj.cs2c.com.cn>
+>> >> >> ---
+>> >> >>   testcases/network/xinetd/xinetd_tests.sh | 5 +++--
+>> >> >>   1 file changed, 3 insertions(+), 2 deletions(-)
+>> >> >>
+>> >> >> diff --git a/testcases/network/xinetd/xinetd_tests.sh
+>> >> >> b/testcases/network/xinetd/xinetd_tests.sh
+>> >> >> index 83eb8a7..d2c851d 100755
+>> >> >> --- a/testcases/network/xinetd/xinetd_tests.sh
+>> >> >> +++ b/testcases/network/xinetd/xinetd_tests.sh
+>> >> >> @@ -128,6 +128,7 @@ init()
+>> >> >>
+>> >> >>       # Create expected file with telnet disabled.
+>> >> >>       cat > $LTPTMP/tst_xinetd.exp.1 <<-EOF || RC=$?
+>> >> >> +       telnet: connect to address 127.0.0.1: Connection refused
+>> >> >>         telnet: Unable to connect to remote host: Connection refused
+>> >>
+>> >> Here we should remove the "Unable to connectto remote host" line
+>> >>
+>> >> >>         EOF
+>> >> >>
+>> >> >> @@ -263,7 +264,7 @@ test01()
+>> >> >>
+>> >> >>         # Not checking for exit code from telnet command because
+>> >> >> telnet
+>> >> >> is
+>> >> >>         # not terminated by the test gracefully.
+>> >> >> -       echo " " | telnet localhost 2>$LTPTMP/tst_xinetd.out
+>> >> >> 1>/dev/null
+>> >> >> +       echo " " | telnet 127.0.0.1 2>$LTPTMP/tst_xinetd.out
+>> >> >> 1>/dev/null
+>> >> >>         diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
+>> >> >>                 > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+>> >> >>       if [ $RC -ne 0 ]
+>> >> >> @@ -312,7 +313,7 @@ test01()
+>> >> >>
+>> >> >>         # Not checking for exit code from telnet command because
+>> >> >> telnet
+>> >> >> is
+>> >> >>         # not terminated by the test gracefully.
+>> >> >> -       echo " " | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
+>> >> >> +       echo " " | telnet 127.0.0.1 > $LTPTMP/tst_xinetd.out 2>&1
+>> >> >>
+>> >> >>         diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
+>> >> >>                 > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+>> >> >> -- 1.8.3.1
+>> >> >>
+>> >> >
+>> >>
+>> >>
 >> >
->> > Where does this happen?
->> >
->> > I'm looking at the while loop, and I see it creates 1 connection each
->> > iteration, then it sleeps for 1 second.
->> >
->> > Am I missing something here?
->> >
->> > while true ; do
->> >         # Making connections
->> >         if [ $connection_num -lt $CONNECTION_TOTAL ]; then
->> >                 # make new connection
->> >                 ...
->> >                 connection_num=`expr $connection_num + 1`
->> >         fi
->> >
->> >     # check time
->> >     ...
->> >     sleep 1
->> > done
->> >
->> > Regards,
->> > Jan
 >>
+>>
+>
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by Windows:
