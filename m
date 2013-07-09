@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Uuk5C-0007hc-Hf
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 14:00:26 +0000
-Received: from mail-pa0-f42.google.com ([209.85.220.42])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Uuk5A-0003zs-Ot
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 14:00:26 +0000
-Received: by mail-pa0-f42.google.com with SMTP id rl6so1353613pac.29
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Jul 2013 07:00:18 -0700 (PDT)
-Message-ID: <51D58003.1020500@casparzhang.com>
-Date: Thu, 04 Jul 2013 22:00:35 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UwabQ-0001mj-6h
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 16:17:20 +0000
+Date: Tue, 9 Jul 2013 18:18:54 +0200
+From: chrubis@suse.cz
+Message-ID: <20130709161854.GA1435@rei>
+References: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
+	<51D38924.8090400@oracle.com> <20130709151103.GB760@rei.Home>
+	<CA+icZUUtv3MpiYScqqHmLbOFaEqKRC8eSAtUziMrVcRP80kbGw@mail.gmail.com>
 MIME-Version: 1.0
-References: <CALGiYOH4uhAoPgEQ+-p889GbjTazpXkyXabXs021xdmOTbYkoA@mail.gmail.com>
-In-Reply-To: <CALGiYOH4uhAoPgEQ+-p889GbjTazpXkyXabXs021xdmOTbYkoA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH]xinetd/xinetd_tests.sh:disable the IPV6 localhost
+Content-Disposition: inline
+In-Reply-To: <CA+icZUUtv3MpiYScqqHmLbOFaEqKRC8eSAtUziMrVcRP80kbGw@mail.gmail.com>
+Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,79 +26,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liuhangbin@gmail.com
-Cc: ltp-list@lists.sourceforge.net, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Eko <hong.sun@oracle.com>
 
-Hangbin, have you executed such tests before, and/or met any ipv4/v6 issue?
+Hi!
+> >>   I executed runltp command in my box, everything is OK, but when
+> >> cleaning the environment, got following errors:
+> >>
+> >>         ###############################################################
+> >>              Done executing testcases.
+> >>              LTP Version:  20130503
+> >>         ###############################################################
+> >> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458': Device or resource busy
+> >> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/sandbox': Device or resource busy
+> >>
+> >>
+> >> Because /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458 and
+> >> /tmp/ltp-9NAwvmAbI5/sandbox are still mounted, so can't delete them, the
+> >> best way is:
+> >> # umount /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458
+> >> # umount /tmp/ltp-9NAwvmAbI5/sandbox
+> >>
+> >
+> > This looks like leftover mount from some testcases. We need to find
+> > which testcases are these and fix them to do their cleanup correctly.
+> >
+> > Quick greping suggested that candidates are:
+> >
+> > testscripts/test_fs_bind.sh
+> >
+> > testcases/kernel/syscalls/mount/mount*.c
+> >
+> 
+> So ${TEMP} is really used?
 
-Thanks,
-Caspar
+I don't think so, it looks like a typo to me.
 
+The error messages here are from the 'rm -rf ${TMP}' that is done after
+the line with ${TEMP}.
 
-On 07/04/2013 09:30 PM, Xie Lingyun wrote:
-> If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet
-> 127.0.0.1.
-> The first one makes the command output different from the expected result.
->
->
-> Thanks,
-> Lingyun Xie
->
-> 0001-xinetd-xinetd_tests.sh-disable-the-IPV6-localhost.patch
->
->
->  From 75c79721c095cce27548e74260c1e42681e1a267 Mon Sep 17 00:00:00 2001
-> From: mellonwand<mellonwand@gmail.com>
-> Date: Thu, 4 Jul 2013 16:42:42 +0800
-> Subject: [PATCH] xinetd/xinetd_tests.sh:disable the IPV6 localhost
->
-> If IPV6 is enabled, telnet localhost becomes telnet ::1 and telnet 127.0.0.1. The first one makes the command's output different from the expected output.
->
-> Signed-off-by: Xie Lingyun<lingyun.xie@bj.cs2c.com.cn>
-> ---
->   testcases/network/xinetd/xinetd_tests.sh | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
-> index 83eb8a7..d2c851d 100755
-> --- a/testcases/network/xinetd/xinetd_tests.sh
-> +++ b/testcases/network/xinetd/xinetd_tests.sh
-> @@ -128,6 +128,7 @@ init()
->
->       # Create expected file with telnet disabled.
->       cat > $LTPTMP/tst_xinetd.exp.1 <<-EOF || RC=$?
-> +	telnet: connect to address 127.0.0.1: Connection refused
->   	telnet: Unable to connect to remote host: Connection refused
->   	EOF
->
-> @@ -263,7 +264,7 @@ test01()
->
->   	# Not checking for exit code from telnet command because telnet is
->   	# not terminated by the test gracefully.
-> -	echo "" | telnet localhost 2>$LTPTMP/tst_xinetd.out 1>/dev/null
-> +	echo "" | telnet 127.0.0.1 2>$LTPTMP/tst_xinetd.out 1>/dev/null
->   	diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
->   		> $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
->       if [ $RC -ne 0 ]
-> @@ -312,7 +313,7 @@ test01()
->
->   	# Not checking for exit code from telnet command because telnet is
->   	# not terminated by the test gracefully.
-> -	echo "" | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
-> +	echo "" | telnet 127.0.0.1 > $LTPTMP/tst_xinetd.out 2>&1
->
->   	diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
->   		> $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
-> -- 1.8.3.1
->
+Anyway the line that removes the image is both wrong and useless as the
+whole ${TMP} is removed right after it. I suggest removing it.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
