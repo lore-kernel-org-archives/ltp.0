@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uz4M0-0006ii-DQ
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 12:27:40 +0000
-Date: Tue, 16 Jul 2013 14:29:24 +0200
-From: chrubis@suse.cz
-Message-ID: <20130716122924.GA21078@rei>
-References: <CADyrn+t16kR9FAfQSYUB2aYJej1BEFFZcLwUzDi0nKAjHyZ6Rw@mail.gmail.com>
+	(envelope-from <jstancek@redhat.com>) id 1UwWLi-0007sx-1G
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 11:44:50 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UwWLg-0003Fn-14
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 11:44:50 +0000
+Date: Tue, 9 Jul 2013 07:44:36 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1642200808.1073511.1373370276887.JavaMail.root@redhat.com>
+In-Reply-To: <1373363472-19210-1-git-send-email-penght@cn.fujitsu.com>
+References: <1373363472-19210-1-git-send-email-penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CADyrn+t16kR9FAfQSYUB2aYJej1BEFFZcLwUzDi0nKAjHyZ6Rw@mail.gmail.com>
-Subject: Re: [LTP] [mtest01w] mtest01w test hangs
+Subject: Re: [LTP] [PATCH] syslog-lib.sh: Use lib to restart syslog service
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,65 +27,181 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: SHASHANK BILGI <shashank192@gmail.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> <<<test_start>>>
-> tag=mtest01w stime=2336
-> cmdline="mtest01 -p80 -w"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> [ 2351.111281] rmon:L
-> mtest01     0  TINFO  :  Total memory already used on system = 22796 kbytes
-> mtest01     0  TINFO  :  Total memory used needed to reach maximum =
-> 1750246 kbytes
-> mtest01     0  TINFO  :  Filling up 80% of ram which is 1727450 kbytes
-> mtest01     1  TBROK  :  stopped at 716177408 bytes: errno=ENOMEM(12):
-> Cannot allocate memory
-> 
-> 
-> * When the malloc fails the child process seems to be calling tst_exit().
-> mtest01.c
-> .....
-> .....
->         if (pid == 0) {
->                 bytecount = chunksize;
->                 while (1) {
->                         if ((mem = malloc(chunksize)) == NULL) {
->                                 tst_resm(TBROK | TERRNO,
->                                          "stopped at %lu bytes", bytecount);
->                                 free(pid_list);
->                                 tst_exit();
->                         }
-> 
-> .....
-> .....
-> 
-> * but in this case i can see the child process in the process list(ps -ax)
-> in sleep state.
-> 
->  333 ttyAM0   S      0:00 mtest01 -p80 -w
->  334 ttyAM0   Z      0:14 [mtest01] <defunct>
->  335 ttyAM0   S      0:13 mtest01 -p80 -w
-> 
-> Here is my query , why tst_exit() isn't ending the child process?
 
-Using tst_exit() and any other tst interface from child is a mistake but
-tst_exit() should end the child process.
 
-However there may be other childrens still running as tst_exit() is just
-equivalent to exit() (it does flush output buffers and exits the process
-with result as return value but nothing more).
+----- Original Message -----
+> From: "Peng Haitao" <penght@cn.fujitsu.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 9 July, 2013 11:51:12 AM
+> Subject: [LTP] [PATCH] syslog-lib.sh: Use lib to restart syslog service
+> 
+> Use restart_daemon() to restart syslog service.
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/syslog/syslog-lib.sh | 74
+>  +++++---------------------
+>  testcases/lib/cmdlib.sh                        |  8 +++
+>  2 files changed, 20 insertions(+), 62 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> index c912d61..9bd411a 100755
+> --- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> +++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> @@ -23,22 +23,6 @@ readonly MAILLOG=/var/log/maillog
+>  # Signals to trap.
+>  readonly TRAP_SIGS="1 2 3 6 11 15"
+>  
+> -# configuration file for syslog or syslog-ng
+> -CONFIG_FILE=""
+> -
+> -# rsyslogd .conf specific args.
+> -RSYSLOG_CONFIG=
+> -
+> -# Command to restart syslog daemon.
+> -SYSLOG_RESTART_COMMAND=
+> -
+> -# running under systemd?
+> -if command -v systemctl >/dev/null 2>&1; then
+> -	HAVE_SYSTEMCTL=1
+> -else
+> -	HAVE_SYSTEMCTL=0
+> -fi
+> -
+>  # number of seconds to wait for another syslog test to complete
+>  WAIT_COUNT=60
+>  
+> @@ -75,46 +59,6 @@ setup()
+>  		tst_resm TBROK "Testing is terminating due to a signal"
+>  		cleanup 1' $TRAP_SIGS || exit 1
+>  
+> -	# Check to see if syslogd or syslog-ng exists
+> -	if [ -e /sbin/syslogd ]; then
+> -		CONFIG_FILE="/etc/syslog.conf"
+> -		SYSLOG_INIT_SCRIPT="/etc/init.d/sysklogd"
+> -	elif command -v syslog-ng >/dev/null 2>&1; then
+> -		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+> -		SYSLOG_INIT_SCRIPT="/etc/init.d/syslog-ng"
+> -	elif command -v rsyslogd >/dev/null 2>&1; then
+> -		CONFIG_FILE="/etc/rsyslog.conf"
+> -		SYSLOG_INIT_SCRIPT="/etc/init.d/rsyslog"
+> -		RSYSLOG_CONFIG='$ModLoad imuxsock.so'
+> -	else
+> -		tst_resm TCONF "couldn't find syslogd, syslog-ng, or rsyslogd"
+> -		cleanup	0
+> -	fi
+> -
+> -	SVCNAME=$(basename $SYSLOG_INIT_SCRIPT)
+> -	if [ $HAVE_SYSTEMCTL == 1 ]; then
+> -		for svc in "$SVCNAME" "syslog"; do
+> -			if systemctl is-enabled $svc.service >/dev/null 2>&1; then
+> -				SYSLOG_RESTART_COMMAND="systemctl restart $svc.service"
+> -				break
+> -			fi
+> -		done
+> -	else
+> -		# Fallback to /etc/init.d/syslog if $SYSLOG_INIT_SCRIPT
+> -		# doesn't exist.
+> -		for SYSLOG_INIT_SCRIPT in "$SYSLOG_INIT_SCRIPT" "/etc/init.d/syslog"; do
+> -			if [ -x "$SYSLOG_INIT_SCRIPT" ]; then
+> -				SYSLOG_RESTART_COMMAND="$SYSLOG_INIT_SCRIPT restart"
+> -				break
+> -			fi
+> -		done
+> -	fi
+> -
+> -	if [ -z "$SYSLOG_RESTART_COMMAND" ]; then
+> -		tst_resm TBROK "Don't know how to restart $SVCNAME"
+> -		cleanup 1
+> -	fi
+> -
+>  	# Back up configuration file
+>  	if [ -f "$CONFIG_FILE" ]; then
+>  		# Pause if another LTP syslog test is running
+> @@ -152,14 +96,20 @@ restart_syslog_daemon()
+>  		cleanup_command=$1
+>  	fi
+>  
+> -	tst_resm TINFO "restarting syslog daemon via $SYSLOG_RESTART_COMMAND"
+> +	tst_resm TINFO "restarting syslog daemon"
+>  
+> -	if $SYSLOG_RESTART_COMMAND >/dev/null 2>&1; then
+> -		# XXX: this really shouldn't exist; if *syslogd isn't ready
+> -		# once the restart directive has been issued, then it needs to
+> -		# be fixed.
+> -		sleep 2
+> +	if [ -n "$SYSLOG_DAEMON" ]; then
+> +		restart_daemon $SYSLOG_DAEMON
+> +		if [ $? -eq 0 ]; then
+> +			# XXX: this really shouldn't exist; if *syslogd isn't
+> +			# ready once the restart directive has been issued,
+> +			# then it needs to be fixed.
+> +			sleep 2
+> +		else
+> +			$cleanup_command
+> +		fi
+>  	else
+> +		tst_resm TBROK "Couldn't find syslogd, syslog-ng or rsyslogd"
+>  		$cleanup_command
+>  	fi
+>  }
+> diff --git a/testcases/lib/cmdlib.sh b/testcases/lib/cmdlib.sh
+> index d6f43d2..23d5723 100644
+> --- a/testcases/lib/cmdlib.sh
+> +++ b/testcases/lib/cmdlib.sh
+> @@ -158,13 +158,21 @@ else
+>  	HAVE_SYSTEMCTL=0
+>  fi
+>  
+> +# Configuration file for syslog, syslog-ng or rsyslogd
+> +CONFIG_FILE=""
 
-So my guess is that the rest of the childrens continue to fill the
-chunks and then waits to be reaped by the parent. Which may hang the
-machine if there is not enough memory.
+Hi,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+This looks too generic. What if library need to pass config files for 2 libraries?
+
+> +# rsyslog.conf specific args.
+> +RSYSLOG_CONFIG=""
+>  # Check to see if syslogd, syslog-ng or rsyslogd exists
+>  SYSLOG_DAEMON=""
+>  if command -v syslogd >/dev/null 2>&1; then
+> +	CONFIG_FILE="/etc/syslog.conf"
+>  	SYSLOG_DAEMON="syslog"
+>  elif command -v syslog-ng >/dev/null 2>&1; then
+> +	CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+>  	SYSLOG_DAEMON="syslog-ng"
+>  elif command -v rsyslogd >/dev/null 2>&1; then
+> +	CONFIG_FILE="/etc/rsyslog.conf"
+> +	RSYSLOG_CONFIG='$ModLoad imuxsock.so'
+
+RSYSLOG_CONFIG is specific to syscalls/syslog tests. Is user of this library expected
+to care about how minimum config looks like for rsyslog?
+
+Regards,
+Jan
+
+>  	SYSLOG_DAEMON="rsyslog"
+>  fi
+>  
+> --
+> 1.8.3.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> See everything from the browser to the database with AppDynamics
+> Get end-to-end visibility with application monitoring from AppDynamics
+> Isolate bottlenecks and diagnose root cause in seconds.
+> Start your free trial of AppDynamics Pro today!
+> http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
