@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1Ux7yL-0001Vy-CV
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 03:55:13 +0000
-Received: from mail-pd0-f182.google.com ([209.85.192.182])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Ux7yH-00024T-Te
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 03:55:13 +0000
-Received: by mail-pd0-f182.google.com with SMTP id r10so7060583pdi.41
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Jul 2013 20:55:04 -0700 (PDT)
-Message-ID: <51DE2CA9.7060703@casparzhang.com>
-Date: Thu, 11 Jul 2013 11:55:21 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UwYNF-0008I5-9f
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 13:54:33 +0000
+Date: Tue, 9 Jul 2013 15:56:09 +0200
+From: chrubis@suse.cz
+Message-ID: <20130709135609.GF30721@rei>
+References: <1C23526A7C42DB45BBF55B662C7C530E25B424AA42@BUNGLE.Emea.Arm.com>
 MIME-Version: 1.0
-References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
-	<51DD99C2.9030205@casparzhang.com> <20130711033505.GJ27609@aaa.aa>
-	<51DE2C0F.2090801@cn.fujitsu.com>
-In-Reply-To: <51DE2C0F.2090801@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
+Content-Disposition: inline
+In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B424AA42@BUNGLE.Emea.Arm.com>
+Subject: Re: [LTP] [PATCH] flock03.c: fixes a typo when compiling with
+ UCLINUX=1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,48 +25,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+To: Benoit Marcot <Benoit.Marcot@arm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On 07/11/2013 11:52 AM, Wanlong Gao wrote:
-> On 07/11/2013 11:35 AM, Hangbin Liu wrote:
->> On Thu, Jul 11, 2013 at 01:28:34AM +0800, Caspar Zhang wrote:
->>> On 07/10/2013 07:03 PM, Xie Lingyun wrote:
->>>> +defaults
->>>> +{
->>>> +instances      = 25
->>>> +log_type       = FILE /var/log/servicelog
->>>> +log_on_success = HOST PID
->>>> +log_on_failure = HOST RECORD
->>>> +disabled       = telnet
->>>> +}
->>>
->>> Generally looks good except here.
->>>
->>> better give a 4-space indentation inside the braces.
->>>
->>
->> 1-tab or 4-space, I always be confuse which should we use. Even a tab should
->> be 4 characters or 8 characters also have dispute. But the kernel coding style
->> said Tabs are 8 characters, and thus indentations are also 8 characters.
->>
->> So, should we also use this style in shell scripts? Because I'm tired
->> changing my vim config for each project.
->
-> We are just following kernel coding style in LTP.
+Hi!
+> flock03.c: This patch fixes a typo when compiling with UCLINUX=1.
+> 
+> Corrects FILENAME to FILE_NAME, and removes some trailing white-spaces in
+> empty lines.
+> 
+> Signed-off-by: Benoit Marcot <benoit.marcot@arm.com>
 
-We are talking about shell coding style right? IIRC kernel coding style 
-is just for C.
+Still not right :(
 
-Caspar
+Now the git am complains about corrupted patch and indeed the line in
+question looks like:
 
->
-> Thanks,
-> Wanlong Gao
->
->>
->
+                if (pid =3D=3D -1)
 
+Looks like the mail was converted to quoted-printable including the
+patch itself.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
