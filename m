@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UuJlE-0001oL-Oh
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 09:54:04 +0000
-Date: Wed, 3 Jul 2013 11:55:30 +0200
-From: chrubis@suse.cz
-Message-ID: <20130703095530.GA2715@rei>
-References: <1372842546-4596-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vlee@freedesktop.org>) id 1UwbUB-0000Oy-2n
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 17:13:55 +0000
+Received: from gabe.freedesktop.org ([131.252.210.177])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UwbU6-0006Vm-HY
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 17:13:55 +0000
+From: Vinson Lee <vlee@freedesktop.org>
+Date: Tue,  9 Jul 2013 09:55:42 -0700
+Message-Id: <1373388942-27853-1-git-send-email-vlee@freedesktop.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1372842546-4596-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH RFC] lib: add tst_kvercmp2 to compare specific
- vendor extra kernel versions
+Subject: [LTP] [PATCH] mount/mount05.c: Add mode argument to open call.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,151 +22,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  include/test.h    |  5 +++++
->  lib/tst_kvercmp.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 72 insertions(+)
-> 
-> diff --git a/include/test.h b/include/test.h
-> index ee3efc3..a8e462b 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -172,6 +172,11 @@ char *get_high_address(void);
->  /* lib/tst_kvercmp.c */
->  void tst_getkver(int *k1, int *k2, int *k3);
->  int tst_kvercmp(int r1, int r2, int r3);
-> +struct tst_kern_exv {
-> +	char *dist_name;
-> +	char *extra_ver;
-> +};
-> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
-
-I would add newlines around the structure definition to keep it readable
-but that is very minor.
-
->  /* lib/tst_is_cwd.c */
->  int tst_is_cwd_nfs(void);
-> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
-> index cb4fd67..d791df0 100644
-> --- a/lib/tst_kvercmp.c
-> +++ b/lib/tst_kvercmp.c
-> @@ -34,6 +34,7 @@
->  #include <unistd.h>
->  #include <string.h>
->  #include <sys/utsname.h>
-> +#include "test.h"
->  
->  void get_kver(int *k1, int *k2, int *k3)
->  {
-> @@ -66,3 +67,69 @@ int tst_kvercmp(int r1, int r2, int r3)
->  
->  	return currver - testver;
->  }
-> +
-> +static int tst_kexvcmp(char *tst_exv)
-> +{
-> +	struct utsname uval;
-> +	char *kver;
-> +	char *cur_exv;
-> +	int c1, c2, t1, t2;
-> +	int ret;
-> +	char *cur_exv1, *tst_exv1;
-> +#if !defined(linux)
-> +	extern char *strsep();
-> +	extern char *strchr();
-> +#endif
-
-Please refrain yourself from adding these workarounds for non Linux
-systems. It does not make any sense to add them into the code that
-parses Linux kernel version. :)
-
-(And feel free to clean these from the rest of the file)
-
-> +	uname(&uval);
-> +	kver = uval.release;
-> +	cur_exv = strchr(kver, '-');
-> +	if (!cur_exv)
-> +		return -1;
-> +	cur_exv++;
-> +	cur_exv1 = strsep(&cur_exv, ".");
-> +	c1 = atoi(cur_exv1);
-> +	tst_exv1 = strsep(&tst_exv, ".");
-> +	t1 = atoi(tst_exv1);
-> +	if ((ret = c1 - t1)) {
-> +		return ret;
-> +	} else if (!cur_exv && !tst_exv) {
-> +		return 0;
-> +	} else if (!cur_exv) {
-> +		return -1;
-> +	} else if (!tst_exv) {
-> +		return 1;
-> +	} else {
-> +		c2 = atoi(cur_exv);
-> +		t2 = atoi(tst_exv);
-> +		return c2 - t2;
-> +	}
-> +}
-
-I wonder if we can simplify this with a sscanf() and clever format
-string...
-
-> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers)
-> +{
-> +	int ret;
-> +	int i;
-> +	struct utsname uval;
-> +	char *kver;
-> +	const char *cur_dist_name = NULL;
-> +
-> +	if ((ret = tst_kvercmp(r1, r2, r3)))
-> +		return ret;
-> +
-> +	uname(&uval);
-> +	kver = uval.release;
-> +	if (strstr(kver, ".el5")) {
-> +		cur_dist_name = "RHEL5";
-> +	} else if (strstr(kver, ".el6")) {
-> +		cur_dist_name = "RHEL6";
-> +	} else {
-> +		return ret;
-> +	}
-> +
-> +	for (i = 0; vers[i].dist_name; i++) {
-> +		if (!strcmp(vers[i].dist_name, cur_dist_name))
-> +			return tst_kexvcmp(vers[i].extra_ver);
-> +	}
-> +
-> +	return ret;
-> +}
-
-This part looks Ok.
-
-But perhaps we sould add a override mode too. It may happen that a fix
-that arrived to vanilla x.y.c was backported to RHEL or SLES kernel
-x.y.a so the extra version would not help. But adding this should be as
-simple as adding over_ver into the extra version structure and using
-that instead of the passed integers if it is not NULL. We may also add
-this one later once we find such testcase.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+RnJvbTogVmluc29uIExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KClRoaXMgcGF0Y2ggZml4ZXMgdGhp
+cyBidWlsZCBlcnJvciBvbiBVYnVudHUgaW50cm9kdWNlZCB3aXRoIGNvbW1pdAo5MTQ2ZDgzZDQx
+MGRjMDYwMTI0MzQ0ZmNiY2RiZjQ2MjgwYjY3NGEyLgoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC91
+c3IvaW5jbHVkZS9mY250bC5oOjI3OTowLAogICAgICAgICAgICAgICAgIGZyb20gbW91bnQwNS5j
+OjMxOgpJbiBmdW5jdGlvbiDigJhvcGVu4oCZLAogICAgaW5saW5lZCBmcm9tIOKAmG1haW7igJkg
+YXQgbW91bnQwNS5jOjk0OjEyOgovdXNyL2luY2x1ZGUveDg2XzY0LWxpbnV4LWdudS9iaXRzL2Zj
+bnRsMi5oOjUwOjI0OiBlcnJvcjogY2FsbCB0byDigJhfX29wZW5fbWlzc2luZ19tb2Rl4oCZIGRl
+Y2xhcmVkIHdpdGggYXR0cmlidXRlIGVycm9yOiBvcGVuIHdpdGggT19DUkVBVCBpbiBzZWNvbmQg
+YXJndW1lbnQgbmVlZHMgMyBhcmd1bWVudHMKClNpZ25lZC1vZmYtYnk6IFZpbnNvbiBMZWUgPHZs
+ZWVAdHdpdHRlci5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tb3VudC9tb3Vu
+dDA1LmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
+LSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21vdW50L21vdW50MDUu
+YyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW91bnQvbW91bnQwNS5jCmluZGV4IDhhNzg5
+MzguLjY1Y2MwYWIgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW91bnQv
+bW91bnQwNS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW91bnQvbW91bnQwNS5j
+CkBAIC05MSw3ICs5MSw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAJCQl0
+c3RfcmVzbShURkFJTCB8IFRURVJSTk8sICJtb3VudCgyKSBmYWlsZWQiKTsKIAkJfSBlbHNlIHsK
+IAotCQkJaWYgKG9wZW4oZmlsZV9kZXMsIE9fQ1JFQVQgfCBPX0VYQ0wpID09IC0xICYmCisJCQlp
+ZiAob3BlbihmaWxlX2RlcywgT19DUkVBVCB8IE9fRVhDTCwgU19JUldYVSkgPT0gLTEgJiYKIAkJ
+CSAgICBlcnJubyA9PSBFRVhJU1QpCiAJCQkJdHN0X3Jlc20oVFBBU1MsICJiaW5kIG1vdW50IGlz
+IG9rIik7CiAJCQllbHNlCi0tIAoxLjguMS4yCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNlZSBl
+dmVyeXRoaW5nIGZyb20gdGhlIGJyb3dzZXIgdG8gdGhlIGRhdGFiYXNlIHdpdGggQXBwRHluYW1p
+Y3MKR2V0IGVuZC10by1lbmQgdmlzaWJpbGl0eSB3aXRoIGFwcGxpY2F0aW9uIG1vbml0b3Jpbmcg
+ZnJvbSBBcHBEeW5hbWljcwpJc29sYXRlIGJvdHRsZW5lY2tzIGFuZCBkaWFnbm9zZSByb290IGNh
+dXNlIGluIHNlY29uZHMuClN0YXJ0IHlvdXIgZnJlZSB0cmlhbCBvZiBBcHBEeW5hbWljcyBQcm8g
+dG9kYXkhCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD00ODgw
+ODgzMSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0Cg==
