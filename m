@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwsKJ-0002O6-6K
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 11:12:51 +0000
-Date: Wed, 10 Jul 2013 13:14:28 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UwZ5t-0000Mq-8Y
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 14:40:41 +0000
+Date: Tue, 9 Jul 2013 16:42:18 +0200
 From: chrubis@suse.cz
-Message-ID: <20130710111428.GA19178@rei.suse.cz>
-References: <1372765421-2934-1-git-send-email-alexey.kodanev@oracle.com>
-	<51D3DA8A.5020602@oracle.com> <20130703103321.GA2906@rei>
-	<201307031300.00679.vapier@gentoo.org>
-	<51D548FC.9010003@oracle.com>
+Message-ID: <20130709144218.GA516@rei.Home>
+References: <51D27187.2060003@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51D548FC.9010003@oracle.com>
-Subject: Re: [LTP] [PATCH v6] fw_load: new test of device firmware loading
+In-Reply-To: <51D27187.2060003@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/2] mount/mount03.c: clean up
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,34 +24,161 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >>> There are a lot of files that left after module's build and If I don't
-> >>> clean there, I have to manually add files to the clean target and
-> >>> perhaps, even more.
-> >> Making make clean work would be better, but I'm not sure how to make
-> >> that work, the kernel build leaves various files there and I'm not sure
-> >> if these have stable names, but we can do some effort to clean up all
-> >> the *.cmd.o and maybe some of the rest of them.
-> > have it output to a subdir and add that subdir to the ignore
-> > -mike
-> But how to do it with external kernel modules and kernel build?
+> Clean up mount03.c:
+>     xxx func() -> xxx func(void)
 > 
-> I still don't understand why is the current approach not appropriate? 
-> 'make clean' works and it deletes make target file. 'make' works fine, 
-> even if module doesn't compile. And we get only what is needed for the test.
+>     clean up setup()
+> 
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-The intention here is to make the 'git status' ignore all the generated
-files and/or to make 'make clean' to clean them. Which is not criticall
-in any way and I'm fine with fixing these once the testcase is merged.
+Sorry it took longer than usuall.
 
-> if we need to clean those files by 'make clean', I think it is better to 
-> make LINUX_DIR variable available when clean is invoked, and add 
-> additional rule with kbuild clean.
+>  testcases/kernel/syscalls/mount/mount03.c | 47 ++++++++++---------------------
+>  1 file changed, 15 insertions(+), 32 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
+> index b1aa71f..8b2d3e4 100644
+> --- a/testcases/kernel/syscalls/mount/mount03.c
+> +++ b/testcases/kernel/syscalls/mount/mount03.c
+> @@ -85,6 +85,7 @@ static int setup_uid(void);
+>  char *TCID = "mount03";
+>  int TST_TOTAL = 6;
+> 
+> +#define EXEC_COMMAND	"cp"
+>  #define DEFAULT_FSTYPE	"ext2"
+>  #define TEMP_FILE	"temp_file"
+>  #define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+> @@ -106,7 +107,6 @@ static char read_buffer[BUFSIZ];
+>  static char path_name[PATH_MAX];
+>  static char testhome_path[PATH_MAX];
+>  static char file[PATH_MAX];
+> -static char *cmd = "cp";
+> 
+>  long rwflags[] = {
+>  	MS_RDONLY,
+> @@ -375,7 +375,7 @@ int test_rwflag(int i, int cnt)
+>  }
+> 
+>  /* setup_uid() - performs setup for NOUID test */
+> -int setup_uid()
+> +int setup_uid(void)
+>  {
+>  	int pid, status;
+>  	char command[PATH_MAX];
+> @@ -387,7 +387,8 @@ int setup_uid()
+>  		return 1;
+>  	case 0:
+>  		/* Put command into string */
+> -		sprintf(command, "%s %s %s", cmd, testhome_path, path_name);
+> +		sprintf(command, "%s %s %s",
+> +			EXEC_COMMAND, testhome_path, path_name);
+> 
+>  		/* Run command to cp file to right spot */
+>  		if (system(command) == 0)
 
-If kbuild clean works this satisfies the second part but not the first.
+What about using SAFE_CP() from safe_file_ops.h?
+
+> @@ -410,25 +411,17 @@ int setup_uid()
+>  	}
+>  }
+> 
+> -void setup()
+> +void setup(void)
+>  {
+> -	int fd;
+>  	char path[PATH_MAX];
+> -	char *test_home;
+>  	struct stat setuid_test_stat;
+> 
+>  	tst_sig(FORK, DEF_HANDLER, cleanup);
+> 
+> -	/* Check whether we are root */
+> -	if (geteuid() != 0) {
+> -		free(fs_type);
+> -		tst_brkm(TBROK, NULL, "Test must be run as root");
+> -	}
+> +	tst_require_root(NULL);
+> 
+>  	tst_tmpdir();
+> 
+> -	test_home = get_current_dir_name();
+> -
+>  	sprintf(mntpoint, "mnt_%d", getpid());
+
+This getpid() shouldn't be needed as we are in the test tmpdir anyway.
+
+>  	if (mkdir(mntpoint, DIR_MODE))
+> @@ -444,38 +437,28 @@ void setup()
+>  			 path_name, DIR_MODE);
+> 
+>  	snprintf(file, PATH_MAX, "%s/setuid_test", path_name);
+> -	fd = open(file, O_CREAT | O_TRUNC, S_IRWXU);
+> -	if (fd == -1)
+> +	if (open(file, O_CREAT | O_TRUNC, S_IRWXU) == -1)
+>  		tst_brkm(TBROK, cleanup, "open file failed");
+> -	close(fd);
+
+Why removing the close(fd)?
+
+> -	if (stat(file, &setuid_test_stat) < 0) {
+> +	if (stat(file, &setuid_test_stat) < 0)
+>  		tst_brkm(TBROK, cleanup, "stat for setuid_test failed");
+> -	} else {
+> -		if ((setuid_test_stat.st_uid || setuid_test_stat.st_gid) &&
+> -		    chown(file, 0, 0) < 0)
+> -			tst_brkm(TBROK, cleanup,
+> -				 "chown for setuid_test failed");
+> -
+> -		if (setuid_test_stat.st_mode != SUID_MODE &&
+> -		    chmod(file, SUID_MODE) < 0)
+> -			tst_brkm(TBROK, cleanup,
+> -				 "setuid for setuid_test failed");
+> -	}
+> +
+> +	if (setuid_test_stat.st_mode != SUID_MODE && chmod(file, SUID_MODE) < 0)
+> +		tst_brkm(TBROK, cleanup,
+> +			 "setuid for setuid_test failed");
+                            ^
+			    This could now be one line statement if I'm
+			    not mistaken
+
+>  	/*
+>  	 * under temporary directory
+>  	 */
+> +	strcpy(testhome_path, file);
+>  	strncpy(path, path_name, PATH_MAX);
+>  	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
+> -	strcpy(testhome_path, test_home);
+> -	strcat(testhome_path, "/setuid_test");
+> 
+>  	TEST_PAUSE;
+> 
+>  }
+> 
+> -void cleanup()
+> +void cleanup(void)
+>  {
+>  	free(fs_type);
+> 
+> @@ -487,7 +470,7 @@ void cleanup()
+>  /*
+>   * issue a help message
+>   */
+> -void help()
+> +void help(void)
+>  {
+>  	printf("-T type	  : specifies the type of filesystem to be mounted."
+>  	       " Default ext2.\n");
+> -- 
+
+Also please make all internal functions static.
+
+And pretty please remove the absurd fs_type flag allocation.
 
 -- 
 Cyril Hrubis
