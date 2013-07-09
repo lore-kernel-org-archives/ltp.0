@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwZKy-0005Q6-7X
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 14:56:16 +0000
-Date: Tue, 9 Jul 2013 16:57:53 +0200
+	(envelope-from <metan@suse.de>) id 1UwZXh-0006Ck-KH
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 15:09:25 +0000
+Date: Tue, 9 Jul 2013 17:11:03 +0200
 From: chrubis@suse.cz
-Message-ID: <20130709145753.GA760@rei.Home>
-References: <51D27187.2060003@cn.fujitsu.com> <51D274BD.5070707@cn.fujitsu.com>
+Message-ID: <20130709151103.GB760@rei.Home>
+References: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
+	<51D38924.8090400@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51D274BD.5070707@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] mount/mount03.c: Test feature MS_NOATIME
- of mount(2)
+In-Reply-To: <51D38924.8090400@oracle.com>
+Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,57 +25,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Eko <hong.sun@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Additional test for features MS_NOATIME.
+>   I executed runltp command in my box, everything is OK, but when 
+> cleaning the environment, got following errors:
 > 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-> ---
-> +	case 6:
-> +		/* Validate MS_NOATIME flag of mount call */
-> +
-> +		snprintf(file, PATH_MAX, "%satime", path_name);
-> +		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
-> +		if (fd == -1) {
-> +			tst_resm(TWARN | TERRNO, "opening %s failed", file);
-> +			return 1;
-> +		}
-> +
-> +		if (write(fd, "TEST_MS_NOATIME", 15) != 15) {
-> +			tst_resm(TWARN | TERRNO, "write %s failed", file);
-> +			return 1;
-> +		}
-> +
-> +		if (fstat(fd, &file_stat) == -1) {
-> +			tst_resm(TWARN | TERRNO, "stat %s failed #1", file);
-> +			return 1;
-> +		}
-> +
-> +		atime = file_stat.st_atime;
-> +
-> +		sleep(1);
-> +
-> +		if (read(fd, NULL, 20) == -1) {
-> +			tst_resm(TWARN | TERRNO, "read %s failed", file);
-> +			return 1;
-> +		}
-> +
-> +		if (fstat(fd, &file_stat) == -1) {
-> +			tst_resm(TWARN | TERRNO, "stat %s failed #2", file);
-> +			return 1;
-> +		}
-> +		close(fd);
-> +
-> +		if (file_stat.st_atime != atime) {
-> +			tst_resm(TWARN, "access time is updated");
-> +			return 1;
-> +		}
-> +		return 0;
->  	}
+>         ###############################################################
+>              Done executing testcases.
+>              LTP Version:  20130503
+>         ###############################################################
+> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458': Device or resource busy
+> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/sandbox': Device or resource busy
+> 
+> 
+> Because /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458 and 
+> /tmp/ltp-9NAwvmAbI5/sandbox are still mounted, so can't delete them, the 
+> best way is:
+> # umount /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458
+> # umount /tmp/ltp-9NAwvmAbI5/sandbox
+> 
 
-This version looks fine.
+This looks like leftover mount from some testcases. We need to find
+which testcases are these and fix them to do their cleanup correctly.
+
+Quick greping suggested that candidates are:
+
+testscripts/test_fs_bind.sh
+
+testcases/kernel/syscalls/mount/mount*.c
 
 -- 
 Cyril Hrubis
