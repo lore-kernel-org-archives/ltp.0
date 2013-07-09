@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <penght@cn.fujitsu.com>) id 1Uz17J-00067Q-Il
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 09:00:17 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1UwTmW-00029V-Hs
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 09:00:20 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uz17F-0003PK-N5
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 09:00:17 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UwTmV-00061E-HC
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 09:00:20 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6G8WD4k011621
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jul 2013 16:32:17 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r698b0NK021859
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jul 2013 16:37:06 +0800
 From: Peng Haitao <penght@cn.fujitsu.com>
-Date: Tue, 16 Jul 2013 16:31:38 +0800
-Message-Id: <1373963498-838-1-git-send-email-penght@cn.fujitsu.com>
-Subject: [LTP] [PATCH] testcases/kernel/firmware: fix a bug of make install
+Date: Tue, 9 Jul 2013 16:36:41 +0800
+Message-Id: <1373359002-17618-1-git-send-email-penght@cn.fujitsu.com>
+Subject: [LTP] [PATCH 1/2] sssd-lib.sh: Use lib to restart sssd service
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,150 +30,90 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-When kernel version is before 3.7, the cases should be installed.
+Use restart_daemon() to restart sssd service.
 
 Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 ---
- include/mk/config.mk.default                      |  1 +
- include/mk/config.mk.in                           |  1 +
- m4/ltp-kernel_devel.m4                            | 15 +++++++++++++++
- testcases/kernel/firmware/Makefile                | 23 -----------------------
- testcases/kernel/firmware/fw_load_kernel/Makefile |  6 +++++-
- testcases/kernel/firmware/fw_load_user/fw_load.c  |  6 ++++++
- 6 files changed, 28 insertions(+), 24 deletions(-)
+ testcases/commands/sssd/sssd-lib.sh | 41 +++----------------------------------
+ 1 file changed, 3 insertions(+), 38 deletions(-)
 
-diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
-index 953747c..ca203cb 100644
---- a/include/mk/config.mk.default
-+++ b/include/mk/config.mk.default
-@@ -78,5 +78,6 @@ LINUX_DIR		:=
- LINUX_VERSION_MAJOR	:=
- LINUX_VERSION_PATCH	:=
- WITH_MODULES		:= no
-+LINUX_VERSION_AFTER	:= no
+diff --git a/testcases/commands/sssd/sssd-lib.sh b/testcases/commands/sssd/sssd-lib.sh
+index e434efe..b001904 100755
+--- a/testcases/commands/sssd/sssd-lib.sh
++++ b/testcases/commands/sssd/sssd-lib.sh
+@@ -39,21 +39,10 @@ readonly TRAP_SIGS="2 3 6 11 15"
  
- export datarootdir includedir libdir mandir prefix
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index 96633f1..24052ff 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -80,6 +80,7 @@ LINUX_DIR		:= @LINUX_DIR@
- LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
- LINUX_VERSION_PATCH	:= @LINUX_VERSION_PATCH@
- WITH_MODULES		:= @WITH_MODULES@
-+LINUX_VERSION_AFTER	:= @LINUX_VERSION_AFTER@
- 
- ifeq ($(strip $(prefix)),)
- $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
-diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
-index ba53bc1..febe603 100644
---- a/m4/ltp-kernel_devel.m4
-+++ b/m4/ltp-kernel_devel.m4
-@@ -25,6 +25,8 @@ dnl requires kernel-devel installed
- dnl
- 
- AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[dnl
-+AH_TEMPLATE(LINUX_VERSION_AFTER,
-+[Define to yes if kernel version is after 3.7.])
- 
- AC_MSG_CHECKING([for kernel-devel])
- AC_ARG_WITH(
-@@ -73,4 +75,17 @@ AC_ARG_WITH(
- 			[])
- 
- AC_SUBST(WITH_MODULES)
-+
-+REQ_VERSION_MAJOR=3
-+REQ_VERSION_PATCH=7
-+if test "x$WITH_MODULES" = "xyes"; then
-+	if test ${LINUX_VERSION_MAJOR} -ge ${REQ_VERSION_MAJOR}; then
-+		if test ${LINUX_VERSION_PATCH} -ge ${REQ_VERSION_PATCH}; then
-+			LINUX_VERSION_AFTER="yes"
-+			AC_DEFINE(LINUX_VERSION_AFTER)
-+		fi
-+	fi
-+fi
-+
-+AC_SUBST(LINUX_VERSION_AFTER)
- ])
-diff --git a/testcases/kernel/firmware/Makefile b/testcases/kernel/firmware/Makefile
-index fbacf8d..03069b8 100644
---- a/testcases/kernel/firmware/Makefile
-+++ b/testcases/kernel/firmware/Makefile
-@@ -18,27 +18,4 @@ top_srcdir	?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--SUBDIRS			=
--REQ_VERSION_MAJOR	= 3
--REQ_VERSION_PATCH	= 7
+ CONFIG_FILE="/etc/sssd/sssd.conf"
+ NSS_CONFIG_FILE="/etc/nsswitch.conf"
+-SSSD_INIT_SCRIPT="/etc/init.d/sssd"
 -
--ifeq ($(MAKECMDGOALS),clean)
--SKIP = 0
--endif
+-# Command to restart sssd daemon.
+-SSSD_RESTART_CMD=
+ 
+ # number of seconds to wait for another sssd test to complete
+ WAIT_COUNT=30
+ 
+-# running under systemd?
+-if command -v systemctl >/dev/null 2>&1; then
+-	HAVE_SYSTEMCTL=1
+-else
+-	HAVE_SYSTEMCTL=0
+-fi
 -
--ifeq ($(WITH_MODULES),yes)
--SKIP ?= $(shell test $(LINUX_VERSION_MAJOR) -gt $(REQ_VERSION_MAJOR); echo $$?)
--ifeq ($(SKIP),1)
--SKIP = $(shell test $(LINUX_VERSION_MAJOR) -eq $(REQ_VERSION_MAJOR); echo $$?)
--ifeq ($(SKIP),0)
--SKIP = $(shell test $(LINUX_VERSION_PATCH) -ge $(REQ_VERSION_PATCH); echo $$?)
--endif
--endif
--endif
--
--ifeq ($(SKIP),0)
--SUBDIRS			+= fw_load_kernel
--SUBDIRS			+= fw_load_user
--endif
--
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/firmware/fw_load_kernel/Makefile b/testcases/kernel/firmware/fw_load_kernel/Makefile
-index 076d4ed..564501b 100644
---- a/testcases/kernel/firmware/fw_load_kernel/Makefile
-+++ b/testcases/kernel/firmware/fw_load_kernel/Makefile
-@@ -25,7 +25,11 @@ else
- top_srcdir	?= ../../../..
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--MAKE_TARGETS	:= ltp_fw_load.ko
-+ifeq ($(LINUX_VERSION_AFTER),yes)
-+	MAKE_TARGETS	:= ltp_fw_load.ko
-+else
-+	MAKE_TARGETS    :=
-+endif
- 
- # Ignoring the exit status of commands is done to be forward compatible with
- # kernel internal API changes. The user-space test will return TCONF, if it
-diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c b/testcases/kernel/firmware/fw_load_user/fw_load.c
-index 880531e..69b6d81 100644
---- a/testcases/kernel/firmware/fw_load_user/fw_load.c
-+++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
-@@ -28,6 +28,7 @@
- #include <unistd.h>
- #include <string.h>
- 
-+#include "config.h"
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-@@ -84,11 +85,16 @@ static void create_firmware(char *const fw_paths[]);
- 
- int main(int argc, char *argv[])
+ cleanup()
  {
-+#ifdef LINUX_VERSION_AFTER
- 	setup(argc, argv);
+ 	disable_traps
+@@ -98,30 +87,6 @@ setup()
+ 		cleanup	0
+ 	fi
  
- 	test_run();
+-	SVCNAME=$(basename $SSSD_INIT_SCRIPT)
+-	if [ $HAVE_SYSTEMCTL == 1 ]; then
+-		for svc in "$SVCNAME" "sssd"; do
+-			if systemctl is-enabled $svc.service >/dev/null 2>&1
+-			then
+-				SSSD_RESTART_CMD="systemctl restart $svc.service"
+-				break
+-			fi
+-		done
+-	else
+-		for SSSD_INIT_SCRIPT in "$SSSD_INIT_SCRIPT" "/etc/init.d/sssd"
+-		do
+-			if [ -x "$SSSD_INIT_SCRIPT" ]; then
+-				SSSD_RESTART_CMD="$SSSD_INIT_SCRIPT restart"
+-				break
+-			fi
+-		done
+-	fi
+-
+-	if [ -z "$SSSD_RESTART_CMD" ]; then
+-		tst_resm TBROK "Don't know how to restart $SVCNAME"
+-		cleanup 1
+-	fi
+-
+ 	# Back up configuration file
+ 	if [ -f "$CONFIG_FILE" ]; then
+ 		# Pause if another LTP sssd test is running
+@@ -163,8 +128,8 @@ restart_sssd_daemon()
+ 		cleanup_command=$1
+ 	fi
  
- 	cleanup();
-+#else
-+	tst_resm(TCONF, "This device firmware loading is not supported");
-+	tst_resm(TCONF, "before kernel 3.7");
-+#endif
+-	tst_resm TINFO "restarting sssd daemon via $SSSD_RESTART_CMD"
+-	$SSSD_RESTART_CMD > /dev/null 2>&1
++	tst_resm TINFO "restarting sssd daemon"
++	restart_daemon sssd
+ 	if [ $? -eq 0 ]; then
+ 		# wait sssd restart success.
+ 		sleep 1
+@@ -201,7 +166,7 @@ make_config_file
+ sed -i -e "/\[domain\/LOCAL\]/ a\override_gid = error" $CONFIG_FILE
+ # make sure config file is OK
+ sleep 1
+-$SSSD_RESTART_CMD > /dev/null 2>&1
++restart_daemon sssd
  
- 	tst_exit();
- }
+ if [ $? -ne 1 ]; then
+ 	tst_resm TCONF "override_gid does not exist. Skipping all testcases"
 -- 
 1.8.3.1
 
