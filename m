@@ -2,18 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UxEa5-0001wc-5L
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 10:58:37 +0000
-Received: from relay1.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 74A51A52C6
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Jul 2013 12:58:29 +0200 (CEST)
-Date: Thu, 11 Jul 2013 13:00:15 +0200
+	(envelope-from <metan@suse.de>) id 1UwZKy-0005Q6-7X
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 14:56:16 +0000
+Date: Tue, 9 Jul 2013 16:57:53 +0200
 From: chrubis@suse.cz
-Message-ID: <20130711110014.GB6142@rei.suse.cz>
+Message-ID: <20130709145753.GA760@rei.Home>
+References: <51D27187.2060003@cn.fujitsu.com> <51D274BD.5070707@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] RFC add _FORTIFY_SOURCE to default LTP CFLAGS
+In-Reply-To: <51D274BD.5070707@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] mount/mount03.c: Test feature MS_NOATIME
+ of mount(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,17 +25,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-Recently just another open(.., O_CREAT) without mode_t flags slipped in
-the git, which would have been easily catched early by glibc
-_FORTIFY_SOURCE feature. If _FORTIFY_SOURCE is set additional checks for
-unused return values, buffer overflows etc. are done. Some distros eable
-it even by default...
+> Additional test for features MS_NOATIME.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+> +	case 6:
+> +		/* Validate MS_NOATIME flag of mount call */
+> +
+> +		snprintf(file, PATH_MAX, "%satime", path_name);
+> +		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
+> +		if (fd == -1) {
+> +			tst_resm(TWARN | TERRNO, "opening %s failed", file);
+> +			return 1;
+> +		}
+> +
+> +		if (write(fd, "TEST_MS_NOATIME", 15) != 15) {
+> +			tst_resm(TWARN | TERRNO, "write %s failed", file);
+> +			return 1;
+> +		}
+> +
+> +		if (fstat(fd, &file_stat) == -1) {
+> +			tst_resm(TWARN | TERRNO, "stat %s failed #1", file);
+> +			return 1;
+> +		}
+> +
+> +		atime = file_stat.st_atime;
+> +
+> +		sleep(1);
+> +
+> +		if (read(fd, NULL, 20) == -1) {
+> +			tst_resm(TWARN | TERRNO, "read %s failed", file);
+> +			return 1;
+> +		}
+> +
+> +		if (fstat(fd, &file_stat) == -1) {
+> +			tst_resm(TWARN | TERRNO, "stat %s failed #2", file);
+> +			return 1;
+> +		}
+> +		close(fd);
+> +
+> +		if (file_stat.st_atime != atime) {
+> +			tst_resm(TWARN, "access time is updated");
+> +			return 1;
+> +		}
+> +		return 0;
+>  	}
 
-Does anybody oposse against adding -D_FORTIFY_SOURCE=2 to the default
-LTP CFLAGS?
+This version looks fine.
 
 -- 
 Cyril Hrubis
