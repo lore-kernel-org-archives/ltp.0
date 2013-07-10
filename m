@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Ux7w3-00052V-Av
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 03:52:51 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ux7w1-0007Q5-Cr
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 03:52:51 +0000
-Message-ID: <51DE2C0F.2090801@cn.fujitsu.com>
-Date: Thu, 11 Jul 2013 11:52:47 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <caspar@casparzhang.com>) id 1UwyDk-0000nD-Fx
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 17:30:28 +0000
+Received: from mail-pb0-f52.google.com ([209.85.160.52])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UwyDi-00019z-M4
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 17:30:28 +0000
+Received: by mail-pb0-f52.google.com with SMTP id xa12so6880187pbc.11
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Jul 2013 10:30:20 -0700 (PDT)
+Message-ID: <51DD9A44.4090409@casparzhang.com>
+Date: Thu, 11 Jul 2013 01:30:44 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
 References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
-	<51DD99C2.9030205@casparzhang.com> <20130711033505.GJ27609@aaa.aa>
-In-Reply-To: <20130711033505.GJ27609@aaa.aa>
-Subject: Re: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
-Reply-To: gaowanlong@cn.fujitsu.com
+	<1373454200-8630-2-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+In-Reply-To: <1373454200-8630-2-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+Subject: Re: [LTP] [PATCH 2/2 v3] xinetd/xinetd_tests.sh: add IPv6 test for
+ xinetd
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,40 +32,165 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>, ltp-list@lists.sourceforge.net
+To: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Cc: ltp-list@lists.sourceforge.net
 
-On 07/11/2013 11:35 AM, Hangbin Liu wrote:
-> On Thu, Jul 11, 2013 at 01:28:34AM +0800, Caspar Zhang wrote:
->> On 07/10/2013 07:03 PM, Xie Lingyun wrote:
->>> +defaults
->>> +{
->>> +instances      = 25
->>> +log_type       = FILE /var/log/servicelog
->>> +log_on_success = HOST PID
->>> +log_on_failure = HOST RECORD
->>> +disabled       = telnet
->>> +}
->>
->> Generally looks good except here.
->>
->> better give a 4-space indentation inside the braces.
->>
-> 
-> 1-tab or 4-space, I always be confuse which should we use. Even a tab should
-> be 4 characters or 8 characters also have dispute. But the kernel coding style
-> said Tabs are 8 characters, and thus indentations are also 8 characters.
-> 
-> So, should we also use this style in shell scripts? Because I'm tired
-> changing my vim config for each project.
+On 07/10/2013 07:03 PM, Xie Lingyun wrote:
+> If IPv6 is enabled, telnet ::1 will be tested. Otherwise, IPv4 only.
+> The IPv6 test will be executed first and give a separate result.
+>
+> Signed-off-by: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+> ---
+>   testcases/network/xinetd/xinetd_tests.sh | 81 +++++++++++++++++++++++++++++---
+>   1 file changed, 75 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+> index ea89658..143ea76 100755
+> --- a/testcases/network/xinetd/xinetd_tests.sh
+> +++ b/testcases/network/xinetd/xinetd_tests.sh
+> @@ -84,11 +84,22 @@ init()
+>            return $RC
+>       fi
+>
+> +    # sometimes the default telnet may be /usr/kerberos/bin/telnet
+> +    TELNET_COMM='/usr/bin/telnet'
+> +
+>       # check if commands tst_*, xinetd, awk exists.
+>       chk_ifexists INIT tst_resm   || return $RC
+>       chk_ifexists INIT xinetd     || return $RC
+>       chk_ifexists INIT diff       || return $RC
+> -    chk_ifexists INIT telnet     || return $RC
+> +    chk_ifexists INIT ip         || return $RC
+> +    chk_ifexists INIT $TELNET_COMM || return $RC
+> +
+> +    IPV6_ENABLED=0
+> +    ip a | grep inet6 > /dev/null 2>&1
+> +    if [ $? -eq 0 ]
+> +    then
+> +        IPV6_ENABLED=1
+> +    fi
+>
+>       # Create custom xinetd.conf file.
+>       # tst_xinetd.conf.1 config file has telnet service disabled.
+> @@ -128,7 +139,7 @@ EOF
+>
+>       # Create expected file with telnet disabled.
+>       cat > $LTPTMP/tst_xinetd.exp.1 <<-EOF || RC=$?
+> -telnet: Unable to connect to remote host: Connection refused
+> +telnet: connect to address 127.0.0.1: Connection refused
+>   EOF
+>
+>       if [ $RC -ne 0 ]
+> @@ -138,10 +149,23 @@ EOF
+>           return $RC
+>       fi
+>
+> +    if [ $IPV6_ENABLED -eq 1 ]
+> +    then
+> +        cat > $LTPTMP/tst_xinetd.exp.1.ipv6 <<-EOF || RC=$?
+> +telnet: connect to address ::1: Connection refused
+> +EOF
+> +
+> +        if [ $RC -ne 0 ]
+> +        then
+> +            tst_brkm TBROK NULL \
+> +                "INIT: unable to create expected file $LTPTMP/tst_xinetd.exp.1"
+> +        fi
+> +    fi
+> +
+>       # Create expected file with telnet enabled.
+>       cat > $LTPTMP/tst_xinetd.exp.2 <<-EOF || RC=$?
+>   Trying 127.0.0.1...
+> -Connected to localhost (127.0.0.1).
+> +Connected to 127.0.0.1.
+>   Escape character is '^]'.
+>   Connection closed by foreign host.
+>   EOF
+> @@ -149,10 +173,26 @@ EOF
+>       if [ $RC -ne 0 ]
+>       then
+>           tst_brkm TBROK  NULL \
+> -            "INIT: unable to create expected file $LTPTMP/tst_xinetd.exp.1"
+> +            "INIT: unable to create expected file $LTPTMP/tst_xinetd.exp.2"
+>           return $RC
+>       fi
+>
+> +    if [ $IPV6_ENABLED -eq 1 ]
+> +    then
+> +        cat > $LTPTMP/tst_xinetd.exp.2.ipv6 <<-EOF || RC=$?
+> +Trying ::1...
+> +Connected to ::1.
+> +Escape character is '^]'.
+> +Connection closed by foreign host.
+> +EOF
+> +
+> +        if [ $RC -ne 0 ]
+> +        then
+> +            tst_brkm TBROK NULL \
+> +                "INIT: unable to create expected file $LTPTMP/tst_xinetd.exp.2.ipv6"
+> +        fi
+> +    fi
+> +
+>       return $RC
+>   }
+>
+> @@ -263,7 +303,20 @@ test01()
+>
+>       # Not checking for exit code from telnet command because telnet is
+>       # not terminated by the test gracefully.
+> -    echo "" | telnet localhost 2>$LTPTMP/tst_xinetd.out 1>/dev/null
+> +    if [ $IPV6_ENABLED -eq 1 ]
+> +    then
+> +        echo "" | $TELNET_COMM ::1 2>$LTPTMP/tst_xinetd.out.ipv6 1>/dev/null
+> +        diff -iwB $LTPTMP/tst_xinetd.out.ipv6  $LTPTMP/tst_xinetd.exp.1.ipv6 \
+> +            > $LTPTMP/tst_xinetd.err.ipv6 2>&1 || RC=$?
+> +        if [ $RC -ne 0 ]
+> +        then
+> +            tst_res TFAIL $LTPTMP/tst_xinetd.err.ipv6 \
+> +                "Test #1: with telnet diabled expected out differs RC=$RC. Details:"
+> +            return $RC
+> +        fi
+> +    fi
+> +
+> +    echo "" | $TELNET_COMM 127.0.0.1 2>$LTPTMP/tst_xinetd.out 1>/dev/null
+>       diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
+>           > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+>       if [ $RC -ne 0 ]
+> @@ -312,7 +365,23 @@ test01()
+>
+>       # Not checking for exit code from telnet command because telnet is
+>       # not terminated by the test gracefully.
+> -    echo "" | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
+> +    if [ $IPV6_ENABLED -eq 1 ]
+> +    then
+> +        echo "" | $TELNET_COMM ::1 >$LTPTMP/tst_xinetd.out.ipv6 2>&1
+> +        diff -iwB $LTPTMP/tst_xinetd.out.ipv6  $LTPTMP/tst_xinetd.exp.2.ipv6 \
+> +            > $LTPTMP/tst_xinetd.err.ipv6 2>&1 || RC=$?
+> +        if [ $RC -ne 0 ]
+> +        then
+> +            tst_res TFAIL $LTPTMP/tst_xinetd.err.ipv6 \
+> +                "Test #1: with telnet diabled expected out differs RC=$RC. Details:"
+> +            return $RC
+> +        else
+> +            tst_resm TPASS \
+> +            "Test #1: xinetd reads the config file and starts or stops IPv6 services."
+> +        fi
+> +    fi
+> +
+> +    echo "" | $TELNET_COMM 127.0.0.1 > $LTPTMP/tst_xinetd.out 2>&1
+>
+>       diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
+>           > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+>
 
-We are just following kernel coding style in LTP.
+Patch looks good to me.
+
+Could you also give a running result based on your patch? Thanks.
+
+Leo, please help with review if you have some time :-)
 
 Thanks,
-Wanlong Gao
-
-> 
-
+Caspar
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
