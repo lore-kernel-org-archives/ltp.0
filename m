@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1V4Lbr-0003VB-WE
-	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 01:53:52 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V4Lbq-0006nP-Ag
-	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 01:53:51 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6V1rhb2017675
-	for <ltp-list@lists.sourceforge.net>; Wed, 31 Jul 2013 09:53:43 +0800
-Message-ID: <51F86DD4.7050105@cn.fujitsu.com>
-Date: Wed, 31 Jul 2013 09:52:20 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UwveV-00009y-1I
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 14:45:55 +0000
+Date: Wed, 10 Jul 2013 16:47:32 +0200
+From: chrubis@suse.cz
+Message-ID: <20130710144731.GG19178@rei.suse.cz>
+References: <51DA513C.2040403@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH v2] mount/mount06.c: fix a compile error
+Content-Disposition: inline
+In-Reply-To: <51DA513C.2040403@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mount/mount06.c: new case to test MS_MOVE of
+ mount
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,48 +25,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
+Hi!
+> +		SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
+> +
+> +		TEST(mount(mntpoint_src, mntpoint_des, fs_type, MS_MOVE, NULL));
+> +
+> +		if (TEST_RETURN != 0) {
+> +			tst_resm(TFAIL | TTERRNO, "mount(2) failed");
+> +		} else {
+> +
+> +			if (open(file_des, O_CREAT | O_EXCL) == -1 &&
+> +			    errno == EEXIST)
+> +				tst_resm(TPASS, "move mount is ok");
+> +			else
+> +				tst_resm(TFAIL, "file %s is not available",
+> +					 file_des);
+> +
+> +			TEST(umount(mntpoint_des));
+> +			if (TEST_RETURN != 0)
+> +				tst_brkm(TBROK | TTERRNO, cleanup,
+> +					 "umount(2) failed");
 
-The definitions of MS_PRIVATE and MS_MOVE were only added to glibc headers
-in version 2.12.
+I still think that we should make this check more robust...
 
-If there are no definitions of these two flags, make it.
+> +		}
+> +	}
+> +	cleanup();
+> +
+> +	tst_exit();
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	if (umount(path_name) != 0)
+> +		tst_brkm(TBROK | TTERRNO, NULL, "umount(2) %s failed",
+> +			 path_name);
 
+I think that the TTERRNO is a typo here and it should be TERRNO.
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/mount/mount06.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> +	TEST_CLEANUP;
+> +
+> +	tst_rmdir();
+> +}
 
-diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
-index acfb22d..fff6483 100644
---- a/testcases/kernel/syscalls/mount/mount06.c
-+++ b/testcases/kernel/syscalls/mount/mount06.c
-@@ -31,6 +31,14 @@
- #include "usctest.h"
- #include "safe_macros.h"
-
-+#ifndef MS_MOVE
-+#define MS_MOVE	8192
-+#endif
-+
-+#ifndef MS_PRIVATE
-+#define MS_PRIVATE	(1 << 18)
-+#endif
-+
- #define MNTPOINT_SRC	"mnt_src"
- #define MNTPOINT_DES	"mnt_des"
- #define LINELENGTH	256
 -- 
-1.8.1
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
