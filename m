@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Uttzf-0007vK-7j
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 06:23:15 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uttzd-0008H6-4Z
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 06:23:15 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r626N6EL019873
-	for <ltp-list@lists.sourceforge.net>; Tue, 2 Jul 2013 14:23:06 +0800
-Message-ID: <51D27187.2060003@cn.fujitsu.com>
-Date: Tue, 02 Jul 2013 14:21:59 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH 1/2] mount/mount03.c: clean up
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lingyun.xie@bj.cs2c.com.cn>) id 1UwsRm-00048Z-LM
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 11:20:34 +0000
+Received: from regular2.263xmail.com ([211.157.152.4])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UwsRe-0003Ry-1p
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 11:20:34 +0000
+Received: from regular1.263xmail.com (unknown [192.168.165.234])
+	by regular2.263xmail.com (Postfix) with ESMTP id B029B163C55
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Jul 2013 19:04:48 +0800 (CST)
+From: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Date: Wed, 10 Jul 2013 19:03:19 +0800
+Message-Id: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+Subject: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,155 +25,360 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: liuhangbin@gmail.com
+Cc: ltp-list@lists.sourceforge.net, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
 
+replace tabs with 4 spaces.
+The echo <<-EOF lines become no indentation.
 
-Clean up mount03.c:
-    xxx func() -> xxx func(void)
-
-    clean up setup()
-
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
 ---
- testcases/kernel/syscalls/mount/mount03.c | 47 ++++++++++---------------------
- 1 file changed, 15 insertions(+), 32 deletions(-)
+ testcases/network/xinetd/xinetd_tests.sh | 246 +++++++++++++++----------------
+ 1 file changed, 123 insertions(+), 123 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index b1aa71f..8b2d3e4 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -85,6 +85,7 @@ static int setup_uid(void);
- char *TCID = "mount03";
- int TST_TOTAL = 6;
-
-+#define EXEC_COMMAND	"cp"
- #define DEFAULT_FSTYPE	"ext2"
- #define TEMP_FILE	"temp_file"
- #define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
-@@ -106,7 +107,6 @@ static char read_buffer[BUFSIZ];
- static char path_name[PATH_MAX];
- static char testhome_path[PATH_MAX];
- static char file[PATH_MAX];
--static char *cmd = "cp";
-
- long rwflags[] = {
- 	MS_RDONLY,
-@@ -375,7 +375,7 @@ int test_rwflag(int i, int cnt)
- }
-
- /* setup_uid() - performs setup for NOUID test */
--int setup_uid()
-+int setup_uid(void)
- {
- 	int pid, status;
- 	char command[PATH_MAX];
-@@ -387,7 +387,8 @@ int setup_uid()
- 		return 1;
- 	case 0:
- 		/* Put command into string */
--		sprintf(command, "%s %s %s", cmd, testhome_path, path_name);
-+		sprintf(command, "%s %s %s",
-+			EXEC_COMMAND, testhome_path, path_name);
-
- 		/* Run command to cp file to right spot */
- 		if (system(command) == 0)
-@@ -410,25 +411,17 @@ int setup_uid()
- 	}
- }
-
--void setup()
-+void setup(void)
- {
--	int fd;
- 	char path[PATH_MAX];
--	char *test_home;
- 	struct stat setuid_test_stat;
-
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
-
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		free(fs_type);
--		tst_brkm(TBROK, NULL, "Test must be run as root");
+diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+index 83eb8a7..ea89658 100755
+--- a/testcases/network/xinetd/xinetd_tests.sh
++++ b/testcases/network/xinetd/xinetd_tests.sh
+@@ -90,46 +90,46 @@ init()
+     chk_ifexists INIT diff       || return $RC
+     chk_ifexists INIT telnet     || return $RC
+ 
+-	# Create custom xinetd.conf file.
+-	# tst_xinetd.conf.1 config file has telnet service disabled.
+-	cat > $LTPTMP/tst_xinetd.conf.1 <<-EOF || RC=$?
+-	defaults
+-	{
+-		instances      = 25
+-		log_type       = FILE /var/log/servicelog
+-		log_on_success = HOST PID
+-		log_on_failure = HOST RECORD
+-	    disabled       = telnet
 -	}
-+	tst_require_root(NULL);
-
- 	tst_tmpdir();
-
--	test_home = get_current_dir_name();
+-	EOF
 -
- 	sprintf(mntpoint, "mnt_%d", getpid());
-
- 	if (mkdir(mntpoint, DIR_MODE))
-@@ -444,38 +437,28 @@ void setup()
- 			 path_name, DIR_MODE);
-
- 	snprintf(file, PATH_MAX, "%s/setuid_test", path_name);
--	fd = open(file, O_CREAT | O_TRUNC, S_IRWXU);
--	if (fd == -1)
-+	if (open(file, O_CREAT | O_TRUNC, S_IRWXU) == -1)
- 		tst_brkm(TBROK, cleanup, "open file failed");
--	close(fd);
-
--	if (stat(file, &setuid_test_stat) < 0) {
-+	if (stat(file, &setuid_test_stat) < 0)
- 		tst_brkm(TBROK, cleanup, "stat for setuid_test failed");
--	} else {
--		if ((setuid_test_stat.st_uid || setuid_test_stat.st_gid) &&
--		    chown(file, 0, 0) < 0)
--			tst_brkm(TBROK, cleanup,
--				 "chown for setuid_test failed");
--
--		if (setuid_test_stat.st_mode != SUID_MODE &&
--		    chmod(file, SUID_MODE) < 0)
--			tst_brkm(TBROK, cleanup,
--				 "setuid for setuid_test failed");
+-	# tst_xinetd.conf.2 config file has telnet enabled.
+-	cat > $LTPTMP/tst_xinetd.conf.2 <<-EOF || RC=$?
+-	defaults
+-	{
+-		instances      = 25
+-		log_type       = FILE /var/log/servicelog
+-		log_on_success = HOST PID
+-		log_on_failure = HOST
+-		# disabled       = telnet
 -	}
+-
+-	service telnet
+-	{
+-        socket_type     = stream
+-        protocol        = tcp
+-        wait            = no
+-        user            = root
+-        server          = /usr/sbin/in.telnetd
+-        server_args     = -n
+-        no_access       =
+-    }
+-	EOF
++    # Create custom xinetd.conf file.
++    # tst_xinetd.conf.1 config file has telnet service disabled.
++    cat > $LTPTMP/tst_xinetd.conf.1 <<-EOF || RC=$?
++defaults
++{
++instances      = 25
++log_type       = FILE /var/log/servicelog
++log_on_success = HOST PID
++log_on_failure = HOST RECORD
++disabled       = telnet
++}
++EOF
 +
-+	if (setuid_test_stat.st_mode != SUID_MODE && chmod(file, SUID_MODE) < 0)
-+		tst_brkm(TBROK, cleanup,
-+			 "setuid for setuid_test failed");
-
- 	/*
- 	 * under temporary directory
- 	 */
-+	strcpy(testhome_path, file);
- 	strncpy(path, path_name, PATH_MAX);
- 	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
--	strcpy(testhome_path, test_home);
--	strcat(testhome_path, "/setuid_test");
-
- 	TEST_PAUSE;
-
- }
-
--void cleanup()
-+void cleanup(void)
++    # tst_xinetd.conf.2 config file has telnet enabled.
++    cat > $LTPTMP/tst_xinetd.conf.2 <<-EOF || RC=$?
++defaults
++{
++instances      = 25
++log_type       = FILE /var/log/servicelog
++log_on_success = HOST PID
++log_on_failure = HOST
++# disabled       = telnet
++}
++
++service telnet
++{
++socket_type     = stream
++protocol        = tcp
++wait            = no
++user            = root
++server          = /usr/sbin/in.telnetd
++server_args     = -n
++no_access       =
++}
++EOF
+ 
+     # Create expected file with telnet disabled.
+     cat > $LTPTMP/tst_xinetd.exp.1 <<-EOF || RC=$?
+-	telnet: Unable to connect to remote host: Connection refused
+-	EOF
++telnet: Unable to connect to remote host: Connection refused
++EOF
+ 
+     if [ $RC -ne 0 ]
+     then
+@@ -139,12 +139,12 @@ init()
+     fi
+ 
+     # Create expected file with telnet enabled.
+-	cat > $LTPTMP/tst_xinetd.exp.2 <<-EOF || RC=$?
+-	Trying 127.0.0.1...
+-	Connected to localhost (127.0.0.1).
+-	Escape character is '^]'.
+-	Connection closed by foreign host.
+-	EOF
++    cat > $LTPTMP/tst_xinetd.exp.2 <<-EOF || RC=$?
++Trying 127.0.0.1...
++Connected to localhost (127.0.0.1).
++Escape character is '^]'.
++Connection closed by foreign host.
++EOF
+ 
+     if [ $RC -ne 0 ]
+     then
+@@ -165,28 +165,28 @@ init()
+ #               - non-zero on failure.
+ cleanup()
  {
- 	free(fs_type);
-
-@@ -487,7 +470,7 @@ void cleanup()
- /*
-  * issue a help message
-  */
--void help()
-+void help(void)
- {
- 	printf("-T type	  : specifies the type of filesystem to be mounted."
- 	       " Default ext2.\n");
+-	RC=0
+-	# restore the original xinetd.conf if a back up exits.
+-	if [ -f /etc/xinetd.conf.orig ]
+-	then
+-		mv /etc/xinetd.conf.orig /etc/xinetd.conf \
+-			> $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+-		if [ $RC -ne 0 ]
+-		then
+-			tst_res TINFO $LTPTMP/tst_xinetd.err \
+-			"CLEANUP: failed restoring original xinetd.conf RC=$RC. Details:"
+-		fi
+-
+-		sleep 1s
+-
+-		# restoring original services
+-		/etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+-		if [ $RC -ne 0 ]
+-		then
+-			tst_res TINFO $LTPTMP/tst_xinetd.err \
+-			"CLEANUP: failed restoring original services RC=$RC. Details:"
+-		fi
+-	fi
++    RC=0
++    # restore the original xinetd.conf if a back up exits.
++    if [ -f /etc/xinetd.conf.orig ]
++    then
++        mv /etc/xinetd.conf.orig /etc/xinetd.conf \
++            > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
++        if [ $RC -ne 0 ]
++        then
++            tst_res TINFO $LTPTMP/tst_xinetd.err \
++            "CLEANUP: failed restoring original xinetd.conf RC=$RC. Details:"
++        fi
++
++        sleep 1s
++
++        # restoring original services
++        /etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
++        if [ $RC -ne 0 ]
++        then
++            tst_res TINFO $LTPTMP/tst_xinetd.err \
++            "CLEANUP: failed restoring original services RC=$RC. Details:"
++        fi
++    fi
+ 
+     # remove all the temporary files created by this test.
+     tst_resm TINFO "CLEAN: removing $LTPTMP"
+@@ -214,9 +214,9 @@ test01()
+ 
+     tst_resm TINFO "Test #1: restart xinetd with telnet disabled."
+ 
+-	# create a backup of the original xinetd.conf file.
+-	mv /etc/xinetd.conf /etc/xinetd.conf.orig > $LTPTMP/tst_xinetd.err 2>&1 \
+-		|| RC=$?
++    # create a backup of the original xinetd.conf file.
++    mv /etc/xinetd.conf /etc/xinetd.conf.orig > $LTPTMP/tst_xinetd.err 2>&1 \
++        || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_brk TBROK $LTPTMP/tst_xinetd.err NULL \
+@@ -224,9 +224,9 @@ test01()
+         return $RC
+     fi
+ 
+-	# install the new config file with telnet disabled.
+-	mv $LTPTMP/tst_xinetd.conf.1 /etc/xinetd.conf > $LTPTMP/tst_xinetd.err 2>&1 \
+-		|| RC=$?
++    # install the new config file with telnet disabled.
++    mv $LTPTMP/tst_xinetd.conf.1 /etc/xinetd.conf > $LTPTMP/tst_xinetd.err 2>&1 \
++        || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_brk TBROK $LTPTMP/tst_xinetd.err NULL \
+@@ -236,36 +236,36 @@ test01()
+ 
+     tst_resm TINFO "Test #1: new xinetd.conf installed with telnet disabled."
+ 
+-	sleep 1s
++    sleep 1s
+ 
+-	# restart xinetd to re-start the services
++    # restart xinetd to re-start the services
+     /etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.out 2>&1 || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_res TFAIL $LTPTMP/tst_xinetd.out \
+        "Test #1: unable to restart service with telnet disabled. Details:"
+         return $RC
+-	else
+-		# even if xinetd restart has zero exit value,
+-		# make certain there was no failure.
+-		grep -i "fail" $LTPTMP/tst_xinetd.out > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+-		if [ $RC -eq 0 ]
+-		then
+-			tst_res TFAIL $LTPTMP/tst_xinetd.err \
+-				"Test #1: xinetd failed to restart. Details"
+-			return $RC
+-		else
+-			RC=0
+-			tst_resm TINFO \
+-				"Test #1: xinetd re-started successfully with telnet disabled."
+-		fi
+-	fi
+-
+-	# Not checking for exit code from telnet command because telnet is
+-	# not terminated by the test gracefully.
+-	echo "" | telnet localhost 2>$LTPTMP/tst_xinetd.out 1>/dev/null
+-	diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
+-		> $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
++    else
++        # even if xinetd restart has zero exit value,
++        # make certain there was no failure.
++        grep -i "fail" $LTPTMP/tst_xinetd.out > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
++        if [ $RC -eq 0 ]
++        then
++            tst_res TFAIL $LTPTMP/tst_xinetd.err \
++                "Test #1: xinetd failed to restart. Details"
++            return $RC
++        else
++            RC=0
++            tst_resm TINFO \
++                "Test #1: xinetd re-started successfully with telnet disabled."
++        fi
++    fi
++
++    # Not checking for exit code from telnet command because telnet is
++    # not terminated by the test gracefully.
++    echo "" | telnet localhost 2>$LTPTMP/tst_xinetd.out 1>/dev/null
++    diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
++        > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_res TFAIL $LTPTMP/tst_xinetd.err \
+@@ -274,9 +274,9 @@ test01()
+     fi
+ 
+     tst_resm TINFO "Test #1: restart xinetd with telnet enabled."
+-	# install the xinetd config file with telnet enabled.
+-	mv $LTPTMP/tst_xinetd.conf.2 /etc/xinetd.conf > $LTPTMP/tst_xinetd.err 2>&1 \
+-		|| RC=$?
++    # install the xinetd config file with telnet enabled.
++    mv $LTPTMP/tst_xinetd.conf.2 /etc/xinetd.conf > $LTPTMP/tst_xinetd.err 2>&1 \
++        || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_brk TBROK $LTPTMP/tst_xinetd.err NULL \
+@@ -286,44 +286,44 @@ test01()
+ 
+     tst_resm TINFO "Test #1: new xinetd.conf installed with telnet enabled."
+ 
+-	sleep 1s
++    sleep 1s
+ 
+-	# restart services.
++    # restart services.
+     /etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.out 2>&1 || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_res TFAIL $LTPTMP/tst_xinetd.out \
+             "Test #1: unable to restart services with telnet enabled. Details:"
+         return $RC
+-	else
+-		# even if restart has a zero exit value double check for failure.
+-		grep -i "fail" $LTPTMP/tst_xinetd.out > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+-		if [ $RC -eq 0 ]
+-		then
+-			tst_res TFAIL $LTPTMP/tst_xinetd.err \
+-				"Test #1: xinetd failed to restart. Details"
+-			return $RC
+-		else
+-			RC=0
+-			tst_resm TINFO \
+-				"Test #1: xinetd re-started successfully with telnet enabled."
+-		fi
+-	fi
+-
+-	# Not checking for exit code from telnet command because telnet is
+-	# not terminated by the test gracefully.
+-	echo "" | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
+-
+-	diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
+-		> $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
++    else
++        # even if restart has a zero exit value double check for failure.
++        grep -i "fail" $LTPTMP/tst_xinetd.out > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
++        if [ $RC -eq 0 ]
++        then
++            tst_res TFAIL $LTPTMP/tst_xinetd.err \
++                "Test #1: xinetd failed to restart. Details"
++            return $RC
++        else
++            RC=0
++            tst_resm TINFO \
++                "Test #1: xinetd re-started successfully with telnet enabled."
++        fi
++    fi
++
++    # Not checking for exit code from telnet command because telnet is
++    # not terminated by the test gracefully.
++    echo "" | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
++
++    diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
++        > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+     if [ $RC -ne 0 ]
+     then
+         tst_res TFAIL $LTPTMP/tst_xinetd.err \
+             "Test #1: expected output differes from actual. Details:"
+         return $RC
+-	else
+-		tst_resm TPASS \
+-		"Test #1: xinetd reads the config file and starts or stops services."
++    else
++        tst_resm TPASS \
++        "Test #1: xinetd reads the config file and starts or stops services."
+     fi
+ 
+     return $RC
 -- 
-1.8.1
+1.8.3.1
+
+
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
