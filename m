@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwVww-0008WR-9O
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 11:19:14 +0000
-Date: Tue, 9 Jul 2013 13:20:48 +0200
-From: chrubis@suse.cz
-Message-ID: <20130709112048.GB30721@rei>
-References: <DUB116-W436268875AA46AD93621D0F3790@phx.gbl>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <DUB116-W436268875AA46AD93621D0F3790@phx.gbl>
-Subject: Re: [LTP] [PATCH] flock/flock03.c: When compiling with UCLINUX=1:
- undefined symbol `FILENAME`
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1UwkaB-0000PV-2b
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:56:43 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uwka8-0002u7-TN
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:56:43 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6A2uVP7026760
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jul 2013 10:56:32 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
+Date: Wed, 10 Jul 2013 10:56:13 +0800
+Message-Id: <1373424973-32151-1-git-send-email-penght@cn.fujitsu.com>
+Subject: [LTP] [PATCH v2] syslog-lib.sh: Use lib to restart syslog service
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,32 +24,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Benoit M <juz4m@hotmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> flock/flock03.c: When compiling with UCLINUX=1: undefined symbol
-> `FILENAME`. Did you mean `FILE_NAME`, as it is defined at the top of
-> the file?
+Use restart_daemon() to restart syslog service.
 
-Looks like an obivous typo to me.
+Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/syslog/syslog-lib.sh | 65 ++++++--------------------
+ 1 file changed, 15 insertions(+), 50 deletions(-)
 
-> (The patch also removes some trailing white-spaces in empty lines)
-> --- testcases/kernel/syscalls/flock/flock03.c | 10 +++++----- 1 file changed, 5 insertions(+), 5 deletions(-)
-> diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.cindex bacf4f6..a7a1cd9 100644--- a/testcases/kernel/syscalls/flock/flock03.c+++ b/testcases/kernel/syscalls/flock/flock03.c@@ -86,13 +86,13 @@ int main(int argc, char **argv)                                 "file, errno %d", errno);                 pid = FORK_OR_VFORK();-+                if (pid == -1)                        tst_brkm(TFAIL, cleanup, "fork() failed, errno %d",                                 errno);                if (pid == 0) { #ifdef UCLINUX-                       if (self_exec(argv[0], "ds", fd, FILENAME) < 0)+                       if (self_exec(argv[0], "ds", fd, FILE_NAME) < 0)                                tst_brkm(TFAIL, cleanup, "self_exec failed, "                                         "errno &d", errno); #else@@ -161,7 +161,7 @@ static void childfunc(int fd)        }         TEST(flock(fd2, LOCK_EX | LOCK_NB));-+        if (TEST_RETURN == -1) {   
-              fprintf(stderr, "CHILD: Unable to lock file after "                        "unlocking: %s\n", strerror(TEST_ERRNO));@@ -169,10 +169,10 @@ static void childfunc(int fd)        } else {                fprintf(stderr, "CHILD: Locking after unlock passed\n");        }-+        close(fd);        close(fd2);-+        exit(0); } -- 1.8.3
-> --Benoit Marcot 		 	   		  
-
-Your mail client apparently mangled the patch.
-
-Could you please resend it and add Signed-of-by line too?
-
+diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+index c912d61..0885805 100755
+--- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
++++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+@@ -29,16 +29,6 @@ CONFIG_FILE=""
+ # rsyslogd .conf specific args.
+ RSYSLOG_CONFIG=
+ 
+-# Command to restart syslog daemon.
+-SYSLOG_RESTART_COMMAND=
+-
+-# running under systemd?
+-if command -v systemctl >/dev/null 2>&1; then
+-	HAVE_SYSTEMCTL=1
+-else
+-	HAVE_SYSTEMCTL=0
+-fi
+-
+ # number of seconds to wait for another syslog test to complete
+ WAIT_COUNT=60
+ 
+@@ -75,43 +65,15 @@ setup()
+ 		tst_resm TBROK "Testing is terminating due to a signal"
+ 		cleanup 1' $TRAP_SIGS || exit 1
+ 
+-	# Check to see if syslogd or syslog-ng exists
+-	if [ -e /sbin/syslogd ]; then
++	if [ "$SYSLOG_DAEMON" == "syslog" ]; then
+ 		CONFIG_FILE="/etc/syslog.conf"
+-		SYSLOG_INIT_SCRIPT="/etc/init.d/sysklogd"
+-	elif command -v syslog-ng >/dev/null 2>&1; then
++	elif [ "$SYSLOG_DAEMON" == "syslog-ng" ]; then
+ 		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+-		SYSLOG_INIT_SCRIPT="/etc/init.d/syslog-ng"
+-	elif command -v rsyslogd >/dev/null 2>&1; then
++	elif [ "$SYSLOG_DAEMON" == "rsyslog" ]; then
+ 		CONFIG_FILE="/etc/rsyslog.conf"
+-		SYSLOG_INIT_SCRIPT="/etc/init.d/rsyslog"
+ 		RSYSLOG_CONFIG='$ModLoad imuxsock.so'
+ 	else
+-		tst_resm TCONF "couldn't find syslogd, syslog-ng, or rsyslogd"
+-		cleanup	0
+-	fi
+-
+-	SVCNAME=$(basename $SYSLOG_INIT_SCRIPT)
+-	if [ $HAVE_SYSTEMCTL == 1 ]; then
+-		for svc in "$SVCNAME" "syslog"; do
+-			if systemctl is-enabled $svc.service >/dev/null 2>&1; then
+-				SYSLOG_RESTART_COMMAND="systemctl restart $svc.service"
+-				break
+-			fi
+-		done
+-	else
+-		# Fallback to /etc/init.d/syslog if $SYSLOG_INIT_SCRIPT
+-		# doesn't exist.
+-		for SYSLOG_INIT_SCRIPT in "$SYSLOG_INIT_SCRIPT" "/etc/init.d/syslog"; do
+-			if [ -x "$SYSLOG_INIT_SCRIPT" ]; then
+-				SYSLOG_RESTART_COMMAND="$SYSLOG_INIT_SCRIPT restart"
+-				break
+-			fi
+-		done
+-	fi
+-
+-	if [ -z "$SYSLOG_RESTART_COMMAND" ]; then
+-		tst_resm TBROK "Don't know how to restart $SVCNAME"
++		tst_resm TBROK "Couldn't find syslogd, syslog-ng or rsyslogd"
+ 		cleanup 1
+ 	fi
+ 
+@@ -152,15 +114,18 @@ restart_syslog_daemon()
+ 		cleanup_command=$1
+ 	fi
+ 
+-	tst_resm TINFO "restarting syslog daemon via $SYSLOG_RESTART_COMMAND"
++	tst_resm TINFO "restarting syslog daemon"
+ 
+-	if $SYSLOG_RESTART_COMMAND >/dev/null 2>&1; then
+-		# XXX: this really shouldn't exist; if *syslogd isn't ready
+-		# once the restart directive has been issued, then it needs to
+-		# be fixed.
+-		sleep 2
+-	else
+-		$cleanup_command
++	if [ -n "$SYSLOG_DAEMON" ]; then
++		restart_daemon $SYSLOG_DAEMON
++		if [ $? -eq 0 ]; then
++			# XXX: this really shouldn't exist; if *syslogd isn't
++			# ready once the restart directive has been issued,
++			# then it needs to be fixed.
++			sleep 2
++		else
++			$cleanup_command
++		fi
+ 	fi
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
