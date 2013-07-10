@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uw9Y7-0001gF-6J
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 11:24:07 +0000
-Date: Mon, 8 Jul 2013 13:25:41 +0200
+	(envelope-from <metan@suse.de>) id 1UwuaC-0007yL-Dq
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 13:37:24 +0000
+Date: Wed, 10 Jul 2013 15:38:57 +0200
 From: chrubis@suse.cz
-Message-ID: <20130708112541.GD23579@rei.Home>
-References: <1373014297-30962-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20130710133856.GD19178@rei.suse.cz>
+References: <1373356491-15338-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1373014297-30962-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] runltp: try to create ext3 loop device if
- creating ext4 failed
+In-Reply-To: <1373356491-15338-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V3] lib: add tst_kvercmp2 to compare specific
+ vendor extra kernel versions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,45 +29,33 @@ To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> Try to create ext3 loop device if creating ext4 failed since
-> some old system can't support ext4 file system or the root
-> file system still use ext3 file system.
+> We can now test specific verdor kernel versions in
+> test cases like:
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  runltp | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> static struct tst_kern_exv exv[] = {
+> 	{"RHEL6", "234"},
+> 	{"SLES10", "0.91"},
+> 	{NULL, NULL}
+> };
 > 
-> diff --git a/runltp b/runltp
-> index 1309d0a..2c13b56 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -1002,7 +1002,8 @@ create_block()
->                  return 1
->              else
->                  mkfs.ext4 $LOOP_DEV
-> -                [ $? -ne 0 ] && (echo "creating a ext4 block device failed" && return 1)
-> +                [ $? -ne 0 ] && (mkfs.ext3 $LOOP_DEV)
-> +                [ $? -ne 0 ] && (echo "creating a ext4/3 block device failed" && return 1)
->                  #set the values in alltests which require block device.
->                  DEVICE=$LOOP_DEV
->                  DEVICE_FS_TYPE="ext4"
-                         ^
-Hmm, you should set the DEVICE_FS_TYPE accordingly too. I wonder if
-leaving it set to ext4 will work, have you tested the change?
+> ...
+> 
+> 	if (tst_kvercmp2(2, 6, 25, exv) < 0)
+> 		...
+> ...
 
-Otherwise I'm fine with the change.
+This one looks fine, acked.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
