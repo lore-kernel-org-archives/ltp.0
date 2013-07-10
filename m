@@ -2,24 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1V1sjk-0000Vk-N8
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 06:39:48 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <lingyun.xie@bj.cs2c.com.cn>) id 1UwjsE-0002AL-DO
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:11:18 +0000
+Received: from smtpwcom.263xmail.com ([63.217.87.10])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V1sji-0001wI-Iv
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 06:39:48 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r6O6deCs008666
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jul 2013 02:39:40 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 24 Jul 2013 08:39:25 +0200
-Message-Id: <99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
-In-Reply-To: <0575932595c58348fef5664c180a73b59b2515f4.1374647501.git.jstancek@redhat.com>
-References: <0575932595c58348fef5664c180a73b59b2515f4.1374647501.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 2/2] open_posix_testsuite/../mq_timedsend/12-1: fix
-	race
+	id 1Uwjrw-0000if-DL
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:11:16 +0000
+Received: from mail-pa0-f54.google.com (localhost [127.0.0.1])
+	by smtpwcom.263xmail.com (Postfix) with ESMTP id 2AEBA523
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Jul 2013 10:10:37 +0800 (CST)
+Received: by mail-pa0-f54.google.com with SMTP id kx10so6213434pab.27
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 09 Jul 2013 19:10:38 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAPwn2JThzyiSxEtFDixu1W1shoYuQ-ns0zdOiq95uQvVbSAxVQ@mail.gmail.com>
+References: <CALGiYOHjLdA=roRGqztO1HjHSvy+=Je7LK-Zi2LTQMsKU5Z=1g@mail.gmail.com>
+	<CAPwn2JThzyiSxEtFDixu1W1shoYuQ-ns0zdOiq95uQvVbSAxVQ@mail.gmail.com>
+From: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Date: Wed, 10 Jul 2013 10:09:57 +0800
+Message-ID: <CALGiYOGJAC2Msbz5e5BiMsdSCydyOReWUnK52SpXXxXjir0H-w@mail.gmail.com>
+Subject: Re: [LTP] [PATCH v2] xinetd/xinetd_tests.sh: add IPv6 test for
+	xinetd
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,214 +33,514 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1031339443822411656=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Test can send SIGUSR1 signal after thread has already completed
-and report failure from main() and success from a_thread_func():
+--===============1031339443822411656==
+Content-Type: multipart/alternative; boundary=047d7b15a2d1ab733f04e11ec81d
 
-  conformance/interfaces/mq_timedsend/12-1: execution: UNRESOLVED: Output:
-  Error: in pthread_kill
-  : Success
-  thread: mq_timedsend interrupted by signal and correctly set errno to EINTR
+--047d7b15a2d1ab733f04e11ec81d
+Content-Type: text/plain; charset=ISO-8859-1
 
-Synchronize exit of a_thread_func(), so that thread can exit only
-after loop sending SIGUSR1 completed.
+Yes, there should be a "^D" in each "echo " line. It seems that the
+terminal which I copied from doesn't support the special character.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../conformance/interfaces/mq_timedsend/12-1.c     |   94 +++++++++++---------
- 1 files changed, 51 insertions(+), 43 deletions(-)
+2013/7/9 Hangbin Liu <liuhangbin@gmail.com>
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-index 29780d0..df53a72 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-@@ -39,19 +39,25 @@
- #define MSGSTR "0123456789"
- #define BUFFER 40
- #define MAXMSG 10
-+#define TIMEOUT 10
- 
--#define INTHREAD 0
--#define INMAIN 1
-+#define SAFE(op) \
-+	do {\
-+		if ((op) == -1) {\
-+			perror("unexpected failure"); \
-+			exit(PTS_UNRESOLVED); \
-+		} \
-+	} while (0)
- 
--/* manual semaphore */
--int sem;
-+/* variable to indicate how many times signal handler was called */
-+static volatile sig_atomic_t in_handler;
- 
--/* flag to indicate signal handler was called */
--int in_handler;
-+/* errno returned by mq_timedsend() */
-+static volatile int mq_timedsend_errno = -1;
- 
--/* flag to indicate that errno was set to eintr when mq_timedsend()
-- * was interruped. */
--int errno_eintr;
-+/* pipes to synchronize thread calling mq_timedsend */
-+static int pipefd_start[2];
-+static int pipefd_exit[2];
- 
- /*
-  * This handler is just used to catch the signal and stop sleep (so the
-@@ -59,14 +65,12 @@ int errno_eintr;
-  */
- void justreturn_handler(int signo)
- {
--	/* Indicate that the signal handler was called */
--	in_handler = 1;
--	return;
-+	in_handler++;
- }
- 
--void *a_thread_func()
-+void *a_thread_func(void *arg)
- {
--	int i, ret;
-+	int i, ret, dummy;
- 	struct sigaction act;
- 	char gqname[NAMESIZE];
- 	mqd_t gqueue;
-@@ -92,18 +96,19 @@ void *a_thread_func()
- 		return NULL;
- 	}
- 
--	/* mq_timedsend will block for 10 seconds when it waits */
--	ts.tv_sec = time(NULL) + 10;
-+	/* mq_timedsend will block for TIMEOUT seconds when it waits */
-+	ts.tv_sec = time(NULL) + TIMEOUT;
- 	ts.tv_nsec = 0;
- 
- 	/* Tell main it can go ahead and start sending SIGUSR1 signal */
--	sem = INMAIN;
-+	SAFE(write(pipefd_start[1], "", 1));
- 
- 	for (i = 0; i < MAXMSG + 1; i++) {
- 		ret = mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
- 		if (ret	!= -1)
- 			continue;
- 
-+		mq_timedsend_errno = errno;
- 		if (errno == EINTR) {
- 			if (mq_unlink(gqname) != 0) {
- 				perror("mq_unlink() did not return success");
-@@ -112,21 +117,24 @@ void *a_thread_func()
- 			}
- 			printf("thread: mq_timedsend interrupted by signal"
- 				" and correctly set errno to EINTR\n");
--			errno_eintr = 1;
-+			/* wait for main to stop sending SIGUSR1 */
-+			SAFE(read(pipefd_exit[0], &dummy, 1));
- 			pthread_exit((void *)PTS_PASS);
- 			return NULL;
- 		} else {
- 			printf("mq_timedsend not interrupted by signal or"
- 				" set errno to incorrect code: %d\n", errno);
-+			/* wait for main to stop sending SIGUSR1 */
-+			SAFE(read(pipefd_exit[0], &dummy, 1));
- 			pthread_exit((void *)PTS_FAIL);
- 			return NULL;
- 		}
- 	}
- 
--	/* Tell main that it the thread did not block like it should have */
--	sem = INTHREAD;
--
--	perror("Error: thread never blocked\n");
-+	mq_timedsend_errno = 0;
-+	printf("Error: mq_timedsend wasn't interrupted\n");
-+	/* wait for main to stop sending SIGUSR1 */
-+	SAFE(read(pipefd_exit[0], &dummy, 1));
- 	pthread_exit((void *)PTS_FAIL);
- 	return NULL;
- }
-@@ -134,13 +142,10 @@ void *a_thread_func()
- int main(void)
- {
- 	pthread_t new_th;
--	int i;
-+	int i = 0, ret, dummy;
- 
--	/* Initialized values */
--	i = 0;
--	in_handler = 0;
--	errno_eintr = 0;
--	sem = INTHREAD;
-+	SAFE(pipe(pipefd_start));
-+	SAFE(pipe(pipefd_exit));
- 
- 	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0) {
- 		perror("Error: in pthread_create\n");
-@@ -148,18 +153,22 @@ int main(void)
- 	}
- 
- 	/* Wait for thread to set up handler for SIGUSR1 */
--	while (sem == INTHREAD)
--		sleep(1);
-+	SAFE(read(pipefd_start[0], &dummy, 1));
- 
--	while ((i != 10) && (sem == INMAIN)) {
-+	while (i < TIMEOUT && mq_timedsend_errno < 0) {
- 		/* signal thread while it's in mq_timedsend */
--		if (pthread_kill(new_th, SIGUSR1) != 0) {
--			perror("Error: in pthread_kill\n");
-+		ret = pthread_kill(new_th, SIGUSR1);
-+		if (ret	!= 0) {
-+			printf("Error: in pthread_kill: %d\n", ret);
- 			return PTS_UNRESOLVED;
- 		}
- 		i++;
-+		sleep(1);
- 	}
- 
-+	/* signal thread it's OK to exit now */
-+	SAFE(write(pipefd_exit[1], "", 1));
-+
- 	if (pthread_join(new_th, NULL) != 0) {
- 		perror("Error: in pthread_join()\n");
- 		return PTS_UNRESOLVED;
-@@ -167,18 +176,17 @@ int main(void)
- 
- 	/* Test to see if the thread blocked correctly in mq_timedsend,
- 	 * and if it returned EINTR when it caught the signal */
--	if (errno_eintr != 1) {
--		if (sem == INTHREAD) {
--			printf("Test FAILED: mq_timedsend() never"
--				" blocked for any timeout period.\n");
--			return PTS_FAIL;
--		}
--
--		if (in_handler != 0) {
--			perror("Error: signal SIGUSR1 was never received and/or"
--				" the signal handler was never called.\n");
-+	if (mq_timedsend_errno != EINTR) {
-+		printf("Error: mq_timedsend was NOT interrupted\n");
-+		printf(" signal handler was called %d times\n", in_handler);
-+		printf(" SIGUSR1 signals sent: %d\n", i);
-+		printf(" last mq_timedsend errno: %d %s\n",
-+			mq_timedsend_errno, strerror(mq_timedsend_errno));
-+		if (in_handler == 0) {
-+			printf("Error: SIGUSR1 was never received\n");
- 			return PTS_UNRESOLVED;
- 		}
-+		return PTS_FAIL;
- 	}
- 
- 	printf("Test PASSED\n");
--- 
-1.7.1
+> 2013/7/9 Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>:
+> > If IPv6 is enabled, telnet ::1 will be tested. Otherwise, IPv4 only.
+> >
+> > Signed-off-by: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+> > ---
+> >  testcases/network/xinetd/xinetd_tests.sh | 90
+> > ++++++++++++++++++++++++++++----
+> >  1 file changed, 79 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/testcases/network/xinetd/xinetd_tests.sh
+> > b/testcases/network/xinetd/xinetd_tests.sh
+> > index 83eb8a7..0fb6598 100755
+> > --- a/testcases/network/xinetd/xinetd_tests.sh
+> > +++ b/testcases/network/xinetd/xinetd_tests.sh
+> > @@ -84,12 +84,23 @@ init()
+> >           return $RC
+> >      fi
+> >
+> > + # sometimes the default telnet may be /usr/kerberos/bin/telnet
+> > + TELNET_COMM='/usr/bin/telnet'
+> > +
+> >      # check if commands tst_*, xinetd, awk exists.
+> >      chk_ifexists INIT tst_resm   || return $RC
+> >      chk_ifexists INIT xinetd     || return $RC
+> >      chk_ifexists INIT diff       || return $RC
+> > -    chk_ifexists INIT telnet     || return $RC
+> > -
+> > +    chk_ifexists INIT $TELNET_COMM     || return $RC
+> > +    chk_ifexists INIT ip || return $RC
+> > +
+> > +    IPV6_ENABLED=0
+> > +    ip a | grep inet6 > /dev/null 2>&1
+> > +    if [ $? -eq 0 ]
+> > +    then
+> > +     IPV6_ENABLED=1
+> > +    fi
+> > +
+> >   # Create custom xinetd.conf file.
+> >   # tst_xinetd.conf.1 config file has telnet service disabled.
+> >   cat > $LTPTMP/tst_xinetd.conf.1 <<-EOF || RC=$?
+> > @@ -128,7 +139,7 @@ init()
+> >
+> >      # Create expected file with telnet disabled.
+> >      cat > $LTPTMP/tst_xinetd.exp.1 <<-EOF || RC=$?
+> > - telnet: Unable to connect to remote host: Connection refused
+> > + telnet: connect to address 127.0.0.1: Connection refused
+> >   EOF
+> >
+> >      if [ $RC -ne 0 ]
+> > @@ -137,11 +148,25 @@ init()
+> >              "INIT: unable to create expected file
+> $LTPTMP/tst_xinetd.exp.1"
+> >          return $RC
+> >      fi
+> > +
+> > +    if [ $IPV6_ENABLED -eq 1 ]
+> > +    then
+> > +     cat > $LTPTMP/tst_xinetd.exp.1.ipv6 <<-EOF || RC=$?
+> > + telnet: connect to address ::1: Connection refused
+> > + EOF
+> > +
+> > +     if [ $RC -ne 0 ]
+> > +   then
+> > +         tst_brkm TBROK  NULL \
+> > +             "INIT: unable to create expected file
+> > $LTPTMP/tst_xinetd.exp.1.ipv6"
+> > +         return $RC
+> > +     fi
+> > +    fi
+> >
+> >      # Create expected file with telnet enabled.
+> >   cat > $LTPTMP/tst_xinetd.exp.2 <<-EOF || RC=$?
+> >   Trying 127.0.0.1...
+> > - Connected to localhost (127.0.0.1).
+> > + Connected to 127.0.0.1.
+> >   Escape character is '^]'.
+> >   Connection closed by foreign host.
+> >   EOF
+> > @@ -149,10 +174,27 @@ init()
+> >      if [ $RC -ne 0 ]
+> >      then
+> >          tst_brkm TBROK  NULL \
+> > -            "INIT: unable to create expected file
+> $LTPTMP/tst_xinetd.exp.1"
+> > +            "INIT: unable to create expected file
+> $LTPTMP/tst_xinetd.exp.2"
+> >          return $RC
+> >      fi
+> >
+> > + if [ $IPV6_ENABLED -eq 1 ]
+> > +    then
+> > +     cat > $LTPTMP/tst_xinetd.exp.2.ipv6 <<-EOF || RC=$?
+> > + Trying ::1...
+> > + Connected to ::1.
+> > + Escape character is '^]'.
+> > + Connection closed by foreign host.
+> > + EOF
+> > +
+> > +     if [ $RC -ne 0 ]
+> > +     then
+> > +         tst_brkm TBROK  NULL \
+> > +             "INIT: unable to create expected file
+> > $LTPTMP/tst_xinetd.exp.2.ipv6"
+> > +         return $RC
+> > +     fi
+> > +    fi
+> > +
+> >      return $RC
+> >  }
+> >
+> > @@ -263,7 +305,7 @@ test01()
+> >
+> >   # Not checking for exit code from telnet command because telnet is
+> >   # not terminated by the test gracefully.
+> > - echo " " | telnet localhost 2>$LTPTMP/tst_xinetd.out 1>/dev/null
+> > + echo " " | $TELNET_COMM 127.0.0.1 2>$LTPTMP/tst_xinetd.out 1>/dev/null
+>
+> Should there be a "^D" ? I can't see it here, does gmail support this
+> kind of special character ?
+>
+> >   diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.1 \
+> >   > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+> >      if [ $RC -ne 0 ]
+> > @@ -272,7 +314,20 @@ test01()
+> >              "Test #1: with telnet diabled expected out differs RC=$RC.
+> > Details:"
+> >          return $RC
+> >      fi
+> > -
+> > +
+> > +    if [ $IPV6_ENABLED -eq 1 ]
+> > +    then
+> > +     echo " " | $TELNET_COMM ::1 2>$LTPTMP/tst_xinetd.out.ipv6
+> 1>/dev/null
+>
+> Also here and other echo lines.
+>
+> > + diff -iwB $LTPTMP/tst_xinetd.out.ipv6  $LTPTMP/tst_xinetd.exp.1.ipv6 \
+> > + > $LTPTMP/tst_xinetd.err.ipv6 2>&1 || RC=$?
+> > +     if [ $RC -ne 0 ]
+> > +     then
+> > +         tst_res TFAIL $LTPTMP/tst_xinetd.err.ipv6 \
+> > +             "Test #1: with telnet diabled of IPv6 expected out differs
+> > RC=$RC. Details:"
+> > +         return $RC
+> > +     fi
+> > +    fi
+> > +
+> >      tst_resm TINFO "Test #1: restart xinetd with telnet enabled."
+> >   # install the xinetd config file with telnet enabled.
+> >   mv $LTPTMP/tst_xinetd.conf.2 /etc/xinetd.conf > $LTPTMP/tst_xinetd.err
+> > 2>&1 \
+> > @@ -312,7 +367,7 @@ test01()
+> >
+> >   # Not checking for exit code from telnet command because telnet is
+> >   # not terminated by the test gracefully.
+> > - echo " " | telnet localhost > $LTPTMP/tst_xinetd.out 2>&1
+> > + echo " " | $TELNET_COMM 127.0.0.1 > $LTPTMP/tst_xinetd.out 2>&1
+> >
+> >   diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
+> >   > $LTPTMP/tst_xinetd.err 2>&1 || RC=$?
+> > @@ -321,11 +376,24 @@ test01()
+> >          tst_res TFAIL $LTPTMP/tst_xinetd.err \
+> >              "Test #1: expected output differes from actual. Details:"
+> >          return $RC
+> > - else
+> > - tst_resm TPASS \
+> > - "Test #1: xinetd reads the config file and starts or stops services."
+> >      fi
+> >
+> > + if [ $IPV6_ENABLED -eq 1 ]
+> > +    then
+> > +     echo " " | $TELNET_COMM ::1 > $LTPTMP/tst_xinetd.out.ipv6 2>&1
+> > +
+> > + diff -iwB $LTPTMP/tst_xinetd.out.ipv6  $LTPTMP/tst_xinetd.exp.2.ipv6 \
+> > + > $LTPTMP/tst_xinetd.err.ipv6 2>&1 || RC=$?
+> > +     if [ $RC -ne 0 ]
+> > +     then
+> > +         tst_res TFAIL $LTPTMP/tst_xinetd.err.ipv6 \
+> > +             "Test #1: expected output differes from actual. Details:"
+> > +         return $RC
+> > +     fi
+> > +    fi
+> > +
+> > + tst_resm TPASS \
+> > + "Test #1: xinetd reads the config file and starts or stops services."
+>
+> This will PASS the test anyway. The previous test only pass when $RC eq 0.
+>
+In fact, if $RC -ne 0, the script should exit before this line. So I simply
+move this line from if statement to here.
 
+
+>
+> >      return $RC
+> >  }
+> >
+> > --
+> > 1.8.3.1
+> >
+> >
+> >
+> > Thanks,
+> > Lingyun Xie
+>
+>
+> Regards
+> Hangbin Liu
+>
+>
+>
+Thanks,
+Lingyun Xie
+
+--047d7b15a2d1ab733f04e11ec81d
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:simsun,s=
+erif;color:rgb(0,0,0)">Yes, there should be a &quot;^D&quot; in each &quot;=
+echo &quot; line. It seems that the terminal which I copied from doesn&#39;=
+t support the special=A0<span style=3D"font-family:arial,sans-serif;font-si=
+ze:12px;color:rgb(34,34,34)">character.</span></div>
+
+<div class=3D"gmail_extra"><div class=3D"gmail_default" style=3D"font-famil=
+y:simsun,serif;color:rgb(0,0,0)"></div><br><div class=3D"gmail_quote">2013/=
+7/9 Hangbin Liu <span dir=3D"ltr">&lt;<a href=3D"mailto:liuhangbin@gmail.co=
+m" target=3D"_blank">liuhangbin@gmail.com</a>&gt;</span><br>
+
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">2013/7/9 Xie Lingyun &lt;<a href=3D"mailto:lingyun.xie@bj.=
+cs2c.com.cn">lingyun.xie@bj.cs2c.com.cn</a>&gt;:<br>
+
+
+<div><div class=3D"h5">&gt; If IPv6 is enabled, telnet ::1 will be tested. =
+Otherwise, IPv4 only.<br>
+&gt;<br>
+&gt; Signed-off-by: Xie Lingyun &lt;<a href=3D"mailto:lingyun.xie@bj.cs2c.c=
+om.cn">lingyun.xie@bj.cs2c.com.cn</a>&gt;<br>
+&gt; ---<br>
+&gt; =A0testcases/network/xinetd/xinetd_tests.sh | 90<br>
+&gt; ++++++++++++++++++++++++++++----<br>
+&gt; =A01 file changed, 79 insertions(+), 11 deletions(-)<br>
+&gt;<br>
+&gt; diff --git a/testcases/network/xinetd/xinetd_tests.sh<br>
+&gt; b/testcases/network/xinetd/xinetd_tests.sh<br>
+&gt; index 83eb8a7..0fb6598 100755<br>
+&gt; --- a/testcases/network/xinetd/xinetd_tests.sh<br>
+&gt; +++ b/testcases/network/xinetd/xinetd_tests.sh<br>
+&gt; @@ -84,12 +84,23 @@ init()<br>
+&gt; =A0 =A0 =A0 =A0 =A0 return $RC<br>
+&gt; =A0 =A0 =A0fi<br>
+&gt;<br>
+&gt; + # sometimes the default telnet may be /usr/kerberos/bin/telnet<br>
+&gt; + TELNET_COMM=3D&#39;/usr/bin/telnet&#39;<br>
+&gt; +<br>
+&gt; =A0 =A0 =A0# check if commands tst_*, xinetd, awk exists.<br>
+&gt; =A0 =A0 =A0chk_ifexists INIT tst_resm =A0 || return $RC<br>
+&gt; =A0 =A0 =A0chk_ifexists INIT xinetd =A0 =A0 || return $RC<br>
+&gt; =A0 =A0 =A0chk_ifexists INIT diff =A0 =A0 =A0 || return $RC<br>
+&gt; - =A0 =A0chk_ifexists INIT telnet =A0 =A0 || return $RC<br>
+&gt; -<br>
+&gt; + =A0 =A0chk_ifexists INIT $TELNET_COMM =A0 =A0 || return $RC<br>
+&gt; + =A0 =A0chk_ifexists INIT ip || return $RC<br>
+&gt; +<br>
+&gt; + =A0 =A0IPV6_ENABLED=3D0<br>
+&gt; + =A0 =A0ip a | grep inet6 &gt; /dev/null 2&gt;&amp;1<br>
+&gt; + =A0 =A0if [ $? -eq 0 ]<br>
+&gt; + =A0 =A0then<br>
+&gt; + =A0 =A0 IPV6_ENABLED=3D1<br>
+&gt; + =A0 =A0fi<br>
+&gt; +<br>
+&gt; =A0 # Create custom xinetd.conf file.<br>
+&gt; =A0 # tst_xinetd.conf.1 config file has telnet service disabled.<br>
+&gt; =A0 cat &gt; $LTPTMP/tst_xinetd.conf.1 &lt;&lt;-EOF || RC=3D$?<br>
+&gt; @@ -128,7 +139,7 @@ init()<br>
+&gt;<br>
+&gt; =A0 =A0 =A0# Create expected file with telnet disabled.<br>
+&gt; =A0 =A0 =A0cat &gt; $LTPTMP/tst_xinetd.exp.1 &lt;&lt;-EOF || RC=3D$?<b=
+r>
+&gt; - telnet: Unable to connect to remote host: Connection refused<br>
+&gt; + telnet: connect to address <a href=3D"http://127.0.0.1" target=3D"_b=
+lank">127.0.0.1</a>: Connection refused<br>
+&gt; =A0 EOF<br>
+&gt;<br>
+&gt; =A0 =A0 =A0if [ $RC -ne 0 ]<br>
+&gt; @@ -137,11 +148,25 @@ init()<br>
+&gt; =A0 =A0 =A0 =A0 =A0 =A0 =A0&quot;INIT: unable to create expected file =
+$LTPTMP/tst_xinetd.exp.1&quot;<br>
+&gt; =A0 =A0 =A0 =A0 =A0return $RC<br>
+&gt; =A0 =A0 =A0fi<br>
+&gt; +<br>
+&gt; + =A0 =A0if [ $IPV6_ENABLED -eq 1 ]<br>
+&gt; + =A0 =A0then<br>
+&gt; + =A0 =A0 cat &gt; $LTPTMP/tst_xinetd.exp.1.ipv6 &lt;&lt;-EOF || RC=3D=
+$?<br>
+&gt; + telnet: connect to address ::1: Connection refused<br>
+&gt; + EOF<br>
+&gt; +<br>
+&gt; + =A0 =A0 if [ $RC -ne 0 ]<br>
+&gt; + =A0 then<br>
+&gt; + =A0 =A0 =A0 =A0 tst_brkm TBROK =A0NULL \<br>
+&gt; + =A0 =A0 =A0 =A0 =A0 =A0 &quot;INIT: unable to create expected file<b=
+r>
+&gt; $LTPTMP/tst_xinetd.exp.1.ipv6&quot;<br>
+&gt; + =A0 =A0 =A0 =A0 return $RC<br>
+&gt; + =A0 =A0 fi<br>
+&gt; + =A0 =A0fi<br>
+&gt;<br>
+&gt; =A0 =A0 =A0# Create expected file with telnet enabled.<br>
+&gt; =A0 cat &gt; $LTPTMP/tst_xinetd.exp.2 &lt;&lt;-EOF || RC=3D$?<br>
+&gt; =A0 Trying 127.0.0.1...<br>
+&gt; - Connected to localhost (127.0.0.1).<br>
+&gt; + Connected to 127.0.0.1.<br>
+&gt; =A0 Escape character is &#39;^]&#39;.<br>
+&gt; =A0 Connection closed by foreign host.<br>
+&gt; =A0 EOF<br>
+&gt; @@ -149,10 +174,27 @@ init()<br>
+&gt; =A0 =A0 =A0if [ $RC -ne 0 ]<br>
+&gt; =A0 =A0 =A0then<br>
+&gt; =A0 =A0 =A0 =A0 =A0tst_brkm TBROK =A0NULL \<br>
+&gt; - =A0 =A0 =A0 =A0 =A0 =A0&quot;INIT: unable to create expected file $L=
+TPTMP/tst_xinetd.exp.1&quot;<br>
+&gt; + =A0 =A0 =A0 =A0 =A0 =A0&quot;INIT: unable to create expected file $L=
+TPTMP/tst_xinetd.exp.2&quot;<br>
+&gt; =A0 =A0 =A0 =A0 =A0return $RC<br>
+&gt; =A0 =A0 =A0fi<br>
+&gt;<br>
+&gt; + if [ $IPV6_ENABLED -eq 1 ]<br>
+&gt; + =A0 =A0then<br>
+&gt; + =A0 =A0 cat &gt; $LTPTMP/tst_xinetd.exp.2.ipv6 &lt;&lt;-EOF || RC=3D=
+$?<br>
+&gt; + Trying ::1...<br>
+&gt; + Connected to ::1.<br>
+&gt; + Escape character is &#39;^]&#39;.<br>
+&gt; + Connection closed by foreign host.<br>
+&gt; + EOF<br>
+&gt; +<br>
+&gt; + =A0 =A0 if [ $RC -ne 0 ]<br>
+&gt; + =A0 =A0 then<br>
+&gt; + =A0 =A0 =A0 =A0 tst_brkm TBROK =A0NULL \<br>
+&gt; + =A0 =A0 =A0 =A0 =A0 =A0 &quot;INIT: unable to create expected file<b=
+r>
+&gt; $LTPTMP/tst_xinetd.exp.2.ipv6&quot;<br>
+&gt; + =A0 =A0 =A0 =A0 return $RC<br>
+&gt; + =A0 =A0 fi<br>
+&gt; + =A0 =A0fi<br>
+&gt; +<br>
+&gt; =A0 =A0 =A0return $RC<br>
+&gt; =A0}<br>
+&gt;<br>
+&gt; @@ -263,7 +305,7 @@ test01()<br>
+&gt;<br>
+&gt; =A0 # Not checking for exit code from telnet command because telnet is=
+<br>
+&gt; =A0 # not terminated by the test gracefully.<br>
+&gt; - echo &quot; &quot; | telnet localhost 2&gt;$LTPTMP/tst_xinetd.out 1&=
+gt;/dev/null<br>
+&gt; + echo &quot; &quot; | $TELNET_COMM 127.0.0.1 2&gt;$LTPTMP/tst_xinetd.=
+out 1&gt;/dev/null<br>
+<br>
+</div></div>Should there be a &quot;^D&quot; ? I can&#39;t see it here, doe=
+s gmail support this<br>
+kind of special character ?<br>
+<div class=3D"im"><br>
+&gt; =A0 diff -iwB $LTPTMP/tst_xinetd.out =A0$LTPTMP/tst_xinetd.exp.1 \<br>
+&gt; =A0 &gt; $LTPTMP/tst_xinetd.err 2&gt;&amp;1 || RC=3D$?<br>
+&gt; =A0 =A0 =A0if [ $RC -ne 0 ]<br>
+&gt; @@ -272,7 +314,20 @@ test01()<br>
+&gt; =A0 =A0 =A0 =A0 =A0 =A0 =A0&quot;Test #1: with telnet diabled expected=
+ out differs RC=3D$RC.<br>
+&gt; Details:&quot;<br>
+&gt; =A0 =A0 =A0 =A0 =A0return $RC<br>
+&gt; =A0 =A0 =A0fi<br>
+&gt; -<br>
+&gt; +<br>
+&gt; + =A0 =A0if [ $IPV6_ENABLED -eq 1 ]<br>
+&gt; + =A0 =A0then<br>
+&gt; + =A0 =A0 echo &quot; &quot; | $TELNET_COMM ::1 2&gt;$LTPTMP/tst_xinet=
+d.out.ipv6 1&gt;/dev/null<br>
+<br>
+</div>Also here and other echo lines.<br>
+<div><div class=3D"h5"><br>
+&gt; + diff -iwB $LTPTMP/tst_xinetd.out.ipv6 =A0$LTPTMP/tst_xinetd.exp.1.ip=
+v6 \<br>
+&gt; + &gt; $LTPTMP/tst_xinetd.err.ipv6 2&gt;&amp;1 || RC=3D$?<br>
+&gt; + =A0 =A0 if [ $RC -ne 0 ]<br>
+&gt; + =A0 =A0 then<br>
+&gt; + =A0 =A0 =A0 =A0 tst_res TFAIL $LTPTMP/tst_xinetd.err.ipv6 \<br>
+&gt; + =A0 =A0 =A0 =A0 =A0 =A0 &quot;Test #1: with telnet diabled of IPv6 e=
+xpected out differs<br>
+&gt; RC=3D$RC. Details:&quot;<br>
+&gt; + =A0 =A0 =A0 =A0 return $RC<br>
+&gt; + =A0 =A0 fi<br>
+&gt; + =A0 =A0fi<br>
+&gt; +<br>
+&gt; =A0 =A0 =A0tst_resm TINFO &quot;Test #1: restart xinetd with telnet en=
+abled.&quot;<br>
+&gt; =A0 # install the xinetd config file with telnet enabled.<br>
+&gt; =A0 mv $LTPTMP/tst_xinetd.conf.2 /etc/xinetd.conf &gt; $LTPTMP/tst_xin=
+etd.err<br>
+&gt; 2&gt;&amp;1 \<br>
+&gt; @@ -312,7 +367,7 @@ test01()<br>
+&gt;<br>
+&gt; =A0 # Not checking for exit code from telnet command because telnet is=
+<br>
+&gt; =A0 # not terminated by the test gracefully.<br>
+&gt; - echo &quot; &quot; | telnet localhost &gt; $LTPTMP/tst_xinetd.out 2&=
+gt;&amp;1<br>
+&gt; + echo &quot; &quot; | $TELNET_COMM 127.0.0.1 &gt; $LTPTMP/tst_xinetd.=
+out 2&gt;&amp;1<br>
+&gt;<br>
+&gt; =A0 diff -iwB $LTPTMP/tst_xinetd.out =A0$LTPTMP/tst_xinetd.exp.2 \<br>
+&gt; =A0 &gt; $LTPTMP/tst_xinetd.err 2&gt;&amp;1 || RC=3D$?<br>
+&gt; @@ -321,11 +376,24 @@ test01()<br>
+&gt; =A0 =A0 =A0 =A0 =A0tst_res TFAIL $LTPTMP/tst_xinetd.err \<br>
+&gt; =A0 =A0 =A0 =A0 =A0 =A0 =A0&quot;Test #1: expected output differes fro=
+m actual. Details:&quot;<br>
+&gt; =A0 =A0 =A0 =A0 =A0return $RC<br>
+&gt; - else<br>
+&gt; - tst_resm TPASS \<br>
+&gt; - &quot;Test #1: xinetd reads the config file and starts or stops serv=
+ices.&quot;<br>
+&gt; =A0 =A0 =A0fi<br>
+&gt;<br>
+&gt; + if [ $IPV6_ENABLED -eq 1 ]<br>
+&gt; + =A0 =A0then<br>
+&gt; + =A0 =A0 echo &quot; &quot; | $TELNET_COMM ::1 &gt; $LTPTMP/tst_xinet=
+d.out.ipv6 2&gt;&amp;1<br>
+&gt; +<br>
+&gt; + diff -iwB $LTPTMP/tst_xinetd.out.ipv6 =A0$LTPTMP/tst_xinetd.exp.2.ip=
+v6 \<br>
+&gt; + &gt; $LTPTMP/tst_xinetd.err.ipv6 2&gt;&amp;1 || RC=3D$?<br>
+&gt; + =A0 =A0 if [ $RC -ne 0 ]<br>
+&gt; + =A0 =A0 then<br>
+&gt; + =A0 =A0 =A0 =A0 tst_res TFAIL $LTPTMP/tst_xinetd.err.ipv6 \<br>
+&gt; + =A0 =A0 =A0 =A0 =A0 =A0 &quot;Test #1: expected output differes from=
+ actual. Details:&quot;<br>
+&gt; + =A0 =A0 =A0 =A0 return $RC<br>
+&gt; + =A0 =A0 fi<br>
+&gt; + =A0 =A0fi<br>
+&gt; +<br>
+&gt; + tst_resm TPASS \<br>
+&gt; + &quot;Test #1: xinetd reads the config file and starts or stops serv=
+ices.&quot;<br>
+<br>
+</div></div>This will PASS the test anyway. The previous test only pass whe=
+n $RC eq 0.<br></blockquote><div><div class=3D"gmail_default" style=3D"font=
+-family:simsun,serif;color:rgb(0,0,0)"></div><div class=3D"gmail_default" s=
+tyle=3D"font-family:simsun,serif;color:rgb(0,0,0)">
+
+In fact, if $RC -ne 0, the script should exit before this line. So I simply=
+ move this line from if statement to here.</div></div><div>=A0</div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left-wi=
+dth:1px;border-left-color:rgb(204,204,204);border-left-style:solid;padding-=
+left:1ex">
+
+
+<div class=3D"im"><br>
+&gt; =A0 =A0 =A0return $RC<br>
+&gt; =A0}<br>
+&gt;<br>
+&gt; --<br>
+&gt; 1.8.3.1<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; Thanks,<br>
+&gt; Lingyun Xie<br>
+<br>
+<br>
+</div>Regards<br>
+<span class=3D""><font color=3D"#888888">Hangbin Liu<br>
+<br>
+<br>
+</font></span></blockquote></div><div class=3D"gmail_default" style=3D"font=
+-family:simsun,serif;color:rgb(0,0,0)"></div><div><div dir=3D"ltr"><div><br=
+></div><div>Thanks,<br></div></div></div><div class=3D"gmail_default" style=
+=3D"font-family:simsun,serif;color:rgb(0,0,0)">
+
+<span style=3D"font-family:arial;color:rgb(34,34,34)">Lingyun Xie</span></d=
+iv><br></div></div>
+
+--047d7b15a2d1ab733f04e11ec81d--
+
+
+--===============1031339443822411656==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
@@ -244,7 +548,16 @@ Get end-to-end visibility with application monitoring from AppDynamics
 Isolate bottlenecks and diagnose root cause in seconds.
 Start your free trial of AppDynamics Pro today!
 http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+--===============1031339443822411656==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1031339443822411656==--
+
