@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Utep1-0007LO-Nr
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 14:11:15 +0000
-Date: Mon, 1 Jul 2013 16:12:43 +0200
-From: chrubis@suse.cz
-Message-ID: <20130701141242.GA28876@rei.suse.cz>
-References: <1372389039-32494-1-git-send-email-penght@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Uwjit-0006ex-Sr
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:01:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uwjis-0006wy-Eh
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:01:39 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6A21U7A021773
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jul 2013 10:01:30 +0800
+Message-ID: <51DCC083.9020009@cn.fujitsu.com>
+Date: Wed, 10 Jul 2013 10:01:39 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1372389039-32494-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] cron_tests.sh: fix a bug of syslog daemon is
- disabled
+References: <1373359002-17618-1-git-send-email-penght@cn.fujitsu.com>
+	<1373359002-17618-2-git-send-email-penght@cn.fujitsu.com>
+In-Reply-To: <1373359002-17618-2-git-send-email-penght@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2] sssd-lib.sh: fix a bug of sssd daemon is not
+ started
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,100 +36,22 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> +. cmdlib.sh
-> +FLAG=0
-> +SYSLOG_NAME=""
-> +
-> +if command -v systemctl >/dev/null 2>&1; then
-> +	HAVE_SYSTEMCTL=1
-> +else
-> +	HAVE_SYSTEMCTL=0
-> +fi
-> +
-> +if command -v syslogd >/dev/null 2>&1; then
-> +	SYSLOG_INIT_SCRIPT="/etc/init.d/syslog"
-> +elif command -v syslog-ng >/dev/null 2>&1; then
-> +	SYSLOG_INIT_SCRIPT="/etc/init.d/syslog-ng"
-> +elif command -v rsyslogd >/dev/null 2>&1; then
-> +	SYSLOG_INIT_SCRIPT="/etc/init.d/rsyslog"
-> +fi
-> +
-> +# make sure syslog daemon is enabled
-> +SVCNAME=$(basename $SYSLOG_INIT_SCRIPT)
-> +if [ $HAVE_SYSTEMCTL == 1 ]; then
-> +	for svc in "$SVCNAME" "sysklogd"
-> +	do
-> +		if systemctl is-enabled $svc.service >/dev/null 2>&1; then
-> +			SYSLOG_NAME=$svc
-> +			break
-> +		fi
-> +	done
-> +else
-> +	for SYSLOG_INIT_SCRIPT in "$SYSLOG_INIT_SCRIPT" "/etc/init.d/sysklogd"
-> +	do
-> +		if [ -x "$SYSLOG_INIT_SCRIPT" ]; then
-> +			SYSLOG_NAME=$SYSLOG_INIT_SCRIPT
-> +			break
-> +		fi
-> +	done
-> +fi
-> +
-> +if [ -n "$SYSLOG_NAME" ]; then
-> +	if [ $HAVE_SYSTEMCTL == 1 ]; then
-> +		status_daemon $SYSLOG_NAME
-> +		if [ $? -ne 0 ]; then
-> +			restart_daemon $SYSLOG_NAME
-> +			FLAG=1
-> +		fi
-> +	else
-> +		$SYSLOG_NAME status >/dev/null 2>&1
-> +		if [ $? -ne 0 ]; then
-> +			$SYSLOG_NAME restart >/dev/null 2>&1
-> +			FLAG=1
-> +		fi
-> +	fi
-> +fi
-> +
->  # Set return code RC variable to 0, it will be set with a non-zero return code
->  # in case of error. Set TFAILCNT to 0, increment if there occures a failure.
->  
-> @@ -400,4 +454,12 @@ else
->  	TFAILCNT=$(( $TFAILCNT+1 ))
->  fi
->  
-> +if [ $FLAG -eq 1 ]; then
-> +	if [ $HAVE_SYSTEMCTL == 1 ]; then
-> +		stop_daemon $SYSLOG_NAME
-> +	else
-> +		$SYSLOG_NAME stop >/dev/null 2>&1
-> +	fi
-> +fi
-> +
+On 07/09/2013 04:36 PM, Peng Haitao wrote:
+> If sssd daemon is not started, sssd daemon should be kept stopped.
+> 
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-We have similar code to restart cron in cron/cron02 and to restart nscd
-in sssd/sssd-libs.sh.
+Applied, thank you.
 
-What about we create a short library with a common code to restart
-system daemons? So that any new testcase would just need to source the
-lib and call:
+Wanlong Gao
 
-daemon_restart "cron"
-
-or:
-
-daemon_stop "syslog"
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
