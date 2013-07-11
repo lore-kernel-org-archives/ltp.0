@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1V2ISI-0002yT-HX
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jul 2013 10:07:30 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V2ISG-00014C-Kr
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jul 2013 10:07:30 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r6PA7MXr008311
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jul 2013 06:07:22 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 25 Jul 2013 12:07:18 +0200
-Message-Id: <1a46908a50835715045c5baeee559561fc97c601.1374746456.git.jstancek@redhat.com>
-In-Reply-To: <99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
-References: <99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2 2/2] open_posix_testsuite/../mq_timedsend/12-1: fix
-	race
+	(envelope-from <lingyun.xie@bj.cs2c.com.cn>) id 1UxBlV-0000On-Ti
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 07:58:14 +0000
+Received: from smtpwcom.263xmail.com ([63.217.87.10])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UxBlU-0005Wd-1t
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 07:58:13 +0000
+Received: from mail-pa0-f52.google.com (localhost [127.0.0.1])
+	by smtpwcom.263xmail.com (Postfix) with ESMTP id 3708254E
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Jul 2013 15:57:58 +0800 (CST)
+Received: by mail-pa0-f52.google.com with SMTP id kq13so7540890pab.11
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Jul 2013 00:58:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <51DD99C2.9030205@casparzhang.com>
+References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+	<51DD99C2.9030205@casparzhang.com>
+From: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Date: Thu, 11 Jul 2013 15:57:22 +0800
+Message-ID: <CALGiYOFbvnDncG5yQLt_bJ=_GLv5juAqSMabJRhh9zcp9dTUuQ@mail.gmail.com>
+Content-Type: multipart/mixed; boundary=bcaec54307a0fa7cea04e137c008
+Subject: Re: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,223 +33,297 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Test can send SIGUSR1 signal after thread has already completed
-and report failure from main() and success from a_thread_func():
+--bcaec54307a0fa7cea04e137c008
+Content-Type: multipart/alternative; boundary=bcaec54307a0fa7ce704e137c006
 
-  conformance/interfaces/mq_timedsend/12-1: execution: UNRESOLVED: Output:
-  Error: in pthread_kill
-  : Success
-  thread: mq_timedsend interrupted by signal and correctly set errno to EINTR
+--bcaec54307a0fa7ce704e137c006
+Content-Type: text/plain; charset=ISO-8859-1
 
-Synchronize exit of a_thread_func(), so that thread can exit only
-after loop sending SIGUSR1 completed.
+The attachment patch is the modified version of the indentation inside the
+braces.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-Changes in v2: SIGUSR1 can interrupt reading from pipe too,
-so swap SAFE() with loop to restart read() if we got EINTR.
+Without any other changes of version 3.
 
- .../conformance/interfaces/mq_timedsend/12-1.c     |  100 +++++++++++---------
- 1 files changed, 57 insertions(+), 43 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-index 29780d0..040c097 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-@@ -39,19 +39,25 @@
- #define MSGSTR "0123456789"
- #define BUFFER 40
- #define MAXMSG 10
-+#define TIMEOUT 10
- 
--#define INTHREAD 0
--#define INMAIN 1
-+#define SAFE(op) \
-+	do {\
-+		if ((op) == -1) {\
-+			perror("unexpected failure"); \
-+			exit(PTS_UNRESOLVED); \
-+		} \
-+	} while (0)
- 
--/* manual semaphore */
--int sem;
-+/* variable to indicate how many times signal handler was called */
-+static volatile sig_atomic_t in_handler;
- 
--/* flag to indicate signal handler was called */
--int in_handler;
-+/* errno returned by mq_timedsend() */
-+static volatile int mq_timedsend_errno = -1;
- 
--/* flag to indicate that errno was set to eintr when mq_timedsend()
-- * was interruped. */
--int errno_eintr;
-+/* pipes to synchronize thread calling mq_timedsend */
-+static int pipefd_start[2];
-+static int pipefd_exit[2];
- 
- /*
-  * This handler is just used to catch the signal and stop sleep (so the
-@@ -59,14 +65,12 @@ int errno_eintr;
-  */
- void justreturn_handler(int signo)
- {
--	/* Indicate that the signal handler was called */
--	in_handler = 1;
--	return;
-+	in_handler++;
- }
- 
--void *a_thread_func()
-+void *a_thread_func(void *arg)
- {
--	int i, ret;
-+	int i, ret, dummy;
- 	struct sigaction act;
- 	char gqname[NAMESIZE];
- 	mqd_t gqueue;
-@@ -92,18 +96,19 @@ void *a_thread_func()
- 		return NULL;
- 	}
- 
--	/* mq_timedsend will block for 10 seconds when it waits */
--	ts.tv_sec = time(NULL) + 10;
-+	/* mq_timedsend will block for TIMEOUT seconds when it waits */
-+	ts.tv_sec = time(NULL) + TIMEOUT;
- 	ts.tv_nsec = 0;
- 
- 	/* Tell main it can go ahead and start sending SIGUSR1 signal */
--	sem = INMAIN;
-+	SAFE(write(pipefd_start[1], "", 1));
- 
- 	for (i = 0; i < MAXMSG + 1; i++) {
- 		ret = mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
- 		if (ret	!= -1)
- 			continue;
- 
-+		mq_timedsend_errno = errno;
- 		if (errno == EINTR) {
- 			if (mq_unlink(gqname) != 0) {
- 				perror("mq_unlink() did not return success");
-@@ -112,21 +117,30 @@ void *a_thread_func()
- 			}
- 			printf("thread: mq_timedsend interrupted by signal"
- 				" and correctly set errno to EINTR\n");
--			errno_eintr = 1;
-+			/* wait for main to stop sending SIGUSR1 */
-+			do {
-+				ret = read(pipefd_exit[0], &dummy, 1);
-+			} while (ret == -1 && errno == EINTR);
- 			pthread_exit((void *)PTS_PASS);
- 			return NULL;
- 		} else {
- 			printf("mq_timedsend not interrupted by signal or"
- 				" set errno to incorrect code: %d\n", errno);
-+			/* wait for main to stop sending SIGUSR1 */
-+			do {
-+				ret = read(pipefd_exit[0], &dummy, 1);
-+			} while (ret == -1 && errno == EINTR);
- 			pthread_exit((void *)PTS_FAIL);
- 			return NULL;
- 		}
- 	}
- 
--	/* Tell main that it the thread did not block like it should have */
--	sem = INTHREAD;
--
--	perror("Error: thread never blocked\n");
-+	mq_timedsend_errno = 0;
-+	printf("Error: mq_timedsend wasn't interrupted\n");
-+	/* wait for main to stop sending SIGUSR1 */
-+	do {
-+		ret = read(pipefd_exit[0], &dummy, 1);
-+	} while (ret == -1 && errno == EINTR);
- 	pthread_exit((void *)PTS_FAIL);
- 	return NULL;
- }
-@@ -134,13 +148,10 @@ void *a_thread_func()
- int main(void)
- {
- 	pthread_t new_th;
--	int i;
-+	int i = 0, ret, dummy;
- 
--	/* Initialized values */
--	i = 0;
--	in_handler = 0;
--	errno_eintr = 0;
--	sem = INTHREAD;
-+	SAFE(pipe(pipefd_start));
-+	SAFE(pipe(pipefd_exit));
- 
- 	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0) {
- 		perror("Error: in pthread_create\n");
-@@ -148,18 +159,22 @@ int main(void)
- 	}
- 
- 	/* Wait for thread to set up handler for SIGUSR1 */
--	while (sem == INTHREAD)
--		sleep(1);
-+	SAFE(read(pipefd_start[0], &dummy, 1));
- 
--	while ((i != 10) && (sem == INMAIN)) {
-+	while (i < TIMEOUT && mq_timedsend_errno < 0) {
- 		/* signal thread while it's in mq_timedsend */
--		if (pthread_kill(new_th, SIGUSR1) != 0) {
--			perror("Error: in pthread_kill\n");
-+		ret = pthread_kill(new_th, SIGUSR1);
-+		if (ret	!= 0) {
-+			printf("Error: in pthread_kill: %d\n", ret);
- 			return PTS_UNRESOLVED;
- 		}
- 		i++;
-+		sleep(1);
- 	}
- 
-+	/* signal thread it's OK to exit now */
-+	SAFE(write(pipefd_exit[1], "", 1));
-+
- 	if (pthread_join(new_th, NULL) != 0) {
- 		perror("Error: in pthread_join()\n");
- 		return PTS_UNRESOLVED;
-@@ -167,18 +182,17 @@ int main(void)
- 
- 	/* Test to see if the thread blocked correctly in mq_timedsend,
- 	 * and if it returned EINTR when it caught the signal */
--	if (errno_eintr != 1) {
--		if (sem == INTHREAD) {
--			printf("Test FAILED: mq_timedsend() never"
--				" blocked for any timeout period.\n");
--			return PTS_FAIL;
--		}
--
--		if (in_handler != 0) {
--			perror("Error: signal SIGUSR1 was never received and/or"
--				" the signal handler was never called.\n");
-+	if (mq_timedsend_errno != EINTR) {
-+		printf("Error: mq_timedsend was NOT interrupted\n");
-+		printf(" signal handler was called %d times\n", in_handler);
-+		printf(" SIGUSR1 signals sent: %d\n", i);
-+		printf(" last mq_timedsend errno: %d %s\n",
-+			mq_timedsend_errno, strerror(mq_timedsend_errno));
-+		if (in_handler == 0) {
-+			printf("Error: SIGUSR1 was never received\n");
- 			return PTS_UNRESOLVED;
- 		}
-+		return PTS_FAIL;
- 	}
- 
- 	printf("Test PASSED\n");
--- 
-1.7.1
 
+Thanks,
+Lingyun Xie
+
+
+2013/7/11 Caspar Zhang <caspar@casparzhang.com>
+
+> On 07/10/2013 07:03 PM, Xie Lingyun wrote:
+>
+>> +defaults
+>> +{
+>> +instances      = 25
+>> +log_type       = FILE /var/log/servicelog
+>> +log_on_success = HOST PID
+>> +log_on_failure = HOST RECORD
+>> +disabled       = telnet
+>> +}
+>>
+>
+> Generally looks good except here.
+>
+> better give a 4-space indentation inside the braces.
+>
+> Caspar
+>
+>
+>
+
+--bcaec54307a0fa7ce704e137c006
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:simsun,s=
+erif;color:rgb(0,0,0)">The=A0attachment patch is the modified version of th=
+e indentation inside the braces.</div><div class=3D"gmail_default" style=3D=
+"font-family:simsun,serif;color:rgb(0,0,0)">
+
+<br></div><div class=3D"gmail_default" style=3D"font-family:simsun,serif;co=
+lor:rgb(0,0,0)">Without any other changes of version 3.</div></div><div cla=
+ss=3D"gmail_extra"><br clear=3D"all"><div><div dir=3D"ltr"><br><div><br></d=
+iv><div>
+
+Thanks,<br>Lingyun Xie</div></div></div>
+<br><br><div class=3D"gmail_quote">2013/7/11 Caspar Zhang <span dir=3D"ltr"=
+>&lt;<a href=3D"mailto:caspar@casparzhang.com" target=3D"_blank">caspar@cas=
+parzhang.com</a>&gt;</span><br><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+
+<div class=3D"im">On 07/10/2013 07:03 PM, Xie Lingyun wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">
++defaults<br>
++{<br>
++instances =A0 =A0 =A0=3D 25<br>
++log_type =A0 =A0 =A0 =3D FILE /var/log/servicelog<br>
++log_on_success =3D HOST PID<br>
++log_on_failure =3D HOST RECORD<br>
++disabled =A0 =A0 =A0 =3D telnet<br>
++}<br>
+</blockquote>
+<br></div>
+Generally looks good except here.<br>
+<br>
+better give a 4-space indentation inside the braces.<span class=3D"HOEnZb">=
+<font color=3D"#888888"><br>
+<br>
+Caspar<br>
+<br>
+<br>
+</font></span></blockquote></div><br></div>
+
+--bcaec54307a0fa7ce704e137c006--
+
+--bcaec54307a0fa7cea04e137c008
+Content-Type: application/octet-stream; 
+	name="0001-xinetd-xinetd_tests.sh-clean-up-tabs.patch"
+Content-Disposition: attachment; 
+	filename="0001-xinetd-xinetd_tests.sh-clean-up-tabs.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hiznusm60
+
+RnJvbSA2N2FiYjRjM2E4MTRmNTQzMTJjNTE4YWUwNDc2OTk3OWM2NTQzNTkxIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBYaWUgTGluZ3l1biA8bGluZ3l1bi54aWVAYmouY3MyYy5jb20u
+Y24+CkRhdGU6IFRodSwgMTEgSnVsIDIwMTMgMTU6MTE6NTggKzA4MDAKU3ViamVjdDogW1BBVENI
+IDEvMiB2NF0geGluZXRkL3hpbmV0ZF90ZXN0cy5zaDogY2xlYW4gdXAgdGFicwoKcmVwbGFjZSB0
+YWJzIHdpdGggNCBzcGFjZXMuClRoZSBlY2hvIDw8LUVPRiBsaW5lcyBiZWNvbWUgbm8gaW5kZW50
+YXRpb24uCgpTaWduZWQtb2ZmLWJ5OiBYaWUgTGluZ3l1biA8bGluZ3l1bi54aWVAYmouY3MyYy5j
+b20uY24+Ci0tLQogdGVzdGNhc2VzL25ldHdvcmsveGluZXRkL3hpbmV0ZF90ZXN0cy5zaCB8IDI0
+NiArKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTIzIGlu
+c2VydGlvbnMoKyksIDEyMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvbmV0
+d29yay94aW5ldGQveGluZXRkX3Rlc3RzLnNoIGIvdGVzdGNhc2VzL25ldHdvcmsveGluZXRkL3hp
+bmV0ZF90ZXN0cy5zaAppbmRleCA4M2ViOGE3Li5kODk4YWYwIDEwMDc1NQotLS0gYS90ZXN0Y2Fz
+ZXMvbmV0d29yay94aW5ldGQveGluZXRkX3Rlc3RzLnNoCisrKyBiL3Rlc3RjYXNlcy9uZXR3b3Jr
+L3hpbmV0ZC94aW5ldGRfdGVzdHMuc2gKQEAgLTkwLDQ2ICs5MCw0NiBAQCBpbml0KCkKICAgICBj
+aGtfaWZleGlzdHMgSU5JVCBkaWZmICAgICAgIHx8IHJldHVybiAkUkMKICAgICBjaGtfaWZleGlz
+dHMgSU5JVCB0ZWxuZXQgICAgIHx8IHJldHVybiAkUkMKIAotCSMgQ3JlYXRlIGN1c3RvbSB4aW5l
+dGQuY29uZiBmaWxlLgotCSMgdHN0X3hpbmV0ZC5jb25mLjEgY29uZmlnIGZpbGUgaGFzIHRlbG5l
+dCBzZXJ2aWNlIGRpc2FibGVkLgotCWNhdCA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5jb25mLjEgPDwt
+RU9GIHx8IFJDPSQ/Ci0JZGVmYXVsdHMKLQl7Ci0JCWluc3RhbmNlcyAgICAgID0gMjUKLQkJbG9n
+X3R5cGUgICAgICAgPSBGSUxFIC92YXIvbG9nL3NlcnZpY2Vsb2cKLQkJbG9nX29uX3N1Y2Nlc3Mg
+PSBIT1NUIFBJRAotCQlsb2dfb25fZmFpbHVyZSA9IEhPU1QgUkVDT1JECi0JICAgIGRpc2FibGVk
+ICAgICAgID0gdGVsbmV0Ci0JfQotCUVPRgotCi0JIyB0c3RfeGluZXRkLmNvbmYuMiBjb25maWcg
+ZmlsZSBoYXMgdGVsbmV0IGVuYWJsZWQuCi0JY2F0ID4gJExUUFRNUC90c3RfeGluZXRkLmNvbmYu
+MiA8PC1FT0YgfHwgUkM9JD8KLQlkZWZhdWx0cwotCXsKLQkJaW5zdGFuY2VzICAgICAgPSAyNQot
+CQlsb2dfdHlwZSAgICAgICA9IEZJTEUgL3Zhci9sb2cvc2VydmljZWxvZwotCQlsb2dfb25fc3Vj
+Y2VzcyA9IEhPU1QgUElECi0JCWxvZ19vbl9mYWlsdXJlID0gSE9TVAotCQkjIGRpc2FibGVkICAg
+ICAgID0gdGVsbmV0Ci0JfQotCi0Jc2VydmljZSB0ZWxuZXQKLQl7Ci0gICAgICAgIHNvY2tldF90
+eXBlICAgICA9IHN0cmVhbQotICAgICAgICBwcm90b2NvbCAgICAgICAgPSB0Y3AKLSAgICAgICAg
+d2FpdCAgICAgICAgICAgID0gbm8KLSAgICAgICAgdXNlciAgICAgICAgICAgID0gcm9vdAotICAg
+ICAgICBzZXJ2ZXIgICAgICAgICAgPSAvdXNyL3NiaW4vaW4udGVsbmV0ZAotICAgICAgICBzZXJ2
+ZXJfYXJncyAgICAgPSAtbgotICAgICAgICBub19hY2Nlc3MgICAgICAgPQotICAgIH0KLQlFT0YK
+KyAgICAjIENyZWF0ZSBjdXN0b20geGluZXRkLmNvbmYgZmlsZS4KKyAgICAjIHRzdF94aW5ldGQu
+Y29uZi4xIGNvbmZpZyBmaWxlIGhhcyB0ZWxuZXQgc2VydmljZSBkaXNhYmxlZC4KKyAgICBjYXQg
+PiAkTFRQVE1QL3RzdF94aW5ldGQuY29uZi4xIDw8LUVPRiB8fCBSQz0kPworZGVmYXVsdHMKK3sK
+KyAgICBpbnN0YW5jZXMgICAgICA9IDI1CisgICAgbG9nX3R5cGUgICAgICAgPSBGSUxFIC92YXIv
+bG9nL3NlcnZpY2Vsb2cKKyAgICBsb2dfb25fc3VjY2VzcyA9IEhPU1QgUElECisgICAgbG9nX29u
+X2ZhaWx1cmUgPSBIT1NUIFJFQ09SRAorICAgIGRpc2FibGVkICAgICAgID0gdGVsbmV0Cit9CitF
+T0YKKworICAgICMgdHN0X3hpbmV0ZC5jb25mLjIgY29uZmlnIGZpbGUgaGFzIHRlbG5ldCBlbmFi
+bGVkLgorICAgIGNhdCA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5jb25mLjIgPDwtRU9GIHx8IFJDPSQ/
+CitkZWZhdWx0cworeworICAgIGluc3RhbmNlcyAgICAgID0gMjUKKyAgICBsb2dfdHlwZSAgICAg
+ICA9IEZJTEUgL3Zhci9sb2cvc2VydmljZWxvZworICAgIGxvZ19vbl9zdWNjZXNzID0gSE9TVCBQ
+SUQKKyAgICBsb2dfb25fZmFpbHVyZSA9IEhPU1QKKyAgICAjIGRpc2FibGVkICAgICAgID0gdGVs
+bmV0Cit9CisKK3NlcnZpY2UgdGVsbmV0Cit7CisgICAgc29ja2V0X3R5cGUgICAgID0gc3RyZWFt
+CisgICAgcHJvdG9jb2wgICAgICAgID0gdGNwCisgICAgd2FpdCAgICAgICAgICAgID0gbm8KKyAg
+ICB1c2VyICAgICAgICAgICAgPSByb290CisgICAgc2VydmVyICAgICAgICAgID0gL3Vzci9zYmlu
+L2luLnRlbG5ldGQKKyAgICBzZXJ2ZXJfYXJncyAgICAgPSAtbgorICAgIG5vX2FjY2VzcyAgICAg
+ICA9Cit9CitFT0YKIAogICAgICMgQ3JlYXRlIGV4cGVjdGVkIGZpbGUgd2l0aCB0ZWxuZXQgZGlz
+YWJsZWQuCiAgICAgY2F0ID4gJExUUFRNUC90c3RfeGluZXRkLmV4cC4xIDw8LUVPRiB8fCBSQz0k
+PwotCXRlbG5ldDogVW5hYmxlIHRvIGNvbm5lY3QgdG8gcmVtb3RlIGhvc3Q6IENvbm5lY3Rpb24g
+cmVmdXNlZAotCUVPRgordGVsbmV0OiBVbmFibGUgdG8gY29ubmVjdCB0byByZW1vdGUgaG9zdDog
+Q29ubmVjdGlvbiByZWZ1c2VkCitFT0YKIAogICAgIGlmIFsgJFJDIC1uZSAwIF0KICAgICB0aGVu
+CkBAIC0xMzksMTIgKzEzOSwxMiBAQCBpbml0KCkKICAgICBmaQogCiAgICAgIyBDcmVhdGUgZXhw
+ZWN0ZWQgZmlsZSB3aXRoIHRlbG5ldCBlbmFibGVkLgotCWNhdCA+ICRMVFBUTVAvdHN0X3hpbmV0
+ZC5leHAuMiA8PC1FT0YgfHwgUkM9JD8KLQlUcnlpbmcgMTI3LjAuMC4xLi4uCi0JQ29ubmVjdGVk
+IHRvIGxvY2FsaG9zdCAoMTI3LjAuMC4xKS4KLQlFc2NhcGUgY2hhcmFjdGVyIGlzICdeXScuCi0J
+Q29ubmVjdGlvbiBjbG9zZWQgYnkgZm9yZWlnbiBob3N0LgotCUVPRgorICAgIGNhdCA+ICRMVFBU
+TVAvdHN0X3hpbmV0ZC5leHAuMiA8PC1FT0YgfHwgUkM9JD8KK1RyeWluZyAxMjcuMC4wLjEuLi4K
+K0Nvbm5lY3RlZCB0byBsb2NhbGhvc3QgKDEyNy4wLjAuMSkuCitFc2NhcGUgY2hhcmFjdGVyIGlz
+ICdeXScuCitDb25uZWN0aW9uIGNsb3NlZCBieSBmb3JlaWduIGhvc3QuCitFT0YKIAogICAgIGlm
+IFsgJFJDIC1uZSAwIF0KICAgICB0aGVuCkBAIC0xNjUsMjggKzE2NSwyOCBAQCBpbml0KCkKICMg
+ICAgICAgICAgICAgICAtIG5vbi16ZXJvIG9uIGZhaWx1cmUuCiBjbGVhbnVwKCkKIHsKLQlSQz0w
+Ci0JIyByZXN0b3JlIHRoZSBvcmlnaW5hbCB4aW5ldGQuY29uZiBpZiBhIGJhY2sgdXAgZXhpdHMu
+Ci0JaWYgWyAtZiAvZXRjL3hpbmV0ZC5jb25mLm9yaWcgXQotCXRoZW4KLQkJbXYgL2V0Yy94aW5l
+dGQuY29uZi5vcmlnIC9ldGMveGluZXRkLmNvbmYgXAotCQkJPiAkTFRQVE1QL3RzdF94aW5ldGQu
+ZXJyIDI+JjEgfHwgUkM9JD8KLQkJaWYgWyAkUkMgLW5lIDAgXQotCQl0aGVuCi0JCQl0c3RfcmVz
+IFRJTkZPICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgXAotCQkJIkNMRUFOVVA6IGZhaWxlZCByZXN0
+b3Jpbmcgb3JpZ2luYWwgeGluZXRkLmNvbmYgUkM9JFJDLiBEZXRhaWxzOiIKLQkJZmkKLQotCQlz
+bGVlcCAxcwotCi0JCSMgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZpY2VzCi0JCS9ldGMvaW5pdC5k
+L3hpbmV0ZCByZXN0YXJ0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/Ci0J
+CWlmIFsgJFJDIC1uZSAwIF0KLQkJdGhlbgotCQkJdHN0X3JlcyBUSU5GTyAkTFRQVE1QL3RzdF94
+aW5ldGQuZXJyIFwKLQkJCSJDTEVBTlVQOiBmYWlsZWQgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZp
+Y2VzIFJDPSRSQy4gRGV0YWlsczoiCi0JCWZpCi0JZmkKKyAgICBSQz0wCisgICAgIyByZXN0b3Jl
+IHRoZSBvcmlnaW5hbCB4aW5ldGQuY29uZiBpZiBhIGJhY2sgdXAgZXhpdHMuCisgICAgaWYgWyAt
+ZiAvZXRjL3hpbmV0ZC5jb25mLm9yaWcgXQorICAgIHRoZW4KKyAgICAgICAgbXYgL2V0Yy94aW5l
+dGQuY29uZi5vcmlnIC9ldGMveGluZXRkLmNvbmYgXAorICAgICAgICAgICAgPiAkTFRQVE1QL3Rz
+dF94aW5ldGQuZXJyIDI+JjEgfHwgUkM9JD8KKyAgICAgICAgaWYgWyAkUkMgLW5lIDAgXQorICAg
+ICAgICB0aGVuCisgICAgICAgICAgICB0c3RfcmVzIFRJTkZPICRMVFBUTVAvdHN0X3hpbmV0ZC5l
+cnIgXAorICAgICAgICAgICAgIkNMRUFOVVA6IGZhaWxlZCByZXN0b3Jpbmcgb3JpZ2luYWwgeGlu
+ZXRkLmNvbmYgUkM9JFJDLiBEZXRhaWxzOiIKKyAgICAgICAgZmkKKworICAgICAgICBzbGVlcCAx
+cworCisgICAgICAgICMgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZpY2VzCisgICAgICAgIC9ldGMv
+aW5pdC5kL3hpbmV0ZCByZXN0YXJ0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJD
+PSQ/CisgICAgICAgIGlmIFsgJFJDIC1uZSAwIF0KKyAgICAgICAgdGhlbgorICAgICAgICAgICAg
+dHN0X3JlcyBUSU5GTyAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIFwKKyAgICAgICAgICAgICJDTEVB
+TlVQOiBmYWlsZWQgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZpY2VzIFJDPSRSQy4gRGV0YWlsczoi
+CisgICAgICAgIGZpCisgICAgZmkKIAogICAgICMgcmVtb3ZlIGFsbCB0aGUgdGVtcG9yYXJ5IGZp
+bGVzIGNyZWF0ZWQgYnkgdGhpcyB0ZXN0LgogICAgIHRzdF9yZXNtIFRJTkZPICJDTEVBTjogcmVt
+b3ZpbmcgJExUUFRNUCIKQEAgLTIxNCw5ICsyMTQsOSBAQCB0ZXN0MDEoKQogCiAgICAgdHN0X3Jl
+c20gVElORk8gIlRlc3QgIzE6IHJlc3RhcnQgeGluZXRkIHdpdGggdGVsbmV0IGRpc2FibGVkLiIK
+IAotCSMgY3JlYXRlIGEgYmFja3VwIG9mIHRoZSBvcmlnaW5hbCB4aW5ldGQuY29uZiBmaWxlLgot
+CW12IC9ldGMveGluZXRkLmNvbmYgL2V0Yy94aW5ldGQuY29uZi5vcmlnID4gJExUUFRNUC90c3Rf
+eGluZXRkLmVyciAyPiYxIFwKLQkJfHwgUkM9JD8KKyAgICAjIGNyZWF0ZSBhIGJhY2t1cCBvZiB0
+aGUgb3JpZ2luYWwgeGluZXRkLmNvbmYgZmlsZS4KKyAgICBtdiAvZXRjL3hpbmV0ZC5jb25mIC9l
+dGMveGluZXRkLmNvbmYub3JpZyA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgMj4mMSBcCisgICAg
+ICAgIHx8IFJDPSQ/CiAgICAgaWYgWyAkUkMgLW5lIDAgXQogICAgIHRoZW4KICAgICAgICAgdHN0
+X2JyayBUQlJPSyAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIE5VTEwgXApAQCAtMjI0LDkgKzIyNCw5
+IEBAIHRlc3QwMSgpCiAgICAgICAgIHJldHVybiAkUkMKICAgICBmaQogCi0JIyBpbnN0YWxsIHRo
+ZSBuZXcgY29uZmlnIGZpbGUgd2l0aCB0ZWxuZXQgZGlzYWJsZWQuCi0JbXYgJExUUFRNUC90c3Rf
+eGluZXRkLmNvbmYuMSAvZXRjL3hpbmV0ZC5jb25mID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAy
+PiYxIFwKLQkJfHwgUkM9JD8KKyAgICAjIGluc3RhbGwgdGhlIG5ldyBjb25maWcgZmlsZSB3aXRo
+IHRlbG5ldCBkaXNhYmxlZC4KKyAgICBtdiAkTFRQVE1QL3RzdF94aW5ldGQuY29uZi4xIC9ldGMv
+eGluZXRkLmNvbmYgPiAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIDI+JjEgXAorICAgICAgICB8fCBS
+Qz0kPwogICAgIGlmIFsgJFJDIC1uZSAwIF0KICAgICB0aGVuCiAgICAgICAgIHRzdF9icmsgVEJS
+T0sgJExUUFRNUC90c3RfeGluZXRkLmVyciBOVUxMIFwKQEAgLTIzNiwzNiArMjM2LDM2IEBAIHRl
+c3QwMSgpCiAKICAgICB0c3RfcmVzbSBUSU5GTyAiVGVzdCAjMTogbmV3IHhpbmV0ZC5jb25mIGlu
+c3RhbGxlZCB3aXRoIHRlbG5ldCBkaXNhYmxlZC4iCiAKLQlzbGVlcCAxcworICAgIHNsZWVwIDFz
+CiAKLQkjIHJlc3RhcnQgeGluZXRkIHRvIHJlLXN0YXJ0IHRoZSBzZXJ2aWNlcworICAgICMgcmVz
+dGFydCB4aW5ldGQgdG8gcmUtc3RhcnQgdGhlIHNlcnZpY2VzCiAgICAgL2V0Yy9pbml0LmQveGlu
+ZXRkIHJlc3RhcnQgPiAkTFRQVE1QL3RzdF94aW5ldGQub3V0IDI+JjEgfHwgUkM9JD8KICAgICBp
+ZiBbICRSQyAtbmUgMCBdCiAgICAgdGhlbgogICAgICAgICB0c3RfcmVzIFRGQUlMICRMVFBUTVAv
+dHN0X3hpbmV0ZC5vdXQgXAogICAgICAgICJUZXN0ICMxOiB1bmFibGUgdG8gcmVzdGFydCBzZXJ2
+aWNlIHdpdGggdGVsbmV0IGRpc2FibGVkLiBEZXRhaWxzOiIKICAgICAgICAgcmV0dXJuICRSQwot
+CWVsc2UKLQkJIyBldmVuIGlmIHhpbmV0ZCByZXN0YXJ0IGhhcyB6ZXJvIGV4aXQgdmFsdWUsCi0J
+CSMgbWFrZSBjZXJ0YWluIHRoZXJlIHdhcyBubyBmYWlsdXJlLgotCQlncmVwIC1pICJmYWlsIiAk
+TFRQVE1QL3RzdF94aW5ldGQub3V0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJD
+PSQ/Ci0JCWlmIFsgJFJDIC1lcSAwIF0KLQkJdGhlbgotCQkJdHN0X3JlcyBURkFJTCAkTFRQVE1Q
+L3RzdF94aW5ldGQuZXJyIFwKLQkJCQkiVGVzdCAjMTogeGluZXRkIGZhaWxlZCB0byByZXN0YXJ0
+LiBEZXRhaWxzIgotCQkJcmV0dXJuICRSQwotCQllbHNlCi0JCQlSQz0wCi0JCQl0c3RfcmVzbSBU
+SU5GTyBcCi0JCQkJIlRlc3QgIzE6IHhpbmV0ZCByZS1zdGFydGVkIHN1Y2Nlc3NmdWxseSB3aXRo
+IHRlbG5ldCBkaXNhYmxlZC4iCi0JCWZpCi0JZmkKLQotCSMgTm90IGNoZWNraW5nIGZvciBleGl0
+IGNvZGUgZnJvbSB0ZWxuZXQgY29tbWFuZCBiZWNhdXNlIHRlbG5ldCBpcwotCSMgbm90IHRlcm1p
+bmF0ZWQgYnkgdGhlIHRlc3QgZ3JhY2VmdWxseS4KLQllY2hvICIEIiB8IHRlbG5ldCBsb2NhbGhv
+c3QgMj4kTFRQVE1QL3RzdF94aW5ldGQub3V0IDE+L2Rldi9udWxsCi0JZGlmZiAtaXdCICRMVFBU
+TVAvdHN0X3hpbmV0ZC5vdXQgICRMVFBUTVAvdHN0X3hpbmV0ZC5leHAuMSBcCi0JCT4gJExUUFRN
+UC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/CisgICAgZWxzZQorICAgICAgICAjIGV2ZW4g
+aWYgeGluZXRkIHJlc3RhcnQgaGFzIHplcm8gZXhpdCB2YWx1ZSwKKyAgICAgICAgIyBtYWtlIGNl
+cnRhaW4gdGhlcmUgd2FzIG5vIGZhaWx1cmUuCisgICAgICAgIGdyZXAgLWkgImZhaWwiICRMVFBU
+TVAvdHN0X3hpbmV0ZC5vdXQgPiAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIDI+JjEgfHwgUkM9JD8K
+KyAgICAgICAgaWYgWyAkUkMgLWVxIDAgXQorICAgICAgICB0aGVuCisgICAgICAgICAgICB0c3Rf
+cmVzIFRGQUlMICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgXAorICAgICAgICAgICAgICAgICJUZXN0
+ICMxOiB4aW5ldGQgZmFpbGVkIHRvIHJlc3RhcnQuIERldGFpbHMiCisgICAgICAgICAgICByZXR1
+cm4gJFJDCisgICAgICAgIGVsc2UKKyAgICAgICAgICAgIFJDPTAKKyAgICAgICAgICAgIHRzdF9y
+ZXNtIFRJTkZPIFwKKyAgICAgICAgICAgICAgICAiVGVzdCAjMTogeGluZXRkIHJlLXN0YXJ0ZWQg
+c3VjY2Vzc2Z1bGx5IHdpdGggdGVsbmV0IGRpc2FibGVkLiIKKyAgICAgICAgZmkKKyAgICBmaQor
+CisgICAgIyBOb3QgY2hlY2tpbmcgZm9yIGV4aXQgY29kZSBmcm9tIHRlbG5ldCBjb21tYW5kIGJl
+Y2F1c2UgdGVsbmV0IGlzCisgICAgIyBub3QgdGVybWluYXRlZCBieSB0aGUgdGVzdCBncmFjZWZ1
+bGx5LgorICAgIGVjaG8gIgQiIHwgdGVsbmV0IGxvY2FsaG9zdCAyPiRMVFBUTVAvdHN0X3hpbmV0
+ZC5vdXQgMT4vZGV2L251bGwKKyAgICBkaWZmIC1pd0IgJExUUFRNUC90c3RfeGluZXRkLm91dCAg
+JExUUFRNUC90c3RfeGluZXRkLmV4cC4xIFwKKyAgICAgICAgPiAkTFRQVE1QL3RzdF94aW5ldGQu
+ZXJyIDI+JjEgfHwgUkM9JD8KICAgICBpZiBbICRSQyAtbmUgMCBdCiAgICAgdGhlbgogICAgICAg
+ICB0c3RfcmVzIFRGQUlMICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgXApAQCAtMjc0LDkgKzI3NCw5
+IEBAIHRlc3QwMSgpCiAgICAgZmkKIAogICAgIHRzdF9yZXNtIFRJTkZPICJUZXN0ICMxOiByZXN0
+YXJ0IHhpbmV0ZCB3aXRoIHRlbG5ldCBlbmFibGVkLiIKLQkjIGluc3RhbGwgdGhlIHhpbmV0ZCBj
+b25maWcgZmlsZSB3aXRoIHRlbG5ldCBlbmFibGVkLgotCW12ICRMVFBUTVAvdHN0X3hpbmV0ZC5j
+b25mLjIgL2V0Yy94aW5ldGQuY29uZiA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgMj4mMSBcCi0J
+CXx8IFJDPSQ/CisgICAgIyBpbnN0YWxsIHRoZSB4aW5ldGQgY29uZmlnIGZpbGUgd2l0aCB0ZWxu
+ZXQgZW5hYmxlZC4KKyAgICBtdiAkTFRQVE1QL3RzdF94aW5ldGQuY29uZi4yIC9ldGMveGluZXRk
+LmNvbmYgPiAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIDI+JjEgXAorICAgICAgICB8fCBSQz0kPwog
+ICAgIGlmIFsgJFJDIC1uZSAwIF0KICAgICB0aGVuCiAgICAgICAgIHRzdF9icmsgVEJST0sgJExU
+UFRNUC90c3RfeGluZXRkLmVyciBOVUxMIFwKQEAgLTI4Niw0NCArMjg2LDQ0IEBAIHRlc3QwMSgp
+CiAKICAgICB0c3RfcmVzbSBUSU5GTyAiVGVzdCAjMTogbmV3IHhpbmV0ZC5jb25mIGluc3RhbGxl
+ZCB3aXRoIHRlbG5ldCBlbmFibGVkLiIKIAotCXNsZWVwIDFzCisgICAgc2xlZXAgMXMKIAotCSMg
+cmVzdGFydCBzZXJ2aWNlcy4KKyAgICAjIHJlc3RhcnQgc2VydmljZXMuCiAgICAgL2V0Yy9pbml0
+LmQveGluZXRkIHJlc3RhcnQgPiAkTFRQVE1QL3RzdF94aW5ldGQub3V0IDI+JjEgfHwgUkM9JD8K
+ICAgICBpZiBbICRSQyAtbmUgMCBdCiAgICAgdGhlbgogICAgICAgICB0c3RfcmVzIFRGQUlMICRM
+VFBUTVAvdHN0X3hpbmV0ZC5vdXQgXAogICAgICAgICAgICAgIlRlc3QgIzE6IHVuYWJsZSB0byBy
+ZXN0YXJ0IHNlcnZpY2VzIHdpdGggdGVsbmV0IGVuYWJsZWQuIERldGFpbHM6IgogICAgICAgICBy
+ZXR1cm4gJFJDCi0JZWxzZQotCQkjIGV2ZW4gaWYgcmVzdGFydCBoYXMgYSB6ZXJvIGV4aXQgdmFs
+dWUgZG91YmxlIGNoZWNrIGZvciBmYWlsdXJlLgotCQlncmVwIC1pICJmYWlsIiAkTFRQVE1QL3Rz
+dF94aW5ldGQub3V0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/Ci0JCWlm
+IFsgJFJDIC1lcSAwIF0KLQkJdGhlbgotCQkJdHN0X3JlcyBURkFJTCAkTFRQVE1QL3RzdF94aW5l
+dGQuZXJyIFwKLQkJCQkiVGVzdCAjMTogeGluZXRkIGZhaWxlZCB0byByZXN0YXJ0LiBEZXRhaWxz
+IgotCQkJcmV0dXJuICRSQwotCQllbHNlCi0JCQlSQz0wCi0JCQl0c3RfcmVzbSBUSU5GTyBcCi0J
+CQkJIlRlc3QgIzE6IHhpbmV0ZCByZS1zdGFydGVkIHN1Y2Nlc3NmdWxseSB3aXRoIHRlbG5ldCBl
+bmFibGVkLiIKLQkJZmkKLQlmaQotCi0JIyBOb3QgY2hlY2tpbmcgZm9yIGV4aXQgY29kZSBmcm9t
+IHRlbG5ldCBjb21tYW5kIGJlY2F1c2UgdGVsbmV0IGlzCi0JIyBub3QgdGVybWluYXRlZCBieSB0
+aGUgdGVzdCBncmFjZWZ1bGx5LgotCWVjaG8gIgQiIHwgdGVsbmV0IGxvY2FsaG9zdCA+ICRMVFBU
+TVAvdHN0X3hpbmV0ZC5vdXQgMj4mMQotCi0JZGlmZiAtaXdCICRMVFBUTVAvdHN0X3hpbmV0ZC5v
+dXQgICRMVFBUTVAvdHN0X3hpbmV0ZC5leHAuMiBcCi0JCT4gJExUUFRNUC90c3RfeGluZXRkLmVy
+ciAyPiYxIHx8IFJDPSQ/CisgICAgZWxzZQorICAgICAgICAjIGV2ZW4gaWYgcmVzdGFydCBoYXMg
+YSB6ZXJvIGV4aXQgdmFsdWUgZG91YmxlIGNoZWNrIGZvciBmYWlsdXJlLgorICAgICAgICBncmVw
+IC1pICJmYWlsIiAkTFRQVE1QL3RzdF94aW5ldGQub3V0ID4gJExUUFRNUC90c3RfeGluZXRkLmVy
+ciAyPiYxIHx8IFJDPSQ/CisgICAgICAgIGlmIFsgJFJDIC1lcSAwIF0KKyAgICAgICAgdGhlbgor
+ICAgICAgICAgICAgdHN0X3JlcyBURkFJTCAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIFwKKyAgICAg
+ICAgICAgICAgICAiVGVzdCAjMTogeGluZXRkIGZhaWxlZCB0byByZXN0YXJ0LiBEZXRhaWxzIgor
+ICAgICAgICAgICAgcmV0dXJuICRSQworICAgICAgICBlbHNlCisgICAgICAgICAgICBSQz0wCisg
+ICAgICAgICAgICB0c3RfcmVzbSBUSU5GTyBcCisgICAgICAgICAgICAgICAgIlRlc3QgIzE6IHhp
+bmV0ZCByZS1zdGFydGVkIHN1Y2Nlc3NmdWxseSB3aXRoIHRlbG5ldCBlbmFibGVkLiIKKyAgICAg
+ICAgZmkKKyAgICBmaQorCisgICAgIyBOb3QgY2hlY2tpbmcgZm9yIGV4aXQgY29kZSBmcm9tIHRl
+bG5ldCBjb21tYW5kIGJlY2F1c2UgdGVsbmV0IGlzCisgICAgIyBub3QgdGVybWluYXRlZCBieSB0
+aGUgdGVzdCBncmFjZWZ1bGx5LgorICAgIGVjaG8gIgQiIHwgdGVsbmV0IGxvY2FsaG9zdCA+ICRM
+VFBUTVAvdHN0X3hpbmV0ZC5vdXQgMj4mMQorCisgICAgZGlmZiAtaXdCICRMVFBUTVAvdHN0X3hp
+bmV0ZC5vdXQgICRMVFBUTVAvdHN0X3hpbmV0ZC5leHAuMiBcCisgICAgICAgID4gJExUUFRNUC90
+c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/CiAgICAgaWYgWyAkUkMgLW5lIDAgXQogICAgIHRo
+ZW4KICAgICAgICAgdHN0X3JlcyBURkFJTCAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIFwKICAgICAg
+ICAgICAgICJUZXN0ICMxOiBleHBlY3RlZCBvdXRwdXQgZGlmZmVyZXMgZnJvbSBhY3R1YWwuIERl
+dGFpbHM6IgogICAgICAgICByZXR1cm4gJFJDCi0JZWxzZQotCQl0c3RfcmVzbSBUUEFTUyBcCi0J
+CSJUZXN0ICMxOiB4aW5ldGQgcmVhZHMgdGhlIGNvbmZpZyBmaWxlIGFuZCBzdGFydHMgb3Igc3Rv
+cHMgc2VydmljZXMuIgorICAgIGVsc2UKKyAgICAgICAgdHN0X3Jlc20gVFBBU1MgXAorICAgICAg
+ICAiVGVzdCAjMTogeGluZXRkIHJlYWRzIHRoZSBjb25maWcgZmlsZSBhbmQgc3RhcnRzIG9yIHN0
+b3BzIHNlcnZpY2VzLiIKICAgICBmaQogCiAgICAgcmV0dXJuICRSQwotLSAKMS44LjMuMQoK
+--bcaec54307a0fa7cea04e137c008
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
@@ -253,7 +331,16 @@ Get end-to-end visibility with application monitoring from AppDynamics
 Isolate bottlenecks and diagnose root cause in seconds.
 Start your free trial of AppDynamics Pro today!
 http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+--bcaec54307a0fa7cea04e137c008
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--bcaec54307a0fa7cea04e137c008--
+
