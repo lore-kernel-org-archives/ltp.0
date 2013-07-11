@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Ux5rO-0000tF-RB
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 01:39:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ux5rN-0001Ap-Ek
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 01:39:54 +0000
-Message-ID: <51DE0CE7.2080403@cn.fujitsu.com>
-Date: Thu, 11 Jul 2013 09:39:51 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1UxF4b-0007cE-TU
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 11:30:09 +0000
+Date: Thu, 11 Jul 2013 13:31:45 +0200
+From: chrubis@suse.cz
+Message-ID: <20130711113145.GC6142@rei.suse.cz>
+References: <1373509951-10850-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1373424973-32151-1-git-send-email-penght@cn.fujitsu.com>
-	<267085751.2020967.1373482084934.JavaMail.root@redhat.com>
-In-Reply-To: <267085751.2020967.1373482084934.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH v2] syslog-lib.sh: Use lib to restart syslog
-	service
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1373509951-10850-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] inotify04: add RHEL5 extra kernel version check
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,34 +24,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-On 07/11/2013 02:48 AM, Jan Stancek wrote:
-> 
-> ----- Original Message -----
->> > From: "Peng Haitao" <penght@cn.fujitsu.com>
->> > To: ltp-list@lists.sourceforge.net
->> > Sent: Wednesday, 10 July, 2013 4:56:13 AM
->> > Subject: [LTP] [PATCH v2] syslog-lib.sh: Use lib to restart syslog service
->> > 
->> > Use restart_daemon() to restart syslog service.
->> > 
->> > Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> Hi,
-> 
-> looks good to me. I also ran all syslog testcases with this patch
-> on systemd/rsyslog based distro (RHEL7alpha) - all PASSed.
+Hi!
+> @@ -79,6 +79,11 @@ char event_buf[EVENT_BUF_LEN];
+>  
+>  int fd_notify, reap_wd_file, reap_wd_dir, wd_dir, wd_file;
+>  
+> +static struct tst_kern_exv kvers[] = {
+> +	{ "RHEL5", "132" },
+> +	{ NULL, NULL },
+> +};
+> +
+>  static void cleanup(void)
+>  {
+>  
+> @@ -172,7 +177,7 @@ int main(int argc, char **argv)
+>  	 * This isn't well documented in inotify(7), but it's intuitive if you
+>  	 * understand how Unix works.
+>  	 */
+> -	if (0 <= tst_kvercmp(2, 6, 25)) {
+> +	if (tst_kvercmp(2, 6, 25) >= 0 || tst_kvercmp2(2, 6, 18, kvers) >= 0) {
+>  		event_set[tst_count].mask = IN_ATTRIB;
+>  		strcpy(event_set[tst_count].name, "");
+>  		tst_count++;
 
-Thank you for your test and review. Pushed.
+It looks like I've misunderstand the initial definition of the problem,
+sorry.
 
-Wanlong Gao
+Now it is pretty clear that the tst_kern_exv should have included the
+whole kernel version as when we would like to the add another special
+case based on different kerenel version the change would be more
+complicated than adding a line to the tst_kern_exv array.
 
-> 
-> Regards,
-> Jan
-> 
+The approach I would like to have is to have one tst_kvercmp2() with
+kernel version for vanilla kernels and pointer to a structure describing
+special cases. Do you agree to change the code this way?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
