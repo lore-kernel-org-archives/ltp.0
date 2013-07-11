@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1UtZW7-0005sI-SU
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:31:23 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UtZW3-0006tr-Sq
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 08:31:23 +0000
-Message-ID: <51D13E38.5010309@oracle.com>
-Date: Mon, 01 Jul 2013 12:30:48 +0400
-From: alexey.kodanev@oracle.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UxIYv-0006Gg-NI
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 15:13:41 +0000
+Date: Thu, 11 Jul 2013 17:15:21 +0200
+From: chrubis@suse.cz
+Message-ID: <20130711151521.GA7278@rei.suse.cz>
+References: <1373463283-22437-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-References: <1372345762-5425-1-git-send-email-alexey.kodanev@oracle.com>
-	<201306280135.45066.vapier@gentoo.org>
-In-Reply-To: <201306280135.45066.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v4] lib: tst_module: add library functions for
- kernel modules
+Content-Disposition: inline
+In-Reply-To: <1373463283-22437-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v8] fw_load: new test of device firmware loading
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,33 +24,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
+Hi!
+I've merged this version, thanks for your patience.
 
-On 06/28/2013 09:35 AM, Mike Frysinger wrote:
-> On Thursday 27 June 2013 11:09:22 Alexey Kodanev wrote:
-> \>  +void tst_module_load(void (cleanup_fn)(void),
->> +	const char *mod_name, char *const argv[])
->> +{
->> +	char *mod_path = NULL;
->> +	tst_module_exists(cleanup_fn, mod_name,&mod_path);
->> +
->> +	static int offset = 2; /* command name&  module path */
-> why static ?  i would use const instead.
-> -mike
-Yes, const must be used here, and static is not needed for an int. I 
-will fix it.
 
-Thanks,
-Alexey
+Now there are two little nits to be taken care of:
+
+1. asprintf() allocates memory and as such its return
+   value should be checked
+
+   I will fix this one by creating SAFE_ASPRINTF() macro
+   and replacing all the occurences.
+
+
+2. The make clean from kernel devel fails here.
+
+   make[1]: Entering directory `/usr/src/linux-3.7.1'
+   rm: cannot remove '.tmp_System.map': Permission denied
+   make[1]: *** [clean] Error 1
+   make[1]: Leaving directory `/usr/src/linux-3.7.1'
+   make: [ltp_fw_load.ko] Error 2 (ignored)
+   mv ltp_fw_load.ko~ ltp_fw_load.ko
+
+   As I'm compiling my kernels by hand the /lib/modules
+   directory is just a symlink to the /usr/src/linux directory
+   and the clean action tries to run cleanup in the whole
+   tree which obviously fails. Nevertheless the build
+   works fine, because the return value is ignored...
+
+   Now the only way how to reliably fix this seems to use
+   subdir for the whole module build and remove it as whole
+   on make clean.
+
+
+PS: Everybody who does git builds, don't forget to run make autotools to
+    regenerate configure script.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
