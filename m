@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwvBj-0006t5-VC
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 14:16:12 +0000
-Date: Wed, 10 Jul 2013 16:17:51 +0200
+	(envelope-from <metan@suse.de>) id 1UxEa5-0001wc-5L
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 10:58:37 +0000
+Received: from relay1.suse.de (unknown [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 74A51A52C6
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Jul 2013 12:58:29 +0200 (CEST)
+Date: Thu, 11 Jul 2013 13:00:15 +0200
 From: chrubis@suse.cz
-Message-ID: <20130710141751.GF19178@rei.suse.cz>
-References: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
-	<51D38924.8090400@oracle.com>
-	<CA+icZUW=dX6NLpAWRA8neeJDZ7XP1bNhui-CtLLySP+Mfy6XMQ@mail.gmail.com>
+Message-ID: <20130711110014.GB6142@rei.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUW=dX6NLpAWRA8neeJDZ7XP1bNhui-CtLLySP+Mfy6XMQ@mail.gmail.com>
-Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
+Subject: [LTP] RFC add _FORTIFY_SOURCE to default LTP CFLAGS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,15 +26,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Eko <hong.sun@oracle.com>
+To: LTP <ltp-list@lists.sourceforge.net>
 
 Hi!
-> BTW, this line - which needs to be corrected...
-> 
-> [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
+Recently just another open(.., O_CREAT) without mode_t flags slipped in
+the git, which would have been easily catched early by glibc
+_FORTIFY_SOURCE feature. If _FORTIFY_SOURCE is set additional checks for
+unused return values, buffer overflows etc. are done. Some distros eable
+it even by default...
 
-I've just pushed a patch that removes this line.
+Does anybody oposse against adding -D_FORTIFY_SOURCE=2 to the default
+LTP CFLAGS?
 
 -- 
 Cyril Hrubis
