@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1V2dNm-00007n-K7
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:28:14 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Ux5SS-0006op-ID
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 01:14:08 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V2dNi-0001PG-Lo
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:28:14 +0000
-Date: Fri, 26 Jul 2013 04:28:00 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1515555986.6425405.1374827280068.JavaMail.root@redhat.com>
-In-Reply-To: <51F22AB9.6060109@cn.fujitsu.com>
-References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<221551028.6361858.1374822441673.JavaMail.root@redhat.com>
-	<51F22AB9.6060109@cn.fujitsu.com>
+	id 1Ux5SR-0008LQ-IL
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 01:14:08 +0000
+Message-ID: <51DE06DF.4080002@cn.fujitsu.com>
+Date: Thu, 11 Jul 2013 09:14:07 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
-	glibc
+References: <1373356491-15338-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<51DD9B64.7050802@casparzhang.com>
+	<1212845049.2016896.1373481206257.JavaMail.root@redhat.com>
+In-Reply-To: <1212845049.2016896.1373481206257.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH V3] lib: add tst_kvercmp2 to compare specific
+ vendor extra kernel versions
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,97 +31,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
+To: Jan Stancek <jstancek@redhat.com>, Caspar Zhang <caspar@casparzhang.com>
 Cc: LTP <ltp-list@lists.sourceforge.net>
 
+On 07/11/2013 02:33 AM, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
+>> From: "Caspar Zhang" <caspar@casparzhang.com>
+>> To: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> Cc: "LTP" <ltp-list@lists.sourceforge.net>, "Cyril Hrubis" <chrubis@suse.cz>, "Garrett Cooper" <yanegomi@gmail.com>,
+>> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com
+>> Sent: Wednesday, 10 July, 2013 7:35:32 PM
+>> Subject: Re: [PATCH V3] lib: add tst_kvercmp2 to compare specific vendor extra kernel versions
+>>
+>> On 07/09/2013 03:54 PM, Wanlong Gao wrote:
+>>> We can now test specific verdor kernel versions in
+>>> test cases like:
+>>>
+>>> static struct tst_kern_exv exv[] = {
+>>> 	{"RHEL6", "234"},
+>>> 	{"SLES10", "0.91"},
+>>> 	{NULL, NULL}
+>>> };
+>>>
+>>> ...
+>>>
+>>> 	if (tst_kvercmp2(2, 6, 25, exv) < 0)
+>>> 		...
+>>> ...
+>>>
+>>> Thank you for Cyril's suggestion.
+>>>
+>>>
+>>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>>> ---
+>>>   include/test.h    |  7 +++++++
+>>>   lib/tst_kvercmp.c | 46 +++++++++++++++++++++++++++++++++++++++++++---
+>>>   2 files changed, 50 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/include/test.h b/include/test.h
+>>> index ee3efc3..a76fafc 100644
+>>> --- a/include/test.h
+>>> +++ b/include/test.h
+>>> @@ -173,6 +173,13 @@ char *get_high_address(void);
+>>>   void tst_getkver(int *k1, int *k2, int *k3);
+>>>   int tst_kvercmp(int r1, int r2, int r3);
+>>>
+>>> +struct tst_kern_exv {
+>>> +	char *dist_name;
+>>> +	char *extra_ver;
+>>> +};
+>>> +
+>>> +int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
+>>> +
+>>>   /* lib/tst_is_cwd.c */
+>>>   int tst_is_cwd_nfs(void);
+>>>   int tst_is_cwd_v9fs(void);
+>>> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+>>> index cb4fd67..15fb571 100644
+>>> --- a/lib/tst_kvercmp.c
+>>> +++ b/lib/tst_kvercmp.c
+>>> @@ -34,15 +34,13 @@
+>>>   #include <unistd.h>
+>>>   #include <string.h>
+>>>   #include <sys/utsname.h>
+>>> +#include "test.h"
+>>>
+>>>   void get_kver(int *k1, int *k2, int *k3)
+>>>   {
+>>>   	struct utsname uval;
+>>>   	char *kver;
+>>>   	char *r1, *r2, *r3;
+>>> -#if !defined(linux)
+>>> -	extern char *strsep();	/* shut up some compilers */
+>>> -#endif
+>>>
+>>>   	uname(&uval);
+>>>   	kver = uval.release;
+>>> @@ -66,3 +64,45 @@ int tst_kvercmp(int r1, int r2, int r3)
+>>>
+>>>   	return currver - testver;
+>>>   }
+>>> +
+>>> +static int tst_kexvcmp(char *tst_exv, char *cur_ver)
+>>> +{
+>>> +	int c1 = 0, c2 = 0, t1 = 0, t2 = 0;
+>>> +	int ret;
+>>> +
+>>> +	sscanf(cur_ver, "%*d.%*d.%*d-%d.%d", &c1, &c2);
+>>> +	sscanf(tst_exv, "%d.%d", &t1, &t2);
+>>> +	if ((ret = c1 - t1))
+>>
+>> not sure if the brackets are duplicated...
+> 
+> What caught my (and checkpatch's) eye is that these are assignments in if condition,
+> but I'm not sure how strictly we take checkpatch output.
 
+Adding one more parenthesis just shut down the gcc warning here.
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "LTP" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, 26 July, 2013 9:52:25 AM
-> Subject: Re: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
-> 
-> On 07/26/2013 03:07 PM, Jan Stancek wrote:
-> > 
-> > 
-> > ----- Original Message -----
-> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> >> To: "LTP" <ltp-list@lists.sourceforge.net>
-> >> Cc: "Cyril Hrubis" <chrubis@suse.cz>, "Caspar Zhang"
-> >> <caspar@casparzhang.com>, "Garrett Cooper" <yanegomi@gmail.com>,
-> >> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com, "Wanlong Gao"
-> >> <gaowanlong@cn.fujitsu.com>
-> >> Sent: Friday, 26 July, 2013 4:56:18 AM
-> >> Subject: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
-> >>
-> >> Since the reader can always acquire the rwlock if there's not a writer
-> >> held the lock.
-> >>
-> >> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> > 
-> > Hi,
-> > 
-> > I agree that these 3 fail by default on glibc at the moment.
-> > Since we are adding a GLIBC ifdef, I'm wondering if we could use
-> > glibc specific api to change default behaviour with
-> > pthread_rwlockattr_setkind_np() and still run the testcase.
-> 
-> The first 2 *_rdlock cases can change to WRITER_PREFER to let them pass,
-> but the last *_unlock one can't, because *_unlock will choose the writer
-> first without any care of the NP KIND.
-> How about change the first two cases to WRITER_PREFER and just skip the third
-> *_unlock one?
+Thanks,
+Wanlong Gao
 
-I agree with skipping third one and let's see what other guys think about first two.
-When you say "WRITER_PREFER", is that an actual define on your system? Or just
-a shortcut for PTHREAD_RWLOCK_PREFER_WRITER...?
-
-Regards,
-Jan
-
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> > 
-> > Regards,
-> > Jan
-> > 
-> >> ---
-> >>  .../conformance/interfaces/pthread_rwlock_rdlock/2-1.c              | 6
-> >>  ++++++
-> >>  1 file changed, 6 insertions(+)
-> >>
-> >> diff --git
-> >> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> >> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> >> index c6c1412..62a4b3b 100644
-> >> ---
-> >> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> >> +++
-> >> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> >> @@ -141,6 +141,12 @@ int main(void)
-> >>  	return PTS_UNSUPPORTED;
-> >>  #endif
-> >>  
-> >> +#ifdef __GLIBC__
-> >> +	printf("The reader can always acquire rwlock if there's"
-> >> +		" not a writer held this lock in glibc\n");
-> >> +	return PTS_UNTESTED;
-> >> +#endif
-> >> +
-> >>  	int cnt = 0;
-> >>  	pthread_t rd_thread, wr_thread;
-> >>  	int priority;
-> >> --
-> >> 1.8.3.3.754.g9c3c367
-> >>
-> >>
-> > 
-> 
-> 
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
