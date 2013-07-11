@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1V41Ng-0005Cd-LG
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 04:17:52 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V41Ne-0003DH-Se
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 04:17:52 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6U4Hgg8026496
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jul 2013 12:17:43 +0800
-Message-ID: <51F73E13.9040802@cn.fujitsu.com>
-Date: Tue, 30 Jul 2013 12:16:19 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UxGvz-0005tF-9Y
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 13:29:23 +0000
+Date: Thu, 11 Jul 2013 15:31:01 +0200
+From: chrubis@suse.cz
+Message-ID: <20130711133101.GB6550@rei.suse.cz>
+References: <1373509951-10850-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20130711113145.GC6142@rei.suse.cz> <51DEABFE.90405@cn.fujitsu.com>
+	<20130711132656.GA6550@rei.suse.cz> <51DEB2EF.60001@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <51F7338D.4060804@cn.fujitsu.com> <51F735B2.5030007@cn.fujitsu.com>
-In-Reply-To: <51F735B2.5030007@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
+Content-Disposition: inline
+In-Reply-To: <51DEB2EF.60001@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] inotify04: add RHEL5 extra kernel version check
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,66 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-On 07/30/2013 11:40 AM, Wanlong Gao wrote:
-> On 07/30/2013 11:31 AM, DAN LI wrote:
->>
->> The definitions of MS_PRIVATE and MS_MOVE were only added to glibc headers
->> in version 2.12.
->>
->> If the version of glibc is older than 2.12, define these two flags.
->>
->> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
->> ---
->>  testcases/kernel/syscalls/mount/mount06.c |    5 +++++
->>  1 files changed, 5 insertions(+), 0 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
->> index acfb22d..ab1a472 100644
->> --- a/testcases/kernel/syscalls/mount/mount06.c
->> +++ b/testcases/kernel/syscalls/mount/mount06.c
->> @@ -31,6 +31,11 @@
->>  #include "usctest.h"
->>  #include "safe_macros.h"
->>
->> +#if !(__GLIBC_PREREQ(2, 12))
+Hi!
+> > Exactly, this would allow us to add just another line into the array for
+> > any other distro out there.
 > 
-> Why not do like below?
+> OK, that's reasonable.
 
-I think it also clearly shows the reason why this definition should
-exist here(glibc version related).
+Sorry for not figuring out that the first time.
 
-Regards,
-DAN LI
-
-> #ifndef MS_MOVE
-> #define xxx
-> #define xxx
-> #endif
-> 
-> Wanlong Gao
-> 
->> +#define MS_MOVE	8192
->> +#define MS_PRIVATE	(1 << 18)
->> +#endif
->> +
->>  #define MNTPOINT_SRC	"mnt_src"
->>  #define MNTPOINT_DES	"mnt_des"
->>  #define LINELENGTH	256
->>
-> 
-> 
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
