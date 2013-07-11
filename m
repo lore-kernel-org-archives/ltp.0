@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vitti570@gmail.com>) id 1V1rnf-0005IR-TH
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 05:39:47 +0000
-Received: from mail-wg0-f43.google.com ([74.125.82.43])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V1rne-00023p-1s
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 05:39:47 +0000
-Received: by mail-wg0-f43.google.com with SMTP id z12so2627533wgg.34
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1Ux7f9-0000iF-W9
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 03:35:24 +0000
+Received: from mail-pd0-f178.google.com ([209.85.192.178])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Ux7f5-0006jO-Dv
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 03:35:23 +0000
+Received: by mail-pd0-f178.google.com with SMTP id w11so6954165pde.23
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 23 Jul 2013 22:39:39 -0700 (PDT)
+	Wed, 10 Jul 2013 20:35:13 -0700 (PDT)
+Date: Thu, 11 Jul 2013 11:35:05 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+Message-ID: <20130711033505.GJ27609@aaa.aa>
+References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+	<51DD99C2.9030205@casparzhang.com>
 MIME-Version: 1.0
-Date: Wed, 24 Jul 2013 07:39:39 +0200
-Message-ID: <CALuM2ALAOheiEA71A_=YuRqMeCAyBBe+kgHmVvOzcUd7+4kP1w@mail.gmail.com>
-From: Vitti <vitti570@gmail.com>
-Subject: [LTP] Two C issues with ltp-full-20130503
+Content-Disposition: inline
+In-Reply-To: <51DD99C2.9030205@casparzhang.com>
+Subject: Re: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,38 +32,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
 
-In ltp-full-20130503 chmod02.c line 190 I believe that &buf should be just buf.
-This is because buf, declared at line 128, is already a pointer
-to the string "file contents\n" and the system function write
-requires as its second argument a pointer to the buffer to be written
-to the file "tfile".
-By looking to tfile I found that with &buf I got unreadable data
-while with buf I got "file contents" as it should be.
+On Thu, Jul 11, 2013 at 01:28:34AM +0800, Caspar Zhang wrote:
+> On 07/10/2013 07:03 PM, Xie Lingyun wrote:
+> >+defaults
+> >+{
+> >+instances      = 25
+> >+log_type       = FILE /var/log/servicelog
+> >+log_on_success = HOST PID
+> >+log_on_failure = HOST RECORD
+> >+disabled       = telnet
+> >+}
+> 
+> Generally looks good except here.
+> 
+> better give a 4-space indentation inside the braces.
+> 
 
-In sigrelse01.c line 646 the function write_pipe attempts to write
-MAXMESG bytes from its second argument to the pipe.
-MAXMESG is declared as 512 at line 149.
-At line 291 write_pipe is called with READY as the buffer pointer.
-READY is defined at line 151 as the string "ready".
-"ready" is only six bytes long, including the null at its end,
-while write_pipe attempts to transfer 512 bytes.
-I think this is questionable because nobody knows the contents of the
-other 506 bytes, you may even get a segmentation fault
-because the data area is shorter, depending on the implementation.
+1-tab or 4-space, I always be confuse which should we use. Even a tab should
+be 4 characters or 8 characters also have dispute. But the kernel coding style
+said Tabs are 8 characters, and thus indentations are also 8 characters.
 
-I believe my comments are implementation independent,
-anyway I have an x86-64, with Fedora 19 and gcc 4.8.1.
-Best regards
-Vittorio
+So, should we also use this style in shell scripts? Because I'm tired
+changing my vim config for each project.
+-- 
+
+Thanks & Best Regards
+Hangbin Liu <liuhangbin@gmail.com>
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
