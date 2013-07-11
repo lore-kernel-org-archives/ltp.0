@@ -1,34 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hong.sun@oracle.com>) id 1UuCZe-0002Y9-R5
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 02:13:38 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1UuCZc-0000c7-R2
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 02:13:38 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r63279Xe015478
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 02:07:10 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r632DS5m026095
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 02:13:29 GMT
-Received: from abhmt104.oracle.com (abhmt104.oracle.com [141.146.116.56])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r632DSgQ010220
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jul 2013 02:13:28 GMT
-Message-ID: <51D38924.8090400@oracle.com>
-Date: Wed, 03 Jul 2013 10:15:00 +0800
-From: Eko <hong.sun@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UxDHf-0004qW-1P
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 09:35:31 +0000
+Date: Thu, 11 Jul 2013 11:37:07 +0200
+From: chrubis@suse.cz
+Message-ID: <20130711093707.GA6142@rei.suse.cz>
+References: <1373356491-15338-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<51DD9B64.7050802@casparzhang.com>
+	<1212845049.2016896.1373481206257.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-References: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
-In-Reply-To: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
-Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
+Content-Disposition: inline
+In-Reply-To: <1212845049.2016896.1373481206257.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH V3] lib: add tst_kvercmp2 to compare specific
+ vendor extra kernel versions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,121 +24,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1532199317449404269=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---===============1532199317449404269==
-Content-Type: multipart/alternative;
-	boundary="------------080801080400040401060208"
-
-This is a multi-part message in MIME format.
---------------080801080400040401060208
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-hi,
+Hi!
+> > > +static int tst_kexvcmp(char *tst_exv, char *cur_ver)
+> > > +{
+> > > +	int c1 = 0, c2 = 0, t1 = 0, t2 = 0;
+> > > +	int ret;
+> > > +
+> > > +	sscanf(cur_ver, "%*d.%*d.%*d-%d.%d", &c1, &c2);
+> > > +	sscanf(tst_exv, "%d.%d", &t1, &t2);
+> > > +	if ((ret = c1 - t1))
+> > 
+> > not sure if the brackets are duplicated...
+> 
+> What caught my (and checkpatch's) eye is that these are assignments in if condition,
+> but I'm not sure how strictly we take checkpatch output.
 
-  I executed runltp command in my box, everything is OK, but when 
-cleaning the environment, got following errors:
+Assignment inside of condition is generally considered as a tricky
+statement which is why checkpatch gives a warning.
 
-        ###############################################################
-             Done executing testcases.
-             LTP Version:  20130503
-        ###############################################################
-rm: cannot remove `/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458': Device or resource busy
-rm: cannot remove `/tmp/ltp-9NAwvmAbI5/sandbox': Device or resource busy
-
-
-Because /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458 and 
-/tmp/ltp-9NAwvmAbI5/sandbox are still mounted, so can't delete them, the 
-best way is:
-# umount /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458
-# umount /tmp/ltp-9NAwvmAbI5/sandbox
-
-and then:
-
-     [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
-     [ -e "${TEMP}/test.img" ] && rm -f ${TEMP}/test.img
-     rm -rf ${TMP}
-
+I'm personally not against it as long as it's simple statement like this
+but if other people here disagree I'm fine with treating it as a wrong
+thing to do.
 
 -- 
-Best Regards,
-Eko
---
-
-
---------------080801080400040401060208
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body text="#000000" bgcolor="#FFFFFF">
-    hi,<br>
-    <br>
-    &nbsp;I executed runltp command in my box, everything is OK, but when
-    cleaning the environment, got following errors:<br>
-    <br>
-    <pre style="color:#ffffff;background:transparent; border:0;"><font color="#000000">       ###############################################################
-            Done executing testcases.
-            LTP Version:  20130503
-       ###############################################################
-rm: cannot remove `/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458': Device or resource busy
-rm: cannot remove `/tmp/ltp-9NAwvmAbI5/sandbox': Device or resource busy</font></pre>
-    <br>
-    Because&nbsp; <font color="#000000">/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458
-      and&nbsp; </font><font color="#000000">/tmp/ltp-9NAwvmAbI5/sandbox are
-      still mounted, so can't delete them, the best way is:<br>
-      # umount </font><font color="#000000">/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458<br>
-      # umount </font><font color="#000000"> </font><font
-      color="#000000">/tmp/ltp-9NAwvmAbI5/sandbox<br>
-      <br>
-      and then:<br>
-      <br>
-      &nbsp;&nbsp;&nbsp; [ "$LOOP_DEV" ] &amp;&amp; losetup -d $LOOP_DEV<br>
-      &nbsp;&nbsp;&nbsp; [ -e "${TEMP}/test.img" ] &amp;&amp; rm -f ${TEMP}/test.img<br>
-      &nbsp;&nbsp;&nbsp; rm -rf ${TMP}<br>
-      <br>
-      <br>
-    </font>
-    <pre class="moz-signature" cols="72">-- 
-Best Regards,
-Eko
---</pre>
-  </body>
-</html>
-
---------------080801080400040401060208--
-
-
---===============1532199317449404269==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
---===============1532199317449404269==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1532199317449404269==--
-
