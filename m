@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Utbmy-0003Ks-B0
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 10:56:56 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Utbmw-00071L-Ad
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 10:56:56 +0000
-Date: Mon, 1 Jul 2013 06:56:46 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1875908008.1793486.1372676206673.JavaMail.root@redhat.com>
-In-Reply-To: <CAPwn2JQ+ri=T9Fs6JWdF+v_8x9Nk5wPqo5aTrzb1A9ERr2DgEQ@mail.gmail.com>
-References: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
-	<538407137.757498.1372350334215.JavaMail.root@redhat.com>
-	<CAPwn2JTuF3EVb8_XoWkFk=qZc61FhNHenNDmdR7b6xrZFf9x1g@mail.gmail.com>
-	<1243201217.946751.1372403630876.JavaMail.root@redhat.com>
-	<CAPwn2JRYRWDEvn090NdtM1K178R=yQSasmBX3ZoKymVtcRWPXw@mail.gmail.com>
-	<606017700.1063130.1372417612499.JavaMail.root@redhat.com>
-	<CAPwn2JQ+ri=T9Fs6JWdF+v_8x9Nk5wPqo5aTrzb1A9ERr2DgEQ@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UxRUh-0006cL-7R
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jul 2013 00:45:55 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UxRUf-000853-3z
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jul 2013 00:45:55 +0000
+Message-ID: <51DF51C1.4030701@cn.fujitsu.com>
+Date: Fri, 12 Jul 2013 08:45:53 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the
- test case after timeout
+References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+	<1373454200-8630-2-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+	<51DD9A44.4090409@casparzhang.com>
+	<CALGiYOGnBrGcM5nLE4EZaGvYv02oYnNC2QZm1CH4uVwFrFMMyw@mail.gmail.com>
+	<CALGiYOFmr61vz8JzZxV1YMGPQtbYGt5qwiMMQX+xk5BSGx22Rw@mail.gmail.com>
+In-Reply-To: <CALGiYOFmr61vz8JzZxV1YMGPQtbYGt5qwiMMQX+xk5BSGx22Rw@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 2/2 v3] xinetd/xinetd_tests.sh: add IPv6 test for
+ xinetd
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,192 +33,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
+On 07/11/2013 04:00 PM, Xie Lingyun wrote:
+> This patch follows the previous clean up patch. Only change some indentations.
+> 
+> Without any other changes of version 3.
+> 
 
+Applied, thank you.
 
+Wanlong Gao
 
+> 
+> 
+> Thanks,
+> Lingyun Xie
 
------ Original Message -----
-> From: "Hangbin Liu" <liuhangbin@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "ltp-list" <ltp-list@lists.sf.net>
-> Sent: Monday, 1 July, 2013 10:31:28 AM
-> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the test case after timeout
-> 
-> Hi Jan,
-> The problem is the connection won't  fail, but only need too much
-> time. For example:
-
-I see, checking after each X connection seems reasonable.
-I'm not very familiar with this test, so it's up to you to come up with some number.
-
-Regards,
-Jan
-
-> On a guest:  on cpu process, 2G memory
-> # for i in `seq 4000`; do ./ns-tcpclient -b -f 4 -S 10.66.87.216 -p
-> 9999; echo "The $i connection : `date`"; done
-> The 1 connection : Mon Jul  1 04:03:05 EDT 2013
-> The 2 connection : Mon Jul  1 04:03:05 EDT 2013
-> The 3 connection : Mon Jul  1 04:03:05 EDT 2013
-> The 4 connection : Mon Jul  1 04:03:06 EDT 2013
-> <snip>
-> The 19 connection : Mon Jul  1 04:04:46 EDT 2013
-> <snip>
-> The 30 connection : Mon Jul  1 04:06:34 EDT 2013
-> The 31 connection : Mon Jul  1 04:07:52 EDT 2013
-> <snip>
-> The 45 connection : Mon Jul  1 04:10:11 EDT 2013
-> <snip>
-> The 50 connection : Mon Jul  1 04:12:05 EDT 2013
-> 
-> You can saw we took 9 minutes to set up 50 tcp connections.
-> 
-> But on a powerful physical machine,
-> The 1 connection : Mon Jul  1 04:21:08 EDT 2013
-> The 2 connection : Mon Jul  1 04:21:08 EDT 2013
-> <snip>
-> The 499 connection : Mon Jul  1 04:24:35 EDT 2013
-> The 500 connection : Mon Jul  1 04:24:35 EDT 2013
-> 
-> It only use 3 minutest to set up 500 connections.
-> 
-> So we can't just continue on success, but should check the time after
-> some connections.
-> 
-> Thanks and Best regards
-> Hangbin Liu
-> 
-> 2013/6/28 Jan Stancek <jstancek@redhat.com>:
-> >
-> >
-> > ----- Original Message -----
-> >> From: "Hangbin Liu" <liuhangbin@gmail.com>
-> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> Sent: Friday, 28 June, 2013 11:30:02 AM
-> >> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill
-> >> the test case after timeout
-> >>
-> >
-> > Hangbin,
-> >
-> > just fyi, your replies are not going to list.
-> >
-> >> Opps, My mistake.  Didn't find there is a sleep 1...
-> >>
-> >> I will send another patch for this issue. How about check
-> >> $connection_num every 100 times. like
-> >
-> > I'd go with new variable to count each attempt, not just successful ones.
-> >
-> > Or something like this (on top your patch):
-> > Skip the sleep and continue on success, if we hit issue sleep and retry as
-> > watchdog allows.
-> >
-> > diff --git
-> > a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> > b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> > index 206a0d1..649c60b 100644
-> > --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> > +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> > @@ -351,9 +351,10 @@ while true ; do
-> >                         fi
-> >                         # Failed to start a client
-> >                         tst_resm TINFO "$connection_num seems the maximum
-> >                         number of the client"
-> > -                       break
-> > +               else
-> > +                       connection_num=`expr $connection_num + 1`
-> > +                       continue;
-> >                 fi
-> > -               connection_num=`expr $connection_num + 1`
-> >         fi
-> >
-> >      current_epoc=`date +%s`
-> >
-> > Regards,
-> > Jan
-> >
-> >>
-> >> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> >> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
-> >> @@ -340,7 +340,7 @@ connection_num=0
-> >>  start_epoc=`date +%s`
-> >>  while true ; do
-> >>         # Making connections
-> >> -       if [ $connection_num -lt $CONNECTION_TOTAL ]; then
-> >> +       while [ $connection_num -lt $CONNECTION_TOTAL ]; do
-> >>                 # Run a client
-> >>                 ret=`$LTP_RSH $RHOST
-> >> ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p
-> >> $server_port' ; ec
-> >>                 if [ $ret -ne 0 ]; then
-> >> @@ -354,7 +354,12 @@ while true ; do
-> >>                         break
-> >>                 fi
-> >>                 connection_num=`expr $connection_num + 1`
-> >> -       fi
-> >> +
-> >> +               # check timeout every 100 times
-> >> +               if [ $(($connection_num % 100)) -eq 0 ];then
-> >> +                       break
-> >> +               fi
-> >> +       done
-> >>
-> >>      current_epoc=`date +%s`
-> >>      elapse_epoc=`expr $current_epoc - $start_epoc`
-> >>
-> >> 2013/6/28 Jan Stancek <jstancek@redhat.com>:
-> >> >
-> >> >
-> >> >
-> >> >
-> >> > ----- Original Message -----
-> >> >> From: "Hangbin Liu" <liuhangbin@gmail.com>
-> >> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> >> Sent: Friday, 28 June, 2013 8:36:05 AM
-> >> >> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will
-> >> >> kill
-> >> >> the test case after timeout
-> >> >>
-> >> >> No, we can set up $CONNECTION_TOTAL connections as soon as possible,
-> >> >> and
-> >> >> also
-> >> >> transmit tcp data at the same time.
-> >> >
-> >> > Where does this happen?
-> >> >
-> >> > I'm looking at the while loop, and I see it creates 1 connection each
-> >> > iteration, then it sleeps for 1 second.
-> >> >
-> >> > Am I missing something here?
-> >> >
-> >> > while true ; do
-> >> >         # Making connections
-> >> >         if [ $connection_num -lt $CONNECTION_TOTAL ]; then
-> >> >                 # make new connection
-> >> >                 ...
-> >> >                 connection_num=`expr $connection_num + 1`
-> >> >         fi
-> >> >
-> >> >     # check time
-> >> >     ...
-> >> >     sleep 1
-> >> > done
-> >> >
-> >> > Regards,
-> >> > Jan
-> >>
-> 
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
