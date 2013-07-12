@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V4UO9-0006YR-NY
-	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 11:16:17 +0000
-Date: Wed, 31 Jul 2013 13:16:08 +0200
-From: chrubis@suse.cz
-Message-ID: <20130731111608.GB1047@rei.scz.novell.com>
-References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UxRV3-0005Hk-NJ
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jul 2013 00:46:17 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UxRV2-00038L-Sk
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jul 2013 00:46:17 +0000
+Message-ID: <51DF51DA.4050708@cn.fujitsu.com>
+Date: Fri, 12 Jul 2013 08:46:18 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
-	glibc
+References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
+	<51DD99C2.9030205@casparzhang.com>
+	<CALGiYOFbvnDncG5yQLt_bJ=_GLv5juAqSMabJRhh9zcp9dTUuQ@mail.gmail.com>
+In-Reply-To: <CALGiYOFbvnDncG5yQLt_bJ=_GLv5juAqSMabJRhh9zcp9dTUuQ@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +30,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Since the reader can always acquire the rwlock if there's not a writer
-> held the lock.
+On 07/11/2013 03:57 PM, Xie Lingyun wrote:
+> The attachment patch is the modified version of the indentation inside the braces.
+> 
+> Without any other changes of version 3.
+> 
+> 
 
-Since there was recently a discussion about this on glibc ML and some
-clarfication requests for Austin Group were created, I would wait a
-little more until the POSIX is clear on how this locks should behave and
-then we can fix the tests (and possibly skip them on glibc).
+Applied, thank you.
 
-See:
+Wanlong Gao
 
-http://austingroupbugs.net/view.php?id=722
-http://austingroupbugs.net/view.php?id=720
+> 
+> Thanks,
+> Lingyun Xie
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
