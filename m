@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UuKLl-0006yy-Gu
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 10:31:49 +0000
-Date: Wed, 3 Jul 2013 12:33:21 +0200
-From: chrubis@suse.cz
-Message-ID: <20130703103321.GA2906@rei>
-References: <1372765421-2934-1-git-send-email-alexey.kodanev@oracle.com>
-	<201307021650.56483.vapier@gentoo.org>
-	<51D3DA8A.5020602@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UxRSR-0001Ir-Hm
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jul 2013 00:43:35 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UxRSN-000312-En
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jul 2013 00:43:35 +0000
+Message-ID: <51DF5134.8010308@cn.fujitsu.com>
+Date: Fri, 12 Jul 2013 08:43:32 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51D3DA8A.5020602@oracle.com>
-Subject: Re: [LTP] [PATCH v6] fw_load: new test of device firmware loading
+References: <1373532432-26471-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<1445326660.2227578.1373533139274.JavaMail.root@redhat.com>
+In-Reply-To: <1445326660.2227578.1373533139274.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] kmsg01: fix test failure caused by not compiling
+	it
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,49 +30,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi!
-> >> >  +++ b/testcases/kernel/firmware/fw_load_kernel/Makefile
-> >> >
-> >> >  +MAKE_TARGETS	:= ltp_fw_load.ko
-> >> >  +ltp_fw_load.ko: ltp_fw_load.c
-> >> >  +	-$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir)
-> >> >  +	-mv ltp_fw_load.ko ltp_fw_load.ko~
-> >> >  +	-$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir) clean
-> >> >  +	-mv ltp_fw_load.ko~ ltp_fw_load.ko
-> > what's with ignoring the exit status of all these ?  and why clean when you're
-> > done ?  doesn't seem like you'd want to do either of these.
-> >
-> Ignoring the exit status, allow to proceed with the LTP build, despite 
-> of any error during the module's build. Then, user-space test will 
-> return TCONF, if it doesn't find the module.
+On 07/11/2013 04:58 PM, Jan Stancek wrote:
+> 
+> 
+> 
+> ----- Original Message -----
+>> > From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> > To: "LTP" <ltp-list@lists.sourceforge.net>
+>> > Cc: jstancek@redhat.com, "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> > Sent: Thursday, 11 July, 2013 10:47:12 AM
+>> > Subject: [PATCH] kmsg01: fix test failure caused by not compiling it
+>> > 
+>> > We didn't compile and install this case, so this case will
+>> > fail by "No such file":
+>> > 
+>> > initiation_status="pan(26250): execvp of 'kmsg01' (tag kmsg01) failed.
+>> > errno:2  No such file or directory"
+>> > 
+>> > Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
+> 
+> Good catch, I made a full build and install to confirm it builds.
 
-This is done so that LTP is forward compatible with kernel internal API
-changes. The test tries to load the module and returns TCONF if module
-was not found (i.e. wasn't build either due to kernel-devel missing or
-module build failure).
+Pushed, thank you for your review.
 
-> There are a lot of files that left after module's build and If I don't 
-> clean there, I have to manually add files to the clean target and 
-> perhaps, even more.
+Wanlong Gao
 
-Making make clean work would be better, but I'm not sure how to make
-that work, the kernel build leaves various files there and I'm not sure
-if these have stable names, but we can do some effort to clean up all
-the *.cmd.o and maybe some of the rest of them.
+> 
+> Thanks,
+> Jan
+> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
