@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1Ur8ur-0003zC-F6
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:42:53 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ur8uj-0002Se-Cp
-	for ltp-list@lists.sourceforge.net; Mon, 24 Jun 2013 15:42:53 +0000
-Date: Mon, 24 Jun 2013 23:42:33 +0800
-From: Eryu Guan <eguan@redhat.com>
-Message-ID: <20130624154233.GO2542@dhcp-13-216.nay.redhat.com>
-References: <1372086727-27722-1-git-send-email-eguan@redhat.com>
-	<201306241134.32158.vapier@gentoo.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uz7Wn-0001QI-Ff
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 15:51:01 +0000
+Date: Tue, 16 Jul 2013 17:52:41 +0200
+From: chrubis@suse.cz
+Message-ID: <20130716155241.GA21862@rei>
+References: <1373966367-18078-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20130716114347.GB20826@rei> <51E540CC.3070406@cn.fujitsu.com>
+	<20130716132425.GA21306@rei> <51E554C8.4070307@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201306241134.32158.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] dup2/dup205: close all fds before tst_rmdir()
+In-Reply-To: <51E554C8.4070307@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V2 1/2] lib: let tst_kvercmp2() contains major
+ kernel version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +27,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Mon, Jun 24, 2013 at 11:34:31AM -0400, Mike Frysinger wrote:
-> On Monday 24 June 2013 11:12:07 Eryu Guan wrote:
-> > Close all open fds before calling tst_rmdir() to avoid TWARN caused by
-> > NFS silly rename when removing temp dir caused by NFS silly rename.
+Hi!
+> >> 2.6.24 && > 2.6.18-131
+> > 
+> > or (what I did in the example)
+> > 
+> >> = 2.6.25 && >= 2.6.18-132
+> > 
+> > Or am I missing something?
 > 
-> "NFS silly rename" duplicated by accident ?
+> Oops, I understand what you mean.
+> If current kernel match our vendor info, the extra version
+> will take effect, if not, go to compare the vanilla version, right?
 
-Oh, forgot to remove one "NFS silly rename" when editing commit
-message.. Will send v2. Thanks for the review!
+Exactly.
 
-Eryu Guan
-> 
-> code looks fine to me
-> -mike
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
