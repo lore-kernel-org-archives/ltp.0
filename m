@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Utpqa-000632-Q2
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 01:57:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UtpqY-0000tO-Lc
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 01:57:36 +0000
-Message-ID: <51D23341.1060000@cn.fujitsu.com>
-Date: Tue, 02 Jul 2013 09:56:17 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uz5DG-00017B-0f
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 13:22:42 +0000
+Date: Tue, 16 Jul 2013 15:24:25 +0200
+From: chrubis@suse.cz
+Message-ID: <20130716132425.GA21306@rei>
+References: <1373966367-18078-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<20130716114347.GB20826@rei> <51E540CC.3070406@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] mmap/mmap14.c: new case to test MAP_LOCKED of mmap
+Content-Disposition: inline
+In-Reply-To: <51E540CC.3070406@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V2 1/2] lib: let tst_kvercmp2() contains major
+ kernel version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,99 +23,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-CgpDcmVhdGUgdGVzdCBjYXNlIGZvciBNQVBfTE9DS0VEIG9mIG1tYXAuCgpWZXJpZnkgcGFnZXMg
-YXJlIGxvY2tlZCBieSBjaGVja2luZyBzZWN0aW9uICJWbUxjayIgb2YgL3Byb2MvPHBpZD4vc3Rh
-dHVzLgoKClNpZ25lZC1vZmYtYnk6IERBTiBMSSA8bGkuZGFuQGNuLmZ1aml0c3UuY29tPgotLS0K
-IHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCiB0ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzLy5naXRpZ25vcmUgICAgfCAgIDEgKwogdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9tbWFwL21tYXAxNC5jIHwgMTQ1ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDE0NyBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAx
-MDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNC5jCgpIaSBKYW7vvIwK
-CnYzOgogIEFkZCByb290IGNoZWNrLgogIEFkZCBtbWFwMTQgdG8gLi4vLmdpdGlnbm9yZS4KClJl
-Z2FyZHMsCkRBTiBMSQoKCgpkaWZmIC0tZ2l0IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qv
-c3lzY2FsbHMKaW5kZXggM2FiMTlmNS4uYmViODc4MiAxMDA2NDQKLS0tIGEvcnVudGVzdC9zeXNj
-YWxscworKysgYi9ydW50ZXN0L3N5c2NhbGxzCkBAIC01NjMsNiArNTYzLDcgQEAgbW1hcDA4IG1t
-YXAwOAogbW1hcDA5IG1tYXAwOQogbW1hcDEyIG1tYXAxMgogbW1hcDEzIG1tYXAxMworbW1hcDE0
-IG1tYXAxNAogIyB0ZXN0IGlzIGJyb2tlbiwgbWFzayBpdCBmb3Igbm93LgogI21tYXAxMSBtbWFw
-MTEgLWkgMzAwMDAKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRp
-Z25vcmUgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRpZ25vcmUKaW5kZXggZmVkZTE0
-NS4uMThkMDNkNCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy8uZ2l0aWdu
-b3JlCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvLmdpdGlnbm9yZQpAQCAtNTE1LDYg
-KzUxNSw3IEBACiAvbW1hcC9tbWFwMTEKIC9tbWFwL21tYXAxMgogL21tYXAvbW1hcDEzCisvbW1h
-cC9tbWFwMTQKIC9tb2RpZnlfbGR0L21vZGlmeV9sZHQwMQogL21vZGlmeV9sZHQvbW9kaWZ5X2xk
-dDAyCiAvbW91bnQvbW91bnQwMQpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9tbWFwL21tYXAxNC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNC5j
-Cm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjI1YmM0OGQKLS0tIC9kZXYvbnVs
-bAorKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDE0LmMKQEAgLTAsMCAr
-MSwxNDUgQEAKKy8qCisgKiBDb3B5cmlnaHQgKGMpIDIwMTMgRk5TVCwgREFOIExJIDxsaS5kYW5A
-Y24uZnVqaXRzdS5jb20+CisgKgorICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5
-b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisgKiBpdCB1bmRlciB0aGUgdGVy
-bXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQorICog
-dGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGlj
-ZW5zZSwgb3IKKyAqIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisgKgorICog
-VGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1
-c2VmdWwsCisgKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGlt
-cGxpZWQgd2FycmFudHkgb2YKKyAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBB
-UlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQorICogdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
-IGZvciBtb3JlIGRldGFpbHMuCisgKgorICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29w
-eSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKKyAqIGFsb25nIHdpdGggdGhpcyBw
-cm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQorICogRm91bmRhdGlv
-biwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjEx
-MC0xMzAxIFVTQQorICovCisKKy8qCisgKiBUZXN0IERlc2NyaXB0aW9uOgorICogIFZlcmlmeSBN
-QVBfTE9DS0VEIHdvcmtzIGZpbmUuCisgKiAgIkxvY2sgdGhlIHBhZ2VzIG9mIHRoZSBtYXBwZWQg
-cmVnaW9uIGludG8gbWVtb3J5IGluIHRoZSBtYW5uZXIgb2YgbWxvY2soMikuIgorICoKKyAqIEV4
-cGVjdGVkIFJlc3VsdDoKKyAqICBtbWFwKCkgc2hvdWxkIHN1Y2NlZWQgcmV0dXJuaW5nIHRoZSBh
-ZGRyZXNzIG9mIHRoZSBtYXBwZWQgcmVnaW9uLAorICogIGFuZCB0aGlzIHJlZ2lvbiBzaG91bGQg
-YmUgbG9ja2VkIGludG8gbWVtb3J5LgorICovCisjaW5jbHVkZSA8c3RkaW8uaD4KKyNpbmNsdWRl
-IDxzdGRsaWIuaD4KKyNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KKyNpbmNsdWRlIDxlcnJuby5oPgor
-I2luY2x1ZGUgPHVuaXN0ZC5oPgorI2luY2x1ZGUgPGZjbnRsLmg+CisjaW5jbHVkZSA8c3RyaW5n
-Lmg+CisjaW5jbHVkZSA8c2lnbmFsLmg+CisjaW5jbHVkZSA8c3RkaW50Lmg+CisjaW5jbHVkZSA8
-c3lzL3N0YXQuaD4KKyNpbmNsdWRlIDxzeXMvbW1hbi5oPgorI2luY2x1ZGUgPHN5cy9zaG0uaD4K
-KworI2luY2x1ZGUgInRlc3QuaCIKKyNpbmNsdWRlICJ1c2N0ZXN0LmgiCisKKyNkZWZpbmUgVEVN
-UEZJTEUgICAgICAgICJtbWFwZmlsZSIKKyNkZWZpbmUgTU1BUFNJWkUgICAgICAgICgxVUw8PDIw
-KQorI2RlZmluZSBMSU5FTEVOICAgICAgICAgMjU2CisKK2NoYXIgKlRDSUQgPSAibW1hcDE0IjsK
-K2ludCBUU1RfVE9UQUwgPSAxOworCitzdGF0aWMgY2hhciAqYWRkcjsKKworc3RhdGljIHZvaWQg
-Z2V0dm1sY2sodW5zaWduZWQgaW50ICpsb2NrX3N6KTsKK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQp
-Oworc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKKworaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
-KmFyZ3ZbXSkKK3sKKwlpbnQgbGM7CisJY2hhciAqbXNnOworCXVuc2lnbmVkIGludCBzel9iZWZv
-cmU7CisJdW5zaWduZWQgaW50IHN6X2FmdGVyOworCXVuc2lnbmVkIGludCBzel9jaDsKKworCW1z
-ZyA9IHBhcnNlX29wdHMoYXJnYywgYXJndiwgTlVMTCwgTlVMTCk7CisJaWYgKG1zZyAhPSBOVUxM
-KQorCQl0c3RfYnJrbShUQlJPSywgTlVMTCwgIk9QVElPTiBQQVJTSU5HIEVSUk9SIC0gJXMiLCBt
-c2cpOworCisJc2V0dXAoKTsKKworCWZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysr
-KSB7CisKKwkJdHN0X2NvdW50ID0gMDsKKworCQlnZXR2bWxjaygmc3pfYmVmb3JlKTsKKworCQlh
-ZGRyID0gbW1hcChOVUxMLCBNTUFQU0laRSwgUFJPVF9SRUFEIHwgUFJPVF9XUklURSwKKwkJCSAg
-ICBNQVBfUFJJVkFURSB8IE1BUF9MT0NLRUQgfCBNQVBfQU5PTllNT1VTLAorCQkJICAgIC0xLCAw
-KTsKKworCQlpZiAoYWRkciA9PSBNQVBfRkFJTEVEKSB7CisJCQl0c3RfcmVzbShURkFJTCB8IFRF
-UlJOTywgIm1tYXAgb2YgJXMgZmFpbGVkIiwgVEVNUEZJTEUpOworCQkJY29udGludWU7CisJCX0K
-KworCQlpZiAoU1REX0ZVTkNUSU9OQUxfVEVTVCkgeworCisJCQlnZXR2bWxjaygmc3pfYWZ0ZXIp
-OworCisJCQlzel9jaCA9IHN6X2FmdGVyIC0gc3pfYmVmb3JlOworCQkJaWYgKHN6X2NoID09IE1N
-QVBTSVpFIC8gMTAyNCkKKwkJCQl0c3RfcmVzbShUUEFTUywgIkZ1bmN0aW9uYWxpdHkgb2YgbW1h
-cCgpICIKKwkJCQkJCSJzdWNjZXNzZnVsIik7CisJCQllbHNlCisJCQkJdHN0X3Jlc20oVEZBSUws
-ICJFeHBlY3RlZCAlbHVLIGxvY2tlZCwgIgorCQkJCQkJImdldCAldUsgbG9ja2VkIiwKKwkJCQkJ
-CU1NQVBTSVpFIC8gMTAyNCwgc3pfY2gpOworCisJCX0gZWxzZSB7CisJCQl0c3RfcmVzbShUUEFT
-UywgImNhbGwgc3VjY2VlZGVkIik7CisJCX0KKworCQlpZiAobXVubWFwKGFkZHIsIE1NQVBTSVpF
-KSAhPSAwKQorCQkJdHN0X2Jya20oVEZBSUwgfCBURVJSTk8sIE5VTEwsICJtdW5tYXAgZmFpbGVk
-Iik7CisJfQorCisJY2xlYW51cCgpOworCXRzdF9leGl0KCk7CisKK30KKwordm9pZCBnZXR2bWxj
-ayh1bnNpZ25lZCBpbnQgKmxvY2tfc3opCit7CisJaW50IHJldDsKKwljaGFyIGxpbmVbTElORUxF
-Tl07CisJRklMRSAqZnN0YXR1cyA9IE5VTEw7CisKKwlmc3RhdHVzID0gZm9wZW4oIi9wcm9jL3Nl
-bGYvc3RhdHVzIiwgInIiKTsKKwlpZiAoZnN0YXR1cyA9PSBOVUxMKQorCQl0c3RfYnJrbShURkFJ
-TCB8IFRFUlJOTywgTlVMTCwgIk9wZW4gZGV2IHN0YXR1cyBmYWlsZWQiKTsKKworCXdoaWxlIChm
-Z2V0cyhsaW5lLCBMSU5FTEVOLCBmc3RhdHVzKSAhPSBOVUxMKQorCQlpZiAoc3Ryc3RyKGxpbmUs
-ICJWbUxjayIpICE9IE5VTEwpCisJCQlicmVhazsKKworCXJldCA9IHNzY2FuZihsaW5lLCAiJSpb
-XjAtOV0lZCUqW14wLTldIiwgbG9ja19zeik7CisJaWYgKHJldCAhPSAxKQorCQl0c3RfYnJrbShU
-RkFJTCB8IFRFUlJOTywgTlVMTCwgIkdldCBsb2NrIHNpemUgZmFpbGVkIik7CisKKwlmY2xvc2Uo
-ZnN0YXR1cyk7Cit9CisKK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpCit7CisJdHN0X3JlcXVpcmVf
-cm9vdChOVUxMKTsKKworCXRzdF9zaWcoRk9SSywgREVGX0hBTkRMRVIsIGNsZWFudXApOworCisJ
-VEVTVF9QQVVTRTsKK30KKworc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQoreworCVRFU1RfQ0xF
-QU5VUDsKK30KLS0gCjEuOC4xCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1h
-aWwgaXMgc3BvbnNvcmVkIGJ5IFdpbmRvd3M6CgpCdWlsZCBmb3IgV2luZG93cyBTdG9yZS4KCmh0
-dHA6Ly9wLnNmLm5ldC9zZnUvd2luZG93cy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+> Assume that we want version ">=2.6.25", but only ">2.6.18-131", contain
+> them together will make no sense.  I suppose only use tst_kvercmp2()
+> "<0" and ">0", no use "=0", just remain return value "0" to indicate
+> that the extra kernel vendor is not match with current kernel.
+> What do you think?
+
+Given that the kernel versions increase monotonically one can always
+change that to:
+
+> 2.6.24 && > 2.6.18-131
+
+or (what I did in the example)
+
+>= 2.6.25 && >= 2.6.18-132
+
+Or am I missing something?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
