@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1V2c7h-0005F8-2E
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 07:07:33 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V2c7f-0001Vl-3N
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 07:07:32 +0000
-Date: Fri, 26 Jul 2013 03:07:21 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <221551028.6361858.1374822441673.JavaMail.root@redhat.com>
-In-Reply-To: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
-References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <penght@cn.fujitsu.com>) id 1Uz1eF-0007ID-O7
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 09:34:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uz1eD-0007YM-Jg
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 09:34:19 +0000
+Message-ID: <51E5136F.5080103@cn.fujitsu.com>
+Date: Tue, 16 Jul 2013 17:33:35 +0800
+From: Peng Haitao <penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
-	glibc
+References: <1373963498-838-1-git-send-email-penght@cn.fujitsu.com>
+	<1752195557.979708.1373966382515.JavaMail.root@redhat.com>
+In-Reply-To: <1752195557.979708.1373966382515.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] testcases/kernel/firmware: fix a bug of make
+	install
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,64 +29,215 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: alexey.kodanev@oracle.com, ltp-list@lists.sourceforge.net
 
 
-
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "LTP" <ltp-list@lists.sourceforge.net>
-> Cc: "Cyril Hrubis" <chrubis@suse.cz>, "Caspar Zhang" <caspar@casparzhang.com>, "Garrett Cooper" <yanegomi@gmail.com>,
-> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com, "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> Sent: Friday, 26 July, 2013 4:56:18 AM
-> Subject: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
+On 07/16/2013 05:19 PM, Jan Stancek wrote:
 > 
-> Since the reader can always acquire the rwlock if there's not a writer
-> held the lock.
+> how about this?
 > 
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-Hi,
+It is very simple:)
 
-I agree that these 3 fail by default on glibc at the moment.
-Since we are adding a GLIBC ifdef, I'm wondering if we could use
-glibc specific api to change default behaviour with 
-pthread_rwlockattr_setkind_np() and still run the testcase.
-
-Regards,
-Jan
-
-> ---
->  .../conformance/interfaces/pthread_rwlock_rdlock/2-1.c              | 6
->  ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git
-> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> index c6c1412..62a4b3b 100644
-> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
-> @@ -141,6 +141,12 @@ int main(void)
->  	return PTS_UNSUPPORTED;
->  #endif
+> diff --git a/testcases/kernel/firmware/Makefile b/testcases/kernel/firmware/Makefile
+> index fbacf8d..dd2c62d 100644
+> --- a/testcases/kernel/firmware/Makefile
+> +++ b/testcases/kernel/firmware/Makefile
+> @@ -38,7 +38,7 @@ endif
 >  
-> +#ifdef __GLIBC__
-> +	printf("The reader can always acquire rwlock if there's"
-> +		" not a writer held this lock in glibc\n");
-> +	return PTS_UNTESTED;
-> +#endif
-> +
->  	int cnt = 0;
->  	pthread_t rd_thread, wr_thread;
->  	int priority;
-> --
-> 1.8.3.3.754.g9c3c367
+>  ifeq ($(SKIP),0)
+>  SUBDIRS                        += fw_load_kernel
+> -SUBDIRS                        += fw_load_user
+>  endif
+> +SUBDIRS                        += fw_load_user
 > 
+> We always build userspace part. The check for kernel version is
+> already in setup(). We just need to make sure userspace bits compile everywhere.
+> I tried 2.6.32 based kernel, it builds and runs:
+> # ./fw_load_user/fw_load 
+> fw_load     1  TCONF  :  Test must be run with kernel 3.7 or newer
+> fw_load     2  TCONF  :  Remaining cases not appropriate for configuration
 > 
+
+Tested in RHEL5, the result is OK.
+<<<test_output>>>
+incrementing stop
+fw_load     1  TCONF  :  Test must be run with kernel 3.7 or newer
+fw_load     2  TCONF  :  Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+
+
+Thanks.
+
+-- 
+Best Regards,
+Peng
+
+> Regards,
+> Jan
+> 
+>>
+>> diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
+>> index 953747c..ca203cb 100644
+>> --- a/include/mk/config.mk.default
+>> +++ b/include/mk/config.mk.default
+>> @@ -78,5 +78,6 @@ LINUX_DIR		:=
+>>  LINUX_VERSION_MAJOR	:=
+>>  LINUX_VERSION_PATCH	:=
+>>  WITH_MODULES		:= no
+>> +LINUX_VERSION_AFTER	:= no
+>>  
+>>  export datarootdir includedir libdir mandir prefix
+>> diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+>> index 96633f1..24052ff 100644
+>> --- a/include/mk/config.mk.in
+>> +++ b/include/mk/config.mk.in
+>> @@ -80,6 +80,7 @@ LINUX_DIR		:= @LINUX_DIR@
+>>  LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
+>>  LINUX_VERSION_PATCH	:= @LINUX_VERSION_PATCH@
+>>  WITH_MODULES		:= @WITH_MODULES@
+>> +LINUX_VERSION_AFTER	:= @LINUX_VERSION_AFTER@
+>>  
+>>  ifeq ($(strip $(prefix)),)
+>>  $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir)
+>>  if you want to build in the source tree)
+>> diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
+>> index ba53bc1..febe603 100644
+>> --- a/m4/ltp-kernel_devel.m4
+>> +++ b/m4/ltp-kernel_devel.m4
+>> @@ -25,6 +25,8 @@ dnl requires kernel-devel installed
+>>  dnl
+>>  
+>>  AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[dnl
+>> +AH_TEMPLATE(LINUX_VERSION_AFTER,
+>> +[Define to yes if kernel version is after 3.7.])
+>>  
+>>  AC_MSG_CHECKING([for kernel-devel])
+>>  AC_ARG_WITH(
+>> @@ -73,4 +75,17 @@ AC_ARG_WITH(
+>>  			[])
+>>  
+>>  AC_SUBST(WITH_MODULES)
+>> +
+>> +REQ_VERSION_MAJOR=3
+>> +REQ_VERSION_PATCH=7
+>> +if test "x$WITH_MODULES" = "xyes"; then
+>> +	if test ${LINUX_VERSION_MAJOR} -ge ${REQ_VERSION_MAJOR}; then
+>> +		if test ${LINUX_VERSION_PATCH} -ge ${REQ_VERSION_PATCH}; then
+>> +			LINUX_VERSION_AFTER="yes"
+>> +			AC_DEFINE(LINUX_VERSION_AFTER)
+>> +		fi
+>> +	fi
+>> +fi
+>> +
+>> +AC_SUBST(LINUX_VERSION_AFTER)
+>>  ])
+>> diff --git a/testcases/kernel/firmware/Makefile
+>> b/testcases/kernel/firmware/Makefile
+>> index fbacf8d..03069b8 100644
+>> --- a/testcases/kernel/firmware/Makefile
+>> +++ b/testcases/kernel/firmware/Makefile
+>> @@ -18,27 +18,4 @@ top_srcdir	?= ../../..
+>>  
+>>  include $(top_srcdir)/include/mk/env_pre.mk
+>>  
+>> -SUBDIRS			=
+>> -REQ_VERSION_MAJOR	= 3
+>> -REQ_VERSION_PATCH	= 7
+>> -
+>> -ifeq ($(MAKECMDGOALS),clean)
+>> -SKIP = 0
+>> -endif
+>> -
+>> -ifeq ($(WITH_MODULES),yes)
+>> -SKIP ?= $(shell test $(LINUX_VERSION_MAJOR) -gt $(REQ_VERSION_MAJOR); echo
+>> $$?)
+>> -ifeq ($(SKIP),1)
+>> -SKIP = $(shell test $(LINUX_VERSION_MAJOR) -eq $(REQ_VERSION_MAJOR); echo
+>> $$?)
+>> -ifeq ($(SKIP),0)
+>> -SKIP = $(shell test $(LINUX_VERSION_PATCH) -ge $(REQ_VERSION_PATCH); echo
+>> $$?)
+>> -endif
+>> -endif
+>> -endif
+>> -
+>> -ifeq ($(SKIP),0)
+>> -SUBDIRS			+= fw_load_kernel
+>> -SUBDIRS			+= fw_load_user
+>> -endif
+>> -
+>>  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+>> diff --git a/testcases/kernel/firmware/fw_load_kernel/Makefile
+>> b/testcases/kernel/firmware/fw_load_kernel/Makefile
+>> index 076d4ed..564501b 100644
+>> --- a/testcases/kernel/firmware/fw_load_kernel/Makefile
+>> +++ b/testcases/kernel/firmware/fw_load_kernel/Makefile
+>> @@ -25,7 +25,11 @@ else
+>>  top_srcdir	?= ../../../..
+>>  include $(top_srcdir)/include/mk/env_pre.mk
+>>  
+>> -MAKE_TARGETS	:= ltp_fw_load.ko
+>> +ifeq ($(LINUX_VERSION_AFTER),yes)
+>> +	MAKE_TARGETS	:= ltp_fw_load.ko
+>> +else
+>> +	MAKE_TARGETS    :=
+>> +endif
+>>  
+>>  # Ignoring the exit status of commands is done to be forward compatible with
+>>  # kernel internal API changes. The user-space test will return TCONF, if it
+>> diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c
+>> b/testcases/kernel/firmware/fw_load_user/fw_load.c
+>> index 880531e..69b6d81 100644
+>> --- a/testcases/kernel/firmware/fw_load_user/fw_load.c
+>> +++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
+>> @@ -28,6 +28,7 @@
+>>  #include <unistd.h>
+>>  #include <string.h>
+>>  
+>> +#include "config.h"
+>>  #include "test.h"
+>>  #include "usctest.h"
+>>  #include "safe_macros.h"
+>> @@ -84,11 +85,16 @@ static void create_firmware(char *const fw_paths[]);
+>>  
+>>  int main(int argc, char *argv[])
+>>  {
+>> +#ifdef LINUX_VERSION_AFTER
+>>  	setup(argc, argv);
+>>  
+>>  	test_run();
+>>  
+>>  	cleanup();
+>> +#else
+>> +	tst_resm(TCONF, "This device firmware loading is not supported");
+>> +	tst_resm(TCONF, "before kernel 3.7");
+>> +#endif
+>>  
+>>  	tst_exit();
+>>  }
+>> --
+>> 1.8.3.1
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> See everything from the browser to the database with AppDynamics
+>> Get end-to-end visibility with application monitoring from AppDynamics
+>> Isolate bottlenecks and diagnose root cause in seconds.
+>> Start your free trial of AppDynamics Pro today!
+>> http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+> 
+
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
