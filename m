@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Uz3Bk-0002Fn-8z
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 11:13:00 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uz3Bi-0004hS-5u
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 11:13:00 +0000
-Date: Tue, 16 Jul 2013 07:12:48 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1942688902.1035838.1373973168675.JavaMail.root@redhat.com>
-In-Reply-To: <51E5189F.3090703@oracle.com>
-References: <1373963498-838-1-git-send-email-penght@cn.fujitsu.com>
-	<1752195557.979708.1373966382515.JavaMail.root@redhat.com>
-	<51E5136F.5080103@cn.fujitsu.com> <51E5189F.3090703@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jungsoo.son@lge.com>) id 1Uyyx5-0000Rp-70
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 06:41:35 +0000
+Received: from lgeamrelo02.lge.com ([156.147.1.126])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uyyx3-0007On-Ah
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 06:41:35 +0000
+From: "Jungsoo Son" <jungsoo.son@lge.com>
+Date: Tue, 16 Jul 2013 15:41:26 +0900
+Message-ID: <005001ce81ef$7ea7dc20$7bf79460$@lge.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] testcases/kernel/firmware: fix a bug of make
- install
+Content-Language: ko
+Subject: [LTP] [PATCH] Fix the bug of the temp-files removing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,57 +26,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey kodanev <alexey.kodanev@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+The shell command to remove all the temp-files created had a bug that
+try to remove /dev/null. If the ltp is run with root permission the
+/dev/null will be removed.
 
+Signed-off-by: jungsoo.son <jungsoo.son@lge.com>
+---
+ testscripts/test_robind.sh |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testscripts/test_robind.sh b/testscripts/test_robind.sh
+index 142678a..4c01f4e 100755
+--- a/testscripts/test_robind.sh
++++ b/testscripts/test_robind.sh
+@@ -193,7 +193,7 @@ function testdir
+         echo >> $PASSLOG
+     fi
+     # Remove all the temp-files created.
+-    eval rm -rf ${TMPDIR}/${dir}/* > /dev/null 2>&1 /dev/null || true
++    eval rm -rf ${TMPDIR}/${dir}/* > /dev/null 2>&1 || true
+     unset TDIRECTORY
+     popd
+ }
+-- 
+1.7.9.5
 
-
------ Original Message -----
-> From: "alexey kodanev" <alexey.kodanev@oracle.com>
-> To: "Peng Haitao" <penght@cn.fujitsu.com>
-> Cc: "Jan Stancek" <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 16 July, 2013 11:55:43 AM
-> Subject: Re: [LTP] [PATCH] testcases/kernel/firmware: fix a bug of make install
-> 
-> Hi!
-> 
-> >>
-> >>   ifeq ($(SKIP),0)
-> >>   SUBDIRS                        += fw_load_kernel
-> >> -SUBDIRS                        += fw_load_user
-> >>   endif
-> >> +SUBDIRS                        += fw_load_user
-> >>
-> >> We always build userspace part. The check for kernel version is
-> >> already in setup(). We just need to make sure userspace bits compile
-> >> everywhere.
-> >> I tried 2.6.32 based kernel, it builds and runs:
-> >> # ./fw_load_user/fw_load
-> >> fw_load     1  TCONF  :  Test must be run with kernel 3.7 or newer
-> >> fw_load     2  TCONF  :  Remaining cases not appropriate for configuration
-> >>
-> or in case we don't want compile user-space part:
-
-I think the issue here is that this testcase is listed in some runtest file (kernel_misc).
-So when you try to run it, ltp is looking for 'fw_load' binary, which doesn't exist.
-
-Regards,
-Jan
-
-> ...
-> 
-> SUBDIRS			+= fw_load_user
-> include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> else
-> include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> endif
-> 
-> Thanks,
-> Alexey
-> 
-> 
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
