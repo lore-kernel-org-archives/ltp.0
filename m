@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V4DpV-0005Rt-Pl
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 17:35:25 +0000
-Date: Tue, 30 Jul 2013 19:35:17 +0200
-From: chrubis@suse.cz
-Message-ID: <20130730173517.GC1999@rei.scz.novell.com>
-References: <0575932595c58348fef5664c180a73b59b2515f4.1374647501.git.jstancek@redhat.com>
-	<99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1Uyvew-0001Kj-Go
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 03:10:38 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uyveu-0006Gw-EA
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 03:10:38 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6G3AQid018886
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jul 2013 11:10:29 +0800
+Message-ID: <51E4B956.9020708@cn.fujitsu.com>
+Date: Tue, 16 Jul 2013 11:09:10 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] open_posix_testsuite/../mq_timedsend/12-1:
- fix race
+Subject: [LTP] [PATCH] inotify/inotify03.c: cleanup a parameter-passing error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,53 +28,159 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> -#define INTHREAD 0
-> -#define INMAIN 1
-> +#define SAFE(op) \
-> +	do {\
-> +		if ((op) == -1) {\
-> +			perror("unexpected failure"); \
-> +			exit(PTS_UNRESOLVED); \
-> +		} \
-> +	} while (0)
 
-I do not like this approach, this does not tell what call has failed. It
-would be really hard to figure out what exact line of code has failed
-from the test error messages.
+1. Revise code to follow ltp-code-style
 
-> -/* manual semaphore */
-> -int sem;
-> +/* variable to indicate how many times signal handler was called */
-> +static volatile sig_atomic_t in_handler;
->  
-> -/* flag to indicate signal handler was called */
-> -int in_handler;
-> +/* errno returned by mq_timedsend() */
-> +static volatile int mq_timedsend_errno = -1;
->  
-> -/* flag to indicate that errno was set to eintr when mq_timedsend()
-> - * was interruped. */
-> -int errno_eintr;
-> +/* pipes to synchronize thread calling mq_timedsend */
-> +static int pipefd_start[2];
-> +static int pipefd_exit[2];
+2. Fix a bad parameter-passing which causes mount(2) "EINVAL"
 
-What about using mutexes? (it's multithread application anyway).
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/inotify/inotify03.c | 48 +++++++++++----------------
+ 1 file changed, 20 insertions(+), 28 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/inotify/inotify03.c b/testcases/kernel/syscalls/inotify/inotify03.c
+index 12545b8..f17004f 100644
+--- a/testcases/kernel/syscalls/inotify/inotify03.c
++++ b/testcases/kernel/syscalls/inotify/inotify03.c
+@@ -59,7 +59,7 @@ int TST_TOTAL = 3;
+
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+-#define EVENT_SIZE (sizeof (struct inotify_event))
++#define EVENT_SIZE (sizeof(struct inotify_event))
+ /* reasonable guess as to size of 1024 events */
+ #define EVENT_BUF_LEN		(EVENT_MAX * (EVENT_SIZE + 16))
+
+@@ -77,37 +77,35 @@ int event_set[EVENT_MAX];
+
+ char event_buf[EVENT_BUF_LEN];
+
+-#define DIR_MODE	S_IRWXU | S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP
++#define DIR_MODE	(S_IRWXU | S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP)
+
+-static char *Fstype;
+ static char mntpoint[20];
+-static int mount_flag = 0;
++static int mount_flag;
+ static char *fstype = "ext2";
+ static char *device;
+-static int Tflag = 0;
+-static int Dflag = 0;
++static int dflag;
+
+ static option_t options[] = {
+-	{"T:", &Tflag, &fstype},
+-	{"D:", &Dflag, &device},
++	{"T:", NULL, &fstype},
++	{"D:", &dflag, &device},
+ 	{NULL, NULL, NULL}
+ };
+
+-int main(int ac, char **av)
++int main(int argc, char *argv[])
+ {
+ 	char *msg;
+ 	int ret;
+ 	int len, i, test_num;
+
+-	if ((msg = parse_opts(ac, av, options, &help)) != NULL)
++	msg = parse_opts(argc, argv, options, &help);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+
+ 	/* Check for mandatory option of the testcase */
+-	if (!Dflag) {
++	if (!dflag)
+ 		tst_brkm(TBROK, NULL, "You must specifiy the device used for "
+ 			 " mounting with -D option, Run '%s  -h' for option "
+ 			 " information.", TCID);
+-	}
+
+ 	setup();
+
+@@ -207,8 +205,8 @@ static void setup(void)
+ 	}
+
+ 	/* Call mount(2) */
+-	tst_resm(TINFO, "mount %s to %s fstype=%s", device, mntpoint, Fstype);
+-	TEST(mount(device, mntpoint, Fstype, 0, NULL));
++	tst_resm(TINFO, "mount %s to %s fstype=%s", device, mntpoint, fstype);
++	TEST(mount(device, mntpoint, fstype, 0, NULL));
+
+ 	/* check return code */
+ 	if (TEST_RETURN != 0) {
+@@ -231,43 +229,37 @@ static void setup(void)
+ 	}
+
+ 	/* close the file we have open */
+-	if (close(fd) == -1) {
++	if (close(fd) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed", fname);
+-	}
+
+ 	fd_notify = myinotify_init();
+
+ 	if (fd_notify < 0) {
+-		if (errno == ENOSYS) {
++		if (errno == ENOSYS)
+ 			tst_brkm(TCONF, cleanup,
+ 				 "inotify is not configured in this kernel.");
+-		} else {
++		else
+ 			tst_brkm(TBROK | TERRNO, cleanup,
+ 				 "inotify_init failed");
+-		}
+ 	}
+
+ 	wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS);
+-	if (wd < 0) {
++	if (wd < 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+ 			 "inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed.",
+ 			 fd_notify, fname);
+-	};
+-
+ }
+
+ static void cleanup(void)
+ {
+-	if (close(fd_notify) == -1) {
++	if (close(fd_notify) == -1)
+ 		tst_resm(TWARN | TERRNO, "close(%d) failed", fd_notify);
+-	}
+
+ 	if (mount_flag) {
+ 		TEST(umount(mntpoint));
+-		if (TEST_RETURN != 0) {
++		if (TEST_RETURN != 0)
+ 			tst_resm(TWARN | TTERRNO, "umount(%s) failed",
+ 				 mntpoint);
+-		}
+ 	}
+
+ 	TEST_CLEANUP;
+@@ -278,8 +270,8 @@ static void cleanup(void)
+ static void help(void)
+ {
+ 	printf("-T type : specifies the type of filesystem to be mounted."
+-	       " Default ext2. \n");
+-	printf("-D device : device used for mounting \n");
++	       " Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
+ }
+
+ #else
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
