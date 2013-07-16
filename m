@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UzG4K-00009l-3g
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jul 2013 00:58:12 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UzG4I-0006Yv-0c
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jul 2013 00:58:12 +0000
-Message-ID: <51E5EC13.5030400@cn.fujitsu.com>
-Date: Wed, 17 Jul 2013 08:57:55 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Uz4M0-0006ii-DQ
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 12:27:40 +0000
+Date: Tue, 16 Jul 2013 14:29:24 +0200
+From: chrubis@suse.cz
+Message-ID: <20130716122924.GA21078@rei>
+References: <CADyrn+t16kR9FAfQSYUB2aYJej1BEFFZcLwUzDi0nKAjHyZ6Rw@mail.gmail.com>
 MIME-Version: 1.0
-References: <65bd50b9cbce20c71adb8a412ef1f95a527db102.1373973465.git.jstancek@redhat.com>
-In-Reply-To: <65bd50b9cbce20c71adb8a412ef1f95a527db102.1373973465.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] kernel/firmware: always build userspace bits
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <CADyrn+t16kR9FAfQSYUB2aYJej1BEFFZcLwUzDi0nKAjHyZ6Rw@mail.gmail.com>
+Subject: Re: [LTP] [mtest01w] mtest01w test hangs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,20 +24,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: SHASHANK BILGI <shashank192@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 07/16/2013 07:20 PM, Jan Stancek wrote:
-> Because this testcase is listed in runtest files, we should
-> always build userspace bits, so that ltp has something to run.
+Hi!
+> <<<test_start>>>
+> tag=mtest01w stime=2336
+> cmdline="mtest01 -p80 -w"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> [ 2351.111281] rmon:L
+> mtest01     0  TINFO  :  Total memory already used on system = 22796 kbytes
+> mtest01     0  TINFO  :  Total memory used needed to reach maximum =
+> 1750246 kbytes
+> mtest01     0  TINFO  :  Filling up 80% of ram which is 1727450 kbytes
+> mtest01     1  TBROK  :  stopped at 716177408 bytes: errno=ENOMEM(12):
+> Cannot allocate memory
 > 
-> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> 
+> * When the malloc fails the child process seems to be calling tst_exit().
+> mtest01.c
+> .....
+> .....
+>         if (pid == 0) {
+>                 bytecount = chunksize;
+>                 while (1) {
+>                         if ((mem = malloc(chunksize)) == NULL) {
+>                                 tst_resm(TBROK | TERRNO,
+>                                          "stopped at %lu bytes", bytecount);
+>                                 free(pid_list);
+>                                 tst_exit();
+>                         }
+> 
+> .....
+> .....
+> 
+> * but in this case i can see the child process in the process list(ps -ax)
+> in sleep state.
+> 
+>  333 ttyAM0   S      0:00 mtest01 -p80 -w
+>  334 ttyAM0   Z      0:14 [mtest01] <defunct>
+>  335 ttyAM0   S      0:13 mtest01 -p80 -w
+> 
+> Here is my query , why tst_exit() isn't ending the child process?
 
-Applied, thank you.
+Using tst_exit() and any other tst interface from child is a mistake but
+tst_exit() should end the child process.
 
-Wanlong Gao
+However there may be other childrens still running as tst_exit() is just
+equivalent to exit() (it does flush output buffers and exits the process
+with result as return value but nothing more).
 
+So my guess is that the rest of the childrens continue to fill the
+chunks and then waits to be reaped by the parent. Which may hang the
+machine if there is not enough memory.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
