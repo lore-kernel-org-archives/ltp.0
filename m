@@ -1,34 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Uz5uj-0003Vq-8h
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 14:07:37 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Uz5ug-00058o-Rv
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 14:07:37 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r6GE7RR8020724
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jul 2013 14:07:28 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r6GE7Rh7027732
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jul 2013 14:07:27 GMT
-Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r6GE7R1C027714
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jul 2013 14:07:27 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 16 Jul 2013 18:06:51 +0400
-Message-Id: <1373983611-10136-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20130625124854.GD31268@rei>
-References: <20130625124854.GD31268@rei>
-Subject: [LTP] [PATCH V2] syscalls/swapon: fix for variable page size
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1UzQSI-0005Dk-MT
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jul 2013 12:03:38 +0000
+Date: Wed, 17 Jul 2013 14:05:22 +0200
+From: chrubis@suse.cz
+Message-ID: <20130717120522.GB25145@rei>
+References: <51E6272B.3020509@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <51E6272B.3020509@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/2] Add support for xfs quota tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,509 +21,193 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Hi!
+> Add support for xfs quota tests:
+> 
+>   *Create a xfs block device
+> 
+>   *Define HAVE_XFS_QUOTA to show if xfs quota is available
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> ---
+>  configure.ac        |  1 +
+>  m4/ltp-xfs_quota.m4 | 39 +++++++++++++++++++++++++++++++++++++
+>  runltp              | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 95 insertions(+), 1 deletion(-)
+>  create mode 100644 m4/ltp-xfs_quota.m4
+> 
+> diff --git a/configure.ac b/configure.ac
+> index f0fc6b0..1f95603 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -168,5 +168,6 @@ LTP_CHECK_ACL_SUPPORT
+>  LTP_CHECK_FS_IOC_FLAGS
+>  LTP_CHECK_MREMAP_FIXED
+>  LTP_CHECK_KERNEL_DEVEL
+> +LTP_CHECK_XFS_QUOTACTL
+> 
+>  AC_OUTPUT
+> diff --git a/m4/ltp-xfs_quota.m4 b/m4/ltp-xfs_quota.m4
+> new file mode 100644
+> index 0000000..a17d4d9
+> --- /dev/null
+> +++ b/m4/ltp-xfs_quota.m4
+> @@ -0,0 +1,39 @@
+> +dnl
+> +dnl Copyright (c) 2013 Fujitsu Ltd.
+> +dnl Author: DAN LI <li.dan@cn.fujitsu.com>
+> +dnl
+> +dnl This program is free software;  you can redistribute it and/or modify
+> +dnl it under the terms of the GNU General Public License as published by
+> +dnl the Free Software Foundation; either version 2 of the License, or
+> +dnl (at your option) any later version.
+> +dnl
+> +dnl This program is distributed in the hope that it will be useful,
+> +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +dnl the GNU General Public License for more details.
+> +dnl
+> +dnl You should have received a copy of the GNU General Public License
+> +dnl along with this program;  if not, write to the Free Software
+> +dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> +dnl
+> +
+> +dnl
+> +dnl LTP_CHECK_XFS_QUOTACTL
+> +dnl ----------------------------
+> +dnl
+> +AC_DEFUN([LTP_CHECK_XFS_QUOTACTL],[dnl
+> +	AC_LINK_IFELSE([AC_LANG_SOURCE([
+> +#include <xfs/xqm.h>
+> +#include <sys/quota.h>
+> +int main(void) {
+> +	struct fs_quota_stat qstat;
+> +	return quotactl(QCMD(Q_XGETQSTAT, USRQUOTA), (const char *) "/dev/null",
+> +			geteuid(), (caddr_t) &qstat);
 
-lib/tst_fill_file.c: added tst_fill_file function
+Why the (const char *) and (caddr_t) casts?
 
-mkswap refuses files of size < 10*(page size).
+> +}])],[has_xfs_quota="yes"])
+> +
+> +if test "x$has_xfs_quota" = xyes; then
+> +	AC_DEFINE(HAVE_XFS_QUOTA,1,[Define to 1 if you have xfs quota])
+> +else
+> +	AC_MSG_WARN(No xfs quota support)
+> +fi
+> +])
+> diff --git a/runltp b/runltp
+> index 28e6bed..210a332 100755
+> --- a/runltp
+> +++ b/runltp
+> @@ -163,6 +163,7 @@ usage()
+>      -b DEVICE       Some tests require an unmounted block device
+>                      to run correctly.
+>      -B DEVICE_FS_TYPE The file system of test block devices.
+> +    -X XFS_DEVICE   Some tests require an unmounted xfs-format block device
+> 
+> 
+>      example: ${0##*/} -c 2 -i 2 -m 2,4,10240,1 -D 2,10,10240,1 -p -q  -l /tmp/result-log.$$ -o /tmp/result-output.$$ -C
+> /tmp/result-failed.$$ -d ${PWD}
+> @@ -211,7 +212,7 @@ main()
+> 
+>      version_date=$(cat "$LTPROOT/Version")
+> 
+> -    while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B: arg
+> +    while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B:X: arg
+>      do  case $arg in
+>          a)  EMAIL_TO=$OPTARG
+>              ALT_EMAIL_OUT=1;;
+> @@ -424,6 +425,7 @@ main()
+>              INSTANCES="-x $OPTARG";;
+>          b) DEVICE=$OPTARG;;
+>          B) DEVICE_FS_TYPE=$OPTARG;;
+> +        X) XFS_DEVICE=$OPTARG;;
+>          \?) usage;;
+>          esac
+>      done
+> @@ -679,6 +681,24 @@ main()
+>      }
+>      }
+> 
+> +    if [ -n "$XFS_DEVICE" ]; then
+> +        sed -i "s|XFS_DEVICE|$XFS_DEVICE|"  ${TMP}/alltests
+> +        RC=$?
+> +    else
+> +        create_xfs_block
+> +        if [ $? -eq 0 ]; then
+> +            sed -i "s|XFS_DEVICE|$XFS_DEVICE|"  ${TMP}/alltests
+> +            RC=$?
+> +        else
+> +            echo "No xfs-format block device was specified on commandline."
+> +            echo "Block device could not be created using loopback device"
+> +            echo "Tests which require xfs block device are disabled."
+> +            echo "You can specify it with option -X"
+> +            sed -i "/XFS_DEVICE/d"  ${TMP}/alltests
+> +            RC=$?
+> +        fi
+> +    fi
+> +
+>      if [ -n "$DEVICE" ]; then
+>          sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
+>          RC=$?
+> @@ -1019,9 +1039,43 @@ create_block()
+>      fi
+>  }
+> 
+> +create_xfs_block()
+> +{
+> +    #create a block device with xfs filesystem.
+> +    dd if=/dev/zero of=${TMP}/xfstest.img bs=1kB count=20480
+> +    if [ $? -ne 0 ]; then
+> +        echo "Failed to create loopback device image, please check disk space and re-run"
+> +        return 1
+> +    else
+> +        ##search for an unused loop dev
+> +        LOOP_DEV_XFS=$(losetup -f)
+> +        if [ $? -ne 0 ]; then
+> +            echo "no unused loop device is found"
+> +            return 1
+> +        else
+> +            ##attach the created file to loop dev.
+> +            losetup $LOOP_DEV_XFS ${TMP}/xfstest.img
+> +            if [ $? -ne 0 ]; then
+> +                echo "losetup failed to create block device"
+> +                return 1
+> +            else
+> +                mkfs.xfs $LOOP_DEV_XFS
+> +                if [ $? -ne 0 ]; then
+> +                    echo "creating an xfs block device failed."
+> +                    return 1
+> +                fi
+> +
+> +                XFS_DEVICE=$LOOP_DEV_XFS
+> +                return 0
+> +            fi
+> +        fi
+> +    fi
+> +}
 
-On systems with 8192 page size swapon02, swapon03 tests fail because
-they try to use files of size 41920 (< 81920).
 
-Modified swapon02, swapon03 so they operate on files of size
-10*(page size).
+Now this is getting a bit out of hand.
 
-In swapon01 test size of swap file is predefined. For unification
-modified this test the same way.
+What about we change the tests (we have) to take only device to work
+with and let each test prepare the filesystem it needs? This will
+simplify the runltp script to only prepare loop device.
 
-Verified on systems with 4096 and 8192 page sizes.
+If we agree on that I can write the tst_mkfs() function and convert
+current usages.
 
-Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/test.h                               |   10 ++++
- lib/tst_fill_file.c                          |   66 ++++++++++++++++++++++++
- testcases/kernel/syscalls/swapon/Makefile    |    5 ++
- testcases/kernel/syscalls/swapon/libswapon.c |   54 +++++++++++++++++++
- testcases/kernel/syscalls/swapon/libswapon.h |   34 ++++++++++++
- testcases/kernel/syscalls/swapon/swapon01.c  |   18 +------
- testcases/kernel/syscalls/swapon/swapon02.c  |   62 +---------------------
- testcases/kernel/syscalls/swapon/swapon03.c  |   71 ++------------------------
- 8 files changed, 179 insertions(+), 141 deletions(-)
- create mode 100644 lib/tst_fill_file.c
- create mode 100644 testcases/kernel/syscalls/swapon/libswapon.c
- create mode 100644 testcases/kernel/syscalls/swapon/libswapon.h
+Or has anbody better idea?
 
-diff --git a/include/test.h b/include/test.h
-index a76fafc..745ea0c 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -222,6 +222,16 @@ long tst_ncpus_max(void);
-  */
- void tst_run_cmd(void (cleanup_fn)(void), char *const argv[]);
- 
-+/* lib/tst_fill_file.c
-+ *
-+ * Creates/ovewrites a file with specified pattern
-+ * @path: path to file
-+ * @pattern: pattern
-+ * @bs: block size
-+ * @bcount: blocks amount
-+ */
-+int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
-+
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/lib/tst_fill_file.c b/lib/tst_fill_file.c
-new file mode 100644
-index 0000000..b5488c8
---- /dev/null
-+++ b/lib/tst_fill_file.c
-@@ -0,0 +1,66 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#include "test.h"
-+
-+int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
-+{
-+	int fd, counter;
-+	char *buf;
-+
-+	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
-+	if (fd < 0)
-+        	return -1;
-+
-+	/* Filling a memory buffer with provided pattern */
-+	buf = malloc(bs);
-+	if (buf == NULL) { 
-+		close(fd);
-+
-+		return -1;
-+	}
-+
-+	for (counter = 0; counter < bs; counter++)
-+		buf[counter] = pattern;
-+
-+	/* Filling the file */
-+	for (counter = 0; counter < bcount; counter++) 
-+		if (write(fd, buf, bs) != bs) {
-+			free(buf);
-+			close(fd);
-+
-+			return -1;
-+		}
-+
-+
-+	free(buf);
-+	if (close(fd) < 0)
-+		return -1;
-+
-+	return 0;
-+}
-diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
-index 7ff50f1..a272224 100644
---- a/testcases/kernel/syscalls/swapon/Makefile
-+++ b/testcases/kernel/syscalls/swapon/Makefile
-@@ -25,4 +25,9 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+FILTER_OUT_MAKE_TARGETS         := libswapon
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+$(MAKE_TARGETS): %: %.o libswapon.o
-+
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
-new file mode 100644
-index 0000000..8add3e6
---- /dev/null
-+++ b/testcases/kernel/syscalls/swapon/libswapon.c
-@@ -0,0 +1,54 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+#include "test.h"
-+#include "libswapon.h"
-+
-+/* 
-+ * Make a swap file
-+ */
-+void make_swapfile(void (cleanup)(void), char *swapfile)
-+{
-+	char cmd_buffer[256];
-+
-+	if (!tst_cwd_has_free(sysconf(_SC_PAGESIZE)*10)) {
-+		tst_brkm(TBROK, cleanup,
-+			"Insufficient disk space to create swap file");
-+	}
-+
-+	/* create file */
-+	if (tst_fill_file(swapfile, 0, 
-+			sysconf(_SC_PAGESIZE), 10) != 0) {
-+		tst_brkm(TBROK, cleanup, "Failed to create swapfile");
-+	}
-+
-+	/* make the file swapfile */
-+	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
-+			"mkswap %s > /dev/null 2>&1", swapfile) < 0) {
-+		tst_brkm(TBROK, cleanup, 
-+			"snprintf() failed to create mkswap command string");
-+	}
-+
-+	if (system(cmd_buffer) != 0) {
-+		tst_brkm(TBROK, cleanup, "Failed to make swapfile %s via command %s",
-+			swapfile, cmd_buffer);
-+	}
-+}
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.h b/testcases/kernel/syscalls/swapon/libswapon.h
-new file mode 100644
-index 0000000..ec810d6
---- /dev/null
-+++ b/testcases/kernel/syscalls/swapon/libswapon.h
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+/* 
-+ * Contains common content for all swapon tests
-+ */
-+
-+#ifndef __LIBSWAPON_H__
-+#define __LIBSWAPON_H__
-+
-+/* 
-+ * Make a swap file
-+ */
-+void make_swapfile(void (cleanup)(void), char *swapfile);
-+
-+#endif /* __LIBSWAPON_H__ */
-diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-index 11a49f9..feefc58 100644
---- a/testcases/kernel/syscalls/swapon/swapon01.c
-+++ b/testcases/kernel/syscalls/swapon/swapon01.c
-@@ -81,6 +81,7 @@
- #include "config.h"
- #include "linux_syscall_numbers.h"
- #include "swaponoff.h"
-+#include "libswapon.h"
- 
- static void setup();
- static void cleanup();
-@@ -132,7 +133,6 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test */
- void setup()
- {
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	/* Check whether we are root */
-@@ -154,21 +154,7 @@ void setup()
- 			 "Cannot do swapon on a file located on a nfs filesystem");
- 	}
- 
--	if (!tst_cwd_has_free(65536)) {
--		tst_brkm(TBROK, cleanup,
--			 "Insufficient disk space to create swap file");
--	}
--
--	/*create file */
--	if (system("dd if=/dev/zero of=swapfile01 bs=1024 count=65536 >"
--		   " tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to create file for swap");
--	}
--
--	/* make above file a swap file */
--	if (system("mkswap swapfile01 > tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
--	}
-+	make_swapfile(cleanup, "swapfile01");
- }
- 
- /*
-diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-index d44d6c3..fb8f89d 100644
---- a/testcases/kernel/syscalls/swapon/swapon02.c
-+++ b/testcases/kernel/syscalls/swapon/swapon02.c
-@@ -99,6 +99,7 @@
- #include "config.h"
- #include "linux_syscall_numbers.h"
- #include "swaponoff.h"
-+#include "libswapon.h"
- 
- static void setup();
- static void cleanup();
-@@ -217,36 +218,7 @@ int main(int ac, char **av)
-  */
- int setup01()
- {
--	int pagesize = getpagesize();
--
--	/*create file */
--	if ((strncmp(kmachine, "ia64", 4)) == 0) {
--		if (system
--		    ("dd if=/dev/zero of=swapfile01 bs=1024  count=65536 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else if (pagesize == 65536) {
--		if (system
--		    ("dd if=/dev/zero of=swapfile01 bs=1048  count=655 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else {
--		if (system
--		    ("dd if=/dev/zero of=swapfile01 bs=1048  count=40 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	}
--
--	/* make above file a swap file */
--	if (system("mkswap swapfile01 > tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
--	}
-+	make_swapfile(cleanup, "swapfile01");
- 
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_resm(TWARN, "\"nobody\" user not present. skipping test");
-@@ -293,37 +265,9 @@ int setup02()
-  */
- int setup03()
- {
--	int pagesize = getpagesize();
- 	int res = 0;
- 
--	/*create file */
--	if ((strncmp(kmachine, "ia64", 4)) == 0) {
--		if (system
--		    ("dd if=/dev/zero of=alreadyused bs=1024  count=65536 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else if (pagesize == 65536) {
--		if (system
--		    ("dd if=/dev/zero of=alreadyused bs=1048  count=655 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else {
--		if (system
--		    ("dd if=/dev/zero of=alreadyused bs=1048  count=40 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	}
--
--	/* make above file a swap file */
--	if (system("mkswap alreadyused > tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
--	}
-+	make_swapfile(cleanup, "alreadyused");
- 
- 	/* turn on the swap file */
- 	res = ltp_syscall(__NR_swapon, "alreadyused", 0);
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index 3dbc998..a80e378 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -74,13 +74,13 @@
- #include "config.h"
- #include "linux_syscall_numbers.h"
- #include "swaponoff.h"
-+#include "libswapon.h"
- 
- void setup();
- void cleanup();
- int setup_swap();
- int clean_swap();
- int check_and_swapoff(char *filename);
--int create_swapfile(char *swapfile, int bs, int count);
- 
- char *TCID = "swapon03";
- int TST_TOTAL = 1;
-@@ -208,8 +208,7 @@ int setup_swap()
- 	pid_t pid;
- 	int j, fd;		/*j is loop counter, fd is file descriptor */
- 	int status;		/* used for fork */
--	int res = 0, pagesize = getpagesize();
--	int bs, count;
-+	int res = 0;
- 	char filename[15];	/* array to store new filename */
- 	char buf[BUFSIZ + 1];	/* temp buffer for reading /proc/swaps */
- 
-@@ -254,18 +253,6 @@ int setup_swap()
- 		swapfiles = MAX_SWAPFILES;
- 	}
- 
--	/* args for dd */
--	if ((strncmp(kmachine, "ia64", 4)) == 0) {
--		bs = 1024;
--		count = 1024;
--	} else if (pagesize == 65536) {
--		bs = 1048;
--		count = 655;
--	} else {
--		bs = 1048;
--		count = 40;
--	}
--
- 	pid = FORK_OR_VFORK();
- 	if (pid == 0) {
- 		/*create and turn on remaining swapfiles */
-@@ -279,10 +266,7 @@ int setup_swap()
- 			}
- 
- 			/* Create the swapfile */
--			if (create_swapfile(filename, bs, count) < 0) {
--				printf("Failed to create swapfile");
--				exit(1);
--			}
-+			make_swapfile(cleanup, filename);
- 
- 			/* turn on the swap file */
- 			res = ltp_syscall(__NR_swapon, filename, 0);
-@@ -307,59 +291,14 @@ int setup_swap()
- 	}
- 
- 	/* Create all needed extra swapfiles for testing */
--	for (j = 0; j < testfiles; j++) {
--		if (create_swapfile(swap_testfiles[j].filename, bs, count) < 0) {
--			tst_resm(TWARN,
--				 "Failed to create swapfiles for the test");
--			exit(1);
--		}
--	}
-+	for (j = 0; j < testfiles; j++)
-+		make_swapfile(cleanup, swap_testfiles[j].filename);
- 
- 	return 0;
- 
- }
- 
- /***************************************************************
-- * create_swapfile() - Create a swap file
-- ***************************************************************/
--int create_swapfile(char *swapfile, int bs, int count)
--{
--	char cmd_buffer[256];
--
--	/* prepare the path string for dd command */
--	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
--		     "dd if=/dev/zero of=%s bs=%d "
--		     "count=%d > tmpfile 2>&1", swapfile, bs, count) < 0) {
--		tst_resm(TWARN,
--			 "sprintf() failed to create the command string");
--
--		return -1;
--	}
--
--	if (system(cmd_buffer) != 0) {
--		tst_resm(TWARN, "dd command failed to create file via "
--			 "command: %s", cmd_buffer);
--		return -1;
--	}
--
--	/* make the file swapfile */
--	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
--		     "mkswap %s > tmpfile 2>&1", swapfile) < 0) {
--		tst_resm(TWARN,
--			 "snprintf() failed to create mkswap command string");
--		return -1;
--	}
--
--	if (system(cmd_buffer) != 0) {
--		tst_resm(TWARN, "failed to make swap file %s via command %s",
--			 swapfile, cmd_buffer);
--		return -1;
--	}
--
--	return 0;
--}
--
--/***************************************************************
-  * clean_swap() - clearing all turned on swapfiles
-  ***************************************************************/
- int clean_swap()
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
