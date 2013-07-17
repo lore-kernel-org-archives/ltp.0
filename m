@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Uw3qZ-0006wW-MS
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 05:18:47 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1UzK8S-0005xF-2X
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jul 2013 05:18:44 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uw3qW-00061y-Q7
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 05:18:47 +0000
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UzK8Q-0001Yt-Db
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jul 2013 05:18:44 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r685IaRP014478
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Jul 2013 13:18:36 +0800
-Message-ID: <51DA4B63.9010700@cn.fujitsu.com>
-Date: Mon, 08 Jul 2013 13:17:23 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6H5ITcP021926
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Jul 2013 13:18:34 +0800
+Message-ID: <51E628D6.4030002@cn.fujitsu.com>
+Date: Wed, 17 Jul 2013 13:17:10 +0800
 From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH 1/2 v2] mount/mount03.c: clean up
+References: <51E6272B.3020509@cn.fujitsu.com>
+In-Reply-To: <51E6272B.3020509@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2] quotactl/quotactl02.c: create a case to test
+ basic flags of quotactl(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,331 +34,313 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: LTP list <ltp-list@lists.sourceforge.net>
 
 
-Clean up mount03.c:
-    xxx func() -> xxx func(void)
-
-    clean up setup()
-
+Test basic xqm-related flags of quotactl() syscall.
 
 Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/mount/mount03.c | 179 +++++-------------------------
- 1 file changed, 27 insertions(+), 152 deletions(-)
+ runtest/syscalls                                |   1 +
+ testcases/kernel/syscalls/.gitignore            |   1 +
+ testcases/kernel/syscalls/quotactl/quotactl02.c | 258 ++++++++++++++++++++++++
+ 3 files changed, 260 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl02.c
 
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index b1aa71f..a4c065a 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -16,15 +16,7 @@
-  */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 0ce3679..bf5da76 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -769,6 +769,7 @@ pwrite03_64 pwrite03_64
+ pwrite04_64 pwrite04_64
 
- /*
-- *    EXECUTED BY	: root / superuser
-- *
-- *    TEST TITLE	: Test for checking mount(2) flags
-- *
-- *    TEST CASE TOTAL	: 6
-- *
-- *    AUTHOR		: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
-- *
-- *    DESCRIPTION
-+ * DESCRIPTION
-  *	Check for basic mount(2) system call flags.
-  *
-  *	Verify that mount(2) syscall passes for each flag setting and validate
-@@ -35,30 +27,7 @@
-  *	4) MS_SYNCHRONOUS - writes are synced at once.
-  *	5) MS_REMOUNT - alter flags of a mounted FS.
-  *	6) MS_NOSUID - ignore suid and sgid bits.
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Create a mount point.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	  Loop if the proper options are given.
-- *	  Execute mount system call for each flag
-- *	  Validate each flag setting. if validation fails
-- *		Delete the mount point.
-- *		Log the errno and Issue a FAIL message.
-- *	  Delete the mount point.
-- *	  Otherwise, Issue a PASS message.
-- *
-- *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
-- *	  Delete the temporary directory(s)/file(s) created.
-- *
-- * RESTRICTIONS
-- *	test must run with the -D option
-- *	test doesn't support -c option to run it in parallel, as mount
-- *	syscall is not supposed to run in parallel.
-- *****************************************************************************/
+ quotactl01 quotactl01
++quotactl02 quotactl02 -D XFS_DEVICE
+
+ read01 read01
+ read02 read02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index f7e4ce0..7bf341f 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -633,6 +633,7 @@
+ /pwrite/pwrite04
+ /pwrite/pwrite04_64
+ /quotactl/quotactl01
++/quotactl/quotactl02
+ /read/read01
+ /read/read02
+ /read/read03
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl02.c b/testcases/kernel/syscalls/quotactl/quotactl02.c
+new file mode 100644
+index 0000000..bd21c37
+--- /dev/null
++++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
+@@ -0,0 +1,258 @@
++/*
++ * Copyright (c) 2013 Fujitsu Ltd.
++ * Author: DAN LI <li.dan@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 + */
-
- #ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-@@ -73,14 +42,15 @@
- #include <fcntl.h>
- #include <pwd.h>
- #include <unistd.h>
 +
- #include "test.h"
- #include "usctest.h"
++/*
++ * Description:
++ *	This tests basic flags of quotactl() syscall:
++ *	1) Q_XQUOTAOFF - Turn off quotas for an XFS file system.
++ *	2) Q_XQUOTAON - Turn on quotas for an XFS file system.
++ *	3) Q_XGETQUOTA - Get disk quota limits and current usage for user id.
++ *	4) Q_XSETQLIM - Set disk quota limits for user id.
++ *	5) Q_XGETQSTAT - Get XFS file system specific quota information.
++ */
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
++#include "config.h"
++#include <fcntl.h>
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <stdio.h>
++#include <errno.h>
++#include <sys/mount.h>
++#include <linux/fs.h>
++#include <sys/types.h>
++
++#if defined(HAVE_XFS_QUOTA)
++#include <xfs/xqm.h>
++#else
++#define BROKEN_XFS_QUOTA 1
++#endif
++
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
 +#include "safe_macros.h"
-
- static void help(void);
- static void setup(void);
- static void cleanup(void);
- static int test_rwflag(int, int);
--static int setup_uid(void);
-
- char *TCID = "mount03";
- int TST_TOTAL = 6;
-@@ -92,9 +62,9 @@ int TST_TOTAL = 6;
- 			 S_IXGRP|S_IROTH|S_IXOTH)
- #define SUID_MODE	(S_ISUID|S_IRUSR|S_IXUSR|S_IXGRP|S_IXOTH)
-
--static char *fs_type;
-+static const char *fs_type = "ext2";
-
--static char mntpoint[20];
-+static const char mntpoint[] = "mntpoint";
- static char *fstype;
- static char *device;
- static int tflag;
-@@ -104,9 +74,7 @@ static int fildes;
- static char write_buffer[BUFSIZ];
- static char read_buffer[BUFSIZ];
- static char path_name[PATH_MAX];
--static char testhome_path[PATH_MAX];
- static char file[PATH_MAX];
--static char *cmd = "cp";
-
- long rwflags[] = {
- 	MS_RDONLY,
-@@ -138,21 +106,9 @@ int main(int argc, char *argv[])
- 			 "you must specify the device used for mounting with -D "
- 			 "option");
-
--	if (tflag) {
--		fs_type = malloc(strlen(fstype) + 1);
--		if (fs_type == NULL)
--			tst_brkm(TBROK | TERRNO, NULL, "malloc failed");
-+	if (tflag)
-+		fs_type = fstype;
-
--		fs_type[strlen(fstype)] = '\0';
--		strncpy(fs_type, fstype, strlen(fstype));
--	} else {
--		fs_type = malloc(strlen(DEFAULT_FSTYPE) + 1);
--		if (fs_type == NULL)
--			tst_brkm(TBROK | TERRNO, NULL, "malloc failed");
--
--		strncpy(fs_type, DEFAULT_FSTYPE, strlen(DEFAULT_FSTYPE));
--		fs_type[strlen(DEFAULT_FSTYPE)] = '\0';
--	}
-
- 	if (STD_COPIES != 1) {
- 		tst_resm(TINFO, "-c option has no effect for this testcase - "
-@@ -169,11 +125,9 @@ int main(int argc, char *argv[])
-
- 		for (i = 0; i < TST_TOTAL; ++i) {
-
--			/* Call mount(2) */
- 			TEST(mount(device, mntpoint, fs_type, rwflags[i],
- 				   NULL));
-
--			/* check return code */
- 			if (TEST_RETURN != 0) {
- 				tst_resm(TFAIL | TTERRNO, "mount(2) failed");
- 				continue;
-@@ -203,12 +157,12 @@ int main(int argc, char *argv[])
-  * test_rwflag(int i, int cnt)
-  * Validate the mount system call for rwflags.
-  */
--
- int test_rwflag(int i, int cnt)
- {
- 	int ret, fd, pid, status;
- 	char nobody_uid[] = "nobody";
- 	struct passwd *ltpuser;
-+	struct stat setuid_test_stat;
-
- 	switch (i) {
- 	case 0:
-@@ -337,21 +291,23 @@ int test_rwflag(int i, int cnt)
- 	case 5:
- 		/* Validate MS_NOSUID flag of mount call */
-
--		if (setup_uid() != 0) {
--			tst_resm(TBROK | TERRNO, "setup_uid failed");
--			return 1;
--		}
-+		snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
-+		SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
 +
-+		if (stat(file, &setuid_test_stat) < 0)
-+			tst_brkm(TBROK, cleanup, "stat for setuid_test failed");
++#define USRQCMD(cmd)	((cmd) << 8)
++#define RTBLIMIT	2000
 +
-+		if (setuid_test_stat.st_mode != SUID_MODE &&
-+		    chmod(file, SUID_MODE) < 0)
-+			tst_brkm(TBROK, cleanup,
-+				 "setuid for setuid_test failed");
++char *TCID = "quotactl02";
++int TST_TOTAL = 5;
 +
- 		pid = fork();
- 		switch (pid) {
- 		case -1:
- 			tst_resm(TBROK | TERRNO, "fork failed");
- 			return 1;
- 		case 0:
--			snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
--			if (chmod(file, SUID_MODE) != 0)
--				tst_resm(TWARN, "chmod(%s, %#o) failed",
--					 file, SUID_MODE);
--
- 			ltpuser = getpwnam(nobody_uid);
- 			if (setreuid(ltpuser->pw_uid, ltpuser->pw_uid) == -1)
- 				tst_resm(TWARN | TERRNO,
-@@ -374,68 +330,18 @@ int test_rwflag(int i, int cnt)
- 	return 0;
- }
-
--/* setup_uid() - performs setup for NOUID test */
--int setup_uid()
-+void setup(void)
- {
--	int pid, status;
--	char command[PATH_MAX];
--
--	pid = fork();
--	switch (pid) {
--	case -1:
--		tst_resm(TWARN | TERRNO, "fork failed");
--		return 1;
--	case 0:
--		/* Put command into string */
--		sprintf(command, "%s %s %s", cmd, testhome_path, path_name);
--
--		/* Run command to cp file to right spot */
--		if (system(command) == 0)
--			execlp(file, basename(file), NULL);
--		else
--			printf("call to %s failed\n", command);
--
--		exit(1);
--	default:
--		waitpid(pid, &status, 0);
--		if (WIFEXITED(status)) {
--			return WEXITSTATUS(status);
--		} else if (WIFSIGNALED(status)) {
--			return WTERMSIG(status);
--		} else {
--			/* Should be 0. */
--			assert(status == 0);
--			return 0;
--		}
--	}
--}
--
--void setup()
--{
--	int fd;
- 	char path[PATH_MAX];
--	char *test_home;
--	struct stat setuid_test_stat;
-
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
-
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		free(fs_type);
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
++#ifndef BROKEN_XFS_QUOTA
++static void func_test(int i);
++static void setup(void);
++static void cleanup(void);
++static void help(void);
++
++static int dflag;
++static int uid = -1;
++static char dev[PATH_MAX];
++static char *block_dev;
++static struct fs_disk_quota dquota;
++static struct fs_quota_stat qstat;
++static unsigned int qflag = XFS_QUOTA_UDQ_ENFD;
++static const char mntpoint[] = "mnt_point";
++
++static option_t options[] = {
++	{"D:", &dflag, &block_dev},
++	{NULL, NULL, NULL},
++};
++
++static struct test_case_t {
++	int cmd;
++	const char *dev;
++	int *id;
++	void *addr;
++} TC[] = {
++	{Q_XQUOTAOFF, dev, &uid, &qflag},
++	{Q_XQUOTAON, dev, &uid, &qflag},
++	{Q_XGETQUOTA, dev, &uid, &dquota},
++	{Q_XSETQLIM, dev, &uid, &dquota},
++	{Q_XGETQSTAT, dev, &uid, &qstat},
++};
++
++int main(int argc, char *argv[])
++{
++	int i;
++	int lc;
++	char *msg;
++
++	msg = parse_opts(argc, argv, options, &help);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	if (!dflag)
++		tst_brkm(TBROK, NULL,
++			 "you must specify the device used for mounting with "
++			 "the -D option");
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++) {
++
++			TEST(ltp_syscall(__NR_quotactl,
++					 USRQCMD(TC[i].cmd), TC[i].dev,
++					 *TC[i].id, TC[i].addr));
++
++			if (TEST_RETURN != 0)
++				tst_resm(TFAIL | TERRNO,
++					 "cmd=0x%x failed", TC[i].cmd);
++
++			if (STD_FUNCTIONAL_TEST)
++				func_test(i);
++			else
++				tst_resm(TPASS,
++					 "quotactl call succeeded");
++
++		}
++	}
++
++	cleanup();
++
++	tst_exit();
++
++}
++
++void func_test(int i)
++{
++	int ret;
++
++	switch (i) {
++	case 0:
++		/* Validate Q_XQUOTAOFF flag of quotactl call */
++		ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
++				  TC[i].dev, *TC[i].id, &qstat);
++		if (ret != 0)
++			tst_brkm(TBROK | TERRNO, cleanup,
++				 "fail to get quota stat");
++
++		if (qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
++			tst_resm(TFAIL, "enforcement is not off");
++			return;
++		}
++
++		tst_resm(TPASS, "enforcement is off");
++		break;
++
++	case 1:
++		/* Validate Q_XQUOTAON flag of quotactl call */
++		ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
++				  TC[i].dev, *TC[i].id, &qstat);
++		if (ret != 0)
++			tst_brkm(TBROK | TERRNO, cleanup,
++				 "fail to get quota stat");
++
++		if (!(qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
++			tst_resm(TFAIL, "enforcement is off");
++			return;
++		}
++
++		tst_resm(TPASS, "enforcement is on");
++		break;
++
++	case 2:
++		/* Validate Q_XGETQUOTA flag of quotactl call */
++		if (!(dquota.d_flags & XFS_USER_QUOTA)) {
++			tst_resm(TFAIL, "get incorrect quota type");
++			return;
++		}
++
++		/* for case3 */
++		dquota.d_rtb_hardlimit = RTBLIMIT;
++		dquota.d_fieldmask = FS_DQ_LIMIT_MASK;
++
++		tst_resm(TPASS, "get the right quota type");
++		break;
++
++	case 3:
++		/* Validate Q_XSETQLIM flag of quotactl call */
++		ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQUOTA),
++				  TC[i].dev, *TC[i].id, &dquota);
++		if (ret != 0)
++			tst_brkm(TFAIL | TERRNO, NULL,
++				 "fail to get quota information");
++
++		if (dquota.d_rtb_hardlimit != RTBLIMIT) {
++			tst_resm(TFAIL, "limit on RTB, except %lu get %lu",
++				 (uint64_t)RTBLIMIT,
++				 (uint64_t)dquota.d_rtb_hardlimit);
++			return;
++		}
++
++		tst_resm(TPASS, "quotactl works fine with Q_XSETQLIM");
++		break;
++
++	case 4:
++		/* Validate Q_XGETQSTAT flag of quotactl call */
++		if (qstat.qs_version != FS_QSTAT_VERSION) {
++			tst_resm(TFAIL, "get incorrect qstat version");
++			return;
++		}
++
++		tst_resm(TPASS, "get correct qstat version");
++		break;
++
++	default:
++		tst_brkm(TBROK, cleanup, "Got unexpected index");
++	}
++
++}
++
++void setup()
++{
++
 +	tst_require_root(NULL);
-
- 	tst_tmpdir();
-
--	test_home = get_current_dir_name();
--
--	sprintf(mntpoint, "mnt_%d", getpid());
--
--	if (mkdir(mntpoint, DIR_MODE))
--		tst_brkm(TBROK | TERRNO, cleanup, "mkdir(%s, %#o) failed",
--			 mntpoint, DIR_MODE);
-+	SAFE_MKDIR(cleanup, mntpoint, DIR_MODE);
-
--	/* Get the current working directory of the process */
- 	if (getcwd(path_name, sizeof(path_name)) == NULL)
- 		tst_brkm(TBROK, cleanup, "getcwd failed");
-
-@@ -443,53 +349,22 @@ void setup()
- 		tst_brkm(TBROK, cleanup, "chmod(%s, %#o) failed",
- 			 path_name, DIR_MODE);
-
--	snprintf(file, PATH_MAX, "%s/setuid_test", path_name);
--	fd = open(file, O_CREAT | O_TRUNC, S_IRWXU);
--	if (fd == -1)
--		tst_brkm(TBROK, cleanup, "open file failed");
--	close(fd);
--
--	if (stat(file, &setuid_test_stat) < 0) {
--		tst_brkm(TBROK, cleanup, "stat for setuid_test failed");
--	} else {
--		if ((setuid_test_stat.st_uid || setuid_test_stat.st_gid) &&
--		    chown(file, 0, 0) < 0)
--			tst_brkm(TBROK, cleanup,
--				 "chown for setuid_test failed");
--
--		if (setuid_test_stat.st_mode != SUID_MODE &&
--		    chmod(file, SUID_MODE) < 0)
--			tst_brkm(TBROK, cleanup,
--				 "setuid for setuid_test failed");
--	}
--
--	/*
--	 * under temporary directory
--	 */
- 	strncpy(path, path_name, PATH_MAX);
- 	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
--	strcpy(testhome_path, test_home);
--	strcat(testhome_path, "/setuid_test");
-
- 	TEST_PAUSE;
--
- }
-
--void cleanup()
-+void cleanup(void)
- {
--	free(fs_type);
--
- 	TEST_CLEANUP;
-
- 	tst_rmdir();
- }
-
--/*
-- * issue a help message
-- */
--void help()
++
++	TEST_PAUSE;
++
++	tst_tmpdir();
++
++	SAFE_MKDIR(cleanup, mntpoint, 0755);
++
++	uid = 0;
++	strncpy(dev, block_dev, PATH_MAX);
++
++	if (mount(dev, mntpoint, "xfs", 0, "uquota") < 0)
++		tst_brkm(TFAIL | TERRNO, NULL, "mount(2) fail");
++
++}
++
++void cleanup()
++{
++	if (umount(mntpoint) < 0)
++		tst_resm(TFAIL | TERRNO, "umount(2) fail");
++
++	TEST_CLEANUP;
++	tst_rmdir();
++}
++
 +void help(void)
- {
--	printf("-T type	  : specifies the type of filesystem to be mounted."
--	       " Default ext2.\n");
-+	printf("-T type	  : specifies the type of filesystem to be mounted. "
-+	       "Default ext2.\n");
- 	printf("-D device : device used for mounting.\n");
- }
++{
++	printf("-D device : device used for mounting.\n");
++}
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "This system doesn't support xfs quota");
++}
++#endif
 -- 
 1.8.1
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
