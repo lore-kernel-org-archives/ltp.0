@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Utbpd-0004ZJ-QN
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 10:59:41 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Utbpb-0005a3-UH
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jul 2013 10:59:41 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r61AxWh2017450
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Jul 2013 18:59:32 +0800
-Message-ID: <51D160D2.4070806@cn.fujitsu.com>
-Date: Mon, 01 Jul 2013 18:58:26 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] mount/mount03.c: Test feature MS_NOATIME of mount(2)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1V06nP-0000N2-W3
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jul 2013 09:16:16 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V06nO-00057I-1b
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jul 2013 09:16:15 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r6J9G6Eu021234
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jul 2013 09:16:07 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r6J9G5Ld019402
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jul 2013 09:16:06 GMT
+Received: from abhmt112.oracle.com (abhmt112.oracle.com [141.146.116.64])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r6J9G5Hw029686
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jul 2013 09:16:05 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri, 19 Jul 2013 13:15:52 +0400
+Message-Id: <1374225352-16396-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 1/2] tst_run_cmd: added support for stdout and stderr
+	redirection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,121 +37,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
 
+From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Additional test for features MS_NOATIME.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/mount/mount03.c | 47 +++++++++++++++++++++++++++++--
- 1 file changed, 45 insertions(+), 2 deletions(-)
+ include/test.h    |    9 ++++++++-
+ lib/tst_run_cmd.c |   20 ++++++++++++++++++--
+ 2 files changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index b1aa71f..370b880 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -20,7 +20,7 @@
+diff --git a/include/test.h b/include/test.h
+index a76fafc..f294b16 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -219,8 +219,15 @@ long tst_ncpus_max(void);
+  * @argv: a list of two (at least program name + NULL) or more pointers that
+  * represent the argument list to the new program. The array of pointers
+  * must be terminated by a NULL pointer.
++ * @stdout_path: path where to redirect stdout. Set NULL if redirection is
++ * not needed.
++ * @stderr_path: path where to redirect stderr. Set NULL if redirection is
++ * not needed.
+  */
+-void tst_run_cmd(void (cleanup_fn)(void), char *const argv[]);
++void tst_run_cmd(void (cleanup_fn)(void),
++		char *const argv[],
++		const char *stdout_path,
++		const char *stderr_path);
+ 
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
+index 93fe2d6..c54c650 100644
+--- a/lib/tst_run_cmd.c
++++ b/lib/tst_run_cmd.c
+@@ -19,12 +19,16 @@
   *
-  *    TEST TITLE	: Test for checking mount(2) flags
-  *
-- *    TEST CASE TOTAL	: 6
-+ *    TEST CASE TOTAL	: 7
-  *
-  *    AUTHOR		: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
-  *
-@@ -35,6 +35,7 @@
-  *	4) MS_SYNCHRONOUS - writes are synced at once.
-  *	5) MS_REMOUNT - alter flags of a mounted FS.
-  *	6) MS_NOSUID - ignore suid and sgid bits.
-+ *	7) MS_NOATIME - do not update access times.
-  *
-  *	Setup:
-  *	  Setup signal handling.
-@@ -83,7 +84,7 @@ static int test_rwflag(int, int);
- static int setup_uid(void);
-
- char *TCID = "mount03";
--int TST_TOTAL = 6;
-+int TST_TOTAL = 7;
-
- #define DEFAULT_FSTYPE	"ext2"
- #define TEMP_FILE	"temp_file"
-@@ -115,6 +116,7 @@ long rwflags[] = {
- 	MS_SYNCHRONOUS,
- 	MS_RDONLY,
- 	MS_NOSUID,
-+	MS_NOATIME,
- };
-
- static option_t options[] = {
-@@ -208,6 +210,8 @@ int test_rwflag(int i, int cnt)
+  */
+ 
++#include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <unistd.h>
+ #include "test.h"
+ 
+-void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
++void tst_run_cmd(void (cleanup_fn)(void),
++		char *const argv[],
++		const char *stdout_path,
++		const char *stderr_path)
  {
- 	int ret, fd, pid, status;
- 	char nobody_uid[] = "nobody";
-+	time_t atime;
-+	struct stat file_stat;
- 	struct passwd *ltpuser;
-
- 	switch (i) {
-@@ -370,6 +374,45 @@ int test_rwflag(int i, int cnt)
- 					return 1;
- 			}
- 		}
-+	case 6:
-+		/* Validate MS_NOATIME flag of mount call */
-+
-+		snprintf(file, PATH_MAX, "%satime", path_name);
-+		fd = open(file, O_CREAT | O_RDWR, S_IRWXU);
-+		if (fd == -1) {
-+			tst_resm(TWARN | TERRNO, "opening %s failed", file);
-+			return 1;
-+		}
-+
-+		if (write(fd, "TEST_MS_NOATIME", 15) != 15) {
-+			tst_resm(TWARN | TERRNO, "write %s failed", file);
-+			return 1;
-+		}
-+
-+		if (fstat(fd, &file_stat) == -1) {
-+			tst_resm(TWARN | TERRNO, "stat %s failed #1", file);
-+			return 1;
-+		}
-+
-+		atime = file_stat.st_atime;
-+
-+		if (read(fd, NULL, 20) == -1) {
-+			tst_resm(TWARN | TERRNO, "read %s failed", file);
-+			return 1;
-+		}
-+
-+		if (fstat(fd, &file_stat) == -1) {
-+			tst_resm(TWARN | TERRNO, "stat %s failed #2", file);
-+			return 1;
-+		}
-+
-+		close(fd);
-+
-+		if (file_stat.st_atime != atime) {
-+			tst_resm(TWARN, "access time is updated");
-+			return 1;
-+		}
-+		return 0;
+ 	if (argv == NULL || argv[0] == NULL) {
+ 		tst_brkm(TBROK, cleanup_fn,
+@@ -36,8 +40,20 @@ void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn, "vfork failed at %s:%d",
+ 			__FILE__, __LINE__);
  	}
- 	return 0;
+-	if (!pid)
++	if (!pid) {
++		/* redirecting stdout and stderr if needed */
++		if ((stdout_path != NULL) &&
++				(freopen(stdout_path, "a", stdout) == NULL))
++			tst_resm(TWARN | TERRNO, "freopen failed at %s:%d",
++					__FILE__, __LINE__);
++
++		if ((stderr_path != NULL) &&
++				(freopen(stderr_path, "a", stderr) == NULL))
++			tst_resm(TWARN | TERRNO, "freopen failed at %s:%d",
++					__FILE__, __LINE__);
++
+ 		_exit(execvp(argv[0], argv));
++	}
+ 
+ 	int ret = -1;
+ 	if (waitpid(pid, &ret, 0) != pid) {
+-- 
+1.7.1
+
+
+From 5cc0b5ffd90736a780bd487947f804ed2ab4d03d Mon Sep 17 00:00:00 2001
+From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri, 19 Jul 2013 13:02:55 +0400
+Subject: [PATCH 2/2] lib/tst_module.c: modification for updated tst_run_cmd specification
+
+Modified lib/tst_module.c:
+* for updated tst_run_cmd specification
+* to hide gcc warning "initialization discards qualifiers from pointer target type"
+
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ lib/tst_module.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index 832da27..4871005 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -94,12 +94,12 @@ void tst_module_load(void (cleanup_fn)(void),
+ 	for (i = offset; i < size; ++i)
+ 		mod_argv[i] = argv[i - offset];
+ 
+-	tst_run_cmd(cleanup_fn, mod_argv);
++	tst_run_cmd(cleanup_fn, mod_argv, NULL, NULL);
+ 	free(mod_path);
+ }
+ 
+ void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
+ {
+-	char *const argv[] = { "rmmod", mod_name, NULL };
+-	tst_run_cmd(cleanup_fn, argv);
++	char *const argv[] = { "rmmod", (char *) mod_name, NULL };
++	tst_run_cmd(cleanup_fn, argv, NULL, NULL);
  }
 -- 
-1.8.1
+1.7.1
+
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
