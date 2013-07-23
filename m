@@ -1,29 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lingyun.xie@bj.cs2c.com.cn>) id 1UxBlV-0000On-Ti
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 07:58:14 +0000
-Received: from smtpwcom.263xmail.com ([63.217.87.10])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UxBlU-0005Wd-1t
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jul 2013 07:58:13 +0000
-Received: from mail-pa0-f52.google.com (localhost [127.0.0.1])
-	by smtpwcom.263xmail.com (Postfix) with ESMTP id 3708254E
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1V1TFv-0006t7-UW
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 03:27:20 +0000
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1V1TFt-0003xY-FS
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 03:27:19 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so3779926pad.22
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Jul 2013 15:57:58 +0800 (CST)
-Received: by mail-pa0-f52.google.com with SMTP id kq13so7540890pab.11
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 11 Jul 2013 00:58:03 -0700 (PDT)
+	Mon, 22 Jul 2013 20:27:11 -0700 (PDT)
+Date: Tue, 23 Jul 2013 11:27:03 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+Message-ID: <20130723032703.GG3004@localhost.localdomain>
+References: <1374548876-24829-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <51DD99C2.9030205@casparzhang.com>
-References: <1373454200-8630-1-git-send-email-lingyun.xie@bj.cs2c.com.cn>
-	<51DD99C2.9030205@casparzhang.com>
-From: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
-Date: Thu, 11 Jul 2013 15:57:22 +0800
-Message-ID: <CALGiYOFbvnDncG5yQLt_bJ=_GLv5juAqSMabJRhh9zcp9dTUuQ@mail.gmail.com>
-Content-Type: multipart/mixed; boundary=bcaec54307a0fa7cea04e137c008
-Subject: Re: [LTP] [PATCH 1/2 v3] xinetd/xinetd_tests.sh: cleanup tabs
+Content-Disposition: inline
+In-Reply-To: <1374548876-24829-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH] testcases/network/sctp: update sctp test to
+ upstream version 1.0.15
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,297 +29,516 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
-
---bcaec54307a0fa7cea04e137c008
-Content-Type: multipart/alternative; boundary=bcaec54307a0fa7ce704e137c006
-
---bcaec54307a0fa7ce704e137c006
-Content-Type: text/plain; charset=ISO-8859-1
-
-The attachment patch is the modified version of the indentation inside the
-braces.
-
-Without any other changes of version 3.
-
-
-
-Thanks,
-Lingyun Xie
-
-
-2013/7/11 Caspar Zhang <caspar@casparzhang.com>
-
-> On 07/10/2013 07:03 PM, Xie Lingyun wrote:
->
->> +defaults
->> +{
->> +instances      = 25
->> +log_type       = FILE /var/log/servicelog
->> +log_on_success = HOST PID
->> +log_on_failure = HOST RECORD
->> +disabled       = telnet
->> +}
->>
->
-> Generally looks good except here.
->
-> better give a 4-space indentation inside the braces.
->
-> Caspar
->
->
->
-
---bcaec54307a0fa7ce704e137c006
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:simsun,s=
-erif;color:rgb(0,0,0)">The=A0attachment patch is the modified version of th=
-e indentation inside the braces.</div><div class=3D"gmail_default" style=3D=
-"font-family:simsun,serif;color:rgb(0,0,0)">
-
-<br></div><div class=3D"gmail_default" style=3D"font-family:simsun,serif;co=
-lor:rgb(0,0,0)">Without any other changes of version 3.</div></div><div cla=
-ss=3D"gmail_extra"><br clear=3D"all"><div><div dir=3D"ltr"><br><div><br></d=
-iv><div>
-
-Thanks,<br>Lingyun Xie</div></div></div>
-<br><br><div class=3D"gmail_quote">2013/7/11 Caspar Zhang <span dir=3D"ltr"=
->&lt;<a href=3D"mailto:caspar@casparzhang.com" target=3D"_blank">caspar@cas=
-parzhang.com</a>&gt;</span><br><blockquote class=3D"gmail_quote" style=3D"m=
-argin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
-
-<div class=3D"im">On 07/10/2013 07:03 PM, Xie Lingyun wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">
-+defaults<br>
-+{<br>
-+instances =A0 =A0 =A0=3D 25<br>
-+log_type =A0 =A0 =A0 =3D FILE /var/log/servicelog<br>
-+log_on_success =3D HOST PID<br>
-+log_on_failure =3D HOST RECORD<br>
-+disabled =A0 =A0 =A0 =3D telnet<br>
-+}<br>
-</blockquote>
-<br></div>
-Generally looks good except here.<br>
-<br>
-better give a 4-space indentation inside the braces.<span class=3D"HOEnZb">=
-<font color=3D"#888888"><br>
-<br>
-Caspar<br>
-<br>
-<br>
-</font></span></blockquote></div><br></div>
-
---bcaec54307a0fa7ce704e137c006--
-
---bcaec54307a0fa7cea04e137c008
-Content-Type: application/octet-stream; 
-	name="0001-xinetd-xinetd_tests.sh-clean-up-tabs.patch"
-Content-Disposition: attachment; 
-	filename="0001-xinetd-xinetd_tests.sh-clean-up-tabs.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hiznusm60
-
-RnJvbSA2N2FiYjRjM2E4MTRmNTQzMTJjNTE4YWUwNDc2OTk3OWM2NTQzNTkxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBYaWUgTGluZ3l1biA8bGluZ3l1bi54aWVAYmouY3MyYy5jb20u
-Y24+CkRhdGU6IFRodSwgMTEgSnVsIDIwMTMgMTU6MTE6NTggKzA4MDAKU3ViamVjdDogW1BBVENI
-IDEvMiB2NF0geGluZXRkL3hpbmV0ZF90ZXN0cy5zaDogY2xlYW4gdXAgdGFicwoKcmVwbGFjZSB0
-YWJzIHdpdGggNCBzcGFjZXMuClRoZSBlY2hvIDw8LUVPRiBsaW5lcyBiZWNvbWUgbm8gaW5kZW50
-YXRpb24uCgpTaWduZWQtb2ZmLWJ5OiBYaWUgTGluZ3l1biA8bGluZ3l1bi54aWVAYmouY3MyYy5j
-b20uY24+Ci0tLQogdGVzdGNhc2VzL25ldHdvcmsveGluZXRkL3hpbmV0ZF90ZXN0cy5zaCB8IDI0
-NiArKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTIzIGlu
-c2VydGlvbnMoKyksIDEyMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvbmV0
-d29yay94aW5ldGQveGluZXRkX3Rlc3RzLnNoIGIvdGVzdGNhc2VzL25ldHdvcmsveGluZXRkL3hp
-bmV0ZF90ZXN0cy5zaAppbmRleCA4M2ViOGE3Li5kODk4YWYwIDEwMDc1NQotLS0gYS90ZXN0Y2Fz
-ZXMvbmV0d29yay94aW5ldGQveGluZXRkX3Rlc3RzLnNoCisrKyBiL3Rlc3RjYXNlcy9uZXR3b3Jr
-L3hpbmV0ZC94aW5ldGRfdGVzdHMuc2gKQEAgLTkwLDQ2ICs5MCw0NiBAQCBpbml0KCkKICAgICBj
-aGtfaWZleGlzdHMgSU5JVCBkaWZmICAgICAgIHx8IHJldHVybiAkUkMKICAgICBjaGtfaWZleGlz
-dHMgSU5JVCB0ZWxuZXQgICAgIHx8IHJldHVybiAkUkMKIAotCSMgQ3JlYXRlIGN1c3RvbSB4aW5l
-dGQuY29uZiBmaWxlLgotCSMgdHN0X3hpbmV0ZC5jb25mLjEgY29uZmlnIGZpbGUgaGFzIHRlbG5l
-dCBzZXJ2aWNlIGRpc2FibGVkLgotCWNhdCA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5jb25mLjEgPDwt
-RU9GIHx8IFJDPSQ/Ci0JZGVmYXVsdHMKLQl7Ci0JCWluc3RhbmNlcyAgICAgID0gMjUKLQkJbG9n
-X3R5cGUgICAgICAgPSBGSUxFIC92YXIvbG9nL3NlcnZpY2Vsb2cKLQkJbG9nX29uX3N1Y2Nlc3Mg
-PSBIT1NUIFBJRAotCQlsb2dfb25fZmFpbHVyZSA9IEhPU1QgUkVDT1JECi0JICAgIGRpc2FibGVk
-ICAgICAgID0gdGVsbmV0Ci0JfQotCUVPRgotCi0JIyB0c3RfeGluZXRkLmNvbmYuMiBjb25maWcg
-ZmlsZSBoYXMgdGVsbmV0IGVuYWJsZWQuCi0JY2F0ID4gJExUUFRNUC90c3RfeGluZXRkLmNvbmYu
-MiA8PC1FT0YgfHwgUkM9JD8KLQlkZWZhdWx0cwotCXsKLQkJaW5zdGFuY2VzICAgICAgPSAyNQot
-CQlsb2dfdHlwZSAgICAgICA9IEZJTEUgL3Zhci9sb2cvc2VydmljZWxvZwotCQlsb2dfb25fc3Vj
-Y2VzcyA9IEhPU1QgUElECi0JCWxvZ19vbl9mYWlsdXJlID0gSE9TVAotCQkjIGRpc2FibGVkICAg
-ICAgID0gdGVsbmV0Ci0JfQotCi0Jc2VydmljZSB0ZWxuZXQKLQl7Ci0gICAgICAgIHNvY2tldF90
-eXBlICAgICA9IHN0cmVhbQotICAgICAgICBwcm90b2NvbCAgICAgICAgPSB0Y3AKLSAgICAgICAg
-d2FpdCAgICAgICAgICAgID0gbm8KLSAgICAgICAgdXNlciAgICAgICAgICAgID0gcm9vdAotICAg
-ICAgICBzZXJ2ZXIgICAgICAgICAgPSAvdXNyL3NiaW4vaW4udGVsbmV0ZAotICAgICAgICBzZXJ2
-ZXJfYXJncyAgICAgPSAtbgotICAgICAgICBub19hY2Nlc3MgICAgICAgPQotICAgIH0KLQlFT0YK
-KyAgICAjIENyZWF0ZSBjdXN0b20geGluZXRkLmNvbmYgZmlsZS4KKyAgICAjIHRzdF94aW5ldGQu
-Y29uZi4xIGNvbmZpZyBmaWxlIGhhcyB0ZWxuZXQgc2VydmljZSBkaXNhYmxlZC4KKyAgICBjYXQg
-PiAkTFRQVE1QL3RzdF94aW5ldGQuY29uZi4xIDw8LUVPRiB8fCBSQz0kPworZGVmYXVsdHMKK3sK
-KyAgICBpbnN0YW5jZXMgICAgICA9IDI1CisgICAgbG9nX3R5cGUgICAgICAgPSBGSUxFIC92YXIv
-bG9nL3NlcnZpY2Vsb2cKKyAgICBsb2dfb25fc3VjY2VzcyA9IEhPU1QgUElECisgICAgbG9nX29u
-X2ZhaWx1cmUgPSBIT1NUIFJFQ09SRAorICAgIGRpc2FibGVkICAgICAgID0gdGVsbmV0Cit9CitF
-T0YKKworICAgICMgdHN0X3hpbmV0ZC5jb25mLjIgY29uZmlnIGZpbGUgaGFzIHRlbG5ldCBlbmFi
-bGVkLgorICAgIGNhdCA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5jb25mLjIgPDwtRU9GIHx8IFJDPSQ/
-CitkZWZhdWx0cworeworICAgIGluc3RhbmNlcyAgICAgID0gMjUKKyAgICBsb2dfdHlwZSAgICAg
-ICA9IEZJTEUgL3Zhci9sb2cvc2VydmljZWxvZworICAgIGxvZ19vbl9zdWNjZXNzID0gSE9TVCBQ
-SUQKKyAgICBsb2dfb25fZmFpbHVyZSA9IEhPU1QKKyAgICAjIGRpc2FibGVkICAgICAgID0gdGVs
-bmV0Cit9CisKK3NlcnZpY2UgdGVsbmV0Cit7CisgICAgc29ja2V0X3R5cGUgICAgID0gc3RyZWFt
-CisgICAgcHJvdG9jb2wgICAgICAgID0gdGNwCisgICAgd2FpdCAgICAgICAgICAgID0gbm8KKyAg
-ICB1c2VyICAgICAgICAgICAgPSByb290CisgICAgc2VydmVyICAgICAgICAgID0gL3Vzci9zYmlu
-L2luLnRlbG5ldGQKKyAgICBzZXJ2ZXJfYXJncyAgICAgPSAtbgorICAgIG5vX2FjY2VzcyAgICAg
-ICA9Cit9CitFT0YKIAogICAgICMgQ3JlYXRlIGV4cGVjdGVkIGZpbGUgd2l0aCB0ZWxuZXQgZGlz
-YWJsZWQuCiAgICAgY2F0ID4gJExUUFRNUC90c3RfeGluZXRkLmV4cC4xIDw8LUVPRiB8fCBSQz0k
-PwotCXRlbG5ldDogVW5hYmxlIHRvIGNvbm5lY3QgdG8gcmVtb3RlIGhvc3Q6IENvbm5lY3Rpb24g
-cmVmdXNlZAotCUVPRgordGVsbmV0OiBVbmFibGUgdG8gY29ubmVjdCB0byByZW1vdGUgaG9zdDog
-Q29ubmVjdGlvbiByZWZ1c2VkCitFT0YKIAogICAgIGlmIFsgJFJDIC1uZSAwIF0KICAgICB0aGVu
-CkBAIC0xMzksMTIgKzEzOSwxMiBAQCBpbml0KCkKICAgICBmaQogCiAgICAgIyBDcmVhdGUgZXhw
-ZWN0ZWQgZmlsZSB3aXRoIHRlbG5ldCBlbmFibGVkLgotCWNhdCA+ICRMVFBUTVAvdHN0X3hpbmV0
-ZC5leHAuMiA8PC1FT0YgfHwgUkM9JD8KLQlUcnlpbmcgMTI3LjAuMC4xLi4uCi0JQ29ubmVjdGVk
-IHRvIGxvY2FsaG9zdCAoMTI3LjAuMC4xKS4KLQlFc2NhcGUgY2hhcmFjdGVyIGlzICdeXScuCi0J
-Q29ubmVjdGlvbiBjbG9zZWQgYnkgZm9yZWlnbiBob3N0LgotCUVPRgorICAgIGNhdCA+ICRMVFBU
-TVAvdHN0X3hpbmV0ZC5leHAuMiA8PC1FT0YgfHwgUkM9JD8KK1RyeWluZyAxMjcuMC4wLjEuLi4K
-K0Nvbm5lY3RlZCB0byBsb2NhbGhvc3QgKDEyNy4wLjAuMSkuCitFc2NhcGUgY2hhcmFjdGVyIGlz
-ICdeXScuCitDb25uZWN0aW9uIGNsb3NlZCBieSBmb3JlaWduIGhvc3QuCitFT0YKIAogICAgIGlm
-IFsgJFJDIC1uZSAwIF0KICAgICB0aGVuCkBAIC0xNjUsMjggKzE2NSwyOCBAQCBpbml0KCkKICMg
-ICAgICAgICAgICAgICAtIG5vbi16ZXJvIG9uIGZhaWx1cmUuCiBjbGVhbnVwKCkKIHsKLQlSQz0w
-Ci0JIyByZXN0b3JlIHRoZSBvcmlnaW5hbCB4aW5ldGQuY29uZiBpZiBhIGJhY2sgdXAgZXhpdHMu
-Ci0JaWYgWyAtZiAvZXRjL3hpbmV0ZC5jb25mLm9yaWcgXQotCXRoZW4KLQkJbXYgL2V0Yy94aW5l
-dGQuY29uZi5vcmlnIC9ldGMveGluZXRkLmNvbmYgXAotCQkJPiAkTFRQVE1QL3RzdF94aW5ldGQu
-ZXJyIDI+JjEgfHwgUkM9JD8KLQkJaWYgWyAkUkMgLW5lIDAgXQotCQl0aGVuCi0JCQl0c3RfcmVz
-IFRJTkZPICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgXAotCQkJIkNMRUFOVVA6IGZhaWxlZCByZXN0
-b3Jpbmcgb3JpZ2luYWwgeGluZXRkLmNvbmYgUkM9JFJDLiBEZXRhaWxzOiIKLQkJZmkKLQotCQlz
-bGVlcCAxcwotCi0JCSMgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZpY2VzCi0JCS9ldGMvaW5pdC5k
-L3hpbmV0ZCByZXN0YXJ0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/Ci0J
-CWlmIFsgJFJDIC1uZSAwIF0KLQkJdGhlbgotCQkJdHN0X3JlcyBUSU5GTyAkTFRQVE1QL3RzdF94
-aW5ldGQuZXJyIFwKLQkJCSJDTEVBTlVQOiBmYWlsZWQgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZp
-Y2VzIFJDPSRSQy4gRGV0YWlsczoiCi0JCWZpCi0JZmkKKyAgICBSQz0wCisgICAgIyByZXN0b3Jl
-IHRoZSBvcmlnaW5hbCB4aW5ldGQuY29uZiBpZiBhIGJhY2sgdXAgZXhpdHMuCisgICAgaWYgWyAt
-ZiAvZXRjL3hpbmV0ZC5jb25mLm9yaWcgXQorICAgIHRoZW4KKyAgICAgICAgbXYgL2V0Yy94aW5l
-dGQuY29uZi5vcmlnIC9ldGMveGluZXRkLmNvbmYgXAorICAgICAgICAgICAgPiAkTFRQVE1QL3Rz
-dF94aW5ldGQuZXJyIDI+JjEgfHwgUkM9JD8KKyAgICAgICAgaWYgWyAkUkMgLW5lIDAgXQorICAg
-ICAgICB0aGVuCisgICAgICAgICAgICB0c3RfcmVzIFRJTkZPICRMVFBUTVAvdHN0X3hpbmV0ZC5l
-cnIgXAorICAgICAgICAgICAgIkNMRUFOVVA6IGZhaWxlZCByZXN0b3Jpbmcgb3JpZ2luYWwgeGlu
-ZXRkLmNvbmYgUkM9JFJDLiBEZXRhaWxzOiIKKyAgICAgICAgZmkKKworICAgICAgICBzbGVlcCAx
-cworCisgICAgICAgICMgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZpY2VzCisgICAgICAgIC9ldGMv
-aW5pdC5kL3hpbmV0ZCByZXN0YXJ0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJD
-PSQ/CisgICAgICAgIGlmIFsgJFJDIC1uZSAwIF0KKyAgICAgICAgdGhlbgorICAgICAgICAgICAg
-dHN0X3JlcyBUSU5GTyAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIFwKKyAgICAgICAgICAgICJDTEVB
-TlVQOiBmYWlsZWQgcmVzdG9yaW5nIG9yaWdpbmFsIHNlcnZpY2VzIFJDPSRSQy4gRGV0YWlsczoi
-CisgICAgICAgIGZpCisgICAgZmkKIAogICAgICMgcmVtb3ZlIGFsbCB0aGUgdGVtcG9yYXJ5IGZp
-bGVzIGNyZWF0ZWQgYnkgdGhpcyB0ZXN0LgogICAgIHRzdF9yZXNtIFRJTkZPICJDTEVBTjogcmVt
-b3ZpbmcgJExUUFRNUCIKQEAgLTIxNCw5ICsyMTQsOSBAQCB0ZXN0MDEoKQogCiAgICAgdHN0X3Jl
-c20gVElORk8gIlRlc3QgIzE6IHJlc3RhcnQgeGluZXRkIHdpdGggdGVsbmV0IGRpc2FibGVkLiIK
-IAotCSMgY3JlYXRlIGEgYmFja3VwIG9mIHRoZSBvcmlnaW5hbCB4aW5ldGQuY29uZiBmaWxlLgot
-CW12IC9ldGMveGluZXRkLmNvbmYgL2V0Yy94aW5ldGQuY29uZi5vcmlnID4gJExUUFRNUC90c3Rf
-eGluZXRkLmVyciAyPiYxIFwKLQkJfHwgUkM9JD8KKyAgICAjIGNyZWF0ZSBhIGJhY2t1cCBvZiB0
-aGUgb3JpZ2luYWwgeGluZXRkLmNvbmYgZmlsZS4KKyAgICBtdiAvZXRjL3hpbmV0ZC5jb25mIC9l
-dGMveGluZXRkLmNvbmYub3JpZyA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgMj4mMSBcCisgICAg
-ICAgIHx8IFJDPSQ/CiAgICAgaWYgWyAkUkMgLW5lIDAgXQogICAgIHRoZW4KICAgICAgICAgdHN0
-X2JyayBUQlJPSyAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIE5VTEwgXApAQCAtMjI0LDkgKzIyNCw5
-IEBAIHRlc3QwMSgpCiAgICAgICAgIHJldHVybiAkUkMKICAgICBmaQogCi0JIyBpbnN0YWxsIHRo
-ZSBuZXcgY29uZmlnIGZpbGUgd2l0aCB0ZWxuZXQgZGlzYWJsZWQuCi0JbXYgJExUUFRNUC90c3Rf
-eGluZXRkLmNvbmYuMSAvZXRjL3hpbmV0ZC5jb25mID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAy
-PiYxIFwKLQkJfHwgUkM9JD8KKyAgICAjIGluc3RhbGwgdGhlIG5ldyBjb25maWcgZmlsZSB3aXRo
-IHRlbG5ldCBkaXNhYmxlZC4KKyAgICBtdiAkTFRQVE1QL3RzdF94aW5ldGQuY29uZi4xIC9ldGMv
-eGluZXRkLmNvbmYgPiAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIDI+JjEgXAorICAgICAgICB8fCBS
-Qz0kPwogICAgIGlmIFsgJFJDIC1uZSAwIF0KICAgICB0aGVuCiAgICAgICAgIHRzdF9icmsgVEJS
-T0sgJExUUFRNUC90c3RfeGluZXRkLmVyciBOVUxMIFwKQEAgLTIzNiwzNiArMjM2LDM2IEBAIHRl
-c3QwMSgpCiAKICAgICB0c3RfcmVzbSBUSU5GTyAiVGVzdCAjMTogbmV3IHhpbmV0ZC5jb25mIGlu
-c3RhbGxlZCB3aXRoIHRlbG5ldCBkaXNhYmxlZC4iCiAKLQlzbGVlcCAxcworICAgIHNsZWVwIDFz
-CiAKLQkjIHJlc3RhcnQgeGluZXRkIHRvIHJlLXN0YXJ0IHRoZSBzZXJ2aWNlcworICAgICMgcmVz
-dGFydCB4aW5ldGQgdG8gcmUtc3RhcnQgdGhlIHNlcnZpY2VzCiAgICAgL2V0Yy9pbml0LmQveGlu
-ZXRkIHJlc3RhcnQgPiAkTFRQVE1QL3RzdF94aW5ldGQub3V0IDI+JjEgfHwgUkM9JD8KICAgICBp
-ZiBbICRSQyAtbmUgMCBdCiAgICAgdGhlbgogICAgICAgICB0c3RfcmVzIFRGQUlMICRMVFBUTVAv
-dHN0X3hpbmV0ZC5vdXQgXAogICAgICAgICJUZXN0ICMxOiB1bmFibGUgdG8gcmVzdGFydCBzZXJ2
-aWNlIHdpdGggdGVsbmV0IGRpc2FibGVkLiBEZXRhaWxzOiIKICAgICAgICAgcmV0dXJuICRSQwot
-CWVsc2UKLQkJIyBldmVuIGlmIHhpbmV0ZCByZXN0YXJ0IGhhcyB6ZXJvIGV4aXQgdmFsdWUsCi0J
-CSMgbWFrZSBjZXJ0YWluIHRoZXJlIHdhcyBubyBmYWlsdXJlLgotCQlncmVwIC1pICJmYWlsIiAk
-TFRQVE1QL3RzdF94aW5ldGQub3V0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJD
-PSQ/Ci0JCWlmIFsgJFJDIC1lcSAwIF0KLQkJdGhlbgotCQkJdHN0X3JlcyBURkFJTCAkTFRQVE1Q
-L3RzdF94aW5ldGQuZXJyIFwKLQkJCQkiVGVzdCAjMTogeGluZXRkIGZhaWxlZCB0byByZXN0YXJ0
-LiBEZXRhaWxzIgotCQkJcmV0dXJuICRSQwotCQllbHNlCi0JCQlSQz0wCi0JCQl0c3RfcmVzbSBU
-SU5GTyBcCi0JCQkJIlRlc3QgIzE6IHhpbmV0ZCByZS1zdGFydGVkIHN1Y2Nlc3NmdWxseSB3aXRo
-IHRlbG5ldCBkaXNhYmxlZC4iCi0JCWZpCi0JZmkKLQotCSMgTm90IGNoZWNraW5nIGZvciBleGl0
-IGNvZGUgZnJvbSB0ZWxuZXQgY29tbWFuZCBiZWNhdXNlIHRlbG5ldCBpcwotCSMgbm90IHRlcm1p
-bmF0ZWQgYnkgdGhlIHRlc3QgZ3JhY2VmdWxseS4KLQllY2hvICIEIiB8IHRlbG5ldCBsb2NhbGhv
-c3QgMj4kTFRQVE1QL3RzdF94aW5ldGQub3V0IDE+L2Rldi9udWxsCi0JZGlmZiAtaXdCICRMVFBU
-TVAvdHN0X3hpbmV0ZC5vdXQgICRMVFBUTVAvdHN0X3hpbmV0ZC5leHAuMSBcCi0JCT4gJExUUFRN
-UC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/CisgICAgZWxzZQorICAgICAgICAjIGV2ZW4g
-aWYgeGluZXRkIHJlc3RhcnQgaGFzIHplcm8gZXhpdCB2YWx1ZSwKKyAgICAgICAgIyBtYWtlIGNl
-cnRhaW4gdGhlcmUgd2FzIG5vIGZhaWx1cmUuCisgICAgICAgIGdyZXAgLWkgImZhaWwiICRMVFBU
-TVAvdHN0X3hpbmV0ZC5vdXQgPiAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIDI+JjEgfHwgUkM9JD8K
-KyAgICAgICAgaWYgWyAkUkMgLWVxIDAgXQorICAgICAgICB0aGVuCisgICAgICAgICAgICB0c3Rf
-cmVzIFRGQUlMICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgXAorICAgICAgICAgICAgICAgICJUZXN0
-ICMxOiB4aW5ldGQgZmFpbGVkIHRvIHJlc3RhcnQuIERldGFpbHMiCisgICAgICAgICAgICByZXR1
-cm4gJFJDCisgICAgICAgIGVsc2UKKyAgICAgICAgICAgIFJDPTAKKyAgICAgICAgICAgIHRzdF9y
-ZXNtIFRJTkZPIFwKKyAgICAgICAgICAgICAgICAiVGVzdCAjMTogeGluZXRkIHJlLXN0YXJ0ZWQg
-c3VjY2Vzc2Z1bGx5IHdpdGggdGVsbmV0IGRpc2FibGVkLiIKKyAgICAgICAgZmkKKyAgICBmaQor
-CisgICAgIyBOb3QgY2hlY2tpbmcgZm9yIGV4aXQgY29kZSBmcm9tIHRlbG5ldCBjb21tYW5kIGJl
-Y2F1c2UgdGVsbmV0IGlzCisgICAgIyBub3QgdGVybWluYXRlZCBieSB0aGUgdGVzdCBncmFjZWZ1
-bGx5LgorICAgIGVjaG8gIgQiIHwgdGVsbmV0IGxvY2FsaG9zdCAyPiRMVFBUTVAvdHN0X3hpbmV0
-ZC5vdXQgMT4vZGV2L251bGwKKyAgICBkaWZmIC1pd0IgJExUUFRNUC90c3RfeGluZXRkLm91dCAg
-JExUUFRNUC90c3RfeGluZXRkLmV4cC4xIFwKKyAgICAgICAgPiAkTFRQVE1QL3RzdF94aW5ldGQu
-ZXJyIDI+JjEgfHwgUkM9JD8KICAgICBpZiBbICRSQyAtbmUgMCBdCiAgICAgdGhlbgogICAgICAg
-ICB0c3RfcmVzIFRGQUlMICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgXApAQCAtMjc0LDkgKzI3NCw5
-IEBAIHRlc3QwMSgpCiAgICAgZmkKIAogICAgIHRzdF9yZXNtIFRJTkZPICJUZXN0ICMxOiByZXN0
-YXJ0IHhpbmV0ZCB3aXRoIHRlbG5ldCBlbmFibGVkLiIKLQkjIGluc3RhbGwgdGhlIHhpbmV0ZCBj
-b25maWcgZmlsZSB3aXRoIHRlbG5ldCBlbmFibGVkLgotCW12ICRMVFBUTVAvdHN0X3hpbmV0ZC5j
-b25mLjIgL2V0Yy94aW5ldGQuY29uZiA+ICRMVFBUTVAvdHN0X3hpbmV0ZC5lcnIgMj4mMSBcCi0J
-CXx8IFJDPSQ/CisgICAgIyBpbnN0YWxsIHRoZSB4aW5ldGQgY29uZmlnIGZpbGUgd2l0aCB0ZWxu
-ZXQgZW5hYmxlZC4KKyAgICBtdiAkTFRQVE1QL3RzdF94aW5ldGQuY29uZi4yIC9ldGMveGluZXRk
-LmNvbmYgPiAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIDI+JjEgXAorICAgICAgICB8fCBSQz0kPwog
-ICAgIGlmIFsgJFJDIC1uZSAwIF0KICAgICB0aGVuCiAgICAgICAgIHRzdF9icmsgVEJST0sgJExU
-UFRNUC90c3RfeGluZXRkLmVyciBOVUxMIFwKQEAgLTI4Niw0NCArMjg2LDQ0IEBAIHRlc3QwMSgp
-CiAKICAgICB0c3RfcmVzbSBUSU5GTyAiVGVzdCAjMTogbmV3IHhpbmV0ZC5jb25mIGluc3RhbGxl
-ZCB3aXRoIHRlbG5ldCBlbmFibGVkLiIKIAotCXNsZWVwIDFzCisgICAgc2xlZXAgMXMKIAotCSMg
-cmVzdGFydCBzZXJ2aWNlcy4KKyAgICAjIHJlc3RhcnQgc2VydmljZXMuCiAgICAgL2V0Yy9pbml0
-LmQveGluZXRkIHJlc3RhcnQgPiAkTFRQVE1QL3RzdF94aW5ldGQub3V0IDI+JjEgfHwgUkM9JD8K
-ICAgICBpZiBbICRSQyAtbmUgMCBdCiAgICAgdGhlbgogICAgICAgICB0c3RfcmVzIFRGQUlMICRM
-VFBUTVAvdHN0X3hpbmV0ZC5vdXQgXAogICAgICAgICAgICAgIlRlc3QgIzE6IHVuYWJsZSB0byBy
-ZXN0YXJ0IHNlcnZpY2VzIHdpdGggdGVsbmV0IGVuYWJsZWQuIERldGFpbHM6IgogICAgICAgICBy
-ZXR1cm4gJFJDCi0JZWxzZQotCQkjIGV2ZW4gaWYgcmVzdGFydCBoYXMgYSB6ZXJvIGV4aXQgdmFs
-dWUgZG91YmxlIGNoZWNrIGZvciBmYWlsdXJlLgotCQlncmVwIC1pICJmYWlsIiAkTFRQVE1QL3Rz
-dF94aW5ldGQub3V0ID4gJExUUFRNUC90c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/Ci0JCWlm
-IFsgJFJDIC1lcSAwIF0KLQkJdGhlbgotCQkJdHN0X3JlcyBURkFJTCAkTFRQVE1QL3RzdF94aW5l
-dGQuZXJyIFwKLQkJCQkiVGVzdCAjMTogeGluZXRkIGZhaWxlZCB0byByZXN0YXJ0LiBEZXRhaWxz
-IgotCQkJcmV0dXJuICRSQwotCQllbHNlCi0JCQlSQz0wCi0JCQl0c3RfcmVzbSBUSU5GTyBcCi0J
-CQkJIlRlc3QgIzE6IHhpbmV0ZCByZS1zdGFydGVkIHN1Y2Nlc3NmdWxseSB3aXRoIHRlbG5ldCBl
-bmFibGVkLiIKLQkJZmkKLQlmaQotCi0JIyBOb3QgY2hlY2tpbmcgZm9yIGV4aXQgY29kZSBmcm9t
-IHRlbG5ldCBjb21tYW5kIGJlY2F1c2UgdGVsbmV0IGlzCi0JIyBub3QgdGVybWluYXRlZCBieSB0
-aGUgdGVzdCBncmFjZWZ1bGx5LgotCWVjaG8gIgQiIHwgdGVsbmV0IGxvY2FsaG9zdCA+ICRMVFBU
-TVAvdHN0X3hpbmV0ZC5vdXQgMj4mMQotCi0JZGlmZiAtaXdCICRMVFBUTVAvdHN0X3hpbmV0ZC5v
-dXQgICRMVFBUTVAvdHN0X3hpbmV0ZC5leHAuMiBcCi0JCT4gJExUUFRNUC90c3RfeGluZXRkLmVy
-ciAyPiYxIHx8IFJDPSQ/CisgICAgZWxzZQorICAgICAgICAjIGV2ZW4gaWYgcmVzdGFydCBoYXMg
-YSB6ZXJvIGV4aXQgdmFsdWUgZG91YmxlIGNoZWNrIGZvciBmYWlsdXJlLgorICAgICAgICBncmVw
-IC1pICJmYWlsIiAkTFRQVE1QL3RzdF94aW5ldGQub3V0ID4gJExUUFRNUC90c3RfeGluZXRkLmVy
-ciAyPiYxIHx8IFJDPSQ/CisgICAgICAgIGlmIFsgJFJDIC1lcSAwIF0KKyAgICAgICAgdGhlbgor
-ICAgICAgICAgICAgdHN0X3JlcyBURkFJTCAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIFwKKyAgICAg
-ICAgICAgICAgICAiVGVzdCAjMTogeGluZXRkIGZhaWxlZCB0byByZXN0YXJ0LiBEZXRhaWxzIgor
-ICAgICAgICAgICAgcmV0dXJuICRSQworICAgICAgICBlbHNlCisgICAgICAgICAgICBSQz0wCisg
-ICAgICAgICAgICB0c3RfcmVzbSBUSU5GTyBcCisgICAgICAgICAgICAgICAgIlRlc3QgIzE6IHhp
-bmV0ZCByZS1zdGFydGVkIHN1Y2Nlc3NmdWxseSB3aXRoIHRlbG5ldCBlbmFibGVkLiIKKyAgICAg
-ICAgZmkKKyAgICBmaQorCisgICAgIyBOb3QgY2hlY2tpbmcgZm9yIGV4aXQgY29kZSBmcm9tIHRl
-bG5ldCBjb21tYW5kIGJlY2F1c2UgdGVsbmV0IGlzCisgICAgIyBub3QgdGVybWluYXRlZCBieSB0
-aGUgdGVzdCBncmFjZWZ1bGx5LgorICAgIGVjaG8gIgQiIHwgdGVsbmV0IGxvY2FsaG9zdCA+ICRM
-VFBUTVAvdHN0X3hpbmV0ZC5vdXQgMj4mMQorCisgICAgZGlmZiAtaXdCICRMVFBUTVAvdHN0X3hp
-bmV0ZC5vdXQgICRMVFBUTVAvdHN0X3hpbmV0ZC5leHAuMiBcCisgICAgICAgID4gJExUUFRNUC90
-c3RfeGluZXRkLmVyciAyPiYxIHx8IFJDPSQ/CiAgICAgaWYgWyAkUkMgLW5lIDAgXQogICAgIHRo
-ZW4KICAgICAgICAgdHN0X3JlcyBURkFJTCAkTFRQVE1QL3RzdF94aW5ldGQuZXJyIFwKICAgICAg
-ICAgICAgICJUZXN0ICMxOiBleHBlY3RlZCBvdXRwdXQgZGlmZmVyZXMgZnJvbSBhY3R1YWwuIERl
-dGFpbHM6IgogICAgICAgICByZXR1cm4gJFJDCi0JZWxzZQotCQl0c3RfcmVzbSBUUEFTUyBcCi0J
-CSJUZXN0ICMxOiB4aW5ldGQgcmVhZHMgdGhlIGNvbmZpZyBmaWxlIGFuZCBzdGFydHMgb3Igc3Rv
-cHMgc2VydmljZXMuIgorICAgIGVsc2UKKyAgICAgICAgdHN0X3Jlc20gVFBBU1MgXAorICAgICAg
-ICAiVGVzdCAjMTogeGluZXRkIHJlYWRzIHRoZSBjb25maWcgZmlsZSBhbmQgc3RhcnRzIG9yIHN0
-b3BzIHNlcnZpY2VzLiIKICAgICBmaQogCiAgICAgcmV0dXJuICRSQwotLSAKMS44LjMuMQoK
---bcaec54307a0fa7cea04e137c008
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Daniel Borkmann <dborkman@redhat.com>, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+
+On Tue, Jul 23, 2013 at 11:07:56AM +0800, Hangbin Liu wrote:
+> SCTP test in ltp is based on lksctp. But the last patch for sctp in ltp is
+> 2006. It has changed a lot and fixed many bugs. Update sctp test to upstream
+> version 1.0.15 now.
+> 
+> Format code with
+> for file in `find ~/git/ltp/testcases/network/sctp -name *.c -o -name *.h`; do
+> 	~/git/linux/scripts/cleanfile $file
+> 	~/git/linux/scripts/Lindent $file
+> 	rm -f ${file}~
+> done
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+Note: Some distros may fail test_sockopt, test_sockopt_v6, test_tcp_style and
+test_tcp_style_v6 because of bug https://bugzilla.redhat.com/show_bug.cgi?id=903296
+
+Test result:
+# ./test_1_to_1_accept_close
+test_1_to_1_accept_close.c    1  TPASS  :  accept() with a bad socket descriptor - EBADF
+test_1_to_1_accept_close.c    2  TPASS  :  accept() with invalid socket - ENOTSOCK
+test_1_to_1_accept_close.c    3  TPASS  :  accept() with invalid address - EFAULT
+test_1_to_1_accept_close.c    4  TPASS  :  accept() on a non-listening socket - EINVAL
+test_1_to_1_accept_close.c    5  TPASS  :  accept() on an established socket - EINVAL
+test_1_to_1_accept_close.c    6  TPASS  :  accept() a closed association - SUCCESS
+test_1_to_1_accept_close.c    7  TPASS  :  accept() on a listening socket - SUCCESS
+test_1_to_1_accept_close.c    8  TPASS  :  close() with a bad socket descriptor - EBADF
+test_1_to_1_accept_close.c    9  TPASS  :  close() with a valid socket descriptor - SUCCESS
+test_1_to_1_accept_close.c   10  TPASS  :  close() with a closed socket descriptor - EBADF
+# ./test_1_to_1_addrs
+test_1_to_1_addrs.c    1  TPASS  :  sctp_getladdrs() with a bad socket descriptor - EBADF
+test_1_to_1_addrs.c    2  TPASS  :  sctp_getladdrs() with invalid socket - ENOTSOCK
+test_1_to_1_addrs.c    3  TPASS  :  sctp_getladdrs() with socket of different protocol - EOPNOTSUPP
+test_1_to_1_addrs.c    4  TPASS  :  sctp_getladdrs() - SUCCESS
+test_1_to_1_addrs.c    5  TPASS  :  sctp_freeladdrs() - SUCCESS
+test_1_to_1_addrs.c    6  TPASS  :  sctp_getpaddrs() with a bad socket descriptor - EBADF
+test_1_to_1_addrs.c    7  TPASS  :  sctp_getpaddrs() with invalid socket - ENOTSOCK
+test_1_to_1_addrs.c    8  TPASS  :  sctp_getpaddrs() with socket of different protocol - EOPNOTSUPP
+test_1_to_1_addrs.c    9  TPASS  :  sctp_getpaddrs() - SUCCESS
+test_1_to_1_addrs.c   10  TPASS  :  sctp_freepaddrs() - SUCCESS
+# ./test_1_to_1_connect
+test_1_to_1_connect.c    1  TPASS  :  connect() with bad socket descriptor - EBADF
+test_1_to_1_connect.c    2  TPASS  :  connect() with invalid socket - ENOTSOCK
+test_1_to_1_connect.c    3  TPASS  :  connect() with invalid address - EFAULT
+test_1_to_1_connect.c    4  TPASS  :  connect() with invalid address length - EINVAL
+test_1_to_1_connect.c    5  TPASS  :  connect() with invalid address family - EINVAL
+test_1_to_1_connect.c    6  TPASS  :  valid blocking connect() - SUCCESS
+test_1_to_1_connect.c    7  TPASS  :  connect() when accept queue is full - ECONNREFUSED
+test_1_to_1_connect.c    8  TPASS  :  connect() on a listening socket - EISCONN
+test_1_to_1_connect.c    9  TPASS  :  connect() on an established socket - EISCONN
+test_1_to_1_connect.c   10  TPASS  :  connect() to re-establish a closed association - SUCCESS
+# ./test_1_to_1_connectx
+test_1_to_1_connectx.c    1  TPASS  :  sctp_connectx() with bad socket descriptor - EBADF
+test_1_to_1_connectx.c    2  TPASS  :  sctp_connectx() with invalid socket - ENOTSOCK
+test_1_to_1_connectx.c    3  TPASS  :  sctp_connectx() with invalid address - EINVAL
+test_1_to_1_connectx.c    4  TPASS  :  sctp_connectx() with invalid address length - EINVAL
+test_1_to_1_connectx.c    5  TPASS  :  sctp_connectx() with invalid address family - EINVAL
+test_1_to_1_connectx.c    6  TPASS  :  valid blocking sctp_connectx() - SUCCESS
+test_1_to_1_connectx.c    7  TPASS  :  sctp_connectx() when accept queue is full - ECONNREFUSED
+test_1_to_1_connectx.c    8  TPASS  :  sctp_connectx() on a listening socket - EISCONN
+test_1_to_1_connectx.c    9  TPASS  :  sctp_connectx() on an established socket - EISCONN
+test_1_to_1_connectx.c   10  TPASS  :  sctp_connectx() to re-establish a closed association - SUCCESS
+# ./test_1_to_1_events
+test_1_to_1_events.c    1  TPASS  :  COMM_UP notification on client socket - SUCCESS
+test_1_to_1_events.c    2  TPASS  :  COMM_UP notification on server socket - SUCCESS
+test_1_to_1_events.c    3  TPASS  :  Data message on server socket - SUCCESS
+test_1_to_1_events.c    4  TPASS  :  SHUTDOWN notification on accepted socket - SUCCESS
+# ./test_1_to_1_initmsg_connect
+test_1_to_1_initmsg_connect.c    1  TPASS  :  connect() with init timeout set to 0 - SUCCESS
+# ./test_1_to_1_nonblock
+test_1_to_1_nonblock.c    1  TPASS  :  non-blocking accept() - EAGAIN
+test_1_to_1_nonblock.c    2  TPASS  :  non-blocking connect() - EINPROGRESS
+test_1_to_1_nonblock.c    3  TPASS  :  accept() after a non-blocking connect - SUCCESS
+test_1_to_1_nonblock.c    4  TPASS  :  non-blocking recvmsg() - EAGAIN
+test_1_to_1_nonblock.c    5  TPASS  :  non-blocking recvmsg() when data is available - SUCCESS
+# ./test_1_to_1_recvfrom
+test_1_to_1_recvfrom.c    1  TPASS  :  recvfrom() with a bad socket descriptor - EBADF
+test_1_to_1_recvfrom.c    2  TPASS  :  recvfrom() with invalid socket - ENOTSOCK
+test_1_to_1_recvfrom.c    3  TPASS  :  recvfrom() with invalid message ptr - EFAULT
+test_1_to_1_recvfrom.c    4  TPASS  :  recvfrom() on listening socket - ENOTCONN
+test_1_to_1_recvfrom.c    5  TPASS  :  recvfrom() on a socket that has received shutdown - EOF
+test_1_to_1_recvfrom.c    6  TPASS  :  recvfrom() on a socket with pending message that has sent shutdown - SUCCESS
+test_1_to_1_recvfrom.c    7  TPASS  :  recvfrom() on a socket with no pending messages and  has sent shutdown - ENOTCONN
+# ./test_1_to_1_recvmsg
+test_1_to_1_recvmsg.c    1  TPASS  :  recvmsg() with a bad socket descriptor - EBADF
+test_1_to_1_recvmsg.c    2  TPASS  :  recvmsg() with invalid socket - ENOTSOCK
+test_1_to_1_recvmsg.c    3  TPASS  :  recvmsg() with invalid iovec ptr - EFAULT
+test_1_to_1_recvmsg.c    4  TPASS  :  recvmsg() with invalid msghdr ptr - EFAULT
+test_1_to_1_recvmsg.c    5  TPASS  :  recvmsg() on listening socket - ENOTCONN
+test_1_to_1_recvmsg.c    6  TPASS  :  recvmsg() on a socket that has received shutdown - EOF
+test_1_to_1_recvmsg.c    7  TPASS  :  recvmsg() on a socket with pending message that has sent shutdown - SUCCESS
+test_1_to_1_recvmsg.c    8  TPASS  :  recvmsg() on a socket with no pending messages and  has sent shutdown - ENOTCONN
+# ./test_1_to_1_rtoinfo
+test_1_to_1_rtoinfo.c    1  TPASS  :  getsockopt() SCTP_RTOINFO - SUCCESS
+test_1_to_1_rtoinfo.c    2  TPASS  :  setsockopt() SCTP_RTOINFO - SUCCESS
+test_1_to_1_rtoinfo.c    3  TPASS  :  setsockopt()/getsockopt SCTP_RTOINFO compare - SUCCESS
+# ./test_1_to_1_send
+test_1_to_1_send.c    1  TPASS  :  send() with a bad socket descriptor - EBADF
+test_1_to_1_send.c    2  TPASS  :  send() with invalid socket - ENOTSOCK
+test_1_to_1_send.c    3  TPASS  :  send() on a listening socket - EPIPE
+test_1_to_1_send.c    4  TPASS  :  send() on a closed association - EPIPE
+test_1_to_1_send.c    5  TBROK  :  bind: Address already in use
+test_1_to_1_send.c    6  TBROK  :  Remaining cases broken
+# ./test_1_to_1_sendmsg
+test_1_to_1_sendmsg.c    1  TPASS  :  sendmsg() with a bad socket descriptor - EBADF
+test_1_to_1_sendmsg.c    2  TPASS  :  sendmsg() with invalid socket - ENOTSOCK
+test_1_to_1_sendmsg.c    3  TPASS  :  sendmsg() on a listening socket - EPIPE
+test_1_to_1_sendmsg.c    4  TPASS  :  sendmsg() with invalid iovec ptr - EFAULT
+test_1_to_1_sendmsg.c    5  TPASS  :  sendmsg() with invalid iovec length - EINVAL
+test_1_to_1_sendmsg.c    6  TPASS  :  sendmsg() with invalid msghdr ptr - EFAULT
+test_1_to_1_sendmsg.c    7  TPASS  :  sendmsg() with invalid sinfo flags - EINVAL
+test_1_to_1_sendmsg.c    8  TPASS  :  sendmsg() with SCTP_EOF flag - EINVAL
+test_1_to_1_sendmsg.c    9  TPASS  :  sendmsg() with SCTP_ABORT flag - EINVAL
+test_1_to_1_sendmsg.c   10  TPASS  :  sendmsg() on a closed association - EPIPE
+test_1_to_1_sendmsg.c   11  TBROK  :  bind: Address already in use
+test_1_to_1_sendmsg.c   12  TBROK  :  Remaining cases broken
+# ./test_1_to_1_sendto
+test_1_to_1_sendto.c    1  TPASS  :  sendto() from client to server - SUCCESS
+test_1_to_1_sendto.c    2  TPASS  :  sendto() from accept socket to client - SUCCESS
+test_1_to_1_sendto.c    3  TPASS  :  sendto() from unconnected client to server - SUCCESS
+test_1_to_1_sendto.c    4  TPASS  :  sendto() partial data from a buffer - SUCCESS
+# ./test_1_to_1_shutdown
+test_1_to_1_shutdown.c    1  TPASS  :  shutdown() with a bad socket descriptor - EBADF
+test_1_to_1_shutdown.c    2  TPASS  :  shutdown() with an invalid socket - ENOTSOCK
+test_1_to_1_shutdown.c    3  TPASS  :  shutdown() with SHUT_WR flag - SUCCESS
+test_1_to_1_shutdown.c    4  TPASS  :  shutdown() with SHUT_RD flag - SUCCESS
+test_1_to_1_shutdown.c    5  TPASS  :  shutdown() with SHUT_RDWR flag - SUCCESS
+test_1_to_1_shutdown.c    6  TPASS  :  shutdown() on an unconnected socket - SUCCESS
+# ./test_1_to_1_socket_bind_listen
+test_1_to_1_socket_bind_listen.c    1  TPASS  :  socket() with invalid domain - EAFNOSUPPORT
+test_1_to_1_socket_bind_listen.c    2  TPASS  :  socket() with invalid type - EINVAL
+test_1_to_1_socket_bind_listen.c    3  TPASS  :  socket() - SUCCESS
+test_1_to_1_socket_bind_listen.c    4  TPASS  :  bind() with invalid address ptr - EFAULT
+test_1_to_1_socket_bind_listen.c    5  TPASS  :  bind() with invalid address length - EINVAL
+test_1_to_1_socket_bind_listen.c    6  TPASS  :  bind() with invalid socket descriptor - ENOTSOCK
+test_1_to_1_socket_bind_listen.c    7  TPASS  :  bind() with invalid local address - EADDRNOTAVAIL
+test_1_to_1_socket_bind_listen.c    8  TPASS  :  bind() on an already bound socket - EINVAL
+test_1_to_1_socket_bind_listen.c    9  TPASS  :  bind() with INADDR_ANY address and non-zero port - SUCCESS
+test_1_to_1_socket_bind_listen.c   10  TPASS  :  bind() with INADDR_ANY address and zero port - SUCCESS
+test_1_to_1_socket_bind_listen.c   11  TPASS  :  bind() with local address and zero port - SUCCESS
+test_1_to_1_socket_bind_listen.c   12  TPASS  :  listen() with bad socket descriptor - EBADF
+test_1_to_1_socket_bind_listen.c   13  TPASS  :  listen() with invalid socket - ENOTSOCK
+test_1_to_1_socket_bind_listen.c   14  TPASS  :  listen() on a bound socket - SUCCESS
+# ./test_1_to_1_sockopt
+test_1_to_1_sockopt.c    1  TPASS  :  setsockopt() with a bad socket descriptor - EBADF
+test_1_to_1_sockopt.c    2  TPASS  :  setsockopt() with an invalid socket - ENOTSOCK
+test_1_to_1_sockopt.c    3  TPASS  :  setsockopt() with an invalid level - ENOPROTOOPT
+test_1_to_1_sockopt.c    4  TPASS  :  setsockopt() with invalid option buffer - EFAULT
+test_1_to_1_sockopt.c    5  TPASS  :  setsockopt() with invalid option name - EOPNOTSUPP
+test_1_to_1_sockopt.c    6  TPASS  :  getsockopt() with a bad socket descriptor - EBADF
+test_1_to_1_sockopt.c    7  TPASS  :  getsockopt() with an invalid socket - ENOTSOCK
+test_1_to_1_sockopt.c    8  TPASS  :  getsockopt() with invalid option buffer - EFAULT
+test_1_to_1_sockopt.c    9  TPASS  :  getsockopt() with invalid option name - EOPNOTSUPP
+test_1_to_1_sockopt.c   10  TPASS  :  getsockopt() SCTP_INITMSG - SUCCESS
+test_1_to_1_sockopt.c   11  TPASS  :  setsockopt() SCTP_INITMSG - SUCCESS
+test_1_to_1_sockopt.c   12  TPASS  :  setsockopt() SO_LINGER - SUCCESS
+test_1_to_1_sockopt.c   13  TPASS  :  getsockopt() SO_LINGER - SUCCESS
+test_1_to_1_sockopt.c   14  TPASS  :  getsockopt() SO_RCVBUF - SUCCESS
+test_1_to_1_sockopt.c   15  TPASS  :  getsockopt() SCTP_STATUS - SUCCESS
+test_1_to_1_sockopt.c   16  TPASS  :  setsockopt() SO_RCVBUF - SUCCESS
+test_1_to_1_sockopt.c   17  TPASS  :  setsockopt() SO_SNDBUF - SUCCESS
+test_1_to_1_sockopt.c   18  TPASS  :  getsockopt() SO_SNDBUF - SUCCESS
+test_1_to_1_sockopt.c   19  TPASS  :  getsockopt() SCTP_PRIMARY_ADDR - SUCCESS
+test_1_to_1_sockopt.c   20  TPASS  :  setsockopt() SCTP_PRIMARY_ADDR - SUCCESS
+test_1_to_1_sockopt.c   21  TPASS  :  getsockopt() SCTP_ASSOCINFO - SUCCESS
+test_1_to_1_sockopt.c   22  TPASS  :  setsockopt() SCTP_ASSOCINFO - SUCCESS
+# ./test_1_to_1_threads
+test_1_to_1_threads.c    1  TPASS  :  send and receive data across multiple threads - SUCCESS
+# ./test_assoc_abort
+test_assoc_abort.c    1  TPASS  :  ABORT an association using SCTP_ABORT
+# ./test_assoc_shutdown
+test_assoc_shutdown.c    1  TPASS  :  Graceful shutdown of associations using SCTP_EOF
+# ./test_autoclose
+test_autoclose.c    0  TINFO  :  Waiting for the associations to close automatically in 5 secs
+test_autoclose.c    1  TPASS  :  Autoclose of associations
+# ./test_basic
+test_basic.c    1  TPASS  :  socket
+test_basic.c    2  TPASS  :  bind
+test_basic.c    3  TPASS  :  recvmsg on a socket neither listening nor established
+test_basic.c    4  TPASS  :  listen
+test_basic.c    5  TPASS  :  sendmsg with a valid msg_name
+test_basic.c    6  TPASS  :  recvmsg COMM_UP notifications
+test_basic.c    7  TPASS  :  sendmsg with NULL associd and NULL msg_name
+test_basic.c    8  TPASS  :  sendmsg with incorrect associd
+test_basic.c    9  TPASS  :  sendmsg with valid associd
+test_basic.c   10  TPASS  :  recvmsg
+test_basic.c   11  TPASS  :  sctp_getladdrs
+test_basic.c    0  TINFO  :  LOCAL ADDR 127.0.0.1 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 10.66.86.114 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 192.168.0.20 PORT 1024
+test_basic.c   12  TPASS  :  sctp_freeladdrs
+test_basic.c   13  TPASS  :  sctp_getpaddrs
+test_basic.c    0  TINFO  :  PEER ADDR 127.0.0.1 PORT 1025
+test_basic.c   14  TPASS  :  sctp_freepaddrs
+test_basic.c   15  TPASS  :  recvmsg SHUTDOWN_COMP notification
+# ./test_basic_v6
+test_basic.c    1  TPASS  :  socket
+test_basic.c    2  TPASS  :  bind
+test_basic.c    3  TPASS  :  recvmsg on a socket neither listening nor established
+test_basic.c    4  TPASS  :  listen
+test_basic.c    5  TPASS  :  sendmsg with a valid msg_name
+test_basic.c    6  TPASS  :  recvmsg COMM_UP notifications
+test_basic.c    7  TPASS  :  sendmsg with NULL associd and NULL msg_name
+test_basic.c    8  TPASS  :  sendmsg with incorrect associd
+test_basic.c    9  TPASS  :  sendmsg with valid associd
+test_basic.c   10  TPASS  :  recvmsg
+test_basic.c   11  TPASS  :  sctp_getladdrs
+test_basic.c    0  TINFO  :  LOCAL ADDR 0000:0000:0000:0000:0000:ffff:7f00:0001 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 0000:0000:0000:0000:0000:0000:0000:0001 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 0000:0000:0000:0000:0000:ffff:0a42:5672 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 2620:0052:0000:4257:2e76:8aff:fe56:ef28 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR fe80:0000:0000:0000:2e76:8aff:fe56:ef28 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 0000:0000:0000:0000:0000:ffff:c0a8:0014 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 3ffe:0501:ffff:0100:0000:0000:0000:0020 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR fe80:0000:0000:0000:2e76:8aff:fe56:ef29 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR 3ffe:0501:ffff:0101:0000:0000:0000:0020 PORT 1024
+test_basic.c    0  TINFO  :  LOCAL ADDR fe80:0000:0000:0000:2e76:8aff:fe56:ef2b PORT 1024
+test_basic.c   12  TPASS  :  sctp_freeladdrs
+test_basic.c   13  TPASS  :  sctp_getpaddrs
+test_basic.c    0  TINFO  :  PEER ADDR 0000:0000:0000:0000:0000:0000:0000:0001 PORT 1025
+test_basic.c   14  TPASS  :  sctp_freepaddrs
+test_basic.c   15  TPASS  :  recvmsg SHUTDOWN_COMP notification
+# ./test_connect
+test_connect.c    1  TPASS  :  non-blocking connect
+test_connect.c    2  TPASS  :  connect on a socket to create an assoc that is already established
+test_connect.c    3  TPASS  :  blocking connect
+test_connect.c    4  TPASS  :  connect on a peeled off socket
+test_connect.c    5  TPASS  :  connect to create an assoc that matches a peeled off assoc
+# ./test_connectx
+test_connectx.c    1  TPASS  :  non-blocking connectx
+test_connectx.c    2  TPASS  :  connectx on a socket to create an assoc that is already established
+test_connectx.c    3  TPASS  :  Association id match between sctp_connectx() and notification.
+test_connectx.c    4  TPASS  :  blocking connectx
+test_connectx.c    5  TPASS  :  connectx on a peeled off socket
+test_connectx.c    6  TPASS  :  connectx to create an assoc that matches a peeled off assoc
+test_connectx.c    7  TPASS  :  server association 1 peers ok
+test_connectx.c    8  TPASS  :  server association 2 peers ok
+test_connectx.c    9  TPASS  :  client association 1 peers ok
+test_connectx.c   10  TPASS  :  client association 2 peers ok
+# ./test_fragments
+test_fragments.c    1  TPASS  :  setsockopt(SCTP_DISABLE_FRAGMENTS)
+test_fragments.c    2  TPASS  :  getsockopt(SCTP_DISABLE_FRAGMENTS)
+test_fragments.c    3  TPASS  :  Send a message that exceeds assoc frag point
+test_fragments.c    0  TINFO  :  Sent 1353 byte message
+test_fragments.c    0  TINFO  :  Received 1353 byte message
+test_fragments.c    0  TINFO  :  Sent 2000 byte message
+test_fragments.c    0  TINFO  :  Received 2000 byte message
+test_fragments.c    0  TINFO  :  Sent 5000 byte message
+test_fragments.c    0  TINFO  :  Received 5000 byte message
+test_fragments.c    0  TINFO  :  Sent 10000 byte message
+test_fragments.c    0  TINFO  :  Received 10000 byte message
+test_fragments.c    0  TINFO  :  Sent 20000 byte message
+test_fragments.c    0  TINFO  :  Received 20000 byte message
+test_fragments.c    0  TINFO  :  Sent 32768 byte message
+test_fragments.c    0  TINFO  :  Received 32768 byte message
+test_fragments.c    4  TPASS  :  Send/Receive fragmented messages
+# ./test_fragments_v6
+test_fragments.c    1  TPASS  :  setsockopt(SCTP_DISABLE_FRAGMENTS)
+test_fragments.c    2  TPASS  :  getsockopt(SCTP_DISABLE_FRAGMENTS)
+test_fragments.c    3  TPASS  :  Send a message that exceeds assoc frag point
+test_fragments.c    0  TINFO  :  Sent 1353 byte message
+test_fragments.c    0  TINFO  :  Received 1353 byte message
+test_fragments.c    0  TINFO  :  Sent 2000 byte message
+test_fragments.c    0  TINFO  :  Received 2000 byte message
+test_fragments.c    0  TINFO  :  Sent 5000 byte message
+test_fragments.c    0  TINFO  :  Received 5000 byte message
+test_fragments.c    0  TINFO  :  Sent 10000 byte message
+test_fragments.c    0  TINFO  :  Received 10000 byte message
+test_fragments.c    0  TINFO  :  Sent 20000 byte message
+test_fragments.c    0  TINFO  :  Received 20000 byte message
+test_fragments.c    0  TINFO  :  Sent 32768 byte message
+test_fragments.c    0  TINFO  :  Received 32768 byte message
+test_fragments.c    4  TPASS  :  Send/Receive fragmented messages
+# ./test_getname
+test_getname.c    1  TPASS  :  getsockname on an unconnected socket
+test_getname.c    2  TPASS  :  getpeername on an unconnected socket
+test_getname.c    3  TPASS  :  getsockname on a connected client socket
+test_getname.c    4  TPASS  :  getpeername on a connected client socket
+test_getname.c    5  TPASS  :  getsockname on a connected server socket
+test_getname.c    6  TPASS  :  getpeername on a connected server socket
+test_getname.c    7  TPASS  :  getsockname/getpeername server/client match
+test_getname.c    8  TPASS  :  getsockname on a bad socket descriptor - EBADF
+test_getname.c    9  TPASS  :  getsockname on an invalid socket - ENOTSOCK
+test_getname.c   10  TPASS  :  getsockname with invalid buffer - EFAULT
+test_getname.c   11  TPASS  :  getpeername on a bad socket descriptor - EBADF
+test_getname.c   12  TPASS  :  getpeername on an invalid socket - ENOTSOCK
+test_getname.c   13  TPASS  :  getpeername with invalid buffer - EFAULT
+# ./test_getname_v6
+test_getname.c    1  TPASS  :  getsockname on an unconnected socket
+test_getname.c    2  TPASS  :  getpeername on an unconnected socket
+test_getname.c    3  TPASS  :  getsockname on a connected client socket
+test_getname.c    4  TPASS  :  getpeername on a connected client socket
+test_getname.c    5  TPASS  :  getsockname on a connected server socket
+test_getname.c    6  TPASS  :  getpeername on a connected server socket
+test_getname.c    7  TPASS  :  getsockname/getpeername server/client match
+test_getname.c    8  TPASS  :  getsockname on a bad socket descriptor - EBADF
+test_getname.c    9  TPASS  :  getsockname on an invalid socket - ENOTSOCK
+test_getname.c   10  TPASS  :  getsockname with invalid buffer - EFAULT
+test_getname.c   11  TPASS  :  getpeername on a bad socket descriptor - EBADF
+test_getname.c   12  TPASS  :  getpeername on an invalid socket - ENOTSOCK
+test_getname.c   13  TPASS  :  getpeername with invalid buffer - EFAULT
+# ./test_inaddr_any
+test_inaddr_any.c    1  TPASS  :  bind INADDR_ANY address
+test_inaddr_any.c    2  TPASS  :  send msgs from a socket with INADDR_ANY bind address
+# ./test_inaddr_any_v6
+test_inaddr_any.c    1  TPASS  :  bind INADDR_ANY address
+test_inaddr_any.c    2  TPASS  :  send msgs from a socket with INADDR_ANY bind address
+# ./test_peeloff
+test_peeloff.c    1  TPASS  :  sctp_peeloff
+test_peeloff.c    2  TPASS  :  listen on a peeled off socket
+test_peeloff.c    3  TPASS  :  sctp_peeloff on a peeled off socket
+test_peeloff.c    4  TPASS  :  Receive msgs on peeled off sockets
+test_peeloff.c    5  TPASS  :  Send msgs on peeled off sockets
+test_peeloff.c    6  TPASS  :  peeled off socket cannot initialize a new assoc
+# ./test_peeloff_v6
+test_peeloff.c    1  TPASS  :  sctp_peeloff
+test_peeloff.c    2  TPASS  :  listen on a peeled off socket
+test_peeloff.c    3  TPASS  :  sctp_peeloff on a peeled off socket
+test_peeloff.c    4  TPASS  :  Receive msgs on peeled off sockets
+test_peeloff.c    5  TPASS  :  Send msgs on peeled off sockets
+test_peeloff.c    6  TPASS  :  peeled off socket cannot initialize a new assoc
+# ./test_recvmsg
+test_recvmsg.c    1  TPASS  :  recvmsg with MSG_PEEK flag
+test_recvmsg.c    2  TPASS  :  MSG_EOR in msg_flags set correctly
+# ./test_sctp_sendrecvmsg
+test_sctp_sendrecvmsg.c    1  TPASS  :  sctp_sendmsg
+test_sctp_sendrecvmsg.c    2  TPASS  :  sctp_recvmsg SCTP_COMM_UP notification
+test_sctp_sendrecvmsg.c    3  TPASS  :  sctp_recvmsg data
+test_sctp_sendrecvmsg.c    0  TINFO  :  creating a fillmsg of size 3087
+test_sctp_sendrecvmsg.c    4  TPASS  :  sctp_sendmsg with ttl
+test_sctp_sendrecvmsg.c    5  TPASS  :  sctp_sendmsg with zero ttl
+test_sctp_sendrecvmsg.c    6  TPASS  :  sctp_sendmsg fragmented msg with ttl
+test_sctp_sendrecvmsg.c    0  TINFO  :  **  SLEEPING for 3 seconds **
+test_sctp_sendrecvmsg.c    7  TPASS  :  sctp_recvmsg msg with zero ttl
+test_sctp_sendrecvmsg.c    8  TPASS  :  sctp_recvmsg SEND_FAILED for message with ttl
+test_sctp_sendrecvmsg.c    9  TPASS  :  sctp_recvmsg SEND_FAILED for fragmented message with ttl
+test_sctp_sendrecvmsg.c   10  TPASS  :  sctp_send
+# ./test_sctp_sendrecvmsg_v6
+test_sctp_sendrecvmsg.c    1  TPASS  :  sctp_sendmsg
+test_sctp_sendrecvmsg.c    2  TPASS  :  sctp_recvmsg SCTP_COMM_UP notification
+test_sctp_sendrecvmsg.c    3  TPASS  :  sctp_recvmsg data
+test_sctp_sendrecvmsg.c    0  TINFO  :  creating a fillmsg of size 3087
+test_sctp_sendrecvmsg.c    4  TPASS  :  sctp_sendmsg with ttl
+test_sctp_sendrecvmsg.c    5  TPASS  :  sctp_sendmsg with zero ttl
+test_sctp_sendrecvmsg.c    6  TPASS  :  sctp_sendmsg fragmented msg with ttl
+test_sctp_sendrecvmsg.c    0  TINFO  :  **  SLEEPING for 3 seconds **
+test_sctp_sendrecvmsg.c    7  TPASS  :  sctp_recvmsg msg with zero ttl
+test_sctp_sendrecvmsg.c    8  TPASS  :  sctp_recvmsg SEND_FAILED for message with ttl
+test_sctp_sendrecvmsg.c    9  TPASS  :  sctp_recvmsg SEND_FAILED for fragmented message with ttl
+test_sctp_sendrecvmsg.c   10  TPASS  :  sctp_send
+# ./test_sockopt
+test_sockopt.c  1 PASS : getsockopt(SCTP_STATUS) on a socket with no assoc
+test_sockopt.c  2 PASS : getsockopt(SCTP_STATUS)
+test_sockopt.c  3 PASS : getsockopt(SCTP_STATUS) with invalid associd
+test_sockopt.c  4 PASS : getsockopt(SCTP_STATUS) with NULL associd
+test_sockopt.c  5 PASS : getsockopt(SCTP_EVENTS)
+test_sockopt.c  6 PASS : setsockopt(SCTP_EVENTS)
+test_sockopt.c  7 PASS : setsockopt(SCTP_EVENTS) - SCTP_SHUTDOWN_EVENT
+test_sockopt.c  8 PASS : sctp_opt_info(SCTP_STATUS)
+test_sockopt.c  9 PASS : getsockopt(SCTP_INITMSG)
+test_sockopt.c 10 PASS : setsockopt(SCTP_INITMSG)
+test_sockopt.c 11 PASS : getsockopt(SCTP_PEER_ADDR_PARAMS)
+test_sockopt.c 12 PASS : setsockopt(SCTP_DELAYED_ACK_TIME)
+test_sockopt.c 13 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS)
+test_sockopt.c 14 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid associd
+test_sockopt.c 15 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style valid associd valid address
+test_sockopt.c 16 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid transport
+test_sockopt.c 17 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid parameter length
+test_sockopt.c 18 PASS : setsockopt(SCTP_DELAYED_ACK_TIME) - one-to-many style invalid parameter length
+test_sockopt.c 19 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid sack delay
+test_sockopt.c 20 PASS : setsockopt(SCTP_DELAYED_ACK_TIME) - one-to-many style invalid sack delay
+test_sockopt.c 21 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid path MTU
+test_sockopt.c 22 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid hb enable flags
+test_sockopt.c 23 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid PMTU discovery enable flags
+test_sockopt.c 24 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid sack delay enable flags
+test_sockopt.c 25 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid hb demand
+test_sockopt.c 26 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style socket
+test_sockopt.c 27 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style socket
+test_sockopt.c 28 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style invalid associd
+test_sockopt.c 29 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style associd belonging to another socket
+test_sockopt.c 30 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style valid associd
+test_sockopt.c 31 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style valid associd
+test_sockopt.c 32 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style zero associd
+test_sockopt.c 33 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style peeled off socket
+test_sockopt.c 34 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style socket
+test_sockopt.c 35 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style socket
+test_sockopt.c 36 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style assoc
+test_sockopt.c 37 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style assoc
+test_sockopt.c 38 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style accepted socket
+test_sockopt.c 39 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - null associd and null addr
+test_sockopt.c 40 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and null addr
+test_sockopt.c 41 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and invalid addr
+test_sockopt.c 42 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and valid addr
+test_sockopt.c 43 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and valid addr peeled off socket
+test_sockopt.c 44 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and valid addr accepted socket
+# ./test_sockopt_v6
+test_sockopt.c  1 PASS : getsockopt(SCTP_STATUS) on a socket with no assoc
+test_sockopt.c  2 PASS : getsockopt(SCTP_STATUS)
+test_sockopt.c  3 PASS : getsockopt(SCTP_STATUS) with invalid associd
+test_sockopt.c  4 PASS : getsockopt(SCTP_STATUS) with NULL associd
+test_sockopt.c  5 PASS : getsockopt(SCTP_EVENTS)
+test_sockopt.c  6 PASS : setsockopt(SCTP_EVENTS)
+test_sockopt.c  7 PASS : setsockopt(SCTP_EVENTS) - SCTP_SHUTDOWN_EVENT
+test_sockopt.c  8 PASS : sctp_opt_info(SCTP_STATUS)
+test_sockopt.c  9 PASS : getsockopt(SCTP_INITMSG)
+test_sockopt.c 10 PASS : setsockopt(SCTP_INITMSG)
+test_sockopt.c 11 PASS : getsockopt(SCTP_PEER_ADDR_PARAMS)
+test_sockopt.c 12 PASS : setsockopt(SCTP_DELAYED_ACK_TIME)
+test_sockopt.c 13 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS)
+test_sockopt.c 14 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid associd
+test_sockopt.c 15 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style valid associd valid address
+test_sockopt.c 16 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid transport
+test_sockopt.c 17 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid parameter length
+test_sockopt.c 18 PASS : setsockopt(SCTP_DELAYED_ACK_TIME) - one-to-many style invalid parameter length
+test_sockopt.c 19 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid sack delay
+test_sockopt.c 20 PASS : setsockopt(SCTP_DELAYED_ACK_TIME) - one-to-many style invalid sack delay
+test_sockopt.c 21 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid path MTU
+test_sockopt.c 22 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid hb enable flags
+test_sockopt.c 23 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid PMTU discovery enable flags
+test_sockopt.c 24 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid sack delay enable flags
+test_sockopt.c 25 PASS : setsockopt(SCTP_PEER_ADDR_PARAMS) - one-to-many style invalid hb demand
+test_sockopt.c 26 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style socket
+test_sockopt.c 27 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style socket
+test_sockopt.c 28 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style invalid associd
+test_sockopt.c 29 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style associd belonging to another socket
+test_sockopt.c 30 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style valid associd
+test_sockopt.c 31 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style valid associd
+test_sockopt.c 32 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style zero associd
+test_sockopt.c 33 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-many style peeled off socket
+test_sockopt.c 34 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style socket
+test_sockopt.c 35 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style socket
+test_sockopt.c 36 PASS : setsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style assoc
+test_sockopt.c 37 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style assoc
+test_sockopt.c 38 PASS : getsockopt(SCTP_DEFAULT_SEND_PARAM) - one-to-one style accepted socket
+test_sockopt.c 39 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - null associd and null addr
+test_sockopt.c 40 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and null addr
+test_sockopt.c 41 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and invalid addr
+test_sockopt.c 42 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and valid addr
+test_sockopt.c 43 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and valid addr peeled off socket
+test_sockopt.c 44 PASS : getsockopt(SCTP_GET_PEER_ADDR_INFO) - valid associd and valid addr accepted socket
+#  ./test_tcp_style
+test_tcp_style.c  1 PASS : accept on non-listening socket
+test_tcp_style.c  2 PASS : connect to non-listening socket
+test_tcp_style.c  3 PASS : connect to listening socket
+test_tcp_style.c  4 PASS : connect after max backlog
+test_tcp_style.c  5 PASS : accept from listening socket
+test_tcp_style.c  6 PASS : connect on an established socket
+test_tcp_style.c  7 PASS : accept on an established socket
+test_tcp_style.c  8 PASS : client sockets -> accepted sockets
+test_tcp_style.c  9 PASS : accepted sockets -> client sockets
+test_tcp_style.c 10 PASS : send on a listening socket
+test_tcp_style.c 11 PASS : recv on a listening socket
+test_tcp_style.c 12 PASS : recv on a SHUTDOWN received socket
+test_tcp_style.c 13 PASS : recv SHUTDOWN_COMP notification on a SHUT_WR socket
+test_tcp_style.c 14 PASS : recv on a SHUTDOWN sent socket
+test_tcp_style.c 15 PASS : recv on a SHUT_RD socket
+test_tcp_style.c 16 PASS : recv on a SHUT_RDWR socket
+test_tcp_style.c 17 PASS : accept of a CLOSED association
+test_tcp_style.c 18 PASS : send to a CLOSED association
+test_tcp_style.c 19 PASS : auto-connect using sendto
+test_tcp_style.c 20 PASS : sendmsg with SCTP_EOF flag
+test_tcp_style.c 21 PASS : sendmsg with SCTP_ABORT flag
+test_tcp_style.c 22 PASS : sendmsg with no flags
+# ./test_tcp_style_v6
+test_tcp_style.c  1 PASS : accept on non-listening socket
+test_tcp_style.c  2 PASS : connect to non-listening socket
+test_tcp_style.c  3 PASS : connect to listening socket
+test_tcp_style.c  4 PASS : connect after max backlog
+test_tcp_style.c  5 PASS : accept from listening socket
+test_tcp_style.c  6 PASS : connect on an established socket
+test_tcp_style.c  7 PASS : accept on an established socket
+test_tcp_style.c  8 PASS : client sockets -> accepted sockets
+test_tcp_style.c  9 PASS : accepted sockets -> client sockets
+test_tcp_style.c 10 PASS : send on a listening socket
+test_tcp_style.c 11 PASS : recv on a listening socket
+test_tcp_style.c 12 PASS : recv on a SHUTDOWN received socket
+test_tcp_style.c 13 PASS : recv SHUTDOWN_COMP notification on a SHUT_WR socket
+test_tcp_style.c 14 PASS : recv on a SHUTDOWN sent socket
+test_tcp_style.c 15 PASS : recv on a SHUT_RD socket
+test_tcp_style.c 16 PASS : recv on a SHUT_RDWR socket
+test_tcp_style.c 17 PASS : accept of a CLOSED association
+test_tcp_style.c 18 PASS : send to a CLOSED association
+test_tcp_style.c 19 PASS : auto-connect using sendto
+test_tcp_style.c 20 PASS : sendmsg with SCTP_EOF flag
+test_tcp_style.c 21 PASS : sendmsg with SCTP_ABORT flag
+test_tcp_style.c 22 PASS : sendmsg with no flags
+# ./test_timetolive
+test_timetolive.c    0  TINFO  :  Creating fillmsg of size 3087
+test_timetolive.c    1  TPASS  :  Send a message with timeout
+test_timetolive.c    2  TPASS  :  Send a message with no timeout
+test_timetolive.c    3  TPASS  :  Send a fragmented message with timeout
+test_timetolive.c    0  TINFO  :   **  SLEEPING for 3 seconds **
+test_timetolive.c    4  TPASS  :  Receive message with no timeout
+test_timetolive.c    5  TPASS  :  Receive SEND_FAILED for message with timeout
+test_timetolive.c    6  TPASS  :  Receive SEND_FAILED for fragmented message with timeout
+# ./test_timetolive_v6
+test_timetolive.c    0  TINFO  :  Creating fillmsg of size 3087
+test_timetolive.c    1  TPASS  :  Send a message with timeout
+test_timetolive.c    2  TPASS  :  Send a message with no timeout
+test_timetolive.c    3  TPASS  :  Send a fragmented message with timeout
+test_timetolive.c    0  TINFO  :   **  SLEEPING for 3 seconds **
+test_timetolive.c    4  TPASS  :  Receive message with no timeout
+test_timetolive.c    5  TPASS  :  Receive SEND_FAILED for message with timeout
+test_timetolive.c    6  TPASS  :  Receive SEND_FAILED for fragmented message with timeout
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
@@ -331,16 +546,7 @@ Get end-to-end visibility with application monitoring from AppDynamics
 Isolate bottlenecks and diagnose root cause in seconds.
 Start your free trial of AppDynamics Pro today!
 http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
---bcaec54307a0fa7cea04e137c008
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---bcaec54307a0fa7cea04e137c008--
-
