@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1UuXxH-0001St-Dr
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 01:03:27 +0000
-Received: from mail-we0-f182.google.com ([74.125.82.182])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UuXxC-0006vV-Hd
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 01:03:27 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1V1b0V-00047I-Ml
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 11:43:55 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V1b0U-00047k-9W
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 11:43:55 +0000
+Message-ID: <51EE6C97.1050502@cn.fujitsu.com>
+Date: Tue, 23 Jul 2013 19:44:23 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1875908008.1793486.1372676206673.JavaMail.root@redhat.com>
-References: <1372146532-3182-1-git-send-email-liuhangbin@gmail.com>
-	<538407137.757498.1372350334215.JavaMail.root@redhat.com>
-	<CAPwn2JTuF3EVb8_XoWkFk=qZc61FhNHenNDmdR7b6xrZFf9x1g@mail.gmail.com>
-	<1243201217.946751.1372403630876.JavaMail.root@redhat.com>
-	<CAPwn2JRYRWDEvn090NdtM1K178R=yQSasmBX3ZoKymVtcRWPXw@mail.gmail.com>
-	<606017700.1063130.1372417612499.JavaMail.root@redhat.com>
-	<CAPwn2JQ+ri=T9Fs6JWdF+v_8x9Nk5wPqo5aTrzb1A9ERr2DgEQ@mail.gmail.com>
-	<1875908008.1793486.1372676206673.JavaMail.root@redhat.com>
-Date: Thu, 4 Jul 2013 09:03:16 +0800
-Message-ID: <CAPwn2JR4V_7wmHjy+Vk86ncysSuVVkw2LpUL7dm0O=9WU4PqmQ@mail.gmail.com>
-From: Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the
- test case after timeout
+References: <1374575324-26149-1-git-send-email-zliu@redhat.com>
+In-Reply-To: <1374575324-26149-1-git-send-email-zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] lib/tst_kvercmp: fixed a compiling error
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,205 +25,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Sorry the late reply, too busy these days. I think 100 is suitable, It
-won't take too much time on sleeping, and will check timeout after a
-while.
-I will send a new patchv2 for all this issue.
-
-Thanks
-Hangbin Liu
-
-2013/7/1 Jan Stancek <jstancek@redhat.com>:
->
->
->
->
-> ----- Original Message -----
->> From: "Hangbin Liu" <liuhangbin@gmail.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: "ltp-list" <ltp-list@lists.sf.net>
->> Sent: Monday, 1 July, 2013 10:31:28 AM
->> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill the test case after timeout
->>
->> Hi Jan,
->> The problem is the connection won't  fail, but only need too much
->> time. For example:
->
-> I see, checking after each X connection seems reasonable.
-> I'm not very familiar with this test, so it's up to you to come up with some number.
->
-> Regards,
-> Jan
->
->> On a guest:  on cpu process, 2G memory
->> # for i in `seq 4000`; do ./ns-tcpclient -b -f 4 -S 10.66.87.216 -p
->> 9999; echo "The $i connection : `date`"; done
->> The 1 connection : Mon Jul  1 04:03:05 EDT 2013
->> The 2 connection : Mon Jul  1 04:03:05 EDT 2013
->> The 3 connection : Mon Jul  1 04:03:05 EDT 2013
->> The 4 connection : Mon Jul  1 04:03:06 EDT 2013
->> <snip>
->> The 19 connection : Mon Jul  1 04:04:46 EDT 2013
->> <snip>
->> The 30 connection : Mon Jul  1 04:06:34 EDT 2013
->> The 31 connection : Mon Jul  1 04:07:52 EDT 2013
->> <snip>
->> The 45 connection : Mon Jul  1 04:10:11 EDT 2013
->> <snip>
->> The 50 connection : Mon Jul  1 04:12:05 EDT 2013
->>
->> You can saw we took 9 minutes to set up 50 tcp connections.
->>
->> But on a powerful physical machine,
->> The 1 connection : Mon Jul  1 04:21:08 EDT 2013
->> The 2 connection : Mon Jul  1 04:21:08 EDT 2013
->> <snip>
->> The 499 connection : Mon Jul  1 04:24:35 EDT 2013
->> The 500 connection : Mon Jul  1 04:24:35 EDT 2013
->>
->> It only use 3 minutest to set up 500 connections.
->>
->> So we can't just continue on success, but should check the time after
->> some connections.
->>
->> Thanks and Best regards
->> Hangbin Liu
->>
->> 2013/6/28 Jan Stancek <jstancek@redhat.com>:
->> >
->> >
->> > ----- Original Message -----
->> >> From: "Hangbin Liu" <liuhangbin@gmail.com>
->> >> To: "Jan Stancek" <jstancek@redhat.com>
->> >> Sent: Friday, 28 June, 2013 11:30:02 AM
->> >> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will kill
->> >> the test case after timeout
->> >>
->> >
->> > Hangbin,
->> >
->> > just fyi, your replies are not going to list.
->> >
->> >> Opps, My mistake.  Didn't find there is a sleep 1...
->> >>
->> >> I will send another patch for this issue. How about check
->> >> $connection_num every 100 times. like
->> >
->> > I'd go with new variable to count each attempt, not just successful ones.
->> >
->> > Or something like this (on top your patch):
->> > Skip the sleep and continue on success, if we hit issue sleep and retry as
->> > watchdog allows.
->> >
->> > diff --git
->> > a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> > b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> > index 206a0d1..649c60b 100644
->> > --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> > +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> > @@ -351,9 +351,10 @@ while true ; do
->> >                         fi
->> >                         # Failed to start a client
->> >                         tst_resm TINFO "$connection_num seems the maximum
->> >                         number of the client"
->> > -                       break
->> > +               else
->> > +                       connection_num=`expr $connection_num + 1`
->> > +                       continue;
->> >                 fi
->> > -               connection_num=`expr $connection_num + 1`
->> >         fi
->> >
->> >      current_epoc=`date +%s`
->> >
->> > Regards,
->> > Jan
->> >
->> >>
->> >> --- a/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> >> +++ b/testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
->> >> @@ -340,7 +340,7 @@ connection_num=0
->> >>  start_epoc=`date +%s`
->> >>  while true ; do
->> >>         # Making connections
->> >> -       if [ $connection_num -lt $CONNECTION_TOTAL ]; then
->> >> +       while [ $connection_num -lt $CONNECTION_TOTAL ]; do
->> >>                 # Run a client
->> >>                 ret=`$LTP_RSH $RHOST
->> >> ${LTPROOT}/testcases/bin/ns-tcpclient -b -f $IP_VER -S $lhost_addr -p
->> >> $server_port' ; ec
->> >>                 if [ $ret -ne 0 ]; then
->> >> @@ -354,7 +354,12 @@ while true ; do
->> >>                         break
->> >>                 fi
->> >>                 connection_num=`expr $connection_num + 1`
->> >> -       fi
->> >> +
->> >> +               # check timeout every 100 times
->> >> +               if [ $(($connection_num % 100)) -eq 0 ];then
->> >> +                       break
->> >> +               fi
->> >> +       done
->> >>
->> >>      current_epoc=`date +%s`
->> >>      elapse_epoc=`expr $current_epoc - $start_epoc`
->> >>
->> >> 2013/6/28 Jan Stancek <jstancek@redhat.com>:
->> >> >
->> >> >
->> >> >
->> >> >
->> >> > ----- Original Message -----
->> >> >> From: "Hangbin Liu" <liuhangbin@gmail.com>
->> >> >> To: "Jan Stancek" <jstancek@redhat.com>
->> >> >> Sent: Friday, 28 June, 2013 8:36:05 AM
->> >> >> Subject: Re: [LTP] [PATCH] networking/stress/tcp: make sure we will
->> >> >> kill
->> >> >> the test case after timeout
->> >> >>
->> >> >> No, we can set up $CONNECTION_TOTAL connections as soon as possible,
->> >> >> and
->> >> >> also
->> >> >> transmit tcp data at the same time.
->> >> >
->> >> > Where does this happen?
->> >> >
->> >> > I'm looking at the while loop, and I see it creates 1 connection each
->> >> > iteration, then it sleeps for 1 second.
->> >> >
->> >> > Am I missing something here?
->> >> >
->> >> > while true ; do
->> >> >         # Making connections
->> >> >         if [ $connection_num -lt $CONNECTION_TOTAL ]; then
->> >> >                 # make new connection
->> >> >                 ...
->> >> >                 connection_num=`expr $connection_num + 1`
->> >> >         fi
->> >> >
->> >> >     # check time
->> >> >     ...
->> >> >     sleep 1
->> >> > done
->> >> >
->> >> > Regards,
->> >> > Jan
->> >>
->>
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDcvMjMvMjAxMyAwNjoyOCBQTSwgWmhvdXBpbmcgTGl1IHdyb3RlOgo+IGNvbW1pdCAxOGY3
+YmU3ZWIgaW50cm9kdWNlZCB0aGUgZm9sbG93aW5nIGNvbXBpbGluZyBlcnJvcjoKPiAKPiBtYWtl
+WzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0
+cC9naXRfdGVzdC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL2xpYmNsb25lJwo+IGdj
+YyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uLy4u
+Ly4uL2luY2x1ZGUgLUkuLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi9saWIgIGNoZWNrX2Zv
+cl91bnNoYXJlLmMgIC1sZGwgLWxsdHAgLW8gY2hlY2tfZm9yX3Vuc2hhcmUKPiBjaGVja19mb3Jf
+dW5zaGFyZS5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgo+IGNoZWNrX2Zvcl91bnNoYXJlLmM6
+MzU6ODogd2FybmluZzogdmFyaWFibGUg4oCYcmV04oCZIHNldCBidXQgbm90IHVzZWQgWy1XdW51
+c2VkLWJ1dC1zZXQtdmFyaWFibGVdCj4gICB2b2lkICpyZXQ7Cj4gICAgICAgICBeCj4gLi4vLi4v
+Li4vbGliL2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGBjYXRfZmlsZSc6Cj4gL21u
+dC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMu
+Yzo3Nzc6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYFRDSUQnCj4gL21udC90ZXN0cy9rZXJuZWwv
+ZGlzdHJpYnV0aW9uL2x0cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMuYzo3ODc6IHVuZGVmaW5l
+ZCByZWZlcmVuY2UgdG8gYFRDSUQnCj4gL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0
+cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMuYzo3OTU6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
+YFRDSUQnCj4gLi4vLi4vLi4vbGliL2xpYmx0cC5hKHRzdF9yZXMubyk6IEluIGZ1bmN0aW9uIGB0
+c3RfcmVzJzoKPiAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0L2x0
+cC9saWIvdHN0X3Jlcy5jOjMwMTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKPiAvbW50
+L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0L2x0cC9saWIvdHN0X3Jlcy5j
+OjMxNzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKPiAuLi8uLi8uLi9saWIvbGlibHRw
+LmEodHN0X3Jlcy5vKTovbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0
+L2x0cC9saWIvdHN0X3Jlcy5jOjM3MDogbW9yZSB1bmRlZmluZWQgcmVmZXJlbmNlcyB0byBgVENJ
+RCcgZm9sbG93Cj4gY29sbGVjdDI6IGVycm9yOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4g
+bWFrZTogKioqIFtjaGVja19mb3JfdW5zaGFyZV0gRXJyb3IgMQo+IAo+IHRoYXQncyBiZWNhdXNl
+IGNvbW1pdCAxOGY3YmU3ZWIgdXNlZCBMVFAgbGliIGZ1bmN0aW9uIHRzdF9yZXNtKCksIHVzaW5n
+IHByaW50ZigpIGluc3RlYWQgY2FuIGF2b2lkIGl0Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IFpob3Vw
+aW5nIExpdSA8emxpdUByZWRoYXQuY29tPgoKCk9vcHMsIGl0J3MgbXkgZmF1bHQuIFRoYW5rIHlv
+dSwgYXBwbGllZC4KCldhbmxvbmcgR2FvCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNlZSBldmVy
+eXRoaW5nIGZyb20gdGhlIGJyb3dzZXIgdG8gdGhlIGRhdGFiYXNlIHdpdGggQXBwRHluYW1pY3MK
+R2V0IGVuZC10by1lbmQgdmlzaWJpbGl0eSB3aXRoIGFwcGxpY2F0aW9uIG1vbml0b3JpbmcgZnJv
+bSBBcHBEeW5hbWljcwpJc29sYXRlIGJvdHRsZW5lY2tzIGFuZCBkaWFnbm9zZSByb290IGNhdXNl
+IGluIHNlY29uZHMuClN0YXJ0IHlvdXIgZnJlZSB0cmlhbCBvZiBBcHBEeW5hbWljcyBQcm8gdG9k
+YXkhCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD00ODgwODgz
+MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
