@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Uz1zZ-00025A-TT
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 09:56:21 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Uz1zW-0000Q5-GI
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 09:56:21 +0000
-Message-ID: <51E5189F.3090703@oracle.com>
-Date: Tue, 16 Jul 2013 13:55:43 +0400
-From: alexey.kodanev@oracle.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zliu@redhat.com>) id 1V1Zso-0000nI-I8
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 10:31:54 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V1Zsn-0000Xl-E4
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jul 2013 10:31:54 +0000
+From: Zhouping Liu <zliu@redhat.com>
+Date: Tue, 23 Jul 2013 18:28:44 +0800
+Message-Id: <1374575324-26149-1-git-send-email-zliu@redhat.com>
 MIME-Version: 1.0
-References: <1373963498-838-1-git-send-email-penght@cn.fujitsu.com>
-	<1752195557.979708.1373966382515.JavaMail.root@redhat.com>
-	<51E5136F.5080103@cn.fujitsu.com>
-In-Reply-To: <51E5136F.5080103@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] testcases/kernel/firmware: fix a bug of make
-	install
+Subject: [LTP] [PATCH] lib/tst_kvercmp: fixed a compiling error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,48 +22,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-
->>
->>   ifeq ($(SKIP),0)
->>   SUBDIRS                        += fw_load_kernel
->> -SUBDIRS                        += fw_load_user
->>   endif
->> +SUBDIRS                        += fw_load_user
->>
->> We always build userspace part. The check for kernel version is
->> already in setup(). We just need to make sure userspace bits compile everywhere.
->> I tried 2.6.32 based kernel, it builds and runs:
->> # ./fw_load_user/fw_load
->> fw_load     1  TCONF  :  Test must be run with kernel 3.7 or newer
->> fw_load     2  TCONF  :  Remaining cases not appropriate for configuration
->>
-or in case we don't want compile user-space part:
-...
-
-SUBDIRS			+= fw_load_user
-include $(top_srcdir)/include/mk/generic_trunk_target.mk
-else
-include $(top_srcdir)/include/mk/generic_leaf_target.mk
-endif
-
-Thanks,
-Alexey
-
-
-------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Y29tbWl0IDE4ZjdiZTdlYiBpbnRyb2R1Y2VkIHRoZSBmb2xsb3dpbmcgY29tcGlsaW5nIGVycm9y
+OgoKbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1
+dGlvbi9sdHAvZ2l0X3Rlc3QvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9saWJjbG9u
+ZScKZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgIC1J
+Li4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4uL2xpYiAgY2hl
+Y2tfZm9yX3Vuc2hhcmUuYyAgLWxkbCAtbGx0cCAtbyBjaGVja19mb3JfdW5zaGFyZQpjaGVja19m
+b3JfdW5zaGFyZS5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgpjaGVja19mb3JfdW5zaGFyZS5j
+OjM1Ojg6IHdhcm5pbmc6IHZhcmlhYmxlIOKAmHJldOKAmSBzZXQgYnV0IG5vdCB1c2VkIFstV3Vu
+dXNlZC1idXQtc2V0LXZhcmlhYmxlXQogIHZvaWQgKnJldDsKICAgICAgICBeCi4uLy4uLy4uL2xp
+Yi9saWJsdHAuYSh0c3RfcmVzLm8pOiBJbiBmdW5jdGlvbiBgY2F0X2ZpbGUnOgovbW50L3Rlc3Rz
+L2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0L2x0cC9saWIvdHN0X3Jlcy5jOjc3Nzog
+dW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0
+aW9uL2x0cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMuYzo3ODc6IHVuZGVmaW5lZCByZWZlcmVu
+Y2UgdG8gYFRDSUQnCi9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvZ2l0X3Rlc3Qv
+bHRwL2xpYi90c3RfcmVzLmM6Nzk1OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBUQ0lEJwouLi8u
+Li8uLi9saWIvbGlibHRwLmEodHN0X3Jlcy5vKTogSW4gZnVuY3Rpb24gYHRzdF9yZXMnOgovbW50
+L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwL2dpdF90ZXN0L2x0cC9saWIvdHN0X3Jlcy5j
+OjMwMTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgVENJRCcKL21udC90ZXN0cy9rZXJuZWwvZGlz
+dHJpYnV0aW9uL2x0cC9naXRfdGVzdC9sdHAvbGliL3RzdF9yZXMuYzozMTc6IHVuZGVmaW5lZCBy
+ZWZlcmVuY2UgdG8gYFRDSUQnCi4uLy4uLy4uL2xpYi9saWJsdHAuYSh0c3RfcmVzLm8pOi9tbnQv
+dGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvZ2l0X3Rlc3QvbHRwL2xpYi90c3RfcmVzLmM6
+MzcwOiBtb3JlIHVuZGVmaW5lZCByZWZlcmVuY2VzIHRvIGBUQ0lEJyBmb2xsb3cKY29sbGVjdDI6
+IGVycm9yOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCm1ha2U6ICoqKiBbY2hlY2tfZm9yX3Vu
+c2hhcmVdIEVycm9yIDEKCnRoYXQncyBiZWNhdXNlIGNvbW1pdCAxOGY3YmU3ZWIgdXNlZCBMVFAg
+bGliIGZ1bmN0aW9uIHRzdF9yZXNtKCksIHVzaW5nIHByaW50ZigpIGluc3RlYWQgY2FuIGF2b2lk
+IGl0LgoKU2lnbmVkLW9mZi1ieTogWmhvdXBpbmcgTGl1IDx6bGl1QHJlZGhhdC5jb20+Ci0tLQog
+bGliL3RzdF9rdmVyY21wLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyks
+IDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9saWIvdHN0X2t2ZXJjbXAuYyBiL2xpYi90c3Rf
+a3ZlcmNtcC5jCmluZGV4IGJlNDE0OGEuLmI2YWVlOTkgMTAwNjQ0Ci0tLSBhL2xpYi90c3Rfa3Zl
+cmNtcC5jCisrKyBiL2xpYi90c3Rfa3ZlcmNtcC5jCkBAIC0xMDMsNyArMTAzLDcgQEAgaW50IHRz
+dF9rdmVyY21wMihpbnQgcjEsIGludCByMiwgaW50IHIzLCBzdHJ1Y3QgdHN0X2tlcm5fZXh2ICp2
+ZXJzKQogCiAJZm9yIChpID0gMDsgdmVyc1tpXS5kaXN0X25hbWU7IGkrKykgewogCQlpZiAoIXN0
+cmNtcCh2ZXJzW2ldLmRpc3RfbmFtZSwgY3VyX2Rpc3RfbmFtZSkpIHsKLQkJCXRzdF9yZXNtKFRJ
+TkZPLCAiRGV0ZWN0ZWQgJXMgdXNpbmcga2VybmVsIHZlcnNpb24gJXMiLAorCQkJcHJpbnRmKCJE
+ZXRlY3RlZCAlcyB1c2luZyBrZXJuZWwgdmVyc2lvbiAlcyIsCiAJCQkJIGN1cl9kaXN0X25hbWUs
+IGt2ZXIpOwogCQkJcmV0dXJuIHRzdF9rZXh2Y21wKHZlcnNbaV0uZXh0cmFfdmVyLCBrdmVyKTsK
+IAkJfQotLSAKMS43LjExLjcKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2VlIGV2ZXJ5dGhpbmcg
+ZnJvbSB0aGUgYnJvd3NlciB0byB0aGUgZGF0YWJhc2Ugd2l0aCBBcHBEeW5hbWljcwpHZXQgZW5k
+LXRvLWVuZCB2aXNpYmlsaXR5IHdpdGggYXBwbGljYXRpb24gbW9uaXRvcmluZyBmcm9tIEFwcER5
+bmFtaWNzCklzb2xhdGUgYm90dGxlbmVja3MgYW5kIGRpYWdub3NlIHJvb3QgY2F1c2UgaW4gc2Vj
+b25kcy4KU3RhcnQgeW91ciBmcmVlIHRyaWFsIG9mIEFwcER5bmFtaWNzIFBybyB0b2RheSEKaHR0
+cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTQ4ODA4ODMxJml1PS80
+MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
