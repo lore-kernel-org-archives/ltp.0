@@ -2,20 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1Uw4Ud-0008Sc-3U
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 06:00:11 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uw4Ua-0007cO-4V
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jul 2013 06:00:11 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r685hY7S016124
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Jul 2013 13:43:35 +0800
-Message-ID: <51DA513C.2040403@cn.fujitsu.com>
-Date: Mon, 08 Jul 2013 13:42:20 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	(envelope-from <vitti570@gmail.com>) id 1V1rnf-0005IR-TH
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 05:39:47 +0000
+Received: from mail-wg0-f43.google.com ([74.125.82.43])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1V1rne-00023p-1s
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 05:39:47 +0000
+Received: by mail-wg0-f43.google.com with SMTP id z12so2627533wgg.34
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 23 Jul 2013 22:39:39 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] mount/mount06.c: new case to test MS_MOVE of mount
+Date: Wed, 24 Jul 2013 07:39:39 +0200
+Message-ID: <CALuM2ALAOheiEA71A_=YuRqMeCAyBBe+kgHmVvOzcUd7+4kP1w@mail.gmail.com>
+From: Vitti <vitti570@gmail.com>
+Subject: [LTP] Two C issues with ltp-full-20130503
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,236 +28,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
+In ltp-full-20130503 chmod02.c line 190 I believe that &buf should be just buf.
+This is because buf, declared at line 128, is already a pointer
+to the string "file contents\n" and the system function write
+requires as its second argument a pointer to the buffer to be written
+to the file "tfile".
+By looking to tfile I found that with &buf I got unreadable data
+while with buf I got "file contents" as it should be.
 
-Create new test case "mount06.c" for MS_MOVE of mount.
+In sigrelse01.c line 646 the function write_pipe attempts to write
+MAXMESG bytes from its second argument to the pipe.
+MAXMESG is declared as 512 at line 149.
+At line 291 write_pipe is called with READY as the buffer pointer.
+READY is defined at line 151 as the string "ready".
+"ready" is only six bytes long, including the null at its end,
+while write_pipe attempts to transfer 512 bytes.
+I think this is questionable because nobody knows the contents of the
+other 506 bytes, you may even get a segmentation fault
+because the data area is shorter, depending on the implementation.
 
-Checking if file is visible from the new location after move mount.
-
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/.gitignore      |   1 +
- testcases/kernel/syscalls/mount/mount06.c | 175 ++++++++++++++++++++++++++++++
- 3 files changed, 177 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mount/mount06.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index beb8782..b4a69f5 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -579,6 +579,7 @@ mount01 mount01 -D DEVICE -T DEVICE_FS_TYPE
- mount02 mount02 -D DEVICE -T DEVICE_FS_TYPE
- mount03 mount03 -D DEVICE -T DEVICE_FS_TYPE
- mount04 mount04 -D DEVICE -T DEVICE_FS_TYPE
-+mount06 mount06 -D DEVICE -T DEVICE_FS_TYPE
-
- move_pages01 move_pages.sh 01
- move_pages02 move_pages.sh 02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 18d03d4..5d6f9d6 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -522,6 +522,7 @@
- /mount/mount02
- /mount/mount03
- /mount/mount04
-+/mount/mount06
- /mount/setuid_test
- /move_pages/move_pages01
- /move_pages/move_pages02
-diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
-new file mode 100644
-index 0000000..927d288
---- /dev/null
-+++ b/testcases/kernel/syscalls/mount/mount06.c
-@@ -0,0 +1,175 @@
-+/*
-+ * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ *
-+ */
-+
-+/*
-+ *  DESCRIPTION
-+ *	Test for feature MS_MOVE of mount(2).
-+ *	"Move an existing mount point to the new location."
-+ */
-+
-+#include <errno.h>
-+#include <sys/mount.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+#define MNTPOINT_SRC	"mnt_src"
-+#define MNTPOINT_DES	"mnt_des"
-+#define TMP_FILE	"tstfile"
-+#define DIR_MODE	(S_IRWXU | S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP)
-+
-+static void help(void);
-+static void setup(void);
-+static void cleanup(void);
-+
-+char *TCID = "mount06";
-+int TST_TOTAL = 1;
-+
-+static const char *fs_type = "ext2";
-+
-+static int tflag;
-+static int dflag;
-+static char *fstype;
-+static char *device;
-+static char path_name[PATH_MAX];
-+static char file_src[PATH_MAX];
-+static char file_des[PATH_MAX];
-+static char mntpoint_src[PATH_MAX];
-+static char mntpoint_des[PATH_MAX];
-+
-+static option_t options[] = {
-+	{"T:", &tflag, &fstype},
-+	{"D:", &dflag, &device},
-+	{NULL, NULL, NULL},
-+};
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, options, &help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	/* Check for mandatory option of the testcase */
-+	if (!dflag)
-+		tst_brkm(TBROK, NULL,
-+			 "you must specify the device used for mounting with "
-+			 "the -D option");
-+
-+	if (tflag)
-+		fs_type = fstype;
-+
-+	if (STD_COPIES != 1) {
-+		tst_resm(TINFO, "-c option has no effect for this testcase - "
-+			 "%s doesn't allow running more than one instance "
-+			 "at a time", TCID);
-+		STD_COPIES = 1;
-+	}
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
-+		tst_count = 0;
-+
-+		if (mount(device, mntpoint_src, fs_type, 0, NULL) == -1)
-+			tst_brkm(TBROK | TERRNO, cleanup, "mount %s failed",
-+				 mntpoint_src);
-+
-+		SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
-+
-+		TEST(mount(mntpoint_src, mntpoint_des, fs_type, MS_MOVE, NULL));
-+
-+		if (TEST_RETURN != 0) {
-+			tst_resm(TFAIL | TTERRNO, "mount(2) failed");
-+		} else {
-+
-+			if (open(file_des, O_CREAT | O_EXCL) == -1 &&
-+			    errno == EEXIST)
-+				tst_resm(TPASS, "move mount is ok");
-+			else
-+				tst_resm(TFAIL, "file %s is not available",
-+					 file_des);
-+
-+			TEST(umount(mntpoint_des));
-+			if (TEST_RETURN != 0)
-+				tst_brkm(TBROK | TTERRNO, cleanup,
-+					 "umount(2) failed");
-+		}
-+	}
-+	cleanup();
-+
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	tst_tmpdir();
-+
-+	if (getcwd(path_name, sizeof(path_name)) == NULL)
-+		tst_brkm(TBROK, cleanup, "getcwd failed");
-+
-+	/*
-+	 * Turn current dir into a private mount point being a parent
-+	 * mount which is required by move mount.
-+	 */
-+	if (mount(path_name, path_name, "none", MS_BIND, NULL) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "bind mount failed");
-+
-+	if (mount("none", path_name, "none", MS_PRIVATE, NULL) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "mount private failed");
-+
-+	snprintf(mntpoint_src, PATH_MAX, "%s/%s", path_name, MNTPOINT_SRC);
-+	snprintf(mntpoint_des, PATH_MAX, "%s/%s", path_name, MNTPOINT_DES);
-+
-+	snprintf(file_src, PATH_MAX, "%s/%s/%s",
-+		 path_name, MNTPOINT_SRC, TMP_FILE);
-+	snprintf(file_des, PATH_MAX, "%s/%s/%s",
-+		 path_name, MNTPOINT_DES, TMP_FILE);
-+
-+	SAFE_MKDIR(cleanup, mntpoint_src, DIR_MODE);
-+	SAFE_MKDIR(cleanup, mntpoint_des, DIR_MODE);
-+
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	if (umount(path_name) != 0)
-+		tst_brkm(TBROK | TTERRNO, NULL, "umount(2) %s failed",
-+			 path_name);
-+
-+	TEST_CLEANUP;
-+
-+	tst_rmdir();
-+}
-+
-+void help(void)
-+{
-+	printf("-T type	  : specifies the type of filesystem to be mounted. "
-+	       "Default ext2.\n");
-+	printf("-D device : device used for mounting.\n");
-+}
--- 
-1.8.1
+I believe my comments are implementation independent,
+anyway I have an x86-64, with Fedora 19 and gcc 4.8.1.
+Best regards
+Vittorio
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
