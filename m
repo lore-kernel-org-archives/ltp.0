@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UuKjO-0006Vz-Ea
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jul 2013 10:56:14 +0000
-Date: Wed, 3 Jul 2013 12:57:46 +0200
-From: chrubis@suse.cz
-Message-ID: <20130703105746.GB2906@rei>
-References: <51D38B82.5060709@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1V2dPw-00071E-KR
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:30:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V2dPv-0001DH-2d
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:30:28 +0000
+Message-ID: <51F233B4.2030804@cn.fujitsu.com>
+Date: Fri, 26 Jul 2013 16:30:44 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51D38B82.5060709@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] mount/mount05.c: new case to test MS_BIND of
- mount
+References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<221551028.6361858.1374822441673.JavaMail.root@redhat.com>
+	<51F22AB9.6060109@cn.fujitsu.com>
+	<1515555986.6425405.1374827280068.JavaMail.root@redhat.com>
+In-Reply-To: <1515555986.6425405.1374827280068.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
+	glibc
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,68 +32,121 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Create new test case for MS_BIND of mount.
+On 07/26/2013 04:28 PM, Jan Stancek wrote:
 > 
-> Checking if file is visible from target mountpoint after bind mount.
 > 
-> +/**************************************************************************
-> + *
-> + *    EXECUTED BY	: root / superuser
-> + *
-> + *    DESCRIPTION
-> + *	Test for feature MS_BIND of mount.
-> + *	"Perform a bind mount, making a file or a directory subtree visible
-> + *	 at another point within a file system."
-> + *
-> + *	Setup:
-> + *	  Setup signal handling.
-> + *	  Create a mount point.
-> + *	  Pause for SIGUSR1 if option specified.
-> + *
-> + *	Test:
-> + *	 Loop if the proper options are given.
-> + *	  Execute system call
-> + *	  Check return code, if system call failed (return=-1)
-> + *		Log the errno and Issue a FAIL message.
-> + *	  Otherwise, Issue a PASS message.
-> + *
-> + *	Cleanup:
-> + *	  Delete the mount point.
-> + *
-> + *    RESTRICTIONS
-> + *	test must run with the -D option
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: "LTP" <ltp-list@lists.sourceforge.net>
+>> Sent: Friday, 26 July, 2013 9:52:25 AM
+>> Subject: Re: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
+>>
+>> On 07/26/2013 03:07 PM, Jan Stancek wrote:
+>>>
+>>>
+>>> ----- Original Message -----
+>>>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>>>> To: "LTP" <ltp-list@lists.sourceforge.net>
+>>>> Cc: "Cyril Hrubis" <chrubis@suse.cz>, "Caspar Zhang"
+>>>> <caspar@casparzhang.com>, "Garrett Cooper" <yanegomi@gmail.com>,
+>>>> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com, "Wanlong Gao"
+>>>> <gaowanlong@cn.fujitsu.com>
+>>>> Sent: Friday, 26 July, 2013 4:56:18 AM
+>>>> Subject: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
+>>>>
+>>>> Since the reader can always acquire the rwlock if there's not a writer
+>>>> held the lock.
+>>>>
+>>>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>>>
+>>> Hi,
+>>>
+>>> I agree that these 3 fail by default on glibc at the moment.
+>>> Since we are adding a GLIBC ifdef, I'm wondering if we could use
+>>> glibc specific api to change default behaviour with
+>>> pthread_rwlockattr_setkind_np() and still run the testcase.
+>>
+>> The first 2 *_rdlock cases can change to WRITER_PREFER to let them pass,
+>> but the last *_unlock one can't, because *_unlock will choose the writer
+>> first without any care of the NP KIND.
+>> How about change the first two cases to WRITER_PREFER and just skip the third
+>> *_unlock one?
+> 
+> I agree with skipping third one and let's see what other guys think about first two.
+> When you say "WRITER_PREFER", is that an actual define on your system? Or just
+> a shortcut for PTHREAD_RWLOCK_PREFER_WRITER...?
 
-Now this part of the comment is not relevant anymore. Which is the
-reason we should comment only information that is not easily seen from
-the test itself.
+Surly means shortcut in glibc:
 
-If some options are required the test must print error when these are
-not passed. Adding these to comments too only creates room for outdated
-and misleading informations.
+113 enum
+ 114 {
+ 115   PTHREAD_RWLOCK_PREFER_READER_NP,
+ 116   PTHREAD_RWLOCK_PREFER_WRITER_NP,
+ 117   PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP,
+ 118   PTHREAD_RWLOCK_DEFAULT_NP = PTHREAD_RWLOCK_PREFER_READER_NP
+ 119 };
 
-I would just keep the description here which nicely tells what the test
-does in one sentence, the rest of the comment is mostly useless.
+Thanks,
+Wanlong Gao
 
-> + *	test doesn't support -c option to run it in parallel, as mount
-> + *	syscall is not supposed to run in parallel.
-> + *****************************************************************************/
+> 
+> Regards,
+> Jan
+> 
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>
+>>> Regards,
+>>> Jan
+>>>
+>>>> ---
+>>>>  .../conformance/interfaces/pthread_rwlock_rdlock/2-1.c              | 6
+>>>>  ++++++
+>>>>  1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git
+>>>> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>>>> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>>>> index c6c1412..62a4b3b 100644
+>>>> ---
+>>>> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>>>> +++
+>>>> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>>>> @@ -141,6 +141,12 @@ int main(void)
+>>>>  	return PTS_UNSUPPORTED;
+>>>>  #endif
+>>>>  
+>>>> +#ifdef __GLIBC__
+>>>> +	printf("The reader can always acquire rwlock if there's"
+>>>> +		" not a writer held this lock in glibc\n");
+>>>> +	return PTS_UNTESTED;
+>>>> +#endif
+>>>> +
+>>>>  	int cnt = 0;
+>>>>  	pthread_t rd_thread, wr_thread;
+>>>>  	int priority;
+>>>> --
+>>>> 1.8.3.3.754.g9c3c367
+>>>>
+>>>>
+>>>
+>>
+>>
+> 
 
-The test code looks fine to me.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
