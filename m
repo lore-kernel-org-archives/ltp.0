@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V4CHu-0005NQ-I1
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 15:56:38 +0000
-Date: Tue, 30 Jul 2013 17:56:23 +0200
-From: chrubis@suse.cz
-Message-ID: <20130730155622.GA1999@rei.scz.novell.com>
-References: <CADyrn+t16kR9FAfQSYUB2aYJej1BEFFZcLwUzDi0nKAjHyZ6Rw@mail.gmail.com>
-	<20130716122924.GA21078@rei>
-	<CADyrn+vPD7d4o4F4r7HayBJ-Q9iKL4HefbUxkcJVik8yb80o7w@mail.gmail.com>
-	<20130717135735.GA27308@rei>
-	<CADyrn+sgQJL+0NOFp3GW78LoqmKG1szFbu+C14Dk8SZgu=fe2Q@mail.gmail.com>
-	<CADyrn+s2BjHFhT5BnHSHOzQmyqyEf=bofjj+6E-oKhp9OyGohA@mail.gmail.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1V2d1J-0000S6-PH
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:05:02 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V2d1H-0004NK-Og
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:05:01 +0000
+Message-ID: <51F22AB9.6060109@cn.fujitsu.com>
+Date: Fri, 26 Jul 2013 15:52:25 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CADyrn+s2BjHFhT5BnHSHOzQmyqyEf=bofjj+6E-oKhp9OyGohA@mail.gmail.com>
-Subject: Re: [LTP] [mtest01w] mtest01w test hangs
+References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<221551028.6361858.1374822441673.JavaMail.root@redhat.com>
+In-Reply-To: <221551028.6361858.1374822441673.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
+	glibc
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,37 +30,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: SHASHANK BILGI <shashank192@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi!
-> In my case 2 child processes from mtest01w try to allocate 1GB each and
-> third one allocates around 100 MB.
-> Both of the first 2 child processes throws this error "errno=ENOMEM(12):
-> Cannot allocate memory" around 700MB. And third successfully finishes its
-> job.
-> Here are some details.
-> * Actual physical memory: 80MB
-> * Swap space is 2GB
-> * /proc/sys/vm/overcommit_memory is 1
-> * /proc/sys/vm/overcommit_ratio is 50
+On 07/26/2013 03:07 PM, Jan Stancek wrote:
 > 
-> Can somebody please tell me why this might be happening?
+> 
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "LTP" <ltp-list@lists.sourceforge.net>
+>> Cc: "Cyril Hrubis" <chrubis@suse.cz>, "Caspar Zhang" <caspar@casparzhang.com>, "Garrett Cooper" <yanegomi@gmail.com>,
+>> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com, "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> Sent: Friday, 26 July, 2013 4:56:18 AM
+>> Subject: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
+>>
+>> Since the reader can always acquire the rwlock if there's not a writer
+>> held the lock.
+>>
+>> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> 
+> Hi,
+> 
+> I agree that these 3 fail by default on glibc at the moment.
+> Since we are adding a GLIBC ifdef, I'm wondering if we could use
+> glibc specific api to change default behaviour with 
+> pthread_rwlockattr_setkind_np() and still run the testcase.
 
-Hmm, are you aware that in this case you RAM + SWAP is lesser than the
-memory the program is trying to allocate, which will not work no matter
-what.
+The first 2 *_rdlock cases can change to WRITER_PREFER to let them pass,
+but the last *_unlock one can't, because *_unlock will choose the writer
+first without any care of the NP KIND.
+How about change the first two cases to WRITER_PREFER and just skip the third *_unlock one?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Wanlong Gao
+
+> 
+> Regards,
+> Jan
+> 
+>> ---
+>>  .../conformance/interfaces/pthread_rwlock_rdlock/2-1.c              | 6
+>>  ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git
+>> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>> index c6c1412..62a4b3b 100644
+>> ---
+>> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>> +++
+>> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+>> @@ -141,6 +141,12 @@ int main(void)
+>>  	return PTS_UNSUPPORTED;
+>>  #endif
+>>  
+>> +#ifdef __GLIBC__
+>> +	printf("The reader can always acquire rwlock if there's"
+>> +		" not a writer held this lock in glibc\n");
+>> +	return PTS_UNTESTED;
+>> +#endif
+>> +
+>>  	int cnt = 0;
+>>  	pthread_t rd_thread, wr_thread;
+>>  	int priority;
+>> --
+>> 1.8.3.3.754.g9c3c367
+>>
+>>
+> 
+
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
