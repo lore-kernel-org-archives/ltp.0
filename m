@@ -1,40 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <tejaswin@linux.vnet.ibm.com>) id 1V1vNa-0006Pw-NM
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 09:29:06 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V1vNY-0002nf-JK
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jul 2013 09:29:06 +0000
-Received: from /spool/local
-	by e37.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <tejaswin@linux.vnet.ibm.com>;
-	Wed, 24 Jul 2013 03:28:59 -0600
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by d03dlp01.boulder.ibm.com (Postfix) with ESMTP id 0E0B21FF0044
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 24 Jul 2013 03:23:36 -0600 (MDT)
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	r6O9SvKn135170
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jul 2013 03:28:57 -0600
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id r6O9Vaoj026952
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jul 2013 03:31:36 -0600
-Received: from localhost.localdomain ([9.124.151.54])
-	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
-	r6O9VTpQ026819
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jul 2013 03:31:35 -0600
-Message-ID: <51EF9E51.1070208@linux.vnet.ibm.com>
-Date: Wed, 24 Jul 2013 14:58:49 +0530
-From: Tejaswini <tejaswin@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1V2dNm-00007n-K7
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:28:14 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V2dNi-0001PG-Lo
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jul 2013 08:28:14 +0000
+Date: Fri, 26 Jul 2013 04:28:00 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1515555986.6425405.1374827280068.JavaMail.root@redhat.com>
+In-Reply-To: <51F22AB9.6060109@cn.fujitsu.com>
+References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	<221551028.6361858.1374822441673.JavaMail.root@redhat.com>
+	<51F22AB9.6060109@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Containers test case is hanging at two sub test cases
+Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
+	glibc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,70 +30,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-Containers : testcase is preventing runfiv.sh from proceeding. Hangs at
-
->> two_children_ns and
->> par_chld_ipv6
-
-The function crtchild() in two_children_ns.c and par_chld_ipv6.c is called
-with only one parameter while the definition has two parameters: 
-crtchild (char *, char *)
-
-Signed-off-by: Tejaswini <tejaswin@linux.vnet.ibm.com>
-
-The patches below fix the issue:
-
-----
-
---- ltp-full-20130109/testcases/kernel/containers/netns/par_chld_ipv6.c.orig    2013-06-19 16:05:55.866360812 +0530
-+++ ltp-full-20130109/testcases/kernel/containers/netns/par_chld_ipv6.c 2013-06-19 16:06:31.975150188 +0530
-@@ -45,7 +45,7 @@
-  #include "test.h"
-  #include "config.h"
-
--extern int crtchild(char *);
-+extern int crtchild(char *, char *);
-
-  char *TCID = "netns_ipv6";
-  int TST_TOTAL = 1;
-@@ -95,7 +95,7 @@ int main()
-  #else
-                 tst_resm(TCONF, "System doesn't have unshare support");
-  #endif
--               return crtchild(child);
-+               return crtchild(child,par);
-         } else {
-
-                 //parent
-
---- ltp-full-20130109/testcases/kernel/containers/netns/two_children_ns.c.orig  2013-06-19 16:04:54.436982114 +0530
-+++ ltp-full-20130109/testcases/kernel/containers/netns/two_children_ns.c       2013-06-19 16:05:22.427611441 +0530
-@@ -47,7 +47,7 @@
-  #include "libclone.h"
-  #include "config.h"
-
--extern int crtchild(char *);
-+extern int crtchild(char *, char *);
-
-  char *TCID = "netns_2children";
-  int TST_TOTAL = 1;
-@@ -109,7 +109,7 @@ int main()
-                                 return ret;
-                         }
-  #endif
--                       return crtchild(child[i]);
-+                       return crtchild(child[i], par[i]);
-                 } else {
-                         //Parent
-
-----
-
-Thanks,
-Tejaswini
+To: gaowanlong@cn.fujitsu.com
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
 
+
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "LTP" <ltp-list@lists.sourceforge.net>
+> Sent: Friday, 26 July, 2013 9:52:25 AM
+> Subject: Re: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
+> 
+> On 07/26/2013 03:07 PM, Jan Stancek wrote:
+> > 
+> > 
+> > ----- Original Message -----
+> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> >> To: "LTP" <ltp-list@lists.sourceforge.net>
+> >> Cc: "Cyril Hrubis" <chrubis@suse.cz>, "Caspar Zhang"
+> >> <caspar@casparzhang.com>, "Garrett Cooper" <yanegomi@gmail.com>,
+> >> "Mike Frysinger" <vapier@gentoo.org>, jstancek@redhat.com, "Wanlong Gao"
+> >> <gaowanlong@cn.fujitsu.com>
+> >> Sent: Friday, 26 July, 2013 4:56:18 AM
+> >> Subject: [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on glibc
+> >>
+> >> Since the reader can always acquire the rwlock if there's not a writer
+> >> held the lock.
+> >>
+> >> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> > 
+> > Hi,
+> > 
+> > I agree that these 3 fail by default on glibc at the moment.
+> > Since we are adding a GLIBC ifdef, I'm wondering if we could use
+> > glibc specific api to change default behaviour with
+> > pthread_rwlockattr_setkind_np() and still run the testcase.
+> 
+> The first 2 *_rdlock cases can change to WRITER_PREFER to let them pass,
+> but the last *_unlock one can't, because *_unlock will choose the writer
+> first without any care of the NP KIND.
+> How about change the first two cases to WRITER_PREFER and just skip the third
+> *_unlock one?
+
+I agree with skipping third one and let's see what other guys think about first two.
+When you say "WRITER_PREFER", is that an actual define on your system? Or just
+a shortcut for PTHREAD_RWLOCK_PREFER_WRITER...?
+
+Regards,
+Jan
+
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> > 
+> > Regards,
+> > Jan
+> > 
+> >> ---
+> >>  .../conformance/interfaces/pthread_rwlock_rdlock/2-1.c              | 6
+> >>  ++++++
+> >>  1 file changed, 6 insertions(+)
+> >>
+> >> diff --git
+> >> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+> >> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+> >> index c6c1412..62a4b3b 100644
+> >> ---
+> >> a/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+> >> +++
+> >> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_rwlock_rdlock/2-1.c
+> >> @@ -141,6 +141,12 @@ int main(void)
+> >>  	return PTS_UNSUPPORTED;
+> >>  #endif
+> >>  
+> >> +#ifdef __GLIBC__
+> >> +	printf("The reader can always acquire rwlock if there's"
+> >> +		" not a writer held this lock in glibc\n");
+> >> +	return PTS_UNTESTED;
+> >> +#endif
+> >> +
+> >>  	int cnt = 0;
+> >>  	pthread_t rd_thread, wr_thread;
+> >>  	int priority;
+> >> --
+> >> 1.8.3.3.754.g9c3c367
+> >>
+> >>
+> > 
+> 
+> 
 
 ------------------------------------------------------------------------------
 See everything from the browser to the database with AppDynamics
