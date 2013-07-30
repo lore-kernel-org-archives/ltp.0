@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UwjrS-0000DQ-Jz
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:10:30 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UwjrR-0000TD-Ie
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:10:30 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6A2AHl0022622
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jul 2013 10:10:22 +0800
-Message-ID: <51DCC295.8020706@cn.fujitsu.com>
-Date: Wed, 10 Jul 2013 10:10:29 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V46ik-0004VQ-KK
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 09:59:58 +0000
+Date: Tue, 30 Jul 2013 11:59:50 +0200
+From: chrubis@suse.cz
+Message-ID: <20130730095950.GC1184@rei.scz.novell.com>
+References: <51F7338D.4060804@cn.fujitsu.com> <51F735B2.5030007@cn.fujitsu.com>
+	<51F73E13.9040802@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <51DA4B63.9010700@cn.fujitsu.com>
-In-Reply-To: <51DA4B63.9010700@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2 v2] mount/mount03.c: clean up
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <51F73E13.9040802@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,26 +28,56 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: DAN LI <li.dan@cn.fujitsu.com>
 Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/08/2013 01:17 PM, DAN LI wrote:
-> Clean up mount03.c:
->     xxx func() -> xxx func(void)
+Hi!
+> >> The definitions of MS_PRIVATE and MS_MOVE were only added to glibc headers
+> >> in version 2.12.
+> >>
+> >> If the version of glibc is older than 2.12, define these two flags.
+> >>
+> >> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> >> ---
+> >>  testcases/kernel/syscalls/mount/mount06.c |    5 +++++
+> >>  1 files changed, 5 insertions(+), 0 deletions(-)
+> >>
+> >> diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
+> >> index acfb22d..ab1a472 100644
+> >> --- a/testcases/kernel/syscalls/mount/mount06.c
+> >> +++ b/testcases/kernel/syscalls/mount/mount06.c
+> >> @@ -31,6 +31,11 @@
+> >>  #include "usctest.h"
+> >>  #include "safe_macros.h"
+> >>
+> >> +#if !(__GLIBC_PREREQ(2, 12))
+> > 
+> > Why not do like below?
 > 
->     clean up setup()
-> 
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> I think it also clearly shows the reason why this definition should
+> exist here(glibc version related).
 
-Applied V2 series, thank you.
+Well the same is told in the git commit log anyway.
+(Which is the place where people should look for verbose description of
+ changes.)
 
-Wanlong Gao
+And this kind of code may break with different libc implementation where
+there is no __GLIBC_PREREQ() macro.
 
+
+So I vote for the:
+
+#ifndef FOO
+# define FOO xyz
+#endif
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
