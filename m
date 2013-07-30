@@ -1,27 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1UuY6g-0001Vl-HH
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 01:13:10 +0000
-Received: from mail-wg0-f46.google.com ([74.125.82.46])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UuY6e-0004nc-Kl
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jul 2013 01:13:10 +0000
-Received: by mail-wg0-f46.google.com with SMTP id c11so640510wgh.13
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Jul 2013 18:13:02 -0700 (PDT)
+	(envelope-from <metan@suse.de>) id 1V4DpV-0005Rt-Pl
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 17:35:25 +0000
+Date: Tue, 30 Jul 2013 19:35:17 +0200
+From: chrubis@suse.cz
+Message-ID: <20130730173517.GC1999@rei.scz.novell.com>
+References: <0575932595c58348fef5664c180a73b59b2515f4.1374647501.git.jstancek@redhat.com>
+	<99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <51CD3113.7010802@casparzhang.com>
-References: <1372142262-4654-1-git-send-email-liuhangbin@gmail.com>
-	<51CCFF42.6060703@casparzhang.com>
-	<CAPwn2JSrnMeANv6Reh=Z1sGZEpr5aGD1SMKtffjwdxnuh+cv=w@mail.gmail.com>
-	<51CD3113.7010802@casparzhang.com>
-Date: Thu, 4 Jul 2013 09:13:02 +0800
-Message-ID: <CAPwn2JSRvLdTg8qjqPEVS-=a82JoAAhMwBO67i3HvD0edE3AYw@mail.gmail.com>
-From: Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] testscripts/networkstress.sh: update for two
- interfaces support
+Content-Disposition: inline
+In-Reply-To: <99e7b2c3f61ddc7e6e89d28a0b15bc001e372b76.1374647501.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] open_posix_testsuite/../mq_timedsend/12-1:
+ fix race
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,482 +26,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Caspar,
+Hi!
+> -#define INTHREAD 0
+> -#define INMAIN 1
+> +#define SAFE(op) \
+> +	do {\
+> +		if ((op) == -1) {\
+> +			perror("unexpected failure"); \
+> +			exit(PTS_UNRESOLVED); \
+> +		} \
+> +	} while (0)
 
-Here are some results after applied this patch, there are all passed
-except two, one is IPcomp [ tunnel ] config failed, another is IPv6
-connectivity failed. Both are not related with this patch.
+I do not like this approach, this does not tell what call has failed. It
+would be really hard to figure out what exact line of code has failed
+from the test error messages.
 
-<<<test_start>>>
-tag=icmp4-multi-diffnic01 stime=1372785494
-cmdline="icmp4-multi-diffnic01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic01    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic01    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic01    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic01    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic01    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
+> -/* manual semaphore */
+> -int sem;
+> +/* variable to indicate how many times signal handler was called */
+> +static volatile sig_atomic_t in_handler;
+>  
+> -/* flag to indicate signal handler was called */
+> -int in_handler;
+> +/* errno returned by mq_timedsend() */
+> +static volatile int mq_timedsend_errno = -1;
+>  
+> -/* flag to indicate that errno was set to eintr when mq_timedsend()
+> - * was interruped. */
+> -int errno_eintr;
+> +/* pipes to synchronize thread calling mq_timedsend */
+> +static int pipefd_start[2];
+> +static int pipefd_exit[2];
 
-MARK-LWD-LOOP -- 2013-07-02 13:18:27 --
-icmp4-multi-diffnic01    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=104 termination_type=exited termination_id=0 corefile=no
-cutime=19 cstime=46
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp4-multi-diffnic02 stime=1372785598
-cmdline="icmp4-multi-diffnic02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic02    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic02    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic02    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic02    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic02    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp4-multi-diffnic02    0  TINFO  :  - IPsec [ AH / transport ]
-icmp4-multi-diffnic02    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=102 termination_type=exited termination_id=0 corefile=no
-cutime=20 cstime=49
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp4-multi-diffnic03 stime=1372785700
-cmdline="icmp4-multi-diffnic03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic03    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic03    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic03    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic03    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic03    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp4-multi-diffnic03    0  TINFO  :  - IPsec [ AH / tunnel ]
-icmp4-multi-diffnic03    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=104 termination_type=exited termination_id=0 corefile=no
-cutime=19 cstime=49
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp4-multi-diffnic04 stime=1372785804
-cmdline="icmp4-multi-diffnic04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic04    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic04    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic04    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic04    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic04    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp4-multi-diffnic04    0  TINFO  :  - IPsec [ ESP / transport ]
+What about using mutexes? (it's multithread application anyway).
 
-MARK-LWD-LOOP -- 2013-07-02 13:23:27 --
-icmp4-multi-diffnic04    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=102 termination_type=exited termination_id=0 corefile=no
-cutime=20 cstime=49
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp4-multi-diffnic05 stime=1372785906
-cmdline="icmp4-multi-diffnic05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic05    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic05    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic05    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic05    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic05    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp4-multi-diffnic05    0  TINFO  :  - IPsec [ ESP / tunnel ]
-icmp4-multi-diffnic05    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=102 termination_type=exited termination_id=0 corefile=no
-cutime=20 cstime=48
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp4-multi-diffnic06 stime=1372786008
-cmdline="icmp4-multi-diffnic06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic06    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic06    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic06    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic06    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic06    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp4-multi-diffnic06    0  TINFO  :  - IPcomp [ transport ]
-
-MARK-LWD-LOOP -- 2013-07-02 13:28:27 --
-icmp4-multi-diffnic06    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=103 termination_type=exited termination_id=0 corefile=no
-cutime=19 cstime=50
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp4-multi-diffnic07 stime=1372786111
-cmdline="icmp4-multi-diffnic07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp4-multi-diffnic07    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp4-multi-diffnic07    0  TINFO  :  - Test duration is 60 [sec]
-icmp4-multi-diffnic07    0  TINFO  :  - Target number of the connection is 2
-icmp4-multi-diffnic07    0  TINFO  :  - Version of IP is IPv4
-icmp4-multi-diffnic07    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp4-multi-diffnic07    0  TINFO  :  - IPcomp [ tunnel ]
-Invalid argument.
-Invalid argument.
-icmp4-multi-diffnic07    1  TBROK  :  Failed to configure SAD/SPD on
-the local host.
-<<<execution_status>>>
-initiation_status="ok"
-duration=7 termination_type=exited termination_id=1 corefile=no
-cutime=12 cstime=35
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic01 stime=1372786118
-cmdline="icmp6-multi-diffnic01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic01    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic01    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic01    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic01    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic01    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic01    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=103 termination_type=exited termination_id=0 corefile=no
-cutime=20 cstime=36
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic02 stime=1372786221
-cmdline="icmp6-multi-diffnic02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic02    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic02    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic02    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic02    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic02    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic02    0  TINFO  :  - IPsec [ AH / transport ]
-icmp6-multi-diffnic02    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=103 termination_type=exited termination_id=0 corefile=no
-cutime=19 cstime=38
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic03 stime=1372786324
-cmdline="icmp6-multi-diffnic03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic03    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic03    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic03    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic03    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic03    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic03    0  TINFO  :  - IPsec [ AH / tunnel ]
-
-MARK-LWD-LOOP -- 2013-07-02 13:33:27 --
-icmp6-multi-diffnic03    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=104 termination_type=exited termination_id=0 corefile=no
-cutime=20 cstime=39
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic04 stime=1372786428
-cmdline="icmp6-multi-diffnic04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic04    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic04    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic04    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic04    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic04    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic04    0  TINFO  :  - IPsec [ ESP / transport ]
-icmp6-multi-diffnic04    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=106 termination_type=exited termination_id=0 corefile=no
-cutime=18 cstime=39
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic05 stime=1372786534
-cmdline="icmp6-multi-diffnic05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic05    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic05    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic05    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic05    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic05    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic05    0  TINFO  :  - IPsec [ ESP / tunnel ]
-icmp6-multi-diffnic05    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=103 termination_type=exited termination_id=0 corefile=no
-cutime=18 cstime=40
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic06 stime=1372786637
-cmdline="icmp6-multi-diffnic06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic06    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic06    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic06    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic06    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic06    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic06    0  TINFO  :  - IPcomp [ transport ]
-
-MARK-LWD-LOOP -- 2013-07-02 13:38:27 --
-icmp6-multi-diffnic06    1  TPASS  :  Test is finished successfully.
-<<<execution_status>>>
-initiation_status="ok"
-duration=104 termination_type=exited termination_id=0 corefile=no
-cutime=20 cstime=38
-<<<test_end>>>
-<<<test_start>>>
-tag=icmp6-multi-diffnic07 stime=1372786741
-cmdline="icmp6-multi-diffnic07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-icmp6-multi-diffnic07    0  TINFO  :  Verify that the kernel is not
-crashed with receiving and sending various size of ICMP message at
-differnt NIC simultaneously with the following conditions
-icmp6-multi-diffnic07    0  TINFO  :  - Test duration is 60 [sec]
-icmp6-multi-diffnic07    0  TINFO  :  - Target number of the connection is 2
-icmp6-multi-diffnic07    0  TINFO  :  - Version of IP is IPv6
-icmp6-multi-diffnic07    0  TINFO  :  - Size of packets are ( 10 100
-1000 10000 65507 )
-icmp6-multi-diffnic07    0  TINFO  :  - IPcomp [ tunnel ]
-icmp6-multi-diffnic07    1  TBROK  :  There is no IPv6 connectivity on Link0
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=86 termination_type=exited termination_id=1 corefile=no
-cutime=13 cstime=28
-<<<test_end>>>
-ltp-pan reported FAIL
-
-2013/6/28 Caspar Zhang <caspar@casparzhang.com>:
-> On 06/28/2013 01:59 PM, Hangbin Liu wrote:
->>
->> No, the INTERFACE and LHOST_HWADDRS are both used to make sure we have
->> enough NIC for some network testing.
->>
->> We can know the networking test topology from
->> testcases/network/stress/README
->>
->> Physical Topology
->> =================
->>
->> These tests require two machines. And each machine needs to have 2 or more
->> interfaces. These tests assume that they run on the following topology.
->>
->>                                Control Link
->>                  +------------------------------------+
->>                  |                                    |
->>          +-------+-------+                    +-------+-------+
->>          |               +---- Test Link 0 ---+               |
->>          |  Local Host   +          :         +  Remote Host  |
->>          |               +---- Test Link n ---+               |
->>          +---------------+                    +---------------+
->>
->> Control Link is used by the local host to control the remote host.
->> `control' means, for example, changing the setting of the interfaces that
->> are
->> connected to the test links. The setting of the interfaces connected to
->> the
->> control link is never changed.
->>
->> Test Links are the place where the stress tests run. For example, test
->> packets
->> flow those links. The number of test links must be at least 1. The setting
->> of
->> the interfaces connectted to the test links would be changed by the tests.
->> Therefore, each test link should not belong to any external network. It is
->> recommended to connect each pair of interfaces with the ether cross
->> cables.
->>
->> Currently, different NIC testcases for ICMP/UDP/TCP/Multicast require
->> plural
->> test links.  Other testcases uses only 1 test link. (Test Link 0)
->>
->>
->> So some tests, such as
->> testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
->> testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic01
->> testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic01
->>
->> they all need more than one NIC for testing.
->>
->> When we get INTERFACE="eth0|eth1", then we can get
->> LHOST_HWADDRS="aa:bb:cc:dd:ee:fe aa:bb:cc:dd:ee:ff" from networkstress.sh.
->>
->> And for example, in test
->> testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
->>
->> We will check the total link num by
->> link_total=`echo $LHOST_HWADDRS | wc -w`
->>
->> Then in "while [ $link_num -lt $link_total ]; do" loop, we will assign
->> different IP address
->> for each link with network_part="10.0.${link_num}".
->>
->> What I want to say is that we need to get two MAC addresses for
->> LHOST_HWADDRS,
->> so we have to make sure networkstress.sh can get two interface for
->> INTERFACE
->
->
-> OK, I was a bit naive :-) thanks for the detailed explanation. I grepped a
-> bit in testcases/network and did find the two variables are widely used. I
-> think before we can prove all affected cases work with this change, we
-> should hold on the patch. Do you have a running result against all affected
-> cases?
->
-> Thanks,
-> Caspar
->
->
->
->>
->> 2013/6/28 Caspar Zhang <caspar@casparzhang.com>:
->>>
->>> On 06/25/2013 02:37 PM, Hangbin Liu wrote:
->>>>
->>>>
->>>> As some networking tests need two interfaces at the same time. Use grep
->>>> -P
->>>> to
->>>> get two interfaces' mac addresses.
->>>>
->>>> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
->>>> ---
->>>>    testscripts/networkstress.sh | 5 ++++-
->>>>    1 file changed, 4 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
->>>> index b40af72..499b40c 100755
->>>> --- a/testscripts/networkstress.sh
->>>> +++ b/testscripts/networkstress.sh
->>>> @@ -15,6 +15,8 @@ fi
->>>>    export TMPDIR=/tmp/netst-$$
->>>>    mkdir $TMPDIR
->>>>    VERBOSE="no"
->>>> +# Default interface is "eth0".
->>>> +# For some test cases that need two interfaces, give parameter like
->>>> "eth0|eth1"
->>>>    INTERFACE="eth0"
->>>>
->>>>
->>>>
->>>> #===========================================================================
->>>> @@ -71,6 +73,7 @@ usage () {
->>>>        echo " -W|w: Run whole network stress tests"
->>>>        echo " -D|d: Test duration (default ${NS_DURATION} sec)"
->>>>        echo " -N|n: Select the network interface (default: $INTERFACE)"
->>>> +    echo "       Two interfaces' format: \"eth0|eth1\""
->>>>        echo " -V|v: Enable verbose"
->>>>        echo " -H|h: This Usage"
->>>>        echo ""
->>>> @@ -102,7 +105,7 @@ if [ -z ${TEST_CASE} ]; then
->>>>          usage
->>>>    fi
->>>>
->>>> -export LHOST_HWADDRS=`ifconfig | grep ${INTERFACE} | grep HWaddr |awk
->>>> '{print $5}'`
->>>> +export LHOST_HWADDRS=`ifconfig | grep -P ${INTERFACE} | grep HWaddr
->>>> |awk
->>>> '{print $5}'`
->>>
->>>
->>>
->>>
->>> As my understanding, the INTERFACE & LHOST_HWADDRS variables only used
->>> for
->>> verbose printing, right?
->>>
->>> If yes, I'll give my ack here.
->>>
->>> BTW, I'd to add quotations around ${INTERFACE}, to make sure 100% safety.
->>>
->>> Caspar.
->>>
->>>
->>>>
->>>>    if [ -z ${RHOST} ]; then
->>>>          ## Just a silly check
->>>>
->>>
->
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
