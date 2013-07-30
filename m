@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UwabQ-0001mj-6h
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jul 2013 16:17:20 +0000
-Date: Tue, 9 Jul 2013 18:18:54 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V4Df1-0000Ar-0u
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 17:24:35 +0000
+Date: Tue, 30 Jul 2013 19:24:27 +0200
 From: chrubis@suse.cz
-Message-ID: <20130709161854.GA1435@rei>
-References: <mailman.80890.1372765469.12996.ltp-list@lists.sourceforge.net>
-	<51D38924.8090400@oracle.com> <20130709151103.GB760@rei.Home>
-	<CA+icZUUtv3MpiYScqqHmLbOFaEqKRC8eSAtUziMrVcRP80kbGw@mail.gmail.com>
+Message-ID: <20130730172427.GB1999@rei.scz.novell.com>
+References: <1C23526A7C42DB45BBF55B662C7C530E25B461FD20@BUNGLE.Emea.Arm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUUtv3MpiYScqqHmLbOFaEqKRC8eSAtUziMrVcRP80kbGw@mail.gmail.com>
-Subject: Re: [LTP] [ltp-full-20130503] runltp cleanup() can't remove ${TMP}
+In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B461FD20@BUNGLE.Emea.Arm.com>
+Subject: Re: [LTP] Where is defined TEST_ERRNO when 'make UCLINUX=1'?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,58 +24,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Eko <hong.sun@oracle.com>
+To: Benoit Marcot <Benoit.Marcot@arm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >>   I executed runltp command in my box, everything is OK, but when
-> >> cleaning the environment, got following errors:
-> >>
-> >>         ###############################################################
-> >>              Done executing testcases.
-> >>              LTP Version:  20130503
-> >>         ###############################################################
-> >> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458': Device or resource busy
-> >> rm: cannot remove `/tmp/ltp-9NAwvmAbI5/sandbox': Device or resource busy
-> >>
-> >>
-> >> Because /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458 and
-> >> /tmp/ltp-9NAwvmAbI5/sandbox are still mounted, so can't delete them, the
-> >> best way is:
-> >> # umount /tmp/ltp-9NAwvmAbI5/moulTfFCf/mnt_4458
-> >> # umount /tmp/ltp-9NAwvmAbI5/sandbox
-> >>
-> >
-> > This looks like leftover mount from some testcases. We need to find
-> > which testcases are these and fix them to do their cleanup correctly.
-> >
-> > Quick greping suggested that candidates are:
-> >
-> > testscripts/test_fs_bind.sh
-> >
-> > testcases/kernel/syscalls/mount/mount*.c
-> >
+> I am building LTP for UCLINUX, and I went through an undefined symbol TEST_ERRNO with 'make UCLINUX=1'.
 > 
-> So ${TEMP} is really used?
+> As far as I understand, making with 'UCLINUX=1' defines also _USC_LIB_ in lib/Makefile:
+> 
+> ifeq ($(UCLINUX),1)
+> CFLAGS                  += -D_USC_LIB_
+> endif
+> 
+> In include/usctest.h, if _USC_LIB_ is defined then TEST_ERRNO is declared as extern, hence still not defined:
+> 
+> #ifdef  _USC_LIB_
+> extern int TEST_ERRNO;
+> #else
 
-I don't think so, it looks like a typo to me.
+That seems to be really messed up, so without UCLINUX the TEST_ERRNO is
+defined in the header which is included in the test and in the library.
+I wonder how that passes through the linker, that looks like
+redefinition to me...
 
-The error messages here are from the 'rm -rf ${TMP}' that is done after
-the line with ${TEMP}.
+And with UCLINUX it's does not look to be defined anywhere.
 
-Anyway the line that removes the image is both wrong and useless as the
-whole ${TMP} is removed right after it. I suggest removing it.
+Hmm, we should really clean up this part.
+
+> Finally, the last place where TEST_ERRNO could be defined is in lib/parse_opts.c; if UNIT_TEST is somewhere defined:
+> 
+> #if UNIT_TEST
+> int TEST_ERRNO;
+> ...
+> 
+> So my questions are: should I compile with CFLAGS += -DUNIT_TEST=1? How to use parse_opts.c?
+> 
+
+If you define the UNIT_TEST the parse_opts.c will contain main() (it's
+intended for testing the LTP lib interface only).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
