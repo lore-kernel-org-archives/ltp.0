@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UzQF4-0003Qe-9k
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jul 2013 11:49:58 +0000
-Date: Wed, 17 Jul 2013 13:51:41 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V46V8-0003Kq-1W
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 09:45:54 +0000
+Date: Tue, 30 Jul 2013 11:45:42 +0200
 From: chrubis@suse.cz
-Message-ID: <20130717115140.GA25145@rei>
-References: <51E63B72.6010600@cn.fujitsu.com>
+Message-ID: <20130730094542.GA1184@rei.scz.novell.com>
+References: <1374575324-26149-1-git-send-email-zliu@redhat.com>
+	<51EE6C97.1050502@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51E63B72.6010600@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3] mount/mount06.c: new case to test MS_MOVE of
- mount
+In-Reply-To: <51EE6C97.1050502@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] lib/tst_kvercmp: fixed a compiling error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +25,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
+> > make[1]: Leaving directory `/mnt/tests/kernel/distribution/ltp/git_test/ltp/testcases/kernel/containers/libclone'
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include -I../../../include   -L../../../lib  check_for_unshare.c  -ldl -lltp -o check_for_unshare
+> > check_for_unshare.c: In function ???main???:
+> > check_for_unshare.c:35:8: warning: variable ???ret??? set but not used [-Wunused-but-set-variable]
+> >   void *ret;
+> >         ^
+> > ../../../lib/libltp.a(tst_res.o): In function `cat_file':
+> > /mnt/tests/kernel/distribution/ltp/git_test/ltp/lib/tst_res.c:777: undefined reference to `TCID'
+> > /mnt/tests/kernel/distribution/ltp/git_test/ltp/lib/tst_res.c:787: undefined reference to `TCID'
+> > /mnt/tests/kernel/distribution/ltp/git_test/ltp/lib/tst_res.c:795: undefined reference to `TCID'
+> > ../../../lib/libltp.a(tst_res.o): In function `tst_res':
+> > /mnt/tests/kernel/distribution/ltp/git_test/ltp/lib/tst_res.c:301: undefined reference to `TCID'
+> > /mnt/tests/kernel/distribution/ltp/git_test/ltp/lib/tst_res.c:317: undefined reference to `TCID'
+> > ../../../lib/libltp.a(tst_res.o):/mnt/tests/kernel/distribution/ltp/git_test/ltp/lib/tst_res.c:370: more undefined references to `TCID' follow
+> > collect2: error: ld returned 1 exit status
+> > make: *** [check_for_unshare] Error 1
+> > 
+> > that's because commit 18f7be7eb used LTP lib function tst_resm(), using printf() instead can avoid it.
+> > 
+> > Signed-off-by: Zhouping Liu <zliu@redhat.com>
 > 
-> Create new test case "mount06.c" for MS_MOVE of mount.
 > 
-> Checking if file is visible from the new location after move mount.
-> 
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> Oops, it's my fault. Thank you, applied.
 
-This version looks fine.
+This is a good workaround for now, but the correct fix would be fixing
+the check_for_unshare source to define the TCID otherwise it could break
+anytime we do change in the tst_kvercmp() interface.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
