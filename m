@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V4AH1-0008Lv-0i
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 13:47:35 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V4AGx-0000nR-MV
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 13:47:34 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r6UDlOsb026044
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jul 2013 13:47:25 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r6UDlN6T007373
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jul 2013 13:47:24 GMT
-Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r6UDlMIo024062
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jul 2013 13:47:22 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 30 Jul 2013 17:47:11 +0400
-Message-Id: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH] max_map_count: corrected max_map_count condition
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <benoit.marcot@arm.com>) id 1V45Ma-0000L5-JX
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 08:33:00 +0000
+Received: from service88.mimecast.com ([195.130.217.12])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V45MW-0007W5-Sx
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jul 2013 08:33:00 +0000
+From: Benoit Marcot <Benoit.Marcot@arm.com>
+Date: Tue, 30 Jul 2013 09:32:49 +0100
+Message-ID: <1C23526A7C42DB45BBF55B662C7C530E25B49F550D@BUNGLE.Emea.Arm.com>
+References: <51F7338D.4060804@cn.fujitsu.com>
+	<51F735B2.5030007@cn.fujitsu.com> <51F73E13.9040802@cn.fujitsu.com>
+	<1C23526A7C42DB45BBF55B662C7C530E25B49F54B3@BUNGLE.Emea.Arm.com>
+In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B49F54B3@BUNGLE.Emea.Arm.com>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,109 +27,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: bob.picco@oracle.com
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+In the other hand Dan's patch gives a hint about *why* it's failing to compile, which is nice.
 
-* kernel test for max_map_count_sysctl is:
-   /* Too many mappings? */
-   if (mm->map_count > sysctl_max_map_count)
-     return -ENOMEM;
-  so in LTP test map_count should be greater than max_map_count by 1
+> -----Original Message-----
+> From: Benoit Marcot [mailto:Benoit.Marcot@arm.com]
+> Sent: 30 July 2013 09:19
+> To: DAN LI; gaowanlong@cn.fujitsu.com
+> Cc: LTP list
+> Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
+>
+> Hi!
+>
+> I had the same problem to compile the latest commits; I patched in the same
+> way as testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c:
+>
+> #ifndef MS_MOVE
+> #define MS_MOVE         8192
+> #endif
+>
+> Benoit
+>
+> > -----Original Message-----
+> > From: DAN LI [mailto:li.dan@cn.fujitsu.com]
+> > Sent: 30 July 2013 05:16
+> > To: gaowanlong@cn.fujitsu.com
+> > Cc: LTP list
+> > Subject: Re: [LTP] [PATCH] mount/mount06.c: fix a compile error
+> >
+> > On 07/30/2013 11:40 AM, Wanlong Gao wrote:
+> > > On 07/30/2013 11:31 AM, DAN LI wrote:
+> > >>
+> > >> The definitions of MS_PRIVATE and MS_MOVE were only added to glibc
+> > >> headers in version 2.12.
+> > >>
+> > >> If the version of glibc is older than 2.12, define these two flags.
+> > >>
+> > >> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+> > >> ---
+> > >>  testcases/kernel/syscalls/mount/mount06.c |    5 +++++
+> > >>  1 files changed, 5 insertions(+), 0 deletions(-)
+> > >>
+> > >> diff --git a/testcases/kernel/syscalls/mount/mount06.c
+> > >> b/testcases/kernel/syscalls/mount/mount06.c
+> > >> index acfb22d..ab1a472 100644
+> > >> --- a/testcases/kernel/syscalls/mount/mount06.c
+> > >> +++ b/testcases/kernel/syscalls/mount/mount06.c
+> > >> @@ -31,6 +31,11 @@
+> > >>  #include "usctest.h"
+> > >>  #include "safe_macros.h"
+> > >>
+> > >> +#if !(__GLIBC_PREREQ(2, 12))
+> > >
+> > > Why not do like below?
+> >
+> > I think it also clearly shows the reason why this definition should
+> > exist here(glibc version related).
+> >
+> > Regards,
+> > DAN LI
+> >
+> > > #ifndef MS_MOVE
+> > > #define xxx
+> > > #define xxx
+> > > #endif
+> > >
+> > > Wanlong Gao
+> > >
+> > >> +#define MS_MOVE   8192
+> > >> +#define MS_PRIVATE        (1 << 18)
+> > >> +#endif
+> > >> +
+> > >>  #define MNTPOINT_SRC      "mnt_src"
+> > >>  #define MNTPOINT_DES      "mnt_des"
+> > >>  #define LINELENGTH        256
+> > >>
+> > >
+> > >
+> >
+> >
+> >
+> > ----------------------------------------------------------------------
+> > -------- Get your SQL database under version control now!
+> > Version control is standard for application code, but databases havent
+> > caught up. So what steps can you take to put your SQL databases under
+> > version control? Why should you start doing it? Read more to find out.
+> > http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.c
+> > lk
+> > trk
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
+> -- IMPORTANT NOTICE: The contents of this email and any attachments are
+> confidential and may also be privileged. If you are not the intended recipient,
+> please notify the sender immediately and do not disclose the contents to any
+> other person, use it for any purpose, or store or copy the information in any
+> medium.  Thank you.
+>
+>
+> ------------------------------------------------------------------------------
+> Get your SQL database under version control now!
+> Version control is standard for application code, but databases havent caught
+> up. So what steps can you take to put your SQL databases under version
+> control? Why should you start doing it? Read more to find out.
+> http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clk
+> trk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-* only [vsyscall] is allocated without incrementing mm->map_count
 
-Author: Bob Picco <bob.picco@oracle.com>
-
-Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/mem/tunable/max_map_count.c |   41 +++++++++++++++++--------
- 1 files changed, 28 insertions(+), 13 deletions(-)
-
-diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-index e948868..01fbe5e 100644
---- a/testcases/kernel/mem/tunable/max_map_count.c
-+++ b/testcases/kernel/mem/tunable/max_map_count.c
-@@ -14,20 +14,16 @@
-  * The program trys to invoke mmap() endless until triggering MAP_FAILED,
-  * then read the process's maps file /proc/[pid]/maps, save the line number
-  * to map_count variable, and compare it with /proc/sys/vm/max_map_count,
-- * map_count should less than max_map_count.
-- * Note: There are two special vmas VDSO and VSYSCALL, which are allocated
-- * via install_special_mapping(), install_specail_mapping() allows the VMAs
-- * to be allocated and inserted without checking the sysctl_map_map_count,
-- * and each /proc/<pid>/maps has both at the end:
-- * # cat /proc/self/maps
-+ * map_count should be greater than max_map_count by 1;
-+ *
-+ * Note: On some architectures there is a special vma VSYSCALL, which
-+ * is allocated without incrementing mm->map_count variable. On these
-+ * architectures each /proc/<pid>/maps has at the end:
-  * ...
-  * ...
-- * 7fff7b9ff000-7fff7ba00000 r-xp 00000000 00:00 0           [vdso]
-  * ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0   [vsyscall]
-  *
-- * so during comparing with map_count and /proc/sys/vm/max_map_count,
-- * we should except the two special vmas from map_count:
-- * map_count -= 2;
-+ * so we ignore this line during /proc/[pid]/maps reading.
-  *
-  * ********************************************************************
-  * Copyright (C) 2012 Red Hat, Inc.
-@@ -121,6 +117,21 @@ void cleanup(void)
- 	TEST_CLEANUP;
- }
- 
-+/* This is a filter to exclude map entries which aren't accounted
-+ * for in the vm_area_struct's map_count.
-+ */
-+#if defined(__x86_64__) || defined(__x86__)
-+static int filter_map(char *buf)
-+{
-+	return strcmp(buf, "[vsyscall]") == 0;
-+}
-+#else
-+static int filter_map(char *buf)
-+{
-+	return 0;
-+}
-+#endif
-+
- static long count_maps(pid_t pid)
- {
- 	FILE *fp;
-@@ -136,8 +147,7 @@ static long count_maps(pid_t pid)
- 	while (getline(&line, &len, fp) != -1) {
- 		/* exclude vdso and vsyscall */
- 		if (sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf) ==
--		    1 && ((strcmp(buf, "[vdso]") == 0) ||
--			  (strcmp(buf, "[vsyscall]") == 0)))
-+				1 && filter_map(buf))
- 			continue;
- 		map_count++;
- 	}
-@@ -202,7 +212,12 @@ static void max_map_count_test(void)
- 			tst_brkm(TBROK, cleanup, "child did not stopped");
- 
- 		map_count = count_maps(pid);
--		if (map_count == max_maps)
-+		/* Note max_maps will be exceeded by one for
-+		 * the sysctl setting of max_map_count. This
-+		 * is the mm failure point at the time of
-+		 * writing this COMMENT!
-+		*/
-+		if (map_count == (max_maps + 1))
- 			tst_resm(TPASS, "%ld map entries in total "
- 				 "as expected.", max_maps);
- 		else
--- 
-1.7.1
+-- IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium.  Thank you.
 
 
 ------------------------------------------------------------------------------
