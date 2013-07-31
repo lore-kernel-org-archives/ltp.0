@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Uz7Wn-0001QI-Ff
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jul 2013 15:51:01 +0000
-Date: Tue, 16 Jul 2013 17:52:41 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V4UO9-0006YR-NY
+	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 11:16:17 +0000
+Date: Wed, 31 Jul 2013 13:16:08 +0200
 From: chrubis@suse.cz
-Message-ID: <20130716155241.GA21862@rei>
-References: <1373966367-18078-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<20130716114347.GB20826@rei> <51E540CC.3070406@cn.fujitsu.com>
-	<20130716132425.GA21306@rei> <51E554C8.4070307@cn.fujitsu.com>
+Message-ID: <20130731111608.GB1047@rei.scz.novell.com>
+References: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51E554C8.4070307@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2 1/2] lib: let tst_kvercmp2() contains major
- kernel version
+In-Reply-To: <1374807380-20319-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/3] pthread_rwlock_rdlock:2-1: do not test on
+	glibc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,33 +26,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> >> 2.6.24 && > 2.6.18-131
-> > 
-> > or (what I did in the example)
-> > 
-> >> = 2.6.25 && >= 2.6.18-132
-> > 
-> > Or am I missing something?
-> 
-> Oops, I understand what you mean.
-> If current kernel match our vendor info, the extra version
-> will take effect, if not, go to compare the vanilla version, right?
+> Since the reader can always acquire the rwlock if there's not a writer
+> held the lock.
 
-Exactly.
+Since there was recently a discussion about this on glibc ML and some
+clarfication requests for Austin Group were created, I would wait a
+little more until the POSIX is clear on how this locks should behave and
+then we can fix the tests (and possibly skip them on glibc).
+
+See:
+
+http://austingroupbugs.net/view.php?id=722
+http://austingroupbugs.net/view.php?id=720
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
