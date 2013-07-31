@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1UtzZL-0003XU-VA
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 12:20:28 +0000
-Date: Tue, 2 Jul 2013 14:21:58 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V4XUQ-0007vO-3I
+	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 14:34:58 +0000
+Date: Wed, 31 Jul 2013 16:34:49 +0200
 From: chrubis@suse.cz
-Message-ID: <20130702122158.GB4922@rei>
-References: <1372650052-2470-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20130731143448.GB2698@rei.scz.novell.com>
+References: <1374548876-24829-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1372650052-2470-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] inotify04: add more comments about this bug
+In-Reply-To: <1374548876-24829-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH] testcases/network/sctp: update sctp test to
+ upstream version 1.0.15
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,29 +25,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: Garrett Cooper <yanegomi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>, Daniel Borkmann <dborkman@redhat.com>, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
 
 Hi!
-> If the kernel version is less than 2.6.25, but this kernel back
-> ported the kernel commit ece95912 to send IN_ATTRIB events when
-> link count changes, this test may fail because we assume that
-> there is no event IN_ATTRIB is sent.
+> SCTP test in ltp is based on lksctp. But the last patch for sctp in ltp is
+> 2006. It has changed a lot and fixed many bugs. Update sctp test to upstream
+> version 1.0.15 now.
 
-Are we going to implement the kvercmp extraversion?
-
-If so, I think that this patch is irrelevant.
+I'm a bit confused here. Is the SCTP testsuite developed elsewhere? In
+that case it probably shouldn't be part of the LTP repo, perhaps a git
+submodule as mce-test is.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
