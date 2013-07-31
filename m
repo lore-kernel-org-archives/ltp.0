@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1UwjhU-0008Ki-Td
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:00:12 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1V4Lbr-0003VB-WE
+	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 01:53:52 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UwjhR-0001t9-Qe
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jul 2013 02:00:12 +0000
-Message-ID: <51DCBFF1.4030902@cn.fujitsu.com>
-Date: Wed, 10 Jul 2013 09:59:13 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V4Lbq-0006nP-Ag
+	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 01:53:51 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r6V1rhb2017675
+	for <ltp-list@lists.sourceforge.net>; Wed, 31 Jul 2013 09:53:43 +0800
+Message-ID: <51F86DD4.7050105@cn.fujitsu.com>
+Date: Wed, 31 Jul 2013 09:52:20 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1C23526A7C42DB45BBF55B662C7C530E25B424AA42@BUNGLE.Emea.Arm.com>
-In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B424AA42@BUNGLE.Emea.Arm.com>
-Subject: Re: [LTP] [PATCH] flock03.c: fixes a typo when compiling with
-	UCLINUX=1
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP]  [PATCH v2] mount/mount06.c: fix a compile error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,34 +28,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Benoit Marcot <Benoit.Marcot@arm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On 07/09/2013 08:37 PM, Benoit Marcot wrote:
-> flock03.c: This patch fixes a typo when compiling with UCLINUX=1.
-> 
->  
-> 
-> Corrects FILENAME to FILE_NAME, and removes some trailing white-spaces in
-> 
-> empty lines.
-> 
->  
-> 
-> Signed-off-by: Benoit Marcot <benoit.marcot@arm.com>
-> 
 
-Thank you, fixed on site with your SOB.
+The definitions of MS_PRIVATE and MS_MOVE were only added to glibc headers
+in version 2.12.
 
-Wanlong Gao
+If there are no definitions of these two flags, make it.
 
+
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mount/mount06.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/mount/mount06.c b/testcases/kernel/syscalls/mount/mount06.c
+index acfb22d..fff6483 100644
+--- a/testcases/kernel/syscalls/mount/mount06.c
++++ b/testcases/kernel/syscalls/mount/mount06.c
+@@ -31,6 +31,14 @@
+ #include "usctest.h"
+ #include "safe_macros.h"
+
++#ifndef MS_MOVE
++#define MS_MOVE	8192
++#endif
++
++#ifndef MS_PRIVATE
++#define MS_PRIVATE	(1 << 18)
++#endif
++
+ #define MNTPOINT_SRC	"mnt_src"
+ #define MNTPOINT_DES	"mnt_des"
+ #define LINELENGTH	256
+-- 
+1.8.1
 
 ------------------------------------------------------------------------------
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
