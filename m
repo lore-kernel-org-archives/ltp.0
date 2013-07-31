@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Uu0HJ-0007xF-5S
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 13:05:53 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Uu0HF-0000Ug-55
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jul 2013 13:05:53 +0000
-Date: Tue, 2 Jul 2013 09:05:37 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <428972040.2573228.1372770337971.JavaMail.root@redhat.com>
-In-Reply-To: <51D23341.1060000@cn.fujitsu.com>
-References: <51D23341.1060000@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <caspar@casparzhang.com>) id 1V4Mgr-00032o-Sk
+	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 03:03:05 +0000
+Received: from mail-pa0-f42.google.com ([209.85.220.42])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1V4Mgp-0005LM-7T
+	for ltp-list@lists.sourceforge.net; Wed, 31 Jul 2013 03:03:05 +0000
+Received: by mail-pa0-f42.google.com with SMTP id lj1so312759pab.15
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Jul 2013 20:02:57 -0700 (PDT)
+Message-ID: <51F87E66.2020004@casparzhang.com>
+Date: Wed, 31 Jul 2013 11:03:02 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3] mmap/mmap14.c: new case to test MAP_LOCKED of
- mmap
+References: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] max_map_count: corrected max_map_count condition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,115 +27,120 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list@lists.sourceforge.net, bob.picco@oracle.com
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiREFOIExJIiA8bGkuZGFu
-QGNuLmZ1aml0c3UuY29tPgo+IFRvOiAiTFRQIGxpc3QiIDxsdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQ+Cj4gQ2M6ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4gU2Vu
-dDogVHVlc2RheSwgMiBKdWx5LCAyMDEzIDM6NTY6MTcgQU0KPiBTdWJqZWN0OiBbTFRQXSBbUEFU
-Q0ggdjNdIG1tYXAvbW1hcDE0LmM6IG5ldyBjYXNlIHRvIHRlc3QgTUFQX0xPQ0tFRCBvZiBtbWFw
-Cj4gCj4gCj4gCj4gQ3JlYXRlIHRlc3QgY2FzZSBmb3IgTUFQX0xPQ0tFRCBvZiBtbWFwLgo+IAo+
-IFZlcmlmeSBwYWdlcyBhcmUgbG9ja2VkIGJ5IGNoZWNraW5nIHNlY3Rpb24gIlZtTGNrIiBvZiAv
-cHJvYy88cGlkPi9zdGF0dXMuCj4gCj4gCj4gU2lnbmVkLW9mZi1ieTogREFOIExJIDxsaS5kYW5A
-Y24uZnVqaXRzdS5jb20+CgpSZXZpZXdlZC1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJlZGhh
-dC5jb20+CgpMb29rcyBnb29kIHRvIG1lLiBZb3UgY291bGQgcHJvYmFibHkgcmVtb3ZlIHNvbWUg
-b2YgdGhvc2UgaW5jbHVkZXMsIGJ1dAp0aGF0J3MganVzdCBtaW5vciBuaXQuCgpSZWdhcmRzLApK
-YW4KCj4gLS0tCj4gIHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-MSArCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvLmdpdGlnbm9yZSAgICB8ICAgMSArCj4g
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTQuYyB8IDE0NQo+ICArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAzIGZpbGVzIGNoYW5nZWQsIDE0NyBpbnNlcnRp
-b25zKCspCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21t
-YXAvbW1hcDE0LmMKPiAKPiBIaSBKYW7vvIwKPiAKPiB2MzoKPiAgIEFkZCByb290IGNoZWNrLgo+
-ICAgQWRkIG1tYXAxNCB0byAuLi8uZ2l0aWdub3JlLgo+IAo+IFJlZ2FyZHMsCj4gREFOIExJCj4g
-Cj4gCj4gCj4gZGlmZiAtLWdpdCBhL3J1bnRlc3Qvc3lzY2FsbHMgYi9ydW50ZXN0L3N5c2NhbGxz
-Cj4gaW5kZXggM2FiMTlmNS4uYmViODc4MiAxMDA2NDQKPiAtLS0gYS9ydW50ZXN0L3N5c2NhbGxz
-Cj4gKysrIGIvcnVudGVzdC9zeXNjYWxscwo+IEBAIC01NjMsNiArNTYzLDcgQEAgbW1hcDA4IG1t
-YXAwOAo+ICBtbWFwMDkgbW1hcDA5Cj4gIG1tYXAxMiBtbWFwMTIKPiAgbW1hcDEzIG1tYXAxMwo+
-ICttbWFwMTQgbW1hcDE0Cj4gICMgdGVzdCBpcyBicm9rZW4sIG1hc2sgaXQgZm9yIG5vdy4KPiAg
-I21tYXAxMSBtbWFwMTEgLWkgMzAwMDAKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy8uZ2l0aWdub3JlCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRp
-Z25vcmUKPiBpbmRleCBmZWRlMTQ1Li4xOGQwM2Q0IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvLmdpdGlnbm9yZQo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvLmdpdGlnbm9yZQo+IEBAIC01MTUsNiArNTE1LDcgQEAKPiAgL21tYXAvbW1hcDExCj4gIC9t
-bWFwL21tYXAxMgo+ICAvbW1hcC9tbWFwMTMKPiArL21tYXAvbW1hcDE0Cj4gIC9tb2RpZnlfbGR0
-L21vZGlmeV9sZHQwMQo+ICAvbW9kaWZ5X2xkdC9tb2RpZnlfbGR0MDIKPiAgL21vdW50L21vdW50
-MDEKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNC5j
-Cj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDE0LmMKPiBuZXcgZmlsZSBt
-b2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAuLjI1YmM0OGQKPiAtLS0gL2Rldi9udWxsCj4gKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNC5jCj4gQEAgLTAsMCArMSwx
-NDUgQEAKPiArLyoKPiArICogQ29weXJpZ2h0IChjKSAyMDEzIEZOU1QsIERBTiBMSSA8bGkuZGFu
-QGNuLmZ1aml0c3UuY29tPgo+ICsgKgo+ICsgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2Fy
-ZTsgIHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKPiArICogaXQgdW5kZXIg
-dGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQg
-YnkKPiArICogdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBv
-ZiB0aGUgTGljZW5zZSwgb3IKPiArICogKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
-bi4KPiArICoKPiArICogVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRo
-YXQgaXQgd2lsbCBiZSB1c2VmdWwsCj4gKyAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdp
-dGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo+ICsgKiBNRVJDSEFOVEFCSUxJVFkg
-b3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUKPiArICogdGhlIEdOVSBH
-ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCj4gKyAqCj4gKyAqIFlvdSBz
-aG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNl
-bnNlCj4gKyAqIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUg
-RnJlZSBTb2Z0d2FyZQo+ICsgKiBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdHJlZXQs
-IEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEKPiBVU0EKPiArICovCj4gKwo+ICsv
-Kgo+ICsgKiBUZXN0IERlc2NyaXB0aW9uOgo+ICsgKiAgVmVyaWZ5IE1BUF9MT0NLRUQgd29ya3Mg
-ZmluZS4KPiArICogICJMb2NrIHRoZSBwYWdlcyBvZiB0aGUgbWFwcGVkIHJlZ2lvbiBpbnRvIG1l
-bW9yeSBpbiB0aGUgbWFubmVyIG9mCj4gbWxvY2soMikuIgo+ICsgKgo+ICsgKiBFeHBlY3RlZCBS
-ZXN1bHQ6Cj4gKyAqICBtbWFwKCkgc2hvdWxkIHN1Y2NlZWQgcmV0dXJuaW5nIHRoZSBhZGRyZXNz
-IG9mIHRoZSBtYXBwZWQgcmVnaW9uLAo+ICsgKiAgYW5kIHRoaXMgcmVnaW9uIHNob3VsZCBiZSBs
-b2NrZWQgaW50byBtZW1vcnkuCj4gKyAqLwo+ICsjaW5jbHVkZSA8c3RkaW8uaD4KPiArI2luY2x1
-ZGUgPHN0ZGxpYi5oPgo+ICsjaW5jbHVkZSA8c3lzL3R5cGVzLmg+Cj4gKyNpbmNsdWRlIDxlcnJu
-by5oPgo+ICsjaW5jbHVkZSA8dW5pc3RkLmg+Cj4gKyNpbmNsdWRlIDxmY250bC5oPgo+ICsjaW5j
-bHVkZSA8c3RyaW5nLmg+Cj4gKyNpbmNsdWRlIDxzaWduYWwuaD4KPiArI2luY2x1ZGUgPHN0ZGlu
-dC5oPgo+ICsjaW5jbHVkZSA8c3lzL3N0YXQuaD4KPiArI2luY2x1ZGUgPHN5cy9tbWFuLmg+Cj4g
-KyNpbmNsdWRlIDxzeXMvc2htLmg+Cj4gKwo+ICsjaW5jbHVkZSAidGVzdC5oIgo+ICsjaW5jbHVk
-ZSAidXNjdGVzdC5oIgo+ICsKPiArI2RlZmluZSBURU1QRklMRSAgICAgICAgIm1tYXBmaWxlIgo+
-ICsjZGVmaW5lIE1NQVBTSVpFICAgICAgICAoMVVMPDwyMCkKPiArI2RlZmluZSBMSU5FTEVOICAg
-ICAgICAgMjU2Cj4gKwo+ICtjaGFyICpUQ0lEID0gIm1tYXAxNCI7Cj4gK2ludCBUU1RfVE9UQUwg
-PSAxOwo+ICsKPiArc3RhdGljIGNoYXIgKmFkZHI7Cj4gKwo+ICtzdGF0aWMgdm9pZCBnZXR2bWxj
-ayh1bnNpZ25lZCBpbnQgKmxvY2tfc3opOwo+ICtzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKTsKPiAr
-c3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKPiArCj4gK2ludCBtYWluKGludCBhcmdjLCBjaGFy
-ICphcmd2W10pCj4gK3sKPiArCWludCBsYzsKPiArCWNoYXIgKm1zZzsKPiArCXVuc2lnbmVkIGlu
-dCBzel9iZWZvcmU7Cj4gKwl1bnNpZ25lZCBpbnQgc3pfYWZ0ZXI7Cj4gKwl1bnNpZ25lZCBpbnQg
-c3pfY2g7Cj4gKwo+ICsJbXNnID0gcGFyc2Vfb3B0cyhhcmdjLCBhcmd2LCBOVUxMLCBOVUxMKTsK
-PiArCWlmIChtc2cgIT0gTlVMTCkKPiArCQl0c3RfYnJrbShUQlJPSywgTlVMTCwgIk9QVElPTiBQ
-QVJTSU5HIEVSUk9SIC0gJXMiLCBtc2cpOwo+ICsKPiArCXNldHVwKCk7Cj4gKwo+ICsJZm9yIChs
-YyA9IDA7IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKPiArCj4gKwkJdHN0X2NvdW50ID0gMDsK
-PiArCj4gKwkJZ2V0dm1sY2soJnN6X2JlZm9yZSk7Cj4gKwo+ICsJCWFkZHIgPSBtbWFwKE5VTEws
-IE1NQVBTSVpFLCBQUk9UX1JFQUQgfCBQUk9UX1dSSVRFLAo+ICsJCQkgICAgTUFQX1BSSVZBVEUg
-fCBNQVBfTE9DS0VEIHwgTUFQX0FOT05ZTU9VUywKPiArCQkJICAgIC0xLCAwKTsKPiArCj4gKwkJ
-aWYgKGFkZHIgPT0gTUFQX0ZBSUxFRCkgewo+ICsJCQl0c3RfcmVzbShURkFJTCB8IFRFUlJOTywg
-Im1tYXAgb2YgJXMgZmFpbGVkIiwgVEVNUEZJTEUpOwo+ICsJCQljb250aW51ZTsKPiArCQl9Cj4g
-Kwo+ICsJCWlmIChTVERfRlVOQ1RJT05BTF9URVNUKSB7Cj4gKwo+ICsJCQlnZXR2bWxjaygmc3pf
-YWZ0ZXIpOwo+ICsKPiArCQkJc3pfY2ggPSBzel9hZnRlciAtIHN6X2JlZm9yZTsKPiArCQkJaWYg
-KHN6X2NoID09IE1NQVBTSVpFIC8gMTAyNCkKPiArCQkJCXRzdF9yZXNtKFRQQVNTLCAiRnVuY3Rp
-b25hbGl0eSBvZiBtbWFwKCkgIgo+ICsJCQkJCQkic3VjY2Vzc2Z1bCIpOwo+ICsJCQllbHNlCj4g
-KwkJCQl0c3RfcmVzbShURkFJTCwgIkV4cGVjdGVkICVsdUsgbG9ja2VkLCAiCj4gKwkJCQkJCSJn
-ZXQgJXVLIGxvY2tlZCIsCj4gKwkJCQkJCU1NQVBTSVpFIC8gMTAyNCwgc3pfY2gpOwo+ICsKPiAr
-CQl9IGVsc2Ugewo+ICsJCQl0c3RfcmVzbShUUEFTUywgImNhbGwgc3VjY2VlZGVkIik7Cj4gKwkJ
-fQo+ICsKPiArCQlpZiAobXVubWFwKGFkZHIsIE1NQVBTSVpFKSAhPSAwKQo+ICsJCQl0c3RfYnJr
-bShURkFJTCB8IFRFUlJOTywgTlVMTCwgIm11bm1hcCBmYWlsZWQiKTsKPiArCX0KPiArCj4gKwlj
-bGVhbnVwKCk7Cj4gKwl0c3RfZXhpdCgpOwo+ICsKPiArfQo+ICsKPiArdm9pZCBnZXR2bWxjayh1
-bnNpZ25lZCBpbnQgKmxvY2tfc3opCj4gK3sKPiArCWludCByZXQ7Cj4gKwljaGFyIGxpbmVbTElO
-RUxFTl07Cj4gKwlGSUxFICpmc3RhdHVzID0gTlVMTDsKPiArCj4gKwlmc3RhdHVzID0gZm9wZW4o
-Ii9wcm9jL3NlbGYvc3RhdHVzIiwgInIiKTsKPiArCWlmIChmc3RhdHVzID09IE5VTEwpCj4gKwkJ
-dHN0X2Jya20oVEZBSUwgfCBURVJSTk8sIE5VTEwsICJPcGVuIGRldiBzdGF0dXMgZmFpbGVkIik7
-Cj4gKwo+ICsJd2hpbGUgKGZnZXRzKGxpbmUsIExJTkVMRU4sIGZzdGF0dXMpICE9IE5VTEwpCj4g
-KwkJaWYgKHN0cnN0cihsaW5lLCAiVm1MY2siKSAhPSBOVUxMKQo+ICsJCQlicmVhazsKPiArCj4g
-KwlyZXQgPSBzc2NhbmYobGluZSwgIiUqW14wLTldJWQlKlteMC05XSIsIGxvY2tfc3opOwo+ICsJ
-aWYgKHJldCAhPSAxKQo+ICsJCXRzdF9icmttKFRGQUlMIHwgVEVSUk5PLCBOVUxMLCAiR2V0IGxv
-Y2sgc2l6ZSBmYWlsZWQiKTsKPiArCj4gKwlmY2xvc2UoZnN0YXR1cyk7Cj4gK30KPiArCj4gK3N0
-YXRpYyB2b2lkIHNldHVwKHZvaWQpCj4gK3sKPiArCXRzdF9yZXF1aXJlX3Jvb3QoTlVMTCk7Cj4g
-Kwo+ICsJdHN0X3NpZyhGT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7Cj4gKwo+ICsJVEVTVF9Q
-QVVTRTsKPiArfQo+ICsKPiArc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQo+ICt7Cj4gKwlURVNU
-X0NMRUFOVVA7Cj4gK30KPiAtLQo+IDEuOC4xCj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhp
-cyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IFdpbmRvd3M6CgpCdWlsZCBmb3IgV2luZG93
-cyBTdG9yZS4KCmh0dHA6Ly9wLnNmLm5ldC9zZnUvd2luZG93cy1kZXYyZGV2Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On 07/30/2013 09:47 PM, Stanislav Kholmanskikh wrote:
+> From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>
+> * kernel test for max_map_count_sysctl is:
+>     /* Too many mappings? */
+>     if (mm->map_count > sysctl_max_map_count)
+>       return -ENOMEM;
+>    so in LTP test map_count should be greater than max_map_count by 1
+>
+> * only [vsyscall] is allocated without incrementing mm->map_count
+>
+> Author: Bob Picco <bob.picco@oracle.com>
+>
+> Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+
+Acked-by: Caspar Zhang <caspar@casparzhang.com>
+
+> ---
+>   testcases/kernel/mem/tunable/max_map_count.c |   41 +++++++++++++++++--------
+>   1 files changed, 28 insertions(+), 13 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
+> index e948868..01fbe5e 100644
+> --- a/testcases/kernel/mem/tunable/max_map_count.c
+> +++ b/testcases/kernel/mem/tunable/max_map_count.c
+> @@ -14,20 +14,16 @@
+>    * The program trys to invoke mmap() endless until triggering MAP_FAILED,
+>    * then read the process's maps file /proc/[pid]/maps, save the line number
+>    * to map_count variable, and compare it with /proc/sys/vm/max_map_count,
+> - * map_count should less than max_map_count.
+> - * Note: There are two special vmas VDSO and VSYSCALL, which are allocated
+> - * via install_special_mapping(), install_specail_mapping() allows the VMAs
+> - * to be allocated and inserted without checking the sysctl_map_map_count,
+> - * and each /proc/<pid>/maps has both at the end:
+> - * # cat /proc/self/maps
+> + * map_count should be greater than max_map_count by 1;
+> + *
+> + * Note: On some architectures there is a special vma VSYSCALL, which
+> + * is allocated without incrementing mm->map_count variable. On these
+> + * architectures each /proc/<pid>/maps has at the end:
+>    * ...
+>    * ...
+> - * 7fff7b9ff000-7fff7ba00000 r-xp 00000000 00:00 0           [vdso]
+>    * ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0   [vsyscall]
+>    *
+> - * so during comparing with map_count and /proc/sys/vm/max_map_count,
+> - * we should except the two special vmas from map_count:
+> - * map_count -= 2;
+> + * so we ignore this line during /proc/[pid]/maps reading.
+>    *
+>    * ********************************************************************
+>    * Copyright (C) 2012 Red Hat, Inc.
+> @@ -121,6 +117,21 @@ void cleanup(void)
+>   	TEST_CLEANUP;
+>   }
+>
+> +/* This is a filter to exclude map entries which aren't accounted
+> + * for in the vm_area_struct's map_count.
+> + */
+> +#if defined(__x86_64__) || defined(__x86__)
+> +static int filter_map(char *buf)
+> +{
+> +	return strcmp(buf, "[vsyscall]") == 0;
+> +}
+> +#else
+> +static int filter_map(char *buf)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>   static long count_maps(pid_t pid)
+>   {
+>   	FILE *fp;
+> @@ -136,8 +147,7 @@ static long count_maps(pid_t pid)
+>   	while (getline(&line, &len, fp) != -1) {
+>   		/* exclude vdso and vsyscall */
+>   		if (sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf) ==
+> -		    1 && ((strcmp(buf, "[vdso]") == 0) ||
+> -			  (strcmp(buf, "[vsyscall]") == 0)))
+> +				1 && filter_map(buf))
+>   			continue;
+>   		map_count++;
+>   	}
+> @@ -202,7 +212,12 @@ static void max_map_count_test(void)
+>   			tst_brkm(TBROK, cleanup, "child did not stopped");
+>
+>   		map_count = count_maps(pid);
+> -		if (map_count == max_maps)
+> +		/* Note max_maps will be exceeded by one for
+> +		 * the sysctl setting of max_map_count. This
+> +		 * is the mm failure point at the time of
+> +		 * writing this COMMENT!
+> +		*/
+> +		if (map_count == (max_maps + 1))
+>   			tst_resm(TPASS, "%ld map entries in total "
+>   				 "as expected.", max_maps);
+>   		else
+>
+
+
+------------------------------------------------------------------------------
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
