@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V6KCs-0002WU-Ee
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 12:48:14 +0000
-Date: Mon, 5 Aug 2013 14:48:00 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V4wsV-0002KV-Im
+	for ltp-list@lists.sourceforge.net; Thu, 01 Aug 2013 17:41:31 +0000
+Date: Thu, 1 Aug 2013 19:41:23 +0200
 From: chrubis@suse.cz
-Message-ID: <20130805124800.GD8739@rei>
-References: <1374230659-21101-1-git-send-email-anders.roxell@linaro.org>
-	<1374230659-21101-2-git-send-email-anders.roxell@linaro.org>
+Message-ID: <20130801174123.GA708@rei.scz.novell.com>
+References: <51EF9E51.1070208@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1374230659-21101-2-git-send-email-anders.roxell@linaro.org>
-Subject: Re: [LTP] [PATCH] realtime-testsuite: update the install rule
+In-Reply-To: <51EF9E51.1070208@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH] Containers test case is hanging at two sub test
+ cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,24 +25,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anders Roxell <anders.roxell@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
+To: Tejaswini <tejaswin@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> func/*/Makefile: added INSTALL_TARGETS
-> func/*/run.sh -> func/*/run_auto.sh to autorun those tests when running
->     the test_realtime.sh script.
-> run.sh scripts/run_c_files.sh: if installed no need to rebuild tests
-> testscritps/test_realtime.sh: remove java from the "all" target and
->     do not rebuild lib if running from installed path
+> >> two_children_ns and
+> >> par_chld_ipv6
 > 
-> New files, needed to run the realtime-testsuite from a installed path
-> profiles/Makefile and scripts/Makefile
+> The function crtchild() in two_children_ns.c and par_chld_ipv6.c is called
+> with only one parameter while the definition has two parameters: 
+> crtchild (char *, char *)
 
-Generally it looks good.
-
-Could you please split the changes into several smaller patches (one
-patch per fix) and write a bit more verbose descriptions?
+The definition of the function should really be in some header
+(presumbly common.h) and included in common.c and all the tests that
+uses it (there are three instances of the wrong definiton of the
+function at the moment).
 
 -- 
 Cyril Hrubis
