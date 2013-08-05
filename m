@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1VF2h2-0005Rb-Hf
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 13:55:24 +0000
-Received: from mail-la0-f53.google.com ([209.85.215.53])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VF2h0-0002GL-NS
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 13:55:24 +0000
-Received: by mail-la0-f53.google.com with SMTP id el20so391731lab.12
+	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3s-0006sz-0b
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:20 +0000
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1V6Q3o-0005mL-57
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:19 +0000
+Received: by mail-lb0-f177.google.com with SMTP id r11so2331176lbv.22
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 29 Aug 2013 06:55:15 -0700 (PDT)
-Date: Thu, 29 Aug 2013 16:00:05 +0200
+	Mon, 05 Aug 2013 12:03:09 -0700 (PDT)
 From: Anders Roxell <anders.roxell@linaro.org>
-Message-ID: <20130829140004.GL31610@nexon.se>
-References: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
-	<1377761241-17744-3-git-send-email-anders.roxell@linaro.org>
-	<CA+icZUWpYYd__ZKdX6SBbbpN9tJHGnywVhrawHo_UJ3ub=3cOA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+icZUWpYYd__ZKdX6SBbbpN9tJHGnywVhrawHo_UJ3ub=3cOA@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 2/2] runltp: remove bashisms
+Date: Mon,  5 Aug 2013 21:02:55 +0200
+Message-Id: <1375729379-16469-3-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+Subject: [LTP] [PATCH 2/6] added run_auto.sh to install targets for realtime
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,62 +27,248 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
 
-Hi,
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ testcases/realtime/func/async_handler/Makefile        |    1 +
+ testcases/realtime/func/gtod_latency/Makefile         |    1 +
+ testcases/realtime/func/hrtimer-prio/Makefile         |    1 +
+ testcases/realtime/func/matrix_mult/Makefile          |    1 +
+ testcases/realtime/func/measurement/Makefile          |    1 +
+ testcases/realtime/func/periodic_cpu_load/Makefile    |    1 +
+ testcases/realtime/func/pi-tests/Makefile             |    1 +
+ testcases/realtime/func/pi_perf/Makefile              |    1 +
+ testcases/realtime/func/prio-preempt/Makefile         |    1 +
+ testcases/realtime/func/prio-wake/Makefile            |    1 +
+ testcases/realtime/func/pthread_kill_latency/Makefile |    1 +
+ testcases/realtime/func/rt-migrate/Makefile           |    1 +
+ testcases/realtime/func/sched_football/Makefile       |    1 +
+ testcases/realtime/func/sched_jitter/Makefile         |    1 +
+ testcases/realtime/func/sched_latency/Makefile        |    1 +
+ testcases/realtime/func/thread_clock/Makefile         |    1 +
+ testcases/realtime/perf/latency/Makefile              |    1 +
+ 17 files changed, 17 insertions(+)
 
-On 2013-08-29 10:41, Sedat Dilek wrote:
-> On Thu, Aug 29, 2013 at 9:27 AM, Anders Roxell <anders.roxell@linaro.org> wrote:
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > ---
-> >  runltp | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/runltp b/runltp
-> > index a419bf8..970c4ee 100755
-> > --- a/runltp
-> > +++ b/runltp
-> > @@ -733,15 +733,15 @@ main()
-> >      #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
-> >
-> >      ## Display the Output/Log/Failed/HTML file names here
-> > -    echo -e "LOG File: \c"
-> > +    echo -n "LOG File: "
-> >      echo $LOGFILE | cut -b4-
-> >
-> >      if [ "$OUTPUTFILE" ]; then
-> > -       echo -e "OUTPUT File: \c"
-> > +       echo -n "OUTPUT File: "
-> >         echo $OUTPUTFILE | cut -b4-
-> >      fi
-> >
-> > -    echo -e "FAILED COMMAND File: \c"
-> > +    echo -n "FAILED COMMAND File: "
-> >      echo $FAILCMDFILE | cut -b4-
-> >
-> >      if [ "$HTMLFILE" ]; then
-> > --
-> > 1.8.1.2
-> >
-> 
-> Yesterday, I looked through diverse GIT repos where I saw a commit
-> saying that "echo" (dunno if it was "-e" or "-n") is not
-> POSIX-compliant and "printf" should be used.
-> I am no POSIX guy, but maybe someone can confirm this?
-Thanks, I will rework and resend the patch.
+diff --git a/testcases/realtime/func/async_handler/Makefile b/testcases/realtime/func/async_handler/Makefile
+index faf4fa9..f334cfa 100644
+--- a/testcases/realtime/func/async_handler/Makefile
++++ b/testcases/realtime/func/async_handler/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/gtod_latency/Makefile b/testcases/realtime/func/gtod_latency/Makefile
+index bd67ed6..89d82c9 100644
+--- a/testcases/realtime/func/gtod_latency/Makefile
++++ b/testcases/realtime/func/gtod_latency/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/hrtimer-prio/Makefile b/testcases/realtime/func/hrtimer-prio/Makefile
+index 0a1872c..d294ee2 100644
+--- a/testcases/realtime/func/hrtimer-prio/Makefile
++++ b/testcases/realtime/func/hrtimer-prio/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/matrix_mult/Makefile b/testcases/realtime/func/matrix_mult/Makefile
+index c19cad1..3d89133 100644
+--- a/testcases/realtime/func/matrix_mult/Makefile
++++ b/testcases/realtime/func/matrix_mult/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/measurement/Makefile b/testcases/realtime/func/measurement/Makefile
+index fdad2c5..36343e9 100644
+--- a/testcases/realtime/func/measurement/Makefile
++++ b/testcases/realtime/func/measurement/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/periodic_cpu_load/Makefile b/testcases/realtime/func/periodic_cpu_load/Makefile
+index 275eb06..e7ec8fc 100644
+--- a/testcases/realtime/func/periodic_cpu_load/Makefile
++++ b/testcases/realtime/func/periodic_cpu_load/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/pi-tests/Makefile b/testcases/realtime/func/pi-tests/Makefile
+index eb9cca3..5273952 100644
+--- a/testcases/realtime/func/pi-tests/Makefile
++++ b/testcases/realtime/func/pi-tests/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ 
+diff --git a/testcases/realtime/func/pi_perf/Makefile b/testcases/realtime/func/pi_perf/Makefile
+index fbceaba..196fca8 100644
+--- a/testcases/realtime/func/pi_perf/Makefile
++++ b/testcases/realtime/func/pi_perf/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/prio-preempt/Makefile b/testcases/realtime/func/prio-preempt/Makefile
+index 6da3504..b4c0b2e 100644
+--- a/testcases/realtime/func/prio-preempt/Makefile
++++ b/testcases/realtime/func/prio-preempt/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/prio-wake/Makefile b/testcases/realtime/func/prio-wake/Makefile
+index 256f5fb..6cea976 100644
+--- a/testcases/realtime/func/prio-wake/Makefile
++++ b/testcases/realtime/func/prio-wake/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/pthread_kill_latency/Makefile b/testcases/realtime/func/pthread_kill_latency/Makefile
+index b07d8de..fd3a059 100644
+--- a/testcases/realtime/func/pthread_kill_latency/Makefile
++++ b/testcases/realtime/func/pthread_kill_latency/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/rt-migrate/Makefile b/testcases/realtime/func/rt-migrate/Makefile
+index b48f48a..ae4f610 100644
+--- a/testcases/realtime/func/rt-migrate/Makefile
++++ b/testcases/realtime/func/rt-migrate/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/sched_football/Makefile b/testcases/realtime/func/sched_football/Makefile
+index 1b2a480..a5117fd 100644
+--- a/testcases/realtime/func/sched_football/Makefile
++++ b/testcases/realtime/func/sched_football/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/sched_jitter/Makefile b/testcases/realtime/func/sched_jitter/Makefile
+index 95bc9a9..827a0db 100644
+--- a/testcases/realtime/func/sched_jitter/Makefile
++++ b/testcases/realtime/func/sched_jitter/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/sched_latency/Makefile b/testcases/realtime/func/sched_latency/Makefile
+index 564d42f..b7327df 100644
+--- a/testcases/realtime/func/sched_latency/Makefile
++++ b/testcases/realtime/func/sched_latency/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/func/thread_clock/Makefile b/testcases/realtime/func/thread_clock/Makefile
+index b94b897..5cac451 100644
+--- a/testcases/realtime/func/thread_clock/Makefile
++++ b/testcases/realtime/func/thread_clock/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/perf/latency/Makefile b/testcases/realtime/perf/latency/Makefile
+index 6b1ad58..eea054d 100644
+--- a/testcases/realtime/perf/latency/Makefile
++++ b/testcases/realtime/perf/latency/Makefile
+@@ -22,6 +22,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++INSTALL_TARGETS		:= run_auto.sh
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-- 
+1.7.10.4
 
-/Anders
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
