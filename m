@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VEYC5-0002D3-7R
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 05:21:25 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VEYC2-0000YW-Om
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 05:21:25 +0000
-Message-ID: <521D8899.3000307@cn.fujitsu.com>
-Date: Wed, 28 Aug 2013 13:20:25 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1V6Mym-0004OP-5M
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 15:45:52 +0000
+Date: Mon, 5 Aug 2013 17:45:46 +0200
+From: chrubis@suse.cz
+Message-ID: <20130805154546.GB16172@rei>
+References: <1375713846-24291-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1375713846-24291-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-References: <2060663a46bc8d66f90a9686c7fe4a83d21e40a4.1377594171.git.jstancek@redhat.com>
-In-Reply-To: <2060663a46bc8d66f90a9686c7fe4a83d21e40a4.1377594171.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] proc01: add use-gss-proxy to known_issues list
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1375713846-24291-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] quota_remount_test01: SELinux workaround and
+ other fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,35 +26,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 08/27/2013 05:05 PM, Jan Stancek wrote:
-> Following commit implemented non-blocking read for use-gss-proxy:
->   commit b161c144404c18f6a9e20e46b63828ae3c2eb093
->   Author: J. Bruce Fields <bfields@redhat.com>
->     Date:   Fri May 24 09:47:49 2013 -0400
->         svcrpc: implement O_NONBLOCK behavior for use-gss-proxy
-> 
-> Prior to this commit non-block read hanged, but it happened
-> only in -rc kernels, which we can ignore.
-> 
-> Note, that this proc entry is available only when you load module
-> auth_rpcgss.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hi!
+> * now it uses tst_kvercmp (to support kernels >= 3)
+> * some distros doesn't allow creation of quota files in
+> directories with SELinux file_t type. Now we explicitly
+> change file type of the test directory to tmp_t
 
-Pushed
+I can't check that the selinux specific bits works as they should, but
+general idea of this patch is fine.
 
-Wanlong Gao
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
