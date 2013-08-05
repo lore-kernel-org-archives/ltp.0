@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VC7XN-00088q-N1
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 12:29:21 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VC7XM-00086v-EV
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 12:29:21 +0000
-Date: Wed, 21 Aug 2013 08:29:14 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <212598736.1836601.1377088154292.JavaMail.root@redhat.com>
-In-Reply-To: <1377086098-32691-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <52122141.3020005@oracle.com>
-	<1377086098-32691-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V6KCs-0002WU-Ee
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 12:48:14 +0000
+Date: Mon, 5 Aug 2013 14:48:00 +0200
+From: chrubis@suse.cz
+Message-ID: <20130805124800.GD8739@rei>
+References: <1374230659-21101-1-git-send-email-anders.roxell@linaro.org>
+	<1374230659-21101-2-git-send-email-anders.roxell@linaro.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
+Content-Disposition: inline
+In-Reply-To: <1374230659-21101-2-git-send-email-anders.roxell@linaro.org>
+Subject: Re: [LTP] [PATCH] realtime-testsuite: update the install rule
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,100 +25,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Anders Roxell <anders.roxell@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
 
-
-
-
-
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>, jstancek@redhat.com
-> Sent: Wednesday, 21 August, 2013 1:54:58 PM
-> Subject: [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
+Hi!
+> func/*/Makefile: added INSTALL_TARGETS
+> func/*/run.sh -> func/*/run_auto.sh to autorun those tests when running
+>     the test_realtime.sh script.
+> run.sh scripts/run_c_files.sh: if installed no need to rebuild tests
+> testscritps/test_realtime.sh: remove java from the "all" target and
+>     do not rebuild lib if running from installed path
 > 
-> Now nodemask_size is rounded up to the next multiple
-> of sizeof(nodemask_t).
+> New files, needed to run the realtime-testsuite from a installed path
+> profiles/Makefile and scripts/Makefile
 
-Hi,
+Generally it looks good.
 
-Why multiple of nodemask_t? It can be quite large.
+Could you please split the changes into several smaller patches (one
+patch per fix) and write a bit more verbose descriptions?
 
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  testcases/kernel/lib/numa_helper.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/lib/numa_helper.c
-> b/testcases/kernel/lib/numa_helper.c
-> index 4157816..9151583 100644
-> --- a/testcases/kernel/lib/numa_helper.c
-> +++ b/testcases/kernel/lib/numa_helper.c
-> @@ -60,7 +60,7 @@ unsigned long get_max_node(void)
->  #if HAVE_NUMA_H
->  static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long
->  max_node)
->  {
-> -	unsigned long nodemask_size = max_node / 8 + 1;
-> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
-
-Because mask is passed as parameter, we should respect max_node and
-clear only up to byte which holds max_node. So I think we should align
-to next byte only:
-
-        unsigned long nodemask_size = ALIGN(max_node, 8) / 8;
-
->  	int i;
->  	char fn[64];
->  	struct stat st;
-> @@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask,
-> unsigned long max_node)
->  static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long
->  max_node)
->  {
->  #if MPOL_F_MEMS_ALLOWED
-> -	unsigned long nodemask_size = max_node / 8 + 1;
-> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
-
-Same as above:
-        unsigned long nodemask_size = ALIGN(max_node, 8) / 8;
-
->  	memset(nodemask, 0, nodemask_size);
->  	/*
->  	 * avoid numa_get_mems_allowed(), because of bug in getpol()
-> @@ -165,7 +165,7 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int
-> **nodes)
->  
->  #if HAVE_NUMA_H
->  	unsigned long max_node = get_max_node();
-> -	unsigned long nodemask_size = max_node / 8 + 1;
-> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
-
-This function allocates the nodemask, so we can align to as much as we need.
-I'd expect this to be same as in migrate_pages, align to next long:
-
-        unsigned long nodemask_size = ALIGN(max_node / 8, sizeof(long));
-
-Regards,
-Jan
-
->  
->  	nodemask = malloc(nodemask_size);
->  	if (nodes)
-> --
-> 1.7.1
-> 
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
