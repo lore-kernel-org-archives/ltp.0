@@ -1,17 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V8ozO-0000nH-Iq
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 10:04:38 +0000
-Date: Mon, 12 Aug 2013 12:04:37 +0200
-From: chrubis@suse.cz
-Message-ID: <20130812100437.GA24518@rei>
-References: <20130808130919.2587.qmail@f5mail-224-107.rediffmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20130808130919.2587.qmail@f5mail-224-107.rediffmail.com>
-Subject: Re: [LTP] open posix testsuite compilation
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1V6M1Z-000551-52
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 14:44:41 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V6M1U-0000R1-Bd
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 14:44:41 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r75EiRaE014655
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 Aug 2013 14:44:29 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r75EiQGm014168
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 Aug 2013 14:44:27 GMT
+Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r75EiQN1003298
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 Aug 2013 14:44:26 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon,  5 Aug 2013 18:44:05 +0400
+Message-Id: <1375713846-24291-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] (no subject)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,56 +36,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: devaraja b v <sunildev_63@rediffmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
+
 
 Hi!
-> ltp-full-20130109 source code is having old open posix testsuite.New version posixtestsuite-1.5.2&nbsp;is available at&nbsp;http://sourceforge.net/projects/posixtest/files/posixtest/&nbsp;link.Please use this or the latest module in the next release of LTP, as the latest one is easy to cross compile and run on various platforms.
-> I am facing the following issues when I am compiling this new tool inside LTP.&nbsp;Please let me know any lead or pointer to fix this issue?
 
-Open posix testuite in LTP was updated to the latest version (1.5.2) in
-2007. The open posix testuite upstream is dead for about seven years and
-the development was continued inside the LTP. The open posix testsuite
-in LTP is the latest and best you can have.
+This is a little fix to run quota_remount_test01.sh with SELinux enabled. 
+Some distros (CentOS 6.x and, likely, RHEL 6) prevent from creation of quota 
+files in 'file_t' directories, some - don't care. 
+I tried this fix on CentOS 5.x/6.x and Oracle Linux, Debian 7. Seems, It's ok, and
+should not break anything else.
 
-> cat: LDFLAGS: No such file or
-> directoryltp/obj-i686/locate-test:
-> Command not foundltp/obj-i686/locate-test:
-> Command not foundmake-3.81[3]: *** No rule to
-> make target `install'.&nbsp; Stop.make-3.81[3]: Leaving
-> directoryltp/obj-i686/testcases/open_posix_testsuite'
-> 
-> make-3.81[2]: *** [install] Error
-> 2
-> 
-> make-3.81[2]: Leaving directory&nbsp;ltp/obj-i686/testcases'
-> 
-> make-3.81[1]: ***
-> [testcases-install] Error 2
-> 
-> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;make-3.81[1]: Leaving directory&nbsp;ltp/obj-i686'
-> 
-> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;make-3.81: ***ltp/obj-i686/install.sentinel]
-> Error 2
-> 
-
-Can you include exact steps that lead to this failure?
-
-Also please send emails to the mailing list in plain text next time.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+And the test couldn't be invoked under 3.x kernels because of its kernel check. 
+Changed it to use tst_kvercmp.
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
