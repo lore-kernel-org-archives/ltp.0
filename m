@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1VF2ho-0005Vf-CO
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 13:56:12 +0000
-Received: from mail-lb0-f172.google.com ([209.85.217.172])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1V6Inc-0007GY-7v
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 11:18:04 +0000
+Received: from mail-lb0-f180.google.com ([209.85.217.180])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VF2hn-0002Xl-Ht
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 13:56:12 +0000
-Received: by mail-lb0-f172.google.com with SMTP id x18so730782lbi.17
+	(Exim 4.76) id 1V6Ina-0006P9-DF
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 11:18:04 +0000
+Received: by mail-lb0-f180.google.com with SMTP id a16so1936948lbj.25
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 29 Aug 2013 06:56:04 -0700 (PDT)
+	Mon, 05 Aug 2013 04:17:55 -0700 (PDT)
+Date: Mon, 5 Aug 2013 13:21:41 +0200
 From: Anders Roxell <anders.roxell@linaro.org>
-Date: Thu, 29 Aug 2013 15:55:48 +0200
-Message-Id: <1377784548-1036-3-git-send-email-anders.roxell@linaro.org>
-In-Reply-To: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
-References: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCH 2/2] runltp: rework echo -n to printf POSIX-compliant
+Message-ID: <20130805112141.GB4640@nexon.se>
+References: <1374230659-21101-1-git-send-email-anders.roxell@linaro.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1374230659-21101-1-git-send-email-anders.roxell@linaro.org>
+Subject: Re: [LTP] [PATCH] update make install when enable realtime test
+	suite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,72 +29,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: patches@linaro.org
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- runltp | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+Ping
 
-diff --git a/runltp b/runltp
-index a419bf8..eb8e0c0 100755
---- a/runltp
-+++ b/runltp
-@@ -537,18 +537,13 @@ main()
-         {
-             [ -z "$RHOST" ] && \
-             {
--                echo \
--                "INFO: Enter RHOST = 'name of the remote host machine'"
--                echo -n "-> "
-+                printf "INFO: Enter RHOST = 'name of the remote host machine'\n-> "
-                 read RHOST
-             }
- 
-             [ -z "$PASSWD" ] && \
-             {
--                echo " "
--                echo \
--                "INFO: Enter PASSWD = 'root passwd of the remote host machine'"
--                echo -n "-> "
-+                printf "\nINFO: Enter PASSWD = 'root passwd of the remote host machine'\n-> "
-                 read PASSWD
-             }
-             export RHOST=$RHOST
-@@ -733,15 +728,15 @@ main()
-     #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
- 
-     ## Display the Output/Log/Failed/HTML file names here
--    echo -e "LOG File: \c"
-+    printf "LOG File: "
-     echo $LOGFILE | cut -b4-
- 
-     if [ "$OUTPUTFILE" ]; then
--       echo -e "OUTPUT File: \c"
-+       printf "OUTPUT File: "
-        echo $OUTPUTFILE | cut -b4-
-     fi
- 
--    echo -e "FAILED COMMAND File: \c"
-+    printf "FAILED COMMAND File: "
-     echo $FAILCMDFILE | cut -b4-
- 
-     if [ "$HTMLFILE" ]; then
+/Anders
+
+On 2013-07-19 12:44, Anders Roxell wrote:
+> Hi,
+> 
+> I was trying to enable --with-realtime-testsuite and run that.
+> However, I had some issues with installing the realtime tests and
+> problem with running testscripts/test_realtime.sh script.
+> This patch resolves the problem I had.
+> 
+> 
+> /Anders
+> 
+> Anders Roxell (1):
+>   realtime-testsuite: update the install rule
+> 
+>  testcases/realtime/func/async_handler/Makefile     |  1 +
+>  testcases/realtime/func/gtod_latency/Makefile      |  1 +
+>  testcases/realtime/func/hrtimer-prio/Makefile      |  1 +
+>  testcases/realtime/func/hrtimer-prio/run.sh        | 12 ----------
+>  testcases/realtime/func/hrtimer-prio/run_auto.sh   | 10 +++++++++
+>  testcases/realtime/func/matrix_mult/Makefile       |  1 +
+>  testcases/realtime/func/measurement/Makefile       |  1 +
+>  testcases/realtime/func/measurement/run.sh         | 19 ----------------
+>  testcases/realtime/func/measurement/run_auto.sh    | 19 ++++++++++++++++
+>  testcases/realtime/func/periodic_cpu_load/Makefile |  1 +
+>  testcases/realtime/func/pi-tests/Makefile          |  1 +
+>  testcases/realtime/func/pi_perf/Makefile           |  1 +
+>  testcases/realtime/func/prio-preempt/Makefile      |  1 +
+>  testcases/realtime/func/prio-wake/Makefile         |  1 +
+>  .../realtime/func/pthread_kill_latency/Makefile    |  1 +
+>  testcases/realtime/func/rt-migrate/Makefile        |  1 +
+>  testcases/realtime/func/sched_football/Makefile    |  1 +
+>  testcases/realtime/func/sched_jitter/Makefile      |  1 +
+>  testcases/realtime/func/sched_latency/Makefile     |  1 +
+>  testcases/realtime/func/thread_clock/Makefile      |  1 +
+>  testcases/realtime/perf/latency/Makefile           |  1 +
+>  testcases/realtime/profiles/Makefile               | 26 ++++++++++++++++++++++
+>  testcases/realtime/run.sh                          | 16 ++++++++-----
+>  testcases/realtime/scripts/Makefile                | 26 ++++++++++++++++++++++
+>  testcases/realtime/scripts/run_c_files.sh          |  7 ++++--
+>  testscripts/test_realtime.sh                       | 18 +++++++++------
+>  26 files changed, 124 insertions(+), 46 deletions(-)
+>  delete mode 100644 testcases/realtime/func/hrtimer-prio/run.sh
+>  create mode 100644 testcases/realtime/func/hrtimer-prio/run_auto.sh
+>  delete mode 100644 testcases/realtime/func/measurement/run.sh
+>  create mode 100644 testcases/realtime/func/measurement/run_auto.sh
+>  create mode 100644 testcases/realtime/profiles/Makefile
+>  create mode 100644 testcases/realtime/scripts/Makefile
+> 
+> -- 
+> 1.8.1.2
+> 
+
 -- 
-1.8.1.2
-
+Anders Roxell
+anders.roxell@linaro.org
+M: +46 709 71 42 85 | IRC: roxell
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
