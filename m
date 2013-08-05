@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VC221-000860-2p
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:36:37 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VC21v-0002Zi-Lz
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:36:36 +0000
-Message-ID: <52145FC8.2040207@cn.fujitsu.com>
-Date: Wed, 21 Aug 2013 14:35:52 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <a4b10219d9304cc8ea0fb62447640710d72d05c6.1376300996.git.jstancek@redhat.com>
-In-Reply-To: <a4b10219d9304cc8ea0fb62447640710d72d05c6.1376300996.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] aio_fsync: wait until aio_fsync completes
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3z-0001ZM-QF
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:27 +0000
+Received: from mail-lb0-f182.google.com ([209.85.217.182])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1V6Q3y-0006rT-Qu
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:27 +0000
+Received: by mail-lb0-f182.google.com with SMTP id v20so2333721lbc.41
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 05 Aug 2013 12:03:20 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Mon,  5 Aug 2013 21:02:59 +0200
+Message-Id: <1375729379-16469-7-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+Subject: [LTP] [PATCH 6/6] Remove reference to "java",
+	missed in commit 78596957
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,37 +27,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
 
-On 08/12/2013 07:03 PM, Jan Stancek wrote:
-> This patch introduces wait so that testcases exit doesn't race
-> with completion of aio_fsync.
-> 
-> This is to avoid SIGSEGV:
->  #0  0x000003fffd1f4a24 in _IO_flush_all_lockp () at genops.c:850
->  #1  0x000003fffd1f4b8e in _IO_cleanup () at genops.c:1010
->  #2  0x000003fffd1a88f6 in __run_exit_handlers () at exit.c:90
->  #3  0x000003fffd1a89b0 in __GI_exit () at exit.c:99
->  #4  0x000003fffd18c822 in __libc_start_main () at libc-start.c:292
->  #5  0x0000000080000b76 in _start ()
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ testscripts/test_realtime.sh |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I pushed this, thank you ;)
-
-Wanlong Gao
+diff --git a/testscripts/test_realtime.sh b/testscripts/test_realtime.sh
+index ad5075f..0d424fc 100755
+--- a/testscripts/test_realtime.sh
++++ b/testscripts/test_realtime.sh
+@@ -128,7 +128,7 @@ find_test()
+             ;;
+         all)
+         # Run all tests which have run_auto.sh
+-            TESTLIST="func stress java perf"
++            TESTLIST="func stress perf"
+             ;;
+         list)
+         # This will only display subdirs which have run_auto.sh
+-- 
+1.7.10.4
 
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
