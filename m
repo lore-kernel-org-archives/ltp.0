@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEcCX-00054n-Me
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 09:38:09 +0000
-Date: Wed, 28 Aug 2013 11:38:10 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V6J2R-0000L8-L5
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 11:33:23 +0000
+Date: Mon, 5 Aug 2013 13:33:19 +0200
 From: chrubis@suse.cz
-Message-ID: <20130828093810.GA22849@rei.Home>
-References: <521C4688.9020305@cn.fujitsu.com> <521C46FB.7020308@cn.fujitsu.com>
-	<20130827125144.GI10995@rei.Home> <521D710C.8030609@cn.fujitsu.com>
+Message-ID: <20130805113319.GA8739@rei>
+References: <20130731141915.GA2698@rei.scz.novell.com>
+	<1375362489-27214-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130801160456.GA31753@rei.scz.novell.com>
+	<51FB6D7F.3080507@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <521D710C.8030609@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] quotactl/quotactl02.c: create a case to
- test basic flags of quotactl(2)
+In-Reply-To: <51FB6D7F.3080507@oracle.com>
+Subject: Re: [LTP] [PATCH 1/2 V2] tst_run_cmd: added support for stdout and
+ stderr redirection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,47 +28,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
 
 Hi!
-> > You don't need to have function to statically initialize a structure, I
-> > would just initialized it statically and passed right pointer to the
-> > testcase addr.
+> > What about passing file descriptors to function (-1 means no
+> > redirection) and create a second function on the top of it that
+> > opens the files, does the checks and the calls the tst_run_cmd?
 > 
-> I am afraid I don't catch your meaning.
-> 
-> This function setup_setqlim set up the structure "dquota" for the setqlim test,
-> and crucially, the structure "dquota" is used by other tests, so its value will
-> change after statically initializing.
-> 
+> So you propose creating two functions: one will accept (const char *) 
+> arguments, the other - file descriptors. Yes?
 
-You can define as many structures as you want, one for this particular
-test and one for the rest of the testcases for example, does the syscall
-modify the structure?
+I preffer to look at this as creating one bare function to do the work
+(redirect, vfork + exec) and creating the final function on the top of
+it.
 
-> > 
-> >> +	tst_mkfs(NULL, dev, "xfs", "-f");
-> > 
-> > I still think that the '-f' should go to the library instead. Or we can
-> > zero start of the device (where the filesystem superblock and signatures
-> > are, which should be first few bytes) before we call the mkfs.
-> 
-> I vote to "add the -f parameter in the tst_mkfs() if fs_type is xfs"
-> 
+Good thing about the desing is that we can keep the bare function very
+simple.
 
-Ok, I will fix that.
+> But do we really need this functionality in LTP (ie redirect cmd output 
+> either to filename or to file descriptor)?
+
+Well, it may be usefull to be able to redirect stdout of a command into
+a pipe for example.
+
+> What about modifying tst_run_cmd interface as I propose:
+> tst_run_cmd_redirected(void (cleanup_fn)(void),
+>                                          char *const argv[],
+>                                          const char *stdout_path,
+>                                          const char *stderr_path)
+> but putting all the related to file descriptors' opening/closing in 
+> parent's body.
+
+That works as well.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
