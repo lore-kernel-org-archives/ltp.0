@@ -1,30 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lingyun.xie@bj.cs2c.com.cn>) id 1VDldX-0006Z0-Hg
-	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 01:30:31 +0000
-Received: from [63.217.87.10] (helo=smtpwcom.263xmail.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VDldC-0001jd-WE
-	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 01:30:31 +0000
-Received: from mail-pd0-f169.google.com (localhost [127.0.0.1])
-	by smtpwcom.263xmail.com (Postfix) with ESMTP id 0F425487
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3p-0001YS-Cw
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:17 +0000
+Received: from mail-la0-f51.google.com ([209.85.215.51])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1V6Q3l-00076b-JM
+	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:17 +0000
+Received: by mail-la0-f51.google.com with SMTP id fp13so2365545lab.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Aug 2013 09:29:26 +0800 (CST)
-Received: by mail-pd0-f169.google.com with SMTP id r10so2827338pdi.14
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 25 Aug 2013 18:29:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201308242123.36727.vapier@gentoo.org>
-References: <CALGiYOHZ8qNPSNSwuQ_BQf3L3J=gXbGUgg9Pk45Lke9-ugBueQ@mail.gmail.com>
-	<201308242123.36727.vapier@gentoo.org>
-From: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
-Date: Mon, 26 Aug 2013 09:28:47 +0800
-Message-ID: <CALGiYOGn1trNWZfSLVDTaWqhLSwCjWc0AXS1prs_MTw2PVC7tw@mail.gmail.com>
-Content-Type: multipart/mixed; boundary=047d7b6dbdcaea97cf04e4cfafe6
-Subject: Re: [LTP] [PATCH] network/stress/route/route[4,
- 6]-redirect: add PATH setting for ip
+	Mon, 05 Aug 2013 12:03:07 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Mon,  5 Aug 2013 21:02:54 +0200
+Message-Id: <1375729379-16469-2-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+Subject: [LTP] [PATCH 1/6] realtime/(func|perf)/: rename run.sh to
+	run_auto.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,138 +27,230 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
-
---047d7b6dbdcaea97cf04e4cfafe6
-Content-Type: multipart/alternative; boundary=047d7b6dbdcaea97cc04e4cfafe4
-
---047d7b6dbdcaea97cc04e4cfafe4
-Content-Type: text/plain; charset=ISO-8859-1
-
-I'm sorry for the wrong format of the patch sent from Gmail
-
-The attachment is the patch I posted
-
-
-
-Thanks,
-Lingyun Xie
-
-
-2013/8/25 Mike Frysinger <vapier@gentoo.org>
-
-> On Thursday 08 August 2013 05:59:06 Xie Lingyun wrote:
-> > ip command is not in default rsh $PATH, add PATH setting for 'ip addr
-> > flush' the same
-> > change
-> > in route4-redirect and route6-redirect
->
-> your patch is line wrapped.  maybe you should use `git send-email` to post
-> things ...
-> -mike
->
-
---047d7b6dbdcaea97cc04e4cfafe4
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:simsun,s=
-erif;color:#000000">I&#39;m sorry for the wrong format of the patch sent fr=
-om Gmail</div><div class=3D"gmail_default" style=3D"font-family:simsun,seri=
-f;color:#000000">
-
-<br></div><div class=3D"gmail_default" style=3D"font-family:simsun,serif;co=
-lor:#000000">The attachment is the patch I posted</div><div class=3D"gmail_=
-extra"><br clear=3D"all"><div><div dir=3D"ltr"><br><div><br></div><div>Than=
-ks,<br>
-
-Lingyun Xie</div></div></div>
-<br><br><div class=3D"gmail_quote">2013/8/25 Mike Frysinger <span dir=3D"lt=
-r">&lt;<a href=3D"mailto:vapier@gentoo.org" target=3D"_blank">vapier@gentoo=
-.org</a>&gt;</span><br><blockquote class=3D"gmail_quote" style=3D"margin:0 =
-0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
-
-<div class=3D"im">On Thursday 08 August 2013 05:59:06 Xie Lingyun wrote:<br=
->
-&gt; ip command is not in default rsh $PATH, add PATH setting for &#39;ip a=
-ddr<br>
-&gt; flush&#39; the same<br>
-&gt; change<br>
-&gt; in route4-redirect and route6-redirect<br>
-<br>
-</div>your patch is line wrapped. =A0maybe you should use `git send-email` =
-to post<br>
-things ...<br>
-<span class=3D"HOEnZb"><font color=3D"#888888">-mike<br>
-</font></span></blockquote></div><br></div></div>
-
---047d7b6dbdcaea97cc04e4cfafe4--
-
---047d7b6dbdcaea97cf04e4cfafe6
-Content-Type: application/octet-stream; 
-	name="0001-route-route-4-6-redirect-add-PATH-setting-for-ip.patch"
-Content-Disposition: attachment; 
-	filename="0001-route-route-4-6-redirect-add-PATH-setting-for-ip.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hkt058mr1
-
-RnJvbSA3MGE1ZmZiNWEyMGU2MTIyOWZmZGM3YzQ4ZGM4MzNjZTgxODEyYjRjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBYaWUgTGluZ3l1biA8bGluZ3l1bi54aWVAYmouY3MyYy5jb20u
-Y24+CkRhdGU6IFRodSwgOCBBdWcgMjAxMyAxNzo1MjoxNCArMDgwMApTdWJqZWN0OiBbUEFUQ0hd
-IHJvdXRlL3JvdXRlWzQsNl0tcmVkaXJlY3Q6IGFkZCBQQVRIIHNldHRpbmcgZm9yIGlwCgppcCBj
-b21tYW5kIGlzIG5vdCBpbiBkZWZhdWx0IHJzaCAkUEFUSCwgYWRkIFBBVEggc2V0dGluZyBmb3Ig
-J2lwIGFkZHIgZmx1c2ggJwp0aGUgc2FtZSBpbiByb3V0ZTQtcmVkaXJlY3QgYW5kIHJvdXRlNi1y
-ZWRpcmVjdAoKU2lnbmVkLW9mZi1ieTogWGllIExpbmd5dW4gPGxpbmd5dW4ueGllQGJqLmNzMmMu
-Y29tLmNuPgotLS0KIHRlc3RjYXNlcy9uZXR3b3JrL3N0cmVzcy9yb3V0ZS9yb3V0ZTQtcmVkaXJl
-Y3QgfCAyICstCiB0ZXN0Y2FzZXMvbmV0d29yay9zdHJlc3Mvcm91dGUvcm91dGU2LXJlZGlyZWN0
-IHwgMiArLQogMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL25ldHdvcmsvc3RyZXNzL3JvdXRlL3JvdXRlNC1yZWRp
-cmVjdCBiL3Rlc3RjYXNlcy9uZXR3b3JrL3N0cmVzcy9yb3V0ZS9yb3V0ZTQtcmVkaXJlY3QKaW5k
-ZXggOWViOGE0Ni4uYWI2YWFmMSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL25ldHdvcmsvc3RyZXNz
-L3JvdXRlL3JvdXRlNC1yZWRpcmVjdAorKysgYi90ZXN0Y2FzZXMvbmV0d29yay9zdHJlc3Mvcm91
-dGUvcm91dGU0LXJlZGlyZWN0CkBAIC0xNDAsNyArMTQwLDcgQEAgZG9fc2V0dXAoKQogCiAgICAg
-IyBSZW1vdmUgdGhlIGxpbmstbG9jYWwgYWRkcmVzcyBvZiB0aGUgcmVtb3RlIGhvc3QKICAgICBz
-bGVlcCAzCi0gICAgJExUUF9SU0ggJFJIT1NUICJpcCBhZGRyIGZsdXNoIGRldiAkcmhvc3RfaWZu
-YW1lIiA+IC9kZXYvbnVsbAorICAgICRMVFBfUlNIICRSSE9TVCAiUEFUSD0vc2JpbjovdXNyL3Ni
-aW46JFBBVEggaXAgYWRkciBmbHVzaCBkZXYgJHJob3N0X2lmbmFtZSIgPiAvZGV2L251bGwKIAog
-ICAgICMgQXNzaWduIElQdjQgYWRkcmVzcyB0byB0aGUgaW50ZXJmYWNlIG9mIHRoZSBsb2NhbCBo
-b3N0CiAgICAgc2V0X2lwdjRhZGRyIGxob3N0ICR7TElOS19OVU19ICR7SVBWNF9ORVRXT1JLfSAk
-e0xIT1NUX0lQVjRfSE9TVH0KZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9uZXR3b3JrL3N0cmVzcy9y
-b3V0ZS9yb3V0ZTYtcmVkaXJlY3QgYi90ZXN0Y2FzZXMvbmV0d29yay9zdHJlc3Mvcm91dGUvcm91
-dGU2LXJlZGlyZWN0CmluZGV4IDFjMzFiNjIuLjFlOGY1ZGYgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNl
-cy9uZXR3b3JrL3N0cmVzcy9yb3V0ZS9yb3V0ZTYtcmVkaXJlY3QKKysrIGIvdGVzdGNhc2VzL25l
-dHdvcmsvc3RyZXNzL3JvdXRlL3JvdXRlNi1yZWRpcmVjdApAQCAtMTM3LDcgKzEzNyw3IEBAIGRv
-X3NldHVwKCkKIAogICAgICMgUmVtb3ZlIHRoZSBsaW5rLWxvY2FsIGFkZHJlc3Mgb2YgdGhlIHJl
-bW90ZSBob3N0CiAgICAgc2xlZXAgNQotICAgICRMVFBfUlNIICRSSE9TVCAiaXAgYWRkciBmbHVz
-aCBkZXYgJHJob3N0X2lmbmFtZSIgPiAvZGV2L251bGwKKyAgICAkTFRQX1JTSCAkUkhPU1QgIlBB
-VEg9L3NiaW46L3Vzci9zYmluOiRQQVRIIGlwIGFkZHIgZmx1c2ggZGV2ICRyaG9zdF9pZm5hbWUi
-ID4gL2Rldi9udWxsCiAKICAgICAjIEFzc2lnbiBJUHY2IGFkZHJlc3MgdG8gdGhlIGludGVyZmFj
-ZSBvZiB0aGUgbG9jYWwgaG9zdAogICAgIGFkZF9pcHY2YWRkciBsaG9zdCAke0xJTktfTlVNfSAk
-e0lQVjZfTkVUV09SS30gJHtMSE9TVF9JUFY2X0hPU1R9Ci0tIAoxLjguMy4xCgo=
---047d7b6dbdcaea97cf04e4cfafe6
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
+
+Rename run.sh to run_auto.sh in accordance to all other func tests and
+remove unnecessary whitespaces newlines at the end of file to prevent git
+am warning.
+
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ testcases/realtime/func/hrtimer-prio/run.sh      |   12 ------
+ testcases/realtime/func/hrtimer-prio/run_auto.sh |   10 +++++
+ testcases/realtime/func/measurement/run.sh       |   19 ---------
+ testcases/realtime/func/measurement/run_auto.sh  |   19 +++++++++
+ testcases/realtime/perf/latency/run.sh           |   45 ----------------------
+ testcases/realtime/perf/latency/run_auto.sh      |   45 ++++++++++++++++++++++
+ 6 files changed, 74 insertions(+), 76 deletions(-)
+ delete mode 100644 testcases/realtime/func/hrtimer-prio/run.sh
+ create mode 100644 testcases/realtime/func/hrtimer-prio/run_auto.sh
+ delete mode 100644 testcases/realtime/func/measurement/run.sh
+ create mode 100644 testcases/realtime/func/measurement/run_auto.sh
+ delete mode 100755 testcases/realtime/perf/latency/run.sh
+ create mode 100755 testcases/realtime/perf/latency/run_auto.sh
+
+diff --git a/testcases/realtime/func/hrtimer-prio/run.sh b/testcases/realtime/func/hrtimer-prio/run.sh
+deleted file mode 100644
+index b45e76b..0000000
+--- a/testcases/realtime/func/hrtimer-prio/run.sh
++++ /dev/null
+@@ -1,12 +0,0 @@
+-#! /bin/bash
+-
+-if [ ! $SCRIPTS_DIR ]; then
+-        # assume we're running standalone
+-        export SCRIPTS_DIR=../../scripts/
+-fi
+-
+-source $SCRIPTS_DIR/setenv.sh
+-
+-$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
+-
+-
+diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+new file mode 100644
+index 0000000..366e746
+--- /dev/null
++++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+@@ -0,0 +1,10 @@
++#! /bin/bash
++
++if [ ! $SCRIPTS_DIR ]; then
++        # assume we're running standalone
++        export SCRIPTS_DIR=../../scripts/
++fi
++
++source $SCRIPTS_DIR/setenv.sh
++
++$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
+diff --git a/testcases/realtime/func/measurement/run.sh b/testcases/realtime/func/measurement/run.sh
+deleted file mode 100644
+index 3011964..0000000
+--- a/testcases/realtime/func/measurement/run.sh
++++ /dev/null
+@@ -1,19 +0,0 @@
+-#! /bin/bash
+-
+-if [ ! $SCRIPTS_DIR ]; then
+-        # assume we're running standalone
+-        export SCRIPTS_DIR=../../scripts/
+-fi
+-
+-source $SCRIPTS_DIR/setenv.sh
+-
+-
+-# This is a temporary workaround for previous
+-# loop support patch which seems to be having
+-# issues right now.
+-
+-LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
+-$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
+-
+-LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
+-$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
+diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
+new file mode 100644
+index 0000000..3011964
+--- /dev/null
++++ b/testcases/realtime/func/measurement/run_auto.sh
+@@ -0,0 +1,19 @@
++#! /bin/bash
++
++if [ ! $SCRIPTS_DIR ]; then
++        # assume we're running standalone
++        export SCRIPTS_DIR=../../scripts/
++fi
++
++source $SCRIPTS_DIR/setenv.sh
++
++
++# This is a temporary workaround for previous
++# loop support patch which seems to be having
++# issues right now.
++
++LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
++$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
++
++LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
++$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
+diff --git a/testcases/realtime/perf/latency/run.sh b/testcases/realtime/perf/latency/run.sh
+deleted file mode 100755
+index 2c0d203..0000000
+--- a/testcases/realtime/perf/latency/run.sh
++++ /dev/null
+@@ -1,45 +0,0 @@
+-#! /bin/bash
+-
+-if [ ! $SCRIPTS_DIR ]; then
+-	# assume we're running standalone
+-	export SCRIPTS_DIR=../../scripts/
+-fi
+-
+-source $SCRIPTS_DIR/setenv.sh
+-LOG_FILE="$LOG_DIR/$LOG_FORMAT-pthread_cond_many.log"
+-
+-echo -e "Logging to: " | tee -a $LOG_FILE
+-echo -e "$LOG_FILE " | tee -a $LOG_FILE
+-echo -e "and to local individual .out files " | tee -a $LOG_FILE
+-
+-#
+-# make will eventually go away from here, as will the above echoes
+-#
+-make
+-
+-#
+-# Test lots of threads.  Specify "--realtime" if you want the first
+-# process to run realtime.  The remainder of the processes (if any)
+-# will run non-realtime in any case.
+-
+-nthread=5000
+-iter=400
+-nproc=5
+-
+-echo -e "pthread_cond_many configuration:" | tee -a $LOG_FILE
+-echo -e "number of threads = $nthread " | tee -a $LOG_FILE
+-echo -e "number of iterations = $iter " | tee -a $LOG_FILE
+-echo -e "number of processes = $nproc " | tee -a $LOG_FILE
+-
+-# Remove any existing local log files
+-rm -f $nthread.$iter.$nproc.*.out
+-
+-i=0
+-./pthread_cond_many --realtime --broadcast -i $iter -n $nthread > $nthread.$iter.$nproc.$i.out &
+-i=1
+-while test $i -lt $nproc
+-do
+-        ./pthread_cond_many --broadcast -i $iter -n $nthread > $nthread.$iter.$nproc.$i.out &
+-        i=`expr $i + 1`
+-done
+-wait
+diff --git a/testcases/realtime/perf/latency/run_auto.sh b/testcases/realtime/perf/latency/run_auto.sh
+new file mode 100755
+index 0000000..2c0d203
+--- /dev/null
++++ b/testcases/realtime/perf/latency/run_auto.sh
+@@ -0,0 +1,45 @@
++#! /bin/bash
++
++if [ ! $SCRIPTS_DIR ]; then
++	# assume we're running standalone
++	export SCRIPTS_DIR=../../scripts/
++fi
++
++source $SCRIPTS_DIR/setenv.sh
++LOG_FILE="$LOG_DIR/$LOG_FORMAT-pthread_cond_many.log"
++
++echo -e "Logging to: " | tee -a $LOG_FILE
++echo -e "$LOG_FILE " | tee -a $LOG_FILE
++echo -e "and to local individual .out files " | tee -a $LOG_FILE
++
++#
++# make will eventually go away from here, as will the above echoes
++#
++make
++
++#
++# Test lots of threads.  Specify "--realtime" if you want the first
++# process to run realtime.  The remainder of the processes (if any)
++# will run non-realtime in any case.
++
++nthread=5000
++iter=400
++nproc=5
++
++echo -e "pthread_cond_many configuration:" | tee -a $LOG_FILE
++echo -e "number of threads = $nthread " | tee -a $LOG_FILE
++echo -e "number of iterations = $iter " | tee -a $LOG_FILE
++echo -e "number of processes = $nproc " | tee -a $LOG_FILE
++
++# Remove any existing local log files
++rm -f $nthread.$iter.$nproc.*.out
++
++i=0
++./pthread_cond_many --realtime --broadcast -i $iter -n $nthread > $nthread.$iter.$nproc.$i.out &
++i=1
++while test $i -lt $nproc
++do
++        ./pthread_cond_many --broadcast -i $iter -n $nthread > $nthread.$iter.$nproc.$i.out &
++        i=`expr $i + 1`
++done
++wait
+-- 
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
---047d7b6dbdcaea97cf04e4cfafe6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---047d7b6dbdcaea97cf04e4cfafe6--
-
