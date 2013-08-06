@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEHng-0006a9-54
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 11:51:08 +0000
-Date: Tue, 27 Aug 2013 13:51:12 +0200
-From: chrubis@suse.cz
-Message-ID: <20130827115112.GE10995@rei.Home>
-References: <364946f8001c14134ce7bf32fe8b5c6b5201bcfb.1376399706.git.jstancek@redhat.com>
-	<cfa1ee92801ae50856d8d7b000c5bb046724475e.1376479412.git.jstancek@redhat.com>
-	<20130815125341.GA336@rei>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1V6VoG-0000ZZ-Pq
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 01:11:36 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V6VoF-000086-2I
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 01:11:36 +0000
+Message-ID: <52004D42.9020101@cn.fujitsu.com>
+Date: Tue, 06 Aug 2013 09:11:30 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20130815125341.GA336@rei>
-Subject: Re: [LTP] [PATCH v5 2/2] open_posix_testsuite/../mq_timedsend/12-1:
- fix race
+References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
+Subject: Re: [LTP] [PATCHv2 0/6] update make install when enable realtime
+ test suite
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,41 +29,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Anders Roxell <anders.roxell@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
 
-Hi!
-> > Test can send SIGUSR1 signal after thread has already completed
-> > and report failure from main() and success from a_thread_func():
-> > 
-> >   conformance/interfaces/mq_timedsend/12-1: execution: UNRESOLVED: Output:
-> >   Error: in pthread_kill
-> >   : Success
-> >   thread: mq_timedsend interrupted by signal and correctly set errno to EINTR
-> > 
-> > Synchronize exit of a_thread_func(), so that thread can exit only
-> > after loop sending SIGUSR1 completed.
-> > 
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> > Changes in v5:
-> > - return value from pthread_exit is not used, always return NULL
+On 08/06/2013 03:02 AM, Anders Roxell wrote:
+> Hi,
 > 
-> Looks good to me. Acked.
+> Split up previous patch sent to this mailing list.
+
+
+Applied this version, thank you.
+
+Wanlong Gao
+
 > 
+> /Anders
 
-Did you forget to commit this patch?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
