@@ -1,20 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1VEwdv-0001wp-Ho
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 07:27:47 +0000
-Received: from mail-lb0-f182.google.com ([209.85.217.182])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VEwdu-0007LA-Mn
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 07:27:47 +0000
-Received: by mail-lb0-f182.google.com with SMTP id r12so412396lbi.27
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 29 Aug 2013 00:27:39 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Thu, 29 Aug 2013 09:27:19 +0200
-Message-Id: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCH 0/2] Remove bashism and added required import
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1V6dJk-0006Co-1s
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:36 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V6dJb-00067L-4o
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:36 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r769CKYR017806
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:21 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r769CJtb023114
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:20 GMT
+Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r769CJmr018346
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:19 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue,  6 Aug 2013 13:11:53 +0400
+Message-Id: <1375780313-17327-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <51FFBCC1.3030101@oracle.com>
+References: <51FFBCC1.3030101@oracle.com>
+Subject: [LTP] [PATCH 2/2 V3] lib/tst_module.c: modification for updated
+	tst_run_cmd specification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +44,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
 
-Hi,
+From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Remove bashism and added required import
+Modified lib/tst_module.c:
+* for updated tst_run_cmd specification
+* to hide gcc warning "initialization discards qualifiers from pointer target type"
 
-/Anders
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ lib/tst_module.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Anders Roxell (2):
-  realtime parser: remove unused and depricated imports
-  runltp: remove bashisms
-
- runltp                               | 6 +++---
- testcases/realtime/scripts/parser.py | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index 832da27..0b94a26 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -94,12 +94,12 @@ void tst_module_load(void (cleanup_fn)(void),
+ 	for (i = offset; i < size; ++i)
+ 		mod_argv[i] = argv[i - offset];
+ 
+-	tst_run_cmd(cleanup_fn, mod_argv);
++	tst_run_cmd(cleanup_fn, mod_argv, -1, -1);
+ 	free(mod_path);
+ }
+ 
+ void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
+ {
+-	char *const argv[] = { "rmmod", mod_name, NULL };
+-	tst_run_cmd(cleanup_fn, argv);
++	char *const argv[] = { "rmmod", (char *) mod_name, NULL };
++	tst_run_cmd(cleanup_fn, argv, -1, -1);
+ }
 -- 
-1.8.1.2
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
