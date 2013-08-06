@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEeLt-0003LS-5K
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 11:55:57 +0000
-Date: Wed, 28 Aug 2013 13:56:01 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V6gwT-0004EN-GN
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 13:04:49 +0000
+Date: Tue, 6 Aug 2013 15:04:45 +0200
 From: chrubis@suse.cz
-Message-ID: <20130828115601.GA4804@rei>
-References: <20130711110014.GB6142@rei.suse.cz>
-	<201308242143.45598.vapier@gentoo.org>
-	<20130827110434.GA10995@rei.Home>
-	<201308271218.22009.vapier@gentoo.org>
+Message-ID: <20130806130445.GA28262@rei>
+References: <20130806111355.GB24437@rei>
+	<1375793678-26497-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201308271218.22009.vapier@gentoo.org>
-Subject: Re: [LTP] RFC add _FORTIFY_SOURCE to default LTP CFLAGS
+In-Reply-To: <1375793678-26497-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 1/2 V4] tst_run_cmd: added support for stdout and
+ stderr redirection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,38 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
 
 Hi!
+> Added function tst_run_cmd_fds which allows redirection of
+> stdout/stderr to file descriptors.
 > 
-> unfortunately that does not work.  this snippet from coreutils is probably 
-> better:
->   AH_VERBATIM([FORTIFY_SOURCE],
->   [/* Enable compile-time and run-time bounds-checking, and some warnings,
->       without upsetting glibc 2.15+. */
->    #if !defined _FORTIFY_SOURCE && defined __OPTIMIZE__ && __OPTIMIZE__
->    # define _FORTIFY_SOURCE 2   
->    #endif
->   ])
+> Now function tst_run_cmd is a wrapper to tst_run_cmd_fds.
 
-That wouldn't work here, as config.h is included only in a few testcases
-(in these that actually use some of the defines there).
-
-But given that this just copies some ifdefs into config.h what about
-adding the snippet directly into compiler.h that is included from
-test.h thus ends up in all testcases?
+Both patches pushed.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
