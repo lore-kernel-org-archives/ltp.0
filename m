@@ -1,35 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VEFgg-00017F-7u
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 09:35:46 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VEFge-0002fj-8o
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 09:35:46 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r7R9ZbIc027694
+	id 1V6dJo-0002EM-SC
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:41 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V6dJY-0006VZ-VR
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:40 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r769CIU9029397
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 09:35:38 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7R9ZaSr029130
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:19 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r769CH6H018258
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 09:35:37 GMT
-Received: from abhmt106.oracle.com (abhmt106.oracle.com [141.146.116.58])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7R9Zakr023932
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 09:35:36 GMT
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:17 GMT
+Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r769CG01022918
+	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:16 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 27 Aug 2013 13:35:29 +0400
-Message-Id: <1377596129-32367-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <521B6875.8010202@oracle.com>
-References: <521B6875.8010202@oracle.com>
-Subject: [LTP] [PATCH V2 2/2] syscalls/getgroups: added checks for 16-bit
-	getgroups() syscall
+Date: Tue,  6 Aug 2013 13:11:52 +0400
+Message-Id: <1375780313-17327-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <51FFBCC1.3030101@oracle.com>
+References: <51FFBCC1.3030101@oracle.com>
+Subject: [LTP] [PATCH 1/2 V3] tst_run_cmd: added support for stdout and
+	stderr redirection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,265 +44,158 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
 
-getgroups01_16 and getgroups03_16 did not use 16-bit
-version of getgroups() syscall. Fixed this in the same manner as
-syscalls/setgroups.
+From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+For tst_run_cmd added support for stdout/stderr redirection to
+a file descriptor.
+
+Added function tst_run_cmd_rdr_file which allows to redirect
+tst_run_cmd output to a file.
+
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/getgroups/compat_16.h   |   78 +++++++++++++++++++++
- testcases/kernel/syscalls/getgroups/getgroups01.c |   22 +++---
- testcases/kernel/syscalls/getgroups/getgroups03.c |   17 +++--
- 3 files changed, 99 insertions(+), 18 deletions(-)
- create mode 100644 testcases/kernel/syscalls/getgroups/compat_16.h
+ include/test.h    |   20 +++++++++++++++-
+ lib/tst_run_cmd.c |   66 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 83 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getgroups/compat_16.h b/testcases/kernel/syscalls/getgroups/compat_16.h
-new file mode 100644
-index 0000000..79d006e
---- /dev/null
-+++ b/testcases/kernel/syscalls/getgroups/compat_16.h
-@@ -0,0 +1,78 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+#ifndef __GETGROUPS_COMPAT_16_H__
-+#define __GETGROUPS_COMPAT_16_H__
-+
-+#include "compat_gid.h"
-+#include "linux_syscall_numbers.h"
-+
-+#ifdef TST_USE_COMPAT16_SYSCALL
-+
-+int SETGROUPS(size_t size, const GID_T *list16)
-+{
-+	int r;
-+	int i;
-+
-+	gid_t *list32;
-+	list32 = calloc(size, sizeof(gid_t));
-+	if (list32 == NULL)
-+		tst_brkm(TBROK | TERRNO, NULL,
-+			"calloc() failed to allocate %zu bytes",
-+			size * sizeof(gid_t));
-+
-+	for (i = 0; i < size; i++)
-+		list32[i] = list16[i];
-+
-+	r = setgroups(size, list32);
-+
-+	free(list32);
-+
-+	return r;
-+}
-+
-+int GETGROUPS(int size, GID_T *list16)
-+{
-+# if (__NR_getgroups32 != __LTP__NR_INVALID_SYSCALL)
-+	/* __NR_getgroups - 16-bit version of getgroups() syscall */
-+	return ltp_syscall(__NR_getgroups, size, list16);
-+# else
-+	/* The platform has no 16-bit version of getgroups() syscall */
-+	tst_brkm(TCONF, NULL,
-+		"16-bit version of getgroups() is not supported on your arch");
-+# endif /* __NR_getgroups32 */
-+}
-+
-+#else
-+
-+int SETGROUPS(size_t size, const GID_T *list32)
-+{
-+	return setgroups(size, list32);
-+}
-+
-+int GETGROUPS(int size, GID_T *list32)
-+{
-+	return getgroups(size, list32);
-+}
-+
-+#endif /* TST_USE_COMPAT16_SYSCALL */
-+
-+#endif /* __GETGROUPS_COMPAT_16_H__ */
-diff --git a/testcases/kernel/syscalls/getgroups/getgroups01.c b/testcases/kernel/syscalls/getgroups/getgroups01.c
-index 1d58109..39157aa 100644
---- a/testcases/kernel/syscalls/getgroups/getgroups01.c
-+++ b/testcases/kernel/syscalls/getgroups/getgroups01.c
-@@ -52,8 +52,10 @@
- #include <grp.h>
- #include <sys/param.h>
- #include <sys/types.h>
-+
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- static void setup(void);
- static void cleanup(void);
-@@ -61,14 +63,14 @@ static void cleanup(void);
- char *TCID = "getgroups01";
- int TST_TOTAL = 4;
- 
--static gid_t gidset[NGROUPS];
--static gid_t cmpset[NGROUPS];
-+static GID_T gidset[NGROUPS];
-+static GID_T cmpset[NGROUPS];
- 
- int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
--	gid_t group;
-+	GID_T group;
- 	int i;
- 	int entries;
- 
-@@ -83,7 +85,7 @@ int main(int ac, char **av)
- 
- 		tst_count = 0;
- 
--		TEST(getgroups(-1, gidset));
-+		TEST(GETGROUPS(-1, gidset));
- 
- 		if (TEST_RETURN == 0) {
- 			tst_resm(TFAIL, "getgroups succeeded unexpectedly");
-@@ -101,14 +103,14 @@ int main(int ac, char **av)
- 		 * return and the the gidset array is not modified.
- 		 * This is a POSIX special case.
- 		 */
--		memset(gidset, 052, NGROUPS * sizeof(gid_t));
--		memset(cmpset, 052, NGROUPS * sizeof(gid_t));
-+		memset(gidset, 052, NGROUPS * sizeof(GID_T));
-+		memset(cmpset, 052, NGROUPS * sizeof(GID_T));
- 
--		TEST(getgroups(0, gidset));
-+		TEST(GETGROUPS(0, gidset));
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL | TTERRNO, "getgroups failed unexpectedly");
- 		} else if (STD_FUNCTIONAL_TEST) {
--			if (memcmp(cmpset, gidset, NGROUPS * sizeof(gid_t)) != 0)
-+			if (memcmp(cmpset, gidset, NGROUPS * sizeof(GID_T)) != 0)
- 				tst_resm(TFAIL,
- 					 "getgroups modified the gidset array");
- 			else
-@@ -126,7 +128,7 @@ int main(int ac, char **av)
- 				 "getgroups returned %ld; unable to test that using ngrps >=1 but less than number of grps",
- 				 TEST_RETURN);
- 		} else {
--			TEST(getgroups(TEST_RETURN - 1, gidset));
-+			TEST(GETGROUPS(TEST_RETURN - 1, gidset));
- 			if (TEST_RETURN == -1) {
- 				if (STD_FUNCTIONAL_TEST) {
- 					if (errno == EINVAL)
-@@ -145,7 +147,7 @@ int main(int ac, char **av)
- 			}
- 		}
- 
--		TEST(getgroups(NGROUPS, gidset));
-+		TEST(GETGROUPS(NGROUPS, gidset));
- 		if ((entries = TEST_RETURN) == -1) {
- 			tst_resm(TFAIL | TTERRNO,
- 				 "getgroups failed unexpectedly");
-diff --git a/testcases/kernel/syscalls/getgroups/getgroups03.c b/testcases/kernel/syscalls/getgroups/getgroups03.c
-index 1e25756..3a0ac0c 100644
---- a/testcases/kernel/syscalls/getgroups/getgroups03.c
-+++ b/testcases/kernel/syscalls/getgroups/getgroups03.c
-@@ -41,6 +41,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define TESTUSER "root"
- 
-@@ -48,8 +49,8 @@ char *TCID = "getgroups03";
- int TST_TOTAL = 1;
- 
- static int ngroups;
--static gid_t groups_list[NGROUPS];
--static gid_t groups[NGROUPS];
-+static GID_T groups_list[NGROUPS];
-+static GID_T groups[NGROUPS];
- 
- static void verify_groups(int ret_ngroups);
- static void setup(void);
-@@ -70,7 +71,7 @@ int main(int ac, char **av)
- 
- 		tst_count = 0;
- 
--		TEST(getgroups(gidsetsize, groups_list));
-+		TEST(GETGROUPS(gidsetsize, groups_list));
- 
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL | TTERRNO, "getgroups failed");
-@@ -88,18 +89,18 @@ int main(int ac, char **av)
- }
- 
- /*
-- * readgroups(gid_t *)  - Read supplimentary group ids of "root" user
-+ * readgroups(GID_T *)  - Read supplimentary group ids of "root" user
-  * Scans the /etc/group file to get IDs of all the groups to which TESTUSER
-  * belongs and puts them into the array passed.
-  * Returns the no of gids read.
+diff --git a/include/test.h b/include/test.h
+index a76fafc..ab0cdcc 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -219,8 +219,26 @@ long tst_ncpus_max(void);
+  * @argv: a list of two (at least program name + NULL) or more pointers that
+  * represent the argument list to the new program. The array of pointers
+  * must be terminated by a NULL pointer.
++ * @stdout_fd: file descriptor where to redirect stdout. Set -1 if
++ * redirection is not needed.
++ * @stderr_fd: file descriptor where to redirect stderr. Set -1 if
++ * redirection is not needed.
   */
--static int readgroups(gid_t groups[NGROUPS])
-+static int readgroups(GID_T groups[NGROUPS])
+-void tst_run_cmd(void (cleanup_fn)(void), char *const argv[]);
++void tst_run_cmd(void (cleanup_fn)(void),
++		char *const argv[],
++		int stdout_fd,
++		int stderr_fd);
++
++/* Executes tst_run_cmd() and redirects its output to a file
++ * @stdout_path: path where to redirect stdout. Set NULL if redirection is
++ * not needed.
++ * @stderr_path: path where to redirect stderr. Set NULL if redirection is
++ * not needed.
++ */
++void tst_run_cmd_rdr_file(void (cleanup_fn)(void),
++			char *const argv[],
++			const char *stdout_path,
++			const char *stderr_path);
+ 
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
+index 93fe2d6..1829b4c 100644
+--- a/lib/tst_run_cmd.c
++++ b/lib/tst_run_cmd.c
+@@ -19,12 +19,21 @@
+  *
+  */
+ 
++#include <errno.h>
+ #include <sys/types.h>
++#include <sys/stat.h>
+ #include <sys/wait.h>
++#include <fcntl.h>
+ #include <unistd.h>
+ #include "test.h"
+ 
+-void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
++#define OPEN_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
++#define OPEN_FLAGS	(O_WRONLY | O_APPEND | O_CREAT)
++
++void tst_run_cmd(void (cleanup_fn)(void),
++		char *const argv[],
++		int stdout_fd,
++		int stderr_fd)
  {
- 	struct group *grp;
- 	int ngrps = 0;
- 	int i;
- 	int found;
--	gid_t g;
-+	GID_T g;
+ 	if (argv == NULL || argv[0] == NULL) {
+ 		tst_brkm(TBROK, cleanup_fn,
+@@ -36,8 +45,20 @@ void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn, "vfork failed at %s:%d",
+ 			__FILE__, __LINE__);
+ 	}
+-	if (!pid)
++	if (!pid) {
++		/* redirecting stdout and stderr if needed */
++		if (stdout_fd != -1) {
++			close(STDOUT_FILENO);
++			dup2(stdout_fd, STDOUT_FILENO);
++		}
++
++		if (stderr_fd != -1) {
++			close(STDERR_FILENO);
++			dup2(stderr_fd, STDERR_FILENO);
++		}
++
+ 		_exit(execvp(argv[0], argv));
++	}
  
- 	setgrent();
- 
-@@ -151,7 +152,7 @@ static void setup(void)
- 	 * testcase will fail. So execute setgroups() before executing
- 	 * getgroups()
- 	 */
--	if (setgroups(ngroups, groups) == -1)
-+	if (SETGROUPS(ngroups, groups) == -1)
- 		tst_brkm(TBROK | TERRNO, cleanup, "setgroups failed");
+ 	int ret = -1;
+ 	if (waitpid(pid, &ret, 0) != pid) {
+@@ -50,3 +71,44 @@ void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
+ 			argv[0], __FILE__, __LINE__);
+ 	}
  }
- 
-@@ -165,7 +166,7 @@ static void setup(void)
- static void verify_groups(int ret_ngroups)
- {
- 	int i, j;
--	gid_t egid;
-+	GID_T egid;
- 	int egid_flag = 1;
- 	int fflag = 1;
- 
++
++void tst_run_cmd_rdr_file(void (cleanup_fn)(void),
++			char *const argv[],
++			const char *stdout_path,
++			const char *stderr_path)
++{
++	int stdout_fd = -1;
++	int stderr_fd = -1;
++
++	if (stdout_path != NULL) {
++		stdout_fd = open(stdout_path,
++				OPEN_FLAGS, OPEN_MODE);
++
++		if (stdout_fd == -1)
++			tst_resm(TWARN | TERRNO,
++				"open() on %s failed at %s:%d",
++				stdout_path, __FILE__, __LINE__);
++	}
++
++	if (stderr_path != NULL) {
++		stderr_fd = open(stderr_path,
++				OPEN_FLAGS, OPEN_MODE);
++
++		if (stderr_fd == -1)
++			tst_resm(TWARN | TERRNO,
++				"open() on %s failed at %s:%d",
++				stderr_path, __FILE__, __LINE__);
++	}
++
++	tst_run_cmd(cleanup_fn, argv, stdout_fd, stderr_fd);
++
++	if ((stdout_fd != -1) && (close(stdout_fd) == -1))
++		tst_resm(TWARN | TERRNO,
++			"close() on %s failed at %s:%d",
++			stdout_path, __FILE__, __LINE__);
++
++	if ((stderr_fd != -1) && (close(stderr_fd) == -1))
++		tst_resm(TWARN | TERRNO,
++			"close() on %s failed at %s:%d",
++			stderr_path, __FILE__, __LINE__);
++}
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
