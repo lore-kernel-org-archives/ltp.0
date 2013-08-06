@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V9G3r-0005tK-LH
-	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 14:59:03 +0000
-Date: Tue, 13 Aug 2013 16:59:02 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V6fEz-0006tv-4q
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 11:15:49 +0000
+Date: Tue, 6 Aug 2013 13:15:45 +0200
 From: chrubis@suse.cz
-Message-ID: <20130813145902.GC29233@rei>
-References: <20130717130502.GD25145@rei>
-	<1376311771-30968-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20130806111545.GC24437@rei>
+References: <51FFBCC1.3030101@oracle.com>
+	<1375780313-17327-3-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1376311771-30968-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V4 1/2] Implemented tst_fill_file function
+In-Reply-To: <1375780313-17327-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 2/2 V3] lib/tst_module.c: modification for updated
+ tst_run_cmd specification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,70 +27,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
 
 Hi!
-> +int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
-> +{
-> +	int fd, counter;
-> +	char *buf;
-> +
-> +	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
-> +	if (fd < 0)
-> +		return -1;
-> +
-> +	/* Filling a memory buffer with provided pattern */
-> +	buf = malloc(bs);
-> +	if (buf == NULL) {
-> +		close(fd);
-> +
-> +		return -1;
-> +	}
-> +
-> +	for (counter = 0; counter < bs; counter++)
-> +		buf[counter] = pattern;
-> +
-> +	/* Filling the file */
-> +	for (counter = 0; counter < bcount; counter++)
-> +		if (write(fd, buf, bs) != bs) {
-> +			free(buf);
-> +			close(fd);
-> +			unlink(path);
-> +
-> +			return -1;
-> +		}
+> * to hide gcc warning "initialization discards qualifiers from pointer target type"
 
-This is minor but I've told you allready that it's preffered to add the
-curly brackets ({}) around large blocks. Such as:
+I think that correct solution is to declare the argv as:
 
-	for (counter = 0; counter < bcount; counter++) {
-		if (...) {
-			...
-			...
-		}
-	}
+const char *const argv[]
 
-> +	free(buf);
-> +	if (close(fd) < 0)
+So that both the array and the stored strings are constant.
 
-Add unlink here too, just to be consistent.
-
-> +		return -1;
-> +
-> +	return 0;
-> +}
-
-Otherwise it looks good.
+(Feel free to do this in separate patch)
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
 http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
