@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VC2FL-0006EX-RV
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:50:23 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VC2FK-0001Uw-DQ
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:50:23 +0000
-Date: Wed, 21 Aug 2013 02:50:15 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <930235670.1613017.1377067815751.JavaMail.root@redhat.com>
-In-Reply-To: <5213D2DF.20802@oracle.com>
-References: <5213D2DF.20802@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V6fDF-00034w-7o
+	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 11:14:01 +0000
+Date: Tue, 6 Aug 2013 13:13:55 +0200
+From: chrubis@suse.cz
+Message-ID: <20130806111355.GB24437@rei>
+References: <51FFBCC1.3030101@oracle.com>
+	<1375780313-17327-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] ltp: handle missing online file
+Content-Disposition: inline
+In-Reply-To: <1375780313-17327-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 1/2 V3] tst_run_cmd: added support for stdout and
+ stderr redirection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,82 +26,171 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
 
-
-
-
-
------ Original Message -----
-> From: "Dave Kleikamp" <dave.kleikamp@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 20 August, 2013 10:34:39 PM
-> Subject: [LTP] [PATCH] ltp: handle missing online file
+Hi!
+> For tst_run_cmd added support for stdout/stderr redirection to
+> a file descriptor.
 > 
-> gather_node_cpus() fails if the /sys/devices/system/node/nodeX/cpuX/online
-> file is missing for any cpu other than cpu0. The absence of the online file
-> should not be treated as a failure, but as an indication that the cpu is
-> not hot-pluggable and cannot be taken offline.
+> Added function tst_run_cmd_rdr_file which allows to redirect
+> tst_run_cmd output to a file.
 > 
-> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-
-Looks good to me. One comment inline.
-
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
+> Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  include/test.h    |   20 +++++++++++++++-
+>  lib/tst_run_cmd.c |   66 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 83 insertions(+), 3 deletions(-)
 > 
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 9bc926e..99243a6 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -786,16 +786,14 @@ static void gather_node_cpus(char *cpus, long nd)
->  		if (path_exist(path, nd, i)) {
-                                     ^^  ^^
-                                     |---|--> Are these parameters used for anything?
-                                              Line above already does snprintf.
+> diff --git a/include/test.h b/include/test.h
+> index a76fafc..ab0cdcc 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -219,8 +219,26 @@ long tst_ncpus_max(void);
+>   * @argv: a list of two (at least program name + NULL) or more pointers that
+>   * represent the argument list to the new program. The array of pointers
+>   * must be terminated by a NULL pointer.
+> + * @stdout_fd: file descriptor where to redirect stdout. Set -1 if
+> + * redirection is not needed.
+> + * @stderr_fd: file descriptor where to redirect stderr. Set -1 if
+> + * redirection is not needed.
+>   */
+> -void tst_run_cmd(void (cleanup_fn)(void), char *const argv[]);
+> +void tst_run_cmd(void (cleanup_fn)(void),
+> +		char *const argv[],
+> +		int stdout_fd,
+> +		int stderr_fd);
+> +
+> +/* Executes tst_run_cmd() and redirects its output to a file
+> + * @stdout_path: path where to redirect stdout. Set NULL if redirection is
+> + * not needed.
+> + * @stderr_path: path where to redirect stderr. Set NULL if redirection is
+> + * not needed.
+> + */
+> +void tst_run_cmd_rdr_file(void (cleanup_fn)(void),
+> +			char *const argv[],
+> +			const char *stdout_path,
+> +			const char *stderr_path);
 
->  			snprintf(path1, BUFSIZ, "%s/online", path);
->  			/*
-> -			 * No cpu0/online knob, as it can't support to
-> -			 * on/offline cpu0, so if the 'nd' node contains
-> -			 * cpu0, it should skip to check cpu0/online's value.
-> +			 * if there is no online knob, then the cpu cannot
-> +			 * be taken offline
->  			 */
-> -			if (i == 0)
-> -				goto next;
-> -			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
-> -			if (online == 0)
-> -				continue;
-> -next:
-> +			if (path_exist(path1)) {
-> +				SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
-> +				if (online == 0)
-> +					continue;
-> +			}
->  			sprintf(buf, "%d,", i);
->  			strcat(cpus, buf);
->  		}
-> 
-> ------------------------------------------------------------------------------
-> Introducing Performance Central, a new site from SourceForge and
-> AppDynamics. Performance Central is your source for news, insights,
-> analysis and resources for efficient Application Performance Management.
-> Visit us today!
-> http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+This is relatively minor but the function names are not best choosen as
+both of them does the redirections but only one of them has it in the
+name.
+
+What about
+
+tst_run_cmd_fds() and tst_run_cmd_files()
+
+or
+
+tst_run_cmd_fds() and just tst_run_cmd()
+
+Naming things right is hard.
+
+> --- a/lib/tst_run_cmd.c
+> +++ b/lib/tst_run_cmd.c
+> @@ -19,12 +19,21 @@
+>   *
+>   */
+>  
+> +#include <errno.h>
+>  #include <sys/types.h>
+> +#include <sys/stat.h>
+>  #include <sys/wait.h>
+> +#include <fcntl.h>
+>  #include <unistd.h>
+>  #include "test.h"
+>  
+> -void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
+> +#define OPEN_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+> +#define OPEN_FLAGS	(O_WRONLY | O_APPEND | O_CREAT)
+> +
+> +void tst_run_cmd(void (cleanup_fn)(void),
+> +		char *const argv[],
+> +		int stdout_fd,
+> +		int stderr_fd)
+>  {
+>  	if (argv == NULL || argv[0] == NULL) {
+>  		tst_brkm(TBROK, cleanup_fn,
+> @@ -36,8 +45,20 @@ void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn, "vfork failed at %s:%d",
+>  			__FILE__, __LINE__);
+>  	}
+> -	if (!pid)
+> +	if (!pid) {
+> +		/* redirecting stdout and stderr if needed */
+> +		if (stdout_fd != -1) {
+> +			close(STDOUT_FILENO);
+> +			dup2(stdout_fd, STDOUT_FILENO);
+> +		}
+> +
+> +		if (stderr_fd != -1) {
+> +			close(STDERR_FILENO);
+> +			dup2(stderr_fd, STDERR_FILENO);
+> +		}
+> +
+>  		_exit(execvp(argv[0], argv));
+> +	}
+>  
+>  	int ret = -1;
+>  	if (waitpid(pid, &ret, 0) != pid) {
+> @@ -50,3 +71,44 @@ void tst_run_cmd(void (cleanup_fn)(void), char *const argv[])
+>  			argv[0], __FILE__, __LINE__);
+>  	}
+>  }
+> +
+> +void tst_run_cmd_rdr_file(void (cleanup_fn)(void),
+> +			char *const argv[],
+> +			const char *stdout_path,
+> +			const char *stderr_path)
+> +{
+> +	int stdout_fd = -1;
+> +	int stderr_fd = -1;
+> +
+> +	if (stdout_path != NULL) {
+> +		stdout_fd = open(stdout_path,
+> +				OPEN_FLAGS, OPEN_MODE);
+> +
+> +		if (stdout_fd == -1)
+> +			tst_resm(TWARN | TERRNO,
+> +				"open() on %s failed at %s:%d",
+> +				stdout_path, __FILE__, __LINE__);
+> +	}
+> +
+> +	if (stderr_path != NULL) {
+> +		stderr_fd = open(stderr_path,
+> +				OPEN_FLAGS, OPEN_MODE);
+> +
+> +		if (stderr_fd == -1)
+> +			tst_resm(TWARN | TERRNO,
+> +				"open() on %s failed at %s:%d",
+> +				stderr_path, __FILE__, __LINE__);
+> +	}
+> +
+> +	tst_run_cmd(cleanup_fn, argv, stdout_fd, stderr_fd);
+> +
+> +	if ((stdout_fd != -1) && (close(stdout_fd) == -1))
+> +		tst_resm(TWARN | TERRNO,
+> +			"close() on %s failed at %s:%d",
+> +			stdout_path, __FILE__, __LINE__);
+> +
+> +	if ((stderr_fd != -1) && (close(stderr_fd) == -1))
+> +		tst_resm(TWARN | TERRNO,
+> +			"close() on %s failed at %s:%d",
+> +			stderr_path, __FILE__, __LINE__);
+> +}
+
+The code looks ok.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get your SQL database under version control now!
+Version control is standard for application code, but databases havent 
+caught up. So what steps can you take to put your SQL databases under 
+version control? Why should you start doing it? Read more to find out.
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
