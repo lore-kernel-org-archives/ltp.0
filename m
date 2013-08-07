@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VCPWw-0005z6-Dm
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:42:06 +0000
+	id 1V71pl-0005JS-A4
+	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 11:23:17 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VCPWu-0005gv-M3
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:42:06 +0000
+	(Exim 4.76) id 1V71pj-0006N9-99
+	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 11:23:17 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r77BN8ew026538
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 Aug 2013 11:23:09 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r77BN7U5012396
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 Aug 2013 11:23:08 GMT
+Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r77BN7Ar010073
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 Aug 2013 11:23:07 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 22 Aug 2013 11:41:48 +0400
-Message-Id: <1377157309-23572-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <52122141.3020005@oracle.com>
-References: <52122141.3020005@oracle.com>
-Subject: [LTP] [PATCH V3 2/3] syscalls/migrate_pages: fix nodemask memory
-	allocation
+Date: Wed,  7 Aug 2013 15:22:55 +0400
+Message-Id: <1375874575-29198-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20130807102427.GA4389@rei>
+References: <20130807102427.GA4389@rei>
+Subject: [LTP] [PATCH] tst_run_cmd: const correctness
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,57 +43,92 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
 
-In accordance to man migrate_pages(), mbind() the bit mask size
-should be rounded to the next multiple of sizeof(unsigned long).
+From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- .../syscalls/migrate_pages/migrate_pages01.c       |    4 ++--
- .../syscalls/migrate_pages/migrate_pages02.c       |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/test.h    |    4 ++--
+ lib/tst_module.c  |    4 ++--
+ lib/tst_run_cmd.c |    4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-index c23e8b0..9af4f14 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -247,8 +247,8 @@ static void setup(void)
- 		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes_arr: %d",
- 			 ret);
+diff --git a/include/test.h b/include/test.h
+index 1957148..75a34ab 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -225,7 +225,7 @@ long tst_ncpus_max(void);
+  * redirection is not needed.
+  */
+ void tst_run_cmd_fds(void (cleanup_fn)(void),
+-			char *const argv[],
++			const char *const argv[],
+ 			int stdout_fd,
+ 			int stderr_fd);
  
--	sane_max_node = get_max_node();
--	sane_nodemask_size = sane_max_node / 8 + 1;
-+	sane_max_node = ALIGN(get_max_node(), sizeof(unsigned long)*8);
-+	sane_nodemask_size = sane_max_node / 8;
- 	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
- 	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
- 	memset(sane_old_nodes, 0, sane_nodemask_size);
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-index 49129e0..ba0e625 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-@@ -109,8 +109,8 @@ static int migrate_to_node(pid_t pid, int node)
+@@ -236,7 +236,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
+  * not needed.
+  */
+ void tst_run_cmd(void (cleanup_fn)(void),
+-		char *const argv[],
++		const char *const argv[],
+ 		const char *stdout_path,
+ 		const char *stderr_path);
  
- 	tst_resm(TINFO, "pid(%d) migrate pid %d to node -> %d",
- 		 getpid(), pid, node);
--	max_node = get_max_node();
--	nodemask_size = max_node / 8 + 1;
-+	max_node = ALIGN(get_max_node(), sizeof(unsigned long)*8);
-+	nodemask_size = max_node / 8;
- 	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
- 	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index c0f2c8f..028af0e 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -85,7 +85,7 @@ void tst_module_load(void (cleanup_fn)(void),
+ 	while (argv && argv[size])
+ 		++size;
+ 	size += offset;
+-	char *mod_argv[size + 1]; /* + NULL in the end */
++	const char *mod_argv[size + 1]; /* + NULL in the end */
+ 	mod_argv[size] = NULL;
+ 	mod_argv[0] = "insmod";
+ 	mod_argv[1] = mod_path;
+@@ -100,6 +100,6 @@ void tst_module_load(void (cleanup_fn)(void),
  
+ void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
+ {
+-	char *const argv[] = { "rmmod", mod_name, NULL };
++	const char *const argv[] = { "rmmod", mod_name, NULL };
+ 	tst_run_cmd(cleanup_fn, argv, NULL, NULL);
+ }
+diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
+index 714b508..2c84cfd 100644
+--- a/lib/tst_run_cmd.c
++++ b/lib/tst_run_cmd.c
+@@ -31,7 +31,7 @@
+ #define OPEN_FLAGS	(O_WRONLY | O_APPEND | O_CREAT)
+ 
+ void tst_run_cmd_fds(void (cleanup_fn)(void),
+-		char *const argv[],
++		const char *const argv[],
+ 		int stdout_fd,
+ 		int stderr_fd)
+ {
+@@ -73,7 +73,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
+ }
+ 
+ void tst_run_cmd(void (cleanup_fn)(void),
+-		char *const argv[],
++		const char *const argv[],
+ 		const char *stdout_path,
+ 		const char *stderr_path)
+ {
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
