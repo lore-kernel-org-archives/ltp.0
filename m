@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1VE9hR-00035Q-VJ
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 03:12:10 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VE9hQ-0007nt-Hi
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 03:12:09 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r7R3BxbO008935
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 11:11:59 +0800
-Message-ID: <521C198C.4020604@cn.fujitsu.com>
-Date: Tue, 27 Aug 2013 11:14:20 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V728k-00043w-PS
+	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 11:42:54 +0000
+Date: Wed, 7 Aug 2013 13:42:51 +0200
+From: chrubis@suse.cz
+Message-ID: <20130807114251.GA4761@rei>
+References: <1375713846-24291-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1375713846-24291-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] mount/mount05.c: format the device when necessary
+Content-Disposition: inline
+In-Reply-To: <1375713846-24291-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] quota_remount_test01: SELinux workaround and
+ other fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,60 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
+Hi!
+> * now it uses tst_kvercmp (to support kernels >= 3)
+> * some distros doesn't allow creation of quota files in
+> directories with SELinux file_t type. Now we explicitly
+> change file type of the test directory to tmp_t
 
-Format the device only when "-D device" & "-T type" are specified.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- testcases/kernel/syscalls/mount/mount05.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mount/mount05.c b/testcases/kernel/syscalls/mount/mount05.c
-index 4b2a07c..fb5a385 100644
---- a/testcases/kernel/syscalls/mount/mount05.c
-+++ b/testcases/kernel/syscalls/mount/mount05.c
-@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
- void setup(void)
- {
- 	tst_require_root(NULL);
--	tst_mkfs(NULL, device, fstype, NULL);
-
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
-@@ -122,9 +121,12 @@ void setup(void)
- 	SAFE_MKDIR(cleanup, mntpoint_src, DIR_MODE);
- 	SAFE_MKDIR(cleanup, mntpoint_des, DIR_MODE);
-
--	if (dflag && tflag)
-+	if (dflag) {
-+		tst_mkfs(NULL, device, fs_type, NULL);
-+
- 		if (mount(device, mntpoint_src, fs_type, 0, NULL) == -1)
- 			tst_brkm(TBROK | TERRNO, cleanup, "mount failed");
-+	}
-
- 	SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
-
-@@ -133,7 +135,7 @@ void setup(void)
-
- void cleanup(void)
- {
--	if (dflag && tflag)
-+	if (dflag)
- 		if (umount(mntpoint_src) != 0)
- 			tst_brkm(TBROK | TTERRNO, NULL, "umount(2) failed");
+Pushed, thanks.
 
 -- 
-1.8.1
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
