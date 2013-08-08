@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zliu@redhat.com>) id 1V6BId-00085n-1n
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 03:17:35 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V6BIb-0002DK-Kv
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 03:17:34 +0000
-Message-ID: <51FF1925.5050406@redhat.com>
-Date: Mon, 05 Aug 2013 11:16:53 +0800
-From: Zhouping Liu <zliu@redhat.com>
-MIME-Version: 1.0
-References: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] max_map_count: corrected max_map_count condition
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1V7KUY-000561-UC
+	for ltp-list@lists.sourceforge.net; Thu, 08 Aug 2013 07:18:38 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V7KUX-0006Yz-3C
+	for ltp-list@lists.sourceforge.net; Thu, 08 Aug 2013 07:18:38 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r787IUrW030808
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Aug 2013 07:18:31 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r787ITdg020360
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Aug 2013 07:18:29 GMT
+Received: from abhmt110.oracle.com (abhmt110.oracle.com [141.146.116.62])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r787ISo3029453
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Aug 2013 07:18:28 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu,  8 Aug 2013 11:18:06 +0400
+Message-Id: <1375946286-20523-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20130807142445.GA7331@rei>
+References: <20130807142445.GA7331@rei>
+Subject: [LTP] [PATCH V2] tst_run_cmd: const correctness
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,125 +38,105 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: ltp-list@lists.sourceforge.net, bob.picco@oracle.com
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
 
-On 07/30/2013 09:47 PM, Stanislav Kholmanskikh wrote:
-> From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
->
-> * kernel test for max_map_count_sysctl is:
->     /* Too many mappings? */
->     if (mm->map_count > sysctl_max_map_count)
->       return -ENOMEM;
->    so in LTP test map_count should be greater than max_map_count by 1
->
-> * only [vsyscall] is allocated without incrementing mm->map_count
->
-> Author: Bob Picco <bob.picco@oracle.com>
->
-> Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->   testcases/kernel/mem/tunable/max_map_count.c |   41 +++++++++++++++++--------
->   1 files changed, 28 insertions(+), 13 deletions(-)
->
-> diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-> index e948868..01fbe5e 100644
-> --- a/testcases/kernel/mem/tunable/max_map_count.c
-> +++ b/testcases/kernel/mem/tunable/max_map_count.c
-> @@ -14,20 +14,16 @@
->    * The program trys to invoke mmap() endless until triggering MAP_FAILED,
->    * then read the process's maps file /proc/[pid]/maps, save the line number
->    * to map_count variable, and compare it with /proc/sys/vm/max_map_count,
-> - * map_count should less than max_map_count.
-> - * Note: There are two special vmas VDSO and VSYSCALL, which are allocated
-> - * via install_special_mapping(), install_specail_mapping() allows the VMAs
-> - * to be allocated and inserted without checking the sysctl_map_map_count,
-> - * and each /proc/<pid>/maps has both at the end:
-> - * # cat /proc/self/maps
-> + * map_count should be greater than max_map_count by 1;
-> + *
-> + * Note: On some architectures there is a special vma VSYSCALL, which
-> + * is allocated without incrementing mm->map_count variable. On these
-> + * architectures each /proc/<pid>/maps has at the end:
->    * ...
->    * ...
-> - * 7fff7b9ff000-7fff7ba00000 r-xp 00000000 00:00 0           [vdso]
+Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ include/test.h    |    4 ++--
+ lib/tst_module.c  |    4 ++--
+ lib/tst_run_cmd.c |    6 +++---
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-
-Why you removed VDSO map? AFAIK VDSO map is also calculated by 
-install_special_maping(),
-so the VMA  is allocated and inserted without checking the 
-sysctl_max_map_count.
-
-Thanks,
-Zhouping
-
->    * ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0   [vsyscall]
->    *
-> - * so during comparing with map_count and /proc/sys/vm/max_map_count,
-> - * we should except the two special vmas from map_count:
-> - * map_count -= 2;
-> + * so we ignore this line during /proc/[pid]/maps reading.
->    *
->    * ********************************************************************
->    * Copyright (C) 2012 Red Hat, Inc.
-> @@ -121,6 +117,21 @@ void cleanup(void)
->   	TEST_CLEANUP;
->   }
->   
-> +/* This is a filter to exclude map entries which aren't accounted
-> + * for in the vm_area_struct's map_count.
-> + */
-> +#if defined(__x86_64__) || defined(__x86__)
-> +static int filter_map(char *buf)
-> +{
-> +	return strcmp(buf, "[vsyscall]") == 0;
-> +}
-> +#else
-> +static int filter_map(char *buf)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->   static long count_maps(pid_t pid)
->   {
->   	FILE *fp;
-> @@ -136,8 +147,7 @@ static long count_maps(pid_t pid)
->   	while (getline(&line, &len, fp) != -1) {
->   		/* exclude vdso and vsyscall */
->   		if (sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf) ==
-> -		    1 && ((strcmp(buf, "[vdso]") == 0) ||
-> -			  (strcmp(buf, "[vsyscall]") == 0)))
-> +				1 && filter_map(buf))
->   			continue;
->   		map_count++;
->   	}
-> @@ -202,7 +212,12 @@ static void max_map_count_test(void)
->   			tst_brkm(TBROK, cleanup, "child did not stopped");
->   
->   		map_count = count_maps(pid);
-> -		if (map_count == max_maps)
-> +		/* Note max_maps will be exceeded by one for
-> +		 * the sysctl setting of max_map_count. This
-> +		 * is the mm failure point at the time of
-> +		 * writing this COMMENT!
-> +		*/
-> +		if (map_count == (max_maps + 1))
->   			tst_resm(TPASS, "%ld map entries in total "
->   				 "as expected.", max_maps);
->   		else
+diff --git a/include/test.h b/include/test.h
+index 1957148..75a34ab 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -225,7 +225,7 @@ long tst_ncpus_max(void);
+  * redirection is not needed.
+  */
+ void tst_run_cmd_fds(void (cleanup_fn)(void),
+-			char *const argv[],
++			const char *const argv[],
+ 			int stdout_fd,
+ 			int stderr_fd);
+ 
+@@ -236,7 +236,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
+  * not needed.
+  */
+ void tst_run_cmd(void (cleanup_fn)(void),
+-		char *const argv[],
++		const char *const argv[],
+ 		const char *stdout_path,
+ 		const char *stderr_path);
+ 
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index c0f2c8f..028af0e 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -85,7 +85,7 @@ void tst_module_load(void (cleanup_fn)(void),
+ 	while (argv && argv[size])
+ 		++size;
+ 	size += offset;
+-	char *mod_argv[size + 1]; /* + NULL in the end */
++	const char *mod_argv[size + 1]; /* + NULL in the end */
+ 	mod_argv[size] = NULL;
+ 	mod_argv[0] = "insmod";
+ 	mod_argv[1] = mod_path;
+@@ -100,6 +100,6 @@ void tst_module_load(void (cleanup_fn)(void),
+ 
+ void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
+ {
+-	char *const argv[] = { "rmmod", mod_name, NULL };
++	const char *const argv[] = { "rmmod", mod_name, NULL };
+ 	tst_run_cmd(cleanup_fn, argv, NULL, NULL);
+ }
+diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
+index 714b508..804103c 100644
+--- a/lib/tst_run_cmd.c
++++ b/lib/tst_run_cmd.c
+@@ -31,7 +31,7 @@
+ #define OPEN_FLAGS	(O_WRONLY | O_APPEND | O_CREAT)
+ 
+ void tst_run_cmd_fds(void (cleanup_fn)(void),
+-		char *const argv[],
++		const char *const argv[],
+ 		int stdout_fd,
+ 		int stderr_fd)
+ {
+@@ -57,7 +57,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
+ 			dup2(stderr_fd, STDERR_FILENO);
+ 		}
+ 
+-		_exit(execvp(argv[0], argv));
++		_exit(execvp(argv[0], (char *const *)argv));
+ 	}
+ 
+ 	int ret = -1;
+@@ -73,7 +73,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
+ }
+ 
+ void tst_run_cmd(void (cleanup_fn)(void),
+-		char *const argv[],
++		const char *const argv[],
+ 		const char *stdout_path,
+ 		const char *stderr_path)
+ {
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
