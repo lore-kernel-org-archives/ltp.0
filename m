@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V8tL4-0004DR-TI
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 14:43:18 +0000
-Date: Mon, 12 Aug 2013 16:43:15 +0200
-From: chrubis@suse.cz
-Message-ID: <20130812144315.GA25901@rei>
-References: <1a46908a50835715045c5baeee559561fc97c601.1374746456.git.jstancek@redhat.com>
-	<c6bfd2f062e27984837f94e4d333657fae5cd65e.1375280397.git.jstancek@redhat.com>
+	(envelope-from <sunildev_63@rediffmail.com>) id 1V7Py4-0005AK-Lp
+	for ltp-list@lists.sourceforge.net; Thu, 08 Aug 2013 13:09:28 +0000
+Received: from f5mail-224-107.rediffmail.com ([114.31.224.107]
+	helo=rediffmail.com) by sog-mx-1.v43.ch3.sourceforge.com with smtp 
+	(Exim 4.76) id 1V7Py3-0002wT-4l
+	for ltp-list@lists.sourceforge.net; Thu, 08 Aug 2013 13:09:28 +0000
+Date: 8 Aug 2013 13:09:19 -0000
+Message-ID: <20130808130919.2587.qmail@f5mail-224-107.rediffmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c6bfd2f062e27984837f94e4d333657fae5cd65e.1375280397.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v3 2/2] open_posix_testsuite/../mq_timedsend/12-1:
- fix race
+From: "devaraja b v" <sunildev_63@rediffmail.com>
+Subject: [LTP] =?utf-8?q?open_posix_testsuite_compilation?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,273 +22,155 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8966624253918963179=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "shubham@linux.vnet.ibm.com" <shubham@linux.vnet.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
-> Changes in v3:
->   remove SAFE() macro
->   convert pipes to mutex and condition
-> 
->  .../conformance/interfaces/mq_timedsend/12-1.c     |  175 ++++++++++++--------
->  1 files changed, 107 insertions(+), 68 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-> index 29780d0..fdcb6ec 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
-> @@ -39,19 +39,23 @@
->  #define MSGSTR "0123456789"
->  #define BUFFER 40
->  #define MAXMSG 10
-> +#define TIMEOUT 10		/* seconds mq_timedsend will block */
-> +#define SIGNAL_DELAY_MS 50	/* delay in ms between 2 signals */
-> +#define STATE_THREAD_READY 1
-> +#define STATE_DONE_SENDING 2
->  
-> -#define INTHREAD 0
-> -#define INMAIN 1
-> +#define handle_error_en(en, msg) \
-> +	do { errno = en; perror(msg); exit(PTS_UNRESOLVED); } while (0)
+--===============8966624253918963179==
+Content-Type: multipart/alternative;
+	boundary="=_59ac4257a6ef60a8d3b93f97631c729e"
 
-Maybe error_and_exit() would be a bit better name, but that is very
-minor.
+--=_59ac4257a6ef60a8d3b93f97631c729e
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 
-> -/* manual semaphore */
-> -int sem;
-> +/* variable to indicate how many times signal handler was called */
-> +static volatile sig_atomic_t in_handler;
->  
-> -/* flag to indicate signal handler was called */
-> -int in_handler;
-> +/* errno returned by mq_timedsend() */
-> +static int mq_timedsend_errno = -1;
->  
-> -/* flag to indicate that errno was set to eintr when mq_timedsend()
-> - * was interruped. */
-> -int errno_eintr;
-> +static int state;
-> +pthread_mutex_t mutex;
-> +pthread_cond_t cond;
->  
->  /*
->   * This handler is just used to catch the signal and stop sleep (so the
-> @@ -59,12 +63,46 @@ int errno_eintr;
->   */
->  void justreturn_handler(int signo)
->  {
-> -	/* Indicate that the signal handler was called */
-> -	in_handler = 1;
-> -	return;
-> +	in_handler++;
->  }
->  
-> -void *a_thread_func()
-> +void set_state(int n)
-> +{
-> +	int ret;
-> +
-> +	ret = pthread_mutex_lock(&mutex);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "set_state pthread_mutex_lock");
-> +
-> +	state = n;
-> +	ret = pthread_cond_signal(&cond);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "set_state pthread_cond_signal");
-> +
-> +	ret = pthread_mutex_unlock(&mutex);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "set_state pthread_mutex_unlock");
-> +}
-> +
-> +void wait_for_state(int n)
-> +{
-> +	int ret;
-> +
-> +	ret = pthread_mutex_lock(&mutex);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "wait_for_state pthread_mutex_lock");
-> +
-> +	while (state != n) {
-> +		ret = pthread_cond_wait(&cond, &mutex);
-> +		if (ret != 0)
-> +			handle_error_en(ret, "pthread_cond_wait");
-> +	}
-> +	ret = pthread_mutex_unlock(&mutex);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "wait_for_state pthread_mutex_unlock");
-> +}
+Hi Shubham,
+ltp-full-20130109 source code is having old open posix testsuite.New version posixtestsuite-1.5.2&nbsp;is available at&nbsp;http://sourceforge.net/projects/posixtest/files/posixtest/&nbsp;link.Please use this or the latest module in the next release of LTP, as the latest one is easy to cross compile and run on various platforms.
+I am facing the following issues when I am compiling this new tool inside LTP.&nbsp;Please let me know any lead or pointer to fix this issue?
 
-Hmm, that gets unnecessary complicated :(
+cat: LDFLAGS: No such file or
+directoryltp/obj-i686/locate-test:
+Command not foundltp/obj-i686/locate-test:
+Command not foundmake-3.81[3]: *** No rule to
+make target `install'.&nbsp; Stop.make-3.81[3]: Leaving
+directoryltp/obj-i686/testcases/open_posix_testsuite'
 
-And all we need is to get first thread wait until the second is ready
-and then the second until the first has finished sending signals. I
-wonder if pthread_barrier or two wouldn't be easier way around.
+make-3.81[2]: *** [install] Error
+2
 
-> +void *a_thread_func(void *arg)
->  {
->  	int i, ret;
->  	struct sigaction act;
-> @@ -86,101 +124,102 @@ void *a_thread_func()
->  	attr.mq_maxmsg = MAXMSG;
->  	attr.mq_msgsize = BUFFER;
->  	gqueue = mq_open(gqname, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR, &attr);
-> -	if (gqueue == (mqd_t) - 1) {
-> -		perror("mq_open() did not return success");
-> -		pthread_exit((void *)PTS_UNRESOLVED);
-> -		return NULL;
-> -	}
-> +	if (gqueue == (mqd_t) -1)
-> +		handle_error_en(errno, "mq_open");
->  
-> -	/* mq_timedsend will block for 10 seconds when it waits */
-> -	ts.tv_sec = time(NULL) + 10;
-> +	/* mq_timedsend will block for TIMEOUT seconds when it waits */
-> +	ts.tv_sec = time(NULL) + TIMEOUT;
->  	ts.tv_nsec = 0;
->  
->  	/* Tell main it can go ahead and start sending SIGUSR1 signal */
-> -	sem = INMAIN;
-> +	set_state(STATE_THREAD_READY);
->  
->  	for (i = 0; i < MAXMSG + 1; i++) {
->  		ret = mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
-> -		if (ret	!= -1)
-> +		if (ret != -1)
->  			continue;
->  
-> +		mq_timedsend_errno = errno;
->  		if (errno == EINTR) {
-> -			if (mq_unlink(gqname) != 0) {
-> -				perror("mq_unlink() did not return success");
-> -				pthread_exit((void *)PTS_UNRESOLVED);
-> -				return NULL;
-> -			}
-> +			if (mq_unlink(gqname) != 0)
-> +				handle_error_en(errno, "mq_unlink");
->  			printf("thread: mq_timedsend interrupted by signal"
->  				" and correctly set errno to EINTR\n");
-> -			errno_eintr = 1;
-> +			wait_for_state(STATE_DONE_SENDING);
->  			pthread_exit((void *)PTS_PASS);
-> -			return NULL;
->  		} else {
->  			printf("mq_timedsend not interrupted by signal or"
->  				" set errno to incorrect code: %d\n", errno);
-> +			wait_for_state(STATE_DONE_SENDING);
->  			pthread_exit((void *)PTS_FAIL);
-> -			return NULL;
->  		}
->  	}
->  
-> -	/* Tell main that it the thread did not block like it should have */
-> -	sem = INTHREAD;
-> -
-> -	perror("Error: thread never blocked\n");
-> +	mq_timedsend_errno = 0;
-> +	printf("Error: mq_timedsend wasn't interrupted\n");
-> +	wait_for_state(STATE_DONE_SENDING);
->  	pthread_exit((void *)PTS_FAIL);
-> -	return NULL;
->  }
->  
->  int main(void)
->  {
->  	pthread_t new_th;
-> -	int i;
-> +	int i = 0, ret;
->  
-> -	/* Initialized values */
-> -	i = 0;
-> -	in_handler = 0;
-> -	errno_eintr = 0;
-> -	sem = INTHREAD;
-> +	ret = pthread_mutex_init(&mutex, NULL);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "pthread_mutex_init");
+make-3.81[2]: Leaving directory&nbsp;ltp/obj-i686/testcases'
 
-You can initialize the mutex statically with PTHRED_MUTEX_INITIALIZER.
+make-3.81[1]: ***
+[testcases-install] Error 2
 
-> -	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0) {
-> -		perror("Error: in pthread_create\n");
-> -		return PTS_UNRESOLVED;
-> -	}
-> +	ret = pthread_cond_init(&cond, NULL);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "pthread_cond_init");
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;make-3.81[1]: Leaving directory&nbsp;ltp/obj-i686'
 
-Here as well with PTHREAD_COND_INIT.
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;make-3.81: ***ltp/obj-i686/install.sentinel]
+Error 2
 
-> -	/* Wait for thread to set up handler for SIGUSR1 */
-> -	while (sem == INTHREAD)
-> -		sleep(1);
-> +	ret = pthread_create(&new_th, NULL, a_thread_func, NULL);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "pthread_create");
->  
-> -	while ((i != 10) && (sem == INMAIN)) {
-> +	/* wait for thread to start */
-> +	wait_for_state(STATE_THREAD_READY);
-> +
-> +	while (i < TIMEOUT*1000 && mq_timedsend_errno < 0) {
->  		/* signal thread while it's in mq_timedsend */
-> -		if (pthread_kill(new_th, SIGUSR1) != 0) {
-> -			perror("Error: in pthread_kill\n");
-> -			return PTS_UNRESOLVED;
-> -		}
-> -		i++;
-> +		ret = pthread_kill(new_th, SIGUSR1);
-> +		if (ret != 0)
-> +			handle_error_en(ret, "pthread_kill");
-> +		usleep(SIGNAL_DELAY_MS*1000);
-> +		i += SIGNAL_DELAY_MS;
->  	}
->  
-> -	if (pthread_join(new_th, NULL) != 0) {
-> -		perror("Error: in pthread_join()\n");
-> -		return PTS_UNRESOLVED;
-> -	}
-> +	/* signal thread we are done sending SIGUSR1 */
-> +	set_state(STATE_DONE_SENDING);
-> +
-> +	ret = pthread_join(new_th, NULL);
-> +	if (ret != 0)
-> +		handle_error_en(ret, "pthread_join");
->  
->  	/* Test to see if the thread blocked correctly in mq_timedsend,
->  	 * and if it returned EINTR when it caught the signal */
-> -	if (errno_eintr != 1) {
-> -		if (sem == INTHREAD) {
-> -			printf("Test FAILED: mq_timedsend() never"
-> -				" blocked for any timeout period.\n");
-> -			return PTS_FAIL;
-> -		}
-> -
-> -		if (in_handler != 0) {
-> -			perror("Error: signal SIGUSR1 was never received and/or"
-> -				" the signal handler was never called.\n");
-> +	if (mq_timedsend_errno != EINTR) {
-> +		printf("Error: mq_timedsend was NOT interrupted\n");
-> +		printf(" signal handler was called %d times\n", in_handler);
-> +		printf(" SIGUSR1 signals sent: %d\n", i);
-> +		printf(" last mq_timedsend errno: %d %s\n",
-> +			mq_timedsend_errno, strerror(mq_timedsend_errno));
-> +		if (in_handler == 0) {
-> +			printf("Error: SIGUSR1 was never received\n");
->  			return PTS_UNRESOLVED;
->  		}
-> +		return PTS_FAIL;
->  	}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;mk: FAILED&nbsp;&nbsp;
+Thanks &amp; Regards,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Devraj
+
+
+--=_59ac4257a6ef60a8d3b93f97631c729e
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="UTF-8"
+
+Hi Shubham,<div><br></div><div>ltp-full-20130109 source code is having old =
+open posix testsuite.</div><div>New version p<a href=3D"http://sourceforge.=
+net/projects/posixtest/files/posixtest/posixtestsuite-1.5.2/" title=3D"Clic=
+k to enter posixtestsuite-1.5.2" class=3D"name" style=3D"margin: 0px; paddi=
+ng: 0px; vertical-align: baseline; outline: none; color: rgb(0, 102, 153); =
+text-decoration: none; -webkit-tap-highlight-color: rgb(0, 119, 170); font-=
+family: sans-serif; font-weight: bold; line-height: 18px; white-space: nowr=
+ap;">osixtestsuite-1.5.2</a>&nbsp;is available at&nbsp;<a href=3D"http://so=
+urceforge.net/projects/posixtest/files/posixtest/">http://sourceforge.net/p=
+rojects/posixtest/files/posixtest/</a>&nbsp;link.</div><div>Please use this=
+ or the latest module in the next release of LTP, as the latest one is easy=
+ to cross compile and run on various platforms.</div><div><br></div><div>I =
+am facing the following issues when I am compiling this new tool inside LTP=
+.&nbsp;</div><div>Please let me know any lead or pointer to fix this issue?=
+</div><div><br></div><div><br></div><div><p class=3D"MsoNormal" style=3D"ma=
+rgin-left:1.0in">cat: LDFLAGS: No such file or
+directory<o:p></o:p></p><p class=3D"MsoNormal" style=3D"margin-left:1.0in">=
+<span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,&quot;sans-=
+serif&quot;;
+mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-ansi=
+-language:
+EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">ltp/obj-i686/loca=
+te-test:
+Command not found</span></p><p class=3D"MsoNormal" style=3D"margin-left:1.0=
+in"><span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,&quot;s=
+ans-serif&quot;;
+mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-ansi=
+-language:
+EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">ltp/obj-i686/loca=
+te-test:
+Command not found</span></p><p class=3D"MsoNormal" style=3D"margin-left:1.0=
+in"><b>make-3.81[3]: *** No rule to
+make target `install'.&nbsp; Stop.<o:p></o:p></b></p><p class=3D"MsoNormal"=
+ style=3D"margin-left:1.0in"><span style=3D"font-size:11.0pt;font-family:&q=
+uot;Calibri&quot;,&quot;sans-serif&quot;;
+mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-ansi=
+-language:
+EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA">make-3.81[3]: Lea=
+ving
+directory</span>ltp/obj-i686/testcases/open_posix_testsuite'</p><p class=3D=
+"MsoNormal" style=3D"margin-left:1.0in"><o:p></o:p></p>
+
+<p class=3D"MsoNormal" style=3D"margin-left:1.0in">make-3.81[2]: *** [insta=
+ll] Error
+2<o:p></o:p></p>
+
+<p class=3D"MsoNormal" style=3D"margin-left:1.0in"><span style=3D"font-fami=
+ly: Calibri, sans-serif; font-size: 11pt;">make-3.81[2]: Leaving directory&=
+nbsp;</span>ltp/obj-i686/testcases'</p><p class=3D"MsoNormal" style=3D"marg=
+in-left:1.0in"><o:p></o:p></p>
+
+<p class=3D"MsoNormal" style=3D"margin-left:1.0in">make-3.81[1]: ***
+[testcases-install] Error 2<o:p></o:p></p>
+
+<span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,&quot;sans-=
+serif&quot;;mso-fareast-font-family:
+Calibri;mso-fareast-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fare=
+ast-language:
+EN-US;mso-bidi-language:AR-SA"><span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; =
+&nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; =
+&nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; =
+&nbsp;</span></span></span></span></span></span></span></span>make-3.81[1]:=
+ Leaving directory&nbsp;</span>ltp/obj-i686'</div><p class=3D"MsoNormal" st=
+yle=3D"margin-left:1.0in"><o:p></o:p></p>
+
+<div><span style=3D"font-family: Calibri, sans-serif; font-size: 11pt;"><sp=
+an>&nbsp;&nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbs=
+p;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbs=
+p;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;</span></s=
+pan></span></span></span></span></span></span> &nbsp;</span>make-3.81: ***<=
+/span>ltp/obj-i686/install.sentinel]
+Error 2</div><p class=3D"MsoNormal" style=3D"margin-left:1.0in"><o:p></o:p>=
+</p>
+
+<p class=3D"MsoNormal" style=3D"margin-left:1.0in"><o:p></o:p></p><div><spa=
+n>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<spa=
+n>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<span>&nbsp;&nbsp; &nbsp;<spa=
+n>&nbsp;&nbsp; &nbsp;</span></span></span></span></span></span></span>mk: F=
+AILED<span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,&quot;=
+sans-serif&quot;;mso-fareast-font-family:
+Calibri;mso-fareast-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fare=
+ast-language:
+EN-US;mso-bidi-language:AR-SA">&nbsp;</span><span style=3D"font-family: Cal=
+ibri, sans-serif; font-size: 11pt;">&nbsp;</span></div><div><br>Thanks &amp=
+; Regards,<br>
+Devraj<br><br></div><br><A HREF=3D"http://sigads.rediff.com/RealMedia/ads/c=
+lick_nx.ads/www.rediffmail.com/signatureline.htm@Middle?" target=3D"_blank"=
+><IMG SRC=3D"http://sigads.rediff.com/RealMedia/ads/adstream_nx.ads/www.red=
+iffmail.com/signatureline.htm@Middle"></A><br><div style=3D"font-family:Ari=
+al, Helvetica, sans-serif; font-size:14px">Get your own <span style=3D"font=
+-size:12px; font-family:Arial, Helvetica, sans-serif;background-color:#C00;=
+ color:#FFF; padding: 0 3px;"><b>FREE</b></span> website and domain with bu=
+siness email solutions, <a href=3D"http://track.rediff.com/click?url=3D___h=
+ttp://hosting.rediff.com/rediffmailpro/business-email?sc_cid=3Dsig___&cmp=
+=3Dsig&lnk=3Dsig&nsrv1=3Dhost">click here</a></div>
+--=_59ac4257a6ef60a8d3b93f97631c729e--
+
+
+--===============8966624253918963179==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Get 100% visibility into Java/.NET code with AppDynamics Lite!
@@ -297,7 +178,16 @@ It's a free troubleshooting tool designed for production.
 Get down to code-level detail for bottlenecks, with <2% overhead. 
 Download for free and get started troubleshooting in minutes. 
 http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+--===============8966624253918963179==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8966624253918963179==--
+
