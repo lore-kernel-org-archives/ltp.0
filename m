@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1VErRi-0000qx-65
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 01:54:50 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VErRg-00086T-GI
-	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 01:54:49 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r7T1seLb028562
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Aug 2013 09:54:40 +0800
-Message-ID: <521EAA6B.8090308@cn.fujitsu.com>
-Date: Thu, 29 Aug 2013 09:56:59 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V8ozO-0000nH-Iq
+	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 10:04:38 +0000
+Date: Mon, 12 Aug 2013 12:04:37 +0200
+From: chrubis@suse.cz
+Message-ID: <20130812100437.GA24518@rei>
+References: <20130808130919.2587.qmail@f5mail-224-107.rediffmail.com>
 MIME-Version: 1.0
-Subject: [LTP] Wanna execute the ltp and the openposix test suite together
- by one command
+Content-Disposition: inline
+In-Reply-To: <20130808130919.2587.qmail@f5mail-224-107.rediffmail.com>
+Subject: Re: [LTP] open posix testsuite compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,42 +24,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: devaraja b v <sunildev_63@rediffmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
+Hi!
+> ltp-full-20130109 source code is having old open posix testsuite.New version posixtestsuite-1.5.2&nbsp;is available at&nbsp;http://sourceforge.net/projects/posixtest/files/posixtest/&nbsp;link.Please use this or the latest module in the next release of LTP, as the latest one is easy to cross compile and run on various platforms.
+> I am facing the following issues when I am compiling this new tool inside LTP.&nbsp;Please let me know any lead or pointer to fix this issue?
 
-Hi guys,
+Open posix testuite in LTP was updated to the latest version (1.5.2) in
+2007. The open posix testuite upstream is dead for about seven years and
+the development was continued inside the LTP. The open posix testsuite
+in LTP is the latest and best you can have.
 
+> cat: LDFLAGS: No such file or
+> directoryltp/obj-i686/locate-test:
+> Command not foundltp/obj-i686/locate-test:
+> Command not foundmake-3.81[3]: *** No rule to
+> make target `install'.&nbsp; Stop.make-3.81[3]: Leaving
+> directoryltp/obj-i686/testcases/open_posix_testsuite'
+> 
+> make-3.81[2]: *** [install] Error
+> 2
+> 
+> make-3.81[2]: Leaving directory&nbsp;ltp/obj-i686/testcases'
+> 
+> make-3.81[1]: ***
+> [testcases-install] Error 2
+> 
+> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;make-3.81[1]: Leaving directory&nbsp;ltp/obj-i686'
+> 
+> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;make-3.81: ***ltp/obj-i686/install.sentinel]
+> Error 2
+> 
 
-I want to implement that running the ltp test suite and the openposix test suite
-together by one command, as currently, they are performed separately.
+Can you include exact steps that lead to this failure?
 
-To make it, i get two ways,
+Also please send emails to the mailing list in plain text next time.
 
-A.
-1. Run configure with option "--with-open-posix-testsuite", then the openposix test
-   suite can be compiled and installed to /opt/ltp together with the ltp test.
-2. Create a Makefile which drives the running of the openposix test suite under /opt/ltp
-   and install it to /opt/ltp.
-3. Add a new option to "runltp", when it is specified, the "runltp" will run command
-   "make" to execute the openposix test suite.
-
-Or B.
-1. Add a new option to "runltp", when it is specified, the "runltp" will cd to
-   "tesecase/open_posix_testsuite", compile and execute it.
-
-
-Or does anbody have a better idea?
-
-
-Regards,
-DAN LI
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
