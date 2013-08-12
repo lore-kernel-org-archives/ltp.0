@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3w-0002ka-SJ
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:24 +0000
-Received: from mail-la0-f48.google.com ([209.85.215.48])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V6Q3v-00077A-Vw
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:24 +0000
-Received: by mail-la0-f48.google.com with SMTP id hi8so2357684lab.35
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Aug 2013 12:03:17 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Mon,  5 Aug 2013 21:02:58 +0200
-Message-Id: <1375729379-16469-6-git-send-email-anders.roxell@linaro.org>
-In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCH 5/6] realtime: only build tests if needed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V8qu6-0005KJ-6N
+	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:07:18 +0000
+Date: Mon, 12 Aug 2013 14:07:16 +0200
+From: chrubis@suse.cz
+Message-ID: <20130812120716.GD24962@rei>
+References: <a4b10219d9304cc8ea0fb62447640710d72d05c6.1376300996.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <a4b10219d9304cc8ea0fb62447640710d72d05c6.1376300996.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] aio_fsync: wait until aio_fsync completes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,104 +21,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-stand alone run scripts can not build from the installed directory.
+Hi!
+> This is to avoid SIGSEGV:
+>  #0  0x000003fffd1f4a24 in _IO_flush_all_lockp () at genops.c:850
+>  #1  0x000003fffd1f4b8e in _IO_cleanup () at genops.c:1010
+>  #2  0x000003fffd1a88f6 in __run_exit_handlers () at exit.c:90
+>  #3  0x000003fffd1a89b0 in __GI_exit () at exit.c:99
+>  #4  0x000003fffd18c822 in __libc_start_main () at libc-start.c:292
+>  #5  0x0000000080000b76 in _start ()
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- testcases/realtime/run.sh                 |   16 ++++++++++------
- testcases/realtime/scripts/run_c_files.sh |    7 +++++--
- testscripts/test_realtime.sh              |   16 ++++++++++------
- 3 files changed, 25 insertions(+), 14 deletions(-)
+Acked.
 
-diff --git a/testcases/realtime/run.sh b/testcases/realtime/run.sh
-index 77e8d68..a66e4e5 100755
---- a/testcases/realtime/run.sh
-+++ b/testcases/realtime/run.sh
-@@ -185,12 +185,16 @@ if [ $# -lt 1 ]; then
- fi
- pushd $TESTS_DIR >/dev/null
- 
--#Only build the library, most of the tests depend upon.
--#The Individual tests will be built, just before they run.
--pushd lib
--make
--check_error make
--popd
-+# if INSTALL_DIR != top_srcdir assume the individual tests are built and installed.
-+# So no need to build lib
-+if [[ -d lib ]]; then
-+    #Only build the library, most of the tests depend upon.
-+    #The Individual tests will be built, just before they run.
-+    pushd lib
-+    make
-+    check_error make
-+    popd
-+fi
- 
- ISLOOP=0
- index=0
-diff --git a/testcases/realtime/scripts/run_c_files.sh b/testcases/realtime/scripts/run_c_files.sh
-index 3ab52ec..6e73f38 100755
---- a/testcases/realtime/scripts/run_c_files.sh
-+++ b/testcases/realtime/scripts/run_c_files.sh
-@@ -20,8 +20,11 @@ profile_path=$PROFILES_DIR/$profile
- # Does profile exist?
- [ ! -f "$profile_path" ] && { echo >&2 "$0: Could not find profile ($profile_path)" ; exit 1 ; }
- 
--# Compile the test cases to support stand alone runs.
--make
-+# if INSTALL_DIR != top_srcdir assume the individual tests are built and installed.
-+if [[ -f Makefile ]]; then
-+    # Compile the test cases to support stand alone runs.
-+    make
-+fi
- 
- 
- # Run the test case
-diff --git a/testscripts/test_realtime.sh b/testscripts/test_realtime.sh
-index 22c3692..ad5075f 100755
---- a/testscripts/test_realtime.sh
-+++ b/testscripts/test_realtime.sh
-@@ -176,12 +176,16 @@ if [ ! -e "logs" ]; then
-         chmod -R 775 logs
- fi
- 
--#Only build the library, most of the tests depend upon.
--#The Individual tests will be built, just before they run.
--pushd lib
--make
--check_error make
--popd
-+# if INSTALL_DIR != top_srcdir assume the individual tests are built and installed.
-+# So no need to build lib
-+if [[ -d lib ]]; then
-+    #Only build the library, most of the tests depend upon.
-+    #The Individual tests will be built, just before they run.
-+    pushd lib
-+    make
-+    check_error make
-+    popd
-+fi
- 
- ISLOOP=0
- index=0
 -- 
-1.7.10.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
