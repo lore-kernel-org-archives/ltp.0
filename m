@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VBcOE-0007JZ-Do
-	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 03:13:50 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VBcOC-0008BQ-Hs
-	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 03:13:50 +0000
-Message-ID: <5212DEC5.4050506@cn.fujitsu.com>
-Date: Tue, 20 Aug 2013 11:13:09 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
-In-Reply-To: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
-	writers
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1V8rZV-0001Dt-2E
+	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:50:05 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V8rZU-0007eR-6u
+	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:50:05 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r7CCnvHE029392
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:49:58 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7CCnugf008936
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:49:57 GMT
+Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7CCnuAg000196
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:49:56 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 12 Aug 2013 16:49:30 +0400
+Message-Id: <1376311771-30968-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20130717130502.GD25145@rei>
+References: <20130717130502.GD25145@rei>
+Subject: [LTP] [PATCH V4 1/2] Implemented tst_fill_file function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,105 +38,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On 08/19/2013 09:38 PM, Jan Stancek wrote:
-> Starting with 3.10 dio_sparse sporadically fails, because
-> read() in read_sparse returns garbage and dio_sparse testcase
-> fails with:
->   dio_sparse    0  TINFO  :  Dirtying free blocks
->   dio_sparse    0  TINFO  :  Starting I/O tests
->   non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
->   non-zero read at offset 0
->   dio_sparse    0  TINFO  :  Killing childrens(s)
->   dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ include/test.h      |   10 +++++++
+ lib/tst_fill_file.c |   67 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 77 insertions(+), 0 deletions(-)
+ create mode 100644 lib/tst_fill_file.c
 
-Why did I always meet the EINVAL error?
-Like:
-dio_sparse    1  TBROK  :  open(): errno=EINVAL(22): Invalid argument
-
-Caused by the file system's O_DIRECT support?
-
-Thanks,
-Wanlong Gao
-
-> 
-> Issue is that we have parent opening file as O_DIRECT and
-> children trying to read from it without O_DIRECT, which is
-> discouraged in man pages.
-> 
-> open(2) says:
-> "Applications should avoid mixing O_DIRECT and normal I/O to the same
-> file, and especially to overlapping byte regions in the same file."
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/io/ltp-aiodio/aiodio_sparse.c |    2 +-
->  testcases/kernel/io/ltp-aiodio/common_sparse.h |    4 ++--
->  testcases/kernel/io/ltp-aiodio/dio_sparse.c    |    2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> index 944e12b..705bbc5 100644
-> --- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> +++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> @@ -279,7 +279,7 @@ int main(int argc, char **argv)
->  	for (i = 0; i < num_children; i++) {
->  		switch (pid[i] = fork()) {
->  		case 0:
-> -			read_sparse(filename, filesize);
-> +			read_sparse(filename, filesize, O_DIRECT);
->  			break;
->  		case -1:
->  			while (i-- > 0)
-> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> index f7f4ef4..6a294cb 100644
-> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> @@ -104,7 +104,7 @@ char *check_zero(char *buf, int size)
->   * either there is a hole in the file,
->   * or zeroes were actually written by parent.
->   */
-> -static void read_sparse(char *filename, int filesize)
-> +static void read_sparse(char *filename, int filesize, int mode)
->  {
->  	int fd;
->  	int  i, j, r;
-> @@ -114,7 +114,7 @@ static void read_sparse(char *filename, int filesize)
->  	 * Wait for the file to appear.
->  	 */
->  	for (i = 0; i < 10000; i++) {
-> -		fd = open(filename, O_RDONLY);
-> +		fd = open(filename, O_RDONLY | mode);
->  
->  		if (fd != -1)
->  			break;
-> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> index 7ad5f80..eaaea14 100644
-> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> @@ -153,7 +153,7 @@ int main(int argc, char **argv)
->  	for (i = 0; i < num_children; i++) {
->  		switch (pid[i] = fork()) {
->  		case 0:
-> -			read_sparse(filename, filesize);
-> +			read_sparse(filename, filesize, O_DIRECT);
->  			break;
->  		case -1:
->  			while (i-- > 0)
-> 
+diff --git a/include/test.h b/include/test.h
+index 991269e..d9eba31 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -249,6 +249,16 @@ void tst_run_cmd(void (cleanup_fn)(void),
+ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+               const char *fs_type, const char *fs_opts);
+ 
++/* lib/tst_fill_file.c
++ *
++ * Creates/ovewrites a file with specified pattern
++ * @path: path to file
++ * @pattern: pattern
++ * @bs: block size
++ * @bcount: blocks amount
++ */
++int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/tst_fill_file.c b/lib/tst_fill_file.c
+new file mode 100644
+index 0000000..6613330
+--- /dev/null
++++ b/lib/tst_fill_file.c
+@@ -0,0 +1,67 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++#include "test.h"
++
++int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
++{
++	int fd, counter;
++	char *buf;
++
++	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
++	if (fd < 0)
++		return -1;
++
++	/* Filling a memory buffer with provided pattern */
++	buf = malloc(bs);
++	if (buf == NULL) {
++		close(fd);
++
++		return -1;
++	}
++
++	for (counter = 0; counter < bs; counter++)
++		buf[counter] = pattern;
++
++	/* Filling the file */
++	for (counter = 0; counter < bcount; counter++)
++		if (write(fd, buf, bs) != bs) {
++			free(buf);
++			close(fd);
++			unlink(path);
++
++			return -1;
++		}
++
++
++	free(buf);
++	if (close(fd) < 0)
++		return -1;
++
++	return 0;
++}
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
