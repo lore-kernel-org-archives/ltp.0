@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3z-0001ZM-QF
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:27 +0000
-Received: from mail-lb0-f182.google.com ([209.85.217.182])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V6Q3y-0006rT-Qu
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:27 +0000
-Received: by mail-lb0-f182.google.com with SMTP id v20so2333721lbc.41
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Aug 2013 12:03:20 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Mon,  5 Aug 2013 21:02:59 +0200
-Message-Id: <1375729379-16469-7-git-send-email-anders.roxell@linaro.org>
-In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCH 6/6] Remove reference to "java",
-	missed in commit 78596957
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V9Fx9-000492-Ux
+	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 14:52:07 +0000
+Date: Tue, 13 Aug 2013 16:52:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20130813145205.GB29233@rei>
+References: <1375192031-10636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130805154118.GA16172@rei> <52009D26.4030609@oracle.com>
+	<520A34B4.3020502@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <520A34B4.3020502@oracle.com>
+Subject: Re: [LTP] [PATCH] max_map_count: corrected max_map_count condition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,41 +23,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list@lists.sourceforge.net, bob.picco@oracle.com
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- testscripts/test_realtime.sh |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+> Guys, could anybody approve or disapprove this? I'm not sure where to go 
+> to complete this subject.
 
-diff --git a/testscripts/test_realtime.sh b/testscripts/test_realtime.sh
-index ad5075f..0d424fc 100755
---- a/testscripts/test_realtime.sh
-+++ b/testscripts/test_realtime.sh
-@@ -128,7 +128,7 @@ find_test()
-             ;;
-         all)
-         # Run all tests which have run_auto.sh
--            TESTLIST="func stress java perf"
-+            TESTLIST="func stress perf"
-             ;;
-         list)
-         # This will only display subdirs which have run_auto.sh
+I have this in my TODO, stay tuned.
+
 -- 
-1.7.10.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
