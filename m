@@ -1,27 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1VFI2E-0005qP-1Q
-	for ltp-list@lists.sourceforge.net; Fri, 30 Aug 2013 06:18:18 +0000
-Received: from mail-lb0-f180.google.com ([209.85.217.180])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VFI2C-00017l-0F
-	for ltp-list@lists.sourceforge.net; Fri, 30 Aug 2013 06:18:18 +0000
-Received: by mail-lb0-f180.google.com with SMTP id q8so1491874lbi.25
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 29 Aug 2013 23:18:09 -0700 (PDT)
-Date: Fri, 30 Aug 2013 08:22:59 +0200
-From: Anders Roxell <anders.roxell@linaro.org>
-Message-ID: <20130830062259.GD18729@nexon.se>
-References: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
-	<1377761241-17744-3-git-send-email-anders.roxell@linaro.org>
-	<CA+icZUWpYYd__ZKdX6SBbbpN9tJHGnywVhrawHo_UJ3ub=3cOA@mail.gmail.com>
-	<201308292016.29360.vapier@gentoo.org>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V9HBs-0006td-UC
+	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 16:11:25 +0000
+Date: Tue, 13 Aug 2013 18:11:22 +0200
+From: chrubis@suse.cz
+Message-ID: <20130813161122.GA29678@rei>
+References: <1376369417-13511-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201308292016.29360.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 2/2] runltp: remove bashisms
+In-Reply-To: <1376369417-13511-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] rt_sigaction: headers are included in a uniform
+	way
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,34 +25,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+> index 5beabef..0e2915e 100644
+> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+> @@ -46,28 +46,11 @@
+>  #include <sys/syscall.h>
+>  #include <string.h>
+>  
+> +#define LTP_RT_SIG_TEST
 
-On 2013-08-29 20:16, Mike Frysinger wrote:
-> On Thursday 29 August 2013 04:41:33 Sedat Dilek wrote:
-> > On Thu, Aug 29, 2013 at 9:27 AM, Anders Roxell wrote:
-> > > -    echo -e "LOG File: \c"
-> > > +    echo -n "LOG File: "
-> > 
-> > Yesterday, I looked through diverse GIT repos where I saw a commit
-> > saying that "echo" (dunno if it was "-e" or "-n") is not
-> > POSIX-compliant and "printf" should be used.
-> > I am no POSIX guy, but maybe someone can confirm this?
-> 
-> use `printf` please for both -e and -n issues
-I did resend the patch yesterday, with subject: "[PATCHv2 0/2] Rework to
-printf and added required import"
+As far as I see these two testcases does not use the interface exposed
+after this is defined. If this is so there is no need to define it here.
 
-/Anders
+> diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
+> index 646c37d..b160f2b 100644
+> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
+> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
+> @@ -46,9 +46,11 @@
+>  #include <sys/syscall.h>
+>  #include <string.h>
+>  
+> +#define LTP_RT_SIG_TEST
+
+Here as well.
+
+
+Otherwise it looks ok.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
