@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VC1xt-0004Xv-Rp
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:32:21 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VC1xq-0002Kp-9n
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:32:21 +0000
-Message-ID: <52145ECA.5060602@cn.fujitsu.com>
-Date: Wed, 21 Aug 2013 14:31:38 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V9G3r-0005tK-LH
+	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 14:59:03 +0000
+Date: Tue, 13 Aug 2013 16:59:02 +0200
+From: chrubis@suse.cz
+Message-ID: <20130813145902.GC29233@rei>
+References: <20130717130502.GD25145@rei>
+	<1376311771-30968-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-References: <5213D2DF.20802@oracle.com>
-In-Reply-To: <5213D2DF.20802@oracle.com>
-Subject: Re: [LTP] [PATCH] ltp: handle missing online file
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1376311771-30968-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V4 1/2] Implemented tst_fill_file function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,69 +25,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 08/21/2013 04:34 AM, Dave Kleikamp wrote:
-> gather_node_cpus() fails if the /sys/devices/system/node/nodeX/cpuX/online
-> file is missing for any cpu other than cpu0. The absence of the online file
-> should not be treated as a failure, but as an indication that the cpu is
-> not hot-pluggable and cannot be taken offline.
-> 
-> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Hi!
+> +int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
+> +{
+> +	int fd, counter;
+> +	char *buf;
+> +
+> +	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
+> +	if (fd < 0)
+> +		return -1;
+> +
+> +	/* Filling a memory buffer with provided pattern */
+> +	buf = malloc(bs);
+> +	if (buf == NULL) {
+> +		close(fd);
+> +
+> +		return -1;
+> +	}
+> +
+> +	for (counter = 0; counter < bs; counter++)
+> +		buf[counter] = pattern;
+> +
+> +	/* Filling the file */
+> +	for (counter = 0; counter < bcount; counter++)
+> +		if (write(fd, buf, bs) != bs) {
+> +			free(buf);
+> +			close(fd);
+> +			unlink(path);
+> +
+> +			return -1;
+> +		}
 
-Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+This is minor but I've told you allready that it's preffered to add the
+curly brackets ({}) around large blocks. Such as:
 
+	for (counter = 0; counter < bcount; counter++) {
+		if (...) {
+			...
+			...
+		}
+	}
 
-> 
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 9bc926e..99243a6 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -786,16 +786,14 @@ static void gather_node_cpus(char *cpus, long nd)
->  		if (path_exist(path, nd, i)) {
->  			snprintf(path1, BUFSIZ, "%s/online", path);
->  			/*
-> -			 * No cpu0/online knob, as it can't support to
-> -			 * on/offline cpu0, so if the 'nd' node contains
-> -			 * cpu0, it should skip to check cpu0/online's value.
-> +			 * if there is no online knob, then the cpu cannot
-> +			 * be taken offline
->  			 */
-> -			if (i == 0)
-> -				goto next;
-> -			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
-> -			if (online == 0)
-> -				continue;
-> -next:
-> +			if (path_exist(path1)) {
-> +				SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
-> +				if (online == 0)
-> +					continue;
-> +			}
->  			sprintf(buf, "%d,", i);
->  			strcat(cpus, buf);
->  		}
-> 
-> ------------------------------------------------------------------------------
-> Introducing Performance Central, a new site from SourceForge and 
-> AppDynamics. Performance Central is your source for news, insights, 
-> analysis and resources for efficient Application Performance Management. 
-> Visit us today!
-> http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> +	free(buf);
+> +	if (close(fd) < 0)
 
+Add unlink here too, just to be consistent.
+
+> +		return -1;
+> +
+> +	return 0;
+> +}
+
+Otherwise it looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
