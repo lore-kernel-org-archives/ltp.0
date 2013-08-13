@@ -1,34 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V8rZZ-0007vj-5S
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:50:09 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V8rZX-0007ec-P0
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:50:09 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r7CCo1vU019777
+	(envelope-from <jstancek@redhat.com>) id 1V9EoS-0006ai-Ap
+	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 13:39:04 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V9EoQ-0000wy-Ih
+	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 13:39:04 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r7DDcuTf016736
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:50:01 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7CCo0HG015181
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:50:00 GMT
-Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7CCo0US009031
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:50:00 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 12 Aug 2013 16:49:31 +0400
-Message-Id: <1376311771-30968-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20130717130502.GD25145@rei>
-References: <20130717130502.GD25145@rei>
-Subject: [LTP] [PATCH V4 2/2] syscalls/swapon: fix for variable page size
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Aug 2013 09:38:56 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 13 Aug 2013 15:38:51 +0200
+Message-Id: <364946f8001c14134ce7bf32fe8b5c6b5201bcfb.1376399706.git.jstancek@redhat.com>
+In-Reply-To: <c6bfd2f062e27984837f94e4d333657fae5cd65e.1375280397.git.jstancek@redhat.com>
+References: <c6bfd2f062e27984837f94e4d333657fae5cd65e.1375280397.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v4 2/2] open_posix_testsuite/../mq_timedsend/12-1: fix
+	race
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,392 +34,254 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-mkswap refuses files of size < 10*(page size).
+Test can send SIGUSR1 signal after thread has already completed
+and report failure from main() and success from a_thread_func():
 
-On systems with 8192 page size swapon02, swapon03 tests fail because
-they try to use files of size 41920 (< 81920).
+  conformance/interfaces/mq_timedsend/12-1: execution: UNRESOLVED: Output:
+  Error: in pthread_kill
+  : Success
+  thread: mq_timedsend interrupted by signal and correctly set errno to EINTR
 
-Modified swapon1, swapon02, swapon03 so they operate on files of size
-10*(page size).
+Synchronize exit of a_thread_func(), so that thread can exit only
+after loop sending SIGUSR1 completed.
 
-Verified on systems with 4096 and 8192 page sizes.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/swapon/Makefile    |    5 ++
- testcases/kernel/syscalls/swapon/libswapon.c |   48 +++++++++++++++++
- testcases/kernel/syscalls/swapon/libswapon.h |   34 ++++++++++++
- testcases/kernel/syscalls/swapon/swapon01.c  |   18 +------
- testcases/kernel/syscalls/swapon/swapon02.c  |   62 +---------------------
- testcases/kernel/syscalls/swapon/swapon03.c  |   71 ++------------------------
- 6 files changed, 97 insertions(+), 141 deletions(-)
- create mode 100644 testcases/kernel/syscalls/swapon/libswapon.c
- create mode 100644 testcases/kernel/syscalls/swapon/libswapon.h
+Changes in v4:
+- renamed handle_error to error_and_exit
+- use pthread_barrier instead of mutex/cond
+- for loop in a_thread_func modified to minimize code duplication in each branch
 
-diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
-index 7ff50f1..a272224 100644
---- a/testcases/kernel/syscalls/swapon/Makefile
-+++ b/testcases/kernel/syscalls/swapon/Makefile
-@@ -25,4 +25,9 @@ top_srcdir		?= ../../../..
+ .../conformance/interfaces/mq_timedsend/12-1.c     |  166 ++++++++++---------
+ 1 files changed, 87 insertions(+), 79 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
+index 29780d0..96a6656 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedsend/12-1.c
+@@ -39,19 +39,19 @@
+ #define MSGSTR "0123456789"
+ #define BUFFER 40
+ #define MAXMSG 10
++#define TIMEOUT 10		/* seconds mq_timedsend will block */
++#define SIGNAL_DELAY_MS 50	/* delay in ms between 2 signals */
  
- include $(top_srcdir)/include/mk/testcases.mk
+-#define INTHREAD 0
+-#define INMAIN 1
++#define error_and_exit(en, msg) \
++	do { errno = en; perror(msg); exit(PTS_UNRESOLVED); } while (0)
  
-+FILTER_OUT_MAKE_TARGETS         := libswapon
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+$(MAKE_TARGETS): %: %.o libswapon.o
-+
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
-new file mode 100644
-index 0000000..8eca7dc
---- /dev/null
-+++ b/testcases/kernel/syscalls/swapon/libswapon.c
-@@ -0,0 +1,48 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+#include "test.h"
-+#include "libswapon.h"
-+
-+/*
-+ * Make a swap file
-+ */
-+void make_swapfile(void (cleanup)(void), const char *swapfile)
-+{
-+	if (!tst_cwd_has_free(sysconf(_SC_PAGESIZE)*10)) {
-+		tst_brkm(TBROK, cleanup,
-+			"Insufficient disk space to create swap file");
-+	}
-+
-+	/* create file */
-+	if (tst_fill_file(swapfile, 0,
-+			sysconf(_SC_PAGESIZE), 10) != 0) {
-+		tst_brkm(TBROK, cleanup, "Failed to create swapfile");
-+	}
-+
-+	/* make the file swapfile */
-+	const char *argv[2 + 1];
-+	argv[0] = "mkswap";
-+	argv[1] = swapfile;
-+	argv[2] = NULL;
-+
-+	tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null");
-+}
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.h b/testcases/kernel/syscalls/swapon/libswapon.h
-new file mode 100644
-index 0000000..7f7211e
---- /dev/null
-+++ b/testcases/kernel/syscalls/swapon/libswapon.h
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+/*
-+ * Contains common content for all swapon tests
-+ */
-+
-+#ifndef __LIBSWAPON_H__
-+#define __LIBSWAPON_H__
-+
-+/*
-+ * Make a swap file
-+ */
-+void make_swapfile(void (cleanup)(void), const char *swapfile);
-+
-+#endif /* __LIBSWAPON_H__ */
-diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-index 11a49f9..feefc58 100644
---- a/testcases/kernel/syscalls/swapon/swapon01.c
-+++ b/testcases/kernel/syscalls/swapon/swapon01.c
-@@ -81,6 +81,7 @@
- #include "config.h"
- #include "linux_syscall_numbers.h"
- #include "swaponoff.h"
-+#include "libswapon.h"
+-/* manual semaphore */
+-int sem;
++/* variable to indicate how many times signal handler was called */
++static volatile sig_atomic_t in_handler;
  
- static void setup();
- static void cleanup();
-@@ -132,7 +133,6 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test */
- void setup()
- {
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
+-/* flag to indicate signal handler was called */
+-int in_handler;
++/* errno returned by mq_timedsend() */
++static int mq_timedsend_errno = -1;
  
- 	/* Check whether we are root */
-@@ -154,21 +154,7 @@ void setup()
- 			 "Cannot do swapon on a file located on a nfs filesystem");
- 	}
- 
--	if (!tst_cwd_has_free(65536)) {
--		tst_brkm(TBROK, cleanup,
--			 "Insufficient disk space to create swap file");
--	}
--
--	/*create file */
--	if (system("dd if=/dev/zero of=swapfile01 bs=1024 count=65536 >"
--		   " tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to create file for swap");
--	}
--
--	/* make above file a swap file */
--	if (system("mkswap swapfile01 > tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
--	}
-+	make_swapfile(cleanup, "swapfile01");
- }
+-/* flag to indicate that errno was set to eintr when mq_timedsend()
+- * was interruped. */
+-int errno_eintr;
++pthread_barrier_t barrier;
  
  /*
-diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-index d44d6c3..fb8f89d 100644
---- a/testcases/kernel/syscalls/swapon/swapon02.c
-+++ b/testcases/kernel/syscalls/swapon/swapon02.c
-@@ -99,6 +99,7 @@
- #include "config.h"
- #include "linux_syscall_numbers.h"
- #include "swaponoff.h"
-+#include "libswapon.h"
- 
- static void setup();
- static void cleanup();
-@@ -217,36 +218,7 @@ int main(int ac, char **av)
+  * This handler is just used to catch the signal and stop sleep (so the
+@@ -59,12 +59,10 @@ int errno_eintr;
   */
- int setup01()
+ void justreturn_handler(int signo)
  {
--	int pagesize = getpagesize();
--
--	/*create file */
--	if ((strncmp(kmachine, "ia64", 4)) == 0) {
--		if (system
--		    ("dd if=/dev/zero of=swapfile01 bs=1024  count=65536 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else if (pagesize == 65536) {
--		if (system
--		    ("dd if=/dev/zero of=swapfile01 bs=1048  count=655 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else {
--		if (system
--		    ("dd if=/dev/zero of=swapfile01 bs=1048  count=40 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	}
--
--	/* make above file a swap file */
--	if (system("mkswap swapfile01 > tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
--	}
-+	make_swapfile(cleanup, "swapfile01");
- 
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_resm(TWARN, "\"nobody\" user not present. skipping test");
-@@ -293,37 +265,9 @@ int setup02()
-  */
- int setup03()
- {
--	int pagesize = getpagesize();
- 	int res = 0;
- 
--	/*create file */
--	if ((strncmp(kmachine, "ia64", 4)) == 0) {
--		if (system
--		    ("dd if=/dev/zero of=alreadyused bs=1024  count=65536 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else if (pagesize == 65536) {
--		if (system
--		    ("dd if=/dev/zero of=alreadyused bs=1048  count=655 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	} else {
--		if (system
--		    ("dd if=/dev/zero of=alreadyused bs=1048  count=40 > tmpfile"
--		     " 2>&1") != 0) {
--			tst_brkm(TBROK, cleanup,
--				 "Failed to create file for swap");
--		}
--	}
--
--	/* make above file a swap file */
--	if (system("mkswap alreadyused > tmpfile 2>&1") != 0) {
--		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
--	}
-+	make_swapfile(cleanup, "alreadyused");
- 
- 	/* turn on the swap file */
- 	res = ltp_syscall(__NR_swapon, "alreadyused", 0);
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index 3dbc998..a80e378 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -74,13 +74,13 @@
- #include "config.h"
- #include "linux_syscall_numbers.h"
- #include "swaponoff.h"
-+#include "libswapon.h"
- 
- void setup();
- void cleanup();
- int setup_swap();
- int clean_swap();
- int check_and_swapoff(char *filename);
--int create_swapfile(char *swapfile, int bs, int count);
- 
- char *TCID = "swapon03";
- int TST_TOTAL = 1;
-@@ -208,8 +208,7 @@ int setup_swap()
- 	pid_t pid;
- 	int j, fd;		/*j is loop counter, fd is file descriptor */
- 	int status;		/* used for fork */
--	int res = 0, pagesize = getpagesize();
--	int bs, count;
-+	int res = 0;
- 	char filename[15];	/* array to store new filename */
- 	char buf[BUFSIZ + 1];	/* temp buffer for reading /proc/swaps */
- 
-@@ -254,18 +253,6 @@ int setup_swap()
- 		swapfiles = MAX_SWAPFILES;
- 	}
- 
--	/* args for dd */
--	if ((strncmp(kmachine, "ia64", 4)) == 0) {
--		bs = 1024;
--		count = 1024;
--	} else if (pagesize == 65536) {
--		bs = 1048;
--		count = 655;
--	} else {
--		bs = 1048;
--		count = 40;
--	}
--
- 	pid = FORK_OR_VFORK();
- 	if (pid == 0) {
- 		/*create and turn on remaining swapfiles */
-@@ -279,10 +266,7 @@ int setup_swap()
- 			}
- 
- 			/* Create the swapfile */
--			if (create_swapfile(filename, bs, count) < 0) {
--				printf("Failed to create swapfile");
--				exit(1);
--			}
-+			make_swapfile(cleanup, filename);
- 
- 			/* turn on the swap file */
- 			res = ltp_syscall(__NR_swapon, filename, 0);
-@@ -307,59 +291,14 @@ int setup_swap()
- 	}
- 
- 	/* Create all needed extra swapfiles for testing */
--	for (j = 0; j < testfiles; j++) {
--		if (create_swapfile(swap_testfiles[j].filename, bs, count) < 0) {
--			tst_resm(TWARN,
--				 "Failed to create swapfiles for the test");
--			exit(1);
--		}
--	}
-+	for (j = 0; j < testfiles; j++)
-+		make_swapfile(cleanup, swap_testfiles[j].filename);
- 
- 	return 0;
- 
+-	/* Indicate that the signal handler was called */
+-	in_handler = 1;
+-	return;
++	in_handler++;
  }
  
- /***************************************************************
-- * create_swapfile() - Create a swap file
-- ***************************************************************/
--int create_swapfile(char *swapfile, int bs, int count)
--{
--	char cmd_buffer[256];
--
--	/* prepare the path string for dd command */
--	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
--		     "dd if=/dev/zero of=%s bs=%d "
--		     "count=%d > tmpfile 2>&1", swapfile, bs, count) < 0) {
--		tst_resm(TWARN,
--			 "sprintf() failed to create the command string");
--
--		return -1;
+-void *a_thread_func()
++void *a_thread_func(void *arg)
+ {
+ 	int i, ret;
+ 	struct sigaction act;
+@@ -86,101 +84,111 @@ void *a_thread_func()
+ 	attr.mq_maxmsg = MAXMSG;
+ 	attr.mq_msgsize = BUFFER;
+ 	gqueue = mq_open(gqname, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR, &attr);
+-	if (gqueue == (mqd_t) - 1) {
+-		perror("mq_open() did not return success");
+-		pthread_exit((void *)PTS_UNRESOLVED);
+-		return NULL;
 -	}
++	if (gqueue == (mqd_t) -1)
++		error_and_exit(errno, "mq_open");
+ 
+-	/* mq_timedsend will block for 10 seconds when it waits */
+-	ts.tv_sec = time(NULL) + 10;
++	/* mq_timedsend will block for TIMEOUT seconds when it waits */
++	ts.tv_sec = time(NULL) + TIMEOUT;
+ 	ts.tv_nsec = 0;
+ 
+-	/* Tell main it can go ahead and start sending SIGUSR1 signal */
+-	sem = INMAIN;
++	/* main can now start sending SIGUSR1 signal */
++	ret = pthread_barrier_wait(&barrier);
++	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD)
++		error_and_exit(ret, "pthread_barrier_wait start");
+ 
+ 	for (i = 0; i < MAXMSG + 1; i++) {
+ 		ret = mq_timedsend(gqueue, msgptr, strlen(msgptr), 1, &ts);
+-		if (ret	!= -1)
+-			continue;
 -
--	if (system(cmd_buffer) != 0) {
--		tst_resm(TWARN, "dd command failed to create file via "
--			 "command: %s", cmd_buffer);
--		return -1;
+-		if (errno == EINTR) {
+-			if (mq_unlink(gqname) != 0) {
+-				perror("mq_unlink() did not return success");
+-				pthread_exit((void *)PTS_UNRESOLVED);
+-				return NULL;
+-			}
+-			printf("thread: mq_timedsend interrupted by signal"
+-				" and correctly set errno to EINTR\n");
+-			errno_eintr = 1;
+-			pthread_exit((void *)PTS_PASS);
+-			return NULL;
+-		} else {
+-			printf("mq_timedsend not interrupted by signal or"
+-				" set errno to incorrect code: %d\n", errno);
+-			pthread_exit((void *)PTS_FAIL);
+-			return NULL;
++		if (ret == -1) {
++			mq_timedsend_errno = errno;
++			break;
+ 		}
+ 	}
+ 
+-	/* Tell main that it the thread did not block like it should have */
+-	sem = INTHREAD;
++	if (mq_unlink(gqname) != 0)
++		error_and_exit(errno, "mq_unlink");
++
++	switch (mq_timedsend_errno) {
++	case -1:
++		mq_timedsend_errno = 0;
++		printf("Error: mq_timedsend wasn't interrupted\n");
++		break;
++	case EINTR:
++		printf("thread: mq_timedsend interrupted by signal"
++			" and correctly set errno to EINTR\n");
++		break;
++	default:
++		printf("mq_timedsend not interrupted by signal or"
++			" set errno to incorrect code: %d\n",
++			mq_timedsend_errno);
++		break;
++	}
++
++	/* wait until main stops sending signals */
++	ret = pthread_barrier_wait(&barrier);
++	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD)
++		error_and_exit(ret, "pthread_barrier_wait end");
+ 
+-	perror("Error: thread never blocked\n");
+-	pthread_exit((void *)PTS_FAIL);
+-	return NULL;
++	if (mq_timedsend_errno == EINTR)
++		pthread_exit((void *)PTS_PASS);
++	else
++		pthread_exit((void *)PTS_FAIL);
+ }
+ 
+ int main(void)
+ {
+ 	pthread_t new_th;
+-	int i;
++	int i = 0, ret;
+ 
+-	/* Initialized values */
+-	i = 0;
+-	in_handler = 0;
+-	errno_eintr = 0;
+-	sem = INTHREAD;
++	ret = pthread_barrier_init(&barrier, NULL, 2);
++	if (ret != 0)
++		error_and_exit(ret, "pthread_barrier_init");
+ 
+-	if (pthread_create(&new_th, NULL, a_thread_func, NULL) != 0) {
+-		perror("Error: in pthread_create\n");
+-		return PTS_UNRESOLVED;
 -	}
--
--	/* make the file swapfile */
--	if (snprintf(cmd_buffer, sizeof(cmd_buffer),
--		     "mkswap %s > tmpfile 2>&1", swapfile) < 0) {
--		tst_resm(TWARN,
--			 "snprintf() failed to create mkswap command string");
--		return -1;
++	ret = pthread_create(&new_th, NULL, a_thread_func, NULL);
++	if (ret != 0)
++		error_and_exit(ret, "pthread_create");
+ 
+-	/* Wait for thread to set up handler for SIGUSR1 */
+-	while (sem == INTHREAD)
+-		sleep(1);
++	/* wait for thread to start */
++	ret = pthread_barrier_wait(&barrier);
++	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD)
++		error_and_exit(ret, "pthread_barrier_wait start");
+ 
+-	while ((i != 10) && (sem == INMAIN)) {
++	while (i < TIMEOUT*1000 && mq_timedsend_errno < 0) {
+ 		/* signal thread while it's in mq_timedsend */
+-		if (pthread_kill(new_th, SIGUSR1) != 0) {
+-			perror("Error: in pthread_kill\n");
+-			return PTS_UNRESOLVED;
+-		}
+-		i++;
++		ret = pthread_kill(new_th, SIGUSR1);
++		if (ret != 0)
++			error_and_exit(ret, "pthread_kill");
++		usleep(SIGNAL_DELAY_MS*1000);
++		i += SIGNAL_DELAY_MS;
+ 	}
+ 
+-	if (pthread_join(new_th, NULL) != 0) {
+-		perror("Error: in pthread_join()\n");
+-		return PTS_UNRESOLVED;
 -	}
++	/* thread can now safely exit */
++	ret = pthread_barrier_wait(&barrier);
++	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD)
++		error_and_exit(ret, "pthread_barrier_wait end");
++
++	ret = pthread_join(new_th, NULL);
++	if (ret != 0)
++		error_and_exit(ret, "pthread_join");
+ 
+ 	/* Test to see if the thread blocked correctly in mq_timedsend,
+ 	 * and if it returned EINTR when it caught the signal */
+-	if (errno_eintr != 1) {
+-		if (sem == INTHREAD) {
+-			printf("Test FAILED: mq_timedsend() never"
+-				" blocked for any timeout period.\n");
+-			return PTS_FAIL;
+-		}
 -
--	if (system(cmd_buffer) != 0) {
--		tst_resm(TWARN, "failed to make swap file %s via command %s",
--			 swapfile, cmd_buffer);
--		return -1;
--	}
--
--	return 0;
--}
--
--/***************************************************************
-  * clean_swap() - clearing all turned on swapfiles
-  ***************************************************************/
- int clean_swap()
+-		if (in_handler != 0) {
+-			perror("Error: signal SIGUSR1 was never received and/or"
+-				" the signal handler was never called.\n");
++	if (mq_timedsend_errno != EINTR) {
++		printf("Error: mq_timedsend was NOT interrupted\n");
++		printf(" signal handler was called %d times\n", in_handler);
++		printf(" SIGUSR1 signals sent: %d\n", i);
++		printf(" last mq_timedsend errno: %d %s\n",
++			mq_timedsend_errno, strerror(mq_timedsend_errno));
++		if (in_handler == 0) {
++			printf("Error: SIGUSR1 was never received\n");
+ 			return PTS_UNRESOLVED;
+ 		}
++		return PTS_FAIL;
+ 	}
+ 
++	ret = pthread_barrier_destroy(&barrier);
++	if (ret != 0)
++		error_and_exit(ret, "pthread_barrier_destroy");
++
+ 	printf("Test PASSED\n");
+ 	return PTS_PASS;
+ }
 -- 
 1.7.1
 
