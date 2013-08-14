@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VDP3Y-0001Gf-H2
-	for ltp-list@lists.sourceforge.net; Sun, 25 Aug 2013 01:23:52 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VDP3X-0008JC-LE
-	for ltp-list@lists.sourceforge.net; Sun, 25 Aug 2013 01:23:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 24 Aug 2013 21:23:35 -0400
-References: <CALGiYOHZ8qNPSNSwuQ_BQf3L3J=gXbGUgg9Pk45Lke9-ugBueQ@mail.gmail.com>
-In-Reply-To: <CALGiYOHZ8qNPSNSwuQ_BQf3L3J=gXbGUgg9Pk45Lke9-ugBueQ@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <201308242123.36727.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] network/stress/route/route[4,
-	6]-redirect: add PATH setting for ip
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1V9VYo-00083M-21
+	for ltp-list@lists.sourceforge.net; Wed, 14 Aug 2013 07:32:02 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1V9VYn-0000Lp-7b
+	for ltp-list@lists.sourceforge.net; Wed, 14 Aug 2013 07:32:02 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r7E7Vsnj017253
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Aug 2013 07:31:55 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7E7VrpI015706
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Aug 2013 07:31:54 GMT
+Received: from abhmt110.oracle.com (abhmt110.oracle.com [141.146.116.62])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7E7VqNu029792
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Aug 2013 07:31:52 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 14 Aug 2013 11:31:41 +0400
+Message-Id: <1376465501-5916-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20130813161122.GA29678@rei>
+References: <20130813161122.GA29678@rei>
+Subject: [LTP] [PATCH V2] rt_sigaction: headers are included in a uniform way
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,79 +38,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6468205091207141086=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+Cc: vasily.isaenko@oracle.com
 
---===============6468205091207141086==
-Content-Type: multipart/signed; boundary="nextPart3926181.MaziX2N2yX";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ include/ltp_signal.h                               |   17 +++++++++++++++++
+ .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |   20 +-------------------
+ .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |    1 +
+ 3 files changed, 19 insertions(+), 19 deletions(-)
 
---nextPart3926181.MaziX2N2yX
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+diff --git a/include/ltp_signal.h b/include/ltp_signal.h
+index 95134e9..e6fb2e0 100644
+--- a/include/ltp_signal.h
++++ b/include/ltp_signal.h
+@@ -34,7 +34,24 @@
+ #include <stdio.h>
+ #include "config.h"
+ 
++/*
++ * For all but __mips__:
++ *
++ * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 2.
++ *
++ * For __mips__:
++ *
++ * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 4.
++ *
++ * See asm/compat.h under the kernel source for more details.
++ *
++ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
++ */
++#if defined __mips__
++#define SIGSETSIZE 16
++#else
+ #define SIGSETSIZE (_NSIG / 8)
++#endif
+ 
+ #ifdef LTP_RT_SIG_TEST
+ 
+diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+index 5beabef..b89324f 100644
+--- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
++++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+@@ -49,25 +49,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
+-
+-/*
+- * For all but __mips__:
+- *
+- * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 2.
+- *
+- * For __mips__:
+- *
+- * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 4.
+- *
+- * See asm/compat.h under the kernel source for more details.
+- *
+- * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
+- */
+-#if defined (__mips__)
+-#define SIGSETSIZE 16
+-#else
+-#define SIGSETSIZE 8
+-#endif
++#include "ltp_signal.h"
+ 
+ #define INVAL_STRUCT -1
+ 
+diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
+index 646c37d..279f342 100644
+--- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
++++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
+@@ -49,6 +49,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
++#include "ltp_signal.h"
+ 
+ #define INVAL_SIGSETSIZE -1
+ 
+-- 
+1.7.1
 
-On Thursday 08 August 2013 05:59:06 Xie Lingyun wrote:
-> ip command is not in default rsh $PATH, add PATH setting for 'ip addr
-> flush' the same
-> change
-> in route4-redirect and route6-redirect
-
-your patch is line wrapped.  maybe you should use `git send-email` to post=
-=20
-things ...
-=2Dmike
-
---nextPart3926181.MaziX2N2yX
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSGVyYAAoJEEFjO5/oN/WBqnAQALMdEuYIT6E40auJxLw6ab84
-8j2iUX9US9P1/IIYQyPhY6ojT1dJT1Xr6ZpRTbyNYUjWkhRnw9dwyQq6V4Hd/yAz
-asINO4k7ZFC9TvLLcOihMVfMht9Ul1ZnZxPJNDT1UsCHhbx5Y76Cs/FBlwZOw7Nc
-gnan4+ogQGl/g21Lwic1Vuaz5sJMzlvDx1G/vatRJBIaL0TeLjJ+JJwCeLGEknXb
-QS4lyr+JTZUcVtU6rWBpOT2EHSOmsHUWDj9QnnM+k7eWnZoEE36xNN1bckCP2xyE
-cbi0RNyJ6iP95Q7CH4/7nUJr66vgZ/jtq7bFtZiW3www4FXQnwVjchPBI8T/s+Ax
-l1Y3YtmIX7axbaNv/FJ6mlDvPQ+3SeDyyimYSwFH5AlZI2o/wd2kmL72xVgSTFbk
-UqnJMwI0ktSlxEpZm1GsQSoPnpNpMGp2HeSg79TA6jcknESgj59sWpKLanulVlQL
-y9yowwMRwGPoD2n7kg9dpHHI9Bdtr3vUDO1DH5eM7AhwK9+tVOOKu7f5Ql8dI1lK
-QiCbwOBd/KoH2TzK1kATA1I/sIPOS3Q5wX1Ir6+wxsmClFVQeJ8TBOkmsHoFX9x3
-S6KCxvWIb4LSLcl8a0UA0K34mc9rq5R/14+Jj8wlxHV4uwikfWwkXNHbahtBWsCR
-pCe4aEaLi+sSXI4xlzMN
-=zfzc
------END PGP SIGNATURE-----
-
---nextPart3926181.MaziX2N2yX--
-
-
---===============6468205091207141086==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
---===============6468205091207141086==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6468205091207141086==--
-
