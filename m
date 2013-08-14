@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEgoe-0002tk-5Z
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 14:33:48 +0000
-Date: Wed, 28 Aug 2013 16:33:56 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1V9XgA-0003ei-Vs
+	for ltp-list@lists.sourceforge.net; Wed, 14 Aug 2013 09:47:47 +0000
+Date: Wed, 14 Aug 2013 11:47:49 +0200
 From: chrubis@suse.cz
-Message-ID: <20130828143355.GA383@rei>
-References: <521DF60B.9010401@oracle.com>
+Message-ID: <20130814094749.GB9158@rei>
+References: <1366181425.S.90345.autosave.drafts.old.1376464126.7788@webmail.rediffmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <521DF60B.9010401@oracle.com>
-Subject: Re: [LTP] [PATCH] ltp: Fix races in mmap1
+In-Reply-To: <1366181425.S.90345.autosave.drafts.old.1376464126.7788@webmail.rediffmail.com>
+Subject: Re: [LTP] More runtime memory consuming LTP test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,51 +24,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: devaraja b v <sunildev_63@rediffmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
->  static int verbose_print = 0;
-> -static char *map_address;
-> +static char *volatile map_address;
+> I am using LTP for testing my embedded device with 2 GB of total memory.I need to exclude few of the test cases in the default run.Could you please let me know which are all the test cases are more memory eater?I could not find this information in LTP wiki and Google search as well.And also what would be the minimum free memory required to run LTP on the deviceThanks much in advance.
 
-Ok.
+Sorry I'm not avare of any list of memory intensive testcases but having
+2GB of RAM is more than enough for all testcases. There may be problems
+with:
 
->  static jmp_buf jmpbuf;
->  static volatile char read_lock = 0;
->  
-> @@ -228,11 +228,13 @@ void *read_mem(void *ptr)
->  				tst_resm(TINFO, "page fault occurred due to "
->  					 "a read after an unmap");
->  		} else {
-> -			if (verbose_print)
-> +			if (verbose_print) {
-> +				read_lock = 1;
->  				tst_resm(TINFO,
->  					 "read_mem(): content of memory: %s",
->  					 (char *)map_address);
-> -
-> +				read_lock = 0;
-> +			}
->  			for (j = 0; j < args[1]; j++) {
->  				read_lock = 1;
->  				if (map_address[j] != 'a')
+* /tmp on tmpfs and I/O stress testcases that create large files
 
-Good catch, I've overlooked the tst_resm() when I was fixing the
-testcase.
+* oom testcases that checks if the kernel can handle low memory
 
-Commited, thanks.
+* absence of swap
+
+Did you find specific testcase(s) that brings down your device?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
