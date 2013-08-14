@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEhSa-0002D4-13
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 15:15:04 +0000
-Date: Wed, 28 Aug 2013 17:15:11 +0200
+	(envelope-from <metan@suse.de>) id 1V9XTK-0005Bk-Av
+	for ltp-list@lists.sourceforge.net; Wed, 14 Aug 2013 09:34:30 +0000
+Date: Wed, 14 Aug 2013 11:34:32 +0200
 From: chrubis@suse.cz
-Message-ID: <20130828151510.GB383@rei>
-References: <20130828130310.GA20976@rei>
-	<CA+icZUX_wbwzO3Ys=i1hMJoZKVn_Zq-NLGFZc4Zw=yx_h3YxWw@mail.gmail.com>
+Message-ID: <20130814093432.GA9158@rei>
+References: <20130813161122.GA29678@rei>
+	<1376465501-5916-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUX_wbwzO3Ys=i1hMJoZKVn_Zq-NLGFZc4Zw=yx_h3YxWw@mail.gmail.com>
-Subject: Re: [LTP] LTP release?
+In-Reply-To: <1376465501-5916-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V2] rt_sigaction: headers are included in a
+ uniform way
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,31 +26,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> > I think it's about the time we do another release, do you have time to
-> > work on that or should we take over?
-> >
-> 
-> When I saw Mike's "mega-merge" into master I assumed there will be a
-> new release.
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  include/ltp_signal.h                               |   17 +++++++++++++++++
+>  .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |   20 +-------------------
+>  .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |    1 +
+>  3 files changed, 19 insertions(+), 19 deletions(-)
 
-I guess that it's not documented anywhere but the current system is time
-based. We have four releases per year which means new tarball every
-three months (which is about the time now).
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
