@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3l-0006sA-9a
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:13 +0000
-Received: from mail-lb0-f175.google.com ([209.85.217.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V6Q3j-0005mC-Fd
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:13 +0000
-Received: by mail-lb0-f175.google.com with SMTP id 13so2384677lba.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Aug 2013 12:03:04 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Mon,  5 Aug 2013 21:02:53 +0200
-Message-Id: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCHv2 0/6] update make install when enable realtime test
-	suite
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunildev_63@rediffmail.com>) id 1V9VCR-0001er-K9
+	for ltp-list@lists.sourceforge.net; Wed, 14 Aug 2013 07:08:55 +0000
+Received: from f5mail-224-141.rediffmail.com ([114.31.224.141]
+	helo=rediffmail.com) by sog-mx-2.v43.ch3.sourceforge.com with smtp 
+	(Exim 4.76) id 1V9VCQ-0007hN-Bj
+	for ltp-list@lists.sourceforge.net; Wed, 14 Aug 2013 07:08:55 +0000
+Date: 14 Aug 2013 07:08:46 -0000
+MIME-Version: 1.0
+Message-ID: <1366181425.S.90345.autosave.drafts.old.1376464126.7788@webmail.rediffmail.com>
+From: "devaraja b v" <sunildev_63@rediffmail.com>
+Subject: [LTP] =?utf-8?q?More_runtime_memory_consuming_LTP_test_cases?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,76 +22,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3594943601281676685=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+To: "shubham@linux.vnet.ibm.com" <shubham@linux.vnet.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi,
+--===============3594943601281676685==
+Content-Type: multipart/alternative;
+	boundary="=_6df3abab092cce5125ce191babf686db"
 
-Split up previous patch sent to this mailing list.
+--=_6df3abab092cce5125ce191babf686db
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 
-/Anders
+Hi Shubham Goyal,
+I am using LTP for testing my embedded device with 2 GB of total memory.I need to exclude few of the test cases in the default run.Could you please let me know which are all the test cases are more memory eater?I could not find this information in LTP wiki and Google search as well.And also what would be the minimum free memory required to run LTP on the deviceThanks much in advance.
 
-Anders Roxell (6):
-  realtime/(func|perf)/: rename run.sh to run_auto.sh
-  added run_auto.sh to install targets for realtime tests
-  realtime tests: added additional install targets
-  realtime tests: created Makefiles for profiles/scripts
-  realtime: only build tests if needed
-  Remove reference to "java", missed in commit 78596957
+Thanks &amp; Regards,
 
- testcases/realtime/func/async_handler/Makefile     |    1 +
- testcases/realtime/func/gtod_latency/Makefile      |    1 +
- testcases/realtime/func/hrtimer-prio/Makefile      |    1 +
- testcases/realtime/func/hrtimer-prio/run.sh        |   12 ------
- testcases/realtime/func/hrtimer-prio/run_auto.sh   |   10 +++++
- testcases/realtime/func/matrix_mult/Makefile       |    1 +
- testcases/realtime/func/measurement/Makefile       |    1 +
- testcases/realtime/func/measurement/run.sh         |   19 ---------
- testcases/realtime/func/measurement/run_auto.sh    |   19 +++++++++
- testcases/realtime/func/periodic_cpu_load/Makefile |    1 +
- testcases/realtime/func/pi-tests/Makefile          |    1 +
- testcases/realtime/func/pi_perf/Makefile           |    1 +
- testcases/realtime/func/prio-preempt/Makefile      |    1 +
- testcases/realtime/func/prio-wake/Makefile         |    1 +
- .../realtime/func/pthread_kill_latency/Makefile    |    1 +
- testcases/realtime/func/rt-migrate/Makefile        |    1 +
- testcases/realtime/func/sched_football/Makefile    |    1 +
- testcases/realtime/func/sched_jitter/Makefile      |    1 +
- testcases/realtime/func/sched_latency/Makefile     |    1 +
- testcases/realtime/func/thread_clock/Makefile      |    1 +
- testcases/realtime/perf/latency/Makefile           |    1 +
- testcases/realtime/perf/latency/run.sh             |   45 --------------------
- testcases/realtime/perf/latency/run_auto.sh        |   45 ++++++++++++++++++++
- testcases/realtime/profiles/Makefile               |   26 +++++++++++
- testcases/realtime/run.sh                          |   16 ++++---
- testcases/realtime/scripts/Makefile                |   26 +++++++++++
- testcases/realtime/scripts/run_c_files.sh          |    7 ++-
- testscripts/test_realtime.sh                       |   18 +++++---
- 28 files changed, 169 insertions(+), 91 deletions(-)
- delete mode 100644 testcases/realtime/func/hrtimer-prio/run.sh
- create mode 100644 testcases/realtime/func/hrtimer-prio/run_auto.sh
- delete mode 100644 testcases/realtime/func/measurement/run.sh
- create mode 100644 testcases/realtime/func/measurement/run_auto.sh
- delete mode 100755 testcases/realtime/perf/latency/run.sh
- create mode 100755 testcases/realtime/perf/latency/run_auto.sh
- create mode 100644 testcases/realtime/profiles/Makefile
- create mode 100644 testcases/realtime/scripts/Makefile
+Devraj
 
--- 
-1.7.10.4
++91-9900516693
 
+--=_6df3abab092cce5125ce191babf686db
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="UTF-8"
+
+Hi Shubham Goyal,<div><br></div><div>I am using LTP for testing my embedded=
+ device with 2 GB of total memory.</div><div>I need to exclude few of the t=
+est cases in the default run.</div><div>Could you please let me know which =
+are all the test cases are more memory eater?</div><div>I could not find th=
+is information in LTP wiki and Google search as well.</div><div>And also wh=
+at would be the minimum free memory required to run LTP on the device</div>=
+<div>Thanks much in advance.</div><div><br></div><div></div><div><br>Thanks=
+ &amp; Regards,<br>
+Devraj<br>
++91-9900516693</div>
+<br><A HREF=3D"http://sigads.rediff.com/RealMedia/ads/click_nx.ads/www.redi=
+ffmail.com/signatureline.htm@Middle?" target=3D"_blank"><IMG SRC=3D"http://=
+sigads.rediff.com/RealMedia/ads/adstream_nx.ads/www.rediffmail.com/signatur=
+eline.htm@Middle"></A><br><div style=3D"font-family:Arial, Helvetica, sans-=
+serif; font-size:14px">Get your own <span style=3D"font-size:12px; font-fam=
+ily:Arial, Helvetica, sans-serif;background-color:#C00; color:#FFF; padding=
+: 0 3px;"><b>FREE</b></span> website and domain with business email solutio=
+ns, <a href=3D"http://track.rediff.com/click?url=3D___http://hosting.rediff=
+.com/rediffmailpro/business-email?sc_cid=3Dsig___&cmp=3Dsig&lnk=3Dsig&nsrv1=
+=3Dhost">click here</a></div>
+--=_6df3abab092cce5125ce191babf686db--
+
+
+--===============3594943601281676685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+--===============3594943601281676685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3594943601281676685==--
+
