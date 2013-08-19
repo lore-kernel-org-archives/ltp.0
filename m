@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VC9Se-00076x-BI
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 14:32:36 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VC9Sc-0003rt-VF
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 14:32:36 +0000
-Date: Wed, 21 Aug 2013 10:32:28 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1585868915.1934407.1377095548829.JavaMail.root@redhat.com>
-In-Reply-To: <1377086098-32691-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <52122141.3020005@oracle.com>
-	<1377086098-32691-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2 2/3] syscalls/migrate_pages: fix nodemask
- memory allocation
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VBMiU-0007Fp-Q0
+	for ltp-list@lists.sourceforge.net; Mon, 19 Aug 2013 10:29:42 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VBMiR-0006nQ-Jw
+	for ltp-list@lists.sourceforge.net; Mon, 19 Aug 2013 10:29:42 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 19 Aug 2013 14:29:24 +0400
+Message-Id: <1376908164-10045-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] syscalls/migrate_pages: fix nodemask memory allocation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,74 +22,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
+In accordance to man migrate_pages(), mbind() the bit mask size
+should be rounded to next multiple of sizeof(unsigned long).
 
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../syscalls/migrate_pages/migrate_pages01.c       |    5 ++++-
+ .../syscalls/migrate_pages/migrate_pages02.c       |    5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>, jstancek@redhat.com
-> Sent: Wednesday, 21 August, 2013 1:54:57 PM
-> Subject: [PATCH V2 2/3] syscalls/migrate_pages: fix nodemask memory allocation
-> 
-> In accordance to man migrate_pages(), mbind() the bit mask size
-> should be rounded to next multiple of sizeof(unsigned long).
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+index c23e8b0..9981c0c 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+@@ -248,7 +248,10 @@ static void setup(void)
+ 			 ret);
+ 
+ 	sane_max_node = get_max_node();
+-	sane_nodemask_size = sane_max_node / 8 + 1;
++	sane_nodemask_size = sane_max_node / (sizeof(unsigned long)*8);
++	sane_nodemask_size += sane_max_node % (sizeof(unsigned long)*8) == 0 ?
++				0 : 1;
++	sane_nodemask_size *= sizeof(unsigned long);
+ 	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
+ 	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
+ 	memset(sane_old_nodes, 0, sane_nodemask_size);
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+index 49129e0..2b30b1f 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+@@ -110,7 +110,10 @@ static int migrate_to_node(pid_t pid, int node)
+ 	tst_resm(TINFO, "pid(%d) migrate pid %d to node -> %d",
+ 		 getpid(), pid, node);
+ 	max_node = get_max_node();
+-	nodemask_size = max_node / 8 + 1;
++	nodemask_size = max_node / (sizeof(unsigned long)*8);
++	nodemask_size += max_node % (sizeof(unsigned long)*8) == 0 ?
++			0 : 1;
++	nodemask_size *= sizeof(unsigned long);
+ 	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
+ 	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
+ 
+-- 
+1.7.1
 
-As noted in 3/3 we need to align on bits, looks good to me.
-
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
-> ---
->  .../syscalls/migrate_pages/migrate_pages01.c       |    2 +-
->  .../syscalls/migrate_pages/migrate_pages02.c       |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> index c23e8b0..6361e9f 100644
-> --- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> @@ -248,7 +248,7 @@ static void setup(void)
->  			 ret);
->  
->  	sane_max_node = get_max_node();
-> -	sane_nodemask_size = sane_max_node / 8 + 1;
-> +	sane_nodemask_size = ALIGN(sane_max_node, sizeof(unsigned long)*8) / 8;
->  	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
->  	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
->  	memset(sane_old_nodes, 0, sane_nodemask_size);
-> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-> b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-> index 49129e0..5790abd 100644
-> --- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-> @@ -110,7 +110,7 @@ static int migrate_to_node(pid_t pid, int node)
->  	tst_resm(TINFO, "pid(%d) migrate pid %d to node -> %d",
->  		 getpid(), pid, node);
->  	max_node = get_max_node();
-> -	nodemask_size = max_node / 8 + 1;
-> +	nodemask_size = ALIGN(max_node, sizeof(unsigned long)*8) / 8;
->  	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
->  	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
->  
-> --
-> 1.7.1
-> 
-> 
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Get 100% visibility into Java/.NET code with AppDynamics Lite!
+It's a free troubleshooting tool designed for production.
+Get down to code-level detail for bottlenecks, with <2% overhead. 
+Download for free and get started troubleshooting in minutes. 
+http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
