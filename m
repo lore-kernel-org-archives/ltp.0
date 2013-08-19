@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V96Z4-000368-SJ
-	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 04:50:38 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V96Z2-0004tb-VC
-	for ltp-list@lists.sourceforge.net; Tue, 13 Aug 2013 04:50:38 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r7D4oUbr005047
+	(envelope-from <jstancek@redhat.com>) id 1VBPfT-0005wc-1D
+	for ltp-list@lists.sourceforge.net; Mon, 19 Aug 2013 13:38:47 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VBPfR-0000eT-Nm
+	for ltp-list@lists.sourceforge.net; Mon, 19 Aug 2013 13:38:47 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r7JDcdDb001383
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Aug 2013 04:50:31 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7D4oUGA028818
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Aug 2013 04:50:30 GMT
-Received: from abhmt120.oracle.com (abhmt120.oracle.com [141.146.116.72])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7D4oUB5011681
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Aug 2013 04:50:30 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 13 Aug 2013 08:50:17 +0400
-Message-Id: <1376369417-13511-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH] rt_sigaction: headers are included in a uniform way
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Aug 2013 09:38:39 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 19 Aug 2013 15:38:34 +0200
+Message-Id: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as writers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,95 +31,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Starting with 3.10 dio_sparse sporadically fails, because
+read() in read_sparse returns garbage and dio_sparse testcase
+fails with:
+  dio_sparse    0  TINFO  :  Dirtying free blocks
+  dio_sparse    0  TINFO  :  Starting I/O tests
+  non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
+  non-zero read at offset 0
+  dio_sparse    0  TINFO  :  Killing childrens(s)
+  dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
+
+Issue is that we have parent opening file as O_DIRECT and
+children trying to read from it without O_DIRECT, which is
+discouraged in man pages.
+
+open(2) says:
+"Applications should avoid mixing O_DIRECT and normal I/O to the same
+file, and especially to overlapping byte regions in the same file."
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- include/ltp_signal.h                               |   17 ++++++++++++++++
- .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |   21 +------------------
- .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |    2 +
- 3 files changed, 21 insertions(+), 19 deletions(-)
+ testcases/kernel/io/ltp-aiodio/aiodio_sparse.c |    2 +-
+ testcases/kernel/io/ltp-aiodio/common_sparse.h |    4 ++--
+ testcases/kernel/io/ltp-aiodio/dio_sparse.c    |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/ltp_signal.h b/include/ltp_signal.h
-index 95134e9..e6fb2e0 100644
---- a/include/ltp_signal.h
-+++ b/include/ltp_signal.h
-@@ -34,7 +34,24 @@
- #include <stdio.h>
- #include "config.h"
+diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+index 944e12b..705bbc5 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+@@ -279,7 +279,7 @@ int main(int argc, char **argv)
+ 	for (i = 0; i < num_children; i++) {
+ 		switch (pid[i] = fork()) {
+ 		case 0:
+-			read_sparse(filename, filesize);
++			read_sparse(filename, filesize, O_DIRECT);
+ 			break;
+ 		case -1:
+ 			while (i-- > 0)
+diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+index f7f4ef4..6a294cb 100644
+--- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
++++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+@@ -104,7 +104,7 @@ char *check_zero(char *buf, int size)
+  * either there is a hole in the file,
+  * or zeroes were actually written by parent.
+  */
+-static void read_sparse(char *filename, int filesize)
++static void read_sparse(char *filename, int filesize, int mode)
+ {
+ 	int fd;
+ 	int  i, j, r;
+@@ -114,7 +114,7 @@ static void read_sparse(char *filename, int filesize)
+ 	 * Wait for the file to appear.
+ 	 */
+ 	for (i = 0; i < 10000; i++) {
+-		fd = open(filename, O_RDONLY);
++		fd = open(filename, O_RDONLY | mode);
  
-+/*
-+ * For all but __mips__:
-+ *
-+ * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 2.
-+ *
-+ * For __mips__:
-+ *
-+ * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 4.
-+ *
-+ * See asm/compat.h under the kernel source for more details.
-+ *
-+ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
-+ */
-+#if defined __mips__
-+#define SIGSETSIZE 16
-+#else
- #define SIGSETSIZE (_NSIG / 8)
-+#endif
- 
- #ifdef LTP_RT_SIG_TEST
- 
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-index 5beabef..0e2915e 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-@@ -46,28 +46,11 @@
- #include <sys/syscall.h>
- #include <string.h>
- 
-+#define LTP_RT_SIG_TEST
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
--
--/*
-- * For all but __mips__:
-- *
-- * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 2.
-- *
-- * For __mips__:
-- *
-- * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 4.
-- *
-- * See asm/compat.h under the kernel source for more details.
-- *
-- * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
-- */
--#if defined (__mips__)
--#define SIGSETSIZE 16
--#else
--#define SIGSETSIZE 8
--#endif
-+#include "ltp_signal.h"
- 
- #define INVAL_STRUCT -1
- 
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-index 646c37d..b160f2b 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-@@ -46,9 +46,11 @@
- #include <sys/syscall.h>
- #include <string.h>
- 
-+#define LTP_RT_SIG_TEST
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
-+#include "ltp_signal.h"
- 
- #define INVAL_SIGSETSIZE -1
- 
+ 		if (fd != -1)
+ 			break;
+diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+index 7ad5f80..eaaea14 100644
+--- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+@@ -153,7 +153,7 @@ int main(int argc, char **argv)
+ 	for (i = 0; i < num_children; i++) {
+ 		switch (pid[i] = fork()) {
+ 		case 0:
+-			read_sparse(filename, filesize);
++			read_sparse(filename, filesize, O_DIRECT);
+ 			break;
+ 		case -1:
+ 			while (i-- > 0)
 -- 
 1.7.1
 
