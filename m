@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEIkE-0001p9-3W
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 12:51:38 +0000
-Date: Tue, 27 Aug 2013 14:51:44 +0200
-From: chrubis@suse.cz
-Message-ID: <20130827125144.GI10995@rei.Home>
-References: <521C4688.9020305@cn.fujitsu.com> <521C46FB.7020308@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VBcOE-0007JZ-Do
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 03:13:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VBcOC-0008BQ-Hs
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 03:13:50 +0000
+Message-ID: <5212DEC5.4050506@cn.fujitsu.com>
+Date: Tue, 20 Aug 2013 11:13:09 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <521C46FB.7020308@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] quotactl/quotactl02.c: create a case to
- test basic flags of quotactl(2)
+References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+In-Reply-To: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
+	writers
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,143 +29,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> +/*
-> + * func_qoff() - check the functionality of the Q_XQUOTAOFF flag of quotactl
-> + */
+On 08/19/2013 09:38 PM, Jan Stancek wrote:
+> Starting with 3.10 dio_sparse sporadically fails, because
+> read() in read_sparse returns garbage and dio_sparse testcase
+> fails with:
+>   dio_sparse    0  TINFO  :  Dirtying free blocks
+>   dio_sparse    0  TINFO  :  Starting I/O tests
+>   non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
+>   non-zero read at offset 0
+>   dio_sparse    0  TINFO  :  Killing childrens(s)
+>   dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
 
-These type of comments is not usefull at all. Just name the function so
-that it's clear what it does, for this one something like
-check_qoff(void) would do.
+Why did I always meet the EINVAL error?
+Like:
+dio_sparse    1  TBROK  :  open(): errno=EINVAL(22): Invalid argument
 
-> +static void func_qoff(void)
-> +{
-> +	int ret;
-> +
-> +	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
-> +			  dev, uid, &qstat);
-> +	if (ret != 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
-> +
-> +	if (qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
-> +		tst_resm(TFAIL, "enforcement is not off");
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "enforcement is off");
-> +}
-> +
-> +/*
-> + * func_qon() - check the functionality of the Q_XQUOTAON flag of quotactl
-> + */
-> +static void func_qon(void)
-> +{
-> +	int ret;
-> +	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
-> +			  dev, uid, &qstat);
-> +	if (ret != 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
-> +
-> +	if (!(qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
-> +		tst_resm(TFAIL, "enforcement is off");
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "enforcement is on");
-> +}
-> +
-> +/*
-> + * func_getq() - check the functionality of the Q_XGETQUOTA flag of quotactl
-> + */
-> +static void func_getq(void)
-> +{
-> +	if (!(dquota.d_flags & XFS_USER_QUOTA)) {
-> +		tst_resm(TFAIL, "get incorrect quota type");
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "get the right quota type");
-> +}
-> +
-> +/*
-> + * setup_setqlim() - set up for the Q_XSETQLIM flag of quotactl
-> + */
-> +static void setup_setqlim(void)
-> +{
-> +	dquota.d_rtb_hardlimit = RTBLIMIT;
-> +	dquota.d_fieldmask = FS_DQ_LIMIT_MASK;
-> +}
+Caused by the file system's O_DIRECT support?
 
-You don't need to have function to statically initialize a structure, I
-would just initialized it statically and passed right pointer to the
-testcase addr.
+Thanks,
+Wanlong Gao
 
-> +/*
-> + * func_setqlim() - check the functionality of the Q_XSETQLIM flag of quotactl
-> + */
-> +static void func_setqlim(void)
-> +{
-> +	int ret;
-> +	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQUOTA),
-> +			  dev, uid, &dquota);
-> +	if (ret != 0)
-> +		tst_brkm(TFAIL | TERRNO, NULL,
-> +			 "fail to get quota information");
-> +
-> +	if (dquota.d_rtb_hardlimit != RTBLIMIT) {
-> +		tst_resm(TFAIL, "limit on RTB, except %lu get %lu",
-> +			 (uint64_t)RTBLIMIT,
-> +			 (uint64_t)dquota.d_rtb_hardlimit);
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "quotactl works fine with Q_XSETQLIM");
-> +}
-> +
-> +/*
-> + * func_getqstat() - check the functionality of
-> + * the Q_XGETQSTAT flag of quotactl
-> + */
-> +static void func_getqstat(void)
-> +{
-> +	if (qstat.qs_version != FS_QSTAT_VERSION) {
-> +		tst_resm(TFAIL, "get incorrect qstat version");
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "get correct qstat version");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +
-> +	tst_require_root(NULL);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	SAFE_MKDIR(cleanup, mntpoint, 0755);
-> +
-> +	uid = 0;
-> +	strncpy(dev, block_dev, PATH_MAX);
+> 
+> Issue is that we have parent opening file as O_DIRECT and
+> children trying to read from it without O_DIRECT, which is
+> discouraged in man pages.
+> 
+> open(2) says:
+> "Applications should avoid mixing O_DIRECT and normal I/O to the same
+> file, and especially to overlapping byte regions in the same file."
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/io/ltp-aiodio/aiodio_sparse.c |    2 +-
+>  testcases/kernel/io/ltp-aiodio/common_sparse.h |    4 ++--
+>  testcases/kernel/io/ltp-aiodio/dio_sparse.c    |    2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> index 944e12b..705bbc5 100644
+> --- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> +++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> @@ -279,7 +279,7 @@ int main(int argc, char **argv)
+>  	for (i = 0; i < num_children; i++) {
+>  		switch (pid[i] = fork()) {
+>  		case 0:
+> -			read_sparse(filename, filesize);
+> +			read_sparse(filename, filesize, O_DIRECT);
+>  			break;
+>  		case -1:
+>  			while (i-- > 0)
+> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> index f7f4ef4..6a294cb 100644
+> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> @@ -104,7 +104,7 @@ char *check_zero(char *buf, int size)
+>   * either there is a hole in the file,
+>   * or zeroes were actually written by parent.
+>   */
+> -static void read_sparse(char *filename, int filesize)
+> +static void read_sparse(char *filename, int filesize, int mode)
+>  {
+>  	int fd;
+>  	int  i, j, r;
+> @@ -114,7 +114,7 @@ static void read_sparse(char *filename, int filesize)
+>  	 * Wait for the file to appear.
+>  	 */
+>  	for (i = 0; i < 10000; i++) {
+> -		fd = open(filename, O_RDONLY);
+> +		fd = open(filename, O_RDONLY | mode);
+>  
+>  		if (fd != -1)
+>  			break;
+> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> index 7ad5f80..eaaea14 100644
+> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> @@ -153,7 +153,7 @@ int main(int argc, char **argv)
+>  	for (i = 0; i < num_children; i++) {
+>  		switch (pid[i] = fork()) {
+>  		case 0:
+> -			read_sparse(filename, filesize);
+> +			read_sparse(filename, filesize, O_DIRECT);
+>  			break;
+>  		case -1:
+>  			while (i-- > 0)
+> 
 
-I think that copying block_dev to dev is pointless, I haven't seen a
-single place where block_dev couldn't be used directly, or am I
-mistaken?
-
-> +	tst_mkfs(NULL, dev, "xfs", "-f");
-
-I still think that the '-f' should go to the library instead. Or we can
-zero start of the device (where the filesystem superblock and signatures
-are, which should be first few bytes) before we call the mkfs.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
