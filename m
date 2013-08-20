@@ -1,35 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V6dJk-0006Co-1s
-	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:36 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V6dJb-00067L-4o
-	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:36 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r769CKYR017806
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:21 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r769CJtb023114
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:20 GMT
-Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r769CJmr018346
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:19 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue,  6 Aug 2013 13:11:53 +0400
-Message-Id: <1375780313-17327-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <51FFBCC1.3030101@oracle.com>
-References: <51FFBCC1.3030101@oracle.com>
-Subject: [LTP] [PATCH 2/2 V3] lib/tst_module.c: modification for updated
-	tst_run_cmd specification
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VBg1G-0008CU-B4
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 07:06:22 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VBg1E-00024F-Hu
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 07:06:22 +0000
+Date: Tue, 20 Aug 2013 03:06:11 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <386542620.1062949.1376982371162.JavaMail.root@redhat.com>
+In-Reply-To: <5213105C.5010905@cn.fujitsu.com>
+References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+	<5212DEC5.4050506@cn.fujitsu.com>
+	<1004207590.1053823.1376980479030.JavaMail.root@redhat.com>
+	<5213105C.5010905@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
+ writers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,54 +28,172 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Modified lib/tst_module.c:
-* for updated tst_run_cmd specification
-* to hide gcc warning "initialization discards qualifiers from pointer target type"
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 20 August, 2013 8:44:44 AM
+> Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as writers
+> 
+> On 08/20/2013 02:34 PM, Jan Stancek wrote:
+> > 
+> > 
+> > ----- Original Message -----
+> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> >> To: "Jan Stancek" <jstancek@redhat.com>
+> >> Cc: ltp-list@lists.sourceforge.net
+> >> Sent: Tuesday, 20 August, 2013 5:13:09 AM
+> >> Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
+> >> writers
+> >>
+> >> On 08/19/2013 09:38 PM, Jan Stancek wrote:
+> >>> Starting with 3.10 dio_sparse sporadically fails, because
+> >>> read() in read_sparse returns garbage and dio_sparse testcase
+> >>> fails with:
+> >>>   dio_sparse    0  TINFO  :  Dirtying free blocks
+> >>>   dio_sparse    0  TINFO  :  Starting I/O tests
+> >>>   non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
+> >>>   non-zero read at offset 0
+> >>>   dio_sparse    0  TINFO  :  Killing childrens(s)
+> >>>   dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
+> >>
+> >> Why did I always meet the EINVAL error?
+> >> Like:
+> >> dio_sparse    1  TBROK  :  open(): errno=EINVAL(22): Invalid argument
+> >>
+> >> Caused by the file system's O_DIRECT support?
+> > 
+> > It's possible, I know you'll get EINVAL if your tmp directory is tmpfs.
+> > Can you try to run it with "env TMPDIR=/root" and see if
+> > that makes difference?
+> 
+> I tried with "-d /root/test" and the case PASSED, but without your patch.
+> 
+> tag=ADSP044 stime=1376980874
+> cmdline="dio_sparse  -a 2k -w 2k -s 2k -n 2"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> dio_sparse    0  TINFO  :  Dirtying free blocks
+> dio_sparse    0  TINFO  :  Starting I/O tests
+> dio_sparse    0  TINFO  :  Killing childrens(s)
+> dio_sparse    1  TPASS  :  Test passed
+> 
+> 
+> /root/test is ext4 file system, and the kernel is 3.10.4-300.fc19.x86_64.
+> 
+> Still can't see the FAIL like you said?
 
-Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- lib/tst_module.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+The FAIL is sporadic, I also get PASS most of the time.
 
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-index 832da27..0b94a26 100644
---- a/lib/tst_module.c
-+++ b/lib/tst_module.c
-@@ -94,12 +94,12 @@ void tst_module_load(void (cleanup_fn)(void),
- 	for (i = offset; i < size; ++i)
- 		mod_argv[i] = argv[i - offset];
- 
--	tst_run_cmd(cleanup_fn, mod_argv);
-+	tst_run_cmd(cleanup_fn, mod_argv, -1, -1);
- 	free(mod_path);
- }
- 
- void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
- {
--	char *const argv[] = { "rmmod", mod_name, NULL };
--	tst_run_cmd(cleanup_fn, argv);
-+	char *const argv[] = { "rmmod", (char *) mod_name, NULL };
-+	tst_run_cmd(cleanup_fn, argv, -1, -1);
- }
--- 
-1.7.1
+The most reliable way to trigger it so far seems to be running it in loop
+on KVM guest with 2 CPUs (/tmp is ext4), where it usually triggers in couple minutes.
 
+virt-install --name x86_64_kvm --mac 52:56:00:00:00:01 --ram=2048 --vcpus=2 --file-size=20 --hvm --nonsparse --debug --extra-args "console=tty0 console=ttyS0,115200" --accelerate --os-variant=virtio26 --ver6 --network bridge:br0  --serial file,path=/root/x86_64_kvm_console.log --file /var/lib/libvirt/images/x86_64_kvm.img
+
+Regards,
+Jan
+
+> 
+> Thanks,
+> Wanlong Gao
+> 
+> > 
+> > Regards,
+> > Jan
+> > 
+> >>
+> >> Thanks,
+> >> Wanlong Gao
+> >>
+> >>>
+> >>> Issue is that we have parent opening file as O_DIRECT and
+> >>> children trying to read from it without O_DIRECT, which is
+> >>> discouraged in man pages.
+> >>>
+> >>> open(2) says:
+> >>> "Applications should avoid mixing O_DIRECT and normal I/O to the same
+> >>> file, and especially to overlapping byte regions in the same file."
+> >>>
+> >>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> >>> ---
+> >>>  testcases/kernel/io/ltp-aiodio/aiodio_sparse.c |    2 +-
+> >>>  testcases/kernel/io/ltp-aiodio/common_sparse.h |    4 ++--
+> >>>  testcases/kernel/io/ltp-aiodio/dio_sparse.c    |    2 +-
+> >>>  3 files changed, 4 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> >>> b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> >>> index 944e12b..705bbc5 100644
+> >>> --- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> >>> +++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+> >>> @@ -279,7 +279,7 @@ int main(int argc, char **argv)
+> >>>  	for (i = 0; i < num_children; i++) {
+> >>>  		switch (pid[i] = fork()) {
+> >>>  		case 0:
+> >>> -			read_sparse(filename, filesize);
+> >>> +			read_sparse(filename, filesize, O_DIRECT);
+> >>>  			break;
+> >>>  		case -1:
+> >>>  			while (i-- > 0)
+> >>> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> >>> b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> >>> index f7f4ef4..6a294cb 100644
+> >>> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> >>> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> >>> @@ -104,7 +104,7 @@ char *check_zero(char *buf, int size)
+> >>>   * either there is a hole in the file,
+> >>>   * or zeroes were actually written by parent.
+> >>>   */
+> >>> -static void read_sparse(char *filename, int filesize)
+> >>> +static void read_sparse(char *filename, int filesize, int mode)
+> >>>  {
+> >>>  	int fd;
+> >>>  	int  i, j, r;
+> >>> @@ -114,7 +114,7 @@ static void read_sparse(char *filename, int filesize)
+> >>>  	 * Wait for the file to appear.
+> >>>  	 */
+> >>>  	for (i = 0; i < 10000; i++) {
+> >>> -		fd = open(filename, O_RDONLY);
+> >>> +		fd = open(filename, O_RDONLY | mode);
+> >>>  
+> >>>  		if (fd != -1)
+> >>>  			break;
+> >>> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> >>> b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> >>> index 7ad5f80..eaaea14 100644
+> >>> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> >>> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> >>> @@ -153,7 +153,7 @@ int main(int argc, char **argv)
+> >>>  	for (i = 0; i < num_children; i++) {
+> >>>  		switch (pid[i] = fork()) {
+> >>>  		case 0:
+> >>> -			read_sparse(filename, filesize);
+> >>> +			read_sparse(filename, filesize, O_DIRECT);
+> >>>  			break;
+> >>>  		case -1:
+> >>>  			while (i-- > 0)
+> >>>
+> >>
+> >>
+> > 
+> 
+> 
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
