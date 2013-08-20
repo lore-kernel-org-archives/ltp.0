@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VC70U-0002oe-8C
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 11:55:22 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <dave.kleikamp@oracle.com>) id 1VBsdc-0001A1-Ku
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 20:34:48 +0000
 Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VC70S-0006HU-Hp
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 11:55:22 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 21 Aug 2013 15:54:57 +0400
-Message-Id: <1377086098-32691-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <52122141.3020005@oracle.com>
-References: <52122141.3020005@oracle.com>
-Subject: [LTP] [PATCH V2 2/3] syscalls/migrate_pages: fix nodemask memory
-	allocation
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VBsdb-0005s8-Sv
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 20:34:48 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r7KKYfcC027917
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Aug 2013 20:34:42 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7KKYeeW025388
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Aug 2013 20:34:41 GMT
+Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7KKYeHj011364
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Aug 2013 20:34:40 GMT
+Message-ID: <5213D2DF.20802@oracle.com>
+Date: Tue, 20 Aug 2013 15:34:39 -0500
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] ltp: handle missing online file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,51 +36,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-In accordance to man migrate_pages(), mbind() the bit mask size
-should be rounded to next multiple of sizeof(unsigned long).
+gather_node_cpus() fails if the /sys/devices/system/node/nodeX/cpuX/online
+file is missing for any cpu other than cpu0. The absence of the online file
+should not be treated as a failure, but as an indication that the cpu is
+not hot-pluggable and cannot be taken offline.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../syscalls/migrate_pages/migrate_pages01.c       |    2 +-
- .../syscalls/migrate_pages/migrate_pages02.c       |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-index c23e8b0..6361e9f 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -248,7 +248,7 @@ static void setup(void)
- 			 ret);
- 
- 	sane_max_node = get_max_node();
--	sane_nodemask_size = sane_max_node / 8 + 1;
-+	sane_nodemask_size = ALIGN(sane_max_node, sizeof(unsigned long)*8) / 8;
- 	sane_old_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
- 	sane_new_nodes = SAFE_MALLOC(NULL, sane_nodemask_size);
- 	memset(sane_old_nodes, 0, sane_nodemask_size);
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-index 49129e0..5790abd 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-@@ -110,7 +110,7 @@ static int migrate_to_node(pid_t pid, int node)
- 	tst_resm(TINFO, "pid(%d) migrate pid %d to node -> %d",
- 		 getpid(), pid, node);
- 	max_node = get_max_node();
--	nodemask_size = max_node / 8 + 1;
-+	nodemask_size = ALIGN(max_node, sizeof(unsigned long)*8) / 8;
- 	old_nodes = SAFE_MALLOC(NULL, nodemask_size);
- 	new_nodes = SAFE_MALLOC(NULL, nodemask_size);
- 
--- 
-1.7.1
-
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 9bc926e..99243a6 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -786,16 +786,14 @@ static void gather_node_cpus(char *cpus, long nd)
+ 		if (path_exist(path, nd, i)) {
+ 			snprintf(path1, BUFSIZ, "%s/online", path);
+ 			/*
+-			 * No cpu0/online knob, as it can't support to
+-			 * on/offline cpu0, so if the 'nd' node contains
+-			 * cpu0, it should skip to check cpu0/online's value.
++			 * if there is no online knob, then the cpu cannot
++			 * be taken offline
+ 			 */
+-			if (i == 0)
+-				goto next;
+-			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
+-			if (online == 0)
+-				continue;
+-next:
++			if (path_exist(path1)) {
++				SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
++				if (online == 0)
++					continue;
++			}
+ 			sprintf(buf, "%d,", i);
+ 			strcat(cpus, buf);
+ 		}
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
