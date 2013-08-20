@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VCOu7-0003fs-Tr
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:01:59 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VBfh0-0006b5-Gf
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 06:45:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VCOu6-0001LM-CT
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:01:59 +0000
-Date: Thu, 22 Aug 2013 03:01:52 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1462085563.2226697.1377154912029.JavaMail.root@redhat.com>
-In-Reply-To: <5215AC0E.6000205@oracle.com>
-References: <52122141.3020005@oracle.com>
-	<1377086098-32691-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<212598736.1836601.1377088154292.JavaMail.root@redhat.com>
-	<5214BEFC.504@oracle.com>
-	<1748281355.1930512.1377095285040.JavaMail.root@redhat.com>
-	<5215AC0E.6000205@oracle.com>
+	id 1VBfgx-0001QX-OD
+	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 06:45:26 +0000
+Message-ID: <5213105C.5010905@cn.fujitsu.com>
+Date: Tue, 20 Aug 2013 14:44:44 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
+References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+	<5212DEC5.4050506@cn.fujitsu.com>
+	<1004207590.1053823.1376980479030.JavaMail.root@redhat.com>
+In-Reply-To: <1004207590.1053823.1376980479030.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
+	writers
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,92 +31,141 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net, "vasily isaenko" <vasily.isaenko@oracle.com>
-> Sent: Thursday, 22 August, 2013 8:13:34 AM
-> Subject: Re: [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
-
-<snip>
-
-> I think we cannot clear area by zeroing only few bytes of a long. Each
-> byte of a long should
-> be zeroed.
-
-Agreed, that was good point.
-
-> >> This formula may give incorrect results. For example, if max_mode = 66
-> >> and sizeof(long) = 8, then
-> >> ALIGN(max_node / 8, sizeof(long)) will output 8 and we will lost 2 bits.
-> >> The correct output should be 16.
-> >>
-> >> I think as max_node contains number of bits so we should align it on
-> >> sizeof(long)*8 boundary and after that divide the final result by 8.
-> > Agreed, we should align on bits then divide.
-> >
-> > What if we align max_node? Then we can be sure that nodemask_size
-> > in all functions is also aligned:
-> Ok. And for convenience the same for migrate_pages fix ?
-
-I'll leave it up to you. 
-Man page says, that "bits beyond those specified by maxnode are ignored"
-so both ways should work equally well in those testcases.
-
-Regards,
-Jan
-
+On 08/20/2013 02:34 PM, Jan Stancek wrote:
 > 
 > 
-> >
-> > diff --git a/testcases/kernel/lib/numa_helper.c
-> > b/testcases/kernel/lib/numa_helper.c
-> > index 4157816..a2b6b4a 100644
-> > --- a/testcases/kernel/lib/numa_helper.c
-> > +++ b/testcases/kernel/lib/numa_helper.c
-> > @@ -60,7 +60,7 @@ unsigned long get_max_node(void)
-> >   #if HAVE_NUMA_H
-> >   static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long
-> >   max_node)
-> >   {
-> > -       unsigned long nodemask_size = max_node / 8 + 1;
-> > +       unsigned long nodemask_size = max_node / 8;
-> >          int i;
-> >          char fn[64];
-> >          struct stat st;
-> > @@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask,
-> > unsigned long max_node)
-> >   static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long
-> >   max_node)
-> >   {
-> >   #if MPOL_F_MEMS_ALLOWED
-> > -       unsigned long nodemask_size = max_node / 8 + 1;
-> > +       unsigned long nodemask_size = max_node / 8;
-> >          memset(nodemask, 0, nodemask_size);
-> >          /*
-> >           * avoid numa_get_mems_allowed(), because of bug in getpol()
-> > @@ -164,8 +164,8 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int
-> > **nodes)
-> >                  *nodes = NULL;
-> >   
-> >   #if HAVE_NUMA_H
-> > -       unsigned long max_node = get_max_node();
-> > -       unsigned long nodemask_size = max_node / 8 + 1;
-> > +       unsigned long max_node = ALIGN(get_max_node(), sizeof(long)*8);
-> > +       unsigned long nodemask_size = max_node / 8;
-> >   
-> >          nodemask = malloc(nodemask_size);
-> >          if (nodes)
-> >
-> > Regards,
-> > Jan
+> ----- Original Message -----
+>> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Tuesday, 20 August, 2013 5:13:09 AM
+>> Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as writers
+>>
+>> On 08/19/2013 09:38 PM, Jan Stancek wrote:
+>>> Starting with 3.10 dio_sparse sporadically fails, because
+>>> read() in read_sparse returns garbage and dio_sparse testcase
+>>> fails with:
+>>>   dio_sparse    0  TINFO  :  Dirtying free blocks
+>>>   dio_sparse    0  TINFO  :  Starting I/O tests
+>>>   non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
+>>>   non-zero read at offset 0
+>>>   dio_sparse    0  TINFO  :  Killing childrens(s)
+>>>   dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
+>>
+>> Why did I always meet the EINVAL error?
+>> Like:
+>> dio_sparse    1  TBROK  :  open(): errno=EINVAL(22): Invalid argument
+>>
+>> Caused by the file system's O_DIRECT support?
 > 
+> It's possible, I know you'll get EINVAL if your tmp directory is tmpfs.
+> Can you try to run it with "env TMPDIR=/root" and see if
+> that makes difference?
+
+I tried with "-d /root/test" and the case PASSED, but without your patch.
+
+tag=ADSP044 stime=1376980874
+cmdline="dio_sparse  -a 2k -w 2k -s 2k -n 2"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+dio_sparse    0  TINFO  :  Dirtying free blocks
+dio_sparse    0  TINFO  :  Starting I/O tests
+dio_sparse    0  TINFO  :  Killing childrens(s)
+dio_sparse    1  TPASS  :  Test passed
+
+
+/root/test is ext4 file system, and the kernel is 3.10.4-300.fc19.x86_64.
+
+Still can't see the FAIL like you said?
+
+Thanks,
+Wanlong Gao
+
 > 
+> Regards,
+> Jan
+> 
+>>
+>> Thanks,
+>> Wanlong Gao
+>>
+>>>
+>>> Issue is that we have parent opening file as O_DIRECT and
+>>> children trying to read from it without O_DIRECT, which is
+>>> discouraged in man pages.
+>>>
+>>> open(2) says:
+>>> "Applications should avoid mixing O_DIRECT and normal I/O to the same
+>>> file, and especially to overlapping byte regions in the same file."
+>>>
+>>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>>> ---
+>>>  testcases/kernel/io/ltp-aiodio/aiodio_sparse.c |    2 +-
+>>>  testcases/kernel/io/ltp-aiodio/common_sparse.h |    4 ++--
+>>>  testcases/kernel/io/ltp-aiodio/dio_sparse.c    |    2 +-
+>>>  3 files changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+>>> b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+>>> index 944e12b..705bbc5 100644
+>>> --- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+>>> +++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+>>> @@ -279,7 +279,7 @@ int main(int argc, char **argv)
+>>>  	for (i = 0; i < num_children; i++) {
+>>>  		switch (pid[i] = fork()) {
+>>>  		case 0:
+>>> -			read_sparse(filename, filesize);
+>>> +			read_sparse(filename, filesize, O_DIRECT);
+>>>  			break;
+>>>  		case -1:
+>>>  			while (i-- > 0)
+>>> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>>> b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>>> index f7f4ef4..6a294cb 100644
+>>> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>>> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>>> @@ -104,7 +104,7 @@ char *check_zero(char *buf, int size)
+>>>   * either there is a hole in the file,
+>>>   * or zeroes were actually written by parent.
+>>>   */
+>>> -static void read_sparse(char *filename, int filesize)
+>>> +static void read_sparse(char *filename, int filesize, int mode)
+>>>  {
+>>>  	int fd;
+>>>  	int  i, j, r;
+>>> @@ -114,7 +114,7 @@ static void read_sparse(char *filename, int filesize)
+>>>  	 * Wait for the file to appear.
+>>>  	 */
+>>>  	for (i = 0; i < 10000; i++) {
+>>> -		fd = open(filename, O_RDONLY);
+>>> +		fd = open(filename, O_RDONLY | mode);
+>>>  
+>>>  		if (fd != -1)
+>>>  			break;
+>>> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+>>> b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+>>> index 7ad5f80..eaaea14 100644
+>>> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+>>> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+>>> @@ -153,7 +153,7 @@ int main(int argc, char **argv)
+>>>  	for (i = 0; i < num_children; i++) {
+>>>  		switch (pid[i] = fork()) {
+>>>  		case 0:
+>>> -			read_sparse(filename, filesize);
+>>> +			read_sparse(filename, filesize, O_DIRECT);
+>>>  			break;
+>>>  		case -1:
+>>>  			while (i-- > 0)
+>>>
+>>
+>>
+> 
+
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
