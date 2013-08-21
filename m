@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V6Jda-0002tY-AC
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 12:11:46 +0000
-Date: Mon, 5 Aug 2013 14:11:36 +0200
-From: chrubis@suse.cz
-Message-ID: <20130805121135.GB8739@rei>
-References: <1374548876-24829-1-git-send-email-liuhangbin@gmail.com>
-	<20130731143448.GB2698@rei.scz.novell.com>
-	<51F92131.7090406@redhat.com>
-	<20130801133308.GA1819@rei.scz.novell.com>
-	<20130802013524.GN14331@localhost.localdomain>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VC9OO-0000yv-Lg
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 14:28:12 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VC9ON-0000Dl-Gg
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 14:28:12 +0000
+Date: Wed, 21 Aug 2013 10:28:05 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1748281355.1930512.1377095285040.JavaMail.root@redhat.com>
+In-Reply-To: <5214BEFC.504@oracle.com>
+References: <52122141.3020005@oracle.com>
+	<1377086098-32691-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<212598736.1836601.1377088154292.JavaMail.root@redhat.com>
+	<5214BEFC.504@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20130802013524.GN14331@localhost.localdomain>
-Subject: Re: [LTP] [PATCH] testcases/network/sctp: update sctp test to
- upstream version 1.0.15
+Subject: Re: [LTP] [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,45 +30,169 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>, Daniel Borkmann <dborkman@redhat.com>, Xie Lingyun <lingyun.xie@bj.cs2c.com.cn>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> > > Still at the old SF place: http://lksctp.org/
-> > > Git repo from the website: git://github.com/borkmann/lksctp-tools.git
-> > 
-> > So what about making it git submodule or including it only in the
-> > released tarballs leaving only a README with URL to the original project
-> > in the git?
-> > 
-> > It IMHO does not make much sense to have the code in two different git
-> > repos and synchronizing them from time to time with really big patch is
-> > even worse.
+
+
+----- Original Message -----
+> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net, "vasily isaenko" <vasily.isaenko@oracle.com>
+> Sent: Wednesday, 21 August, 2013 3:22:04 PM
+> Subject: Re: [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
 > 
-> The lksctp-tools project provides a Linux user space library for SCTP
-> (libsctp) including C language header files (netinet/sctp.h) for accessing
-> SCTP specific application programming interfaces not provided by the standard
-> sockets, and also some helper utilities around SCTP.
 > 
-> The sctp test case is only a little part of lksctp-tools and used for
-> sctp protocol stack testing. LTP include these test cases from 2002 for
-> networking test. It is just like TCP/UDP/ICMP/IGMP testing. I don't see any
-> reason why we should remove it from network stack testing.
+> On 08/21/2013 04:29 PM, Jan Stancek wrote:
+> >
+> >
+> >
+> > ----- Original Message -----
+> >> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+> >> To: ltp-list@lists.sourceforge.net
+> >> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>, jstancek@redhat.com
+> >> Sent: Wednesday, 21 August, 2013 1:54:58 PM
+> >> Subject: [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
+> >>
+> >> Now nodemask_size is rounded up to the next multiple
+> >> of sizeof(nodemask_t).
+> > Hi,
+> >
+> > Why multiple of nodemask_t? It can be quite large.
+> Hi.
+> 
+> As nodemask is a pointer to nodemask_t type, so it should point to
+> memory areas
+> multiple of sizeof(nodemask_t).
+> 
+> Isn't it?
 
-I haven't said we should remove them from LTP. I'm just trying to figure
-out if we can do better than having the sources maintained in two git
-repos at the same time which is more work and prone to mistakes.
+typedef struct {
+        unsigned long n[NUMA_NUM_NODES/(sizeof(unsigned long)*8)];
+} nodemask_t;
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+It's used more like trailing array in this case, because NUMA_NUM_NODES is not
+always correct (I think it was version < 2.0 that had this issue).
+
+I kept the type so I can reuse some trivial functions from numa.h
+and kernel gets 'n' field directly so it doesn't care about nodemask_t.
+
+> >
+> >> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> >> ---
+> >>   testcases/kernel/lib/numa_helper.c |    6 +++---
+> >>   1 files changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/testcases/kernel/lib/numa_helper.c
+> >> b/testcases/kernel/lib/numa_helper.c
+> >> index 4157816..9151583 100644
+> >> --- a/testcases/kernel/lib/numa_helper.c
+> >> +++ b/testcases/kernel/lib/numa_helper.c
+> >> @@ -60,7 +60,7 @@ unsigned long get_max_node(void)
+> >>   #if HAVE_NUMA_H
+> >>   static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long
+> >>   max_node)
+> >>   {
+> >> -	unsigned long nodemask_size = max_node / 8 + 1;
+> >> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+> > Because mask is passed as parameter, we should respect max_node and
+> > clear only up to byte which holds max_node. So I think we should align
+> > to next byte only:
+> >
+> >          unsigned long nodemask_size = ALIGN(max_node, 8) / 8;
+> I agree but I'm not sure how bytes comprising nodemask_t are handled.
+> If they are handled in an endianness-dependant way then your approach will
+> work only on little-endian systems.
+> 
+> So I decided to clear entire region. The same for filter_nodemask_mem.
+> 
+> >
+> >>   	int i;
+> >>   	char fn[64];
+> >>   	struct stat st;
+> >> @@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask,
+> >> unsigned long max_node)
+> >>   static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long
+> >>   max_node)
+> >>   {
+> >>   #if MPOL_F_MEMS_ALLOWED
+> >> -	unsigned long nodemask_size = max_node / 8 + 1;
+> >> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+> > Same as above:
+> >          unsigned long nodemask_size = ALIGN(max_node, 8) / 8;
+> >
+> >>   	memset(nodemask, 0, nodemask_size);
+> >>   	/*
+> >>   	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+> >> @@ -165,7 +165,7 @@ int get_allowed_nodes_arr(int flag, int *num_nodes,
+> >> int
+> >> **nodes)
+> >>   
+> >>   #if HAVE_NUMA_H
+> >>   	unsigned long max_node = get_max_node();
+> >> -	unsigned long nodemask_size = max_node / 8 + 1;
+> >> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+> > This function allocates the nodemask, so we can align to as much as we
+> > need.
+> > I'd expect this to be same as in migrate_pages, align to next long:
+> >
+> >          unsigned long nodemask_size = ALIGN(max_node / 8, sizeof(long));
+> This formula may give incorrect results. For example, if max_mode = 66
+> and sizeof(long) = 8, then
+> ALIGN(max_node / 8, sizeof(long)) will output 8 and we will lost 2 bits.
+> The correct output should be 16.
+> 
+> I think as max_node contains number of bits so we should align it on
+> sizeof(long)*8 boundary and after that divide the final result by 8.
+
+Agreed, we should align on bits then divide.
+
+What if we align max_node? Then we can be sure that nodemask_size
+in all functions is also aligned:
+
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index 4157816..a2b6b4a 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -60,7 +60,7 @@ unsigned long get_max_node(void)
+ #if HAVE_NUMA_H
+ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ {
+-       unsigned long nodemask_size = max_node / 8 + 1;
++       unsigned long nodemask_size = max_node / 8;
+        int i;
+        char fn[64];
+        struct stat st;
+@@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long max_node)
+ {
+ #if MPOL_F_MEMS_ALLOWED
+-       unsigned long nodemask_size = max_node / 8 + 1;
++       unsigned long nodemask_size = max_node / 8;
+        memset(nodemask, 0, nodemask_size);
+        /*
+         * avoid numa_get_mems_allowed(), because of bug in getpol()
+@@ -164,8 +164,8 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
+                *nodes = NULL;
+ 
+ #if HAVE_NUMA_H
+-       unsigned long max_node = get_max_node();
+-       unsigned long nodemask_size = max_node / 8 + 1;
++       unsigned long max_node = ALIGN(get_max_node(), sizeof(long)*8);
++       unsigned long nodemask_size = max_node / 8;
+ 
+        nodemask = malloc(nodemask_size);
+        if (nodes)
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
