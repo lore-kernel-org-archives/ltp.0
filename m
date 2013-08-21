@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VCV0Q-0003oA-NQ
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 13:32:54 +0000
-Date: Thu, 22 Aug 2013 15:32:49 +0200
-From: chrubis@suse.cz
-Message-ID: <20130822133248.GB11897@rei.ASUS>
-References: <1377097927.S.3511.11139.H.TmNocnViaXNAc3VzZS5jegBSZTogW0xUUF0gb3BlbiBwb3NpeCB0ZXN0c3VpdGUgY29tcGlsYXRpb24_.RU.rfs279,
-	rfs279, 557,
-	625.f5-224-110.old.1377175547.17217@webmail.rediffmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VC8Ma-0007EH-Sb
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 13:22:16 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VC8MZ-0002XD-P8
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 13:22:16 +0000
+Message-ID: <5214BEFC.504@oracle.com>
+Date: Wed, 21 Aug 2013 17:22:04 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1377097927.S.3511.11139.H.TmNocnViaXNAc3VzZS5jegBSZTogW0xUUF0gb3BlbiBwb3NpeCB0ZXN0c3VpdGUgY29tcGlsYXRpb24_.RU.rfs279,
-	rfs279, 557,
-	625.f5-224-110.old.1377175547.17217@webmail.rediffmail.com>
-Subject: Re: [LTP] open posix testsuite compilation
+References: <52122141.3020005@oracle.com>
+	<1377086098-32691-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<212598736.1836601.1377088154292.JavaMail.root@redhat.com>
+In-Reply-To: <212598736.1836601.1377088154292.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +30,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: devaraja b v <sunildev_63@rediffmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> I used the following command&nbsp;
-> ./configure --with-open-posix-testsuite
-> and hit the following issue.
-> 7632 make-3.81[3]:
-> Entering directory `/opt/ltp/testcases/open_posix_testsuite'
 
-That is really strange, it should not look into /opt/ltp/ if you are
-compiling ltp in you home directory.
+On 08/21/2013 04:29 PM, Jan Stancek wrote:
+>
+>
+>
+> ----- Original Message -----
+>> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>, jstancek@redhat.com
+>> Sent: Wednesday, 21 August, 2013 1:54:58 PM
+>> Subject: [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
+>>
+>> Now nodemask_size is rounded up to the next multiple
+>> of sizeof(nodemask_t).
+> Hi,
+>
+> Why multiple of nodemask_t? It can be quite large.
+Hi.
 
-Could you send what exactly did you do (i.e. the commands executed) and
-their output so that we can figure out what is wrong?
+As nodemask is a pointer to nodemask_t type, so it should point to 
+memory areas
+multiple of sizeof(nodemask_t).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Isn't it?
+>
+>> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>> ---
+>>   testcases/kernel/lib/numa_helper.c |    6 +++---
+>>   1 files changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/testcases/kernel/lib/numa_helper.c
+>> b/testcases/kernel/lib/numa_helper.c
+>> index 4157816..9151583 100644
+>> --- a/testcases/kernel/lib/numa_helper.c
+>> +++ b/testcases/kernel/lib/numa_helper.c
+>> @@ -60,7 +60,7 @@ unsigned long get_max_node(void)
+>>   #if HAVE_NUMA_H
+>>   static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long
+>>   max_node)
+>>   {
+>> -	unsigned long nodemask_size = max_node / 8 + 1;
+>> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+> Because mask is passed as parameter, we should respect max_node and
+> clear only up to byte which holds max_node. So I think we should align
+> to next byte only:
+>
+>          unsigned long nodemask_size = ALIGN(max_node, 8) / 8;
+I agree but I'm not sure how bytes comprising nodemask_t are handled.
+If they are handled in an endianness-dependant way then your approach will
+work only on little-endian systems.
+
+So I decided to clear entire region. The same for filter_nodemask_mem.
+
+>
+>>   	int i;
+>>   	char fn[64];
+>>   	struct stat st;
+>> @@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask,
+>> unsigned long max_node)
+>>   static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long
+>>   max_node)
+>>   {
+>>   #if MPOL_F_MEMS_ALLOWED
+>> -	unsigned long nodemask_size = max_node / 8 + 1;
+>> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+> Same as above:
+>          unsigned long nodemask_size = ALIGN(max_node, 8) / 8;
+>
+>>   	memset(nodemask, 0, nodemask_size);
+>>   	/*
+>>   	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+>> @@ -165,7 +165,7 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int
+>> **nodes)
+>>   
+>>   #if HAVE_NUMA_H
+>>   	unsigned long max_node = get_max_node();
+>> -	unsigned long nodemask_size = max_node / 8 + 1;
+>> +	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+> This function allocates the nodemask, so we can align to as much as we need.
+> I'd expect this to be same as in migrate_pages, align to next long:
+>
+>          unsigned long nodemask_size = ALIGN(max_node / 8, sizeof(long));
+This formula may give incorrect results. For example, if max_mode = 66 
+and sizeof(long) = 8, then
+ALIGN(max_node / 8, sizeof(long)) will output 8 and we will lost 2 bits. 
+The correct output should be 16.
+
+I think as max_node contains number of bits so we should align it on 
+sizeof(long)*8 boundary and after that divide the final result by 8.
+
+
+> Regards,
+> Jan
+>
+>>   
+>>   	nodemask = malloc(nodemask_size);
+>>   	if (nodes)
+>> --
+>> 1.7.1
+>>
+>>
+
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
