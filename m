@@ -1,35 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V6dJX-0006Bt-7U
-	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:23 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V6dJV-0007dq-8X
-	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 09:12:23 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r769CEA5017744
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:15 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r769CDMU027867
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:14 GMT
-Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r769CDhW018093
-	for <ltp-list@lists.sourceforge.net>; Tue, 6 Aug 2013 09:12:13 GMT
+	id 1VC70V-0001Kk-15
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 11:55:23 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VC70U-0000TG-A7
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 11:55:22 +0000
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue,  6 Aug 2013 13:11:51 +0400
-Message-Id: <1375780313-17327-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <51FFBCC1.3030101@oracle.com>
-References: <51FFBCC1.3030101@oracle.com>
-Subject: [LTP] [PATCH V3] tst_run_cmd: added support for stdout and stderr
-	redirection
+Date: Wed, 21 Aug 2013 15:54:58 +0400
+Message-Id: <1377086098-32691-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <52122141.3020005@oracle.com>
+References: <52122141.3020005@oracle.com>
+Subject: [LTP] [PATCH V2 3/3] lib/numa_helper.c: fix nodemask_size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,20 +29,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com
 
+Now nodemask_size is rounded up to the next multiple
+of sizeof(nodemask_t).
 
-Now there are two functions:
-tst_run_cmd() - redirects cmd's stdout/stderr to file descriptors
-tst_run_cmd_rdr_file() - a wrapper around tst_run_cmd(), redirects its output
-to files.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/lib/numa_helper.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index 4157816..9151583 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -60,7 +60,7 @@ unsigned long get_max_node(void)
+ #if HAVE_NUMA_H
+ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ {
+-	unsigned long nodemask_size = max_node / 8 + 1;
++	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+ 	int i;
+ 	char fn[64];
+ 	struct stat st;
+@@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long max_node)
+ {
+ #if MPOL_F_MEMS_ALLOWED
+-	unsigned long nodemask_size = max_node / 8 + 1;
++	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+ 	memset(nodemask, 0, nodemask_size);
+ 	/*
+ 	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+@@ -165,7 +165,7 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
+ 
+ #if HAVE_NUMA_H
+ 	unsigned long max_node = get_max_node();
+-	unsigned long nodemask_size = max_node / 8 + 1;
++	unsigned long nodemask_size = ALIGN(max_node, sizeof(nodemask_t)*8) / 8;
+ 
+ 	nodemask = malloc(nodemask_size);
+ 	if (nodes)
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
