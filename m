@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <dave.kleikamp@oracle.com>) id 1VBsdc-0001A1-Ku
-	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 20:34:48 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VBsdb-0005s8-Sv
-	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 20:34:48 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r7KKYfcC027917
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Aug 2013 20:34:42 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7KKYeeW025388
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Aug 2013 20:34:41 GMT
-Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7KKYeHj011364
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Aug 2013 20:34:40 GMT
-Message-ID: <5213D2DF.20802@oracle.com>
-Date: Tue, 20 Aug 2013 15:34:39 -0500
-From: Dave Kleikamp <dave.kleikamp@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VC4XS-0007C3-M3
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 09:17:14 +0000
+Date: Wed, 21 Aug 2013 11:17:13 +0200
+From: chrubis@suse.cz
+Message-ID: <20130821091712.GA3558@rei>
+References: <1376908164-10045-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] ltp: handle missing online file
+Content-Disposition: inline
+In-Reply-To: <1376908164-10045-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] syscalls/migrate_pages: fix nodemask memory
+ allocation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,43 +25,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-gather_node_cpus() fails if the /sys/devices/system/node/nodeX/cpuX/online
-file is missing for any cpu other than cpu0. The absence of the online file
-should not be treated as a failure, but as an indication that the cpu is
-not hot-pluggable and cannot be taken offline.
+Hi!
+> ---
+>  .../syscalls/migrate_pages/migrate_pages01.c       |    5 ++++-
+>  .../syscalls/migrate_pages/migrate_pages02.c       |    5 ++++-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+> index c23e8b0..9981c0c 100644
+> --- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+> @@ -248,7 +248,10 @@ static void setup(void)
+>  			 ret);
+>  
+>  	sane_max_node = get_max_node();
+> -	sane_nodemask_size = sane_max_node / 8 + 1;
+> +	sane_nodemask_size = sane_max_node / (sizeof(unsigned long)*8);
+> +	sane_nodemask_size += sane_max_node % (sizeof(unsigned long)*8) == 0 ?
+> +				0 : 1;
+> +	sane_nodemask_size *= sizeof(unsigned long);
 
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Do we really need to round it sizeof(unsigned long) or is creating large
+enough array sufficient?
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 9bc926e..99243a6 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -786,16 +786,14 @@ static void gather_node_cpus(char *cpus, long nd)
- 		if (path_exist(path, nd, i)) {
- 			snprintf(path1, BUFSIZ, "%s/online", path);
- 			/*
--			 * No cpu0/online knob, as it can't support to
--			 * on/offline cpu0, so if the 'nd' node contains
--			 * cpu0, it should skip to check cpu0/online's value.
-+			 * if there is no online knob, then the cpu cannot
-+			 * be taken offline
- 			 */
--			if (i == 0)
--				goto next;
--			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
--			if (online == 0)
--				continue;
--next:
-+			if (path_exist(path1)) {
-+				SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
-+				if (online == 0)
-+					continue;
-+			}
- 			sprintf(buf, "%d,", i);
- 			strcat(cpus, buf);
- 		}
+What about:
+
+sane_max_node / 8 + sizeof(unsinged long);
+
+Which should yield size that is at least as large as the size we need.
+
+Also I would create a macro to do that NODEMASK_SIZE() and put it into
+migrate_pages_common.h header.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
