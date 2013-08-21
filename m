@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V6HNM-0001Qa-Sc
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 09:46:52 +0000
-Date: Mon, 5 Aug 2013 11:46:48 +0200
-From: chrubis@suse.cz
-Message-ID: <20130805094648.GB8082@rei.Home>
-References: <1375668923-15593-1-git-send-email-gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VC1xt-0004Xv-Rp
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:32:21 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VC1xq-0002Kp-9n
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 06:32:21 +0000
+Message-ID: <52145ECA.5060602@cn.fujitsu.com>
+Date: Wed, 21 Aug 2013 14:31:38 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1375668923-15593-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] sigaction:16-1: leave it untested on the Linux
- kernel less than 2.6.22
+References: <5213D2DF.20802@oracle.com>
+In-Reply-To: <5213D2DF.20802@oracle.com>
+Subject: Re: [LTP] [PATCH] ltp: handle missing online file
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +28,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> As the Linux signal(7) said:
-> POSIX semaphore interfaces: sem_wait(3) and sem_timedwait(3) (since Linux 2.6.22; beforehand, always failed with EINTR).
+On 08/21/2013 04:34 AM, Dave Kleikamp wrote:
+> gather_node_cpus() fails if the /sys/devices/system/node/nodeX/cpuX/online
+> file is missing for any cpu other than cpu0. The absence of the online file
+> should not be treated as a failure, but as an indication that the cpu is
+> not hot-pluggable and cannot be taken offline.
 > 
-> So, on linux, we just leave this untested when the kernel version
-> is less than 2.6.22.
+> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 
-While I'm completly fine with workarounds for broken kernels in Linux
-part of the LTP I'm a bit reluctant to add them into the open posix
-testsuite. Has anybody different opinion?
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+> 
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 9bc926e..99243a6 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -786,16 +786,14 @@ static void gather_node_cpus(char *cpus, long nd)
+>  		if (path_exist(path, nd, i)) {
+>  			snprintf(path1, BUFSIZ, "%s/online", path);
+>  			/*
+> -			 * No cpu0/online knob, as it can't support to
+> -			 * on/offline cpu0, so if the 'nd' node contains
+> -			 * cpu0, it should skip to check cpu0/online's value.
+> +			 * if there is no online knob, then the cpu cannot
+> +			 * be taken offline
+>  			 */
+> -			if (i == 0)
+> -				goto next;
+> -			SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
+> -			if (online == 0)
+> -				continue;
+> -next:
+> +			if (path_exist(path1)) {
+> +				SAFE_FILE_SCANF(cleanup, path1, "%ld", &online);
+> +				if (online == 0)
+> +					continue;
+> +			}
+>  			sprintf(buf, "%d,", i);
+>  			strcat(cpus, buf);
+>  		}
+> 
+> ------------------------------------------------------------------------------
+> Introducing Performance Central, a new site from SourceForge and 
+> AppDynamics. Performance Central is your source for news, insights, 
+> analysis and resources for efficient Application Performance Management. 
+> Visit us today!
+> http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
