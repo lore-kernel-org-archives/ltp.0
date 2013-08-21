@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <dave.kleikamp@oracle.com>) id 1VEfTC-00059C-22
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:07:34 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VEfTB-0007ph-6X
-	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:07:34 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r7SD7Qal027090
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:07:27 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7SD7P1D008762
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:07:26 GMT
-Received: from abhmt103.oracle.com (abhmt103.oracle.com [141.146.116.55])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7SD7PiB019870
-	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:07:25 GMT
-Message-ID: <521DF60B.9010401@oracle.com>
-Date: Wed, 28 Aug 2013 08:07:23 -0500
-From: Dave Kleikamp <dave.kleikamp@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VC5ab-0004fA-LO
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 10:24:33 +0000
+Date: Wed, 21 Aug 2013 12:24:37 +0200
+From: chrubis@suse.cz
+Message-ID: <20130821102436.GA3894@rei>
+References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] ltp: Fix races in mmap1
+Content-Disposition: inline
+In-Reply-To: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
+ writers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,52 +25,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Make map_address a volatile pointer so that it is dereferenced in
-read_mem() after read_lock is set.
+Hi!
+> Starting with 3.10 dio_sparse sporadically fails, because
+> read() in read_sparse returns garbage and dio_sparse testcase
+> fails with:
+>   dio_sparse    0  TINFO  :  Dirtying free blocks
+>   dio_sparse    0  TINFO  :  Starting I/O tests
+>   non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
+>   non-zero read at offset 0
+>   dio_sparse    0  TINFO  :  Killing childrens(s)
+>   dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
+> 
+> Issue is that we have parent opening file as O_DIRECT and
+> children trying to read from it without O_DIRECT, which is
+> discouraged in man pages.
+> 
+> open(2) says:
+> "Applications should avoid mixing O_DIRECT and normal I/O to the same
+> file, and especially to overlapping byte regions in the same file."
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
 
-Also read_lock must protect the verbose printf that reads from map_address
-as well.
+The README in the testcases directory says that the tests explicitly
+tests for consistency between buffered I/O and O_DIRECT.
 
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+I will consult some kernel guys if this was ever supported and we will
+either remove the tests or try to find a bug in the kernel.
 
-diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-index 7c80bb4..cd1127f 100644
---- a/testcases/kernel/mem/mtest06/mmap1.c
-+++ b/testcases/kernel/mem/mtest06/mmap1.c
-@@ -62,7 +62,7 @@
- } while (0)
- 
- static int verbose_print = 0;
--static char *map_address;
-+static char *volatile map_address;
- static jmp_buf jmpbuf;
- static volatile char read_lock = 0;
- 
-@@ -228,11 +228,13 @@ void *read_mem(void *ptr)
- 				tst_resm(TINFO, "page fault occurred due to "
- 					 "a read after an unmap");
- 		} else {
--			if (verbose_print)
-+			if (verbose_print) {
-+				read_lock = 1;
- 				tst_resm(TINFO,
- 					 "read_mem(): content of memory: %s",
- 					 (char *)map_address);
--
-+				read_lock = 0;
-+			}
- 			for (j = 0; j < args[1]; j++) {
- 				read_lock = 1;
- 				if (map_address[j] != 'a')
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
