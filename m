@@ -1,34 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V8rZV-0001Dt-2E
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:50:05 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V8rZU-0007eR-6u
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 12:50:05 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r7CCnvHE029392
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:49:58 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7CCnugf008936
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:49:57 GMT
-Received: from abhmt118.oracle.com (abhmt118.oracle.com [141.146.116.70])
-	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r7CCnuAg000196
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Aug 2013 12:49:56 GMT
+	id 1VC70S-000661-Hf
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 11:55:20 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VC70R-0006Kq-Q9
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 11:55:20 +0000
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 12 Aug 2013 16:49:30 +0400
-Message-Id: <1376311771-30968-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20130717130502.GD25145@rei>
-References: <20130717130502.GD25145@rei>
-Subject: [LTP] [PATCH V4 1/2] Implemented tst_fill_file function
+Date: Wed, 21 Aug 2013 15:54:56 +0400
+Message-Id: <1377086098-32691-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <52122141.3020005@oracle.com>
+References: <52122141.3020005@oracle.com>
+Subject: [LTP] [PATCH V2 1/3] Added ALIGN, __ALIGN_MASK macroses
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,115 +33,36 @@ Cc: vasily.isaenko@oracle.com
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- include/test.h      |   10 +++++++
- lib/tst_fill_file.c |   67 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 0 deletions(-)
- create mode 100644 lib/tst_fill_file.c
+ include/test.h |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
 diff --git a/include/test.h b/include/test.h
-index 991269e..d9eba31 100644
+index d9eba31..a517ff9 100644
 --- a/include/test.h
 +++ b/include/test.h
-@@ -249,6 +249,16 @@ void tst_run_cmd(void (cleanup_fn)(void),
- void tst_mkfs(void (cleanup_fn)(void), const char *dev,
-               const char *fs_type, const char *fs_opts);
+@@ -105,6 +105,12 @@
+ #define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
+ #endif
  
-+/* lib/tst_fill_file.c
-+ *
-+ * Creates/ovewrites a file with specified pattern
-+ * @path: path to file
-+ * @pattern: pattern
-+ * @bs: block size
-+ * @bcount: blocks amount
++/* Round x to the next multiple of a.
++ * a should be a power of 2.
 + */
-+int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
++#define ALIGN(x, a)	__ALIGN_MASK(x, (typeof(x))(a) - 1)
++#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
 +
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/lib/tst_fill_file.c b/lib/tst_fill_file.c
-new file mode 100644
-index 0000000..6613330
---- /dev/null
-+++ b/lib/tst_fill_file.c
-@@ -0,0 +1,67 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ *
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#include "test.h"
-+
-+int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
-+{
-+	int fd, counter;
-+	char *buf;
-+
-+	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
-+	if (fd < 0)
-+		return -1;
-+
-+	/* Filling a memory buffer with provided pattern */
-+	buf = malloc(bs);
-+	if (buf == NULL) {
-+		close(fd);
-+
-+		return -1;
-+	}
-+
-+	for (counter = 0; counter < bs; counter++)
-+		buf[counter] = pattern;
-+
-+	/* Filling the file */
-+	for (counter = 0; counter < bcount; counter++)
-+		if (write(fd, buf, bs) != bs) {
-+			free(buf);
-+			close(fd);
-+			unlink(path);
-+
-+			return -1;
-+		}
-+
-+
-+	free(buf);
-+	if (close(fd) < 0)
-+		return -1;
-+
-+	return 0;
-+}
+ /*
+  * lib/forker.c
+  */
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
