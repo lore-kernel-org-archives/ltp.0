@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VCmhv-0002AO-C8
-	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 08:26:59 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VCmhs-0003XU-0u
-	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 08:26:59 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 23 Aug 2013 12:26:41 +0400
-Message-Id: <1377246401-17449-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <893330423.2949965.1377244649561.JavaMail.root@redhat.com>
-References: <893330423.2949965.1377244649561.JavaMail.root@redhat.com>
-Subject: [LTP] [PATCH V3.1 1/3] Added ALIGN, __ALIGN_MASK macros
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VC8f2-0006j2-W2
+	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 13:41:21 +0000
+Date: Wed, 21 Aug 2013 15:41:21 +0200
+From: chrubis@suse.cz
+Message-ID: <20130821134121.GA4729@rei>
+References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
+	<20130821102436.GA3894@rei>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20130821102436.GA3894@rei>
+Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
+ writers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,38 +23,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/test.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+Hi!
+> The README in the testcases directory says that the tests explicitly
+> tests for consistency between buffered I/O and O_DIRECT.
+> 
+> I will consult some kernel guys if this was ever supported and we will
+> either remove the tests or try to find a bug in the kernel.
 
-diff --git a/include/test.h b/include/test.h
-index d9eba31..a517ff9 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -105,6 +105,12 @@
- #define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
- #endif
- 
-+/* Round x to the next multiple of a.
-+ * a should be a power of 2.
-+ */
-+#define ALIGN(x, a)	__ALIGN_MASK(x, (typeof(x))(a) - 1)
-+#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
-+
- /*
-  * lib/forker.c
-  */
+I've looked at the test and what it does is:
+
+1. create file and make sure it's empty
+2. truncate it to defined size
+3. parent starts writing zeroes to it with O_DIRECT
+4. childs reads it and expect to get zeroes at any time
+
+This should really work and I've been told by our filesystem guy that
+this really looks like bug in the kernel (assuming that I haven't
+overlooked something in the test source).
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
