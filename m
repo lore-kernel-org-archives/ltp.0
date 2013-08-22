@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V72ZU-0005QT-0i
-	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 12:10:32 +0000
-Date: Wed, 7 Aug 2013 14:10:28 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VCV0Q-0003oA-NQ
+	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 13:32:54 +0000
+Date: Thu, 22 Aug 2013 15:32:49 +0200
 From: chrubis@suse.cz
-Message-ID: <20130807121028.GB4761@rei>
-References: <20130807102427.GA4389@rei>
-	<1375874575-29198-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20130822133248.GB11897@rei.ASUS>
+References: <1377097927.S.3511.11139.H.TmNocnViaXNAc3VzZS5jegBSZTogW0xUUF0gb3BlbiBwb3NpeCB0ZXN0c3VpdGUgY29tcGlsYXRpb24_.RU.rfs279,
+	rfs279, 557,
+	625.f5-224-110.old.1377175547.17217@webmail.rediffmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1375874575-29198-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] tst_run_cmd: const correctness
+In-Reply-To: <1377097927.S.3511.11139.H.TmNocnViaXNAc3VzZS5jegBSZTogW0xUUF0gb3BlbiBwb3NpeCB0ZXN0c3VpdGUgY29tcGlsYXRpb24_.RU.rfs279,
+	rfs279, 557,
+	625.f5-224-110.old.1377175547.17217@webmail.rediffmail.com>
+Subject: Re: [LTP] open posix testsuite compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,43 +28,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
+To: devaraja b v <sunildev_63@rediffmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
->  void tst_run_cmd_fds(void (cleanup_fn)(void),
-> -			char *const argv[],
-> +			const char *const argv[],
->  			int stdout_fd,
->  			int stderr_fd);
->  
-> @@ -236,7 +236,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
->   * not needed.
->   */
->  void tst_run_cmd(void (cleanup_fn)(void),
-> -		char *const argv[],
-> +		const char *const argv[],
->  		const char *stdout_path,
->  		const char *stderr_path);
+> I used the following command&nbsp;
+> ./configure --with-open-posix-testsuite
+> and hit the following issue.
+> 7632 make-3.81[3]:
+> Entering directory `/opt/ltp/testcases/open_posix_testsuite'
 
-Gosh, that fixed the warning in the test but I've overlooked that
-execvp() takes char *const argv[] argument so it introduced warning in
-the lib. Now I wonder why execvp() has such strange parameter type...
+That is really strange, it should not look into /opt/ltp/ if you are
+compiling ltp in you home directory.
 
-I'm trying to figure out how to fix it 'right' but it gets unnecessary
-complicated. I guess that we can fix this patch by casting the array in
-the lib before it gets to execvp().
+Could you send what exactly did you do (i.e. the commands executed) and
+their output so that we can figure out what is wrong?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
