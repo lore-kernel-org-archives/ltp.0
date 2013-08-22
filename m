@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEHy0-0007Sx-AY
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 12:01:48 +0000
-Date: Tue, 27 Aug 2013 14:01:55 +0200
-From: chrubis@suse.cz
-Message-ID: <20130827120154.GF10995@rei.Home>
-References: <893330423.2949965.1377244649561.JavaMail.root@redhat.com>
-	<1377246401-17449-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1377246401-17449-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V3.1 1/3] Added ALIGN, __ALIGN_MASK macros
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VCPWx-0005Uh-HP
+	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:42:07 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VCPWv-0004Vy-RV
+	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:42:07 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 22 Aug 2013 11:41:49 +0400
+Message-Id: <1377157309-23572-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <52122141.3020005@oracle.com>
+References: <52122141.3020005@oracle.com>
+Subject: [LTP] [PATCH V3 3/3] lib/numa_helper.c: fix nodemask_size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,43 +24,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  include/test.h |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
-> 
-> diff --git a/include/test.h b/include/test.h
-> index d9eba31..a517ff9 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -105,6 +105,12 @@
->  #define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
->  #endif
->  
-> +/* Round x to the next multiple of a.
-> + * a should be a power of 2.
-> + */
-> +#define ALIGN(x, a)	__ALIGN_MASK(x, (typeof(x))(a) - 1)
-> +#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
-> +
+Now nodemask_size is rounded up to the next
+multiple of sizeof(unsigned long).
 
-Generally looks good to me. I'm a bit concerned that macros named as
-ALIGN() and __ALING_MASK() may eventually collide with some system
-definiton. What about prefixing them with LTP_?
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/lib/numa_helper.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Also test.h is a bit crowded, what about adding them into compiler.h
-instead?
-
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index 4157816..ab294f0 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -60,7 +60,7 @@ unsigned long get_max_node(void)
+ #if HAVE_NUMA_H
+ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ {
+-	unsigned long nodemask_size = max_node / 8 + 1;
++	unsigned long nodemask_size = max_node / 8;
+ 	int i;
+ 	char fn[64];
+ 	struct stat st;
+@@ -76,7 +76,7 @@ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long max_node)
+ {
+ #if MPOL_F_MEMS_ALLOWED
+-	unsigned long nodemask_size = max_node / 8 + 1;
++	unsigned long nodemask_size = max_node / 8;
+ 	memset(nodemask, 0, nodemask_size);
+ 	/*
+ 	 * avoid numa_get_mems_allowed(), because of bug in getpol()
+@@ -164,8 +164,8 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
+ 		*nodes = NULL;
+ 
+ #if HAVE_NUMA_H
+-	unsigned long max_node = get_max_node();
+-	unsigned long nodemask_size = max_node / 8 + 1;
++	unsigned long max_node = ALIGN(get_max_node(), sizeof(unsigned long)*8);
++	unsigned long nodemask_size = max_node / 8;
+ 
+ 	nodemask = malloc(nodemask_size);
+ 	if (nodes)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
