@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V8qgQ-0005Aj-Ap
-	for ltp-list@lists.sourceforge.net; Mon, 12 Aug 2013 11:53:10 +0000
-Date: Mon, 12 Aug 2013 13:53:09 +0200
-From: chrubis@suse.cz
-Message-ID: <20130812115309.GC24962@rei>
-References: <51E6272B.3020509@cn.fujitsu.com> <20130717120522.GB25145@rei>
-	<51FA290E.1040804@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1VCmFX-0004sC-4l
+	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 07:57:39 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VCmFT-0005yD-Sy
+	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 07:57:39 +0000
+Date: Fri, 23 Aug 2013 03:57:29 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <893330423.2949965.1377244649561.JavaMail.root@redhat.com>
+In-Reply-To: <1377157309-23572-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <52122141.3020005@oracle.com>
+	<1377157309-23572-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51FA290E.1040804@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] Add support for xfs quota tests
+Subject: Re: [LTP] [PATCH V3 1/3] Added ALIGN, __ALIGN_MASK macroses
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,37 +28,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> > Now this is getting a bit out of hand.
-> > 
-> > What about we change the tests (we have) to take only device to work
-> > with and let each test prepare the filesystem it needs? This will
-> > simplify the runltp script to only prepare loop device.
-> > 
-> > If we agree on that I can write the tst_mkfs() function and convert
-> > current usages.
+
+
+----- Original Message -----
+> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>, jstancek@redhat.com
+> Sent: Thursday, 22 August, 2013 9:41:47 AM
+> Subject: [PATCH V3 1/3] Added ALIGN, __ALIGN_MASK macroses
 > 
-> What about the progress of this work? :)
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-I've just pushed a patchset that implements this functionality.
-(It has been finished previous week but I hold it util I had time to
-test it properly)
+The series looks good to me. I also ran it on small NUMA system, it worked fine.
+My only nit is this patch's subject, I believe plural of macro is macros :-).
 
-Everybody please test this change and report any problems.
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  include/test.h |    6 ++++++
+>  1 files changed, 6 insertions(+), 0 deletions(-)
+> 
+> diff --git a/include/test.h b/include/test.h
+> index d9eba31..a517ff9 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -105,6 +105,12 @@
+>  #define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
+>  #endif
+>  
+> +/* Round x to the next multiple of a.
+> + * a should be a power of 2.
+> + */
+> +#define ALIGN(x, a)	__ALIGN_MASK(x, (typeof(x))(a) - 1)
+> +#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
+> +
+>  /*
+>   * lib/forker.c
+>   */
+> --
+> 1.7.1
+> 
+> 
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
