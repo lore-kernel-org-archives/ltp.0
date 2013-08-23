@@ -2,17 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VC4XS-0007C3-M3
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 09:17:14 +0000
-Date: Wed, 21 Aug 2013 11:17:13 +0200
-From: chrubis@suse.cz
-Message-ID: <20130821091712.GA3558@rei>
-References: <1376908164-10045-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1376908164-10045-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] syscalls/migrate_pages: fix nodemask memory
- allocation
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VCmhv-0002AO-C8
+	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 08:26:59 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VCmhs-0003XU-0u
+	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 08:26:59 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri, 23 Aug 2013 12:26:41 +0400
+Message-Id: <1377246401-17449-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <893330423.2949965.1377244649561.JavaMail.root@redhat.com>
+References: <893330423.2949965.1377244649561.JavaMail.root@redhat.com>
+Subject: [LTP] [PATCH V3.1 1/3] Added ALIGN, __ALIGN_MASK macros
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,47 +24,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> ---
->  .../syscalls/migrate_pages/migrate_pages01.c       |    5 ++++-
->  .../syscalls/migrate_pages/migrate_pages02.c       |    5 ++++-
->  2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> index c23e8b0..9981c0c 100644
-> --- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-> @@ -248,7 +248,10 @@ static void setup(void)
->  			 ret);
->  
->  	sane_max_node = get_max_node();
-> -	sane_nodemask_size = sane_max_node / 8 + 1;
-> +	sane_nodemask_size = sane_max_node / (sizeof(unsigned long)*8);
-> +	sane_nodemask_size += sane_max_node % (sizeof(unsigned long)*8) == 0 ?
-> +				0 : 1;
-> +	sane_nodemask_size *= sizeof(unsigned long);
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ include/test.h |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-Do we really need to round it sizeof(unsigned long) or is creating large
-enough array sufficient?
-
-What about:
-
-sane_max_node / 8 + sizeof(unsinged long);
-
-Which should yield size that is at least as large as the size we need.
-
-Also I would create a macro to do that NODEMASK_SIZE() and put it into
-migrate_pages_common.h header.
-
+diff --git a/include/test.h b/include/test.h
+index d9eba31..a517ff9 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -105,6 +105,12 @@
+ #define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
+ #endif
+ 
++/* Round x to the next multiple of a.
++ * a should be a power of 2.
++ */
++#define ALIGN(x, a)	__ALIGN_MASK(x, (typeof(x))(a) - 1)
++#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
++
+ /*
+  * lib/forker.c
+  */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
