@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VCPWu-0005UK-CN
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:42:04 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VCPWt-0003SE-Im
-	for ltp-list@lists.sourceforge.net; Thu, 22 Aug 2013 07:42:04 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 22 Aug 2013 11:41:47 +0400
-Message-Id: <1377157309-23572-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <52122141.3020005@oracle.com>
-References: <52122141.3020005@oracle.com>
-Subject: [LTP] [PATCH V3 1/3] Added ALIGN, __ALIGN_MASK macroses
+	(envelope-from <metan@suse.de>) id 1VCpiA-00045a-FJ
+	for ltp-list@lists.sourceforge.net; Fri, 23 Aug 2013 11:39:26 +0000
+Date: Fri, 23 Aug 2013 13:39:27 +0200
+From: chrubis@suse.cz
+Message-ID: <20130823113927.GA24285@rei>
+References: <1376637057-1744-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130822131321.GA11897@rei.ASUS> <52174875.9030606@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <52174875.9030606@oracle.com>
+Subject: Re: [LTP] [PATCH] syscalls/setgroups: fix implicit SETGROUPS
+ parameter casting
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,38 +23,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/test.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+Hi!
+> Thank you for this point.
+> 
+> At first sight it seems that this testcase is very specific for i386 
+> (maybe for other architectures also).
+> 
+> In i386 I found two variants of setgroups syscall (from 
+> arch/x86/syscalls/syscall_32.tbl):
+>      81      i386    setgroups               sys_setgroups16
+>      206     i386    setgroups32             sys_setgroups
+> 
+> I guess in i386 glibc handler for setgroups() internally uses 
+> _setgroups32_ syscall.
+> 
+> In x86_64 there is only one variant (from arch/x86/syscalls/syscall_64.tbl):
+>      116     common  setgroups               sys_setgroups
+> 
+> which points to 32-bit version.
+> 
+> But It's just an assumption and I'll verify this.
 
-diff --git a/include/test.h b/include/test.h
-index d9eba31..a517ff9 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -105,6 +105,12 @@
- #define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
- #endif
- 
-+/* Round x to the next multiple of a.
-+ * a should be a power of 2.
-+ */
-+#define ALIGN(x, a)	__ALIGN_MASK(x, (typeof(x))(a) - 1)
-+#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
-+
- /*
-  * lib/forker.c
-  */
+The 16 variant is backward compatibility for old programs using this
+binari ABI so it makes sense that it does not exist on architectures
+that Linux were ported to after the 32 bit syscall was created.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
