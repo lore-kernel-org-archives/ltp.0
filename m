@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VEFDf-0003Xt-T7
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 09:05:47 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VEFDa-00020H-U2
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 09:05:47 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r7R95a4s023844
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 05:05:36 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 27 Aug 2013 11:05:32 +0200
-Message-Id: <2060663a46bc8d66f90a9686c7fe4a83d21e40a4.1377594171.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] proc01: add use-gss-proxy to known_issues list
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1VDpwO-0000qn-E3
+	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 06:06:16 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VDpwM-0005tf-U6
+	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 06:06:16 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r7Q65lsT015513
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Aug 2013 14:05:47 +0800
+Message-ID: <521AF0C8.6020704@cn.fujitsu.com>
+Date: Mon, 26 Aug 2013 14:08:08 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP]  [PATCH] mount/mount05.c: format the device when necessary
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,44 +25,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Following commit implemented non-blocking read for use-gss-proxy:
-  commit b161c144404c18f6a9e20e46b63828ae3c2eb093
-  Author: J. Bruce Fields <bfields@redhat.com>
-    Date:   Fri May 24 09:47:49 2013 -0400
-        svcrpc: implement O_NONBLOCK behavior for use-gss-proxy
 
-Prior to this commit non-block read hanged, but it happened
-only in -rc kernels, which we can ignore.
+Format the device only when "-D device" & "-T type" are specified.
 
-Note, that this proc entry is available only when you load module
-auth_rpcgss.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 ---
- testcases/kernel/fs/proc/proc01.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ testcases/kernel/syscalls/mount/mount05.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
-index f2aa483..2771cd4 100644
---- a/testcases/kernel/fs/proc/proc01.c
-+++ b/testcases/kernel/fs/proc/proc01.c
-@@ -106,6 +106,7 @@ static const struct mapping known_issues[] = {
- 	{"read", "/proc/fs/nfsd/filehandle", EINVAL},
- 	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
- 	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
-+	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
- 	{"", "", 0}
- };
- 
+diff --git a/testcases/kernel/syscalls/mount/mount05.c b/testcases/kernel/syscalls/mount/mount05.c
+index 4b2a07c..b4be67b 100644
+--- a/testcases/kernel/syscalls/mount/mount05.c
++++ b/testcases/kernel/syscalls/mount/mount05.c
+@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
+ void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	tst_mkfs(NULL, device, fstype, NULL);
+
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+
+@@ -122,9 +121,12 @@ void setup(void)
+ 	SAFE_MKDIR(cleanup, mntpoint_src, DIR_MODE);
+ 	SAFE_MKDIR(cleanup, mntpoint_des, DIR_MODE);
+
+-	if (dflag && tflag)
++	if (dflag && tflag) {
++		tst_mkfs(NULL, device, fstype, NULL);
++
+ 		if (mount(device, mntpoint_src, fs_type, 0, NULL) == -1)
+ 			tst_brkm(TBROK | TERRNO, cleanup, "mount failed");
++	}
+
+ 	SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
+
 -- 
-1.7.1
-
+1.8.1
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
