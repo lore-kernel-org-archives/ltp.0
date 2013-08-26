@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VBg1G-0008CU-B4
-	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 07:06:22 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VBg1E-00024F-Hu
-	for ltp-list@lists.sourceforge.net; Tue, 20 Aug 2013 07:06:22 +0000
-Date: Tue, 20 Aug 2013 03:06:11 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <386542620.1062949.1376982371162.JavaMail.root@redhat.com>
-In-Reply-To: <5213105C.5010905@cn.fujitsu.com>
-References: <b02ceb0270268de40055e69232d12c3a3422f7f4.1376919310.git.jstancek@redhat.com>
-	<5212DEC5.4050506@cn.fujitsu.com>
-	<1004207590.1053823.1376980479030.JavaMail.root@redhat.com>
-	<5213105C.5010905@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VDxaQ-0006hS-W5
+	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 14:16:07 +0000
+Date: Mon, 26 Aug 2013 16:16:12 +0200
+From: chrubis@suse.cz
+Message-ID: <20130826141612.GB3344@rei>
+References: <1376637057-1744-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130822131321.GA11897@rei.ASUS> <52174875.9030606@oracle.com>
+	<20130823113927.GA24285@rei> <521B331D.7050902@oracle.com>
+	<20130826113021.GA3344@rei> <521B4D82.2060007@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
- writers
+Content-Disposition: inline
+In-Reply-To: <521B4D82.2060007@oracle.com>
+Subject: Re: [LTP] [PATCH] syscalls/setgroups: fix implicit SETGROUPS
+ parameter casting
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,162 +28,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
+Hi!
+> But we can't rely on the fact that group ids of a user invoking the 
+> testcases are fit into __old_gid_t.
+> 
+> And the purpose of current GETGROUPS definition is to handle such cases.
+> 
+> A situation may happen where root user is a member of a group with a 
+> _big_ group id.
+> 
+> So I'm not 100% sure about fixing getgroups part of the same header.
+> 
+> Or did I miss something?
 
------ Original Message -----
-> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 20 August, 2013 8:44:44 AM
-> Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as writers
-> 
-> On 08/20/2013 02:34 PM, Jan Stancek wrote:
-> > 
-> > 
-> > ----- Original Message -----
-> >> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
-> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> Cc: ltp-list@lists.sourceforge.net
-> >> Sent: Tuesday, 20 August, 2013 5:13:09 AM
-> >> Subject: Re: [LTP] [PATCH/RFC] aiodio: make read_sparse use same mode as
-> >> writers
-> >>
-> >> On 08/19/2013 09:38 PM, Jan Stancek wrote:
-> >>> Starting with 3.10 dio_sparse sporadically fails, because
-> >>> read() in read_sparse returns garbage and dio_sparse testcase
-> >>> fails with:
-> >>>   dio_sparse    0  TINFO  :  Dirtying free blocks
-> >>>   dio_sparse    0  TINFO  :  Starting I/O tests
-> >>>   non zero buffer at buf[0] => 0xffffffaa,ffffffaa,ffffffaa,ffffffaa
-> >>>   non-zero read at offset 0
-> >>>   dio_sparse    0  TINFO  :  Killing childrens(s)
-> >>>   dio_sparse    1  TFAIL  :  1 children(s) exited abnormally
-> >>
-> >> Why did I always meet the EINVAL error?
-> >> Like:
-> >> dio_sparse    1  TBROK  :  open(): errno=EINVAL(22): Invalid argument
-> >>
-> >> Caused by the file system's O_DIRECT support?
-> > 
-> > It's possible, I know you'll get EINVAL if your tmp directory is tmpfs.
-> > Can you try to run it with "env TMPDIR=/root" and see if
-> > that makes difference?
-> 
-> I tried with "-d /root/test" and the case PASSED, but without your patch.
-> 
-> tag=ADSP044 stime=1376980874
-> cmdline="dio_sparse  -a 2k -w 2k -s 2k -n 2"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> dio_sparse    0  TINFO  :  Dirtying free blocks
-> dio_sparse    0  TINFO  :  Starting I/O tests
-> dio_sparse    0  TINFO  :  Killing childrens(s)
-> dio_sparse    1  TPASS  :  Test passed
-> 
-> 
-> /root/test is ext4 file system, and the kernel is 3.10.4-300.fc19.x86_64.
-> 
-> Still can't see the FAIL like you said?
+What I mean is that we should check if the compatibility getgroups
+syscall exists and if not abort the test (as the setgroups will do).
+Because the 32 bit getgroups syscall is tested with the tests without
+the TST_USE_COMPAT16_SYSCALL.
 
-The FAIL is sporadic, I also get PASS most of the time.
-
-The most reliable way to trigger it so far seems to be running it in loop
-on KVM guest with 2 CPUs (/tmp is ext4), where it usually triggers in couple minutes.
-
-virt-install --name x86_64_kvm --mac 52:56:00:00:00:01 --ram=2048 --vcpus=2 --file-size=20 --hvm --nonsparse --debug --extra-args "console=tty0 console=ttyS0,115200" --accelerate --os-variant=virtio26 --ver6 --network bridge:br0  --serial file,path=/root/x86_64_kvm_console.log --file /var/lib/libvirt/images/x86_64_kvm.img
-
-Regards,
-Jan
-
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> > 
-> > Regards,
-> > Jan
-> > 
-> >>
-> >> Thanks,
-> >> Wanlong Gao
-> >>
-> >>>
-> >>> Issue is that we have parent opening file as O_DIRECT and
-> >>> children trying to read from it without O_DIRECT, which is
-> >>> discouraged in man pages.
-> >>>
-> >>> open(2) says:
-> >>> "Applications should avoid mixing O_DIRECT and normal I/O to the same
-> >>> file, and especially to overlapping byte regions in the same file."
-> >>>
-> >>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> >>> ---
-> >>>  testcases/kernel/io/ltp-aiodio/aiodio_sparse.c |    2 +-
-> >>>  testcases/kernel/io/ltp-aiodio/common_sparse.h |    4 ++--
-> >>>  testcases/kernel/io/ltp-aiodio/dio_sparse.c    |    2 +-
-> >>>  3 files changed, 4 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> >>> b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> >>> index 944e12b..705bbc5 100644
-> >>> --- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> >>> +++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
-> >>> @@ -279,7 +279,7 @@ int main(int argc, char **argv)
-> >>>  	for (i = 0; i < num_children; i++) {
-> >>>  		switch (pid[i] = fork()) {
-> >>>  		case 0:
-> >>> -			read_sparse(filename, filesize);
-> >>> +			read_sparse(filename, filesize, O_DIRECT);
-> >>>  			break;
-> >>>  		case -1:
-> >>>  			while (i-- > 0)
-> >>> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> >>> b/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> >>> index f7f4ef4..6a294cb 100644
-> >>> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> >>> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
-> >>> @@ -104,7 +104,7 @@ char *check_zero(char *buf, int size)
-> >>>   * either there is a hole in the file,
-> >>>   * or zeroes were actually written by parent.
-> >>>   */
-> >>> -static void read_sparse(char *filename, int filesize)
-> >>> +static void read_sparse(char *filename, int filesize, int mode)
-> >>>  {
-> >>>  	int fd;
-> >>>  	int  i, j, r;
-> >>> @@ -114,7 +114,7 @@ static void read_sparse(char *filename, int filesize)
-> >>>  	 * Wait for the file to appear.
-> >>>  	 */
-> >>>  	for (i = 0; i < 10000; i++) {
-> >>> -		fd = open(filename, O_RDONLY);
-> >>> +		fd = open(filename, O_RDONLY | mode);
-> >>>  
-> >>>  		if (fd != -1)
-> >>>  			break;
-> >>> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> >>> b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> >>> index 7ad5f80..eaaea14 100644
-> >>> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> >>> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> >>> @@ -153,7 +153,7 @@ int main(int argc, char **argv)
-> >>>  	for (i = 0; i < num_children; i++) {
-> >>>  		switch (pid[i] = fork()) {
-> >>>  		case 0:
-> >>> -			read_sparse(filename, filesize);
-> >>> +			read_sparse(filename, filesize, O_DIRECT);
-> >>>  			break;
-> >>>  		case -1:
-> >>>  			while (i-- > 0)
-> >>>
-> >>
-> >>
-> > 
-> 
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
