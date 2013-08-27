@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V4wIb-0001hq-3h
-	for ltp-list@lists.sourceforge.net; Thu, 01 Aug 2013 17:04:25 +0000
-Date: Thu, 1 Aug 2013 19:04:17 +0200
-From: chrubis@suse.cz
-Message-ID: <20130801170417.GA32528@rei.scz.novell.com>
-References: <1C23526A7C42DB45BBF55B662C7C530E25B461FD20@BUNGLE.Emea.Arm.com>
-	<20130730172427.GB1999@rei.scz.novell.com>
-	<1C23526A7C42DB45BBF55B662C7C530E25B4AAF0D3@BUNGLE.Emea.Arm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VE8un-0006Oe-B7
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 02:21:53 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VE8ul-0005OC-Ma
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 02:21:53 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r7R2LcbK005047
+	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 10:21:43 +0800
+Message-ID: <521C0D06.7040602@cn.fujitsu.com>
+Date: Tue, 27 Aug 2013 10:20:54 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1C23526A7C42DB45BBF55B662C7C530E25B4AAF0D3@BUNGLE.Emea.Arm.com>
-Subject: Re: [LTP] Where is defined TEST_ERRNO when 'make UCLINUX=1'?
+References: <521AF0C8.6020704@cn.fujitsu.com>
+In-Reply-To: <521AF0C8.6020704@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mount/mount05.c: format the device when necessary
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,63 +31,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Benoit Marcot <Benoit.Marcot@arm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > That seems to be really messed up, so without UCLINUX the TEST_ERRNO is
-> > defined in the header which is included in the test and in the library.
-> > I wonder how that passes through the linker, that looks like redefinition to
-> > me...
-> >
-> > And with UCLINUX it's does not look to be defined anywhere.
-> >
-> > Hmm, we should really clean up this part.
+On 08/26/2013 02:08 PM, DAN LI wrote:
 > 
-> I have quickly patched my local working copy with the following change, but I am not really fond of this kind of nested conditions...
+> Format the device only when "-D device" & "-T type" are specified.
 > 
-> From 67bb4cc0a23c7a1c48acb85b49323edb9c93ff0a Mon Sep 17 00:00:00 2001
-> From: Benoit Marcot < benoit.marcot@gmail.com >
-> Date: Thu, 25 Jul 2013 15:45:17 +0100
-> Subject: [PATCH] usctest.h: fix TEST_ERRNO definition when compiling with
->  'make UCLINUX=1'.
-> 
-> Compiling with 'make UCLINUX=1' adds -D_USC_LIB_, which make TEST_ERRNO declared as extern. This patch defines TEST_ERRNO.
-> 
-> Signed-off-by: Benoit Marcot <benoit.marcot@gmail.com>
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 > ---
->  include/usctest.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  testcases/kernel/syscalls/mount/mount05.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/usctest.h b/include/usctest.h
-> index 90b124f..290b379 100644
-> --- a/include/usctest.h
-> +++ b/include/usctest.h
-> @@ -157,7 +157,7 @@ struct usc_errno_t {
->   ****
->   ****
->   **********************************************************************/
-> -#ifdef  _USC_LIB_
-> +#if defined(_USC_LIB_) && (!defined(UCLINUX) || UCLINUX == 0)
+> diff --git a/testcases/kernel/syscalls/mount/mount05.c b/testcases/kernel/syscalls/mount/mount05.c
+> index 4b2a07c..b4be67b 100644
+> --- a/testcases/kernel/syscalls/mount/mount05.c
+> +++ b/testcases/kernel/syscalls/mount/mount05.c
+> @@ -113,7 +113,6 @@ int main(int argc, char *argv[])
+>  void setup(void)
+>  {
+>  	tst_require_root(NULL);
+> -	tst_mkfs(NULL, device, fstype, NULL);
 > 
->  extern long TEST_RETURN;
->  extern int TEST_ERRNO;
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> 
+> @@ -122,9 +121,12 @@ void setup(void)
+>  	SAFE_MKDIR(cleanup, mntpoint_src, DIR_MODE);
+>  	SAFE_MKDIR(cleanup, mntpoint_des, DIR_MODE);
+> 
+> -	if (dflag && tflag)
+> +	if (dflag && tflag) {
 
-The more I'm looking at the issue the more I think that the best
-solution is to remove the ifdefs and left only the extern definitons
-there and add the corresponding declaration somewhere into the library
-sources, presumbly tst_res.c.
+If "-T" option is not specified, the default fs_type is "ext2",
+then we can also format the device.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +		tst_mkfs(NULL, device, fstype, NULL);
+
+And here "fstype" should be changed to "fs_type", right?
+
+Thanks,
+Wanlong Gao
+
+> +
+>  		if (mount(device, mntpoint_src, fs_type, 0, NULL) == -1)
+>  			tst_brkm(TBROK | TERRNO, cleanup, "mount failed");
+> +	}
+> 
+>  	SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
+> 
+
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
