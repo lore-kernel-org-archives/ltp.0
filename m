@@ -1,34 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1V71pl-0005JS-A4
-	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 11:23:17 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1V71pj-0006N9-99
-	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 11:23:17 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r77BN8ew026538
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 Aug 2013 11:23:09 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r77BN7U5012396
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 Aug 2013 11:23:08 GMT
-Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r77BN7Ar010073
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 Aug 2013 11:23:07 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed,  7 Aug 2013 15:22:55 +0400
-Message-Id: <1375874575-29198-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20130807102427.GA4389@rei>
-References: <20130807102427.GA4389@rei>
-Subject: [LTP] [PATCH] tst_run_cmd: const correctness
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VEIkE-0001p9-3W
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 12:51:38 +0000
+Date: Tue, 27 Aug 2013 14:51:44 +0200
+From: chrubis@suse.cz
+Message-ID: <20130827125144.GI10995@rei.Home>
+References: <521C4688.9020305@cn.fujitsu.com> <521C46FB.7020308@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <521C46FB.7020308@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] quotactl/quotactl02.c: create a case to
+ test basic flags of quotactl(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,97 +22,153 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, alexey.kodanev@oracle.com
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-From: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Hi!
+> +/*
+> + * func_qoff() - check the functionality of the Q_XQUOTAOFF flag of quotactl
+> + */
 
-Signed-off-by: Stanislav kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/test.h    |    4 ++--
- lib/tst_module.c  |    4 ++--
- lib/tst_run_cmd.c |    4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+These type of comments is not usefull at all. Just name the function so
+that it's clear what it does, for this one something like
+check_qoff(void) would do.
 
-diff --git a/include/test.h b/include/test.h
-index 1957148..75a34ab 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -225,7 +225,7 @@ long tst_ncpus_max(void);
-  * redirection is not needed.
-  */
- void tst_run_cmd_fds(void (cleanup_fn)(void),
--			char *const argv[],
-+			const char *const argv[],
- 			int stdout_fd,
- 			int stderr_fd);
- 
-@@ -236,7 +236,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
-  * not needed.
-  */
- void tst_run_cmd(void (cleanup_fn)(void),
--		char *const argv[],
-+		const char *const argv[],
- 		const char *stdout_path,
- 		const char *stderr_path);
- 
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-index c0f2c8f..028af0e 100644
---- a/lib/tst_module.c
-+++ b/lib/tst_module.c
-@@ -85,7 +85,7 @@ void tst_module_load(void (cleanup_fn)(void),
- 	while (argv && argv[size])
- 		++size;
- 	size += offset;
--	char *mod_argv[size + 1]; /* + NULL in the end */
-+	const char *mod_argv[size + 1]; /* + NULL in the end */
- 	mod_argv[size] = NULL;
- 	mod_argv[0] = "insmod";
- 	mod_argv[1] = mod_path;
-@@ -100,6 +100,6 @@ void tst_module_load(void (cleanup_fn)(void),
- 
- void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
- {
--	char *const argv[] = { "rmmod", mod_name, NULL };
-+	const char *const argv[] = { "rmmod", mod_name, NULL };
- 	tst_run_cmd(cleanup_fn, argv, NULL, NULL);
- }
-diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
-index 714b508..2c84cfd 100644
---- a/lib/tst_run_cmd.c
-+++ b/lib/tst_run_cmd.c
-@@ -31,7 +31,7 @@
- #define OPEN_FLAGS	(O_WRONLY | O_APPEND | O_CREAT)
- 
- void tst_run_cmd_fds(void (cleanup_fn)(void),
--		char *const argv[],
-+		const char *const argv[],
- 		int stdout_fd,
- 		int stderr_fd)
- {
-@@ -73,7 +73,7 @@ void tst_run_cmd_fds(void (cleanup_fn)(void),
- }
- 
- void tst_run_cmd(void (cleanup_fn)(void),
--		char *const argv[],
-+		const char *const argv[],
- 		const char *stdout_path,
- 		const char *stderr_path)
- {
+> +static void func_qoff(void)
+> +{
+> +	int ret;
+> +
+> +	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
+> +			  dev, uid, &qstat);
+> +	if (ret != 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
+> +
+> +	if (qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
+> +		tst_resm(TFAIL, "enforcement is not off");
+> +		return;
+> +	}
+> +
+> +	tst_resm(TPASS, "enforcement is off");
+> +}
+> +
+> +/*
+> + * func_qon() - check the functionality of the Q_XQUOTAON flag of quotactl
+> + */
+> +static void func_qon(void)
+> +{
+> +	int ret;
+> +	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
+> +			  dev, uid, &qstat);
+> +	if (ret != 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
+> +
+> +	if (!(qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
+> +		tst_resm(TFAIL, "enforcement is off");
+> +		return;
+> +	}
+> +
+> +	tst_resm(TPASS, "enforcement is on");
+> +}
+> +
+> +/*
+> + * func_getq() - check the functionality of the Q_XGETQUOTA flag of quotactl
+> + */
+> +static void func_getq(void)
+> +{
+> +	if (!(dquota.d_flags & XFS_USER_QUOTA)) {
+> +		tst_resm(TFAIL, "get incorrect quota type");
+> +		return;
+> +	}
+> +
+> +	tst_resm(TPASS, "get the right quota type");
+> +}
+> +
+> +/*
+> + * setup_setqlim() - set up for the Q_XSETQLIM flag of quotactl
+> + */
+> +static void setup_setqlim(void)
+> +{
+> +	dquota.d_rtb_hardlimit = RTBLIMIT;
+> +	dquota.d_fieldmask = FS_DQ_LIMIT_MASK;
+> +}
+
+You don't need to have function to statically initialize a structure, I
+would just initialized it statically and passed right pointer to the
+testcase addr.
+
+> +/*
+> + * func_setqlim() - check the functionality of the Q_XSETQLIM flag of quotactl
+> + */
+> +static void func_setqlim(void)
+> +{
+> +	int ret;
+> +	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQUOTA),
+> +			  dev, uid, &dquota);
+> +	if (ret != 0)
+> +		tst_brkm(TFAIL | TERRNO, NULL,
+> +			 "fail to get quota information");
+> +
+> +	if (dquota.d_rtb_hardlimit != RTBLIMIT) {
+> +		tst_resm(TFAIL, "limit on RTB, except %lu get %lu",
+> +			 (uint64_t)RTBLIMIT,
+> +			 (uint64_t)dquota.d_rtb_hardlimit);
+> +		return;
+> +	}
+> +
+> +	tst_resm(TPASS, "quotactl works fine with Q_XSETQLIM");
+> +}
+> +
+> +/*
+> + * func_getqstat() - check the functionality of
+> + * the Q_XGETQSTAT flag of quotactl
+> + */
+> +static void func_getqstat(void)
+> +{
+> +	if (qstat.qs_version != FS_QSTAT_VERSION) {
+> +		tst_resm(TFAIL, "get incorrect qstat version");
+> +		return;
+> +	}
+> +
+> +	tst_resm(TPASS, "get correct qstat version");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +
+> +	tst_require_root(NULL);
+> +
+> +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
+> +
+> +	SAFE_MKDIR(cleanup, mntpoint, 0755);
+> +
+> +	uid = 0;
+> +	strncpy(dev, block_dev, PATH_MAX);
+
+I think that copying block_dev to dev is pointless, I haven't seen a
+single place where block_dev couldn't be used directly, or am I
+mistaken?
+
+> +	tst_mkfs(NULL, dev, "xfs", "-f");
+
+I still think that the '-f' should go to the library instead. Or we can
+zero start of the device (where the filesystem superblock and signatures
+are, which should be first few bytes) before we call the mkfs.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
