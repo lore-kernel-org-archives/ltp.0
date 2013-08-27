@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V6gwT-0004EN-GN
-	for ltp-list@lists.sourceforge.net; Tue, 06 Aug 2013 13:04:49 +0000
-Date: Tue, 6 Aug 2013 15:04:45 +0200
-From: chrubis@suse.cz
-Message-ID: <20130806130445.GA28262@rei>
-References: <20130806111355.GB24437@rei>
-	<1375793678-26497-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VE9jT-0001DD-ME
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 03:14:15 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VE9jR-0007h8-JL
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 03:14:15 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r7R3E6LF009082
+	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 11:14:06 +0800
+Message-ID: <521C1950.6050702@cn.fujitsu.com>
+Date: Tue, 27 Aug 2013 11:13:20 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1375793678-26497-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 1/2 V4] tst_run_cmd: added support for stdout and
- stderr redirection
+References: <521C198C.4020604@cn.fujitsu.com>
+In-Reply-To: <521C198C.4020604@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mount/mount05.c: format the device when
+	necessary
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,27 +32,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Added function tst_run_cmd_fds which allows redirection of
-> stdout/stderr to file descriptors.
+On 08/27/2013 11:14 AM, DAN LI wrote:
+> Format the device only when "-D device" & "-T type" are specified.
 > 
-> Now function tst_run_cmd is a wrapper to tst_run_cmd_fds.
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-Both patches pushed.
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Introducing Performance Central, a new site from SourceForge and 
+AppDynamics. Performance Central is your source for news, insights, 
+analysis and resources for efficient Application Performance Management. 
+Visit us today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
