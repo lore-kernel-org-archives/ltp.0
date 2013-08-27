@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VC5La-0006hZ-D4
-	for ltp-list@lists.sourceforge.net; Wed, 21 Aug 2013 10:09:02 +0000
-Date: Wed, 21 Aug 2013 12:09:01 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VEHjJ-0008Gr-BL
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 11:46:37 +0000
+Date: Tue, 27 Aug 2013 13:46:44 +0200
 From: chrubis@suse.cz
-Message-ID: <20130821100901.GA3795@rei>
-References: <1376908164-10045-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130821091712.GA3558@rei> <52148D58.9060509@oracle.com>
+Message-ID: <20130827114644.GC10995@rei.Home>
+References: <521C198C.4020604@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <52148D58.9060509@oracle.com>
-Subject: Re: [LTP] [PATCH] syscalls/migrate_pages: fix nodemask memory
- allocation
+In-Reply-To: <521C198C.4020604@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mount/mount05.c: format the device when
+ necessary
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,18 +25,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > Also I would create a macro to do that NODEMASK_SIZE() and put it into
-> > migrate_pages_common.h header.
-> >
-> I like the variant of a ALIGN general  macro addition (for example, in 
-> test.h) because it may be useful in further testcases.
+> 
+> Format the device only when "-D device" & "-T type" are specified.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-Ah, I've missed that Jan replied to the patch before. The align macro
-sounds good.
+Acked.
 
 -- 
 Cyril Hrubis
