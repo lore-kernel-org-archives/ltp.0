@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VDuzw-00067w-CA
-	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 11:30:16 +0000
-Date: Mon, 26 Aug 2013 13:30:21 +0200
-From: chrubis@suse.cz
-Message-ID: <20130826113021.GA3344@rei>
-References: <1376637057-1744-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130822131321.GA11897@rei.ASUS> <52174875.9030606@oracle.com>
-	<20130823113927.GA24285@rei> <521B331D.7050902@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <521B331D.7050902@oracle.com>
-Subject: Re: [LTP] [PATCH] syscalls/setgroups: fix implicit SETGROUPS
- parameter casting
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VEFDf-0003Xt-T7
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 09:05:47 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VEFDa-00020H-U2
+	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 09:05:47 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r7R95a4s023844
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 27 Aug 2013 05:05:36 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 27 Aug 2013 11:05:32 +0200
+Message-Id: <2060663a46bc8d66f90a9686c7fe4a83d21e40a4.1377594171.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] proc01: add use-gss-proxy to known_issues list
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,79 +26,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> I looked at arch/* from linux sources and prepared this table:
-> 
-> Architecture | __NR_setgroups32 defined | __NR_setgroups defined | glibc 
-> for setgroups() invokes |
-> alpha            |     | + |
-> arm              | + | + |
-> avr32           |     | + |
-> blackfin        | + | + |
-> cris               | + | + |
-> frv                | + | + |
-> h8300           | + | + |
-> ia64              | + |   |
-> m32r            | + |   |
-> m68k            | + | + |
-> microblaze   | + | + |
-> mips             |    | + |
-> mn10300     | + | + |
-> parisc           |    | + |
-> powerpc       |    | + | setgroups   |
-> s390             | + | + | setgroups32 |
-> s390x           |     | + | setgroups   |
-> sh-32            | + | + | setgroups32 |
-> sh-64            | + | + | setgroups32 |
-> sparc32        | + | + | setgroups32 |
-> sparc64        |     | + | setgroups   |
-> i386              | + | + | setgroups32 |
-> x86_64         |     | + | setgroups   |
-> xtensa          |    | + |
-> 
-> Sorry for formatting.
-> 
-> It looks like that if __NR_setgroups32 is defined then this means that 
-> syscall pointed by __NR_setgroups is 16bit.
-> 
-> So how do you think about this patch ?
-> 
-> diff --git a/testcases/kernel/syscalls/setgroups/compat_16.h 
-> b/testcases/kernel/syscalls/setgroups/compat_16.h
-> index 0de4e78..8f46da9 100644
-> --- a/testcases/kernel/syscalls/setgroups/compat_16.h
-> +++ b/testcases/kernel/syscalls/setgroups/compat_16.h
-> @@ -32,9 +32,16 @@ extern void cleanup(void);
->   #ifdef TST_USE_COMPAT16_SYSCALL
-> 
->   long
-> -SETGROUPS(size_t gidsetsize, GID_T *list)
-> +SETGROUPS(size_t gidsetsize, GID_T *list16)
->   {
-> -       return ltp_syscall(__NR_setgroups, gidsetsize, list);
-> +# if (__NR_setgroups32 != __LTP__NR_INVALID_SYSCALL)
-> +       /* __NR_setgroups - 16-bit version of setgroups() syscall */
-> +       return ltp_syscall(__NR_setgroups, gidsetsize, list16);
-> +# else
-> +       /* The platform has no 16-bit version of setgroups() syscall */
-> +       tst_brkm(TCONF, NULL,
-> +               "16-bit version of setgroups() is not supported on your 
-> arch");
-> +# endif /* __NR_setgroups32 */
+Following commit implemented non-blocking read for use-gss-proxy:
+  commit b161c144404c18f6a9e20e46b63828ae3c2eb093
+  Author: J. Bruce Fields <bfields@redhat.com>
+    Date:   Fri May 24 09:47:49 2013 -0400
+        svcrpc: implement O_NONBLOCK behavior for use-gss-proxy
 
-Looks good to me.
+Prior to this commit non-block read hanged, but it happened
+only in -rc kernels, which we can ignore.
 
-And we should fix the getgroups in the same header as well.
+Note, that this proc entry is available only when you load module
+auth_rpcgss.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/fs/proc/proc01.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index f2aa483..2771cd4 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -106,6 +106,7 @@ static const struct mapping known_issues[] = {
+ 	{"read", "/proc/fs/nfsd/filehandle", EINVAL},
+ 	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
+ 	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
++	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
+ 	{"", "", 0}
+ };
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Introducing Performance Central, a new site from SourceForge and 
