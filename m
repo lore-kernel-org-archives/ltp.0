@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VEHM3-0006x8-9z
-	for ltp-list@lists.sourceforge.net; Tue, 27 Aug 2013 11:22:35 +0000
-Date: Tue, 27 Aug 2013 13:22:42 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VEeLt-0003LS-5K
+	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 11:55:57 +0000
+Date: Wed, 28 Aug 2013 13:56:01 +0200
 From: chrubis@suse.cz
-Message-ID: <20130827112242.GB10995@rei.Home>
-References: <1376637057-1744-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130822131321.GA11897@rei.ASUS> <52174875.9030606@oracle.com>
-	<20130823113927.GA24285@rei> <521B331D.7050902@oracle.com>
-	<20130826113021.GA3344@rei> <521B4D82.2060007@oracle.com>
-	<20130826141612.GB3344@rei> <521B6875.8010202@oracle.com>
+Message-ID: <20130828115601.GA4804@rei>
+References: <20130711110014.GB6142@rei.suse.cz>
+	<201308242143.45598.vapier@gentoo.org>
+	<20130827110434.GA10995@rei.Home>
+	<201308271218.22009.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <521B6875.8010202@oracle.com>
-Subject: Re: [LTP] [PATCH] syscalls/setgroups: fix implicit SETGROUPS
- parameter casting
+In-Reply-To: <201308271218.22009.vapier@gentoo.org>
+Subject: Re: [LTP] RFC add _FORTIFY_SOURCE to default LTP CFLAGS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,48 +27,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> But we can't rely on the fact that group ids of a user invoking the
-> >> testcases are fit into __old_gid_t.
-> >>
-> >> And the purpose of current GETGROUPS definition is to handle such cases.
-> >>
-> >> A situation may happen where root user is a member of a group with a
-> >> _big_ group id.
-> >>
-> >> So I'm not 100% sure about fixing getgroups part of the same header.
-> >>
-> >> Or did I miss something?
-> > What I mean is that we should check if the compatibility getgroups
-> > syscall exists and if not abort the test (as the setgroups will do).
-> I understand, but should it be a part of syscalls/setgroups testcases?
+> 
+> unfortunately that does not work.  this snippet from coreutils is probably 
+> better:
+>   AH_VERBATIM([FORTIFY_SOURCE],
+>   [/* Enable compile-time and run-time bounds-checking, and some warnings,
+>       without upsetting glibc 2.15+. */
+>    #if !defined _FORTIFY_SOURCE && defined __OPTIMIZE__ && __OPTIMIZE__
+>    # define _FORTIFY_SOURCE 2   
+>    #endif
+>   ])
 
-Ideally we should move all the syscall magic into more general place,
-some subdirectory of include/ I guess.
+That wouldn't work here, as config.h is included only in a few testcases
+(in these that actually use some of the defines there).
 
-> Maybe we should modify a little bit syscalls/getgroups tests and add 
-> this check there?
-
-That would not help much, to test setgroups() you need to be able to
-call getgroups() as well, thus I think that we should move them into
-more general location.
-
-And moreover it looks like getgroups testcases currently are not able to
-call the compat syscalls at all.
+But given that this just copies some ifdefs into config.h what about
+adding the snippet directly into compiler.h that is included from
+test.h thus ends up in all testcases?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
