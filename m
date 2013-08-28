@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VFCOG-0008OY-9d
-	for ltp-list@lists.sourceforge.net; Fri, 30 Aug 2013 00:16:40 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VFCOE-00028V-Rm
-	for ltp-list@lists.sourceforge.net; Fri, 30 Aug 2013 00:16:39 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 29 Aug 2013 20:16:27 -0400
-References: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
-	<1377761241-17744-3-git-send-email-anders.roxell@linaro.org>
-	<CA+icZUWpYYd__ZKdX6SBbbpN9tJHGnywVhrawHo_UJ3ub=3cOA@mail.gmail.com>
-In-Reply-To: <CA+icZUWpYYd__ZKdX6SBbbpN9tJHGnywVhrawHo_UJ3ub=3cOA@mail.gmail.com>
+	(envelope-from <dave.kleikamp@oracle.com>) id 1VEfTC-00059C-22
+	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:07:34 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VEfTB-0007ph-6X
+	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:07:34 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r7SD7Qal027090
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:07:27 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7SD7P1D008762
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:07:26 GMT
+Received: from abhmt103.oracle.com (abhmt103.oracle.com [141.146.116.55])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7SD7PiB019870
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:07:25 GMT
+Message-ID: <521DF60B.9010401@oracle.com>
+Date: Wed, 28 Aug 2013 08:07:23 -0500
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
 MIME-Version: 1.0
-Message-Id: <201308292016.29360.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 2/2] runltp: remove bashisms
+Subject: [LTP] [PATCH] ltp: Fix races in mmap1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,64 +36,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6052505527603926456=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, sedat.dilek@gmail.com
-Cc: patches@linaro.org
-
---===============6052505527603926456==
-Content-Type: multipart/signed; boundary="nextPart1509137.WzhvWhBYbE";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1509137.WzhvWhBYbE
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Thursday 29 August 2013 04:41:33 Sedat Dilek wrote:
-> On Thu, Aug 29, 2013 at 9:27 AM, Anders Roxell wrote:
-> > -    echo -e "LOG File: \c"
-> > +    echo -n "LOG File: "
->=20
-> Yesterday, I looked through diverse GIT repos where I saw a commit
-> saying that "echo" (dunno if it was "-e" or "-n") is not
-> POSIX-compliant and "printf" should be used.
-> I am no POSIX guy, but maybe someone can confirm this?
-
-use `printf` please for both -e and -n issues
-=2Dmike
-
---nextPart1509137.WzhvWhBYbE
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSH+RdAAoJEEFjO5/oN/WBvwkQAM6zmBnyaouIQADYzVQjJXAc
-x6QxetCsiHa4hXuvjR6/2zQpS7Bvpjrr+d592tKnK60Iy0a8+hB8DvYVk+aQnraQ
-YRGBgpi5/JQ2x/Vsf4USJdUUU1DhqXnDMv0rTpas9wCxV17j6x0UYGX0hAbX0gqj
-pZ+JXm5wVRMjuBgqDtyRUo2/ha5HZl7Ha0+XLB4YmyFrKP0oQ3mlykfH+Iizbmpx
-8ZDWySV3nfCfxAhdV6NKMtegxNgWZQgUYYF639jR2PYE/AzUgr9cHLDwJM6hTdKG
-JgvT/OnEIqSvalZXj0vcytJ5jrlsIV8AMbZruQq1Fn/e6Ga0o7QRkuap3/mUPZME
-KYG/ZVagtt6J0JTxeTDb+NMz8OKuET5qBqUSGQxvUWFNIeyPburwUhCV8rMNeqo/
-ZhzgayLIUFHQO8w/UYCZ8UAiWcckR1YNlkGSope1uGj2NAGmUzwJjALEBrA2j3sG
-NxGEQSmmlAYmmYil1kWUQA/d+Wjlt3rLh7LQgxDbXwIdgkjFJmaANwpHmC5GM5Ek
-RW0KaJO4Ue0No6jYGVdTOj/MH8IBxEc/BNXtoGF9VSd/m1wNiOLmuFSiHGsiD84Q
-NB3eBU6xy+ldwxOs4kAREaORM9LLf6BfCHPoRPXmX2gqfDha1+Z7AlmG7nA//sN4
-UnEuk9r1ZtXt5u8spekN
-=nhtm
------END PGP SIGNATURE-----
-
---nextPart1509137.WzhvWhBYbE--
-
-
---===============6052505527603926456==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Make map_address a volatile pointer so that it is dereferenced in
+read_mem() after read_lock is set.
+
+Also read_lock must protect the verbose printf that reads from map_address
+as well.
+
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+
+diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+index 7c80bb4..cd1127f 100644
+--- a/testcases/kernel/mem/mtest06/mmap1.c
++++ b/testcases/kernel/mem/mtest06/mmap1.c
+@@ -62,7 +62,7 @@
+ } while (0)
+ 
+ static int verbose_print = 0;
+-static char *map_address;
++static char *volatile map_address;
+ static jmp_buf jmpbuf;
+ static volatile char read_lock = 0;
+ 
+@@ -228,11 +228,13 @@ void *read_mem(void *ptr)
+ 				tst_resm(TINFO, "page fault occurred due to "
+ 					 "a read after an unmap");
+ 		} else {
+-			if (verbose_print)
++			if (verbose_print) {
++				read_lock = 1;
+ 				tst_resm(TINFO,
+ 					 "read_mem(): content of memory: %s",
+ 					 (char *)map_address);
+-
++				read_lock = 0;
++			}
+ 			for (j = 0; j < args[1]; j++) {
+ 				read_lock = 1;
+ 				if (map_address[j] != 'a')
 
 ------------------------------------------------------------------------------
 Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
@@ -91,16 +85,7 @@ Discover the easy way to master current and previous Microsoft technologies
 and advance your career. Get an incredible 1,500+ hours of step-by-step
 tutorial videos with LearnDevNow. Subscribe today and save!
 http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
---===============6052505527603926456==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6052505527603926456==--
-
