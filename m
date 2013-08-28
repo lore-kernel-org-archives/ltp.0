@@ -1,23 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anders.roxell@linaro.org>) id 1V6Q3s-0006sz-0b
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:20 +0000
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V6Q3o-0005mL-57
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 19:03:19 +0000
-Received: by mail-lb0-f177.google.com with SMTP id r11so2331176lbv.22
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 05 Aug 2013 12:03:09 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Mon,  5 Aug 2013 21:02:55 +0200
-Message-Id: <1375729379-16469-3-git-send-email-anders.roxell@linaro.org>
-In-Reply-To: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-References: <1375729379-16469-1-git-send-email-anders.roxell@linaro.org>
-Subject: [LTP] [PATCH 2/6] added run_auto.sh to install targets for realtime
-	tests
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VEg6j-0007sg-8y
+	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:48:25 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VEg6e-0005ip-EU
+	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:48:25 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r7SDmD4x013863
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:48:14 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7SDmCMS003654
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:48:13 GMT
+Received: from abhmt102.oracle.com (abhmt102.oracle.com [141.146.116.54])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r7SDmCV5003648
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Aug 2013 13:48:12 GMT
+Message-ID: <521DFF99.4050000@oracle.com>
+Date: Wed, 28 Aug 2013 17:48:09 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+References: <521DF60B.9010401@oracle.com>
+In-Reply-To: <521DF60B.9010401@oracle.com>
+Subject: Re: [LTP] [PATCH] ltp: Fix races in mmap1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,248 +39,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+Cc: Dave Kleikamp <dave.kleikamp@oracle.com>
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- testcases/realtime/func/async_handler/Makefile        |    1 +
- testcases/realtime/func/gtod_latency/Makefile         |    1 +
- testcases/realtime/func/hrtimer-prio/Makefile         |    1 +
- testcases/realtime/func/matrix_mult/Makefile          |    1 +
- testcases/realtime/func/measurement/Makefile          |    1 +
- testcases/realtime/func/periodic_cpu_load/Makefile    |    1 +
- testcases/realtime/func/pi-tests/Makefile             |    1 +
- testcases/realtime/func/pi_perf/Makefile              |    1 +
- testcases/realtime/func/prio-preempt/Makefile         |    1 +
- testcases/realtime/func/prio-wake/Makefile            |    1 +
- testcases/realtime/func/pthread_kill_latency/Makefile |    1 +
- testcases/realtime/func/rt-migrate/Makefile           |    1 +
- testcases/realtime/func/sched_football/Makefile       |    1 +
- testcases/realtime/func/sched_jitter/Makefile         |    1 +
- testcases/realtime/func/sched_latency/Makefile        |    1 +
- testcases/realtime/func/thread_clock/Makefile         |    1 +
- testcases/realtime/perf/latency/Makefile              |    1 +
- 17 files changed, 17 insertions(+)
 
-diff --git a/testcases/realtime/func/async_handler/Makefile b/testcases/realtime/func/async_handler/Makefile
-index faf4fa9..f334cfa 100644
---- a/testcases/realtime/func/async_handler/Makefile
-+++ b/testcases/realtime/func/async_handler/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/gtod_latency/Makefile b/testcases/realtime/func/gtod_latency/Makefile
-index bd67ed6..89d82c9 100644
---- a/testcases/realtime/func/gtod_latency/Makefile
-+++ b/testcases/realtime/func/gtod_latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/hrtimer-prio/Makefile b/testcases/realtime/func/hrtimer-prio/Makefile
-index 0a1872c..d294ee2 100644
---- a/testcases/realtime/func/hrtimer-prio/Makefile
-+++ b/testcases/realtime/func/hrtimer-prio/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/matrix_mult/Makefile b/testcases/realtime/func/matrix_mult/Makefile
-index c19cad1..3d89133 100644
---- a/testcases/realtime/func/matrix_mult/Makefile
-+++ b/testcases/realtime/func/matrix_mult/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/measurement/Makefile b/testcases/realtime/func/measurement/Makefile
-index fdad2c5..36343e9 100644
---- a/testcases/realtime/func/measurement/Makefile
-+++ b/testcases/realtime/func/measurement/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/periodic_cpu_load/Makefile b/testcases/realtime/func/periodic_cpu_load/Makefile
-index 275eb06..e7ec8fc 100644
---- a/testcases/realtime/func/periodic_cpu_load/Makefile
-+++ b/testcases/realtime/func/periodic_cpu_load/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/pi-tests/Makefile b/testcases/realtime/func/pi-tests/Makefile
-index eb9cca3..5273952 100644
---- a/testcases/realtime/func/pi-tests/Makefile
-+++ b/testcases/realtime/func/pi-tests/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- 
-diff --git a/testcases/realtime/func/pi_perf/Makefile b/testcases/realtime/func/pi_perf/Makefile
-index fbceaba..196fca8 100644
---- a/testcases/realtime/func/pi_perf/Makefile
-+++ b/testcases/realtime/func/pi_perf/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/prio-preempt/Makefile b/testcases/realtime/func/prio-preempt/Makefile
-index 6da3504..b4c0b2e 100644
---- a/testcases/realtime/func/prio-preempt/Makefile
-+++ b/testcases/realtime/func/prio-preempt/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/prio-wake/Makefile b/testcases/realtime/func/prio-wake/Makefile
-index 256f5fb..6cea976 100644
---- a/testcases/realtime/func/prio-wake/Makefile
-+++ b/testcases/realtime/func/prio-wake/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/pthread_kill_latency/Makefile b/testcases/realtime/func/pthread_kill_latency/Makefile
-index b07d8de..fd3a059 100644
---- a/testcases/realtime/func/pthread_kill_latency/Makefile
-+++ b/testcases/realtime/func/pthread_kill_latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/rt-migrate/Makefile b/testcases/realtime/func/rt-migrate/Makefile
-index b48f48a..ae4f610 100644
---- a/testcases/realtime/func/rt-migrate/Makefile
-+++ b/testcases/realtime/func/rt-migrate/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/sched_football/Makefile b/testcases/realtime/func/sched_football/Makefile
-index 1b2a480..a5117fd 100644
---- a/testcases/realtime/func/sched_football/Makefile
-+++ b/testcases/realtime/func/sched_football/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/sched_jitter/Makefile b/testcases/realtime/func/sched_jitter/Makefile
-index 95bc9a9..827a0db 100644
---- a/testcases/realtime/func/sched_jitter/Makefile
-+++ b/testcases/realtime/func/sched_jitter/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/sched_latency/Makefile b/testcases/realtime/func/sched_latency/Makefile
-index 564d42f..b7327df 100644
---- a/testcases/realtime/func/sched_latency/Makefile
-+++ b/testcases/realtime/func/sched_latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/func/thread_clock/Makefile b/testcases/realtime/func/thread_clock/Makefile
-index b94b897..5cac451 100644
---- a/testcases/realtime/func/thread_clock/Makefile
-+++ b/testcases/realtime/func/thread_clock/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/perf/latency/Makefile b/testcases/realtime/perf/latency/Makefile
-index 6b1ad58..eea054d 100644
---- a/testcases/realtime/perf/latency/Makefile
-+++ b/testcases/realtime/perf/latency/Makefile
-@@ -22,6 +22,7 @@
- 
- top_srcdir		?= ../../../..
- 
-+INSTALL_TARGETS		:= run_auto.sh
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
--- 
-1.7.10.4
+On 08/28/2013 05:07 PM, Dave Kleikamp wrote:
+> Make map_address a volatile pointer so that it is dereferenced in
+> read_mem() after read_lock is set.
+>
+> Also read_lock must protect the verbose printf that reads from map_address
+> as well.
+>
+> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+>
+> diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+> index 7c80bb4..cd1127f 100644
+> --- a/testcases/kernel/mem/mtest06/mmap1.c
+> +++ b/testcases/kernel/mem/mtest06/mmap1.c
+> @@ -62,7 +62,7 @@
+>   } while (0)
+>   
+>   static int verbose_print = 0;
+> -static char *map_address;
+> +static char *volatile map_address;
+>   static jmp_buf jmpbuf;
+>   static volatile char read_lock = 0;
+>   
+> @@ -228,11 +228,13 @@ void *read_mem(void *ptr)
+>   				tst_resm(TINFO, "page fault occurred due to "
+>   					 "a read after an unmap");
+>   		} else {
+> -			if (verbose_print)
+> +			if (verbose_print) {
+> +				read_lock = 1;
+>   				tst_resm(TINFO,
+>   					 "read_mem(): content of memory: %s",
+>   					 (char *)map_address);
+> -
+> +				read_lock = 0;
+> +			}
+>   			for (j = 0; j < args[1]; j++) {
+>   				read_lock = 1;
+>   				if (map_address[j] != 'a')
+>
+> ------------------------------------------------------------------------------
+> Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+> Discover the easy way to master current and previous Microsoft technologies
+> and advance your career. Get an incredible 1,500+ hours of step-by-step
+> tutorial videos with LearnDevNow. Subscribe today and save!
+> http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+Just in case.. To reproduce failures we need to invoke the test this 
+way, for example:
+
+   ./mmap1 -v -s 10
+
+and then wait few minutes (it depends...)
 
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
