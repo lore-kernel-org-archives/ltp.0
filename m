@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sulfurfff@gmail.com>) id 1V7TN8-0007zL-C9
-	for ltp-list@lists.sourceforge.net; Thu, 08 Aug 2013 16:47:34 +0000
-Received: from mail-wi0-f176.google.com ([209.85.212.176])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1V7TN6-0004Zg-FG
-	for ltp-list@lists.sourceforge.net; Thu, 08 Aug 2013 16:47:34 +0000
-Received: by mail-wi0-f176.google.com with SMTP id f14so805378wiw.3
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 08 Aug 2013 09:47:26 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VEg1T-0001yO-Kw
+	for ltp-list@lists.sourceforge.net; Wed, 28 Aug 2013 13:42:59 +0000
+Date: Wed, 28 Aug 2013 15:43:06 +0200
+From: chrubis@suse.cz
+Message-ID: <20130828134306.GA22069@rei>
+References: <20130827120444.GG10995@rei.Home>
+	<1377607792-5731-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Date: Thu, 8 Aug 2013 11:47:26 -0500
-Message-ID: <CANXECd7vG6AkOSkk+hqPe4f5WUzV800jL2-LRh7BaO1m9ELymQ@mail.gmail.com>
-From: =?UTF-8?Q?Ismael_Farf=C3=A1n?= <sulfurfff@gmail.com>
-Subject: [LTP] unsubscribing
+Content-Disposition: inline
+In-Reply-To: <1377607792-5731-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V4] syscalls/migrate_pages: fix
+	nodemask_memory_allocation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,32 +26,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hello guys
+Hi!
+> Changes since V3:
+> * Macros ALIGN, __ALIGN_MASK renamed to LTP_ALIGN, __LTP_ALIGN_MASK
+> * Both macros are placed in compiler.h (instead of test.h)
 
-I entered here:
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-put my email and hit unsubscribe and then unsubscribe again a few
-times since the last week, but I never get the confirmation email, not
-even among the spam.
-
-Could someone unsubscribe me please?
-
-Thanks
-
+Pushed, thanks.
 
 -- 
-Do not let me induce you to satisfy my curiosity, from an expectation,
-that I shall gratify yours. What I may judge proper to conceal, does
-not concern myself alone.
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
