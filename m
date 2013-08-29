@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1VDpwO-0000qn-E3
-	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 06:06:16 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VDpwM-0005tf-U6
-	for ltp-list@lists.sourceforge.net; Mon, 26 Aug 2013 06:06:16 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r7Q65lsT015513
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Aug 2013 14:05:47 +0800
-Message-ID: <521AF0C8.6020704@cn.fujitsu.com>
-Date: Mon, 26 Aug 2013 14:08:08 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH] mount/mount05.c: format the device when necessary
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1VEwe1-0002IT-B2
+	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 07:27:53 +0000
+Received: from mail-lb0-f179.google.com ([209.85.217.179])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VEwe0-0004NZ-Ib
+	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 07:27:53 +0000
+Received: by mail-lb0-f179.google.com with SMTP id x18so396075lbi.24
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 29 Aug 2013 00:27:45 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu, 29 Aug 2013 09:27:21 +0200
+Message-Id: <1377761241-17744-3-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
+References: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
+Subject: [LTP] [PATCH 2/2] runltp: remove bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +26,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
 
-
-Format the device only when "-D device" & "-T type" are specified.
-
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- testcases/kernel/syscalls/mount/mount05.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ runltp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mount/mount05.c b/testcases/kernel/syscalls/mount/mount05.c
-index 4b2a07c..b4be67b 100644
---- a/testcases/kernel/syscalls/mount/mount05.c
-+++ b/testcases/kernel/syscalls/mount/mount05.c
-@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
- void setup(void)
- {
- 	tst_require_root(NULL);
--	tst_mkfs(NULL, device, fstype, NULL);
-
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
-@@ -122,9 +121,12 @@ void setup(void)
- 	SAFE_MKDIR(cleanup, mntpoint_src, DIR_MODE);
- 	SAFE_MKDIR(cleanup, mntpoint_des, DIR_MODE);
-
--	if (dflag && tflag)
-+	if (dflag && tflag) {
-+		tst_mkfs(NULL, device, fstype, NULL);
-+
- 		if (mount(device, mntpoint_src, fs_type, 0, NULL) == -1)
- 			tst_brkm(TBROK | TERRNO, cleanup, "mount failed");
-+	}
-
- 	SAFE_FILE_PRINTF(cleanup, file_src, "TEST FILE");
-
+diff --git a/runltp b/runltp
+index a419bf8..970c4ee 100755
+--- a/runltp
++++ b/runltp
+@@ -733,15 +733,15 @@ main()
+     #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
+ 
+     ## Display the Output/Log/Failed/HTML file names here
+-    echo -e "LOG File: \c"
++    echo -n "LOG File: "
+     echo $LOGFILE | cut -b4-
+ 
+     if [ "$OUTPUTFILE" ]; then
+-       echo -e "OUTPUT File: \c"
++       echo -n "OUTPUT File: "
+        echo $OUTPUTFILE | cut -b4-
+     fi
+ 
+-    echo -e "FAILED COMMAND File: \c"
++    echo -n "FAILED COMMAND File: "
+     echo $FAILCMDFILE | cut -b4-
+ 
+     if [ "$HTMLFILE" ]; then
 -- 
-1.8.1
+1.8.1.2
+
 
 ------------------------------------------------------------------------------
-Introducing Performance Central, a new site from SourceForge and 
-AppDynamics. Performance Central is your source for news, insights, 
-analysis and resources for efficient Application Performance Management. 
-Visit us today!
-http://pubads.g.doubleclick.net/gampad/clk?id=48897511&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
