@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V74fR-0002wI-QK
-	for ltp-list@lists.sourceforge.net; Wed, 07 Aug 2013 14:24:49 +0000
-Date: Wed, 7 Aug 2013 16:24:45 +0200
-From: chrubis@suse.cz
-Message-ID: <20130807142445.GA7331@rei>
-References: <20130807102427.GA4389@rei>
-	<1375874575-29198-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130807121028.GB4761@rei> <52023F30.9000401@oracle.com>
-	<20130807125522.GC4761@rei> <520252CC.9050900@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <520252CC.9050900@oracle.com>
-Subject: Re: [LTP] [PATCH] tst_run_cmd: const correctness
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1VEwdy-0002IB-Km
+	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 07:27:50 +0000
+Received: from mail-lb0-f178.google.com ([209.85.217.178])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VEwdx-0003kq-NX
+	for ltp-list@lists.sourceforge.net; Thu, 29 Aug 2013 07:27:50 +0000
+Received: by mail-lb0-f178.google.com with SMTP id z5so416470lbh.9
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 29 Aug 2013 00:27:42 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu, 29 Aug 2013 09:27:20 +0200
+Message-Id: <1377761241-17744-2-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
+References: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
+Subject: [LTP] [PATCH 1/2] realtime parser: remove unused and depricated
+	imports
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,82 +27,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
 
-Hi!
-> >> I think that casting mod_name to (char *) is easier than casting array
-> >> before it gets to execvp(). And it doesn't require
-> >> any changes of tst_run_cmd interfaces (ie they accepts argv the same way
-> >> as execvp does)...
-> >>
-> >> Maybe leave everything as is and just cast mod_name to (char *)?
-> > That is easier for one testcase, but will require the cast in each
-> > testcase that will use the interface. From this point of view cast in
-> > the library is better. Not elegant solution though. :(
-> I google-ed the following:
-> http://pubs.opengroup.org/onlinepubs/009604499/functions/exec.html 
-> section RATIONALE
-> 
-> So as I understood from this document execvp expects 'char *const 
-> argv[]'  to prevent 'non-expert' users from
-> casting argv, envp from "char *[]" to "const char *[]".
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ testcases/realtime/scripts/parser.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not exactly, it looks like this was choosen to be backward compatible
-with older code that declared the array as char *argv[] which couldn't
-be automatically casted to const char *const argv[]. So they simple
-choose variant that has at least one const and allows automatic cast
-from char *argv[].
-
-...
-Specifying two levels of const- qualification for the argv[] and envp[]
-parameters for the exec functions may seem to be the natural choice,
-given that these functions do not modify either the array of pointers or
-the characters to which the function points, but this would disallow
-existing correct code. Instead, only the array of pointers is noted as
-constant. The table of assignment compatibility for dst= src derived
-from the ISO C standard summarizes the compatibility:
-
-<snip>
-
-Since all existing code has a source type matching the first row, the
-column that gives the most valid combinations is the third column. The
-only other possibility is the fourth column, but using it would require
-a cast on the argv or envp arguments. It is unfortunate that the fourth
-column cannot be used, because the declaration a non-expert would
-naturally use would be that in the second row.
-...
-
-They are actually complaining that as the type exec functions use is
-char *const[] it couldn't be automatically casted from const char *[]
-as the array would loose the const attribute. Too bad C cannot gain two
-const attributes and cast from char *[] to const char *const[] is not
-possible that way exec fuction could have take any string array...
-
-Looks like I've learned something new today ;).
-
-> Given this information and:
-> > But in the end any of the solutions will work...
-> I vote for a "standard" way i.e. casting array elements to (char *) 
-> before calling tst_run_cmd or execvp.
-
-Given that we do not have any existing code passing char *[] array to
-the tst_run_cmd() I think that we can declare the array as const char
-*const[] and cast it in the library.
-
+diff --git a/testcases/realtime/scripts/parser.py b/testcases/realtime/scripts/parser.py
+index b90233c..6b2dc73 100644
+--- a/testcases/realtime/scripts/parser.py
++++ b/testcases/realtime/scripts/parser.py
+@@ -26,7 +26,7 @@
+ ##                                                                            ##
+ ################################################################################
+ 
+-import sys,os,string,re
++import sys
+ 
+ class Log:
+     def __init__(self,filename):
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1.2
+
 
 ------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
