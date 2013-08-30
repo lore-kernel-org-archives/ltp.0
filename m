@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1V6J2R-0000L8-L5
-	for ltp-list@lists.sourceforge.net; Mon, 05 Aug 2013 11:33:23 +0000
-Date: Mon, 5 Aug 2013 13:33:19 +0200
-From: chrubis@suse.cz
-Message-ID: <20130805113319.GA8739@rei>
-References: <20130731141915.GA2698@rei.scz.novell.com>
-	<1375362489-27214-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130801160456.GA31753@rei.scz.novell.com>
-	<51FB6D7F.3080507@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1VFI2E-0005qP-1Q
+	for ltp-list@lists.sourceforge.net; Fri, 30 Aug 2013 06:18:18 +0000
+Received: from mail-lb0-f180.google.com ([209.85.217.180])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VFI2C-00017l-0F
+	for ltp-list@lists.sourceforge.net; Fri, 30 Aug 2013 06:18:18 +0000
+Received: by mail-lb0-f180.google.com with SMTP id q8so1491874lbi.25
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 29 Aug 2013 23:18:09 -0700 (PDT)
+Date: Fri, 30 Aug 2013 08:22:59 +0200
+From: Anders Roxell <anders.roxell@linaro.org>
+Message-ID: <20130830062259.GD18729@nexon.se>
+References: <1377761241-17744-1-git-send-email-anders.roxell@linaro.org>
+	<1377761241-17744-3-git-send-email-anders.roxell@linaro.org>
+	<CA+icZUWpYYd__ZKdX6SBbbpN9tJHGnywVhrawHo_UJ3ub=3cOA@mail.gmail.com>
+	<201308292016.29360.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51FB6D7F.3080507@oracle.com>
-Subject: Re: [LTP] [PATCH 1/2 V2] tst_run_cmd: added support for stdout and
- stderr redirection
+In-Reply-To: <201308292016.29360.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 2/2] runltp: remove bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,50 +34,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
 
-Hi!
-> > What about passing file descriptors to function (-1 means no
-> > redirection) and create a second function on the top of it that
-> > opens the files, does the checks and the calls the tst_run_cmd?
+Hi,
+
+On 2013-08-29 20:16, Mike Frysinger wrote:
+> On Thursday 29 August 2013 04:41:33 Sedat Dilek wrote:
+> > On Thu, Aug 29, 2013 at 9:27 AM, Anders Roxell wrote:
+> > > -    echo -e "LOG File: \c"
+> > > +    echo -n "LOG File: "
+> > 
+> > Yesterday, I looked through diverse GIT repos where I saw a commit
+> > saying that "echo" (dunno if it was "-e" or "-n") is not
+> > POSIX-compliant and "printf" should be used.
+> > I am no POSIX guy, but maybe someone can confirm this?
 > 
-> So you propose creating two functions: one will accept (const char *) 
-> arguments, the other - file descriptors. Yes?
+> use `printf` please for both -e and -n issues
+I did resend the patch yesterday, with subject: "[PATCHv2 0/2] Rework to
+printf and added required import"
 
-I preffer to look at this as creating one bare function to do the work
-(redirect, vfork + exec) and creating the final function on the top of
-it.
-
-Good thing about the desing is that we can keep the bare function very
-simple.
-
-> But do we really need this functionality in LTP (ie redirect cmd output 
-> either to filename or to file descriptor)?
-
-Well, it may be usefull to be able to redirect stdout of a command into
-a pipe for example.
-
-> What about modifying tst_run_cmd interface as I propose:
-> tst_run_cmd_redirected(void (cleanup_fn)(void),
->                                          char *const argv[],
->                                          const char *stdout_path,
->                                          const char *stderr_path)
-> but putting all the related to file descriptors' opening/closing in 
-> parent's body.
-
-That works as well.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+/Anders
 
 ------------------------------------------------------------------------------
-Get your SQL database under version control now!
-Version control is standard for application code, but databases havent 
-caught up. So what steps can you take to put your SQL databases under 
-version control? Why should you start doing it? Read more to find out.
-http://pubads.g.doubleclick.net/gampad/clk?id=49501711&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
