@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VLaK7-00077o-KN
-	for ltp-list@lists.sourceforge.net; Mon, 16 Sep 2013 15:02:47 +0000
-Date: Mon, 16 Sep 2013 17:03:02 +0200
-From: chrubis@suse.cz
-Message-ID: <20130916150302.GA31089@rei.suse.cz>
-References: <1378895508-28703-1-git-send-email-alexey.kodanev@oracle.com>
-	<1378895508-28703-2-git-send-email-alexey.kodanev@oracle.com>
-	<20130916130318.GA19644@rei.suse.cz> <523714C8.1090504@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1VGVIe-0006MU-FI
+	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 14:40:16 +0000
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VGVId-0004t4-Je
+	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 14:40:16 +0000
+Received: by mail-lb0-f177.google.com with SMTP id p5so3969525lbi.36
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 02 Sep 2013 07:40:08 -0700 (PDT)
+Date: Mon, 2 Sep 2013 16:45:08 +0200
+From: Anders Roxell <anders.roxell@linaro.org>
+Message-ID: <20130902144508.GN18729@nexon.se>
+References: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <523714C8.1090504@oracle.com>
-Subject: Re: [LTP] [PATCH v2 2/2] device-drivers: block: fixes
+In-Reply-To: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
+Subject: Re: [LTP] [PATCHv2 0/2] Rework to printf and added required import
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,91 +31,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
 
-Hi!
-> > Now that we have more uses of this Make recipe I would love to see it
-> > moved to a file under include/mk/ to avoid duplication.
-> >
-> module.mk is OK?
+On 2013-08-29 15:55, Anders Roxell wrote:
+> Hi,
+> 
+> Rewoked to printf and added required import
+> 
+> /Anders
+> 
+> Anders Roxell (2):
+>   realtime parser: remove unused and depricated imports
+>   runltp: rework echo -n to printf POSIX-compliant
+> 
+>  runltp                               | 15 +++++----------
+>  testcases/realtime/scripts/parser.py |  2 +-
+>  2 files changed, 6 insertions(+), 11 deletions(-)
+> 
+> -- 
+> 1.8.1.2
+> 
 
-OK
+Ping.
 
-> > Hmm, wouldn't this print FAIL and the SUCCESS in case the test failed?
-> > (as the main loop prints SUCCESS unconditionally)
-> In case of insmod error, tst_module_load() will call cleanup function 
-> (we're passing tst_fail()) and then test exit with TBROK and it will 
-> never print PASS.
-> > Shouldn't we rather set a flag here (reset it before each test) and
-> > print PASS/FALL accordingly?
-> >
-> This function will be called after test-case failure only once.
-
-Ah, so we abort the testing after first failure due to the
-tst_brkm(TBROK, ...) in tst_run_cmd(). This is not 100% correct as the
-test exit value would say both TBROK and TFAIL (if I'm not mistaken
-these would be simply added to the return mask and reported to the upper
-layer, i.e. ltp-pan). It would be better to report failure only, but
-that would either require changes to the test reporting (probably file
-in sysfs or debugfs) or new test function such as tst_try_load_module()
-or similar.
-
-> > How do we distinguish missing module (due to possible compilation
-> > failure) and test failure?
-> dmesg output can be inspected. If test fail module will print message 
-> with description.
-
-I see that this is settled in the tst_module_load() that calls
-tst_module_exists() first, so if there is no module the result is TCONF,
-so this works well without any further effort. I should have checked
-that myself before asking.
-
-> >> +}
-> >> +
-> >> +static void test_run(void)
-> >> +{
-> >> +	int off = 0;
-> >> +	int test_case[] = { 1, 2, 5, 3, 4, 10, 6, 7, 8 };
-> > What a strange sequence. Is this order of testcases required? Why we
-> > have testcase 10 but not testcase 9?
-> >
-> I think this is a sequence where test-cases's harmless decreasing to the 
-> end. Perhaps, there were more test-cases earlier... I'm not an author of 
-> this test, so I can only guess.
-
-That makes sense but I guess that we can simply renumber them and get
-rid of the magic translation table...
-
-> >> +	/*
-> >> +	 * test-cases #7 and #8 can crash the kernel.
-> >> +	 * We have to wait for kernel fix where register_blkdev()&
-> >> +	 * unregister_blkdev() checks the input device name parameter
-> >> +	 * against NULL pointer.
-> >> +	 */
-> >> +	if (!run_all_testcases)
-> >> +		off = 2;
-> > Are you working on fix with kernel devs?
-> >
-> Not me, patch sent to upstream: 
-> http://www.gossamer-threads.com/lists/linux/kernel/1780670
-
-Ok.
-
-Looking at the patch, is calling with NULL name even supported, given
-that the code causes Oops I would say no. But let's wait for resolution
-from kernel guys.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+/Anders
 
 ------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
