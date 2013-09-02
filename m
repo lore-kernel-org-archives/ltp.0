@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mashimiao.fnst@cn.fujitsu.com>) id 1VP86C-0003IN-5u
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 09:43:04 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VP869-00029D-Dv
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 09:43:04 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r8Q9grUr009314
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Sep 2013 17:42:53 +0800
-Message-ID: <5244016A.4060300@cn.fujitsu.com>
-Date: Thu, 26 Sep 2013 17:42:02 +0800
-From: MaShimiao <mashimiao.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VGWX8-00063l-Qc
+	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 15:59:18 +0000
+Date: Mon, 2 Sep 2013 17:59:29 +0200
+From: chrubis@suse.cz
+Message-ID: <20130902155929.GA2146@rei>
+References: <20130828095459.GB22849@rei.Home>
+	<1377782535-15955-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH v2] setuid/setuid04.c: Fix a double cleanup() error
+Content-Disposition: inline
+In-Reply-To: <1377782535-15955-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V3 1/3] syscalls/utils/compat_16.mk: fix build
+ dependencies
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +26,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: zenglg.jy@cn.fujitsu.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-The cleanup() may be called twice by both the parent and child process
-in this testcase leading to a failure.
+Hi!
+> If we create/modify/touch file syscalls/utils/compat_16.h and execute
+> 'make' in any of syscalls directories which includes compat_16.mk, then
+> nothing will happen, because this approach:
+> 
+>    %.c: $(COMPAT_16_H)
+> 
+> is not working.
+> 
+> Fixed this.
+> 
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  testcases/kernel/syscalls/utils/compat_16.mk |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/utils/compat_16.mk b/testcases/kernel/syscalls/utils/compat_16.mk
+> index 371bd43..36ece1b 100644
+> --- a/testcases/kernel/syscalls/utils/compat_16.mk
+> +++ b/testcases/kernel/syscalls/utils/compat_16.mk
+> @@ -55,6 +55,7 @@ CPPFLAGS		+= -I$(abs_srcdir) -I$(abs_srcdir)/../utils
+>  SRCS			?= $(wildcard $(abs_srcdir)/*.c)
+>  
+>  MAKE_TARGETS		:= $(notdir $(patsubst %.c,%,$(SRCS)))
+> +MAKE_TARGETS_OBJS_WO_COMPAT_16	:= $(addsuffix .o,$(MAKE_TARGETS))
+>  
+>  ifneq ($(TST_COMPAT_16_SYSCALL),no)
+>  MAKE_TARGETS		+= $(addsuffix _16,$(MAKE_TARGETS))
+> @@ -69,7 +70,8 @@ COMPAT_16_H		:= $(abs_srcdir)/../utils/compat_16.h
+>  ifneq ($(wildcard $(COMPAT_16_H)),)
+>  HAS_COMPAT_16		:= 1
+>  
+> -%.c: $(COMPAT_16_H)
+> +$(MAKE_TARGETS_OBJS_WO_COMPAT_16): $(COMPAT_16_H)
+> +.INTERMEDIATE: $(MAKE_TARGETS_OBJS_WO_COMPAT_16)
+>  
+>  else
+>  HAS_COMPAT_16		:= 0
+> @@ -78,5 +80,5 @@ endif
+>  %_16: CPPFLAGS += -D$(DEF_16)=1
+>  # XXX (garrcoop): End section of code in question..
+>  
+> -%_16.o: %.c
+> +%_16.o: %.c $(COMPAT_16_H)
+>  	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
-This patch makes sure cleanup() is called only once by parent process.
+Perhaps we can do this more cleanly by making the _16 binaries depend on
+the compat_16.h as with:
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Signed-off-by: Ma Shimiao <mashimiao.fnst@cn.fujitsu.com>
----
-  testcases/kernel/syscalls/setuid/setuid04.c |    2 +-
-  1 files changed, 1 insertions(+), 1 deletions(-)
+--- a/testcases/kernel/syscalls/utils/compat_16.mk
++++ b/testcases/kernel/syscalls/utils/compat_16.mk
+@@ -57,7 +57,8 @@ SRCS			?= $(wildcard $(abs_srcdir)/*.c)
+ MAKE_TARGETS		:= $(notdir $(patsubst %.c,%,$(SRCS)))
+ 
+ ifneq ($(TST_COMPAT_16_SYSCALL),no)
+-MAKE_TARGETS		+= $(addsuffix _16,$(MAKE_TARGETS))
++MAKE_TARGETS_16	 = $(addsuffix _16,$(MAKE_TARGETS))
++MAKE_TARGETS		+= $(MAKE_TARGETS_16)
+ endif
+ 
+ # XXX (garrcoop): This code should be put in question as it cannot be applied
+@@ -69,8 +70,7 @@ COMPAT_16_H		:= $(abs_srcdir)/../utils/compat_16.h
+ ifneq ($(wildcard $(COMPAT_16_H)),)
+ HAS_COMPAT_16		:= 1
+ 
+-%.c: $(COMPAT_16_H)
+-
++$(MAKE_TARGETS_16): $(COMPAT_16_H)
+ else
+ HAS_COMPAT_16		:= 0
+ endif
 
-diff --git a/testcases/kernel/syscalls/setuid/setuid04.c
-b/testcases/kernel/syscalls/setuid/setuid04.c
-index d8e991e..365859b 100644
---- a/testcases/kernel/syscalls/setuid/setuid04.c
-+++ b/testcases/kernel/syscalls/setuid/setuid04.c
-@@ -88,7 +88,7 @@ static void do_master_child(void)
-  	int pid;
-  	int status;
-
--	if (SETUID(cleanup, ltpuser->pw_uid) == -1) {
-+	if (SETUID(NULL, ltpuser->pw_uid) == -1) {
-  		tst_brkm(TBROK, NULL,
-  			 "setuid failed to set the effective uid to %d",
-  			 ltpuser->pw_uid);
--- 1.7.1
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
