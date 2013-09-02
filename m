@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VK79I-0000RF-QT
-	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 13:41:32 +0000
-Date: Thu, 12 Sep 2013 15:41:46 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VGW3a-0002Cq-Bz
+	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 15:28:46 +0000
+Date: Mon, 2 Sep 2013 17:28:55 +0200
 From: chrubis@suse.cz
-Message-ID: <20130912134146.GA7271@rei.suse.cz>
-References: <1378891544-706-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20130902152855.GD26252@rei>
+References: <20130828095459.GB22849@rei.Home>
+	<1377782535-15955-4-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1378891544-706-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] 16-bit syscalls, part 1
+In-Reply-To: <1377782535-15955-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V3 3/3] syscalls/getgroups: added checks for
+ 16-bit getgroups() syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,23 +30,22 @@ To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> This is part 1 of fixes for 16-bit syscalls.
+> getgroups01_16 and getgroups03_16 did not use 16-bit
+> versions of getgroups() syscall. Fixed this in the same manner like
+> syscalls/setgroups.
 
-Pushed, thanks.
-
-Note that I've cleaned up the test sources and fixed setuid04 to use
-standard temp directory instread of messing up CWD.
+This part looks fine. 
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. Consolidate legacy IT systems to a single system of record for IT
-2. Standardize and globalize service processes across IT
-3. Implement zero-touch automation to replace manual, redundant tasks
-http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
