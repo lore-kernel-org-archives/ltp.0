@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VGT6T-0000cR-Pi
-	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 12:19:33 +0000
-Date: Mon, 2 Sep 2013 14:19:40 +0200
-From: chrubis@suse.cz
-Message-ID: <20130902121939.GB3269@rei>
-References: <521EAA6B.8090308@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <521EAA6B.8090308@cn.fujitsu.com>
-Subject: Re: [LTP] Wanna execute the ltp and the openposix test suite
- together by one command
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anders.roxell@linaro.org>) id 1VGlGS-0004bN-Qq
+	for ltp-list@lists.sourceforge.net; Tue, 03 Sep 2013 07:43:04 +0000
+Received: from mail-lb0-f174.google.com ([209.85.217.174])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VGlGR-0006a1-Tm
+	for ltp-list@lists.sourceforge.net; Tue, 03 Sep 2013 07:43:04 +0000
+Received: by mail-lb0-f174.google.com with SMTP id w6so4617044lbh.33
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Sep 2013 00:42:56 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Tue,  3 Sep 2013 09:42:35 +0200
+Message-Id: <1378194155-16370-1-git-send-email-anders.roxell@linaro.org>
+In-Reply-To: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
+References: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
+Subject: [LTP] [PATCHv3] runltp: rework echo -n to printf POSIX-compliant
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,27 +26,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: patches@linaro.org
 
-Hi!
-> 
-> Or does anbody have a better idea?
-> 
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ runltp | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-What I'm about to do is complete rewrite of the system that executes LTP
-testcases and integrating open posix testsuite is one of the key points.
-
-Hopefully I will start to work on this soon enough (It's quite high
-priority on my TODO now) but even if I start working on it today, it
-will not be ready at least for a few months.
-
+diff --git a/runltp b/runltp
+index a419bf8..e86f5c7 100755
+--- a/runltp
++++ b/runltp
+@@ -537,18 +537,16 @@ main()
+         {
+             [ -z "$RHOST" ] && \
+             {
+-                echo \
+-                "INFO: Enter RHOST = 'name of the remote host machine'"
+-                echo -n "-> "
++                printf "INFO: Enter RHOST = 'name of the remote host machine'"
++                printf "\n-> "
+                 read RHOST
+             }
+ 
+             [ -z "$PASSWD" ] && \
+             {
+-                echo " "
+-                echo \
+-                "INFO: Enter PASSWD = 'root passwd of the remote host machine'"
+-                echo -n "-> "
++                printf "\nINFO: "
++                printf "Enter PASSWD = 'root passwd of the remote host machine'"
++                printf "\n-> "
+                 read PASSWD
+             }
+             export RHOST=$RHOST
+@@ -733,15 +731,15 @@ main()
+     #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
+ 
+     ## Display the Output/Log/Failed/HTML file names here
+-    echo -e "LOG File: \c"
++    printf "LOG File: "
+     echo $LOGFILE | cut -b4-
+ 
+     if [ "$OUTPUTFILE" ]; then
+-       echo -e "OUTPUT File: \c"
++       printf "OUTPUT File: "
+        echo $OUTPUTFILE | cut -b4-
+     fi
+ 
+-    echo -e "FAILED COMMAND File: \c"
++    printf "FAILED COMMAND File: "
+     echo $FAILCMDFILE | cut -b4-
+ 
+     if [ "$HTMLFILE" ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1.2
+
 
 ------------------------------------------------------------------------------
 Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
