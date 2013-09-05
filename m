@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VMde0-0007dU-Ej
-	for ltp-list@lists.sourceforge.net; Thu, 19 Sep 2013 12:47:40 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VMddx-0008VR-5Y
-	for ltp-list@lists.sourceforge.net; Thu, 19 Sep 2013 12:47:40 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r8JClU5c003312
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Sep 2013 12:47:31 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r8JClUCb007087
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Sep 2013 12:47:30 GMT
-Received: from abhmt111.oracle.com (abhmt111.oracle.com [141.146.116.63])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r8JClTV6015811
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Sep 2013 12:47:29 GMT
-Message-ID: <523AF25C.1010907@oracle.com>
-Date: Thu, 19 Sep 2013 16:47:24 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VHWPb-0007MR-OA
+	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 10:03:39 +0000
+Date: Thu, 5 Sep 2013 12:03:52 +0200
+From: chrubis@suse.cz
+Message-ID: <20130905100351.GB2770@rei>
+References: <1378318684-29558-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] Policy regarding BASH
+In-Reply-To: <1378318684-29558-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers: acpi: update for Linux kernel
+ 2.6.37+
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,48 +21,121 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6569336309380390913=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+--===============6569336309380390913==
+Content-Type: text/plain; charset=unknown-8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 Hi!
+> +int LTPMAJOR;
+>  // define the ioctl cmds
+>  #define LTPDEV_CMD       _IOR( LTPMAJOR, LTP_IOCTL_NUMBER, ltpdev_cmd_=
+t **)
+> -
+> diff --git a/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c b/testc=
+ases/kernel/device-drivers/acpi/LtpAcpiCmds.c
+> index 26fcc15..1e85242 100644
+> --- a/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c
+> +++ b/testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c
+> @@ -28,6 +28,8 @@
+>   *  01/03/2009 M=C3=A1rton N=C3=A9meth <nm127@freemail.hu>
+>   *   - Updated for Linux kernel 2.6.28
+>   *
+> + *  09/2013 Alexey Kodanev <alexey.kodanev@oracle.com>
+> + *   - Updated for Linux kernel 2.6.37
+>   */
 
-During looking into shell testcases I came across a situation where
-* main shell script is a bash script (ie it has #!/bin/bash in the header)
-* for each testcase number main shell script executes a separate (child) 
-shell-script which has #!/bin/sh in the header
+Linux-2.6.37 is quite old, does it compile with Linux-3.10?
 
-So If I try to run main script on Debian (where /bin/sh  points to 
-/bin/dash) I get error like this:
-root@debian7-x64:/opt/ltp/testcases/bin# ./run_cpuset_test.sh 3
-TEST 3: CPUSET CONTROLLER TESTING
-TEST STARTED: Please avoid using system while this test executes
-./cpuset_exclusive_test.sh: 34: ./cpuset_funcs.sh: arithmetic 
-expression: expecting primary: "N_NODES++"
-
-So what is the policy regarding bash presence in LTP? Is it permitted to 
-write testcases using bash specific features?
-Or are we strongly encouraged to use "common shell" only?
-
-And how should I proceed with this particular testcase? Try to remove 
-"bashism" or just change header of child scripts from "#!/bin/sh" to 
-"#!/bin/bash"?
-
-Thank you.
-
+Ideally it should work with broad range of kernels but that would likely
+require great number of ifdefs...
 
 
+> diff --git a/testcases/kernel/device-drivers/acpi/LtpAcpiMain.c b/testc=
+ases/kernel/device-drivers/acpi/LtpAcpiMain.c
+> index c3e9c91..ed90784 100644
+> --- a/testcases/kernel/device-drivers/acpi/LtpAcpiMain.c
+> +++ b/testcases/kernel/device-drivers/acpi/LtpAcpiMain.c
+> @@ -42,6 +42,10 @@
+> =20
+>  #include "LtpAcpi.h"
+> =20
+> +#include "test.h"
+> +
+> +char *TCID =3D "LTP_ACPI";
+> +
+>  int LTP_acpi_open_block_device(void);
+> =20
+>  int ltp_block_dev_handle =3D 0;	/* handle to LTP Test block device */
+> @@ -66,7 +70,6 @@ int main(int argc, char **argv)
+>  			     LTP_ACPI_DEVICE_NAME, ltp_block_dev_handle, errno);
+>  		} else {
+>  			rc =3D ioctl(ltp_block_dev_handle, LTPDEV_CMD, &cmd);
+> -
+>  			printf("return from ioctl %d \n", rc);
+>  		}
+> =20
+> @@ -81,7 +84,7 @@ int LTP_acpi_open_block_device()
+>  {
+>  	dev_t devt;
+>  	struct stat statbuf;
+> -	int rc;
+> +	int rc =3D -1;
+> =20
+>  	if (ltp_block_dev_handle =3D=3D 0) {
+> =20
+> @@ -90,6 +93,11 @@ int LTP_acpi_open_block_device()
+>  		 * If devfs is running and mounted on /dev, these checks will all pa=
+ss,
+>  		 * so a new node will not be created.
+>  		 */
+> +
+> +		SAFE_FILE_SCANF(NULL, "/sys/devices/virtual/block/"
+> +			LTP_ACPI_DEV_NAME"/dev",
+> +			"%d:0", &LTPMAJOR);
+> +
+>  		devt =3D makedev(LTPMAJOR, 0);
+> =20
+>  		rc =3D stat(LTP_ACPI_DEV_NODE_PATH, &statbuf);
+
+It would be better to convert this code to full LTP test so we can drop
+the ltpapci.sh script.
+
+Also there doesn't seem to be any success/failure logic. It looks like
+the program just opens the device and does some ioctls(). Do you have an
+idea what is the purpose of this test?
+
+--=20
+Cyril Hrubis
+chrubis@suse.cz
 
 
+--===============6569336309380390913==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
+--===============6569336309380390913==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6569336309380390913==--
