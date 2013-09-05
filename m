@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1VK49s-00034k-9g
-	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 10:29:56 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VK49q-0007zy-IC
-	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 10:29:56 +0000
-Message-ID: <52319789.4000609@oracle.com>
-Date: Thu, 12 Sep 2013 14:29:29 +0400
-From: alexey.kodanev@oracle.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VHXPG-0000eM-2R
+	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 11:07:22 +0000
+Date: Thu, 5 Sep 2013 13:07:32 +0200
+From: chrubis@suse.cz
+Message-ID: <20130905110732.GC2770@rei>
+References: <20130904133732.GB12344@rei>
+	<1378364509-20971-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-References: <522DDDC5.2070908@oracle.com>
-In-Reply-To: <522DDDC5.2070908@oracle.com>
-Subject: [LTP] ACPI LTP Test
+Content-Disposition: inline
+In-Reply-To: <1378364509-20971-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V4] 16-bit syscalls fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,30 +25,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Martin Ridgeway <mridge@us.ibm.com>
-Cc: Vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hello Martin,
+Hi!
+> Changes since V3:
+> 
+> [PATCH 1/3]: no changes
+> 
+> [PATCH 2/3]:
+> * Added Oracle copyright string to syscalls/utils/compat_16.h
+> * Fixed comment next to LTP_CREATE_SYSCALL
+> * Used alternative variant: passing cleanup callback parameter to all
+>   caps functions. I think It looks more compact.
+> 
+> [PATCH 3/3]: Modified invocation of SETGROUPS/GETGROUPS because of changes in [PATCH 2/3]
 
-In the Linux Test Project there is a test which you developed. Could you 
-please help me with answering a couple of questions concerning this 
-test? Right now this test is manual and I'm trying to automate it... 
-here the questions:
-     * why this test is using block device?
-     * I'm not sure what is returning from acpi_driver_data(). The test 
-is using its own 'acpi_ec' structure and trying to cast return void 
-pointer from that function to it, but in then kernel, this structure is 
-slightly different and defined internally.
+This version looks good to me.
 
-Many thanks,
-Alexey
+(Let's wait a day or two so that other have chance to look at the code,
+ then, if nobody objects, I will merge it.)
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. Consolidate legacy IT systems to a single system of record for IT
-2. Standardize and globalize service processes across IT
-3. Implement zero-touch automation to replace manual, redundant tasks
-http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
