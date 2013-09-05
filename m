@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VPCCy-000745-V0
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 14:06:20 +0000
-Date: Thu, 26 Sep 2013 16:06:40 +0200
-From: chrubis@suse.cz
-Message-ID: <20130926140639.GB15992@rei.suse.cz>
-References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1380191440-18171-7-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130926120601.GE14003@rei.suse.cz> <52442EAB.6070805@oracle.com>
-	<20130926135731.GA15992@rei.suse.cz>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20130926135731.GA15992@rei.suse.cz>
-Subject: Re: [LTP] [PATCH 6/7] cpuset_memory_spread_test: number of nodes
- and sleep timeout
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VHU0P-00082x-Ap
+	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 07:29:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VHU0O-0002f1-8q
+	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 07:29:29 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r857TMne018750
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Sep 2013 03:29:22 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu,  5 Sep 2013 09:29:13 +0200
+Message-Id: <9e5ca46eba40644a4d51bb60f9a81d2b99cc814c.1378366073.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] proc01: add nfsd/pool_stats to list of known issues
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,48 +26,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > If I remove this sleep and perform two sequential runs I get this error:
-> > root@debian7-x64:/opt/ltp/testcases/bin# ./cpuset_memory_spread_testset.sh
-> > 100+0 records in
-> > 100+0 records out
-> > 104857600 bytes (105 MB) copied, 0.0595533 s, 1.8 GB/s
-> > cpuset11    1  TFAIL  :  hog the memory on the unexpected 
-> > node(FilePages_For_Nodes(KB): _0: 0
-> > _1: 336
-> > _2: 0
-> > _3: 0, Expect Nodes: 0).
-> > 
-> > But if I take a few seconds between two runs the error disappears.
-> > 
-> > I suppose this is an environment issue but don't know how to manage it.
-> 
-> Hmm, strange indeed, so it looks like the memory is allocated under
-> wrong node.
-> 
-> I would guess that there is someting wrong with the cpuset that moves
-> the test process into the new set. Maybe the system needs some time to
-> move the process memory to the node we specified.
+This file is available if /proc/fs/nfsd filesystem is mounted,
+but it can be opened only when nfs server is running.
 
-What about cating /proc/$test_pid/status before we allocate the memory
-and checking that Mems_allowed_list matches the expected node?
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/fs/proc/proc01.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index 2771cd4..73a55c8 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -85,6 +85,7 @@ static const struct mapping known_issues[] = {
+ 	{"open", "/proc/sal/cmc/data", EBUSY},
+ 	{"open", "/proc/sal/init/data", EBUSY},
+ 	{"open", "/proc/sal/mca/data", EBUSY},
++	{"open", "/proc/fs/nfsd/pool_stats", ENODEV},
+ 	{"read", "/proc/acpi/event", EAGAIN},
+ 	{"read", "/proc/kmsg", EAGAIN},
+ 	{"read", "/proc/sal/cpe/event", EAGAIN},
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
