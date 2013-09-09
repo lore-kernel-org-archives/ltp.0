@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VHU0P-00082x-Ap
-	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 07:29:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VHU0O-0002f1-8q
-	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 07:29:29 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r857TMne018750
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 5 Sep 2013 03:29:22 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu,  5 Sep 2013 09:29:13 +0200
-Message-Id: <9e5ca46eba40644a4d51bb60f9a81d2b99cc814c.1378366073.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] proc01: add nfsd/pool_stats to list of known issues
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VJ3IL-0001Yf-Bq
+	for ltp-list@lists.sourceforge.net; Mon, 09 Sep 2013 15:22:29 +0000
+Date: Mon, 9 Sep 2013 17:22:23 +0200
+From: chrubis@suse.cz
+Message-ID: <20130909152223.GA4586@rei>
+References: <1378729381-32706-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130909141126.GB9492@rei> <522DE321.5090701@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <522DE321.5090701@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers: rtc: minor updates
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,35 +22,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-This file is available if /proc/fs/nfsd filesystem is mounted,
-but it can be opened only when nfs server is running.
+Hi!
+> > Hi!
+> >> Makefile updated.
+> >> Added .gitignore file.
+> >> Added root check and rtc device check.
+> > The changes looks good, what about adding the test into kernel_misc
+> > runtest file?
+> >
+> I thought I can do it in separate patches. We have to add device-drivers 
+> directory to .../testcases/kernel/Makefile and then  include this test 
+> in .../device-drivers/Makefile to build it automatically.
+> I've recently sent a patch which is adding Makefile to device-drivers 
+> directory, is it OK?
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/fs/proc/proc01.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+I would split it to patch that adds Makefile into device drivers
+directory and adds device-drivers directory into the kernel/Makefile
+(assuming that Makefile with empty SUBDIRS is noop) And for each fixed
+test a patch that enables subdirectory once test is fixed along with
+updating the runtest entry (which is a bit unfortunate as this may
+generate collisions if you work on more than one subdir which means that
+this patch should be done only once the test fix is acked). If you are
+OK with that, let's start with rtc test.
 
-diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
-index 2771cd4..73a55c8 100644
---- a/testcases/kernel/fs/proc/proc01.c
-+++ b/testcases/kernel/fs/proc/proc01.c
-@@ -85,6 +85,7 @@ static const struct mapping known_issues[] = {
- 	{"open", "/proc/sal/cmc/data", EBUSY},
- 	{"open", "/proc/sal/init/data", EBUSY},
- 	{"open", "/proc/sal/mca/data", EBUSY},
-+	{"open", "/proc/fs/nfsd/pool_stats", ENODEV},
- 	{"read", "/proc/acpi/event", EAGAIN},
- 	{"read", "/proc/kmsg", EAGAIN},
- 	{"read", "/proc/sal/cpe/event", EAGAIN},
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
