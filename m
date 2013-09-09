@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VGX7Y-0003z9-PD
-	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 16:36:56 +0000
-Date: Mon, 2 Sep 2013 18:37:06 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VJ2BN-000838-8J
+	for ltp-list@lists.sourceforge.net; Mon, 09 Sep 2013 14:11:13 +0000
+Date: Mon, 9 Sep 2013 16:11:26 +0200
 From: chrubis@suse.cz
-Message-ID: <20130902163706.GA30482@rei>
-References: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
-	<1377784548-1036-2-git-send-email-anders.roxell@linaro.org>
+Message-ID: <20130909141126.GB9492@rei>
+References: <1378729381-32706-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1377784548-1036-2-git-send-email-anders.roxell@linaro.org>
-Subject: Re: [LTP] [PATCH 1/2] realtime parser: remove unused and depricated
- imports
+In-Reply-To: <1378729381-32706-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers: rtc: minor updates
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,27 +24,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anders Roxell <anders.roxell@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> ---
->  testcases/realtime/scripts/parser.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/realtime/scripts/parser.py b/testcases/realtime/scripts/parser.py
-> index b90233c..6b2dc73 100644
-> --- a/testcases/realtime/scripts/parser.py
-> +++ b/testcases/realtime/scripts/parser.py
-> @@ -26,7 +26,7 @@
->  ##                                                                            ##
->  ################################################################################
->  
-> -import sys,os,string,re
-> +import sys
+> Makefile updated.
+> Added .gitignore file.
+> Added root check and rtc device check.
 
-Pushed, thanks.
+The changes looks good, what about adding the test into kernel_misc
+runtest file?
 
 -- 
 Cyril Hrubis
@@ -57,7 +44,7 @@ Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
 Discover the easy way to master current and previous Microsoft technologies
 and advance your career. Get an incredible 1,500+ hours of step-by-step
 tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
