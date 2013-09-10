@@ -1,17 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VLy22-0006bH-51
-	for ltp-list@lists.sourceforge.net; Tue, 17 Sep 2013 16:21:42 +0000
-Date: Tue, 17 Sep 2013 18:21:59 +0200
-From: chrubis@suse.cz
-Message-ID: <20130917162159.GA14998@rei>
-References: <1379418720-26529-1-git-send-email-alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1379418720-26529-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v3 2/2] device-drivers: block: fixes
+	(envelope-from <alexey.kodanev@oracle.com>) id 1VJJ6f-0000Hj-1o
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 08:15:29 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VJJ6d-0003Ha-2j
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 08:15:28 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r8A8FKDr022843
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 08:15:21 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8A8FJHr002592
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 08:15:20 GMT
+Received: from abhmt113.oracle.com (abhmt113.oracle.com [141.146.116.65])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8A8FJXq021539
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 08:15:19 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 10 Sep 2013 12:14:49 +0400
+Message-Id: <1378800890-27391-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 1/2] device-drivers: add makefile to build drivers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,100 +35,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi!
-> diff --git a/testcases/kernel/device-drivers/block/Makefile b/testcases/kernel/device-drivers/block/Makefile
-> new file mode 100644
-> index 0000000..455354f
-> --- /dev/null
-> +++ b/testcases/kernel/device-drivers/block/Makefile
-> @@ -0,0 +1,30 @@
-> +# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-> +#
-> +# This program is free software; you can redistribute it and/or
-> +# modify it under the terms of the GNU General Public License as
-> +# published by the Free Software Foundation; either version 2 of
-> +# the License, or (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it would be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program; if not, write the Free Software Foundation,
-> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +
-> +top_srcdir	?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +SUBDIRS		= block_dev_user
-> +
-> +SKIP		= $(shell test "$(MAKECMDGOALS)" = "clean" -o \
-> +	"$(WITH_MODULES)" = "yes"; echo $$?)
-> +
-> +ifeq ($(SKIP),0)
-> +SUBDIRS		+= block_dev_kernel
-> +endif
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/kernel/device-drivers/Makefile |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/device-drivers/Makefile
 
-I wonder if it wouldn't be easier to enter the directory and make the
-kernel part Makefile to be noop if there is no kernel-devel package or
-if the kernel version is not new enough.
-
-Ideally the makefile in the kernel part should look like:
-
-
-top_srcdir	?= ../../../..
-
-include $(top_srcdir)/include/mk/env_pre.mk
-
-REQ_VERSION_MAJOR       = 3
-REQ_VERSION_PATCH       = 7
-
-MODULE_NAME = ltp_foo_bar
-
-include $(top_srcdir)/include/mk/module.mk
-
-
-And the rest of the magic should be in the module.mk file.
-
-Then:
-
-1) make in the dir is noop if devel package is missing or
-   version is too old
-
-   - the parent Makefile has only subdirs defined, no need
-     for additional magic there
-
-2) module is build
-
-3) if module was build installed
-
->  /*
-> - * Module under test: linux/block/genhd.c
-> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-
-I would add a copyright line for the name in the MODULE_AUTHOR() too.
-
-
-The rest of the changes looks good to me.
-
+diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
+new file mode 100644
+index 0000000..10aded8
+--- /dev/null
++++ b/testcases/kernel/device-drivers/Makefile
+@@ -0,0 +1,23 @@
++# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++
++top_srcdir	?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++SUBDIRS		:=
++
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
+How ServiceNow helps IT people transform IT departments:
+1. Consolidate legacy IT systems to a single system of record for IT
+2. Standardize and globalize service processes across IT
+3. Implement zero-touch automation to replace manual, redundant tasks
+http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
