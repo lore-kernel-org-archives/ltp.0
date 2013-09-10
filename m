@@ -2,17 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VLy5J-00021a-K6
-	for ltp-list@lists.sourceforge.net; Tue, 17 Sep 2013 16:25:05 +0000
-Date: Tue, 17 Sep 2013 18:25:23 +0200
+	(envelope-from <metan@suse.de>) id 1VJQHJ-0007YX-9B
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 15:54:57 +0000
+Received: from relay2.suse.de (unknown [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id A21FFA4EB7
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 10 Sep 2013 17:54:50 +0200 (CEST)
+Date: Tue, 10 Sep 2013 17:55:10 +0200
 From: chrubis@suse.cz
-Message-ID: <20130917162523.GB14998@rei>
-References: <1379418720-26529-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130917162159.GA14998@rei>
+Message-ID: <20130910155508.GA25865@rei.Home>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20130917162159.GA14998@rei>
-Subject: Re: [LTP] [PATCH v3 2/2] device-drivers: block: fixes
+Subject: [LTP] typo in runtest/mm?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,56 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 Hi!
-> I wonder if it wouldn't be easier to enter the directory and make the
-> kernel part Makefile to be noop if there is no kernel-devel package or
-> if the kernel version is not new enough.
-> 
-> Ideally the makefile in the kernel part should look like:
-> 
-> 
-> top_srcdir	?= ../../../..
-> 
-> include $(top_srcdir)/include/mk/env_pre.mk
-> 
-> REQ_VERSION_MAJOR       = 3
-> REQ_VERSION_PATCH       = 7
-> 
-> MODULE_NAME = ltp_foo_bar
-> 
-> include $(top_srcdir)/include/mk/module.mk
-> 
-> 
-> And the rest of the magic should be in the module.mk file.
-> 
-> Then:
-> 
-> 1) make in the dir is noop if devel package is missing or
->    version is too old
-> 
->    - the parent Makefile has only subdirs defined, no need
->      for additional magic there
-> 
-> 2) module is build
-> 
-> 3) if module was build installed
+I've been looking at test results and found (what I think) is a typo in
+test name:
 
-     if module was build, i.e. the .ko file exist install it
-     on install, dtto for clean
+diff --git a/runtest/mm b/runtest/mm
+index a39becd..28151b5 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -72,7 +72,7 @@ ksm04_1 ksm04 -u 128
+ksm05 ksm05 -I 10
+ksm06 ksm06
+ksm06_1 ksm06 -n 10
+-ksn06_2 ksm06 -n 10000
++ksm06_2 ksm06 -n 10000
+
+Should I apply this patch?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
+How ServiceNow helps IT people transform IT departments:
+1. Consolidate legacy IT systems to a single system of record for IT
+2. Standardize and globalize service processes across IT
+3. Implement zero-touch automation to replace manual, redundant tasks
+http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
