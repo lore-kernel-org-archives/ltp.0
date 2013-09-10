@@ -1,19 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VPAKD-00045G-KW
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 12:05:41 +0000
-Date: Thu, 26 Sep 2013 14:06:01 +0200
-From: chrubis@suse.cz
-Message-ID: <20130926120601.GE14003@rei.suse.cz>
-References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1380191440-18171-7-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1380191440-18171-7-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 6/7] cpuset_memory_spread_test: number of nodes
- and sleep timeout
+	(envelope-from <alexey.kodanev@oracle.com>) id 1VJJ6g-0000Hp-Q2
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 08:15:30 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VJJ6g-0003Hh-50
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 08:15:30 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r8A8FNvs022879
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 08:15:24 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8A8FMDS021652
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 08:15:23 GMT
+Received: from abhmt113.oracle.com (abhmt113.oracle.com [141.146.116.65])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8A8FMMh021649
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 08:15:22 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 10 Sep 2013 12:14:50 +0400
+Message-Id: <1378800890-27391-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1378800890-27391-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1378800890-27391-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 2/2] device-drivers: include device-drivers directory
+	to the LTP build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,62 +38,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi!
-> For unification number of nodes is set based on environment.
-> 
-> I've not found a better way to guarantee dropping of caches than
-> just increasing sleep timeout twice (to 20 seconds).
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  .../cpuset_memory_spread_testset.sh                |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-> index a357e22..4d7bbeb 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-> @@ -32,8 +32,8 @@ export TST_COUNT=1
->  
->  exit_status=0
->  # must >= 3 for: 1-$((nr_mems-2))
-> -nr_cpus=4
-> -nr_mems=3
-> +nr_cpus=$NR_CPUS
-> +nr_mems=$N_NODES
->  
->  # In general, the cache hog will use more than 10000 kb slab space on the nodes
->  # on which it is running. The other nodes' slab space has littler change.(less
-> @@ -231,7 +231,7 @@ general_memory_spread_test()
->  	fi
->  
->  	# wait for droping the cache
-> -	sleep 10
-> +	sleep 20
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/kernel/Makefile |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-I've asked our kernel guys and the drop_caches is synchronous interface,
-so at the time the cat returns the caches should be dropped. See
-fs/drop_caches.c the sysctl handler just does the work, there is nothing
-deffered to working threads.
-
-What exactly goes wrong when this sleep is missing here?
-
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 811fcca..fa6a191 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -38,6 +38,7 @@ ifneq ($(UCLINUX),1)
+ SUBDIRS			+= connectors \
+ 			   containers \
+ 			   controllers \
++			   device-drivers \
+ 			   firmware \
+ 			   fs \
+ 			   hotplug \
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+How ServiceNow helps IT people transform IT departments:
+1. Consolidate legacy IT systems to a single system of record for IT
+2. Standardize and globalize service processes across IT
+3. Implement zero-touch automation to replace manual, redundant tasks
+http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
