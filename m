@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VK08u-0001Hr-7K
-	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 06:12:40 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VK08s-00010I-Cu
-	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 06:12:40 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r8C6CVIP002578
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Sep 2013 06:12:32 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r8C6CVce024185
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Sep 2013 06:12:31 GMT
-Received: from abhmt101.oracle.com (abhmt101.oracle.com [141.146.116.53])
-	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r8C6CV0F008976
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Sep 2013 06:12:31 GMT
-Message-ID: <52315B4D.1020902@oracle.com>
-Date: Thu, 12 Sep 2013 10:12:29 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	(envelope-from <metan@suse.de>) id 1VJMuo-0000Nj-CF
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 12:19:30 +0000
+Date: Tue, 10 Sep 2013 14:19:45 +0200
+From: chrubis@suse.cz
+Message-ID: <20130910121944.GB21927@rei.Home>
+References: <522E89AE.5080707@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] FORK_OR_VFORK
+Content-Disposition: inline
+In-Reply-To: <522E89AE.5080707@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] runltp: bigger the supplied block device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,47 +24,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: DAN LI <li.dan@cn.fujitsu.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hello!
+Hi!
+> To make a xfs filesystem, we need the device gets at least 4096 blocks.
+> 
+> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
 
-LTP employs FORK_OR_VFORK macro which is defined as:
+Pushed, thanks.
 
-#ifdef UCLINUX
-#define FORK_OR_VFORK                   vfork
-#define MAP_PRIVATE_EXCEPT_UCLINUX      0
-#else
-#define FORK_OR_VFORK                   fork
-#define MAP_PRIVATE_EXCEPT_UCLINUX      MAP_PRIVATE
-#endif
-
-So, on UCLINUX it is a vfork call.
-
-But many testcases use this macro and try to use functions other than 
-exec() and _exit() inside a child.
-Example - syscalls/setfsuid/setfsuid04.c.
-And I suppose that because of that fact these testcases may fail on 
-UCLINUX (or behave unexpectedly).
-
-Is this situation left intentionally? Does somebody care about this 
-issue? Or we simply ignore it.
-
-I'm just curious. :)
-
-Thanks.
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 How ServiceNow helps IT people transform IT departments:
