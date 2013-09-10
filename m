@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VGnZk-0002eO-75
-	for ltp-list@lists.sourceforge.net; Tue, 03 Sep 2013 10:11:08 +0000
-Date: Tue, 3 Sep 2013 12:11:19 +0200
-From: chrubis@suse.cz
-Message-ID: <20130903101118.GA2100@rei>
-References: <20130828095459.GB22849@rei.Home>
-	<1377782535-15955-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20130902152301.GC26252@rei> <52259811.3000604@oracle.com>
+	(envelope-from <li.dan@cn.fujitsu.com>) id 1VJE5G-0002ww-IK
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 02:53:42 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VJE5E-00056X-PQ
+	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 02:53:42 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r8A2rWMl022361
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 10:53:32 +0800
+Message-ID: <522E89AE.5080707@cn.fujitsu.com>
+Date: Tue, 10 Sep 2013 10:53:34 +0800
+From: DAN LI <li.dan@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52259811.3000604@oracle.com>
-Subject: Re: [LTP] [PATCH V3 2/3] fixes for 16-bit syscalls testcases
+Subject: [LTP]  [PATCH] runltp: bigger the supplied block device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,61 +28,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
-
-Hi!
-> Sorry, but is it possible to use #ifdef or #if inside a #define macro?
-
-Right it does not, sorry. I tend to forget how dumb it the C preprocessor is.
-
-> This doesn't work:
-> 
-> #define MYDEF(NN) \
-> # ifdef TST_USE_COMPAT16_SYSCALL
->          return NN(0);
-> # else
->          return NN(1);
-> # endif
-> 
-> MYDEF(bla)
-
-We need to pull the first if out of the macro and we can do the second
-one as a regular if (it will be optimized away anyway).
-
-#ifdef TST_USE_COMPAT16_SYSCALL
-# define LTP_CREATE_SYSCALL(sys_name, ...) \
-	if (__NR_##sys_name##32 != __LTP__NR_INVALID_SYSCALL) { \
-		return ltp_syscall(sys_name, ##__VA_ARGS__); \
-	} else { \
-		errno = ENOSYS; \
-		return -1; \
-	}
-#else
-# define LTP_CREATE_SYSCALL(sys_name, ...) \
-	return sys_name(__VA_ARGS__)
-#endif
+To: LTP list <ltp-list@lists.sourceforge.net>
 
 
-The usage will be:
+To make a xfs filesystem, we need the device gets at least 4096 blocks.
 
-int SETGROUPS(size_t size, const GID_T *list)
-{
-	LTP_CREATE_SYSCALL(getgroups, size, list);
-}
+Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
+---
+ runltp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Does this sound reasonable?
+diff --git a/runltp b/runltp
+index e86f5c7..63c625f 100755
+--- a/runltp
++++ b/runltp
+@@ -955,8 +955,8 @@ main()
 
+ create_block()
+ {
+-    #create a block device with ext4 filesystem.
+-    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240
++    #create a block device
++    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480
+     if [ $? -ne 0 ]; then
+         echo "Failed to create loopback device image, please check disk space and re-run"
+         return 1
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+How ServiceNow helps IT people transform IT departments:
+1. Consolidate legacy IT systems to a single system of record for IT
+2. Standardize and globalize service processes across IT
+3. Implement zero-touch automation to replace manual, redundant tasks
+http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
