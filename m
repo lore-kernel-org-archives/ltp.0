@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VJMuo-0000Nj-CF
-	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 12:19:30 +0000
-Date: Tue, 10 Sep 2013 14:19:45 +0200
-From: chrubis@suse.cz
-Message-ID: <20130910121944.GB21927@rei.Home>
-References: <522E89AE.5080707@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vlee@freedesktop.org>) id 1VKDiU-0001vl-HW
+	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 20:42:18 +0000
+Received: from gabe.freedesktop.org ([131.252.210.177])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VKDiS-0004Kk-3B
+	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 20:42:18 +0000
+From: Vinson Lee <vlee@freedesktop.org>
+Date: Thu, 12 Sep 2013 13:24:39 -0700
+Message-Id: <1379017479-2396-1-git-send-email-vlee@freedesktop.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <522E89AE.5080707@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] runltp: bigger the supplied block device
+Subject: [LTP] [PATCH] setgid03.c: Fix build.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,30 +22,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> To make a xfs filesystem, we need the device gets at least 4096 blocks.
-> 
-> Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
-
-Pushed, thanks.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. Consolidate legacy IT systems to a single system of record for IT
-2. Standardize and globalize service processes across IT
-3. Implement zero-touch automation to replace manual, redundant tasks
-http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+RnJvbTogVmluc29uIExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KClRoaXMgcGF0Y2ggZml4ZXMgYnVp
+bGQgZXJyb3JzIGludHJvZHVjZWQgd2l0aCBjb21taXQKN2RjNDJjOTc2OTZmMTM1ZTFmZWY5MmU2
+MTJlY2M2NmJmOGQ3NDMxOC4KCnNldGdpZDAzLmM6MzY6MjM6IGVycm9yOiBzdGF0aWMgZGVjbGFy
+YXRpb24gb2Yg4oCYZ2V0cHduYW3igJkgZm9sbG93cyBub24tc3RhdGljIGRlY2xhcmF0aW9uCklu
+IGZpbGUgaW5jbHVkZWQgZnJvbSBzZXRnaWQwMy5jOjI0OjA6Ci91c3IvaW5jbHVkZS9wd2QuaDox
+MTc6MjM6IG5vdGU6IHByZXZpb3VzIGRlY2xhcmF0aW9uIG9mIOKAmGdldHB3bmFt4oCZIHdhcyBo
+ZXJlCnNldGdpZDAzLmM6Mzk6MTogZXJyb3I6IGR1cGxpY2F0ZSDigJhzdGF0aWPigJkKc2V0Z2lk
+MDMuYzo0MDoxOiBlcnJvcjogZHVwbGljYXRlIOKAmHN0YXRpY+KAmQoKU2lnbmVkLW9mZi1ieTog
+Vmluc29uIExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3NldGdpZC9zZXRnaWQwMy5jIHwgNiArKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2Vy
+dGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9zZXRnaWQvc2V0Z2lkMDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0
+Z2lkL3NldGdpZDAzLmMKaW5kZXggOGI3MTQwMS4uOGM3NjU1NiAxMDA2NDQKLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9zZXRnaWQvc2V0Z2lkMDMuYworKysgYi90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCkBAIC0zMywxMSArMzMsMTEgQEAgaW50IFRT
+VF9UT1RBTCA9IDE7CiAKIHN0YXRpYyBjaGFyIGx0cHVzZXIxW10gPSAibm9ib2R5IjsKIHN0YXRp
+YyBjaGFyIHJvb3RbXSA9ICJyb290IjsKLXN0YXRpYyBzdHJ1Y3QgcGFzc3dkICpnZXRwd25hbSgp
+LCAqbHRwdXNlcjFwd2VudCwgKnJvb3Rwd2VudDsKK3N0YXRpYyBzdHJ1Y3QgcGFzc3dkICpsdHB1
+c2VyMXB3ZW50LCAqcm9vdHB3ZW50Owogc3RhdGljIGdpZF90IG15Z2lkOwogCi1zdGF0aWMgc3Rh
+dGljIHZvaWQgc2V0dXAodm9pZCk7Ci1zdGF0aWMgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsK
+K3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpOworc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKIAog
+aW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCiB7Ci0tIAoxLjguMS4yCgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkhvdyBTZXJ2aWNlTm93IGhlbHBzIElUIHBlb3BsZSB0cmFuc2Zvcm0gSVQgZGVw
+YXJ0bWVudHM6CjEuIENvbnNvbGlkYXRlIGxlZ2FjeSBJVCBzeXN0ZW1zIHRvIGEgc2luZ2xlIHN5
+c3RlbSBvZiByZWNvcmQgZm9yIElUCjIuIFN0YW5kYXJkaXplIGFuZCBnbG9iYWxpemUgc2Vydmlj
+ZSBwcm9jZXNzZXMgYWNyb3NzIElUCjMuIEltcGxlbWVudCB6ZXJvLXRvdWNoIGF1dG9tYXRpb24g
+dG8gcmVwbGFjZSBtYW51YWwsIHJlZHVuZGFudCB0YXNrcwpodHRwOi8vcHViYWRzLmcuZG91Ymxl
+Y2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NTEyNzExMTEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFp
+bGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
