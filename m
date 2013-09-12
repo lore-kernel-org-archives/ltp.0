@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VP8qp-0006id-Fc
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:15 +0000
+	id 1VK08u-0001Hr-7K
+	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 06:12:40 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VP8ql-00055w-AK
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:15 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VK08s-00010I-Cu
+	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 06:12:40 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r8C6CVIP002578
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Sep 2013 06:12:32 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8C6CVce024185
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Sep 2013 06:12:31 GMT
+Received: from abhmt101.oracle.com (abhmt101.oracle.com [141.146.116.53])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8C6CV0F008976
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Sep 2013 06:12:31 GMT
+Message-ID: <52315B4D.1020902@oracle.com>
+Date: Thu, 12 Sep 2013 10:12:29 +0400
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 26 Sep 2013 14:30:35 +0400
-Message-Id: <1380191440-18171-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/7] cpuset/cpuset_base_ops_test: fix expected error
+MIME-Version: 1.0
+Subject: [LTP] FORK_OR_VFORK
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,80 +37,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-At least since kernel 3.0.0 writing '0-' to
-$CPUSET/N/{cpus, mems} files doesn't raise an error.
-Reading content of these files after writing gives '0'.
+Hello!
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../cpuset_base_ops_testset.sh                     |   16 ++++++++++++++--
- 1 files changed, 14 insertions(+), 2 deletions(-)
+LTP employs FORK_OR_VFORK macro which is defined as:
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-index 8b21210..126eec5 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-@@ -117,7 +117,6 @@ test_cpus()
- 		0-$((nr_cpus-1))			0-$((nr_cpus-1))
- 		-1					WRITE_ERROR
- 		0-$nr_cpus				WRITE_ERROR
--		0-					WRITE_ERROR
- 		0--$((nr_cpus-1))			WRITE_ERROR
- 		0,1-$((nr_cpus-2)),$((nr_cpus-1))	0-$((nr_cpus-1))
- 		0,1-$((nr_cpus-2)),			0-$((nr_cpus-2))
-@@ -125,6 +124,13 @@ test_cpus()
- 		AAA					WRITE_ERROR
- 	EOF
- 	# while read cpus result
-+
-+	tst_kvercmp 3 0 0
-+	if [ $? -eq 0 ]; then
-+		base_op_test "$CPUSET/1/cpus" "0-" "WRITE_ERROR"
-+	else
-+		base_op_test "$CPUSET/1/cpus" "0-" "0"
-+	fi
- }
- 
- test_mems()
-@@ -144,7 +150,6 @@ test_mems()
- 		0-$((nr_mems-1))			0-$((nr_mems-1))
- 		-1					WRITE_ERROR
- 		0-$nr_mems				WRITE_ERROR
--		0-					WRITE_ERROR
- 		0--$((nr_mems-1))			WRITE_ERROR
- 		0,1-$((nr_mems-2)),$((nr_mems-1))	0-$((nr_mems-1))
- 		0,1-$((nr_mems-2)),			0-$((nr_mems-2))
-@@ -152,6 +157,13 @@ test_mems()
- 		AAA					WRITE_ERROR
- 	EOF
- 	# while read mems result
-+
-+	tst_kvercmp 3 0 0
-+	if [ $? -eq 0 ]; then
-+		base_op_test "$CPUSET/1/mems" "0-" "WRITE_ERROR"
-+	else
-+		base_op_test "$CPUSET/1/mems" "0-" "0"
-+	fi
- }
- 
- test_flags()
--- 
-1.7.1
+#ifdef UCLINUX
+#define FORK_OR_VFORK                   vfork
+#define MAP_PRIVATE_EXCEPT_UCLINUX      0
+#else
+#define FORK_OR_VFORK                   fork
+#define MAP_PRIVATE_EXCEPT_UCLINUX      MAP_PRIVATE
+#endif
+
+So, on UCLINUX it is a vfork call.
+
+But many testcases use this macro and try to use functions other than 
+exec() and _exit() inside a child.
+Example - syscalls/setfsuid/setfsuid04.c.
+And I suppose that because of that fact these testcases may fail on 
+UCLINUX (or behave unexpectedly).
+
+Is this situation left intentionally? Does somebody care about this 
+issue? Or we simply ignore it.
+
+I'm just curious. :)
+
+Thanks.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+How ServiceNow helps IT people transform IT departments:
+1. Consolidate legacy IT systems to a single system of record for IT
+2. Standardize and globalize service processes across IT
+3. Implement zero-touch automation to replace manual, redundant tasks
+http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
