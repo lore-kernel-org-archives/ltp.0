@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VLaZL-0002pA-Sm
-	for ltp-list@lists.sourceforge.net; Mon, 16 Sep 2013 15:18:31 +0000
-Date: Mon, 16 Sep 2013 17:18:47 +0200
-From: chrubis@suse.cz
-Message-ID: <20130916151847.GA30140@rei.suse.cz>
-References: <1379066350-20317-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VKRSN-0007bS-Cc
+	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 11:22:35 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VKRSK-0007Ra-Tx
+	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 11:22:35 +0000
+Date: Fri, 13 Sep 2013 07:22:26 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1378015317.12865344.1379071346297.JavaMail.root@redhat.com>
+In-Reply-To: <1379017479-2396-1-git-send-email-vlee@freedesktop.org>
+References: <1379017479-2396-1-git-send-email-vlee@freedesktop.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="d6Gm4EdcadzBjdND"
-Content-Disposition: inline
-In-Reply-To: <1379066350-20317-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] setfsgid,
- setfsuid: clean up and 16-bit version fixes
+Subject: Re: [LTP] [PATCH] setgid03.c: Fix build.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,565 +24,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Vinson Lee <vlee@freedesktop.org>, Zhouping Liu <zliu@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  testcases/kernel/syscalls/setfsgid/setfsgid01.c |   97 ++++--------
->  testcases/kernel/syscalls/setfsgid/setfsgid02.c |   95 ++++--------
->  testcases/kernel/syscalls/setfsgid/setfsgid03.c |  118 ++++++---------
->  testcases/kernel/syscalls/setfsuid/setfsuid01.c |   97 ++++--------
->  testcases/kernel/syscalls/setfsuid/setfsuid02.c |   96 ++++--------
->  testcases/kernel/syscalls/setfsuid/setfsuid03.c |  118 +++++----------
->  testcases/kernel/syscalls/setfsuid/setfsuid04.c |  183 +++++++++-------------
->  testcases/kernel/syscalls/utils/compat_16.h     |   13 ++
->  8 files changed, 297 insertions(+), 520 deletions(-)
-
-It's usually better to split the patches between cleanup and functional
-changes but in this case the functional changes are simple enough...
-
-I've amended a few more fixes over this patches mostly another missing
-void in function parameters and cosmetic changes.
-
-Note that for TEST_ERRNO you must use TTERRNO not TERRNO.
-
-Also notice that I've basically reverted the changes in
-run_master_child() in setfsuid04. You must not use tst_* interface from
-child, it's not designed to work this way and it may lead to unexpected
-results.
-
-See attached patch (that is combined with your patch in the final one)
-for details.
-
-Thanks!
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---d6Gm4EdcadzBjdND
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: inline; filename="fixes.patch"
-
-diff --git a/testcases/kernel/syscalls/setfsgid/setfsgid01.c b/testcases/kernel/syscalls/setfsgid/setfsgid01.c
-index da21cd3..f87bace 100644
---- a/testcases/kernel/syscalls/setfsgid/setfsgid01.c
-+++ b/testcases/kernel/syscalls/setfsgid/setfsgid01.c
-@@ -44,9 +44,8 @@ int main(int ac, char **av)
- 
- 	gid_t gid;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -59,7 +58,7 @@ int main(int ac, char **av)
- 		TEST(SETFSGID(cleanup, gid));
- 
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_resm(TFAIL | TTERRNO,
- 				"setfsgid() failed unexpectedly");
- 			continue;
- 		}
-@@ -83,14 +82,14 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--static void setup()
-+static void setup(void)
- {
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- }
- 
--static void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setfsgid/setfsgid02.c b/testcases/kernel/syscalls/setfsgid/setfsgid02.c
-index 296adc1..250d677 100644
---- a/testcases/kernel/syscalls/setfsgid/setfsgid02.c
-+++ b/testcases/kernel/syscalls/setfsgid/setfsgid02.c
-@@ -29,9 +29,6 @@
- #include <pwd.h>
- #include <sys/types.h>
- #include <errno.h>
--#ifdef __GLIBC__
--#include <sys/fsuid.h>
--#endif
- 
- #include "test.h"
- #include "usctest.h"
-@@ -50,9 +47,8 @@ int main(int ac, char **av)
- 
- 	gid_t gid;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -60,15 +56,15 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		gid = 1;
--		while (getgrgid(gid)) {
-+		while (getgrgid(gid))
- 			gid++;
--		}
-+
- 		GID16_CHECK(gid, setfsgid, cleanup);
- 
- 		TEST(SETFSGID(cleanup, gid));
- 
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_resm(TFAIL | TTERRNO,
- 				"setfsgid() failed unexpectedly");
- 			continue;
- 		}
-@@ -91,14 +87,14 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--static void setup()
-+static void setup(void)
- {
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- }
- 
--static void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setfsgid/setfsgid03.c b/testcases/kernel/syscalls/setfsgid/setfsgid03.c
-index a38b685..ae351b8 100644
---- a/testcases/kernel/syscalls/setfsgid/setfsgid03.c
-+++ b/testcases/kernel/syscalls/setfsgid/setfsgid03.c
-@@ -29,9 +29,6 @@
- #include <errno.h>
- #include <pwd.h>
- #include <grp.h>
--#ifdef __GLIBC__
--#include <sys/fsuid.h>
--#endif
- 
- #include "test.h"
- #include "usctest.h"
-@@ -53,9 +50,8 @@ int main(int ac, char **av)
- 
- 	gid_t gid;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -63,15 +59,15 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		gid = 1;
--		while (!getgrgid(gid)) {
-+		while (!getgrgid(gid))
- 			gid++;
--		}
-+
- 		GID16_CHECK(gid, setfsgid, cleanup);
- 
- 		TEST(SETFSGID(cleanup, gid));
- 
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_resm(TFAIL | TTERRNO,
- 				"setfsgid() failed unexpectedly");
- 			continue;
- 		}
-@@ -95,7 +91,7 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--static void setup()
-+static void setup(void)
- {
- 	tst_require_root(NULL);
- 
-@@ -114,7 +110,7 @@ static void setup()
- 	TEST_PAUSE;
- }
- 
--static void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid01.c b/testcases/kernel/syscalls/setfsuid/setfsuid01.c
-index 3d3896d..0f1828e 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid01.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid01.c
-@@ -44,9 +44,8 @@ int main(int ac, char **av)
- 
- 	uid_t uid;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -60,7 +59,7 @@ int main(int ac, char **av)
- 		TEST(SETFSUID(cleanup, uid));
- 
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_resm(TFAIL | TTERRNO,
- 				"setfsuid() failed unexpectedly");
- 			continue;
- 		}
-@@ -84,14 +83,14 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--static void setup()
-+static void setup(void)
- {
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- }
- 
--static void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid02.c b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-index baf1993..666dd32 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-@@ -26,9 +26,6 @@
- #include <stdio.h>
- #include <unistd.h>
- #include <pwd.h>
--#ifdef __GLIBC__
--#include <sys/fsuid.h>
--#endif
- #include <sys/types.h>
- #include <errno.h>
- 
-@@ -49,16 +46,15 @@ int main(int ac, char **av)
- 
- 	uid_t uid;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
- 	uid = 1;
--	while (getpwuid(uid)) {
-+	while (getpwuid(uid))
- 		uid++;
--	}
-+
- 	UID16_CHECK(uid, setfsuid, cleanup);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -68,7 +64,7 @@ int main(int ac, char **av)
- 		TEST(SETFSUID(cleanup, uid));
- 
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_resm(TFAIL | TTERRNO,
- 				"setfsuid() failed unexpectedly");
- 			continue;
- 		}
-@@ -91,14 +87,14 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--static void setup()
-+static void setup(void)
- {
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- }
- 
--static void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid03.c b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-index a065d78..b194f00 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-@@ -25,9 +25,6 @@
- 
- #include <stdio.h>
- #include <unistd.h>
--#ifdef __GLIBC__
--#include <sys/fsuid.h>
--#endif
- #include <sys/types.h>
- #include <errno.h>
- #include <pwd.h>
-@@ -52,16 +49,15 @@ int main(int ac, char **av)
- 
- 	uid_t uid;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
- 	uid = 1;
--	while (!getpwuid(uid)) {
-+	while (!getpwuid(uid))
- 		uid++;
--	}
-+
- 	UID16_CHECK(uid, setfsuid, cleanup);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -71,7 +67,7 @@ int main(int ac, char **av)
- 		TEST(SETFSUID(cleanup, uid));
- 
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_resm(TFAIL | TTERRNO,
- 				"setfsuid() failed unexpectedly");
- 			continue;
- 		}
-@@ -95,7 +91,7 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--static void setup()
-+static void setup(void)
- {
- 	tst_require_root(NULL);
- 
-@@ -113,7 +109,7 @@ static void setup()
- 	TEST_PAUSE;
- }
- 
--static void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-index 03ea551..0b41426 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-@@ -27,9 +27,6 @@
-  */
- 
- #include <sys/types.h>
--#ifdef __GLIBC__
--#include <sys/fsuid.h>
--#endif
- #include <sys/stat.h>
- #include <sys/wait.h>
- #include <errno.h>
-@@ -49,13 +46,13 @@ int TST_TOTAL = 1;
- 
- static char nobody_uid[] = "nobody";
- static char testfile[] = "setfsuid04_testfile";
--struct passwd *ltpuser;
-+static struct passwd *ltpuser;
- 
- static int fd = -1;
- 
- static void setup(void);
- static void cleanup(void);
--static void do_master_child();
-+static void do_master_child(void);
- 
- int main(int ac, char **av)
- {
-@@ -79,71 +76,74 @@ int main(int ac, char **av)
- 		tst_resm(TBROK | TERRNO, "waitpid failed");
- 	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
- 		tst_resm(TFAIL, "child process terminated abnormally");
-+	else
-+		tst_resm(TPASS, "Test passed");
- 
- 	cleanup();
- 	tst_exit();
- }
- 
--static void do_master_child()
-+static void do_master_child(void)
- {
- 	int pid;
- 	int status;
--	int tst_fd;
- 
--	if (SETFSUID(NULL, ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setfsuid failed");
-+	if (SETFSUID(NULL, ltpuser->pw_uid) == -1) {
-+		perror("setfsuid failed");
-+		exit(1);
-+	}
- 
- 	/* Test 1: Check the process with new uid cannot open the file
- 	 *         with RDWR permissions.
- 	 */
--	TEST(tst_fd = open(testfile, O_RDWR));
-+	TEST(open(testfile, O_RDWR));
- 
- 	if (TEST_RETURN != -1) {
--		close(tst_fd);
--		tst_brkm(TFAIL, NULL, "open succeeded unexpectedly");
-+		close(TEST_RETURN);
-+		printf("open succeeded unexpectedly\n");
-+		exit(1);
- 	}
- 
--	if (TEST_ERRNO == EACCES)
--		tst_resm(TPASS,
--			"open failed with EACCESS as expected");
--	else {
--		tst_brkm(TFAIL, NULL,
--			"open returned unexpected errno - %d",
--			TEST_ERRNO);
-+	if (TEST_ERRNO == EACCES) {
-+		printf("open failed with EACCESS as expected\n");
-+	} else {
-+		printf("open returned unexpected errno - %d\n", TEST_ERRNO);
-+		exit(1);
- 	}
- 
- 	/* Test 2: Check a son process cannot open the file
- 	 *         with RDWR permissions.
- 	 */
- 	pid = FORK_OR_VFORK();
--	if (pid < 0)
--		tst_brkm(TBROK, NULL, "Fork failed");
-+	if (pid < 0) {
-+		perror("Fork failed");
-+		exit(1);
-+	}
- 
- 	if (pid == 0) {
--		int tst_fd2;
--
- 		/* Test to open the file in son process */
--		TEST(tst_fd2 = open(testfile, O_RDWR));
-+		TEST(open(testfile, O_RDWR));
- 
- 		if (TEST_RETURN != -1) {
--			close(tst_fd2);
--			tst_brkm(TFAIL, NULL,
--				"open succeeded unexpectedly");
-+			close(TEST_RETURN);
-+			printf("open succeeded unexpectedly\n");
-+			exit(1);
- 		}
- 
--		if (TEST_ERRNO == EACCES)
--			tst_resm(TPASS,
--				"open failed with EACCESS as expected");
--		else {
--			tst_brkm(TFAIL, NULL,
--				"open returned unexpected errno - %d",
--				TEST_ERRNO);
-+		if (TEST_ERRNO == EACCES) {
-+			printf("open failed with EACCESS as expected\n");
-+		} else {
-+			printf("open returned unexpected errno - %d\n",
-+			       TEST_ERRNO);
-+			exit(1);
- 		}
- 	} else {
- 		/* Wait for son completion */
- 		if (waitpid(pid, &status, 0) == -1) {
--			tst_brkm(TFAIL, NULL, "waitpid failed");
-+			perror("waitpid failed");
-+			exit(1);
- 		}
-+
- 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
- 			exit(WEXITSTATUS(status));
- 	}
-@@ -152,17 +152,19 @@ static void do_master_child()
- 	 *         the file with RDWR permissions.
- 	 */
- 	tst_count++;
--	if (SETFSUID(NULL, 0) == -1)
--		tst_brkm(TFAIL | TERRNO, NULL, "setfsuid failed");
-+	if (SETFSUID(NULL, 0) == -1) {
-+		perror("setfsuid failed");
-+		exit(1);
-+	}
- 
--	TEST(tst_fd = open(testfile, O_RDWR));
-+	TEST(open(testfile, O_RDWR));
- 
- 	if (TEST_RETURN == -1) {
--		tst_brkm(TFAIL | TERRNO, NULL,
--			"open failed unexpectedly");
-+		perror("open failed unexpectedly");
-+		exit(1);
- 	} else {
--		tst_resm(TPASS, "open call succeeded");
--		close(tst_fd);
-+		printf("open call succeeded\n");
-+		close(TEST_RETURN);
- 	}
- 	exit(0);
- }
-
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---d6Gm4EdcadzBjdND--
-
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiVmluc29uIExlZSIgPHZs
+ZWVAZnJlZWRlc2t0b3Aub3JnPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+PiBTZW50OiBUaHVyc2RheSwgMTIgU2VwdGVtYmVyLCAyMDEzIDEwOjI0OjM5IFBNCj4gU3ViamVj
+dDogW0xUUF0gW1BBVENIXSBzZXRnaWQwMy5jOiBGaXggYnVpbGQuCj4gCj4gRnJvbTogVmluc29u
+IExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KPiAKPiBUaGlzIHBhdGNoIGZpeGVzIGJ1aWxkIGVycm9y
+cyBpbnRyb2R1Y2VkIHdpdGggY29tbWl0Cj4gN2RjNDJjOTc2OTZmMTM1ZTFmZWY5MmU2MTJlY2M2
+NmJmOGQ3NDMxOC4KPiAKPiBzZXRnaWQwMy5jOjM2OjIzOiBlcnJvcjogc3RhdGljIGRlY2xhcmF0
+aW9uIG9mIOKAmGdldHB3bmFt4oCZIGZvbGxvd3Mgbm9uLXN0YXRpYwo+IGRlY2xhcmF0aW9uCj4g
+SW4gZmlsZSBpbmNsdWRlZCBmcm9tIHNldGdpZDAzLmM6MjQ6MDoKPiAvdXNyL2luY2x1ZGUvcHdk
+Lmg6MTE3OjIzOiBub3RlOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJhnZXRwd25hbeKAmSB3
+YXMgaGVyZQo+IHNldGdpZDAzLmM6Mzk6MTogZXJyb3I6IGR1cGxpY2F0ZSDigJhzdGF0aWPigJkK
+PiBzZXRnaWQwMy5jOjQwOjE6IGVycm9yOiBkdXBsaWNhdGUg4oCYc3RhdGlj4oCZCj4gCj4gU2ln
+bmVkLW9mZi1ieTogVmluc29uIExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KCkNvbW1pdHRlZC4KWmhv
+dXBpbmcgSSBhZGRlZCB5b3VyIHNpZ25lZC1vZmYtYnkgdG8gdGhpcyBwYXRjaCBhcyBpdCB3YXMg
+aWRlbnRpY2FsLgoKVGhhbmsgeW91LApKYW4KCj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvc2V0Z2lkL3NldGdpZDAzLmMgfCA2ICsrKy0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMyBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCj4gaW5kZXggOGI3MTQwMS4uOGM3NjU1NiAxMDA2NDQK
+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCj4gKysr
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRnaWQvc2V0Z2lkMDMuYwo+IEBAIC0zMywx
+MSArMzMsMTEgQEAgaW50IFRTVF9UT1RBTCA9IDE7Cj4gIAo+ICBzdGF0aWMgY2hhciBsdHB1c2Vy
+MVtdID0gIm5vYm9keSI7Cj4gIHN0YXRpYyBjaGFyIHJvb3RbXSA9ICJyb290IjsKPiAtc3RhdGlj
+IHN0cnVjdCBwYXNzd2QgKmdldHB3bmFtKCksICpsdHB1c2VyMXB3ZW50LCAqcm9vdHB3ZW50Owo+
+ICtzdGF0aWMgc3RydWN0IHBhc3N3ZCAqbHRwdXNlcjFwd2VudCwgKnJvb3Rwd2VudDsKPiAgc3Rh
+dGljIGdpZF90IG15Z2lkOwo+ICAKPiAtc3RhdGljIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+
+IC1zdGF0aWMgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKPiArc3RhdGljIHZvaWQgc2V0dXAo
+dm9pZCk7Cj4gK3N0YXRpYyB2b2lkIGNsZWFudXAodm9pZCk7Cj4gIAo+ICBpbnQgbWFpbihpbnQg
+YWMsIGNoYXIgKiphdikKPiAgewo+IC0tCj4gMS44LjEuMgo+IAo+IAo+IC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQo+IEhvdyBTZXJ2aWNlTm93IGhlbHBzIElUIHBlb3BsZSB0cmFuc2Zvcm0gSVQgZGVw
+YXJ0bWVudHM6Cj4gMS4gQ29uc29saWRhdGUgbGVnYWN5IElUIHN5c3RlbXMgdG8gYSBzaW5nbGUg
+c3lzdGVtIG9mIHJlY29yZCBmb3IgSVQKPiAyLiBTdGFuZGFyZGl6ZSBhbmQgZ2xvYmFsaXplIHNl
+cnZpY2UgcHJvY2Vzc2VzIGFjcm9zcyBJVAo+IDMuIEltcGxlbWVudCB6ZXJvLXRvdWNoIGF1dG9t
+YXRpb24gdG8gcmVwbGFjZSBtYW51YWwsIHJlZHVuZGFudCB0YXNrcwo+IGh0dHA6Ly9wdWJhZHMu
+Zy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD01MTI3MTExMSZpdT0vNDE0MC9vc3RnLmNs
+a3Ryawo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+THRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPiAK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpIb3cgU2VydmljZU5vdyBoZWxwcyBJVCBwZW9wbGUgdHJh
+bnNmb3JtIElUIGRlcGFydG1lbnRzOgoxLiBDb25zb2xpZGF0ZSBsZWdhY3kgSVQgc3lzdGVtcyB0
+byBhIHNpbmdsZSBzeXN0ZW0gb2YgcmVjb3JkIGZvciBJVAoyLiBTdGFuZGFyZGl6ZSBhbmQgZ2xv
+YmFsaXplIHNlcnZpY2UgcHJvY2Vzc2VzIGFjcm9zcyBJVAozLiBJbXBsZW1lbnQgemVyby10b3Vj
+aCBhdXRvbWF0aW9uIHRvIHJlcGxhY2UgbWFudWFsLCByZWR1bmRhbnQgdGFza3MKaHR0cDovL3B1
+YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTUxMjcxMTExJml1PS80MTQwL29z
+dGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Ckx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
+cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
