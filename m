@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1VKSND-00054w-UY
-	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 12:21:19 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VKSNB-0006Rs-TK
-	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 12:21:19 +0000
-Message-ID: <52330323.6020702@oracle.com>
-Date: Fri, 13 Sep 2013 16:20:51 +0400
-From: alexey.kodanev@oracle.com
-MIME-Version: 1.0
-Subject: [LTP] ACPI test
+	(envelope-from <zliu@redhat.com>) id 1VKQCp-0007eM-Gs
+	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 10:02:27 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VKQCn-00089p-8P
+	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 10:02:27 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r8DA2JBw022243
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 13 Sep 2013 06:02:19 -0400
+From: Zhouping Liu <zliu@redhat.com>
+Date: Fri, 13 Sep 2013 18:00:52 +0800
+Message-Id: <1379066452-5943-1-git-send-email-zliu@redhat.com>
+Subject: [LTP] [PATCH] syscalls/setgid: fixed a compiling error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,35 +26,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: linux-acpi@vger.kernel.org
-Cc: Vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi All!
+commit 7dc42c97 did some clean up, but brought some typos:
+ 1. getpwnam() is defined in /usr/include/pwd.h,
+    it doesn't need 'static', or remove getpwnam() declaration.
+ 2. added duplicated 'static' key word.
 
-I'm reviewing Linux Test Project's test concerning ACPI and a little bit 
-lost with the following test: 
-https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/device-drivers/acpi. 
-It's quite outdated...
+Signed-off-by: Zhouping Liu <zliu@redhat.com>
+---
+ testcases/kernel/syscalls/setgid/setgid03.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Pardon my technical knowledge on this subject but could you guide me to 
-solve the following questions about the test and ACPI:
+diff --git a/testcases/kernel/syscalls/setgid/setgid03.c b/testcases/kernel/syscalls/setgid/setgid03.c
+index 8b71401..8c76556 100644
+--- a/testcases/kernel/syscalls/setgid/setgid03.c
++++ b/testcases/kernel/syscalls/setgid/setgid03.c
+@@ -33,11 +33,11 @@ int TST_TOTAL = 1;
+ 
+ static char ltpuser1[] = "nobody";
+ static char root[] = "root";
+-static struct passwd *getpwnam(), *ltpuser1pwent, *rootpwent;
++static struct passwd *ltpuser1pwent, *rootpwent;
+ static gid_t mygid;
+ 
+-static static void setup(void);
+-static static void cleanup(void);
++static void setup(void);
++static void cleanup(void);
+ 
+ int main(int ac, char **av)
+ {
+-- 
+1.7.11.7
 
-* Is it necessary to use block device to test ACPI functionality as test 
-does?
-
-* How can I verify data which I get from acpi_driver_data() using random 
-acpi device handle? The test is using its own 'acpi_ec' structure and 
-trying to cast return void pointer from that function to it, but in the 
-kernel, this structure is slightly different and defined internally.
-
-May be you have some thoughts how ACPI test should look like? Any help 
-is appreciated.
-
-Many thanks,
-Alexey
 
 ------------------------------------------------------------------------------
 How ServiceNow helps IT people transform IT departments:
