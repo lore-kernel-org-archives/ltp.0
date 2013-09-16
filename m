@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VGovz-0005xH-07
-	for ltp-list@lists.sourceforge.net; Tue, 03 Sep 2013 11:38:11 +0000
-Date: Tue, 3 Sep 2013 13:38:22 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VLVVl-0006ub-FV
+	for ltp-list@lists.sourceforge.net; Mon, 16 Sep 2013 09:54:29 +0000
+Date: Mon, 16 Sep 2013 11:54:42 +0200
 From: chrubis@suse.cz
-Message-ID: <20130903113821.GA8672@rei>
-References: <1377784548-1036-1-git-send-email-anders.roxell@linaro.org>
-	<1378194155-16370-1-git-send-email-anders.roxell@linaro.org>
+Message-ID: <20130916095442.GA17003@rei.suse.cz>
+References: <1379066452-5943-1-git-send-email-zliu@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1378194155-16370-1-git-send-email-anders.roxell@linaro.org>
-Subject: Re: [LTP] [PATCHv3] runltp: rework echo -n to printf POSIX-compliant
+In-Reply-To: <1379066452-5943-1-git-send-email-zliu@redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/setgid: fixed a compiling error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,27 +24,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anders Roxell <anders.roxell@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, patches@linaro.org
+To: Zhouping Liu <zliu@redhat.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> commit 7dc42c97 did some clean up, but brought some typos:
+>  1. getpwnam() is defined in /usr/include/pwd.h,
+>     it doesn't need 'static', or remove getpwnam() declaration.
+>  2. added duplicated 'static' key word.
+> 
+> Signed-off-by: Zhouping Liu <zliu@redhat.com>
 > ---
->  runltp | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
+>  testcases/kernel/syscalls/setgid/setgid03.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/setgid/setgid03.c b/testcases/kernel/syscalls/setgid/setgid03.c
+> index 8b71401..8c76556 100644
+> --- a/testcases/kernel/syscalls/setgid/setgid03.c
+> +++ b/testcases/kernel/syscalls/setgid/setgid03.c
+> @@ -33,11 +33,11 @@ int TST_TOTAL = 1;
+>  
+>  static char ltpuser1[] = "nobody";
+>  static char root[] = "root";
+> -static struct passwd *getpwnam(), *ltpuser1pwent, *rootpwent;
+> +static struct passwd *ltpuser1pwent, *rootpwent;
+>  static gid_t mygid;
+>  
+> -static static void setup(void);
+> -static static void cleanup(void);
+> +static void setup(void);
+> +static void cleanup(void);
+>  
+>  int main(int ac, char **av)
+>  {
 
-Pushed, thanks.
+Missed that, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
+1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
+2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
+Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
+http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
