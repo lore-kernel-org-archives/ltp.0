@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <li.dan@cn.fujitsu.com>) id 1VJE5G-0002ww-IK
-	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 02:53:42 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VJE5E-00056X-PQ
-	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 02:53:42 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r8A2rWMl022361
-	for <ltp-list@lists.sourceforge.net>; Tue, 10 Sep 2013 10:53:32 +0800
-Message-ID: <522E89AE.5080707@cn.fujitsu.com>
-Date: Tue, 10 Sep 2013 10:53:34 +0800
-From: DAN LI <li.dan@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VLy5J-00021a-K6
+	for ltp-list@lists.sourceforge.net; Tue, 17 Sep 2013 16:25:05 +0000
+Date: Tue, 17 Sep 2013 18:25:23 +0200
+From: chrubis@suse.cz
+Message-ID: <20130917162523.GB14998@rei>
+References: <1379418720-26529-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130917162159.GA14998@rei>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] runltp: bigger the supplied block device
+Content-Disposition: inline
+In-Reply-To: <20130917162159.GA14998@rei>
+Subject: Re: [LTP] [PATCH v3 2/2] device-drivers: block: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,40 +25,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
+Hi!
+> I wonder if it wouldn't be easier to enter the directory and make the
+> kernel part Makefile to be noop if there is no kernel-devel package or
+> if the kernel version is not new enough.
+> 
+> Ideally the makefile in the kernel part should look like:
+> 
+> 
+> top_srcdir	?= ../../../..
+> 
+> include $(top_srcdir)/include/mk/env_pre.mk
+> 
+> REQ_VERSION_MAJOR       = 3
+> REQ_VERSION_PATCH       = 7
+> 
+> MODULE_NAME = ltp_foo_bar
+> 
+> include $(top_srcdir)/include/mk/module.mk
+> 
+> 
+> And the rest of the magic should be in the module.mk file.
+> 
+> Then:
+> 
+> 1) make in the dir is noop if devel package is missing or
+>    version is too old
+> 
+>    - the parent Makefile has only subdirs defined, no need
+>      for additional magic there
+> 
+> 2) module is build
+> 
+> 3) if module was build installed
 
-To make a xfs filesystem, we need the device gets at least 4096 blocks.
+     if module was build, i.e. the .ko file exist install it
+     on install, dtto for clean
 
-Signed-off-by: DAN LI <li.dan@cn.fujitsu.com>
----
- runltp | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/runltp b/runltp
-index e86f5c7..63c625f 100755
---- a/runltp
-+++ b/runltp
-@@ -955,8 +955,8 @@ main()
-
- create_block()
- {
--    #create a block device with ext4 filesystem.
--    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=10240
-+    #create a block device
-+    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480
-     if [ $? -ne 0 ]; then
-         echo "Failed to create loopback device image, please check disk space and re-run"
-         return 1
 -- 
-1.8.1
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. Consolidate legacy IT systems to a single system of record for IT
-2. Standardize and globalize service processes across IT
-3. Implement zero-touch automation to replace manual, redundant tasks
-http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
+LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
+1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
+2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
+Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
+http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
