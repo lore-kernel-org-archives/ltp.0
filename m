@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VHXPG-0000eM-2R
-	for ltp-list@lists.sourceforge.net; Thu, 05 Sep 2013 11:07:22 +0000
-Date: Thu, 5 Sep 2013 13:07:32 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VLtGS-0003ED-6N
+	for ltp-list@lists.sourceforge.net; Tue, 17 Sep 2013 11:16:16 +0000
+Date: Tue, 17 Sep 2013 13:16:31 +0200
 From: chrubis@suse.cz
-Message-ID: <20130905110732.GC2770@rei>
-References: <20130904133732.GB12344@rei>
-	<1378364509-20971-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20130917111631.GA7003@rei.suse.cz>
+References: <1379415301-2841-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1378364509-20971-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V4] 16-bit syscalls fixes
+In-Reply-To: <1379415301-2841-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] syscalls/getgroups: use TCID_DEFINE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,33 +28,24 @@ To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Changes since V3:
-> 
-> [PATCH 1/3]: no changes
-> 
-> [PATCH 2/3]:
-> * Added Oracle copyright string to syscalls/utils/compat_16.h
-> * Fixed comment next to LTP_CREATE_SYSCALL
-> * Used alternative variant: passing cleanup callback parameter to all
->   caps functions. I think It looks more compact.
-> 
-> [PATCH 3/3]: Modified invocation of SETGROUPS/GETGROUPS because of changes in [PATCH 2/3]
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  testcases/kernel/syscalls/getgroups/getgroups01.c |    2 +-
+>  testcases/kernel/syscalls/getgroups/getgroups03.c |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-This version looks good to me.
-
-(Let's wait a day or two so that other have chance to look at the code,
- then, if nobody objects, I will merge it.)
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
+LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
+1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
+2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
+Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
+http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
