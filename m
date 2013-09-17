@@ -1,19 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VJ1b7-00030R-AK
-	for ltp-list@lists.sourceforge.net; Mon, 09 Sep 2013 13:33:45 +0000
-Received: from relay2.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 174F0A51B7
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  9 Sep 2013 15:33:36 +0200 (CEST)
-Date: Mon, 9 Sep 2013 15:33:56 +0200
-From: chrubis@suse.cz
-Message-ID: <20130909133355.GG18849@rei>
-MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] LTP sf.net git repo
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VLswB-00044r-Ea
+	for ltp-list@lists.sourceforge.net; Tue, 17 Sep 2013 10:55:19 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VLsw6-0008Cc-N7
+	for ltp-list@lists.sourceforge.net; Tue, 17 Sep 2013 10:55:19 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r8HAt8kc014448
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Sep 2013 10:55:09 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8HAt70J022291
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Sep 2013 10:55:08 GMT
+Received: from abhmt116.oracle.com (abhmt116.oracle.com [141.146.116.68])
+	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r8HAt7KH024297
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Sep 2013 10:55:07 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 17 Sep 2013 14:55:01 +0400
+Message-Id: <1379415301-2841-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] syscalls/getgroups: use TCID_DEFINE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,31 +36,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-FYI I've fixed the sync script that pushes patches from github to sf.net
-(it broke once the git repos on sf.net were changed to use different
- servers and the original repo was switched to read only).
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/getgroups/getgroups01.c |    2 +-
+ testcases/kernel/syscalls/getgroups/getgroups03.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-The sf.net repo was out of sync for a few weeks. Now that brings the
-question, should we close the sf.net repo pernamently? Currently the web
-GUI as well as git access are way to slow and buggy to be usable. I
-wonder if redirecting users directly to github would be better.
-
+diff --git a/testcases/kernel/syscalls/getgroups/getgroups01.c b/testcases/kernel/syscalls/getgroups/getgroups01.c
+index f319ebf..bbb6409 100644
+--- a/testcases/kernel/syscalls/getgroups/getgroups01.c
++++ b/testcases/kernel/syscalls/getgroups/getgroups01.c
+@@ -60,7 +60,7 @@
+ static void setup(void);
+ static void cleanup(void);
+ 
+-char *TCID = "getgroups01";
++TCID_DEFINE(getgroups01);
+ int TST_TOTAL = 4;
+ 
+ static GID_T gidset[NGROUPS];
+diff --git a/testcases/kernel/syscalls/getgroups/getgroups03.c b/testcases/kernel/syscalls/getgroups/getgroups03.c
+index 5e46792..e1f879d 100644
+--- a/testcases/kernel/syscalls/getgroups/getgroups03.c
++++ b/testcases/kernel/syscalls/getgroups/getgroups03.c
+@@ -45,7 +45,7 @@
+ 
+ #define TESTUSER "root"
+ 
+-char *TCID = "getgroups03";
++TCID_DEFINE(getgroups03);
+ int TST_TOTAL = 1;
+ 
+ static int ngroups;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
+LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
+1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
+2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
+Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
+http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
