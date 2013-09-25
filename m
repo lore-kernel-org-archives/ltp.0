@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VHBnR-0002or-BD
-	for ltp-list@lists.sourceforge.net; Wed, 04 Sep 2013 12:02:53 +0000
-Date: Wed, 4 Sep 2013 14:03:04 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VOojh-00055f-W6
+	for ltp-list@lists.sourceforge.net; Wed, 25 Sep 2013 13:02:34 +0000
+Date: Wed, 25 Sep 2013 15:02:53 +0200
 From: chrubis@suse.cz
-Message-ID: <20130904120304.GA12344@rei>
-References: <521C4688.9020305@cn.fujitsu.com>
+Message-ID: <20130925130253.GC3485@rei.suse.cz>
+References: <5242A7F9.2030105@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <521C4688.9020305@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2 v2] Check if xfs quota is available
+In-Reply-To: <5242A7F9.2030105@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] setuid/setuid04.c: Fix a double cleanup() error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,48 +24,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: DAN LI <li.dan@cn.fujitsu.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: MaShimiao <mashimiao.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, zenglg.jy@cn.fujitsu.com
 
 Hi!
+> On some systems which do not support 16-bit version syscall,
+> the cleanup() will be called twice in this case leading to
+> a case failure.
 > 
-> Define HAVE_XFS_QUOTA to show if xfs quota is available.
+> This patch makes sure calling tst_rmdir() only when the temp dir
+> still exists.
 > 
-> +AC_DEFUN([LTP_CHECK_XFS_QUOTACTL],[dnl
-> +	AC_LINK_IFELSE([AC_LANG_SOURCE([
-> +#include <xfs/xqm.h>
-> +#include <sys/quota.h>
-> +int main(void) {
-> +	struct fs_quota_stat qstat;
-> +	return quotactl(QCMD(Q_XGETQSTAT, USRQUOTA), "/dev/null", geteuid(),
-> +			(caddr_t) &qstat);
-> +}])],[has_xfs_quota="yes"])
-> +
-> +if test "x$has_xfs_quota" = xyes; then
-> +	AC_DEFINE(HAVE_XFS_QUOTA,1,[Define to 1 if you have xfs quota])
-> +else
-> +	AC_MSG_WARN(No xfs quota support)
-> +fi
-> +])
+> Signed-off-by: Ma Shimiao <mashimiao.fnst@cn.fujitsu.com>
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>   testcases/kernel/syscalls/setuid/setuid04.c |    6 +++++-
+>   1 files changed, 5 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/setuid/setuid04.c b/testcases/kernel/syscalls/setuid/setuid04.c
+> index d8e991e..4f2cabd 100644
+> --- a/testcases/kernel/syscalls/setuid/setuid04.c
+> +++ b/testcases/kernel/syscalls/setuid/setuid04.c
+> @@ -175,7 +175,11 @@ static void setup(void)
+>   
+>   static void cleanup(void)
+>   {
+> +	char *tmpdir;
+>   	close(fd);
+> -	tst_rmdir();
+> +	tmpdir = get_tst_tmpdir();
+> +	if (!access(tmpdir, F_OK))
+> +		tst_rmdir();
+> +	free(tmpdir);
+>   	TEST_CLEANUP;
 
-I've modified this part to print the more standard:
+This is not the best course of action.
 
-Checking for XFS quota (xfs/xqm.h)...{yes,no}
-
-rather than issuing the warning and commited both patches.
-
-Thanks.
+It would be better to figure out why the cleanup is executed twice and
+fix the cause rather than the symptoms.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
