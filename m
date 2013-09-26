@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VQh0N-0005vn-Pv
-	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 17:11:31 +0000
-Date: Mon, 30 Sep 2013 19:11:54 +0200
-From: chrubis@suse.cz
-Message-ID: <20130930171154.GA6339@rei.suse.cz>
-References: <20130926122235.GF14003@rei.suse.cz>
-	<1380280420-12280-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mashimiao.fnst@cn.fujitsu.com>) id 1VP86C-0003IN-5u
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 09:43:04 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VP869-00029D-Dv
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 09:43:04 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r8Q9grUr009314
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Sep 2013 17:42:53 +0800
+Message-ID: <5244016A.4060300@cn.fujitsu.com>
+Date: Thu, 26 Sep 2013 17:42:02 +0800
+From: MaShimiao <mashimiao.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1380280420-12280-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V2 5/7] cpuset/cpuset_memory_test: fixes
+Subject: [LTP]  [PATCH v2] setuid/setuid04.c: Fix a double cleanup() error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,31 +28,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
+To: ltp-list@lists.sourceforge.net
+Cc: zenglg.jy@cn.fujitsu.com
 
-Hi!
-> cpuset_memory_test.c:
->  * lack of "config.h"
->  * incorrect use of HAVE_LINUX_MEMPOLICY macro
->  * modification to make use of sigwaitinfo
->  * some cleanup
-> 
-> cpuset_memory_testset.sh:
->  * number of cpu and memory nodes are set based on environment
->  * we send second SIGUSR1 signal to make the child free its resources
->  * setting nr_hugepages to a value of 2 is not sufficient. Because there
->    is no guarantee that these hugepages will be allocated on the specified
->    node
->  * cleanup and several typos are fixed
+The cleanup() may be called twice by both the parent and child process
+in this testcase leading to a failure.
 
-Looks good.
+This patch makes sure cleanup() is called only once by parent process.
 
-I will try to apply the patchset and run the tests tomorrow.
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Ma Shimiao <mashimiao.fnst@cn.fujitsu.com>
+---
+  testcases/kernel/syscalls/setuid/setuid04.c |    2 +-
+  1 files changed, 1 insertions(+), 1 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+diff --git a/testcases/kernel/syscalls/setuid/setuid04.c
+b/testcases/kernel/syscalls/setuid/setuid04.c
+index d8e991e..365859b 100644
+--- a/testcases/kernel/syscalls/setuid/setuid04.c
++++ b/testcases/kernel/syscalls/setuid/setuid04.c
+@@ -88,7 +88,7 @@ static void do_master_child(void)
+  	int pid;
+  	int status;
+
+-	if (SETUID(cleanup, ltpuser->pw_uid) == -1) {
++	if (SETUID(NULL, ltpuser->pw_uid) == -1) {
+  		tst_brkm(TBROK, NULL,
+  			 "setuid failed to set the effective uid to %d",
+  			 ltpuser->pw_uid);
+-- 1.7.1
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
