@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VQgQX-0006MD-Ik
-	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 16:34:29 +0000
-Date: Mon, 30 Sep 2013 18:34:52 +0200
-From: chrubis@suse.cz
-Message-ID: <20130930163452.GB5370@rei.suse.cz>
-References: <1380266492-7199-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1380266492-7199-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] tools: added tst_kvercmp2 binary
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VP8qt-0005qz-9m
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:19 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VP8qr-00056C-GW
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:19 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 26 Sep 2013 14:30:40 +0400
+Message-Id: <1380191440-18171-8-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 7/7] cpuset/cpuset_load_balance_test: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,130 +24,113 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Hi!
-> +MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp kvercmp2 \
-> +				res resm ncpus ncpus_max)
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
->  
-> diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
-> index e2b0061..1e48a90 100644
-> --- a/tools/apicmds/ltpapicmd.c
-> +++ b/tools/apicmds/ltpapicmd.c
-> @@ -151,7 +151,8 @@ int main(int argc, char *argv[])
->  	tst_total = getenv("TST_TOTAL");
->  	tst_cntstr = getenv("TST_COUNT");
->  	if (TCID == NULL || tst_total == NULL || tst_cntstr == NULL) {
-> -		if (strcmp(cmd_name, "tst_kvercmp") != 0) {
-> +		if ((strcmp(cmd_name, "tst_kvercmp") != 0)
-> +				&& (strcmp(cmd_name, "tst_kvercmp2") != 0)) {
->  			fprintf(stderr,
->  				"\nSet variables TCID, TST_TOTAL, and TST_COUNT before each test:\n"
->  				"export TCID=<test name>\n"
-> @@ -265,6 +266,84 @@ int main(int argc, char *argv[])
->  		else if (exit_value > 0)
->  			exit_value = 2;
->  		exit(exit_value);
-> +	} else if (strcmp(cmd_name, "tst_kvercmp2") == 0) {
-> +		int exit_value;
-> +
-> +		struct tst_kern_exv vers[100];
-> +		unsigned int count;
-> +
-> +		char *saveptr1 = NULL;
-> +		char *saveptr2 = NULL;
-> +		char *token1;
-> +		char *buf;
-> +
-> +		if (TCID == NULL)
-> +			TCID = "outoftest";
-> +		if (tst_cntstr == NULL)
-> +			tst_count = 0;
-> +
-> +		if (argc < 5) {
-> +			fprintf(stderr, "Usage: %s NUM NUM NUM KVERS\n"
-> +				"Compares to the running kernel version\n"
-> +				"based on vanilla kernel version NUM NUM NUM\n"
-> +				"or distribution specific kernel version KVERS\n\n"
-> +				"\tNUM - A positive integer.\n"
-> +				"\tThe first NUM is the kernel VERSION\n"
-> +				"\tThe second NUM is the kernel PATCHLEVEL\n"
-> +				"\tThe third NUM is the kernel SUBLEVEL\n\n"
-> +				"\tKVERS is a string of the form "
-> +				"\"DISTR1:VERS1 DISTR2:VERS2\",\n"
-> +				"\twhere DISTR1 is a distribution name\n"
-> +				"\tand VERS1 is the corresponding kernel version.\n"
-> +				"\tExample: \"RHEL6:2.6.39-400.208\"\n\n"
-> +				"\tIf running kernel matches a distribution in KVERS then\n"
-> +				"\tcomparison is performed based on version in KVERS,\n"
-> +				"\totherwise - based on NUM NUM NUM.\n\n"
-> +				"\tExit status is 0 if the running kernel is older.\n"
-> +				"\tExit status is 1 for kernels of the same age.\n"
-> +				"\tExit status is 2 if the running kernel is newer.\n",
-> +				cmd_name);
-> +			exit(3);
-> +		}
-> +
-> +		count = 0;
-> +
-> +		buf = strdup(argv[3]);
-> +		if (buf == NULL) {
-> +			fprintf(stderr, "Allocation for buf failed\n");
-> +			exit(3);
-> +		}
+Fixed lack of '#include "config.h"', perform some cleanup
+and set nr_cpus, nr_mems based on environment.
 
-You don't have to copy the argv[3] string, you are allowed to modify it
-by the C standard.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../cpuset_load_balance_test/cpuset_cpu_hog.c      |   16 ++++++++--------
+ .../cpuset_load_balance_test.sh                    |    4 ++--
+ .../cpuset_sched_domains_check.c                   |    1 +
+ .../cpuset_sched_domains_test.sh                   |    4 ++--
+ 4 files changed, 13 insertions(+), 12 deletions(-)
 
-> +		token1 = strtok_r(buf, " ", &saveptr1);
-> +		while ((token1 != NULL) && (count < 99)) {
-                                            I would use
-					    LTP_ARRAY_SIZE(vers) - 1
-					    just to make sure it does
-					    not get out of sync
-
-> +			vers[count].dist_name = strtok_r(token1, ":", &saveptr2);
-> +			vers[count].extra_ver = strtok_r(NULL, ":", &saveptr2);
-> +
-> +			if (vers[count].extra_ver == NULL) {
-> +				fprintf(stderr, "Incorrect KVERS format\n");
-> +				free(buf);
-> +				exit(3);
-> +			}
-> +
-> +			count++;
-> +
-> +			token1 = strtok_r(NULL, " ", &saveptr1);
-> +		}
-> +		vers[count].dist_name = NULL;
-> +		vers[count].extra_ver = NULL;
-> +
-> +		exit_value = tst_kvercmp2(atoi(argv[0]), atoi(argv[1]),
-> +					atoi(argv[2]), vers);
-> +
-> +		free(buf);
-> +
-> +		if (exit_value < 0)
-> +			exit_value = 0;
-> +		else if (exit_value == 0)
-> +			exit_value = 1;
-> +		else if (exit_value > 0)
-> +			exit_value = 2;
-> +		exit(exit_value);
-
-Well the whole ltpapicmd.c code is a bit hairy. I would personaly like
-to see the main being split into functions but that may be done in
-separate patches.
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
+index 4b4e965..5dd2ced 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
+@@ -20,6 +20,7 @@
+ /*                                                                            */
+ /******************************************************************************/
+ 
++#include "config.h"
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -33,24 +34,23 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ 
++char *TCID = "cpuset_cpu_hog";
++int TST_TOTAL = 1;
++
++#if HAVE_LINUX_MEMPOLICY_H
++
+ #include "../cpuset_lib/common.h"
+ #include "../cpuset_lib/bitmask.h"
+ #include "../cpuset_lib/cpuset.h"
+ 
+-#if HAVE_LINUX_MEMPOLICY_H
+-
+ #define MAX_NPROCS	1000
+ #define USAGE	("Usage: %s [-p nprocs] [-h]\n"		\
+ 		 "\t-p nprocs\n"					\
+ 		 "\t\tThe num of the procs. [Default = 2 * nr_cpus]\n"	\
+ 		 "\t-h\tHelp.\n")
+ 
+-char *TCID = "cpuset_cpu_hog";
+-int TST_TOTAL = 1;
+-
+-unsigned long count;
+-int nprocs;
+-volatile int end;
++static int nprocs;
++static volatile int end;
+ 
+ /*
+  * report executing result to the parent by fifo
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
+index 003e9cf..55f533a 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
+@@ -33,8 +33,8 @@ export TST_COUNT=1
+ exit_status=0
+ 
+ # must >= 3 for: 1-$((nr_mems-2))
+-nr_cpus=4
+-nr_mems=3
++nr_cpus=$NR_CPUS
++nr_mems=$N_NODES
+ 
+ cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
+ mems_all="$(seq -s, 0 $((nr_mems-1)))"
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c
+index 9fe4f01..15259e7 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c
+@@ -20,6 +20,7 @@
+ /*                                                                            */
+ /******************************************************************************/
+ 
++#include "config.h"
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
+index 4547367..3ca70df 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
+@@ -33,8 +33,8 @@ export TST_COUNT=1
+ exit_status=0
+ 
+ # must >= 3 for: 1-$((nr_mems-2))
+-nr_cpus=4
+-nr_mems=3
++nr_cpus=$NR_CPUS
++nr_mems=$N_NODES
+ 
+ cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
+ mems_all="$(seq -s, 0 $((nr_mems-1)))"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
