@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VLVVl-0006ub-FV
-	for ltp-list@lists.sourceforge.net; Mon, 16 Sep 2013 09:54:29 +0000
-Date: Mon, 16 Sep 2013 11:54:42 +0200
-From: chrubis@suse.cz
-Message-ID: <20130916095442.GA17003@rei.suse.cz>
-References: <1379066452-5943-1-git-send-email-zliu@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1379066452-5943-1-git-send-email-zliu@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/setgid: fixed a compiling error
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VP8qx-0003sT-UU
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:23 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VP8qm-0008MP-2A
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:23 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 26 Sep 2013 14:30:37 +0400
+Message-Id: <1380191440-18171-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 4/7] cpuset/cpuset_lib: cpuinfo.c compiled incorrectly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,55 +24,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhouping Liu <zliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Hi!
-> commit 7dc42c97 did some clean up, but brought some typos:
->  1. getpwnam() is defined in /usr/include/pwd.h,
->     it doesn't need 'static', or remove getpwnam() declaration.
->  2. added duplicated 'static' key word.
-> 
-> Signed-off-by: Zhouping Liu <zliu@redhat.com>
-> ---
->  testcases/kernel/syscalls/setgid/setgid03.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/setgid/setgid03.c b/testcases/kernel/syscalls/setgid/setgid03.c
-> index 8b71401..8c76556 100644
-> --- a/testcases/kernel/syscalls/setgid/setgid03.c
-> +++ b/testcases/kernel/syscalls/setgid/setgid03.c
-> @@ -33,11 +33,11 @@ int TST_TOTAL = 1;
->  
->  static char ltpuser1[] = "nobody";
->  static char root[] = "root";
-> -static struct passwd *getpwnam(), *ltpuser1pwent, *rootpwent;
-> +static struct passwd *ltpuser1pwent, *rootpwent;
->  static gid_t mygid;
->  
-> -static static void setup(void);
-> -static static void cleanup(void);
-> +static void setup(void);
-> +static void cleanup(void);
->  
->  int main(int ac, char **av)
->  {
+Because of lack of '#include "config.h"' cpuinfo.c file
+was compiled incorrectly (i.e. final lib libcpu_set.a didn't contain
+the functions/variables from cpuinfo.c)
 
-Missed that, thanks.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../kernel/controllers/cpuset/cpuset_lib/cpuinfo.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c b/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
+index 65c5072..3e7961f 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
+@@ -1,3 +1,4 @@
++#include "config.h"
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
