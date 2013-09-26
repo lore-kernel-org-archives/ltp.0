@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VK3Uf-0000t0-Gx
-	for ltp-list@lists.sourceforge.net; Thu, 12 Sep 2013 09:47:21 +0000
-Date: Thu, 12 Sep 2013 11:47:35 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VPC4A-0002Oe-Kd
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 13:57:14 +0000
+Date: Thu, 26 Sep 2013 15:57:32 +0200
 From: chrubis@suse.cz
-Message-ID: <20130912094735.GA6824@rei.suse.cz>
-References: <52315B4D.1020902@oracle.com>
+Message-ID: <20130926135731.GA15992@rei.suse.cz>
+References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1380191440-18171-7-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130926120601.GE14003@rei.suse.cz> <52442EAB.6070805@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <52315B4D.1020902@oracle.com>
-Subject: Re: [LTP] FORK_OR_VFORK
+In-Reply-To: <52442EAB.6070805@oracle.com>
+Subject: Re: [LTP] [PATCH 6/7] cpuset_memory_spread_test: number of nodes
+ and sleep timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +28,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
 
 Hi!
-> LTP employs FORK_OR_VFORK macro which is defined as:
+> >> +nr_cpus=$NR_CPUS
+> >> +nr_mems=$N_NODES
+> >>   
+> >>   # In general, the cache hog will use more than 10000 kb slab space on the nodes
+> >>   # on which it is running. The other nodes' slab space has littler change.(less
+> >> @@ -231,7 +231,7 @@ general_memory_spread_test()
+> >>   	fi
+> >>   
+> >>   	# wait for droping the cache
+> >> -	sleep 10
+> >> +	sleep 20
+> > I've asked our kernel guys and the drop_caches is synchronous interface,
+> > so at the time the cat returns the caches should be dropped. See
+> > fs/drop_caches.c the sysctl handler just does the work, there is nothing
+> > deffered to working threads.
+> >
+> > What exactly goes wrong when this sleep is missing here?
 > 
-> #ifdef UCLINUX
-> #define FORK_OR_VFORK                   vfork
-> #define MAP_PRIVATE_EXCEPT_UCLINUX      0
-> #else
-> #define FORK_OR_VFORK                   fork
-> #define MAP_PRIVATE_EXCEPT_UCLINUX      MAP_PRIVATE
-> #endif
+> If I remove this sleep and perform two sequential runs I get this error:
+> root@debian7-x64:/opt/ltp/testcases/bin# ./cpuset_memory_spread_testset.sh
+> 100+0 records in
+> 100+0 records out
+> 104857600 bytes (105 MB) copied, 0.0595533 s, 1.8 GB/s
+> cpuset11    1  TFAIL  :  hog the memory on the unexpected 
+> node(FilePages_For_Nodes(KB): _0: 0
+> _1: 336
+> _2: 0
+> _3: 0, Expect Nodes: 0).
 > 
-> So, on UCLINUX it is a vfork call.
+> But if I take a few seconds between two runs the error disappears.
 > 
-> But many testcases use this macro and try to use functions other than 
-> exec() and _exit() inside a child.
-> Example - syscalls/setfsuid/setfsuid04.c.
-> And I suppose that because of that fact these testcases may fail on 
-> UCLINUX (or behave unexpectedly).
-> 
-> Is this situation left intentionally? Does somebody care about this 
-> issue? Or we simply ignore it.
-> 
-> I'm just curious. :)
+> I suppose this is an environment issue but don't know how to manage it.
 
-Most of the testcases does vfork() then exec itself with some parameter
-in argv[] to create the child, which is correct and as close to fork()
-as uClinux can get. See self_exec() in lib/self_exec.c.
+Hmm, strange indeed, so it looks like the memory is allocated under
+wrong node.
 
-There seems to be a few testcases that does just call FORK_OR_VFORK and
-use it in a way that violates the specs, these may work or may not, that
-depends on actual implementation of vfork in uClinux.
+I would guess that there is someting wrong with the cpuset that moves
+the test process into the new set. Maybe the system needs some time to
+move the process memory to the node we specified.
 
-I'm trying not to break any of uClinux code in LTP but as I have no
-uClinux hardware nor much interest in fixing it I'm not trying to fix it
-actively.
+And I wasn't able to run the test yet, I've managed to get a machine
+with two real nodes but the cpuset tests are not easy to run :(
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. Consolidate legacy IT systems to a single system of record for IT
-2. Standardize and globalize service processes across IT
-3. Implement zero-touch automation to replace manual, redundant tasks
-http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
