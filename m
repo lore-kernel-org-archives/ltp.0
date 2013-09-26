@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VP8qt-0005qz-9m
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:19 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VP8qr-00056C-GW
-	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 10:31:19 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 26 Sep 2013 14:30:40 +0400
-Message-Id: <1380191440-18171-8-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 7/7] cpuset/cpuset_load_balance_test: fixes
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VP9o5-0001rP-Cq
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 11:32:29 +0000
+Date: Thu, 26 Sep 2013 13:32:49 +0200
+From: chrubis@suse.cz
+Message-ID: <20130926113249.GC14003@rei.suse.cz>
+References: <CAK67bL80qDJnZqSw7J5rG3gV8+NuVHfp7uPsmAqVFVo5n4waEA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAK67bL80qDJnZqSw7J5rG3gV8+NuVHfp7uPsmAqVFVo5n4waEA@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Unzip command validation irrespective of verbose
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,113 +21,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
+To: siva sankar padhy <padhy.sivasankar@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Fixed lack of '#include "config.h"', perform some cleanup
-and set nr_cpus, nr_mems based on environment.
+Hi!
+> I have faced a problem while running LTP on my ARM board. The below command
+> is failing.
+> unzip01 unzip_tests.sh $LTPROOT/testcases/data/tst_unzip_file.zip
+> As i observed the "unzip" binary on my board uses a string "inflating" to
+> show the verbose message for compression of files.
+> The test case is is expecting "unzip" binary to use a string "extracting"
+> to show the verbose message for compression of files.
+> In unzip_tests.sh the code has been written to compare the verbose message
+> to PASS/FAIL the test case.
+> hence it is PASS in my x86 but FAIL in my ARM board.
+> 
+> *So i have added this patch which will compare the directory tree output
+> structure not the verbose message.*
+> 
+> Please find the patch below and please revert for any suggestion and
+> concerns.
+> This is my first patch. So please regret for any wrong formatting of make
+> the patch review. :)
+> 
+> *I will eagerly wait for your valuable reply ASAP.*
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../cpuset_load_balance_test/cpuset_cpu_hog.c      |   16 ++++++++--------
- .../cpuset_load_balance_test.sh                    |    4 ++--
- .../cpuset_sched_domains_check.c                   |    1 +
- .../cpuset_sched_domains_test.sh                   |    4 ++--
- 4 files changed, 13 insertions(+), 12 deletions(-)
+The patch has been corrupted by your mail client (the long lines were
+wrapped). Can you please resend correctly?
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
-index 4b4e965..5dd2ced 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
-@@ -20,6 +20,7 @@
- /*                                                                            */
- /******************************************************************************/
- 
-+#include "config.h"
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -33,24 +34,23 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- 
-+char *TCID = "cpuset_cpu_hog";
-+int TST_TOTAL = 1;
-+
-+#if HAVE_LINUX_MEMPOLICY_H
-+
- #include "../cpuset_lib/common.h"
- #include "../cpuset_lib/bitmask.h"
- #include "../cpuset_lib/cpuset.h"
- 
--#if HAVE_LINUX_MEMPOLICY_H
--
- #define MAX_NPROCS	1000
- #define USAGE	("Usage: %s [-p nprocs] [-h]\n"		\
- 		 "\t-p nprocs\n"					\
- 		 "\t\tThe num of the procs. [Default = 2 * nr_cpus]\n"	\
- 		 "\t-h\tHelp.\n")
- 
--char *TCID = "cpuset_cpu_hog";
--int TST_TOTAL = 1;
--
--unsigned long count;
--int nprocs;
--volatile int end;
-+static int nprocs;
-+static volatile int end;
- 
- /*
-  * report executing result to the parent by fifo
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
-index 003e9cf..55f533a 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
-@@ -33,8 +33,8 @@ export TST_COUNT=1
- exit_status=0
- 
- # must >= 3 for: 1-$((nr_mems-2))
--nr_cpus=4
--nr_mems=3
-+nr_cpus=$NR_CPUS
-+nr_mems=$N_NODES
- 
- cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
- mems_all="$(seq -s, 0 $((nr_mems-1)))"
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c
-index 9fe4f01..15259e7 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_check.c
-@@ -20,6 +20,7 @@
- /*                                                                            */
- /******************************************************************************/
- 
-+#include "config.h"
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
-index 4547367..3ca70df 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
-@@ -33,8 +33,8 @@ export TST_COUNT=1
- exit_status=0
- 
- # must >= 3 for: 1-$((nr_mems-2))
--nr_cpus=4
--nr_mems=3
-+nr_cpus=$NR_CPUS
-+nr_mems=$N_NODES
- 
- cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
- mems_all="$(seq -s, 0 $((nr_mems-1)))"
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
