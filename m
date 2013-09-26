@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VJOBW-0000Om-3B
-	for ltp-list@lists.sourceforge.net; Tue, 10 Sep 2013 13:40:50 +0000
-Date: Tue, 10 Sep 2013 15:41:03 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VPCCy-000745-V0
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 14:06:20 +0000
+Date: Thu, 26 Sep 2013 16:06:40 +0200
 From: chrubis@suse.cz
-Message-ID: <20130910134103.GA25190@rei.Home>
-References: <1378729381-32706-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130909141126.GB9492@rei> <522DE321.5090701@oracle.com>
-	<20130909152223.GA4586@rei> <20130910124732.GA24708@rei.Home>
-	<522F2003.5010101@oracle.com>
+Message-ID: <20130926140639.GB15992@rei.suse.cz>
+References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1380191440-18171-7-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130926120601.GE14003@rei.suse.cz> <52442EAB.6070805@oracle.com>
+	<20130926135731.GA15992@rei.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <522F2003.5010101@oracle.com>
-Subject: Re: [LTP] [PATCH] device-drivers: rtc: minor updates
+In-Reply-To: <20130926135731.GA15992@rei.suse.cz>
+Subject: Re: [LTP] [PATCH 6/7] cpuset_memory_spread_test: number of nodes
+ and sleep timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,31 +28,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
 
 Hi!
-> > Note that I've renamed the rtc-test to rtc01 so that the binary name
-> > matches the test name (TCID) and fixed the runtest entry (you had it
-> > wrong anyway the first string is test name and the rest is the
-> > commandline to execute).
-> Thanks, I missed it :)
-> I have a quick question concerning SUBDIRS in the 
-> ..../device-drivers/Makefile: should we keep test directories in 
-> alphabetical order?
+> > If I remove this sleep and perform two sequential runs I get this error:
+> > root@debian7-x64:/opt/ltp/testcases/bin# ./cpuset_memory_spread_testset.sh
+> > 100+0 records in
+> > 100+0 records out
+> > 104857600 bytes (105 MB) copied, 0.0595533 s, 1.8 GB/s
+> > cpuset11    1  TFAIL  :  hog the memory on the unexpected 
+> > node(FilePages_For_Nodes(KB): _0: 0
+> > _1: 336
+> > _2: 0
+> > _3: 0, Expect Nodes: 0).
+> > 
+> > But if I take a few seconds between two runs the error disappears.
+> > 
+> > I suppose this is an environment issue but don't know how to manage it.
+> 
+> Hmm, strange indeed, so it looks like the memory is allocated under
+> wrong node.
+> 
+> I would guess that there is someting wrong with the cpuset that moves
+> the test process into the new set. Maybe the system needs some time to
+> move the process memory to the node we specified.
 
-Yes please.
+What about cating /proc/$test_pid/status before we allocate the memory
+and checking that Mems_allowed_list matches the expected node?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-How ServiceNow helps IT people transform IT departments:
-1. Consolidate legacy IT systems to a single system of record for IT
-2. Standardize and globalize service processes across IT
-3. Implement zero-touch automation to replace manual, redundant tasks
-http://pubads.g.doubleclick.net/gampad/clk?id=51271111&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
