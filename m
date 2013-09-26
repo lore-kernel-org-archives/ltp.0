@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VJ2fq-0004Pu-Rh
-	for ltp-list@lists.sourceforge.net; Mon, 09 Sep 2013 14:42:42 +0000
-Date: Mon, 9 Sep 2013 16:42:54 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VPA11-0002IT-Eb
+	for ltp-list@lists.sourceforge.net; Thu, 26 Sep 2013 11:45:51 +0000
+Date: Thu, 26 Sep 2013 13:46:04 +0200
 From: chrubis@suse.cz
-Message-ID: <20130909144251.GC9492@rei>
-References: <1378723227-30907-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20130926114604.GD14003@rei.suse.cz>
+References: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1378723227-30907-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] device-drivers: block: fixes
+In-Reply-To: <1380191440-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] cpuset controller fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,61 +24,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
 
 Hi!
-> Fixed test-cases behavior: major number greater than 255 is valid.
-> Added test-cases results (pass/fail).
-> run.sh removed and substituted for the user-space program which automatically
-> checks each test-case result.
+> And:
+> 1. What do you think about idea of assigning to each cpuset controller test
+> a separate testcase name in runtest/controllers? Instead of using a single
+> run_cpuset_test.sh. 
+> This will greatly simplify output results analysis.
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  testcases/kernel/device-drivers/Makefile           |    2 +-
->  testcases/kernel/device-drivers/block/Makefile     |   30 ++
->  testcases/kernel/device-drivers/block/README       |   27 ++
->  .../block/block_dev_kernel/.gitignore              |    6 +
->  .../device-drivers/block/block_dev_kernel/Makefile |   40 +++
->  .../block/block_dev_kernel/ltp_block_dev.c         |  336 ++++++++++++++++++++
->  .../block/block_dev_kernel/test_genhd.c            |   53 +++
->  .../device-drivers/block/block_dev_user/.gitignore |    1 +
->  .../device-drivers/block/block_dev_user/Makefile   |   20 ++
->  .../block/block_dev_user/block_dev.c               |  102 ++++++
->  .../device-drivers/block/kernel_space/Makefile     |   24 --
->  .../device-drivers/block/kernel_space/README       |   27 --
->  .../device-drivers/block/kernel_space/run.sh       |   47 ---
->  .../device-drivers/block/kernel_space/test_block.c |  310 ------------------
->  .../device-drivers/block/kernel_space/test_genhd.c |   53 ---
->  15 files changed, 616 insertions(+), 462 deletions(-)
->  create mode 100644 testcases/kernel/device-drivers/block/Makefile
->  create mode 100644 testcases/kernel/device-drivers/block/README
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_kernel/.gitignore
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_kernel/Makefile
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_kernel/test_genhd.c
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_user/.gitignore
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_user/Makefile
->  create mode 100644 testcases/kernel/device-drivers/block/block_dev_user/block_dev.c
->  delete mode 100644 testcases/kernel/device-drivers/block/kernel_space/Makefile
->  delete mode 100644 testcases/kernel/device-drivers/block/kernel_space/README
->  delete mode 100755 testcases/kernel/device-drivers/block/kernel_space/run.sh
->  delete mode 100644 testcases/kernel/device-drivers/block/kernel_space/test_block.c
->  delete mode 100644 testcases/kernel/device-drivers/block/kernel_space/test_genhd.c
+> For example rename current cpuset01 testcase to cpuset12 and 
+> assign names cpuset01 cpuset11 cpuset_*.sh tests.
+> 
+> 2. How do you think about adding a separate tst_kvercmp2 binary
+> (using tst_kvercmp2() function). 
+> It would help in cpuset_base_ops_testset.sh because several distribution
+> kernels have these fixes. Because on we also need to make testing based on
+> distribution kernel version.
+> 
+> Like this:
+> tst_kvercmp2 X Y Z "RHEL5:234 SLES10:0.91"
 
-Can you please split the patch into two, one that just moves the files
-and second that does actual changes?
+Both sounds good to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
