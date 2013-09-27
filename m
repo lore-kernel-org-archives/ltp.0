@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VGV6d-0003su-PT
-	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 14:27:51 +0000
-Date: Mon, 2 Sep 2013 16:27:54 +0200
-From: chrubis@suse.cz
-Message-ID: <20130902142754.GA26252@rei>
-References: <20130711110014.GB6142@rei.suse.cz> <20130828115601.GA4804@rei>
-	<201308281234.41447.vapier@gentoo.org>
-	<201308281237.03104.vapier@gentoo.org> <20130902122315.GC3269@rei>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <20130902122315.GC3269@rei>
-Subject: Re: [LTP] RFC add _FORTIFY_SOURCE to default LTP CFLAGS
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VPVzj-0000ap-16
+	for ltp-list@lists.sourceforge.net; Fri, 27 Sep 2013 11:13:59 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VPVzh-0007U9-RK
+	for ltp-list@lists.sourceforge.net; Fri, 27 Sep 2013 11:13:59 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri, 27 Sep 2013 15:13:40 +0400
+Message-Id: <1380280420-12280-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20130926122235.GF14003@rei.suse.cz>
+References: <20130926122235.GF14003@rei.suse.cz>
+Subject: [LTP] [PATCH V2 5/7] cpuset/cpuset_memory_test: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,134 +24,355 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
-
-
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-> > you could probably turn that AH_VERBATIM into a compile test and then add it 
-> > to CPPFLAGS based on the result.  that would probably work in most cases.
-> 
-> So back to the beginning...
-
-What about this patch?
-(it's tested and works)
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---LZvS9be/3tNcYl/X
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: inline;
-	filename="0001-configure-Add-_FORTIFY_SOURCE-2.patch"
-
-From 9d69dc34b6f08e742d79a30b4253371836de7367 Mon Sep 17 00:00:00 2001
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 2 Sep 2013 16:13:16 +0200
-Subject: [PATCH] configure: Add _FORTIFY_SOURCE=2
-
-Add -D_FORTIFY_SOURCE=2 into CPPFLAGS if:
-
-o it's not allready set in system headers
-o optimalization is enabled
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- configure.ac             |  2 +-
- m4/ltp-fortify_source.m4 | 39 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+), 1 deletion(-)
- create mode 100644 m4/ltp-fortify_source.m4
-
-diff --git a/configure.ac b/configure.ac
-index f0fc6b0..81f92ab 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -144,7 +144,7 @@ else
- fi
- 
- # END testsuites knobs
--
-+LTP_CHECK_FORTIFY_SOURCE
- LTP_CHECK_MKDTEMP
- LTP_CHECK_CAPABILITY_SUPPORT
- LTP_CHECK_CRYPTO
-diff --git a/m4/ltp-fortify_source.m4 b/m4/ltp-fortify_source.m4
-new file mode 100644
-index 0000000..ffb22b4
---- /dev/null
-+++ b/m4/ltp-fortify_source.m4
-@@ -0,0 +1,39 @@
-+dnl
-+dnl Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program;  if not, write to the Free Software
-+dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_FORTIFY_SOURCE
-+dnl ------------------------
-+dnl
-+AC_DEFUN([LTP_CHECK_FORTIFY_SOURCE],[dnl
-+	AC_MSG_CHECKING(whether to define _FORTIFY_SOURCE=2)
-+	AC_COMPILE_IFELSE([AC_LANG_SOURCE([
-+#include <stdio.h>
-+
-+int main(void)
-+{
-+#if !defined _FORTIFY_SOURCE && defined __OPTIMIZE__ && __OPTIMIZE__
-+	return 0;
-+#else
-+# error Compiling without optimalizations
-+#endif
-+}
-+])],[CPPFLAGS="$CPPFLAGS -D_FORTIFY_SOURCE=2"
-+AC_MSG_RESULT(yes)],
-+[AC_MSG_RESULT(no)])
-+])
--- 
-1.8.1.5
-
-
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
+
+cpuset_memory_test.c:
+ * lack of "config.h"
+ * incorrect use of HAVE_LINUX_MEMPOLICY macro
+ * modification to make use of sigwaitinfo
+ * some cleanup
+
+cpuset_memory_testset.sh:
+ * number of cpu and memory nodes are set based on environment
+ * we send second SIGUSR1 signal to make the child free its resources
+ * setting nr_hugepages to a value of 2 is not sufficient. Because there
+   is no guarantee that these hugepages will be allocated on the specified
+   node
+ * cleanup and several typos are fixed
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../cpuset/cpuset_memory_test/cpuset_memory_test.c |  159 ++++++++++----------
+ .../cpuset_memory_test/cpuset_memory_testset.sh    |   18 ++-
+ 2 files changed, 88 insertions(+), 89 deletions(-)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
+index ddf5935..e4206cf 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c
+@@ -20,6 +20,7 @@
+ /*                                                                            */
+ /******************************************************************************/
+ 
++#include "config.h"
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+@@ -36,27 +37,26 @@
+ #include <syscall.h>
+ #include <pthread.h>
+ 
+-#include "../cpuset_lib/cpuset.h"
+-
+ char *TCID = "cpuset_memory_test";
+ int TST_TOTAL = 1;
+ 
+-#if HAVE_LINUX_MEMPOLICY_TEST
++#if HAVE_LINUX_MEMPOLICY_H
++
++#include "../cpuset_lib/cpuset.h"
+ 
+-int fd;
+-int flag_exit;
++static int fd;
+ 
+-int opt_mmap_anon;
+-int opt_mmap_file;
+-int opt_mmap_lock1;
+-int opt_mmap_lock2;
+-int opt_shm;
+-int opt_hugepage;
+-int opt_check;			/* check node when munmap memory (only for mmap_anon()) */
+-int opt_thread;
++static int opt_mmap_anon;
++static int opt_mmap_file;
++static int opt_mmap_lock1;
++static int opt_mmap_lock2;
++static int opt_shm;
++static int opt_hugepage;
++static int opt_check; /* check node when munmap memory (only for mmap_anon()) */
++static int opt_thread;
+ 
+-int key_id;			/* used with opt_shm */
+-unsigned long memsize;
++static int key_id;			/* used with opt_shm */
++static unsigned long memsize;
+ 
+ #define FILE_HUGEPAGE	"/hugetlb/hugepagefile"
+ 
+@@ -136,7 +136,7 @@ void process_options(int argc, char *argv[])
+ 	}
+ 
+ 	if (!memsize)
+-		memsize = getpagesize();
++		memsize = sysconf(_SC_PAGESIZE);
+ }
+ 
+ /*
+@@ -145,7 +145,7 @@ void process_options(int argc, char *argv[])
+ void touch_memory_and_echo_node(char *p, int size)
+ {
+ 	int i;
+-	int pagesize = getpagesize();
++	int pagesize = sysconf(_SC_PAGESIZE);
+ 
+ 	for (i = 0; i < size; i += pagesize)
+ 		p[i] = 0xef;
+@@ -281,90 +281,54 @@ void shm(int flag_allocated)
+ 	}
+ }
+ 
+-/*
+- * sigint_handler: handle SIGINT by set the exit flag.
+- */
+-void sigint_handler(int __attribute__ ((unused)) signo)
+-{
+-	flag_exit = 1;
+-}
+-
+-/*
+- * sigusr_handler: handler SIGUSR
+- *
+- * When we receive SIGUSR, we allocate some memory according
+- * to the user input when the process started.
+- *
+- * When we recive SIGUSR again, we will free all the allocated
+- * memory.
+- */
+-void sigusr_handler(int __attribute__ ((unused)) signo)
+-{
+-	static int flag_allocated = 0;
+-
+-	if (opt_mmap_anon)
+-		mmap_anon(flag_allocated);
+-
+-	if (opt_mmap_file)
+-		mmap_file(flag_allocated);
+-
+-	if (opt_mmap_lock1)
+-		mmap_lock1(flag_allocated);
+-
+-	if (opt_mmap_lock2)
+-		mmap_lock2(flag_allocated);
+-
+-	if (opt_shm)
+-		shm(flag_allocated);
+-
+-	flag_allocated = !flag_allocated;
+-}
+-
+-void sigusr2(int __attribute__ ((unused)) signo)
+-{
+-	static int flag_allocated = 0;
+-	mmap_anon(flag_allocated);
+-	flag_allocated = !flag_allocated;
+-}
+-
+ void *thread2_routine(void __attribute__ ((unused)) * arg)
+ {
+ 	sigset_t set;
+-	struct sigaction sigusr2_action;
++	sigset_t waitset;
++	int flag_allocated;
+ 
+ 	sigemptyset(&set);
+ 	sigaddset(&set, SIGUSR1);
+ 	sigaddset(&set, SIGINT);
+ 	pthread_sigmask(SIG_BLOCK, &set, NULL);
+ 
+-	memset(&sigusr2_action, 0, sizeof(sigusr2_action));
+-	sigusr2_action.sa_handler = &sigusr2;
+-	sigaction(SIGUSR2, &sigusr2_action, NULL);
++	sigemptyset(&waitset);
++	sigaddset(&waitset, SIGUSR2);
++	pthread_sigmask(SIG_BLOCK, &waitset, NULL);
++
++	flag_allocated = 0;
++
++	for (;;) {
++		if (sigwaitinfo(&waitset, NULL) < 0)
++			err(1, "sigwaitinfo() in thread2 failed");
+ 
+-	while (!flag_exit)
+-		sleep(1);
++		mmap_anon(flag_allocated);
++		flag_allocated = !flag_allocated;
++	}
+ 
+ 	return NULL;
+ }
+ 
++/*
++ * When we receive SIGUSR1, we allocate some memory according
++ * to the user intput when the process started.
++ * When we receive SIGUSR1 again, we will free all the allocated
++ * memory.
++ * Similiar for --thread option but SIGUSR2 signal is used
++ * to control thread2 behaviour.
++ */
+ int main(int argc, char *argv[])
+ {
+-	struct sigaction sigint_action;
+-	struct sigaction sigusr_action;
++	sigset_t waitset;
++	int signo;
++	int flag_allocated;
++
+ 	pthread_t thread2;
+ 
+ 	fd = open("/dev/zero", O_RDWR);
+ 	if (fd < 0)
+ 		err(1, "open /dev/zero failed");
+ 
+-	memset(&sigint_action, 0, sizeof(sigint_action));
+-	sigint_action.sa_handler = &sigint_handler;
+-	sigaction(SIGINT, &sigint_action, NULL);
+-
+-	memset(&sigusr_action, 0, sizeof(sigusr_action));
+-	sigusr_action.sa_handler = &sigusr_handler;
+-	sigaction(SIGUSR1, &sigusr_action, NULL);
+-
+ 	process_options(argc, argv);
+ 
+ 	if (opt_thread) {
+@@ -377,8 +341,41 @@ int main(int argc, char *argv[])
+ 		pthread_sigmask(SIG_BLOCK, &set, NULL);
+ 	}
+ 
+-	while (!flag_exit)
+-		sleep(1);
++
++	sigemptyset(&waitset);
++	sigaddset(&waitset, SIGINT);
++	sigaddset(&waitset, SIGUSR1);
++
++	pthread_sigmask(SIG_BLOCK, &waitset, NULL);
++
++	flag_allocated = 0;
++
++	for (;;) {
++		signo = sigwaitinfo(&waitset, NULL);
++		if (signo < 0)
++			err(1, "sigwaitinfo() failed");
++
++		if (signo == SIGUSR1) {
++			if (opt_mmap_anon)
++				mmap_anon(flag_allocated);
++
++			if (opt_mmap_file)
++				mmap_file(flag_allocated);
++
++			if (opt_mmap_lock1)
++				mmap_lock1(flag_allocated);
++
++			if (opt_mmap_lock2)
++				mmap_lock2(flag_allocated);
++
++			if (opt_shm)
++				shm(flag_allocated);
++
++			flag_allocated = !flag_allocated;
++		} else {
++			break;
++		}
++	}
+ 
+ 	if (opt_thread) {
+ 		void *retv;
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+index 85f1863..2a9f7e3 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+@@ -33,8 +33,8 @@ export TST_COUNT=1
+ exit_status=0
+ 
+ # must >= 3 for: 1-$((nr_mems-2))
+-nr_cpus=4
+-nr_mems=3
++nr_cpus=$NR_CPUS
++nr_mems=$N_NODES
+ 
+ cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
+ mems_all="$(seq -s, 0 $((nr_mems-1)))"
+@@ -55,6 +55,8 @@ simple_getresult()
+ 	echo $1 > "$2/tasks"
+ 	/bin/kill -s SIGUSR1 $1
+ 	sleep 1
++	/bin/kill -s SIGUSR1 $1
++	sleep 1
+ 	/bin/kill -s SIGINT $1
+ 	wait $1
+ 	read node < "$MEMORY_RESULT"
+@@ -150,7 +152,7 @@ test5()
+ #        1 - support hugetlbfs
+ check_hugetlbfs()
+ {
+-	local fssupport="grep -w hugetlbfs /proc/filesystems 2>/dev/null | cut -f2"
++	local fssupport=$(grep -w hugetlbfs /proc/filesystems 2>/dev/null | cut -f2)
+ 
+ 	if [ "$fssupport" = "hugetlbfs" ]; then
+ 		return 1
+@@ -178,7 +180,7 @@ test6()
+ 	mount -t hugetlbfs none /hugetlb
+ 
+ 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
+-	echo 2 > /proc/sys/vm/nr_hugepages
++	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
+ 
+ 	./cpuset_memory_test --mmap-file --hugepage -s $HUGEPAGESIZE >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+@@ -187,7 +189,7 @@ test6()
+ 	rmdir /hugetlb
+ 
+ 	echo $save_nr_hugepages > /proc/sys/vm/nr_hugepages
+-	if [ $! -ne 0 ]; then
++	if [ $(cat /proc/sys/vm/nr_hugepages) -ne $save_nr_hugepages ]; then
+ 		tst_resm TFAIL "can't restore nr_hugepages(nr_hugepages = $save_nr_hugepages)."
+ 		return 1
+ 	fi
+@@ -217,7 +219,7 @@ test7()
+ 	mount -t hugetlbfs none /hugetlb
+ 
+ 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
+-	echo 2 > /proc/sys/vm/nr_hugepages
++	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
+ 
+ 	./cpuset_memory_test --shm --hugepage -s $HUGEPAGESIZE --key=7 >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+@@ -226,7 +228,7 @@ test7()
+ 	rmdir /hugetlb
+ 
+ 	echo $save_nr_hugepages > /proc/sys/vm/nr_hugepages
+-	if [ $! -ne 0 ]; then
++	if [ $(cat /proc/sys/vm/nr_hugepages) -ne $save_nr_hugepages ]; then
+ 		tst_resm TFAIL "can't restore nr_hugepages(nr_hugepages = $save_nr_hugepages)."
+ 		return 1
+ 	fi
+@@ -821,7 +823,7 @@ do
+ 			if [ $? -ne 0 ]; then
+ 				exit_status=1
+ 			else
+-				tst_resm TPASS "Cpuset memory alloaction test succeeded."
++				tst_resm TPASS "Cpuset memory allocation test succeeded."
+ 			fi
+ 		fi
+ 	fi
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---LZvS9be/3tNcYl/X--
-
