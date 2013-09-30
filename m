@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VQgVn-0000nb-Up
-	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 16:39:55 +0000
-Date: Mon, 30 Sep 2013 18:40:18 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VQgQX-0006MD-Ik
+	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 16:34:29 +0000
+Date: Mon, 30 Sep 2013 18:34:52 +0200
 From: chrubis@suse.cz
-Message-ID: <20130930164018.GA6251@rei.suse.cz>
-References: <1379676132-23574-1-git-send-email-alexey.kodanev@oracle.com>
-	<20130925170241.GA7024@rei> <52497EF2.50204@oracle.com>
-	<20130930154608.GA5370@rei.suse.cz> <5249A54A.2000404@oracle.com>
+Message-ID: <20130930163452.GB5370@rei.suse.cz>
+References: <1380266492-7199-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5249A54A.2000404@oracle.com>
-Subject: Re: [LTP] [PATCH v3] mk/module.mk: add Makefile to build kernel
- modules
+In-Reply-To: <1380266492-7199-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] tools: added tst_kvercmp2 binary
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,51 +24,123 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> > Hmm, I think that it may be more clear to put the linux kernel Makefile
-> > part to the Makefile that is in the test directory, so that it will
-> > became:
-> >
-> > ifneq ($(KERNELRELEASE),)
-> >
-> > obj-m := $(addsuffix .o, $(MODULE_NAMES))
-> >
-> > else
-> >
-> > top_srcdir ?= ../../../..
-> >
-> > include $(top_srcdir)/include/mk/testcases.mk
-> >
-> > REQ_VERSION_MAJOR  := 2
-> > REQ_VERSION_PATCH  := 6
-> > MAKE_TARGETS       := test01 test02 ...
-> >
-> > include $(top_srcdir)/include/mk/module.mk
-> > include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> >
-> > endif
-> And "MODULE_NAMES := Module01 Module02" on the top of it, right?
+> +MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp kvercmp2 \
+> +				res resm ncpus ncpus_max)
+>  
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>  
+> diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
+> index e2b0061..1e48a90 100644
+> --- a/tools/apicmds/ltpapicmd.c
+> +++ b/tools/apicmds/ltpapicmd.c
+> @@ -151,7 +151,8 @@ int main(int argc, char *argv[])
+>  	tst_total = getenv("TST_TOTAL");
+>  	tst_cntstr = getenv("TST_COUNT");
+>  	if (TCID == NULL || tst_total == NULL || tst_cntstr == NULL) {
+> -		if (strcmp(cmd_name, "tst_kvercmp") != 0) {
+> +		if ((strcmp(cmd_name, "tst_kvercmp") != 0)
+> +				&& (strcmp(cmd_name, "tst_kvercmp2") != 0)) {
+>  			fprintf(stderr,
+>  				"\nSet variables TCID, TST_TOTAL, and TST_COUNT before each test:\n"
+>  				"export TCID=<test name>\n"
+> @@ -265,6 +266,84 @@ int main(int argc, char *argv[])
+>  		else if (exit_value > 0)
+>  			exit_value = 2;
+>  		exit(exit_value);
+> +	} else if (strcmp(cmd_name, "tst_kvercmp2") == 0) {
+> +		int exit_value;
+> +
+> +		struct tst_kern_exv vers[100];
+> +		unsigned int count;
+> +
+> +		char *saveptr1 = NULL;
+> +		char *saveptr2 = NULL;
+> +		char *token1;
+> +		char *buf;
+> +
+> +		if (TCID == NULL)
+> +			TCID = "outoftest";
+> +		if (tst_cntstr == NULL)
+> +			tst_count = 0;
+> +
+> +		if (argc < 5) {
+> +			fprintf(stderr, "Usage: %s NUM NUM NUM KVERS\n"
+> +				"Compares to the running kernel version\n"
+> +				"based on vanilla kernel version NUM NUM NUM\n"
+> +				"or distribution specific kernel version KVERS\n\n"
+> +				"\tNUM - A positive integer.\n"
+> +				"\tThe first NUM is the kernel VERSION\n"
+> +				"\tThe second NUM is the kernel PATCHLEVEL\n"
+> +				"\tThe third NUM is the kernel SUBLEVEL\n\n"
+> +				"\tKVERS is a string of the form "
+> +				"\"DISTR1:VERS1 DISTR2:VERS2\",\n"
+> +				"\twhere DISTR1 is a distribution name\n"
+> +				"\tand VERS1 is the corresponding kernel version.\n"
+> +				"\tExample: \"RHEL6:2.6.39-400.208\"\n\n"
+> +				"\tIf running kernel matches a distribution in KVERS then\n"
+> +				"\tcomparison is performed based on version in KVERS,\n"
+> +				"\totherwise - based on NUM NUM NUM.\n\n"
+> +				"\tExit status is 0 if the running kernel is older.\n"
+> +				"\tExit status is 1 for kernels of the same age.\n"
+> +				"\tExit status is 2 if the running kernel is newer.\n",
+> +				cmd_name);
+> +			exit(3);
+> +		}
+> +
+> +		count = 0;
+> +
+> +		buf = strdup(argv[3]);
+> +		if (buf == NULL) {
+> +			fprintf(stderr, "Allocation for buf failed\n");
+> +			exit(3);
+> +		}
 
-Or directly written in the $(addsuffix ...) expression, or just write
-the obj-m := foo.o there, since it's in one file it does not matter.
+You don't have to copy the argv[3] string, you are allowed to modify it
+by the C standard.
 
-> > Or to use Kbuild file which should be preffered over Makefile,
-> > unfortunately the documentation does not say which kernel version gets
-> > the support for Kbuild for extrenal modules, so if it's a recent feature
-> > we must go with the Makefile.
-> >
-> It can be made backward compatible with just the include of that file in 
-> the ifneq ($(KERNELRELEASE,)). But we have only one line, I don't think 
-> it necessary to do so.
+> +		token1 = strtok_r(buf, " ", &saveptr1);
+> +		while ((token1 != NULL) && (count < 99)) {
+                                            I would use
+					    LTP_ARRAY_SIZE(vers) - 1
+					    just to make sure it does
+					    not get out of sync
 
-Right.
+> +			vers[count].dist_name = strtok_r(token1, ":", &saveptr2);
+> +			vers[count].extra_ver = strtok_r(NULL, ":", &saveptr2);
+> +
+> +			if (vers[count].extra_ver == NULL) {
+> +				fprintf(stderr, "Incorrect KVERS format\n");
+> +				free(buf);
+> +				exit(3);
+> +			}
+> +
+> +			count++;
+> +
+> +			token1 = strtok_r(NULL, " ", &saveptr1);
+> +		}
+> +		vers[count].dist_name = NULL;
+> +		vers[count].extra_ver = NULL;
+> +
+> +		exit_value = tst_kvercmp2(atoi(argv[0]), atoi(argv[1]),
+> +					atoi(argv[2]), vers);
+> +
+> +		free(buf);
+> +
+> +		if (exit_value < 0)
+> +			exit_value = 0;
+> +		else if (exit_value == 0)
+> +			exit_value = 1;
+> +		else if (exit_value > 0)
+> +			exit_value = 2;
+> +		exit(exit_value);
 
-I've looked into the kernel git log and the Kbuild documentation was
-updated to mention the posibility to use Kbuild files around 2.6.33
-which is still to late for us.
+Well the whole ltpapicmd.c code is a bit hairy. I would personaly like
+to see the main being split into functions but that may be done in
+separate patches.
 
 -- 
 Cyril Hrubis
