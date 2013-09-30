@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VGT9u-0000mb-Ii
-	for ltp-list@lists.sourceforge.net; Mon, 02 Sep 2013 12:23:06 +0000
-Date: Mon, 2 Sep 2013 14:23:16 +0200
-From: chrubis@suse.cz
-Message-ID: <20130902122315.GC3269@rei>
-References: <20130711110014.GB6142@rei.suse.cz> <20130828115601.GA4804@rei>
-	<201308281234.41447.vapier@gentoo.org>
-	<201308281237.03104.vapier@gentoo.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201308281237.03104.vapier@gentoo.org>
-Subject: Re: [LTP] RFC add _FORTIFY_SOURCE to default LTP CFLAGS
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VQcvU-0000bi-H9
+	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 12:50:12 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VQcvS-00080k-OQ
+	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 12:50:12 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 30 Sep 2013 16:49:53 +0400
+Message-Id: <1380545393-32222-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20130926120601.GE14003@rei.suse.cz>
+References: <20130926120601.GE14003@rei.suse.cz>
+Subject: [LTP] [PATCH V2 6/7] cpuset_memory_spread_test: number of nodes and
+	sync
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,43 +25,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Hi!
-> > > That wouldn't work here, as config.h is included only in a few testcases
-> > > (in these that actually use some of the defines there).
-> > > 
-> > > But given that this just copies some ifdefs into config.h what about
-> > > adding the snippet directly into compiler.h that is included from
-> > > test.h thus ends up in all testcases?
-> > 
-> > SGTM
-> 
-> err, no, that won't work either.  _FORTIFY_SOURCE must be defined before any 
-> header file is included.  otherwise, including all the C lib headers and then 
-> test.h and then defining this won't accomplish anything.
+For unification number of nodes is set based on environment.
 
-Ah, you are right.
+In accordance to Documentation/sysctl/vm.txt to reliably drop caches
+we should invoke 'sync' before 'echo N > /proc/sys/vm/drop_caches'.
 
-> you could probably turn that AH_VERBATIM into a compile test and then add it 
-> to CPPFLAGS based on the result.  that would probably work in most cases.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../cpuset_memory_spread_testset.sh                |   14 +++-----------
+ 1 files changed, 3 insertions(+), 11 deletions(-)
 
-So back to the beginning...
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+index a357e22..ffce419 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+@@ -32,8 +32,8 @@ export TST_COUNT=1
+ 
+ exit_status=0
+ # must >= 3 for: 1-$((nr_mems-2))
+-nr_cpus=4
+-nr_mems=3
++nr_cpus=$NR_CPUS
++nr_mems=$N_NODES
+ 
+ # In general, the cache hog will use more than 10000 kb slab space on the nodes
+ # on which it is running. The other nodes' slab space has littler change.(less
+@@ -223,6 +223,7 @@ general_memory_spread_test()
+ 	fi
+ 
+ 	# we'd better drop the caches before we test page cache.
++	sync
+ 	/bin/echo 3 > /proc/sys/vm/drop_caches 2> $CPUSET_TMP/stderr
+ 	if [ $? -ne 0 ]; then
+ 		cpuset_log_error $CPUSET_TMP/stderr
+@@ -230,9 +231,6 @@ general_memory_spread_test()
+ 		return 1
+ 	fi
+ 
+-	# wait for droping the cache
+-	sleep 10
+-
+ 	get_memsinfo
+ 	/bin/kill -s SIGUSR1 $test_pid
+ 	read exit_num < $FIFO
+@@ -344,12 +342,6 @@ if [ $? -ne 0 ]; then
+ 	exit 1
+ fi
+ 
+-# drop page caches
+-/bin/echo 1 > /proc/sys/vm/drop_caches
+-
+-# wait for droping caches
+-sleep 10
+-
+ mkfifo $FIFO
+ if [ $? -ne 0 ]; then
+ 	rm -f DATAFILE
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
