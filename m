@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VKRSN-0007bS-Cc
-	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 11:22:35 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VKRSK-0007Ra-Tx
-	for ltp-list@lists.sourceforge.net; Fri, 13 Sep 2013 11:22:35 +0000
-Date: Fri, 13 Sep 2013 07:22:26 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1378015317.12865344.1379071346297.JavaMail.root@redhat.com>
-In-Reply-To: <1379017479-2396-1-git-send-email-vlee@freedesktop.org>
-References: <1379017479-2396-1-git-send-email-vlee@freedesktop.org>
+	(envelope-from <metan@suse.de>) id 1VQffN-0000jg-7g
+	for ltp-list@lists.sourceforge.net; Mon, 30 Sep 2013 15:45:45 +0000
+Date: Mon, 30 Sep 2013 17:46:08 +0200
+From: chrubis@suse.cz
+Message-ID: <20130930154608.GA5370@rei.suse.cz>
+References: <1379676132-23574-1-git-send-email-alexey.kodanev@oracle.com>
+	<20130925170241.GA7024@rei> <52497EF2.50204@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] setgid03.c: Fix build.
+Content-Disposition: inline
+In-Reply-To: <52497EF2.50204@oracle.com>
+Subject: Re: [LTP] [PATCH v3] mk/module.mk: add Makefile to build kernel
+ modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,58 +23,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vinson Lee <vlee@freedesktop.org>, Zhouping Liu <zliu@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiVmluc29uIExlZSIgPHZs
-ZWVAZnJlZWRlc2t0b3Aub3JnPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-PiBTZW50OiBUaHVyc2RheSwgMTIgU2VwdGVtYmVyLCAyMDEzIDEwOjI0OjM5IFBNCj4gU3ViamVj
-dDogW0xUUF0gW1BBVENIXSBzZXRnaWQwMy5jOiBGaXggYnVpbGQuCj4gCj4gRnJvbTogVmluc29u
-IExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KPiAKPiBUaGlzIHBhdGNoIGZpeGVzIGJ1aWxkIGVycm9y
-cyBpbnRyb2R1Y2VkIHdpdGggY29tbWl0Cj4gN2RjNDJjOTc2OTZmMTM1ZTFmZWY5MmU2MTJlY2M2
-NmJmOGQ3NDMxOC4KPiAKPiBzZXRnaWQwMy5jOjM2OjIzOiBlcnJvcjogc3RhdGljIGRlY2xhcmF0
-aW9uIG9mIOKAmGdldHB3bmFt4oCZIGZvbGxvd3Mgbm9uLXN0YXRpYwo+IGRlY2xhcmF0aW9uCj4g
-SW4gZmlsZSBpbmNsdWRlZCBmcm9tIHNldGdpZDAzLmM6MjQ6MDoKPiAvdXNyL2luY2x1ZGUvcHdk
-Lmg6MTE3OjIzOiBub3RlOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJhnZXRwd25hbeKAmSB3
-YXMgaGVyZQo+IHNldGdpZDAzLmM6Mzk6MTogZXJyb3I6IGR1cGxpY2F0ZSDigJhzdGF0aWPigJkK
-PiBzZXRnaWQwMy5jOjQwOjE6IGVycm9yOiBkdXBsaWNhdGUg4oCYc3RhdGlj4oCZCj4gCj4gU2ln
-bmVkLW9mZi1ieTogVmluc29uIExlZSA8dmxlZUB0d2l0dGVyLmNvbT4KCkNvbW1pdHRlZC4KWmhv
-dXBpbmcgSSBhZGRlZCB5b3VyIHNpZ25lZC1vZmYtYnkgdG8gdGhpcyBwYXRjaCBhcyBpdCB3YXMg
-aWRlbnRpY2FsLgoKVGhhbmsgeW91LApKYW4KCj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvc2V0Z2lkL3NldGdpZDAzLmMgfCA2ICsrKy0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMyBp
-bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCj4gaW5kZXggOGI3MTQwMS4uOGM3NjU1NiAxMDA2NDQK
-PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldGdpZC9zZXRnaWQwMy5jCj4gKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRnaWQvc2V0Z2lkMDMuYwo+IEBAIC0zMywx
-MSArMzMsMTEgQEAgaW50IFRTVF9UT1RBTCA9IDE7Cj4gIAo+ICBzdGF0aWMgY2hhciBsdHB1c2Vy
-MVtdID0gIm5vYm9keSI7Cj4gIHN0YXRpYyBjaGFyIHJvb3RbXSA9ICJyb290IjsKPiAtc3RhdGlj
-IHN0cnVjdCBwYXNzd2QgKmdldHB3bmFtKCksICpsdHB1c2VyMXB3ZW50LCAqcm9vdHB3ZW50Owo+
-ICtzdGF0aWMgc3RydWN0IHBhc3N3ZCAqbHRwdXNlcjFwd2VudCwgKnJvb3Rwd2VudDsKPiAgc3Rh
-dGljIGdpZF90IG15Z2lkOwo+ICAKPiAtc3RhdGljIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+
-IC1zdGF0aWMgc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKPiArc3RhdGljIHZvaWQgc2V0dXAo
-dm9pZCk7Cj4gK3N0YXRpYyB2b2lkIGNsZWFudXAodm9pZCk7Cj4gIAo+ICBpbnQgbWFpbihpbnQg
-YWMsIGNoYXIgKiphdikKPiAgewo+IC0tCj4gMS44LjEuMgo+IAo+IAo+IC0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQo+IEhvdyBTZXJ2aWNlTm93IGhlbHBzIElUIHBlb3BsZSB0cmFuc2Zvcm0gSVQgZGVw
-YXJ0bWVudHM6Cj4gMS4gQ29uc29saWRhdGUgbGVnYWN5IElUIHN5c3RlbXMgdG8gYSBzaW5nbGUg
-c3lzdGVtIG9mIHJlY29yZCBmb3IgSVQKPiAyLiBTdGFuZGFyZGl6ZSBhbmQgZ2xvYmFsaXplIHNl
-cnZpY2UgcHJvY2Vzc2VzIGFjcm9zcyBJVAo+IDMuIEltcGxlbWVudCB6ZXJvLXRvdWNoIGF1dG9t
-YXRpb24gdG8gcmVwbGFjZSBtYW51YWwsIHJlZHVuZGFudCB0YXNrcwo+IGh0dHA6Ly9wdWJhZHMu
-Zy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD01MTI3MTExMSZpdT0vNDE0MC9vc3RnLmNs
-a3Ryawo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-THRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPiAK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpIb3cgU2VydmljZU5vdyBoZWxwcyBJVCBwZW9wbGUgdHJh
-bnNmb3JtIElUIGRlcGFydG1lbnRzOgoxLiBDb25zb2xpZGF0ZSBsZWdhY3kgSVQgc3lzdGVtcyB0
-byBhIHNpbmdsZSBzeXN0ZW0gb2YgcmVjb3JkIGZvciBJVAoyLiBTdGFuZGFyZGl6ZSBhbmQgZ2xv
-YmFsaXplIHNlcnZpY2UgcHJvY2Vzc2VzIGFjcm9zcyBJVAozLiBJbXBsZW1lbnQgemVyby10b3Vj
-aCBhdXRvbWF0aW9uIHRvIHJlcGxhY2UgbWFudWFsLCByZWR1bmRhbnQgdGFza3MKaHR0cDovL3B1
-YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTUxMjcxMTExJml1PS80MTQwL29z
-dGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Ckx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+> >> Makefile example:
+> >>
+> >> top_srcdir	?= ../../../..
+> >>
+> >> include $(top_srcdir)/include/mk/testcases.mk
+> >>
+> >> REQ_VERSION_MAJOR	:= 2
+> >> REQ_VERSION_PATCH	:= 6
+> >>
+> >> MODULE_NAMES	:= Module01 Module02 ...
+> >> MAKE_TARGETS	:= test01 test02 ...
+> >>
+> >> include $(top_srcdir)/include/mk/module.mk
+> >> include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>
+> I redefine top_srcdir to make it absolute because when "make" cd to 
+> kernel build directory and once again include LTP Makefile, the first 
+> include of env_pre.mk leads to non-existed file and kernel build stops 
+> with error. If top_srcdir absolute, no include errors in the kernel build.
+> 
+> Actually we don't need this include of env_pre.mk in the kernel build 
+> system because it does nothing with the module build and usually it 
+> accomplished with the KERNELRELEASE variable or separate kbuild file. 
+> But to preserve the LTP Makefile API and also have a chance to build 
+> user-space tests, we include it and tell kernel build system that this 
+> one have already been loaded (exporting ENV_PRE_LOAD).
+
+Hmm, I think that it may be more clear to put the linux kernel Makefile
+part to the Makefile that is in the test directory, so that it will
+became:
+
+ifneq ($(KERNELRELEASE),)
+
+obj-m := $(addsuffix .o, $(MODULE_NAMES))
+
+else
+
+top_srcdir ?= ../../../..
+
+include $(top_srcdir)/include/mk/testcases.mk
+
+REQ_VERSION_MAJOR  := 2
+REQ_VERSION_PATCH  := 6
+MAKE_TARGETS       := test01 test02 ...
+
+include $(top_srcdir)/include/mk/module.mk
+include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+endif
+
+Which moves all the common code into module.mk and just leaves the
+kernel recipe in the particular Makefile. That should guarantee that the
+LTP build system and kernel build system stay separated and won't
+interact. What do you think?
+
+Or to use Kbuild file which should be preffered over Makefile,
+unfortunately the documentation does not say which kernel version gets
+the support for Kbuild for extrenal modules, so if it's a recent feature
+we must go with the Makefile.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
