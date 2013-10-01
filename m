@@ -1,31 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1VHAId-0002iu-E0
-	for ltp-list@lists.sourceforge.net; Wed, 04 Sep 2013 10:26:59 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VHAIb-0000jE-Fd
-	for ltp-list@lists.sourceforge.net; Wed, 04 Sep 2013 10:26:59 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r84AQn80015680
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Sep 2013 10:26:49 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r84AQmUh013176
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Sep 2013 10:26:49 GMT
-Received: from abhmt112.oracle.com (abhmt112.oracle.com [141.146.116.64])
-	by userz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r84AQmZg015196
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Sep 2013 10:26:48 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  4 Sep 2013 14:26:06 +0400
-Message-Id: <1378290366-25022-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] device-drivers: add makefile to build drivers
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VQyoT-0004fB-Iy
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 12:12:25 +0000
+Date: Tue, 1 Oct 2013 14:12:42 +0200
+From: chrubis@suse.cz
+Message-ID: <20131001121242.GA23458@rei.suse.cz>
+References: <20130926122235.GF14003@rei.suse.cz>
+	<1380280420-12280-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20130930171154.GA6339@rei.suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20130930171154.GA6339@rei.suse.cz>
+Subject: Re: [LTP] [PATCH V2 5/7] cpuset/cpuset_memory_test: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,65 +23,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, miaox@cn.fujitsu.com
 
-This is the first step to automate building of device-drivers tests.
-Fixed tests should be added to SUBDIRS inside ifeq body.
+Hi!
+> 
+> Looks good.
+> 
+> I will try to apply the patchset and run the tests tomorrow.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/kernel/device-drivers/Makefile |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/device-drivers/Makefile
+I've tested the patset (all 8 patches) and it works fine.
 
-diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
-new file mode 100644
-index 0000000..c402702
---- /dev/null
-+++ b/testcases/kernel/device-drivers/Makefile
-@@ -0,0 +1,27 @@
-+# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+
-+top_srcdir	?= ../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+SUBDIRS	=
-+
-+ifeq ($(WITH_MODULES),yes)
-+
-+endif
-+
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
+I've got a failure on cpuset_memory_pressure_testset.sh:
+
+cpuset10    5  TFAIL  :  root group's memory_pressure didn't have memory pressure rate.
+/opt/ltp/testcases/bin/cpuset_memory_pressure_testset.sh: line 195:
+15280 Killed                  ./cpuset_memory_pressure $usemem
+cpuset10    6  TFAIL  :  root group's memory_pressure didn't have memory pressure rate.
+
+however the changes you did to the test are more or less cosmetic.
+
+Now I would like to see a bit more verbose git log for
+"cpuset_memory_spread_test: number of nodes and sync" patch (You should
+write commit logs verbose enough so that peroson who wasn't involved in
+the fix would understand how the changes fix the prolem).
+
+And with the fixes to the reorganization patch and then I'm fine with
+the whole series.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
