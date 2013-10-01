@@ -1,29 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VRh8n-0002MX-8z
-	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 11:32:21 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VRh8m-0007C6-Fj
-	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 11:32:21 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r93BWERI014116
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Oct 2013 07:32:14 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r93BWAKL025510
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Oct 2013 07:32:13 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu,  3 Oct 2013 13:32:05 +0200
-Message-Id: <1f03930f721cfec46a30d523a0447672a1ba6049.1380794505.git.jstancek@redhat.com>
-In-Reply-To: <8803687faf31650b5174df670f07014a7a2f7532.1380794505.git.jstancek@redhat.com>
-References: <8803687faf31650b5174df670f07014a7a2f7532.1380794505.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 2/3] pthread_attr_setschedpolicy/2-1.c: fix race at
-	thread startup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VR0GI-0001cl-9r
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:14 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VR0GH-0001ze-G4
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:14 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue,  1 Oct 2013 17:44:49 +0400
+Message-Id: <1380635095-21403-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V2 2/8] cpuset/cpuset_base_ops_test: fix expected error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,91 +29,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Test can hang during startup in following scenario:
+At least since kernel 3.0.0 writing '0-' to
+$CPUSET/N/{cpus, mems} files doesn't raise an error.
+Reading content of these files after writing gives '0'.
 
-                    main                                       new thread
---------------------------------------------------+-------------------------------------
-int create_thread(int prio, pthread_t * tid)      |
-...                                               |
-    pthread_create(tid, &attr, thread_func, NULL);|
-        while (!thread_started) {                 |
-                                                  |   void *thread_func(void *data)
-                                                  |        thread_started = 1;
-                                                  |        pthread_cond_signal(&cond);
-            pthread_mutex_lock(&c_mutex);         |
-132:        pthread_cond_wait(&cond, &c_mutex);   |
-                                                  |65:     pthread_mutex_lock(&mutex);
-                                                  |
-
-(gdb) bt
- #0  0x00007fd588808f6d in __lll_lock_wait () from /lib64/libpthread.so.0
- #1  0x00007fd588804d31 in _L_lock_790 () from /lib64/libpthread.so.0
- #2  0x00007fd588804c37 in pthread_mutex_lock () from /lib64/libpthread.so.0
- #3  0x0000000000400bba in thread_func (data=0x0) at ../../../conformance/interfaces/pthread_attr_setschedpolicy/2-1.c:65
- #4  0x00007fd588802de3 in start_thread () from /lib64/libpthread.so.0
- #5  0x00007fd5885300dd in clone () from /lib64/libc.so.6
-(gdb) t 2
-(gdb) bt
- #0  0x00007fd5888066f5 in pthread_cond_wait@@GLIBC_2.3.2 () from /lib64/libpthread.so.0
- #1  0x0000000000400d9b in create_thread (prio=5, tid=0x7fffdb562678) at ../../../conformance/interfaces/pthread_attr_setschedpolicy/2-1.c:132
- #2  0x0000000000400e82 in main () at ../../../conformance/interfaces/pthread_attr_setschedpolicy/2-1.c:174
-
-Fix this by using same c_mutex in thread_func for updating
-thread_started and signalling cond.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- .../interfaces/pthread_attr_setschedpolicy/2-1.c   |   20 ++++++++++++--------
- 1 files changed, 12 insertions(+), 8 deletions(-)
+ .../cpuset_base_ops_testset.sh                     |   16 ++++++++++++++--
+ 1 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-index 6c471d6..80ce906 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-@@ -56,10 +56,16 @@ static void *thread_func(void *data)
- 	if (rc)
- 		FAIL_AND_EXIT("pthread_getschedparam()", rc);
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
+index 8b21210..126eec5 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
+@@ -117,7 +117,6 @@ test_cpus()
+ 		0-$((nr_cpus-1))			0-$((nr_cpus-1))
+ 		-1					WRITE_ERROR
+ 		0-$nr_cpus				WRITE_ERROR
+-		0-					WRITE_ERROR
+ 		0--$((nr_cpus-1))			WRITE_ERROR
+ 		0,1-$((nr_cpus-2)),$((nr_cpus-1))	0-$((nr_cpus-1))
+ 		0,1-$((nr_cpus-2)),			0-$((nr_cpus-2))
+@@ -125,6 +124,13 @@ test_cpus()
+ 		AAA					WRITE_ERROR
+ 	EOF
+ 	# while read cpus result
++
++	tst_kvercmp 3 0 0
++	if [ $? -eq 0 ]; then
++		base_op_test "$CPUSET/1/cpus" "0-" "WRITE_ERROR"
++	else
++		base_op_test "$CPUSET/1/cpus" "0-" "0"
++	fi
+ }
  
-+	rc = pthread_mutex_lock(&c_mutex);
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_lock()", rc);
- 	thread_started = 1;
- 	rc = pthread_cond_signal(&cond);
- 	if (rc)
- 		FAIL_AND_EXIT("pthread_cond_signal()", rc);
-+	rc = pthread_mutex_unlock(&c_mutex);
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
+ test_mems()
+@@ -144,7 +150,6 @@ test_mems()
+ 		0-$((nr_mems-1))			0-$((nr_mems-1))
+ 		-1					WRITE_ERROR
+ 		0-$nr_mems				WRITE_ERROR
+-		0-					WRITE_ERROR
+ 		0--$((nr_mems-1))			WRITE_ERROR
+ 		0,1-$((nr_mems-2)),$((nr_mems-1))	0-$((nr_mems-1))
+ 		0,1-$((nr_mems-2)),			0-$((nr_mems-2))
+@@ -152,6 +157,13 @@ test_mems()
+ 		AAA					WRITE_ERROR
+ 	EOF
+ 	# while read mems result
++
++	tst_kvercmp 3 0 0
++	if [ $? -eq 0 ]; then
++		base_op_test "$CPUSET/1/mems" "0-" "WRITE_ERROR"
++	else
++		base_op_test "$CPUSET/1/mems" "0-" "0"
++	fi
+ }
  
- 	rc = pthread_mutex_lock(&mutex);
- 	if (rc)
-@@ -109,19 +115,17 @@ static int create_thread(int prio, pthread_t * tid)
- 	if (rc)
- 		FAIL_AND_EXIT("pthread_create()", rc);
- 
-+	rc = pthread_mutex_lock(&c_mutex);
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_lock()", rc);
- 	while (!thread_started) {
--		rc = pthread_mutex_lock(&c_mutex);
--		if (rc)
--			FAIL_AND_EXIT("pthread_mutex_lock()", rc);
--
- 		rc = pthread_cond_wait(&cond, &c_mutex);
- 		if (rc)
- 			FAIL_AND_EXIT("pthread_cond_wait()", rc);
--
--		rc = pthread_mutex_unlock(&c_mutex);
--		if (rc)
--			FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
- 	}
-+	rc = pthread_mutex_unlock(&c_mutex);
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
- 
- 	pthread_attr_destroy(&attr);
- 
+ test_flags()
 -- 
 1.7.1
 
