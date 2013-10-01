@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VS2K8-0004uN-83
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:28 +0000
+	id 1VR0GK-00043c-Gb
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:16 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VS2K6-00023Q-TQ
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:28 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VR0GJ-0006xK-Gv
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:16 +0000
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri,  4 Oct 2013 14:08:59 +0400
-Message-Id: <1380881342-13025-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/5] controllers/cpuset: removed './' next to binaries
+Date: Tue,  1 Oct 2013 17:44:50 +0400
+Message-Id: <1380635095-21403-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V2 3/8] cpuset/cpuset_syscall_test: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,366 +31,208 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-In the testcases removed './' next to binaries.
+cpuset_syscall_test.c:
+I suppose that now there is no need in many '#if' and explicit
+definition of functions get_mempolicy, set_mempolicy, mbind.
+Including numa.h and numaif.h (as we do in the other testcases)
+should be sufficient.
+
+cpuset_syscall_testset.sh:
+Since linux kernel 3.8.0 (commit 5606e3877ad8baea42f3a71ebde0a03622bbb551
+"mm: numa: Migrate on reference policy") default task memory policy and
+its output in /proc/<pid>/numa_maps changed.
+
+For example in 3.7.10 for stack vma /proc/<pid>/numa_maps show:
+ 7fff81e01000 default stack anon=3 dirty=3 N3=3
+but in 3.8.0:
+ 7fff08950000 prefer:3 stack anon=5 dirty=5 N2=4 N3=1
+
+So modified a check in test 10 and removed unnessesary checks for "default"
+memory policy from tests 14, 15, 16.
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    6 ++--
- .../cpuset_load_balance_test.sh                    |    4 +-
- .../cpuset_sched_domains_test.sh                   |    6 ++--
- .../cpuset_memory_pressure_testset.sh              |   10 +++---
- .../cpuset_memory_spread_testset.sh                |    4 +-
- .../cpuset_memory_test/cpuset_memory_testset.sh    |   36 ++++++++++----------
- .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    6 ++--
- 7 files changed, 36 insertions(+), 36 deletions(-)
+ .../cpuset/cpuset_syscall_test/Makefile            |    1 +
+ .../cpuset_syscall_test/cpuset_syscall_test.c      |   61 +++++---------------
+ .../cpuset_syscall_test/cpuset_syscall_testset.sh  |   16 +++--
+ 3 files changed, 25 insertions(+), 53 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
-index 1a8eb98..611ea62 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
-@@ -36,7 +36,7 @@ nr_cpus=$NR_CPUS
- nr_mems=$N_NODES
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+index 6565631..54393e7 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+@@ -26,6 +26,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../Makefile.inc
  
- cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
--cpus_all="`./cpuset_list_compute $cpus_all`"
-+cpus_all="`cpuset_list_compute $cpus_all`"
- mems_all="$(seq -s, 0 $((nr_mems-1)))"
+ LDLIBS                  += $(NUMA_LIBS)
++CPPFLAGS                += $(NUMA_CPPFLAGS)
  
- # check_result <result> <expect>
-@@ -224,7 +224,7 @@ base_test()
- # Test Case 1-2
- test_root_cpu_hotplug()
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ 
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+index 5c30763..dd35cd0 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+@@ -22,6 +22,7 @@
+ 
+ #define _GNU_SOURCE
+ 
++#include "config.h"
+ #include <sched.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+@@ -38,49 +39,29 @@
+ #include <sys/shm.h>
+ #include <syscall.h>
+ #include <inttypes.h>
+-#include "config.h"
+-#include "linux_syscall_numbers.h"
++#if HAVE_NUMA_H
++#include <numa.h>
++#endif
++#if HAVE_NUMAIF_H
++#include <numaif.h>
++#endif
++
+ #include "test.h"
+ #include "usctest.h"
+ 
+ char *TCID = "cpuset_syscall_test";
++int TST_TOTAL = 1;
+ 
+-#if HAVE_LINUX_MEMPOLICY_H
+-#include <linux/mempolicy.h>
++#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
++	&& HAVE_MPOL_CONSTANTS
+ 
+ #include "../cpuset_lib/cpuset.h"
+ #include "../cpuset_lib/bitmask.h"
+ 
+-int TST_TOTAL = 1;
+-
+-unsigned long mask;
+-int test = -1;
+-int flag_exit;
+-int ret;
+-
+-#if HAVE_DECL_MPOL_F_MEMS_ALLOWED
+-static int get_mempolicy(int *policy, unsigned long *nmask,
+-			 unsigned long maxnode, void *addr, int flags)
+-{
+-	return ltp_syscall(__NR_get_mempolicy, policy, nmask, maxnode, addr,
+-		flags);
+-}
+-#endif
+-
+-#if HAVE_DECL_MPOL_BIND
+-static int mbind(void *start, unsigned long len, int policy,
+-		 unsigned long *nodemask, unsigned long maxnode, unsigned flags)
+-{
+-	return ltp_syscall(__NR_mbind, start, len, policy, nodemask, maxnode,
+-		       flags);
+-}
+-
+-static int set_mempolicy(int policy, unsigned long *nodemask,
+-			 unsigned long maxnode)
+-{
+-	return ltp_syscall(__NR_set_mempolicy, policy, nodemask, maxnode);
+-}
+-#endif
++static unsigned long mask;
++static int test = -1;
++static int flag_exit;
++static int ret;
+ 
+ #define OPT_setaffinity		(SCHAR_MAX + 1)
+ #define OPT_getaffinity		(SCHAR_MAX + 2)
+@@ -178,20 +159,12 @@ void test_mbind(void)
+ 		return;
+ 	}
+ 	printf("%p\n", addr);
+-#if HAVE_DECL_MPOL_BIND
+ 	ret = mbind(addr, len, MPOL_BIND, &mask, 8 * sizeof(mask), 0);
+-#else
+-	ret = 1;
+-#endif
+ }
+ 
+ void test_set_mempolicy(void)
  {
--	local tmp_cpus="`./cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
-+	local tmp_cpus="`cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
+-#if HAVE_DECL_MPOL_BIND
+ 	ret = set_mempolicy(MPOL_BIND, &mask, 8 * sizeof(mask));
+-#else
+-	ret = -1;
+-#endif
+ }
  
- 	test_function="root_cpu_hotplug_test"
- 	while read hotplug cpus_expect task_expect
-@@ -240,7 +240,7 @@ test_root_cpu_hotplug()
- # Test Case 3-6
- test_general_cpu_hotplug()
- {
--	local tmp_cpus="`./cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
-+	local tmp_cpus="`cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
+ void test_get_mempolicy(void)
+@@ -213,12 +186,8 @@ void test_get_mempolicy(void)
+ 		ret = 1;
+ 		return;
+ 	}
+-#if HAVE_DECL_MPOL_F_MEMS_ALLOWED
+ 	ret = get_mempolicy(NULL, bitmask_mask(nmask), bitmask_nbits(nmask), 0,
+ 			    MPOL_F_MEMS_ALLOWED);
+-#else
+-	ret = -1;
+-#endif
  
- 	test_function="general_cpu_hotplug_test"
- 	while read hotplug cpus cpus_expect task_expect
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
-index 0c9e5c6..8ba7222 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
-@@ -84,7 +84,7 @@ general_load_balance_test1()
- 		return 1
- 	fi
- 
--	./cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
-+	cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
- 	pid=$!
- 
- 	read fifo < ./myfifo
-@@ -209,7 +209,7 @@ general_load_balance_test2()
- 		return 1
- 	fi
- 
--	./cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
-+	cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
- 	pid=$!
- 
- 	# wait for the parent to do prepare
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
-index 27d8266..53675ec 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
-@@ -76,7 +76,7 @@ root_load_balance_test()
- 
- 	# check sched domains of every CPU
- 	sleep 1
--	./cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
-+	cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
- 	ret=$?
- 	if [ $ret -ne 0 ]; then
- 		cpuset_log_error $CPUSET_TMP/stderr
-@@ -119,7 +119,7 @@ general_load_balance_test1()
- 
- 	# check sched domains of every CPU
- 	sleep 1
--	./cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
-+	cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
- 	if [ $? -ne 0 ]; then
- 		cpuset_log_error $CPUSET_TMP/stderr
- 		tst_resm TFAIL "partition sched domains failed."
-@@ -195,7 +195,7 @@ general_load_balance_test2()
- 
- 	# check sched domains of every CPU
- 	sleep 1
--	./cpuset_sched_domains_check > $CPUSET_TMP/stdout
-+	cpuset_sched_domains_check > $CPUSET_TMP/stdout
- 	if [ $? -ne 0 ]; then
- 		cpuset_log_error $CPUSET_TMP/stdout
- 		tst_resm TFAIL "partition sched domains failed."
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-index 889398f..fcf00d4 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-@@ -69,7 +69,7 @@ test2()
- 		return 1
- 	fi
- 
--	./cpuset_memory_pressure $usemem
-+	cpuset_memory_pressure $usemem
- 
- 	local i
- 	for i in $(seq 0 9)
-@@ -135,7 +135,7 @@ test4()
- 		return 1
- 	fi
- 
--	./cpuset_memory_pressure $usemem
-+	cpuset_memory_pressure $usemem
- 
- 	echo $$ > "$CPUSET/tasks" 2> $CPUSET_TMP/stderr
- 	if [ $? -ne 0 ]; then
-@@ -174,7 +174,7 @@ test5()
- 		return 1
- 	fi
- 
--	./cpuset_memory_pressure $usemem
-+	cpuset_memory_pressure $usemem
- 	local i
- 	for i in $(seq 0 9)
- 	do
-@@ -211,7 +211,7 @@ test6()
- 		tst_resm TFAIL "attaching self to sub group failed"
- 		return 1
- 	fi
--	./cpuset_memory_pressure $usemem
-+	cpuset_memory_pressure $usemem
- 
- 	echo $$ > "$CPUSET/tasks" 2> $CPUSET_TMP/stderr
- 	if [ $? -ne 0 ]; then
-@@ -220,7 +220,7 @@ test6()
- 		return 1
- 	fi
- 
--	./cpuset_memory_pressure $usemem
-+	cpuset_memory_pressure $usemem
- 	local i
- 	for i in $(seq 0 9)
- 	do
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-index f3f3b09..b8a434f 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-@@ -256,7 +256,7 @@ base_test()
- 	if [ $? -ne 0 ]; then
- 		exit_status=1
- 	else
--		./cpuset_mem_hog &
-+		cpuset_mem_hog &
- 		pid=$!
- 		general_memory_spread_test "$@" "$pid"
- 		result_num=$?
-@@ -303,7 +303,7 @@ test_spread_page2()
- 	if [ $? -ne 0 ]; then
- 		exit_status=1
- 	else
--		./cpuset_mem_hog &
-+		cpuset_mem_hog &
- 		pid=$!
- 		general_memory_spread_test "1" "$cpus_all" "0" "0" "$pid"
- 		result_num=$?
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
-index bc4ff1c..315f759 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
-@@ -71,7 +71,7 @@ test1()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "0" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
-@@ -88,7 +88,7 @@ test2()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-file >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-file >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "0" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
-@@ -105,7 +105,7 @@ test3()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --shm >"$MEMORY_RESULT" &
-+	cpuset_memory_test --shm >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "0" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
-@@ -122,7 +122,7 @@ test4()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-lock1 >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-lock1 >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "0" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
-@@ -139,7 +139,7 @@ test5()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-lock2 >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-lock2 >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "0" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
-@@ -182,7 +182,7 @@ test6()
- 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
- 	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
- 
--	./cpuset_memory_test --mmap-file --hugepage -s $HUGEPAGESIZE >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-file --hugepage -s $HUGEPAGESIZE >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 
- 	umount /hugetlb
-@@ -221,7 +221,7 @@ test7()
- 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
- 	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
- 
--	./cpuset_memory_test --shm --hugepage -s $HUGEPAGESIZE --key=7 >"$MEMORY_RESULT" &
-+	cpuset_memory_test --shm --hugepage -s $HUGEPAGESIZE --key=7 >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 
- 	umount /hugetlb
-@@ -248,7 +248,7 @@ test8()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "0" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
-@@ -265,7 +265,7 @@ test9()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
- 	simple_getresult $! "$CPUSET/0"
- 	if [ "$node" != "1" ]; then
- 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#1)."
-@@ -308,7 +308,7 @@ test10()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
- 	talk2memory_test_for_case_10_11 $! "$CPUSET/1" "$CPUSET/2"
- 	{
- 		read node0
-@@ -353,7 +353,7 @@ test11()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
- 	talk2memory_test_for_case_10_11 $! "$CPUSET/1" "$CPUSET/2"
- 	{
- 		read node0
-@@ -405,7 +405,7 @@ test12()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
- 	talk2memory_test_for_case_12_13 $! "$CPUSET/0"
- 
- 	{
-@@ -441,7 +441,7 @@ test13()
- 	fi
- 
- 
--	./cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
-+	cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
- 	talk2memory_test_for_case_12_13 $! "$CPUSET/0"
- 
- 	{
-@@ -496,7 +496,7 @@ test14()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
- 	{
- 		local testpid=$!
- 		sleep 1
-@@ -552,7 +552,7 @@ test15()
- 	fi
- 
- 
--	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
- 	{
- 		local testpid=$!
- 		sleep 1
-@@ -608,7 +608,7 @@ test16()
- 	fi
- 
- 
--	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
- 	{
- 		local testpid=$!
- 		sleep 1
-@@ -674,7 +674,7 @@ test17()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
- 	{
- 		local testpid=$!
- 		sleep 1
-@@ -756,7 +756,7 @@ test18()
- 		return 1
- 	fi
- 
--	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
-+	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
- 	{
- 		local testpid=$!
- 		sleep 1
+ 	bitmask_displaylist(str, 256, nmask);
+ 	puts(str);
 diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-index b6ac7a7..95196b7 100755
+index 35e368c..af92373 100755
 --- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
 +++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-@@ -37,10 +37,10 @@ TEST_OUTPUT="$CPUSET_TMP/result"
- TEST_PROCSTATUS="$CPUSET_TMP/status"
- TEST_PROCNUMA="$CPUSET_TMP/numa_maps"
- 
--# do_syscall_test - call ./syscall_test
-+# do_syscall_test - call syscall_test
- # $1 - cpus
- # $2 - mems
--# $3 - ./syscall_test's args
-+# $3 - syscall_test's args
- # $4 - expect return value of test task
- 
- do_syscall_test()
-@@ -63,7 +63,7 @@ do_syscall_test()
- 		tst_resm TFAIL "set $TEST_CPUSET/mems as $2 fail."
+@@ -230,15 +230,20 @@ test10()
+ 	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
+ 			awk '{print $2}')
+ 	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
+-	test "$allowed_list" = "default"
++
++	task_policy=$(cat $TEST_PROCNUMA | grep -e "\s\+stack\s\+anon" | \
++			awk '{print $2}')
++
++	test "$allowed_list" = "$task_policy"
+ 	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "Result(/proc/<pid>/status) = \"$allowed_list\", expect = \"default\")"
++		tst_resm TFAIL "Result(/proc/<pid>/status) = \"$allowed_list\",\
++			expect = \"$task_policy\")"
  		return 1
  	fi
--	./cpuset_syscall_test $3 >"$TEST_OUTPUT" &
-+	cpuset_syscall_test $3 >"$TEST_OUTPUT" &
- 	testpid=$!
- 	echo $testpid > "$TEST_CPUSET/tasks"
- 	if [ $? -ne 0 ]; then
+ 	return 0
+ }
+ 
+-# this function is used by case 11-16
++# this function is used by case 11-13
+ # check_result <expect>
+ check_result()
+ {
+@@ -279,8 +284,7 @@ test13()
+ test14()
+ {
+ 	do_syscall_test 0 0 --set_mempolicy=6 1 || return 1
+-	check_result "default"
+-	return $?
++	return 0
+ }
+ 
+ test15()
+@@ -297,7 +301,6 @@ test15()
+ 		tst_resm TFAIL "Result(/proc/<pid>/status) = \"$allowed_list\", expect = \"0\")"
+ 		return 1
+ 	fi
+-	check_result "default" || return 1
+ 	return 0
+ }
+ 
+@@ -315,7 +318,6 @@ test16()
+ 		tst_resm TFAIL "Result(/proc/<pid>/status) = \"$allowed_list\", expect = \"0-1\")"
+ 		return 1
+ 	fi
+-	check_result "default" || return 1
+ 	return 0
+ }
+ 
 -- 
 1.7.1
 
