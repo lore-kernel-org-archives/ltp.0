@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VUa47-0005wo-7X
-	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 10:35:27 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VUa45-00072t-IR
-	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 10:35:27 +0000
-Date: Fri, 11 Oct 2013 06:35:16 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1690303515.5158783.1381487716233.JavaMail.root@redhat.com>
-In-Reply-To: <000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
-	->	factor_nr = 5
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VR0GP-000447-5p
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:21 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VR0GK-0001mW-V4
+	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:21 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue,  1 Oct 2013 17:44:51 +0400
+Message-Id: <1380635095-21403-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V2 4/8] cpuset/cpuset_lib: cpuinfo.c compiled
+	incorrectly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,75 +25,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiWmVuZyBMaW5nZ2FuZyIg
-PHplbmdsZy5qeUBjbi5mdWppdHN1LmNvbT4KPiBUbzogIkphbiBTdGFuY2VrIiA8anN0YW5jZWtA
-cmVkaGF0LmNvbT4KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gU2VudDog
-RnJpZGF5LCAxMSBPY3RvYmVyLCAyMDEzIDEyOjE5OjE5IFBNCj4gU3ViamVjdDogUkU6IFtMVFBd
-IFtQQVRDSF0gZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmM6IEZpeCBmYWN0b3JfbnIgPSAxIC0+CWZh
-Y3Rvcl9uciA9IDUKPiAKPiAKPiAKPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiBG
-cm9tOiDmm77ku6TpkqIgW21haWx0bzp6ZW5nbGcuanlAY24uZnVqaXRzdS5jb21dCj4gPiBTZW50
-OiBUaHVyc2RheSwgT2N0b2JlciAxMCwgMjAxMyA0OjE2IFBNCj4gPiBUbzogJ0phbiBTdGFuY2Vr
-Jwo+ID4gQ2M6ICdsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQnCj4gPiBTdWJqZWN0OiDn
-rZTlpI06IFtMVFBdIFtQQVRDSF0gZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmM6IEZpeCBmYWN0b3Jf
-bnIgPSAxIC0+Cj4gPiBmYWN0b3JfbnIgPSA1Cj4gPiAKPiA+IAo+ID4gCj4gPiA+Cj4gPiA+Cj4g
-PiA+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+ID4gPiBGcm9tOiAi5pu+5Luk6ZKi
-IiA8emVuZ2xnLmp5QGNuLmZ1aml0c3UuY29tPgo+ID4gPiA+IFRvOiBsdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKPiA+ID4gPiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3
-OjU2OjA1IEFNCj4gPiA+ID4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBnZXRydXNhZ2UvZ2V0cnVz
-YWdlMDQuYzogRml4IGZhY3Rvcl9uciA9IDEgLT4KPiA+ID4gCWZhY3Rvcl9uciA9IDUKPiA+ID4g
-Pgo+ID4gPiA+IFRvIG1ha2UgdWRlbHRhIG9yIHNkZWx0YSdzIHZhbHVlcyBpc25vdCBncmVhdCB0
-aGFuIGV4cGVjdGVkLCB3ZQo+ID4gPiA+IGNoYW5nZSB0aGUgZmFjdG9yX25yIHRvIDUuCj4gPiA+
-Cj4gPiA+IE5vdGUsIHRoYXQgdGhlcmUgaXMgYWxyZWFkeSBhIHBhcmFtZXRlciAtbSB0byBzZXQg
-ZmFjdG9yX25yLgo+ID4gPgo+ID4gPiBDYW4geW91IHNoYXJlIG1vcmUgZGV0YWlscyB3aHkgdGhp
-cyBzaG91bGQgYmUgdGhlIGRlZmF1bHQ/Cj4gPiA+IE9uIHdoaWNoIHN5c3RlbS9hcmNoaXRlY3R1
-cmUgZG8geW91IHNlZSBpdCBmYWlsaW5nPwo+ID4gCj4gPiBZZXMuIFdlIGhhdmUgc29tZSBwcm9i
-bGVtcyBpbiBSSEVMNS4xMEdBLgo+ID4gSXQgY291bGQgbm90IHdvcmsgYXMgd2UgZXhwZWN0ZWQu
-IEFuZCBJIHdpbGwgYmUgbW9yZSBjYXJlZnVsLgo+ID4gVGhhbmtzLgo+ID4gCj4gCj4gTWF5YmUg
-dGhlIGNhc2UgaXMgbm90IHN1aXQgZm9yIHhlbiBrZXJuZWwuCj4gV2hlbiBrZXJuZWwgaXMgdm1s
-aW51ei0yLjYuMTgtMzcxLmVsNXhlbiwgdGhlIGNhc2Ugd2lsbCBmYWlsLgo+IEJ1dCB3aXRoIHZt
-bGludXotMi42LjE4LTM3MS5lbDUsIGl0IHdvcmtzIHdlbGwuCgpDYW4geW91IHNlbmQgdGhlIG91
-dHB1dCBmcm9tIGZhaWxlZCBydW4/CgoKPiAKPiBSZWdhcmRzLAo+IFplbmcKPiAKPiA+ID4KPiA+
-ID4gUmVnYXJkcywKPiA+ID4gSmFuCj4gPiA+Cj4gPiA+ID4KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5
-OiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+Cj4gPiA+ID4gLS0tCj4g
-PiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMg
-fCAgICAyICstCj4gPiA+ID4gIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRl
-bGV0aW9ucygtKQo+ID4gPiA+Cj4gPiA+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gPiBiL3Rlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gPiBpbmRleCA5NmUyNGE0
-Li40MWQwMDUyIDEwMDY0NAo+ID4gPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-Z2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL2dldHJ1c2FnZS9nZXRydXNhZ2UwNC5jCj4gPiA+ID4gQEAgLTY3LDcgKzY3LDcgQEAg
-c3RhdGljIGxvbmcgQklBU19NQVg7Cj4gPiA+ID4KPiA+ID4gPiAgc3RhdGljIGludCBvcHRfZmFj
-dG9yOwo+ID4gPiA+ICBzdGF0aWMgY2hhciAqZmFjdG9yX3N0cjsKPiA+ID4gPiAtc3RhdGljIGxv
-bmcgZmFjdG9yX25yID0gMTsKPiA+ID4gPiArc3RhdGljIGxvbmcgZmFjdG9yX25yID0gNTsKPiA+
-ID4gPgo+ID4gPiA+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7Cj4gPiA+ID4gIAl7Im06
-IiwgJm9wdF9mYWN0b3IsICZmYWN0b3Jfc3RyfSwKPiA+ID4gPiAtLQo+ID4gPiA+IDEuNy4xCj4g
-PiA+ID4KPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4gPiAtLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gPiA+
-IC0tCj4gPiA+ID4gLS0tLS0tLS0gT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFu
-Y2UgRnJlZSBJbnRlbCB3ZWJpbmFycwo+ID4gPiA+IGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFw
-cGxpY2F0aW9uIHBlcmZvcm1hbmNlLgo+ID4gPiA+IEV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVu
-TVAsIGFkdmFuY2VkIHByb2ZpbGluZywgYW5kIG1vcmUuIEdldCB0aGUKPiA+ID4gPiBtb3N0IGZy
-b20gdGhlIGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nlc3NvcnMuIFNlZQo+ID4g
-PiA+IGFic3RyYWN0cyBhbmQgcmVnaXN0ZXIgPgo+ID4gPiA+Cj4gPiA+Cj4gPiBodHRwOi8vcHVi
-YWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzQwNzEmaXU9LzQxNDAvb3N0
-Zy5jCj4gPiA+ID4gbGt0cmsgX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiA+ID4gPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiA+ID4gPiBMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+ID4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+ID4gPiA+Cj4gCj4gCj4gCgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UKRnJlZSBJbnRl
-bCB3ZWJpbmFycyBjYW4gaGVscCB5b3UgYWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5j
-ZS4KRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBhbmQg
-bW9yZS4gR2V0IHRoZSBtb3N0IGZyb20gCnRoZSBsYXRlc3QgSW50ZWwgcHJvY2Vzc29ycyBhbmQg
-Y29wcm9jZXNzb3JzLiBTZWUgYWJzdHJhY3RzIGFuZCByZWdpc3RlciA+Cmh0dHA6Ly9wdWJhZHMu
-Zy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnLmNs
-a3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
-bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Because of lack of '#include "config.h"' cpuinfo.c file
+was compiled incorrectly (i.e. final lib libcpu_set.a didn't contain
+the functions/variables from cpuinfo.c)
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../kernel/controllers/cpuset/cpuset_lib/cpuinfo.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c b/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
+index 65c5072..3e7961f 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
+@@ -1,3 +1,4 @@
++#include "config.h"
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
