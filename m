@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vbo4q-0005B8-95
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:58:04 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vbo4o-0006cL-O4
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:58:04 +0000
-Message-ID: <52721B84.8050105@cn.fujitsu.com>
-Date: Thu, 31 Oct 2013 16:57:40 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VRjlU-0006jU-LG
+	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 14:20:28 +0000
+Date: Thu, 3 Oct 2013 16:20:50 +0200
+From: chrubis@suse.cz
+Message-ID: <20131003142050.GB3862@rei.Home>
+References: <1380705212-7200-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-References: <1383208907-9881-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1383208907-9881-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] fcntl/fcntl16: close fd before unlink
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1380705212-7200-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v2] device-drivers: acpi: update for Linux kernel
+ 2.6.37+
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +25,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 10/31/2013 04:41 PM, Stanislav Kholmanskikh wrote:
-> This testcase fails on NFS but doesn't remove its
-> working directory on exit (NFS silly rename):
+Hi!
+> User-space program determines block device major number using sysfs.
+> User-space program loads/unloads kernel module.
+> acpi_get_object_info external interface updated.
+> ACPI bit register access function renamed.
+> acpi_bus_get_power() changed to acpi_bus_update_power()
+> Added block device queue to fix NULL dereference.
+> Added acpi functions return status checks.
 > 
-> TWARN  :  tst_rmdir: rmobj(/mnt/fcn1GHJ8g) failed: unlink(/mnt/fcn1GHJ8g/.nfs0000000000000c4200000001) failed; errno=16: Device or resource busy
-> 
-> Fixed.
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 > ---
->  testcases/kernel/syscalls/fcntl/fcntl16.c |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
+>  testcases/kernel/device-drivers/acpi/.gitignore    |    8 +
+>  testcases/kernel/device-drivers/acpi/LtpAcpi.h     |    6 +-
+>  testcases/kernel/device-drivers/acpi/LtpAcpiCmds.c |  439 +++++++++-----------
+>  testcases/kernel/device-drivers/acpi/LtpAcpiMain.c |  169 +++++---
+>  testcases/kernel/device-drivers/acpi/Makefile      |   43 +-
+>  testcases/kernel/device-drivers/acpi/ltpacpi.sh    |   54 ---
+>  6 files changed, 337 insertions(+), 382 deletions(-)
+>  create mode 100644 testcases/kernel/device-drivers/acpi/.gitignore
+>  delete mode 100755 testcases/kernel/device-drivers/acpi/ltpacpi.sh
 
+I've looked at the code closely and the whole point of the device driver
+is the ioclt() handler that is used to start the tests. I guess that we
+can rewrite it to use sysfs interface too.
 
-Applied, thank you.
+Otherwise the code looks like it tries to poke some of the ACPI
+structures that are expected to be there by the ACPI specification and
+try to register some handlers and LTP test device. The \_SB is root of
+the system bus, then it tries to execute initialization on the system
+bus which, if I'm reading the ACPI specification (free downloadable ~500
+pages pdf) is noop if device is allready initialized.
 
-Wanlong Gao
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
