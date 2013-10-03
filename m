@@ -1,20 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VVasS-0008F0-3m
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 05:39:36 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VVasQ-00041c-Rn
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 05:39:36 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 14 Oct 2013 01:39:33 -0400
-References: <1381327865-9089-1-git-send-email-maxim.uvarov@linaro.com>
-In-Reply-To: <1381327865-9089-1-git-send-email-maxim.uvarov@linaro.com>
-MIME-Version: 1.0
-Message-Id: <201310140139.35346.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH]  syslog-lib.sh bash posix compliance
+	(envelope-from <jstancek@redhat.com>) id 1VRh8p-0000Eu-94
+	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 11:32:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VRh8o-00088Q-L3
+	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 11:32:23 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r93BWGm8021867
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Oct 2013 07:32:16 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id r93BWAKM025510
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Oct 2013 07:32:16 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu,  3 Oct 2013 13:32:06 +0200
+Message-Id: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
+In-Reply-To: <8803687faf31650b5174df670f07014a7a2f7532.1380794505.git.jstancek@redhat.com>
+References: <8803687faf31650b5174df670f07014a7a2f7532.1380794505.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 3/3] pthread_attr_setschedpolicy/2-1.c: give threads a
+	moment to block on mutex
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,82 +33,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2987040437903866413=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.com>
 
---===============2987040437903866413==
-Content-Type: multipart/signed; boundary="nextPart3746997.Mlnlbf7Wml";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Use small sleep for lack of better way to check that all threads
+are blocked on mutex "mutex".
 
---nextPart3746997.Mlnlbf7Wml
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../interfaces/pthread_attr_setschedpolicy/2-1.c   |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-On Wednesday 09 October 2013 10:11:05 Maxim Uvarov wrote:
-> /opt/ltp/testcases/bin/syslog02: 69: [: syslog-ng: unexpected operator
-> + [ syslog-ng =3D=3D syslog-ng ]
-> Accoding to:
-> http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html
-> [ STRING1 =3D=3D STRING2 ]  True if the strings are equal. "=3D" may be
-> used instead of "=3D=3D" for strict POSIX compliance.
->=20
-> Because of busybox and other bash like shells look for posix syntax
-> make it so.
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
+index 80ce906..1f8825a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
+@@ -161,6 +161,9 @@ int main(void)
+ 	if (rc)
+ 		FAIL_AND_EXIT("create_thread HIGH", rc);
+ 
++	/* give threads a moment so they can block on mutex "mutex" */
++	sleep(2);
++
+ 	rc = pthread_mutex_unlock(&mutex);
+ 	if (rc)
+ 		FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
+-- 
+1.7.1
 
-pushed, thanks !
-=2Dmike
-
---nextPart3746997.Mlnlbf7Wml
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSW4OXAAoJEEFjO5/oN/WBOcQP/i7L0/d6sFfkzsz5SdUXKIKH
-RLC5nFRDL2IXy8ICr1MhrvHcNPQsWYsWSYHQmGPj1eKgtK9TUclQdZup3oJIv6g0
-Vn/p0VW/fB+VUp0shPADo9VJvcXbvECKKnFOPXvog1XsGg5MxkhYbzKUu8YhWXqt
-J36ZCB6B/APwKIDfjMVSKRBfLPzPjd50ea4kMLkH7l8Txqd3z4di6IUGGuozBeTO
-Go2x+hSQGWw9SkgPupvKxzeiG+Jwoi+Fuxn0BLJfSxeBvJHT0fK6rfYppJpJgcqi
-tRbnJVB2cZDkbrvnCML72/TcSyeC7IOx5ZY4yOzGdGIdq7HMBDe5uFiVE73qjEDy
-6qEm3suT6Ii5iCAjbOwzCktCVwN8N4nYSK6mQCUnOmwEmjxieKEr7NgS1k6u2rvU
-Zo5niXCDrW8AqpBuYEfoaaU7OmlhPt0Urjwi3XRbOHV8pX4Y2SOjTxFR6kEOfufP
-KXmqwMw29UbzBCP4I7ilYAt2tNZcgbnc3saB/q4ibFxqWe2OQg38hNOUIZpAcTMU
-2p/LV8sX6m4YFjdbgCCFUkWGSrKGm97iYKQXsS4SSlix8kiIFq3WOR6qyRvkD9pD
-DvRJtcyw0YtPAPYdVviiP27Kk6KbruPJ2h3d7No2ZDjPAcJrspTX3nkmSQVR4uc8
-qtctwA4mLMVO36ZRub/2
-=yHIY
------END PGP SIGNATURE-----
-
---nextPart3746997.Mlnlbf7Wml--
-
-
---===============2987040437903866413==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
---===============2987040437903866413==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2987040437903866413==--
-
