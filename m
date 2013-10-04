@@ -1,27 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VRh8l-0006rk-Qz
-	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 11:32:19 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VRh8k-0002WI-0p
-	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 11:32:19 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r93BWC7G010404
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Oct 2013 07:32:12 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r93BWAKK025510
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Oct 2013 07:32:11 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu,  3 Oct 2013 13:32:04 +0200
-Message-Id: <8803687faf31650b5174df670f07014a7a2f7532.1380794505.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 1/3] pthread_attr_setschedpolicy/2-1.c: simplify error
-	handling
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VS2K8-0004uN-83
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:28 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VS2K6-00023Q-TQ
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:28 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri,  4 Oct 2013 14:08:59 +0400
+Message-Id: <1380881342-13025-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 2/5] controllers/cpuset: removed './' next to binaries
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,230 +29,368 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Remove all gotos and if there's error in any of pthread
-functions exit immediately.
+In the testcases removed './' next to binaries.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- .../interfaces/pthread_attr_setschedpolicy/2-1.c   |  105 +++++++-------------
- 1 files changed, 34 insertions(+), 71 deletions(-)
+ .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    6 ++--
+ .../cpuset_load_balance_test.sh                    |    4 +-
+ .../cpuset_sched_domains_test.sh                   |    6 ++--
+ .../cpuset_memory_pressure_testset.sh              |   10 +++---
+ .../cpuset_memory_spread_testset.sh                |    4 +-
+ .../cpuset_memory_test/cpuset_memory_testset.sh    |   36 ++++++++++----------
+ .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    6 ++--
+ 7 files changed, 36 insertions(+), 36 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-index 6088466..6c471d6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-@@ -24,6 +24,7 @@
- #include <string.h>
- #include <pthread.h>
- #include <unistd.h>
-+#include <stdlib.h>
- #include <errno.h>
- #include <posixtest.h>
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+index 1a8eb98..611ea62 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+@@ -36,7 +36,7 @@ nr_cpus=$NR_CPUS
+ nr_mems=$N_NODES
  
-@@ -40,8 +41,10 @@ static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+ cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
+-cpus_all="`./cpuset_list_compute $cpus_all`"
++cpus_all="`cpuset_list_compute $cpus_all`"
+ mems_all="$(seq -s, 0 $((nr_mems-1)))"
  
- static int thread_started;
- 
--#define ERR_MSG(f, rc)	printf("Failed: function: %s status: %s(%u)\n", \
--						f, strerror(rc), rc)
-+#define FAIL_AND_EXIT(f, rc) { \
-+	printf("Failed: function: %s status: %s(%u)\n", f, strerror(rc), rc); \
-+	exit(PTS_UNRESOLVED); \
-+}
- 
- static void *thread_func(void *data)
+ # check_result <result> <expect>
+@@ -224,7 +224,7 @@ base_test()
+ # Test Case 1-2
+ test_root_cpu_hotplug()
  {
-@@ -50,23 +53,17 @@ static void *thread_func(void *data)
- 	int rc;
+-	local tmp_cpus="`./cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
++	local tmp_cpus="`cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
  
- 	rc = pthread_getschedparam(pthread_self(), &policy, &sp);
--	if (rc) {
--		ERR_MSG("pthread_getschedparam()", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_getschedparam()", rc);
- 
- 	thread_started = 1;
- 	rc = pthread_cond_signal(&cond);
--	if (rc) {
--		ERR_MSG("pthread_cond_signal()", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_cond_signal()", rc);
- 
- 	rc = pthread_mutex_lock(&mutex);
--	if (rc) {
--		ERR_MSG("pthread_mutex_lock()", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_lock()", rc);
- 
- 	/* Stuff the priority in execution order */
- 	if (!priorities[0])
-@@ -77,79 +74,58 @@ static void *thread_func(void *data)
- 		priorities[2] = sp.sched_priority;
- 
- 	rc = pthread_mutex_unlock(&mutex);
--	if (rc) {
--		ERR_MSG("pthread_mutex_unlock()", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
- 
--done:
- 	return (void *)(long)rc;
- }
- 
- static int create_thread(int prio, pthread_t * tid)
+ 	test_function="root_cpu_hotplug_test"
+ 	while read hotplug cpus_expect task_expect
+@@ -240,7 +240,7 @@ test_root_cpu_hotplug()
+ # Test Case 3-6
+ test_general_cpu_hotplug()
  {
- 	int rc;
--	char *func;
- 	struct sched_param sp;
- 	pthread_attr_t attr;
+-	local tmp_cpus="`./cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
++	local tmp_cpus="`cpuset_list_compute -s $cpus_all $HOTPLUG_CPU`"
  
--	func = "pthread_attr_init()";
- 	rc = pthread_attr_init(&attr);
- 	if (rc != 0)
--		goto done;
-+		FAIL_AND_EXIT("pthread_attr_init()", rc);
+ 	test_function="general_cpu_hotplug_test"
+ 	while read hotplug cpus cpus_expect task_expect
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
+index 0c9e5c6..8ba7222 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_load_balance_test.sh
+@@ -84,7 +84,7 @@ general_load_balance_test1()
+ 		return 1
+ 	fi
  
--	func = "pthread_attr_setschedpolicy()";
- 	rc = pthread_attr_setschedpolicy(&attr, SCHED_FIFO);
- 	if (rc != 0)
--		goto error;
-+		FAIL_AND_EXIT("pthread_attr_setschedpolicy()", rc);
+-	./cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
++	cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
+ 	pid=$!
  
--	func = "pthread_attr_setinheritsched()";
- 	rc = pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
- 	if (rc != 0)
--		goto error;
-+		FAIL_AND_EXIT("pthread_attr_setinheritsched()", rc);
+ 	read fifo < ./myfifo
+@@ -209,7 +209,7 @@ general_load_balance_test2()
+ 		return 1
+ 	fi
  
--	func = "pthread_attr_setschedparam()";
- 	sp.sched_priority = prio;
- 	rc = pthread_attr_setschedparam(&attr, &sp);
- 	if (rc != 0)
--		goto error;
-+		FAIL_AND_EXIT("pthread_attr_setschedparam()", rc);
+-	./cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
++	cpuset_cpu_hog 2> $CPUSET_TMP/cpu-hog_stderr &
+ 	pid=$!
  
- 	thread_started = 0;
+ 	# wait for the parent to do prepare
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
+index 27d8266..53675ec 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_sched_domains_test.sh
+@@ -76,7 +76,7 @@ root_load_balance_test()
  
- 	rc = pthread_create(tid, &attr, thread_func, NULL);
--	if (rc) {
--		ERR_MSG("pthread_create()", rc);
--		goto error;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_create()", rc);
+ 	# check sched domains of every CPU
+ 	sleep 1
+-	./cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
++	cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
+ 	ret=$?
+ 	if [ $ret -ne 0 ]; then
+ 		cpuset_log_error $CPUSET_TMP/stderr
+@@ -119,7 +119,7 @@ general_load_balance_test1()
  
- 	while (!thread_started) {
--		func = "pthread_mutex_lock()";
- 		rc = pthread_mutex_lock(&c_mutex);
- 		if (rc)
--			goto error;
-+			FAIL_AND_EXIT("pthread_mutex_lock()", rc);
+ 	# check sched domains of every CPU
+ 	sleep 1
+-	./cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
++	cpuset_sched_domains_check 2> $CPUSET_TMP/stderr
+ 	if [ $? -ne 0 ]; then
+ 		cpuset_log_error $CPUSET_TMP/stderr
+ 		tst_resm TFAIL "partition sched domains failed."
+@@ -195,7 +195,7 @@ general_load_balance_test2()
  
--		func = "pthread_cond_wait()";
- 		rc = pthread_cond_wait(&cond, &c_mutex);
- 		if (rc)
--			goto unlock;
-+			FAIL_AND_EXIT("pthread_cond_wait()", rc);
+ 	# check sched domains of every CPU
+ 	sleep 1
+-	./cpuset_sched_domains_check > $CPUSET_TMP/stdout
++	cpuset_sched_domains_check > $CPUSET_TMP/stdout
+ 	if [ $? -ne 0 ]; then
+ 		cpuset_log_error $CPUSET_TMP/stdout
+ 		tst_resm TFAIL "partition sched domains failed."
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+index 889398f..fcf00d4 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+@@ -69,7 +69,7 @@ test2()
+ 		return 1
+ 	fi
  
--		func = "pthread_mutex_unlock()";
- 		rc = pthread_mutex_unlock(&c_mutex);
- 		if (rc)
--			goto error;
-+			FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
- 	}
+-	./cpuset_memory_pressure $usemem
++	cpuset_memory_pressure $usemem
  
- 	pthread_attr_destroy(&attr);
+ 	local i
+ 	for i in $(seq 0 9)
+@@ -135,7 +135,7 @@ test4()
+ 		return 1
+ 	fi
  
- 	return 0;
--
--unlock:
--	(void)pthread_mutex_unlock(&c_mutex);
--error:
--	pthread_attr_destroy(&attr);
--done:
--	ERR_MSG(func, rc);
--	return -1;
- }
+-	./cpuset_memory_pressure $usemem
++	cpuset_memory_pressure $usemem
  
- int main(void)
-@@ -166,48 +142,36 @@ int main(void)
- 	status = PTS_UNRESOLVED;
+ 	echo $$ > "$CPUSET/tasks" 2> $CPUSET_TMP/stderr
+ 	if [ $? -ne 0 ]; then
+@@ -174,7 +174,7 @@ test5()
+ 		return 1
+ 	fi
  
- 	rc = pthread_mutex_lock(&mutex);
--	if (rc) {
--		ERR_MSG("pthread_mutex_lock()", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_mutex_lock()", rc);
+-	./cpuset_memory_pressure $usemem
++	cpuset_memory_pressure $usemem
+ 	local i
+ 	for i in $(seq 0 9)
+ 	do
+@@ -211,7 +211,7 @@ test6()
+ 		tst_resm TFAIL "attaching self to sub group failed"
+ 		return 1
+ 	fi
+-	./cpuset_memory_pressure $usemem
++	cpuset_memory_pressure $usemem
  
- 	rc = create_thread(PRIO_LOW, &t3);
- 	if (rc)
--		goto done;
-+		FAIL_AND_EXIT("create_thread LOW", rc);
+ 	echo $$ > "$CPUSET/tasks" 2> $CPUSET_TMP/stderr
+ 	if [ $? -ne 0 ]; then
+@@ -220,7 +220,7 @@ test6()
+ 		return 1
+ 	fi
  
- 	rc = create_thread(PRIO_MED, &t2);
- 	if (rc)
--		goto done;
-+		FAIL_AND_EXIT("create_thread MED", rc);
- 
- 	rc = create_thread(PRIO_HIGH, &t1);
- 	if (rc)
--		goto done;
-+		FAIL_AND_EXIT("create_thread HIGH", rc);
- 
- 	rc = pthread_mutex_unlock(&mutex);
- 	if (rc)
--		ERR_MSG("pthread_mutex_unlock()", rc);
-+		FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
- 
- 	rc = pthread_join(t1, &r1);
--	if (rc) {
--		ERR_MSG("pthread_join(t1)", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_join(t1)", rc);
- 
- 	rc = pthread_join(t2, &r2);
--	if (rc) {
--		ERR_MSG("pthread_join(t2)", rc);
--		goto done;
--	}
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_join(t2)", rc);
- 
- 	rc = pthread_join(t3, &r3);
--	if (rc) {
--		ERR_MSG("pthread_join(t3)", rc);
--		goto done;
--	}
--
--	/* Threads fail? */
--	if ((long)r1 || (long)r2 || (long)r2)
--		goto done;
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_join(t3)", rc);
- 
- 	/* priorities must be high to low */
- 	status = PTS_FAIL;
-@@ -223,7 +187,6 @@ int main(void)
+-	./cpuset_memory_pressure $usemem
++	cpuset_memory_pressure $usemem
+ 	local i
+ 	for i in $(seq 0 9)
+ 	do
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+index f3f3b09..b8a434f 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+@@ -256,7 +256,7 @@ base_test()
+ 	if [ $? -ne 0 ]; then
+ 		exit_status=1
  	else
- 		status = PTS_PASS;
+-		./cpuset_mem_hog &
++		cpuset_mem_hog &
+ 		pid=$!
+ 		general_memory_spread_test "$@" "$pid"
+ 		result_num=$?
+@@ -303,7 +303,7 @@ test_spread_page2()
+ 	if [ $? -ne 0 ]; then
+ 		exit_status=1
+ 	else
+-		./cpuset_mem_hog &
++		cpuset_mem_hog &
+ 		pid=$!
+ 		general_memory_spread_test "1" "$cpus_all" "0" "0" "$pid"
+ 		result_num=$?
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+index bc4ff1c..315f759 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+@@ -71,7 +71,7 @@ test1()
+ 		return 1
+ 	fi
  
--done:
- 	if (status == PTS_PASS)
- 		printf("Test PASSED\n");
+-	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "0" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
+@@ -88,7 +88,7 @@ test2()
+ 		return 1
+ 	fi
  
+-	./cpuset_memory_test --mmap-file >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-file >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "0" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
+@@ -105,7 +105,7 @@ test3()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --shm >"$MEMORY_RESULT" &
++	cpuset_memory_test --shm >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "0" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
+@@ -122,7 +122,7 @@ test4()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-lock1 >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-lock1 >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "0" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
+@@ -139,7 +139,7 @@ test5()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-lock2 >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-lock2 >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "0" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
+@@ -182,7 +182,7 @@ test6()
+ 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
+ 	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
+ 
+-	./cpuset_memory_test --mmap-file --hugepage -s $HUGEPAGESIZE >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-file --hugepage -s $HUGEPAGESIZE >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 
+ 	umount /hugetlb
+@@ -221,7 +221,7 @@ test7()
+ 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
+ 	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
+ 
+-	./cpuset_memory_test --shm --hugepage -s $HUGEPAGESIZE --key=7 >"$MEMORY_RESULT" &
++	cpuset_memory_test --shm --hugepage -s $HUGEPAGESIZE --key=7 >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 
+ 	umount /hugetlb
+@@ -248,7 +248,7 @@ test8()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "0" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#0)."
+@@ -265,7 +265,7 @@ test9()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 	if [ "$node" != "1" ]; then
+ 		tst_resm TFAIL "allocate memory on the Node#$node(Expect: Node#1)."
+@@ -308,7 +308,7 @@ test10()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
+ 	talk2memory_test_for_case_10_11 $! "$CPUSET/1" "$CPUSET/2"
+ 	{
+ 		read node0
+@@ -353,7 +353,7 @@ test11()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
+ 	talk2memory_test_for_case_10_11 $! "$CPUSET/1" "$CPUSET/2"
+ 	{
+ 		read node0
+@@ -405,7 +405,7 @@ test12()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon >"$MEMORY_RESULT" &
+ 	talk2memory_test_for_case_12_13 $! "$CPUSET/0"
+ 
+ 	{
+@@ -441,7 +441,7 @@ test13()
+ 	fi
+ 
+ 
+-	./cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
++	cpuset_memory_test --mmap-anon --check >"$MEMORY_RESULT" &
+ 	talk2memory_test_for_case_12_13 $! "$CPUSET/0"
+ 
+ 	{
+@@ -496,7 +496,7 @@ test14()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
+ 	{
+ 		local testpid=$!
+ 		sleep 1
+@@ -552,7 +552,7 @@ test15()
+ 	fi
+ 
+ 
+-	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
+ 	{
+ 		local testpid=$!
+ 		sleep 1
+@@ -608,7 +608,7 @@ test16()
+ 	fi
+ 
+ 
+-	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
+ 	{
+ 		local testpid=$!
+ 		sleep 1
+@@ -674,7 +674,7 @@ test17()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
+ 	{
+ 		local testpid=$!
+ 		sleep 1
+@@ -756,7 +756,7 @@ test18()
+ 		return 1
+ 	fi
+ 
+-	./cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
++	cpuset_memory_test --thread --mmap-anon >"$MEMORY_RESULT" &
+ 	{
+ 		local testpid=$!
+ 		sleep 1
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+index b6ac7a7..95196b7 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+@@ -37,10 +37,10 @@ TEST_OUTPUT="$CPUSET_TMP/result"
+ TEST_PROCSTATUS="$CPUSET_TMP/status"
+ TEST_PROCNUMA="$CPUSET_TMP/numa_maps"
+ 
+-# do_syscall_test - call ./syscall_test
++# do_syscall_test - call syscall_test
+ # $1 - cpus
+ # $2 - mems
+-# $3 - ./syscall_test's args
++# $3 - syscall_test's args
+ # $4 - expect return value of test task
+ 
+ do_syscall_test()
+@@ -63,7 +63,7 @@ do_syscall_test()
+ 		tst_resm TFAIL "set $TEST_CPUSET/mems as $2 fail."
+ 		return 1
+ 	fi
+-	./cpuset_syscall_test $3 >"$TEST_OUTPUT" &
++	cpuset_syscall_test $3 >"$TEST_OUTPUT" &
+ 	testpid=$!
+ 	echo $testpid > "$TEST_CPUSET/tasks"
+ 	if [ $? -ne 0 ]; then
 -- 
 1.7.1
 
