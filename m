@@ -2,22 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VUBei-0001ha-MJ
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 08:31:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VUBeg-0002e2-VM
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 08:31:36 +0000
-From: =?UTF-8?B?5pu+5Luk6ZKi?= <zenglg.jy@cn.fujitsu.com>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-In-Reply-To: <552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-Date: Thu, 10 Oct 2013 16:16:29 +0800
-Message-ID: <000301cec591$08b51ce0$1a1f56a0$@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Language: zh-cn
-Subject: [LTP] =?utf-8?b?562U5aSNOiAgW1BBVENIXSBnZXRydXNhZ2UvZ2V0cnVzYWdl?=
-	=?utf-8?q?04=2Ec=3A_Fix_factor=5Fnr_=3D_1_-=3E=09factor=5Fnr_=3D_5?=
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VS2K6-0007I2-1s
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:26 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VS2K5-00023M-9K
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:26 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri,  4 Oct 2013 14:08:57 +0400
+Message-Id: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] controllers/cpuset: promised patches
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,56 +22,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Jan Stancek' <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Cgo+IAo+IAo+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+IEZyb206ICLmm77ku6Tp
-kqIiIDx6ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+Cj4gPiBUbzogbHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cj4gPiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3OjU2OjA1
-IEFNCj4gPiBTdWJqZWN0OiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9nZXRydXNhZ2UwNC5jOiBG
-aXggZmFjdG9yX25yID0gMSAtPgo+IAlmYWN0b3JfbnIgPSA1Cj4gPgo+ID4gVG8gbWFrZSB1ZGVs
-dGEgb3Igc2RlbHRhJ3MgdmFsdWVzIGlzbm90IGdyZWF0IHRoYW4gZXhwZWN0ZWQsIHdlIGNoYW5n
-ZQo+ID4gdGhlIGZhY3Rvcl9uciB0byA1Lgo+IAo+IE5vdGUsIHRoYXQgdGhlcmUgaXMgYWxyZWFk
-eSBhIHBhcmFtZXRlciAtbSB0byBzZXQgZmFjdG9yX25yLgo+IAo+IENhbiB5b3Ugc2hhcmUgbW9y
-ZSBkZXRhaWxzIHdoeSB0aGlzIHNob3VsZCBiZSB0aGUgZGVmYXVsdD8KPiBPbiB3aGljaCBzeXN0
-ZW0vYXJjaGl0ZWN0dXJlIGRvIHlvdSBzZWUgaXQgZmFpbGluZz8KClllcy4gV2UgaGF2ZSBzb21l
-IHByb2JsZW1zIGluIFJIRUw1LjEwR0EuCkl0IGNvdWxkIG5vdCB3b3JrIGFzIHdlIGV4cGVjdGVk
-LiBBbmQgSSB3aWxsIGJlIG1vcmUgY2FyZWZ1bC4KVGhhbmtzLgoKPiAKPiBSZWdhcmRzLAo+IEph
-bgo+IAo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IFplbmcgTGluZ2dhbmcgPHplbmdsZy5qeUBjbi5m
-dWppdHN1LmNvbT4KPiA+IC0tLQo+ID4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVz
-YWdlL2dldHJ1c2FnZTA0LmMgfCAgICAyICstCj4gPiAgMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+IGIvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+ID4gaW5kZXggOTZlMjRhNC4u
-NDFkMDA1MiAxMDA2NDQKPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVz
-YWdlL2dldHJ1c2FnZTA0LmMKPiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0
-cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+IEBAIC02Nyw3ICs2Nyw3IEBAIHN0YXRpYyBsb25nIEJJ
-QVNfTUFYOwo+ID4KPiA+ICBzdGF0aWMgaW50IG9wdF9mYWN0b3I7Cj4gPiAgc3RhdGljIGNoYXIg
-KmZhY3Rvcl9zdHI7Cj4gPiAtc3RhdGljIGxvbmcgZmFjdG9yX25yID0gMTsKPiA+ICtzdGF0aWMg
-bG9uZyBmYWN0b3JfbnIgPSA1Owo+ID4KPiA+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7
-Cj4gPiAgCXsibToiLCAmb3B0X2ZhY3RvciwgJmZhY3Rvcl9zdHJ9LAo+ID4gLS0KPiA+IDEuNy4x
-Cj4gPgo+ID4KPiA+Cj4gPgo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gLS0tLS0tLS0gT2N0b2JlciBX
-ZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UgRnJlZSBJbnRlbCB3ZWJpbmFycwo+ID4gY2Fu
-IGhlbHAgeW91IGFjY2VsZXJhdGUgYXBwbGljYXRpb24gcGVyZm9ybWFuY2UuCj4gPiBFeHBsb3Jl
-IHRpcHMgZm9yIE1QSSwgT3Blbk1QLCBhZHZhbmNlZCBwcm9maWxpbmcsIGFuZCBtb3JlLiBHZXQg
-dGhlCj4gPiBtb3N0IGZyb20gdGhlIGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nl
-c3NvcnMuIFNlZSBhYnN0cmFjdHMKPiA+IGFuZCByZWdpc3RlciA+Cj4gPgo+IGh0dHA6Ly9wdWJh
-ZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0MC9vc3Rn
-LmMKPiA+IGxrdHJrIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCj4gPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiA+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldAo+ID4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bHRwLWxpc3QKPiA+CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpPY3RvYmVyIFdlYmluYXJzOiBD
-b2RlIGZvciBQZXJmb3JtYW5jZQpGcmVlIEludGVsIHdlYmluYXJzIGNhbiBoZWxwIHlvdSBhY2Nl
-bGVyYXRlIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlLgpFeHBsb3JlIHRpcHMgZm9yIE1QSSwgT3Bl
-bk1QLCBhZHZhbmNlZCBwcm9maWxpbmcsIGFuZCBtb3JlLiBHZXQgdGhlIG1vc3QgZnJvbSAKdGhl
-IGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nlc3NvcnMuIFNlZSBhYnN0cmFjdHMg
-YW5kIHJlZ2lzdGVyID4KaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xr
-P2lkPTYwMTM0MDcxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+
+This a series promised in 'Re: [LTP] [PATCH V2 8/8] controllers/cpuset: reorganization'.
+
+Thanks.
+
+
+
+------------------------------------------------------------------------------
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
