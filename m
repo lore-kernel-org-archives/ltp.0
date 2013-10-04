@@ -2,16 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VYy9P-0005Wr-0s
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:07:03 +0000
-Date: Wed, 23 Oct 2013 15:06:46 +0200
-From: chrubis@suse.cz
-Message-ID: <20131023130646.GE24275@rei.Home>
-References: <015d01cecfef$962c92c0$c285b840$@gyu.kim@lge.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <015d01cecfef$962c92c0$c285b840$@gyu.kim@lge.com>
-Subject: Re: [LTP] [PATCH] getcontext01: check getcontext function in libc
+	(envelope-from <jstancek@redhat.com>) id 1VRzB5-0007dm-M3
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 06:47:55 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VRzB4-0003r3-JR
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 06:47:55 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r946lm9f028110
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 4 Oct 2013 02:47:48 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id r946lllD025096
+	for <ltp-list@lists.sourceforge.net>; Fri, 4 Oct 2013 02:47:48 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  4 Oct 2013 08:47:44 +0200
+Message-Id: <2e3e4287d2d3551db34c734971f0a3145c14a7d5.1380869051.git.jstancek@redhat.com>
+In-Reply-To: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
+References: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2 3/3] pthread_attr_setschedpolicy/2-1.c: bind
+	threads to single CPU
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,66 +33,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Honggyu Kim <hong.gyu.kim@lge.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> getcontext function is implemented depends on libc version and arch.
-> Some libc version for specific arch does not implement getcontext yet.
-> In that case, getcontext just sets errno to ENOSYS and returns -1.
-> For example, getcontext is not implemented before libc-2.17 in ARM.
-> Current test goes to TFAIL when lower version of libc is used in ARM.
-> 
-> This patch sets the test as TCONF if libc does not implement getcontext.
-> If ENOSYS is not set, it goes to TFAIL as it was.
-> 
-> Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
-> ---
->  .../kernel/syscalls/getcontext/getcontext01.c      |    8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c
-> b/testcases/kernel/syscalls/getcontext/getcontext01.c
-> index 03b2df9..860d208 100644
-> --- a/testcases/kernel/syscalls/getcontext/getcontext01.c
-> +++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
-> @@ -73,8 +73,12 @@ int main(int ac, char **av)
->  
->  		TEST(getcontext(&ptr));
->  
-> -		if (TEST_RETURN == -1)
-> -			tst_resm(TFAIL | TTERRNO, "getcontext failed");
-> +		if (TEST_RETURN == -1) {
-> +			if (errno == ENOSYS)
-> +				tst_resm(TCONF, "getcontext is not
-> implemented in the current libc");
-> +			else
-> +				tst_resm(TFAIL | TTERRNO, "getcontext
-> failed");
-> +		}
->  		else if (TEST_RETURN >= 0)
->  			tst_resm(TPASS, "getcontext passed");
->  
+To make sure that threads are blocked on mutex, bind all to single CPU.
+Because they all use SCHED_FIFO policy with main thread having the lowest
+priority, main will progress only after three created threads block on
+mutex.
 
-Can you please fix the over 80 chars lines?
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../interfaces/pthread_attr_setschedpolicy/2-1.c   |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
-In this case I would moved the inner part of the loop (from
-TEST(getcontext(&ptr)) to a function called test() and shortened the
-TCONF message to simple "getcontext is not implemented".
-
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
+index 80ce906..af8e3e4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
+@@ -20,6 +20,7 @@
+  *   Date:  20/05/2011
+  */
+ 
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <string.h>
+ #include <pthread.h>
+@@ -27,11 +28,13 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <posixtest.h>
++#include <affinity.h>
+ 
+ /* Priorities for the threads, must be unique, non-zero, and ordered */
+ #define PRIO_HIGH	20
+ #define PRIO_MED	10
+ #define PRIO_LOW	5
++#define PRIO_MAIN	1
+ 
+ static int priorities[3];
+ 
+@@ -142,9 +145,20 @@ int main(void)
+ 	pthread_t t1;
+ 	pthread_t t2;
+ 	pthread_t t3;
++	struct sched_param sp;
+ 
+ 	status = PTS_UNRESOLVED;
+ 
++
++	rc = set_affinity(0);
++	if (rc)
++		FAIL_AND_EXIT("set_affinity", errno);
++
++	sp.sched_priority = PRIO_MAIN;
++	rc = pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp);
++	if (rc)
++		FAIL_AND_EXIT("pthread_setschedparam()", rc);
++
+ 	rc = pthread_mutex_lock(&mutex);
+ 	if (rc)
+ 		FAIL_AND_EXIT("pthread_mutex_lock()", rc);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
