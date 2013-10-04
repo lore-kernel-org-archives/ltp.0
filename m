@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VYxvF-0004kO-5s
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 12:52:25 +0000
-Date: Wed, 23 Oct 2013 14:52:06 +0200
-From: chrubis@suse.cz
-Message-ID: <20131023125206.GD24275@rei.Home>
-References: <5266530C.5070604@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5266530C.5070604@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] acct/acct01.c: Add ELOOP ENAMETOOLONG EROFS
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VS2KO-0007LQ-0K
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:44 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VS2K8-00023S-7t
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:43 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri,  4 Oct 2013 14:09:00 +0400
+Message-Id: <1380881342-13025-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 3/5] controllers/cpuset: fix for old grep
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,62 +24,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Hi!
-> Add ELOOP, ENAMETOOLONG, EROFS error number test in acct01.c for acct(2)
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  runtest/syscalls                        |  2 +-
->  testcases/kernel/syscalls/acct/acct01.c | 77 ++++++++++++++++++++++++++++++++-
->  2 files changed, 77 insertions(+), 2 deletions(-)
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 09e5f7f..a3a65b6 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -10,7 +10,7 @@ access03 access03
->  access04 access04
->  access05 access05
->  
-> -acct01 acct01
-> +acct01 acct01 -D DEVICE -T DEVICE_FS_TYPE
->  acct02 acct02
->  
->  add_key01 add_key01
-> diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
-> index 062cc2b..1545df1 100644
-> --- a/testcases/kernel/syscalls/acct/acct01.c
-> +++ b/testcases/kernel/syscalls/acct/acct01.c
-> @@ -44,22 +44,41 @@
->  #include <stdio.h>		/* needed by testhead.h */
->  #include <stdlib.h>
->  #include <unistd.h>
-> +#include <sys/mount.h>
+It seems that '\s' does not work with old version
+of grep (2.6.3).
 
+Therefore several testcases fail on some distributions
+using this version. For example - RHEL5-based.
 
-I've tried to apply this one, but it appears to be based on the first
-version of the cleanup patch (see the /* needed by testhead.h */ comment
-for example).
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../cpuset_memory_spread_testset.sh                |    6 +++---
+ .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Can you please rebase it on the current cleanup (as pushed to git) and
-resend?
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+index b8a434f..ae1bc09 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+@@ -61,7 +61,7 @@ set_memsinfo_val()
+ 	local nl='
+ '
+ 	# clearing existent value (if present)
+-	memsinfo=`echo "$memsinfo" | sed -r "/^\_$1\:\s/d"`
++	memsinfo=`echo "$memsinfo" | sed -r "/^\_$1\: /d"`
+ 
+ 	if [ -z "$memsinfo" ]; then
+ 		memsinfo="_$1: $2"
+@@ -74,8 +74,8 @@ set_memsinfo_val()
+ get_memsinfo_val()
+ {
+ 	local value=
+-	value=`echo "$memsinfo" | grep -e "^\_$1\:\s"`
+-	value=`echo "$value" | sed -r "s/^.*\:\s(.*)$/\1/"`
++	value=`echo "$memsinfo" | grep -e "^\_$1\: "`
++	value=`echo "$value" | sed -r "s/^.*\: (.*)$/\1/"`
+ 	echo "$value"
+ }
+ 
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+index 95196b7..587e912 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+@@ -231,7 +231,7 @@ test10()
+ 			awk '{print $2}')
+ 	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
+ 
+-	task_policy=$(cat $TEST_PROCNUMA | grep -e "\s\+stack\s\+anon" | \
++	task_policy=$(cat $TEST_PROCNUMA | grep -e "  *stack  *anon" | \
+ 			awk '{print $2}')
+ 
+ 	test "$allowed_list" = "$task_policy"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
