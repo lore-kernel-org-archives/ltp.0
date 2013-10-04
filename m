@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VWPBK-0004NV-KL
-	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 11:22:26 +0000
-Date: Wed, 16 Oct 2013 13:22:13 +0200
-From: chrubis@suse.cz
-Message-ID: <20131016112213.GB24451@rei.Home>
-References: <9C261B4871671149A8D67C0E65957391507046@039-SN1MPN1-003.039d.mgd.msft.net>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VS0Qw-0002lG-G2
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 08:08:22 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VS0Qu-0002w8-Eq
+	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 08:08:22 +0000
+Date: Fri, 4 Oct 2013 04:08:14 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1031362814.1472423.1380874094146.JavaMail.root@redhat.com>
+In-Reply-To: <656844534.1470973.1380873788462.JavaMail.root@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <9C261B4871671149A8D67C0E65957391507046@039-SN1MPN1-003.039d.mgd.msft.net>
-Subject: Re: [LTP] "cpu_hotplug/functional/cpuhotplug05.sh" failed
+Subject: [LTP] Coverity report for ltp-20130904
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,55 +26,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Liao Guoqi-B25230 <B25230@freescale.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
 
-Hi!
-> When I run cpuhotplug05 cases on our platform(powerpc), it failed:
-> Name:   cpuhotplug05
-> Date:   Wed Oct 16 10:49:31 UTC 2013
-> Desc:   Does sar behave properly during CPU hotplug events?
-> 
-> CPU is 1
-> cpuhotplug05    1  TFAIL  :  CPU1 Not Found on SAR!
-> 
-> After some investigation:
-> 
-> the following code:
-> 
->         while ! grep -iq nan $TMP/log_$$; do
-> 
->                 tst_resm TFAIL "CPU${CPU_TO_TEST} Not Found on SAR!"
-> 
->                 exit_clean 1
-> 
->         done
-> 
-> root cause:
-> output of command "sar" has been changed, the log from "sar" output did NOT include "nan".
-> 
-> Enrionment:
-> Sysstat version: 10.1.4
-> Ltp version: 20130109-r0
+Hi,
 
-It looks like the sar parameters and output changes from time to time.
-On my system (systat 10.0.5) sar does not accept zero as a inifinte
-count and needs to be executed as 'sar -P ALL 1' instead of
-'sar -P ALL 1 0'.
+What is Coverity?
+Coverity Prevent is commercial enterprise level tool for static analysis
+(analysis based only on compiling of sources, not based on running of binary)
+of the C/C++ and Java code.
 
-I guess that the only solution is to switch on systat version and change
-expectations accordingly. Feel free to send a patch.
+analyzer: coverity
+analyzer-args: --wait-for-license -co BAD_FREE:allow_first_field:true
+analyzer-version: Coverity Static Analysis for C/C++ version 6.5.3 on Linux 2.6.32-279.el6.x86_64 x86_64
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+This run includes snapshot of LTP git tree from 20130904 (on top of RHEL6).
+Results include also Open Posix testcases, flags: defaults, -MISSING_BREAK:
+http://jan.stancek.eu/coverity/ltp-20130904-2.el6.err.xz
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
