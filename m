@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VVat6-00026O-B9
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 05:40:16 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VVat5-00042y-Mq
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 05:40:16 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 14 Oct 2013 01:40:14 -0400
-References: <1381324269-29300-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1381324269-29300-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VTocZ-0003UF-2m
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 07:55:51 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VTocX-0007q0-P8
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 07:55:51 +0000
+Date: Wed, 9 Oct 2013 03:55:38 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1444343766.3683031.1381305338134.JavaMail.root@redhat.com>
+In-Reply-To: <1380881832-7418-2-git-send-email-maxim.uvarov@linaro.com>
+References: <1380881832-7418-1-git-send-email-maxim.uvarov@linaro.com>
+	<1380881832-7418-2-git-send-email-maxim.uvarov@linaro.com>
 MIME-Version: 1.0
-Message-Id: <201310140140.16182.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] tst_kvercmp2: Criteria for Oracle Linux UEK
-	kernels
+Subject: Re: [LTP] [PATCH] LTP cacheflush01 add arm variant
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +25,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8692291638734393756=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
-
---===============8692291638734393756==
-Content-Type: multipart/signed; boundary="nextPart2291509.TlCV9YjYEp";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2291509.TlCV9YjYEp
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-pushed, thanks!
--mike
-
---nextPart2291509.TlCV9YjYEp
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSW4PAAAoJEEFjO5/oN/WBrcEP/1qirpdIG6u5q6waQcYCh4XV
-E2UV9nHuHAkgo+GDWQsxYkIkdGEZFltbEP/2ESoL9PxM/hTadFuCpplxXiSmmkeO
-slZsncYvqdGuqN8CcToZcyE08AJf7MtFmlWynhOaInLxWHDrlIFBMUp/8Q2xgi6A
-CrHtSm29vnbDgkkdhljK7mRvJkMjaXTJrpwEhtaJz80Gm29SqJGR0fwjMXjemh/Q
-5cdxxEHxgbGdp281FX+g9ArS1Yx5Qb+aLy7rbzcxI4tRmIBO+0KkosZv7g/OMbCj
-2MMz2wUuGtKiBGznKyEQjDU4Vu2fAUuNJGDEoc8qcKWuUYEqXO73eP7a46FRY9sY
-mu8Grx0LGT2lNvkeeBp3d+y02idMNiHrsiCMN6dW4By9FwjIqBKbVRGZVFNnqu58
-KdDWP75IcGfU2m/Zf1pmsV8wbS91rQVLKTSDdOUP+uqTQ0xAAdbwSBA+j5FYJRL+
-GxwnFUbZrt6TOTVowfTJSpVDDg0ytt+9QmVrlhwmUeih3ekQyxFdQq81B6sT/oiH
-EGG6MzKYf0PgHF8vLE67D+1a+F7YXmkfC7abMDj2w1AhuCnKSxeqLLF+CBzRfNTk
-BYxCLTnxtx2BVkZbn5NlIqJCXGs0evTyPZEyvDNT6kDdmR5WKpgbFpKDQsP+zCMB
-TF1CiOKd9vrpEuZKQ+QX
-=Fg71
------END PGP SIGNATURE-----
-
---nextPart2291509.TlCV9YjYEp--
-
-
---===============8692291638734393756==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Maxim Uvarov <maxim.uvarov@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, Maxim Uvarov <maxim.uvarov@linaro.com>, linaro-networking@linaro.org
+
+
+
+----- Original Message -----
+> From: "Maxim Uvarov" <maxim.uvarov@linaro.org>
+> To: ltp-list@lists.sourceforge.net
+> Cc: linaro-networking@linaro.org, "Maxim Uvarov" <maxim.uvarov@linaro.com>
+> Sent: Friday, 4 October, 2013 12:17:12 PM
+> Subject: [LTP] [PATCH] LTP cacheflush01 add arm variant
+> 
+> Cache flush on arm provided via
+> __ARM_NR_cacheflush(unsigned long start, unsigned long end, int flags)
+> defined in ./arch/arm/kernel/traps.c.
+> Flags are not used, providing 0 there.
+> 
+> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.com>
+
+Hi,
+
+looks good to me. I was thinking about getting rid of that ifdef,
+but I'm not sure it's worth the trouble for such trivial testcase.
+
+Small nits (related to original code):
+- no need for brackets for single statement
+- it would be helpful to see the errno in case of failure:
+  tst_resm(TFAIL | TTERRNO, "failed with unexpected errno");
+- "malloc failed" flags should be TFAIL | TERRNO
+- tst_tmpdir()/tst_rmdir() is not needed
+- unnecessary comments can be removed
+
+Regards,
+Jan
+
+> ---
+>  .../kernel/syscalls/cacheflush/cacheflush01.c      |    9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
+> b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
+> index 9c02f0a..fae51b4 100644
+> --- a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
+> +++ b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
+> @@ -137,6 +137,14 @@ int main(int ac, char **av)
+>  	}
+>  
+>  	/* Invokes cacheflush() with proper parameters */
+> +#if defined(__arm__)
+> +	TEST(ltp_syscall(__ARM_NR_cacheflush, addr, addr + getpagesize(), 0));
+> +	if (TEST_RETURN == 0) {
+> +		tst_resm(TPASS, "passed with no errno");
+> +	} else {
+> +		tst_resm(TFAIL, "failed with unexpected errno");
+> +	}
+> +#else
+>  	TEST(ltp_syscall(__NR_cacheflush, addr, getpagesize(), ICACHE));
+>  	if (TEST_RETURN == 0) {
+>  		tst_resm(TPASS, "passed with no errno");
+> @@ -157,6 +165,7 @@ int main(int ac, char **av)
+>  	} else {
+>  		tst_resm(TFAIL, "failed with unexpected errno");
+>  	}
+> +#endif
+>  
+>  	cleanup();
+>  	tst_exit();
+> --
+> 1.7.9.5
+> 
+> 
+> ------------------------------------------------------------------------------
+> October Webinars: Code for Performance
+> Free Intel webinars can help you accelerate application performance.
+> Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from
+> the latest Intel processors and coprocessors. See abstracts and register >
+> http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
@@ -80,16 +117,7 @@ Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
 http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
---===============8692291638734393756==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8692291638734393756==--
-
