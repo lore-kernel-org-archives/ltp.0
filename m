@@ -1,17 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VYyYS-0007N9-Kd
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:32:56 +0000
-Date: Wed, 23 Oct 2013 15:32:39 +0200
-From: chrubis@suse.cz
-Message-ID: <20131023133239.GG24275@rei.Home>
-References: <015f01cecff3$2be084e0$83a18ea0$@gyu.kim@lge.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <015f01cecff3$2be084e0$83a18ea0$@gyu.kim@lge.com>
-Subject: Re: [LTP] [PATCH v2] getcontext01: check getcontext function in libc
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VTtXy-00033F-No
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 13:11:26 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VTtXw-0002lI-HG
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 13:11:26 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r99DBHuq010584
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Oct 2013 13:11:18 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r99DBHIc000409
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Oct 2013 13:11:17 GMT
+Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r99DBGeN028359
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Oct 2013 13:11:17 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed,  9 Oct 2013 17:11:09 +0400
+Message-Id: <1381324269-29300-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] tst_kvercmp2: Criteria for Oracle Linux UEK kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,76 +36,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Honggyu Kim <hong.gyu.kim@lge.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> getcontext function is implemented depends on libc version and arch.
-> Some libc version for specific arch does not implement getcontext yet.
-> In that case, getcontext just sets errno to ENOSYS and returns -1.
-> For example, getcontext is not implemented before libc-2.17 in ARM.
-> Current test goes to TFAIL when lower version of libc is used in ARM.
-> 
-> This patch sets the test as TCONF if libc does not implement getcontext.
-> If ENOSYS is not set, it goes to TFAIL as it was.
-> 
-> Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
-> ---
->  .../kernel/syscalls/getcontext/getcontext01.c      |   27
-> ++++++++++++--------
->  1 file changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c
-> b/testcases/kernel/syscalls/getcontext/getcontext01.c
-> index 03b2df9..34724ac 100644
-> --- a/testcases/kernel/syscalls/getcontext/getcontext01.c
-> +++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
-> @@ -54,12 +54,27 @@ int TST_TOTAL = 1;
->  
->  int exp_enos[] = { 0 };		/* must be a 0 terminated list */
->  
-> +static void test_getcontext(void)
-> +{
-> +	ucontext_t ptr;
-> +
-> +	TEST(getcontext(&ptr));
-> +
-> +	if (TEST_RETURN == -1) {
-> +		if (errno == ENOSYS)
-> +			tst_resm(TCONF, "getcontext is not implemented in
-> libc");
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ lib/tst_kvercmp.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-This line looks like it's line wrapped by your mail client (which
-corrupts the patch). Try turning off line wrapping and/or add the patch
-attached as a file.
-
-> +		else
-> +			tst_resm(TFAIL | TTERRNO, "getcontext failed");
-> +	}
-> +	else if (TEST_RETURN >= 0)
-> +		tst_resm(TPASS, "getcontext passed");
-> +}
-
-The prefered style is to have the else on the same line as the closing
-curly brace.
-
-As LTP has adopted LKML coding style, you can use chechpatch.pl (which
-is shipped in scripts dir with Linux kernel sources) to theck your
-patches before submission.
-
+diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+index a703c47..a950120 100644
+--- a/lib/tst_kvercmp.c
++++ b/lib/tst_kvercmp.c
+@@ -95,8 +95,12 @@ int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers)
+ 
+ 	uname(&uval);
+ 	kver = uval.release;
+-	if (strstr(kver, ".el5")) {
++	if (strstr(kver, ".el5uek")) {
++		cur_dist_name = "OL5UEK";
++	} else if (strstr(kver, ".el5")) {
+ 		cur_dist_name = "RHEL5";
++	} else if (strstr(kver, ".el6uek")) {
++		cur_dist_name = "OL6UEK";
+ 	} else if (strstr(kver, ".el6")) {
+ 		cur_dist_name = "RHEL6";
+ 	}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
