@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VU9EY-0002N5-DQ
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 05:56:26 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VU9EW-0002OW-Ry
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 05:56:26 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9A5uC42016410
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Oct 2013 13:56:15 +0800
-From: =?gb2312?B?1PjB7rjW?= <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 10 Oct 2013 13:56:05 +0800
-Message-ID: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Language: zh-cn
-Subject: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1 ->
-	factor_nr = 5
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maxim.uvarov@linaro.org>) id 1VTuWD-0006hK-AX
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 14:13:41 +0000
+Received: from mail-lb0-f178.google.com ([209.85.217.178])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VTuWC-0006qI-6E
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 14:13:41 +0000
+Received: by mail-lb0-f178.google.com with SMTP id z5so844111lbh.9
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 09 Oct 2013 07:13:33 -0700 (PDT)
+From: Maxim Uvarov <maxim.uvarov@linaro.org>
+Date: Wed,  9 Oct 2013 18:13:26 +0400
+Message-Id: <1381328006-9432-1-git-send-email-maxim.uvarov@linaro.com>
+Subject: [LTP] [PATCH]  syslog-lib.sh bash posix compliance
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,37 +24,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.com>
 
-To make udelta or sdelta's values isnot great than expected,
-we change the factor_nr to 5.
+/opt/ltp/testcases/bin/syslog02: 69: [: syslog-ng: unexpected operator
++ [ syslog-ng == syslog-ng ]
+Accoding to:
+http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html
+[ STRING1 == STRING2 ]  True if the strings are equal. "=" may be
+used instead of "==" for strict POSIX compliance.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Because of busybox and other bash like shells look for posix syntax
+make it so.
+Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.com>
 ---
- testcases/kernel/syscalls/getrusage/getrusage04.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ testcases/kernel/syscalls/syslog/syslog-lib.sh |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c
-b/testcases/kernel/syscalls/getrusage/getrusage04.c
-index 96e24a4..41d0052 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -67,7 +67,7 @@ static long BIAS_MAX;
+diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+index 0885805..6b19b8d 100755
+--- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
++++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+@@ -65,11 +65,11 @@ setup()
+ 		tst_resm TBROK "Testing is terminating due to a signal"
+ 		cleanup 1' $TRAP_SIGS || exit 1
  
- static int opt_factor;
- static char *factor_str;
--static long factor_nr = 1;
-+static long factor_nr = 5;
- 
- option_t child_options[] = {
- 	{"m:", &opt_factor, &factor_str},
+-	if [ "$SYSLOG_DAEMON" == "syslog" ]; then
++	if [ "$SYSLOG_DAEMON" = "syslog" ]; then
+ 		CONFIG_FILE="/etc/syslog.conf"
+-	elif [ "$SYSLOG_DAEMON" == "syslog-ng" ]; then
++	elif [ "$SYSLOG_DAEMON" = "syslog-ng" ]; then
+ 		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+-	elif [ "$SYSLOG_DAEMON" == "rsyslog" ]; then
++	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
+ 		CONFIG_FILE="/etc/rsyslog.conf"
+ 		RSYSLOG_CONFIG='$ModLoad imuxsock.so'
+ 	else
 -- 
-1.7.1
-
-
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
