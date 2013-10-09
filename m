@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VUAUx-0007H1-TR
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 07:17:27 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VUAUw-0006jh-Hi
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 07:17:27 +0000
-Date: Thu, 10 Oct 2013 03:17:18 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-In-Reply-To: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maxim.uvarov@linaro.org>) id 1VTr56-0005hN-TE
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 10:33:28 +0000
+Received: from mail-lb0-f169.google.com ([209.85.217.169])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VTr55-0001O2-42
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 10:33:28 +0000
+Received: by mail-lb0-f169.google.com with SMTP id z5so586106lbh.14
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 09 Oct 2013 03:33:20 -0700 (PDT)
+Message-ID: <525530ED.2030509@linaro.org>
+Date: Wed, 09 Oct 2013 14:33:17 +0400
+From: Maxim Uvarov <maxim.uvarov@linaro.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
-	->	factor_nr = 5
+References: <1380881832-7418-1-git-send-email-maxim.uvarov@linaro.com>
+	<31658697.3684822.1381305595230.JavaMail.root@redhat.com>
+In-Reply-To: <31658697.3684822.1381305595230.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] LTP max_map_count: filer out not accounted vector
+ stub for arm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,52 +29,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?utf-8?B?5pu+5Luk6ZKi?= <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Maxim Uvarov <maxim.uvarov@linaro.com>, linaro-networking@linaro.org
 
-Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAi5pu+5Luk6ZKiIiA8emVuZ2xn
-Lmp5QGNuLmZ1aml0c3UuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-PiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3OjU2OjA1IEFNCj4gU3ViamVjdDog
-W0xUUF0gW1BBVENIXSBnZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYzogRml4IGZhY3Rvcl9uciA9IDEg
-LT4JZmFjdG9yX25yID0gNQo+IAo+IFRvIG1ha2UgdWRlbHRhIG9yIHNkZWx0YSdzIHZhbHVlcyBp
-c25vdCBncmVhdCB0aGFuIGV4cGVjdGVkLAo+IHdlIGNoYW5nZSB0aGUgZmFjdG9yX25yIHRvIDUu
-CgpOb3RlLCB0aGF0IHRoZXJlIGlzIGFscmVhZHkgYSBwYXJhbWV0ZXIgLW0gdG8gc2V0IGZhY3Rv
-cl9uci4KCkNhbiB5b3Ugc2hhcmUgbW9yZSBkZXRhaWxzIHdoeSB0aGlzIHNob3VsZCBiZSB0aGUg
-ZGVmYXVsdD8KT24gd2hpY2ggc3lzdGVtL2FyY2hpdGVjdHVyZSBkbyB5b3Ugc2VlIGl0IGZhaWxp
-bmc/CgpSZWdhcmRzLApKYW4KCj4gCj4gU2lnbmVkLW9mZi1ieTogWmVuZyBMaW5nZ2FuZyA8emVu
-Z2xnLmp5QGNuLmZ1aml0c3UuY29tPgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2dldHJ1c2FnZS9nZXRydXNhZ2UwNC5jIHwgICAgMiArLQo+ICAxIGZpbGVzIGNoYW5nZWQsIDEg
-aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+IGIvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+IGluZGV4IDk2ZTI0YTQuLjQx
-ZDAwNTIgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2Uv
-Z2V0cnVzYWdlMDQuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdl
-L2dldHJ1c2FnZTA0LmMKPiBAQCAtNjcsNyArNjcsNyBAQCBzdGF0aWMgbG9uZyBCSUFTX01BWDsK
-PiAgCj4gIHN0YXRpYyBpbnQgb3B0X2ZhY3RvcjsKPiAgc3RhdGljIGNoYXIgKmZhY3Rvcl9zdHI7
-Cj4gLXN0YXRpYyBsb25nIGZhY3Rvcl9uciA9IDE7Cj4gK3N0YXRpYyBsb25nIGZhY3Rvcl9uciA9
-IDU7Cj4gIAo+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7Cj4gIAl7Im06IiwgJm9wdF9m
-YWN0b3IsICZmYWN0b3Jfc3RyfSwKPiAtLQo+IDEuNy4xCj4gCj4gCj4gCj4gCj4gLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCj4gT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UKPiBG
-cmVlIEludGVsIHdlYmluYXJzIGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFwcGxpY2F0aW9uIHBl
-cmZvcm1hbmNlLgo+IEV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVuTVAsIGFkdmFuY2VkIHByb2Zp
-bGluZywgYW5kIG1vcmUuIEdldCB0aGUgbW9zdCBmcm9tCj4gdGhlIGxhdGVzdCBJbnRlbCBwcm9j
-ZXNzb3JzIGFuZCBjb3Byb2Nlc3NvcnMuIFNlZSBhYnN0cmFjdHMgYW5kIHJlZ2lzdGVyID4KPiBo
-dHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzQwNzEmaXU9
-LzQxNDAvb3N0Zy5jbGt0cmsKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0Cj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KT2N0b2JlciBXZWJpbmFyczogQ29k
-ZSBmb3IgUGVyZm9ybWFuY2UKRnJlZSBJbnRlbCB3ZWJpbmFycyBjYW4gaGVscCB5b3UgYWNjZWxl
-cmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZS4KRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5N
-UCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBhbmQgbW9yZS4gR2V0IHRoZSBtb3N0IGZyb20gCnRoZSBs
-YXRlc3QgSW50ZWwgcHJvY2Vzc29ycyBhbmQgY29wcm9jZXNzb3JzLiBTZWUgYWJzdHJhY3RzIGFu
-ZCByZWdpc3RlciA+Cmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9p
-ZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cg==
+On 10/09/2013 11:59 AM, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> From: "Maxim Uvarov" <maxim.uvarov@linaro.org>
+>> To: ltp-list@lists.sourceforge.net
+>> Cc: linaro-networking@linaro.org, "Maxim Uvarov" <maxim.uvarov@linaro.com>
+>> Sent: Friday, 4 October, 2013 12:17:11 PM
+>> Subject: [LTP] [PATCH] LTP max_map_count: filer out not accounted vector	stub for arm
+>>
+>> Arm has following vector stab:
+>> ffff0000-ffff1000 r-xp 00000000 00:00 0 [vectors]
+>> which is not accounted in map_count.
+>>
+>> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.com>
+>> ---
+>>   testcases/kernel/mem/tunable/max_map_count.c |   19 +++++++++++++++----
+>>   1 file changed, 15 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/testcases/kernel/mem/tunable/max_map_count.c
+>> b/testcases/kernel/mem/tunable/max_map_count.c
+>> index 01fbe5e..ca28fba 100644
+>> --- a/testcases/kernel/mem/tunable/max_map_count.c
+>> +++ b/testcases/kernel/mem/tunable/max_map_count.c
+>> @@ -121,12 +121,24 @@ void cleanup(void)
+>>    * for in the vm_area_struct's map_count.
+>>    */
+>>   #if defined(__x86_64__) || defined(__x86__)
+>> -static int filter_map(char *buf)
+>> +static int filter_map(char *line)
+>>   {
+>> +	char buf[BUFSIZ];
+>> +	int ret;
+>> +
+>> +	ret = sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf);
+>> +	if (ret != 1)
+>> +		return 0;
+>> +
+>>   	return strcmp(buf, "[vsyscall]") == 0;
+>>   }
+>> +#elif defined(__arm__)
+>> +static int filter_map(char *line)
+>> +{
+>> +	return strncmp(line, "ffff0000-ffff1000", 17) == 0;
+> Hi,
+>
+> just curious, why comparing the range instead of name ([vectors])?
+>
+> Regards,
+> Jan
+for arm there are 8 regions for vectors. Only that region is not accounted.
+
+Maxim.
+
+>> +}
+>>   #else
+>> -static int filter_map(char *buf)
+>> +static int filter_map(char *line)
+>>   {
+>>   	return 0;
+>>   }
+>> @@ -146,8 +158,7 @@ static long count_maps(pid_t pid)
+>>   		tst_brkm(TBROK | TERRNO, cleanup, "fopen %s", buf);
+>>   	while (getline(&line, &len, fp) != -1) {
+>>   		/* exclude vdso and vsyscall */
+>> -		if (sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf) ==
+>> -				1 && filter_map(buf))
+>> +		if (filter_map(line))
+>>   			continue;
+>>   		map_count++;
+>>   	}
+>> --
+>> 1.7.9.5
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> October Webinars: Code for Performance
+>> Free Intel webinars can help you accelerate application performance.
+>> Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from
+>> the latest Intel processors and coprocessors. See abstracts and register >
+>> http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+
+
+------------------------------------------------------------------------------
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
