@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VRiAV-0006tn-UX
-	for ltp-list@lists.sourceforge.net; Thu, 03 Oct 2013 12:38:12 +0000
-Date: Thu, 3 Oct 2013 14:38:34 +0200
-From: chrubis@suse.cz
-Message-ID: <20131003123834.GC3516@rei.Home>
-References: <8803687faf31650b5174df670f07014a7a2f7532.1380794505.git.jstancek@redhat.com>
-	<ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VTnOu-0003EN-Bc
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 06:37:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VTnOs-0002l1-M0
+	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 06:37:40 +0000
+Message-ID: <5254F98A.9080803@cn.fujitsu.com>
+Date: Wed, 09 Oct 2013 14:36:58 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 3/3] pthread_attr_setschedpolicy/2-1.c: give
- threads a moment to block on mutex
+References: <CAB53+CHkXU0qiWwNUkYM0TaZLiAOPgB-cBm7h4tVC7jCS2LKFw@mail.gmail.com>
+In-Reply-To: <CAB53+CHkXU0qiWwNUkYM0TaZLiAOPgB-cBm7h4tVC7jCS2LKFw@mail.gmail.com>
+Subject: Re: [LTP] [Help] Pushing code to the ltp github
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,54 +28,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Sagar Sakre <sagarsakre@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Use small sleep for lack of better way to check that all threads
-> are blocked on mutex "mutex".
+On 10/09/2013 02:27 PM, Sagar Sakre wrote:
+> Hi Wanlong
+> ,
 > 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  .../interfaces/pthread_attr_setschedpolicy/2-1.c   |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
+>     My name is Sagar from india, I am working on ltp since a long time. I have fixed many ltp testcases and now I want to contribute the same to the open source. In ltp github  I am facing some problem while pushing changes. Here is what I did
 > 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-> index 80ce906..1f8825a 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-> @@ -161,6 +161,9 @@ int main(void)
->  	if (rc)
->  		FAIL_AND_EXIT("create_thread HIGH", rc);
->  
-> +	/* give threads a moment so they can block on mutex "mutex" */
-> +	sleep(2);
-> +
->  	rc = pthread_mutex_unlock(&mutex);
->  	if (rc)
->  		FAIL_AND_EXIT("pthread_mutex_unlock()", rc);
 
-Hmm, so you did hit the small window for race condition between the new
-thread signals the main thread that it's executed and the next call to
-the mutex_lock on the tested mutex?
+Welcome!!!
 
-I do not like this solution much, but this is not easy to do properly.
-One posibility is to pinpoint the threads on one cpu via the affinity()
-interface (open_posix_testsuite/include/affinity.h) then we can wait in
-the main thread until the thread with lowest priority is executed and
-safely say that the rest is locked on the mutex allready (as they run
-with FIFO scheduling).
+> sagar.sakre@sagar-vm ~/git-hub/ltp/testcases/commands/unzip $ git add unzip_tests.sh
+> 
+> sagar.sakre@sagar-vm ~/git-hub/ltp $ git commit -s 
+> [master 5a4c094] Modified unzip testcase to check for the list of directories unzipped rahter than checking the verbose, because busybox utility in ARM board gives different verbos as inflating than extracting. Signed-off-by: sagar.sakre <sagar.sakre@lge.com <mailto:sagar.sakre@lge.com>>
+>  1 file changed, 22 insertions(+), 15 deletions(-)
+> 
+> sagar.sakre@sagar-vm ~/git-hub/ltp $ git push
+> Username for 'https://github.com': sagarsakre
+> Password for 'https://sagarsakre@github.com': 
+> error: The requested URL returned error: 403 while accessing https://github.com/linux-test-project/ltp.git/info/refs
+> fatal: HTTP request failed
+> 
+> I may not have permission to push to the repository, Can you please tell me what should I do to solve this issue and continue contributing to the ltp project
+> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+You should know that the push permission here is only for maintainers, if everyone can push
+to it, the project may be broken ;).
+You can make changes on your local git tree and make patches to send to this LTP mail list (ltp-list@lists.sourceforge.net),
+we will review your patches, if they are OK, the maintainers will commit your patches
+to the upstream LTP tree. 
+
+Thanks,
+Wanlong Gao
+
+> -- 
+> 
+> With Regards,
+> Sagar C Sakre
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
