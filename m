@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VYxtM-0001jY-Tq
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 12:50:29 +0000
-Date: Wed, 23 Oct 2013 14:50:12 +0200
-From: chrubis@suse.cz
-Message-ID: <20131023125012.GC24275@rei.Home>
-References: <526636E4.6040504@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1VUAUx-0007H1-TR
+	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 07:17:27 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VUAUw-0006jh-Hi
+	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 07:17:27 +0000
+Date: Thu, 10 Oct 2013 03:17:18 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <552630664.4346396.1381389438416.JavaMail.root@redhat.com>
+In-Reply-To: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
+References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <526636E4.6040504@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] add some common errno values
+Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
+	->	factor_nr = 5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,49 +25,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wang, Xiaoguang" <wangxg.fnst@cn.fujitsu.com>
+To: =?utf-8?B?5pu+5Luk6ZKi?= <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  lib/tst_res.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
-> diff --git a/lib/tst_res.c b/lib/tst_res.c
-> index 245bd5f..f73022b 100644
-> --- a/lib/tst_res.c
-> +++ b/lib/tst_res.c
-> @@ -249,7 +249,12 @@ static const char *strerrnodef(int err)
->  		    PAIR(EPIPE)
->  		    PAIR(EDOM)
->  		    PAIR(ERANGE)
-> +		    PAIR(EDEADLK)
->  		    PAIR(ENAMETOOLONG)
-> +		    PAIR(ENOLCK)
-> +		    PAIR(ENOSYS)
-> +		    PAIR(ENOTEMPTY)
-> +		    PAIR(ELOOP)
->  	};
->  	return pair_lookup(errno_pairs, err);
-
-Applied (whith a slight change to the commit message), thanks.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAi5pu+5Luk6ZKiIiA8emVuZ2xn
+Lmp5QGNuLmZ1aml0c3UuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+PiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3OjU2OjA1IEFNCj4gU3ViamVjdDog
+W0xUUF0gW1BBVENIXSBnZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYzogRml4IGZhY3Rvcl9uciA9IDEg
+LT4JZmFjdG9yX25yID0gNQo+IAo+IFRvIG1ha2UgdWRlbHRhIG9yIHNkZWx0YSdzIHZhbHVlcyBp
+c25vdCBncmVhdCB0aGFuIGV4cGVjdGVkLAo+IHdlIGNoYW5nZSB0aGUgZmFjdG9yX25yIHRvIDUu
+CgpOb3RlLCB0aGF0IHRoZXJlIGlzIGFscmVhZHkgYSBwYXJhbWV0ZXIgLW0gdG8gc2V0IGZhY3Rv
+cl9uci4KCkNhbiB5b3Ugc2hhcmUgbW9yZSBkZXRhaWxzIHdoeSB0aGlzIHNob3VsZCBiZSB0aGUg
+ZGVmYXVsdD8KT24gd2hpY2ggc3lzdGVtL2FyY2hpdGVjdHVyZSBkbyB5b3Ugc2VlIGl0IGZhaWxp
+bmc/CgpSZWdhcmRzLApKYW4KCj4gCj4gU2lnbmVkLW9mZi1ieTogWmVuZyBMaW5nZ2FuZyA8emVu
+Z2xnLmp5QGNuLmZ1aml0c3UuY29tPgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2dldHJ1c2FnZS9nZXRydXNhZ2UwNC5jIHwgICAgMiArLQo+ICAxIGZpbGVzIGNoYW5nZWQsIDEg
+aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+IGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+IGluZGV4IDk2ZTI0YTQuLjQx
+ZDAwNTIgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2Uv
+Z2V0cnVzYWdlMDQuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdl
+L2dldHJ1c2FnZTA0LmMKPiBAQCAtNjcsNyArNjcsNyBAQCBzdGF0aWMgbG9uZyBCSUFTX01BWDsK
+PiAgCj4gIHN0YXRpYyBpbnQgb3B0X2ZhY3RvcjsKPiAgc3RhdGljIGNoYXIgKmZhY3Rvcl9zdHI7
+Cj4gLXN0YXRpYyBsb25nIGZhY3Rvcl9uciA9IDE7Cj4gK3N0YXRpYyBsb25nIGZhY3Rvcl9uciA9
+IDU7Cj4gIAo+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7Cj4gIAl7Im06IiwgJm9wdF9m
+YWN0b3IsICZmYWN0b3Jfc3RyfSwKPiAtLQo+IDEuNy4xCj4gCj4gCj4gCj4gCj4gLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCj4gT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UKPiBG
+cmVlIEludGVsIHdlYmluYXJzIGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFwcGxpY2F0aW9uIHBl
+cmZvcm1hbmNlLgo+IEV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVuTVAsIGFkdmFuY2VkIHByb2Zp
+bGluZywgYW5kIG1vcmUuIEdldCB0aGUgbW9zdCBmcm9tCj4gdGhlIGxhdGVzdCBJbnRlbCBwcm9j
+ZXNzb3JzIGFuZCBjb3Byb2Nlc3NvcnMuIFNlZSBhYnN0cmFjdHMgYW5kIHJlZ2lzdGVyID4KPiBo
+dHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzQwNzEmaXU9
+LzQxNDAvb3N0Zy5jbGt0cmsKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0Cj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KT2N0b2JlciBXZWJpbmFyczogQ29k
+ZSBmb3IgUGVyZm9ybWFuY2UKRnJlZSBJbnRlbCB3ZWJpbmFycyBjYW4gaGVscCB5b3UgYWNjZWxl
+cmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZS4KRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5N
+UCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBhbmQgbW9yZS4gR2V0IHRoZSBtb3N0IGZyb20gCnRoZSBs
+YXRlc3QgSW50ZWwgcHJvY2Vzc29ycyBhbmQgY29wcm9jZXNzb3JzLiBTZWUgYWJzdHJhY3RzIGFu
+ZCByZWdpc3RlciA+Cmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9p
+ZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL2x0cC1saXN0Cg==
