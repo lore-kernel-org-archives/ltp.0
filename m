@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VWQCG-0007e1-Pv
-	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 12:27:28 +0000
-Date: Wed, 16 Oct 2013 14:27:09 +0200
-From: chrubis@suse.cz
-Message-ID: <20131016122709.GA24852@rei>
-References: <1381919200-15004-1-git-send-email-alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VUa47-0005wo-7X
+	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 10:35:27 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VUa45-00072t-IR
+	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 10:35:27 +0000
+Date: Fri, 11 Oct 2013 06:35:16 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1690303515.5158783.1381487716233.JavaMail.root@redhat.com>
+In-Reply-To: <000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
+References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
+	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
+	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1381919200-15004-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2 2/2] device-drivers: pci: fixes
+Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
+	->	factor_nr = 5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,33 +27,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-Pushed with slight change to the test_scan_bus(), I've moved the
-#ifdef CONFIG_HOTPLUG two lines up to eliminate unused variable warning
-when CONFIG_HOTPLUG is not set.
-
-Thanks a lot.
-
-Will you also send a patch to enable the test in the device-drivers
-Makefile?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiWmVuZyBMaW5nZ2FuZyIg
+PHplbmdsZy5qeUBjbi5mdWppdHN1LmNvbT4KPiBUbzogIkphbiBTdGFuY2VrIiA8anN0YW5jZWtA
+cmVkaGF0LmNvbT4KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gU2VudDog
+RnJpZGF5LCAxMSBPY3RvYmVyLCAyMDEzIDEyOjE5OjE5IFBNCj4gU3ViamVjdDogUkU6IFtMVFBd
+IFtQQVRDSF0gZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmM6IEZpeCBmYWN0b3JfbnIgPSAxIC0+CWZh
+Y3Rvcl9uciA9IDUKPiAKPiAKPiAKPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiBG
+cm9tOiDmm77ku6TpkqIgW21haWx0bzp6ZW5nbGcuanlAY24uZnVqaXRzdS5jb21dCj4gPiBTZW50
+OiBUaHVyc2RheSwgT2N0b2JlciAxMCwgMjAxMyA0OjE2IFBNCj4gPiBUbzogJ0phbiBTdGFuY2Vr
+Jwo+ID4gQ2M6ICdsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQnCj4gPiBTdWJqZWN0OiDn
+rZTlpI06IFtMVFBdIFtQQVRDSF0gZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmM6IEZpeCBmYWN0b3Jf
+bnIgPSAxIC0+Cj4gPiBmYWN0b3JfbnIgPSA1Cj4gPiAKPiA+IAo+ID4gCj4gPiA+Cj4gPiA+Cj4g
+PiA+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+ID4gPiBGcm9tOiAi5pu+5Luk6ZKi
+IiA8emVuZ2xnLmp5QGNuLmZ1aml0c3UuY29tPgo+ID4gPiA+IFRvOiBsdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKPiA+ID4gPiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3
+OjU2OjA1IEFNCj4gPiA+ID4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBnZXRydXNhZ2UvZ2V0cnVz
+YWdlMDQuYzogRml4IGZhY3Rvcl9uciA9IDEgLT4KPiA+ID4gCWZhY3Rvcl9uciA9IDUKPiA+ID4g
+Pgo+ID4gPiA+IFRvIG1ha2UgdWRlbHRhIG9yIHNkZWx0YSdzIHZhbHVlcyBpc25vdCBncmVhdCB0
+aGFuIGV4cGVjdGVkLCB3ZQo+ID4gPiA+IGNoYW5nZSB0aGUgZmFjdG9yX25yIHRvIDUuCj4gPiA+
+Cj4gPiA+IE5vdGUsIHRoYXQgdGhlcmUgaXMgYWxyZWFkeSBhIHBhcmFtZXRlciAtbSB0byBzZXQg
+ZmFjdG9yX25yLgo+ID4gPgo+ID4gPiBDYW4geW91IHNoYXJlIG1vcmUgZGV0YWlscyB3aHkgdGhp
+cyBzaG91bGQgYmUgdGhlIGRlZmF1bHQ/Cj4gPiA+IE9uIHdoaWNoIHN5c3RlbS9hcmNoaXRlY3R1
+cmUgZG8geW91IHNlZSBpdCBmYWlsaW5nPwo+ID4gCj4gPiBZZXMuIFdlIGhhdmUgc29tZSBwcm9i
+bGVtcyBpbiBSSEVMNS4xMEdBLgo+ID4gSXQgY291bGQgbm90IHdvcmsgYXMgd2UgZXhwZWN0ZWQu
+IEFuZCBJIHdpbGwgYmUgbW9yZSBjYXJlZnVsLgo+ID4gVGhhbmtzLgo+ID4gCj4gCj4gTWF5YmUg
+dGhlIGNhc2UgaXMgbm90IHN1aXQgZm9yIHhlbiBrZXJuZWwuCj4gV2hlbiBrZXJuZWwgaXMgdm1s
+aW51ei0yLjYuMTgtMzcxLmVsNXhlbiwgdGhlIGNhc2Ugd2lsbCBmYWlsLgo+IEJ1dCB3aXRoIHZt
+bGludXotMi42LjE4LTM3MS5lbDUsIGl0IHdvcmtzIHdlbGwuCgpDYW4geW91IHNlbmQgdGhlIG91
+dHB1dCBmcm9tIGZhaWxlZCBydW4/CgoKPiAKPiBSZWdhcmRzLAo+IFplbmcKPiAKPiA+ID4KPiA+
+ID4gUmVnYXJkcywKPiA+ID4gSmFuCj4gPiA+Cj4gPiA+ID4KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5
+OiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+Cj4gPiA+ID4gLS0tCj4g
+PiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMg
+fCAgICAyICstCj4gPiA+ID4gIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRl
+bGV0aW9ucygtKQo+ID4gPiA+Cj4gPiA+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gPiBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gPiBpbmRleCA5NmUyNGE0
+Li40MWQwMDUyIDEwMDY0NAo+ID4gPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+Z2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2dldHJ1c2FnZS9nZXRydXNhZ2UwNC5jCj4gPiA+ID4gQEAgLTY3LDcgKzY3LDcgQEAg
+c3RhdGljIGxvbmcgQklBU19NQVg7Cj4gPiA+ID4KPiA+ID4gPiAgc3RhdGljIGludCBvcHRfZmFj
+dG9yOwo+ID4gPiA+ICBzdGF0aWMgY2hhciAqZmFjdG9yX3N0cjsKPiA+ID4gPiAtc3RhdGljIGxv
+bmcgZmFjdG9yX25yID0gMTsKPiA+ID4gPiArc3RhdGljIGxvbmcgZmFjdG9yX25yID0gNTsKPiA+
+ID4gPgo+ID4gPiA+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7Cj4gPiA+ID4gIAl7Im06
+IiwgJm9wdF9mYWN0b3IsICZmYWN0b3Jfc3RyfSwKPiA+ID4gPiAtLQo+ID4gPiA+IDEuNy4xCj4g
+PiA+ID4KPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4gPiAtLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gPiA+
+IC0tCj4gPiA+ID4gLS0tLS0tLS0gT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFu
+Y2UgRnJlZSBJbnRlbCB3ZWJpbmFycwo+ID4gPiA+IGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFw
+cGxpY2F0aW9uIHBlcmZvcm1hbmNlLgo+ID4gPiA+IEV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVu
+TVAsIGFkdmFuY2VkIHByb2ZpbGluZywgYW5kIG1vcmUuIEdldCB0aGUKPiA+ID4gPiBtb3N0IGZy
+b20gdGhlIGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nlc3NvcnMuIFNlZQo+ID4g
+PiA+IGFic3RyYWN0cyBhbmQgcmVnaXN0ZXIgPgo+ID4gPiA+Cj4gPiA+Cj4gPiBodHRwOi8vcHVi
+YWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzQwNzEmaXU9LzQxNDAvb3N0
+Zy5jCj4gPiA+ID4gbGt0cmsgX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+ID4gPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiA+ID4gPiBMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+ID4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+ID4gPiA+Cj4gCj4gCj4gCgotLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UKRnJlZSBJbnRl
+bCB3ZWJpbmFycyBjYW4gaGVscCB5b3UgYWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5j
+ZS4KRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBhbmQg
+bW9yZS4gR2V0IHRoZSBtb3N0IGZyb20gCnRoZSBsYXRlc3QgSW50ZWwgcHJvY2Vzc29ycyBhbmQg
+Y29wcm9jZXNzb3JzLiBTZWUgYWJzdHJhY3RzIGFuZCByZWdpc3RlciA+Cmh0dHA6Ly9wdWJhZHMu
+Zy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnLmNs
+a3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
+bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
+bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
