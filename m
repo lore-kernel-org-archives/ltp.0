@@ -1,32 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VWN3W-0002gh-Dp
-	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 09:06:14 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VWN3U-00033f-Nf
-	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 09:06:14 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r9G966xd032703
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 16 Oct 2013 09:06:07 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9G965Jv020769
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 16 Oct 2013 09:06:06 GMT
-Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9G9655w020762
-	for <ltp-list@lists.sourceforge.net>; Wed, 16 Oct 2013 09:06:05 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 16 Oct 2013 13:05:57 +0400
-Message-Id: <1381914358-29029-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] msgctl11: changed logic
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VVf1t-0006i4-11
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 10:05:37 +0000
+Date: Mon, 14 Oct 2013 12:05:15 +0200
+From: chrubis@suse.cz
+Message-ID: <20131014100332.GA1278@rei>
+References: <1380029829-8113-1-git-send-email-alexey.kodanev@oracle.com>
+	<1380029829-8113-2-git-send-email-alexey.kodanev@oracle.com>
+	<20131002141537.GA727@rei.suse.cz> <5253F867.3030307@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5253F867.3030307@oracle.com>
+Subject: Re: [LTP] [PATCH 2/2] device-drivers: pci: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,28 +23,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
+> > So the while cycle runs for all pci devices? How does this works?
+> >
+> > It seems to run all tests then increment pci_device until test number
+> > zero fails. This needs to cleaned up so that the codeflow is less
+> > cryptic. Or at least deserves a comment what is done and why.
+> >
+> Yes, my intention was to perform all test-cases with all available 
+> pci-devices, not just with the first found. This behavior managed by 
+> user-space test, so may be add a cmd-line option like test all or first 
+> found pci-device(s)?
 
-I've not verified this patch with UCLINUX defined. Yet.
+No need for that. What I do not like on the test is that there is no
+correspondence between the pci device number in the userspace and in the
+test module, i.e. the pci_number is incremented automagically in the
+module once all tests are executed. This is hard to figure out. It would
+be better if we had explicit mechanism for that, for example sysfs file
+you write the number to (and get -EINVAL if the number is out of range).
 
-Just want to be sure that the general idea is acceptable.
-
-Thanks.
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
