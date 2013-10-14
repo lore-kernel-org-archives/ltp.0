@@ -1,31 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1VblW6-00062A-8u
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 06:14:02 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VblW4-0005fV-Ej
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 06:14:02 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r9V6Dsh9000575
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 06:13:54 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9V6DruC005884
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 06:13:54 GMT
-Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9V6DrZB005878
-	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 06:13:53 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Thu, 31 Oct 2013 14:13:38 +0800
-Message-Id: <1383200018-1207-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH] iptables_tests.sh: nat table can have 4 chains
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VVkWS-0007ZP-Ed
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 15:57:33 +0000
+Date: Mon, 14 Oct 2013 17:57:17 +0200
+From: chrubis@suse.cz
+Message-ID: <20131014155717.GA22710@rei>
+References: <656844534.1470973.1380873788462.JavaMail.root@redhat.com>
+	<1031362814.1472423.1380874094146.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1031362814.1472423.1380874094146.JavaMail.root@redhat.com>
+Subject: Re: [LTP] Coverity report for ltp-20130904
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,42 +22,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-It is considered by iptables_tests.sh a failure When nat table chain count is
-not 3, while recent kernels can have 4 built-in chains in nat table, namely
-PREROUTING, OUTPUT, POSTROUTING and INPUT.
----
- testcases/network/iptables/iptables_tests.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+> analyzer: coverity
+> analyzer-args: --wait-for-license -co BAD_FREE:allow_first_field:true
+> analyzer-version: Coverity Static Analysis for C/C++ version 6.5.3 on Linux 2.6.32-279.el6.x86_64 x86_64
+> 
+> This run includes snapshot of LTP git tree from 20130904 (on top of RHEL6).
+> Results include also Open Posix testcases, flags: defaults, -MISSING_BREAK:
+> http://jan.stancek.eu/coverity/ltp-20130904-2.el6.err.xz
 
-diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
-index 028d54e..77ee29b 100755
---- a/testcases/network/iptables/iptables_tests.sh
-+++ b/testcases/network/iptables/iptables_tests.sh
-@@ -165,7 +165,7 @@ test01()
- 		return $RC
- 	else
- 		chaincnt=$(grep -c Chain $LTPTMP/tst_iptables.out)
--		if [ $chaincnt -ne 3 ]; then
-+		if [ $chaincnt -ne 3 ] && [ $chaincnt -ne 4 ]; then
- 			tst_res TFAIL $LTPTMP/tst_iptables.out \
- 				"$TCID: $cmd failed to list rules. Reason:"
- 			return $chaincnt
+Thanks for the report.
+
+I've took liberty of removing some dead code from Open Posix testcases.
+(and continue to look into the coverity results)
+
+I've also set up LTP TODO wiki page at github, mainly for me in order
+not to forget what I want to fix. But it may be used as a list of tasks
+for anybody to take. Feel free (as well as anybody else who has account)
+to update it as well. And for these who does not have an account, feel
+free to report problems on the list, I will add them to the page.
+
 -- 
-1.8.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
