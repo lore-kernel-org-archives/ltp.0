@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VYXJI-0007wu-5x
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 08:27:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VYXJG-00007v-S7
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 08:27:28 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9M8REUE024251
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 16:27:14 +0800
-Message-ID: <526636E4.6040504@cn.fujitsu.com>
-Date: Tue, 22 Oct 2013 16:27:16 +0800
-From: "Wang, Xiaoguang" <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VVgpM-0003OE-LS
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 12:00:48 +0000
+Date: Mon, 14 Oct 2013 14:00:35 +0200
+From: chrubis@suse.cz
+Message-ID: <20131014120035.GA4593@rei>
+References: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
+	<2e3e4287d2d3551db34c734971f0a3145c14a7d5.1380869051.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] add some common errno values
+Content-Disposition: inline
+In-Reply-To: <2e3e4287d2d3551db34c734971f0a3145c14a7d5.1380869051.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2 3/3] pthread_attr_setschedpolicy/2-1.c: bind
+ threads to single CPU
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,44 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> To make sure that threads are blocked on mutex, bind all to single CPU.
+> Because they all use SCHED_FIFO policy with main thread having the lowest
+> priority, main will progress only after three created threads block on
+> mutex.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- lib/tst_res.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+Looks good.
 
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 245bd5f..f73022b 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -249,7 +249,12 @@ static const char *strerrnodef(int err)
- 		    PAIR(EPIPE)
- 		    PAIR(EDOM)
- 		    PAIR(ERANGE)
-+		    PAIR(EDEADLK)
- 		    PAIR(ENAMETOOLONG)
-+		    PAIR(ENOLCK)
-+		    PAIR(ENOSYS)
-+		    PAIR(ENOTEMPTY)
-+		    PAIR(ELOOP)
- 	};
- 	return pair_lookup(errno_pairs, err);
- }
 -- 
-1.7.1
-
-Regards,
-Xiaoguang Wang
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
