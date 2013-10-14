@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VW5me-0003sF-MX
-	for ltp-list@lists.sourceforge.net; Tue, 15 Oct 2013 14:39:40 +0000
-Date: Tue, 15 Oct 2013 16:39:27 +0200
-From: chrubis@suse.cz
-Message-ID: <20131015143927.GB27433@rei>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
-	<1096964421.7014139.1381837841727.JavaMail.root@redhat.com>
-	<20131015135532.GC25867@rei>
-	<2139370019.7163656.1381846796437.JavaMail.root@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1VVasS-0008F0-3m
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 05:39:36 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VVasQ-00041c-Rn
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 05:39:36 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 14 Oct 2013 01:39:33 -0400
+References: <1381327865-9089-1-git-send-email-maxim.uvarov@linaro.com>
+In-Reply-To: <1381327865-9089-1-git-send-email-maxim.uvarov@linaro.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2139370019.7163656.1381846796437.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1 ->
- factor_nr = 5
+Message-Id: <201310140139.35346.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH]  syslog-lib.sh bash posix compliance
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,43 +24,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2987040437903866413=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Drew Jones <drjones@redhat.com>, Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.com>
 
-Hi!
-> > The problem with the test is that it tries to assert that granurality of
-> > gerusage CPU time accounting is as good as possible. The granularity
-> > itself depends on kernel config options, mainly on CONFIG_HZ. But as the
-> > kernel compilation options are not exported (by running kernel) in any
-> > reliable way the code I've added tries to guess them by side channel
-> > (the CLOCK_REALTIME_COARSE resolution). If CLOCK_REALTIME_COARSE is not
-> > supported it goes with 4ms which should correspond with CONFIG_HZ=250.
-> > 
-> > Now the accuracy on xen may be off for several reasons. It can have
-> > CONFIG_HZ=100. Or xen may not be able to account virtual CPU time with
-> > the same accuracy as on the real CPU...
-> 
-> Drew (from xen team) mentioned something along these lines as well.
-> 
-> Do we have some simple way to detect that test is running on xen (dom0/domU),
-> so we could end test with TCONF in that case?
+--===============2987040437903866413==
+Content-Type: multipart/signed; boundary="nextPart3746997.Mlnlbf7Wml";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I'm not aware of any. But feel free to add a function into LTP lib/.
+--nextPart3746997.Mlnlbf7Wml
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On Wednesday 09 October 2013 10:11:05 Maxim Uvarov wrote:
+> /opt/ltp/testcases/bin/syslog02: 69: [: syslog-ng: unexpected operator
+> + [ syslog-ng =3D=3D syslog-ng ]
+> Accoding to:
+> http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html
+> [ STRING1 =3D=3D STRING2 ]  True if the strings are equal. "=3D" may be
+> used instead of "=3D=3D" for strict POSIX compliance.
+>=20
+> Because of busybox and other bash like shells look for posix syntax
+> make it so.
+
+pushed, thanks !
+=2Dmike
+
+--nextPart3746997.Mlnlbf7Wml
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJSW4OXAAoJEEFjO5/oN/WBOcQP/i7L0/d6sFfkzsz5SdUXKIKH
+RLC5nFRDL2IXy8ICr1MhrvHcNPQsWYsWSYHQmGPj1eKgtK9TUclQdZup3oJIv6g0
+Vn/p0VW/fB+VUp0shPADo9VJvcXbvECKKnFOPXvog1XsGg5MxkhYbzKUu8YhWXqt
+J36ZCB6B/APwKIDfjMVSKRBfLPzPjd50ea4kMLkH7l8Txqd3z4di6IUGGuozBeTO
+Go2x+hSQGWw9SkgPupvKxzeiG+Jwoi+Fuxn0BLJfSxeBvJHT0fK6rfYppJpJgcqi
+tRbnJVB2cZDkbrvnCML72/TcSyeC7IOx5ZY4yOzGdGIdq7HMBDe5uFiVE73qjEDy
+6qEm3suT6Ii5iCAjbOwzCktCVwN8N4nYSK6mQCUnOmwEmjxieKEr7NgS1k6u2rvU
+Zo5niXCDrW8AqpBuYEfoaaU7OmlhPt0Urjwi3XRbOHV8pX4Y2SOjTxFR6kEOfufP
+KXmqwMw29UbzBCP4I7ilYAt2tNZcgbnc3saB/q4ibFxqWe2OQg38hNOUIZpAcTMU
+2p/LV8sX6m4YFjdbgCCFUkWGSrKGm97iYKQXsS4SSlix8kiIFq3WOR6qyRvkD9pD
+DvRJtcyw0YtPAPYdVviiP27Kk6KbruPJ2h3d7No2ZDjPAcJrspTX3nkmSQVR4uc8
+qtctwA4mLMVO36ZRub/2
+=yHIY
+-----END PGP SIGNATURE-----
+
+--nextPart3746997.Mlnlbf7Wml--
+
+
+--===============2987040437903866413==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+--===============2987040437903866413==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2987040437903866413==--
+
