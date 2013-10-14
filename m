@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VW0lk-0003QW-PG
-	for ltp-list@lists.sourceforge.net; Tue, 15 Oct 2013 09:18:24 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VVYyU-0003uU-5v
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 03:37:42 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VW0li-0002AU-GY
-	for ltp-list@lists.sourceforge.net; Tue, 15 Oct 2013 09:18:24 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9F9IEsO007777
-	for <ltp-list@lists.sourceforge.net>; Tue, 15 Oct 2013 17:18:15 +0800
-From: "Wang xiaoguang" <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 15 Oct 2013 17:18:12 +0800
-Message-ID: <003c01cec987$79eb1320$6dc13960$@cn.fujitsu.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VVYyS-0003aB-1q
+	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 03:37:42 +0000
+From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
+	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
+	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
+	<1690303515.5158783.1381487716233.JavaMail.root@redhat.com>
+In-Reply-To: <1690303515.5158783.1381487716233.JavaMail.root@redhat.com>
+Date: Mon, 14 Oct 2013 11:37:26 +0800
+Message-ID: <000001cec88e$b689f9d0$239ded70$@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Language: zh-cn
-Subject: [LTP] [PATCH] access/access06.c: add ELOOP, ENOTDIR,
-	EROFS error number test for access(2)
+Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
+	->	factor_nr = 5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,316 +29,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: 'Jan Stancek' <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-create a case to test ELOOP, ENOTDIR, EROFS error number for access(2)
-
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/syscalls                            |    1 +
- testcases/kernel/syscalls/.gitignore        |    1 +
- testcases/kernel/syscalls/access/access06.c |  245
-+++++++++++++++++++++++++++
- 3 files changed, 247 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/access/access06.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 09e5f7f..791de7c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -9,6 +9,7 @@ access02 access02
- access03 access03
- access04 access04
- access05 access05
-+access06 access06 -D DEVICE -T DEVICE_FS_TYPE
- 
- acct01 acct01
- acct02 acct02
-diff --git a/testcases/kernel/syscalls/.gitignore
-b/testcases/kernel/syscalls/.gitignore
-index ad23c2e..c005111 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -6,6 +6,7 @@
- /access/access03
- /access/access04
- /access/access05
-+/access/access06
- /acct/acct01
- /acct/acct02
- /add_key/add_key01
-diff --git a/testcases/kernel/syscalls/access/access06.c
-b/testcases/kernel/syscalls/access/access06.c
-new file mode 100644
-index 0000000..c4a6dff
---- /dev/null
-+++ b/testcases/kernel/syscalls/access/access06.c
-@@ -0,0 +1,245 @@
-+/*
-+ *   Copyright (C) 2013 Fujitsu Ltd.
-+ *   Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;  if not, write to the Free Software
-+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301 USA
-+ */
-+
-+/*
-+ * Test Description:
-+ *  Verify that,
-+ *   1. access() fails with -1 return value and sets errno to ENOTDIR
-+ *	if a component used as a directory in pathname is not a directory.
-+ *   2. access() fails with -1 return value and sets errno to ELOOP
-+ *	if too many symbolic links were encountered in resolving pathname.
-+ *   3. access() fails with -1 return value and sets errno to EROFS
-+ *	if write permission was requested for a file on a read-only file
-system
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+#include <sys/mount.h>
-+#include <pwd.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void help(void);
-+static void setup1(void);
-+static void setup2(void);
-+static void setup3(void);
-+
-+#define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
-+#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-+				S_IXGRP|S_IROTH|S_IXOTH)
-+
-+#define TEST_FILE1	"test_file1/test_file2"
-+#define TEST_FILE2	"test_file3"
-+#define TEST_FILE3	"mntpoint"
-+
-+static const char mntpoint[] = "mntpoint";
-+static const char *fs_type = "ext3";
-+static char *fstype;
-+static char *device;
-+static int tflag;
-+static int dflag;
-+static int mount_flag;
-+
-+static option_t options[] = {
-+	{"T:", &tflag, &fstype},
-+	{"D:", &dflag, &device},
-+	{NULL, NULL, NULL}
-+};
-+
-+static struct test_case_t {
-+	char *pathname;
-+	int a_mode;
-+	int exp_errno;
-+	void (*setupfunc) (void);
-+} test_cases[] = {
-+	{TEST_FILE1, R_OK, ENOTDIR, setup1},
-+	{TEST_FILE2, R_OK, ELOOP, setup2},
-+	{TEST_FILE3, W_OK, EROFS, setup3}
-+};
-+
-+char *TCID = "access06";
-+int TST_TOTAL = sizeof(test_cases) / sizeof(*test_cases);
-+static int exp_enos[] = { ENOTDIR, ELOOP, EROFS, 0 };
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	char *msg;
-+	char *file_name;
-+	int access_mode;
-+	int i;
-+
-+	msg = parse_opts(ac, av, options, help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	/* Check for mandatory option of the testcase */
-+	if (!dflag)
-+		tst_brkm(TBROK, NULL, "you must specify the device used "
-+			 "for mounting with -D option");
-+	if (tflag)
-+		fs_type = fstype;
-+
-+	setup();
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			file_name = test_cases[i].pathname;
-+			access_mode = test_cases[i].a_mode;
-+
-+			/*
-+			 * Call access(2) to test different test conditions.
-+			 * verify that it fails with -1 return value and
-+			 * sets appropriate errno.
-+			 */
-+			TEST(access(file_name, access_mode));
-+
-+			if (TEST_RETURN != -1) {
-+				tst_resm(TFAIL, "access(%s, %#o)"
-+					 "succeeded unexpectedly",
-+					 file_name, access_mode);
-+				continue;
-+			}
-+
-+			if (TEST_ERRNO == test_cases[i].exp_errno)
-+				tst_resm(TPASS | TTERRNO,
-+					 "access failed as expected");
-+			else
-+				tst_resm(TFAIL | TTERRNO,
-+					 "access failed unexpectedly;"
-+					 "expected: %d - %s",
-+					 test_cases[i].exp_errno,
-+					 strerror(test_cases[i].exp_errno));
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	int i;
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	tst_require_root(NULL);
-+
-+	tst_mkfs(NULL, device, fstype, NULL);
-+
-+	tst_tmpdir();
-+
-+	SAFE_MKDIR(cleanup, mntpoint, DIR_MODE);
-+
-+	TEST_PAUSE;
-+
-+	for (i = 0; i < TST_TOTAL; i++)
-+		if (test_cases[i].setupfunc != NULL)
-+			test_cases[i].setupfunc();
-+}
-+
-+static void setup_file(const char *file, mode_t perms)
-+{
-+	int fd = open(file, O_RDWR | O_CREAT, FILE_MODE);
-+
-+	if (fd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "open(%s, O_RDWR|O_CREAT, %#o) failed",
-+			 file, FILE_MODE);
-+
-+	if (fchmod(fd, perms) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "fchmod(%s, %#o) failed", file, perms);
-+	if (close(fd) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "close(%s) failed", file);
-+}
-+
-+/*
-+ * setup1() -setup to create two regular files: test_file1 and test_file2
-+ */
-+static void setup1(void)
-+{
-+	setup_file("test_file1", 0644);
-+	setup_file("test_file2", 0644);
-+}
-+
-+/*
-+ *setup2() -setup to create two symbolic links who point to each other.
-+ */
-+static void setup2(void)
-+{
-+	if (mkdir("dir1", 0755) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "create temporary directory dir1 failed");
-+	if (symlink("dir1/test_file3", "test_file3") < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "create symbolink test_file3 to "
-+			 "dir1/test_file3 failed");
-+	if (symlink("../test_file3", "dir1/test_file3") < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "create symbolink test_file3 in dir1 to "
-+			 "../test_file3 failed");
-+}
-+
-+/*
-+ *setup3() -setup to mount a readonly file system
-+ */
-+static void setup3(void)
-+{
-+	if (mount(device, mntpoint, fs_type, MS_RDONLY, NULL) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	mount_flag = 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	if (mount_flag && umount(mntpoint) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "umount device:%s failed", device);
-+	mount_flag = 0;
-+	tst_rmdir();
-+}
-+
-+static void help(void)
-+{
-+	printf("-T type	 : specifies the type of filesystem to be mounted."
-+	       " Default ext3.\n");
-+	printf("-D device: device used for mounting.\n");
-+}
--- 
-1.7.1
-
-Regards,
-Xiaoguang Wang
-
-
-
-------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogSmFuIFN0YW5jZWsgW21haWx0
+bzpqc3RhbmNla0ByZWRoYXQuY29tXQo+IFNlbnQ6IEZyaWRheSwgT2N0b2JlciAxMSwgMjAxMyA2
+OjM1IFBNCj4gVG86IFplbmcgTGluZ2dhbmcKPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSF0gZ2V0cnVzYWdlL2dldHJ1c2FnZTA0
+LmM6IEZpeCBmYWN0b3JfbnIgPSAxIC0+Cj4gZmFjdG9yX25yID0gNQo+IAo+IAo+IAo+IAo+IAo+
+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+IEZyb206ICJaZW5nIExpbmdnYW5nIiA8
+emVuZ2xnLmp5QGNuLmZ1aml0c3UuY29tPgo+ID4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2Vr
+QHJlZGhhdC5jb20+Cj4gPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gPiBT
+ZW50OiBGcmlkYXksIDExIE9jdG9iZXIsIDIwMTMgMTI6MTk6MTkgUE0KPiA+IFN1YmplY3Q6IFJF
+OiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9nZXRydXNhZ2UwNC5jOiBGaXggZmFjdG9yX25yID0g
+MSAtPgo+IAlmYWN0b3JfbnIgPSA1Cj4gPgo+ID4KPiA+Cj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tCj4gPiA+IEZyb206IOabvuS7pOmSoiBbbWFpbHRvOnplbmdsZy5qeUBjbi5mdWpp
+dHN1LmNvbV0KPiA+ID4gU2VudDogVGh1cnNkYXksIE9jdG9iZXIgMTAsIDIwMTMgNDoxNiBQTQo+
+ID4gPiBUbzogJ0phbiBTdGFuY2VrJwo+ID4gPiBDYzogJ2x0cC1saXN0QGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldCcKPiA+ID4gU3ViamVjdDog562U5aSNOiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9n
+ZXRydXNhZ2UwNC5jOiBGaXggZmFjdG9yX25yID0KPiA+ID4gMSAtPiBmYWN0b3JfbnIgPSA1Cj4g
+PiA+Cj4gPiA+Cj4gPiA+Cj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+IC0tLS0tIE9yaWdpbmFsIE1l
+c3NhZ2UgLS0tLS0KPiA+ID4gPiA+IEZyb206ICLmm77ku6TpkqIiIDx6ZW5nbGcuanlAY24uZnVq
+aXRzdS5jb20+Cj4gPiA+ID4gPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
+PiA+ID4gPiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3OjU2OjA1IEFNCj4gPiA+
+ID4gPiBTdWJqZWN0OiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9nZXRydXNhZ2UwNC5jOiBGaXgg
+ZmFjdG9yX25yID0KPiA+ID4gPiA+IDEgLT4KPiA+ID4gPiAJZmFjdG9yX25yID0gNQo+ID4gPiA+
+ID4KPiA+ID4gPiA+IFRvIG1ha2UgdWRlbHRhIG9yIHNkZWx0YSdzIHZhbHVlcyBpc25vdCBncmVh
+dCB0aGFuIGV4cGVjdGVkLCB3ZQo+ID4gPiA+ID4gY2hhbmdlIHRoZSBmYWN0b3JfbnIgdG8gNS4K
+PiA+ID4gPgo+ID4gPiA+IE5vdGUsIHRoYXQgdGhlcmUgaXMgYWxyZWFkeSBhIHBhcmFtZXRlciAt
+bSB0byBzZXQgZmFjdG9yX25yLgo+ID4gPiA+Cj4gPiA+ID4gQ2FuIHlvdSBzaGFyZSBtb3JlIGRl
+dGFpbHMgd2h5IHRoaXMgc2hvdWxkIGJlIHRoZSBkZWZhdWx0Pwo+ID4gPiA+IE9uIHdoaWNoIHN5
+c3RlbS9hcmNoaXRlY3R1cmUgZG8geW91IHNlZSBpdCBmYWlsaW5nPwo+ID4gPgo+ID4gPiBZZXMu
+IFdlIGhhdmUgc29tZSBwcm9ibGVtcyBpbiBSSEVMNS4xMEdBLgo+ID4gPiBJdCBjb3VsZCBub3Qg
+d29yayBhcyB3ZSBleHBlY3RlZC4gQW5kIEkgd2lsbCBiZSBtb3JlIGNhcmVmdWwuCj4gPiA+IFRo
+YW5rcy4KPiA+ID4KPiA+Cj4gPiBNYXliZSB0aGUgY2FzZSBpcyBub3Qgc3VpdCBmb3IgeGVuIGtl
+cm5lbC4KPiA+IFdoZW4ga2VybmVsIGlzIHZtbGludXotMi42LjE4LTM3MS5lbDV4ZW4sIHRoZSBj
+YXNlIHdpbGwgZmFpbC4KPiA+IEJ1dCB3aXRoIHZtbGludXotMi42LjE4LTM3MS5lbDUsIGl0IHdv
+cmtzIHdlbGwuCj4gCj4gQ2FuIHlvdSBzZW5kIHRoZSBvdXRwdXQgZnJvbSBmYWlsZWQgcnVuPwoK
+PDw8dGVzdF9zdGFydD4+Pgp0YWc9Z2V0cnVzYWdlMDQgc3RpbWU9MTM4MTI4NTM3OQpjbWRsaW5l
+PSJnZXRydXNhZ2UwNCIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8PDx0ZXN0X291dHB1dD4+
+PgpnZXRydXNhZ2UwNCAgICAwICBUSU5GTyAgOiAgQ0xPQ0tfUkVBTFRJTUVfQ09BUlNFIG5vdCBz
+dXBwb3J0ZWQsIHVzaW5nIDQwMDAgdXMKZ2V0cnVzYWdlMDQgICAgMCAgVElORk8gIDogIFVzaW5n
+IDEgYXMgbXVsdGlwbHkgZmFjdG9yIGZvciBtYXggW3VzXXRpbWUgaW5jcmVtZW50ICgxMDAwKzQw
+MDB1cykhCmdldHJ1c2FnZTA0ICAgIDAgIFRJTkZPICA6ICB1dGltZTogICAgICAgICAgIDB1czsg
+c3RpbWU6ICAgICAgICA0MDAwdXMKZ2V0cnVzYWdlMDQgICAgMCAgVElORk8gIDogIHV0aW1lOiAg
+ICAgICAgICAgMHVzOyBzdGltZTogICAgICAgMTYwMDF1cwpnZXRydXNhZ2UwNCAgICAxICBURkFJ
+TCAgOiAgc3RpbWUgaW5jcmVhc2VkID4gNTAwMHVzOgo8PDxleGVjdXRpb25fc3RhdHVzPj4+Cmlu
+aXRpYXRpb25fc3RhdHVzPSJvayIKZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0
+ZXJtaW5hdGlvbl9pZD0xIGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0yCjw8PHRlc3RfZW5k
+Pj4+CgpSZWdhcmRzLApaZW5nCgo+IAo+IAo+ID4KPiA+IFJlZ2FyZHMsCj4gPiBaZW5nCj4gPgo+
+ID4gPiA+Cj4gPiA+ID4gUmVnYXJkcywKPiA+ID4gPiBKYW4KPiA+ID4gPgo+ID4gPiA+ID4KPiA+
+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFplbmcgTGluZ2dhbmcgPHplbmdsZy5qeUBjbi5mdWppdHN1
+LmNvbT4KPiA+ID4gPiA+IC0tLQo+ID4gPiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+Z2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMgfCAgICAyICstCj4gPiA+ID4gPiAgMSBmaWxlcyBjaGFu
+Z2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4gPiA+ID4gPgo+ID4gPiA+ID4g
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2Fn
+ZTA0LmMKPiA+ID4gPiA+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0
+cnVzYWdlMDQuYwo+ID4gPiA+ID4gaW5kZXggOTZlMjRhNC4uNDFkMDA1MiAxMDA2NDQKPiA+ID4g
+PiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0
+LmMKPiA+ID4gPiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dl
+dHJ1c2FnZTA0LmMKPiA+ID4gPiA+IEBAIC02Nyw3ICs2Nyw3IEBAIHN0YXRpYyBsb25nIEJJQVNf
+TUFYOwo+ID4gPiA+ID4KPiA+ID4gPiA+ICBzdGF0aWMgaW50IG9wdF9mYWN0b3I7Cj4gPiA+ID4g
+PiAgc3RhdGljIGNoYXIgKmZhY3Rvcl9zdHI7Cj4gPiA+ID4gPiAtc3RhdGljIGxvbmcgZmFjdG9y
+X25yID0gMTsKPiA+ID4gPiA+ICtzdGF0aWMgbG9uZyBmYWN0b3JfbnIgPSA1Owo+ID4gPiA+ID4K
+PiA+ID4gPiA+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7Cj4gPiA+ID4gPiAgCXsibToi
+LCAmb3B0X2ZhY3RvciwgJmZhY3Rvcl9zdHJ9LAo+ID4gPiA+ID4gLS0KPiA+ID4gPiA+IDEuNy4x
+Cj4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4gPgo+ID4gPiA+ID4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQo+ID4gPiA+ID4gLS0tLQo+ID4gPiA+ID4gLS0KPiA+ID4gPiA+IC0tLS0tLS0tIE9jdG9iZXIg
+V2ViaW5hcnM6IENvZGUgZm9yIFBlcmZvcm1hbmNlIEZyZWUgSW50ZWwKPiA+ID4gPiA+IHdlYmlu
+YXJzIGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlLgo+ID4g
+PiA+ID4gRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBh
+bmQgbW9yZS4gR2V0Cj4gPiA+ID4gPiB0aGUgbW9zdCBmcm9tIHRoZSBsYXRlc3QgSW50ZWwgcHJv
+Y2Vzc29ycyBhbmQgY29wcm9jZXNzb3JzLiBTZWUKPiA+ID4gPiA+IGFic3RyYWN0cyBhbmQgcmVn
+aXN0ZXIgPgo+ID4gPiA+ID4KPiA+ID4gPgo+ID4gPgo+IGh0dHA6Ly9wdWJhZHMuZy5kb3VibGVj
+bGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnCj4gPiA+IC5jCj4g
+PiA+ID4gPiBsa3RyayBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+ID4gPiA+ID4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gPiA+ID4gPiBMdHAtbGlzdEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+ID4gPiA+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gPiA+ID4gPgo+ID4KPiA+Cj4gPgoKCgotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UK
+RnJlZSBJbnRlbCB3ZWJpbmFycyBjYW4gaGVscCB5b3UgYWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBw
+ZXJmb3JtYW5jZS4KRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmls
+aW5nLCBhbmQgbW9yZS4gR2V0IHRoZSBtb3N0IGZyb20gCnRoZSBsYXRlc3QgSW50ZWwgcHJvY2Vz
+c29ycyBhbmQgY29wcm9jZXNzb3JzLiBTZWUgYWJzdHJhY3RzIGFuZCByZWdpc3RlciA+Cmh0dHA6
+Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0
+MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
