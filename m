@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VZLxO-00028s-Dv
-	for ltp-list@lists.sourceforge.net; Thu, 24 Oct 2013 14:32:14 +0000
-Date: Thu, 24 Oct 2013 16:31:58 +0200
-From: chrubis@suse.cz
-Message-ID: <20131024143158.GA11150@rei>
-References: <525F76B7.4050705@oracle.com>
-	<1382087565-2370-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20131021125723.GA2385@rei> <5268FDE5.5010408@oracle.com>
-	<20131024121601.GC29706@rei> <52692C2F.3040903@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VW39K-0001nz-JS
+	for ltp-list@lists.sourceforge.net; Tue, 15 Oct 2013 11:50:54 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VW39I-0007Ml-Rj
+	for ltp-list@lists.sourceforge.net; Tue, 15 Oct 2013 11:50:54 +0000
+Date: Tue, 15 Oct 2013 07:50:41 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1096964421.7014139.1381837841727.JavaMail.root@redhat.com>
+In-Reply-To: <000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
+References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
+	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
+	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52692C2F.3040903@oracle.com>
-Subject: Re: [LTP] [PATCH] msgctl{08, 09, 10, 11}: cleanup
+Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
+	->	factor_nr = 5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,116 +30,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>, Drew Jones <drjones@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> And I think that I found an another issue we should overcome - lib.mk
-> >> defines MAKE_TARGETS:
-> >>
-> >> MAKE_TARGETS    := $(LIB)
-> >>
-> >> generic_leaf_target.mk also does it.
-> >>
-> >> So It should not be trivial to include both files (lib.mk and
-> >> generic_leaf_target.mk) into one Makefile.
-> >> I suppose that in that case we have to implicitly define MAKE_TARGETS in
-> >> our Makefile.
-> > Now this one is more complicated, but solvable.
-> >
-> > First of all we need to change the part in lib.mk to
-> >
-> > MAKE_TARGETS += $(LIB)
-> >
-> > Then define MAKE_TARGETS explicitly in the Makefile (we need that anyway
-> > for lib: tests dependency) and add LDFLAGS and LDLIBS. The full Makefile
-> > looks like:
-> >
-> > top_srcdir              ?= ../../../../..
-> > include $(top_srcdir)/include/mk/testcases.mk
-> >
-> > LIBSRCS := libmsgctl.c
-> > INTERNAL_LIB := libmsgctl.a
-> > MAKE_TARGETS := $(patsubst %.c,%,$(wildcard msgctl??.c))
-> >
-> > $(MAKE_TARGETS): $(INTERNAL_LIB)
-> >
-> > LDFLAGS += -L$(abs_builddir)
-> > LDLIBS += -lmsgctl
-> >
-> > include $(abs_srcdir)/../Makefile.inc
-> > include $(top_srcdir)/include/mk/lib.mk
-> > include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> >
-> > See also attached patch with all the changes and check if that works for
-> > you. If so I will commit change to the lib.mk as separate patch and ask
-> > you to include changes in Makefile.inc in your patchset.
-> 
-> 
-> Yes, It works.
-> 
-> But the compilation is performed as follows:
-> 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall 
-> -I/home/stas/ltp/testcases/kernel/include 
-> -I/home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl/../lib 
-> -I../../../../../include -I../../../../../include 
-> -I../../../../../include -I../../../../../include 
-> -L/home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl 
-> -L/home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl/../lib 
-> -L../../../../../lib -L../../../../../lib  msgctl01.c libmsgctl.a -lltp 
-> -lmsgctl -lipc -o msgctl01
-> 
-> So gcc 'links' msgctl01.c and libmsgctl.a at once (and additionally is 
-> passed -lmsgctl option).
 
-Ah, this one. Let's fix this, the handling of static libraries is too
-fragile and this may posibly break on some distribution (from my memory
-Ubuntu was the most problematic one).
 
-> How do you think, maybe introduce my favourite .INTERMEDIATE target into 
-> Makefile? :)
+----- Original Message -----
+> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 11 October, 2013 12:19:19 PM
+> Subject: RE: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1 ->	factor_nr = 5
+> > >
+> > > Note, that there is already a parameter -m to set factor_nr.
+> > >
+> > > Can you share more details why this should be the default?
+> > > On which system/architecture do you see it failing?
+> > 
+> > Yes. We have some problems in RHEL5.10GA.
+> > It could not work as we expected. And I will be more careful.
+> > Thanks.
+> > 
 > 
-> Like this:
-> 
-> MAKE_TARGET_OBJS := $(addsuffix .o,$(MAKE_TARGETS))
-> .INTERMEDIATE: $(MAKE_TARGET_OBJS)
-> 
-> $(MAKE_TARGET_OBJS): $(INTERNAL_LIB)
-> 
-> #$(MAKE_TARGETS): $(INTERNAL_LIB)
-> 
-> With this option the compilation is as follows:
-> 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall 
-> -I/home/stas/ltp/testcases/kernel/include 
-> -I/home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl/../lib 
-> -I../../../../../include -I../../../../../include 
-> -I../../../../../include -I../../../../../include  -c -o msgctl01.o 
-> msgctl01.c
-> gcc   -L/home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl 
-> -L/home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl/../lib 
-> -L../../../../../lib -L../../../../../lib  msgctl01.o   -lltp -lmsgctl 
-> -lipc -o msgctl01
-> 
-> I can't find any reasonable arguments for this approach. Just feels that 
-> it's more 'correct'.
+> When kernel is vmlinuz-2.6.18-371.el5xen, the case will fail.
+> But with vmlinuz-2.6.18-371.el5, it works well.
 
-That looks a bit like a workaround, but let's go with this one for now.
+I'm seeing the same as you also with previous minor RHEL5 releases on dom0:
+5.3 2.6.18-128.el5xen
+5.6 2.6.18-238.el5xen
+5.9 2.6.18-348.el5xen
+5.10 2.6.18-371.el5xen
 
-I will take a closer look later and change it if I find a better way.
-(I have a better build system documentation on my TODO)
+> Maybe the case is not suit for xen kernel.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+It's possible, it doesn't look like regression to me so far.
+The systems are definitely not "slow" ones, and test can pass on bare-metal kernel. 
+
+Regards,
+Jan
+
+> 
+> Regards,
+> Zeng
+> 
+> > >
+> > > Regards,
+> > > Jan
+> > >
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
