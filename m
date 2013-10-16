@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <voipio@kos.to>) id 1VUYzm-0000gJ-IS
-	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 09:26:54 +0000
-Received: from afflict.kos.to ([92.243.29.197])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VUYzk-0002m0-QQ
-	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 09:26:54 +0000
-Received: from kos.to (91-157-208-114.elisa-laajakaista.fi [91.157.208.114])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by afflict.kos.to (Postfix) with ESMTPSA id F015426552
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 11 Oct 2013 11:09:11 +0200 (CEST)
-From: Riku Voipio <riku.voipio@linaro.org>
-Date: Fri, 11 Oct 2013 12:09:08 +0300
-Message-Id: <1381482548-29543-1-git-send-email-riku.voipio@linaro.org>
-Subject: [LTP] [PATCH] Remove bogus Aarch64 system call numbers
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VWPBK-0004NV-KL
+	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 11:22:26 +0000
+Date: Wed, 16 Oct 2013 13:22:13 +0200
+From: chrubis@suse.cz
+Message-ID: <20131016112213.GB24451@rei.Home>
+References: <9C261B4871671149A8D67C0E65957391507046@039-SN1MPN1-003.039d.mgd.msft.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <9C261B4871671149A8D67C0E65957391507046@039-SN1MPN1-003.039d.mgd.msft.net>
+Subject: Re: [LTP] "cpu_hotplug/functional/cpuhotplug05.sh" failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,76 +21,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+To: Liao Guoqi-B25230 <B25230@freescale.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Aarch64 build fails with:
+Hi!
+> When I run cpuhotplug05 cases on our platform(powerpc), it failed:
+> Name:   cpuhotplug05
+> Date:   Wed Oct 16 10:49:31 UTC 2013
+> Desc:   Does sar behave properly during CPU hotplug events?
+> 
+> CPU is 1
+> cpuhotplug05    1  TFAIL  :  CPU1 Not Found on SAR!
+> 
+> After some investigation:
+> 
+> the following code:
+> 
+>         while ! grep -iq nan $TMP/log_$$; do
+> 
+>                 tst_resm TFAIL "CPU${CPU_TO_TEST} Not Found on SAR!"
+> 
+>                 exit_clean 1
+> 
+>         done
+> 
+> root cause:
+> output of command "sar" has been changed, the log from "sar" output did NOT include "nan".
+> 
+> Enrionment:
+> Sysstat version: 10.1.4
+> Ltp version: 20130109-r0
 
-cacheflush01.c:52:26: fatal error: asm/cachectl.h: No such file or directory
- #include <asm/cachectl.h>
+It looks like the sar parameters and output changes from time to time.
+On my system (systat 10.0.5) sar does not accept zero as a inifinte
+count and needs to be executed as 'sar -P ALL 1' instead of
+'sar -P ALL 1 0'.
 
-This is caused by bogus definitions of cacheflush and set_tls, which are
-private 32bit ARM system calls. These should not be used on native
-Aarch64 binaries. If they need to be tested, it is better done using ltp
-compiled for 32bit ARM.
+I guess that the only solution is to switch on systat version and change
+expectations accordingly. Feel free to send a patch.
 
-Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
----
- testcases/kernel/include/aarch64.in              | 2 --
- testcases/kernel/include/linux_syscall_numbers.h | 9 ---------
- 2 files changed, 11 deletions(-)
-
-diff --git a/testcases/kernel/include/aarch64.in b/testcases/kernel/include/aarch64.in
-index a845be0..ceb67c6 100644
---- a/testcases/kernel/include/aarch64.in
-+++ b/testcases/kernel/include/aarch64.in
-@@ -253,5 +253,3 @@ clock_adjtime 266
- syncfs 267
- setns 268
- sendmmsg 269
--cacheflush 0x1002
--set_tls 0x1005
-diff --git a/testcases/kernel/include/linux_syscall_numbers.h b/testcases/kernel/include/linux_syscall_numbers.h
-index 38931cf..03664ce 100644
---- a/testcases/kernel/include/linux_syscall_numbers.h
-+++ b/testcases/kernel/include/linux_syscall_numbers.h
-@@ -801,12 +801,6 @@
- # ifndef __NR_sendmmsg
- #  define __NR_sendmmsg 269
- # endif
--# ifndef __NR_cacheflush
--#  define __NR_cacheflush 0x1002
--# endif
--# ifndef __NR_set_tls
--#  define __NR_set_tls 0x1005
--# endif
- #endif
- 
- 
-@@ -12754,9 +12748,6 @@
- # ifndef __NR_settimeofday
- #  define __NR_settimeofday __LTP__NR_INVALID_SYSCALL
- # endif
--# ifndef __NR_set_tls
--#  define __NR_set_tls __LTP__NR_INVALID_SYSCALL
--# endif
- # ifndef __NR_setuid
- #  define __NR_setuid __LTP__NR_INVALID_SYSCALL
- # endif
 -- 
-1.8.1.2
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
