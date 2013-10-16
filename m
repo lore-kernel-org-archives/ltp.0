@@ -1,18 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VYDqm-00080I-AW
-	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 11:40:44 +0000
-Date: Mon, 21 Oct 2013 13:40:28 +0200
-From: chrubis@suse.cz
-Message-ID: <20131021114028.GE1274@rei>
-References: <1382001423-19290-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1382001423-19290-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] memcg_control: revert memory.use_hierarchy value
- to 0
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VWN3W-0002gh-Dp
+	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 09:06:14 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VWN3U-00033f-Nf
+	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 09:06:14 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r9G966xd032703
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 16 Oct 2013 09:06:07 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9G965Jv020769
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 16 Oct 2013 09:06:06 GMT
+Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9G9655w020762
+	for <ltp-list@lists.sourceforge.net>; Wed, 16 Oct 2013 09:06:05 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 16 Oct 2013 13:05:57 +0400
+Message-Id: <1381914358-29029-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] msgctl11: changed logic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,31 +36,21 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
 Hi!
-> Documentation/cgroups/memory.txt states that "Enabling/disabling will
-> fail if either the cgroup already has other cgroups created below it,
-> or if the parent cgroup has use_hierarchy enabled."
-> 
-> memcg_control_test.sh sets global memory.use_hierarchy value to 1 before
-> the execution of its own tests but doesn't revert it back to 0 after
-> they complete.
-> 
-> It causes failures of memcg_stat_test.sh and memcg_use_hierarchy_test.sh
-> testcases if runtest/controllers is run twice on the same host.
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Pushed, thanks.
+I've not verified this patch with UCLINUX defined. Yet.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Just want to be sure that the general idea is acceptable.
+
+Thanks.
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
