@@ -1,34 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VQyFT-0005ZD-BD
-	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 11:36:15 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VQyFS-0006nW-FF
-	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 11:36:15 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r91Ba8Cj002006
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 1 Oct 2013 11:36:08 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r91Ba7ZQ002618
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 1 Oct 2013 11:36:08 GMT
-Received: from abhmt114.oracle.com (abhmt114.oracle.com [141.146.116.66])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r91Ba7XZ002612
-	for <ltp-list@lists.sourceforge.net>; Tue, 1 Oct 2013 11:36:07 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue,  1 Oct 2013 15:35:58 +0400
-Message-Id: <1380627359-18513-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <524A665C.7040202@oracle.com>
-References: <524A665C.7040202@oracle.com>
-Subject: [LTP] [PATCH V3 1/2] tools: added tst_kvercmp2 binary
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VWRvh-000303-1Y
+	for ltp-list@lists.sourceforge.net; Wed, 16 Oct 2013 14:18:29 +0000
+Date: Wed, 16 Oct 2013 16:18:10 +0200
+From: chrubis@suse.cz
+Message-ID: <20131016141810.GA28545@rei>
+References: <1381914358-29029-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1381914358-29029-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] msgctl11: changed logic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,159 +21,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- tools/apicmds/.gitignore  |    1 +
- tools/apicmds/Makefile    |    4 +-
- tools/apicmds/ltpapicmd.c |   77 +++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 77 insertions(+), 5 deletions(-)
+Hi!
+> I've not verified this patch with UCLINUX defined. Yet.
+> 
+> Just want to be sure that the general idea is acceptable.
 
-diff --git a/tools/apicmds/.gitignore b/tools/apicmds/.gitignore
-index e895739..a6d73d3 100644
---- a/tools/apicmds/.gitignore
-+++ b/tools/apicmds/.gitignore
-@@ -3,6 +3,7 @@ tst_brkm
- tst_exit
- tst_flush
- tst_kvercmp
-+tst_kvercmp2
- tst_ncpus
- tst_ncpus_max
- tst_res
-diff --git a/tools/apicmds/Makefile b/tools/apicmds/Makefile
-index faa49b5..3cadc3f 100644
---- a/tools/apicmds/Makefile
-+++ b/tools/apicmds/Makefile
-@@ -26,8 +26,8 @@ include $(top_srcdir)/include/mk/testcases.mk
- 
- CPPFLAGS		+= -D_GNU_SOURCE
- 
--MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp res resm \
--			     ncpus ncpus_max)
-+MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp kvercmp2 \
-+				res resm ncpus ncpus_max)
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
-diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
-index e2b0061..f74ffca 100644
---- a/tools/apicmds/ltpapicmd.c
-+++ b/tools/apicmds/ltpapicmd.c
-@@ -45,8 +45,11 @@
-  *               0   - on success
-  *              -1  - on failure
-  *
-- * Description: Unlike the above commands tst_kvercmp has an unusual exit status
-- *              tst_kvercmp - Compare running kernel to specified version
-+ * Description: Unlike the above commands tst_kvercmp, tst_kvercmp2 have an unusual
-+ *              exit status
-+ *              tst_kvercmp  - Compare running kernel to specified version
-+ *              tst_kvercmp2 - Compare running kernel to specified vanilla version
-+ *                             or distribution specific version
-  * Exit:
-  *               2 - running newer kernel
-  *               1 - running same age kernel
-@@ -151,7 +154,8 @@ int main(int argc, char *argv[])
- 	tst_total = getenv("TST_TOTAL");
- 	tst_cntstr = getenv("TST_COUNT");
- 	if (TCID == NULL || tst_total == NULL || tst_cntstr == NULL) {
--		if (strcmp(cmd_name, "tst_kvercmp") != 0) {
-+		if ((strcmp(cmd_name, "tst_kvercmp") != 0)
-+				&& (strcmp(cmd_name, "tst_kvercmp2") != 0)) {
- 			fprintf(stderr,
- 				"\nSet variables TCID, TST_TOTAL, and TST_COUNT before each test:\n"
- 				"export TCID=<test name>\n"
-@@ -265,6 +269,73 @@ int main(int argc, char *argv[])
- 		else if (exit_value > 0)
- 			exit_value = 2;
- 		exit(exit_value);
-+	} else if (strcmp(cmd_name, "tst_kvercmp2") == 0) {
-+		int exit_value;
-+
-+		struct tst_kern_exv vers[100];
-+		unsigned int count;
-+
-+		char *saveptr1 = NULL;
-+		char *saveptr2 = NULL;
-+		char *token1;
-+
-+		if (TCID == NULL)
-+			TCID = "outoftest";
-+		if (tst_cntstr == NULL)
-+			tst_count = 0;
-+
-+		if (argc < 5) {
-+			fprintf(stderr, "Usage: %s NUM NUM NUM KVERS\n"
-+				"Compares to the running kernel version\n"
-+				"based on vanilla kernel version NUM NUM NUM\n"
-+				"or distribution specific kernel version KVERS\n\n"
-+				"\tNUM - A positive integer.\n"
-+				"\tThe first NUM is the kernel VERSION\n"
-+				"\tThe second NUM is the kernel PATCHLEVEL\n"
-+				"\tThe third NUM is the kernel SUBLEVEL\n\n"
-+				"\tKVERS is a string of the form "
-+				"\"DISTR1:VERS1 DISTR2:VERS2\",\n"
-+				"\twhere DISTR1 is a distribution name\n"
-+				"\tand VERS1 is the corresponding kernel version.\n"
-+				"\tExample: \"RHEL6:2.6.39-400.208\"\n\n"
-+				"\tIf running kernel matches a distribution in KVERS then\n"
-+				"\tcomparison is performed based on version in KVERS,\n"
-+				"\totherwise - based on NUM NUM NUM.\n\n"
-+				"\tExit status is 0 if the running kernel is older.\n"
-+				"\tExit status is 1 for kernels of the same age.\n"
-+				"\tExit status is 2 if the running kernel is newer.\n",
-+				cmd_name);
-+			exit(3);
-+		}
-+
-+		count = 0;
-+		token1 = strtok_r(argv[3], " ", &saveptr1);
-+		while ((token1 != NULL) && (count < 99)) {
-+			vers[count].dist_name = strtok_r(token1, ":", &saveptr2);
-+			vers[count].extra_ver = strtok_r(NULL, ":", &saveptr2);
-+
-+			if (vers[count].extra_ver == NULL) {
-+				fprintf(stderr, "Incorrect KVERS format\n");
-+				exit(3);
-+			}
-+
-+			count++;
-+
-+			token1 = strtok_r(NULL, " ", &saveptr1);
-+		}
-+		vers[count].dist_name = NULL;
-+		vers[count].extra_ver = NULL;
-+
-+		exit_value = tst_kvercmp2(atoi(argv[0]), atoi(argv[1]),
-+					atoi(argv[2]), vers);
-+
-+		if (exit_value < 0)
-+			exit_value = 0;
-+		else if (exit_value == 0)
-+			exit_value = 1;
-+		else if (exit_value > 0)
-+			exit_value = 2;
-+		exit(exit_value);
- 	} else if (strcmp(cmd_name, "tst_ncpus") == 0) {
- 		printf("%li\n", tst_ncpus());
- 	} else if (strcmp(cmd_name, "tst_ncpus_max") == 0) {
+The idea is fine, but the original test is so messed up I would be
+tempted to rewrite it from scratch...
+
+If you decide to fix it (which is also a good idea ;), please clean it
+up first (in separate patch).
+
+Moreovere the code for msgctl09 is nearly the same. What about moving
+the commont parts into a header in the cleanup process?
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
