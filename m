@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vb5FS-0005Bg-SF
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 09:06:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vb5FR-00019r-4j
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 09:06:02 +0000
-Message-ID: <526F7A65.7010206@cn.fujitsu.com>
-Date: Tue, 29 Oct 2013 17:05:41 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1382949890.5455.40.camel@fedora19> <526F779B.2030205@oracle.com>
-In-Reply-To: <526F779B.2030205@oracle.com>
-Subject: Re: [LTP] tpci test trigger RHEL6.4GA crash!
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VWlOe-0007yz-19
+	for ltp-list@lists.sourceforge.net; Thu, 17 Oct 2013 11:05:40 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VWlOd-00010Z-1l
+	for ltp-list@lists.sourceforge.net; Thu, 17 Oct 2013 11:05:39 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r9HB5XBp013486
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Oct 2013 07:05:33 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id r9HB5Uj8014903
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Oct 2013 07:05:32 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 17 Oct 2013 13:05:26 +0200
+Message-Id: <8b67d5899fcf7196cf6c12ed3a506aac0c33c1ae.1382007845.git.jstancek@redhat.com>
+In-Reply-To: <c4b2fd5ad2a7f04ee4979d3a9d6aa967006af688.1382007845.git.jstancek@redhat.com>
+References: <c4b2fd5ad2a7f04ee4979d3a9d6aa967006af688.1382007845.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 2/2] getrusage04: skip it on Xen
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,87 +32,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On 10/29/2013 04:53 PM, alexey.kodanev@oracle.com wrote:
-> Hi!
-> On 10/28/2013 12:44 PM, Zeng Linggang wrote:
->> Hi,
->>
->> When we execute the test of tpci in RHEL6.4GA, the system will crash:
->>    - filesystem is broken
->>    - network is off
->> Some logs are as follows:
->>
->> [root@RHEL6U4GA-Intel64 ltp]# ata1.00: exception Emask 0x52 SAct 0x1 SErr 0xffffffff action 0xe frozen
->> ata1: SError: { RecovData RecovCommon UnrecovData Persist Proto HostInt PHYInt CommWake 10B8B Display
->> Seq TrStaTrns UnrecFIS DevExch }
->> ata1.00: failed command: WRITE FPDMA QUEUED
->> ata1.00: cmd 61/08:00:c8:fb:f3/00:00:39:00:00/40 tag 0 ncq 4096 out
->>           res 40/00:18:48:eb:33/00:00:38:00:00/40 Emask 0x56 (ATA bus error)
->> ata1.00: stauts: { DRDY }
->> ata1.00 failed to resume link (SControl FFFFFFFF)
->> ata1.00 failed to resume link (SControl FFFFFFFF)
->> ata1.00 failed to resume link (SControl FFFFFFFF)
->> Buffer I/O error on device sda13, logical block 4752991
->> sd 0:0:0:0: rejecting I/O to offline device
->> sd 0:0:0:0: rejecting I/O to offline device
->> ...
->> EXT4-fs error (device sda13): ext4_find_entry: reading directory #524297 offset 0
->> EXT4-fs error (device sda13): ext4_find_entry: reading directory #524297 offset 0
->> ...
->>
-> Could you please find out which particular test case does it? it can be 
-> done manually the following way:
-> insmod ltp_pci.ko
-> 
-> Get your ata bus and pci slot number, then write it to the file (the 
-> number is 16bit unsigned integer, the first 8 bits is a device number, 
-> the last is a bus number):
-> 
-> echo "number" > /sys/devices/ltp_tcpi/bus_slot
-> 
-> Then try test-cases one by one:
-> echo 1 > /sys/devices/ltp_tcpi/tcase
-> ...
-> echo 17 > /sys/devices/ltp_tcpi/tcase
-> 
-> You can check the result of each test case by reading 
-> /sys/devices/ltp_tcpi/result file. 0 - PASS, 1 - FAIL.
+Skip this test on Xen, as it is known to fail, presumably because
+Xen is not able to account virtual CPU time with same accuracy
+as on the real CPU.
 
-PCI_RESOURCES, will cause kernel crash, could you please
-check it?
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/getrusage/getrusage04.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Thanks,
-Wanlong Gao
-
-> 
-> Thanks,
-> Alexey
-> 
-> ------------------------------------------------------------------------------
-> Android is increasing in popularity, but the open development platform that
-> developers love is also attractive to malware creators. Download this white
-> paper to learn more about secure code signing practices that can help keep
-> Android apps secure.
-> http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+index 96e24a4..fa5fe2d 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage04.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+@@ -205,6 +205,9 @@ static void setup(void)
+ {
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
++	if (tst_is_virt(VIRT_XEN))
++		tst_brkm(TCONF, NULL, "This testcase is not supported on Xen.");
++
+ 	BIAS_MAX = guess_timer_resolution();
+ 
+ 	TEST_PAUSE;
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
