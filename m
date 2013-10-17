@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VYfS0-0003GK-5y
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 17:09:00 +0000
-Date: Tue, 22 Oct 2013 19:08:44 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VWn4J-0006KA-Nr
+	for ltp-list@lists.sourceforge.net; Thu, 17 Oct 2013 12:52:47 +0000
+Date: Thu, 17 Oct 2013 14:52:33 +0200
 From: chrubis@suse.cz
-Message-ID: <20131022170843.GA7753@rei>
-References: <1382340317-8510-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20131017125233.GC24992@rei>
+References: <9C261B4871671149A8D67C0E65957391507046@039-SN1MPN1-003.039d.mgd.msft.net>
+	<20131016112213.GB24451@rei.Home>
+	<9C261B4871671149A8D67C0E659573915077DF@039-SN1MPN1-003.039d.mgd.msft.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="wRRV7LY7NUeQGEoC"
 Content-Disposition: inline
-In-Reply-To: <1382340317-8510-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] 16-bit fixes for setreuid, setregid
+In-Reply-To: <9C261B4871671149A8D67C0E659573915077DF@039-SN1MPN1-003.039d.mgd.msft.net>
+Subject: Re: [LTP] "cpu_hotplug/functional/cpuhotplug05.sh" failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,224 +23,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
-
-
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To: Liao Guoqi-B25230 <B25230@freescale.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> This series contains fixes for 16-bit version of syscalls for
-> setreuid, setregid system calls.
+> ---
+>  .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh |    8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> And some cleanup also.
+> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> index e64b91c..e893f04 100755
+> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> @@ -57,8 +57,8 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>         sleep 2
+>         SAR_PID=$!
+> 
+> -       # Verify that SAR has correctly listed the missing CPU as 'nan'
+> -       while ! grep -iq nan $TMP/log_$$; do
+> +       # Verify that SAR has correctly listed the missing CPU
+> +       while ! awk '{print $8}' $TMP/log_$$|grep -i "^0.00"; do
+>                 tst_resm TFAIL "CPU${CPU_TO_TEST} Not Found on SAR!"
+>                 exit_clean 1
+>         done
+> @@ -66,7 +66,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>         sleep .5
+> 
+>         # Verify that at least some of the CPUs are offline
+> -       NUMBER_CPU_OFF=$(grep "$time" $TMP/log_$$ | grep -i nan | wc -l)
+> +        NUMBER_CPU_OFF=$(grep "$time" $TMP/log_$$ | awk '{print $8}' |grep -i "^0.00" | wc -l)
+>         if [ ${NUMBER_CPU_OFF} -eq 0 ]; then
+>                 tst_resm TBROK "no CPUs found offline"
+>                 exit_clean 1
+> @@ -83,7 +83,7 @@ until [ $TST_COUNT -gt $TST_TOTAL ]; do
+>         sleep .5
+> 
+>         # Check that SAR registered the change in CPU online/offline states
+> -       NEW_NUMBER_CPU_OFF=$(grep "$time" $TMP/log_$$ | grep -i nan | wc -l)
+> +        NEW_NUMBER_CPU_OFF=$(grep "$time" $TMP/log_$$|awk '{print $8}'|grep -i "^0.00"| wc -l)
+>         : $(( NUMBER_CPU_OFF -= 1 ))
+>         if [ "$NUMBER_CPU_OFF" = "$NEW_NUMBER_CPU_OFF" ]; then
+>                 tst_resm TPASS "CPU was found after turned on."
 
-Pushed (with a few minor fixes by myself, see attached patch), thanks.
+Ok, that fixes it for sar that does not print nan. Do you have an idea
+for how long the sar behaves this way?
+
+Because I do not wan't to break the test for anybody with slightly older
+sasstat package.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
-
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="setere.diff"
-
-diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
-index 5674070..e67a7df 100644
---- a/testcases/kernel/syscalls/setregid/setregid02.c
-+++ b/testcases/kernel/syscalls/setregid/setregid02.c
-@@ -72,7 +72,7 @@ struct test_data_t {
- 		    "After setregid(bin, root),"}, {
- 	&inval_user, &neg_one, EINVAL, &nobody, &nobody,
- 		    "After setregid(invalid group, -1),"}, {
--&neg_one, &inval_user, EINVAL, &nobody, &nobody,
-+	&neg_one, &inval_user, EINVAL, &nobody, &nobody,
- 		    "After setregid(-1, invalid group),"},};
- 
- int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
-@@ -194,6 +194,5 @@ void gid_verify(struct group *rg, struct group *eg, char *when)
- 			 rg->gr_gid, eg->gr_gid);
- 	} else {
- 		tst_resm(TPASS, "real or effective gid was modified as expected");
--
- 	}
- }
-diff --git a/testcases/kernel/syscalls/setregid/setregid03.c b/testcases/kernel/syscalls/setregid/setregid03.c
-index 932371b..1cbdd52 100644
---- a/testcases/kernel/syscalls/setregid/setregid03.c
-+++ b/testcases/kernel/syscalls/setregid/setregid03.c
-@@ -108,9 +108,9 @@ int main(int ac, char **av)
- 		if (SETREGID(cleanup, sys.gr_gid, bin.gr_gid) == -1)
- 			tst_brkm(TBROK, NULL, "Initial setregid failed");
- 
--		if (seteuid(nobody.pw_uid) == -1) {
-+		if (seteuid(nobody.pw_uid) == -1)
- 			tst_brkm(TBROK, NULL, "Initial seteuid failed");
--		}
-+
- 		if ((pid = FORK_OR_VFORK()) == -1) {
- 			tst_brkm(TBROK, NULL, "fork failed");
- 		} else if (pid == 0) {	/* child */
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid01.c b/testcases/kernel/syscalls/setreuid/setreuid01.c
-index 45d38cb..18b5ed0 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid01.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid01.c
-@@ -46,8 +46,8 @@
- #include "usctest.h"
- #include "compat_16.h"
- 
--static void setup();
--static void cleanup();
-+static void setup(void);
-+static void cleanup(void);
- 
- TCID_DEFINE(setreuid01);
- int TST_TOTAL = 5;
-@@ -182,7 +182,6 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid02.c b/testcases/kernel/syscalls/setreuid/setreuid02.c
-index 050df17..1263996 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid02.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid02.c
-@@ -70,11 +70,9 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	}
--
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -140,7 +138,6 @@ static void setup(void)
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
--
- }
- 
- static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid03.c b/testcases/kernel/syscalls/setreuid/setreuid03.c
-index 24e52d5..1074e79 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid03.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid03.c
-@@ -95,11 +95,9 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	}
--
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -188,7 +186,6 @@ static void setup(void)
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
--
- }
- 
- static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid04.c b/testcases/kernel/syscalls/setreuid/setreuid04.c
-index d949a4b..3010fc5 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid04.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid04.c
-@@ -70,11 +70,9 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	}
--
- 	setup();
- 
- 	flag = 0;
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid05.c b/testcases/kernel/syscalls/setreuid/setreuid05.c
-index c46fcd9..a379ab7 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid05.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid05.c
-@@ -91,11 +91,9 @@ int main(int argc, char **argv)
- 	int lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	}
--
- 	setup();
- 
- 	pass = 0;
-@@ -204,7 +202,6 @@ static void setup(void)
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
--
- }
- 
- static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid06.c b/testcases/kernel/syscalls/setreuid/setreuid06.c
-index 823d10b..e4bc207 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid06.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid06.c
-@@ -48,13 +48,11 @@ static void cleanup(void);
- 
- int main(int argc, char **argv)
- {
--
- 	int lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL) {
-+	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---wRRV7LY7NUeQGEoC--
-
