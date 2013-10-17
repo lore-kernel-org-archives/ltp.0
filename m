@@ -2,31 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VY9s2-0004YU-Em
-	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 07:25:46 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VY9s0-00050Z-LT
-	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 07:25:46 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r9L7Pcpq015417
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 07:25:39 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9L7PbBI000856
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 07:25:38 GMT
-Received: from abhmt117.oracle.com (abhmt117.oracle.com [141.146.116.69])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9L7Pbij006545
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 07:25:37 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 21 Oct 2013 11:25:14 +0400
-Message-Id: <1382340317-8510-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] 16-bit fixes for setreuid, setregid
+	(envelope-from <metan@suse.de>) id 1VWmwv-0007Jl-3K
+	for ltp-list@lists.sourceforge.net; Thu, 17 Oct 2013 12:45:09 +0000
+Date: Thu, 17 Oct 2013 14:44:55 +0200
+From: chrubis@suse.cz
+Message-ID: <20131017124455.GB24992@rei>
+References: <003c01cec987$79eb1320$6dc13960$@cn.fujitsu.com>
+	<20131015115452.GA25867@rei> <525F5E68.7030108@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <525F5E68.7030108@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] access/access06.c: add ELOOP, ENOTDIR,
+ EROFS error number test for access(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,22 +23,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
+> > Also looking at the access testcases, there is allready access05 to test
+> > access failures, I wonder if it would be better to move the ENOTDIR and
+> > ELOOP tests there (after it's cleaned up a bit). But I'm not sure about
+> > this myself...
+> 
+> Since access03 and access05 both contain error number tests for access, 
+> I think a new access06 would be better to make the three error number 
+> tests clearer.
+> If you perfer to add these test to existing tests, I will make a new version
+> patch.
 
-This series contains fixes for 16-bit version of syscalls for
-setreuid, setregid system calls.
+Actually after looking at your v2 patch the code is cleaner than the
+access05.c, what about moving the testcases from access05 to the test
+you written and calling the result access05? Are you OK with that?
 
-And some cleanup also.
-
-Thanks.
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
