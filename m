@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VVkWS-0007ZP-Ed
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 15:57:33 +0000
-Date: Mon, 14 Oct 2013 17:57:17 +0200
-From: chrubis@suse.cz
-Message-ID: <20131014155717.GA22710@rei>
-References: <656844534.1470973.1380873788462.JavaMail.root@redhat.com>
-	<1031362814.1472423.1380874094146.JavaMail.root@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maxim.uvarov@linaro.org>) id 1VX94a-0004Lc-Dn
+	for ltp-list@lists.sourceforge.net; Fri, 18 Oct 2013 12:22:32 +0000
+Received: from mail-lb0-f171.google.com ([209.85.217.171])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VX94X-0001ZP-Nu
+	for ltp-list@lists.sourceforge.net; Fri, 18 Oct 2013 12:22:31 +0000
+Received: by mail-lb0-f171.google.com with SMTP id x18so1537505lbi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 18 Oct 2013 05:22:23 -0700 (PDT)
+Message-ID: <526127FC.3070606@linaro.org>
+Date: Fri, 18 Oct 2013 16:22:20 +0400
+From: Maxim Uvarov <maxim.uvarov@linaro.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1031362814.1472423.1380874094146.JavaMail.root@redhat.com>
-Subject: Re: [LTP] Coverity report for ltp-20130904
+References: <1380881832-7418-1-git-send-email-maxim.uvarov@linaro.com>
+	<31658697.3684822.1381305595230.JavaMail.root@redhat.com>
+	<525530ED.2030509@linaro.org>
+In-Reply-To: <525530ED.2030509@linaro.org>
+Subject: Re: [LTP] [PATCH] LTP max_map_count: filer out not accounted vector
+ stub for arm
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +34,116 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+Cc: ltp-list@lists.sourceforge.net, Maxim Uvarov <maxim.uvarov@linaro.com>, linaro-networking@linaro.org
 
-Hi!
-> analyzer: coverity
-> analyzer-args: --wait-for-license -co BAD_FREE:allow_first_field:true
-> analyzer-version: Coverity Static Analysis for C/C++ version 6.5.3 on Linux 2.6.32-279.el6.x86_64 x86_64
-> 
-> This run includes snapshot of LTP git tree from 20130904 (on top of RHEL6).
-> Results include also Open Posix testcases, flags: defaults, -MISSING_BREAK:
-> http://jan.stancek.eu/coverity/ltp-20130904-2.el6.err.xz
+what is the status of that patch?
 
-Thanks for the report.
+Thank you,
+Maxim.
 
-I've took liberty of removing some dead code from Open Posix testcases.
-(and continue to look into the coverity results)
+On 10/09/2013 02:33 PM, Maxim Uvarov wrote:
+> On 10/09/2013 11:59 AM, Jan Stancek wrote:
+>>
+>> ----- Original Message -----
+>>> From: "Maxim Uvarov" <maxim.uvarov@linaro.org>
+>>> To: ltp-list@lists.sourceforge.net
+>>> Cc: linaro-networking@linaro.org, "Maxim Uvarov" 
+>>> <maxim.uvarov@linaro.com>
+>>> Sent: Friday, 4 October, 2013 12:17:11 PM
+>>> Subject: [LTP] [PATCH] LTP max_map_count: filer out not accounted 
+>>> vector    stub for arm
+>>>
+>>> Arm has following vector stab:
+>>> ffff0000-ffff1000 r-xp 00000000 00:00 0 [vectors]
+>>> which is not accounted in map_count.
+>>>
+>>> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.com>
+>>> ---
+>>>   testcases/kernel/mem/tunable/max_map_count.c |   19 
+>>> +++++++++++++++----
+>>>   1 file changed, 15 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/mem/tunable/max_map_count.c
+>>> b/testcases/kernel/mem/tunable/max_map_count.c
+>>> index 01fbe5e..ca28fba 100644
+>>> --- a/testcases/kernel/mem/tunable/max_map_count.c
+>>> +++ b/testcases/kernel/mem/tunable/max_map_count.c
+>>> @@ -121,12 +121,24 @@ void cleanup(void)
+>>>    * for in the vm_area_struct's map_count.
+>>>    */
+>>>   #if defined(__x86_64__) || defined(__x86__)
+>>> -static int filter_map(char *buf)
+>>> +static int filter_map(char *line)
+>>>   {
+>>> +    char buf[BUFSIZ];
+>>> +    int ret;
+>>> +
+>>> +    ret = sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf);
+>>> +    if (ret != 1)
+>>> +        return 0;
+>>> +
+>>>       return strcmp(buf, "[vsyscall]") == 0;
+>>>   }
+>>> +#elif defined(__arm__)
+>>> +static int filter_map(char *line)
+>>> +{
+>>> +    return strncmp(line, "ffff0000-ffff1000", 17) == 0;
+>> Hi,
+>>
+>> just curious, why comparing the range instead of name ([vectors])?
+>>
+>> Regards,
+>> Jan
+> for arm there are 8 regions for vectors. Only that region is not 
+> accounted.
+>
+> Maxim.
+>
+>>> +}
+>>>   #else
+>>> -static int filter_map(char *buf)
+>>> +static int filter_map(char *line)
+>>>   {
+>>>       return 0;
+>>>   }
+>>> @@ -146,8 +158,7 @@ static long count_maps(pid_t pid)
+>>>           tst_brkm(TBROK | TERRNO, cleanup, "fopen %s", buf);
+>>>       while (getline(&line, &len, fp) != -1) {
+>>>           /* exclude vdso and vsyscall */
+>>> -        if (sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf) ==
+>>> -                1 && filter_map(buf))
+>>> +        if (filter_map(line))
+>>>               continue;
+>>>           map_count++;
+>>>       }
+>>> -- 
+>>> 1.7.9.5
+>>>
+>>>
+>>> ------------------------------------------------------------------------------ 
+>>>
+>>> October Webinars: Code for Performance
+>>> Free Intel webinars can help you accelerate application performance.
+>>> Explore tips for MPI, OpenMP, advanced profiling, and more. Get the 
+>>> most from
+>>> the latest Intel processors and coprocessors. See abstracts and 
+>>> register >
+>>> http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk 
+>>>
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>
+>
 
-I've also set up LTP TODO wiki page at github, mainly for me in order
-not to forget what I want to fix. But it may be used as a list of tasks
-for anybody to take. Feel free (as well as anybody else who has account)
-to update it as well. And for these who does not have an account, feel
-free to report problems on the list, I will add them to the page.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
