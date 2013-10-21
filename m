@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VWjS7-00056U-PV
-	for ltp-list@lists.sourceforge.net; Thu, 17 Oct 2013 09:01:07 +0000
-Date: Thu, 17 Oct 2013 11:00:53 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VYHhz-0005jD-FZ
+	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 15:47:55 +0000
+Date: Mon, 21 Oct 2013 17:47:40 +0200
 From: chrubis@suse.cz
-Message-ID: <20131017090053.GA23578@rei.Home>
-References: <CAGcQJusNyFXzWp-4FXA9HSfgcHePQdGxGZHyY38jvym+iQ1cnA@mail.gmail.com>
-	<CAGcQJuvyNDpE7vS19UChrPwK9fzMR74jigDYJ_7d6Ste0ONtAw@mail.gmail.com>
+Message-ID: <20131021154739.GB2385@rei>
+References: <1382089184-21140-1-git-send-email-alexey.kodanev@oracle.com>
+	<1382089184-21140-2-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAGcQJuvyNDpE7vS19UChrPwK9fzMR74jigDYJ_7d6Ste0ONtAw@mail.gmail.com>
-Subject: Re: [LTP] Fwd: LTP patch contribution.
+In-Reply-To: <1382089184-21140-2-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 2/2] device-drivers: tbio: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +25,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: prakash b <bjsprakash@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Hi ltp-list,
-> 
-> I would like to submit a minor patch to ltp/sourceforge.
-> 
-> To resolve abi related issues.
-> 
-> index c6226f8..6bc5863 100644
-> --- a/testcases/kernel/mem/lib/Makefile
-> +++ b/testcases/kernel/mem/lib/Makefile
-> @@ -20,7 +20,7 @@ top_srcdir            ?= ../../../..
-> 
->  include $(top_srcdir)/include/mk/env_pre.mk
-> 
-> -CFLAGS                 := -I../include
-> +CFLAGS                 += -I../include
->  INTERNAL_LIB           := libmem.a
-> 
->  include $(top_srcdir)/testcases/kernel/include/lib.mk
+> -static int tbio_open(struct inode *inode, struct file *filep)
+> +static int tbio_open(struct block_device *blk, fmode_t mode)
+>  {
+> -	if (!Device.bdev) {
+> -		Device.bdev = inode->i_bdev;
+> -		//atomic_inc((atomic_t)&Device.bdev->bd_part_count);
+> -	}
+> -
+>  	return 0;
+>  }
+>  
+> -static int tbio_release(struct inode *inode, struct file *filep)
+> +static int tbio_release(struct gendisk *gd, fmode_t mode)
 
-Thanks for your effort.
+This function is declared as void since db2a144bedd58b3dcf19950c2f476c58c9f39d18
 
-Can you describe, in detail, why is this change needed?
-(ideally in commit message)
+I guess that we should fix this by adding ifdefs for kernel versions
+around the function declaration and around the return.
 
-Also can you send a signed patch?
-(i.e. patch with a Signed-off-by line, git can help you create these)
+The rest of the code looks good to me.
+
+Apart from that I'm wondering if it would be a good idea to add read()
+and write() tests to the userspace program as well. Something as writing
+to the device, issuing fsync() and checking that the request made it to
+the block device driver once we have returned from it... But that can be
+done in subsequent patches.
 
 -- 
 Cyril Hrubis
