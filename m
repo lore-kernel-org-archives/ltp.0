@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <voipio@kos.to>) id 1VVdrS-0008NF-L1
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 08:50:46 +0000
-Received: from afflict.kos.to ([92.243.29.197])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VVdrQ-0003Po-T3
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 08:50:46 +0000
-Received: from kos.to (91-157-208-114.elisa-laajakaista.fi [91.157.208.114])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by afflict.kos.to (Postfix) with ESMTPSA id DA7A326552
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 14 Oct 2013 10:50:37 +0200 (CEST)
-From: Riku Voipio <riku.voipio@linaro.org>
-Date: Mon, 14 Oct 2013 11:50:28 +0300
-Message-Id: <1381740628-11475-1-git-send-email-riku.voipio@linaro.org>
-Subject: [LTP] [PATCH] [v2] power_management: add TCID
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VY9s2-0004YU-Em
+	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 07:25:46 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VY9s0-00050Z-LT
+	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 07:25:46 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r9L7Pcpq015417
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 07:25:39 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9L7PbBI000856
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 07:25:38 GMT
+Received: from abhmt117.oracle.com (abhmt117.oracle.com [141.146.116.69])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9L7Pbij006545
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 07:25:37 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 21 Oct 2013 11:25:14 +0400
+Message-Id: <1382340317-8510-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] 16-bit fixes for setreuid, setregid
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,34 +41,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
+Cc: vasily.isaenko@oracle.com
 
-get_sched_values.c uses interfaces provided by -lltp which need
-TCID defined. Not sure how this built successfully before.
+Hi!
 
-[v2] correct TCID to an unique one
+This series contains fixes for 16-bit version of syscalls for
+setreuid, setregid system calls.
 
-Cc: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
----
- testcases/kernel/power_management/get_sched_values.c | 2 ++
- 1 file changed, 2 insertions(+)
+And some cleanup also.
 
-diff --git a/testcases/kernel/power_management/get_sched_values.c b/testcases/kernel/power_management/get_sched_values.c
-index 08260d5..328e682 100644
---- a/testcases/kernel/power_management/get_sched_values.c
-+++ b/testcases/kernel/power_management/get_sched_values.c
-@@ -17,6 +17,8 @@
- #include <stdio.h>
- #include "test.h"
- 
-+const char *TCID = "get_sched_values";
-+
- int get_supp_sched_mc(void)
- {
- 	if (tst_kvercmp(2, 6, 29) < 0)
--- 
-1.8.1.2
+Thanks.
 
 
 ------------------------------------------------------------------------------
@@ -67,7 +58,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
