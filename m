@@ -1,18 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VS2K6-0007I2-1s
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:26 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1VYYBF-0007Ya-8m
+	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 09:23:13 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VS2K5-00023M-9K
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:26 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri,  4 Oct 2013 14:08:57 +0400
-Message-Id: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] controllers/cpuset: promised patches
+	(Exim 4.76) id 1VYYBB-0003Nk-Ip
+	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 09:23:13 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r9M9N2bh020121
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 09:23:03 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9M9N1P4004520
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 09:23:01 GMT
+Received: from abhmt108.oracle.com (abhmt108.oracle.com [141.146.116.60])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9M9N1pN004514
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 09:23:01 GMT
+From: shuang.qiu@oracle.com
+Date: Tue, 22 Oct 2013 17:22:34 +0800
+Message-Id: <1382433754-25025-1-git-send-email-shuang.qiu@oracle.com>
+Subject: [LTP] [PATCH] Fix cgroup_regression_test.sh script issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,14 +40,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-Hi!
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-This a series promised in 'Re: [LTP] [PATCH V2 8/8] controllers/cpuset: reorganization'.
+Testcase cgroup sometimes fail although there is no bug found.
+Initialize the exit status to fix it.
 
-Thanks.
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ .../controllers/cgroup/cgroup_regression_test.sh   |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index f5e0b4b..356c000 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -28,6 +28,8 @@ export TCID="cgroup_regression_test"
+ export TST_TOTAL=10
+ export TST_COUNT=1
+ 
++failed=0
++
+ tst_kvercmp 2 6 29
+ if [ $? -eq 0 ]; then
+ 	tst_brkm TCONF ignored "test must be run with kernel 2.6.29 or newer"
+@@ -523,7 +525,7 @@ for ((cur = 1; cur <= $TST_TOTAL; cur++))
+ 	test_$cur
+ }
+ 
+-rmdir cgroup/
++rmdir -p cgroup/*
+ 
+ exit $failed
+ 
+-- 
+1.7.7
 
 
 ------------------------------------------------------------------------------
@@ -42,7 +82,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
