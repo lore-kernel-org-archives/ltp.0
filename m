@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VYAsc-0007Hk-0K
-	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 08:30:26 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VYWaB-0005As-Ml
+	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 07:40:51 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VYAsZ-0000xt-IK
-	for ltp-list@lists.sourceforge.net; Mon, 21 Oct 2013 08:30:25 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VYWa9-0002PY-DB
+	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 07:40:51 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9L8UGvS001363
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Oct 2013 16:30:16 +0800
-Message-ID: <5264E618.6040904@cn.fujitsu.com>
-Date: Mon, 21 Oct 2013 16:30:16 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9M7egQH020345
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 15:40:42 +0800
+Message-ID: <52662BFB.9050105@cn.fujitsu.com>
+Date: Tue, 22 Oct 2013 15:40:43 +0800
 From: "Wang, Xiaoguang" <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH]  access/access05.c: clean up
+Subject: [LTP] [PATCH] access(2): add ELOOP, ENOTDIR, EROFS error number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,284 +31,252 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 
+access/access05.c: add ELOOP, ENOTDIR error number test
+
+new access/access06.c: add EROFS error number test
+
 Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/access/access05.c |  204 +++++++++------------------
- 1 files changed, 68 insertions(+), 136 deletions(-)
+ runtest/syscalls                            |    1 +
+ testcases/kernel/syscalls/.gitignore        |    1 +
+ testcases/kernel/syscalls/access/access05.c |   22 ++++-
+ testcases/kernel/syscalls/access/access06.c |  171 +++++++++++++++++++++++++++
+ 4 files changed, 194 insertions(+), 1 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/access/access06.c
 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 09e5f7f..791de7c 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -9,6 +9,7 @@ access02 access02
+ access03 access03
+ access04 access04
+ access05 access05
++access06 access06 -D DEVICE -T DEVICE_FS_TYPE
+ 
+ acct01 acct01
+ acct02 acct02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index ad23c2e..c005111 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -6,6 +6,7 @@
+ /access/access03
+ /access/access04
+ /access/access05
++/access/access06
+ /acct/acct01
+ /acct/acct02
+ /add_key/add_key01
 diff --git a/testcases/kernel/syscalls/access/access05.c b/testcases/kernel/syscalls/access/access05.c
-index be86225..739b4b2 100644
+index 739b4b2..792692c 100644
 --- a/testcases/kernel/syscalls/access/access05.c
 +++ b/testcases/kernel/syscalls/access/access05.c
-@@ -49,6 +49,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
- 
- #define INV_OK		-1
- #define TEST_FILE1	"test_file1"
-@@ -56,13 +57,6 @@
+@@ -32,6 +32,10 @@
+  *	if the specified file doesn't exist (or pathname is NULL).
+  *   5. access() fails with -1 return value and sets errno to ENAMETOOLONG
+  *      if the pathname size is > PATH_MAX characters.
++ *   6. access() fails with -1 return value and sets errno to ENOTDIR
++ *      if a component used as a directory in pathname is not a directory.
++ *   7. access() fails with -1 return value and sets errno to ELOOP
++ *      if too many symbolic links were encountered in resolving pathname.
+  *
+  *   07/2001 Ported by Wayne Boyer
+  */
+@@ -56,6 +60,8 @@
+ #define TEST_FILE2	"test_file2"
  #define TEST_FILE3	"test_file3"
  #define TEST_FILE4	"test_file4"
++#define TEST_FILE5	"test_file5/test_file5"
++#define TEST_FILE6	"test_file6"
  
--#define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
--
--static void setup1(void);	/* setup() to test access() for EACCES */
--static void setup2(void);	/* setup() to test access() for EACCES */
--static void setup3(void);	/* setup() to test access() for EACCES */
--static void setup4(void);	/* setup() to test access() for EINVAL */
--static void longpath_setup();	/* setup function to test access() for ENAMETOOLONG */
  
  #if !defined(UCLINUX)
- static char high_address_node[64];
-@@ -74,22 +68,21 @@ static struct test_case_t {
- 	char *pathname;
- 	int a_mode;
- 	int exp_errno;
--	void (*setupfunc) (void);
- } test_cases[] = {
--	{TEST_FILE1, R_OK, EACCES, setup1},
--	{TEST_FILE2, W_OK, EACCES, setup2},
--	{TEST_FILE3, X_OK, EACCES, setup3},
--	{TEST_FILE4, INV_OK, EINVAL, setup4},
-+	{TEST_FILE1, R_OK, EACCES},
-+	{TEST_FILE2, W_OK, EACCES},
-+	{TEST_FILE3, X_OK, EACCES},
-+	{TEST_FILE4, INV_OK, EINVAL},
- #if !defined(UCLINUX)
--	{(char *)-1, R_OK, EFAULT, NULL},
--	{high_address_node, R_OK, EFAULT, NULL},
-+	{(char *)-1, R_OK, EFAULT},
-+	{high_address_node, R_OK, EFAULT},
+@@ -79,12 +85,15 @@ static struct test_case_t {
  #endif
--	{"", W_OK, ENOENT, NULL},
--	{longpathname, R_OK, ENAMETOOLONG, longpath_setup},
-+	{"", W_OK, ENOENT},
-+	{longpathname, R_OK, ENAMETOOLONG},
+ 	{"", W_OK, ENOENT},
+ 	{longpathname, R_OK, ENAMETOOLONG},
++	{TEST_FILE5, R_OK, ENOTDIR},
++	{TEST_FILE6, R_OK, ELOOP},
  };
  
  char *TCID = "access05";
--int TST_TOTAL = sizeof(test_cases) / sizeof(*test_cases);
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
+ int TST_TOTAL = ARRAY_SIZE(test_cases);
  
- static int exp_enos[] = { EACCES, EFAULT, EINVAL, ENOENT, ENAMETOOLONG, 0 };
+-static int exp_enos[] = { EACCES, EFAULT, EINVAL, ENOENT, ENAMETOOLONG, 0 };
++static int exp_enos[] = { EACCES, EFAULT, EINVAL, ENOENT, ENAMETOOLONG,
++			  ENOTDIR, ELOOP, 0 };
  
-@@ -97,6 +90,7 @@ static const char nobody_uid[] = "nobody";
+ static const char nobody_uid[] = "nobody";
  static struct passwd *ltpuser;
- 
- static void setup(void);
-+static void access_verify(int i);
- static void cleanup(void);
- 
- static char *bad_addr;
-@@ -105,8 +99,6 @@ int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
--	char *file_name;
--	int access_mode;
- 	int i;
- 
- 	msg = parse_opts(ac, av, NULL, NULL);
-@@ -120,39 +112,8 @@ int main(int ac, char **av)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		for (i = 0; i < TST_TOTAL; i++) {
--			file_name = test_cases[i].pathname;
--			access_mode = test_cases[i].a_mode;
--
--#if !defined(UCLINUX)
--			if (file_name == high_address_node)
--				file_name = get_high_address();
--#endif
--
--			/*
--			 * Call access(2) to test different test conditions.
--			 * verify that it fails with -1 return value and
--			 * sets appropriate errno.
--			 */
--			TEST(access(file_name, access_mode));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL,
--					 "access(%s, %#o) succeeded unexpectedly",
--					 file_name, access_mode);
--				continue;
--			}
--
--			if (TEST_ERRNO == test_cases[i].exp_errno)
--				tst_resm(TPASS | TTERRNO,
--					 "access failed as expected");
--			else
--				tst_resm(TFAIL | TTERRNO,
--					 "access failed unexpectedly; expected: "
--					 "%d - %s",
--					 test_cases[i].exp_errno,
--					 strerror(test_cases[i].exp_errno));
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			access_verify(i);
- 	}
- 
- 	cleanup();
-@@ -161,17 +122,13 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
--	int i;
-+	int fd;
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_require_root(NULL);
- 
--	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--	if (setuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid failed");
--
-+	ltpuser = SAFE_GETPWNAM(cleanup, nobody_uid);
-+	SAFE_SETUID(cleanup, ltpuser->pw_uid);
- 	TEST_PAUSE;
- 
- #if !defined(UCLINUX)
-@@ -179,98 +136,73 @@ static void setup(void)
- 			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
- 	if (bad_addr == MAP_FAILED)
- 		tst_brkm(TBROK | TERRNO, NULL, "mmap failed");
--	test_cases[5].pathname = bad_addr;
-+	test_cases[4].pathname = bad_addr;
+@@ -172,6 +181,17 @@ static void setup(void)
+ 	 *the MAX length of PATH_MAX.
+ 	 */
+ 	memset(longpathname, 'a', sizeof(longpathname) - 1);
 +
-+	test_cases[5].pathname = get_high_address();
- #endif
- 
- 	tst_tmpdir();
- 
--	for (i = 0; i < TST_TOTAL; i++)
--		if (test_cases[i].setupfunc != NULL)
--			test_cases[i].setupfunc();
-+	/*
-+	 * create TEST_FILE1 to test R_OK EACCESS
-+	 */
-+	fd = SAFE_CREAT(cleanup, TEST_FILE1, 0333);
++	/* create test_file5 for test ENOTDIR. */
++	fd = SAFE_CREAT(cleanup, "test_file5", 0644);
 +	SAFE_CLOSE(cleanup, fd);
 +
 +	/*
-+	 * create TEST_FILE2 to test W_OK EACCESS
++	 * create two symbolic links who point to each other for
++	 * test ELOOP.
 +	 */
-+	fd = SAFE_CREAT(cleanup, TEST_FILE2, 0555);
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	/*
-+	 * create TEST_FILE3 to test X_OK EACCESS
-+	 */
-+	fd = SAFE_CREAT(cleanup, TEST_FILE3, 0666);
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	/*
-+	 * create TEST_FILE4 to test EINVAL
-+	 */
-+	fd = SAFE_CREAT(cleanup, TEST_FILE4, 0333);
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	/*
-+	 *setup to create a node with a name length exceeding
-+	 *the MAX length of PATH_MAX.
-+	 */
-+	memset(longpathname, 'a', sizeof(longpathname) - 1);
++	SAFE_SYMLINK(cleanup, "test_file6", "test_file7");
++	SAFE_SYMLINK(cleanup, "test_file7", "test_file6");
  }
  
--static void setup_file(const char *file, mode_t perms)
--{
--	int fd = open(file, O_RDWR | O_CREAT, FILE_MODE);
--	if (fd == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %#o) failed",
--			 file, FILE_MODE);
--
--	if (fchmod(fd, perms) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "chmod(%s, %#o) failed",
--			 file, perms);
--	if (close(fd) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "close(%s) failed", file);
--}
--
--/*
-- * setup1() - Setup function to test access() for return value -1
-- *	      and errno EACCES when read access denied for specified
-- *	      testfile.
-- *
-- *   Creat/open a testfile and close it.
-- *   Deny read access permissions on testfile.
-- *   This function returns 0.
-- */
--static void setup1(void)
--{
--	setup_file(TEST_FILE1, 0333);
--}
--
--/*
-- * setup2() - Setup function to test access() for return value -1 and
-- *	      errno EACCES when write access denied on testfile.
-- *
-- *   Creat/open a testfile and close it.
-- *   Deny write access permissions on testfile.
-- *   This function returns 0.
-- */
--static void setup2(void)
+ static void access_verify(int i)
+diff --git a/testcases/kernel/syscalls/access/access06.c b/testcases/kernel/syscalls/access/access06.c
+new file mode 100644
+index 0000000..5c00a9b
+--- /dev/null
++++ b/testcases/kernel/syscalls/access/access06.c
+@@ -0,0 +1,171 @@
++/*
++ * Copyright (c) 2013 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++/*
++ * Description:
++ * Verify that,
++ *  1. access() fails with -1 return value and sets errno to EROFS
++ *     if write permission was requested for files on a read-only file system.
++ */
++
++#include <stdio.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <signal.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <sys/mount.h>
++#include <pwd.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++
++
++static void setup(void);
++static void access_verify(int i);
++static void cleanup(void);
++static void help(void);
++
++#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
++			 S_IXGRP|S_IROTH|S_IXOTH)
++#define MNT_POINT	"mntpoint"
++
++static char *fstype = "ext2";
++static char *device;
++static int dflag;
++static int mount_flag;
++
++static option_t options[] = {
++	{"T:", NULL, &fstype},
++	{"D:", &dflag, &device},
++	{NULL, NULL, NULL}
++};
++
++static struct test_case_t {
++	char *pathname;
++	int a_mode;
++	int exp_errno;
++} test_cases[] = {
++	{MNT_POINT, W_OK, EROFS}
++};
++
++char *TCID = "access06";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++static int exp_enos[] = { EROFS, 0 };
++
++int main(int ac, char **av)
++{
++	int lc;
++	char *msg;
++	int i;
++
++	msg = parse_opts(ac, av, options, help);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	/* Check for mandatory option of the testcase */
++	if (!dflag) {
++		tst_brkm(TBROK, NULL, "you must specify the device "
++			 "used for mounting with -D option");
++	}
++
++	setup();
++
++	TEST_EXP_ENOS(exp_enos);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			access_verify(i);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	tst_require_root(NULL);
++
++	tst_mkfs(NULL, device, fstype, NULL);
++
++	tst_tmpdir();
++
++	SAFE_MKDIR(cleanup, MNT_POINT, DIR_MODE);
++
++	TEST_PAUSE;
++
++	/*
++	 * mount a read-only file system for test EROFS
++	 */
++	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
++}
++
 +static void access_verify(int i)
- {
--	setup_file(TEST_FILE2, 0555);
--}
++{
 +	char *file_name;
 +	int access_mode;
- 
--/*
-- * setup3() - Setup function to test access() for return value -1 and
-- *	      errno EACCES when execute access denied on testfile.
-- *
-- *   Creat/open a testfile and close it.
-- *   Deny search access permissions on testfile.
-- *   This function returns 0.
-- */
--static void setup3(void)
--{
--	setup_file(TEST_FILE3, 0666);
--}
++
 +	file_name = test_cases[i].pathname;
 +	access_mode = test_cases[i].a_mode;
- 
--/*
-- * setup4() - Setup function to test access() for return value -1
-- *	      and errno EINVAL when specified access mode argument is
-- *	      invalid.
-- *
-- *   Creat/open a testfile and close it.
-- *   This function returns 0.
-- */
--static void setup4(void)
--{
--	setup_file(TEST_FILE4, FILE_MODE);
--}
++
 +	TEST(access(file_name, access_mode));
- 
--/*
-- * longpath_setup() - setup to create a node with a name length exceeding
-- *		      the MAX. length of PATH_MAX.
-- */
--static void longpath_setup(void)
--{
--	int i;
++
 +	if (TEST_RETURN != -1) {
 +		tst_resm(TFAIL, "access(%s, %#o) succeeded unexpectedly",
 +			 file_name, access_mode);
 +		return;
 +	}
- 
--	for (i = 0; i <= (PATH_MAX + 1); i++)
--		longpathname[i] = 'a';
++
 +	if (TEST_ERRNO == test_cases[i].exp_errno) {
 +		tst_resm(TPASS | TTERRNO, "access failed as expected");
 +	} else {
@@ -317,17 +285,30 @@ index be86225..739b4b2 100644
 +			 "%d - %s", test_cases[i].exp_errno,
 +			 strerror(test_cases[i].exp_errno));
 +	}
- }
- 
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
++}
 +
- 	tst_rmdir();
- }
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++
++	if (mount_flag && umount(MNT_POINT) < 0) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "umount device:%s failed", device);
++	}
++	tst_rmdir();
++}
++
++static void help(void)
++{
++	printf("-T type	  : specifies the type of filesystem to be mounted. "
++	       "Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
++}
 -- 
 1.7.1
 
+Regards,
+Xiaogung Wang
 
 
 ------------------------------------------------------------------------------
@@ -335,7 +316,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
