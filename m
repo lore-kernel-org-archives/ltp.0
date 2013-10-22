@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VR0GR-0007rc-53
-	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:23 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VR0GN-0006xa-TB
-	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 13:45:23 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue,  1 Oct 2013 17:44:53 +0400
-Message-Id: <1380635095-21403-7-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1380635095-21403-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V2 6/8] cpuset_memory_spread_test: number of nodes and
-	sync
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <linuxsnail@gmail.com>) id 1VYTqF-00078x-BJ
+	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 04:45:15 +0000
+Received: from mail-ie0-f194.google.com ([209.85.223.194])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VYTqD-0005gi-NV
+	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 04:45:15 +0000
+Received: by mail-ie0-f194.google.com with SMTP id tp5so247465ieb.5
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 Oct 2013 21:45:08 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 21 Oct 2013 22:45:08 -0600
+Message-ID: <CA+rVjkCwd4O6sEg7426VohDqrm1yTdyQd9L0Bg=_Xi5dNiZU_w@mail.gmail.com>
+From: C N <linuxsnail@gmail.com>
+Subject: [LTP] Test suite for the t-core kernel patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,87 +25,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2725613317499388641=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-For unification number of nodes is set based on environment.
+--===============2725613317499388641==
+Content-Type: multipart/alternative; boundary=047d7bea3434abe52e04e94d1041
 
-OS caches were not reliably dropped after execution of 'dd'
-on DATAFILE. And since 'dd' was executed in root cpuset the
-caches were spread among all available memory nodes. Because on
-consecutive reading of DATAFILE in cpuset_mem_hog didn't increase
-memory consumption. This situation caused random failures of
-the testcase.
+--047d7bea3434abe52e04e94d1041
+Content-Type: text/plain; charset=ISO-8859-1
 
-In accordance to Documentation/sysctl/vm.txt to reliably drop caches
-we should invoke 'sync' before 'echo N > /proc/sys/vm/drop_caches'.
+Hi,
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../cpuset_memory_spread_testset.sh                |   14 +++-----------
- 1 files changed, 3 insertions(+), 11 deletions(-)
+Is there any plan for removal of t-core test case?
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-index a357e22..ffce419 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-@@ -32,8 +32,8 @@ export TST_COUNT=1
- 
- exit_status=0
- # must >= 3 for: 1-$((nr_mems-2))
--nr_cpus=4
--nr_mems=3
-+nr_cpus=$NR_CPUS
-+nr_mems=$N_NODES
- 
- # In general, the cache hog will use more than 10000 kb slab space on the nodes
- # on which it is running. The other nodes' slab space has littler change.(less
-@@ -223,6 +223,7 @@ general_memory_spread_test()
- 	fi
- 
- 	# we'd better drop the caches before we test page cache.
-+	sync
- 	/bin/echo 3 > /proc/sys/vm/drop_caches 2> $CPUSET_TMP/stderr
- 	if [ $? -ne 0 ]; then
- 		cpuset_log_error $CPUSET_TMP/stderr
-@@ -230,9 +231,6 @@ general_memory_spread_test()
- 		return 1
- 	fi
- 
--	# wait for droping the cache
--	sleep 10
--
- 	get_memsinfo
- 	/bin/kill -s SIGUSR1 $test_pid
- 	read exit_num < $FIFO
-@@ -344,12 +342,6 @@ if [ $? -ne 0 ]; then
- 	exit 1
- fi
- 
--# drop page caches
--/bin/echo 1 > /proc/sys/vm/drop_caches
--
--# wait for droping caches
--sleep 10
--
- mkfifo $FIFO
- if [ $? -ne 0 ]; then
- 	rm -f DATAFILE
--- 
-1.7.1
+Please ref:
+http://sourceforge.net/p/ltp/mailman/message/31006567/
 
+- - - -
+Chandrashekhar Nandi
+
+--047d7bea3434abe52e04e94d1041
+Content-Type: text/html; charset=ISO-8859-1
+
+<div dir="ltr"><div><div>Hi,<br><br>Is there any plan for removal of t-core test case?<br><br>Please ref: <br><a href="http://sourceforge.net/p/ltp/mailman/message/31006567/" target="_blank">http://sourceforge.net/p/ltp/mailman/message/31006567/</a><br>
+
+<br></div>- - - -<br></div>Chandrashekhar Nandi</div>
+
+--047d7bea3434abe52e04e94d1041--
+
+
+--===============2725613317499388641==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+--===============2725613317499388641==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2725613317499388641==--
+
