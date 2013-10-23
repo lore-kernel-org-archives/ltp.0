@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VW56A-0008Ka-Tn
-	for ltp-list@lists.sourceforge.net; Tue, 15 Oct 2013 13:55:46 +0000
-Date: Tue, 15 Oct 2013 15:55:33 +0200
-From: chrubis@suse.cz
-Message-ID: <20131015135532.GC25867@rei>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
-	<1096964421.7014139.1381837841727.JavaMail.root@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VYzCw-0005dF-RA
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 14:14:46 +0000
+Received: from lgeamrelo01.lge.com ([156.147.1.125])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VYzCv-0007hP-19
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 14:14:46 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Wed, 23 Oct 2013 23:14:37 +0900
+Message-ID: <000001cecffa$34dbd980$9e938c80$@gyu.kim@lge.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1096964421.7014139.1381837841727.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
-	->	factor_nr = 5
+Content-Language: ko
+Subject: [LTP] [PATCH v4] getcontext01: check getcontext function in libc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,46 +26,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Drew Jones <drjones@redhat.com>, Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > When kernel is vmlinuz-2.6.18-371.el5xen, the case will fail.
-> > But with vmlinuz-2.6.18-371.el5, it works well.
-> 
-> I'm seeing the same as you also with previous minor RHEL5 releases on dom0:
-> 5.3 2.6.18-128.el5xen
-> 5.6 2.6.18-238.el5xen
-> 5.9 2.6.18-348.el5xen
-> 5.10 2.6.18-371.el5xen
-> 
-> > Maybe the case is not suit for xen kernel.
-> 
-> It's possible, it doesn't look like regression to me so far.
-> The systems are definitely not "slow" ones, and test can pass on bare-metal kernel. 
+getcontext function is implemented depends on libc version and arch.
+Some libc version for specific arch does not implement getcontext yet.
+In that case, getcontext just sets errno to ENOSYS and returns -1.
+For example, getcontext is not implemented before libc-2.17 in ARM.
+Current test goes to TFAIL when lower version of libc is used in ARM.
 
-The problem with the test is that it tries to assert that granurality of
-gerusage CPU time accounting is as good as possible. The granularity
-itself depends on kernel config options, mainly on CONFIG_HZ. But as the
-kernel compilation options are not exported (by running kernel) in any
-reliable way the code I've added tries to guess them by side channel
-(the CLOCK_REALTIME_COARSE resolution). If CLOCK_REALTIME_COARSE is not
-supported it goes with 4ms which should correspond with CONFIG_HZ=250.
+This patch sets the test as TCONF if libc does not implement getcontext.
+If ENOSYS is not set and -1 is returned, it goes to TFAIL as it was.
 
-Now the accuracy on xen may be off for several reasons. It can have
-CONFIG_HZ=100. Or xen may not be able to account virtual CPU time with
-the same accuracy as on the real CPU...
+Change-Id: I93cab9805e5bc9cd05f9f473b466e0dc2bc4fa8f
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
+---
+ .../kernel/syscalls/getcontext/getcontext01.c      |   24 +++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c b/testcases/kernel/syscalls/getcontext/getcontext01.c
+index 03b2df9..7919fb5 100644
+--- a/testcases/kernel/syscalls/getcontext/getcontext01.c
++++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+@@ -54,12 +54,26 @@ int TST_TOTAL = 1;
+ 
+ int exp_enos[] = { 0 };		/* must be a 0 terminated list */
+ 
++static void test_getcontext(void)
++{
++	ucontext_t ptr;
++
++	TEST(getcontext(&ptr));
++
++	if (TEST_RETURN == -1) {
++		if (errno == ENOSYS)
++			tst_resm(TCONF, "getcontext is not implemented in libc");
++		else
++			tst_resm(TFAIL | TTERRNO, "getcontext failed");
++	} else if (TEST_RETURN >= 0)
++		tst_resm(TPASS, "getcontext passed");
++}
++
+ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	char *msg;
+ 
+-	ucontext_t ptr;
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+@@ -71,13 +85,7 @@ int main(int ac, char **av)
+ 
+ 		tst_count = 0;
+ 
+-		TEST(getcontext(&ptr));
+-
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "getcontext failed");
+-		else if (TEST_RETURN >= 0)
+-			tst_resm(TPASS, "getcontext passed");
+-
++		test_getcontext();
+ 	}
+ 
+ 	cleanup();
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135031&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
