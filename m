@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VVgsy-00085F-5k
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 12:04:32 +0000
-Date: Mon, 14 Oct 2013 14:04:19 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VYynU-0008GC-KK
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:48:28 +0000
+Date: Wed, 23 Oct 2013 15:48:12 +0200
 From: chrubis@suse.cz
-Message-ID: <20131014120419.GB4593@rei>
-References: <1380029829-8113-1-git-send-email-alexey.kodanev@oracle.com>
-	<1380029829-8113-2-git-send-email-alexey.kodanev@oracle.com>
-	<20131002141537.GA727@rei.suse.cz> <5253F867.3030307@oracle.com>
-	<20131014100332.GA1278@rei> <525BD42C.1050703@oracle.com>
+Message-ID: <20131023134812.GA25303@rei.Home>
+References: <c4b2fd5ad2a7f04ee4979d3a9d6aa967006af688.1382007845.git.jstancek@redhat.com>
+	<20131017123132.GA24992@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <525BD42C.1050703@oracle.com>
-Subject: Re: [LTP] [PATCH 2/2] device-drivers: pci: fixes
+In-Reply-To: <20131017123132.GA24992@rei>
+Subject: Re: [LTP] [PATCH 1/2] lib: add tst_is_virt()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,30 +25,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >>> So the while cycle runs for all pci devices? How does this works?
-> >>>
-> >>> It seems to run all tests then increment pci_device until test number
-> >>> zero fails. This needs to cleaned up so that the codeflow is less
-> >>> cryptic. Or at least deserves a comment what is done and why.
-> >>>
-> >> Yes, my intention was to perform all test-cases with all available
-> >> pci-devices, not just with the first found. This behavior managed by
-> >> user-space test, so may be add a cmd-line option like test all or first
-> >> found pci-device(s)?
-> > No need for that. What I do not like on the test is that there is no
-> > correspondence between the pci device number in the userspace and in the
-> > test module, i.e. the pci_number is incremented automagically in the
-> > module once all tests are executed. This is hard to figure out. It would
-> > be better if we had explicit mechanism for that, for example sysfs file
-> > you write the number to (and get -EINVAL if the number is out of range).
-> OK, I'll make "bus_dev" sysfs file, 0-7 bits for device number, 8 - 15 
-> bits for bus number... is it ok?
+> > The initial version supports only generic check for xen dom0/domU,
+> > but should allow to easily extend it for other types of checks,
+> > (e.g. KVM guest) if needed later.
+> 
+> Both patches looks good, apart from minor nit, missing void in is_xen()
+> parameters.
 
-Sounds good.
+Ping. Will you commit this fix?
 
 -- 
 Cyril Hrubis
@@ -61,7 +47,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
