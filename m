@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <voipio@kos.to>) id 1VVd73-0000Ue-Nl
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 08:02:49 +0000
-Received: from afflict.kos.to ([92.243.29.197])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VVd72-0007cj-8I
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 08:02:49 +0000
-Received: from kos.to (91-157-208-114.elisa-laajakaista.fi [91.157.208.114])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by afflict.kos.to (Postfix) with ESMTPSA id 4D72026553
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 14 Oct 2013 10:02:41 +0200 (CEST)
-From: Riku Voipio <riku.voipio@linaro.org>
-Date: Mon, 14 Oct 2013 11:02:38 +0300
-Message-Id: <1381737758-10516-1-git-send-email-riku.voipio@linaro.org>
-Subject: [LTP] [PATCH] power_management: add TCID
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VYyQD-000767-4n
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:24:25 +0000
+Received: from lgeamrelo02.lge.com ([156.147.1.126])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VYyQB-000592-Hn
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:24:25 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Wed, 23 Oct 2013 22:24:15 +0900
+Message-ID: <015f01cecff3$2be084e0$83a18ea0$@gyu.kim@lge.com>
+MIME-Version: 1.0
+Content-Language: ko
+Subject: [LTP] [PATCH v2] getcontext01: check getcontext function in libc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,36 +23,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: patches@linaro.org
 
-get_sched_values.c uses interfaces provided by -lltp which need
-TCID defined. Not sure how this built successfully before.
+getcontext function is implemented depends on libc version and arch.
+Some libc version for specific arch does not implement getcontext yet.
+In that case, getcontext just sets errno to ENOSYS and returns -1.
+For example, getcontext is not implemented before libc-2.17 in ARM.
+Current test goes to TFAIL when lower version of libc is used in ARM.
 
-Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
+This patch sets the test as TCONF if libc does not implement getcontext.
+If ENOSYS is not set, it goes to TFAIL as it was.
+
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
 ---
- testcases/kernel/power_management/get_sched_values.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../kernel/syscalls/getcontext/getcontext01.c      |   27
+++++++++++++--------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/power_management/get_sched_values.c b/testcases/kernel/power_management/get_sched_values.c
-index 08260d5..b9d0156 100644
---- a/testcases/kernel/power_management/get_sched_values.c
-+++ b/testcases/kernel/power_management/get_sched_values.c
-@@ -17,6 +17,8 @@
- #include <stdio.h>
- #include "test.h"
+diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c
+b/testcases/kernel/syscalls/getcontext/getcontext01.c
+index 03b2df9..34724ac 100644
+--- a/testcases/kernel/syscalls/getcontext/getcontext01.c
++++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+@@ -54,12 +54,27 @@ int TST_TOTAL = 1;
  
-+const char *TCID = "Power_Management";
+ int exp_enos[] = { 0 };		/* must be a 0 terminated list */
+ 
++static void test_getcontext(void)
++{
++	ucontext_t ptr;
 +
- int get_supp_sched_mc(void)
++	TEST(getcontext(&ptr));
++
++	if (TEST_RETURN == -1) {
++		if (errno == ENOSYS)
++			tst_resm(TCONF, "getcontext is not implemented in
+libc");
++		else
++			tst_resm(TFAIL | TTERRNO, "getcontext failed");
++	}
++	else if (TEST_RETURN >= 0)
++		tst_resm(TPASS, "getcontext passed");
++}
++
+ int main(int ac, char **av)
  {
- 	if (tst_kvercmp(2, 6, 29) < 0)
+ 	int lc;
+ 	char *msg;
+ 
+-	ucontext_t ptr;
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+@@ -68,16 +83,8 @@ int main(int ac, char **av)
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+ 		tst_count = 0;
+-
+-		TEST(getcontext(&ptr));
+-
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "getcontext failed");
+-		else if (TEST_RETURN >= 0)
+-			tst_resm(TPASS, "getcontext passed");
+-
++		test_getcontext();
+ 	}
+ 
+ 	cleanup();
 -- 
-1.8.1.2
+1.7.9.5
+
 
 
 ------------------------------------------------------------------------------
@@ -64,7 +106,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
