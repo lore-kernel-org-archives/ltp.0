@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maxim.uvarov@linaro.org>) id 1VTuU0-0001ea-6i
-	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 14:11:24 +0000
-Received: from mail-lb0-f181.google.com ([209.85.217.181])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VTuTy-0007A0-VQ
-	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 14:11:24 +0000
-Received: by mail-lb0-f181.google.com with SMTP id u14so810777lbd.12
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 09 Oct 2013 07:11:16 -0700 (PDT)
-From: Maxim Uvarov <maxim.uvarov@linaro.org>
-Date: Wed,  9 Oct 2013 18:11:05 +0400
-Message-Id: <1381327865-9089-1-git-send-email-maxim.uvarov@linaro.com>
-Subject: [LTP] [PATCH]  syslog-lib.sh bash posix compliance
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VYy1N-0004zu-Hu
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 12:58:45 +0000
+Received: from lgeamrelo02.lge.com ([156.147.1.126])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VYy1L-0002IM-QZ
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 12:58:45 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Wed, 23 Oct 2013 21:58:36 +0900
+Message-ID: <015d01cecfef$962c92c0$c285b840$@gyu.kim@lge.com>
+MIME-Version: 1.0
+Content-Language: ko
+Subject: [LTP] [PATCH] getcontext01: check getcontext function in libc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,48 +23,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.com>
 
-/opt/ltp/testcases/bin/syslog02: 69: [: syslog-ng: unexpected operator
-+ [ syslog-ng == syslog-ng ]
-Accoding to:
-http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html
-[ STRING1 == STRING2 ]  True if the strings are equal. "=" may be
-used instead of "==" for strict POSIX compliance.
+getcontext function is implemented depends on libc version and arch.
+Some libc version for specific arch does not implement getcontext yet.
+In that case, getcontext just sets errno to ENOSYS and returns -1.
+For example, getcontext is not implemented before libc-2.17 in ARM.
+Current test goes to TFAIL when lower version of libc is used in ARM.
 
-Because of busybox and other bash like shells look for posix syntax
-make it so.
-Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.com>
+This patch sets the test as TCONF if libc does not implement getcontext.
+If ENOSYS is not set, it goes to TFAIL as it was.
+
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
 ---
- testcases/kernel/syscalls/syslog/syslog-lib.sh |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../kernel/syscalls/getcontext/getcontext01.c      |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-index 0885805..6b19b8d 100755
---- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
-+++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-@@ -65,11 +65,11 @@ setup()
- 		tst_resm TBROK "Testing is terminating due to a signal"
- 		cleanup 1' $TRAP_SIGS || exit 1
+diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c
+b/testcases/kernel/syscalls/getcontext/getcontext01.c
+index 03b2df9..860d208 100644
+--- a/testcases/kernel/syscalls/getcontext/getcontext01.c
++++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+@@ -73,8 +73,12 @@ int main(int ac, char **av)
  
--	if [ "$SYSLOG_DAEMON" == "syslog" ]; then
-+	if [ "$SYSLOG_DAEMON" = "syslog" ]; then
- 		CONFIG_FILE="/etc/syslog.conf"
--	elif [ "$SYSLOG_DAEMON" == "syslog-ng" ]; then
-+	elif [ "$SYSLOG_DAEMON" = "syslog-ng" ]; then
- 		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
--	elif [ "$SYSLOG_DAEMON" == "rsyslog" ]; then
-+	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
- 		CONFIG_FILE="/etc/rsyslog.conf"
- 		RSYSLOG_CONFIG='$ModLoad imuxsock.so'
- 	else
+ 		TEST(getcontext(&ptr));
+ 
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "getcontext failed");
++		if (TEST_RETURN == -1) {
++			if (errno == ENOSYS)
++				tst_resm(TCONF, "getcontext is not
+implemented in the current libc");
++			else
++				tst_resm(TFAIL | TTERRNO, "getcontext
+failed");
++		}
+ 		else if (TEST_RETURN >= 0)
+ 			tst_resm(TPASS, "getcontext passed");
+ 
 -- 
 1.7.9.5
+
 
 
 ------------------------------------------------------------------------------
@@ -73,7 +74,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
