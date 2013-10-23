@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VbnME-0003Gt-K1
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:11:58 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VbnMC-0005Fo-Ex
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:11:58 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9V8Bm8X019542
-	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 16:11:48 +0800
-Message-ID: <527210BF.3040803@cn.fujitsu.com>
-Date: Thu, 31 Oct 2013 16:11:43 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VYzXM-0002iZ-FS
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 14:35:52 +0000
+Date: Wed, 23 Oct 2013 16:35:36 +0200
+From: chrubis@suse.cz
+Message-ID: <20131023143536.GA25390@rei.Home>
+References: <52662BFB.9050105@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] clock_getres/clock_getres01.c: Add
-	CLOCK_MONOTONIC_RAW test
+Content-Disposition: inline
+In-Reply-To: <52662BFB.9050105@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] access(2): add ELOOP, ENOTDIR,
+ EROFS error number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,41 +25,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Wang, Xiaoguang" <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Add CLOCK_MONOTONIC_RAW test in clock_getres01.c for clock_getres(2)
+Hi!
+> access/access05.c: add ELOOP, ENOTDIR error number test
+> 
+> new access/access06.c: add EROFS error number test
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/clock_getres/clock_getres01.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Sorry for not being clear enough the first time. When I said adding the
+testcases to access05 I meant all of them including the EROFS (contrary
+to my first thoughts). (I can fix this myself if you want). Otherwise
+the code is fine.
 
-diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-index 0fb5df4..c73b0ce 100644
---- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-+++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-@@ -188,6 +188,12 @@ static struct test_case tcase[] = {
- 	 .ret = 0,
- 	 .err = 0,
- 	 },
-+	{
-+	 .clk_id = CLOCK_MONOTONIC_RAW,
-+	 .ttype = NORMAL,
-+	 .ret = 0,
-+	 .err = 0,
-+	 },
- };
- 
- #define MEM_LENGTH	      (4 * 1024 * 1024)
--- 1.8.2.1 
+Also looking at increased demand for EROFS tests, I'm trying to figure
+out more general LTP lib API for creating and mounting the readonly
+image, so that the code pattern is not repeated all over. But for now
+let's go with the manual approach and I will convert all usages once the
+new API is in place.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
