@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VU4t9-0006Dz-R8
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 01:18:03 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VU4t9-0005jW-12
-	for ltp-list@lists.sourceforge.net; Thu, 10 Oct 2013 01:18:03 +0000
-Message-ID: <52560024.2040601@cn.fujitsu.com>
-Date: Thu, 10 Oct 2013 09:17:24 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1VYyYS-0007N9-Kd
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:32:56 +0000
+Date: Wed, 23 Oct 2013 15:32:39 +0200
+From: chrubis@suse.cz
+Message-ID: <20131023133239.GG24275@rei.Home>
+References: <015f01cecff3$2be084e0$83a18ea0$@gyu.kim@lge.com>
 MIME-Version: 1.0
-References: <1381324269-29300-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1381324269-29300-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] tst_kvercmp2: Criteria for Oracle Linux UEK
-	kernels
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <015f01cecff3$2be084e0$83a18ea0$@gyu.kim@lge.com>
+Subject: Re: [LTP] [PATCH v2] getcontext01: check getcontext function in libc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,45 +24,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Honggyu Kim <hong.gyu.kim@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 10/09/2013 09:11 PM, Stanislav Kholmanskikh wrote:
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
+Hi!
+> getcontext function is implemented depends on libc version and arch.
+> Some libc version for specific arch does not implement getcontext yet.
+> In that case, getcontext just sets errno to ENOSYS and returns -1.
+> For example, getcontext is not implemented before libc-2.17 in ARM.
+> Current test goes to TFAIL when lower version of libc is used in ARM.
+> 
+> This patch sets the test as TCONF if libc does not implement getcontext.
+> If ENOSYS is not set, it goes to TFAIL as it was.
+> 
+> Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
 > ---
->  lib/tst_kvercmp.c |    6 +++++-
->  1 files changed, 5 insertions(+), 1 deletions(-)
+>  .../kernel/syscalls/getcontext/getcontext01.c      |   27
+> ++++++++++++--------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
 > 
-> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
-> index a703c47..a950120 100644
-> --- a/lib/tst_kvercmp.c
-> +++ b/lib/tst_kvercmp.c
-> @@ -95,8 +95,12 @@ int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers)
+> diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c
+> b/testcases/kernel/syscalls/getcontext/getcontext01.c
+> index 03b2df9..34724ac 100644
+> --- a/testcases/kernel/syscalls/getcontext/getcontext01.c
+> +++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
+> @@ -54,12 +54,27 @@ int TST_TOTAL = 1;
 >  
->  	uname(&uval);
->  	kver = uval.release;
-> -	if (strstr(kver, ".el5")) {
-> +	if (strstr(kver, ".el5uek")) {
-> +		cur_dist_name = "OL5UEK";
-> +	} else if (strstr(kver, ".el5")) {
->  		cur_dist_name = "RHEL5";
-> +	} else if (strstr(kver, ".el6uek")) {
-> +		cur_dist_name = "OL6UEK";
->  	} else if (strstr(kver, ".el6")) {
->  		cur_dist_name = "RHEL6";
->  	}
-> 
+>  int exp_enos[] = { 0 };		/* must be a 0 terminated list */
+>  
+> +static void test_getcontext(void)
+> +{
+> +	ucontext_t ptr;
+> +
+> +	TEST(getcontext(&ptr));
+> +
+> +	if (TEST_RETURN == -1) {
+> +		if (errno == ENOSYS)
+> +			tst_resm(TCONF, "getcontext is not implemented in
+> libc");
 
+This line looks like it's line wrapped by your mail client (which
+corrupts the patch). Try turning off line wrapping and/or add the patch
+attached as a file.
+
+> +		else
+> +			tst_resm(TFAIL | TTERRNO, "getcontext failed");
+> +	}
+> +	else if (TEST_RETURN >= 0)
+> +		tst_resm(TPASS, "getcontext passed");
+> +}
+
+The prefered style is to have the else on the same line as the closing
+curly brace.
+
+As LTP has adopted LKML coding style, you can use chechpatch.pl (which
+is shipped in scripts dir with Linux kernel sources) to theck your
+patches before submission.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
