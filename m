@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hong.gyu.kim@lge.com>) id 1VadAA-0005WT-8n
-	for ltp-list@lists.sourceforge.net; Mon, 28 Oct 2013 03:06:42 +0000
-Received: from lgemrelse1q.lge.com ([156.147.1.111])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VadA8-0003fs-Bm
-	for ltp-list@lists.sourceforge.net; Mon, 28 Oct 2013 03:06:42 +0000
-From: "Honggyu Kim" <hong.gyu.kim@lge.com>
-Date: Mon, 28 Oct 2013 12:06:32 +0900
-Message-ID: <00e501ced38a$b4b19e90$1e14dbb0$@gyu.kim@lge.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VYw5j-0005dI-39
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 10:55:07 +0000
+Date: Wed, 23 Oct 2013 12:54:47 +0200
+From: chrubis@suse.cz
+Message-ID: <20131023105447.GA23369@rei.Home>
+References: <010c01cecf9e$f1e915d0$d5bb4170$@gyu.kim@lge.com>
 MIME-Version: 1.0
-Content-Language: ko
-Subject: [LTP] [PATCH] ext4-new-features: fix syntax error in configure
+Content-Disposition: inline
+In-Reply-To: <010c01cecf9e$f1e915d0$d5bb4170$@gyu.kim@lge.com>
+Subject: Re: [LTP] [PATCH v2] getcontext01: fix to check libc version for ARM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +24,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Honggyu Kim <hong.gyu.kim@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
-In configure, string comparison is done using double assignment.
-/bin/sh doesn't allow to compare strings using "==".
-So "==" is modified to "=".
+Hi!
+> getcontext function is implemented from libc-2.17 in ARM.
+> Currently, getcontext01 goes to TFAIL because getcontext just 
+> returns -1 in the previous libc for ARM.
+> This patch makes getcontext01 as TCONF when libc version is less 
+> than 2.17.
 
-Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
----
- testcases/kernel/fs/ext4-new-features/configure |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Does the setcontext() set errno to ENOSYS after the failure? If so it
+would be much easier (and more general solution) to just add a test for
+errno == ENOSYS and return TCONF if so.
 
-diff --git a/testcases/kernel/fs/ext4-new-features/configure b/testcases/kernel/fs/ext4-new-features/configure
-index 13f43f9..12849e5 100755
---- a/testcases/kernel/fs/ext4-new-features/configure
-+++ b/testcases/kernel/fs/ext4-new-features/configure
-@@ -14,9 +14,9 @@ read EXT4_DEV
- 
- echo "The partition is: $EXT4_DEV, Are you sure(Y/N)?"
- read RESULT
--if [ "$RESULT" == "Y" ] || [ "$RESULT" == "y" ]; then
-+if [ "$RESULT" = "Y" ] || [ "$RESULT" = "y" ]; then
- 	echo "EXT4_DEV=$EXT4_DEV" > ./ext4-test-config
--elif [ "$RESULT" == "N" ]; then
-+elif [ "$RESULT" = "N" ]; then
- 	echo "Give up specifing a partition!"
- else
- 	echo "Your input is wrong($RESULT)."
 -- 
-1.7.9.5
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
