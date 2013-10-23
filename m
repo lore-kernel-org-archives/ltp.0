@@ -1,31 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1VYYBF-0007Ya-8m
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 09:23:13 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VYYBB-0003Nk-Ip
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 09:23:13 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id r9M9N2bh020121
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 09:23:03 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9M9N1P4004520
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 09:23:01 GMT
-Received: from abhmt108.oracle.com (abhmt108.oracle.com [141.146.116.60])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	r9M9N1pN004514
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Oct 2013 09:23:01 GMT
-From: shuang.qiu@oracle.com
-Date: Tue, 22 Oct 2013 17:22:34 +0800
-Message-Id: <1382433754-25025-1-git-send-email-shuang.qiu@oracle.com>
-Subject: [LTP] [PATCH] Fix cgroup_regression_test.sh script issue
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VYyIq-00046R-85
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:16:48 +0000
+Date: Wed, 23 Oct 2013 15:16:29 +0200
+From: chrubis@suse.cz
+Message-ID: <20131023131629.GF24275@rei.Home>
+References: <5266530C.5070604@cn.fujitsu.com> <20131023125206.GD24275@rei.Home>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20131023125206.GD24275@rei.Home>
+Subject: Re: [LTP] [PATCH] acct/acct01.c: Add ELOOP ENAMETOOLONG EROFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,47 +21,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+Hi!
+> > Add ELOOP, ENAMETOOLONG, EROFS error number test in acct01.c for acct(2)
+> > 
+> > Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> > ---
+> >  runtest/syscalls                        |  2 +-
+> >  testcases/kernel/syscalls/acct/acct01.c | 77 ++++++++++++++++++++++++++++++++-
+> >  2 files changed, 77 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index 09e5f7f..a3a65b6 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -10,7 +10,7 @@ access03 access03
+> >  access04 access04
+> >  access05 access05
+> >  
+> > -acct01 acct01
+> > +acct01 acct01 -D DEVICE -T DEVICE_FS_TYPE
+> >  acct02 acct02
+> >  
+> >  add_key01 add_key01
+> > diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+> > index 062cc2b..1545df1 100644
+> > --- a/testcases/kernel/syscalls/acct/acct01.c
+> > +++ b/testcases/kernel/syscalls/acct/acct01.c
+> > @@ -44,22 +44,41 @@
+> >  #include <stdio.h>		/* needed by testhead.h */
+> >  #include <stdlib.h>
+> >  #include <unistd.h>
+> > +#include <sys/mount.h>
+> 
+> 
+> I've tried to apply this one, but it appears to be based on the first
+> version of the cleanup patch (see the /* needed by testhead.h */ comment
+> for example).
+> 
+> Can you please rebase it on the current cleanup (as pushed to git) and
+> resend?
 
-Testcase cgroup sometimes fail although there is no bug found.
-Initialize the exit status to fix it.
+Also note that I've just added one more testcase into acct01 and removed
+the messy acct02 that is now covered by the acct01 test.
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- .../controllers/cgroup/cgroup_regression_test.sh   |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index f5e0b4b..356c000 100755
---- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -28,6 +28,8 @@ export TCID="cgroup_regression_test"
- export TST_TOTAL=10
- export TST_COUNT=1
- 
-+failed=0
-+
- tst_kvercmp 2 6 29
- if [ $? -eq 0 ]; then
- 	tst_brkm TCONF ignored "test must be run with kernel 2.6.29 or newer"
-@@ -523,7 +525,7 @@ for ((cur = 1; cur <= $TST_TOTAL; cur++))
- 	test_$cur
- }
- 
--rmdir cgroup/
-+rmdir -p cgroup/*
- 
- exit $failed
- 
 -- 
-1.7.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
