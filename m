@@ -1,25 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VbhZO-0004mt-Nt
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 02:01:10 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VbhZN-0001tF-O6
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 02:01:10 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9V212gq026005
-	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 10:01:02 +0800
-Message-ID: <5271B9CF.6010406@cn.fujitsu.com>
-Date: Thu, 31 Oct 2013 10:00:47 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VYxvF-0004kO-5s
+	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 12:52:25 +0000
+Date: Wed, 23 Oct 2013 14:52:06 +0200
+From: chrubis@suse.cz
+Message-ID: <20131023125206.GD24275@rei.Home>
+References: <5266530C.5070604@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <526A2834.5090503@cn.fujitsu.com>
-In-Reply-To: <526A2834.5090503@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] chmod/chmod06.c: add ELOOP,
- EROFS error number test for chmod(2)
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <5266530C.5070604@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] acct/acct01.c: Add ELOOP ENAMETOOLONG EROFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,27 +24,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wang, Xiaoguang" <wangxg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 10/25/2013 04:13 PM, Wang, Xiaoguang wrote:
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Hi!
+> Add ELOOP, ENAMETOOLONG, EROFS error number test in acct01.c for acct(2)
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 > ---
->  runtest/syscalls                          |    2 +-
->  testcases/kernel/syscalls/chmod/chmod06.c |   65 +++++++++++++++++++++++++++-
->  2 files changed, 63 insertions(+), 4 deletions(-)
+>  runtest/syscalls                        |  2 +-
+>  testcases/kernel/syscalls/acct/acct01.c | 77 ++++++++++++++++++++++++++++++++-
+>  2 files changed, 77 insertions(+), 2 deletions(-)
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 09e5f7f..a3a65b6 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -10,7 +10,7 @@ access03 access03
+>  access04 access04
+>  access05 access05
+>  
+> -acct01 acct01
+> +acct01 acct01 -D DEVICE -T DEVICE_FS_TYPE
+>  acct02 acct02
+>  
+>  add_key01 add_key01
+> diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+> index 062cc2b..1545df1 100644
+> --- a/testcases/kernel/syscalls/acct/acct01.c
+> +++ b/testcases/kernel/syscalls/acct/acct01.c
+> @@ -44,22 +44,41 @@
+>  #include <stdio.h>		/* needed by testhead.h */
+>  #include <stdlib.h>
+>  #include <unistd.h>
+> +#include <sys/mount.h>
 
 
-Applied, thank you.
+I've tried to apply this one, but it appears to be based on the first
+version of the cleanup patch (see the /* needed by testhead.h */ comment
+for example).
 
-Wanlong Gao
+Can you please rebase it on the current cleanup (as pushed to git) and
+resend?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
