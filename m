@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VTocZ-0003UF-2m
-	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 07:55:51 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VTocX-0007q0-P8
-	for ltp-list@lists.sourceforge.net; Wed, 09 Oct 2013 07:55:51 +0000
-Date: Wed, 9 Oct 2013 03:55:38 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1444343766.3683031.1381305338134.JavaMail.root@redhat.com>
-In-Reply-To: <1380881832-7418-2-git-send-email-maxim.uvarov@linaro.com>
-References: <1380881832-7418-1-git-send-email-maxim.uvarov@linaro.com>
-	<1380881832-7418-2-git-send-email-maxim.uvarov@linaro.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VZJpp-0003qm-Ry
+	for ltp-list@lists.sourceforge.net; Thu, 24 Oct 2013 12:16:17 +0000
+Date: Thu, 24 Oct 2013 14:16:01 +0200
+From: chrubis@suse.cz
+Message-ID: <20131024121601.GC29706@rei>
+References: <525F76B7.4050705@oracle.com>
+	<1382087565-2370-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20131021125723.GA2385@rei> <5268FDE5.5010408@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] LTP cacheflush01 add arm variant
+Content-Type: multipart/mixed; boundary="tThc/1wpZn/ma/RB"
+Content-Disposition: inline
+In-Reply-To: <5268FDE5.5010408@oracle.com>
+Subject: Re: [LTP] [PATCH] msgctl{08, 09, 10, 11}: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,99 +24,215 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Maxim Uvarov <maxim.uvarov@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, Maxim Uvarov <maxim.uvarov@linaro.com>, linaro-networking@linaro.org
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
------ Original Message -----
-> From: "Maxim Uvarov" <maxim.uvarov@linaro.org>
-> To: ltp-list@lists.sourceforge.net
-> Cc: linaro-networking@linaro.org, "Maxim Uvarov" <maxim.uvarov@linaro.com>
-> Sent: Friday, 4 October, 2013 12:17:12 PM
-> Subject: [LTP] [PATCH] LTP cacheflush01 add arm variant
+Hi!
+> >> diff --git a/testcases/kernel/syscalls/ipc/msgctl/Makefile b/testcases/kernel/syscalls/ipc/msgctl/Makefile
+> >> index f467389..ae61b51 100644
+> >> --- a/testcases/kernel/syscalls/ipc/msgctl/Makefile
+> >> +++ b/testcases/kernel/syscalls/ipc/msgctl/Makefile
+> >> @@ -18,6 +18,15 @@
+> >>   
+> >>   top_srcdir              ?= ../../../../..
+> >>   
+> >> +FILTER_OUT_MAKE_TARGETS	:= libmsgctl
+> >> +
+> >>   include $(top_srcdir)/include/mk/testcases.mk
+> >>   include $(abs_srcdir)/../Makefile.inc
+> >>   include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> >> +
+> >> +SRCS			?= $(wildcard $(abs_srcdir)/*.c)
+> >> +OBJS			:= $(notdir $(patsubst %.c,%.o,$(SRCS)))
+> >> +.INTERMEDIATE: $(OBJS)
+> >> +
+> >> +$(MAKE_TARGETS): %: %.o libmsgctl.o
+> >> +libmsgctl.o: libmsgctl.h
+> >> diff --git a/testcases/kernel/syscalls/ipc/msgctl/libmsgctl.c b/testcases/kernel/syscalls/ipc/msgctl/libmsgctl.c
+> >> new file mode 100644
+> >> index 0000000..fa77b56
+> > This is too hacky what about building .a library instead as it's done in
+> > testcases/kernel/mem/lib ?
+> >
+> > I've looked into the lib.mk and it looks like you don't even have to put
+> > the lib in the separate directory if you set LIBSRC in the corresponding
+> > Makefile.
 > 
-> Cache flush on arm provided via
-> __ARM_NR_cacheflush(unsigned long start, unsigned long end, int flags)
-> defined in ./arch/arm/kernel/traps.c.
-> Flags are not used, providing 0 there.
+> Cyril, could you show an example of doing this (placing test case 
+> sources and static libraries sources in the same directory), please?
 > 
-> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.com>
-
-Hi,
-
-looks good to me. I was thinking about getting rid of that ifdef,
-but I'm not sure it's worth the trouble for such trivial testcase.
-
-Small nits (related to original code):
-- no need for brackets for single statement
-- it would be helpful to see the errno in case of failure:
-  tst_resm(TFAIL | TTERRNO, "failed with unexpected errno");
-- "malloc failed" flags should be TFAIL | TERRNO
-- tst_tmpdir()/tst_rmdir() is not needed
-- unnecessary comments can be removed
-
-Regards,
-Jan
-
-> ---
->  .../kernel/syscalls/cacheflush/cacheflush01.c      |    9 +++++++++
->  1 file changed, 9 insertions(+)
+> I tried to do what you said but couldn't manage it :(
 > 
-> diff --git a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-> b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-> index 9c02f0a..fae51b4 100644
-> --- a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-> +++ b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-> @@ -137,6 +137,14 @@ int main(int ac, char **av)
->  	}
->  
->  	/* Invokes cacheflush() with proper parameters */
-> +#if defined(__arm__)
-> +	TEST(ltp_syscall(__ARM_NR_cacheflush, addr, addr + getpagesize(), 0));
-> +	if (TEST_RETURN == 0) {
-> +		tst_resm(TPASS, "passed with no errno");
-> +	} else {
-> +		tst_resm(TFAIL, "failed with unexpected errno");
-> +	}
-> +#else
->  	TEST(ltp_syscall(__NR_cacheflush, addr, getpagesize(), ICACHE));
->  	if (TEST_RETURN == 0) {
->  		tst_resm(TPASS, "passed with no errno");
-> @@ -157,6 +165,7 @@ int main(int ac, char **av)
->  	} else {
->  		tst_resm(TFAIL, "failed with unexpected errno");
->  	}
-> +#endif
->  
->  	cleanup();
->  	tst_exit();
-> --
-> 1.7.9.5
+> I used this Makefile:
 > 
+> top_srcdir              ?= ../../../../..
 > 
-> ------------------------------------------------------------------------------
-> October Webinars: Code for Performance
-> Free Intel webinars can help you accelerate application performance.
-> Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from
-> the latest Intel processors and coprocessors. See abstracts and register >
-> http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> LIBSRCS := $(abs_srcdir)/libmsgctl.c
+> INTERNAL_LIB := libmsgctl.a
 > 
+> include $(top_srcdir)/include/mk/testcases.mk
+> include $(abs_srcdir)/../Makefile.inc
+> include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> include $(top_srcdir)/include/mk/lib.mk
+> 
+> And got error:
+> ../../../../../include/mk/lib.mk:66: warning: overriding commands for 
+> target `../lib/libipc.a'
+> /home/stas/ltp/testcases/kernel/syscalls/ipc/msgctl/../Makefile.inc:34: 
+> warning: ignoring old commands for target `../lib/libipc.a'
+> make: Circular ../lib/libipc.a <- ../lib/libipc.a dependency dropped.
+> if [ -z "../lib" ] ; then \
+>          echo "Cowardly refusing to create empty archive"; \
+>          exit 1; \
+>      fi
+> ar -rc "../lib/libipc.a" ../lib
+> ar: ../lib/libipc.a: Error reading ../lib: Is a directory
+> make: *** [../lib/libipc.a] Error 1
+
+Ah, there is the include $(abs_srcdir)/../Makefile.inc that sets LIB
+to ../lib/libipc.a which breaks the lib.mk as there now there are two
+rules for making the library. One that runs make in ../lib/ from the
+Makefile.inc and second in lib.mk. Renaming the LIB to LIBIPC in
+Makefile.inc fixes this one.
+
+> And I think that I found an another issue we should overcome - lib.mk 
+> defines MAKE_TARGETS:
+> 
+> MAKE_TARGETS    := $(LIB)
+> 
+> generic_leaf_target.mk also does it.
+> 
+> So It should not be trivial to include both files (lib.mk and 
+> generic_leaf_target.mk) into one Makefile.
+> I suppose that in that case we have to implicitly define MAKE_TARGETS in 
+> our Makefile.
+
+Now this one is more complicated, but solvable.
+
+First of all we need to change the part in lib.mk to
+
+MAKE_TARGETS += $(LIB)
+
+Then define MAKE_TARGETS explicitly in the Makefile (we need that anyway
+for lib: tests dependency) and add LDFLAGS and LDLIBS. The full Makefile
+looks like:
+
+top_srcdir              ?= ../../../../..
+include $(top_srcdir)/include/mk/testcases.mk
+
+LIBSRCS := libmsgctl.c
+INTERNAL_LIB := libmsgctl.a
+MAKE_TARGETS := $(patsubst %.c,%,$(wildcard msgctl??.c))
+
+$(MAKE_TARGETS): $(INTERNAL_LIB)
+
+LDFLAGS += -L$(abs_builddir)
+LDLIBS += -lmsgctl
+
+include $(abs_srcdir)/../Makefile.inc
+include $(top_srcdir)/include/mk/lib.mk
+include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+See also attached patch with all the changes and check if that works for
+you. If so I will commit change to the lib.mk as separate patch and ask
+you to include changes in Makefile.inc in your patchset.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--tThc/1wpZn/ma/RB
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="build.patch"
+
+diff --git a/include/mk/lib.mk b/include/mk/lib.mk
+index 96c08eb..456db24 100644
+--- a/include/mk/lib.mk
++++ b/include/mk/lib.mk
+@@ -46,7 +46,7 @@ ifneq ($(MAKECMDGOALS),install)
+ LIB ?= $(INTERNAL_LIB)
+ endif
+ 
+-MAKE_TARGETS	:= $(LIB)
++MAKE_TARGETS	+= $(LIB)
+ 
+ LIBSRCS		?= $(wildcard $(abs_srcdir)/*.c)
+ 
+diff --git a/testcases/kernel/syscalls/ipc/Makefile.inc b/testcases/kernel/syscalls/ipc/Makefile.inc
+index a468e93..c7890a9 100644
+--- a/testcases/kernel/syscalls/ipc/Makefile.inc
++++ b/testcases/kernel/syscalls/ipc/Makefile.inc
+@@ -25,15 +25,15 @@
+ LDLIBS			+= -lipc
+ LIBDIR			:= ../lib
+ 
+-LIB			:= $(LIBDIR)/libipc.a
++LIBIPC			:= $(LIBDIR)/libipc.a
+ 
+ $(LIBDIR):
+ 	mkdir -p "$@"
+ 
+-$(LIB): $(LIBDIR)
++$(LIBIPC): $(LIBDIR)
+ 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+ 
+-MAKE_DEPS		:= $(LIB)
++MAKE_DEPS		:= $(LIBIPC)
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/Makefile b/testcases/kernel/syscalls/ipc/msgctl/Makefile
+index f467389..7f1688b 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgctl/Makefile
+@@ -17,7 +17,17 @@
+ #
+ 
+ top_srcdir              ?= ../../../../..
+-
+ include $(top_srcdir)/include/mk/testcases.mk
++
++LIBSRCS := libmsgctl.c
++INTERNAL_LIB := libmsgctl.a
++MAKE_TARGETS := $(patsubst %.c,%,$(wildcard msgctl??.c))
++
++$(MAKE_TARGETS): $(INTERNAL_LIB)
++
++LDFLAGS += -L$(abs_builddir)
++LDLIBS += -lmsgctl
++
+ include $(abs_srcdir)/../Makefile.inc
++include $(top_srcdir)/include/mk/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--tThc/1wpZn/ma/RB--
+
