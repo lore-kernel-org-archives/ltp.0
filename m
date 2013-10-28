@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VVf1t-0006i4-11
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 10:05:37 +0000
-Date: Mon, 14 Oct 2013 12:05:15 +0200
-From: chrubis@suse.cz
-Message-ID: <20131014100332.GA1278@rei>
-References: <1380029829-8113-1-git-send-email-alexey.kodanev@oracle.com>
-	<1380029829-8113-2-git-send-email-alexey.kodanev@oracle.com>
-	<20131002141537.GA727@rei.suse.cz> <5253F867.3030307@oracle.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VadJ2-0006FD-TD
+	for ltp-list@lists.sourceforge.net; Mon, 28 Oct 2013 03:15:52 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VadJ1-0003xq-F8
+	for ltp-list@lists.sourceforge.net; Mon, 28 Oct 2013 03:15:52 +0000
+Message-ID: <526DD69C.2070302@cn.fujitsu.com>
+Date: Mon, 28 Oct 2013 11:14:36 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5253F867.3030307@oracle.com>
-Subject: Re: [LTP] [PATCH 2/2] device-drivers: pci: fixes
+References: <1382704355-27129-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1382704355-27129-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] kernel/connectors: TCONF vs TBROK,
+ and fix check for root
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +29,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> > So the while cycle runs for all pci devices? How does this works?
-> >
-> > It seems to run all tests then increment pci_device until test number
-> > zero fails. This needs to cleaned up so that the codeflow is less
-> > cryptic. Or at least deserves a comment what is done and why.
-> >
-> Yes, my intention was to perform all test-cases with all available 
-> pci-devices, not just with the first found. This behavior managed by 
-> user-space test, so may be add a cmd-line option like test all or first 
-> found pci-device(s)?
+On 10/25/2013 08:32 PM, Stanislav Kholmanskikh wrote:
+> Fixed check for root the same way as in
+> 08dcfbb5a4ebad9319c54935a600ab936708c6da.
+> 
+> If the test is run on unsupported kernels it
+> should return TCONF, not TBROK. Fixed this.
+> 
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-No need for that. What I do not like on the test is that there is no
-correspondence between the pci device number in the userspace and in the
-test module, i.e. the pci_number is incremented automagically in the
-module once all tests are executed. This is hard to figure out. It would
-be better if we had explicit mechanism for that, for example sysfs file
-you write the number to (and get -EINVAL if the number is out of range).
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  testcases/kernel/connectors/pec/run_pec_test |    8 ++++----
+>  1 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/connectors/pec/run_pec_test b/testcases/kernel/connectors/pec/run_pec_test
+> index 7577ffa..2729485 100755
+> --- a/testcases/kernel/connectors/pec/run_pec_test
+> +++ b/testcases/kernel/connectors/pec/run_pec_test
+> @@ -33,14 +33,14 @@ export TST_COUNT=1
+>  
+>  exit_status=0
+>  
+> -if [ "$USER" != root ]; then
+> -	tst_brkm TBROK ignored "Test must be run as root"
+> +if [ $(id -u) != 0 ]; then
+> +	tst_brkm TCONF ignored "Test must be run as root"
+>  	exit 0;
+>  fi
+>  
+>  grep cn_proc /proc/net/connector > /dev/null
+>  if [ $? -ne 0 ]; then
+> -	tst_brkm TBROK ignored "Process Event Connector is not supported or kernel is below 2.6.26"
+> +	tst_brkm TCONF ignored "Process Event Connector is not supported or kernel is below 2.6.26"
+>  	exit 0;
+>  fi
+>  
+> @@ -77,7 +77,7 @@ run_case()
+>  	fi
+>  
+>  	if [ $ret2 -eq 2 ]; then
+> -		tst_brkm TBROK NULL "connector may not be supported"
+> +		tst_brkm TCONF NULL "connector may not be supported"
+>  		exit 0
+>  	fi
+>  
+> 
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134071&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
