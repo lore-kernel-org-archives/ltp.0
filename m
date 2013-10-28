@@ -2,19 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VS2KD-0004uy-3W
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:33 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VS2KB-00023f-Ao
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:33 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri,  4 Oct 2013 14:09:02 +0400
-Message-Id: <1380881342-13025-6-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 5/5] cpuset_base_ops_test: using tst_kvercmp2
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VadAA-0005WT-8n
+	for ltp-list@lists.sourceforge.net; Mon, 28 Oct 2013 03:06:42 +0000
+Received: from lgemrelse1q.lge.com ([156.147.1.111])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VadA8-0003fs-Bm
+	for ltp-list@lists.sourceforge.net; Mon, 28 Oct 2013 03:06:42 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Mon, 28 Oct 2013 12:06:32 +0900
+Message-ID: <00e501ced38a$b4b19e90$1e14dbb0$@gyu.kim@lge.com>
+MIME-Version: 1.0
+Content-Language: ko
+Subject: [LTP] [PATCH] ext4-new-features: fix syntax error in configure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,45 +23,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
 
-RHEL6 kernel backported a fix to not produce
-an error in case of writing '0-' to cpuset/N/{cpus,mems} file.
+In configure, string comparison is done using double assignment.
+/bin/sh doesn't allow to compare strings using "==".
+So "==" is modified to "=".
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
 ---
- .../cpuset_base_ops_testset.sh                     |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/fs/ext4-new-features/configure |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-index 3fa905c..63a9dc5 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-@@ -128,7 +128,7 @@ test_cpus()
- 		base_op_test "$CPUSET/1/cpus" "0,1-$((nr_cpus-2))," "0-$((nr_cpus-2))"
- 	fi
+diff --git a/testcases/kernel/fs/ext4-new-features/configure b/testcases/kernel/fs/ext4-new-features/configure
+index 13f43f9..12849e5 100755
+--- a/testcases/kernel/fs/ext4-new-features/configure
++++ b/testcases/kernel/fs/ext4-new-features/configure
+@@ -14,9 +14,9 @@ read EXT4_DEV
  
--	tst_kvercmp 3 0 0
-+	tst_kvercmp2 3 0 0 "RHEL6:2.6.32"
- 	if [ $? -eq 0 ]; then
- 		base_op_test "$CPUSET/1/cpus" "0-" "WRITE_ERROR"
- 	else
-@@ -164,7 +164,7 @@ test_mems()
- 		base_op_test "$CPUSET/1/mems" "0,1-$((nr_mems-2))," "0-$((nr_mems-2))"
- 	fi
- 
--	tst_kvercmp 3 0 0
-+	tst_kvercmp2 3 0 0 "RHEL6:2.6.32"
- 	if [ $? -eq 0 ]; then
- 		base_op_test "$CPUSET/1/mems" "0-" "WRITE_ERROR"
- 	else
+ echo "The partition is: $EXT4_DEV, Are you sure(Y/N)?"
+ read RESULT
+-if [ "$RESULT" == "Y" ] || [ "$RESULT" == "y" ]; then
++if [ "$RESULT" = "Y" ] || [ "$RESULT" = "y" ]; then
+ 	echo "EXT4_DEV=$EXT4_DEV" > ./ext4-test-config
+-elif [ "$RESULT" == "N" ]; then
++elif [ "$RESULT" = "N" ]; then
+ 	echo "Give up specifing a partition!"
+ else
+ 	echo "Your input is wrong($RESULT)."
 -- 
-1.7.1
+1.7.9.5
+
 
 
 ------------------------------------------------------------------------------
@@ -70,7 +63,7 @@ October Webinars: Code for Performance
 Free Intel webinars can help you accelerate application performance.
 Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
 the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
