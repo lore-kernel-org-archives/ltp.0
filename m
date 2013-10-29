@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VR10H-0007FT-Ij
-	for ltp-list@lists.sourceforge.net; Tue, 01 Oct 2013 14:32:45 +0000
-Date: Tue, 1 Oct 2013 16:33:08 +0200
-From: chrubis@suse.cz
-Message-ID: <20131001143307.GA24945@rei.suse.cz>
-References: <524A665C.7040202@oracle.com>
-	<1380627359-18513-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vb5FS-0005Bg-SF
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 09:06:02 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vb5FR-00019r-4j
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 09:06:02 +0000
+Message-ID: <526F7A65.7010206@cn.fujitsu.com>
+Date: Tue, 29 Oct 2013 17:05:41 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1380627359-18513-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] tst_kvercmp2 V3 series
+References: <1382949890.5455.40.camel@fedora19> <526F779B.2030205@oracle.com>
+In-Reply-To: <526F779B.2030205@oracle.com>
+Subject: Re: [LTP] tpci test trigger RHEL6.4GA crash!
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,27 +28,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Sorry, I left 'buf' unused variable in V2 version of tst_kvercmp2 patch.
-> Fixed this.
+On 10/29/2013 04:53 PM, alexey.kodanev@oracle.com wrote:
+> Hi!
+> On 10/28/2013 12:44 PM, Zeng Linggang wrote:
+>> Hi,
+>>
+>> When we execute the test of tpci in RHEL6.4GA, the system will crash:
+>>    - filesystem is broken
+>>    - network is off
+>> Some logs are as follows:
+>>
+>> [root@RHEL6U4GA-Intel64 ltp]# ata1.00: exception Emask 0x52 SAct 0x1 SErr 0xffffffff action 0xe frozen
+>> ata1: SError: { RecovData RecovCommon UnrecovData Persist Proto HostInt PHYInt CommWake 10B8B Display
+>> Seq TrStaTrns UnrecFIS DevExch }
+>> ata1.00: failed command: WRITE FPDMA QUEUED
+>> ata1.00: cmd 61/08:00:c8:fb:f3/00:00:39:00:00/40 tag 0 ncq 4096 out
+>>           res 40/00:18:48:eb:33/00:00:38:00:00/40 Emask 0x56 (ATA bus error)
+>> ata1.00: stauts: { DRDY }
+>> ata1.00 failed to resume link (SControl FFFFFFFF)
+>> ata1.00 failed to resume link (SControl FFFFFFFF)
+>> ata1.00 failed to resume link (SControl FFFFFFFF)
+>> Buffer I/O error on device sda13, logical block 4752991
+>> sd 0:0:0:0: rejecting I/O to offline device
+>> sd 0:0:0:0: rejecting I/O to offline device
+>> ...
+>> EXT4-fs error (device sda13): ext4_find_entry: reading directory #524297 offset 0
+>> EXT4-fs error (device sda13): ext4_find_entry: reading directory #524297 offset 0
+>> ...
+>>
+> Could you please find out which particular test case does it? it can be 
+> done manually the following way:
+> insmod ltp_pci.ko
 > 
-> Added a patch to split main() (of ltpapicmd.c) into separate functions.
+> Get your ata bus and pci slot number, then write it to the file (the 
+> number is 16bit unsigned integer, the first 8 bits is a device number, 
+> the last is a bus number):
+> 
+> echo "number" > /sys/devices/ltp_tcpi/bus_slot
+> 
+> Then try test-cases one by one:
+> echo 1 > /sys/devices/ltp_tcpi/tcase
+> ...
+> echo 17 > /sys/devices/ltp_tcpi/tcase
+> 
+> You can check the result of each test case by reading 
+> /sys/devices/ltp_tcpi/result file. 0 - PASS, 1 - FAIL.
 
-Pushed, thanks.
+PCI_RESOURCES, will cause kernel crash, could you please
+check it?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Wanlong Gao
+
+> 
+> Thanks,
+> Alexey
+> 
+> ------------------------------------------------------------------------------
+> Android is increasing in popularity, but the open development platform that
+> developers love is also attractive to malware creators. Download this white
+> paper to learn more about secure code signing practices that can help keep
+> Android apps secure.
+> http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
