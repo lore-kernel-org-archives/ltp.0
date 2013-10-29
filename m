@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ve65k-0007Oa-1k
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 16:36:28 +0000
-Date: Wed, 6 Nov 2013 13:53:17 +0100
-From: chrubis@suse.cz
-Message-ID: <20131106124955.GC28897@rei>
-References: <1383710112.1600.3.camel@localhost>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1383710112.1600.3.camel@localhost>
-Subject: Re: [LTP] [PATCH] clock_getres/clock_getres01.c: cleanup
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vincent.hsu@linaro.org>) id 1VbHem-0005ny-Pz
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:00 +0000
+Received: from mail-ob0-f178.google.com ([209.85.214.178])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VbHem-0006t5-47
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:00 +0000
+Received: by mail-ob0-f178.google.com with SMTP id wm4so618012obc.23
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 29 Oct 2013 15:20:54 -0700 (PDT)
+From: Vincent Hsu <vincent.hsu@linaro.org>
+Date: Tue, 29 Oct 2013 15:20:38 -0700
+Message-Id: <1383085243-5833-5-git-send-email-vincent.hsu@linaro.org>
+In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+Subject: [LTP] [LNG][PATCH 4/9] ltp-networking/tcp_cmds/netstat: netstat
+	cmds will return 1 even if no output in stderr on Ubuntu 12.04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,47 +27,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org
 
-Hi!
-> Fix the messy testcase of clock_getres01.c
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+for example:
+    $ netstat -s 1>netstat/dev/null 2>&1 ; echo $?
+    1
 
-That's better that the previous state but there are still some things to
-fix:
+This if condition would have worng result.
+    if ! netstat $flag 1>/dev/null 2>&1; then
+        end_testcase "netstat $flag failed"
+    fi
+---
+ testcases/network/tcp_cmds/netstat/netstat01 |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-1. The options are unused (opt_debug is only set and never used)
-   we can strip all the custom option parsing and remove the usage()
-   function and add LTP standard:
+diff --git a/testcases/network/tcp_cmds/netstat/netstat01 b/testcases/network/tcp_cmds/netstat/netstat01
+index 3c2d1bb..6d4682a 100755
+--- a/testcases/network/tcp_cmds/netstat/netstat01
++++ b/testcases/network/tcp_cmds/netstat/netstat01
+@@ -58,7 +58,8 @@ do_test() {
+     while [ $TST_COUNT -le $NUMLOOPS ]; do
 
-        char *msg;
+         for flag in "-s" "-rn" "-i" "-gn" "-apn"; do
+-            if ! netstat $flag 1>/dev/null 2>&1; then
++            var=$(netstat $flag 1>/dev/null 2>&1);
++            if [ "$var" != "" ]; then
+                 end_testcase "netstat $flag failed"
+             fi
+         done
+--
+1.7.9.5
 
-        if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-                tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-
-
-2. Does the test really need to create temporary directory?
-   It does not seem to create any files, so we can remove the
-   tst_tmpdir() and tst_rmdir() in cleanup() and setup().
-
-Also I would sanitize the comments in test header so that the ending */ does
-not overflow 80 chars and end up on the same column. (May need to move the word Foundation to the previous line)
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
