@@ -1,29 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VRzB5-0007dm-M3
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 06:47:55 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VRzB4-0003r3-JR
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 06:47:55 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r946lm9f028110
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 4 Oct 2013 02:47:48 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id r946lllD025096
-	for <ltp-list@lists.sourceforge.net>; Fri, 4 Oct 2013 02:47:48 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri,  4 Oct 2013 08:47:44 +0200
-Message-Id: <2e3e4287d2d3551db34c734971f0a3145c14a7d5.1380869051.git.jstancek@redhat.com>
-In-Reply-To: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
-References: <ac99f1c859b7e69d93ed09bc9223f2aabf325a5a.1380794505.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2 3/3] pthread_attr_setschedpolicy/2-1.c: bind
-	threads to single CPU
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Vb7sL-0003xb-ES
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 11:54:21 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vb7sK-0000nU-3C
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 11:54:21 +0000
+Message-ID: <526FA1E0.1010707@oracle.com>
+Date: Tue, 29 Oct 2013 15:54:08 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+References: <1383033332-932-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<955388781.15408075.1383042634142.JavaMail.root@redhat.com>
+In-Reply-To: <955388781.15408075.1383042634142.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] setpgid03: use SIGUSR1 instead of sleep
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,79 +26,388 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-To make sure that threads are blocked on mutex, bind all to single CPU.
-Because they all use SCHED_FIFO policy with main thread having the lowest
-priority, main will progress only after three created threads block on
-mutex.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../interfaces/pthread_attr_setschedpolicy/2-1.c   |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+On 10/29/2013 02:30 PM, Jan Stancek wrote:
+> Hi,
+Hi.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-index 80ce906..af8e3e4 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setschedpolicy/2-1.c
-@@ -20,6 +20,7 @@
-  *   Date:  20/05/2011
-  */
- 
-+#define _GNU_SOURCE
- #include <stdio.h>
- #include <string.h>
- #include <pthread.h>
-@@ -27,11 +28,13 @@
- #include <stdlib.h>
- #include <errno.h>
- #include <posixtest.h>
-+#include <affinity.h>
- 
- /* Priorities for the threads, must be unique, non-zero, and ordered */
- #define PRIO_HIGH	20
- #define PRIO_MED	10
- #define PRIO_LOW	5
-+#define PRIO_MAIN	1
- 
- static int priorities[3];
- 
-@@ -142,9 +145,20 @@ int main(void)
- 	pthread_t t1;
- 	pthread_t t2;
- 	pthread_t t3;
-+	struct sched_param sp;
- 
- 	status = PTS_UNRESOLVED;
- 
-+
-+	rc = set_affinity(0);
-+	if (rc)
-+		FAIL_AND_EXIT("set_affinity", errno);
-+
-+	sp.sched_priority = PRIO_MAIN;
-+	rc = pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp);
-+	if (rc)
-+		FAIL_AND_EXIT("pthread_setschedparam()", rc);
-+
- 	rc = pthread_mutex_lock(&mutex);
- 	if (rc)
- 		FAIL_AND_EXIT("pthread_mutex_lock()", rc);
--- 
-1.7.1
+>
+> it looks race-y after patch too. For example, let assume child runs first:
+>
+> diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
+> index 17fd16f..91f9940 100644
+> --- a/testcases/kernel/syscalls/setpgid/setpgid03.c
+> +++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+> @@ -82,6 +82,7 @@ int main(int ac, char **av)
+>   #endif
+>                  }
+>
+> +               sleep(1);
+>                  if (sigwaitinfo(&sigusr_set, NULL) < 0)
+>                          tst_brkm(TFAIL | TERRNO, cleanup,
+>                                  "sigwaitinfo() failed");
+>
+> # ./setpgid03
+> setpgid03    1  TBROK  :  unexpected signal 10 received (pid = 6763).
+> setpgid03    2  TBROK  :  Remaining cases broken
+Yes... I can't realize how I wanted to prevent this race if I put 
+sigwaitinfo() after fork().... :(
+
+Sorry.
+
+
+>
+> It might be easier to use "checkpoint" system, see include/tst_checkpoint.h,
+> and lib/tests/tst_checkpoint_* for examples.
+Thank you. I will take a look.
+
+>
+> Regards,
+> Jan
+>
+> ----- Original Message -----
+>> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
+>> Sent: Tuesday, 29 October, 2013 8:55:32 AM
+>> Subject: [LTP] [PATCH] setpgid03: use SIGUSR1 instead of sleep
+>>
+>> I came accross the following rare issue:
+>>
+>> setpgid03    1  TPASS  :  setpgid SUCCESS to set errno to EPERM
+>> setpgid03    2  TFAIL  :  setpgid FAILED, expect EACCES got 1
+>>
+>> I suppose It may happen if the test host is under stress.
+>> To prevent this It would be better to use SIGUSR1 for parent-child
+>> synchronisations.
+>>
+>> Also fixed error passing from children and performed a minor cleanup.
+>>
+>> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>> ---
+>>   testcases/kernel/syscalls/setpgid/setpgid03.c |  200
+>>   ++++++++++++-------------
+>>   1 files changed, 98 insertions(+), 102 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c
+>> b/testcases/kernel/syscalls/setpgid/setpgid03.c
+>> index 4429fe4..17fd16f 100644
+>> --- a/testcases/kernel/syscalls/setpgid/setpgid03.c
+>> +++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+>> @@ -1,34 +1,23 @@
+>>   /*
+>> + * Copyright (c) International Business Machines  Corp., 2001
+>>    *
+>> - *   Copyright (c) International Business Machines  Corp., 2001
+>> + * This program is free software;  you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>>    *
+>> - *   This program is free software;  you can redistribute it and/or modify
+>> - *   it under the terms of the GNU General Public License as published by
+>> - *   the Free Software Foundation; either version 2 of the License, or
+>> - *   (at your option) any later version.
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> + * the GNU General Public License for more details.
+>>    *
+>> - *   This program is distributed in the hope that it will be useful,
+>> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> - *   the GNU General Public License for more details.
+>> - *
+>> - *   You should have received a copy of the GNU General Public License
+>> - *   along with this program;  if not, write to the Free Software
+>> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+>> 02110-1301 USA
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program;  if not, write to the Free Software
+>> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
+>> USA
+>>    */
+>>   
+>>   /*
+>> - * NAME
+>> - * 	setpgid03.c
+>> - *
+>> - * DESCRIPTION
+>> - * 	Test to check the error and trivial conditions in setpgid system call
+>> - *
+>> - * USAGE
+>> - * 	setuid03
+>> - *
+>> - * RESTRICTIONS
+>> - * 	This test is not completely written in the LTP format - PLEASE FIX!
+>> + * Test to check the error and trivial conditions in setpgid system call
+>>    */
+>>   
+>>   #define DEBUG 0
+>> @@ -47,16 +36,16 @@
+>>   char *TCID = "setpgid03";
+>>   int TST_TOTAL = 1;
+>>   
+>> -void do_child(void);
+>> -void setup(void);
+>> -void cleanup(void);
+>> +static void do_child(void);
+>> +static void setup(void);
+>> +static void cleanup(void);
+>>   
+>>   int main(int ac, char **av)
+>>   {
+>>   	int pid;
+>> -	int rval, fail = 0;
+>> -	int ret, status;
+>> -	int exno = 0;
+>> +	int rval;
+>> +	int status;
+>> +	sigset_t sigusr_set;
+>>   
+>>   	int lc;
+>>   	char *msg;
+>> @@ -68,14 +57,13 @@ int main(int ac, char **av)
+>>   	maybe_run_child(&do_child, "");
+>>   #endif
+>>   
+>> -	/*
+>> -	 * perform global setup for the test
+>> -	 */
+>>   	setup();
+>>   
+>> +	sigemptyset(&sigusr_set);
+>> +	sigaddset(&sigusr_set, SIGUSR1);
+>> +
+>>   	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>>   
+>> -		/* reset tst_count in case we are looping */
+>>   		tst_count = 0;
+>>   
+>>   //test1:
+>> @@ -84,7 +72,7 @@ int main(int ac, char **av)
+>>   			tst_brkm(TBROK, cleanup, "fork() failed");
+>>   		}
+>>   
+>> -		if (pid == 0) {	/* child */
+>> +		if (pid == 0) {
+>>   #ifdef UCLINUX
+>>   			if (self_exec(av[0], "") < 0) {
+>>   				tst_brkm(TBROK, cleanup, "self_exec failed");
+>> @@ -92,35 +80,33 @@ int main(int ac, char **av)
+>>   #else
+>>   			do_child();
+>>   #endif
+>> -		} else {	/* parent */
+>> -			sleep(1);
+>> -			rval = setpgid(pid, getppid());
+>> -			if (errno == EPERM) {
+>> -				tst_resm(TPASS, "setpgid SUCCESS to set "
+>> -					 "errno to EPERM");
+>> -			} else {
+>> -				tst_resm(TFAIL, "setpgid FAILED, "
+>> -					 "expect %d, return %d", EPERM, errno);
+>> -				fail = 1;
+>> -			}
+>> -			sleep(1);
+>> -			if ((ret = wait(&status)) > 0) {
+>> -				if (DEBUG)
+>> -					tst_resm(TINFO, "Test {%d} exited "
+>> -						 "status 0x%0x", ret, status);
+>> -
+>> -				if (status != 0) {
+>> -					fail = 1;
+>> -				}
+>> -			}
+>>   		}
+>> -		if (DEBUG) {
+>> -			if (fail || exno) {
+>> -				tst_resm(TINFO, "Test test 1: FAILED");
+>> -			} else {
+>> -				tst_resm(TINFO, "Test test 1: PASSED");
+>> -			}
+>> +
+>> +		if (sigwaitinfo(&sigusr_set, NULL) < 0)
+>> +			tst_brkm(TFAIL | TERRNO, cleanup,
+>> +				"sigwaitinfo() failed");
+>> +
+>> +		rval = setpgid(pid, getppid());
+>> +		if (errno == EPERM) {
+>> +			tst_resm(TPASS,
+>> +				"setpgid SUCCESS to set errno to EPERM");
+>> +		} else {
+>> +			tst_resm(TFAIL,
+>> +				"setpgid FAILED, expect %d, return %d",
+>> +				EPERM, errno);
+>> +		}
+>> +
+>> +		if (wait(&status) < 0)
+>> +			tst_resm(TFAIL | TERRNO, "wait() failed");
+>> +
+>> +		if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0)) {
+>> +			if (DEBUG)
+>> +				tst_resm(TINFO, "child exited with status %d",
+>> +					WEXITSTATUS(status));
+>> +
+>> +			tst_resm(TFAIL, "child failed");
+>>   		}
+>> +
+>>   //test2:
+>>   		/*
+>>   		 * Value of pid matches the pid of the child process and
+>> @@ -131,39 +117,59 @@ int main(int ac, char **av)
+>>   
+>>   		}
+>>   		if (pid == 0) {
+>> -			if (execlp("sleep", "sleep", "3", NULL) < 0) {
+>> -				perror("exec failed");
+>> +			char buf[10];
+>> +			int ret;
+>> +
+>> +			ret = snprintf(buf, 10, "%d", getppid());
+>> +			if ((ret >= 10) || (ret <= 0)) {
+>> +				printf("snprintf() failed\n");
+>> +
+>> +				exit(126);
+>>   			}
+>> +
+>> +			const char *args[4 + 1];
+>> +			args[0] = "kill";
+>> +			args[1] = "-s";
+>> +			args[2] = "SIGUSR1";
+>> +			args[3] = buf;
+>> +			args[4] = NULL;
+>> +
+>> +			if (execvp(args[0], (char *const *)args) < 0)
+>> +				perror("exec failed\n");
+>> +
+>>   			exit(127);
+>> +		}
+>> +
+>> +		if (sigwaitinfo(&sigusr_set, NULL) < 0)
+>> +			tst_brkm(TFAIL | TERRNO, cleanup,
+>> +				"sigwaitinfo() failed");
+>> +
+>> +		rval = setpgid(pid, getppid());
+>> +		if (errno == EACCES) {
+>> +			tst_resm(TPASS,
+>> +				"setpgid SUCCEEDED to set errno to EACCES");
+>>   		} else {
+>> -			sleep(1);
+>> -			rval = setpgid(pid, getppid());
+>> -			if (errno == EACCES) {
+>> -				tst_resm(TPASS, "setpgid SUCCEEDED to set "
+>> -					 "errno to EACCES");
+>> -			} else {
+>> -				tst_resm(TFAIL, "setpgid FAILED, expect EACCES "
+>> -					 "got %d", errno);
+>> -			}
+>> -			if ((ret = wait(&status)) > 0) {
+>> -				if (DEBUG)
+>> -					tst_resm(TINFO, "Test {%d} exited "
+>> -						 "status 0x%0x", ret, status);
+>> -				if (status != 0) {
+>> -					fail = 1;
+>> -				}
+>> -			}
+>> +			tst_resm(TFAIL,
+>> +				"setpgid FAILED, expect EACCES got %d", errno);
+>> +		}
+>> +
+>> +		if (wait(&status) < 0)
+>> +			tst_resm(TFAIL | TERRNO, "wait() failed");
+>> +
+>> +		if ((!WIFEXITED(status)) || (WEXITSTATUS(status) != 0)) {
+>> +			if (DEBUG)
+>> +				tst_resm(TINFO, "child exited with status %d",
+>> +					WEXITSTATUS(status));
+>> +
+>> +			tst_resm(TFAIL, "child failed");
+>>   		}
+>>   	}
+>> +
+>>   	cleanup();
+>>   	tst_exit();
+>> -
+>>   }
+>>   
+>> -/*
+>> - * do_child()
+>> - */
+>> -void do_child()
+>> +static void do_child(void)
+>>   {
+>>   	int exno = 0;
+>>   
+>> @@ -171,15 +177,15 @@ void do_child()
+>>   		tst_resm(TFAIL, "setsid failed, errno :%d", errno);
+>>   		exno = 1;
+>>   	}
+>> +
+>> +	kill(getppid(), SIGUSR1);
+>> +
+>>   	sleep(2);
+>> +
+>>   	exit(exno);
+>>   }
+>>   
+>> -/*
+>> - * setup()
+>> - * 	performs all ONE TIME setup for this test
+>> - */
+>> -void setup(void)
+>> +static void setup(void)
+>>   {
+>>   
+>>   	tst_sig(FORK, DEF_HANDLER, cleanup);
+>> @@ -189,17 +195,7 @@ void setup(void)
+>>   	TEST_PAUSE;
+>>   }
+>>   
+>> -/*
+>> - * cleanup()
+>> - * 	performs all the ONE TIME cleanup for this test at completion
+>> - * 	or premature exit
+>> - */
+>> -void cleanup(void)
+>> +static void cleanup(void)
+>>   {
+>> -	/*
+>> -	 * print timing status if that option was specified
+>> -	 * print errno log if that option was specified
+>> -	 */
+>>   	TEST_CLEANUP;
+>> -
+>>   }
+>> --
+>> 1.7.1
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Android is increasing in popularity, but the open development platform that
+>> developers love is also attractive to malware creators. Download this white
+>> paper to learn more about secure code signing practices that can help keep
+>> Android apps secure.
+>> http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
 
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
