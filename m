@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <linuxsnail@gmail.com>) id 1VYTqF-00078x-BJ
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 04:45:15 +0000
-Received: from mail-ie0-f194.google.com ([209.85.223.194])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VYTqD-0005gi-NV
-	for ltp-list@lists.sourceforge.net; Tue, 22 Oct 2013 04:45:15 +0000
-Received: by mail-ie0-f194.google.com with SMTP id tp5so247465ieb.5
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 Oct 2013 21:45:08 -0700 (PDT)
-MIME-Version: 1.0
-Date: Mon, 21 Oct 2013 22:45:08 -0600
-Message-ID: <CA+rVjkCwd4O6sEg7426VohDqrm1yTdyQd9L0Bg=_Xi5dNiZU_w@mail.gmail.com>
-From: C N <linuxsnail@gmail.com>
-Subject: [LTP] Test suite for the t-core kernel patch
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Vb9uu-0003is-73
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 14:05:08 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vb9us-0006Lz-UN
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 14:05:07 +0000
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 29 Oct 2013 18:04:30 +0400
+Message-Id: <1383055470-18080-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v2] device-drivers: pci: check memory region for flag
+	IORESOURCE_PREFETCH
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,58 +22,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2725613317499388641=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
---===============2725613317499388641==
-Content-Type: multipart/alternative; boundary=047d7bea3434abe52e04e94d1041
+This is done to make sure there will be no side effects if we change it somehow
+in the test (e.g. we're not changing I/O ports implemented as memory regions).
+Remove annoying printk messages.
 
---047d7bea3434abe52e04e94d1041
-Content-Type: text/plain; charset=ISO-8859-1
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ .../device-drivers/pci/tpci_kernel/ltp_tpci.c      |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-Hi,
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+index 4e92f5e..d2ffacd 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+@@ -99,8 +99,6 @@ static int probe_pci_dev(unsigned int bus, unsigned int slot)
+ {
+ 	struct pci_dev *dev;
+ 
+-	prk_info("find arbitrary pci device for test");
+-
+ 	if (ltp_pci.dev) {
+ 		pci_dev_put(ltp_pci.dev);
+ 		ltp_pci.dev = NULL;
+@@ -467,7 +465,8 @@ static int test_assign_resources(void)
+ 			r->name, r->flags,
+ 			(unsigned long)r->start, (unsigned long)r->end);
+ 
+-		if ((r->flags & IORESOURCE_MEM) == IORESOURCE_MEM) {
++		if (r->flags & IORESOURCE_MEM &&
++			r->flags & IORESOURCE_PREFETCH) {
+ 			ret = pci_assign_resource(dev, i);
+ 			prk_info("assign resource to '%d', ret '%d'", i, ret);
+ 			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
+@@ -718,8 +717,6 @@ static ssize_t sys_bus_slot(struct device *dev,
+ 	bus = res >> 8 & 0xFF;
+ 	slot = res & 0xFF;
+ 
+-	prk_info("get bus '%u' slot '%u'", bus, slot);
+-
+ 	ret = probe_pci_dev(bus, slot);
+ 	if (ret)
+ 		return ret;
+-- 
+1.7.1
 
-Is there any plan for removal of t-core test case?
-
-Please ref:
-http://sourceforge.net/p/ltp/mailman/message/31006567/
-
-- - - -
-Chandrashekhar Nandi
-
---047d7bea3434abe52e04e94d1041
-Content-Type: text/html; charset=ISO-8859-1
-
-<div dir="ltr"><div><div>Hi,<br><br>Is there any plan for removal of t-core test case?<br><br>Please ref: <br><a href="http://sourceforge.net/p/ltp/mailman/message/31006567/" target="_blank">http://sourceforge.net/p/ltp/mailman/message/31006567/</a><br>
-
-<br></div>- - - -<br></div>Chandrashekhar Nandi</div>
-
---047d7bea3434abe52e04e94d1041--
-
-
---===============2725613317499388641==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
---===============2725613317499388641==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2725613317499388641==--
-
