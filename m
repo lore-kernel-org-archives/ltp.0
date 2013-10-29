@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlIjz-0005i0-Ql
-	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 13:31:47 +0000
-Date: Tue, 26 Nov 2013 14:31:18 +0100
-From: chrubis@suse.cz
-Message-ID: <20131126133118.GA13496@rei>
-References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-	<1384400319-30776-8-git-send-email-vincent.hsu@linaro.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1384400319-30776-8-git-send-email-vincent.hsu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH 8/8] ltp-networking/iproute: fix iproute test
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vincent.hsu@linaro.org>) id 1VbHeg-0000Pe-Tq
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:20:54 +0000
+Received: from mail-oa0-f54.google.com ([209.85.219.54])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VbHeg-0007Pa-7m
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:20:54 +0000
+Received: by mail-oa0-f54.google.com with SMTP id o20so628812oag.27
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 29 Oct 2013 15:20:48 -0700 (PDT)
+From: Vincent Hsu <vincent.hsu@linaro.org>
+Date: Tue, 29 Oct 2013 15:20:34 -0700
+Message-Id: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+Subject: [LTP] [LNG][PATCH 0/9] ltp-networking on ubuntu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,67 +24,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vincent Hsu <vincent.hsu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org
 
-Hi!
-> ip02: set original mtu size back. this test will set mtu to 300.
-> ip05: if there is not only one route, using "head" command will get
->       wrong result.
-> 
-> Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
-> ---
->  testcases/network/iproute/ip_tests.sh |    5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
-> index ce4cabc..e16f6c4 100755
-> --- a/testcases/network/iproute/ip_tests.sh
-> +++ b/testcases/network/iproute/ip_tests.sh
-> @@ -187,6 +187,7 @@ test01()
-> 
->  	tst_resm TINFO "Test #1: changing mtu size of eth0:1 device."
-> 
-> +	MTUSZ_BAK=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $1}'`
->  	ip link set eth0:1 mtu 300 >$LTPTMP/tst_ip.err 2>&1
->  	if [ $RC -ne 0 ]
->  	then
-> @@ -198,6 +199,7 @@ test01()
->  		if [ $MTUSZ -eq 300 ]
->  		then
->  			tst_resm TPASS "Test #1: changing mtu size success"
-> +			ip link set eth0:1 mtu $MTUSZ_BAK >$LTPTMP/tst_ip.err 2>&1
->  		else
->  			tst_resm FAIL NULL \
->  				"Test #1: MTU value not set to 300: ifconfig returned: $MTUSZ"
-> @@ -453,7 +455,8 @@ test05()
->  		10.6.6.6 via 127.0.0.1 dev lo
->  		EOF
-> 
-> -		ip route show | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
-> +		ip route show | grep "10.6.6.6 via 127.0.0.1 dev lo" \
-> +		>$LTPTMP/tst_ip.out 2>&1 || RC=$?
->  		if [ $RC -ne 0 ]
->  		then
->  			tst_res TFAIL $LTPTMP/tst_ip.err \
+Hi
+I want to do ltp-networking test with ubuntu rootfs on the arndale board, but some of them can't test success. So I do several changes based on the ltp release 20130904. Could you help to review them?
 
-Can you please fix the two over 80 chars lines that your patch adds?
+Vincent Hsu (9):
+  ltp-networking/nfs: Setting the NFS to version 3 by default. NFSv3 is
+        more compatibled with recent linux distributions.
+  ltp-networking/nfs: don't use absolute path for showmount. showmount
+       does not locate at /user/sbin/showmount on Ubuntu 12.04.
+  ltp-networking/tcp_cmds/finger: finger an unknown host test will
+    return     1 even if execution success on Ubuntu 12.04
+  ltp-networking/tcp_cmds/netstat: netstat cmds will return 1 even if
+    no     output in stderr on Ubuntu 12.04
+  ltp-networking/tcp_cmds/tcpdump:     1. RHOST IP won't appear in
+    network interfaces. It should be LHOST.     2. Host commad can't
+    fetch IP in no DNS enviroment. use ping intead of        it
+  ltp-networking/iproute:     ip02: set original mtu size back. this
+    test will set mtu to 300.     ip05: if there is nott only one route
+    using "head" command will get           wrong result.
+  ltp-networking/iptables: "iptables -L -t nat" lists 4 chains not
+    3 chains on Ubuntu 12.04
+  ltp-networking: standardize test result message
+  ltp-networking/rpc: gave precise test name
 
-Otherwise this is fine.
+ testcases/network/iproute/ip_tests.sh              |    6 +++++-
+ testcases/network/iptables/iptables_tests.sh       |   22 +++++++++++++-------
+ testcases/network/multicast/mc_cmds/mc_cmds        |    9 ++++++--
+ testcases/network/multicast/mc_commo/mc_commo      |    8 +++++--
+ testcases/network/multicast/mc_member/mc_member    |    8 +++++--
+ testcases/network/multicast/mc_opts/mc_opts        |    8 +++++--
+ testcases/network/nfs/fsx-linux/fsx.sh             |    9 +++++---
+ testcases/network/nfs/nfs01/nfs01                  |    9 +++++---
+ testcases/network/nfs/nfs02/nfs02                  |   11 ++++++----
+ testcases/network/nfs/nfs03/nfs03                  |    9 +++++---
+ testcases/network/nfs/nfs04/nfs04                  |    2 +-
+ testcases/network/nfs/nfslock01/nfslock01          |    7 +++++--
+ testcases/network/nfs/nfsstat01/nfsstat01          |    9 +++++---
+ testcases/network/nfs/nfsstress/nfsstress          |   11 ++++++----
+ testcases/network/rpc/basic_tests/rpc01/rpc01      |    7 +++++--
+ .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |    9 +++++---
+ testcases/network/rpc/basic_tests/rup/rup01        |    9 +++++---
+ testcases/network/rpc/basic_tests/rusers/rusers01  |    7 +++++--
+ testcases/network/tcp_cmds/finger/finger01         |    4 ++--
+ testcases/network/tcp_cmds/netstat/netstat01       |    3 ++-
+ testcases/network/tcp_cmds/tcpdump/tcpdump01       |    4 ++--
+ 21 files changed, 117 insertions(+), 54 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
