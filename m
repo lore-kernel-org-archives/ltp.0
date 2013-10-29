@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vlzwr-0001Tl-OH
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:39:57 +0000
-Date: Thu, 28 Nov 2013 12:39:28 +0100
-From: chrubis@suse.cz
-Message-ID: <20131128113928.GC19263@rei.Home>
-References: <1384784307-28731-1-git-send-email-alexey.kodanev@oracle.com>
-	<1384784307-28731-2-git-send-email-alexey.kodanev@oracle.com>
-	<20131127180449.GA8163@rei> <529725F3.6040002@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <529725F3.6040002@oracle.com>
-Subject: Re: [LTP] [PATCH v4 2/2] device-drivers: acpi: fixes
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vincent.hsu@linaro.org>) id 1VbHel-0005nY-8g
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:20:59 +0000
+Received: from mail-ob0-f173.google.com ([209.85.214.173])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VbHek-00065S-IJ
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:20:59 +0000
+Received: by mail-ob0-f173.google.com with SMTP id gq1so625057obb.18
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 29 Oct 2013 15:20:53 -0700 (PDT)
+From: Vincent Hsu <vincent.hsu@linaro.org>
+Date: Tue, 29 Oct 2013 15:20:37 -0700
+Message-Id: <1383085243-5833-4-git-send-email-vincent.hsu@linaro.org>
+In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+Subject: [LTP] [LNG][PATCH 3/9] ltp-networking/tcp_cmds/finger: finger an
+	unknown host test will return 1 even if execution success on
+	Ubuntu 12.04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,74 +28,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org
 
-Hi!
-> >> +	while (i < TST_TOTAL) {
-> >> +
-> >> +		SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
-> >> +		SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
-> >> +
-> >> +		tst_resm(res, "Test-case '%d'", i);
-> >> +
-> >> +		/*
-> >> +		 * trigger ACPI_TRAVERSE test-case while we can
-> >> +		 * get valid next device description.
-> >> +		 */
-> >> +		if (i == ACPI_TRAVERSE && next_acpi_str())
-> >> +			continue;
-> > The same goes for the tst_resm() here.
-> >
-> > I would write this part so that reading the sys_str file triggers
-> > walking to next object with _STR argument, while writing to dev_tcase
-> > will reset the walk to root and wrote a code as:
-> >
-> > 	SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
-> > 	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
-> >
-> > 	if (i == ACPI_TRAVERSE)
-> > 		res = next_acpi_str();
-> >
-> > 	tst_resm(...);
-> >
-> > And the next_acpi_str() would loop on reading the dev_str while "null"
-> > is returned. Or even better make the read returns zero size at the end,
-> > (should be mapped to EOF in case of FILE*).
-> OK
-> > Also I would be more carefull and rather sanitized the result value, i.e.
-> >
-> > 	tst_resm(ret ? TFAIL : TPASS, "...");
-> If I do that way, next_acpi_str could also return TCONF (kernel version 
-> lower than 3.7) and then we would get TFAIL in the test-case result.
+for example:
+    $ finger @xxxx || echo "test fail"
+    finger: unknown host: xxxx
+    getaddrinfo: No address associated with hostname
+    test fail
+---
+ testcases/network/tcp_cmds/finger/finger01 |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ah, hmm, so what about:
+diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
+index 6a72c8f..a5206be 100755
+--- a/testcases/network/tcp_cmds/finger/finger01
++++ b/testcases/network/tcp_cmds/finger/finger01
+@@ -116,8 +116,8 @@ do_test2()
 
+     tst_resm TINFO "finger -bad user "
+     finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
+-    finger @$BADHOST 2>&1 1>/dev/null || end_testcase "finger @$BADHOST"
+-    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null; then
++    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" || end_testcase "finger @$BADHOST"
++    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host"; then
+         end_testcase "finger $BADUSER@$BADHOST"
+     fi
+ }
+--
+1.7.9.5
 
-	SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
-	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
-
-	res = res ? TFAIL : TPASS;
-
-	if (i == ACPI_TRAVERSE)
-		res = next_acpi_str();
-
-	...
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
