@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VlYn7-0003Bx-3t
-	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 06:40:05 +0000
-Received: from mail-pb0-f50.google.com ([209.85.160.50])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VlYn5-0006Rm-8X
-	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 06:40:05 +0000
-Received: by mail-pb0-f50.google.com with SMTP id rr13so9775353pbb.9
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vincent.hsu@linaro.org>) id 1VbHeo-0006aR-AE
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:02 +0000
+Received: from mail-oa0-f46.google.com ([209.85.219.46])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VbHen-0007Pu-JJ
+	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:02 +0000
+Received: by mail-oa0-f46.google.com with SMTP id g12so624427oah.19
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 26 Nov 2013 22:39:57 -0800 (PST)
+	Tue, 29 Oct 2013 15:20:56 -0700 (PDT)
 From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Wed, 27 Nov 2013 14:37:50 +0800
-Message-Id: <1385534272-32414-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH V2 0/2] fixing over 80 chars
+Date: Tue, 29 Oct 2013 15:20:39 -0700
+Message-Id: <1383085243-5833-6-git-send-email-vincent.hsu@linaro.org>
+In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+Subject: [LTP] [LNG][PATCH 5/9] ltp-networking/tcp_cmds/tcpdump: 1. RHOST IP
+	won't appear in network interfaces. It should be LHOST. 2.
+	Host commad can't fetch IP in no DNS enviroment. use ping
+	intead of it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,43 +36,35 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: linaro-networking@linaro.org
 
-Hi,
-I've fixed the over 80 characters lines that my patches adds,
-but there are other lines over 80 chars in the same file.
-eg.
-    checkpatch.pl -f testcases/network/iproute/ip_tests.sh
-    ....
-    WARNING: line over 80 characters
-    #575: FILE: network/iproute/ip_tests.sh:575:
-    +                       ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err \
-    total: 0 errors, 22 warnings, 611 lines checked
+---
+ testcases/network/tcp_cmds/tcpdump/tcpdump01 |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-BTW, some test files combine spaces and tabs for indentation, and also have
-over 80 chars lines.
-eg.
-    testcases/network/multicast/*
-    testcases/network/nfs/*
+diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+index 4866720..6d99398 100755
+--- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
++++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+@@ -47,8 +47,8 @@ do_setup()
+     tst_setup
 
-Maybe you could clean up them when you have time :)
-
-Vincent Hsu (2):
-  ltp-networking/tcp_cmds/finger: fix finger test
-  ltp-networking/iproute: fix iproute test
-
- testcases/network/iproute/ip_tests.sh      |    7 ++++++-
- testcases/network/tcp_cmds/finger/finger01 |    9 ++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
-
+     exists awk grep host hostname ifconfig netstat ping tail tcpdump
+-    RHOST=${RHOST:-`hostname`}
+-    IP=`host ${RHOST} 2>/dev/null | awk '{print $4}'`
++    LHOST=${LHOST:-`hostname`}
++    IP=`ping ${LHOST} -c 1 | awk '{print $3}' | head -n1 | cut -f2 -d'(' | cut -f1 -d')'`
+     IFNUMS=`netstat -i|wc -l`
+     IFNUMS=$(( $IFNUMS - 2 ))
+     IFNAME=${IFNAME:-$(netstat -i | awk '{print $1}' | tail -n ${IFNUMS})}
 --
 1.7.9.5
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
