@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VbhZi-0004Wz-JZ
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 02:01:30 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VbhZh-0001td-2q
-	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 02:01:30 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id r9V21LZh026034
-	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 10:01:22 +0800
-Message-ID: <5271B9E3.5070201@cn.fujitsu.com>
-Date: Thu, 31 Oct 2013 10:01:07 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VbwNZ-00020I-SQ
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 17:49:57 +0000
+Date: Thu, 31 Oct 2013 18:49:37 +0100
+From: chrubis@suse.cz
+Message-ID: <20131031174936.GF20620@rei.Home>
+References: <52723AC1.6090807@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <526DBE96.1060902@cn.fujitsu.com>
-In-Reply-To: <526DBE96.1060902@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] chdir/chdir01.c: Add ELOOP error number test
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <52723AC1.6090807@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] realtime: add realtime tests to the default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,21 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 10/28/2013 09:32 AM, Zeng Linggang wrote:
-> Add ELOOP error number test in chdir01.c for chdir(2)
+Hi!
 > 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/chdir/chdir01.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
+> modify run.sh to check whether the kernel support RT PREEMPT
+> 
+> modify configure.ac to make the realtime tests default
 
-Applied, thank you.
+I do not like the realtime runtest file. The reason is that all the
+tests are executed by a single script, which makes it hard (if not
+impossible) to figure out what exactly has failed. We are working hard
+on getting rid of such runtest files. The runtest file should have only
+one entry per test.
 
-Wanlong Gao
+Also adding it into the default scenario is IMHO not good choice, most
+of the systems out there are not RT systems.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Android is increasing in popularity, but the open development platform that
