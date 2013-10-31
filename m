@@ -2,18 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hong.gyu.kim@lge.com>) id 1VYyQD-000767-4n
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:24:25 +0000
-Received: from lgeamrelo02.lge.com ([156.147.1.126])
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vbnrb-0004Xb-Ag
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:44:23 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VYyQB-000592-Hn
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 13:24:25 +0000
-From: "Honggyu Kim" <hong.gyu.kim@lge.com>
-Date: Wed, 23 Oct 2013 22:24:15 +0900
-Message-ID: <015f01cecff3$2be084e0$83a18ea0$@gyu.kim@lge.com>
+	id 1Vbnra-0005bk-Ko
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:44:23 +0000
+Message-ID: <52721851.7050906@cn.fujitsu.com>
+Date: Thu, 31 Oct 2013 16:44:01 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Language: ko
-Subject: [LTP] [PATCH v2] getcontext01: check getcontext function in libc
+References: <1383198252-1033-1-git-send-email-xu.simon@oracle.com>
+In-Reply-To: <1383198252-1033-1-git-send-email-xu.simon@oracle.com>
+Subject: Re: [LTP] [PATCH] dhcpd_tests.sh: fix dhcpd.conf file paths
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,87 +28,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Simon Xu <xu.simon@oracle.com>, ltp-list@lists.sourceforge.net
 
-getcontext function is implemented depends on libc version and arch.
-Some libc version for specific arch does not implement getcontext yet.
-In that case, getcontext just sets errno to ENOSYS and returns -1.
-For example, getcontext is not implemented before libc-2.17 in ARM.
-Current test goes to TFAIL when lower version of libc is used in ARM.
+On 10/31/2013 01:44 PM, Simon Xu wrote:
+> dhcpd_tests.sh only checks for /etc/dhcpd.conf, while in some distros the
+> path is /etc/dhcp/dhcpd.conf.
+> ---
+>  testcases/network/dhcpd/dhcpd_tests.sh | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
 
-This patch sets the test as TCONF if libc does not implement getcontext.
-If ENOSYS is not set, it goes to TFAIL as it was.
+Applied, thank you.
 
-Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
----
- .../kernel/syscalls/getcontext/getcontext01.c      |   27
-++++++++++++--------
- 1 file changed, 17 insertions(+), 10 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c
-b/testcases/kernel/syscalls/getcontext/getcontext01.c
-index 03b2df9..34724ac 100644
---- a/testcases/kernel/syscalls/getcontext/getcontext01.c
-+++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
-@@ -54,12 +54,27 @@ int TST_TOTAL = 1;
- 
- int exp_enos[] = { 0 };		/* must be a 0 terminated list */
- 
-+static void test_getcontext(void)
-+{
-+	ucontext_t ptr;
-+
-+	TEST(getcontext(&ptr));
-+
-+	if (TEST_RETURN == -1) {
-+		if (errno == ENOSYS)
-+			tst_resm(TCONF, "getcontext is not implemented in
-libc");
-+		else
-+			tst_resm(TFAIL | TTERRNO, "getcontext failed");
-+	}
-+	else if (TEST_RETURN >= 0)
-+		tst_resm(TPASS, "getcontext passed");
-+}
-+
- int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
- 
--	ucontext_t ptr;
- 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-@@ -68,16 +83,8 @@ int main(int ac, char **av)
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
- 		tst_count = 0;
--
--		TEST(getcontext(&ptr));
--
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "getcontext failed");
--		else if (TEST_RETURN >= 0)
--			tst_resm(TPASS, "getcontext passed");
--
-+		test_getcontext();
- 	}
- 
- 	cleanup();
--- 
-1.7.9.5
-
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
