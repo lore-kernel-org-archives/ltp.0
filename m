@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hong.gyu.kim@lge.com>) id 1VYzCw-0005dF-RA
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 14:14:46 +0000
-Received: from lgeamrelo01.lge.com ([156.147.1.125])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VYzCv-0007hP-19
-	for ltp-list@lists.sourceforge.net; Wed, 23 Oct 2013 14:14:46 +0000
-From: "Honggyu Kim" <hong.gyu.kim@lge.com>
-Date: Wed, 23 Oct 2013 23:14:37 +0900
-Message-ID: <000001cecffa$34dbd980$9e938c80$@gyu.kim@lge.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Vbnof-0004UN-Mc
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:41:21 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vbnoe-0007Cq-RI
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 08:41:21 +0000
+Message-ID: <52721796.7010001@oracle.com>
+Date: Thu, 31 Oct 2013 12:40:54 +0400
+From: alexey.kodanev@oracle.com
 MIME-Version: 1.0
-Content-Language: ko
-Subject: [LTP] [PATCH v4] getcontext01: check getcontext function in libc
+References: <1383132093-4920-1-git-send-email-alexey.kodanev@oracle.com>
+	<5271B4A7.4060006@cn.fujitsu.com>
+In-Reply-To: <5271B4A7.4060006@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] device-drivers: pci: fix PCI_EXP_CAP_CONFIG
+	test-case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,81 +29,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-getcontext function is implemented depends on libc version and arch.
-Some libc version for specific arch does not implement getcontext yet.
-In that case, getcontext just sets errno to ENOSYS and returns -1.
-For example, getcontext is not implemented before libc-2.17 in ARM.
-Current test goes to TFAIL when lower version of libc is used in ARM.
+Hi!
+On 10/31/2013 05:38 AM, Wanlong Gao wrote:
+> On 10/30/2013 07:21 PM, Alexey Kodanev wrote:
+>> There is another way to check that PCI Express config space of pci devices
+>> can be read successfully.
+>> Firstly, find out if a device has a PCI Express Capability: we should get
+>> a correct config address offset from the dev's structure (dev->pcie_cap).
+>> Using the offset, read a PCI Express header. Check if we can get the right
+>> PCI Express CAP ID from the header (it must match the PCI_CAP_ID_EXP macro).
+> This can PASS here, thank you.
+>
+> Why did the original method always FAIL?
 
-This patch sets the test as TCONF if libc does not implement getcontext.
-If ENOSYS is not set and -1 is returned, it goes to TFAIL as it was.
+The original code has wrong offset, should be reg = 0x100 at least (as 
+it written in comment):
+> int reg = 100, len = 4; /*PCI-Exp enhanced config register 0x100, 4 
+> implies dword access */
 
-Change-Id: I93cab9805e5bc9cd05f9f473b466e0dc2bc4fa8f
-Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
----
- .../kernel/syscalls/getcontext/getcontext01.c      |   24 +++++++++++++-------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+I don't know about that magic number 0x14011 in the original code. 
+Comments said that we can find a constant value from that offset, but in 
+truth, we can find any of the PCI_EXT_CAP_ID_* macors in the first 16 
+bits or none if device doesn't have Extended Configuration Space. It can 
+be AER (ERR in the macro) and it could be any other ID (it depends on 
+the device).
 
-diff --git a/testcases/kernel/syscalls/getcontext/getcontext01.c b/testcases/kernel/syscalls/getcontext/getcontext01.c
-index 03b2df9..7919fb5 100644
---- a/testcases/kernel/syscalls/getcontext/getcontext01.c
-+++ b/testcases/kernel/syscalls/getcontext/getcontext01.c
-@@ -54,12 +54,26 @@ int TST_TOTAL = 1;
- 
- int exp_enos[] = { 0 };		/* must be a 0 terminated list */
- 
-+static void test_getcontext(void)
-+{
-+	ucontext_t ptr;
-+
-+	TEST(getcontext(&ptr));
-+
-+	if (TEST_RETURN == -1) {
-+		if (errno == ENOSYS)
-+			tst_resm(TCONF, "getcontext is not implemented in libc");
-+		else
-+			tst_resm(TFAIL | TTERRNO, "getcontext failed");
-+	} else if (TEST_RETURN >= 0)
-+		tst_resm(TPASS, "getcontext passed");
-+}
-+
- int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
- 
--	ucontext_t ptr;
- 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-@@ -71,13 +85,7 @@ int main(int ac, char **av)
- 
- 		tst_count = 0;
- 
--		TEST(getcontext(&ptr));
--
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "getcontext failed");
--		else if (TEST_RETURN >= 0)
--			tst_resm(TPASS, "getcontext passed");
--
-+		test_getcontext();
- 	}
- 
- 	cleanup();
--- 
-1.7.9.5
+better find a particular offset using the kernel function, for example:
+pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR); /* it will find 
+Advanced Error Reporting structure */
 
+Then get the header (first 4 bytes). First 16 bits should be AER_ID, 
+that it is to say 0x0001. From bit 16 to bit 19 - capability version 
+(can be 1h or 2h). The other bits contain the offset to the next PCI 
+Express Capability structure or zero if it is the last one. That kind of 
+header will never equal to 0x14011, that's is why the original method 
+will always fail even with the right offset.
 
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60135991&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
