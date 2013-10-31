@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VS2KO-0007LQ-0K
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:44 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VS2K8-00023S-7t
-	for ltp-list@lists.sourceforge.net; Fri, 04 Oct 2013 10:09:43 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri,  4 Oct 2013 14:09:00 +0400
-Message-Id: <1380881342-13025-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1380881342-13025-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 3/5] controllers/cpuset: fix for old grep
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vbtpk-0002De-Tg
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 15:06:52 +0000
+Date: Thu, 31 Oct 2013 16:06:32 +0100
+From: chrubis@suse.cz
+Message-ID: <20131031150632.GB20620@rei.Home>
+References: <955388781.15408075.1383042634142.JavaMail.root@redhat.com>
+	<1383124058-13133-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1608129004.16193796.1383140734531.JavaMail.root@redhat.com>
+	<52720CC8.7070000@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <52720CC8.7070000@oracle.com>
+Subject: Re: [LTP] [PATCH V2 2/2] setpgid03: use SIGUSR1 instead of sleep
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,72 +24,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, miaox@cn.fujitsu.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-It seems that '\s' does not work with old version
-of grep (2.6.3).
+Hi!
+There are child/parent synchronization primitives in the LTP library.
+See include/tst_checkpoint.h and lib/tests/tst_checkpoint_child.c.
 
-Therefore several testcases fail on some distributions
-using this version. For example - RHEL5-based.
+All that is needed is to initialize checkpoint, call wait in parent and
+once child is ready call signal in child. That will fix the first race.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../cpuset_memory_spread_testset.sh                |    6 +++---
- .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Once child signals the parent it needs to wait till the parent executes
+the test, simple pause() in child and kill() from parent should fix this
+part.
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-index b8a434f..ae1bc09 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-@@ -61,7 +61,7 @@ set_memsinfo_val()
- 	local nl='
- '
- 	# clearing existent value (if present)
--	memsinfo=`echo "$memsinfo" | sed -r "/^\_$1\:\s/d"`
-+	memsinfo=`echo "$memsinfo" | sed -r "/^\_$1\: /d"`
- 
- 	if [ -z "$memsinfo" ]; then
- 		memsinfo="_$1: $2"
-@@ -74,8 +74,8 @@ set_memsinfo_val()
- get_memsinfo_val()
- {
- 	local value=
--	value=`echo "$memsinfo" | grep -e "^\_$1\:\s"`
--	value=`echo "$value" | sed -r "s/^.*\:\s(.*)$/\1/"`
-+	value=`echo "$memsinfo" | grep -e "^\_$1\: "`
-+	value=`echo "$value" | sed -r "s/^.*\: (.*)$/\1/"`
- 	echo "$value"
- }
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-index 95196b7..587e912 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-@@ -231,7 +231,7 @@ test10()
- 			awk '{print $2}')
- 	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
- 
--	task_policy=$(cat $TEST_PROCNUMA | grep -e "\s\+stack\s\+anon" | \
-+	task_policy=$(cat $TEST_PROCNUMA | grep -e "  *stack  *anon" | \
- 			awk '{print $2}')
- 
- 	test "$allowed_list" = "$task_policy"
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60134791&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
