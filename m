@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VVYyU-0003uU-5v
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 03:37:42 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VVYyS-0003aB-1q
-	for ltp-list@lists.sourceforge.net; Mon, 14 Oct 2013 03:37:42 +0000
-From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-	<552630664.4346396.1381389438416.JavaMail.root@redhat.com>
-	<000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
-	<1690303515.5158783.1381487716233.JavaMail.root@redhat.com>
-In-Reply-To: <1690303515.5158783.1381487716233.JavaMail.root@redhat.com>
-Date: Mon, 14 Oct 2013 11:37:26 +0800
-Message-ID: <000001cec88e$b689f9d0$239ded70$@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1VbuVG-0002IZ-QF
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 15:49:46 +0000
+Date: Thu, 31 Oct 2013 16:49:25 +0100
+From: chrubis@suse.cz
+Message-ID: <20131031154925.GC20620@rei.Home>
+References: <527210BF.3040803@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Language: zh-cn
-Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
-	->	factor_nr = 5
+Content-Disposition: inline
+In-Reply-To: <527210BF.3040803@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] clock_getres/clock_getres01.c: Add
+ CLOCK_MONOTONIC_RAW test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,95 +22,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Jan Stancek' <jstancek@redhat.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogSmFuIFN0YW5jZWsgW21haWx0
-bzpqc3RhbmNla0ByZWRoYXQuY29tXQo+IFNlbnQ6IEZyaWRheSwgT2N0b2JlciAxMSwgMjAxMyA2
-OjM1IFBNCj4gVG86IFplbmcgTGluZ2dhbmcKPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Cj4gU3ViamVjdDogUmU6IFtMVFBdIFtQQVRDSF0gZ2V0cnVzYWdlL2dldHJ1c2FnZTA0
-LmM6IEZpeCBmYWN0b3JfbnIgPSAxIC0+Cj4gZmFjdG9yX25yID0gNQo+IAo+IAo+IAo+IAo+IAo+
-IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+IEZyb206ICJaZW5nIExpbmdnYW5nIiA8
-emVuZ2xnLmp5QGNuLmZ1aml0c3UuY29tPgo+ID4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2Vr
-QHJlZGhhdC5jb20+Cj4gPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gPiBT
-ZW50OiBGcmlkYXksIDExIE9jdG9iZXIsIDIwMTMgMTI6MTk6MTkgUE0KPiA+IFN1YmplY3Q6IFJF
-OiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9nZXRydXNhZ2UwNC5jOiBGaXggZmFjdG9yX25yID0g
-MSAtPgo+IAlmYWN0b3JfbnIgPSA1Cj4gPgo+ID4KPiA+Cj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVz
-c2FnZS0tLS0tCj4gPiA+IEZyb206IOabvuS7pOmSoiBbbWFpbHRvOnplbmdsZy5qeUBjbi5mdWpp
-dHN1LmNvbV0KPiA+ID4gU2VudDogVGh1cnNkYXksIE9jdG9iZXIgMTAsIDIwMTMgNDoxNiBQTQo+
-ID4gPiBUbzogJ0phbiBTdGFuY2VrJwo+ID4gPiBDYzogJ2x0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldCcKPiA+ID4gU3ViamVjdDog562U5aSNOiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9n
-ZXRydXNhZ2UwNC5jOiBGaXggZmFjdG9yX25yID0KPiA+ID4gMSAtPiBmYWN0b3JfbnIgPSA1Cj4g
-PiA+Cj4gPiA+Cj4gPiA+Cj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+IC0tLS0tIE9yaWdpbmFsIE1l
-c3NhZ2UgLS0tLS0KPiA+ID4gPiA+IEZyb206ICLmm77ku6TpkqIiIDx6ZW5nbGcuanlAY24uZnVq
-aXRzdS5jb20+Cj4gPiA+ID4gPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
-PiA+ID4gPiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2JlciwgMjAxMyA3OjU2OjA1IEFNCj4gPiA+
-ID4gPiBTdWJqZWN0OiBbTFRQXSBbUEFUQ0hdIGdldHJ1c2FnZS9nZXRydXNhZ2UwNC5jOiBGaXgg
-ZmFjdG9yX25yID0KPiA+ID4gPiA+IDEgLT4KPiA+ID4gPiAJZmFjdG9yX25yID0gNQo+ID4gPiA+
-ID4KPiA+ID4gPiA+IFRvIG1ha2UgdWRlbHRhIG9yIHNkZWx0YSdzIHZhbHVlcyBpc25vdCBncmVh
-dCB0aGFuIGV4cGVjdGVkLCB3ZQo+ID4gPiA+ID4gY2hhbmdlIHRoZSBmYWN0b3JfbnIgdG8gNS4K
-PiA+ID4gPgo+ID4gPiA+IE5vdGUsIHRoYXQgdGhlcmUgaXMgYWxyZWFkeSBhIHBhcmFtZXRlciAt
-bSB0byBzZXQgZmFjdG9yX25yLgo+ID4gPiA+Cj4gPiA+ID4gQ2FuIHlvdSBzaGFyZSBtb3JlIGRl
-dGFpbHMgd2h5IHRoaXMgc2hvdWxkIGJlIHRoZSBkZWZhdWx0Pwo+ID4gPiA+IE9uIHdoaWNoIHN5
-c3RlbS9hcmNoaXRlY3R1cmUgZG8geW91IHNlZSBpdCBmYWlsaW5nPwo+ID4gPgo+ID4gPiBZZXMu
-IFdlIGhhdmUgc29tZSBwcm9ibGVtcyBpbiBSSEVMNS4xMEdBLgo+ID4gPiBJdCBjb3VsZCBub3Qg
-d29yayBhcyB3ZSBleHBlY3RlZC4gQW5kIEkgd2lsbCBiZSBtb3JlIGNhcmVmdWwuCj4gPiA+IFRo
-YW5rcy4KPiA+ID4KPiA+Cj4gPiBNYXliZSB0aGUgY2FzZSBpcyBub3Qgc3VpdCBmb3IgeGVuIGtl
-cm5lbC4KPiA+IFdoZW4ga2VybmVsIGlzIHZtbGludXotMi42LjE4LTM3MS5lbDV4ZW4sIHRoZSBj
-YXNlIHdpbGwgZmFpbC4KPiA+IEJ1dCB3aXRoIHZtbGludXotMi42LjE4LTM3MS5lbDUsIGl0IHdv
-cmtzIHdlbGwuCj4gCj4gQ2FuIHlvdSBzZW5kIHRoZSBvdXRwdXQgZnJvbSBmYWlsZWQgcnVuPwoK
-PDw8dGVzdF9zdGFydD4+Pgp0YWc9Z2V0cnVzYWdlMDQgc3RpbWU9MTM4MTI4NTM3OQpjbWRsaW5l
-PSJnZXRydXNhZ2UwNCIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8PDx0ZXN0X291dHB1dD4+
-PgpnZXRydXNhZ2UwNCAgICAwICBUSU5GTyAgOiAgQ0xPQ0tfUkVBTFRJTUVfQ09BUlNFIG5vdCBz
-dXBwb3J0ZWQsIHVzaW5nIDQwMDAgdXMKZ2V0cnVzYWdlMDQgICAgMCAgVElORk8gIDogIFVzaW5n
-IDEgYXMgbXVsdGlwbHkgZmFjdG9yIGZvciBtYXggW3VzXXRpbWUgaW5jcmVtZW50ICgxMDAwKzQw
-MDB1cykhCmdldHJ1c2FnZTA0ICAgIDAgIFRJTkZPICA6ICB1dGltZTogICAgICAgICAgIDB1czsg
-c3RpbWU6ICAgICAgICA0MDAwdXMKZ2V0cnVzYWdlMDQgICAgMCAgVElORk8gIDogIHV0aW1lOiAg
-ICAgICAgICAgMHVzOyBzdGltZTogICAgICAgMTYwMDF1cwpnZXRydXNhZ2UwNCAgICAxICBURkFJ
-TCAgOiAgc3RpbWUgaW5jcmVhc2VkID4gNTAwMHVzOgo8PDxleGVjdXRpb25fc3RhdHVzPj4+Cmlu
-aXRpYXRpb25fc3RhdHVzPSJvayIKZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0
-ZXJtaW5hdGlvbl9pZD0xIGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0yCjw8PHRlc3RfZW5k
-Pj4+CgpSZWdhcmRzLApaZW5nCgo+IAo+IAo+ID4KPiA+IFJlZ2FyZHMsCj4gPiBaZW5nCj4gPgo+
-ID4gPiA+Cj4gPiA+ID4gUmVnYXJkcywKPiA+ID4gPiBKYW4KPiA+ID4gPgo+ID4gPiA+ID4KPiA+
-ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFplbmcgTGluZ2dhbmcgPHplbmdsZy5qeUBjbi5mdWppdHN1
-LmNvbT4KPiA+ID4gPiA+IC0tLQo+ID4gPiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-Z2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMgfCAgICAyICstCj4gPiA+ID4gPiAgMSBmaWxlcyBjaGFu
-Z2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4gPiA+ID4gPgo+ID4gPiA+ID4g
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2Fn
-ZTA0LmMKPiA+ID4gPiA+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0
-cnVzYWdlMDQuYwo+ID4gPiA+ID4gaW5kZXggOTZlMjRhNC4uNDFkMDA1MiAxMDA2NDQKPiA+ID4g
-PiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0
-LmMKPiA+ID4gPiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dl
-dHJ1c2FnZTA0LmMKPiA+ID4gPiA+IEBAIC02Nyw3ICs2Nyw3IEBAIHN0YXRpYyBsb25nIEJJQVNf
-TUFYOwo+ID4gPiA+ID4KPiA+ID4gPiA+ICBzdGF0aWMgaW50IG9wdF9mYWN0b3I7Cj4gPiA+ID4g
-PiAgc3RhdGljIGNoYXIgKmZhY3Rvcl9zdHI7Cj4gPiA+ID4gPiAtc3RhdGljIGxvbmcgZmFjdG9y
-X25yID0gMTsKPiA+ID4gPiA+ICtzdGF0aWMgbG9uZyBmYWN0b3JfbnIgPSA1Owo+ID4gPiA+ID4K
-PiA+ID4gPiA+ICBvcHRpb25fdCBjaGlsZF9vcHRpb25zW10gPSB7Cj4gPiA+ID4gPiAgCXsibToi
-LCAmb3B0X2ZhY3RvciwgJmZhY3Rvcl9zdHJ9LAo+ID4gPiA+ID4gLS0KPiA+ID4gPiA+IDEuNy4x
-Cj4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4gPgo+ID4gPiA+ID4gLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQo+ID4gPiA+ID4gLS0tLQo+ID4gPiA+ID4gLS0KPiA+ID4gPiA+IC0tLS0tLS0tIE9jdG9iZXIg
-V2ViaW5hcnM6IENvZGUgZm9yIFBlcmZvcm1hbmNlIEZyZWUgSW50ZWwKPiA+ID4gPiA+IHdlYmlu
-YXJzIGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlLgo+ID4g
-PiA+ID4gRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBh
-bmQgbW9yZS4gR2V0Cj4gPiA+ID4gPiB0aGUgbW9zdCBmcm9tIHRoZSBsYXRlc3QgSW50ZWwgcHJv
-Y2Vzc29ycyBhbmQgY29wcm9jZXNzb3JzLiBTZWUKPiA+ID4gPiA+IGFic3RyYWN0cyBhbmQgcmVn
-aXN0ZXIgPgo+ID4gPiA+ID4KPiA+ID4gPgo+ID4gPgo+IGh0dHA6Ly9wdWJhZHMuZy5kb3VibGVj
-bGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnCj4gPiA+IC5jCj4g
-PiA+ID4gPiBsa3RyayBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+ID4gPiA+ID4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gPiA+ID4gPiBMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+ID4gPiA+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gPiA+ID4gPgo+ID4KPiA+Cj4gPgoKCgotLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KT2N0b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UK
-RnJlZSBJbnRlbCB3ZWJpbmFycyBjYW4gaGVscCB5b3UgYWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBw
-ZXJmb3JtYW5jZS4KRXhwbG9yZSB0aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmls
-aW5nLCBhbmQgbW9yZS4gR2V0IHRoZSBtb3N0IGZyb20gCnRoZSBsYXRlc3QgSW50ZWwgcHJvY2Vz
-c29ycyBhbmQgY29wcm9jZXNzb3JzLiBTZWUgYWJzdHJhY3RzIGFuZCByZWdpc3RlciA+Cmh0dHA6
-Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0
-MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> Add CLOCK_MONOTONIC_RAW test in clock_getres01.c for clock_getres(2)
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/clock_getres/clock_getres01.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
+> index 0fb5df4..c73b0ce 100644
+> --- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
+> +++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
+> @@ -188,6 +188,12 @@ static struct test_case tcase[] = {
+>  	 .ret = 0,
+>  	 .err = 0,
+>  	 },
+> +	{
+> +	 .clk_id = CLOCK_MONOTONIC_RAW,
+> +	 .ttype = NORMAL,
+> +	 .ret = 0,
+> +	 .err = 0,
+> +	 },
+>  };
+
+This will fail the testcase on systems where CLOCK_MONOTONIC_RAW is not
+implemented (older than 2.6.28). The kernel will return EINVAL in this
+case because the clock id is not known.
+
+Also the testcase is messy and not ported to the LTP API. Can you please
+fix that? (in separate patch)
+
+
+And when you are at it there more timers to add (CLOCK_REALTIME_COARSE,
+CLOCK_MONOTONIC_COARSE, CLOCK_BOOTTIME) see latest man page for
+clock_getres.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
