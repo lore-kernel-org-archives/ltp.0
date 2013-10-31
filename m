@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VUZom-0005mc-Jp
-	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 10:19:36 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VUZok-0002x9-8T
-	for ltp-list@lists.sourceforge.net; Fri, 11 Oct 2013 10:19:36 +0000
-From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-References: <00ae01cec57d$6b50bbc0$41f23340$@cn.fujitsu.com>
-	<552630664.4346396.1381389438416.JavaMail.root@redhat.com> 
-In-Reply-To: 
-Date: Fri, 11 Oct 2013 18:19:19 +0800
-Message-ID: <000901cec66b$5bd10b70$13732250$@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Language: zh-cn
-Subject: Re: [LTP] [PATCH] getrusage/getrusage04.c: Fix factor_nr = 1
-	->	factor_nr = 5
+	(envelope-from <xu.simon@oracle.com>) id 1VblW6-00062A-8u
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 06:14:02 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VblW4-0005fV-Ej
+	for ltp-list@lists.sourceforge.net; Thu, 31 Oct 2013 06:14:02 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id r9V6Dsh9000575
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 06:13:54 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9V6DruC005884
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 06:13:54 GMT
+Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	r9V6DrZB005878
+	for <ltp-list@lists.sourceforge.net>; Thu, 31 Oct 2013 06:13:53 GMT
+From: Simon Xu <xu.simon@oracle.com>
+Date: Thu, 31 Oct 2013 14:13:38 +0800
+Message-Id: <1383200018-1207-1-git-send-email-xu.simon@oracle.com>
+Subject: [LTP] [PATCH] iptables_tests.sh: nat table can have 4 chains
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,66 +35,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Jan Stancek' <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTog5pu+5Luk6ZKiIFttYWlsdG86
-emVuZ2xnLmp5QGNuLmZ1aml0c3UuY29tXQo+IFNlbnQ6IFRodXJzZGF5LCBPY3RvYmVyIDEwLCAy
-MDEzIDQ6MTYgUE0KPiBUbzogJ0phbiBTdGFuY2VrJwo+IENjOiAnbHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Jwo+IFN1YmplY3Q6IOetlOWkjTogW0xUUF0gW1BBVENIXSBnZXRydXNhZ2Uv
-Z2V0cnVzYWdlMDQuYzogRml4IGZhY3Rvcl9uciA9IDEgLT4KPiBmYWN0b3JfbnIgPSA1Cj4gCj4g
-Cj4gCj4gPgo+ID4KPiA+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiA+ID4gRnJvbTog
-IuabvuS7pOmSoiIgPHplbmdsZy5qeUBjbi5mdWppdHN1LmNvbT4KPiA+ID4gVG86IGx0cC1saXN0
-QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+ID4gPiBTZW50OiBUaHVyc2RheSwgMTAgT2N0b2Jlciwg
-MjAxMyA3OjU2OjA1IEFNCj4gPiA+IFN1YmplY3Q6IFtMVFBdIFtQQVRDSF0gZ2V0cnVzYWdlL2dl
-dHJ1c2FnZTA0LmM6IEZpeCBmYWN0b3JfbnIgPSAxIC0+Cj4gPiAJZmFjdG9yX25yID0gNQo+ID4g
-Pgo+ID4gPiBUbyBtYWtlIHVkZWx0YSBvciBzZGVsdGEncyB2YWx1ZXMgaXNub3QgZ3JlYXQgdGhh
-biBleHBlY3RlZCwgd2UKPiA+ID4gY2hhbmdlIHRoZSBmYWN0b3JfbnIgdG8gNS4KPiA+Cj4gPiBO
-b3RlLCB0aGF0IHRoZXJlIGlzIGFscmVhZHkgYSBwYXJhbWV0ZXIgLW0gdG8gc2V0IGZhY3Rvcl9u
-ci4KPiA+Cj4gPiBDYW4geW91IHNoYXJlIG1vcmUgZGV0YWlscyB3aHkgdGhpcyBzaG91bGQgYmUg
-dGhlIGRlZmF1bHQ/Cj4gPiBPbiB3aGljaCBzeXN0ZW0vYXJjaGl0ZWN0dXJlIGRvIHlvdSBzZWUg
-aXQgZmFpbGluZz8KPiAKPiBZZXMuIFdlIGhhdmUgc29tZSBwcm9ibGVtcyBpbiBSSEVMNS4xMEdB
-Lgo+IEl0IGNvdWxkIG5vdCB3b3JrIGFzIHdlIGV4cGVjdGVkLiBBbmQgSSB3aWxsIGJlIG1vcmUg
-Y2FyZWZ1bC4KPiBUaGFua3MuCj4gCgpNYXliZSB0aGUgY2FzZSBpcyBub3Qgc3VpdCBmb3IgeGVu
-IGtlcm5lbC4KV2hlbiBrZXJuZWwgaXMgdm1saW51ei0yLjYuMTgtMzcxLmVsNXhlbiwgdGhlIGNh
-c2Ugd2lsbCBmYWlsLgpCdXQgd2l0aCB2bWxpbnV6LTIuNi4xOC0zNzEuZWw1LCBpdCB3b3JrcyB3
-ZWxsLgoKUmVnYXJkcywKWmVuZwoKPiA+Cj4gPiBSZWdhcmRzLAo+ID4gSmFuCj4gPgo+ID4gPgo+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcuanlAY24uZnVqaXRzdS5j
-b20+Cj4gPiA+IC0tLQo+ID4gPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2Uv
-Z2V0cnVzYWdlMDQuYyB8ICAgIDIgKy0KPiA+ID4gIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRp
-b25zKCspLCAxIGRlbGV0aW9ucygtKQo+ID4gPgo+ID4gPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+ID4gPiBiL3Rlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPiA+ID4gaW5kZXggOTZl
-MjRhNC4uNDFkMDA1MiAxMDA2NDQKPiA+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL2dldHJ1c2FnZS9nZXRydXNhZ2UwNC5jCj4gPiA+IEBAIC02Nyw3ICs2Nyw3IEBAIHN0
-YXRpYyBsb25nIEJJQVNfTUFYOwo+ID4gPgo+ID4gPiAgc3RhdGljIGludCBvcHRfZmFjdG9yOwo+
-ID4gPiAgc3RhdGljIGNoYXIgKmZhY3Rvcl9zdHI7Cj4gPiA+IC1zdGF0aWMgbG9uZyBmYWN0b3Jf
-bnIgPSAxOwo+ID4gPiArc3RhdGljIGxvbmcgZmFjdG9yX25yID0gNTsKPiA+ID4KPiA+ID4gIG9w
-dGlvbl90IGNoaWxkX29wdGlvbnNbXSA9IHsKPiA+ID4gIAl7Im06IiwgJm9wdF9mYWN0b3IsICZm
-YWN0b3Jfc3RyfSwKPiA+ID4gLS0KPiA+ID4gMS43LjEKPiA+ID4KPiA+ID4KPiA+ID4KPiA+ID4K
-PiA+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KPiA+ID4gLS0KPiA+ID4gLS0tLS0tLS0gT2N0b2JlciBXZWJpbmFy
-czogQ29kZSBmb3IgUGVyZm9ybWFuY2UgRnJlZSBJbnRlbCB3ZWJpbmFycwo+ID4gPiBjYW4gaGVs
-cCB5b3UgYWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZS4KPiA+ID4gRXhwbG9yZSB0
-aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBhbmQgbW9yZS4gR2V0IHRo
-ZQo+ID4gPiBtb3N0IGZyb20gdGhlIGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nl
-c3NvcnMuIFNlZQo+ID4gPiBhYnN0cmFjdHMgYW5kIHJlZ2lzdGVyID4KPiA+ID4KPiA+Cj4gaHR0
-cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTYwMTM0MDcxJml1PS80
-MTQwL29zdGcuYwo+ID4gPiBsa3RyayBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+ID4gPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiA+ID4gTHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gPiA+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
-L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gPiA+CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpP
-Y3RvYmVyIFdlYmluYXJzOiBDb2RlIGZvciBQZXJmb3JtYW5jZQpGcmVlIEludGVsIHdlYmluYXJz
-IGNhbiBoZWxwIHlvdSBhY2NlbGVyYXRlIGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlLgpFeHBsb3Jl
-IHRpcHMgZm9yIE1QSSwgT3Blbk1QLCBhZHZhbmNlZCBwcm9maWxpbmcsIGFuZCBtb3JlLiBHZXQg
-dGhlIG1vc3QgZnJvbSAKdGhlIGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nlc3Nv
-cnMuIFNlZSBhYnN0cmFjdHMgYW5kIHJlZ2lzdGVyID4KaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNs
-aWNrLm5ldC9nYW1wYWQvY2xrP2lkPTYwMTM0MDcxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
-bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+It is considered by iptables_tests.sh a failure When nat table chain count is
+not 3, while recent kernels can have 4 built-in chains in nat table, namely
+PREROUTING, OUTPUT, POSTROUTING and INPUT.
+---
+ testcases/network/iptables/iptables_tests.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+index 028d54e..77ee29b 100755
+--- a/testcases/network/iptables/iptables_tests.sh
++++ b/testcases/network/iptables/iptables_tests.sh
+@@ -165,7 +165,7 @@ test01()
+ 		return $RC
+ 	else
+ 		chaincnt=$(grep -c Chain $LTPTMP/tst_iptables.out)
+-		if [ $chaincnt -ne 3 ]; then
++		if [ $chaincnt -ne 3 ] && [ $chaincnt -ne 4 ]; then
+ 			tst_res TFAIL $LTPTMP/tst_iptables.out \
+ 				"$TCID: $cmd failed to list rules. Reason:"
+ 			return $chaincnt
+-- 
+1.8.4
+
+
+------------------------------------------------------------------------------
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
