@@ -1,19 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vgea6-0001k5-5t
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 17:50:22 +0000
-Date: Wed, 13 Nov 2013 18:50:08 +0100
-From: chrubis@suse.cz
-Message-ID: <20131113175008.GE12406@rei.Home>
-References: <52833F4F.7090303@oracle.com>
-	<1384334113-11205-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	(envelope-from <xu.simon@oracle.com>) id 1VcATk-0008FR-9E
+	for ltp-list@lists.sourceforge.net; Fri, 01 Nov 2013 08:53:16 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VcATi-0002Ye-BU
+	for ltp-list@lists.sourceforge.net; Fri, 01 Nov 2013 08:53:16 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rA18r7Hf002316
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 1 Nov 2013 08:53:08 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA18r7oK009807
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Fri, 1 Nov 2013 08:53:07 GMT
+Received: from abhmt104.oracle.com (abhmt104.oracle.com [141.146.116.56])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA18r75l009798
+	for <ltp-list@lists.sourceforge.net>; Fri, 1 Nov 2013 08:53:07 GMT
+Message-ID: <52736BE4.3080009@oracle.com>
+Date: Fri, 01 Nov 2013 16:52:52 +0800
+From: Simon Xu <xu.simon@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1384334113-11205-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [RFC PATCH V2] tst_checkpoint_signal_child: implemented
- timeout
+References: <1383214761-1385-1-git-send-email-xu.simon@oracle.com>
+In-Reply-To: <1383214761-1385-1-git-send-email-xu.simon@oracle.com>
+Subject: Re: [LTP] [PATCH] rwho01: fix getting hostnames from command output
+ and a typo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,141 +42,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> If a child exits before opening TST_CHECKPOINT_FIFO
-> for reading, tst_checkpoint_signal_child() issued from the parent
-> will block forever.
-> 
-> To handle such situations added timeout logic to tst_checkpoint_signal_child();
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Could anyone review this?
+
+Thanks
+Simon
+
+On 10/31/13 18:19, Simon Xu wrote:
+> Fix the way the script gets hostnames from rwho/ruptime command output,
+> and the mistake that $COUNT is used instead of $TST_COUNT in do_test().
 > ---
->  lib/tst_checkpoint.c |   57 ++++++++++++++++++++++++++++++++++++++++++++++---
->  1 files changed, 53 insertions(+), 4 deletions(-)
-> 
-> diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-> index 56c86b5..842ac74 100644
-> --- a/lib/tst_checkpoint.c
-> +++ b/lib/tst_checkpoint.c
-> @@ -30,9 +30,52 @@
->  #include <sys/stat.h>
->  #include <fcntl.h>
->  #include <poll.h>
-> +#include <time.h>
->  
->  #include "tst_checkpoint.h"
->  
-> +/*
-> + * Issue open() on 'path' fifo with O_WRONLY flag and wait for
-> + * a reader up to 'timeout' ms.
-> + *
-> + * Returns:
-> + *   > 0 - file descriptor
-> + *   -1  - an error has occurred (errno is set accordingly)
-> + *
-> + */
-> +int open_wronly_timed(const char *path, unsigned int timeout)
-> +{
-> +	int fd;
-> +	int interval_ms = 1; /* how often issue open(O_NONBLOCK) */
-> +	long timeleft = timeout;
-> +
-> +	struct timespec interval;
-> +	interval.tv_sec = 0;
-> +	interval.tv_nsec = interval_ms * 1000000; /* in ns */
-> +
-> +	for (;;) {
+>   testcases/network/tcp_cmds/rwho/rwho01 | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
+> index 2c82ef1..eb31642 100755
+> --- a/testcases/network/tcp_cmds/rwho/rwho01
+> +++ b/testcases/network/tcp_cmds/rwho/rwho01
+> @@ -106,18 +106,18 @@ do_test()
+>   
+>       while [ $TST_COUNT -le $NUMLOOPS ]; do
+>           rwho -a > $OUTFILE
+> -        HOST=`awk "\\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
+> +        HOST=`grep $LHOST $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
+>           [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in rwho outfile"
+> -        HOST=`awk "\\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
+> +        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
+>           [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in rwho outfile"
+>   
+>           ruptime -a > $OUTFILE
+> -        HOST=`awk "\\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
+> +        HOST=`grep $LHOST $OUTFILE | sed 's/ .*//' | uniq`
+>           [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in ruptime outfile"
+> -        HOST=`awk "\\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
+> +        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/ .*//' | uniq`
+>           [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in ruptime outfile"
+>   
+> -        tst_resm TINFO "Test $COUNT of $NUMLOOPS complete"
+> +        tst_resm TINFO "Test $TST_COUNT of $NUMLOOPS complete"
+>           incr_tst_count
+>       done
+>   }
 
-What about using
-
-	for (i = 0; i < timeout; i += interval) {
-
-> +		fd = open(path, O_WRONLY | O_NONBLOCK);
-> +		if (fd < 0) {
-> +			if ((errno == ENXIO) || (errno == EINTR)) {
-> +				if (timeleft <= 0) {
-> +					errno = ETIMEDOUT;
-> +
-> +					return -1;
-> +				}
-> +
-> +				timeleft -= interval_ms;
-> +				nanosleep(&interval, NULL);
-
-What about using usleep() which has simplier interface instead?
-
-> +				continue;
-> +			}
-> +
-> +			return -1;
-> +		}
-> +
-> +		return fd;
-> +	}
-> +}
-> +
->  void tst_checkpoint_init(const char *file, const int lineno,
->                           struct tst_checkpoint *self)
->  {
-> @@ -195,12 +238,18 @@ void tst_checkpoint_signal_child(const char *file, const int lineno,
->  {
->  	int ret, fd;
->  	
-> -	fd = open(TST_CHECKPOINT_FIFO, O_WRONLY);
-> +	fd = open_wronly_timed(TST_CHECKPOINT_FIFO, self->timeout);
->  
->  	if (fd < 0) {
-> -		tst_brkm(TBROK | TERRNO, cleanup_fn,
-> -		         "Failed to open fifo '%s' at %s:%d",
-> -		         TST_CHECKPOINT_FIFO, file, lineno);
-> +		if (errno == ETIMEDOUT) {
-> +			tst_brkm(TBROK, cleanup_fn,
-> +				"Checkpoint timeouted after %u msecs at %s:%d",
-> +				self->timeout, file, lineno);
-> +		} else {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				"Failed to open fifo '%s' at %s:%d",
-> +				TST_CHECKPOINT_FIFO, file, lineno);
-> +		}
-
-Hmm, there is no need to complicate this part, if you have set the errno
-to ETIMEOUTED the tst_brkm() will include the errno and will look like:
-
-foo01	1  TBROK  :  Failed to open fifo 'tst_checkpoint_fifo' at tst_checkopoint.c:211: ERRNO=ETIMEDOUT(110): Connection timed out
-
-Which is in my opinion descriptive enough.
-
-
-But we need to add EDTIMEDOUT into the tst_res.c fist, actually there are still
-some errno values missing, so I will add them them there beforehand.
-
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index f73022b..7d87492 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -255,6 +255,7 @@ static const char *strerrnodef(int err)
-                    PAIR(ENOSYS)
-                    PAIR(ENOTEMPTY)
-                    PAIR(ELOOP)
-+                   PAIR(ETIMEDOUT)
-        };
-        return pair_lookup(errno_pairs, err);
- }
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
