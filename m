@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VgDlU-0003sA-OS
-	for ltp-list@lists.sourceforge.net; Tue, 12 Nov 2013 13:12:20 +0000
-Date: Tue, 12 Nov 2013 14:12:08 +0100
-From: chrubis@suse.cz
-Message-ID: <20131112131208.GB27040@rei>
-References: <1383883144.2945.1.camel@G08JYZSD130126>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <nexus226@gmail.com>) id 1VcsKv-0007U5-Jm
+	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 07:43:05 +0000
+Received: from mail-we0-f174.google.com ([74.125.82.174])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VcsKu-0007y1-KW
+	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 07:43:05 +0000
+Received: by mail-we0-f174.google.com with SMTP id u56so968334wes.19
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 03 Nov 2013 00:42:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1383883144.2945.1.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2] clock_getres/clock_getres01.c: cleanup
+Date: Sun, 3 Nov 2013 16:42:58 +0900
+Message-ID: <CAEcr6y0DwkrBXqCqcpm2S1QAN=J1jJXnpcmPjXtAehEi5k8c2A@mail.gmail.com>
+From: Honggyu Kim <nexus226@gmail.com>
+Subject: [LTP] [PATCH] acct01: fix TBROK to TCONF if acct not implemented
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,70 +25,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5869908032731899098=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> -struct test_case {
-> +static struct test_case {
-> +	char *name;
->  	clockid_t clk_id;
->  	int ttype;
->  	int ret;
->  	int err;
-> +} tcase[] = {
-> +	{"CLOCK_REALTIME", CLOCK_REALTIME, NORMAL, 0, 0,},
-> +	{"CLOCK_MONOTONIC", CLOCK_MONOTONIC, NORMAL, 0, 0,},
-> +	{"CLOCK_PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, NORMAL, 0, 0,},
-> +	{"CLOCK_THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, NORMAL, 0, 0,},
-> +	{"-1", -1, NORMAL, -1, EINVAL, },
-> +	{"CLOCK_REALTIME", CLOCK_REALTIME, NULL_POINTER, 0, 0,},
->  };
+--===============5869908032731899098==
+Content-Type: multipart/alternative; boundary=001a1134ccb2c0288804ea40f2b7
 
-Remove comas at the end of the list too.
+--001a1134ccb2c0288804ea40f2b7
+Content-Type: text/plain; charset=ISO-8859-1
 
-> +		for (i = 0; i < TST_TOTAL; ++i) {
-> +			if (tcase->ttype == NULL_POINTER)
-> +				TEST(clock_getres(tcase->clk_id, NULL));
-> +			else
-> +				TEST(clock_getres(tcase->clk_id, &res));
-> +
-> +			if (TEST_RETURN != 0) {
-> +				if (TEST_ERRNO == EINVAL) {
-> +					tst_resm(TCONF, "clock_getres %s not "
-> +						 "supported", tcase[i].name);
-> +				} else {
-> +					tst_resm(TFAIL, "clock_getres %s"
-> +						 "failed", tcase[i].name);
->  				}
+acct system call is avaliable only when the kernel option is on.
+When it fails, acct returns -1 and sets errno correspondingly.
+ENOSYS is set when the system call is not implemented.
+Currently, ENOSYS is not checked when the TEST_FILES argument is passed.
+It just goes to TBROK regardless of the implementation.
+This patch modifies to check errno ENOSYS, and marks as TCONF in that case.
 
-The tcase->ttype and tcase->clk_id is wrong, it should be tcase[i].ttype
-and tcase[i].clk_id, otherwise you are testing only the first structure
-from the tcase array again and again while the tst_resm() testcases
-lists different clock id names.
+Signed-off-by: Honggyu Kim <nexus226@gmail.com>
+---
+ testcases/kernel/syscalls/acct/acct01.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Moreover you should check against expected return value and expected
-errno, i.e. tcase[i].ret and tcase[i].err. And return TCONF only in case
-that the expected return value is 0 (success) and is not and errno is
-set to EINVAL.
+diff --git a/testcases/kernel/syscalls/acct/acct01.c
+b/testcases/kernel/syscalls/acct/acct01.c
+index c38d4db..0fe973b 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -103,8 +103,15 @@ static void setup(void)
+  fd = SAFE_CREAT(cleanup, TEST_FILE5, 0777);
+  SAFE_CLOSE(cleanup, fd);
 
-Also do not abort the test on first failure, (i.e. remove the cleanup
-and exit if returned value does not match the expected one).
+- if (acct(TEST_FILE5) == -1)
+- tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++ if (acct(TEST_FILE5) == -1) {
++ if (errno == ENOSYS) {
++ tst_brkm(TCONF, cleanup,
++ "BSD process accounting is not configured in "
++ "this kernel");
++ } else {
++ tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++ }
++ }
 
+  /* turn off acct, so we are in a known state */
+  if (acct(NULL) == -1) {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
+--001a1134ccb2c0288804ea40f2b7
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>acct system call is avaliable only when the kernel op=
+tion is on.<br></div><div>When it fails, acct returns -1 and sets errno cor=
+respondingly.</div><div>ENOSYS is set when the system call is not implement=
+ed.</div>
+<div>Currently, ENOSYS is not checked when the TEST_FILES argument is passe=
+d.</div><div>It just goes to TBROK regardless of the implementation.</div><=
+div>This patch modifies to check errno ENOSYS, and marks as TCONF in that c=
+ase.</div>
+<div><br></div><div>Signed-off-by: Honggyu Kim &lt;<a href=3D"mailto:nexus2=
+26@gmail.com">nexus226@gmail.com</a>&gt;</div><div>---</div><div>=A0testcas=
+es/kernel/syscalls/acct/acct01.c | =A0 11 +++++++++--</div><div>=A01 file c=
+hanged, 9 insertions(+), 2 deletions(-)</div>
+<div><br></div><div>diff --git a/testcases/kernel/syscalls/acct/acct01.c b/=
+testcases/kernel/syscalls/acct/acct01.c</div><div>index c38d4db..0fe973b 10=
+0644</div><div>--- a/testcases/kernel/syscalls/acct/acct01.c</div><div>
++++ b/testcases/kernel/syscalls/acct/acct01.c</div><div>@@ -103,8 +103,15 @=
+@ static void setup(void)</div><div>=A0<span class=3D"Apple-tab-span" style=
+=3D"white-space:pre">	</span>fd =3D SAFE_CREAT(cleanup, TEST_FILE5, 0777);<=
+/div>
+<div>=A0<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>SA=
+FE_CLOSE(cleanup, fd);</div><div>=A0</div><div>-<span class=3D"Apple-tab-sp=
+an" style=3D"white-space:pre">	</span>if (acct(TEST_FILE5) =3D=3D -1)</div>=
+<div>-<span class=3D"Apple-tab-span" style=3D"white-space:pre">		</span>tst=
+_brkm(TBROK | TERRNO, cleanup, &quot;acct failed unexpectedly&quot;);</div>
+<div>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>if (=
+acct(TEST_FILE5) =3D=3D -1) {</div><div>+<span class=3D"Apple-tab-span" sty=
+le=3D"white-space:pre">		</span>if (errno =3D=3D ENOSYS) {</div><div>+<span=
+ class=3D"Apple-tab-span" style=3D"white-space:pre">			</span>tst_brkm(TCON=
+F, cleanup,</div>
+<div>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">				</span> =
+&quot;BSD process accounting is not configured in &quot;</div><div>+<span c=
+lass=3D"Apple-tab-span" style=3D"white-space:pre">				</span> &quot;this ke=
+rnel&quot;);</div>
+<div>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">		</span>} e=
+lse {</div><div>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	=
+		</span>tst_brkm(TBROK | TERRNO, cleanup, &quot;acct failed unexpectedly&q=
+uot;);</div>
+<div>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">		</span>}</=
+div><div>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>=
+}</div><div>=A0</div><div>=A0<span class=3D"Apple-tab-span" style=3D"white-=
+space:pre">	</span>/* turn off acct, so we are in a known state */</div>
+<div>=A0<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>if=
+ (acct(NULL) =3D=3D -1) {</div><div>--=A0</div><div>1.7.9.5</div><div><br><=
+/div></div>
+
+--001a1134ccb2c0288804ea40f2b7--
+
+
+--===============5869908032731899098==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+--===============5869908032731899098==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5869908032731899098==--
+
