@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VeS2K-00008f-W6
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 16:02:25 +0000
-Date: Thu, 7 Nov 2013 17:02:15 +0100
-From: chrubis@suse.cz
-Message-ID: <20131107160214.GA9169@rei.suse.cz>
-References: <1383558321-1703-1-git-send-email-xu.simon@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1383558321-1703-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH] rdist01: fix mistakes
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <nexus226@gmail.com>) id 1Vcsqb-0001E2-L9
+	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 08:15:49 +0000
+Received: from mail-pb0-f43.google.com ([209.85.160.43])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Vcsqa-0005I2-Tq
+	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 08:15:49 +0000
+Received: by mail-pb0-f43.google.com with SMTP id md4so5944088pbc.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 03 Nov 2013 01:15:43 -0700 (PDT)
+From: Honggyu Kim <nexus226@gmail.com>
+Date: Sun,  3 Nov 2013 17:14:42 +0900
+Message-Id: <1383466482-19441-1-git-send-email-nexus226@gmail.com>
+Subject: [LTP] [PATCH v3] acct01: fix TBROK to TCONF if acct not implemented
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,44 +24,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> @@ -130,17 +130,15 @@ check_result()
->      cd $TCtmp
->      for c_rhost in $HOSTS; do
->          for c_ruser in $RUSERS; do
-> -            TOTAL_SUM=`rsh -n -l $c_ruser $c_rhost \
-> -            x=0; SUM=\$(sum -s $FILES|awk '{ print \$1 }')
-> -            for i in \$SUM; do
-> -                x=\$(( \$x + \$i ))
-> +            TOTAL_SUM=0
-> +            for i in $(rsh -n -l $c_ruser $c_rhost sum -s $FILES | awk '{ print $1 }'); do
-> +                TOTAL_SUM=$(( $TOTAL_SUM + $i ))
->              done
-> -            echo \$x`
-> -            if [ $TOTAL_SUM = $LSUM ]; then
-> +            if [ $TOTAL_SUM == $LSUM ]; then
+acct system call is avaliable only when the kernel option is on.
+When it fails, acct returns -1 and sets errno correspondingly.
+ENOSYS is set when the system call is not implemented.
+Currently, ENOSYS is not checked when the TEST_FILE5 argument is passed.
+It just goes to TBROK regardless of the implementation in kernel.
+This patch modifies to check errno ENOSYS, and marks as TCONF in that case.
 
-Unlike C the correct comparsion operator here is the single '='. The
-'==' is bash extension that does not work with other shells. And in case
-you are comparing two numbers -eq is even better (as ' 0' -eq '0' is
-still true unlike ' 0' = '0').
+Signed-off-by: Honggyu Kim <nexus226@gmail.com>
+---
+ testcases/kernel/syscalls/acct/acct01.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index c38d4db..0fe973b 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -103,8 +103,15 @@ static void setup(void)
+ 	fd = SAFE_CREAT(cleanup, TEST_FILE5, 0777);
+ 	SAFE_CLOSE(cleanup, fd);
+ 
+-	if (acct(TEST_FILE5) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++	if (acct(TEST_FILE5) == -1) {
++		if (errno == ENOSYS) {
++			tst_brkm(TCONF, cleanup,
++				 "BSD process accounting is not configured in "
++				 "this kernel");
++		} else {
++			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++		}
++	}
+ 
+ 	/* turn off acct, so we are in a known state */
+ 	if (acct(NULL) == -1) {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
