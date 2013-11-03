@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VkdHk-000215-38
-	for ltp-list@lists.sourceforge.net; Sun, 24 Nov 2013 17:15:52 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VkdHj-0008Vk-6C
-	for ltp-list@lists.sourceforge.net; Sun, 24 Nov 2013 17:15:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 24 Nov 2013 12:15:46 -0500
-References: <1385290561-24404-1-git-send-email-gaowanlong@cn.fujitsu.com>
-In-Reply-To: <1385290561-24404-1-git-send-email-gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-Message-Id: <201311241215.47426.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] runltp: suppress the out message when creating
-	loop device
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <nexus226@gmail.com>) id 1VcskZ-0008I0-LD
+	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 08:09:35 +0000
+Received: from mail-pb0-f44.google.com ([209.85.160.44])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VcskX-00051x-N1
+	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 08:09:35 +0000
+Received: by mail-pb0-f44.google.com with SMTP id rp16so5946252pbb.17
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 03 Nov 2013 01:09:27 -0700 (PDT)
+From: Honggyu Kim <nexus226@gmail.com>
+Date: Sun,  3 Nov 2013 17:08:16 +0900
+Message-Id: <1383466096-19375-1-git-send-email-nexus226@gmail.com>
+Subject: [LTP] [PATCH v2] acct01: fix TBROK to TCONF if acct not implemented
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,74 +24,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0544391111858217598=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============0544391111858217598==
-Content-Type: multipart/signed; boundary="nextPart4467304.19XsQiEa4L";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+acct system call is avaliable only when the kernel option is on.
+When it fails, acct returns -1 and sets errno correspondingly.
+ENOSYS is set when the system call is not implemented.
+Currently, ENOSYS is not checked when the TEST_FILES argument is passed.
+It just goes to TBROK regardless of the implementation in kernel.
+This patch modifies to check errno ENOSYS, and marks as TCONF in that case.
 
---nextPart4467304.19XsQiEa4L
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Honggyu Kim <nexus226@gmail.com>
+---
+ testcases/kernel/syscalls/acct/acct01.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-On Sunday 24 November 2013 05:56:01 Wanlong Gao wrote:
-> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480 &>/dev/null
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index c38d4db..0fe973b 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -103,8 +103,15 @@ static void setup(void)
+ 	fd = SAFE_CREAT(cleanup, TEST_FILE5, 0777);
+ 	SAFE_CLOSE(cleanup, fd);
+ 
+-	if (acct(TEST_FILE5) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++	if (acct(TEST_FILE5) == -1) {
++		if (errno == ENOSYS) {
++			tst_brkm(TCONF, cleanup,
++				 "BSD process accounting is not configured in "
++				 "this kernel");
++		} else {
++			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++		}
++	}
+ 
+ 	/* turn off acct, so we are in a known state */
+ 	if (acct(NULL) == -1) {
+-- 
+1.7.9.5
 
-that's a bashism.  you have to use:
-	... >/dev/null 2>&1
--mike
-
---nextPart4467304.19XsQiEa4L
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSkjRDAAoJEEFjO5/oN/WBsbQP/R9CQc+a4UFJtS76uypyp0EX
-vaUlIw89ukDaORok24h5i74zxlWgR/T82DnD/5E4gc62msNEFOhz0M/jwGgAjT2H
-RvQAULjD4C5tG2nzTdX69cpHwlmo6ESX8TDEF8SDN/PAClMxszvDSRN4oPjuVfoZ
-Tn2ythB0x8Cjkbl8e/3TVOZm1pqf5/JdSvegWVMyFU7hk7CXuyI8lwSmi6IXZRa6
-d9Y42QMgQ0T/HDMxCH3DVSSoTYeFloY8K+SHdgTSgWgqZW28Z1zvdA8sdcqNHnY4
-zfVjpQwlHjnuxbEqlKCfVlg9m8p8jXl/YsM1TRbrnTSlc4o0pz2/M+opFmSywpNi
-ZImlEWggphExEXVkcAY9jSh4BG43cmS5VxDsTgwD8mG71SERMiaNZ9OJnt1GRxee
-sMFhVNMgkv6MDQOVRSmBC7Vv1RPTT2l8ytNwtXY7FtpGHjIiGokVgf2jORwHfjmF
-Up1RTQ+sXFoy55RUXJCS4QAzcY/9OWHTms+ui56s4HMk7EAd3Mv/CaAmc0pyKww5
-2BzB4xCNB8dAw0RaKLO0ukx2vvo2nn2KkEt/c7c+Lx2bxuJAXv7r2fu2pa8ki9MH
-kZ8VAVfO21a1+qoqOvJRA3oObjbW1owqQl6jyV13AUMcrf5P/0bdUI63NqaELag5
-PpBtHAHR7ITcv+Kr3qlZ
-=h2gc
------END PGP SIGNATURE-----
-
---nextPart4467304.19XsQiEa4L--
-
-
---===============0544391111858217598==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
---===============0544391111858217598==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0544391111858217598==--
-
