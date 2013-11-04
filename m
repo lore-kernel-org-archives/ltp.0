@@ -1,35 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1VkwOG-0003H1-R3
-	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 13:39:52 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1VdG0H-0002JG-Ni
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 08:59:21 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VkwOE-0006rO-NE
-	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 13:39:52 +0000
+	(Exim 4.76) id 1VdG0F-0006KX-J5
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 08:59:21 +0000
 Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rAPDdiCd023274
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rA48xCi0008165
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Nov 2013 13:39:45 GMT
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 08:59:13 GMT
 Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
 	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAPDdgJY025768
+	rA48xBAN010688
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Nov 2013 13:39:44 GMT
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 08:59:12 GMT
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
 	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAPDdgCY023407
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Nov 2013 13:39:42 GMT
-Message-ID: <5293531A.5090402@oracle.com>
-Date: Mon, 25 Nov 2013 21:39:38 +0800
+	rA48xBAJ002518
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 08:59:11 GMT
 From: Simon Xu <xu.simon@oracle.com>
-MIME-Version: 1.0
-References: <20131111141503.GE12164@rei>
-	<1384841690-716-1-git-send-email-xu.simon@oracle.com>
-In-Reply-To: <1384841690-716-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH V4] rpc01: fix paths and add Makefile for datafiles
+Date: Mon,  4 Nov 2013 16:58:58 +0800
+Message-Id: <1383555538-1297-1-git-send-email-xu.simon@oracle.com>
+In-Reply-To: <52736BE4.3080009@oracle.com>
+References: <52736BE4.3080009@oracle.com>
+Subject: [LTP] [PATCH V2] rwho01: fix getting hostnames from command output
+	and $COUNT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,121 +38,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Could anyone help to review?
+Fix the way the script gets hostnames from rwho/ruptime command output,
+and the mistake that $COUNT is used instead of $TST_COUNT in do_test().
 
-Thanks
-Simon
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
+---
+ testcases/network/tcp_cmds/rwho/rwho01 | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-On 2013/11/19 14:14, Simon Xu wrote:
-> 1) fix $TCbin
-> 2) eliminate $TCtmp, use $TMPDIR instead
-> 3) The files in datafiles dir are needed in the test but they are not
->     installed.  Create a Makefile in datafiles to install the files.
->
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
-> ---
->   testcases/network/rpc/basic_tests/rpc01/Makefile   |  4 ++-
->   .../rpc/basic_tests/rpc01/datafiles/Makefile       | 29 ++++++++++++++++++++++
->   testcases/network/rpc/basic_tests/rpc01/rpc01      |  9 +++----
->   3 files changed, 36 insertions(+), 6 deletions(-)
->   create mode 100644 testcases/network/rpc/basic_tests/rpc01/datafiles/Makefile
->
-> diff --git a/testcases/network/rpc/basic_tests/rpc01/Makefile b/testcases/network/rpc/basic_tests/rpc01/Makefile
-> index ba3fe0a..732d816 100644
-> --- a/testcases/network/rpc/basic_tests/rpc01/Makefile
-> +++ b/testcases/network/rpc/basic_tests/rpc01/Makefile
-> @@ -29,4 +29,6 @@ CPPFLAGS		+= -Wno-error
->   
->   INSTALL_TARGETS		:= rpc01
->   
-> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +SUBDIRS			:= datafiles
-> +
-> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/testcases/network/rpc/basic_tests/rpc01/datafiles/Makefile b/testcases/network/rpc/basic_tests/rpc01/datafiles/Makefile
-> new file mode 100644
-> index 0000000..92370e6
-> --- /dev/null
-> +++ b/testcases/network/rpc/basic_tests/rpc01/datafiles/Makefile
-> @@ -0,0 +1,29 @@
-> +#
-> +#    network/rpc/basic_tests/rpc01/datafiles Makefile.
-> +#
-> +#    This program is free software; you can redistribute it and/or modify
-> +#    it under the terms of the GNU General Public License as published by
-> +#    the Free Software Foundation; either version 2 of the License, or
-> +#    (at your option) any later version.
-> +#
-> +#    This program is distributed in the hope that it will be useful,
-> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +#    GNU General Public License for more details.
-> +#
-> +#    You should have received a copy of the GNU General Public License along
-> +#    with this program; if not, write to the Free Software Foundation, Inc.,
-> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +#    Simon Xu <xu.simon@oracle.com> Nov 8 2013
-> +#
-> +
-> +top_srcdir		?= ../../../../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_DIR		:= testcases/bin/datafiles
-> +
-> +INSTALL_TARGETS		:= file*
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc01 b/testcases/network/rpc/basic_tests/rpc01/rpc01
-> index ef97a95..7eed86d 100755
-> --- a/testcases/network/rpc/basic_tests/rpc01/rpc01
-> +++ b/testcases/network/rpc/basic_tests/rpc01/rpc01
-> @@ -36,9 +36,8 @@
->   $trace_logic
->   this_file=${0##*/}
->   TC=${TC:=rpc01}
-> -TCbin=${TCbin:=`pwd`}
-> +TCbin=${TCbin:=$LTPROOT/testcases/bin}
->   TCdat=${TCdat:=$TCbin/datafiles}
-> -TCtmp=${TCtmp:=$LTPROOT/testcases/bin}
->   NUMLOOPS=${NUMLOOPS:=3}
->   RHOST=${RHOST:=`hostname`}
->   CLEANUP=${CLEANUP:="ON"}
-> @@ -68,7 +67,7 @@ do_test()
->       do
->         for FILE in $DATAFILES
->         do
-> -	$TCtmp/rpc1 -s $RHOST -f $TCdat/$FILE
-> +	rpc1 -s $RHOST -f $TCdat/$FILE
->   	[ $? -eq 0 ] || end_testcase "Fail on using $FILE"
->         done
->         COUNT=`expr $COUNT + 1`
-> @@ -90,9 +89,9 @@ do_cleanup()
->       $trace_logic
->   
->       if [ "$CLEANUP" = "ON" ]; then
-> -	if [ -f $TCtmp/core ]; then
-> +	if [ -f $TMPDIR/core ]; then
->   	   echo "Core file is saved in /tmp"
-> -	   mv $TCtmp/core /tmp
-> +	   mv $TMPDIR/core /tmp
->   	fi
->   
->   	# Kill server
+diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
+index 2c82ef1..eb31642 100755
+--- a/testcases/network/tcp_cmds/rwho/rwho01
++++ b/testcases/network/tcp_cmds/rwho/rwho01
+@@ -106,18 +106,18 @@ do_test()
+ 
+     while [ $TST_COUNT -le $NUMLOOPS ]; do
+         rwho -a > $OUTFILE
+-        HOST=`awk "\\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
++        HOST=`grep $LHOST $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
+         [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in rwho outfile"
+-        HOST=`awk "\\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
++        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
+         [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in rwho outfile"
+ 
+         ruptime -a > $OUTFILE
+-        HOST=`awk "\\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
++        HOST=`grep $LHOST $OUTFILE | sed 's/ .*//' | uniq`
+         [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in ruptime outfile"
+-        HOST=`awk "\\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
++        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/ .*//' | uniq`
+         [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in ruptime outfile"
+ 
+-        tst_resm TINFO "Test $COUNT of $NUMLOOPS complete"
++        tst_resm TINFO "Test $TST_COUNT of $NUMLOOPS complete"
+         incr_tst_count
+     done
+ }
+-- 
+1.8.4.2
 
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
