@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VgyXQ-0000PG-Pt
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 15:08:56 +0000
-Date: Thu, 14 Nov 2013 16:08:42 +0100
-From: chrubis@suse.cz
-Message-ID: <20131114150841.GB15449@rei>
-References: <1384353022-9088-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1384353022-9088-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <deller@gmx.de>) id 1VdRKj-0006Rb-Am
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 21:05:13 +0000
+Received: from mout.gmx.net ([212.227.15.19])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1VdRKh-0007GY-8Z
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 21:05:13 +0000
+Received: from [192.168.178.60] ([84.173.31.83]) by mail.gmx.com (mrgmx003)
+	with ESMTPSA (Nemesis) id 0Lg0wl-1VyFR53Dhr-00pZw7 for
+	<ltp-list@lists.sourceforge.net>; Mon, 04 Nov 2013 22:05:04 +0100
+Message-ID: <52780C00.6010706@gmx.de>
+Date: Mon, 04 Nov 2013 22:05:04 +0100
+From: Helge Deller <deller@gmx.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1384353022-9088-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [RFC PATCH 1/2] autoconf check for utimensat(2)
+Content-Type: multipart/mixed; boundary="------------090608070808010503090401"
+Subject: [LTP] [PATCH] fcntl16.c patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,51 +26,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +AC_DEFUN([LTP_CHECK_SYSCALL_UTIMENSAT],[
-> +	AC_MSG_CHECKING([for utimensat])
-> +	AC_LINK_IFELSE([AC_LANG_SOURCE([
-> +#include <stdlib.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +
-> +int main(void) {
-> +	long tv_nsec;
-> +	tv_nsec = UTIME_NOW;
-> +	tv_nsec = UTIME_OMIT;
-> +
-> +	return utimensat(AT_FDCWD, (const char *) "/dev/null", NULL, 0);
-> +}])],[has_utimensat="yes"])
+This is a multi-part message in MIME format.
+--------------090608070808010503090401
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Why the cast to const char* and why cannot be the second parameter NULL
-too (it's just linked not executed)?
+The fcntl16 testcase is being compiled twice, once normal, and the other
+time with the _FILE_OFFSET_BITS=64 define set.
 
-> +
-> +if test "x$has_utimensat" == "xyes"; then
-> +	AC_DEFINE(HAVE_UTIMENSAT, 1, [Define to 1 if you have utimensat(2)])
-> +	AC_MSG_RESULT(yes)
-> +else
-> +	AC_MSG_RESULT(no)
-> +fi
-> +])
+When compiled with 64bit file functions (as fcntl16_64) all 
+file functions will automatically use their 64bit variants, e.g.
+"struct flock64" instead of "struct flock".
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+So, when in the code e.g.
+	fcntl(fd, F_SETLK, thislock)
+is called, this will automatically be translated into
+	fcntl64(fd, F_SETLK64, thislock)
+and "thislock" needs to be of type "struct flock64".
+
+So, we need to make sure that thislock is of the correct type,
+with the start and len fields being of type "off_t" which then
+will be translated into "loff_t" during compilation when 
+_FILE_OFFSET_BITS=64 is set.
+
+This fixes the fcntl16_64 testcase on hppa64-linux-gnu with
+32bit userspace running on 64bit kernel.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+--------------090608070808010503090401
+Content-Type: text/x-patch;
+ name="fcntl16.c.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="fcntl16.c.patch"
+
+diff -up ./testcases/kernel/syscalls/fcntl/fcntl16.c.org ./testcases/kernel/syscalls/fcntl/fcntl16.c
+--- ./testcases/kernel/syscalls/fcntl/fcntl16.c.org	2013-11-04 15:25:15.000000000 +0100
++++ ./testcases/kernel/syscalls/fcntl/fcntl16.c	2013-11-04 16:06:33.000000000 +0100
+@@ -66,8 +66,8 @@
+ typedef struct {
+ 	short type;
+ 	short whence;
+-	long start;
+-	long len;
++	off_t start;
++	off_t len;
+ 	short flag;
+ } lock;
+ 
+
+--------------090608070808010503090401
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+--------------090608070808010503090401
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------090608070808010503090401--
+
