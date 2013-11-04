@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VgZqJ-0000wc-0S
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 12:46:47 +0000
-Date: Wed, 13 Nov 2013 13:46:31 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VdKf2-00084U-Vg
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 13:57:45 +0000
+Date: Mon, 4 Nov 2013 14:57:21 +0100
 From: chrubis@suse.cz
-Message-ID: <20131113124631.GA12390@rei.Home>
-References: <1383899857-4669-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20131104135721.GB8505@rei>
+References: <028e01ced946$bdc140a0$3943c1e0$@gyu.kim@lge.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383899857-4669-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] setregid02: invalid user value fix
+In-Reply-To: <028e01ced946$bdc140a0$3943c1e0$@gyu.kim@lge.com>
+Subject: Re: [LTP] [PATCH] acct01: fix cleanup function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,28 +24,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Honggyu Kim <hong.gyu.kim@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Commit 705926d096f7a64c9d53efeb789288e25457d68f
-> introduced a bug that the value for inval_user was treated
-> as '-1' when passed to 16-bit version of setregid().
+> Currently, additional test for acct is done in cleanup.
+> This was not originally intended because TCONF case will also invoke cleanup
+> function to finish and it will finally goes to TBROK, not TCONF.
+> This patch removes the additional acct execution in cleanup.
 > 
-> Fixed it the same way as it's done for setreuid test cases.
+> Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
+> ---
+>  testcases/kernel/syscalls/acct/acct01.c |    3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+> index 0fe973b..53376ae 100644
+> --- a/testcases/kernel/syscalls/acct/acct01.c
+> +++ b/testcases/kernel/syscalls/acct/acct01.c
+> @@ -165,8 +165,5 @@ static void cleanup(void)
+>  {
+>  	TEST_CLEANUP;
+>  
+> -	if (acct(NULL) == -1)
+> -		tst_resm(TBROK | TERRNO, "acct(NULL) failed");
+> -
+>  	tst_rmdir();
+>  }
 
-Pushed, thanks.
+This does not seem to be right. The acct(NULL) should turn off the
+process accounting so this is not a test for acct() but rather an
+attempt to restore the system to the previous state.
+
+So the correct solution would be to call acct(NULL) first in the setup
+and if that failed with ENOSYS, exit the test with TCONF without calling
+the cleanup (if we do this check before the tst_tmpdir() we don't have
+to do any cleanup). Then we can also remove all checks for ENOSYS from
+the rest of the code.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
