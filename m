@@ -2,31 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VgbSm-0006zT-SC
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 14:30:36 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VgbSm-0005h7-0q
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 14:30:36 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rADEUTYP012389
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 14:30:30 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rADEUTQs016580
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 14:30:29 GMT
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rADEUTRw016563
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 14:30:29 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 13 Nov 2013 18:30:20 +0400
-Message-Id: <1384353022-9088-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] safe_touch and utimensat
+	(envelope-from <jstancek@redhat.com>) id 1VdFMS-0005D1-4d
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 08:18:12 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VdFMP-00029I-Ns
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 08:18:11 +0000
+Date: Mon, 4 Nov 2013 03:18:03 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1568770588.18698492.1383553083237.JavaMail.root@redhat.com>
+In-Reply-To: <1383542895-14069-1-git-send-email-xu.simon@oracle.com>
+References: <1383542895-14069-1-git-send-email-xu.simon@oracle.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] sctp: enlarge SO_RCVBUF option value
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,43 +24,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
 
-Some distributions (RHEL5, for instance) don't have defined utimensat()
-system call. So I introduced an autoconf check for this, otherwise safe_file_ops.c can 
-not be compiled on these distributions.
 
-Actually, I'm not satisfied with
-    utimes(pathname, NULL)
-because it throws away the time-changing logic from safe_touch().
+----- Original Message -----
+> From: "Simon Xu" <xu.simon@oracle.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Monday, 4 November, 2013 6:28:15 AM
+> Subject: [LTP] [PATCH] sctp: enlarge SO_RCVBUF option value
+> 
+> When using setsockopt() with recent Linux kernels, it doesn't make sense to
+> use a value smaller than SOCK_MIN_RCVBUF/2 for SO_RCVBUF and expect getting
+> a SO_RCVBUF value by getsockopt() which is doubled.  See the following code
+> in linux/net/core/sock.c:
+> 
+> 	if ((val * 2) < SOCK_MIN_RCVBUF)
+> 		sk->sk_rcvbuf = SOCK_MIN_RCVBUF;
+> 	else
+> 		sk->sk_rcvbuf = val * 2;
+> 	break;
+> 
+> SOCK_MIN_RCVBUF is defined as (2048 + sizeof(struct sk_buff)) which is 2240.
+> ---
 
-How do you think it is safe to explicitly define UTIME_* constants in LTP
-sources (safe_file_ops.h):
+You are missing 'Signed-off-by', but patch looks good to me.
 
-#ifndef UTIME_NOW
-#define UTIME_NOW ((1l << 30) - 1l)
-#endif
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
 
-#ifndef UTIME_OMIT
-#define UTIME_OMIT     ((1l << 30) - 2l)
-#endif
+Regards,
+Jan
 
-?
-
+>  testcases/network/sctp/func_tests/test_1_to_1_sockopt.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/sctp/func_tests/test_1_to_1_sockopt.c
+> b/testcases/network/sctp/func_tests/test_1_to_1_sockopt.c
+> index b12313b..c36f502 100644
+> --- a/testcases/network/sctp/func_tests/test_1_to_1_sockopt.c
+> +++ b/testcases/network/sctp/func_tests/test_1_to_1_sockopt.c
+> @@ -299,9 +299,9 @@ int main(void)
+>  	tst_resm(TPASS, "getsockopt() SCTP_STATUS - SUCCESS");
+>  
+>  	/* Reducing the SO_RCVBUF value using setsockopt() */
+> -	/*Minimum value is 128 and hence I am using it */
+>  	len = sizeof(int);
+> -	rcvbuf_val_set = 128;
+> +	/* (rcvbuf len)*2 should be no less than SOCK_MIN_RCVBUF in kernel */
+> +	rcvbuf_val_set = 1500;
+>  	/* TEST16: Test case for setsockopt SO_RCVBUF */
+>  	error = setsockopt(sk2, SOL_SOCKET, SO_RCVBUF, &rcvbuf_val_set, len);
+>  	if (error < 0)
+> --
+> 1.8.1.2
+> 
+> 
+> ------------------------------------------------------------------------------
+> Android is increasing in popularity, but the open development platform that
+> developers love is also attractive to malware creators. Download this white
+> paper to learn more about secure code signing practices that can help keep
+> Android apps secure.
+> http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
