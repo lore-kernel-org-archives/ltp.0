@@ -1,32 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Vihc8-00050E-Bz
-	for ltp-list@lists.sourceforge.net; Tue, 19 Nov 2013 09:28:56 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vihc6-0002Se-BR
-	for ltp-list@lists.sourceforge.net; Tue, 19 Nov 2013 09:28:56 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rAJ9Sl0l014425
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Nov 2013 09:28:48 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAJ9SkI0006574
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Nov 2013 09:28:47 GMT
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAJ9Skrr011432
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Nov 2013 09:28:46 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 19 Nov 2013 13:28:05 +0400
-Message-Id: <1384853285-14025-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] device-drivers: acpi: add new test for
-	acpi-cpufreq driver
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VdHBm-00062d-QU
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 10:15:18 +0000
+Received: from lgeamrelo01.lge.com ([156.147.1.125])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VdHBk-0008Ja-TT
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 10:15:18 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Mon, 4 Nov 2013 19:15:09 +0900
+Message-ID: <028e01ced946$bdc140a0$3943c1e0$@gyu.kim@lge.com>
+MIME-Version: 1.0
+Content-Language: ko
+Subject: [LTP] [PATCH] acct01: fix cleanup function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,266 +23,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-The test checks support for disabling dynamic overclocking
-in acpi_cpufreq driver.
-Linux commit: 615b7300717b9ad5c23d1f391843484fe30f6c12.
-It was implemented in Linux 3.7.
+Currently, additional test for acct is done in cleanup.
+This was not originally intended because TCONF case will also invoke cleanup
+function to finish and it will finally goes to TBROK, not TCONF.
+This patch removes the additional acct execution in cleanup.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
 ---
- testcases/kernel/device-drivers/acpi/.gitignore    |    1 +
- testcases/kernel/device-drivers/acpi/Makefile      |    4 +-
- .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |  198 ++++++++++++++++++++
- 3 files changed, 202 insertions(+), 1 deletions(-)
- create mode 100644 testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+ testcases/kernel/syscalls/acct/acct01.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/acpi/.gitignore b/testcases/kernel/device-drivers/acpi/.gitignore
-index 76fbdc8..7061be3 100644
---- a/testcases/kernel/device-drivers/acpi/.gitignore
-+++ b/testcases/kernel/device-drivers/acpi/.gitignore
-@@ -1,5 +1,6 @@
- /LtpAcpiCmds.ko
- /ltp_acpi
-+/ltp_acpi_cpufreq
- /*.mod.c
- /modules.order
- /.tmp_versions
-diff --git a/testcases/kernel/device-drivers/acpi/Makefile b/testcases/kernel/device-drivers/acpi/Makefile
-index 31bf26b..ce1ab34 100644
---- a/testcases/kernel/device-drivers/acpi/Makefile
-+++ b/testcases/kernel/device-drivers/acpi/Makefile
-@@ -25,7 +25,9 @@ include $(top_srcdir)/include/mk/testcases.mk
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index 0fe973b..53376ae 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -165,8 +165,5 @@ static void cleanup(void)
+ {
+ 	TEST_CLEANUP;
  
- REQ_VERSION_MAJOR	:= 2
- REQ_VERSION_PATCH	:= 6
--MAKE_TARGETS		:= ltp_acpi ltp_acpi_cmds.ko
-+MAKE_TARGETS		:= ltp_acpi_cpufreq ltp_acpi ltp_acpi_cmds.ko
-+
-+ltp_acpi_cpufreq: LDLIBS += -lpthread
- 
- include $(top_srcdir)/include/mk/module.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-new file mode 100644
-index 0000000..b291937
---- /dev/null
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-@@ -0,0 +1,198 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ * Check support for disabling dynamic overclocking in acpi_cpufreq driver.
-+ * Required Linux 3.7+.
-+ *
-+ * The test loads CPU0 in a thread. When the loading approaches to the end
-+ * (2/3 elapsed), the test will check processor frequency. if boost is enabled
-+ * we can get a slightly higher speed under load.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sched.h>
-+#include <sys/time.h>
-+#include <pthread.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "safe_stdio.h"
-+
-+char *TCID = "ltp_acpi_cpufreq";
-+
-+#define SYSFS_CPU_DIR "/sys/devices/system/cpu/"
-+
-+const char boost[]	= SYSFS_CPU_DIR "cpufreq/boost";
-+static int boost_value;
-+
-+const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
-+static char governor_name[16];
-+
-+const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
-+const char curspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/cpuinfo_cur_freq";
-+const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
-+
-+const char up_limit[]	= SYSFS_CPU_DIR "cpufreq/ondemand/up_threshold";
-+static int threshold;
-+
-+static void cleanup(void)
-+{
-+	SAFE_FILE_PRINTF(NULL, boost, "%d", boost_value);
-+
-+	if (governor[0] != '\0')
-+		SAFE_FILE_PRINTF(NULL, governor, "%s", governor_name);
-+
-+	if (threshold)
-+		SAFE_FILE_PRINTF(NULL, up_limit, "%d", threshold);
-+
-+	TEST_CLEANUP;
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	if (tst_kvercmp(3, 7, 0) < 0) {
-+		tst_brkm(TCONF, NULL,
-+			"disable overclocking required Linux 3.7+");
-+	}
-+
-+	if (access(boost, R_OK | W_OK)) {
-+		tst_brkm(TCONF, NULL,
-+			"acpi-cpufreq not loaded or overclock not supported");
-+	}
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	SAFE_FILE_SCANF(NULL, boost, "%d", &boost_value);
-+
-+	SAFE_FILE_SCANF(NULL, up_limit, "%d", &threshold);
-+
-+	/* change cpu0 scaling governor */
-+	SAFE_FILE_SCANF(NULL, governor, "%s", governor_name);
-+	SAFE_FILE_PRINTF(cleanup, governor, "%s", "userspace");
-+
-+	/* use only cpu0 */
-+	cpu_set_t set;
-+	CPU_ZERO(&set);
-+	CPU_SET(0, &set);
-+	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU0");
-+
-+	SAFE_FILE_PRINTF(cleanup, up_limit, "11");
-+}
-+
-+static void set_speed(int freq)
-+{
-+	int set_freq;
-+	SAFE_FILE_SCANF(cleanup, setspeed, "%d", &set_freq);
-+
-+	if (set_freq != freq) {
-+		tst_resm(TINFO, "change speed from %d to %d...",
-+			set_freq, freq);
-+		SAFE_FILE_PRINTF(cleanup, setspeed, "%d", freq);
-+	} else {
-+		tst_resm(TINFO, "set speed is %d", set_freq);
-+	}
-+}
-+
-+void *thread_fn(void *val)
-+{
-+	struct timeval tv_start;
-+	struct timeval tv_end;
-+	int i, res = 0;
-+	intptr_t timeout = (intptr_t) val;
-+
-+	gettimeofday(&tv_start, NULL);
-+	tst_resm(TINFO, "load CPU0 for %ld sec...", timeout);
-+
-+	do {
-+		for (i = 1; i < 10000; ++i)
-+			res += i * i;
-+		gettimeofday(&tv_end, NULL);
-+		sched_yield();
-+	} while ((tv_end.tv_sec - tv_start.tv_sec) < timeout);
-+
-+	tst_resm(TINFO, "CPU0 load done: insignificant value '%d'", res);
-+
-+	return NULL;
-+}
-+
-+static int load_cpu(intptr_t timeout)
-+{
-+	pthread_t thread_id;
-+
-+	if (pthread_create(&thread_id, 0, thread_fn,
-+		(void *) timeout) != 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			"pthread_create failed at %s:%d",
-+			__FILE__, __LINE__);
-+	}
-+
-+	sleep(2 * timeout / 3);
-+
-+	int cur_freq;
-+	SAFE_FILE_SCANF(cleanup, curspeed, "%d", &cur_freq);
-+	tst_resm(TINFO, "got cpu freq under load: %d", cur_freq);
-+
-+	pthread_join(thread_id, NULL);
-+
-+	return cur_freq;
-+}
-+
-+static void test_run(void)
-+{
-+	int cur_freq, max_freq;
-+	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq);
-+	set_speed(max_freq);
-+
-+	/* Enable boost */
-+	if (boost_value == 0)
-+		SAFE_FILE_PRINTF(cleanup, boost, "1");
-+	cur_freq = load_cpu(30);
-+	tst_resm((cur_freq >= max_freq) ? TPASS : TFAIL,
-+		"compare current speed %d and max speed %d",
-+		cur_freq, max_freq);
-+
-+	/* Disable boost */
-+	SAFE_FILE_PRINTF(cleanup, boost, "0");
-+	cur_freq = load_cpu(30);
-+	tst_resm((cur_freq < max_freq) ? TPASS : TFAIL,
-+		"compare current speed %d and max speed %d",
-+		cur_freq, max_freq);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	test_run();
-+
-+	cleanup();
-+
-+	tst_exit();
-+}
+-	if (acct(NULL) == -1)
+-		tst_resm(TBROK | TERRNO, "acct(NULL) failed");
+-
+ 	tst_rmdir();
+ }
 -- 
-1.7.1
+1.7.9.5
+
 
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
