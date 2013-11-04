@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Vm4rw-00010g-Gf
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 16:55:12 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vm4rv-0002r9-KX
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 16:55:12 +0000
-Message-ID: <52977568.9070306@imgtec.com>
-Date: Thu, 28 Nov 2013 16:55:04 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vd90N-0005RA-KS
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 01:30:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vd90M-0005px-3i
+	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 01:30:59 +0000
+Message-ID: <5276F7C3.4080606@cn.fujitsu.com>
+Date: Mon, 04 Nov 2013 09:26:27 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <528DE213.1030106@cn.fujitsu.com> <20131128143504.GF19263@rei.Home>
-In-Reply-To: <20131128143504.GF19263@rei.Home>
-Subject: Re: [LTP] [PATCH v3]  dup3(2): add EINVAL error number test
+References: <1383466482-19441-1-git-send-email-nexus226@gmail.com>
+In-Reply-To: <1383466482-19441-1-git-send-email-nexus226@gmail.com>
+Subject: Re: [LTP] [PATCH v3] acct01: fix TBROK to TCONF if acct not
+	implemented
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,57 +29,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Honggyu Kim <nexus226@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 11/28/2013 02:35 PM, chrubis@suse.cz wrote:
-> Hi!
->> +static void cleanup(void)
->> +{
->> +	TEST_CLEANUP;
->> +
->> +	SAFE_CLOSE(cleanup, old_fd);
->
-> Take care not to call cleanup() from within a cleanup()
->
-> If the close() here will fail, the cleanup will be called, then the
-> close() will fail and the cleanup will be called... untill the end of
-> the stack and the test will eventually SegFault.
->
-> Also if the SAFE_CREAT() in setup() will fail, the close() will fail
-> too, because the old_fd will be set to -1.
->
-> I've fixed that this time and pushed (see diff bellow), thanks.
->
->
-> @@ -117,7 +117,8 @@ static void cleanup(void)
->   {
->          TEST_CLEANUP;
->
-> -       SAFE_CLOSE(cleanup, old_fd);
-> +       if (old_fd > 0)
-> +               SAFE_CLOSE(NULL, old_fd);
->
->          tst_rmdir();
->   }
->
+On 11/03/2013 04:14 PM, Honggyu Kim wrote:
+> acct system call is avaliable only when the kernel option is on.
+> When it fails, acct returns -1 and sets errno correspondingly.
+> ENOSYS is set when the system call is not implemented.
+> Currently, ENOSYS is not checked when the TEST_FILE5 argument is passed.
+> It just goes to TBROK regardless of the implementation in kernel.
+> This patch modifies to check errno ENOSYS, and marks as TCONF in that case.
 
-Hello,
+What's changed from V2 to V3?
 
-This test does not seem to compile on uClibc based systems
+Thanks,
+Wanlong Gao
 
-I am getting this:
-dup3_02.c:53: error: 'O_CLOEXEC' undeclared here (not in a function)
-
--- 
-markos
+> 
+> Signed-off-by: Honggyu Kim <nexus226@gmail.com>
+> ---
+>  testcases/kernel/syscalls/acct/acct01.c |   11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+> index c38d4db..0fe973b 100644
+> --- a/testcases/kernel/syscalls/acct/acct01.c
+> +++ b/testcases/kernel/syscalls/acct/acct01.c
+> @@ -103,8 +103,15 @@ static void setup(void)
+>  	fd = SAFE_CREAT(cleanup, TEST_FILE5, 0777);
+>  	SAFE_CLOSE(cleanup, fd);
+>  
+> -	if (acct(TEST_FILE5) == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
+> +	if (acct(TEST_FILE5) == -1) {
+> +		if (errno == ENOSYS) {
+> +			tst_brkm(TCONF, cleanup,
+> +				 "BSD process accounting is not configured in "
+> +				 "this kernel");
+> +		} else {
+> +			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
+> +		}
+> +	}
+>  
+>  	/* turn off acct, so we are in a known state */
+>  	if (acct(NULL) == -1) {
+> 
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
