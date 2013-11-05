@@ -2,18 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vm1ZB-00062G-L5
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 13:23:37 +0000
-Date: Thu, 28 Nov 2013 14:23:08 +0100
-From: chrubis@suse.cz
-Message-ID: <20131128132307.GE19263@rei.Home>
-References: <20131119214612.GA2120@p100.box>
-	<236728861.37114527.1384935019282.JavaMail.root@redhat.com>
-	<528D135D.5060204@gmx.de>
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VdWA4-000353-HV
+	for ltp-list@lists.sourceforge.net; Tue, 05 Nov 2013 02:14:32 +0000
+Received: from lgemrelse7q.lge.com ([156.147.1.151])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VdWA2-0004s7-Q0
+	for ltp-list@lists.sourceforge.net; Tue, 05 Nov 2013 02:14:32 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Tue, 5 Nov 2013 11:14:21 +0900
+Message-ID: <02cb01ced9cc$bd9d6e10$38d84a30$@gyu.kim@lge.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <528D135D.5060204@gmx.de>
-Subject: Re: [LTP] [PATCH] fix readv01 testcase for parisc architecture
+Content-Language: ko
+Subject: [LTP] [PATCH] acct01: add a check routine for acct implmentation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,29 +26,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Helge Deller <deller@gmx.de>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Ok, so if you could just apply this second hunk it would be great!
+A check routine for acct implemation is added at the beginning of the test.
+check_acct_in_kernel function calls acct(NULL) and checks if errno is ENOSYS.
+It means that acct system call is not implemented in kernel.
+The other ENOSYS check routines in setup are removed.
+This patch prevents from unintentional calling acct again in cleanup, which
+makes TCONF to TBROK and helps configuration issues stay as TCONF.
 
-I've cleaned up the testcase and fixed the number of vectors as well.
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
+---
+ testcases/kernel/syscalls/acct/acct01.c |   32 +++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-> Thanks for maintaining LTP!
-> It helped me a lot to find bugs in the parisc arch code of the kernel.
-
-:)
-
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index 8236042..4a34383 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -124,12 +124,28 @@ int main(int argc, char *argv[])
+ 	tst_exit();
+ }
+ 
++static void check_acct_in_kernel(void)
++{
++	/* check if acct is implemented in kernel */
++	if (acct(NULL) == -1) {
++		if (errno == ENOSYS) {
++			tst_resm(TCONF,
++				 "BSD process accounting is not configured in "
++				 "this kernel");
++
++			tst_exit();
++		}
++	}
++}
++
+ static void setup(void)
+ {
+ 	int fd;
+ 
+ 	tst_require_root(NULL);
+ 
++	check_acct_in_kernel();
++
+ 	tst_tmpdir();
+ 
+ 	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+@@ -138,24 +154,12 @@ static void setup(void)
+ 	SAFE_CLOSE(cleanup, fd);
+ 
+ 	if (acct(TEST_FILE5) == -1) {
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF, cleanup,
+-				 "BSD process accounting is not configured in "
+-				 "this kernel");
+-		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
+-		}
++		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
+ 	}
+ 
+ 	/* turn off acct, so we are in a known state */
+ 	if (acct(NULL) == -1) {
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF, cleanup,
+-				 "BSD process accounting is not configured in "
+-				 "this kernel");
+-		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
+-		}
++		tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
+ 	}
+ 
+ 	/* ELOOP SETTING */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
