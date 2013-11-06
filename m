@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VbHep-00081Q-Tx
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:03 +0000
-Received: from mail-oa0-f54.google.com ([209.85.219.54])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VbHep-00065Z-8f
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:03 +0000
-Received: by mail-oa0-f54.google.com with SMTP id o20so636248oag.13
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Oct 2013 15:20:57 -0700 (PDT)
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Tue, 29 Oct 2013 15:20:40 -0700
-Message-Id: <1383085243-5833-7-git-send-email-vincent.hsu@linaro.org>
-In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH 6/9] ltp-networking/iproute: ip02: set original
-	mtu size back. this test will set mtu to 300. ip05: if there
-	is nott only one route using "head" command will get wrong result.
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VeAkk-0000Wj-8p
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 21:35:06 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VeAki-0001pT-8n
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 21:35:06 +0000
+Date: Wed, 6 Nov 2013 16:34:58 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1924029835.23120751.1383773698263.JavaMail.root@redhat.com>
+In-Reply-To: <1383755951-21231-1-git-send-email-jlayton@redhat.com>
+References: <1383755951-21231-1-git-send-email-jlayton@redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] diotest3: fix -f argument
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,58 +24,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org
+To: Jeff Layton <jlayton@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
----
- testcases/network/iproute/ip_tests.sh |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
-index ce4cabc..49b2886 100755
---- a/testcases/network/iproute/ip_tests.sh
-+++ b/testcases/network/iproute/ip_tests.sh
-@@ -187,6 +187,7 @@ test01()
 
- 	tst_resm TINFO "Test #1: changing mtu size of eth0:1 device."
 
-+	MTUSZ_BAK=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $1}'`
- 	ip link set eth0:1 mtu 300 >$LTPTMP/tst_ip.err 2>&1
- 	if [ $RC -ne 0 ]
- 	then
-@@ -198,6 +199,7 @@ test01()
- 		if [ $MTUSZ -eq 300 ]
- 		then
- 			tst_resm TPASS "Test #1: changing mtu size success"
-+	        ip link set eth0:1 mtu $MTUSZ_BAK >$LTPTMP/tst_ip.err 2>&1
- 		else
- 			tst_resm FAIL NULL \
- 				"Test #1: MTU value not set to 300: ifconfig returned: $MTUSZ"
-@@ -453,7 +455,9 @@ test05()
- 		10.6.6.6 via 127.0.0.1 dev lo
- 		EOF
 
--		ip route show | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
-+		ip route show >$LTPTMP/tst_ip.out.tmp
-+        grep "10.6.6.6 via 127.0.0.1 dev lo" $LTPTMP/tst_ip.out.tmp \
-+            >$LTPTMP/tst_ip.out 2>&1 || RC=$?
- 		if [ $RC -ne 0 ]
- 		then
- 			tst_res TFAIL $LTPTMP/tst_ip.err \
---
-1.7.9.5
+----- Original Message -----
+> From: "Jeff Layton" <jlayton@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Wednesday, 6 November, 2013 5:39:11 PM
+> Subject: [LTP] [PATCH] diotest3: fix -f argument
+> 
+> The '-f' argument to diotest3 is currently ignored. During options
+> processing it's copied to the buffer, then subsequently overwritten
+> by the default in a later sprintf() call.
+> 
+> Move the setting of the default prior to the options processing.
+> 
+> Signed-off-by: Jeff Layton <jlayton@redhat.com>
 
+Hi Jeff,
+
+pushed. I checked also other diotest*.c, but diotest3.c
+was the only one having this issue.
+
+Thanks,
+Jan
+
+> ---
+>  testcases/kernel/io/direct_io/diotest3.c |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/io/direct_io/diotest3.c
+> b/testcases/kernel/io/direct_io/diotest3.c
+> index ac460ed..002a6d0 100644
+> --- a/testcases/kernel/io/direct_io/diotest3.c
+> +++ b/testcases/kernel/io/direct_io/diotest3.c
+> @@ -238,6 +238,8 @@ int main(int argc, char *argv[])
+>  	int numchild = 1;	/* Number of children. Default 5 */
+>  	int i, fail_count = 0, failed = 0, total = 0;
+>  
+> +	sprintf(filename, "testdata-3.%ld", syscall(__NR_gettid));
+> +
+>  	/* Options */
+>  	while ((i = getopt(argc, argv, "b:o:i:n:f:")) != -1) {
+>  		switch (i) {
+> @@ -277,7 +279,6 @@ int main(int argc, char *argv[])
+>  			prg_usage();
+>  		}
+>  	}
+> -	sprintf(filename, "testdata-3.%ld", syscall(__NR_gettid));
+>  
+>  	setup();
+>  
+> --
+> 1.7.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> November Webinars for C, C++, Fortran Developers
+> Accelerate application performance with scalable programming models. Explore
+> techniques for threading, error checking, porting, and tuning. Get the most
+> from the latest Intel processors and coprocessors. See abstracts and register
+> http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
