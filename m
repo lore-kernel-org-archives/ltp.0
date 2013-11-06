@@ -1,31 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1VdGL1-0001sF-2q
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 09:20:48 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VdGKz-0005c4-RY
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 09:20:46 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA49Kcn0028916
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jlayton@redhat.com>) id 1VeAtN-0001XF-M4
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 21:44:01 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VeAtM-0002yS-Dq
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 21:44:01 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rA6Lhsjc031505
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 09:20:39 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA49Kc43018475
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 09:20:38 GMT
-Received: from abhmt108.oracle.com (abhmt108.oracle.com [141.146.116.60])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA49Kcl7008621
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 09:20:38 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Mon,  4 Nov 2013 17:20:29 +0800
-Message-Id: <1383556829-1464-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH] networktests.sh: add ${LTPROOT}/bin into $PATH
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 16:43:54 -0500
+Date: Wed, 6 Nov 2013 16:43:52 -0500
+From: Jeff Layton <jlayton@redhat.com>
+Message-ID: <20131106164352.0f52210f@tlielax.poochiereds.net>
+In-Reply-To: <1924029835.23120751.1383773698263.JavaMail.root@redhat.com>
+References: <1383755951-21231-1-git-send-email-jlayton@redhat.com>
+	<1924029835.23120751.1383773698263.JavaMail.root@redhat.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] diotest3: fix -f argument
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,43 +30,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Some tests need `gethost' (e.g. sendfile01), which lives in ${LTPROOT}/bin,
-which is not in $PATH of networktests.sh.
+On Wed, 6 Nov 2013 16:34:58 -0500 (EST)
+Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
----
- testscripts/networktests.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Jeff Layton" <jlayton@redhat.com>
+> > To: ltp-list@lists.sourceforge.net
+> > Sent: Wednesday, 6 November, 2013 5:39:11 PM
+> > Subject: [LTP] [PATCH] diotest3: fix -f argument
+> > 
+> > The '-f' argument to diotest3 is currently ignored. During options
+> > processing it's copied to the buffer, then subsequently overwritten
+> > by the default in a later sprintf() call.
+> > 
+> > Move the setting of the default prior to the options processing.
+> > 
+> > Signed-off-by: Jeff Layton <jlayton@redhat.com>
+> 
+> Hi Jeff,
+> 
+> pushed. I checked also other diotest*.c, but diotest3.c
+> was the only one having this issue.
+> 
+> Thanks,
+> Jan
+> 
 
-diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
-index b136749..9465356 100755
---- a/testscripts/networktests.sh
-+++ b/testscripts/networktests.sh
-@@ -110,7 +110,7 @@ fi
- 
- cd $TMPDIR
- 
--export PATH="${PATH}:${LTPROOT}/testcases/bin"
-+export PATH="${PATH}:${LTPROOT}/bin:${LTPROOT}/testcases/bin"
- 
- if [ ${VERBOSE} = "yes" ]; then
-     echo "Network parameters:"
+Thanks, that's what I found too. The only other (minor) problem I see
+is that the LEN value used in all of the diotests to size the buffer
+for the filename is pitifully small. It might be reasonable to get rid
+of that and just use PATH_MAX...
+
+> > ---
+> >  testcases/kernel/io/direct_io/diotest3.c |    3 ++-
+> >  1 files changed, 2 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/io/direct_io/diotest3.c
+> > b/testcases/kernel/io/direct_io/diotest3.c
+> > index ac460ed..002a6d0 100644
+> > --- a/testcases/kernel/io/direct_io/diotest3.c
+> > +++ b/testcases/kernel/io/direct_io/diotest3.c
+> > @@ -238,6 +238,8 @@ int main(int argc, char *argv[])
+> >  	int numchild = 1;	/* Number of children. Default 5 */
+> >  	int i, fail_count = 0, failed = 0, total = 0;
+> >  
+> > +	sprintf(filename, "testdata-3.%ld", syscall(__NR_gettid));
+> > +
+> >  	/* Options */
+> >  	while ((i = getopt(argc, argv, "b:o:i:n:f:")) != -1) {
+> >  		switch (i) {
+> > @@ -277,7 +279,6 @@ int main(int argc, char *argv[])
+> >  			prg_usage();
+> >  		}
+> >  	}
+> > -	sprintf(filename, "testdata-3.%ld", syscall(__NR_gettid));
+> >  
+> >  	setup();
+> >  
+> > --
+> > 1.7.1
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > November Webinars for C, C++, Fortran Developers
+> > Accelerate application performance with scalable programming models. Explore
+> > techniques for threading, error checking, porting, and tuning. Get the most
+> > from the latest Intel processors and coprocessors. See abstracts and register
+> > http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+
+
 -- 
-1.8.4.2
-
+Jeff Layton <jlayton@redhat.com>
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
