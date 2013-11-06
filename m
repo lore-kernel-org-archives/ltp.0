@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VePO7-0005qX-HC
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:12:43 +0000
-Date: Thu, 7 Nov 2013 14:12:34 +0100
-From: chrubis@suse.cz
-Message-ID: <20131107131234.GA28961@rei.suse.cz>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-	<1383085243-5833-4-git-send-email-vincent.hsu@linaro.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <siva.padhy@lge.com>) id 1VdzgW-0006eM-Jx
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 09:46:00 +0000
+Received: from lgeamrelo02.lge.com ([156.147.1.126])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VdzgV-0001xv-6b
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 09:46:00 +0000
+From: Siva Padhy <siva.padhy@lge.com>
+Date: Wed, 6 Nov 2013 18:45:51 +0900
+Message-ID: <81212EE27BC298499DBD7CA069AAD071428CD96A5A@LGEVEXMBAPSVC2.LGE.NET>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1383085243-5833-4-git-send-email-vincent.hsu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH 3/9] ltp-networking/tcp_cmds/finger: finger
- an unknown host test will return 1 even if execution success on Ubuntu
- 12.04
+Subject: [LTP] [PATCH v2] BindMounts: fix to properly unmount during cleanup
+ in fs_bind
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,53 +27,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vincent Hsu <vincent.hsu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> for example:
->     $ finger @xxxx || echo "test fail"
->     finger: unknown host: xxxx
->     getaddrinfo: No address associated with hostname
->     test fail
+While running fs_bound testcases, some test directory structure are mounted
+using -rbind option. While exiting the testcase the umount is not properly
+done, hence the below testcase are falling into TWARN.
 
-Hmm, at my computers (SUSE, Gentoo) it works as:
+  fs_bind/test02
+  fs_bind/test38
 
-$ finger @xxxx || echo "test fail"
-finger: unknown host: xxxx
+The warning message is as below for respective testcases
+  TWARN  :  rbind/test02 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
+  TWARN  :  rbind/test38 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
 
-Are you sure that finger returns nonzero? From what package and what
-version does your finger come from?
+This patch unmount all the mounted/submounted parts of the filesystem properly.
 
-Btw what is wrong at the code bellow is the redirection, which does not
-work, the >/dev/null should be before the 2>&1. Even if your finger
-really returns nonzero the code bellow is quite cryptic as it looks like
-it redirects all output from the finger into the /dev/null but it really
-just redirects stderr into stdout which goes to the grep...
+Change-Id: Ica6d1799b89e933587c11c1755dff996ddbdf8c5
+Signed-off-by: Siva <siva.padhy@lge.com>
+---
+ testcases/kernel/fs/fs_bind/rbind/test02 |    2 ++
+ testcases/kernel/fs/fs_bind/rbind/test38 |    5 +++++
+ 2 files changed, 7 insertions(+)
 
-> ---
->  testcases/network/tcp_cmds/finger/finger01 |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
-> index 6a72c8f..a5206be 100755
-> --- a/testcases/network/tcp_cmds/finger/finger01
-> +++ b/testcases/network/tcp_cmds/finger/finger01
-> @@ -116,8 +116,8 @@ do_test2()
-> 
->      tst_resm TINFO "finger -bad user "
->      finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
-> -    finger @$BADHOST 2>&1 1>/dev/null || end_testcase "finger @$BADHOST"
-> -    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null; then
-> +    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" || end_testcase "finger @$BADHOST"
-> +    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host"; then
->          end_testcase "finger $BADUSER@$BADHOST"
->      fi
->  }
-
+diff --git a/testcases/kernel/fs/fs_bind/rbind/test02 b/testcases/kernel/fs/fs_bind/rbind/test02
+index 3ab7b6c..eab9cdc 100755
+--- a/testcases/kernel/fs/fs_bind/rbind/test02
++++ b/testcases/kernel/fs/fs_bind/rbind/test02
+@@ -76,8 +76,10 @@ trap '' ERR
+ {
+ 	umount parent1/child1/a
+ 	umount parent1/child1/b
++	umount parent2/child2/b
+ 	umount parent1/child1
+ 	umount parent1/child1
++	umount parent2/child2
+ 	umount parent1/child1
+ 	umount parent1/child1
+ 	umount share1
+diff --git a/testcases/kernel/fs/fs_bind/rbind/test38 b/testcases/kernel/fs/fs_bind/rbind/test38
+index c9cf3e1..c944ce5 100755
+--- a/testcases/kernel/fs/fs_bind/rbind/test38
++++ b/testcases/kernel/fs/fs_bind/rbind/test38
+@@ -77,6 +77,7 @@ trap '' ERR
+ {
+ 	umount share1/a
+ 	umount parent1/child1/b
++	umount parent2/child1/b
+ 	umount parent2/child1/c
+ 	umount parent1/child1
+ 	umount parent1/child1
+@@ -86,6 +87,10 @@ trap '' ERR
+ 	umount parent2
+ 	umount share1
+ 	umount share1
++	umount parent1
++	umount share2
++	umount parent2/child2
++	umount parent2
+ 
+ 	rm -rf parent* share*
+ 	cleanup
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
 November Webinars for C, C++, Fortran Developers
