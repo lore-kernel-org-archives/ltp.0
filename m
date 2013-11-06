@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ve2Om-0006Mk-Oi
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 12:39:52 +0000
-Date: Wed, 6 Nov 2013 13:39:30 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ve0u0-0002Fi-Tc
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 11:04:00 +0000
+Date: Wed, 6 Nov 2013 12:03:39 +0100
 From: chrubis@suse.cz
-Message-ID: <20131106123930.GB28897@rei>
-References: <52788773.8040007@cn.fujitsu.com>
+Message-ID: <20131106110338.GA28367@rei>
+References: <20131105164645.GB21812@rei.suse.cz>
+	<1383726187-25943-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <52788773.8040007@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] access(2): add ELOOP, ENOTDIR,
- EROFS error number test
+In-Reply-To: <1383726187-25943-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V2 1/2] Implemented SAFE_TOUCH macro
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,16 +25,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "\"Wang, Xiaoguang/??? ??????\"" <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> +
-> +	/* create test_file5 for test ENOTDIR. */
-> +	fd = SAFE_CREAT(cleanup, "test_file5", 0644);
-> +	SAFE_CLOSE(cleanup, fd);
+> +	ret = open(pathname, O_CREAT | O_WRONLY, defmode);
+> +	if (ret == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> +			"Failed to open file '%s' at %s:%d",
+> +			pathname, file, lineno);
 
-Pushed after changing this to newly introduced SAFE_TOUCH(), thanks.
+I (and LKML coding style) prefer to have curly braces around multiline
+blocks, but that is very minor...
+
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
