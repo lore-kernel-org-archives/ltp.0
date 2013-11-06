@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vm0Po-0007vF-IQ
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 12:09:52 +0000
-Date: Thu, 28 Nov 2013 13:09:23 +0100
-From: chrubis@suse.cz
-Message-ID: <20131128120923.GD19263@rei.Home>
-References: <1384784307-28731-1-git-send-email-alexey.kodanev@oracle.com>
-	<1384784307-28731-2-git-send-email-alexey.kodanev@oracle.com>
-	<20131127180449.GA8163@rei> <529725F3.6040002@oracle.com>
-	<20131128113928.GC19263@rei.Home> <52972F1C.3020504@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VdsLn-0002nu-U3
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 01:56:07 +0000
+Received: from lgemrelse1q.lge.com ([156.147.1.111])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VdsLk-0004l5-8D
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 01:56:07 +0000
+From: "Honggyu Kim" <hong.gyu.kim@lge.com>
+Date: Wed, 6 Nov 2013 10:55:56 +0900
+Message-ID: <005301ceda93$558302a0$008907e0$@gyu.kim@lge.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52972F1C.3020504@oracle.com>
-Subject: Re: [LTP] [PATCH v4 2/2] device-drivers: acpi: fixes
+Content-Language: ko
+Subject: [LTP] [PATCH v2] acct01: add a check routine for acct implementation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,40 +26,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> All right, something like this is OK?
-> 
-> for (i = 0; i < TST_TOTAL; ++i) {
-> 
-> 	if (i == ACPI_TRAVERSE) {
-> 		res = tc_acpi_str();
-> 	} else {
-> 		SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
-> 		SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
-> 		res = res ? TFAIL : TPASS;
-> 	}
-> 
-> 	tst_resm(res, "Test-case '%d'", i);
-> }
-> 
-> And tc_acpi_str will have a loop to read the dev_str file until NULL, 
-> because fgets returns a pointer.
+A check routine for acct implementation is added at the beginning of the test.
+check_acct_in_kernel function calls acct(NULL) and checks if errno is ENOSYS.
+It means that acct system call is not implemented in kernel.
+The other ENOSYS check routines in setup are removed.
 
-Sounds good.
+This patch prevents from unintentional calling acct again in cleanup, which
+makes TCONF to TBROK and helps configuration problems stay as TCONF.
 
+Previous test output: (becomes TBROK in the end)
+acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
+acct01      2  TCONF  :  Remaining cases not appropriate for configuration
+acct01      3  TBROK  :  acct(NULL) failed: errno=ENOSYS(38): Function not implemented
+
+Fixed test output: (stays as TCONF)
+acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
+
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
+---
+ testcases/kernel/syscalls/acct/acct01.c |   32 +++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index 8236042..4a34383 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -124,12 +124,28 @@ int main(int argc, char *argv[])
+ 	tst_exit();
+ }
+ 
++static void check_acct_in_kernel(void)
++{
++	/* check if acct is implemented in kernel */
++	if (acct(NULL) == -1) {
++		if (errno == ENOSYS) {
++			tst_resm(TCONF,
++				 "BSD process accounting is not configured in "
++				 "this kernel");
++
++			tst_exit();
++		}
++	}
++}
++
+ static void setup(void)
+ {
+ 	int fd;
+ 
+ 	tst_require_root(NULL);
+ 
++	check_acct_in_kernel();
++
+ 	tst_tmpdir();
+ 
+ 	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+@@ -138,24 +154,12 @@ static void setup(void)
+ 	SAFE_CLOSE(cleanup, fd);
+ 
+ 	if (acct(TEST_FILE5) == -1) {
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF, cleanup,
+-				 "BSD process accounting is not configured in "
+-				 "this kernel");
+-		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
+-		}
++		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
+ 	}
+ 
+ 	/* turn off acct, so we are in a known state */
+ 	if (acct(NULL) == -1) {
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF, cleanup,
+-				 "BSD process accounting is not configured in "
+-				 "this kernel");
+-		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
+-		}
++		tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
+ 	}
+ 
+ 	/* ELOOP SETTING */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
