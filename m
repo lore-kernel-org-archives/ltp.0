@@ -1,17 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlKmE-0001lb-B1
-	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 15:42:14 +0000
-Date: Tue, 26 Nov 2013 16:41:43 +0100
-From: chrubis@suse.cz
-Message-ID: <20131126154142.GA14089@rei.suse.cz>
-References: <1384497891.12576.3.camel@G08JYZSD130126>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1384497891.12576.3.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] creat/creat06.c: cleanup
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VdyOY-0002FF-PL
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 08:23:22 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VdyOX-0007V3-Uw
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 08:23:22 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rA68NFuj000414
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 08:23:16 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA68NERc004133
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 08:23:15 GMT
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA68NEPh019155
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 08:23:14 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed,  6 Nov 2013 12:23:06 +0400
+Message-Id: <1383726187-25943-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20131105164645.GB21812@rei.suse.cz>
+References: <20131105164645.GB21812@rei.suse.cz>
+Subject: [LTP] [PATCH V2 1/2] Implemented SAFE_TOUCH macro
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,259 +38,115 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> cleanup of creat06.c
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/creat/creat06.c | 146 ++++++++++--------------------
->  1 file changed, 48 insertions(+), 98 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/creat/creat06.c b/testcases/kernel/syscalls/creat/creat06.c
-> index 51e46ab..6247c11 100644
-> --- a/testcases/kernel/syscalls/creat/creat06.c
-> +++ b/testcases/kernel/syscalls/creat/creat06.c
-> @@ -13,8 +13,8 @@
->   *   the GNU General Public License for more details.
->   *
->   *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *   along with this program;  if not, write to the Free Software Foundation,
-> + *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   */
->  
->  /*
-> @@ -70,84 +70,62 @@
->  #include <fcntl.h>
->  #include "test.h"
->  #include "usctest.h"
-> -
-> -void setup(void);
-> -void cleanup(void);
-> -
-> -char user1name[] = "nobody";
-> -
-> -char *TCID = "creat06";
-> -int fileHandle = 0;
-> -
-> -int exp_enos[] = { EISDIR, ENAMETOOLONG, ENOENT, ENOTDIR, EFAULT, EACCES, 0 };
-> -
-> -#define	MODE1	0444
-> -#define	MODE2	0666
-> -#define NSIZE	1000
-> -
-> -char long_name[] =
-> -    "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
-> -
-> -char good_dir[NSIZE];
-> -char no_dir[] = "testfile/testdir";
-> -char not_dir[] = "file1/testdir";
-> -char test6_file[] = "dir6/file6";
-> -char nobody_uid[] = "nobody";
-> -
-> -struct passwd *ltpuser;
-> -struct test_case_t {
-> +#include "safe_macros.h"
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +#define	MODE1		0444
-> +#define	MODE2		0666
-> +#define NSIZE		1000
-> +#define NO_DIR		"testfile/testdir"
-> +#define NOT_DIR		"file1/testdir"
-> +#define TEST6_FILE	"dir6/file6"
-> +
-> +static char long_name[PATH_MAX+2];
-> +static char good_dir[NSIZE];
-> +static int filehandle;
-> +static char *bad_addr;
-> +static struct passwd *ltpuser;
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ include/safe_file_ops.h |   21 +++++++++++++++++++++
+ lib/safe_file_ops.c     |   41 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 0 deletions(-)
 
-The ltpuser variable don't need to be a global one, it's used only in
-the setup, the same goes for bad_addr.
-
-> +static struct test_case_t {
->  	char *fname;
->  	int mode;
->  	int error;
-> +	void (*setup)(void);
->  } TC[] = {
-> -	/* The file name is an existing directory */
-> -	{
-> -	good_dir, MODE1, EISDIR},
-> -	    /* The file name is too long - ENAMETOOLONG */
-> -	{
-> -	long_name, MODE1, ENAMETOOLONG},
-> -	    /* Attempt to create a file in a directory that doesn't exist - ENOENT */
-> -	{
-> -	no_dir, MODE1, ENOENT},
-> -	    /* a compent of the file's path is not a directory - ENOTDIR */
-> -	{
-> -	not_dir, MODE1, ENOTDIR},
-> +	{good_dir, MODE1, EISDIR, NULL},
-> +	{long_name, MODE1, ENAMETOOLONG, NULL},
-> +	{NO_DIR, MODE1, ENOENT, NULL},
-> +	{NOT_DIR, MODE1, ENOTDIR, NULL},
->  #if !defined(UCLINUX)
-> -	    /* The file address is bad - EFAULT */
-> -	{
-> -	(char *)-1, MODE1, EFAULT},
-> +	{(char *)-1, MODE1, EFAULT, NULL},
->  #endif
-> -	    /* The directory lacks execute permission - EACCES */
-> -	{
-> -	test6_file, MODE1, EACCES}
-> +	{TEST6_FILE, MODE1, EACCES, NULL},
->  };
->  
-> -int TST_TOTAL = (sizeof(TC) / sizeof(*TC));
-> -
-> -char *bad_addr = 0;
-> +char *TCID = "creat06";
-> +int TST_TOTAL = ARRAY_SIZE(TC);
-> +static int exp_enos[] = { EISDIR, ENAMETOOLONG, ENOENT, ENOTDIR,
-> +			  EFAULT, EACCES, 0 };
->  
->  int main(int ac, char **av)
->  {
->  	int lc;
-> -	char *msg;
->  	int i;
->  
-> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-> -		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> -
->  	setup();
->  
-> -	/* set up the expected errnos */
->  	TEST_EXP_ENOS(exp_enos);
->  
->  	for (lc = 0; TEST_LOOPING(lc); lc++) {
->  
-> -		/* reset tst_count in case we are looping */
->  		tst_count = 0;
->  
-> -		/* loop through the test cases */
->  		for (i = 0; i < TST_TOTAL; i++) {
->  
-> +			if (TC[i].setup)
-> +				TC[i].setup();
-> +
->  			TEST(creat(TC[i].fname, TC[i].mode));
->  
->  			if (TEST_RETURN != -1) {
-> @@ -155,8 +133,6 @@ int main(int ac, char **av)
->  				continue;
->  			}
->  
-> -			TEST_ERROR_LOG(TEST_ERRNO);
-> -
->  			if (TEST_ERRNO == TC[i].error) {
->  				tst_resm(TPASS | TTERRNO,
->  					 "got expected failure");
-> @@ -171,21 +147,15 @@ int main(int ac, char **av)
->  	tst_exit();
->  }
->  
-> -/*
-> - * setup() - performs all ONE TIME setup for this test.
-> - */
-> -void setup()
-> +static void setup(void)
->  {
->  	char *cur_dir = NULL;
->  
->  	tst_require_root(NULL);
->  
-> -	ltpuser = getpwnam(nobody_uid);
-> -	if (ltpuser == NULL)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "getpwnam failed");
-> -	if (seteuid(ltpuser->pw_uid) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup,
-> -			 "seteuid(%d) failed", ltpuser->pw_uid);
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
->  
->  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->  
-> @@ -193,47 +163,27 @@ void setup()
->  
->  	tst_tmpdir();
->  
-> -	/* get the current directory for the first test */
-> -	if ((cur_dir = getcwd(cur_dir, 0)) == NULL) {
-> -		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
-> -	}
-> +	cur_dir = SAFE_GETCWD(cleanup, cur_dir, 0);
->  
->  	strncpy(good_dir, cur_dir, NSIZE);
-
-What about doing one SAVE_MKDIR(cleanup, TEST_DIR, MODE) and passing the
-TEST_DIR to the first testcase instead? That would save us time while
-fidling with the absolute path...
-
-> -	/* create a file that will be used in test #3 */
-> -	if ((fileHandle = creat("file1", MODE1)) == -1) {
-> -		tst_brkm(TBROK, cleanup, "couldn't create a test file");
-> -	}
-> +	if (memset(long_name, 'a', PATH_MAX+1) == NULL)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
-
-This part is wrong, memset() can't fail.
-
-> +
-> +	filehandle = SAFE_CREAT(cleanup, "file1", MODE1);
-
-This file descriptor is not used at all. You should use SAFE_TOUCH()
-instead of the SAFE_CREAT() to just create the file.
-
->  #if !defined(UCLINUX)
-> -	bad_addr = mmap(0, 1, PROT_NONE,
-> -			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
-> -	if (bad_addr == MAP_FAILED) {
-> -		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
-> -	}
-> +	bad_addr = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
-> +			     MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
-
-The MAP_PRIVATE_EXCEPT_UCLINUX is not usefull here because you are
-inside of the #if !defined(UCLINUX), you can simply use MAP_PRIVATE
-instead.
-
->  	TC[4].fname = bad_addr;
-
-This is hacked up. You should use the per testcase setup function to
-assign the value instead.
-
->  #endif
->  
-> -	/* create a directory that will be used in test #6 */
-> -	if (mkdir("dir6", MODE2) == -1) {
-> -		tst_brkm(TBROK, cleanup, "couldn't creat a test directory");
-> -	}
-> +	SAFE_MKDIR(cleanup, "dir6", MODE2);
->  }
-
+diff --git a/include/safe_file_ops.h b/include/safe_file_ops.h
+index 7ff5baa..77ad594 100644
+--- a/include/safe_file_ops.h
++++ b/include/safe_file_ops.h
+@@ -72,4 +72,25 @@ void safe_cp(const char *file, const int lineno,
+ #define SAFE_CP(cleanup_fn, src, dst) \
+ 	safe_cp(__FILE__, __LINE__, (cleanup_fn), (src), (dst))
+ 
++/*
++ * Safe function to touch a file.
++ *
++ * If the file (pathname) does not exist It will be created with
++ * the specified permission (mode) and the access/modification times (times).
++ *
++ * If mode is 0 then the file is created with (0666 & ~umask)
++ * permission or (if the file exists) the permission is not changed.
++ *
++ * times is a timespec[2] (as for utimensat(2)). If times is NULL then
++ * the access/modification times of the file is set to the current time.
++ */
++void safe_touch(const char *file, const int lineno,
++		void (*cleanup_fn)(void),
++		const char *pathname,
++		mode_t mode, const struct timespec times[2]);
++
++#define SAFE_TOUCH(cleanup_fn, pathname, mode, times) \
++	safe_touch(__FILE__, __LINE__, (cleanup_fn), \
++			(pathname), (mode), (times))
++
+ #endif /* SAFE_FILE_OPS */
+diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+index b602345..8cfd264 100644
+--- a/lib/safe_file_ops.c
++++ b/lib/safe_file_ops.c
+@@ -23,6 +23,9 @@
+ 
+ #include <stdarg.h>
+ #include <stdio.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
+ 
+ #include "safe_file_ops.h"
+ 
+@@ -152,3 +155,41 @@ void safe_cp(const char *file, const int lineno,
+ 			 src, dst, file, lineno);
+ 	}
+ }
++
++void safe_touch(const char *file, const int lineno,
++		void (*cleanup_fn)(void),
++		const char *pathname,
++		mode_t mode, const struct timespec times[2])
++{
++	int ret;
++	mode_t defmode;
++
++	defmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
++
++	ret = open(pathname, O_CREAT | O_WRONLY, defmode);
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			"Failed to open file '%s' at %s:%d",
++			pathname, file, lineno);
++
++	ret = close(ret);
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			"Failed to close file '%s' at %s:%d",
++			pathname, file, lineno);
++
++	if (mode != 0) {
++		ret = chmod(pathname, mode);
++		if (ret == -1)
++			tst_brkm(TBROK | TERRNO, cleanup_fn,
++				"Failed to chmod file '%s' at %s:%d",
++				pathname, file, lineno);
++	}
++
++	ret = utimensat(AT_FDCWD, pathname, times, 0);
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			"Failed to do utimensat() on file '%s' at %s:%d",
++			pathname, file, lineno);
++}
++
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
