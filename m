@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlIBv-00048H-VG
-	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 12:56:35 +0000
-Date: Tue, 26 Nov 2013 13:56:06 +0100
-From: chrubis@suse.cz
-Message-ID: <20131126125606.GA10489@rei>
-References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-	<1384400319-30776-7-git-send-email-vincent.hsu@linaro.org>
-	<5285BEE3.5030405@casparzhang.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VdssX-0002gm-TF
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 02:29:57 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VdssU-0000SY-FW
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 02:29:57 +0000
+Message-ID: <5279A979.3020302@cn.fujitsu.com>
+Date: Wed, 06 Nov 2013 10:29:13 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5285BEE3.5030405@casparzhang.com>
-Subject: Re: [LTP] [LNG][PATCH 7/8] ltp-networking/tcp_cmds/netstat: fix
- netstat test
+References: <005301ceda93$558302a0$008907e0$@gyu.kim@lge.com>
+In-Reply-To: <005301ceda93$558302a0$008907e0$@gyu.kim@lge.com>
+Subject: Re: [LTP] [PATCH v2] acct01: add a check routine for acct
+	implementation
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,40 +29,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <caspar@casparzhang.com>
-Cc: ltp-list@lists.sourceforge.net, Vincent Hsu <vincent.hsu@linaro.org>, linaro-networking@linaro.org
+To: Honggyu Kim <hong.gyu.kim@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > The netstat command will return nozero on Ubuntu 12.04 even if
-> > execution success.
-> >
-> > for example:
-> > in Ubuntu
-> >      $ netstat -s 1>/dev/null 2>&1 ; echo $?
-> >      1
-> > in CentOS
-> >      $ netstat -s 1>/dev/null 2>&1 ; echo $?
-> >      0
-> >
-> > Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
+On 11/06/2013 09:55 AM, Honggyu Kim wrote:
+> A check routine for acct implementation is added at the beginning of the test.
+> check_acct_in_kernel function calls acct(NULL) and checks if errno is ENOSYS.
+> It means that acct system call is not implemented in kernel.
+> The other ENOSYS check routines in setup are removed.
 > 
-> This should be a bug in netstat @ Ubuntu I guess?
+> This patch prevents from unintentional calling acct again in cleanup, which
+> makes TCONF to TBROK and helps configuration problems stay as TCONF.
+> 
+> Previous test output: (becomes TBROK in the end)
+> acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
+> acct01      2  TCONF  :  Remaining cases not appropriate for configuration
+> acct01      3  TBROK  :  acct(NULL) failed: errno=ENOSYS(38): Function not implemented
+> 
+> Fixed test output: (stays as TCONF)
+> acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
+> 
+> Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
+> ---
+>  testcases/kernel/syscalls/acct/acct01.c |   32 +++++++++++++++++--------------
+>  1 file changed, 18 insertions(+), 14 deletions(-)
 
-Looks like a bug in Debian to me, I've looked into the source package
-and traced it down to the netstat.c-assorted_changes.patch, that seems
-to add ipv6 support and changes the exit(0) to exit(1) for no good
-reason.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Applied with removing the unnecessary braces, thank you.
+
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
