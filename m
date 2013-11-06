@@ -1,17 +1,16 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VeNcU-00049K-Fe
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 11:19:26 +0000
-Date: Thu, 7 Nov 2013 12:19:01 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ve2IG-0005mW-6f
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 12:33:08 +0000
+Date: Wed, 6 Nov 2013 13:32:46 +0100
 From: chrubis@suse.cz
-Message-ID: <20131107111901.GA28246@rei>
-References: <52780C00.6010706@gmx.de> <20131106123245.GA28897@rei>
-	<527A964D.6030004@gmx.de>
+Message-ID: <20131106123245.GA28897@rei>
+References: <52780C00.6010706@gmx.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <527A964D.6030004@gmx.de>
+In-Reply-To: <52780C00.6010706@gmx.de>
 Subject: Re: [LTP] [PATCH] fcntl16.c patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,40 +28,30 @@ To: Helge Deller <deller@gmx.de>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> The fcntl16 testcase is being compiled twice, once normal, and the other
-> >> time with the _FILE_OFFSET_BITS=64 define set.
-> >>
-> >> When compiled with 64bit file functions (as fcntl16_64) all 
-> >> file functions will automatically use their 64bit variants, e.g.
-> >> "struct flock64" instead of "struct flock".
-> >>
-> >> So, when in the code e.g.
-> >> 	fcntl(fd, F_SETLK, thislock)
-> >> is called, this will automatically be translated into
-> >> 	fcntl64(fd, F_SETLK64, thislock)
-> >> and "thislock" needs to be of type "struct flock64".
-> >>
-> >> So, we need to make sure that thislock is of the correct type,
-> >> with the start and len fields being of type "off_t" which then
-> >> will be translated into "loff_t" during compilation when 
-> >> _FILE_OFFSET_BITS=64 is set.
-> >>
-> >> This fixes the fcntl16_64 testcase on hppa64-linux-gnu with
-> >> 32bit userspace running on 64bit kernel.
-> >>
-> >> Signed-off-by: Helge Deller <deller@gmx.de>
-> > 
-> > What about using struct flock as defined in bits/fcntl.h instead?
+> The fcntl16 testcase is being compiled twice, once normal, and the other
+> time with the _FILE_OFFSET_BITS=64 define set.
 > 
-> Sure, that's possible.
-> Patch is attached.
+> When compiled with 64bit file functions (as fcntl16_64) all 
+> file functions will automatically use their 64bit variants, e.g.
+> "struct flock64" instead of "struct flock".
 > 
-> I would be happy if you would apply one of those.
+> So, when in the code e.g.
+> 	fcntl(fd, F_SETLK, thislock)
+> is called, this will automatically be translated into
+> 	fcntl64(fd, F_SETLK64, thislock)
+> and "thislock" needs to be of type "struct flock64".
+> 
+> So, we need to make sure that thislock is of the correct type,
+> with the start and len fields being of type "off_t" which then
+> will be translated into "loff_t" during compilation when 
+> _FILE_OFFSET_BITS=64 is set.
+> 
+> This fixes the fcntl16_64 testcase on hppa64-linux-gnu with
+> 32bit userspace running on 64bit kernel.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
 
-Applied, thanks.
-
-And it would be easier for me if you had send git formatted patch with
-headline and description (output from git format-patch).
+What about using struct flock as defined in bits/fcntl.h instead?
 
 -- 
 Cyril Hrubis
