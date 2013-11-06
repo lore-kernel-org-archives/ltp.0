@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VjRBv-0006R0-FB
-	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:08:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VeBtQ-0007WV-4F
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 22:48:08 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VjRBs-00077e-74
-	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:08:55 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rALA8fFq013196
-	for <ltp-list@lists.sourceforge.net>; Thu, 21 Nov 2013 18:08:44 +0800
-Message-ID: <1385028516.1552.2.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 21 Nov 2013 18:08:36 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] clock_getres/clock_getres01.c: add new clockids
+	id 1VeBtN-0004nA-Q5
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 22:48:07 +0000
+Date: Wed, 6 Nov 2013 17:47:56 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2139722103.23140441.1383778076485.JavaMail.root@redhat.com>
+In-Reply-To: <81212EE27BC298499DBD7CA069AAD071428CD96A5A@LGEVEXMBAPSVC2.LGE.NET>
+References: <81212EE27BC298499DBD7CA069AAD071428CD96A5A@LGEVEXMBAPSVC2.LGE.NET>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2] BindMounts: fix to properly unmount during
+ cleanup in fs_bind
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,43 +28,125 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-add new clockids: CLOCK_MONOTONIC_RAW CLOCK_REALTIME_COARSE
-CLOCK_MONOTONIC_COARSE CLOCK_BOOTTIME
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/clock_getres/clock_getres01.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-index 4df6d87..a53728d 100644
---- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-+++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-@@ -75,6 +75,10 @@ static struct test_case {
- 	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, NORMAL, 0, 0},
- 	{"-1", -1, NORMAL, -1, EINVAL},
- 	{"REALTIME", CLOCK_REALTIME, NULL_POINTER, 0, 0},
-+	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, NORMAL, 0, 0,},
-+	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, NORMAL, 0, 0,},
-+	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, NORMAL, 0, 0,},
-+	{"CLOCK_BOOTTIME", CLOCK_BOOTTIME, NORMAL, 0, 0,},
- };
- 
- static void setup(void);
--- 
-1.8.2.1
+To: Siva Padhy <siva.padhy@lge.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
 
+
+
+----- Original Message -----
+> From: "Siva Padhy" <siva.padhy@lge.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Wednesday, 6 November, 2013 10:45:51 AM
+> Subject: [LTP] [PATCH v2] BindMounts: fix to properly unmount during cleanup in fs_bind
+> 
+> While running fs_bound testcases, some test directory structure are mounted
+> using -rbind option. While exiting the testcase the umount is not properly
+> done, hence the below testcase are falling into TWARN.
+> 
+>   fs_bind/test02
+>   fs_bind/test38
+> 
+> The warning message is as below for respective testcases
+>   TWARN  :  rbind/test02 did not properly clean up
+>   "/tmp/ltp-XXXX9qdYqG/sandbox"
+>   TWARN  :  rbind/test38 did not properly clean up
+>   "/tmp/ltp-XXXX9qdYqG/sandbox"
+> 
+> This patch unmount all the mounted/submounted parts of the filesystem
+> properly.
+> 
+> Change-Id: Ica6d1799b89e933587c11c1755dff996ddbdf8c5
+> Signed-off-by: Siva <siva.padhy@lge.com>
+> ---
+>  testcases/kernel/fs/fs_bind/rbind/test02 |    2 ++
+>  testcases/kernel/fs/fs_bind/rbind/test38 |    5 +++++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/testcases/kernel/fs/fs_bind/rbind/test02
+> b/testcases/kernel/fs/fs_bind/rbind/test02
+> index 3ab7b6c..eab9cdc 100755
+> --- a/testcases/kernel/fs/fs_bind/rbind/test02
+> +++ b/testcases/kernel/fs/fs_bind/rbind/test02
+> @@ -76,8 +76,10 @@ trap '' ERR
+>  {
+>  	umount parent1/child1/a
+>  	umount parent1/child1/b
+> +	umount parent2/child2/b
+>  	umount parent1/child1
+>  	umount parent1/child1
+> +	umount parent2/child2
+>  	umount parent1/child1
+>  	umount parent1/child1
+>  	umount share1
+
+Hi,
+
+This still leaves me with share1 mounted. The following umount sequence
+works for me (3.10 based kernel). Can you try if it fixes also your issue
+in test02?
+
+        umount parent2/child2/b
+        umount parent1/child1/a
+        umount parent2/child2
+        umount share1
+        umount parent1/child1
+
+        umount parent1/child1
+        umount share1
+        umount parent2
+        umount parent1
+
+Regards,
+Jan
+
+> diff --git a/testcases/kernel/fs/fs_bind/rbind/test38
+> b/testcases/kernel/fs/fs_bind/rbind/test38
+> index c9cf3e1..c944ce5 100755
+> --- a/testcases/kernel/fs/fs_bind/rbind/test38
+> +++ b/testcases/kernel/fs/fs_bind/rbind/test38
+> @@ -77,6 +77,7 @@ trap '' ERR
+>  {
+>  	umount share1/a
+>  	umount parent1/child1/b
+> +	umount parent2/child1/b
+>  	umount parent2/child1/c
+>  	umount parent1/child1
+>  	umount parent1/child1
+> @@ -86,6 +87,10 @@ trap '' ERR
+>  	umount parent2
+>  	umount share1
+>  	umount share1
+> +	umount parent1
+> +	umount share2
+> +	umount parent2/child2
+> +	umount parent2
+>  
+>  	rm -rf parent* share*
+>  	cleanup
+> --
+> 1.7.9.5
+> 
+> 
+> ------------------------------------------------------------------------------
+> November Webinars for C, C++, Fortran Developers
+> Accelerate application performance with scalable programming models. Explore
+> techniques for threading, error checking, porting, and tuning. Get the most
+> from the latest Intel processors and coprocessors. See abstracts and register
+> http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
