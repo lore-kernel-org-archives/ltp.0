@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vl18N-0002Et-RW
-	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 18:43:47 +0000
-Date: Mon, 25 Nov 2013 19:43:18 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ve2Om-0006Mk-Oi
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 12:39:52 +0000
+Date: Wed, 6 Nov 2013 13:39:30 +0100
 From: chrubis@suse.cz
-Message-ID: <20131125184318.GD32540@rei.suse.cz>
-References: <1385339610-862-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Message-ID: <20131106123930.GB28897@rei>
+References: <52788773.8040007@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1385339610-862-1-git-send-email-gaowanlong@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH V2] runltp: suppress the out message when creating
- loop device
+In-Reply-To: <52788773.8040007@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] access(2): add ELOOP, ENOTDIR,
+ EROFS error number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,49 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: "\"Wang, Xiaoguang/??? ??????\"" <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> ---
->  runltp | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/runltp b/runltp
-> index 63c625f..c8a2e20 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -956,7 +956,7 @@ main()
->  create_block()
->  {
->      #create a block device
-> -    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480
-> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480 >/dev/null 2>&1
->      if [ $? -ne 0 ]; then
->          echo "Failed to create loopback device image, please check disk space and re-run"
->          return 1
+> +
+> +	/* create test_file5 for test ENOTDIR. */
+> +	fd = SAFE_CREAT(cleanup, "test_file5", 0644);
+> +	SAFE_CLOSE(cleanup, fd);
 
-I remember not silencing the output because:
-
-* I don't care much for tidy output from runltp script,
-  it prints too much of output anyway.
-
-* It's easier to tell what has happened when the command fails.
-
-But I do not really care, if you need this for something feel free to
-commit it.
+Pushed after changing this to newly introduced SAFE_TOUCH(), thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
