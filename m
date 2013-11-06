@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ViPfS-0004ar-AS
-	for ltp-list@lists.sourceforge.net; Mon, 18 Nov 2013 14:19:10 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ViPfP-0005Jl-7H
-	for ltp-list@lists.sourceforge.net; Mon, 18 Nov 2013 14:19:10 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rAIEJ0jH011699
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Nov 2013 14:19:01 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAIEIxm8013799
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Nov 2013 14:19:00 GMT
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAIEIxpT012058
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 Nov 2013 14:18:59 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 18 Nov 2013 18:18:27 +0400
-Message-Id: <1384784307-28731-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1384784307-28731-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1384784307-28731-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v4 2/2] device-drivers: acpi: fixes
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ve6pi-0005s0-9i
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 17:23:58 +0000
+Date: Wed, 6 Nov 2013 16:05:08 +0100
+From: chrubis@suse.cz
+Message-ID: <20131106150508.GB29329@rei>
+References: <1382969894-9814-1-git-send-email-alexey.kodanev@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1382969894-9814-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] network: tcp_fastopen: add TCP Fast Open test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,1590 +21,1029 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6477219976036802788=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
-
---===============6477219976036802788==
-
-Obsolete code updated to the actual kernel ACPI API.
-Changed test-cases handling from ioctl to sysfs.
-User-space program rewritten.
-User-space program loads/unloads kernel module.
-Added new test-cases: traverse ACPI devices and sysfs support
-for device description.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/kernel/device-drivers/acpi/.gitignore    |    8 +
- testcases/kernel/device-drivers/acpi/Makefile      |   43 +-
- testcases/kernel/device-drivers/acpi/ltp_acpi.c    |  166 ++++
- testcases/kernel/device-drivers/acpi/ltp_acpi.h    |  123 +--
- .../kernel/device-drivers/acpi/ltp_acpi_cmds.c     | 1000 ++++++++++----------
- 5 files changed, 714 insertions(+), 626 deletions(-)
- create mode 100644 testcases/kernel/device-drivers/acpi/.gitignore
- create mode 100644 testcases/kernel/device-drivers/acpi/ltp_acpi.c
-
-diff --git a/testcases/kernel/device-drivers/acpi/.gitignore b/testcases/kernel/device-drivers/acpi/.gitignore
-new file mode 100644
-index 0000000..76fbdc8
---- /dev/null
-+++ b/testcases/kernel/device-drivers/acpi/.gitignore
-@@ -0,0 +1,8 @@
-+/LtpAcpiCmds.ko
-+/ltp_acpi
-+/*.mod.c
-+/modules.order
-+/.tmp_versions
-+/.*.ko
-+/.*.cmd
-+/Module.symvers
-diff --git a/testcases/kernel/device-drivers/acpi/Makefile b/testcases/kernel/device-drivers/acpi/Makefile
-index afec680..31bf26b 100644
---- a/testcases/kernel/device-drivers/acpi/Makefile
-+++ b/testcases/kernel/device-drivers/acpi/Makefile
-@@ -1,34 +1,33 @@
-+# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
- #
--# Makefile for GCOV profiling kernel module
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
- #
--#  1 Mar 2009 M��rton N��meth <nm127@freemail.hu>
--#   - Updated for Linux kernel 2.6.28
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
- #
--
--#KERNELDIR := /usr/src/linux-2.5.64-gcov
--EXTRA_CFLAGS := -Wall -g -W -Wno-unused-parameter
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- 
- ifneq ($(KERNELRELEASE),)
- 
--obj-m	:= LtpAcpiCmds.o
--obj-p   := Test
--else
--KDIR	:= /lib/modules/$(shell uname -r)/build
--PWD	:= $(shell pwd)
-+obj-m := ltp_acpi_cmds.o
- 
--modules:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
--	${CC}  $(CFLAGS) -o LtpAcpiMain  LtpAcpiMain.c
-+else
- 
--clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
--	rm -f modules.order
--	rm -f LtpAcpiMain
-+top_srcdir	?= ../../../..
-+include $(top_srcdir)/include/mk/testcases.mk
- 
--help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+REQ_VERSION_MAJOR	:= 2
-+REQ_VERSION_PATCH	:= 6
-+MAKE_TARGETS		:= ltp_acpi ltp_acpi_cmds.ko
- 
--modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+include $(top_srcdir)/include/mk/module.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
- endif
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.c b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-new file mode 100644
-index 0000000..612c3d4
---- /dev/null
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-@@ -0,0 +1,166 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "tst_module.h"
-+#include "safe_macros.h"
-+#include "safe_stdio.h"
-+
-+#include "ltp_acpi.h"
-+
-+char *TCID = "ltp_acpi";
-+int TST_TOTAL = ACPI_TC_NUM;
-+
-+static const char dev_result[]	= "/sys/devices/" ACPI_TEST_NAME "/result";
-+static const char dev_path[]	= "/sys/devices/" ACPI_TEST_NAME "/path";
-+static const char dev_str[]	= "/sys/devices/" ACPI_TEST_NAME "/str";
-+static const char dev_tcase[]	= "/sys/devices/" ACPI_TEST_NAME "/tcase";
-+static const char module_name[]	= "ltp_acpi_cmds.ko";
-+static int module_loaded;
-+
-+static void cleanup(void)
-+{
-+	if (module_loaded)
-+		tst_module_unload(NULL, module_name);
-+
-+	TEST_CLEANUP;
-+}
-+
-+static int read_sysfs_file(const char *name, char *buf, int size)
-+{
-+	FILE *f = SAFE_FOPEN(cleanup, name, "r");
-+	if (!fgets(buf, size, f)) {
-+		tst_resm(TFAIL, "failed to read sysfs file '%s'", name);
-+		return 1;
-+	}
-+	SAFE_FCLOSE(cleanup, f);
-+	return 0;
-+}
-+
-+static int next_acpi_str(void)
-+{
-+	char descr[4096], sysfs_path[4096];
-+
-+	/*
-+	 * if device has _STR object, we should get
-+	 * a valid string from 'str' sysfs file and then can
-+	 * find it in sysfs.
-+	 */
-+	if (read_sysfs_file(dev_str, descr, 4096))
-+		return 0;
-+	if (!strcmp(descr, "null")) {
-+		tst_resm(TCONF, "None of left devices has _STR");
-+		return 0;
-+	}
-+	tst_resm(TINFO, "read description %s", descr);
-+
-+	/* device's sysfs path */
-+	strcpy(sysfs_path, "/sys");
-+	if (read_sysfs_file(dev_path, sysfs_path + 4, 4092))
-+		return 0;
-+	if (!strcmp(sysfs_path + 4, "null")) {
-+		tst_resm(TCONF, "device doesn't have sysfs entry");
-+		/* continue, because others might have it */
-+		return 1;
-+	}
-+	strcat(sysfs_path, "/description");
-+
-+	/*
-+	 * Find device description in sysfs.
-+	 *
-+	 * New sysfs interface to export device description
-+	 * implemented since Linux 3.7
-+	 */
-+	if (tst_kvercmp(3, 7, 0) < 0) {
-+		tst_resm(TCONF,
-+			"sysfs description check required Linux 3.7+");
-+		return 1;
-+	}
-+
-+	if (access(sysfs_path, R_OK)) {
-+		tst_resm(TFAIL, "can't find description file '%s'", sysfs_path);
-+		return 1;
-+	}
-+	tst_resm(TPASS, "found description file '%s'", sysfs_path);
-+
-+	char sysfs_descr[4096];
-+	if (read_sysfs_file(sysfs_path, sysfs_descr, 4096))
-+		return 1;
-+
-+	/*
-+	 * Compare sysfs file and description from test driver
-+	 */
-+	int res = strncmp(descr, sysfs_descr, strlen(descr));
-+
-+	tst_resm((res) ? TFAIL : TPASS, "check sysfs file");
-+
-+	return 1;
-+}
-+
-+static void test_run(void)
-+{
-+	int i = 0, res;
-+	while (i < TST_TOTAL) {
-+
-+		SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
-+		SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
-+
-+		tst_resm(res, "Test-case '%d'", i);
-+
-+		/*
-+		 * trigger ACPI_TRAVERSE test-case while we can
-+		 * get valid next device description.
-+		 */
-+		if (i == ACPI_TRAVERSE && next_acpi_str())
-+			continue;
-+
-+		++i;
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	char *msg;
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	tst_require_root(NULL);
-+
-+	if (tst_kvercmp(2, 6, 0) < 0) {
-+		tst_brkm(TCONF, NULL,
-+			"Test must be run with kernel 2.6 or newer");
-+	}
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	tst_module_load(NULL, module_name, NULL);
-+	module_loaded = 1;
-+
-+	test_run();
-+
-+	cleanup();
-+
-+	tst_exit();
-+}
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.h b/testcases/kernel/device-drivers/acpi/ltp_acpi.h
-index 5c0c37b..b66e8c4 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi.h
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.h
-@@ -1,97 +1,38 @@
- /*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- *  FILE        : LtpAcpi.h
-- *  DESCRIPTION :
-- *  HISTORY:
-- *    06/09/2003 Initial creation mridge@us.ibm.com
-- *      -Ported
-- *  updated - 01/09/2005 Updates from Intel to add functionality
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-  *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  */
- 
--#define ACPI_LTP_TEST_COMPONENT	        	0x00020999
--#define ACPI_LTP_TEST_CLASS		        	"ltp_test"
--#define ACPI_LTP_TEST_HID 		        	"ACPI0999"
--#define ACPI_LTP_TEST_DRIVER_NAME		    "ACPI LTP Test Driver"
--#define ACPI_LTP_TEST_DEVICE_NAME	    	"LTP Test"
--#define ACPI_LTP_TEST_FILE_STATE    		"state"
--#define ACPI_LTP_TEST_NOTIFY_STATUS		    0x80
--#define ACPI_LTP_TEST_STATUS_OFFLINE		0x00
--#define ACPI_LTP_TEST_STATUS_ONLINE	    	0x01
--#define ACPI_LTP_TEST_STATUS_UNKNOWN		0xFF
--#define _COMPONENT		ACPI_LTP_TEST_COMPONENT
--#define ACPI_TLP_TEST_MODULE_NAME		("acpi_ltp_test")
--#define ACPI_NS_SYSTEM_BUS          "_SB_"
--#define ACPI_BATTERY_FORMAT_BIF	"NNNNNNNNNSSSS"
--#define ACPI_BATTERY_FORMAT_BST	"NNNN"
--
--
--#define ACPI_TYPE_ANY                   0x00
--#define ACPI_TYPE_INTEGER               0x01  /* Byte/Word/Dword/Zero/One/Ones */
--#define ACPI_TYPE_STRING                0x02
--#define ACPI_TYPE_BUFFER                0x03
--#define ACPI_TYPE_PACKAGE               0x04  /* byte_const, multiple data_term/Constant/super_name */
--#define ACPI_TYPE_FIELD_UNIT            0x05
--#define ACPI_TYPE_DEVICE                0x06  /* Name, multiple Node */
--#define ACPI_TYPE_EVENT                 0x07
--#define ACPI_TYPE_METHOD                0x08  /* Name, byte_const, multiple Code */
--#define ACPI_TYPE_MUTEX                 0x09
--#define ACPI_TYPE_REGION                0x0A
--#define ACPI_TYPE_POWER                 0x0B  /* Name,byte_const,word_const,multi Node */
--#define ACPI_TYPE_PROCESSOR             0x0C  /* Name,byte_const,Dword_const,byte_const,multi nm_o */
--#define ACPI_TYPE_THERMAL               0x0D  /* Name, multiple Node */
--#define ACPI_TYPE_BUFFER_FIELD          0x0E
--#define ACPI_TYPE_DDB_HANDLE            0x0F
--#define ACPI_TYPE_DEBUG_OBJECT          0x10
--
--#define ACPI_TYPE_EXTERNAL_MAX          0x10
--#define LTPMAJOR                        252
--
--/* Use 'k' as magic number */
--#define LTPACPI_IOC_MAGIC  'k'
--#define TOMINOR(x) ((x & 3) | ((x & 4) << 5))
--
--
--#define DEV_PATH                            "/dev"
--#define LTP_ACPI_DIR_NAME                   ""
--#define LTP_ACPI_DEV_NAME                   "LTP"
--#define LTP_ACPI_DEV_NODE_PATH              DEV_PATH "/"
--#define LTP_ACPI_DEVICE_NAME                DEV_PATH "/"  LTP_ACPI_DEV_NAME
--#define MINOR_SHIFT_BITS 3
--#define MAX_PARTITIONS 8                    /* partition 0 + 7 more possible due to 3 bit partition number field */
--#define	MAX_NUM_DISKS 3                   /* number of real devices */
--
--#define MPDEV_FLAG_CLEAR 0
--#define MPDEV_FLAG_SET   1
--
--typedef struct _ltpdev_cmd {
--    u_int32_t     cmd;           // input - 0==recover, 1==fail
--    u_int32_t     status;        // ouput - 0==success
--} ltpdev_cmd_t;
--
--typedef enum ltpdev_ioctl_cmds_s {
--	/* version commands */
--	LTP_IOCTL_NUMBER = 0x5500
--} ltpdev_ioctl_cmds_t;
--
--// define the ioctl cmds
--#define LTPDEV_CMD       _IOR( LTPMAJOR, LTP_IOCTL_NUMBER, ltpdev_cmd_t **)
--
-+#define ACPI_TEST_NAME		"ltp_acpi_test"
-+
-+enum ACPI_TEST_CASES {
-+	ACPI_INIT = 0,
-+
-+	/*
-+	 * Test-case will stop traversing if it finds _STR.
-+	 * To continue, please trigger it again.
-+	 */
-+	ACPI_TRAVERSE,
-+	ACPI_NOTIFY_HANDLER,
-+	ACPI_EVENT_HANDLER,
-+	ACPI_GLOBAL_LOCK,
-+	ACPI_TEST_BUS,
-+	ACPI_TEST_RESOURCES,
-+	ACPI_SLEEP_TEST,
-+	ACPI_TEST_REGISTER,
-+	ACPI_TEST_DEV_CALLBACK,
-+	ACPI_TC_NUM
-+};
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-index 26fcc15..ff89bc5 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-@@ -1,20 +1,20 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
- /*
-@@ -27,7 +27,6 @@
-  *
-  *  01/03/2009 M��rton N��meth <nm127@freemail.hu>
-  *   - Updated for Linux kernel 2.6.28
-- *
-  */
- 
- #include <linux/kernel.h>
-@@ -40,477 +39,443 @@
- #include <linux/pm.h>
- #include <linux/acpi.h>
- #include <linux/genhd.h>
--#include <asm/uaccess.h>
--#include "LtpAcpi.h"
--
--#ifndef ACPI_EC_UDELAY_GLK
--#define ACPI_EC_UDELAY_GLK	1000	/* Wait 1ms max. to get global lock */
--#endif
--
--static int ltpdev_open(struct block_device *bdev, fmode_t mode);
--static int ltpdev_release(struct gendisk *disk, fmode_t mode);
--static int ltpdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
--			unsigned long arg);
--
--static u32 ltp_test_sleep_button_ev_handler(void *context);
--static u32 ltp_test_power_button_ev_handler(void *context);
--static u32 acpi_ec_gpe_handler(void *context);
--
--static void acpi_bus_notify(acpi_handle handle, u32 type, void *data);
--static acpi_status ltp_get_dev_callback(acpi_handle obj, u32 depth,
--					void *context, void **ret);
--static acpi_status acpi_ec_io_ports(struct acpi_resource *resource,
--				    void *context);
--#if 0
--static acpi_status acpi_ec_space_setup(acpi_handle region_handle,
--				       u32 function,
--				       void *handler_context,
--				       void **return_context);
--static acpi_status acpi_ec_space_handler(u32 function,
--					 acpi_physical_address address,
--					 u32 bit_width,
--					 acpi_integer * value,
--					 void *handler_context,
--					 void *region_context);
--#endif
-+#include <linux/dmi.h>
-+#include <linux/nls.h>
- 
--static struct block_device_operations blkops = {
--open:	ltpdev_open,
--release:ltpdev_release,
--ioctl:	ltpdev_ioctl,
--};
--
--int ltp_acpi_major = LTPMAJOR;
--int test_iteration = 0;
--
--static char genhd_flags = 0;
--static struct gendisk *gd_ptr;
--
--struct acpi_ec {
--	acpi_handle handle;
--	unsigned long uid;
--	unsigned long long gpe_bit;
--	struct acpi_generic_address status_addr;
--	struct acpi_generic_address command_addr;
--	struct acpi_generic_address data_addr;
--	unsigned long global_lock;
--	spinlock_t lock;
--};
-+#include "ltp_acpi.h"
- 
- MODULE_AUTHOR("Martin Ridgeway <mridge@us.ibm.com>");
--MODULE_DESCRIPTION(ACPI_LTP_TEST_DRIVER_NAME);
-+MODULE_AUTHOR("Alexey Kodanev <alexey.kodanev@oracle.com>");
-+MODULE_DESCRIPTION("ACPI LTP Test Driver");
- MODULE_LICENSE("GPL");
-+ACPI_MODULE_NAME("LTP_ACPI")
- 
--/*
-- * Device operations for the virtual ACPI devices
-- */
--
--extern struct acpi_device *acpi_root;
-+#define prk_err(fmt, ...) \
-+	pr_err(ACPI_TEST_NAME ": " fmt "\n", ##__VA_ARGS__)
-+#define prk_alert(fmt, ...) \
-+	pr_alert(ACPI_TEST_NAME ": " fmt "\n", ##__VA_ARGS__)
-+#define prk_info(fmt, ...) \
-+	pr_info(ACPI_TEST_NAME ": " fmt "\n", ##__VA_ARGS__)
- 
--static int ltpdev_open(struct block_device *dev, fmode_t mode)
-+static int acpi_failure(acpi_status status, const char *name)
- {
--	printk(KERN_ALERT "ltpdev_open \n");
-+	if (ACPI_FAILURE(status)) {
-+		ACPI_EXCEPTION((AE_INFO, status, name));
-+		return 1;
-+	}
- 	return 0;
- }
- 
--static int ltpdev_release(struct gendisk *disk, fmode_t mode)
--{
--
--	printk(KERN_ALERT "ltpdev_release \n");
--	return 0;
--}
-+/* points to the string of the last found object _STR */
-+static char *str_obj_result;
- 
--static u32 ltp_test_power_button_ev_handler(void *context)
--{
--	printk(KERN_ALERT "ltp_test_power_button_ev_handler \n");
--	return 1;
--}
-+/* sysfs device path of the last found device */
-+static char *sysfs_path;
- 
--static u32 ltp_test_sleep_button_ev_handler(void *context)
--{
--	printk(KERN_ALERT "ltp_test_sleep_button_ev_handler \n");
--	return 1;
--}
-+/* first found device with _CRS */
-+static acpi_handle res_handle;
- 
--static int ltpdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
--			unsigned long arg)
-+static acpi_status get_str_object(acpi_handle handle)
- {
-+	int res;
- 	acpi_status status;
--//      acpi_handle        sys_bus_handle;
--	acpi_handle start_handle = 0;
--	acpi_handle parent_handle;
--	acpi_handle child_handle;
--	acpi_handle next_child_handle;
--	acpi_status level;
--	struct acpi_ec *ec;
--	struct acpi_device *device;
--	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_handle temp = 0;
-+	union acpi_object *str_obj;
-+	char *buf = NULL;
- 
--#if 0
--	acpi_handle tmp_handle;
--	struct acpi_table_ecdt *ecdt_ptr;
--	struct acpi_buffer dsdt = { ACPI_ALLOCATE_BUFFER, NULL };
--	struct acpi_buffer batt_buffer = { ACPI_ALLOCATE_BUFFER, NULL };
--	struct acpi_buffer format = { sizeof(ACPI_BATTERY_FORMAT_BIF),
--		ACPI_BATTERY_FORMAT_BIF
--	};
--	struct acpi_buffer data = { 0, NULL };
--	union acpi_object *package = NULL;
--	u32 start_ticks, stop_ticks, total_ticks;
--#endif
-+	struct acpi_buffer buffer = {ACPI_ALLOCATE_BUFFER, NULL};
- 
--	u32 i, bm_status;
--	u8 type_a, type_b;
--	u32 global_lock = 0;
--	int state = 0;
-+	status = acpi_get_handle(handle, "_STR", &temp);
- 
--    /*****************************************************************************/
-+	if (ACPI_SUCCESS(status) && !acpi_evaluate_object(handle,
-+		"_STR", NULL, &buffer)) {
- 
--	printk(KERN_ALERT "ltpdev_ioctl \n");
--	switch (cmd) {
--	case LTPDEV_CMD:
-+		str_obj = buffer.pointer;
- 
--		parent_handle = start_handle;
--		child_handle = 0;
--		level = 1;
--		test_iteration++;
-+		buf = kmalloc(str_obj->buffer.length / 2, GFP_KERNEL);
-+		if (!buf) {
-+			kfree(str_obj);
-+			return AE_NO_MEMORY;
-+		}
- 
--		printk(KERN_ALERT
--		       "-- IOCTL called to start ACPI tests -- Iteration:%d\n",
--		       test_iteration);
-+		res = utf16s_to_utf8s((wchar_t *)str_obj->buffer.pointer,
-+			str_obj->buffer.length, UTF16_LITTLE_ENDIAN, buf,
-+			str_obj->buffer.length / 2);
- 
--		printk(KERN_ALERT "TEST -- acpi_get_handle \n");
-+		buf[res] = '\0';
- 
--		status = acpi_get_handle(0, ACPI_NS_SYSTEM_BUS, &parent_handle);
-+		kfree(str_obj_result);
-+		str_obj_result = buf;
-+		kfree(str_obj);
-+	}
- 
--		printk(KERN_ALERT "TEST -- acpi_get_object_info \n");
-+	return status;
-+}
- 
--		status = acpi_get_object_info(parent_handle, &buffer);
-+static void get_crs_object(acpi_handle handle)
-+{
-+	acpi_status status;
-+	acpi_handle temp;
-+	if (!res_handle) {
-+		status = acpi_get_handle(handle, METHOD_NAME__CRS, &temp);
-+		if (ACPI_SUCCESS(status))
-+			res_handle = handle;
-+	}
-+}
- 
--		printk(KERN_ALERT "TEST -- acpi_get_next_object \n");
-+static void get_sysfs_path(acpi_handle handle)
-+{
-+	acpi_status status;
-+	struct acpi_device *device;
-+	struct device *dev;
-+	struct kobject *kobj;
- 
--		status = acpi_get_next_object(ACPI_TYPE_ANY, parent_handle,
--					      child_handle, &next_child_handle);
-+	kfree(sysfs_path);
-+	sysfs_path = NULL;
- 
--		printk(KERN_ALERT "TEST -- acpi_get_parent \n");
-+	status = acpi_bus_get_device(handle, &device);
-+	if (ACPI_SUCCESS(status)) {
-+		dev = &device->dev;
-+		kobj = &dev->kobj;
-+		sysfs_path = kobject_get_path(&device->dev.kobj, GFP_KERNEL);
-+	}
-+}
- 
--		status = acpi_get_parent(parent_handle, &parent_handle);
-+/* acpi handle of the last visited device */
-+static acpi_handle start_parent;
- 
--		printk(KERN_ALERT "TEST -- acpi_evaluate_object \n");
-+static int acpi_traverse(acpi_handle parent, acpi_handle child)
-+{
-+	static char indent[64];
-+	const char * const ind_end = indent + 63;
-+	static const char *ind = ind_end;
-+	acpi_status status;
-+	struct acpi_device_info *dev_info;
-+	acpi_handle new_child;
- 
--		status = acpi_evaluate_object(parent_handle, "_ON", NULL, NULL);
-+	if (!indent[0])
-+		memset(indent, 0x20, 63);
- 
--		printk(KERN_ALERT "TEST -- acpi_get_table \n");
-+	while (parent) {
-+		status = acpi_get_next_object(ACPI_TYPE_DEVICE,
-+			parent, child, &new_child);
- 
--//        status = acpi_get_table(ACPI_TABLE_RSDP, 1, &dsdt);
--//        status = acpi_get_table(ACPI_TABLE_DSDT, 1, &dsdt);
--//        status = acpi_get_table(ACPI_TABLE_FADT, 1, &dsdt);
--//        status = acpi_get_table(ACPI_TABLE_FACS, 1, &dsdt);
--//        status = acpi_get_table(ACPI_TABLE_PSDT, 1, &dsdt);
--//        status = acpi_get_table(ACPI_TABLE_SSDT, 1, &dsdt);
--//        status = acpi_get_table(ACPI_TABLE_XSDT, 1, &dsdt);
-+		if (ACPI_FAILURE(status)) {
-+			ind += 4;
- 
--#if 0
--		printk(KERN_ALERT "TEST -- acpi_get_firmware_table \n");
-+			child = parent;
-+			status = acpi_get_parent(child, &parent);
- 
--		status =
--		    acpi_get_firmware_table("ECDT", 1, ACPI_LOGICAL_ADDRESSING,
--					    (struct acpi_table_header **)&dsdt);
--#endif
-+			/* no more devices */
-+			if (ACPI_FAILURE(status)) {
-+				start_parent = 0;
-+				kfree(str_obj_result);
-+				str_obj_result = NULL;
-+				break;
-+			}
-+			continue;
-+		}
- 
--		printk(KERN_ALERT "TEST -- acpi_install_notify_handler \n");
--
--		status =
--		    acpi_install_notify_handler(ACPI_ROOT_OBJECT,
--						ACPI_SYSTEM_NOTIFY,
--						&acpi_bus_notify, NULL);
--
--		printk(KERN_ALERT "TEST -- acpi_remove_notify_handler \n");
--
--		status =
--		    acpi_remove_notify_handler(ACPI_ROOT_OBJECT,
--					       ACPI_SYSTEM_NOTIFY,
--					       &acpi_bus_notify);
--
--		printk(KERN_ALERT
--		       "TEST -- acpi_install_fixed_event_handler \n");
--		status =
--		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
--						     ltp_test_power_button_ev_handler,
--						     NULL);
--		if (status)
--			printk(KERN_ALERT
--			       "Failed installing fixed event handler \n");
--
--		printk(KERN_ALERT "TEST -- acpi_remove_fixed_event_handler \n");
--		status =
--		    acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
--						    ltp_test_power_button_ev_handler);
--		if (status)
--			printk(KERN_ALERT
--			       "Failed removing fixed event handler \n");
--
--		printk(KERN_ALERT
--		       "TEST -- acpi_install_fixed_event_handler \n");
--		status =
--		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
--						     ltp_test_sleep_button_ev_handler,
--						     NULL);
--		if (status)
--			printk(KERN_ALERT
--			       "Failed installing fixed event handler \n");
--
--		printk(KERN_ALERT "TEST -- acpi_remove_fixed_event_handler \n");
--		status =
--		    acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
--						    ltp_test_sleep_button_ev_handler);
--		if (status)
--			printk(KERN_ALERT
--			       "Failed removing fixed event handler \n");
--
--		printk(KERN_ALERT "TEST -- acpi_acquire_global_lock \n");
--		status =
--		    acpi_acquire_global_lock(ACPI_EC_UDELAY_GLK, &global_lock);
--
--		printk(KERN_ALERT "TEST -- acpi_release_global_lock \n");
--		status = acpi_release_global_lock(global_lock);
--
--		printk(KERN_ALERT "TEST -- acpi_bus_get_device \n");
--
--		status = acpi_bus_get_device(next_child_handle, &device);
--
--#if 0
--		printk(KERN_ALERT "TEST -- acpi_bus_find_driver \n");
--		status = acpi_bus_find_driver(device);
--#endif
-+		status = acpi_get_object_info(new_child, &dev_info);
-+		if (acpi_failure(status, "acpi_object_info failed"))
-+			return 1;
-+
-+		get_sysfs_path(new_child);
-+
-+		get_crs_object(new_child);
-+
-+		if (ind < indent)
-+			ind = indent;
-+		else if (ind > ind_end)
-+			ind = ind_end;
-+
-+		/*
-+		 * if we find _STR object we will stop here
-+		 * and save last visited child
-+		 */
-+		if (ACPI_SUCCESS(get_str_object(new_child))) {
-+			prk_info("%s%4.4s: has '_STR' '%s' path '%s'",
-+				ind, (char *)&dev_info->name, str_obj_result,
-+				(sysfs_path) ? sysfs_path : "no path");
-+			ind -= 4;
-+			start_parent = new_child;
-+			kfree(dev_info);
-+			break;
-+		}
-+		prk_info("%s%4.4s: path '%s'", ind, (char *)&dev_info->name,
-+			(sysfs_path) ? sysfs_path : "no path");
- 
--		printk(KERN_ALERT "TEST -- acpi_bus_get_power \n");
--		status = acpi_bus_get_power(next_child_handle, &state);
--		if (status)
--			printk(KERN_ALERT "Error reading power state \n");
-+		ind -= 4;
-+		parent = new_child;
-+		child = 0;
-+		kfree(dev_info);
-+	}
- 
--		printk(KERN_ALERT "TEST -- acpi_driver_data \n");
-+	return 0;
-+}
- 
--		ec = acpi_driver_data(device);
-+static int acpi_traverse_from_root(void)
-+{
-+	acpi_status status;
-+	struct acpi_device_info *dev_info;
-+	acpi_handle parent = 0, child = 0;
-+
-+	if (!start_parent) {
-+		status = acpi_get_handle(NULL, ACPI_NS_ROOT_PATH, &parent);
-+		if (acpi_failure(status, "acpi_get_handle"))
-+			return 1;
-+		status = acpi_get_object_info(parent, &dev_info);
-+		if (acpi_failure(status, "acpi_object_info failed"))
-+			return 1;
-+		prk_info("start from %4.4s", (char *)&dev_info->name);
-+	} else {
-+		/* continue with the last visited child */
-+		parent = start_parent;
-+	}
- 
--		if (!ec) {
--			printk(KERN_ALERT "Failure getting device data \n");
--		} else {
-+	return acpi_traverse(parent, child);
-+}
- 
--			printk(KERN_ALERT
--			       "TEST -- acpi_install_gpe_handler \n");
--			ec->status_addr = ec->command_addr;
--			status =
--			    acpi_install_gpe_handler(device, ec->gpe_bit,
--						     ACPI_GPE_EDGE_TRIGGERED,
--						     &acpi_ec_gpe_handler, ec);
--/*
--            status = acpi_install_address_space_handler (ACPI_ROOT_OBJECT,
--                    ACPI_ADR_SPACE_EC, &acpi_ec_space_handler,
--                    &acpi_ec_space_setup, ec);
--
--            if (status) {
--                printk(KERN_ALERT "Failed installing address space handler \n");
--            }
--
--            acpi_remove_address_space_handler(ACPI_ROOT_OBJECT,
--                ACPI_ADR_SPACE_EC, &acpi_ec_space_handler);
--*/
--			printk(KERN_ALERT "TEST -- acpi_remove_gpe_handler \n");
--			acpi_remove_gpe_handler(device, ec->gpe_bit,
--						&acpi_ec_gpe_handler);
--		}
-+/* first found device with _STR */
-+static acpi_handle dev_handle;
- 
--		printk(KERN_ALERT "TEST -- acpi_get_current_resources \n");
--		status = acpi_get_current_resources(next_child_handle, &buffer);
-+static int acpi_init(void)
-+{
-+	acpi_status status;
-+	acpi_handle parent_handle;
- 
--		if (status) {
--			printk(KERN_ALERT "Failed get_current_resources %d\n",
--			       status);
--		}
--#ifdef ACPI_FUTURE_USAGE
--		printk(KERN_ALERT "TEST -- acpi_get_possible_resources \n");
--		status =
--		    acpi_get_possible_resources(next_child_handle, &buffer);
-+	struct acpi_device_info *dev_info;
- 
--		if (status) {
--			printk(KERN_ALERT "Failed get_possible_resources %d\n",
--			       status);
--		}
--#endif
-+	prk_alert("TEST -- acpi_get_handle ");
-+	status = acpi_get_handle(NULL, "\\_SB", &parent_handle);
-+	if (acpi_failure(status, "acpi_get_handle"))
-+		return 1;
- 
--		printk(KERN_ALERT "TEST -- acpi_walk_resources \n");
--		status = acpi_walk_resources(ec->handle, METHOD_NAME__CRS,
--					     acpi_ec_io_ports, ec);
-+	/* get first device on SYS bus, it will be used in other tests */
-+	while (acpi_get_next_object(ACPI_TYPE_DEVICE,
-+		parent_handle, 0, &dev_handle) == 0) {
-+		parent_handle = dev_handle;
-+	}
- 
--		if (status) {
--			printk(KERN_ALERT "Failed walk_resources %d\n", status);
--		}
-+	status = acpi_get_object_info(dev_handle, &dev_info);
-+	if (acpi_failure(status, "acpi_object_info failed"))
-+		return 1;
- 
--		printk(KERN_ALERT "TEST -- acpi_evaluate_integer \n");
--		status =
--		    acpi_evaluate_integer(ec->handle, "_GPE", NULL,
--					  &ec->gpe_bit);
--		if (status)
--			printk(KERN_ALERT
--			       "Error obtaining GPE bit assignment\n");
--
--#if 0
--		printk(KERN_ALERT "TEST -- acpi_get_timer \n");
--		status = acpi_get_timer(&total_ticks);
--
--		if (status) {
--			printk(KERN_ALERT "Failed get_timer %d\n", status);
--		} else {
--			printk(KERN_ALERT "get_timer -- total_ticks %d\n",
--			       total_ticks);
--		}
-+	prk_alert("ACPI object name %4.4s, type %d", (char *)&dev_info->name,
-+		dev_info->type);
-+	kfree(dev_info);
- 
--		start_ticks = 20;
--		stop_ticks = 30;
-+	prk_alert("TEST -- acpi_get_parent ");
-+	status = acpi_get_parent(dev_handle, &parent_handle);
-+	return acpi_failure(status, "acpi_get_parent failed");
-+}
- 
--		printk(KERN_ALERT "TEST -- acpi_get_timer_duration \n");
--		status =
--		    acpi_get_timer_duration(start_ticks, stop_ticks,
--					    &total_ticks);
-+/*
-+ * acpi_bus_notify
-+ * ---------------
-+ * Callback for all 'system-level' device notifications (values 0x00-0x7F).
-+ */
-+static void acpi_bus_notify(acpi_handle handle, u32 type, void *data)
-+{
-+	prk_alert("Register ACPI Bus Notify callback function");
-+}
- 
--		if (status) {
--			printk(KERN_ALERT "Failed get_timer_duration %d\n",
--			       status);
--		} else {
--			printk(KERN_ALERT "get_timer_duration total_ticks %d\n",
--			       total_ticks);
--		}
--#endif
-+static int acpi_test_notify_handler(void)
-+{
-+	acpi_status status;
- 
--		for (i = 0; i < ACPI_S_STATE_COUNT; i++) {
--			printk(KERN_ALERT
--			       "TEST -- acpi_get_sleep_type_data \n");
--			status = acpi_get_sleep_type_data(i, &type_a, &type_b);
--
--			if (status) {
--				printk(KERN_ALERT
--				       "Failed get_sleep_type_data %d\n",
--				       status);
--			} else {
--				printk(KERN_ALERT
--				       "get_sleep_type_data [%d] type_a:%d type_b:%d\n",
--				       i, type_a, type_b);
--			}
--		}
-+	prk_alert("TEST -- acpi_install_notify_handler");
- 
--		printk(KERN_ALERT "TEST -- acpi_get_register \n");
-+	status = acpi_install_notify_handler(dev_handle,
-+		ACPI_SYSTEM_NOTIFY, &acpi_bus_notify, NULL);
- 
--/*
-- * ACPICA: Remove obsolete Flags parameter.
-- * http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=d8c71b6d3b21cf21ad775e1cf6da95bf87bd5ad4
-- *
-- */
--		acpi_get_register(ACPI_BITREG_BUS_MASTER_STATUS, &bm_status);
-+	if (ACPI_SUCCESS(status)) {
-+		prk_alert("TEST -- acpi_remove_notify_handler");
-+		status = acpi_remove_notify_handler(dev_handle,
-+			ACPI_SYSTEM_NOTIFY, &acpi_bus_notify);
-+		return acpi_failure(status, "acpi_remove_notify_handler");
-+	} else if (status != AE_ALREADY_EXISTS) {
-+		return acpi_failure(status, "acpi_install_notify_handler");
-+	}
- 
--		if (!bm_status) {
--			printk(KERN_ALERT "Failed get_register [%d]\n",
--			       bm_status);
--		} else {
--			printk(KERN_ALERT "get_register [%d] \n", bm_status);
--		}
-+	return 0;
-+}
-+
-+static u32 ltp_test_power_button_ev_handler(void *context)
-+{
-+	prk_alert("ltp_test_power_button_ev_handler");
-+	return 1;
-+}
-+
-+static u32 ltp_test_sleep_button_ev_handler(void *context)
-+{
-+	prk_alert("ltp_test_sleep_button_ev_handler");
-+	return 1;
-+}
- 
--//        Puts system to sleep, permenately !!!
--//        status = acpi_enter_sleep_state(ACPI_STATE_S1);
-+static int acpi_test_event_handler(void)
-+{
-+	int err = 0;
-+	acpi_status status;
- 
--#if 0
--		printk(KERN_ALERT "TEST -- acpi_get_system_info \n");
--		status = acpi_get_system_info(&buffer);
-+	prk_alert("TEST -- acpi_install_fixed_event_handler");
-+	status = acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-+		ltp_test_power_button_ev_handler, NULL);
-+
-+	if (ACPI_SUCCESS(status)) {
-+		prk_alert("TEST -- acpi_remove_fixed_event_handler");
-+		status = acpi_remove_fixed_event_handler(
-+			ACPI_EVENT_POWER_BUTTON,
-+			ltp_test_power_button_ev_handler);
-+		err = acpi_failure(status, "remove fixed event handler");
-+	} else if (status != AE_ALREADY_EXISTS) {
-+		err = acpi_failure(status, "install fixed event handler");
-+	}
- 
--		if (status) {
--			printk(KERN_ALERT "Failed get_system_info %d\n",
--			       status);
--		} else {
--			printk(KERN_ALERT
--			       "get_system_info buffer.length:%d buffer.pointer:%p\n",
--			       buffer.length, buffer.pointer);
-+	prk_alert("TEST -- acpi_install_fixed_event_handler");
-+	status = acpi_install_fixed_event_handler(ACPI_EVENT_RTC,
-+		ltp_test_sleep_button_ev_handler, NULL);
-+
-+	if (ACPI_SUCCESS(status)) {
-+		prk_alert("TEST -- acpi_remove_fixed_event_handler");
-+		status = acpi_remove_fixed_event_handler(
-+			ACPI_EVENT_RTC,
-+			ltp_test_sleep_button_ev_handler);
-+		err |= acpi_failure(status, "remove fixed event handler");
-+	} else if (status != AE_ALREADY_EXISTS) {
-+		err |= acpi_failure(status, "install fixed event handler");
-+	}
- 
--			acpi_os_printf("os_printf OK %d\n", status);
-+	return err;
-+}
- 
--			if (buffer.pointer) {
--				acpi_os_free(buffer.pointer);
--			}
--		}
-+#ifndef ACPI_EC_UDELAY_GLK
-+#define ACPI_EC_UDELAY_GLK	1000	/* Wait 1ms max. to get global lock */
- #endif
- 
--		printk(KERN_ALERT "TEST -- acpi_get_devices \n");
--		status =
--		    acpi_get_devices(NULL, ltp_get_dev_callback, "LTP0001",
--				     NULL);
-+static int acpi_global_lock(void)
-+{
-+	acpi_status status;
-+	u32 global_lock = 0;
-+
-+	prk_alert("TEST -- acpi_acquire_global_lock ");
-+	status = acpi_acquire_global_lock(ACPI_EC_UDELAY_GLK, &global_lock);
-+	if (acpi_failure(status, "acpi_acquire_global_lock"))
-+		return 1;
- 
--		if (status) {
--			printk(KERN_ALERT "Failed get_devices %d\n", status);
--		}
--//        status = acpi_os_create_semaphore(1, 1, &tmp_handle);
-+	prk_alert("TEST -- acpi_release_global_lock ");
-+	status = acpi_release_global_lock(global_lock);
-+	return acpi_failure(status, "acpi_release_global_lock");
-+}
-+
-+static int acpi_test_bus(void)
-+{
-+	int state = 0;
-+	acpi_status status;
-+	acpi_handle bus_handle;
-+	struct acpi_device *device;
- 
--		if (status) {
--			printk(KERN_ALERT "Failed os_create_semaphore %d\n",
--			       status);
--		} else {
--			printk(KERN_ALERT
--			       "os_create_semaphore OK, no deleteing %d\n",
--			       status);
--//            acpi_os_delete_semaphore(tmp_handle);
-+	status = acpi_get_handle(NULL, "\\_SB", &bus_handle);
-+	if (acpi_failure(status, "acpi_get_handle"))
-+		return 1;
- 
--		}
-+	prk_alert("TEST -- acpi_bus_get_device");
-+	status = acpi_bus_get_device(bus_handle, &device);
-+	if (acpi_failure(status, "acpi_bus_get_device"))
-+		return 1;
- 
--#if 0
--		printk(KERN_ALERT "TEST -- acpi_get_system_info \n");
--		status = acpi_get_system_info(&batt_buffer);
-+	prk_alert("TEST -- acpi_bus_update_power ");
-+	status = acpi_bus_update_power(device->handle, &state);
-+	if (acpi_failure(status, "error reading power state"))
-+		return 1;
- 
--		if (status) {
--			printk(KERN_ALERT "Failed get_system_info %d\n",
--			       status);
--		} else {
--			printk(KERN_ALERT
--			       "get_system_info buffer.length:%d buffer.pointer:%p\n",
--			       buffer.length, buffer.pointer);
-+	prk_info("acpi bus power state is %d", state);
-+	return 0;
-+}
- 
--			package = (union acpi_object *)batt_buffer.pointer;
-+static acpi_status acpi_ec_io_ports(struct acpi_resource *resource,
-+	void *context)
-+{
-+	return 0;
-+}
- 
--			/* Extract Package Data */
-+static int acpi_test_resources(void)
-+{
-+	int err = 0;
-+	acpi_status status;
-+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
- 
--			printk(KERN_ALERT "TEST -- acpi_extract_package \n");
--			status = acpi_extract_package(package, &format, &data);
-+	/* skip if we don't find device with _CRC */
-+	if (res_handle == 0)
-+		return 0;
- 
--			data.pointer = kmalloc(data.length, GFP_KERNEL);
-+	prk_alert("TEST -- acpi_get_current_resources");
-+	status = acpi_get_current_resources(res_handle, &buffer);
-+	err = acpi_failure(status, "failed get_current_resources");
- 
--			if (!data.pointer) {
--				printk(KERN_ALERT
--				       "Failed getting memory kalloc \n");
--			} else {
--				memset(data.pointer, 0, data.length);
-+#ifdef ACPI_FUTURE_USAGE
-+	prk_alert("TEST -- acpi_get_possible_resources");
-+	status = acpi_get_possible_resources(res_handle, &buffer);
-+	err |= acpi_failure(status, "get_possible_resources");
-+#endif
- 
--				printk(KERN_ALERT
--				       "TEST -- acpi_extract_package \n");
--				status =
--				    acpi_extract_package(package, &format,
--							 &data);
-+	prk_alert("TEST -- acpi_walk_resources ");
-+	status = acpi_walk_resources(res_handle, METHOD_NAME__CRS,
-+		acpi_ec_io_ports, NULL);
-+	err |= acpi_failure(status, "Failed walk_resources");
- 
--				kfree(data.pointer);
--			}
-+	return err;
-+}
- 
--//            acpi_os_free(buffer.pointer);
-+static int acpi_sleep_test(void)
-+{
-+	int err = 0;
-+	acpi_status status;
-+	u32 i;
-+	u8 type_a, type_b;
-+	prk_alert("TEST -- acpi_get_sleep_type_data ");
-+
-+	for (i = 0; i < ACPI_S_STATE_COUNT; ++i) {
-+		status = acpi_get_sleep_type_data(i, &type_a, &type_b);
-+		if (ACPI_SUCCESS(status)) {
-+			prk_info("get_sleep_type_data S%d a:%d b:%d",
-+				i, type_a, type_b);
-+		} else if (status != AE_NOT_FOUND) {
-+			err |= 1;
- 		}
--#endif
-+	}
-+
-+	return err;
-+}
- 
--		printk(KERN_ALERT
--		       "-- IOCTL ACPI tests Complete -- Iteration:%d\n",
--		       test_iteration);
-+static int acpi_test_register(void)
-+{
-+	int i, err = 0;
-+	u32 val;
-+	acpi_status status;
- 
--		break;
-+	prk_alert("TEST -- acpi_read_bit_register");
-+	/*
-+	 * ACPICA: Remove obsolete Flags parameter.
-+	 * http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;
-+	 * a=commitdiff;h=d8c71b6d3b21cf21ad775e1cf6da95bf87bd5ad4
-+	 *
-+	 * ACPICA: Rename ACPI bit register access functions
-+	 * http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
-+	 * commit/?id=50ffba1bd3120b069617455545bc27bcf3cf7579
-+	 */
-+	for (i = 0; i < ACPI_NUM_BITREG; ++i) {
-+		status = acpi_read_bit_register(i, &val);
-+		err |= acpi_failure(status, "acpi_read_bit_register");
-+		if (ACPI_SUCCESS(status))
-+			prk_alert("get register: %02x val: %04x", i, val);
- 	}
- 
--	return 0;
-+	return err;
- }
- 
- static acpi_status ltp_get_dev_callback(acpi_handle obj, u32 depth,
--					void *context, void **ret)
-+	void *context, void **ret)
- {
- 	char *name = context;
- 	char fullname[20];
-@@ -521,154 +486,163 @@ static acpi_status ltp_get_dev_callback(acpi_handle obj, u32 depth,
- 	 * separately in PCI space.
- 	 */
- 	sprintf(fullname, "%s SBA", name);
--	printk(KERN_ALERT "get_dev_callback SBA name %s \n", fullname);
-+	prk_info("get_dev_callback SBA name %s", fullname);
- 	sprintf(fullname, "%s IOC", name);
--	printk(KERN_ALERT "get_dev_callback IOC name %s \n", fullname);
-+	prk_info("get_dev_callback IOC name %s", fullname);
- 
- 	return 0;
- }
- 
--/**
-- * acpi_bus_notify
-- * ---------------
-- * Callback for all 'system-level' device notifications (values 0x00-0x7F).
-- */
--static void acpi_bus_notify(acpi_handle handle, u32 type, void *data)
-+static int acpi_test_dev_callback(void)
- {
-+	acpi_status status;
-+	prk_alert("TEST -- acpi_get_devices ");
-+	status = acpi_get_devices(NULL, ltp_get_dev_callback, "LTP0001", NULL);
-+	return acpi_failure(status, "acpi_get_devices");
-+}
- 
--	printk(KERN_ALERT "Register ACPI Bus Notify callback function \n");
-+static int current_test_case;
-+static int test_result;
- 
-+static void device_release(struct device *dev)
-+{
-+	prk_info("device released");
- }
- 
--static u32 acpi_ec_gpe_handler(void *context)
-+static struct device tdev = {
-+	.init_name	= ACPI_TEST_NAME,
-+	.release	= device_release,
-+};
-+
-+/* print test result to sysfs file */
-+static ssize_t sys_result(struct device *dev,
-+	struct device_attribute *attr, char *buf)
- {
--	printk(KERN_ALERT "Register ACPI ec_gpe_handler callback function \n");
--	return 1;
-+	return scnprintf(buf, PAGE_SIZE, "%d\n", test_result);
- }
-+static DEVICE_ATTR(result, S_IRUSR, sys_result, NULL);
- 
--static acpi_status acpi_ec_io_ports(struct acpi_resource *resource,
--				    void *context)
-+/* print found device description */
-+static ssize_t sys_str(struct device *dev,
-+	struct device_attribute *attr, char *buf)
- {
--	return 0;
-+	return scnprintf(buf, PAGE_SIZE, "%s",
-+		(str_obj_result) ? str_obj_result : "null");
- }
-+static DEVICE_ATTR(str, S_IRUSR, sys_str, NULL);
- 
--#if 0
--static acpi_status acpi_ec_space_handler(u32 function,
--					 acpi_physical_address address,
--					 u32 bit_width,
--					 acpi_integer * value,
--					 void *handler_context,
--					 void *region_context)
-+/* print found device's sysfs path */
-+static ssize_t sys_path(struct device *dev,
-+	struct device_attribute *attr, char *buf)
- {
--	int result = 0;
--	struct acpi_ec *ec = NULL;
--	u32 temp = 0;
--
--	ACPI_FUNCTION_TRACE("acpi_ec_space_handler");
--
--	if ((address > 0xFF) || (bit_width != 8) || !value || !handler_context)
--		return_VALUE(AE_BAD_PARAMETER);
--
--	ec = (struct acpi_ec *)handler_context;
--
--	switch (function) {
--	case ACPI_READ:
--		result = 0;
--		*value = (acpi_integer) temp;
--		break;
--	case ACPI_WRITE:
--		result = 0;
--		break;
--	default:
--		result = -EINVAL;
--		break;
--	}
--
--	switch (result) {
--	case -EINVAL:
--		return_VALUE(AE_BAD_PARAMETER);
--		break;
--	case -ENODEV:
--		return_VALUE(AE_NOT_FOUND);
--		break;
--	case -ETIME:
--		return_VALUE(AE_TIME);
--		break;
--	default:
--		return_VALUE(AE_OK);
--	}
--
-+	return scnprintf(buf, PAGE_SIZE, "%s",
-+		(sysfs_path) ? sysfs_path : "null");
- }
-+static DEVICE_ATTR(path, S_IRUSR, sys_path, NULL);
- 
--static acpi_status acpi_ec_space_setup(acpi_handle region_handle,
--				       u32 function,
--				       void *handler_context,
--				       void **return_context)
-+static ssize_t sys_tcase(struct device *dev,
-+	struct device_attribute *attr,  const char *buf, size_t count)
- {
--	/*
--	 * The EC object is in the handler context and is needed
--	 * when calling the acpi_ec_space_handler.
--	 */
--	*return_context = handler_context;
-+	sscanf(buf, "%d", &current_test_case);
-+	prk_info("test-case %d", current_test_case);
-+
-+	switch (current_test_case) {
-+	case ACPI_INIT:
-+		test_result = acpi_init();
-+	break;
-+	case ACPI_TRAVERSE:
-+		test_result = acpi_traverse_from_root();
-+	break;
-+	case ACPI_NOTIFY_HANDLER:
-+		test_result = acpi_test_notify_handler();
-+	break;
-+	case ACPI_EVENT_HANDLER:
-+		test_result = acpi_test_event_handler();
-+	break;
-+	case ACPI_GLOBAL_LOCK:
-+		test_result = acpi_global_lock();
-+	break;
-+	case ACPI_TEST_BUS:
-+		test_result = acpi_test_bus();
-+	break;
-+	case ACPI_TEST_RESOURCES:
-+		test_result = acpi_test_resources();
-+	break;
-+	case ACPI_SLEEP_TEST:
-+		test_result = acpi_sleep_test();
-+	break;
-+	case ACPI_TEST_REGISTER:
-+		test_result = acpi_test_register();
-+	break;
-+	case ACPI_TEST_DEV_CALLBACK:
-+		test_result = acpi_test_dev_callback();
-+	break;
-+	}
- 
--	return AE_OK;
-+	return count;
- }
--#endif
-+static DEVICE_ATTR(tcase, S_IWUSR, NULL, sys_tcase);
- 
- int init_module(void)
- {
--	int result;
--
--	printk(KERN_ALERT "ltpdev_init_module \n");
--
--	result = register_blkdev(ltp_acpi_major, LTP_ACPI_DEV_NAME);
--
--	printk(KERN_ALERT "LTP ACPI: register_blkdev result=%d major %d\n",
--	       result, ltp_acpi_major);
-+	int err = 0;
-+	prk_info("Starting module");
- 
--	if (result < 0) {
--		printk(KERN_ALERT "LTP ACPI: can't get major %d\n",
--		       ltp_acpi_major);
--		return result;
-+	err = device_register(&tdev);
-+	if (err) {
-+		prk_err("Unable to register device");
-+		goto err0;
- 	}
--//    if (ltp_acpi_major == 0)
--//      ltp_acpi_major = result; /* dynamic */
-+	prk_info("device registered");
- 
--	gd_ptr = kmalloc(sizeof(struct gendisk *), GFP_KERNEL);
--
--	if (!gd_ptr) {
--		printk(KERN_ALERT "ERROR getting memory !!!\n");
--		return 0;
-+	err = device_create_file(&tdev, &dev_attr_result);
-+	if (err) {
-+		prk_err("Can't create sysfs file 'result'");
-+		goto err1;
- 	}
- 
--	gd_ptr = alloc_disk(1);
--
--	printk(KERN_ALERT "gd_ptr after alloc = %p \n", gd_ptr);
--
--	gd_ptr->major = ltp_acpi_major;
--	gd_ptr->first_minor = 0;
--	gd_ptr->fops = &blkops;
--//    gd_ptr->minor_shift = MINOR_SHIFT_BITS;
--	gd_ptr->driverfs_dev = NULL;
--//    gd_ptr->disk_de = NULL;
--	gd_ptr->flags = genhd_flags;
-+	err = device_create_file(&tdev, &dev_attr_str);
-+	if (err) {
-+		prk_err("Can't create sysfs file 'str'");
-+		goto err2;
-+	}
- 
--	sprintf(gd_ptr->disk_name, LTP_ACPI_DEV_NAME);
-+	err = device_create_file(&tdev, &dev_attr_tcase);
-+	if (err) {
-+		prk_err(": Can't create sysfs file 'tc'");
-+		goto err3;
-+	}
- 
--	add_disk(gd_ptr);
-+	err = device_create_file(&tdev, &dev_attr_path);
-+	if (err) {
-+		prk_err(": Can't create sysfs file 'path'");
-+		goto err4;
-+	}
- 
- 	return 0;
-+
-+err4:
-+	device_remove_file(&tdev, &dev_attr_tcase);
-+err3:
-+	device_remove_file(&tdev, &dev_attr_str);
-+err2:
-+	device_remove_file(&tdev, &dev_attr_result);
-+err1:
-+	device_unregister(&tdev);
-+err0:
-+	return err;
- }
- 
- void cleanup_module(void)
- {
-+	prk_info("Unloading module\n");
- 
--	printk(KERN_ALERT "Exiting module and cleaning up \n");
--
--	put_disk(gd_ptr);
--
--	del_gendisk(gd_ptr);
--
--	unregister_blkdev(ltp_acpi_major, LTP_ACPI_DEV_NAME);
-+	kfree(str_obj_result);
-+	kfree(sysfs_path);
- 
-+	device_remove_file(&tdev, &dev_attr_result);
-+	device_remove_file(&tdev, &dev_attr_str);
-+	device_remove_file(&tdev, &dev_attr_tcase);
-+	device_remove_file(&tdev, &dev_attr_path);
-+	device_unregister(&tdev);
- }
--- 
-1.7.1
-
-
-
---===============6477219976036802788==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+Hi!
+> new file mode 100644
+> index 0000000..c698628
+> --- /dev/null
+> +++ b/testcases/network/tcp_fastopen/tcp_fastopen.c
+> @@ -0,0 +1,823 @@
+> +/*
+> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + *
+> + * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+> + *
+> + */
+> +
+> +#include <sys/stat.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <sys/time.h>
+> +#include <sys/resource.h>
+> +#include <sys/sysinfo.h>
+> +#include <sys/poll.h>
+> +#include <netinet/in.h>
+> +#include <arpa/inet.h>
+> +#include <netdb.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <pthread.h>
+> +#include <unistd.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "safe_macros.h"
+> +
+> +char *TCID = "tcp_fastopen";
+> +
+> +static const int max_msg_len = 1500;
+> +
+> +/* TCP server requiers */
+> +#ifndef TCP_FASTOPEN
+> +#define TCP_FASTOPEN	23
+> +#endif
+> +
+> +/* TCP client requiers */
+> +#ifndef MSG_FASTOPEN
+> +#define MSG_FASTOPEN	0x20000000 /* Send data in TCP SYN */
+> +#endif
+> +
+> +enum {
+> +	TCP_SERVER = 0,
+> +	TCP_CLIENT,
+> +};
+> +static int tcp_mode;
+> +
+> +enum {
+> +	TFO_ENABLED = 0,
+> +	TFO_DISABLED,
+> +};
+> +static int tfo_support;
+> +
+> +enum {
+> +	TCP_NEW_API = 0,
+> +	TCP_OLD_API
+> +};
+> +static int tcp_api;
+> +
+> +static const char tfo_cfg[]		= "/proc/sys/net/ipv4/tcp_fastopen";
+> +static const char tcp_tw_reuse[]	= "/proc/sys/net/ipv4/tcp_tw_reuse";
+> +static int tw_reuse_changed;
+> +static int tfo_cfg_value;
+> +static int tfo_bit_num;
+> +static int tfo_cfg_changed;
+> +
+> +static int sfd;
+> +
+> +static int tfo_queue_size	= 100;
+> +static int max_queue_len	= 100;
+> +static int client_byte		= 1;
+> +static int server_byte		= 2;
+> +static const int start_byte	= 0x24;
+> +static const int end_byte	= 0x0a;
+> +static int client_msg_size	= 32;
+> +static int server_msg_size	= 128;
+> +static char *client_msg;
+> +static char *server_msg;
+> +
+> +/*
+> + * The number of requests from client after
+> + *  which server has to close the connection.
+> + */
+> +static int server_max_requests	= 3;
+> +static int client_max_requests	= 10;
+> +static int clients_num		= 2;
+> +static char *tcp_port		= "61000";
+> +static char *server_addr	= "localhost";
+> +static char *rpath		= "./tfo_result";
+> +
+> +static int main_pid;
+> +
+> +socklen_t sock_len, csock_len;
+> +
+> +static int force_run;
+> +
+> +/* test options */
+> +static char *narg, *Narg, *qarg, *barg, *Barg,
+> +	*rarg, *Rarg, *aarg, *Targ;
+> +static int nflag, Nflag, qflag, bflag, Bflag, dflag,
+> +	rflag, Rflag, aflag, Hflag, Tflag, gflag;
+
+There is no reason to use these flags. The option pointers are set to
+NULL (global variables). So that you can use:
+
+	if (arg) {
+		...
+	}
+
+In the check_opt() functions.
+
+> +	{"o", &tcp_api, NULL},
+
+This should be rather named as use_fastopen beacuse as it is, the name
+is misleading (I was wondering if there were some changes in the TCP
+userspace API for a while).
+
+> +static struct tcp_func tcp;
+> +
+> +#define MAX_THREADS	10000
+> +
+> +/* current thread size */
+> +static pthread_attr_t attr;
+> +static pthread_t *thread_ids;
+> +static int threads_num;
+> +static struct addrinfo *remote_addrinfo;
+> +static struct addrinfo *local_addrinfo;
+> +static const struct linger clo = { 1, 3 };
+> +
+> +static void cleanup(void)
+> +{
+> +	static int first = 1;
+> +	if (!first)
+> +		return;
+> +	first = 0;
+> +
+> +	tst_resm(TINFO, "cleanup");
+> +
+> +	free(client_msg);
+> +	free(server_msg);
+> +
+> +	if (skip_cleanup)
+> +		return;
+> +
+> +	tcp.cleanup();
+> +
+> +	if (tfo_cfg_changed) {
+> +		SAFE_FILE_SCANF(NULL, tfo_cfg, "%d", &tfo_cfg_value);
+> +		tfo_cfg_value &= ~tfo_bit_num;
+> +		tfo_cfg_value |= !tfo_support << (tfo_bit_num - 1);
+> +		tst_resm(TINFO, "unset '%s' back to '%d'",
+> +			tfo_cfg, tfo_cfg_value);
+> +		SAFE_FILE_PRINTF(NULL, tfo_cfg, "%d", tfo_cfg_value);
+> +	}
+> +
+> +	if (tw_reuse_changed) {
+> +		SAFE_FILE_PRINTF(NULL, tcp_tw_reuse, "0");
+> +		tst_resm(TINFO, "unset '%s' back to '0'", tcp_tw_reuse);
+> +	}
+> +	TEST_CLEANUP;
+> +}
+> +
+> +int sock_recv_poll(int *fd, char *buf, const int *buf_size, int *offset)
+> +{
+> +	struct pollfd pfd;
+> +	pfd.fd = *fd;
+> +	pfd.events = POLLIN;
+> +	int len = -1;
+> +	while (1) {
+> +		errno = 0;
+> +		int ret = poll(&pfd, 1, wait_timeout / 1000);
+> +		if (ret == -1) {
+> +			if (errno == EINTR)
+> +				continue;
+> +			tst_resm(TFAIL | TERRNO, "poll failed at %s:%d",
+> +				__FILE__, __LINE__);
+> +			break;
+> +		}
+> +		if (ret == 0) {
+> +			tst_resm(TFAIL, "msg timeout, sock '%d'", *fd);
+> +			break;
+> +		}
+> +
+> +		if (ret != 1 || !(pfd.revents & POLLIN))
+> +			break;
+> +
+> +		errno = 0;
+> +		len = recv(*fd, buf + *offset,
+> +			*buf_size - *offset, MSG_DONTWAIT);
+> +
+> +		if (len == -1 && (errno == EINTR ||
+> +			errno == EWOULDBLOCK || errno == EAGAIN))
+> +			continue;
+> +		else
+> +			break;
+> +	}
+> +
+> +	if (len == 0)
+> +		tst_resm(TINFO, "sock was closed '%d'", *fd);
+> +
+> +	return len;
+> +}
+
+Now this one seems wrong. Both client and server creates new thread for
+each connection, which means that this creates bussy loop (which will
+eventually degrade performance). Why don't you use blocking read() so
+that each thread waits in read() syscall util data are ready?
+
+> +void client_recv(int *fd, char *buf)
+> +{
+> +	int len, offset = 0;
+> +
+> +	while (1) {
+> +
+> +		len = sock_recv_poll(fd, buf, &server_msg_size, &offset);
+> +
+> +		/* socket closed or msg is not valid */
+> +		if (len < 1 || (offset + len) > server_msg_size ||
+> +			(buf[0] != start_byte && buf[0] != start_byte + 1)) {
+> +			tst_resm(TFAIL | TERRNO,
+> +				"recv failed, sock '%d'", *fd);
+> +			shutdown(*fd, SHUT_WR);
+> +			SAFE_CLOSE(NULL, *fd);
+> +			*fd = -1;
+> +			break;
+> +		}
+> +
+> +		offset += len;
+> +
+> +		if (buf[offset - 1] != end_byte)
+> +			continue;
+> +
+> +		if (verbose) {
+> +			tst_resm_hexd(TINFO, buf, offset,
+> +				"msg recv from sock %d:", *fd);
+> +		}
+> +
+> +		if (buf[0] == start_byte + 1) {
+> +			/* recv last msg, close socket */
+> +			shutdown(*fd, SHUT_WR);
+> +			SAFE_CLOSE(NULL, *fd);
+> +			*fd = -1;
+> +		}
+> +		break;
+> +	}
+> +}
+> +
+> +int client_connect_send(int *cfd)
+> +{
+> +	*cfd = socket(AF_INET, SOCK_STREAM, 0);
+> +	const int flag = 1;
+> +	setsockopt(*cfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+> +
+> +	if (*cfd == -1) {
+> +		tst_resm(TWARN | TERRNO, "socket failed at %s:%d",
+> +			__FILE__, __LINE__);
+> +		return -1;
+> +	}
+> +
+> +	if (tcp_api == TCP_NEW_API) {
+> +		/* Replaces connect() + send()/write() */
+> +		if (sendto(*cfd, client_msg, client_msg_size,
+> +			MSG_FASTOPEN | MSG_NOSIGNAL,
+> +			remote_addrinfo->ai_addr,
+> +			remote_addrinfo->ai_addrlen) != client_msg_size) {
+> +			tst_resm(TFAIL | TERRNO, "sendto failed");
+> +			SAFE_CLOSE(NULL, *cfd);
+> +			return -1;
+> +		}
+> +	} else {
+> +		/* old TCP API */
+> +		if (connect(*cfd, remote_addrinfo->ai_addr,
+> +			remote_addrinfo->ai_addrlen)) {
+> +			tst_resm(TFAIL | TERRNO, "connect failed");
+> +			SAFE_CLOSE(NULL, *cfd);
+> +			return -1;
+> +		}
+> +
+> +		if (send(*cfd, client_msg, client_msg_size,
+> +			MSG_NOSIGNAL) != client_msg_size) {
+> +			tst_resm(TFAIL | TERRNO,
+> +				"send failed on sock '%d'", *cfd);
+> +			SAFE_CLOSE(NULL, *cfd);
+> +			return -1;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void *client_fn(void *arg)
+> +{
+> +	char buf[server_msg_size];
+> +	int cfd, i;
+> +
+> +	/* connect & send requests */
+> +	if (client_connect_send(&cfd))
+> +		return NULL;
+> +	client_recv(&cfd, buf);
+> +
+> +	for (i = 1; i < client_max_requests; ++i) {
+> +
+> +		/* check connection, it can be closed */
+> +		int ret = 0;
+> +		if (cfd != -1)
+> +			ret = recv(cfd, buf, 1, MSG_DONTWAIT);
+> +
+> +		if (ret == 0) {
+> +			/* try to reconnect and send */
+> +			if (cfd != -1)
+> +				SAFE_CLOSE(NULL, cfd);
+> +
+> +			if (client_connect_send(&cfd))
+> +				return NULL;
+> +			client_recv(&cfd, buf);
+> +
+> +			continue;
+> +
+> +		} else if (ret > 0) {
+> +			tst_resm_hexd(TFAIL, buf, 1,
+> +				"received after recv, sock '%d':", cfd);
+> +		}
+> +
+> +		if (verbose) {
+> +			tst_resm_hexd(TINFO, client_msg, client_msg_size,
+> +				"try to send msg[%d]", i);
+> +		}
+> +
+> +		if (send(cfd, client_msg, client_msg_size,
+> +			MSG_NOSIGNAL) != client_msg_size) {
+> +			tst_resm(TFAIL | TERRNO, "send failed");
+> +			break;
+> +		}
+> +		client_recv(&cfd, buf);
+> +	}
+> +
+> +	if (cfd != -1)
+> +		SAFE_CLOSE(NULL, cfd);
+> +	return NULL;
+> +}
+> +
+> +union un_uint16 {
+> +	char b[2];
+> +	uint16_t val;
+> +};
+> +
+> +static struct timeval tv_client_start;
+> +static struct timeval tv_client_end;
+> +
+> +static void client_init(void)
+> +{
+> +	if (clients_num >= MAX_THREADS) {
+> +		tst_brkm(TBROK, cleanup,
+> +			"Unexpected num of clients '%d'",
+> +			clients_num);
+> +	}
+> +
+> +	thread_ids = SAFE_MALLOC(NULL, sizeof(pthread_t) * clients_num);
+> +
+> +	client_msg = SAFE_MALLOC(NULL, client_msg_size);
+> +	memset(client_msg, client_byte, client_msg_size);
+> +	client_msg[0] = start_byte;
+> +	client_msg[1] = server_byte;
+> +
+> +	union un_uint16 un;
+> +	un.val = htons(server_msg_size);
+> +	memcpy(client_msg + 2, un.b, 2);
+> +	client_msg[client_msg_size - 1] = end_byte;
+> +
+> +	struct addrinfo hints;
+> +	memset(&hints, 0, sizeof(struct addrinfo));
+> +	hints.ai_family = AF_INET;
+> +	hints.ai_socktype = SOCK_STREAM;
+> +	if (getaddrinfo(server_addr, tcp_port, &hints, &remote_addrinfo) != 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "getaddrinfo failed");
+> +
+> +	gettimeofday(&tv_client_start, NULL);
+> +	int i;
+> +	for (i = 0; i < clients_num; ++i) {
+> +		if (pthread_create(&thread_ids[i], 0, client_fn, NULL) != 0) {
+> +			tst_brkm(TBROK | TERRNO, cleanup,
+> +				"pthread_create failed at %s:%d",
+> +				__FILE__, __LINE__);
+> +		}
+> +		++threads_num;
+> +	}
+> +}
+> +
+> +static void client_run(void)
+> +{
+> +	void *res = NULL;
+> +	long clnt_time = 0;
+> +
+> +	int i;
+> +	for (i = 0; i < clients_num; ++i)
+> +		pthread_join(thread_ids[i], &res);
+> +
+> +	threads_num = 0;
+> +
+> +	gettimeofday(&tv_client_end, NULL);
+> +	clnt_time = (tv_client_end.tv_sec - tv_client_start.tv_sec) * 1000000 +
+> +		tv_client_end.tv_usec - tv_client_start.tv_usec;
+> +
+> +	tst_resm(TINFO, "total time '%ld' ms", clnt_time / 1000);
+> +
+> +	/* ask server to terminate */
+> +	int cfd;
+> +	client_msg[0] = start_byte + 1;
+> +	if (!client_connect_send(&cfd)) {
+> +		shutdown(cfd, SHUT_WR);
+> +		SAFE_CLOSE(NULL, cfd);
+> +	}
+> +
+> +	/* the script tcp_fastopen_run.sh will remove it */
+> +	SAFE_FILE_PRINTF(cleanup, rpath, "%ld", clnt_time / 1000);
+> +}
+> +
+> +static void client_cleanup(void)
+> +{
+> +	void *res = NULL;
+> +	int i;
+> +	for (i = 0; i < threads_num; ++i)
+> +		pthread_join(thread_ids[i], &res);
+> +
+> +	free(thread_ids);
+> +
+> +	if (remote_addrinfo)
+> +		freeaddrinfo(remote_addrinfo);
+> +}
+> +
+> +void make_server_reply(const char *buf, char **msg, uint16_t *size)
+> +{
+> +	union un_uint16 un;
+> +	memcpy(un.b, buf + 2, 2);
+> +	*size = ntohs(un.val);
+> +	if (*size < 2 || *size > max_msg_len)
+> +		*size = 2;
+> +
+> +	if (msg == NULL) {
+> +		tst_resm(TWARN, "failed to make a reply");
+> +		return;
+> +	}
+> +
+> +	*msg = SAFE_MALLOC(NULL, *size);
+> +	memset(*msg, buf[1], *size - 1);
+> +	(*msg)[*size - 1] = end_byte;
+> +}
+
+This part of the code is really cryptic, the un.val is magically
+initialized via the memset from buf and the whole code does not make
+much sense at first sight. I've been looking at the code for more than
+ten minutes but I can't figure out what exactly does this do.
+
+I suppose that the size of the message is constructed from the data
+received by the client and that reply message buffer is allocated
+accordingly. Can you please write the code in a way that it's clear what
+it does? (i.e. parse the request, store the data into well named
+variables and then construct the reply message accordingly).
+
+> +void *server_fn(void *cfd)
+> +{
+> +	int *client_fd = cfd;
+> +	int num_requests = 0, offset = 0;
+> +	uint16_t reply_size = 0;
+> +	char *msg = NULL, buf[max_msg_len];
+> +	setsockopt(*client_fd, SOL_SOCKET, SO_LINGER, &clo, sizeof(clo));
+> +	ssize_t len;
+> +
+> +	while (1) {
+> +		errno = 0;
+> +		len = sock_recv_poll(client_fd, buf, &max_msg_len, &offset);
+> +
+> +		if (len == 0) {
+> +			break;
+> +		} else if (len < 0 || (offset + len) > max_msg_len ||
+> +			(buf[0] != start_byte && buf[0] != start_byte + 1)) {
+> +			tst_resm(TFAIL, "recv failed, sock '%d'", *client_fd);
+> +			break;
+> +		}
+> +
+> +		offset += len;
+> +
+> +		if (buf[offset - 1] != end_byte) {
+> +			tst_resm(TINFO, "msg is not complete, continue recv");
+> +			continue;
+> +		}
+> +
+> +		if (buf[0] == start_byte + 1)
+> +			tst_brkm(TBROK, cleanup, "client asks to terminate...");
+> +
+> +		if (verbose) {
+> +			tst_resm_hexd(TINFO, buf, offset,
+> +				"msg recv from sock %d:", *client_fd);
+> +		}
+> +
+> +		if (msg == NULL)
+> +			make_server_reply(buf, &msg, &reply_size);
+> +
+> +		++num_requests;
+> +
+> +		/* if last message */
+> +		if (num_requests >= server_max_requests)
+> +			msg[0] = start_byte + 1;
+> +		else
+> +			msg[0] = start_byte;
+> +
+> +		if (send(*client_fd, msg, reply_size, MSG_NOSIGNAL) == -1)
+> +			tst_resm(TWARN | TERRNO, "Error while sending msg");
+> +		else {
+> +			if (verbose) {
+> +				tst_resm_hexd(TINFO, msg, reply_size,
+> +					"msg sent:");
+> +			}
+> +		}
+> +
+> +		offset = 0;
+> +
+> +		if (num_requests >= server_max_requests) {
+> +			if (verbose)
+> +				tst_resm(TINFO, "Max reqs, close socket");
+> +			shutdown(*client_fd, SHUT_WR);
+> +			break;
+> +		}
+> +	}
+> +
+> +	free(msg);
+> +	SAFE_CLOSE(NULL, *client_fd);
+> +	free(client_fd);
+> +
+> +	return NULL;
+> +}
+> +
+> +static void server_thread_add(int *client_fd)
+> +{
+> +	int *cfd = SAFE_MALLOC(NULL, sizeof(int));
+> +	*cfd = *client_fd;
+> +	pthread_t id;
+
+You don't have to allocate the cfd here, just cast the client fd (not a
+pointer to it, the value) to intptr_t and pass it as arg. Then in the
+server_fd cast the arg back to int and assign the value to int variable.
+
+> +	if (pthread_create(&id, &attr, server_fn, cfd) != 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			"pthread_create failed at %s:%d", __FILE__, __LINE__);
+> +	}
+> +}
+> +
+> +static void server_init(void)
+> +{
+> +	struct addrinfo hints;
+> +	memset(&hints, 0, sizeof(struct addrinfo));
+> +	hints.ai_family = AF_INET;
+> +	hints.ai_socktype = SOCK_STREAM;
+> +	hints.ai_flags = AI_PASSIVE;
+> +	if (getaddrinfo(NULL, tcp_port, &hints, &local_addrinfo) != 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "getaddrinfo failed");
+> +
+> +	sfd = socket(AF_INET, SOCK_STREAM, 0);
+> +	if (sfd == -1)
+> +		tst_brkm(TBROK, cleanup, "Failed to create a socket");
+> +
+> +	tst_resm(TINFO, "assigning a name to the server socket...");
+> +	if (!local_addrinfo)
+> +		tst_brkm(TBROK, cleanup, "failed to get the address");
+> +
+> +	while (bind(sfd, local_addrinfo->ai_addr,
+> +		local_addrinfo->ai_addrlen) == -1) {
+> +		sleep(1);
+> +	}
+> +	tst_resm(TINFO, "the name assigned");
+> +
+> +	const int flag = 1;
+> +	setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+> +
+> +	if (tcp_api == TCP_NEW_API) {
+> +		if (setsockopt(sfd, IPPROTO_TCP, TCP_FASTOPEN, &tfo_queue_size,
+> +			sizeof(tfo_queue_size)) == -1)
+> +			tst_brkm(TBROK, cleanup, "Can't set TFO sock. options");
+> +	}
+> +
+> +	listen(sfd, max_queue_len);
+> +	tst_resm(TINFO, "Listen on the socket '%d', port '%s'", sfd, tcp_port);
+> +}
+> +
+> +static void server_cleanup(void)
+> +{
+> +	SAFE_CLOSE(NULL, sfd);
+> +	if (local_addrinfo)
+> +		freeaddrinfo(local_addrinfo);
+> +}
+> +
+> +static void server_run(void)
+> +{
+> +	struct sockaddr_in client_addr;
+> +	socklen_t addr_size = sizeof(client_addr);
+> +	pthread_attr_init(&attr);
+> +
+> +	/*
+> +	 * detaching threads allow to reclaim thread's resources
+> +	 * ones a thread finishs its work.
+           ^
+	   Should be 'once'
+> +	 */
+> +	if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED) != 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "setdetached failed");
+> +
+> +	while (1) {
+> +		int client_fd = accept(sfd, (struct sockaddr *) &client_addr,
+> +			&addr_size);
+> +		if (client_fd == -1) {
+> +			tst_brkm(TBROK, cleanup, "Can't create client socket");
+> +			continue;
+> +		}
+> +
+> +		if (client_addr.sin_family == AF_INET) {
+> +			if (verbose) {
+> +				tst_resm(TINFO, "conn: port '%d', addr '%s'",
+> +					client_addr.sin_port,
+> +					inet_ntoa(client_addr.sin_addr));
+> +			}
+> +		}
+> +		server_thread_add(&client_fd);
+> +	}
+> +}
+> +
+> +static void check_opt(const char *name, int *flag,
+> +	char *arg, int *val, int lim)
+> +{
+> +	if (*flag) {
+> +		if (sscanf(arg, "%i", val) != 1)
+> +			tst_brkm(TBROK, NULL, "-%s option arg is not a number",
+> +				 name);
+> +		if (clients_num < lim)
+> +			tst_brkm(TBROK, NULL, "-%s option arg is less than %d",
+> +				name, lim);
+> +	}
+> +}
+> +
+> +static void check_opt_l(const char *name, int *flag,
+> +	char *arg, long *val, long lim)
+> +{
+> +	if (*flag) {
+> +		if (sscanf(arg, "%ld", val) != 1)
+> +			tst_brkm(TBROK, NULL, "-%s option arg is not a number",
+> +				 name);
+> +		if (clients_num < lim)
+> +			tst_brkm(TBROK, NULL, "-%s option arg is less than %ld",
+> +				name, lim);
+> +	}
+> +}
+> +
+> +/* cleanup flags */
+> +void setup(int argc, char *argv[])
+> +{
+> +	char *msg;
+> +	msg = parse_opts(argc, argv, options, help);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	/* if client num is not set, use num of processors */
+> +	struct sysinfo si;
+> +	if (sysinfo(&si) == 0)
+> +		clients_num = si.procs;
+> +
+> +	check_opt("a", &aflag, aarg, &clients_num, 1);
+> +	check_opt("r", &rflag, rarg, &client_max_requests, 1);
+> +	check_opt("R", &Rflag, Rarg, &server_max_requests, 1);
+> +	check_opt("n", &nflag, narg, &client_msg_size, 1);
+> +
+> +	check_opt("b", &bflag, barg, &client_byte, 0);
+> +	if (client_byte == start_byte || client_byte == end_byte)
+> +		tst_brkm(TBROK, NULL, "-b option, wrong arg");
+> +
+> +	check_opt("N", &Nflag, Narg, &server_msg_size, 1);
+> +
+> +	check_opt("B", &Bflag, Barg, &server_byte, 0);
+> +	if (server_byte == start_byte || server_byte == end_byte)
+> +		tst_brkm(TBROK, NULL, "-B option, wrong arg");
+> +
+> +	check_opt("q", &qflag, qarg, &tfo_queue_size, 1);
+> +	check_opt_l("T", &Tflag, Targ, &wait_timeout, 0L);
+> +
+> +	if (!force_run)
+> +		tst_require_root(NULL);
+> +
+> +	if (!force_run && tst_kvercmp(3, 7, 0) < 0) {
+> +		tst_brkm(TCONF, NULL,
+> +			"Test must be run with kernel 3.7 or newer");
+> +	}
+> +
+> +	/* check tcp fast open knob */
+> +	if (!force_run && access(tfo_cfg, F_OK) == -1)
+> +		tst_brkm(TCONF, NULL, "Failed to find '%s'", tfo_cfg);
+> +
+> +	if (!force_run) {
+> +		SAFE_FILE_SCANF(cleanup, tfo_cfg, "%d", &tfo_cfg_value);
+> +		tst_resm(TINFO, "'%s' is %d", tfo_cfg, tfo_cfg_value);
+> +	}
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	main_pid = getpid();
+> +	tst_resm(TINFO, "pid '%d'", main_pid);
+> +	tst_resm(TINFO, "TCP %s is using %s TCP API.",
+> +		(tcp_mode == TCP_SERVER) ? "server" : "client",
+> +		(tcp_api == TCP_NEW_API) ? "new" : "old");
+> +
+> +	switch (tcp_mode) {
+> +	case TCP_SERVER:
+> +		tst_resm(TINFO, "max requests '%d'",
+> +			server_max_requests);
+> +		tcp.init	= server_init;
+> +		tcp.run		= server_run;
+> +		tcp.cleanup	= server_cleanup;
+> +		tfo_bit_num = 2;
+> +	break;
+> +	case TCP_CLIENT:
+> +		tst_resm(TINFO, "connection: %s:%s",
+> +		server_addr, tcp_port);
+> +		tst_resm(TINFO, "client max req: %d", client_max_requests);
+> +		tst_resm(TINFO, "clients num: %d", clients_num);
+> +		tst_resm(TINFO, "client msg size: %d", client_msg_size);
+> +		tst_resm(TINFO, "server msg size: %d", server_msg_size);
+> +		tst_resm(TINFO, "client msg byte: %02x", client_byte);
+> +		tst_resm(TINFO, "server msg byte: %02x", server_byte);
+> +
+> +		tcp.init	= client_init;
+> +		tcp.run		= client_run;
+> +		tcp.cleanup	= client_cleanup;
+> +		tfo_bit_num = 1;
+> +	break;
+> +	}
+> +
+> +	tfo_support = TFO_ENABLED == tfo_support;
+> +	if (((tfo_cfg_value & tfo_bit_num) == tfo_bit_num) != tfo_support) {
+> +		int value = (tfo_cfg_value & ~tfo_bit_num)
+> +			| (tfo_support << (tfo_bit_num - 1));
+> +		tst_resm(TINFO, "set '%s' to '%d'", tfo_cfg, value);
+> +		SAFE_FILE_PRINTF(cleanup, tfo_cfg, "%d", value);
+> +		tfo_cfg_changed = 1;
+> +	}
+> +
+> +	int reuse_value = 0;
+> +	SAFE_FILE_SCANF(cleanup, tcp_tw_reuse, "%d", &reuse_value);
+> +	if (!reuse_value) {
+> +		SAFE_FILE_PRINTF(cleanup, tcp_tw_reuse, "1");
+> +		tw_reuse_changed = 1;
+> +		tst_resm(TINFO, "set '%s' to '1'", tcp_tw_reuse);
+> +	}
+> +
+> +	tst_resm(TINFO, "TFO support %s",
+> +		(tfo_support) ? "enabled" : "disabled");
+> +
+> +	tcp.init();
+> +}
+> +
+> +static void test_run()
+> +{
+> +	tcp.run();
+> +}
+
+Just call tcp.run() in the main() this is useless redirection.
+
+> +int main(int argc, char *argv[])
+> +{
+> +	setup(argc, argv);
+> +
+> +	test_run();
+> +
+> +	cleanup();
+> +
+> +	tst_exit();
+> +}
+> diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+> new file mode 100755
+> index 0000000..d56c510
+> --- /dev/null
+> +++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+> @@ -0,0 +1,190 @@
+> +#!/bin/bash
+> +
+> +# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, write the Free Software Foundation,
+> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+> +#
+> +
+> +# default command-line options
+> +user_name="root"
+> +remote_addr=$RHOST
+> +use_ssh=0
+> +client_requests=2000000
+> +server_port=$[ $RANDOM % 28232 + 32768 ]
+> +
+> +while getopts :hu:H:sr:p: opt; do
+> +	case "$opt" in
+> +	h)
+> +		echo "Usage:"
+> +		echo "h        help"
+> +		echo "u x      server user name"
+> +		echo "H x      server hostname or IP address"
+> +		echo "s        use ssh to run remote cmds"
+> +		echo "r x      the number of requests"
+> +		echo "p x      server port"
+> +		exit 0
+> +	;;
+> +	u) user_name=$OPTARG ;;
+> +	H) remote_addr=$OPTARG ;;
+> +	s) use_ssh=1 ;;
+> +	r) client_requests=$OPTARG ;;
+> +	p) server_port=$OPTARG ;;
+> +	*)
+> +		tst_brkm TBROK NULL "unknown option: $opt"
+> +		exit 2
+> +	;;
+> +	esac
+> +done
+> +
+> +run_remote_cmd()
+> +{
+> +	tst_resm TINFO "run cmd on $remote_addr: $1"
+> +
+> +	if [ "$use_ssh" = 1 ]; then
+> +		ssh -n -f $user_name@$remote_addr "sh -c 'nohup $1 &'"
+> +	else
+> +		rsh -n -l $user_name $remote_addr "sh -c 'nohup $1 &'"
+> +	fi
+> +}
+> +
+> +cleanup()
+> +{
+> +	rm -f $tfo_result
+> +	run_remote_cmd "pgrep tcp_fastopen && killall -9 tcp_fastopen"
+> +	# remove test files on remote host
+> +	sleep 2
+> +	run_remote_cmd "[ -e ${tdir}tcp_fastopen ] && rm -f ${tdir}tcp_fastopen"
+> +	sleep 2
+> +}
+> +
+> +read_result_file()
+> +{
+> +	if [ -f $tfo_result ]; then
+> +		if [ -r $tfo_result ]; then
+> +			cat $tfo_result
+> +		else
+> +			tst_brkm TBROK NULL "Failed to read result file"
+> +			exit 2
+> +		fi
+> +	else
+> +		tst_brkm TBROK NULL "Failed to find result file"
+> +		exit 2
+> +	fi
+> +}
+> +
+> +check_exit_status()
+> +{
+> +	if [ "$1" -ne "0" ]; then
+> +		tst_brkm TBROK NULL "Last test has failed"
+> +		exit $1;
+> +	fi
+> +}
+> +
+> +export RC=0
+> +export TST_TOTAL=1
+> +export TCID="tcp_fastopen"
+> +export TST_COUNT=0
+> +
+> +tfo_result_ms=0
+> +bind_timeout=10
+> +clients_num=2
+> +max_requests=3
+> +msg_timeout=10000000
+> +
+> +# Setup
+> +type tst_resm > /dev/null 2>&1
+> +if [ $? -eq 1 ]; then
+> +	echo "$TCID    0  TCONF  :  failed to find LTP tst_* utilities"
+> +	exit 2
+> +fi
+
+There is no need to check for tst_ commands. If these are not in $PATH
+none of the LTP shell scripts will work.
+
+> +tst_kvercmp 3 7 0
+> +if [ $? -eq 0 ]; then
+> +	tst_brkm TCONF NULL "test must be run with kernel 3.7 or newer"
+> +	exit 0
+> +fi
+> +
+> +if [ -z $remote_addr ]; then
+> +	tst_brkm TBROK NULL "you must specify server address"
+> +	exit 2
+> +fi
+
+Can we default to localhost, would that work?
+
+> +if [ -z $LTPROOT ]; then
+> +	tdir="./"
+> +else
+> +	tdir=${LTPROOT}/testcases/bin/
+> +fi
+
+This should not be used, the ${LTPROOT}/testcases/bin/ must be in $PATH
+prior to execution of the test.
+
+> +if [ -z "$TMPDIR" ]; then
+> +	tfo_result="${tdir}tfo_result"
+> +else
+> +	tfo_result="${TMPDIR}/tfo_result"
+> +fi
+
+As well as TMPDIR.
+
+> +trap "cleanup" EXIT
+> +
+> +run_remote_cmd "[ ! -e $tdir ] && mkdir -p $tdir"
+> +
+> +if [ "$use_ssh" = 1 ]; then
+> +	scp ${tdir}tcp_fastopen $user_name@$remote_addr:$tdir > /dev/null
+> +else
+> +	rcp ${tdir}tcp_fastopen $user_name@$remote_addr:$tdir > /dev/null
+> +fi
+> +
+> +
+> +# Run
+> +tcp_api_opt=("-o -O" "")
+> +vtime=(0 0)
+> +
+> +for (( i = 0; i < 2; ++i )); do
+> +	# kill tcp server on remote machine
+> +	run_remote_cmd "pgrep tcp_fastopen && killall -9 tcp_fastopen"
+> +
+> +	sleep 2
+> +
+> +	# run tcp server on remote machine
+> +	run_remote_cmd "${tdir}tcp_fastopen -R $max_requests -q 100 \
+> +${tcp_api_opt[$i]} -g $server_port > /dev/null 2>&1"
+> +
+> +	sleep $bind_timeout
+> +
+> +	# run local tcp client
+> +	${tdir}tcp_fastopen -a $clients_num -r $client_requests -l \
+> +-n 32 -b 23 -N 128 -B 8 -T $msg_timeout -H $remote_addr \
+> +${tcp_api_opt[$i]} -g $server_port -d $tfo_result
+> +
+> +	check_exit_status $?
+> +
+> +	vtime[$i]=`read_result_file`
+> +
+> +	if [ -z ${vtime[$i]} -o ${vtime[$i]} -eq "0" ]; then
+> +		tst_brkm TBROK NULL "Last test result isn't valid: ${vtime[$i]}"
+> +		exit 2
+> +	fi
+> +	server_port=$[ $server_port + 1 ]
+> +done
+> +
+> +tfo_cmp=$[ 100 - (${vtime[1]} * 100) / ${vtime[0]} ]
+> +
+> +if (( $tfo_cmp < 3 )); then
+> +	tst_resm TFAIL "TFO performance result is $tfo_cmp percent"
+> +	exit 1
+> +fi
+> +
+> +tst_resm TPASS "TFO performance result is $tfo_cmp percent"
+> +exit 0
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
---===============6477219976036802788==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6477219976036802788==--
