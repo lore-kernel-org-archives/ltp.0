@@ -1,35 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VgqZB-0000ee-RI
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 06:38:13 +0000
+	id 1VdyOa-0001a2-UV
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 08:23:24 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VgqZ9-00038n-Se
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 06:38:13 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	(Exim 4.76) id 1VdyOa-0004WB-3Q
+	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 08:23:24 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
 	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rAE6c4ME021258
+	ESMTP id rA68NGsx015705
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Nov 2013 06:38:05 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAE6c41u015322
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 08:23:18 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA68NFPj019205
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Nov 2013 06:38:04 GMT
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAE6c4c7001241
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Nov 2013 06:38:04 GMT
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 08:23:16 GMT
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA68NFQY019194
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 08:23:15 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 14 Nov 2013 10:37:57 +0400
-Message-Id: <1384411077-26013-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20131113175008.GE12406@rei.Home>
-References: <20131113175008.GE12406@rei.Home>
-Subject: [LTP] [PATCH V3 2/2] tst_checkpoint_signal_child: implemented
-	timeout
+Date: Wed,  6 Nov 2013 12:23:07 +0400
+Message-Id: <1383726187-25943-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20131105164645.GB21812@rei.suse.cz>
+References: <20131105164645.GB21812@rei.suse.cz>
+Subject: [LTP] [PATCH V2 2/2] prot_hsymlinks: use SAFE_TOUCH
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,81 +45,55 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-If a child exits before opening TST_CHECKPOINT_FIFO
-for reading, tst_checkpoint_signal_child() issued from the parent
-will block forever.
+This test case does not need to keep the file descriptors
+open after doing creat() on them. So we use SAFE_TOUCH instead
+of SAFE_CREAT.
 
-To handle such situations added timeout logic to tst_checkpoint_signal_child();
+Otherwise on NFS it outputs:
+
+TWARN  :  tst_rmdir: rmobj(/tmpdir/ltp-vdIWJBmrkz/provfaUSg) failed: remove(/tmpdir/ltp-vdIWJBmrkz/provfaUSg/tmp_root/hsym) failed; errno=66: Directory not empty
+
+or:
+TWARN  :  tst_rmdir: rmobj(/mnt/proXZmq0T) failed: unlink(/mnt/proXZmq0T/root/.nfs00000000000008470000015e) failed; errno=16: Device or resource busy
+
+The same idea as for 8c200cb8e843724afb49fa6617fceec09ac826a5.
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- lib/tst_checkpoint.c |   36 +++++++++++++++++++++++++++++++++++-
- 1 files changed, 35 insertions(+), 1 deletions(-)
+ .../security/prot_hsymlinks/prot_hsymlinks.c       |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 56c86b5..e53c499 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -33,6 +33,40 @@
+diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+index 558681a..e9948e3 100644
+--- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
++++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+@@ -45,6 +45,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "safe_file_ops.h"
  
- #include "tst_checkpoint.h"
+ char *TCID = "prot_hsymlinks";
+ int TST_TOTAL = 396;
+@@ -414,7 +415,7 @@ static void ufiles_add(int usr, char *path, int type)
+ 	struct user_file *ufile = &users[usr].file[file];
  
-+/*
-+ * Issue open() on 'path' fifo with O_WRONLY flag and wait for
-+ * a reader up to 'timeout' ms.
-+ *
-+ * Returns:
-+ *   > 0 - file descriptor
-+ *   -1  - an error has occurred (errno is set accordingly)
-+ *
-+ */
-+int open_wronly_timed(const char *path, unsigned int timeout)
-+{
-+	int fd;
-+	int i;
-+	int interval = 1; /* how often issue open(O_NONBLOCK), in ms */
-+
-+	for (i = 0; i < timeout; i += interval) {
-+		fd = open(path, O_WRONLY | O_NONBLOCK);
-+		if (fd < 0) {
-+			if ((errno == ENXIO) || (errno == EINTR)) {
-+				usleep(interval * 1000);
-+
-+				continue;
-+			}
-+
-+			return -1;
-+		}
-+
-+		return fd;
-+	}
-+
-+	errno = ETIMEDOUT;
-+	return -1;
-+}
-+
- void tst_checkpoint_init(const char *file, const int lineno,
-                          struct tst_checkpoint *self)
- {
-@@ -195,7 +229,7 @@ void tst_checkpoint_signal_child(const char *file, const int lineno,
- {
- 	int ret, fd;
- 	
--	fd = open(TST_CHECKPOINT_FIFO, O_WRONLY);
-+	fd = open_wronly_timed(TST_CHECKPOINT_FIFO, self->timeout);
+ 	if (type == IS_FILE)
+-		SAFE_CREAT(cleanup, path, 0644);
++		SAFE_TOUCH(cleanup, path, 0644, NULL);
+ 	else
+ 		SAFE_MKDIR(cleanup, path, 0755);
  
- 	if (fd < 0) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
