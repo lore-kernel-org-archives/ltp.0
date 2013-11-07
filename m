@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VdZYW-0000jF-8x
-	for ltp-list@lists.sourceforge.net; Tue, 05 Nov 2013 05:52:00 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VdZYU-0002jM-04
-	for ltp-list@lists.sourceforge.net; Tue, 05 Nov 2013 05:52:00 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rA55poQS026137
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Nov 2013 13:51:50 +0800
-Message-ID: <52788773.8040007@cn.fujitsu.com>
-Date: Tue, 05 Nov 2013 13:51:47 +0800
-From: =?UTF-8?B?IldhbmcsIFhpYW9ndWFuZy/njosg5bCP5YWJIg==?= <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VePeY-00022M-Rv
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:29:42 +0000
+Date: Thu, 7 Nov 2013 14:29:34 +0100
+From: chrubis@suse.cz
+Message-ID: <20131107132934.GF28961@rei.suse.cz>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-3-git-send-email-vincent.hsu@linaro.org>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] access(2): add ELOOP, ENOTDIR,
-	EROFS error number test
+Content-Disposition: inline
+In-Reply-To: <1383085243-5833-3-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 2/9] ltp-networking/nfs: don't use absolute
+ path for showmount. showmount does not locate at /user/sbin/showmount on
+ Ubuntu 12.04.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,312 +27,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
+Hi!
+This patch is fine, but the description is not right (the subject is too
+long). Please fix and resend.
 
-access/access05.c: add ELOOP, ENOTDIR error number test
-
-new access/access06.c: add EROFS error number test
-
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/ltplite                             |   1 +
- runtest/stress.part3                        |   1 +
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/.gitignore        |   1 +
- testcases/kernel/syscalls/access/access05.c |  22 +++-
- testcases/kernel/syscalls/access/access06.c | 171 ++++++++++++++++++++++++++++
- 6 files changed, 196 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/access/access06.c
-
-diff --git a/runtest/ltplite b/runtest/ltplite
-index f0738c7..2382dec 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -66,6 +66,7 @@ access02 access02
- access03 access03
- access04 access04
- access05 access05
-+access06 access06 -D DEVICE -T DEVICE_FS_TYPE
- 
- acct01 acct01 -D DEVICE -T DEVICE_FS_TYPE
- 
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 951b00e..16247e9 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -8,6 +8,7 @@ access02 access02
- access03 access03
- access04 access04
- access05 access05
-+access06 access06 -D DEVICE -T DEVICE_FS_TYPE
- 
- acct01 acct01 -D DEVICE -T DEVICE_FS_TYPE
- 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index e5a5508..fa01ff7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -9,6 +9,7 @@ access02 access02
- access03 access03
- access04 access04
- access05 access05
-+access06 access06 -D DEVICE -T DEVICE_FS_TYPE
- 
- acct01 acct01 -D DEVICE -T DEVICE_FS_TYPE
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0effa6b..0130a53 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -6,6 +6,7 @@
- /access/access03
- /access/access04
- /access/access05
-+/access/access06
- /acct/acct01
- /add_key/add_key01
- /add_key/add_key02
-diff --git a/testcases/kernel/syscalls/access/access05.c b/testcases/kernel/syscalls/access/access05.c
-index 739b4b2..792692c 100644
---- a/testcases/kernel/syscalls/access/access05.c
-+++ b/testcases/kernel/syscalls/access/access05.c
-@@ -32,6 +32,10 @@
-  *	if the specified file doesn't exist (or pathname is NULL).
-  *   5. access() fails with -1 return value and sets errno to ENAMETOOLONG
-  *      if the pathname size is > PATH_MAX characters.
-+ *   6. access() fails with -1 return value and sets errno to ENOTDIR
-+ *      if a component used as a directory in pathname is not a directory.
-+ *   7. access() fails with -1 return value and sets errno to ELOOP
-+ *      if too many symbolic links were encountered in resolving pathname.
-  *
-  *   07/2001 Ported by Wayne Boyer
-  */
-@@ -56,6 +60,8 @@
- #define TEST_FILE2	"test_file2"
- #define TEST_FILE3	"test_file3"
- #define TEST_FILE4	"test_file4"
-+#define TEST_FILE5	"test_file5/test_file5"
-+#define TEST_FILE6	"test_file6"
- 
- 
- #if !defined(UCLINUX)
-@@ -79,12 +85,15 @@ static struct test_case_t {
- #endif
- 	{"", W_OK, ENOENT},
- 	{longpathname, R_OK, ENAMETOOLONG},
-+	{TEST_FILE5, R_OK, ENOTDIR},
-+	{TEST_FILE6, R_OK, ELOOP},
- };
- 
- char *TCID = "access05";
- int TST_TOTAL = ARRAY_SIZE(test_cases);
- 
--static int exp_enos[] = { EACCES, EFAULT, EINVAL, ENOENT, ENAMETOOLONG, 0 };
-+static int exp_enos[] = { EACCES, EFAULT, EINVAL, ENOENT, ENAMETOOLONG,
-+			  ENOTDIR, ELOOP, 0 };
- 
- static const char nobody_uid[] = "nobody";
- static struct passwd *ltpuser;
-@@ -172,6 +181,17 @@ static void setup(void)
- 	 *the MAX length of PATH_MAX.
- 	 */
- 	memset(longpathname, 'a', sizeof(longpathname) - 1);
-+
-+	/* create test_file5 for test ENOTDIR. */
-+	fd = SAFE_CREAT(cleanup, "test_file5", 0644);
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	/*
-+	 * create two symbolic links who point to each other for
-+	 * test ELOOP.
-+	 */
-+	SAFE_SYMLINK(cleanup, "test_file6", "test_file7");
-+	SAFE_SYMLINK(cleanup, "test_file7", "test_file6");
- }
- 
- static void access_verify(int i)
-diff --git a/testcases/kernel/syscalls/access/access06.c b/testcases/kernel/syscalls/access/access06.c
-new file mode 100644
-index 0000000..5c00a9b
---- /dev/null
-+++ b/testcases/kernel/syscalls/access/access06.c
-@@ -0,0 +1,171 @@
-+/*
-+ * Copyright (c) 2013 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+/*
-+ * Description:
-+ * Verify that,
-+ *  1. access() fails with -1 return value and sets errno to EROFS
-+ *     if write permission was requested for files on a read-only file system.
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+#include <sys/mount.h>
-+#include <pwd.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+
-+static void setup(void);
-+static void access_verify(int i);
-+static void cleanup(void);
-+static void help(void);
-+
-+#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-+			 S_IXGRP|S_IROTH|S_IXOTH)
-+#define MNT_POINT	"mntpoint"
-+
-+static char *fstype = "ext2";
-+static char *device;
-+static int dflag;
-+static int mount_flag;
-+
-+static option_t options[] = {
-+	{"T:", NULL, &fstype},
-+	{"D:", &dflag, &device},
-+	{NULL, NULL, NULL}
-+};
-+
-+static struct test_case_t {
-+	char *pathname;
-+	int a_mode;
-+	int exp_errno;
-+} test_cases[] = {
-+	{MNT_POINT, W_OK, EROFS}
-+};
-+
-+char *TCID = "access06";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = { EROFS, 0 };
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	char *msg;
-+	int i;
-+
-+	msg = parse_opts(ac, av, options, help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	/* Check for mandatory option of the testcase */
-+	if (!dflag) {
-+		tst_brkm(TBROK, NULL, "you must specify the device "
-+			 "used for mounting with -D option");
-+	}
-+
-+	setup();
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)
-+			access_verify(i);
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	tst_require_root(NULL);
-+
-+	tst_mkfs(NULL, device, fstype, NULL);
-+
-+	tst_tmpdir();
-+
-+	SAFE_MKDIR(cleanup, MNT_POINT, DIR_MODE);
-+
-+	TEST_PAUSE;
-+
-+	/*
-+	 * mount a read-only file system for test EROFS
-+	 */
-+	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
-+}
-+
-+static void access_verify(int i)
-+{
-+	char *file_name;
-+	int access_mode;
-+
-+	file_name = test_cases[i].pathname;
-+	access_mode = test_cases[i].a_mode;
-+
-+	TEST(access(file_name, access_mode));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "access(%s, %#o) succeeded unexpectedly",
-+			 file_name, access_mode);
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == test_cases[i].exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "access failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "access failed unexpectedly; expected: "
-+			 "%d - %s", test_cases[i].exp_errno,
-+			 strerror(test_cases[i].exp_errno));
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	if (mount_flag && umount(MNT_POINT) < 0) {
-+		tst_brkm(TBROK | TERRNO, NULL,
-+			 "umount device:%s failed", device);
-+	}
-+	tst_rmdir();
-+}
-+
-+static void help(void)
-+{
-+	printf("-T type	  : specifies the type of filesystem to be mounted. "
-+	       "Default ext2.\n");
-+	printf("-D device : device used for mounting.\n");
-+}
 -- 
-1.8.2.1
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 November Webinars for C, C++, Fortran Developers
