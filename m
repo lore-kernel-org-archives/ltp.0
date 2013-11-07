@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Vm3Wx-0002LR-Am
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 15:29:27 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vm3Ww-0004Ot-8l
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 15:29:27 +0000
-Message-ID: <52976154.10500@imgtec.com>
-Date: Thu, 28 Nov 2013 15:29:24 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VeQ0I-0008QJ-KI
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:52:10 +0000
+Date: Thu, 7 Nov 2013 14:52:02 +0100
+From: chrubis@suse.cz
+Message-ID: <20131107135202.GJ28961@rei.suse.cz>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-7-git-send-email-vincent.hsu@linaro.org>
 MIME-Version: 1.0
-References: <1385546874.1596.0.camel@G08JYZSD130126>
-	<20131128135908.GA20294@rei.Home>
-In-Reply-To: <20131128135908.GA20294@rei.Home>
-Subject: Re: [LTP] [PATCH v2 1/2] confstr/confstr01.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <1383085243-5833-7-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 6/9] ltp-networking/iproute: ip02: set
+ original mtu size back. this test will set mtu to 300. ip05: if there is
+ nott only one route using "head" command will get wrong result.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,53 +27,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
-On 11/28/2013 01:59 PM, chrubis@suse.cz wrote:
-> Hi!
->> cleanup the confstr01.c test case.
->>
->
-> I've changed the succes message to include the confstr value as:
->
->                                  } else {
-> -                                       tst_resm(TPASS, "confstr %s success",
-> -                                                test_cases[i].name);
-> +                                       tst_resm(TPASS, "confstr %s = '%s'",
-> +                                                test_cases[i].name, buf);
->                                  }
->                                  free(buf);
->
-> And pushed both patches, thanks.
->
+Hi!
+> -		ip route show | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
+> +		ip route show >$LTPTMP/tst_ip.out.tmp
+> +        grep "10.6.6.6 via 127.0.0.1 dev lo" $LTPTMP/tst_ip.out.tmp \
+> +            >$LTPTMP/tst_ip.out 2>&1 || RC=$?
 
-Hi,
+Minus the indentation this looks reasonable, but you can do better and
+pipe the output from ip route show directly to grep and use -q (quiet).
 
-since this change I am seeing the following build problem on a uClibc 
-based system
-
-confstr01.c:50: error: '_CS_XBS5_ILP32_OFF32_CFLAGS' undeclared here 
-(not in a function)
-confstr01.c:51: error: '_CS_XBS5_ILP32_OFF32_LDFLAGS' undeclared here 
-(not in a function)
-confstr01.c:52: error: '_CS_XBS5_ILP32_OFF32_LIBS' undeclared here (not 
-in a function)
-confstr01.c:53: error: '_CS_XBS5_ILP32_OFF32_LINTFLAGS' undeclared here 
-(not in a function)
-...
-
-Reverting the recent changes in confstr01.c file seems to "fix" the problem.
+ip route show | grep -q "10.6.6.6 via 127.0.0.1 dev lo" || RC=$?
 
 -- 
-markos
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
