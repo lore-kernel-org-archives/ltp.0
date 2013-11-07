@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vga10-0001il-At
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 12:57:50 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vga0x-0006QD-MB
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 12:57:50 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rADCvc5G004430
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 20:57:39 +0800
-Message-ID: <5283773E.5080505@cn.fujitsu.com>
-Date: Wed, 13 Nov 2013 20:57:34 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VeSEF-0006HG-Ge
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 16:14:43 +0000
+Date: Thu, 7 Nov 2013 17:14:33 +0100
+From: chrubis@suse.cz
+Message-ID: <20131107161433.GB9653@rei.Home>
+References: <1383645709-1079-1-git-send-email-xu.simon@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fs/ext4-new-features: add ext4-new-features tests to
- the default
+Content-Disposition: inline
+In-Reply-To: <1383645709-1079-1-git-send-email-xu.simon@oracle.com>
+Subject: Re: [LTP] [PATCH] xinetd_tests.sh: remove RECORD and eliminate "||
+ RC=$?"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,226 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> 2) It's not a good idea to do '|| RC=$?' because because it may not be
+>    excecuted and the original value in RC can mess things up.
 
-Here treat every feature as a signle test program.
+I'm OK with that, but remove the RC=0 initializations that are now
+unnecessary.
 
-Makefile: add configure for ffsb
-
-runtest/fs_ext4: 5 new features test currently enabled
-
-run_ext4_test.sh: According to the input parameter to decide which
-feature test to be called.
-
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/fs_ext4                                    |   6 +-
- testcases/kernel/fs/Makefile                       |   2 +-
- testcases/kernel/fs/ext4-new-features/Makefile     |   1 +
- .../kernel/fs/ext4-new-features/run_ext4_test.sh   | 115 ++++++---------------
- 4 files changed, 37 insertions(+), 87 deletions(-)
-
-diff --git a/runtest/fs_ext4 b/runtest/fs_ext4
-index c65ebab..84b6486 100644
---- a/runtest/fs_ext4
-+++ b/runtest/fs_ext4
-@@ -1 +1,5 @@
--ext4_new_feature_test	run_ext4_test.sh
-+ext4-inode-version	run_ext4_test.sh ext4_inode_version_test
-+ext4-nsec-timestamps	run_ext4_test.sh ext4_nsec_timestamps_test
-+ext4-persist-prealloc	run_ext4_test.sh ext4_persist_prealloc_test
-+ext4-subdir-limit	run_ext4_test.sh ext4_subdir_limit_test
-+ext4-uninit-groups	run_ext4_test.sh ext4_uninit_groups_test
-diff --git a/testcases/kernel/fs/Makefile b/testcases/kernel/fs/Makefile
-index afad6f9..81310f5 100644
---- a/testcases/kernel/fs/Makefile
-+++ b/testcases/kernel/fs/Makefile
-@@ -27,6 +27,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
- # XXX (garrcoop): Need to add autoconf checks for JFS.
- # ext4-new-features: This test need to be configured be user.
- # Please read $LTPROOT/README to see the detail information
--FILTER_OUT_DIRS		:= dmapi ext4-new-features
-+FILTER_OUT_DIRS		:= dmapi
- 
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/fs/ext4-new-features/Makefile b/testcases/kernel/fs/ext4-new-features/Makefile
-index 208b8a6..1ad1c3c 100644
---- a/testcases/kernel/fs/ext4-new-features/Makefile
-+++ b/testcases/kernel/fs/ext4-new-features/Makefile
-@@ -32,6 +32,7 @@ FILTER_OUT_DIRS		:= $(FFSBDIR)
- FFSB			:= $(FFSBDIR)/ffsb
- 
- $(FFSB): $(FFSBDIR)
-+	cd $^; ./configure
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 	cp $(FFSBDIR)/ffsb ffsb
- 
-diff --git a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh b/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
-index bfbd844..4ede8f7 100755
---- a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
-@@ -38,11 +38,15 @@
- ################################################################################
- 
- source ext4_funcs.sh;
-+test_features=$1
- 
- export TCID="ext4_new_feature"
- export TST_TOTAL=1
- export TST_COUNT=1
- 
-+script_name="$test_features"".sh"
-+BLOCK_COUNT=3072
-+
- tst_kvercmp 2 6 31
- if [ $? -eq 0 ]; then
- 	tst_brkm TCONF ignored "kernel is below 2.6.31"
-@@ -71,6 +75,22 @@ if [ ! -f "ext4-test-config" ]; then
- 	exit 0
- fi
- 
-+# create an ext4 partition
-+dd if=/dev/zero of=fs_ext4_new_features_$$.img bs=1M count=$BLOCK_COUNT
-+
-+if [ $? -ne 0 ];then
-+	tst_brkm TCONF ignored "failed to create an ext4 image file"
-+	exit 0
-+fi
-+
-+EXT4_DEV=$(losetup --show -f fs_ext4_new_features_$$.img)
-+if [ $? -ne 0 ];then
-+	tst_brkm TCONF ignored "set loop device failed"
-+	exit 0
-+fi
-+
-+echo "EXT4_DEV=$EXT4_DEV" > ./ext4-test-config
-+
- cd $LTPROOT/testcases/bin/
- 
- RET=0
-@@ -79,101 +99,26 @@ echo "EXT4 NEW FEATURE TESTING";
- echo "TEST STARTED: Please avoid using system while this test executes";
- 
- echo " "
--echo "Ext4 block allocation test"
--if [ -f "ext4-alloc-test.sh" ]; then
--	./ext4-alloc-test.sh ./ext4-test-config
-+echo "$test_features"
-+if [ -f "$script_name" ]; then
-+	./$script_name ./ext4-test-config
- 	if [ $? -ne 0 ]; then
- 		RET=1
- 	fi
- else
--	echo "Shell file is not installed..Please check Makefile..."
-+	echo "$script_name is not installed..Please check Makefile..."
- 	RET=1
- fi
- 
--echo " "
--echo "Ext4 journal checksum test"
--if [ -f "ext4_journal_checksum.sh" ]; then
--	./ext4_journal_checksum.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
- 
--echo " "
--echo "Ext4 subdir limit test"
--if [ -f "ext4_subdir_limit_test.sh" ]; then
--	./ext4_subdir_limit_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 nanosecond timestamp test"
--if [ -f "ext4_nsec_timestamps_test.sh" ]; then
--	./ext4_nsec_timestamps_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
- 
--echo " "
--echo "Ext4 persist prealloc test"
--if [ -f "ext4_persist_prealloc_test.sh" ]; then
--	./ext4_persist_prealloc_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 inode version test"
--if [ -f "ext4_inode_version_test.sh" ]; then
--	./ext4_inode_version_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 uninit groups test"
--if [ -f "ext4_uninit_groups_test.sh" ]; then
--	./ext4_uninit_groups_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
-+# cleanup
-+losetup -d $EXT4_DEV
-+if [ $? -ne 0 ];then
-+	tst_brkm TCONF ignored "failed to delete loop: $EXT4_DEV"
-+	exit 0
- fi
- 
--echo " "
--echo "Ext4 online defrag test"
--echo "The output of defrag program is in the file"\
--	"LTPROOT/output/ext4_online_defrag.txt"
--if [ -f "ext4_online_defrag_test.sh" ]; then
--	./ext4_online_defrag_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
-+rm -f fs_ext4_new_features_$$.img
- 
- exit $RET
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
