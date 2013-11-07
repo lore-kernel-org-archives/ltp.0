@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VeS7k-0003hZ-SM
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 16:08:00 +0000
-Date: Thu, 7 Nov 2013 17:07:50 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VeQBQ-0005qj-To
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 14:03:40 +0000
+Date: Thu, 7 Nov 2013 15:03:32 +0100
 From: chrubis@suse.cz
-Message-ID: <20131107160750.GA9653@rei.Home>
-References: <1383556829-1464-1-git-send-email-xu.simon@oracle.com>
+Message-ID: <20131107140332.GB7207@rei.suse.cz>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-6-git-send-email-vincent.hsu@linaro.org>
+	<20131107132513.GC28961@rei.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383556829-1464-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH] networktests.sh: add ${LTPROOT}/bin into $PATH
+In-Reply-To: <20131107132513.GC28961@rei.suse.cz>
+Subject: Re: [LTP] [LNG][PATCH 5/9] ltp-networking/tcp_cmds/tcpdump: 1.
+ RHOST IP won't appear in network interfaces. It should be LHOST. 2. Host
+ commad can't fetch IP in no DNS enviroment. use ping intead of it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,35 +28,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
 Hi!
-> Some tests need `gethost' (e.g. sendfile01), which lives in ${LTPROOT}/bin,
-> which is not in $PATH of networktests.sh.
+> Technically that fixes the problem, but the parsing is too fragile.
 > 
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
-> ---
->  testscripts/networktests.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
-> index b136749..9465356 100755
-> --- a/testscripts/networktests.sh
-> +++ b/testscripts/networktests.sh
-> @@ -110,7 +110,7 @@ fi
->  
->  cd $TMPDIR
->  
-> -export PATH="${PATH}:${LTPROOT}/testcases/bin"
-> +export PATH="${PATH}:${LTPROOT}/bin:${LTPROOT}/testcases/bin"
+> What about rewriting the test to use IP="127.0.0.1" and IFNAME="lo"?
 
-You can remove the original export that adds ${LTPROOT}/testcases/bin as
-this path is allready added by runltp script.
-
-And I think that better solution would be to install genhost into the
-testcases/bin (as the rest of the binaries used from the tests such as
-tst_resm).
+I've just applied a fix for this problem from Simon, see 87f593c.
 
 -- 
 Cyril Hrubis
