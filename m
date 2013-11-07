@@ -2,33 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Vec72-0007lc-Vt
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 02:47:57 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vec72-0007pC-2L
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 02:47:56 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA82lnmk018957
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 02:47:50 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA82lmXs023661
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 02:47:49 GMT
-Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA82lmWi001818
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 02:47:48 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Fri,  8 Nov 2013 10:47:42 +0800
-Message-Id: <1383878862-620-1-git-send-email-xu.simon@oracle.com>
-In-Reply-To: <20131107161950.GC9653@rei.Home>
-References: <20131107161950.GC9653@rei.Home>
-Subject: [LTP] [PATCH] sendfile01: rename SF_Server to sendfile01_server and
-	add it into Makefile
+	(envelope-from <metan@suse.de>) id 1VePO7-0005qX-HC
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:12:43 +0000
+Date: Thu, 7 Nov 2013 14:12:34 +0100
+From: chrubis@suse.cz
+Message-ID: <20131107131234.GA28961@rei.suse.cz>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-4-git-send-email-vincent.hsu@linaro.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1383085243-5833-4-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 3/9] ltp-networking/tcp_cmds/finger: finger
+ an unknown host test will return 1 even if execution success on Ubuntu
+ 12.04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,79 +24,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
-1) Rename SF_Server to sendfile01_server to avoid collisions
-2) The test always fails because SF_Server is not installed, add
-   sendfile01_server into sendfile01 makefile to install it.
+Hi!
+> for example:
+>     $ finger @xxxx || echo "test fail"
+>     finger: unknown host: xxxx
+>     getaddrinfo: No address associated with hostname
+>     test fail
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
----
- testcases/network/tcp_cmds/sendfile/Makefile          | 2 +-
- testcases/network/tcp_cmds/sendfile/SF_Server         | 6 ------
- testcases/network/tcp_cmds/sendfile/sendfile01        | 2 +-
- testcases/network/tcp_cmds/sendfile/sendfile01_server | 6 ++++++
- 4 files changed, 8 insertions(+), 8 deletions(-)
- delete mode 100755 testcases/network/tcp_cmds/sendfile/SF_Server
- create mode 100755 testcases/network/tcp_cmds/sendfile/sendfile01_server
+Hmm, at my computers (SUSE, Gentoo) it works as:
 
-diff --git a/testcases/network/tcp_cmds/sendfile/Makefile b/testcases/network/tcp_cmds/sendfile/Makefile
-index 124ce5d..a8b0736 100644
---- a/testcases/network/tcp_cmds/sendfile/Makefile
-+++ b/testcases/network/tcp_cmds/sendfile/Makefile
-@@ -27,7 +27,7 @@ include $(abs_srcdir)/../Makefile.inc
- 
- CPPFLAGS		+= -I$(abs_srcdir)/../include
- 
--INSTALL_TARGETS		:= sendfile01
-+INSTALL_TARGETS		:= sendfile01 sendfile01_server
- 
- MAKE_TARGETS		+= testsf_c testsf_s testsf_c6 testsf_s6
- 
-diff --git a/testcases/network/tcp_cmds/sendfile/SF_Server b/testcases/network/tcp_cmds/sendfile/SF_Server
-deleted file mode 100755
-index 2383ce4..0000000
---- a/testcases/network/tcp_cmds/sendfile/SF_Server
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#!/bin/sh
--#set -x
--cd $3
--exec 1< /dev/null       # open descriptor 1
--exec 2< /dev/null       # open descriptor 1
--nohup ./testsf_s $1 $2 &
-diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01 b/testcases/network/tcp_cmds/sendfile/sendfile01
-index 46b90e2..ba61873 100755
---- a/testcases/network/tcp_cmds/sendfile/sendfile01
-+++ b/testcases/network/tcp_cmds/sendfile/sendfile01
-@@ -84,7 +84,7 @@ do_test()
- 
-     mkdir -p $TCtmp
-     PORT=$$
--    if ! rsh -l root $IPADDR "$LTPROOT/testcases/bin/SF_Server $IPADDR $PORT $LTPROOT/testcases/bin $SERVER"; then
-+    if ! rsh -l root $IPADDR "$LTPROOT/testcases/bin/sendfile01_server $IPADDR $PORT $LTPROOT/testcases/bin $SERVER"; then
-         end_testcase "rsh failed to $IPADDR as root failed"
-     fi
-     sleep 10
-diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01_server b/testcases/network/tcp_cmds/sendfile/sendfile01_server
-new file mode 100755
-index 0000000..2383ce4
---- /dev/null
-+++ b/testcases/network/tcp_cmds/sendfile/sendfile01_server
-@@ -0,0 +1,6 @@
-+#!/bin/sh
-+#set -x
-+cd $3
-+exec 1< /dev/null       # open descriptor 1
-+exec 2< /dev/null       # open descriptor 1
-+nohup ./testsf_s $1 $2 &
+$ finger @xxxx || echo "test fail"
+finger: unknown host: xxxx
+
+Are you sure that finger returns nonzero? From what package and what
+version does your finger come from?
+
+Btw what is wrong at the code bellow is the redirection, which does not
+work, the >/dev/null should be before the 2>&1. Even if your finger
+really returns nonzero the code bellow is quite cryptic as it looks like
+it redirects all output from the finger into the /dev/null but it really
+just redirects stderr into stdout which goes to the grep...
+
+> ---
+>  testcases/network/tcp_cmds/finger/finger01 |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
+> index 6a72c8f..a5206be 100755
+> --- a/testcases/network/tcp_cmds/finger/finger01
+> +++ b/testcases/network/tcp_cmds/finger/finger01
+> @@ -116,8 +116,8 @@ do_test2()
+> 
+>      tst_resm TINFO "finger -bad user "
+>      finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
+> -    finger @$BADHOST 2>&1 1>/dev/null || end_testcase "finger @$BADHOST"
+> -    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null; then
+> +    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" || end_testcase "finger @$BADHOST"
+> +    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host"; then
+>          end_testcase "finger $BADUSER@$BADHOST"
+>      fi
+>  }
+
 -- 
-1.8.4.2
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 November Webinars for C, C++, Fortran Developers
