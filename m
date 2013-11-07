@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VbHer-0006av-CH
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:05 +0000
-Received: from mail-oa0-f52.google.com ([209.85.219.52])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VbHeq-0006tK-N5
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:05 +0000
-Received: by mail-oa0-f52.google.com with SMTP id j1so636349oag.11
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Oct 2013 15:20:59 -0700 (PDT)
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Tue, 29 Oct 2013 15:20:41 -0700
-Message-Id: <1383085243-5833-8-git-send-email-vincent.hsu@linaro.org>
-In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH 7/9] ltp-networking/iptables: "iptables -L -t
-	nat" lists 4 chains not 3 chains on Ubuntu 12.04
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VeSTW-0007a7-2G
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 16:30:30 +0000
+Date: Thu, 7 Nov 2013 17:30:21 +0100
+From: chrubis@suse.cz
+Message-ID: <20131107163021.GE9653@rei.Home>
+References: <1383789115-553-1-git-send-email-xu.simon@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1383789115-553-1-git-send-email-xu.simon@oracle.com>
+Subject: Re: [LTP] [PATCH] mc_cmds: Multicast ping being disabled should not
+ fail the test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,60 +22,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
----
- testcases/network/iptables/iptables_tests.sh |   22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+Hi!
+> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+> ---
+>  testcases/network/multicast/mc_cmds/mc_cmds | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/network/multicast/mc_cmds/mc_cmds b/testcases/network/multicast/mc_cmds/mc_cmds
+> index e9b7bb5..47bd4b9 100755
+> --- a/testcases/network/multicast/mc_cmds/mc_cmds
+> +++ b/testcases/network/multicast/mc_cmds/mc_cmds
+> @@ -127,7 +127,8 @@ for eth in $IFNAME
+>     cat /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts | grep 1 > /dev/null
+>     if [ $? -eq 0 ]
+>     then
+> -       end_testcase "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"
+> +       tst_resm TINFO "Multicast ping disabled on this system (this is normal on post year:2005 kernels)"
+> +       exit 0
 
-diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
-index 028d54e..641f327 100755
---- a/testcases/network/iptables/iptables_tests.sh
-+++ b/testcases/network/iptables/iptables_tests.sh
-@@ -165,13 +165,21 @@ test01()
- 		return $RC
- 	else
- 		chaincnt=$(grep -c Chain $LTPTMP/tst_iptables.out)
--		if [ $chaincnt -ne 3 ]; then
--			tst_res TFAIL $LTPTMP/tst_iptables.out \
--				"$TCID: $cmd failed to list rules. Reason:"
--			return $chaincnt
--		else
--			tst_resm TINFO "$TCID: $cmd lists rules."
--		fi
-+            # for debian or ubuntu
-+            if [ -f /etc/debian_version ]; then
-+                if [ $chaincnt -ne 4 ]; then
-+                    tst_res TFAIL $LTPTMP/tst_iptables.out \
-+                        "$TCID: $cmd failed to list rules. Reason:"
-+                        return $chaincnt
-+                fi
-+            else
-+                if [ $chaincnt -ne 3 ]; then
-+                    tst_res TFAIL $LTPTMP/tst_iptables.out \
-+                        "$TCID: $cmd failed to list rules. Reason:"
-+                        return $chaincnt
-+                fi
-+            fi
-+            tst_resm TINFO "$TCID: $cmd lists rules."
- 	fi
+This should be TCONF.
 
- 	local cmd="iptables -L -t mangle"
---
-1.7.9.5
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
