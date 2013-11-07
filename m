@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VjRcS-0007Ib-UH
-	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:36:20 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VjRcP-0006xQ-7W
-	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:36:20 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rALAa8S2014475
-	for <ltp-list@lists.sourceforge.net>; Thu, 21 Nov 2013 18:36:08 +0800
-Message-ID: <528DE213.1030106@cn.fujitsu.com>
-Date: Thu, 21 Nov 2013 18:36:03 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VePge-00054U-4v
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:31:52 +0000
+Date: Thu, 7 Nov 2013 14:31:36 +0100
+From: chrubis@suse.cz
+Message-ID: <20131107133136.GG28961@rei.suse.cz>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-8-git-send-email-vincent.hsu@linaro.org>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3]  dup3(2): add EINVAL error number test
+Content-Disposition: inline
+In-Reply-To: <1383085243-5833-8-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 7/9] ltp-networking/iptables: "iptables -L -t
+ nat" lists 4 chains not 3 chains on Ubuntu 12.04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,181 +26,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
-add EINVAL error number test
+Hi!
+> ---
+>  testcases/network/iptables/iptables_tests.sh |   22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+> index 028d54e..641f327 100755
+> --- a/testcases/network/iptables/iptables_tests.sh
+> +++ b/testcases/network/iptables/iptables_tests.sh
+> @@ -165,13 +165,21 @@ test01()
+>  		return $RC
+>  	else
+>  		chaincnt=$(grep -c Chain $LTPTMP/tst_iptables.out)
+> -		if [ $chaincnt -ne 3 ]; then
+> -			tst_res TFAIL $LTPTMP/tst_iptables.out \
+> -				"$TCID: $cmd failed to list rules. Reason:"
+> -			return $chaincnt
+> -		else
+> -			tst_resm TINFO "$TCID: $cmd lists rules."
+> -		fi
+> +            # for debian or ubuntu
+> +            if [ -f /etc/debian_version ]; then
+> +                if [ $chaincnt -ne 4 ]; then
+> +                    tst_res TFAIL $LTPTMP/tst_iptables.out \
+> +                        "$TCID: $cmd failed to list rules. Reason:"
+> +                        return $chaincnt
+> +                fi
+> +            else
+> +                if [ $chaincnt -ne 3 ]; then
+> +                    tst_res TFAIL $LTPTMP/tst_iptables.out \
+> +                        "$TCID: $cmd failed to list rules. Reason:"
+> +                        return $chaincnt
+> +                fi
+> +            fi
+> +            tst_resm TINFO "$TCID: $cmd lists rules."
+>  	fi
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/syscalls                         |   1 +
- testcases/kernel/syscalls/.gitignore     |   1 +
- testcases/kernel/syscalls/dup3/dup3_02.c | 123 +++++++++++++++++++++++++++++++
- 3 files changed, 125 insertions(+)
- create mode 100644 testcases/kernel/syscalls/dup3/dup3_02.c
+It has four Chain lines on basically every new enough Linux. So let's
+accept either 3 or 4 in the general case.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fa01ff7..e7e8a9a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -118,6 +118,7 @@ dup204 dup204
- dup205 dup205
- 
- dup3_01 dup3_01
-+dup3_02 dup3_02
- 
- epoll_create1_01 epoll_create1_01
- epoll01 epoll-ltp
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0130a53..e100dd9 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -96,6 +96,7 @@
- /dup2/dup204
- /dup2/dup205
- /dup3/dup3_01
-+/dup3/dup3_02
- /epoll/epoll-ltp
- /epoll_create1/epoll_create1_01
- /eventfd/eventfd01
-diff --git a/testcases/kernel/syscalls/dup3/dup3_02.c b/testcases/kernel/syscalls/dup3/dup3_02.c
-new file mode 100644
-index 0000000..121414c
---- /dev/null
-+++ b/testcases/kernel/syscalls/dup3/dup3_02.c
-@@ -0,0 +1,123 @@
-+/*
-+ * Copyright (c) 2013 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+/*
-+ * Description:
-+ * Verify that,
-+ *  1. dup3() fails with -1 return value and sets errno to EINVAL
-+ *     if flags contain an invalid value or oldfd was equal to newfd.
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
-+
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+#define INVALID_FLAG	-1
-+
-+static int old_fd;
-+static int new_fd;
-+
-+static struct test_case_t {
-+	int *oldfd;
-+	int *newfd;
-+	int flags;
-+	int exp_errno;
-+} test_cases[] = {
-+	{&old_fd, &old_fd, O_CLOEXEC, EINVAL},
-+	{&old_fd, &old_fd, 0, EINVAL},
-+	{&old_fd, &new_fd, INVALID_FLAG, EINVAL}
-+};
-+
-+char *TCID = "dup3_02";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = {EINVAL, 0};
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			TEST(ltp_syscall(__NR_dup3, *(test_cases[i].oldfd),
-+			     *(test_cases[i].newfd), test_cases[i].flags));
-+
-+			if (TEST_RETURN != -1) {
-+				tst_resm(TFAIL, "dup3 succeeded unexpectedly");
-+				continue;
-+			}
-+
-+			if (TEST_ERRNO == test_cases[i].exp_errno) {
-+				tst_resm(TPASS | TTERRNO,
-+					 "dup3 failed as expected");
-+			} else {
-+				tst_resm(TFAIL | TTERRNO,
-+					 "dup3 failed unexpectedly; expected:"
-+					 "%d - %s", test_cases[i].exp_errno,
-+					 strerror(test_cases[i].exp_errno));
-+			}
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	tst_tmpdir();
-+
-+	TEST_PAUSE;
-+
-+	old_fd = SAFE_CREAT(cleanup, "testeinval.file", 0644);
-+	new_fd = -1;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	SAFE_CLOSE(cleanup, old_fd);
-+
-+	tst_rmdir();
-+}
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
