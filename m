@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VfvBo-0001qK-LT
-	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 17:22:16 +0000
-Date: Mon, 11 Nov 2013 18:06:01 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VePsI-00033k-S8
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:43:54 +0000
+Date: Thu, 7 Nov 2013 14:43:46 +0100
 From: chrubis@suse.cz
-Message-ID: <20131111170600.GD12940@rei.Home>
-References: <20131107161433.GB9653@rei.Home>
-	<1383880727-723-1-git-send-email-xu.simon@oracle.com>
+Message-ID: <20131107134346.GH28961@rei.suse.cz>
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-9-git-send-email-vincent.hsu@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383880727-723-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH V2] xinetd_tests.sh: remove RECORD and eliminate
- "|| RC=$?"
+In-Reply-To: <1383085243-5833-9-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 8/9] ltp-networking: standardize test result
+ message
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +26,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
 Hi!
-> 1) In xinetd.conf, `RECORD' is not a valid value for entry `log_on_failure'
->    (I couldn't find a distro in which it's valid), and it makes xinetd
->    successfully starts and promptly exit with error message:
-> 
->    "Bad log_on_failure flag: RECORD [file=/etc/xinetd.conf] [line=6]",
-> 
->    but the test will pass because telnet service is not started and that's
->    what it expect.
-> 
-> 2) Eliminate '|| RC=$?' because because it may not be excecuted and the
->    original value in RC can mess things up.  Also remove the RC=0
->    initializations that are now unnecessary.
-> 
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
-
-Pushed, thanks.
+This patch is OK, but needs to be applied after the NFS default version
+patch. So I'm not applying it now.
 
 -- 
 Cyril Hrubis
