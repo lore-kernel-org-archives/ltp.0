@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ve0n6-0001Rq-HJ
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 10:56:52 +0000
-Date: Wed, 6 Nov 2013 11:56:30 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VeNcU-00049K-Fe
+	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 11:19:26 +0000
+Date: Thu, 7 Nov 2013 12:19:01 +0100
 From: chrubis@suse.cz
-Message-ID: <20131106105630.GB28037@rei>
-References: <52736BE4.3080009@oracle.com>
-	<1383555538-1297-1-git-send-email-xu.simon@oracle.com>
-	<20131104172008.GA11841@rei> <5278297D.5090407@oracle.com>
+Message-ID: <20131107111901.GA28246@rei>
+References: <52780C00.6010706@gmx.de> <20131106123245.GA28897@rei>
+	<527A964D.6030004@gmx.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5278297D.5090407@oracle.com>
-Subject: Re: [LTP] [PATCH V2] rwho01: fix getting hostnames from command
- output and $COUNT
+In-Reply-To: <527A964D.6030004@gmx.de>
+Subject: Re: [LTP] [PATCH] fcntl16.c patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,16 +25,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
+To: Helge Deller <deller@gmx.de>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> rwho and ruptime are pretty old stuff, their output are not likely to 
-> have changed.  The author intended to use the awk commands to get the 
-> line containing the hostname, but the output of the awk commands are all 
-> empty strings.
+> >> The fcntl16 testcase is being compiled twice, once normal, and the other
+> >> time with the _FILE_OFFSET_BITS=64 define set.
+> >>
+> >> When compiled with 64bit file functions (as fcntl16_64) all 
+> >> file functions will automatically use their 64bit variants, e.g.
+> >> "struct flock64" instead of "struct flock".
+> >>
+> >> So, when in the code e.g.
+> >> 	fcntl(fd, F_SETLK, thislock)
+> >> is called, this will automatically be translated into
+> >> 	fcntl64(fd, F_SETLK64, thislock)
+> >> and "thislock" needs to be of type "struct flock64".
+> >>
+> >> So, we need to make sure that thislock is of the correct type,
+> >> with the start and len fields being of type "off_t" which then
+> >> will be translated into "loff_t" during compilation when 
+> >> _FILE_OFFSET_BITS=64 is set.
+> >>
+> >> This fixes the fcntl16_64 testcase on hppa64-linux-gnu with
+> >> 32bit userspace running on 64bit kernel.
+> >>
+> >> Signed-off-by: Helge Deller <deller@gmx.de>
+> > 
+> > What about using struct flock as defined in bits/fcntl.h instead?
+> 
+> Sure, that's possible.
+> Patch is attached.
+> 
+> I would be happy if you would apply one of those.
 
-Ok, pushed, thanks.
+Applied, thanks.
+
+And it would be easier for me if you had send git formatted patch with
+headline and description (output from git format-patch).
 
 -- 
 Cyril Hrubis
