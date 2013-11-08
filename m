@@ -1,23 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VdA5Y-00084f-FA
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 02:40:24 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VdA5X-0004kI-5p
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 02:40:24 +0000
-Message-ID: <527708F1.3020504@cn.fujitsu.com>
-Date: Mon, 04 Nov 2013 10:39:45 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1383466482-19441-1-git-send-email-nexus226@gmail.com>	<5276F7C3.4080606@cn.fujitsu.com>
-	<CAEcr6y0OmaAyEiTwicvpF7cuHx_GNC+QrU5wPmAwD-1SGwZLRw@mail.gmail.com>
-In-Reply-To: <CAEcr6y0OmaAyEiTwicvpF7cuHx_GNC+QrU5wPmAwD-1SGwZLRw@mail.gmail.com>
-Subject: Re: [LTP] [PATCH v3] acct01: fix TBROK to TCONF if acct not
-	implemented
-Reply-To: gaowanlong@cn.fujitsu.com
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VekzI-0001rK-56
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 12:16:32 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VekzH-000295-8Q
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 12:16:32 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rA8CGOX1023153
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 12:16:25 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA8CGNUx003374
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 12:16:24 GMT
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA8CGNZb003360
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 12:16:23 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri,  8 Nov 2013 16:16:17 +0400
+Message-Id: <1383912978-15159-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <527B7226.5090809@oracle.com>
+References: <527B7226.5090809@oracle.com>
+Subject: [LTP] [PATCH V2 1/2] syscalls/ipc/Makefile.inc: changed LIB to
+	LIBIPC
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,32 +39,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Honggyu Kim <nexus226@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On 11/04/2013 10:15 AM, Honggyu Kim wrote:
-> I just made a mistake on the commit message. No change was made in the source code.
+Both lib.mk and testcases/kernel/syscalls/ipc/Makefile.inc set
+LIB. It confuses make when both failes are included into a leaf Makefile.
 
-Applied, thank you.
+Renamed LIB to LIBIPC in Makefile.inc.
 
-Wanlong Gao
+The idea is by Cyril Hrubis <chrubis@suse.cz>
 
-> 
-> Thank you for your reply.
-> 
-> Honggyu Kim
-> 
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/ipc/Makefile.inc |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/Makefile.inc b/testcases/kernel/syscalls/ipc/Makefile.inc
+index a468e93..c7890a9 100644
+--- a/testcases/kernel/syscalls/ipc/Makefile.inc
++++ b/testcases/kernel/syscalls/ipc/Makefile.inc
+@@ -25,15 +25,15 @@
+ LDLIBS			+= -lipc
+ LIBDIR			:= ../lib
+ 
+-LIB			:= $(LIBDIR)/libipc.a
++LIBIPC			:= $(LIBDIR)/libipc.a
+ 
+ $(LIBDIR):
+ 	mkdir -p "$@"
+ 
+-$(LIB): $(LIBDIR)
++$(LIBIPC): $(LIBDIR)
+ 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+ 
+-MAKE_DEPS		:= $(LIB)
++MAKE_DEPS		:= $(LIBIPC)
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
+ 
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
