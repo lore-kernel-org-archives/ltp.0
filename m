@@ -1,18 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VdjmX-0002H7-M9
-	for ltp-list@lists.sourceforge.net; Tue, 05 Nov 2013 16:47:09 +0000
-Date: Tue, 5 Nov 2013 17:46:45 +0100
-From: chrubis@suse.cz
-Message-ID: <20131105164645.GB21812@rei.suse.cz>
-References: <1383285427-6049-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20131104152621.GA11545@rei> <5278CF8E.7020104@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5278CF8E.7020104@oracle.com>
-Subject: Re: [LTP] [PATCH] prot_hsymlinks: explicitly close file descriptors
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1VekLs-0005qg-N4
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 11:35:48 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VekLr-000076-IG
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 11:35:48 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rA8BZerp016088
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 11:35:41 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA8BZdNa017106
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 11:35:40 GMT
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA8BZddY017101
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 11:35:39 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri,  8 Nov 2013 15:35:21 +0400
+Message-Id: <1383910521-12669-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] device-drivers: acpi: add new test for acpi-cpufreq
+	driver
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,75 +36,260 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net, alexey.kodanev@oracle.com
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi!
-> >> This test case does not need to keep the file descriptors
-> >> open after doing creat() on them. So we close them right after
-> >> SAFE_CREAT.
-> >>
-> >> Otherwise on NFS it outputs:
-> >>
-> >> TWARN  :  tst_rmdir: rmobj(/tmpdir/ltp-vdIWJBmrkz/provfaUSg) failed: remove(/tmpdir/ltp-vdIWJBmrkz/provfaUSg/tmp_root/hsym) failed; errno=66: Directory not empty
-> >>
-> >> or:
-> >> TWARN  :  tst_rmdir: rmobj(/mnt/proXZmq0T) failed: unlink(/mnt/proXZmq0T/root/.nfs00000000000008470000015e) failed; errno=16: Device or resource busy
-> >>
-> >> The same idea as for 8c200cb8e843724afb49fa6617fceec09ac826a5.
-> >>
-> >> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> >> ---
-> >>   .../security/prot_hsymlinks/prot_hsymlinks.c       |    2 +-
-> >>   1 files changed, 1 insertions(+), 1 deletions(-)
-> >>
-> >> diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-> >> index 558681a..4c05e3f 100644
-> >> --- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-> >> +++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-> >> @@ -414,7 +414,7 @@ static void ufiles_add(int usr, char *path, int type)
-> >>   	struct user_file *ufile = &users[usr].file[file];
-> >>   
-> >>   	if (type == IS_FILE)
-> >> -		SAFE_CREAT(cleanup, path, 0644);
-> >> +		close(SAFE_CREAT(cleanup, path, 0644));
-> >>   	else
-> >>   		SAFE_MKDIR(cleanup, path, 0755);
-> >>   
-> > There is quite a lot of places in LTP where we do creat() and then
-> > close(), what about adding SAFE_TOUCH() with touch(1) sematics to the
-> > safe_file_ops.h in LTP lib?
-> I'm ok with that, but I have two little questions:
-> 
-> 1. About the semantics.
-> We use creat() with a 'mode' parameter. Should it just be passed to 
-> open() (with O_CREAT) or should we explicitly call chmod(mode) after 
-> open()/close()?
-> In other words, should SAFE_TOUCH try to change the permissions if the 
-> file exists?
+The test checks support for disabling dynamic overclocking
+in acpi_cpufreq driver.
+Linux commit: 615b7300717b9ad5c23d1f391843484fe30f6c12.
+It were implemented in Linux 3.7.
 
-I would go for changing the permissions if the file exists.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/kernel/device-drivers/acpi/.gitignore    |    1 +
+ testcases/kernel/device-drivers/acpi/Makefile      |    4 +-
+ .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |  199 ++++++++++++++++++++
+ 3 files changed, 203 insertions(+), 1 deletions(-)
+ create mode 100644 testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
 
-> At the moment I think about the following prototype:
-> void safe_touch(const char *file, const int lineno,
->                            void (*cleanup_fn)(void),
->                            const char *pathname,
->                            mode_t mode, const struct timespec *times)
-
-The timespec is used for specifying creation time?
-
-> 2. Maybe move SAFE_TOUCH to safe_macros.h ?
-
-I was thinking of safe_file_ops because safe_macros contains wrappers
-around various libcalls and touch is not really libcall of any kind. But
-that is minor.
-
+diff --git a/testcases/kernel/device-drivers/acpi/.gitignore b/testcases/kernel/device-drivers/acpi/.gitignore
+index 76fbdc8..7061be3 100644
+--- a/testcases/kernel/device-drivers/acpi/.gitignore
++++ b/testcases/kernel/device-drivers/acpi/.gitignore
+@@ -1,5 +1,6 @@
+ /LtpAcpiCmds.ko
+ /ltp_acpi
++/ltp_acpi_cpufreq
+ /*.mod.c
+ /modules.order
+ /.tmp_versions
+diff --git a/testcases/kernel/device-drivers/acpi/Makefile b/testcases/kernel/device-drivers/acpi/Makefile
+index b62eb0b..47ef8c6 100644
+--- a/testcases/kernel/device-drivers/acpi/Makefile
++++ b/testcases/kernel/device-drivers/acpi/Makefile
+@@ -25,7 +25,9 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ REQ_VERSION_MAJOR	:= 2
+ REQ_VERSION_PATCH	:= 6
+-MAKE_TARGETS		:= ltp_acpi LtpAcpiCmds.ko
++MAKE_TARGETS		:= ltp_acpi_cpufreq ltp_acpi LtpAcpiCmds.ko
++
++LDLIBS			+= -lpthread
+ 
+ include $(top_srcdir)/include/mk/module.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+new file mode 100644
+index 0000000..08092df
+--- /dev/null
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+@@ -0,0 +1,199 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ * Check support for disabling dynamic overclocking in acpi_cpufreq driver.
++ * Required Linux 3.7+.
++ *
++ * The test loads CPU0 in a thread. When the loading approaches to the end
++ * (2/3 elapsed), the test will check processor frequency. if boost is enabled
++ * we can get a slightly higher speed under load.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include <sched.h>
++#include <sys/time.h>
++#include <pthread.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "safe_stdio.h"
++
++char *TCID = "ltp_acpi_cpufreq";
++
++#define SYSFS_CPU_DIR "/sys/devices/system/cpu/"
++
++const char boost[]	= SYSFS_CPU_DIR "cpufreq/boost";
++static int boost_value;
++
++const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
++static char governor_name[16];
++
++const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
++const char curspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/cpuinfo_cur_freq";
++const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
++
++const char up_limit[]	= SYSFS_CPU_DIR "cpufreq/ondemand/up_threshold";
++static int threshold;
++
++static void cleanup(void)
++{
++	SAFE_FILE_PRINTF(NULL, boost, "%d", boost_value);
++
++	if (governor[0] != '\0')
++		SAFE_FILE_PRINTF(NULL, governor, "%s", governor_name);
++
++	if (threshold)
++		SAFE_FILE_PRINTF(NULL, up_limit, "%d", threshold);
++
++	TEST_CLEANUP;
++}
++
++static void setup(void)
++{
++	if (tst_kvercmp(3, 7, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			"disable overclocking required Linux 3.7+");
++		return;
++	}
++
++	if (access(boost, R_OK | W_OK)) {
++		tst_brkm(TCONF, NULL,
++			"acpi-cpufreq not loaded or overclock not supported");
++		return;
++	}
++
++	SAFE_FILE_SCANF(NULL, boost, "%d", &boost_value);
++
++	SAFE_FILE_SCANF(NULL, up_limit, "%d", &threshold);
++
++	/* change cpu0 scaling governor */
++	SAFE_FILE_SCANF(NULL, governor, "%s", governor_name);
++	SAFE_FILE_PRINTF(cleanup, governor, "%s", "userspace");
++
++	/* use only cpu0 */
++	cpu_set_t set;
++	CPU_ZERO(&set);
++	CPU_SET(0, &set);
++	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU0");
++
++	SAFE_FILE_PRINTF(cleanup, up_limit, "11");
++}
++
++static void set_speed(int freq)
++{
++	int set_freq;
++	SAFE_FILE_SCANF(cleanup, setspeed, "%d", &set_freq);
++
++	if (set_freq != freq) {
++		tst_resm(TINFO, "change speed from %d to %d...",
++			set_freq, freq);
++		SAFE_FILE_PRINTF(cleanup, setspeed, "%d", freq);
++	} else {
++		tst_resm(TINFO, "set speed is %d", set_freq);
++	}
++}
++
++void *thread_fn(void *val)
++{
++	struct timeval tv_start;
++	struct timeval tv_end;
++	int i, res = 0;
++	intptr_t timeout = (intptr_t) val;
++
++	gettimeofday(&tv_start, NULL);
++	tst_resm(TINFO, "load CPU0 for %ld sec...", timeout);
++
++	do {
++		for (i = 1; i < 1000; ++i)
++			res += i * i;
++		gettimeofday(&tv_end, NULL);
++	} while ((tv_end.tv_sec - tv_start.tv_sec) < timeout);
++
++	tst_resm(TINFO, "CPU0 load done: insignificant value '%d'", res);
++
++	return NULL;
++}
++
++static int load_cpu(intptr_t timeout)
++{
++	pthread_t thread_id;
++
++	if (pthread_create(&thread_id, 0, thread_fn,
++		(intptr_t *) timeout) != 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			"pthread_create failed at %s:%d",
++			__FILE__, __LINE__);
++	}
++
++	sleep(2 * timeout / 3);
++
++	int cur_freq;
++	SAFE_FILE_SCANF(cleanup, curspeed, "%d", &cur_freq);
++	tst_resm(TINFO, "got cpu freq under load: %d", cur_freq);
++
++	pthread_join(thread_id, NULL);
++
++	return cur_freq;
++}
++
++static void test_run(void)
++{
++	int cur_freq, max_freq;
++	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq);
++	set_speed(max_freq);
++
++	/* Enable boost */
++	if (boost_value == 0)
++		SAFE_FILE_PRINTF(cleanup, boost, "1");
++	cur_freq = load_cpu(30);
++	tst_resm((cur_freq >= max_freq) ? TPASS : TFAIL,
++		"compare current speed %d and max speed %d",
++		cur_freq, max_freq);
++
++	/* Disable boost */
++	SAFE_FILE_PRINTF(cleanup, boost, "0");
++	cur_freq = load_cpu(30);
++	tst_resm((cur_freq < max_freq) ? TPASS : TFAIL,
++		"compare current speed %d and max speed %d",
++		cur_freq, max_freq);
++}
++
++int main(int argc, char *argv[])
++{
++	tst_require_root(NULL);
++
++	if (tst_kvercmp(3, 7, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			"Test must be run with kernel 3.7 or newer");
++	}
++
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	setup();
++
++	test_run();
++
++	cleanup();
++
++	tst_exit();
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 November Webinars for C, C++, Fortran Developers
