@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vm2gr-0001TV-KR
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 14:35:37 +0000
-Date: Thu, 28 Nov 2013 15:35:05 +0100
-From: chrubis@suse.cz
-Message-ID: <20131128143504.GF19263@rei.Home>
-References: <528DE213.1030106@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <528DE213.1030106@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3]  dup3(2): add EINVAL error number test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VehZl-0006b2-Jz
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 08:37:57 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VehZj-0007iK-0y
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 08:37:57 +0000
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri,  8 Nov 2013 12:37:37 +0400
+Message-Id: <1383899857-4669-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] setregid02: invalid user value fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,52 +22,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	SAFE_CLOSE(cleanup, old_fd);
+Commit 705926d096f7a64c9d53efeb789288e25457d68f
+introduced a bug that the value for inval_user was treated
+as '-1' when passed to 16-bit version of setregid().
 
-Take care not to call cleanup() from within a cleanup()
+Fixed it the same way as it's done for setreuid test cases.
 
-If the close() here will fail, the cleanup will be called, then the
-close() will fail and the cleanup will be called... untill the end of
-the stack and the test will eventually SegFault.
+Reported-by: Honggyu Kim <hong.gyu.kim@lge.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/setregid/setregid02.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Also if the SAFE_CREAT() in setup() will fail, the close() will fail
-too, because the old_fd will be set to -1.
-
-I've fixed that this time and pushed (see diff bellow), thanks.
-
-
-@@ -117,7 +117,8 @@ static void cleanup(void)
- {
-        TEST_CLEANUP;
-
--       SAFE_CLOSE(cleanup, old_fd);
-+       if (old_fd > 0)
-+               SAFE_CLOSE(NULL, old_fd);
-
-        tst_rmdir();
- }
-
+diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
+index e67a7df..2b84b26 100644
+--- a/testcases/kernel/syscalls/setregid/setregid02.c
++++ b/testcases/kernel/syscalls/setregid/setregid02.c
+@@ -39,7 +39,7 @@ TCID_DEFINE(setregid02);
+ 
+ static gid_t neg_one = -1;
+ 
+-static gid_t inval_user = (USHRT_MAX);
++static gid_t inval_user = USHRT_MAX - 2;
+ static struct passwd *ltpuser;
+ 
+ static struct group nobody, root, bin;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
