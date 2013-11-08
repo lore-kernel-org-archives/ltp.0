@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Markos.Chandras@imgtec.com>) id 1Vjrbu-0005HQ-N1
-	for ltp-list@lists.sourceforge.net; Fri, 22 Nov 2013 14:21:30 +0000
-Received: from multi.imgtec.com ([194.200.65.239])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1Vec72-0007lc-Vt
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 02:47:57 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vjrbq-0008G7-RO
-	for ltp-list@lists.sourceforge.net; Fri, 22 Nov 2013 14:21:30 +0000
-From: Markos Chandras <markos.chandras@imgtec.com>
-Date: Fri, 22 Nov 2013 14:20:59 +0000
-Message-ID: <1385130059-12150-1-git-send-email-markos.chandras@imgtec.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] ptrace: Fix build problems with glibc-2.18
+	(Exim 4.76) id 1Vec72-0007pC-2L
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 02:47:56 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rA82lnmk018957
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 02:47:50 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA82lmXs023661
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 02:47:49 GMT
+Received: from abhmt107.oracle.com (abhmt107.oracle.com [141.146.116.59])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rA82lmWi001818
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 02:47:48 GMT
+From: Simon Xu <xu.simon@oracle.com>
+Date: Fri,  8 Nov 2013 10:47:42 +0800
+Message-Id: <1383878862-620-1-git-send-email-xu.simon@oracle.com>
+In-Reply-To: <20131107161950.GC9653@rei.Home>
+References: <20131107161950.GC9653@rei.Home>
+Subject: [LTP] [PATCH] sendfile01: rename SF_Server to sendfile01_server and
+	add it into Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,82 +38,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Since glibc-2.18, the struct ptrace_peeksiginfo_args is
-also defined in sys/ptrace.h and conflicts with the definition
-from the Linux kernel in linux/ptrace.h. We fix this by not
-including the linux/ptrace.h header if the sys/ptrace.h header
-defines the said struct. Fixes
-https://github.com/linux-test-project/ltp/issues/6
+1) Rename SF_Server to sendfile01_server to avoid collisions
+2) The test always fails because SF_Server is not installed, add
+   sendfile01_server into sendfile01 makefile to install it.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
 ---
-Build tested on glibc-2.17 and glibc-2.18 systems
----
- configure.ac                              | 4 ++++
- include/config.h.default                  | 3 +++
- testcases/kernel/syscalls/ptrace/ptrace.h | 4 +++-
- 3 files changed, 10 insertions(+), 1 deletion(-)
+ testcases/network/tcp_cmds/sendfile/Makefile          | 2 +-
+ testcases/network/tcp_cmds/sendfile/SF_Server         | 6 ------
+ testcases/network/tcp_cmds/sendfile/sendfile01        | 2 +-
+ testcases/network/tcp_cmds/sendfile/sendfile01_server | 6 ++++++
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+ delete mode 100755 testcases/network/tcp_cmds/sendfile/SF_Server
+ create mode 100755 testcases/network/tcp_cmds/sendfile/sendfile01_server
 
-diff --git a/configure.ac b/configure.ac
-index 4846afd..d427276 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -48,6 +48,10 @@ AC_CHECK_HEADERS([ \
-     sys/prctl.h \
- ])
+diff --git a/testcases/network/tcp_cmds/sendfile/Makefile b/testcases/network/tcp_cmds/sendfile/Makefile
+index 124ce5d..a8b0736 100644
+--- a/testcases/network/tcp_cmds/sendfile/Makefile
++++ b/testcases/network/tcp_cmds/sendfile/Makefile
+@@ -27,7 +27,7 @@ include $(abs_srcdir)/../Makefile.inc
  
-+# glibc-2.18 defines ptrace_peeksiginfo_args in sys/ptrace.h which
-+# conflicts with the one from linux kernel in linux/ptrace.h
-+AC_CHECK_TYPES([struct ptrace_peeksiginfo_args],,,[#include <sys/ptrace.h>])
-+
- # Tools knobs
+ CPPFLAGS		+= -I$(abs_srcdir)/../include
  
- # Expect
-diff --git a/include/config.h.default b/include/config.h.default
-index 96e25c4..f226333 100644
---- a/include/config.h.default
-+++ b/include/config.h.default
-@@ -167,6 +167,9 @@
- /* Define to 1 if the system has the type `struct modify_ldt_ldt_s'. */
- #undef HAVE_STRUCT_MODIFY_LDT_LDT_S
+-INSTALL_TARGETS		:= sendfile01
++INSTALL_TARGETS		:= sendfile01 sendfile01_server
  
-+/* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
-+#undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARG
-+
- /* Define to 1 if `signo' is member of `struct signalfd_siginfo'. */
- #undef HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
+ MAKE_TARGETS		+= testsf_c testsf_s testsf_c6 testsf_s6
  
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
-index f0767d7..4a43f01 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace.h
-+++ b/testcases/kernel/syscalls/ptrace/ptrace.h
-@@ -19,7 +19,9 @@
- # include <asm/ptrace.h>
- #endif
- #ifdef HAVE_LINUX_PTRACE_H
--# include <linux/ptrace.h>
-+# ifndef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
-+#  include <linux/ptrace.h>
-+# endif
- #endif
- #undef FU_ia64_fpreg
- #undef FU_pt_all_user_regs
+diff --git a/testcases/network/tcp_cmds/sendfile/SF_Server b/testcases/network/tcp_cmds/sendfile/SF_Server
+deleted file mode 100755
+index 2383ce4..0000000
+--- a/testcases/network/tcp_cmds/sendfile/SF_Server
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/sh
+-#set -x
+-cd $3
+-exec 1< /dev/null       # open descriptor 1
+-exec 2< /dev/null       # open descriptor 1
+-nohup ./testsf_s $1 $2 &
+diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01 b/testcases/network/tcp_cmds/sendfile/sendfile01
+index 46b90e2..ba61873 100755
+--- a/testcases/network/tcp_cmds/sendfile/sendfile01
++++ b/testcases/network/tcp_cmds/sendfile/sendfile01
+@@ -84,7 +84,7 @@ do_test()
+ 
+     mkdir -p $TCtmp
+     PORT=$$
+-    if ! rsh -l root $IPADDR "$LTPROOT/testcases/bin/SF_Server $IPADDR $PORT $LTPROOT/testcases/bin $SERVER"; then
++    if ! rsh -l root $IPADDR "$LTPROOT/testcases/bin/sendfile01_server $IPADDR $PORT $LTPROOT/testcases/bin $SERVER"; then
+         end_testcase "rsh failed to $IPADDR as root failed"
+     fi
+     sleep 10
+diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01_server b/testcases/network/tcp_cmds/sendfile/sendfile01_server
+new file mode 100755
+index 0000000..2383ce4
+--- /dev/null
++++ b/testcases/network/tcp_cmds/sendfile/sendfile01_server
+@@ -0,0 +1,6 @@
++#!/bin/sh
++#set -x
++cd $3
++exec 1< /dev/null       # open descriptor 1
++exec 2< /dev/null       # open descriptor 1
++nohup ./testsf_s $1 $2 &
 -- 
-1.8.4.3
-
+1.8.4.2
 
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
