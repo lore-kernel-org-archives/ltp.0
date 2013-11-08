@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1Vgnnb-00066G-Tq
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 03:40:55 +0000
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Vgnnb-0004af-92
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 03:40:55 +0000
-Received: by mail-pb0-f49.google.com with SMTP id um1so1390153pbc.36
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Nov 2013 19:40:49 -0800 (PST)
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Thu, 14 Nov 2013 11:38:38 +0800
-Message-Id: <1384400319-30776-7-git-send-email-vincent.hsu@linaro.org>
-In-Reply-To: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH 7/8] ltp-networking/tcp_cmds/netstat: fix netstat
-	test
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1Vebqo-0006mS-F4
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 02:31:10 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vebqn-00072q-FI
+	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 02:31:10 +0000
+Message-ID: <527C4CDA.6000202@oracle.com>
+Date: Fri, 08 Nov 2013 10:30:50 +0800
+From: Simon Xu <xu.simon@oracle.com>
+MIME-Version: 1.0
+References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
+	<1383085243-5833-8-git-send-email-vincent.hsu@linaro.org>
+In-Reply-To: <1383085243-5833-8-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 7/9] ltp-networking/iptables: "iptables -L -t
+ nat" lists 4 chains not 3 chains on Ubuntu 12.04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,53 +26,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>, ltp-list@lists.sourceforge.net
 Cc: linaro-networking@linaro.org
 
-The netstat command will return nozero on Ubuntu 12.04 even if
-execution success.
+Hi,
 
-for example:
-in Ubuntu
-    $ netstat -s 1>/dev/null 2>&1 ; echo $?
-    1
-in CentOS
-    $ netstat -s 1>/dev/null 2>&1 ; echo $?
-    0
+Please see 
+https://github.com/linux-test-project/ltp/commit/792fcce8ae68436c8963c6a51f1f98c66c575494
 
-Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
----
- testcases/network/tcp_cmds/netstat/netstat01 |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks
+Simon
 
-diff --git a/testcases/network/tcp_cmds/netstat/netstat01 b/testcases/network/tcp_cmds/netstat/netstat01
-index 3c2d1bb..6d4682a 100755
---- a/testcases/network/tcp_cmds/netstat/netstat01
-+++ b/testcases/network/tcp_cmds/netstat/netstat01
-@@ -58,7 +58,8 @@ do_test() {
-     while [ $TST_COUNT -le $NUMLOOPS ]; do
-
-         for flag in "-s" "-rn" "-i" "-gn" "-apn"; do
--            if ! netstat $flag 1>/dev/null 2>&1; then
-+            var=$(netstat $flag 1>/dev/null 2>&1);
-+            if [ "$var" != "" ]; then
-                 end_testcase "netstat $flag failed"
-             fi
-         done
---
-1.7.9.5
+On 2013/10/30 6:20, Vincent Hsu wrote:
+> ---
+>   testcases/network/iptables/iptables_tests.sh |   22 +++++++++++++++-------
+>   1 file changed, 15 insertions(+), 7 deletions(-)
+>
+> diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+> index 028d54e..641f327 100755
+> --- a/testcases/network/iptables/iptables_tests.sh
+> +++ b/testcases/network/iptables/iptables_tests.sh
+> @@ -165,13 +165,21 @@ test01()
+>   		return $RC
+>   	else
+>   		chaincnt=$(grep -c Chain $LTPTMP/tst_iptables.out)
+> -		if [ $chaincnt -ne 3 ]; then
+> -			tst_res TFAIL $LTPTMP/tst_iptables.out \
+> -				"$TCID: $cmd failed to list rules. Reason:"
+> -			return $chaincnt
+> -		else
+> -			tst_resm TINFO "$TCID: $cmd lists rules."
+> -		fi
+> +            # for debian or ubuntu
+> +            if [ -f /etc/debian_version ]; then
+> +                if [ $chaincnt -ne 4 ]; then
+> +                    tst_res TFAIL $LTPTMP/tst_iptables.out \
+> +                        "$TCID: $cmd failed to list rules. Reason:"
+> +                        return $chaincnt
+> +                fi
+> +            else
+> +                if [ $chaincnt -ne 3 ]; then
+> +                    tst_res TFAIL $LTPTMP/tst_iptables.out \
+> +                        "$TCID: $cmd failed to list rules. Reason:"
+> +                        return $chaincnt
+> +                fi
+> +            fi
+> +            tst_resm TINFO "$TCID: $cmd lists rules."
+>   	fi
+>
+>   	local cmd="iptables -L -t mangle"
+> --
+> 1.7.9.5
+>
+>
+> ------------------------------------------------------------------------------
+> Android is increasing in popularity, but the open development platform that
+> developers love is also attractive to malware creators. Download this white
+> paper to learn more about secure code signing practices that can help keep
+> Android apps secure.
+> http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
