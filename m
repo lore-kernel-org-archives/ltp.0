@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VdssX-0002gm-TF
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 02:29:57 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hong.gyu.kim@lge.com>) id 1VfKUf-0000a4-Rr
+	for ltp-list@lists.sourceforge.net; Sun, 10 Nov 2013 02:11:17 +0000
+Received: from lgemrelse1q.lge.com ([156.147.1.111])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VdssU-0000SY-FW
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 02:29:57 +0000
-Message-ID: <5279A979.3020302@cn.fujitsu.com>
-Date: Wed, 06 Nov 2013 10:29:13 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <005301ceda93$558302a0$008907e0$@gyu.kim@lge.com>
-In-Reply-To: <005301ceda93$558302a0$008907e0$@gyu.kim@lge.com>
-Subject: Re: [LTP] [PATCH v2] acct01: add a check routine for acct
-	implementation
-Reply-To: gaowanlong@cn.fujitsu.com
+	id 1VfKUd-0003Xk-PG
+	for ltp-list@lists.sourceforge.net; Sun, 10 Nov 2013 02:11:17 +0000
+From: Honggyu Kim <hong.gyu.kim@lge.com>
+Date: Sun, 10 Nov 2013 11:11:29 +0900
+Message-Id: <1384049489-11024-1-git-send-email-hong.gyu.kim@lge.com>
+Subject: [LTP] [PATCH] ext4-new-features: fix to properly configure in ffsb
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +21,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Honggyu Kim <hong.gyu.kim@lge.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 11/06/2013 09:55 AM, Honggyu Kim wrote:
-> A check routine for acct implementation is added at the beginning of the test.
-> check_acct_in_kernel function calls acct(NULL) and checks if errno is ENOSYS.
-> It means that acct system call is not implemented in kernel.
-> The other ENOSYS check routines in setup are removed.
-> 
-> This patch prevents from unintentional calling acct again in cleanup, which
-> makes TCONF to TBROK and helps configuration problems stay as TCONF.
-> 
-> Previous test output: (becomes TBROK in the end)
-> acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
-> acct01      2  TCONF  :  Remaining cases not appropriate for configuration
-> acct01      3  TBROK  :  acct(NULL) failed: errno=ENOSYS(38): Function not implemented
-> 
-> Fixed test output: (stays as TCONF)
-> acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
-> 
-> Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
-> ---
->  testcases/kernel/syscalls/acct/acct01.c |   32 +++++++++++++++++--------------
->  1 file changed, 18 insertions(+), 14 deletions(-)
+configure in ext4-new-features calls configure in ffsb without arguments.
+It always configures for host machine environment even if we pass arguments 
+to configure in ext4-new-features.
 
+This patch passes all the arguments to configure in ffsb so that ffsb can 
+also be cross-compiled for target machine as well.
 
-Applied with removing the unnecessary braces, thank you.
+Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
+---
+ testcases/kernel/fs/ext4-new-features/configure |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Wanlong Gao
+diff --git a/testcases/kernel/fs/ext4-new-features/configure b/testcases/kernel/fs/ext4-new-features/configure
+index 12849e5..15c4f0c 100755
+--- a/testcases/kernel/fs/ext4-new-features/configure
++++ b/testcases/kernel/fs/ext4-new-features/configure
+@@ -2,7 +2,7 @@
+ 
+ echo "Run the ffsb's configure"
+ cd ./ffsb-6.0-rc2
+-./configure
++./configure $*
+ cd ..
+ 
+ EXT4_DEV=
+-- 
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
