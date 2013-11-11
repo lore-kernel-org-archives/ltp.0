@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VbHet-00081k-7S
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:07 +0000
-Received: from mail-ob0-f169.google.com ([209.85.214.169])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VbHes-00065c-64
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:07 +0000
-Received: by mail-ob0-f169.google.com with SMTP id uz6so638072obc.14
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Oct 2013 15:21:00 -0700 (PDT)
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Tue, 29 Oct 2013 15:20:42 -0700
-Message-Id: <1383085243-5833-9-git-send-email-vincent.hsu@linaro.org>
-In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH 8/9] ltp-networking: standardize test result
-	message
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1Vfkfm-0005v6-CN
+	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 06:08:30 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vfkfk-0005KB-4g
+	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 06:08:30 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rAB68LoK027224
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Nov 2013 06:08:22 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rAB68KcM022564
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Nov 2013 06:08:21 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rAB68KoP011525
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Nov 2013 06:08:20 GMT
+From: Simon Xu <xu.simon@oracle.com>
+Date: Mon, 11 Nov 2013 14:08:11 +0800
+Message-Id: <1384150091-582-1-git-send-email-xu.simon@oracle.com>
+Subject: [LTP] [PATCH] tcpdump01: specify interface for ping
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,416 +40,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org
 
+Always specify interface for ping because it is possible that pings to RHOST
+can go through multiple interfaces.  Also add -q to ping.
+
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
 ---
- testcases/network/multicast/mc_cmds/mc_cmds        |    9 +++++++--
- testcases/network/multicast/mc_commo/mc_commo      |    8 ++++++--
- testcases/network/multicast/mc_member/mc_member    |    8 ++++++--
- testcases/network/multicast/mc_opts/mc_opts        |    8 ++++++--
- testcases/network/nfs/fsx-linux/fsx.sh             |    7 +++++--
- testcases/network/nfs/nfs01/nfs01                  |    7 +++++--
- testcases/network/nfs/nfs02/nfs02                  |    7 +++++--
- testcases/network/nfs/nfs03/nfs03                  |    7 +++++--
- testcases/network/nfs/nfslock01/nfslock01          |    7 +++++--
- testcases/network/nfs/nfsstat01/nfsstat01          |    7 +++++--
- testcases/network/nfs/nfsstress/nfsstress          |    7 +++++--
- testcases/network/rpc/basic_tests/rpc01/rpc01      |    7 +++++--
- .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |    7 +++++--
- testcases/network/rpc/basic_tests/rup/rup01        |    7 +++++--
- testcases/network/rpc/basic_tests/rusers/rusers01  |    7 +++++--
- 15 files changed, 80 insertions(+), 30 deletions(-)
+ testcases/network/tcp_cmds/tcpdump/tcpdump01 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/multicast/mc_cmds/mc_cmds b/testcases/network/multicast/mc_cmds/mc_cmds
-index e9b7bb5..e2c410e 100755
---- a/testcases/network/multicast/mc_cmds/mc_cmds
-+++ b/testcases/network/multicast/mc_cmds/mc_cmds
-@@ -36,6 +36,11 @@ $trace_logic
-
- TC=mc_cmds
- PING_OUT=/tmp/${TC}_out
-+
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-+
- # Set the LTPROOT variable to the correct path
- # from the ltp/testcases/bin directory or the
- # /ltp/testcases/network/multicast/mc_cmds directory
-@@ -187,8 +192,8 @@ end_testcase()
-    # Call other cleanup functions
-    [ $CLEANUP = "ON" ] && do_cleanup
-
--   [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/multicast/mc_commo/mc_commo b/testcases/network/multicast/mc_commo/mc_commo
-index 50fa6b9..14dce85 100755
---- a/testcases/network/multicast/mc_commo/mc_commo
-+++ b/testcases/network/multicast/mc_commo/mc_commo
-@@ -51,6 +51,10 @@ OUTFILE=$TCtmp/mc_commo_out
- NUMLOOPS=${NUMLOOPS:-2}
- INTERFACE=${INTERFACE:-$("$LTPROOT/bin/gethost" `hostname` | grep addresses: | awk '{print $2}')}
-
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-+
- this_file=${0##*/}
- trap "interrupt_test" 2
-
-@@ -195,8 +199,8 @@ end_testcase()
-    # Call other cleanup functions
-    [ $CLEANUP = "ON" ] && do_cleanup
-
--   [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/multicast/mc_member/mc_member b/testcases/network/multicast/mc_member/mc_member
-index 0e79cdb..6801ebf 100755
---- a/testcases/network/multicast/mc_member/mc_member
-+++ b/testcases/network/multicast/mc_member/mc_member
-@@ -50,6 +50,10 @@ GLIST=${GLIST:-$TCsrc/ManyGroups}
- TooManyGLIST=${TooManyGLIST:-$TCsrc/TooManyGroups}
- ERRFILE=${ERRFILE:-$TCtmp/errors}
-
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-+
- this_file=${0##*/}
- trap "interrupt_test" 2
-
-@@ -183,8 +187,8 @@ end_testcase()
-    # Call other cleanup functions
-    [ $CLEANUP = "ON" ] && do_cleanup
-
--   [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/multicast/mc_opts/mc_opts b/testcases/network/multicast/mc_opts/mc_opts
-index 41e1d68..a029f1e 100755
---- a/testcases/network/multicast/mc_opts/mc_opts
-+++ b/testcases/network/multicast/mc_opts/mc_opts
-@@ -49,6 +49,10 @@ EXECUTABLES=${EXECUTABLES:-"opts opts_e"}
- NUMLOOPS=${NUMLOOPS:-10}
- IPADDR=${IPADDR:-$("$LTPROOT/bin/gethost" `hostname`| grep address |awk '{ print $2 }')}
-
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-+
- this_file=${0##*/}
- trap "interrupt_test" 2
-
-@@ -138,8 +142,8 @@ end_testcase()
-    # Call other cleanup functions
-    [ $CLEANUP = "ON" ] && do_cleanup
-
--   [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/nfs/fsx-linux/fsx.sh b/testcases/network/nfs/fsx-linux/fsx.sh
-index a3c4801..facc708 100755
---- a/testcases/network/nfs/fsx-linux/fsx.sh
-+++ b/testcases/network/nfs/fsx-linux/fsx.sh
-@@ -51,6 +51,9 @@ TCdat=${TCdat:=$TCbin}
- TCsrc=${TCsrc:=$TCbin}
- TCtmp=${TCtmp:=$TCbin/$TC$$}
- TCdump=${TCdump:=$TCbin}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- # If CLEANUP is not set; set it to "ON"
- CLEANUP=${CLEANUP:="ON"}
-@@ -177,8 +180,8 @@ $trace_logic
-  rsh -n $RHOST "rm -rf $TESTDIR"
+diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+index 6d6d399..6296ad2 100755
+--- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
++++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+@@ -51,7 +51,7 @@ do_setup()
+     # Find the first interface that can ping RHOST
+     IF=""
+     for i in $(netstat -i | tail -n+3 | sed '/^lo/d' | cut -f1 -d' '); do
+-        ping -I $i -c 3 $RHOST && { IF="$i"; break; }
++        ping -I $i -c 3 -q $RHOST && { IF="$i"; break; }
+     done
+     test -z $IF && end_testcase "Could not find an interface that can ping remote host $RHOST"
+     IFNAME=${IF}
+@@ -62,7 +62,7 @@ do_setup()
+ 
+ do_test()
+ {
+-    ping -f $RHOST > /dev/null 2>&1 &
++    ping -I $IFNAME -f $RHOST > /dev/null 2>&1 &
+     if ! tcpdump -i $IFNAME -c $NUMLOOPS > $OUTFILE; then
+         end_testcase "Problems trying to launch tcpdump"
      fi
-
--    [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--    echo "Test Failed: $@"
-+    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-     exit 1
- }
-
-diff --git a/testcases/network/nfs/nfs01/nfs01 b/testcases/network/nfs/nfs01/nfs01
-index e52915c..77d2775 100755
---- a/testcases/network/nfs/nfs01/nfs01
-+++ b/testcases/network/nfs/nfs01/nfs01
-@@ -48,6 +48,9 @@ TCdat=${TCdat:=$TCbin}
- TCsrc=${TCsrc:=$TCbin}
- TCtmp=${TCtmp:=$TCbin/$TC$$}
- TCdump=${TCdump:=$TCbin}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- # If CLEANUP is not set; set it to "ON"
- CLEANUP=${CLEANUP:="ON"}
-@@ -187,8 +190,8 @@ $trace_logic
- 		 rsh -n $RHOST "rm -rf $TESTDIR"
-     fi
-
--    [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--    echo "Test Failed: $@"
-+    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-     exit 1
- }
-
-diff --git a/testcases/network/nfs/nfs02/nfs02 b/testcases/network/nfs/nfs02/nfs02
-index 3a157a1..c192d96 100755
---- a/testcases/network/nfs/nfs02/nfs02
-+++ b/testcases/network/nfs/nfs02/nfs02
-@@ -46,6 +46,9 @@ TCbin=${TCbin:=`pwd`}
- TCdat=${TCdat:=$TCbin/datafiles}
- TCsrc=${TCsrc:=$TCbin}
- TCtmp=${TCtmp:=$TCbin/$TC$$}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- PID=$$
-
-@@ -221,8 +224,8 @@ $trace_logic
-        do_cleanup
-     fi
-
--    [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--    echo "Test Failed: $@"
-+    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-     exit 1
- }
-
-diff --git a/testcases/network/nfs/nfs03/nfs03 b/testcases/network/nfs/nfs03/nfs03
-index f1f4bb4..a599a6d 100755
---- a/testcases/network/nfs/nfs03/nfs03
-+++ b/testcases/network/nfs/nfs03/nfs03
-@@ -49,6 +49,9 @@ TCsrc=${TCsrc:=$TCbin}
- TCtmp=${TCtmp:=$TCbin/$TC$$}
- TCdump=${TCdump:=$TCbin}
- RHOST=${RHOST:=`hostname | awk {'print $1'}`}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- PID=$$
-
-@@ -411,8 +414,8 @@ $trace_logic
-
-     fi
-
--    [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--    echo "Test Failed: $@"
-+    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-     exit 1
- }
-
-diff --git a/testcases/network/nfs/nfslock01/nfslock01 b/testcases/network/nfs/nfslock01/nfslock01
-index 1e40073..8485d85 100755
---- a/testcases/network/nfs/nfslock01/nfslock01
-+++ b/testcases/network/nfs/nfslock01/nfslock01
-@@ -42,6 +42,9 @@ TCbin=${TCbin:=`pwd`}
- TCtmp=${TCtmp:=$TCbin/$TC$$}
- TCsrc=${TCsrc:=$TCbin}
- TClog=${TClog:=$TCtmp}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- mkdir $TCtmp >/dev/null 2>&1
-
-@@ -129,8 +132,8 @@ end_testcase()
-      do_cleanup
-    fi
-
--   [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
-index 8b54815..7b1ac43 100755
---- a/testcases/network/nfs/nfsstat01/nfsstat01
-+++ b/testcases/network/nfs/nfsstat01/nfsstat01
-@@ -49,6 +49,9 @@ CLEANUP=${CLEANUP:="ON"}
- VERSION=${VERSION:=3}
- TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
- NFS_TYPE=${NFS_TYPE:nfs}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- if [ "x$NFS_TYPE" != "xnfs4" ]; then
-     OPTS=${OPTS:="-o vers=$VERSION "}
-@@ -236,8 +239,8 @@ $trace_logic
-        do_cleanup
-     fi
-
--    [ $? = 0 ] && { echo "Test PASS"; exit 0; }
--    echo "Test FAIL: $@"
-+    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-     exit 1
- }
-
-diff --git a/testcases/network/nfs/nfsstress/nfsstress b/testcases/network/nfs/nfsstress/nfsstress
-index 914c308..3e078d9 100755
---- a/testcases/network/nfs/nfsstress/nfsstress
-+++ b/testcases/network/nfs/nfsstress/nfsstress
-@@ -49,6 +49,9 @@ TCsrc=${TCsrc:=$TCbin}
- TCtmp=${TCtmp:=$TCbin/$TC$$}
- TCdump=${TCdump:=$TCbin}
- RHOST=${RHOST:=`hostname|awk {'print $1'}`}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- # Setting the NFS to version 3 with UDP by default
- PID=$$
-@@ -192,8 +195,8 @@ $trace_logic
- 		 rsh -n $RHOST "rm -rf $TESTDIR"
-     fi
-
--    [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--    echo "Test Failed: $@"
-+    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-     exit 1
- }
-
-diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc01 b/testcases/network/rpc/basic_tests/rpc01/rpc01
-index ef97a95..fd236b1 100755
---- a/testcases/network/rpc/basic_tests/rpc01/rpc01
-+++ b/testcases/network/rpc/basic_tests/rpc01/rpc01
-@@ -43,6 +43,9 @@ NUMLOOPS=${NUMLOOPS:=3}
- RHOST=${RHOST:=`hostname`}
- CLEANUP=${CLEANUP:="ON"}
- DATAFILES=${DATAFILES:="file.1 file.2"}
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- #=============================================================================
- # FUNCTION NAME:        do_test
-@@ -115,8 +118,8 @@ end_testcase()
-    $trace_logic
-    echo "$this_file: doing $0."
-
--   [ $# = 0 ] && { echo "Test Successful"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01 b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-index 11bdaca..7f8104f 100755
---- a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-+++ b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-@@ -65,6 +65,9 @@ LUSER=${LUSER:=root}
- RHOST=${RHOST:=`hostname`}
- CLEANUP=${CLEANUP:="ON"}
- PID=0
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- #=============================================================================
- # FUNCTION NAME:        do_test
-@@ -273,8 +276,8 @@ end_testcase()
-      do_cleanup
-    fi
-
--   [ $# = 0 ] && { echo "Test Successfull"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/rpc/basic_tests/rup/rup01 b/testcases/network/rpc/basic_tests/rup/rup01
-index 229a03f..5845528 100755
---- a/testcases/network/rpc/basic_tests/rup/rup01
-+++ b/testcases/network/rpc/basic_tests/rup/rup01
-@@ -54,6 +54,9 @@ LUSER=${LUSER:=root}
- RHOST=${RHOST:=`hostname`}
- CLEANUP=${CLEANUP:="ON"}
- PID=0
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- #=============================================================================
- # FUNCTION NAME:        do_test
-@@ -158,8 +161,8 @@ end_testcase()
-      do_cleanup
-    fi
-
--   [ $# = 0 ] && { echo "Test Successfull"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
-diff --git a/testcases/network/rpc/basic_tests/rusers/rusers01 b/testcases/network/rpc/basic_tests/rusers/rusers01
-index 13c884a..0b28c9e 100755
---- a/testcases/network/rpc/basic_tests/rusers/rusers01
-+++ b/testcases/network/rpc/basic_tests/rusers/rusers01
-@@ -55,6 +55,9 @@ LUSER=${LUSER:=root}
- RHOST=${RHOST:=`hostname`}
- CLEANUP=${CLEANUP:="ON"}
- PID=0
-+export TCID=$TC
-+export TST_TOTAL=1
-+export TST_COUNT=1
-
- #=============================================================================
- # FUNCTION NAME:        do_test
-@@ -152,8 +155,8 @@ end_testcase()
-      do_cleanup
-    fi
-
--   [ $# = 0 ] && { echo "Test Successfull"; exit 0; }
--   echo "Test Failed: $@"
-+   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+   tst_resm TFAIL "Test Failed: $@"
-    exit 1
- }
-
---
-1.7.9.5
+-- 
+1.8.4.2
 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
