@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlImg-0003Z7-DY
-	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 13:34:34 +0000
-Date: Tue, 26 Nov 2013 14:34:01 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VfvGe-00024T-Cd
+	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 17:27:16 +0000
+Date: Mon, 11 Nov 2013 17:48:09 +0100
 From: chrubis@suse.cz
-Message-ID: <20131126133400.GC13496@rei>
-References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
+Message-ID: <20131111164712.GA12940@rei.Home>
+References: <20131107160214.GA9169@rei.suse.cz>
+	<1383881948-816-1-git-send-email-xu.simon@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH 1/8] ltp-networking: standardize test result
- message
+In-Reply-To: <1383881948-816-1-git-send-email-xu.simon@oracle.com>
+Subject: Re: [LTP] [PATCH V2] rdist01: fix mistakes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,22 +25,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vincent Hsu <vincent.hsu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-All but the last three patches are pushed, thanks.
+> Fix the following mistakes in the script:
+> 1) the way it gets dirname and basename of files is broken
+> 2) ${FILES} and ${HOSTS} get substituted when generating distfile
+> 3) the way it calculates sum of files on RHOST is broken
+> 4) there is no $DIRECTORIES variable
+
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+November Webinars for C, C++, Fortran Developers
+Accelerate application performance with scalable programming models. Explore
+techniques for threading, error checking, porting, and tuning. Get the most 
+from the latest Intel processors and coprocessors. See abstracts and register
+http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
