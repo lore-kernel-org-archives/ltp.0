@@ -1,12 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Date: Wed, 20 Nov 2013 11:14:41 +0100
-From: chrubis@suse.cz
-Message-ID: <20131120101441.GA2168@rei.nue.novell.com>
-References: <CAO=8iAV97QG4YfcwtGpQopDbszJkt9gDp53vG3F4qnoX6XJkgA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAO=8iAV97QG4YfcwtGpQopDbszJkt9gDp53vG3F4qnoX6XJkgA@mail.gmail.com>
-Subject: Re: [LTP] How to build/install and run with gcov enabled LTP
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VgWXp-0006wR-Be
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 09:15:29 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VgWXn-0003yB-8n
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 09:15:29 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rAD9FKxg002212
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 09:15:21 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rAD9FJop022116
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 09:15:20 GMT
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rAD9FJOR010064
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 09:15:19 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 13 Nov 2013 13:15:13 +0400
+Message-Id: <1384334113-11205-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <52833F4F.7090303@oracle.com>
+References: <52833F4F.7090303@oracle.com>
+Subject: [LTP] [RFC PATCH V2] tst_checkpoint_signal_child: implemented
+	timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -16,47 +39,114 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: "yaneurabeya ." <yanegomi@gmail.com>, ltp-list <ltp-list@lists.sourceforge.net>, naresh.kamboju@linaro.org, ltp-coverage@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> I am looking for (three years) old style of running tests in ltp ( like as
-> runltp do not look for /ltp/bin or testcase/bin or /opt/bin for test
-> binaries, just go to each testcase/kernel/syscall/each-dir-and-run). Not
-> ready to go back and use old ltp version, instead i am looking a way to run
-> test from its source directory which will benefits gcov/lcov to generate
-> coverage report.
+If a child exits before opening TST_CHECKPOINT_FIFO
+for reading, tst_checkpoint_signal_child() issued from the parent
+will block forever.
 
-How exactly was this implemented? In the runltp script or was there a
-diferent one?
+To handle such situations added timeout logic to tst_checkpoint_signal_child();
 
-There are many problems with such approach. Just to start:
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ lib/tst_checkpoint.c |   57 ++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 53 insertions(+), 4 deletions(-)
 
-* There are some programs that runs subprograms and path to them must be
-  in PATH, this obviously works if LTP is installed and all binaries are
-  in /opt/ltp/testcases/bin/
-
-* Device drivers need to modprobe kernel modules, which are not always
-  in local directory
-
-* The testcases are described in runtest files by a binary name, not by
-  a full path -> you have to find them somehow
-
-...
-
+diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+index 56c86b5..842ac74 100644
+--- a/lib/tst_checkpoint.c
++++ b/lib/tst_checkpoint.c
+@@ -30,9 +30,52 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <poll.h>
++#include <time.h>
+ 
+ #include "tst_checkpoint.h"
+ 
++/*
++ * Issue open() on 'path' fifo with O_WRONLY flag and wait for
++ * a reader up to 'timeout' ms.
++ *
++ * Returns:
++ *   > 0 - file descriptor
++ *   -1  - an error has occurred (errno is set accordingly)
++ *
++ */
++int open_wronly_timed(const char *path, unsigned int timeout)
++{
++	int fd;
++	int interval_ms = 1; /* how often issue open(O_NONBLOCK) */
++	long timeleft = timeout;
++
++	struct timespec interval;
++	interval.tv_sec = 0;
++	interval.tv_nsec = interval_ms * 1000000; /* in ns */
++
++	for (;;) {
++		fd = open(path, O_WRONLY | O_NONBLOCK);
++		if (fd < 0) {
++			if ((errno == ENXIO) || (errno == EINTR)) {
++				if (timeleft <= 0) {
++					errno = ETIMEDOUT;
++
++					return -1;
++				}
++
++				timeleft -= interval_ms;
++				nanosleep(&interval, NULL);
++
++				continue;
++			}
++
++			return -1;
++		}
++
++		return fd;
++	}
++}
++
+ void tst_checkpoint_init(const char *file, const int lineno,
+                          struct tst_checkpoint *self)
+ {
+@@ -195,12 +238,18 @@ void tst_checkpoint_signal_child(const char *file, const int lineno,
+ {
+ 	int ret, fd;
+ 	
+-	fd = open(TST_CHECKPOINT_FIFO, O_WRONLY);
++	fd = open_wronly_timed(TST_CHECKPOINT_FIFO, self->timeout);
+ 
+ 	if (fd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "Failed to open fifo '%s' at %s:%d",
+-		         TST_CHECKPOINT_FIFO, file, lineno);
++		if (errno == ETIMEDOUT) {
++			tst_brkm(TBROK, cleanup_fn,
++				"Checkpoint timeouted after %u msecs at %s:%d",
++				self->timeout, file, lineno);
++		} else {
++			tst_brkm(TBROK | TERRNO, cleanup_fn,
++				"Failed to open fifo '%s' at %s:%d",
++				TST_CHECKPOINT_FIFO, file, lineno);
++		}
+ 	}
+ 
+ 	ret = write(fd, "p", 1);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
