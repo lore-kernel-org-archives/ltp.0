@@ -1,20 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <nexus226@gmail.com>) id 1VcskZ-0008I0-LD
-	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 08:09:35 +0000
-Received: from mail-pb0-f44.google.com ([209.85.160.44])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VcskX-00051x-N1
-	for ltp-list@lists.sourceforge.net; Sun, 03 Nov 2013 08:09:35 +0000
-Received: by mail-pb0-f44.google.com with SMTP id rp16so5946252pbb.17
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 03 Nov 2013 01:09:27 -0700 (PDT)
-From: Honggyu Kim <nexus226@gmail.com>
-Date: Sun,  3 Nov 2013 17:08:16 +0900
-Message-Id: <1383466096-19375-1-git-send-email-nexus226@gmail.com>
-Subject: [LTP] [PATCH v2] acct01: fix TBROK to TCONF if acct not implemented
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VgbSt-0000MI-3G
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 14:30:43 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VgbSo-0002tm-A7
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 14:30:43 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rADEUWA0012453
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 14:30:32 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rADEUVi5016770
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 14:30:32 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rADEUVIg010671
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 14:30:31 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 13 Nov 2013 18:30:22 +0400
+Message-Id: <1384353022-9088-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1384353022-9088-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1384353022-9088-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [RFC PATCH 2/2] safe_touch: use utimes(2) if utimensat(2) is
+	not defined
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,51 +44,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-acct system call is avaliable only when the kernel option is on.
-When it fails, acct returns -1 and sets errno correspondingly.
-ENOSYS is set when the system call is not implemented.
-Currently, ENOSYS is not checked when the TEST_FILES argument is passed.
-It just goes to TBROK regardless of the implementation in kernel.
-This patch modifies to check errno ENOSYS, and marks as TCONF in that case.
+If utimensat(2) is not defined on the platform we switch
+to using utimes(2).
 
-Signed-off-by: Honggyu Kim <nexus226@gmail.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/acct/acct01.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ lib/safe_file_ops.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
-index c38d4db..0fe973b 100644
---- a/testcases/kernel/syscalls/acct/acct01.c
-+++ b/testcases/kernel/syscalls/acct/acct01.c
-@@ -103,8 +103,15 @@ static void setup(void)
- 	fd = SAFE_CREAT(cleanup, TEST_FILE5, 0777);
- 	SAFE_CLOSE(cleanup, fd);
+diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+index 8cfd264..3876c27 100644
+--- a/lib/safe_file_ops.c
++++ b/lib/safe_file_ops.c
+@@ -21,10 +21,12 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
  
--	if (acct(TEST_FILE5) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
-+	if (acct(TEST_FILE5) == -1) {
-+		if (errno == ENOSYS) {
-+			tst_brkm(TCONF, cleanup,
-+				 "BSD process accounting is not configured in "
-+				 "this kernel");
-+		} else {
-+			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
-+		}
-+	}
++#include "config.h"
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/syscall.h>
+ #include <fcntl.h>
  
- 	/* turn off acct, so we are in a known state */
- 	if (acct(NULL) == -1) {
+ #include "safe_file_ops.h"
+@@ -186,10 +188,20 @@ void safe_touch(const char *file, const int lineno,
+ 				pathname, file, lineno);
+ 	}
+ 
++
++#if HAVE_UTIMENSAT
+ 	ret = utimensat(AT_FDCWD, pathname, times, 0);
++#else
++	/* we can't reliably check if times[i].tv_nsec is
++	 * either UTIME_NOW or UTIME_OMIT (because they
++	 * are not defined if utimensat() is not defined),
++	 * therefore update the access/modification times
++	 * to the current time */
++	ret = utimes(pathname, NULL);
++#endif
+ 	if (ret == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-			"Failed to do utimensat() on file '%s' at %s:%d",
++			"Failed to update the access/modification times on file '%s' at %s:%d",
+ 			pathname, file, lineno);
+ }
+ 
 -- 
-1.7.9.5
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
