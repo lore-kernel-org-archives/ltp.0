@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vm3Jz-0001gi-8h
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 15:16:03 +0000
-Date: Thu, 28 Nov 2013 16:15:29 +0100
-From: chrubis@suse.cz
-Message-ID: <20131128151528.GA17903@rei.Home>
-References: <1384912265.7680.23.camel@G08JYZSD130126>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vga10-0001il-At
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 12:57:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vga0x-0006QD-MB
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 12:57:50 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rADCvc5G004430
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Nov 2013 20:57:39 +0800
+Message-ID: <5283773E.5080505@cn.fujitsu.com>
+Date: Wed, 13 Nov 2013 20:57:34 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1384912265.7680.23.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] fchmod/fchmod06.c: cleanup
+Subject: [LTP] [PATCH] fs/ext4-new-features: add ext4-new-features tests to
+ the default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,255 +29,226 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> cleanup of fchmod06.c
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/fchmod/fchmod06.c | 115 ++++++++--------------------
->  1 file changed, 34 insertions(+), 81 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod06.c b/testcases/kernel/syscalls/fchmod/fchmod06.c
-> index c0e02cd..7776e1e 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod06.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod06.c
-> @@ -13,8 +13,8 @@
->   *   the GNU General Public License for more details.
->   *
->   *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *   along with this program;  if not, write to the Free Software Foundation,
-> + *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   */
->  
->  /*
-> @@ -68,10 +68,6 @@
 
-Can you please also remove the useless comments here?
+Here treat every feature as a signle test program.
 
-Looking at the comment only Test Description and Expected Result is
-valuable. Also leave the HISTORY there (I usually move the date and name
-under the Copyright line above and remove rest though).
+Makefile: add configure for ffsb
 
-The rest is useless or even misleading, the RESTRICTIONS paragraph is
-simply wrong for example.
+runtest/fs_ext4: 5 new features test currently enabled
 
->   *  This test should be executed by 'non-super-user' only.
->   */
->  
-> -#ifndef _GNU_SOURCE
-> -#define _GNU_SOURCE
-> -#endif
-> -
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <stdio.h>
-> @@ -87,49 +83,36 @@
->  
->  #include "test.h"
->  #include "usctest.h"
-> +#include "safe_macros.h"
->  
-> -#define MODE_RWX	(S_IRWXU|S_IRWXG|S_IRWXO)
->  #define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
->  #define TEST_FILE1	"tfile_1"
->  #define TEST_FILE2	"tfile_2"
+run_ext4_test.sh: According to the input parameter to decide which
+feature test to be called.
 
-I guess that we don't have to define these test file names, they are
-used only once in the setup.
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runtest/fs_ext4                                    |   6 +-
+ testcases/kernel/fs/Makefile                       |   2 +-
+ testcases/kernel/fs/ext4-new-features/Makefile     |   1 +
+ .../kernel/fs/ext4-new-features/run_ext4_test.sh   | 115 ++++++---------------
+ 4 files changed, 37 insertions(+), 87 deletions(-)
 
-> -void setup1();			/* setup function to test chmod for EPERM */
-> -void setup2();			/* setup function to test chmod for EBADF */
-> -
-> -int fd1;			/* File descriptor for testfile1 */
-> -int fd2;			/* File descriptor for testfile2 */
-> +static int fd1;
-> +static int fd2;
->  
-> -struct test_case_t {		/* test case struct. to hold ref. test cond's */
-> -	int fd;
-> +static struct test_case_t {
-> +	int *fd;
->  	int mode;
->  	int exp_errno;
-> -	void (*setupfunc) ();
->  } test_cases[] = {
-> -	{
-> -	1, FILE_MODE, EPERM, setup1}, {
-> -2, FILE_MODE, EBADF, setup2},};
-> +	{&fd1, FILE_MODE, EPERM},
-> +	{&fd2, FILE_MODE, EBADF},
-> +};
->  
->  char *TCID = "fchmod06";
-> -int TST_TOTAL = 2;
-> -int exp_enos[] = { EPERM, EBADF, 0 };
-> +int TST_TOTAL = ARRAY_SIZE(test_cases);
-> +static int exp_enos[] = { EPERM, EBADF, 0 };
-> +static struct passwd *ltpuser;
->  
-> -char nobody_uid[] = "nobody";
-> -struct passwd *ltpuser;
-> -char *test_home;		/* variable to hold TESTHOME env. */
-> -
-> -void setup();			/* Main setup function for the tests */
-> -void cleanup();			/* cleanup function for the test */
-> +static void setup(void);
-> +static void cleanup(void);
->  
->  int main(int ac, char **av)
->  {
->  	int lc;
-> -	char *msg;
-> -	int fd;			/* test file descriptor */
->  	int i;
-> -	int mode;		/* creation mode for the node created */
-> -
-> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-> -		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-
-Again, please do not remove the option parsing code, without it test
-looping and other things would not work.
-
->  	setup();
->  
-> @@ -140,26 +123,21 @@ int main(int ac, char **av)
->  		tst_count = 0;
->  
->  		for (i = 0; i < TST_TOTAL; i++) {
-> -			fd = test_cases[i].fd;
-> -			mode = test_cases[i].mode;
->  
-> -			if (fd == 1)
-> -				fd = fd1;
-> -			else
-> -				fd = fd2;
-> -
-> -			TEST(fchmod(fd, mode));
-> +			TEST(fchmod(*test_cases[i].fd, test_cases[i].mode));
->  
->  			if (TEST_RETURN == -1) {
-> -				if (TEST_ERRNO == test_cases[i].exp_errno)
-> +				if (TEST_ERRNO == test_cases[i].exp_errno) {
->  					tst_resm(TPASS | TTERRNO,
->  						 "fchmod failed as expected");
-> -				else
-> +				} else {
->  					tst_resm(TFAIL | TTERRNO,
->  						 "fchmod failed unexpectedly");
-
-We should print here which errno value we expected.
-
-> -			} else
-> +				}
-> +			} else {
->  				tst_resm(TFAIL,
->  					 "fchmod succeeded unexpectedly");
-> +			}
->  		}
->  
->  	}
-> @@ -168,66 +146,41 @@ int main(int ac, char **av)
->  	tst_exit();
->  }
->  
-> -void setup()
-> +static void setup(void)
->  {
-> -	int i;
-> -
->  	tst_sig(FORK, DEF_HANDLER, cleanup);
->  
->  	tst_require_root(NULL);
-> -	ltpuser = getpwnam(nobody_uid);
-> -	if (ltpuser == NULL)
-> -		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
-> -	if (seteuid(ltpuser->pw_uid) == -1)
-> -		tst_resm(TBROK | TERRNO, "seteuid failed");
->  
-> -	test_home = get_current_dir_name();
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
->  
->  	TEST_PAUSE;
->  
->  	tst_tmpdir();
->  
-> -	for (i = 0; i < TST_TOTAL; i++)
-> -		test_cases[i].setupfunc();
-> -}
-> -
-> -void setup1()
-> -{
-> -	uid_t old_uid;
-> +	fd1 = SAFE_OPEN(cleanup, TEST_FILE1, O_RDWR | O_CREAT, 0666);
->  
-> -	if ((fd1 = open(TEST_FILE1, O_RDWR | O_CREAT, 0666)) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "open(%s, ..) failed",
-> -			 TEST_FILE1);
-> +	fd2 = SAFE_OPEN(cleanup, TEST_FILE2, O_RDWR | O_CREAT, 0666);
->  
-> -	old_uid = geteuid();
-> -	if (seteuid(0) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "seteuid(0) failed");
-> +	SAFE_SETEUID(cleanup, 0);
->  
-> -	if (fchown(fd1, 0, 0) == -1)
-> +	if (fchown(fd1, 0, 0) == -1) {
->  		tst_brkm(TBROK | TERRNO, cleanup, "fchown of %s failed",
->  			 TEST_FILE1);
-> +	}
-
-Hmm, we don't have to do this fchown() if we move the
-SAFE_SETEUID(cleanup, 0) before the SAFE_OPEN(cleanup, TEST_FILE1, ...);
-
-> -	if (seteuid(old_uid) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "seteuid(%d) failed",
-> -			 old_uid);
-> -
-> -}
-> +	SAFE_CLOSE(cleanup, fd2);
-
-Can you close the fd2 right after the open? So that it's clear that it's
-used only to create bad file descriptor?
-
-> -void setup2()
-> -{
-> -	if ((fd2 = open(TEST_FILE2, O_RDWR | O_CREAT, 0666)) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "open(%s, ..) failed",
-> -			 TEST_FILE2);
-> -	if (close(fd2) == -1)
-> -		tst_brkm(TBROK, cleanup, "closing %s failed", TEST_FILE2);
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
->  }
->  
-> -void cleanup()
-> +static void cleanup(void)
->  {
->  	TEST_CLEANUP;
->  
-> -	if (close(fd1) == -1)
-> -		tst_resm(TWARN | TERRNO, "closing %s failed", TEST_FILE1);
-> +	SAFE_CLOSE(NULL, fd1);
->  
->  	tst_rmdir();
->  }
-
+diff --git a/runtest/fs_ext4 b/runtest/fs_ext4
+index c65ebab..84b6486 100644
+--- a/runtest/fs_ext4
++++ b/runtest/fs_ext4
+@@ -1 +1,5 @@
+-ext4_new_feature_test	run_ext4_test.sh
++ext4-inode-version	run_ext4_test.sh ext4_inode_version_test
++ext4-nsec-timestamps	run_ext4_test.sh ext4_nsec_timestamps_test
++ext4-persist-prealloc	run_ext4_test.sh ext4_persist_prealloc_test
++ext4-subdir-limit	run_ext4_test.sh ext4_subdir_limit_test
++ext4-uninit-groups	run_ext4_test.sh ext4_uninit_groups_test
+diff --git a/testcases/kernel/fs/Makefile b/testcases/kernel/fs/Makefile
+index afad6f9..81310f5 100644
+--- a/testcases/kernel/fs/Makefile
++++ b/testcases/kernel/fs/Makefile
+@@ -27,6 +27,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ # XXX (garrcoop): Need to add autoconf checks for JFS.
+ # ext4-new-features: This test need to be configured be user.
+ # Please read $LTPROOT/README to see the detail information
+-FILTER_OUT_DIRS		:= dmapi ext4-new-features
++FILTER_OUT_DIRS		:= dmapi
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/fs/ext4-new-features/Makefile b/testcases/kernel/fs/ext4-new-features/Makefile
+index 208b8a6..1ad1c3c 100644
+--- a/testcases/kernel/fs/ext4-new-features/Makefile
++++ b/testcases/kernel/fs/ext4-new-features/Makefile
+@@ -32,6 +32,7 @@ FILTER_OUT_DIRS		:= $(FFSBDIR)
+ FFSB			:= $(FFSBDIR)/ffsb
+ 
+ $(FFSB): $(FFSBDIR)
++	cd $^; ./configure
+ 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+ 	cp $(FFSBDIR)/ffsb ffsb
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh b/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
+index bfbd844..4ede8f7 100755
+--- a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
+@@ -38,11 +38,15 @@
+ ################################################################################
+ 
+ source ext4_funcs.sh;
++test_features=$1
+ 
+ export TCID="ext4_new_feature"
+ export TST_TOTAL=1
+ export TST_COUNT=1
+ 
++script_name="$test_features"".sh"
++BLOCK_COUNT=3072
++
+ tst_kvercmp 2 6 31
+ if [ $? -eq 0 ]; then
+ 	tst_brkm TCONF ignored "kernel is below 2.6.31"
+@@ -71,6 +75,22 @@ if [ ! -f "ext4-test-config" ]; then
+ 	exit 0
+ fi
+ 
++# create an ext4 partition
++dd if=/dev/zero of=fs_ext4_new_features_$$.img bs=1M count=$BLOCK_COUNT
++
++if [ $? -ne 0 ];then
++	tst_brkm TCONF ignored "failed to create an ext4 image file"
++	exit 0
++fi
++
++EXT4_DEV=$(losetup --show -f fs_ext4_new_features_$$.img)
++if [ $? -ne 0 ];then
++	tst_brkm TCONF ignored "set loop device failed"
++	exit 0
++fi
++
++echo "EXT4_DEV=$EXT4_DEV" > ./ext4-test-config
++
+ cd $LTPROOT/testcases/bin/
+ 
+ RET=0
+@@ -79,101 +99,26 @@ echo "EXT4 NEW FEATURE TESTING";
+ echo "TEST STARTED: Please avoid using system while this test executes";
+ 
+ echo " "
+-echo "Ext4 block allocation test"
+-if [ -f "ext4-alloc-test.sh" ]; then
+-	./ext4-alloc-test.sh ./ext4-test-config
++echo "$test_features"
++if [ -f "$script_name" ]; then
++	./$script_name ./ext4-test-config
+ 	if [ $? -ne 0 ]; then
+ 		RET=1
+ 	fi
+ else
+-	echo "Shell file is not installed..Please check Makefile..."
++	echo "$script_name is not installed..Please check Makefile..."
+ 	RET=1
+ fi
+ 
+-echo " "
+-echo "Ext4 journal checksum test"
+-if [ -f "ext4_journal_checksum.sh" ]; then
+-	./ext4_journal_checksum.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+ 
+-echo " "
+-echo "Ext4 subdir limit test"
+-if [ -f "ext4_subdir_limit_test.sh" ]; then
+-	./ext4_subdir_limit_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 nanosecond timestamp test"
+-if [ -f "ext4_nsec_timestamps_test.sh" ]; then
+-	./ext4_nsec_timestamps_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+ 
+-echo " "
+-echo "Ext4 persist prealloc test"
+-if [ -f "ext4_persist_prealloc_test.sh" ]; then
+-	./ext4_persist_prealloc_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 inode version test"
+-if [ -f "ext4_inode_version_test.sh" ]; then
+-	./ext4_inode_version_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 uninit groups test"
+-if [ -f "ext4_uninit_groups_test.sh" ]; then
+-	./ext4_uninit_groups_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
++# cleanup
++losetup -d $EXT4_DEV
++if [ $? -ne 0 ];then
++	tst_brkm TCONF ignored "failed to delete loop: $EXT4_DEV"
++	exit 0
+ fi
+ 
+-echo " "
+-echo "Ext4 online defrag test"
+-echo "The output of defrag program is in the file"\
+-	"LTPROOT/output/ext4_online_defrag.txt"
+-if [ -f "ext4_online_defrag_test.sh" ]; then
+-	./ext4_online_defrag_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
++rm -f fs_ext4_new_features_$$.img
+ 
+ exit $RET
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
