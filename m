@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VhEiX-0005i5-QW
-	for ltp-list@lists.sourceforge.net; Fri, 15 Nov 2013 08:25:29 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VhEiW-000673-4Z
-	for ltp-list@lists.sourceforge.net; Fri, 15 Nov 2013 08:25:29 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAF8PHKi003255
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Nov 2013 16:25:19 +0800
-Message-ID: <5285DA68.5020409@cn.fujitsu.com>
-Date: Fri, 15 Nov 2013 16:25:12 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VgdTk-0006uq-MS
+	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 16:39:44 +0000
+Date: Wed, 13 Nov 2013 17:39:28 +0100
+From: chrubis@suse.cz
+Message-ID: <20131113163928.GA12406@rei.Home>
+References: <81212EE27BC298499DBD7CA069AAD07142E38D167A@LGEVEXMBAPSVC2.LGE.NET>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] dup3(2): add EINVAL error number test
+Content-Disposition: inline
+In-Reply-To: <81212EE27BC298499DBD7CA069AAD07142E38D167A@LGEVEXMBAPSVC2.LGE.NET>
+Subject: Re: [LTP] [PATCH V2] BindMounts: fix to properly unmount during
+ cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,170 +25,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Siva Padhy <siva.padhy@lge.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-add EINVAL error number test
+Hi!
+> The fs_bind testcases creates the mount directories for testing.
+> When the testcase exits, those directories were not properly unmounted.
+> The reason of the issues are:
+> 
+>  1. Some directories were kept mounted, even after the cleanup() routine, as the unmount code is missing.
+>  2. Some "umount" command execution fails, as they are dependent on some other mounted directories.
+> 
+> Error Report
+> ------------
+> rbind/test02    1  TPASS  :  rbind/test02: PASSED
+> /kvt.new/ltp/testscripts/test_fs_bind.sh    0  TWARN  :  rbind/test02 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
+> 
+> rbind/test38    1  TPASS  :  rbind/test38: PASSED
+> /kvt.new/ltp/testscripts/test_fs_bind.sh    0  TWARN  :  rbind/test38 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
+> 
+> This patch add/reorder the unmount code to fix the above TWARN messages.
+> 
+> Modified-by: Jan Stancek <jstancek@redhat.com>
+> Signed-off-by: Siva  <siva.padhy@lge.com>
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/syscalls                         |   1 +
- testcases/kernel/syscalls/.gitignore     |   1 +
- testcases/kernel/syscalls/dup3/dup3_02.c | 119 +++++++++++++++++++++++++++++++
- 3 files changed, 121 insertions(+)
- create mode 100644 testcases/kernel/syscalls/dup3/dup3_02.c
+Pushed, thanks.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fa01ff7..e7e8a9a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -118,6 +118,7 @@ dup204 dup204
- dup205 dup205
- 
- dup3_01 dup3_01
-+dup3_02 dup3_02
- 
- epoll_create1_01 epoll_create1_01
- epoll01 epoll-ltp
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0130a53..e100dd9 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -96,6 +96,7 @@
- /dup2/dup204
- /dup2/dup205
- /dup3/dup3_01
-+/dup3/dup3_02
- /epoll/epoll-ltp
- /epoll_create1/epoll_create1_01
- /eventfd/eventfd01
-diff --git a/testcases/kernel/syscalls/dup3/dup3_02.c b/testcases/kernel/syscalls/dup3/dup3_02.c
-new file mode 100644
-index 0000000..0394ee7
---- /dev/null
-+++ b/testcases/kernel/syscalls/dup3/dup3_02.c
-@@ -0,0 +1,119 @@
-+/*
-+ * Copyright (c) 2013 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+/*
-+ * Description:
-+ * Verify that,
-+ *  1. dup3() fails with -1 return value and sets errno to EINVAL
-+ *     if flags contain an invalid value or oldfd was equal to newfd.
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
-+
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+#define INVALID_FLAG	-1
-+
-+static struct test_case_t {
-+	int oldfd;
-+	int newfd;
-+	int flags;
-+	int exp_errno;
-+} test_cases[] = {
-+	{-1, -1, O_CLOEXEC, EINVAL},
-+	{-1, -1, INVALID_FLAG, EINVAL}
-+};
-+
-+char *TCID = "dup3_02";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = {EINVAL, 0};
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	int i;
-+
-+
-+	setup();
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			TEST(ltp_syscall(__NR_dup3, test_cases[i].oldfd,
-+			     test_cases[i].newfd, test_cases[i].flags));
-+
-+			if (TEST_RETURN != -1) {
-+				tst_resm(TFAIL, "dup3 succeeded unexpectedly");
-+				continue;
-+			}
-+
-+			if (TEST_ERRNO == test_cases[i].exp_errno) {
-+				tst_resm(TPASS | TTERRNO,
-+					 "dup3 failed as expected");
-+			} else {
-+				tst_resm(TFAIL | TTERRNO,
-+					 "dup3 failed unexpectedly; expected:",
-+					 "%d - %s", test_cases[i].exp_errno,
-+					 strerror(test_cases[i].exp_errno));
-+			}
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	int oldfd;
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	tst_tmpdir();
-+
-+	TEST_PAUSE;
-+
-+	oldfd = SAFE_CREAT(cleanup, "testeinval.file", 0644);
-+
-+	test_cases[0].oldfd = oldfd;
-+	test_cases[0].newfd = oldfd;
-+
-+	test_cases[1].oldfd = oldfd;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	tst_rmdir();
-+}
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
