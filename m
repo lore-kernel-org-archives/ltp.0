@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hong.gyu.kim@lge.com>) id 1VdsLn-0002nu-U3
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 01:56:07 +0000
-Received: from lgemrelse1q.lge.com ([156.147.1.111])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VdsLk-0004l5-8D
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 01:56:07 +0000
-From: "Honggyu Kim" <hong.gyu.kim@lge.com>
-Date: Wed, 6 Nov 2013 10:55:56 +0900
-Message-ID: <005301ceda93$558302a0$008907e0$@gyu.kim@lge.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vgw6g-0005Iq-0t
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 12:33:10 +0000
+Date: Thu, 14 Nov 2013 13:32:55 +0100
+From: chrubis@suse.cz
+Message-ID: <20131114123255.GB13348@rei>
+References: <1383910521-12669-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Language: ko
-Subject: [LTP] [PATCH v2] acct01: add a check routine for acct implementation
+Content-Disposition: inline
+In-Reply-To: <1383910521-12669-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers: acpi: add new test for
+ acpi-cpufreq driver
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,100 +25,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-A check routine for acct implementation is added at the beginning of the test.
-check_acct_in_kernel function calls acct(NULL) and checks if errno is ENOSYS.
-It means that acct system call is not implemented in kernel.
-The other ENOSYS check routines in setup are removed.
+Hi!
+> +void *thread_fn(void *val)
+> +{
+> +	struct timeval tv_start;
+> +	struct timeval tv_end;
+> +	int i, res = 0;
+> +	intptr_t timeout = (intptr_t) val;
+> +
+> +	gettimeofday(&tv_start, NULL);
+> +	tst_resm(TINFO, "load CPU0 for %ld sec...", timeout);
+> +
+> +	do {
+> +		for (i = 1; i < 1000; ++i)
+> +			res += i * i;
+> +		gettimeofday(&tv_end, NULL);
 
-This patch prevents from unintentional calling acct again in cleanup, which
-makes TCONF to TBROK and helps configuration problems stay as TCONF.
+One more thing, you should probably add sched_yield() here to make sure
+the load_cpu() is executed after the sleep() has finished.
 
-Previous test output: (becomes TBROK in the end)
-acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
-acct01      2  TCONF  :  Remaining cases not appropriate for configuration
-acct01      3  TBROK  :  acct(NULL) failed: errno=ENOSYS(38): Function not implemented
+> +	} while ((tv_end.tv_sec - tv_start.tv_sec) < timeout);
+> +
+> +	tst_resm(TINFO, "CPU0 load done: insignificant value '%d'", res);
+> +
+> +	return NULL;
+> +}
+> +
+> +static int load_cpu(intptr_t timeout)
+> +{
+> +	pthread_t thread_id;
+> +
+> +	if (pthread_create(&thread_id, 0, thread_fn,
+> +		(intptr_t *) timeout) != 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			"pthread_create failed at %s:%d",
+> +			__FILE__, __LINE__);
+> +	}
+> +
+> +	sleep(2 * timeout / 3);
+> +
+> +	int cur_freq;
+> +	SAFE_FILE_SCANF(cleanup, curspeed, "%d", &cur_freq);
+> +	tst_resm(TINFO, "got cpu freq under load: %d", cur_freq);
+> +
+> +	pthread_join(thread_id, NULL);
+> +
+> +	return cur_freq;
+> +}
 
-Fixed test output: (stays as TCONF)
-acct01      1  TCONF  :  BSD process accounting is not configured in this kernel
-
-Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
----
- testcases/kernel/syscalls/acct/acct01.c |   32 +++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
-index 8236042..4a34383 100644
---- a/testcases/kernel/syscalls/acct/acct01.c
-+++ b/testcases/kernel/syscalls/acct/acct01.c
-@@ -124,12 +124,28 @@ int main(int argc, char *argv[])
- 	tst_exit();
- }
- 
-+static void check_acct_in_kernel(void)
-+{
-+	/* check if acct is implemented in kernel */
-+	if (acct(NULL) == -1) {
-+		if (errno == ENOSYS) {
-+			tst_resm(TCONF,
-+				 "BSD process accounting is not configured in "
-+				 "this kernel");
-+
-+			tst_exit();
-+		}
-+	}
-+}
-+
- static void setup(void)
- {
- 	int fd;
- 
- 	tst_require_root(NULL);
- 
-+	check_acct_in_kernel();
-+
- 	tst_tmpdir();
- 
- 	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-@@ -138,24 +154,12 @@ static void setup(void)
- 	SAFE_CLOSE(cleanup, fd);
- 
- 	if (acct(TEST_FILE5) == -1) {
--		if (errno == ENOSYS) {
--			tst_brkm(TCONF, cleanup,
--				 "BSD process accounting is not configured in "
--				 "this kernel");
--		} else {
--			tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
--		}
-+		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
- 	}
- 
- 	/* turn off acct, so we are in a known state */
- 	if (acct(NULL) == -1) {
--		if (errno == ENOSYS) {
--			tst_brkm(TCONF, cleanup,
--				 "BSD process accounting is not configured in "
--				 "this kernel");
--		} else {
--			tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
--		}
-+		tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
- 	}
- 
- 	/* ELOOP SETTING */
 -- 
-1.7.9.5
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
