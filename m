@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VeQde-0002VR-Pp
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 14:32:50 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1VgtIe-0008Rh-T0
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 09:33:20 +0000
 Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VeQdc-0006Za-SV
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 14:32:50 +0000
-Date: Thu, 7 Nov 2013 09:32:39 -0500 (EST)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VgtId-0002tF-54
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 09:33:20 +0000
+Date: Thu, 14 Nov 2013 04:33:10 -0500 (EST)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1893446010.23601038.1383834759982.JavaMail.root@redhat.com>
-In-Reply-To: <81212EE27BC298499DBD7CA069AAD071428CD96BD7@LGEVEXMBAPSVC2.LGE.NET>
-References: <81212EE27BC298499DBD7CA069AAD071428CD96A5A@LGEVEXMBAPSVC2.LGE.NET>
-	<2139722103.23140441.1383778076485.JavaMail.root@redhat.com>
-	<81212EE27BC298499DBD7CA069AAD071428CD96BD7@LGEVEXMBAPSVC2.LGE.NET>
+Message-ID: <170173042.31259538.1384421590798.JavaMail.root@redhat.com>
+In-Reply-To: <1384395907-13886-1-git-send-email-penght@cn.fujitsu.com>
+References: <1384395907-13886-1-git-send-email-penght@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] BindMounts: fix to properly unmount during
- cleanup in fs_bind
+Subject: Re: [LTP] [PATCH] sigaction:16-1: leave it untested on the Linux
+ kernel less than 2.6.22
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,215 +28,152 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Siva Padhy <siva.padhy@lge.com>
+To: Peng Haitao <penght@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 
 
-
-
 ----- Original Message -----
-> From: "Siva Padhy" <siva.padhy@lge.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
+> From: "Peng Haitao" <penght@cn.fujitsu.com>
+> To: jstancek@redhat.com, gaowanlong@cn.fujitsu.com
 > Cc: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 7 November, 2013 3:21:20 AM
-> Subject: RE: [LTP] [PATCH v2] BindMounts: fix to properly unmount during cleanup in fs_bind
+> Sent: Thursday, 14 November, 2013 3:25:07 AM
+> Subject: [PATCH] sigaction:16-1: leave it untested on the Linux kernel less than 2.6.22
 > 
-> HI Jan,
+> As the Linux signal(7) said:
+> POSIX semaphore interfaces: sem_wait(3) and sem_timedwait(3) (since Linux
+> 2.6.22; beforehand, always failed with EINTR).
 > 
-> Thanks for the reply.
+> So, on linux, we just leave this untested when the kernel version
+> is less than 2.6.22.
 > 
-> I verified test02 testcase again with my patch, it is working fine for me. I
-> am also using 3.10.11+ kernel.
-> I am wondering why share1 is still mounted in your case.
+> Signed-off-by: Peng Haitao <penght@cn.fujitsu.com>
 
-And I'm wondering why it's not in your case :-).
+Hi,
 
-There are 2 mounts:
-"${FS_BIND_ROOT}/bin/makedir" share share1
-mount --rbind parent1/child1 share1
+looks familiar. Thanks for posting - I haven't revisited this topic since then.
+I suggest following change:
 
-so I'd expect 2 umounts:
-
-# mkdir test1; mkdir test2
-# mount --bind test1 test1
-# mount --rbind test2 test1
-# umount test1
-# mount | grep test1
-/dev/mapper/rhel_dhcp--27--145-root on /mnt/testarea/ltp/test1 type xfs (rw,relatime,seclabel,attr2,inode64,noquota)
-# umount test1
-
-
-Can you rerun test02 with this change and send the output of mounted directories?
-
-diff --git a/testcases/kernel/fs/fs_bind/rbind/test02 b/testcases/kernel/fs/fs_bind/rbind/test02
-index 3ab7b6c..610e873 100755
---- a/testcases/kernel/fs/fs_bind/rbind/test02
-+++ b/testcases/kernel/fs/fs_bind/rbind/test02
-@@ -83,10 +83,12 @@ trap '' ERR
-        umount share1
-        umount parent2
-        umount parent1
-+       mount | grep sandbox
+diff --git a/testcases/open_posix_testsuite/Makefile.linux b/testcases/open_posix_testsuite/Makefile.linux
+index de3dd0e..4a32c07 100644
+--- a/testcases/open_posix_testsuite/Makefile.linux
++++ b/testcases/open_posix_testsuite/Makefile.linux
+@@ -8,13 +8,15 @@ cmd_disable = @set -e; \
+        echo "exit 0" >> $(1); \
+        chmod a+x $(1)
  
-        rm -rf parent* share*
-        cleanup
--} >& /dev/null
-+}
++BROKEN :=
++
+ kver_cmp = $(shell $(top_srcdir)/scripts/tst_kvercmp.sh 2 6 22)
+ ifeq ($(kver_cmp), 1)
+-filter-broken: t_sigaction_16-1
+-else
+-filter-broken:
++BROKEN += t_sigaction_16-1
+ endif
+ 
++filter-broken: $(BROKEN)
++
+ t_sigaction_16-1:
+        $(call cmd_disable,conformance/interfaces/sigaction/sigaction_16-1.run-test, \
+          This fails on old linux because sem_wait always be interrupted by a signal.)
 
 Regards,
 Jan
 
+> ---
+>  testcases/open_posix_testsuite/Makefile              |  4 ++++
+>  testcases/open_posix_testsuite/Makefile.linux        | 20
+>  ++++++++++++++++++++
+>  .../open_posix_testsuite/scripts/tst_kvercmp.sh      | 20
+>  ++++++++++++++++++++
+>  3 files changed, 44 insertions(+)
+>  create mode 100644 testcases/open_posix_testsuite/Makefile.linux
+>  create mode 100755 testcases/open_posix_testsuite/scripts/tst_kvercmp.sh
 > 
-> I observed, share1 hold the part of parent2/child2  and parent2/child2/b
-> mount points.
-> In our case parent2/child2  and parent2/child2/b are not un-mounted so, when
-> I will un-mount share1 it will show resource busy.
+> diff --git a/testcases/open_posix_testsuite/Makefile
+> b/testcases/open_posix_testsuite/Makefile
+> index 9c61fa4..500ddc2 100644
+> --- a/testcases/open_posix_testsuite/Makefile
+> +++ b/testcases/open_posix_testsuite/Makefile
+> @@ -40,6 +40,10 @@ exec_prefix?=		$(prefix)
+>  
+>  all: conformance-all functional-all stress-all tools-all
+>  
+> +ifeq ($(shell uname -s), Linux)
+> +include Makefile.linux
+> +endif
+> +
+>  clean: $(CRITICAL_MAKEFILES)
+>  	@rm -f $(LOGFILE)*
+>  	@for dir in $(SUBDIRS) tools; do \
+> diff --git a/testcases/open_posix_testsuite/Makefile.linux
+> b/testcases/open_posix_testsuite/Makefile.linux
+> new file mode 100644
+> index 0000000..de3dd0e
+> --- /dev/null
+> +++ b/testcases/open_posix_testsuite/Makefile.linux
+> @@ -0,0 +1,20 @@
+> +all: conformance-all functional-all stress-all tools-all filter-broken
+> +
+> +cmd_disable = @set -e; \
+> +	echo "Disabling: $(1)"; \
+> +	echo "\#!/bin/sh" > $(1); \
+> +	echo "echo $(1) skipped" >> $(1); \
+> +	echo "echo $(2)" >> $(1); \
+> +	echo "exit 0" >> $(1); \
+> +	chmod a+x $(1)
+> +
+> +kver_cmp = $(shell $(top_srcdir)/scripts/tst_kvercmp.sh 2 6 22)
+> +ifeq ($(kver_cmp), 1)
+> +filter-broken: t_sigaction_16-1
+> +else
+> +filter-broken:
+> +endif
+> +
+> +t_sigaction_16-1:
+> +	$(call
+> cmd_disable,conformance/interfaces/sigaction/sigaction_16-1.run-test, \
+> +	  This fails on old linux because sem_wait always be interrupted by a
+> signal.)
+> diff --git a/testcases/open_posix_testsuite/scripts/tst_kvercmp.sh
+> b/testcases/open_posix_testsuite/scripts/tst_kvercmp.sh
+> new file mode 100755
+> index 0000000..d0e101c
+> --- /dev/null
+> +++ b/testcases/open_posix_testsuite/scripts/tst_kvercmp.sh
+> @@ -0,0 +1,20 @@
+> +#!/bin/bash
+> +
+> +if [ $# -ne 3 ]; then
+> +	echo "Usgae: ./tst_kvercmp.sh r1 r2 r3"
+> +	exit 1
+> +fi
+> +
+> +ker_ver=$(uname -r)
+> +r1=$(echo ${ker_ver} | awk -F. '{print $1}')
+> +r2=$(echo ${ker_ver} | awk -F. '{print $2}')
+> +r3=$(echo ${ker_ver} | awk -F. '{print $3}')
+> +r3=${r3%-*}
+> +
+> +test_ver=$(($1 * 65536 + $2 * 256 + $3))
+> +curr_ver=$((${r1} * 65536 + ${r2} * 256 + ${r3}))
+> +if [ ${curr_ver} -ge ${test_ver} ]; then
+> +	echo 0
+> +else
+> +	echo 1
+> +fi
+> --
+> 1.8.3.1
 > 
-> So for that reason I added those 2 line to un-mount the share1 successfully.
-> > +	umount parent2/child2/b
-> > +	umount parent2/child2
-> 
-> After adding the above 2 line, now the share1 is free and can be un-mounted
-> successfully.
-> > 	umount share1
-> 
-> I tested your code also. That is also working fine. I am successfully
-> executing the test02 without any warning.
-> 
-> Please share your suggestion so that I can go-ahead. Hope my changes for
-> test38 is proper.
-> 
-> Regards,
-> Siva
-> 
-> -----Original Message-----
-> From: Jan Stancek [mailto:jstancek@redhat.com]
-> Sent: Thursday, November 07, 2013 7:48 AM
-> To: Siva Padhy/LGSIA CSP-4(siva.padhy@lge.com)
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH v2] BindMounts: fix to properly unmount during
-> cleanup in fs_bind
-> 
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Siva Padhy" <siva.padhy@lge.com>
-> > To: ltp-list@lists.sourceforge.net
-> > Sent: Wednesday, 6 November, 2013 10:45:51 AM
-> > Subject: [LTP] [PATCH v2] BindMounts: fix to properly unmount during
-> > cleanup in fs_bind
-> > 
-> > While running fs_bound testcases, some test directory structure are
-> > mounted using -rbind option. While exiting the testcase the umount is
-> > not properly done, hence the below testcase are falling into TWARN.
-> > 
-> >   fs_bind/test02
-> >   fs_bind/test38
-> > 
-> > The warning message is as below for respective testcases
-> >   TWARN  :  rbind/test02 did not properly clean up
-> >   "/tmp/ltp-XXXX9qdYqG/sandbox"
-> >   TWARN  :  rbind/test38 did not properly clean up
-> >   "/tmp/ltp-XXXX9qdYqG/sandbox"
-> > 
-> > This patch unmount all the mounted/submounted parts of the filesystem
-> > properly.
-> > 
-> > Change-Id: Ica6d1799b89e933587c11c1755dff996ddbdf8c5
-> > Signed-off-by: Siva <siva.padhy@lge.com>
-> > ---
-> >  testcases/kernel/fs/fs_bind/rbind/test02 |    2 ++
-> >  testcases/kernel/fs/fs_bind/rbind/test38 |    5 +++++
-> >  2 files changed, 7 insertions(+)
-> > 
-> > diff --git a/testcases/kernel/fs/fs_bind/rbind/test02
-> > b/testcases/kernel/fs/fs_bind/rbind/test02
-> > index 3ab7b6c..eab9cdc 100755
-> > --- a/testcases/kernel/fs/fs_bind/rbind/test02
-> > +++ b/testcases/kernel/fs/fs_bind/rbind/test02
-> > @@ -76,8 +76,10 @@ trap '' ERR
-> >  {
-> >  	umount parent1/child1/a
-> >  	umount parent1/child1/b
-> > +	umount parent2/child2/b
-> >  	umount parent1/child1
-> >  	umount parent1/child1
-> > +	umount parent2/child2
-> >  	umount parent1/child1
-> >  	umount parent1/child1
-> >  	umount share1
-> 
-> Hi,
-> 
-> This still leaves me with share1 mounted. The following umount sequence works
-> for me (3.10 based kernel). Can you try if it fixes also your issue in
-> test02?
-> 
->         umount parent2/child2/b
->         umount parent1/child1/a
->         umount parent2/child2
->         umount share1
->         umount parent1/child1
-> 
->         umount parent1/child1
->         umount share1
->         umount parent2
->         umount parent1
-> 
-> Regards,
-> Jan
-> 
-> > diff --git a/testcases/kernel/fs/fs_bind/rbind/test38
-> > b/testcases/kernel/fs/fs_bind/rbind/test38
-> > index c9cf3e1..c944ce5 100755
-> > --- a/testcases/kernel/fs/fs_bind/rbind/test38
-> > +++ b/testcases/kernel/fs/fs_bind/rbind/test38
-> > @@ -77,6 +77,7 @@ trap '' ERR
-> >  {
-> >  	umount share1/a
-> >  	umount parent1/child1/b
-> > +	umount parent2/child1/b
-> >  	umount parent2/child1/c
-> >  	umount parent1/child1
-> >  	umount parent1/child1
-> > @@ -86,6 +87,10 @@ trap '' ERR
-> >  	umount parent2
-> >  	umount share1
-> >  	umount share1
-> > +	umount parent1
-> > +	umount share2
-> > +	umount parent2/child2
-> > +	umount parent2
-> >  
-> >  	rm -rf parent* share*
-> >  	cleanup
-> > --
-> > 1.7.9.5
-> > 
-> > 
-> > ----------------------------------------------------------------------
-> > -------- November Webinars for C, C++, Fortran Developers Accelerate
-> > application performance with scalable programming models. Explore
-> > techniques for threading, error checking, porting, and tuning. Get the
-> > most from the latest Intel processors and coprocessors. See abstracts
-> > and register
-> > http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.c
-> > lktrk _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
 > 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
