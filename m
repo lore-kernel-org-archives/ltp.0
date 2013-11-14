@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VePeK-00078f-3Y
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:29:28 +0000
-Date: Thu, 7 Nov 2013 14:29:18 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vgw87-0000YP-Sq
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 12:34:39 +0000
+Date: Thu, 14 Nov 2013 13:34:25 +0100
 From: chrubis@suse.cz
-Message-ID: <20131107132918.GE28961@rei.suse.cz>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-	<1383085243-5833-2-git-send-email-vincent.hsu@linaro.org>
+Message-ID: <20131114123425.GC13348@rei>
+References: <5283773E.5080505@cn.fujitsu.com>
+ <20131113160220.GA28712@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383085243-5833-2-git-send-email-vincent.hsu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH 1/9] ltp-networking/nfs: Setting the NFS to
- version 3 by default. NFSv3 is more compatibled with recent linux
- distributions.
+In-Reply-To: <20131113160220.GA28712@rei>
+Subject: Re: [LTP] [PATCH] fs/ext4-new-features: add ext4-new-features tests
+ to the default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,23 +26,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vincent Hsu <vincent.hsu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-This patch is fine, but the description is not right (the subject is too
-long). Please fix and resend.
+> >  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> > diff --git a/testcases/kernel/fs/ext4-new-features/Makefile b/testcases/kernel/fs/ext4-new-features/Makefile
+> > index 208b8a6..1ad1c3c 100644
+> > --- a/testcases/kernel/fs/ext4-new-features/Makefile
+> > +++ b/testcases/kernel/fs/ext4-new-features/Makefile
+> > @@ -32,6 +32,7 @@ FILTER_OUT_DIRS		:= $(FFSBDIR)
+> >  FFSB			:= $(FFSBDIR)/ffsb
+> >  
+> >  $(FFSB): $(FFSBDIR)
+> > +	cd $^; ./configure
+> >  	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+> >  	cp $(FFSBDIR)/ffsb ffsb
+> 
+> The way how ffsb is bundled in LTP is simply wrong, it shouldn't be in
+> the source tree at all. What I would like to see is to:
+> 
+> 1. modify testcases that depends on it to return TCONF with
+>    message that explains that ffsb must be installed to run
+>    the testcases if ffsb is not found in PATH
+> 
+>    or alternatively use something different to create the
+>    I/O load
+> 
+> 2. remove ffsb from the LTP git tree
+
+Or at least the source tree should be moved to a proper place, there is
+utils/benchmar/ directory for this purpose allready.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
