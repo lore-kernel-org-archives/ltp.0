@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VgnnY-00065v-4j
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 03:40:52 +0000
-Received: from mail-pb0-f48.google.com ([209.85.160.48])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VgnnW-0002sS-VD
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 03:40:52 +0000
-Received: by mail-pb0-f48.google.com with SMTP id mc17so1402055pbc.35
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Nov 2013 19:40:45 -0800 (PST)
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Thu, 14 Nov 2013 11:38:36 +0800
-Message-Id: <1384400319-30776-5-git-send-email-vincent.hsu@linaro.org>
-In-Reply-To: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH 5/8] ltp-networking/nfs: fix nfsstat01 typo
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VgwSR-0001eZ-Ns
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 12:55:39 +0000
+Date: Thu, 14 Nov 2013 13:55:24 +0100
+From: chrubis@suse.cz
+Message-ID: <20131114125524.GD13348@rei>
+References: <1384395907-13886-1-git-send-email-penght@cn.fujitsu.com>
+	<20131114122922.GA13348@rei>
+	<187658148.31700134.1384433325925.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <187658148.31700134.1384433325925.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] sigaction:16-1: leave it untested on the Linux
+ kernel less than 2.6.22
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,34 +24,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
----
- testcases/network/nfs/nfsstat01/nfsstat01 |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+> > Or at least the testcases shouldn't be skipped by default.
+> > If there is
+> > enough interest in this feature we can add specific switch or make
+> > target that skips tests that are known to fail on Linux. Skipping them
+> > on default run is, in my opinion, wrong.
+> 
+> I don't have strong preference. I'd be OK also with a text file, which would
+> list which ones fail, why, relevant kernel/glibc versions, etc.
 
-diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
-index f08f758..229e2c3 100755
---- a/testcases/network/nfs/nfsstat01/nfsstat01
-+++ b/testcases/network/nfs/nfsstat01/nfsstat01
-@@ -48,7 +48,7 @@ HOST=`hostname`
- CLEANUP=${CLEANUP:="ON"}
- VERSION=${VERSION:=3}
- TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
--NFS_TYPE=${NFS_TYPE:nfs}
-+NFS_TYPE=${NFS_TYPE:=nfs}
- export TCID=$TC
- export TST_TOTAL=1
- export TST_COUNT=1
---
-1.7.9.5
+Or a wiki page. I would love to see more LTP documentation...
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
