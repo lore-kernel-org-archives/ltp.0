@@ -1,36 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Vdxqv-0000gx-B2
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 07:48:37 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vdxqu-0004sw-7h
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 07:48:37 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA67mTXu015659
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 07:48:30 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA67mQck003927
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 07:48:29 GMT
-Received: from abhmt102.oracle.com (abhmt102.oracle.com [141.146.116.54])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA67mQ0O028832
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 07:48:26 GMT
-Message-ID: <5279F42E.7080204@oracle.com>
-Date: Wed, 06 Nov 2013 15:47:58 +0800
-From: Simon Xu <xu.simon@oracle.com>
-MIME-Version: 1.0
-References: <52736BE4.3080009@oracle.com>	<1383555538-1297-1-git-send-email-xu.simon@oracle.com>	<20131104172008.GA11841@rei>
-	<5278297D.5090407@oracle.com>
-In-Reply-To: <5278297D.5090407@oracle.com>
-Subject: Re: [LTP] [PATCH V2] rwho01: fix getting hostnames from command
- output and $COUNT
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vincent.hsu@linaro.org>) id 1VgnnV-0003Xj-K4
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 03:40:49 +0000
+Received: from mail-pa0-f43.google.com ([209.85.220.43])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VgnnU-0002sN-Sz
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 03:40:49 +0000
+Received: by mail-pa0-f43.google.com with SMTP id fa1so1452162pad.2
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 13 Nov 2013 19:40:43 -0800 (PST)
+From: Vincent Hsu <vincent.hsu@linaro.org>
+Date: Thu, 14 Nov 2013 11:38:35 +0800
+Message-Id: <1384400319-30776-4-git-send-email-vincent.hsu@linaro.org>
+In-Reply-To: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
+References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
+Subject: [LTP] [LNG][PATCH 4/8] ltp-networking/nfs: remove absolute path for
+	showmount.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,87 +27,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org
 
-Could anyone help to review this and other LTP network test patches?
+Showmount doesn't locate at /user/sbin/showmount on Ubuntu 12.04.
 
-Thanks
-Simon
+Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
+---
+ testcases/network/nfs/nfs02/nfs02         |    2 +-
+ testcases/network/nfs/nfsstat01/nfsstat01 |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On 2013/11/5 7:10, Simon Xu wrote:
-> On 2013/11/5 01:20, chrubis@suse.cz wrote:
->> Hi!
->>> Fix the way the script gets hostnames from rwho/ruptime command output,
->>> and the mistake that $COUNT is used instead of $TST_COUNT in do_test().
->> The change from COUNT to TST_COUNT is pretty straightforward. Can you
->> please describe more verbosely why is the second change needed? Has the
->> output from rwho and ruptime changed over the time?
-> rwho and ruptime are pretty old stuff, their output are not likely to
-> have changed.  The author intended to use the awk commands to get the
-> line containing the hostname, but the output of the awk commands are all
-> empty strings.
->
-> Thanks
-> Simon
->
->>>        while [ $TST_COUNT -le $NUMLOOPS ]; do
->>>            rwho -a > $OUTFILE
->>> -        HOST=`awk "\\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
->>> +        HOST=`grep $LHOST $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
->>>            [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in rwho outfile"
->>> -        HOST=`awk "\\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
->>> +        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
->>>            [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in rwho outfile"
->>>    
->>>            ruptime -a > $OUTFILE
->>> -        HOST=`awk "\\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
->>> +        HOST=`grep $LHOST $OUTFILE | sed 's/ .*//' | uniq`
->>>            [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in ruptime outfile"
->>> -        HOST=`awk "\\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
->>> +        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/ .*//' | uniq`
->>>            [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in ruptime outfile"
->>>    
->>> -        tst_resm TINFO "Test $COUNT of $NUMLOOPS complete"
->>> +        tst_resm TINFO "Test $TST_COUNT of $NUMLOOPS complete"
->>>            incr_tst_count
->>>        done
->>>    }
->>> -- 
->>> 1.8.4.2
->>>
->>>
->>> ------------------------------------------------------------------------------
->>> Android is increasing in popularity, but the open development platform that
->>> developers love is also attractive to malware creators. Download this white
->>> paper to learn more about secure code signing practices that can help keep
->>> Android apps secure.
->>> http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
->>> _______________________________________________
->>> Ltp-list mailing list
->>> Ltp-list@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
-> ------------------------------------------------------------------------------
-> November Webinars for C, C++, Fortran Developers
-> Accelerate application performance with scalable programming models. Explore
-> techniques for threading, error checking, porting, and tuning. Get the most
-> from the latest Intel processors and coprocessors. See abstracts and register
-> http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+diff --git a/testcases/network/nfs/nfs02/nfs02 b/testcases/network/nfs/nfs02/nfs02
+index 89b65cf..c192d96 100755
+--- a/testcases/network/nfs/nfs02/nfs02
++++ b/testcases/network/nfs/nfs02/nfs02
+@@ -103,7 +103,7 @@ $trace_logic
+    fi
+
+    #Verify export
+-   /usr/sbin/showmount -e $RHOST | grep $TESTDIR
++   showmount -e $RHOST | grep $TESTDIR
+    [ $? -eq 0 ] || end_testcase "$TESTDIR not exported"
+
+    #Create $TCtmp for mount point
+diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
+index 7b1ac43..f08f758 100755
+--- a/testcases/network/nfs/nfsstat01/nfsstat01
++++ b/testcases/network/nfs/nfsstat01/nfsstat01
+@@ -100,7 +100,7 @@ $trace_logic
+    fi
+
+    #Verify export
+-   /usr/sbin/showmount -e $HOST | grep $EXPORTDIR > /dev/null
++   showmount -e $HOST | grep $EXPORTDIR > /dev/null
+    [ $? -eq 0 ] || end_testcase "$EXPORTDIR not exported"
+
+    #Create mount point
+--
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
