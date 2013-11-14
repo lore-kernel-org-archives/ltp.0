@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VdLt9-0008KJ-NM
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 15:16:23 +0000
-Date: Mon, 4 Nov 2013 16:16:01 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VgyXQ-0000PG-Pt
+	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 15:08:56 +0000
+Date: Thu, 14 Nov 2013 16:08:42 +0100
 From: chrubis@suse.cz
-Message-ID: <20131104151600.GA10512@rei>
-References: <526A4001.5050909@cn.fujitsu.com>
+Message-ID: <20131114150841.GB15449@rei>
+References: <1384353022-9088-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1384353022-9088-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <526A4001.5050909@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] access(2): add ELOOP, ENOTDIR,
- EROFS error values test
+In-Reply-To: <1384353022-9088-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [RFC PATCH 1/2] autoconf check for utimensat(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,48 +25,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wang, Xiaoguang" <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> +/*
-> + * EROFS need superuser privilege (mount and umount a readonly file system),
-> + * but the other error values tests need a normal user.
-> + * So we first call setup1() with superuser privilege to test EROFS, and then
-> + * use setup() to call setuid()to change the real user id to perform
-> + * other tests.
-> + */
+> +AC_DEFUN([LTP_CHECK_SYSCALL_UTIMENSAT],[
+> +	AC_MSG_CHECKING([for utimensat])
+> +	AC_LINK_IFELSE([AC_LANG_SOURCE([
+> +#include <stdlib.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +
+> +int main(void) {
+> +	long tv_nsec;
+> +	tv_nsec = UTIME_NOW;
+> +	tv_nsec = UTIME_OMIT;
+> +
+> +	return utimensat(AT_FDCWD, (const char *) "/dev/null", NULL, 0);
+> +}])],[has_utimensat="yes"])
 
-Ah, this adds unexpected complexity and does not work test looping :(.
+Why the cast to const char* and why cannot be the second parameter NULL
+too (it's just linked not executed)?
 
-I've looked closely on the test code and the problem is that acces uses
-real user id so we have to drop the rights to check the access call but
-we need to be able to unmount the fs at the end of the test, which is
-privileged operation.
-
-Only solution that I have currenlty in mind is to run the test from
-within the child process that drops the rights so that the parent
-can perform the cleanup at the end, but again this adds unnecessary
-complexity.
-
-Was this problem the original reason why you added the new testcase for
-the EROFS part? If so, you should have spoken as I did not foresee that
-we will hit this problem.
-
-So we should either proceed with the previous version (EROFS in separate
-test) or move the code to child processes. The first solution seems
-better to me, what do you think?
+> +
+> +if test "x$has_utimensat" == "xyes"; then
+> +	AC_DEFINE(HAVE_UTIMENSAT, 1, [Define to 1 if you have utimensat(2)])
+> +	AC_MSG_RESULT(yes)
+> +else
+> +	AC_MSG_RESULT(no)
+> +fi
+> +])
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
