@@ -1,32 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1VekLs-0005qg-N4
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 11:35:48 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VekLr-000076-IG
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 11:35:48 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA8BZerp016088
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 11:35:41 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA8BZdNa017106
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 11:35:40 GMT
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA8BZddY017101
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 11:35:39 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri,  8 Nov 2013 15:35:21 +0400
-Message-Id: <1383910521-12669-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] device-drivers: acpi: add new test for acpi-cpufreq
-	driver
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VhIah-0000HE-Rz
+	for ltp-list@lists.sourceforge.net; Fri, 15 Nov 2013 12:33:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VhIaf-0001TU-Ml
+	for ltp-list@lists.sourceforge.net; Fri, 15 Nov 2013 12:33:39 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAFCXPIf013849
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Nov 2013 20:33:27 +0800
+Message-ID: <1384514055.12576.15.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 15 Nov 2013 19:14:15 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] confstr/confstr01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,267 +25,251 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-The test checks support for disabling dynamic overclocking
-in acpi_cpufreq driver.
-Linux commit: 615b7300717b9ad5c23d1f391843484fe30f6c12.
-It were implemented in Linux 3.7.
+cleanup the confstr01.c test case.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/device-drivers/acpi/.gitignore    |    1 +
- testcases/kernel/device-drivers/acpi/Makefile      |    4 +-
- .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |  199 ++++++++++++++++++++
- 3 files changed, 203 insertions(+), 1 deletions(-)
- create mode 100644 testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+ testcases/kernel/syscalls/confstr/confstr01.c | 183 ++++++++++----------------
+ 1 file changed, 73 insertions(+), 110 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/acpi/.gitignore b/testcases/kernel/device-drivers/acpi/.gitignore
-index 76fbdc8..7061be3 100644
---- a/testcases/kernel/device-drivers/acpi/.gitignore
-+++ b/testcases/kernel/device-drivers/acpi/.gitignore
-@@ -1,5 +1,6 @@
- /LtpAcpiCmds.ko
- /ltp_acpi
-+/ltp_acpi_cpufreq
- /*.mod.c
- /modules.order
- /.tmp_versions
-diff --git a/testcases/kernel/device-drivers/acpi/Makefile b/testcases/kernel/device-drivers/acpi/Makefile
-index b62eb0b..47ef8c6 100644
---- a/testcases/kernel/device-drivers/acpi/Makefile
-+++ b/testcases/kernel/device-drivers/acpi/Makefile
-@@ -25,7 +25,9 @@ include $(top_srcdir)/include/mk/testcases.mk
+diff --git a/testcases/kernel/syscalls/confstr/confstr01.c b/testcases/kernel/syscalls/confstr/confstr01.c
+index f301b35..b6aebf1 100644
+--- a/testcases/kernel/syscalls/confstr/confstr01.c
++++ b/testcases/kernel/syscalls/confstr/confstr01.c
+@@ -13,8 +13,8 @@
+  *   the GNU General Public License for more details.
+  *
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
  
- REQ_VERSION_MAJOR	:= 2
- REQ_VERSION_PATCH	:= 6
--MAKE_TARGETS		:= ltp_acpi LtpAcpiCmds.ko
-+MAKE_TARGETS		:= ltp_acpi_cpufreq ltp_acpi LtpAcpiCmds.ko
-+
-+LDLIBS			+= -lpthread
+ /* 11/20/2002	Port to LTP	robbiew@us.ibm.com */
+@@ -33,134 +33,97 @@
+  *
+  */
  
- include $(top_srcdir)/include/mk/module.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-new file mode 100644
-index 0000000..08092df
---- /dev/null
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-@@ -0,0 +1,199 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ * Check support for disabling dynamic overclocking in acpi_cpufreq driver.
-+ * Required Linux 3.7+.
-+ *
-+ * The test loads CPU0 in a thread. When the loading approaches to the end
-+ * (2/3 elapsed), the test will check processor frequency. if boost is enabled
-+ * we can get a slightly higher speed under load.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sched.h>
-+#include <sys/time.h>
-+#include <pthread.h>
-+
-+#include "test.h"
-+#include "usctest.h"
+-#define _XOPEN_SOURCE	500
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <errno.h>
+ 
+-#define INVAL_FLAG	-1
+-
+-/** LTP Port **/
+ #include "test.h"
+ #include "usctest.h"
+-
+-#define FAILED 0
+-#define PASSED 1
+-
+-int local_flag = PASSED;
 +#include "safe_macros.h"
-+#include "safe_stdio.h"
 +
-+char *TCID = "ltp_acpi_cpufreq";
++static struct test_case_t {
++	int value;
++	char *name;
++} test_cases[] = {
++	{_CS_PATH, "PATH"},
++	{_CS_XBS5_ILP32_OFF32_CFLAGS, "XBS5_ILP32_OFF32_CFLAGS"},
++	{_CS_XBS5_ILP32_OFF32_LDFLAGS, "XBS5_ILP32_OFF32_LDFLAGS"},
++	{_CS_XBS5_ILP32_OFF32_LIBS, "XBS5_ILP32_OFF32_LIBS"},
++	{_CS_XBS5_ILP32_OFF32_LINTFLAGS, "XBS5_ILP32_OFF32_LINTFLAGS"},
++	{_CS_XBS5_ILP32_OFFBIG_CFLAGS, "XBS5_ILP32_OFFBIG_CFLAGS"},
++	{_CS_XBS5_ILP32_OFFBIG_LDFLAGS, "XBS5_ILP32_OFFBIG_LDFLAGS"},
++	{_CS_XBS5_ILP32_OFFBIG_LIBS, "XBS5_ILP32_OFFBIG_LIBS"},
++	{_CS_XBS5_ILP32_OFFBIG_LINTFLAGS, "XBS5_ILP32_OFFBIG_LINTFLAGS"},
++	{_CS_XBS5_LP64_OFF64_CFLAGS, "XBS5_LP64_OFF64_CFLAGS"},
++	{_CS_XBS5_LP64_OFF64_LDFLAGS, "XBS5_LP64_OFF64_LDFLAGS"},
++	{_CS_XBS5_LP64_OFF64_LIBS, "XBS5_LP64_OFF64_LIBS"},
++	{_CS_XBS5_LP64_OFF64_LINTFLAGS, "XBS5_LP64_OFF64_LINTFLAGS"},
++	{_CS_XBS5_LPBIG_OFFBIG_CFLAGS, "XBS5_LPBIG_OFFBIG_CFLAGS"},
++	{_CS_XBS5_LPBIG_OFFBIG_LDFLAGS, "XBS5_LPBIG_OFFBIG_LDFLAGS"},
++	{_CS_XBS5_LPBIG_OFFBIG_LIBS, "XBS5_LPBIG_OFFBIG_LIBS"},
++	{_CS_XBS5_LPBIG_OFFBIG_LINTFLAGS, "XBS5_LPBIG_OFFBIG_LINTFLAGS"},
++};
+ 
+ char *TCID = "confstr01";
+-int TST_TOTAL = 1;
+-/**************/
+-
+-int confstr_var_vals[] = { _CS_PATH, _CS_XBS5_ILP32_OFF32_CFLAGS,
+-	_CS_XBS5_ILP32_OFF32_LDFLAGS,
+-	_CS_XBS5_ILP32_OFF32_LIBS,
+-	_CS_XBS5_ILP32_OFF32_LINTFLAGS,
+-	_CS_XBS5_ILP32_OFFBIG_CFLAGS,
+-	_CS_XBS5_ILP32_OFFBIG_LDFLAGS,
+-	_CS_XBS5_ILP32_OFFBIG_LIBS,
+-	_CS_XBS5_ILP32_OFFBIG_LINTFLAGS,
+-	_CS_XBS5_LP64_OFF64_CFLAGS,
+-	_CS_XBS5_LP64_OFF64_LDFLAGS,
+-	_CS_XBS5_LP64_OFF64_LIBS,
+-	_CS_XBS5_LP64_OFF64_LINTFLAGS,
+-	_CS_XBS5_LPBIG_OFFBIG_CFLAGS,
+-	_CS_XBS5_LPBIG_OFFBIG_LDFLAGS,
+-	_CS_XBS5_LPBIG_OFFBIG_LIBS,
+-	_CS_XBS5_LPBIG_OFFBIG_LINTFLAGS,
+-	0
+-};
++int TST_TOTAL = ARRAY_SIZE(test_cases);
+ 
+-char *confstr_vars[] = { "PATH", "XBS5_ILP32_OFF32_CFLAGS",
+-	"XBS5_ILP32_OFF32_LDFLAGS", "XBS5_ILP32_OFF32_LIBS",
+-	"XBS5_ILP32_OFF32_LINTFLAGS",
+-	"XBS5_ILP32_OFFBIG_CFLAGS",
+-	"XBS5_ILP32_OFFBIG_LDFLAGS",
+-	"XBS5_ILP32_OFFBIG_LIBS",
+-	"XBS5_ILP32_OFFBIG_LINTFLAGS",
+-	"XBS5_LP64_OFF64_CFLAGS",
+-	"XBS5_LP64_OFF64_LDFLAGS",
+-	"XBS5_LP64_OFF64_LIBS",
+-	"XBS5_LP64_OFF64_LINTFLAGS",
+-	"XBS5_LPBIG_OFFBIG_CFLAGS",
+-	"XBS5_LPBIG_OFFBIG_LDFLAGS",
+-	"XBS5_LPBIG_OFFBIG_LIBS",
+-	"XBS5_LPBIG_OFFBIG_LINTFLAGS",
+-	"XXX5_MYBIG_VERBIG_MYFLAGS",
+-	0
+-};
++static void setup(void);
++static void cleanup(void);
+ 
+-int main()
++int main(int argc, char *argv[])
+ {
+-	size_t len = 0, retval;	/* return values for confstr(3C) */
++	int lc;
+ 	int i;
+-	char *buf = NULL;
+-
+-	tst_tmpdir();		/* Now temp file is open */
+-
+-/*--------------------------------------------------------------------------*/
+-
+-	errno = 0;
+-	for (i = 0; confstr_vars[i]; i++) {
+-		len = confstr(confstr_var_vals[i], NULL, (size_t) 0);
+-		if (len != 0) {
+-			/* Allocate space for the buffer with size len */
+-			if ((buf = (char *)malloc(len)) == NULL) {
+-				tst_resm(TFAIL,
+-					 "\tmalloc() fails, error= %d\n",
+-					 errno);
+-				local_flag = FAILED;
+-				break;
+-			}
+-			/* Better to reset memory space of buffer */
+-			memset(buf, 0, len);
+-
+-			/* Get the value of config. variables thur. confstr */
+-			retval = confstr(confstr_var_vals[i], buf, len);
+-			if (retval != len) {
+-				tst_resm(TFAIL,
+-					 "\tconfstr returns invalid value :%s for variable: %s\n",
+-					 buf, confstr_vars[i]);
+-				local_flag = FAILED;
+-
+-				/* Free the memory and exit from loop */
++	char *buf;
++	int len;
 +
-+#define SYSFS_CPU_DIR "/sys/devices/system/cpu/"
++	setup();
 +
-+const char boost[]	= SYSFS_CPU_DIR "cpufreq/boost";
-+static int boost_value;
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		for (i = 0; i < TST_TOTAL; i++) {
++			TEST(confstr(test_cases[i].value, NULL, (size_t)0));
++			if (TEST_RETURN != 0) {
++				len = TEST_RETURN;
++				buf = SAFE_MALLOC(cleanup, len);
++				memset(buf, 0, len);
++				TEST(confstr(test_cases[i].value, buf, len));
++				if (TEST_RETURN != len) {
++					tst_brkm(TBROK, cleanup,
++						 "confstr :%s failed",
++						 test_cases[i].name);
++				} else {
++					tst_resm(TPASS, "confstr %s success",
++						 test_cases[i].name);
++				}
+ 				free(buf);
+-				break;
+-			}
+-
+-			/* Free the memory allocated for config. name */
+-			free(buf);
+-			/* Reset the buffer contents to NULL */
+-			buf = '\0';
+-		} else {
+-			if (!buf) {
+-				if ((!strcmp("XXX5_MYBIG_VERBIG_MYFLAGS",
+-					     confstr_vars[i])) &&
+-				    (errno != EINVAL)) {
++				buf = NULL;
++			} else {
++				if (TEST_ERRNO == EINVAL) {
++					tst_resm(TCONF,
++						 "confstr %s not supported",
++						 test_cases[i].name);
++				} else {
+ 					tst_resm(TFAIL,
+-						 "\tconfstr returns invalid error %d\n",
+-						 errno);
+-					local_flag = FAILED;
+-					break;
++						 "confstr %s failed",
++						 test_cases[i].name);
+ 				}
+-			} else {
+-				tst_resm(TFAIL,
+-					 "\tconfstr returns string value: %s for variable %s\n",
+-					 buf, confstr_vars[i]);
+-				local_flag = FAILED;
+-				break;
+ 			}
+ 		}
+ 	}
+-	(local_flag == PASSED) ? tst_resm(TPASS, "Test Passed")
+-	    : tst_resm(TFAIL, "Test Failed");
+ 
+-	tst_rmdir();
+-/*--------------------------------------------------------------*/
+-	tst_exit();		/* THIS CALL DOES NOT RETURN - EXITS!!  */
+-/*--------------------------------------------------------------*/
++	cleanup();
 +
-+const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
-+static char governor_name[16];
-+
-+const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
-+const char curspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/cpuinfo_cur_freq";
-+const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
-+
-+const char up_limit[]	= SYSFS_CPU_DIR "cpufreq/ondemand/up_threshold";
-+static int threshold;
-+
-+static void cleanup(void)
-+{
-+	SAFE_FILE_PRINTF(NULL, boost, "%d", boost_value);
-+
-+	if (governor[0] != '\0')
-+		SAFE_FILE_PRINTF(NULL, governor, "%s", governor_name);
-+
-+	if (threshold)
-+		SAFE_FILE_PRINTF(NULL, up_limit, "%d", threshold);
-+
-+	TEST_CLEANUP;
+ 	tst_exit();
 +}
 +
 +static void setup(void)
 +{
-+	if (tst_kvercmp(3, 7, 0) < 0) {
-+		tst_brkm(TCONF, NULL,
-+			"disable overclocking required Linux 3.7+");
-+		return;
-+	}
-+
-+	if (access(boost, R_OK | W_OK)) {
-+		tst_brkm(TCONF, NULL,
-+			"acpi-cpufreq not loaded or overclock not supported");
-+		return;
-+	}
-+
-+	SAFE_FILE_SCANF(NULL, boost, "%d", &boost_value);
-+
-+	SAFE_FILE_SCANF(NULL, up_limit, "%d", &threshold);
-+
-+	/* change cpu0 scaling governor */
-+	SAFE_FILE_SCANF(NULL, governor, "%s", governor_name);
-+	SAFE_FILE_PRINTF(cleanup, governor, "%s", "userspace");
-+
-+	/* use only cpu0 */
-+	cpu_set_t set;
-+	CPU_ZERO(&set);
-+	CPU_SET(0, &set);
-+	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU0");
-+
-+	SAFE_FILE_PRINTF(cleanup, up_limit, "11");
++	TEST_PAUSE;
 +}
-+
-+static void set_speed(int freq)
+ 
++static void cleanup(void)
 +{
-+	int set_freq;
-+	SAFE_FILE_SCANF(cleanup, setspeed, "%d", &set_freq);
-+
-+	if (set_freq != freq) {
-+		tst_resm(TINFO, "change speed from %d to %d...",
-+			set_freq, freq);
-+		SAFE_FILE_PRINTF(cleanup, setspeed, "%d", freq);
-+	} else {
-+		tst_resm(TINFO, "set speed is %d", set_freq);
-+	}
-+}
-+
-+void *thread_fn(void *val)
-+{
-+	struct timeval tv_start;
-+	struct timeval tv_end;
-+	int i, res = 0;
-+	intptr_t timeout = (intptr_t) val;
-+
-+	gettimeofday(&tv_start, NULL);
-+	tst_resm(TINFO, "load CPU0 for %ld sec...", timeout);
-+
-+	do {
-+		for (i = 1; i < 1000; ++i)
-+			res += i * i;
-+		gettimeofday(&tv_end, NULL);
-+	} while ((tv_end.tv_sec - tv_start.tv_sec) < timeout);
-+
-+	tst_resm(TINFO, "CPU0 load done: insignificant value '%d'", res);
-+
-+	return NULL;
-+}
-+
-+static int load_cpu(intptr_t timeout)
-+{
-+	pthread_t thread_id;
-+
-+	if (pthread_create(&thread_id, 0, thread_fn,
-+		(intptr_t *) timeout) != 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			"pthread_create failed at %s:%d",
-+			__FILE__, __LINE__);
-+	}
-+
-+	sleep(2 * timeout / 3);
-+
-+	int cur_freq;
-+	SAFE_FILE_SCANF(cleanup, curspeed, "%d", &cur_freq);
-+	tst_resm(TINFO, "got cpu freq under load: %d", cur_freq);
-+
-+	pthread_join(thread_id, NULL);
-+
-+	return cur_freq;
-+}
-+
-+static void test_run(void)
-+{
-+	int cur_freq, max_freq;
-+	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq);
-+	set_speed(max_freq);
-+
-+	/* Enable boost */
-+	if (boost_value == 0)
-+		SAFE_FILE_PRINTF(cleanup, boost, "1");
-+	cur_freq = load_cpu(30);
-+	tst_resm((cur_freq >= max_freq) ? TPASS : TFAIL,
-+		"compare current speed %d and max speed %d",
-+		cur_freq, max_freq);
-+
-+	/* Disable boost */
-+	SAFE_FILE_PRINTF(cleanup, boost, "0");
-+	cur_freq = load_cpu(30);
-+	tst_resm((cur_freq < max_freq) ? TPASS : TFAIL,
-+		"compare current speed %d and max speed %d",
-+		cur_freq, max_freq);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	tst_require_root(NULL);
-+
-+	if (tst_kvercmp(3, 7, 0) < 0) {
-+		tst_brkm(TCONF, NULL,
-+			"Test must be run with kernel 3.7 or newer");
-+	}
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	setup();
-+
-+	test_run();
-+
-+	cleanup();
-+
-+	tst_exit();
-+}
++	TEST_CLEANUP;
+ }
 -- 
-1.7.1
+1.8.2.1
+
+
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
+OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
+Free app hosting. Or install the open source package on any LAMP server.
+Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
+http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
