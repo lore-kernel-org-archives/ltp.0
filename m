@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VhDO1-0002Ri-4k
-	for ltp-list@lists.sourceforge.net; Fri, 15 Nov 2013 07:00:13 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1ViNwR-00037d-Mq
+	for ltp-list@lists.sourceforge.net; Mon, 18 Nov 2013 12:28:35 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VhDNy-0001CV-SM
-	for ltp-list@lists.sourceforge.net; Fri, 15 Nov 2013 07:00:13 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ViNwN-0000Fa-Ta
+	for ltp-list@lists.sourceforge.net; Mon, 18 Nov 2013 12:28:35 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAF6iwWm028444
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Nov 2013 14:44:59 +0800
-Message-ID: <1384497891.12576.3.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 15 Nov 2013 14:44:51 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] creat/creat06.c: cleanup
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAICSNAT015205
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 Nov 2013 20:28:23 +0800
+Message-ID: <528A07E4.7060608@cn.fujitsu.com>
+Date: Mon, 18 Nov 2013 20:28:20 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] testscripts/test_robind.sh: add fs_readonly to default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,244 +28,395 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-cleanup of creat06.c
+cleanup of testscripts/test_robind.sh
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+testscripts/fs_ro_tests: delete some unecessary tests
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/creat/creat06.c | 146 ++++++++++--------------------
- 1 file changed, 48 insertions(+), 98 deletions(-)
+ scenario_groups/default    |   1 +
+ testscripts/fs_ro_tests    |  19 ----
+ testscripts/test_robind.sh | 272 ++++++++++++++++++++++-----------------------
+ 3 files changed, 134 insertions(+), 158 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/creat/creat06.c b/testcases/kernel/syscalls/creat/creat06.c
-index 51e46ab..6247c11 100644
---- a/testcases/kernel/syscalls/creat/creat06.c
-+++ b/testcases/kernel/syscalls/creat/creat06.c
-@@ -13,8 +13,8 @@
-  *   the GNU General Public License for more details.
-  *
-  *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   along with this program;  if not, write to the Free Software Foundation,
-+ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 9eca8ad..520db8b 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -25,3 +25,4 @@ hugetlb
+ commands
+ hyperthreading
+ kernel_misc
++fs_readonly
+diff --git a/testscripts/fs_ro_tests b/testscripts/fs_ro_tests
+index ec4a86c..2ecd9c5 100644
+--- a/testscripts/fs_ro_tests
++++ b/testscripts/fs_ro_tests
+@@ -35,22 +35,3 @@ rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10
+ rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:rwtest01%f
+ rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+ fs_inod . 10 10 1
+-linktest.pl
+-openfile -f10 -t10
+-inode01
+-inode02
+-stream01
+-stream02
+-stream03
+-stream04
+-stream05
+-ftest01
+-ftest02
+-ftest03
+-ftest04
+-ftest05
+-ftest06
+-ftest07
+-ftest08
+-lftest 80
+-writetest
+diff --git a/testscripts/test_robind.sh b/testscripts/test_robind.sh
+index 4c01f4e..231419a 100755
+--- a/testscripts/test_robind.sh
++++ b/testscripts/test_robind.sh
+@@ -45,23 +45,20 @@
+ $trace_logic
  
- /*
-@@ -70,84 +70,62 @@
- #include <fcntl.h>
- #include "test.h"
- #include "usctest.h"
--
--void setup(void);
--void cleanup(void);
--
--char user1name[] = "nobody";
--
--char *TCID = "creat06";
--int fileHandle = 0;
--
--int exp_enos[] = { EISDIR, ENAMETOOLONG, ENOENT, ENOTDIR, EFAULT, EACCES, 0 };
--
--#define	MODE1	0444
--#define	MODE2	0666
--#define NSIZE	1000
--
--char long_name[] =
--    "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
--
--char good_dir[NSIZE];
--char no_dir[] = "testfile/testdir";
--char not_dir[] = "file1/testdir";
--char test6_file[] = "dir6/file6";
--char nobody_uid[] = "nobody";
--
--struct passwd *ltpuser;
--struct test_case_t {
-+#include "safe_macros.h"
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+#define	MODE1		0444
-+#define	MODE2		0666
-+#define NSIZE		1000
-+#define NO_DIR		"testfile/testdir"
-+#define NOT_DIR		"file1/testdir"
-+#define TEST6_FILE	"dir6/file6"
-+
-+static char long_name[PATH_MAX+2];
-+static char good_dir[NSIZE];
-+static int filehandle;
-+static char *bad_addr;
-+static struct passwd *ltpuser;
-+static struct test_case_t {
- 	char *fname;
- 	int mode;
- 	int error;
-+	void (*setup)(void);
- } TC[] = {
--	/* The file name is an existing directory */
--	{
--	good_dir, MODE1, EISDIR},
--	    /* The file name is too long - ENAMETOOLONG */
--	{
--	long_name, MODE1, ENAMETOOLONG},
--	    /* Attempt to create a file in a directory that doesn't exist - ENOENT */
--	{
--	no_dir, MODE1, ENOENT},
--	    /* a compent of the file's path is not a directory - ENOTDIR */
--	{
--	not_dir, MODE1, ENOTDIR},
-+	{good_dir, MODE1, EISDIR, NULL},
-+	{long_name, MODE1, ENAMETOOLONG, NULL},
-+	{NO_DIR, MODE1, ENOENT, NULL},
-+	{NOT_DIR, MODE1, ENOTDIR, NULL},
- #if !defined(UCLINUX)
--	    /* The file address is bad - EFAULT */
--	{
--	(char *)-1, MODE1, EFAULT},
-+	{(char *)-1, MODE1, EFAULT, NULL},
- #endif
--	    /* The directory lacks execute permission - EACCES */
--	{
--	test6_file, MODE1, EACCES}
-+	{TEST6_FILE, MODE1, EACCES, NULL},
- };
+ # The test case ID, the test case count and the total number of test case
+-TCID=${TCID:-test_robind.sh}
+-TST_TOTAL=1
+-TST_COUNT=1
+-export TCID
+-export TST_COUNT
+-export TST_TOTAL
++export TCID=${TCID:-test_robind.sh}
++export TST_TOTAL=1
++export TST_COUNT=1
  
--int TST_TOTAL = (sizeof(TC) / sizeof(*TC));
--
--char *bad_addr = 0;
-+char *TCID = "creat06";
-+int TST_TOTAL = ARRAY_SIZE(TC);
-+static int exp_enos[] = { EISDIR, ENAMETOOLONG, ENOENT, ENOTDIR,
-+			  EFAULT, EACCES, 0 };
- 
- int main(int ac, char **av)
+ usage()
  {
- 	int lc;
--	char *msg;
- 	int i;
+-  cat << EOF
+-  usage: $0 [ext3,ext2,jfs,xfs,reiserfs,ramfs]
++	cat << EOF
++usage: $0 [ext3,ext2,jfs,xfs,reiserfs,ramfs]
  
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
- 	setup();
+-  This script verifies ReadOnly-filesystem, by mounting imagefile and
+-  executing the filesystem tests.
++	This script verifies ReadOnly-filesystem, by mounting imagefile and
++executing the filesystem tests.
  
--	/* set up the expected errnos */
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
- 
--		/* loop through the test cases */
- 		for (i = 0; i < TST_TOTAL; i++) {
- 
-+			if (TC[i].setup)
-+				TC[i].setup();
-+
- 			TEST(creat(TC[i].fname, TC[i].mode));
- 
- 			if (TEST_RETURN != -1) {
-@@ -155,8 +133,6 @@ int main(int ac, char **av)
- 				continue;
- 			}
- 
--			TEST_ERROR_LOG(TEST_ERRNO);
--
- 			if (TEST_ERRNO == TC[i].error) {
- 				tst_resm(TPASS | TTERRNO,
- 					 "got expected failure");
-@@ -171,21 +147,15 @@ int main(int ac, char **av)
- 	tst_exit();
+-  OPTIONS
+-    -h    display this message and exit
++OPTIONS
++	-h    display this message and exit
+ EOF
  }
  
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup()
-+static void setup(void)
+@@ -81,18 +78,15 @@ trap cleanup INT
+ #==============================================================================
+ function cleanup
  {
- 	char *cur_dir = NULL;
- 
- 	tst_require_root(NULL);
- 
--	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "getpwnam failed");
--	if (seteuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "seteuid(%d) failed", ltpuser->pw_uid);
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-@@ -193,47 +163,27 @@ void setup()
- 
- 	tst_tmpdir();
- 
--	/* get the current directory for the first test */
--	if ((cur_dir = getcwd(cur_dir, 0)) == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
--	}
-+	cur_dir = SAFE_GETCWD(cleanup, cur_dir, 0);
- 
- 	strncpy(good_dir, cur_dir, NSIZE);
- 
--	/* create a file that will be used in test #3 */
--	if ((fileHandle = creat("file1", MODE1)) == -1) {
--		tst_brkm(TBROK, cleanup, "couldn't create a test file");
--	}
-+	if (memset(long_name, 'a', PATH_MAX+1) == NULL)
-+		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
-+
-+	filehandle = SAFE_CREAT(cleanup, "file1", MODE1);
-+
- #if !defined(UCLINUX)
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
--	}
-+	bad_addr = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
-+			     MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
- 	TC[4].fname = bad_addr;
- #endif
- 
--	/* create a directory that will be used in test #6 */
--	if (mkdir("dir6", MODE2) == -1) {
--		tst_brkm(TBROK, cleanup, "couldn't creat a test directory");
--	}
-+	SAFE_MKDIR(cleanup, "dir6", MODE2);
+-    umount ${TMPDIR}/dir3-ro 2> /dev/null > /dev/null
+-    umount ${TMPDIR}/dir2-bound 2> /dev/null 1> /dev/null
+-    umount ${TMPDIR}/dir1 2> /dev/null 1> /dev/null
+-    if [ ! -z $1 ]; then {
+-        rm -rf $1 || true
+-    }
+-    fi
++	umount ${TMPDIR}/dir3-ro 2> /dev/null > /dev/null
++	umount ${TMPDIR}/dir2-bound 2> /dev/null 1> /dev/null
++	umount ${TMPDIR}/dir1 2> /dev/null 1> /dev/null
++	if [ ! -z $1 ]; then
++		rm -rf $1 || true
++	fi
  }
  
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup()
-+static void cleanup(void)
+-#===============================================================================
+-# FUNCTION NAME:    setup
+-#
++#=============================================================================== # FUNCTION NAME:    setup #
+ # FUNCTION DESCRIPTION: Does the initailization
+ #
+ # PARAMETERS:   File_systems (if any )
+@@ -101,33 +95,33 @@ function cleanup
+ #===============================================================================
+ function setup
  {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
--	close(fileHandle);
--
- 	TEST_CLEANUP;
+-    mkdir ${TMPDIR}
+-    FAILLOG="$TMPDIR/errs.log"
+-    PASSLOG="$TMPDIR/pass.log"
++	mkdir ${TMPDIR}
++	FAILLOG="$TMPDIR/errs.log"
++	PASSLOG="$TMPDIR/pass.log"
  
--	/* delete the test directory created in setup() */
- 	tst_rmdir();
--
+-    for i in $DIRS; do
+-        rm -rf ${TMPDIR}/$i || true
+-        mkdir -p ${TMPDIR}/$i
+-    done;
++	for i in $DIRS; do
++		rm -rf ${TMPDIR}/$i || true
++		mkdir -p ${TMPDIR}/$i
++	done;
+ 
+-    # Populating the default FS as ext3, if FS is not given
+-    if [ -z "$*" ]; then
+-        FSTYPES="ext3"
+-    else
+-        FSTYPES="$*"
+-    fi
++	# Populating the default FS as ext3, if FS is not given
++	if [ -z "$*" ]; then
++		FSTYPES="ext3"
++	else
++		FSTYPES="$*"
++	fi
+ 
+-    # set the LTPROOT directory
+-    cd `dirname $0`
+-    echo "${PWD}" | grep testscripts > /dev/null 2>&1
+-    if [ $? -eq 0 ]; then
+-        cd ..
+-        export LTPROOT="${PWD}"
+-        export PATH="${PATH}:${LTPROOT}/testcases/bin"
+-    fi
++	# set the LTPROOT directory
++	cd `dirname $0`
++	echo "${PWD}" | grep testscripts > /dev/null 2>&1
++	if [ $? -eq 0 ]; then
++		cd ..
++		export LTPROOT="${PWD}"
++		export PATH="${PATH}:${LTPROOT}/testcases/bin"
++	fi
+ 
+-    FS_Tests="${LTPROOT}/testscripts/fs_ro_tests"
+-    cd ${TMPDIR}
++	FS_Tests="${LTPROOT}/testscripts/fs_ro_tests"
++	cd ${TMPDIR}
  }
+ 
+ #=============================================================================
+@@ -141,61 +135,61 @@ function setup
+ #=============================================================================
+ function testdir
+ {
+-    dir=$1
+-    fs=$2
+-    RO=$3
+-    pushd $dir
+-    testnums=`wc -l $FS_Tests | cut -f1 -d" "`
+-    status=0
++	dir=$1
++	fs=$2
++	RO=$3
++	pushd $dir
++	testnums=`wc -l $FS_Tests | cut -f1 -d" "`
++	status=0
++
++	echo "---------------------------------------------------" >> $FAILLOG ;
++	echo "Running RO-FileSystem Tests for $dir $fs filesystem" >> $FAILLOG ;
++	echo "---------------------------------------------------" >> $FAILLOG ;
+ 
+-    echo "---------------------------------------------------" >> $FAILLOG ;
+-    echo "Running RO-FileSystem Tests for $dir $fs filesystem" >> $FAILLOG ;
+-    echo "---------------------------------------------------" >> $FAILLOG ;
++	echo "---------------------------------------------------" >> $PASSLOG ;
++	echo "Running RO-FileSystem Tests for $dir $fs filesystem" >> $PASSLOG ;
++	echo "---------------------------------------------------" >> $PASSLOG ;
+ 
+-    echo "---------------------------------------------------" >> $PASSLOG ;
+-    echo "Running RO-FileSystem Tests for $dir $fs filesystem" >> $PASSLOG ;
+-    echo "---------------------------------------------------" >> $PASSLOG ;
++	export TDIRECTORY=$PWD ;
++	echo TDIR is $TDIRECTORY;
++	if [ $RO == false ] ; then	# Testing Read-Write dir
++		for tests in `seq $testnums` ; do
++			cmd=`cat $FS_Tests | head -$tests | tail -n 1`
++			eval $cmd 2> /dev/null 1> /dev/null
++			if [ $? -eq 0 ]; then
++				echo "$tests. '$cmd' PASS" >> $PASSLOG
++			else
++				echo "$tests. '$cmd' FAIL " >> $FAILLOG
++				status=1
++			fi
++		done
+ 
+-    export TDIRECTORY=$PWD ;
+-    echo TDIR is $TDIRECTORY;
+-    if [ $RO == false ] ; then                          # Testing Read-Write dir
+-        for tests in `seq $testnums` ; do
+-            cmd=`cat $FS_Tests | head -$tests | tail -n 1`
+-#            eval $cmd 2>&1 /dev/null
+-            eval $cmd 2> /dev/null 1> /dev/null
+-            if [ $? -eq 0 ]; then
+-                echo "$tests. '$cmd' PASS" >> $PASSLOG
+-            else
+-                echo "$tests. '$cmd' FAIL " >> $FAILLOG
+-                echo "TDIR is $TDIRECTORY" >> $FAILLOG;
+-                status=1
+-            fi
+-        done
++	else	# Testing Read-Only dir
++		for tests in `seq $testnums` ; do
++			cmd=`cat $FS_Tests | head -$tests | tail -n 1`
++			eval $cmd 2> /dev/null 1> /dev/null
++			if [ $? -ne 0 ]; then
++				echo "$tests. '$cmd' PASS " >> $PASSLOG
++			else
++				echo "$tests. '$cmd' FAIL" >> $FAILLOG
++				status=1
++			fi
++		done
++	fi
+ 
+-    else                                                # Testing Read-Only dir
+-        for tests in `seq $testnums` ; do
+-            cmd=`cat $FS_Tests | head -$tests | tail -n 1`
+-            eval $cmd 2> /dev/null 1> /dev/null
+-            if [ $? -ne 0 ]; then
+-                echo "$tests. '$cmd' PASS " >> $PASSLOG
+-            else
+-                 echo "$tests. '$cmd' FAIL" >> $FAILLOG
+-                 status=1
+-            fi
+-        done
+-    fi
+-    if [ $status == 1 ] ; then
+-        echo "RO-FileSystem Tests FAILED for $dir $fs filesystem" >> $FAILLOG
+-        echo >> $FAILLOG
+-        retcode=$status
+-    else
+-        echo "RO-FileSystem Tests PASSed for $dir $fs filesystem" >> $PASSLOG
+-        echo >> $PASSLOG
+-    fi
+-    # Remove all the temp-files created.
+-    eval rm -rf ${TMPDIR}/${dir}/* > /dev/null 2>&1 || true
+-    unset TDIRECTORY
+-    popd
++	if [ $status == 1 ] ; then
++		echo "RO-FileSystem Tests FAILED for $dir $fs filesystem" >> $FAILLOG
++		echo >> $FAILLOG
++		retcode=$status
++	else
++		echo "RO-FileSystem Tests PASSed for $dir $fs filesystem" >> $PASSLOG
++		echo >> $PASSLOG
++	fi
++
++	# Remove all the temp-files created.
++	rm -rf ${TMPDIR}/${dir}/* > /dev/null 2>&1 || true
++	unset TDIRECTORY
++	popd
+ }
+ 
+ #=============================================================================
+@@ -205,17 +199,18 @@ function testdir
+ #=============================================================================
+ retcode=0
+ while getopts h: OPTION; do
+-  case $OPTION in
+-    h)
+-      usage
+-      exit 1
+-      ;;
+-    ?)
+-      usage
+-      exit 1
+-      ;;
+-  esac
++	case $OPTION in
++	h)
++		usage
++		exit 1
++		;;
++	?)
++		usage
++		exit 1
++		;;
++	esac
+ done
++
+ # Does the initial setups
+ oldpwd=${PWD}
+ setup $*
+@@ -223,43 +218,42 @@ setup $*
+ # Executes the tests for differnt FS's
+ # Creates an image file of 500 MB and mounts it.
+ for fstype in $FSTYPES; do
+-    image=$fstype.img
+-    dd if=/dev/zero of=$image bs=$((1<<20)) count=500 2> /dev/null 1> /dev/null
+-    if [ $? -ne 0 ] ; then
+-        tst_resm, TFAIL "Unable to create image "
+-        tst_resm, TFAIL "Free Disk space of 512MB is required in /tmp fs"
+-        tst_resm, TFAIL "Please free it and rerun thank you.."
+-        rm -f $image
+-        exit -1
+-    fi
++	image=$fstype.img
++	dd if=/dev/zero of=$image bs=$((1<<20)) count=500 2> /dev/null 1> /dev/null
++	if [ $? -ne 0 ] ; then
++		tst_resm  TFAIL "Unable to create image "
++		tst_resm  TFAIL "Free Disk space of 512MB is required in /tmp fs"
++		tst_resm  TFAIL "Please free it and rerun thank you.."
++		rm -f $image
++		exit -1
++	fi
+ 
+-    OPTS="-F"
+-    if [ "$fstype" == "reiserfs" ]; then
+-    OPTS="-f --journal-size 513 -q"
+-    elif [ "$fstype" == "jfs" ]; then
+-    OPTS="-f"
+-    elif [ "$fstype" == "xfs" ]; then
+-    OPTS=""
+-    fi
++	OPTS="-F"
++	if [ "$fstype" == "reiserfs" ]; then
++		OPTS="-f --journal-size 513 -q"
++	elif [ "$fstype" == "jfs" ]; then
++		OPTS="-f"
++	elif [ "$fstype" == "xfs" ]; then
++		OPTS=""
++	fi
+ 
+-    if [ "$fstype" != "ramfs" ] ; then
+-        mkfs.$fstype $OPTS $image 2> /dev/null 1> /dev/null
+-    fi
++	if [ "$fstype" != "ramfs" ] ; then
++		mkfs.$fstype $OPTS $image 2> /dev/null 1> /dev/null
++	fi
+ 
+-    mount -t $fstype -o loop $image dir1
+-    mount --bind dir1 dir2-bound || exit -1
+-    mount --bind dir1 dir3-ro    || exit -1
+-    mount -o remount,ro dir3-ro  || exit -1
++	mount -t $fstype -o loop $image dir1
++	mount --bind dir1 dir2-bound || exit -1
++	mount --bind dir1 dir3-ro    || exit -1
++	mount -o remount,ro,bind dir1 dir3-ro  || exit -1
+ 
+-    testdir dir1 $fstype false
+-    testdir dir2-bound $fstype false
+-    testdir dir3-ro $fstype true
+-    cleanup $image
++	testdir dir1 $fstype false
++	testdir dir2-bound $fstype false
++	testdir dir3-ro $fstype true
++	cleanup $image
+ done
+ 
+-    for i in $DIRS; do
+-        rm -rf ./$i || true
+-    done;
+-    cd $oldpwd || true
+-    exit $retcode
++for i in $DIRS; do
++	rm -rf ./$i || true
++done;
+ 
++exit $retcode
 -- 
 1.8.2.1
-
-
 
 
 ------------------------------------------------------------------------------
