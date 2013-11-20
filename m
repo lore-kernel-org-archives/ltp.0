@@ -1,31 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1VdGah-0002eB-2F
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 09:36:59 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VdGaf-0005lw-0y
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 09:36:59 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA49aoVn018468
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 09:36:51 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA49aopu028947
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 09:36:50 GMT
-Received: from abhmt106.oracle.com (abhmt106.oracle.com [141.146.116.58])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA49aoeO028944
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 09:36:50 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Mon,  4 Nov 2013 17:36:41 +0800
-Message-Id: <1383557801-1603-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP] [PATCH] tcpdump01: fix the way to identify network interface
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Vj2rs-0000nm-2D
+	for ltp-list@lists.sourceforge.net; Wed, 20 Nov 2013 08:10:36 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vj2rp-00038V-HN
+	for ltp-list@lists.sourceforge.net; Wed, 20 Nov 2013 08:10:36 +0000
+Date: Wed, 20 Nov 2013 03:10:19 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <236728861.37114527.1384935019282.JavaMail.root@redhat.com>
+In-Reply-To: <20131119214612.GA2120@p100.box>
+References: <20131119214612.GA2120@p100.box>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] fix readv01 testcase for parisc architecture
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,64 +24,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Helge Deller <deller@gmx.de>
+Cc: ltp-list@lists.sourceforge.net
 
-The script tries to identify network interface that can communicate with RHOST
-by searching for the IP of RHOST in ifconfig output on localhost, which doesn't
-make any sense when RHOST is not localhost.  This patch changes the script to
-indetify the network interface by ping RHOST.
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
----
- testcases/network/tcp_cmds/tcpdump/tcpdump01 | 20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
-index 4866720..6d6d399 100755
---- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
-+++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
-@@ -48,22 +48,12 @@ do_setup()
- 
-     exists awk grep host hostname ifconfig netstat ping tail tcpdump
-     RHOST=${RHOST:-`hostname`}
--    IP=`host ${RHOST} 2>/dev/null | awk '{print $4}'`
--    IFNUMS=`netstat -i|wc -l`
--    IFNUMS=$(( $IFNUMS - 2 ))
--    IFNAME=${IFNAME:-$(netstat -i | awk '{print $1}' | tail -n ${IFNUMS})}
--
--    for i in ${IFNAME}; do
--        if ifconfig ${i} | grep $IP; then
--            IF=$i
--            break
--        fi
-+    # Find the first interface that can ping RHOST
-+    IF=""
-+    for i in $(netstat -i | tail -n+3 | sed '/^lo/d' | cut -f1 -d' '); do
-+        ping -I $i -c 3 $RHOST && { IF="$i"; break; }
-     done
--    # Default to empty string if unset, to avoid errors caused by set -u, which we use (see cmdlib.sh)
--    if [ -z "${IF:-}" ]; then
--        end_testcase "Could not identify interface"
--        exit 1
--    fi
-+    test -z $IF && end_testcase "Could not find an interface that can ping remote host $RHOST"
-     IFNAME=${IF}
-     NUMLOOPS=${NUMLOOPS:-20}
-     OUTFILE=$TCtmp/tcpdump_out
--- 
-1.8.4.2
 
+
+----- Original Message -----
+> From: "Helge Deller" <deller@gmx.de>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 19 November, 2013 10:46:12 PM
+> Subject: [LTP] [PATCH] fix readv01 testcase for parisc architecture
+> 
+> In the second test of readv01 the rd_iovec[] array was not defined or
+> zero-initialized for vectors which will be accessed by the readv() syscall.
+> This leads to the fact that on the parisc platform the readv syscall accessed
+> random memory which is located behind the array.  Fix this problem by adding
+> two more vectors with address NULL and length 0.
+
+Hi,
+
+It shouldn't be behind, since rd_iovec array has size of MAX_IOVEC == 16.
+
+It's partially initialized, and looking at C99 6.7.8.21, I'd expect the
+rest to be zero-initialized as well:
+"If there are fewer initializers in a brace-enclosed list than there are elements or members
+of an aggregate, or fewer characters in a string literal used to initialize an array of known
+size than there are elements in the array, the remainder of the aggregate shall be
+initialized implicitly the same as objects that have static storage duration."
+
+If you add 'static' to rd_iovec array, does the problem go away?
+What compiler are you using?
+
+> 
+> Furthermore, in the test2 itself we tell readv() to read 4 vecors, while
+> the error message behind it says that it has read CHUNK bytes "followed
+> by *two* NULL vectors", which then sums up to a total of 3 vectors
+> instead of 4.
+> Fix this by calling readv() with only 3 vectors instead of 4.
+
+Agreed.
+
+Regards,
+Jan
+
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
+> diff --git a/testcases/kernel/syscalls/readv/readv01.c
+> b/testcases/kernel/syscalls/readv/readv01.c
+> index d92c1be..ca83310 100644
+> --- a/testcases/kernel/syscalls/readv/readv01.c
+> +++ b/testcases/kernel/syscalls/readv/readv01.c
+> @@ -66,7 +66,9 @@ struct iovec rd_iovec[MAX_IOVEC] = {
+>  	{(buf2 + CHUNK * 10), CHUNK},
+>  
+>  	/* Test case #2 */
+> -	{(buf2 + CHUNK * 11), CHUNK}
+> +	{(buf2 + CHUNK * 11), CHUNK},
+> +	{NULL, 0},
+> +	{NULL, 0}
+>  };
+>  
+>  char f_name[K_1];
+> @@ -112,7 +114,7 @@ int main(int ac, char **av)
+>  
+>  //test2:
+>  		l_seek(fd, CHUNK * 12, 0);
+> -		if (readv(fd, (rd_iovec + 1), 4) != CHUNK) {
+> +		if (readv(fd, (rd_iovec + 1), 3) != CHUNK) {
+>  			tst_resm(TFAIL, "readv failed reading %d bytes, "
+>  				 "followed by two NULL vectors", CHUNK);
+>  		} else {
+> 
+> ------------------------------------------------------------------------------
+> Shape the Mobile Experience: Free Subscription
+> Software experts and developers: Be at the forefront of tech innovation.
+> Intel(R) Software Adrenaline delivers strategic insight and game-changing
+> conversations that shape the rapidly evolving mobile landscape. Sign up now.
+> http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
