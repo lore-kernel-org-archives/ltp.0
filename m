@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlLmm-00009l-PL
-	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 16:46:52 +0000
-Date: Tue, 26 Nov 2013 17:46:22 +0100
-From: chrubis@suse.cz
-Message-ID: <20131126164622.GD14089@rei.suse.cz>
-References: <1384514055.12576.15.camel@G08JYZSD130126>
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VjShC-00065h-E3
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 11:45:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VjSh8-0004AP-RO
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 11:45:18 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rALBj7xd017160
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Nov 2013 19:45:07 +0800
+Message-ID: <528DF23E.9080503@cn.fujitsu.com>
+Date: Thu, 21 Nov 2013 19:45:02 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1384514055.12576.15.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] confstr/confstr01.c: cleanup
+Subject: [LTP] [PATCH 3/3] fs/ext4-new-features: add ext4-new-features tests
+ to the, default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,262 +29,289 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> cleanup the confstr01.c test case.
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/confstr/confstr01.c | 183 ++++++++++----------------
->  1 file changed, 73 insertions(+), 110 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/confstr/confstr01.c b/testcases/kernel/syscalls/confstr/confstr01.c
-> index f301b35..b6aebf1 100644
-> --- a/testcases/kernel/syscalls/confstr/confstr01.c
-> +++ b/testcases/kernel/syscalls/confstr/confstr01.c
-> @@ -13,8 +13,8 @@
->   *   the GNU General Public License for more details.
->   *
->   *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *   along with this program;  if not, write to the Free Software Foundation,
-> + *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   */
->  
->  /* 11/20/2002	Port to LTP	robbiew@us.ibm.com */
-> @@ -33,134 +33,97 @@
->   *
->   */
->  
-> -#define _XOPEN_SOURCE	500
->  #include <unistd.h>
->  #include <stdio.h>
->  #include <sys/types.h>
->  #include <errno.h>
->  
-> -#define INVAL_FLAG	-1
-> -
-> -/** LTP Port **/
->  #include "test.h"
->  #include "usctest.h"
-> -
-> -#define FAILED 0
-> -#define PASSED 1
-> -
-> -int local_flag = PASSED;
-> +#include "safe_macros.h"
-> +
-> +static struct test_case_t {
-> +	int value;
-> +	char *name;
-> +} test_cases[] = {
-> +	{_CS_PATH, "PATH"},
-> +	{_CS_XBS5_ILP32_OFF32_CFLAGS, "XBS5_ILP32_OFF32_CFLAGS"},
-> +	{_CS_XBS5_ILP32_OFF32_LDFLAGS, "XBS5_ILP32_OFF32_LDFLAGS"},
-> +	{_CS_XBS5_ILP32_OFF32_LIBS, "XBS5_ILP32_OFF32_LIBS"},
-> +	{_CS_XBS5_ILP32_OFF32_LINTFLAGS, "XBS5_ILP32_OFF32_LINTFLAGS"},
-> +	{_CS_XBS5_ILP32_OFFBIG_CFLAGS, "XBS5_ILP32_OFFBIG_CFLAGS"},
-> +	{_CS_XBS5_ILP32_OFFBIG_LDFLAGS, "XBS5_ILP32_OFFBIG_LDFLAGS"},
-> +	{_CS_XBS5_ILP32_OFFBIG_LIBS, "XBS5_ILP32_OFFBIG_LIBS"},
-> +	{_CS_XBS5_ILP32_OFFBIG_LINTFLAGS, "XBS5_ILP32_OFFBIG_LINTFLAGS"},
-> +	{_CS_XBS5_LP64_OFF64_CFLAGS, "XBS5_LP64_OFF64_CFLAGS"},
-> +	{_CS_XBS5_LP64_OFF64_LDFLAGS, "XBS5_LP64_OFF64_LDFLAGS"},
-> +	{_CS_XBS5_LP64_OFF64_LIBS, "XBS5_LP64_OFF64_LIBS"},
-> +	{_CS_XBS5_LP64_OFF64_LINTFLAGS, "XBS5_LP64_OFF64_LINTFLAGS"},
-> +	{_CS_XBS5_LPBIG_OFFBIG_CFLAGS, "XBS5_LPBIG_OFFBIG_CFLAGS"},
-> +	{_CS_XBS5_LPBIG_OFFBIG_LDFLAGS, "XBS5_LPBIG_OFFBIG_LDFLAGS"},
-> +	{_CS_XBS5_LPBIG_OFFBIG_LIBS, "XBS5_LPBIG_OFFBIG_LIBS"},
-> +	{_CS_XBS5_LPBIG_OFFBIG_LINTFLAGS, "XBS5_LPBIG_OFFBIG_LINTFLAGS"},
-> +};
->  
->  char *TCID = "confstr01";
-> -int TST_TOTAL = 1;
-> -/**************/
-> -
-> -int confstr_var_vals[] = { _CS_PATH, _CS_XBS5_ILP32_OFF32_CFLAGS,
-> -	_CS_XBS5_ILP32_OFF32_LDFLAGS,
-> -	_CS_XBS5_ILP32_OFF32_LIBS,
-> -	_CS_XBS5_ILP32_OFF32_LINTFLAGS,
-> -	_CS_XBS5_ILP32_OFFBIG_CFLAGS,
-> -	_CS_XBS5_ILP32_OFFBIG_LDFLAGS,
-> -	_CS_XBS5_ILP32_OFFBIG_LIBS,
-> -	_CS_XBS5_ILP32_OFFBIG_LINTFLAGS,
-> -	_CS_XBS5_LP64_OFF64_CFLAGS,
-> -	_CS_XBS5_LP64_OFF64_LDFLAGS,
-> -	_CS_XBS5_LP64_OFF64_LIBS,
-> -	_CS_XBS5_LP64_OFF64_LINTFLAGS,
-> -	_CS_XBS5_LPBIG_OFFBIG_CFLAGS,
-> -	_CS_XBS5_LPBIG_OFFBIG_LDFLAGS,
-> -	_CS_XBS5_LPBIG_OFFBIG_LIBS,
-> -	_CS_XBS5_LPBIG_OFFBIG_LINTFLAGS,
-> -	0
-> -};
-> +int TST_TOTAL = ARRAY_SIZE(test_cases);
->  
-> -char *confstr_vars[] = { "PATH", "XBS5_ILP32_OFF32_CFLAGS",
-> -	"XBS5_ILP32_OFF32_LDFLAGS", "XBS5_ILP32_OFF32_LIBS",
-> -	"XBS5_ILP32_OFF32_LINTFLAGS",
-> -	"XBS5_ILP32_OFFBIG_CFLAGS",
-> -	"XBS5_ILP32_OFFBIG_LDFLAGS",
-> -	"XBS5_ILP32_OFFBIG_LIBS",
-> -	"XBS5_ILP32_OFFBIG_LINTFLAGS",
-> -	"XBS5_LP64_OFF64_CFLAGS",
-> -	"XBS5_LP64_OFF64_LDFLAGS",
-> -	"XBS5_LP64_OFF64_LIBS",
-> -	"XBS5_LP64_OFF64_LINTFLAGS",
-> -	"XBS5_LPBIG_OFFBIG_CFLAGS",
-> -	"XBS5_LPBIG_OFFBIG_LDFLAGS",
-> -	"XBS5_LPBIG_OFFBIG_LIBS",
-> -	"XBS5_LPBIG_OFFBIG_LINTFLAGS",
-> -	"XXX5_MYBIG_VERBIG_MYFLAGS",
-> -	0
-> -};
-> +static void setup(void);
-> +static void cleanup(void);
->  
-> -int main()
-> +int main(int argc, char *argv[])
->  {
-> -	size_t len = 0, retval;	/* return values for confstr(3C) */
-> +	int lc;
->  	int i;
 
-Add the option parsing code here.
+currently enable ext4-nsec-timestamps, ext4-persist-prealloc,
+ext4-subdir-limit, ext4-uninit-groups test.
 
-> -	char *buf = NULL;
-> -
-> -	tst_tmpdir();		/* Now temp file is open */
-> -
-> -/*--------------------------------------------------------------------------*/
-> -
-> -	errno = 0;
-> -	for (i = 0; confstr_vars[i]; i++) {
-> -		len = confstr(confstr_var_vals[i], NULL, (size_t) 0);
-> -		if (len != 0) {
-> -			/* Allocate space for the buffer with size len */
-> -			if ((buf = (char *)malloc(len)) == NULL) {
-> -				tst_resm(TFAIL,
-> -					 "\tmalloc() fails, error= %d\n",
-> -					 errno);
-> -				local_flag = FAILED;
-> -				break;
-> -			}
-> -			/* Better to reset memory space of buffer */
-> -			memset(buf, 0, len);
-> -
-> -			/* Get the value of config. variables thur. confstr */
-> -			retval = confstr(confstr_var_vals[i], buf, len);
-> -			if (retval != len) {
-> -				tst_resm(TFAIL,
-> -					 "\tconfstr returns invalid value :%s for variable: %s\n",
-> -					 buf, confstr_vars[i]);
-> -				local_flag = FAILED;
-> -
-> -				/* Free the memory and exit from loop */
-> +	char *buf;
-> +	int len;
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		for (i = 0; i < TST_TOTAL; i++) {
-> +			TEST(confstr(test_cases[i].value, NULL, (size_t)0));
-> +			if (TEST_RETURN != 0) {
-> +				len = TEST_RETURN;
-> +				buf = SAFE_MALLOC(cleanup, len);
-> +				memset(buf, 0, len);
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runtest/fs_ext4                                    |  5 ++-
+ .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |  5 +--
+ .../ext4-inode-version/ext4_inode_version_test.sh  |  6 +---
+ .../ext4-journal-checksum/ext4_journal_checksum.sh |  5 +--
+ .../ext4_nsec_timestamps_test.sh                   |  4 +--
+ .../ext4-online-defrag/ext4_online_defrag_test.sh  |  5 +--
+ .../ext4_persist_prealloc_test.sh                  |  5 +--
+ .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |  4 +--
+ .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |  4 +--
+ .../kernel/fs/ext4-new-features/ext4_funcs.sh      | 36 +++++++++++++---------
+ 10 files changed, 34 insertions(+), 45 deletions(-)
 
-There is no need to clear the buffer before it's passed to the confstr()
-call.
-
-> +				TEST(confstr(test_cases[i].value, buf, len));
-> +				if (TEST_RETURN != len) {
-> +					tst_brkm(TBROK, cleanup,
-> +						 "confstr :%s failed",
-> +						 test_cases[i].name);
-> +				} else {
-> +					tst_resm(TPASS, "confstr %s success",
-> +						 test_cases[i].name);
-
-I would check here that the buffer is zero terminated.
-
-> +				}
->  				free(buf);
-
-There is also no need to set the buf to NULL after the free()
-
-> -				break;
-> -			}
-> -
-> -			/* Free the memory allocated for config. name */
-> -			free(buf);
-> -			/* Reset the buffer contents to NULL */
-> -			buf = '\0';
-> -		} else {
-> -			if (!buf) {
-> -				if ((!strcmp("XXX5_MYBIG_VERBIG_MYFLAGS",
-> -					     confstr_vars[i])) &&
-> -				    (errno != EINVAL)) {
-> +				buf = NULL;
-> +			} else {
-> +				if (TEST_ERRNO == EINVAL) {
-> +					tst_resm(TCONF,
-> +						 "confstr %s not supported",
-> +						 test_cases[i].name);
-> +				} else {
->  					tst_resm(TFAIL,
-> -						 "\tconfstr returns invalid error %d\n",
-> -						 errno);
-> -					local_flag = FAILED;
-> -					break;
-> +						 "confstr %s failed",
-> +						 test_cases[i].name);
->  				}
-> -			} else {
-> -				tst_resm(TFAIL,
-> -					 "\tconfstr returns string value: %s for variable %s\n",
-> -					 buf, confstr_vars[i]);
-> -				local_flag = FAILED;
-> -				break;
->  			}
->  		}
->  	}
-> -	(local_flag == PASSED) ? tst_resm(TPASS, "Test Passed")
-> -	    : tst_resm(TFAIL, "Test Failed");
->  
-> -	tst_rmdir();
-> -/*--------------------------------------------------------------*/
-> -	tst_exit();		/* THIS CALL DOES NOT RETURN - EXITS!!  */
-> -/*--------------------------------------------------------------*/
-> +	cleanup();
-> +
->  	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	TEST_PAUSE;
-> +}
->  
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
->  }
-
+diff --git a/runtest/fs_ext4 b/runtest/fs_ext4
+index c65ebab..35b38de 100644
+--- a/runtest/fs_ext4
++++ b/runtest/fs_ext4
+@@ -1 +1,4 @@
+-ext4_new_feature_test	run_ext4_test.sh
++ext4-nsec-timestamps	ext4_nsec_timestamps_test.sh -D BIG_DEVICE
++ext4-uninit-groups	ext4_uninit_groups_test.sh -D BIG_DEVICE
++ext4-persist-prealloc	ext4_persist_prealloc_test.sh -D BIG_DEVICE
++ext4-subdir-limit	ext4_subdir_limit_test.sh -D BIG_DEVICE
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+index dfa34c4..e40a1d1 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+@@ -28,11 +28,8 @@ export TCID="ext4-delalloc-mballoc"
+ export TST_TOTAL=17
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-
+ export TEST_DIR=$PWD
+ 
+-read_config $1
+ 
+ # Case 17: mount ext4 partition to ext3
+ ext4_test_remount()
+@@ -124,7 +121,7 @@ ext4_test_delalloc_mballoc()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ DELALLOC=( "delalloc" "nodelalloc" )
+ DIRECT_IO=( 0 1 )
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+index 998c3e4..47e6d54 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+@@ -33,9 +33,6 @@ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+ 
+-# $1: the test config
+-read_config $1
+-
+ # Test that inode version is not 32 bits with 128 inode size
+ ext4_test_128_inode_version()
+ {
+@@ -111,7 +108,6 @@ test_inode_version()
+ 		return 1
+ 	fi
+ 
+-	umount mnt_point
+ 	if [ $? -ne 0 ]; then
+ 		tst_resm TFAIL "failed to umount ext4 filesystem"
+ 		return 1
+@@ -145,7 +141,7 @@ test_inode_version()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ RET=0
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+index 1fd9bba..6a011b6 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+@@ -31,11 +31,8 @@ export TCID="ext4-journal-checksum"
+ export TST_TOTAL=36
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-
+ export TEST_DIR=$PWD
+ 
+-read_config $1
+ 
+ # Use ffsb to test journal checksumming
+ # $1: journal mode: writeback, ordered, journal
+@@ -100,7 +97,7 @@ ext4_test_journal_checksum()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ DATA=( "writeback" "ordered" "journal" )
+ COMMIT=( 1 100 )
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+index c91c1af..710bc00 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+@@ -31,8 +31,6 @@ export TCID="ext4-nsec-timestamps"
+ export TST_TOTAL=2
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-read_config $1
+ 
+ TEST_DIR=$PWD
+ 
+@@ -173,7 +171,7 @@ ext4_test_nsec_timestamps()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ RET=0
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+index 2aa3e5b..9845404 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+@@ -30,9 +30,6 @@ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+ 
+-# $1: the test config
+-read_config $1
+-
+ # How to age filesystem
+ EMPTY=1
+ SMALL=2
+@@ -173,7 +170,7 @@ ext4_test_online_defrag()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ rm -f $LTPROOT/output/ext4_online_defrag_result.txt
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+index e41b104..a83a84f 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+@@ -33,9 +33,6 @@ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+ 
+-# $1: the test config
+-read_config $1
+-
+ # The test path of fallocate
+ export TMPDIR=$PWD/mnt_point/
+ 
+@@ -91,7 +88,7 @@ ext4_test_persist_prealloc()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ RET=0
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+index fdb6a08..e6ff372 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+@@ -31,8 +31,6 @@ export TCID="ext4-subdir-limit"
+ export TST_TOTAL=10
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-read_config $1
+ 
+ TEST_DIR=$PWD
+ SHORT_DIR=1
+@@ -138,7 +136,7 @@ ext4_run_case()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ DIR_LEN=( $SHORT_DIR $LONG_DIR )
+ PARENT_DIR=( "mnt_point" "mnt_point/sub" )
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+index e6d49e1..2f4911c 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+@@ -29,8 +29,6 @@ export TST_TOTAL=24
+ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+-# $1: the test config
+-read_config $1
+ 
+ # How to age filesystem
+ EMPTY=1
+@@ -128,7 +126,7 @@ ext4_test_uninit_groups()
+ }
+ 
+ # main
+-ext4_setup
++ext4_setup "$@"
+ 
+ ORLOV=( "orlov" "oldalloc" )
+ DELALLOC=( "delalloc" "nodelalloc" )
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+index b469bab..4bb3554 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+@@ -26,22 +26,30 @@
+ ext4_setup()
+ {
+ 	mkdir mnt_point
+-}
+ 
+-ext4_cleanup()
+-{
+-	rmdir mnt_point
++	while getopts D:T: arg
++	do
++		case $arg in
++		D)
++			export EXT4_DEV=$OPTARG
++			;;
++		T)
++			export FILE_SYSTEM_TYPE=$OPTARG
++			;;
++		\?)
++			echo "not supproted option"
++			;;
++		esac
++	done
++
++	# "d" indicates a invalid block device(read runltp)
++	if [ "$EXT4_DEV" = "d" ];then
++		tst_brkm TCONF ignored "a block device must be specified"
++		exit 0
++	fi
+ }
+ 
+-# $1: the config file
+-read_config()
++ext4_cleanup()
+ {
+-	while read config
+-	do
+-		echo $config | grep -q -E ".*=.*"
+-		if [ $? -eq 0 ]; then
+-			export $config
+-		fi
+-	done < $1
++	rm -rf mnt_point
+ }
+-
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
