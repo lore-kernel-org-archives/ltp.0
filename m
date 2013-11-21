@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1VdG0H-0002JG-Ni
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 08:59:21 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VdG0F-0006KX-J5
-	for ltp-list@lists.sourceforge.net; Mon, 04 Nov 2013 08:59:21 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA48xCi0008165
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 08:59:13 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA48xBAN010688
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 08:59:12 GMT
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA48xBAJ002518
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Nov 2013 08:59:11 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Mon,  4 Nov 2013 16:58:58 +0800
-Message-Id: <1383555538-1297-1-git-send-email-xu.simon@oracle.com>
-In-Reply-To: <52736BE4.3080009@oracle.com>
-References: <52736BE4.3080009@oracle.com>
-Subject: [LTP] [PATCH V2] rwho01: fix getting hostnames from command output
-	and $COUNT
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VjRcS-0007Ib-UH
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:36:20 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VjRcP-0006xQ-7W
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:36:20 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rALAa8S2014475
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Nov 2013 18:36:08 +0800
+Message-ID: <528DE213.1030106@cn.fujitsu.com>
+Date: Thu, 21 Nov 2013 18:36:03 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v3]  dup3(2): add EINVAL error number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,58 +25,184 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Fix the way the script gets hostnames from rwho/ruptime command output,
-and the mistake that $COUNT is used instead of $TST_COUNT in do_test().
+add EINVAL error number test
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/network/tcp_cmds/rwho/rwho01 | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ runtest/syscalls                         |   1 +
+ testcases/kernel/syscalls/.gitignore     |   1 +
+ testcases/kernel/syscalls/dup3/dup3_02.c | 123 +++++++++++++++++++++++++++++++
+ 3 files changed, 125 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/dup3/dup3_02.c
 
-diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
-index 2c82ef1..eb31642 100755
---- a/testcases/network/tcp_cmds/rwho/rwho01
-+++ b/testcases/network/tcp_cmds/rwho/rwho01
-@@ -106,18 +106,18 @@ do_test()
+diff --git a/runtest/syscalls b/runtest/syscalls
+index fa01ff7..e7e8a9a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -118,6 +118,7 @@ dup204 dup204
+ dup205 dup205
  
-     while [ $TST_COUNT -le $NUMLOOPS ]; do
-         rwho -a > $OUTFILE
--        HOST=`awk "\\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
-+        HOST=`grep $LHOST $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
-         [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in rwho outfile"
--        HOST=`awk "\\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
-+        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
-         [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in rwho outfile"
+ dup3_01 dup3_01
++dup3_02 dup3_02
  
-         ruptime -a > $OUTFILE
--        HOST=`awk "\\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
-+        HOST=`grep $LHOST $OUTFILE | sed 's/ .*//' | uniq`
-         [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in ruptime outfile"
--        HOST=`awk "\\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
-+        HOST=`grep $RHOSTNAME $OUTFILE | sed 's/ .*//' | uniq`
-         [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in ruptime outfile"
- 
--        tst_resm TINFO "Test $COUNT of $NUMLOOPS complete"
-+        tst_resm TINFO "Test $TST_COUNT of $NUMLOOPS complete"
-         incr_tst_count
-     done
- }
+ epoll_create1_01 epoll_create1_01
+ epoll01 epoll-ltp
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 0130a53..e100dd9 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -96,6 +96,7 @@
+ /dup2/dup204
+ /dup2/dup205
+ /dup3/dup3_01
++/dup3/dup3_02
+ /epoll/epoll-ltp
+ /epoll_create1/epoll_create1_01
+ /eventfd/eventfd01
+diff --git a/testcases/kernel/syscalls/dup3/dup3_02.c b/testcases/kernel/syscalls/dup3/dup3_02.c
+new file mode 100644
+index 0000000..121414c
+--- /dev/null
++++ b/testcases/kernel/syscalls/dup3/dup3_02.c
+@@ -0,0 +1,123 @@
++/*
++ * Copyright (c) 2013 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++/*
++ * Description:
++ * Verify that,
++ *  1. dup3() fails with -1 return value and sets errno to EINVAL
++ *     if flags contain an invalid value or oldfd was equal to newfd.
++ */
++
++#include <stdio.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <signal.h>
++#include <sys/types.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
++
++
++static void setup(void);
++static void cleanup(void);
++
++#define INVALID_FLAG	-1
++
++static int old_fd;
++static int new_fd;
++
++static struct test_case_t {
++	int *oldfd;
++	int *newfd;
++	int flags;
++	int exp_errno;
++} test_cases[] = {
++	{&old_fd, &old_fd, O_CLOEXEC, EINVAL},
++	{&old_fd, &old_fd, 0, EINVAL},
++	{&old_fd, &new_fd, INVALID_FLAG, EINVAL}
++};
++
++char *TCID = "dup3_02";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++static int exp_enos[] = {EINVAL, 0};
++
++int main(int ac, char **av)
++{
++	int lc;
++	int i;
++	char *msg;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	TEST_EXP_ENOS(exp_enos);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++) {
++			TEST(ltp_syscall(__NR_dup3, *(test_cases[i].oldfd),
++			     *(test_cases[i].newfd), test_cases[i].flags));
++
++			if (TEST_RETURN != -1) {
++				tst_resm(TFAIL, "dup3 succeeded unexpectedly");
++				continue;
++			}
++
++			if (TEST_ERRNO == test_cases[i].exp_errno) {
++				tst_resm(TPASS | TTERRNO,
++					 "dup3 failed as expected");
++			} else {
++				tst_resm(TFAIL | TTERRNO,
++					 "dup3 failed unexpectedly; expected:"
++					 "%d - %s", test_cases[i].exp_errno,
++					 strerror(test_cases[i].exp_errno));
++			}
++		}
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	tst_tmpdir();
++
++	TEST_PAUSE;
++
++	old_fd = SAFE_CREAT(cleanup, "testeinval.file", 0644);
++	new_fd = -1;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++
++	SAFE_CLOSE(cleanup, old_fd);
++
++	tst_rmdir();
++}
 -- 
-1.8.4.2
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
