@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VjRek-0002eQ-Cc
-	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:38:42 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VjRej-0002z8-3C
-	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 10:38:42 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rALAcXqf014558
-	for <ltp-list@lists.sourceforge.net>; Thu, 21 Nov 2013 18:38:34 +0800
-Message-ID: <1385030308.1552.4.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 21 Nov 2013 18:38:28 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] confstr/confstr01.c: add new names
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VjQBN-0002hH-IL
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 09:04:17 +0000
+Date: Thu, 21 Nov 2013 10:03:50 +0100
+From: chrubis@suse.cz
+Message-ID: <20131121090350.GB1870@rei.nue.novell.com>
+References: <528DC2A9.6060105@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <528DC2A9.6060105@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] dup3(2): add EINVAL error number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +24,141 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Add new case for confstr(2) :
-_CS_GNU_LIBC_VERSION, _CS_GNU_LIBPTHREAD_VERSION.
+Hi!
+> +/*
+> + * Copyright (c) 2013 Fujitsu Ltd.
+> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +
+> +/*
+> + * Description:
+> + * Verify that,
+> + *  1. dup3() fails with -1 return value and sets errno to EINVAL
+> + *     if flags contain an invalid value or oldfd was equal to newfd.
+> + */
+> +
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <string.h>
+> +#include <signal.h>
+> +#include <sys/types.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "safe_macros.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +#define INVALID_FLAG	-1
+> +
+> +static int old_fd;
+> +static int new_fd;
+> +
+> +static struct test_case_t {
+> +	int *oldfd;
+> +	int *newfd;
+> +	int flags;
+> +	int exp_errno;
+> +} test_cases[] = {
+> +	{&old_fd, &old_fd, O_CLOEXEC, EINVAL},
+> +	{&old_fd, &old_fd, 0, EINVAL},
+> +	{&old_fd, &new_fd, INVALID_FLAG, EINVAL}
+> +};
+> +
+> +char *TCID = "dup3_02";
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +static int exp_enos[] = {EINVAL, 0};
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int i;
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/confstr/confstr01.c | 2 ++
- 1 file changed, 2 insertions(+)
+Add the standard option parsing code here please.
 
-diff --git a/testcases/kernel/syscalls/confstr/confstr01.c b/testcases/kernel/syscalls/confstr/confstr01.c
-index b6aebf1..6b4b432 100644
---- a/testcases/kernel/syscalls/confstr/confstr01.c
-+++ b/testcases/kernel/syscalls/confstr/confstr01.c
-@@ -63,6 +63,8 @@ static struct test_case_t {
- 	{_CS_XBS5_LPBIG_OFFBIG_LDFLAGS, "XBS5_LPBIG_OFFBIG_LDFLAGS"},
- 	{_CS_XBS5_LPBIG_OFFBIG_LIBS, "XBS5_LPBIG_OFFBIG_LIBS"},
- 	{_CS_XBS5_LPBIG_OFFBIG_LINTFLAGS, "XBS5_LPBIG_OFFBIG_LINTFLAGS"},
-+	{_CS_GNU_LIBC_VERSION, "GNU_LIBC_VERSION"},
-+	{_CS_GNU_LIBPTHREAD_VERSION, "GNU_LIBPTHREAD_VERSION"},
- };
- 
- char *TCID = "confstr01";
+> +
+> +	setup();
+> +
+> +	TEST_EXP_ENOS(exp_enos);
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++) {
+> +			TEST(ltp_syscall(__NR_dup3, *(test_cases[i].oldfd),
+> +			     *(test_cases[i].newfd), test_cases[i].flags));
+> +
+> +			if (TEST_RETURN != -1) {
+> +				tst_resm(TFAIL, "dup3 succeeded unexpectedly");
+> +				continue;
+> +			}
+> +
+> +			if (TEST_ERRNO == test_cases[i].exp_errno) {
+> +				tst_resm(TPASS | TTERRNO,
+> +					 "dup3 failed as expected");
+> +			} else {
+> +				tst_resm(TFAIL | TTERRNO,
+> +					 "dup3 failed unexpectedly; expected:",
+                                                                              ^
+                                         This comma wronlgy passes three
+					 arguments to a tst_resm() that
+					 ends up with format string with
+					 no conversions.
+
+> +					 "%d - %s", test_cases[i].exp_errno,
+> +					 strerror(test_cases[i].exp_errno));
+> +			}
+> +		}
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +
+> +	tst_tmpdir();
+> +
+> +	TEST_PAUSE;
+> +
+> +	old_fd = SAFE_CREAT(cleanup, "testeinval.file", 0644);
+> +	new_fd = -1;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +
+> +	SAFE_CLOSE(cleanup, old_fd);
+> +
+> +	tst_rmdir();
+> +}
+
 -- 
-1.8.2.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Shape the Mobile Experience: Free Subscription
