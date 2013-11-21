@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VgdfL-0007gG-CQ
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 16:51:43 +0000
-Received: from mail-bk0-f50.google.com ([209.85.214.50])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VgdfK-0000qP-D7
-	for ltp-list@lists.sourceforge.net; Wed, 13 Nov 2013 16:51:43 +0000
-Received: by mail-bk0-f50.google.com with SMTP id v16so481349bkz.23
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Nov 2013 08:51:36 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VjSvb-0006kS-JS
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 12:00:11 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VjSvY-0003c9-P8
+	for ltp-list@lists.sourceforge.net; Thu, 21 Nov 2013 12:00:11 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rALBik5e017146
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Nov 2013 19:44:46 +0800
+Message-ID: <528DF229.4090409@cn.fujitsu.com>
+Date: Thu, 21 Nov 2013 19:44:41 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Thu, 14 Nov 2013 00:51:15 +0800
-Message-ID: <CAARHBVt_=_LFY1zdDyi1BeZnKPdpgJbG2Jhc7JK-G9t+eO+T=g@mail.gmail.com>
-Subject: [LTP] LTP networking multicast test fail
+Subject: [LTP] [PATCH 1/3] runltp: add a big loop device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,92 +25,164 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6544150560929595368=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Linaro Networking <linaro-networking@linaro.org>
-
---===============6544150560929595368==
-Content-Type: multipart/alternative; boundary=001a11c397143359e004eb11c79e
-
---001a11c397143359e004eb11c79e
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-I'm trying your newest code. All the multicast tests fail now.
-
-It may cause by this line:
-/opt/ltp/testcases/bin/mc_cmds: line 71: /opt/ltp/bin/gethost: No such file
-or directory
-
-Then I found this commit:
-commit 743f2fcd5744744d649496d8f0524cf5ca7d3859
-Author: Simon Xu <xu.simon@oracle.com>
-Date:   Tue Nov 12 18:59:57 2013 +0800
-
-    move gethost from tools to sendfile01
-
-    Move tools/gethost.c to
-     testcases/network/tcp_cmds/sendfile/sendfile01_gethost.c
-    since sendfile01 is the only test that requires gethost.
-
-    Signed-off-by: Simon Xu <xu.simon@oracle.com>
-    Acked-by: Cyril Hrubis <chrubis@suse.cz>
-
-Could you fix it? Thanks.
-
---
-Regards,
-Vincent Hsu
-
---001a11c397143359e004eb11c79e
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">Hi,<br>I&#39;m trying your newest code. All the multicast =
-tests fail now.<br><br>It may cause by this line:<br>/opt/ltp/testcases/bin=
-/mc_cmds: line 71: /opt/ltp/bin/gethost: No such file or directory<br><br>
-
-Then I found this commit:<br>commit 743f2fcd5744744d649496d8f0524cf5ca7d385=
-9<br>Author: Simon Xu &lt;<a href=3D"mailto:xu.simon@oracle.com">xu.simon@o=
-racle.com</a>&gt;<br>Date: =C2=A0 Tue Nov 12 18:59:57 2013 +0800<br><br>=C2=
-=A0 =C2=A0 move gethost from tools to sendfile01<br>
-
-=C2=A0 =C2=A0<br>=C2=A0 =C2=A0 Move tools/gethost.c to<br>=C2=A0 =C2=A0 =C2=
-=A0testcases/network/tcp_cmds/sendfile/sendfile01_gethost.c<br>=C2=A0 =C2=
-=A0 since sendfile01 is the only test that requires gethost.<br>=C2=A0 =C2=
-=A0<br>=C2=A0 =C2=A0 Signed-off-by: Simon Xu &lt;<a href=3D"mailto:xu.simon=
-@oracle.com">xu.simon@oracle.com</a>&gt;<br>
-
-=C2=A0 =C2=A0 Acked-by: Cyril Hrubis &lt;<a href=3D"mailto:chrubis@suse.cz"=
->chrubis@suse.cz</a>&gt;<br><br>Could you fix it? Thanks.<br><br>--<br>Rega=
-rds,<br>Vincent Hsu</div>
-
---001a11c397143359e004eb11c79e--
 
 
---===============6544150560929595368==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Some tests, such as fs_ext4, need a big block device and
+the original DEVICE is some small, so create a BIG_DEVICE
+(default size 5GB).
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runltp | 67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 63 insertions(+), 4 deletions(-)
+
+diff --git a/runltp b/runltp
+index 63c625f..f491beb 100755
+--- a/runltp
++++ b/runltp
+@@ -163,6 +163,9 @@ usage()
+     -b DEVICE       Some tests require an unmounted block device
+                     to run correctly.
+     -B DEVICE_FS_TYPE The file system of test block devices.
++    -z BIG_DEVICE   Some tests require a big unmounted block device
++                    to run correctly.
++    -Z BIG_DEVICE_FS_TYPE The file system of the big device
+ 
+ 
+     example: ${0##*/} -c 2 -i 2 -m 2,4,10240,1 -D 2,10,10240,1 -p -q  -l /tmp/result-log.$$ -o /tmp/result-output.$$ -C /tmp/result-failed.$$ -d ${PWD}
+@@ -207,11 +210,12 @@ main()
+     local PAN_COMMAND=""
+     local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%b_%d-%Hh_%Mm_%Ss"`
+     local DEVICE_FS_TYPE="ext2"
++    local BIG_DEVICE_FS_TYPE="ext2"
+     local scenfile=
+ 
+     version_date=$(cat "$LTPROOT/Version")
+ 
+-    while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B: arg
++    while getopts a:c:C:d:D:f:F:ehi:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B:z:Z: arg
+     do  case $arg in
+         a)  EMAIL_TO=$OPTARG
+             ALT_EMAIL_OUT=1;;
+@@ -424,6 +428,8 @@ main()
+             INSTANCES="-x $OPTARG";;
+         b) DEVICE=$OPTARG;;
+         B) DEVICE_FS_TYPE=$OPTARG;;
++        z) BIG_DEVICE=$OPTARG;;
++        Z) BIG_DEVICE_FS_TYPE=$OPTARG;;
+         \?) usage;;
+         esac
+     done
+@@ -678,19 +684,37 @@ main()
+     }
+ 
+     if [ -n "$DEVICE" ]; then
+-        sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
++        sed -i "s|\s+DEVICE\s+|$DEVICE|"  ${TMP}/alltests
+         RC=$?
+     else
+         create_block
+         if [ $? -eq 0 ]; then
+-            sed -i "s|DEVICE|$DEVICE|"  ${TMP}/alltests
++            sed -i "s|\s+DEVICE\s+|$DEVICE|"  ${TMP}/alltests
+             RC=$?
+         else
+             echo "no block device was specified on commandline."
+             echo "Block device could not be created using loopback device"
+             echo "Tests which require block device are disabled."
+             echo "You can specify it with option -b"
+-            sed -i "/DEVICE/d"  ${TMP}/alltests
++            sed -i "/\s+DEVICE\s+/d"  ${TMP}/alltests
++            RC=$?
++        fi
++    fi
++
++    if [ -n "$BIG_DEVICE" ]; then
++        sed -i "s|BIG_DEVICE|$BIG_DEVICE|"  ${TMP}/alltests
++        RC=$?
++    else
++        create_big_block
++        if [ $? -eq 0 ]; then
++            sed -i "s|BIG_DEVICE|$BIG_DEVICE|"  ${TMP}/alltests
++            RC=$?
++        else
++            echo "no big block device was specified on commandline."
++            echo "BIG block device could not be created using loopback device"
++            echo "Tests which require big block device are disabled."
++            echo "You can specify it with option -z"
++            sed -i "/BIG_DEVICE/d"  ${TMP}/alltests
+             RC=$?
+         fi
+     fi
+@@ -704,6 +728,10 @@ main()
+         sed -i "s|DEVICE_FS_TYPE|$DEVICE_FS_TYPE|"  ${TMP}/alltests
+     fi
+ 
++    if [ -n "$BIG_DEVICE" ]; then
++        sed -i "s|BIG_DEVICE_FS_TYPE|$BIG_DEVICE_FS_TYPE|"  ${TMP}/alltests
++    fi
++
+     if [ $? -ne 0 ]; then
+         echo "FATAL: error during processing alltests file by sed"
+         exit 1
+@@ -979,10 +1007,41 @@ create_block()
+     fi
+ }
+ 
++create_big_block()
++{
++    # In most systems, the /tmp is relatively small
++    # So create a big block device in LTPROOT
++    BIG_DEVICE_DIR=${LTPROOT}/big_device$$
++    mkdir -p $BIG_DEVICE_DIR
++    dd if=/dev/zero of=${BIG_DEVICE_DIR}/test.img bs=1kB count=5120000 #5G
++    if [ $? -ne 0 ]; then
++        echo "Failed to create loopback device image, please check disk space and re-run"
++        return 1
++    else
++        ##search for an unused loop dev
++        LOOP_BIG_DEV=$(losetup -f)
++        if [ $? -ne 0 ]; then
++            echo "no unused loop device is found"
++            return 1
++        else
++            ##attach the created file to loop dev.
++            losetup $LOOP_BIG_DEV ${BIG_DEVICE_DIR}/test.img
++            if [ $? -ne 0 ]; then
++                echo "losetup failed to create block device"
++                return 1
++            fi
++            BIG_DEVICE=$LOOP_BIG_DEV
++            return 0
++        fi
++    fi
++}
++
+ cleanup()
+ {
+     [ "$LOOP_DEV" ] && losetup -d $LOOP_DEV
++    [ "$LOOP_BIG_DEV" ] && losetup -d $LOOP_BIG_DEV
+     rm -rf ${TMP}
++    rm -rf ${BIG_DEVICE_DIR}
+ }
+ 
+ trap "cleanup" 0
+-- 
+1.8.2.1
+
+
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
---===============6544150560929595368==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6544150560929595368==--
-
