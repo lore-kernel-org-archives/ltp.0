@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vj5c5-0000JR-6W
-	for ltp-list@lists.sourceforge.net; Wed, 20 Nov 2013 11:06:29 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VjkCa-0006sr-1x
+	for ltp-list@lists.sourceforge.net; Fri, 22 Nov 2013 06:26:52 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vj5c1-0000dW-Ke
-	for ltp-list@lists.sourceforge.net; Wed, 20 Nov 2013 11:06:29 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VjkCX-0001Zr-RX
+	for ltp-list@lists.sourceforge.net; Fri, 22 Nov 2013 06:26:52 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAKB6Ht7027398
-	for <ltp-list@lists.sourceforge.net>; Wed, 20 Nov 2013 19:06:18 +0800
-Message-ID: <1384945570.1661.5.camel@G08JYZSD130126>
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAM6QfIe016566
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Nov 2013 14:26:42 +0800
+Message-ID: <1385101595.1552.11.camel@G08JYZSD130126>
 From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 20 Nov 2013 19:06:10 +0800
+Date: Fri, 22 Nov 2013 14:26:35 +0800
 Mime-Version: 1.0
-Subject: [LTP] [PATCH] fallocate/fallocate02.c: cleanup
+Subject: [LTP] [PATCH] fchown/fchown04.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,366 +30,201 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list <ltp-list@lists.sourceforge.net>
 
-cleanup of fallocate02.c
+cleanup of fchown04.c
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/fallocate/fallocate02.c | 278 ++++++++--------------
- 1 file changed, 102 insertions(+), 176 deletions(-)
+ testcases/kernel/syscalls/fchown/fchown04.c | 106 ++++++++--------------------
+ 1 file changed, 31 insertions(+), 75 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
-index 37f0635..d95f682 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate02.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
-@@ -65,23 +65,6 @@
-  *		test is considered passed else test fails
-  *		Provided TEST_DEFAULT to switch b/w modes
+diff --git a/testcases/kernel/syscalls/fchown/fchown04.c b/testcases/kernel/syscalls/fchown/fchown04.c
+index 8329550..707a979 100644
+--- a/testcases/kernel/syscalls/fchown/fchown04.c
++++ b/testcases/kernel/syscalls/fchown/fchown04.c
+@@ -13,8 +13,8 @@
+  *   the GNU General Public License for more details.
   *
-- *		Total 7 Test Cases :-
-- *		Various error messages from the man page
-- *
-- *	Setup:
-- *		Setup files on which fallocate is to be called
-- *
-- *	Test:
-- *		Loop if the proper options are given.
-- *		Execute system call
-- *		Check return code.
-- *		If error obtained matches with the expected error
-- *		PASS the test, otherwise TEST FAILS
-- *		Provided TEST_DEFAULT to switch b/w modes
-- *
-- *	Cleanup:
-- *		Cleanup the temporary folder
-- *
- *************************************************************************/
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
  
- #include <stdio.h>
-@@ -97,77 +80,117 @@
- #include "test.h"
+ /*
+@@ -84,84 +84,59 @@
  #include "usctest.h"
- #include "linux_syscall_numbers.h"
-+#include "safe_macros.h"
+ #include "safe_macros.h"
  
- #define BLOCKS_WRITTEN 12
+-#define MODE_RWX	(S_IRWXU|S_IRWXG|S_IRWXO)
+-#define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+ #define TEST_FILE1	"tfile_1"
+ #define TEST_FILE2	"tfile_2"
  
- #ifdef TEST_DEFAULT
--#define DEFAULT_TEST_MODE 0	//DEFAULT MODE
-+#define DEFAULT_TEST_MODE 0
- #else
--#define DEFAULT_TEST_MODE 1	//FALLOC_FL_KEEP_SIZE MODE
-+#define DEFAULT_TEST_MODE 1
- #endif
+-void setup1();			/* setup function to test chmod for EPERM */
+-void setup2();			/* setup function to test chmod for EBADF */
++static int fd1;
++static int fd2;
  
- #define OFFSET 12
+-int fd1;			/* File descriptor for testfile1 */
+-int fd2;			/* File descriptor for testfile2 */
+-
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
+-	int fd;
++static struct test_case_t {
++	int *fd;
+ 	int exp_errno;
+-	void (*setupfunc) ();
+ } test_cases[] = {
+-	{
+-	1, EPERM, setup1}, {
+-2, EBADF, setup2},};
++	{&fd1, EPERM},
++	{&fd2, EBADF},
++};
  
--static inline long fallocate();
--void populate_file();
--void create_fifo();
--void create_pipe();
--void get_blocksize(int fd);
-+enum { RFILE, WFILE };
+-char test_home[PATH_MAX];	/* variable to hold TESTHOME env */
+ char *TCID = "fchown04";
+-int TST_TOTAL = 2;
+-int exp_enos[] = { EPERM, EBADF, 0 };
+-
+-char bin_uid[] = "bin";
+-struct passwd *ltpuser;
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++static int exp_enos[] = { EPERM, EBADF, 0 };
  
--char *TCID = "fallocate02";
--char fnamew[255];
--char fnamer[255];
--int fdw;
--int fdr;
--enum { RFILE, WFILE, PIPE, FIFO };
--struct test_data_t {
+-void setup();			/* Main setup function for the tests */
+-void cleanup();			/* cleanup function for the test */
 +static void setup(void);
 +static void cleanup(void);
-+static inline long fallocate(int, int, loff_t, loff_t);
-+
-+static char fnamew[255];
-+static char fnamer[255];
-+static int fdw;
-+static int fdr;
-+static int block_size;
-+
-+static struct test_data_t {
- 	int file;
- 	int mode;
- 	loff_t offset;
- 	loff_t len;
- 	int error;
- } test_data[] = {
--	{
--	RFILE, DEFAULT_TEST_MODE, 0, 1, EBADF}, {
--	WFILE, DEFAULT_TEST_MODE, -1, 1, EINVAL}, {
--	WFILE, DEFAULT_TEST_MODE, 1, -1, EINVAL}, {
--	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL}, {
--	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL}, {
--	WFILE, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN + OFFSET), 1, EINVAL}, {
--	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN - OFFSET, 1, 0}
-+	{RFILE, DEFAULT_TEST_MODE, 0, 1, EBADF},
-+	{WFILE, DEFAULT_TEST_MODE, -1, 1, EINVAL},
-+	{WFILE, DEFAULT_TEST_MODE, 1, -1, EINVAL},
-+	{WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL},
-+	{WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
-+	{WFILE, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN + OFFSET), 1, EINVAL},
-+	{WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN - OFFSET, 1, 0},
- };
  
-+char *TCID = "fallocate02";
-+int TST_TOTAL = ARRAY_SIZE(test_data);
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
--int block_size;
--int buf_size;
--
--/******************************************************************************
-- * Performs all one time clean up for this test on successful
-- * completion,  premature exit or  failure. Closes all temporary
-- * files, removes all temporary directories exits the test with
-- * appropriate return code by calling tst_exit() function.
--******************************************************************************/
--extern void cleanup()
-+int main(int ac, char **av)
+ int main(int ac, char **av)
  {
--	/* Close all open file descriptors. */
--	if (close(fdw) == -1)
--		tst_resm(TWARN | TERRNO, "close(%s) failed", fnamew);
-+	int lc;
-+	int i;
-+	int fd;
-+	char *fname;
+ 	int lc;
+-	char *msg;
+-	int fd;			/* test file descriptor */
+ 	int i;
+-	uid_t user_id;		/* Effective user id of a test process */
+-	gid_t group_id;		/* Effective group id of a test process */
+-
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
  
--	if (close(fdr) == -1)
--		tst_resm(TWARN | TERRNO, "close(%s) failed", fnamer);
-+	setup();
+ 	setup();
  
--	tst_rmdir();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			switch (test_data[i].file) {
-+			case RFILE:
-+				fd = fdr;
-+				fname = fnamer;
-+				break;
-+			case WFILE:
-+				fd = fdw;
-+				fname = fnamew;
-+				break;
-+			default:
-+				tst_brkm(TCONF, cleanup,
-+					 "invalid test setting");
-+				tst_exit();
-+			}
+ 	TEST_EXP_ENOS(exp_enos);
  
-+			TEST(fallocate(fd, test_data[i].mode,
-+				       test_data[i].offset * block_size,
-+				       test_data[i].len * block_size));
-+			if (TEST_ERRNO != test_data[i].error) {
-+				if (TEST_ERRNO == EOPNOTSUPP ||
-+				    TEST_ERRNO == ENOSYS) {
-+					tst_brkm(TCONF, cleanup,
-+						 "fallocate system call is not "
-+						 "implemented");
+-	user_id = geteuid();
+-	group_id = getegid();
+-
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
+ 		tst_count = 0;
+ 
+ 		for (i = 0; i < TST_TOTAL; i++) {
+ 
+-			fd = test_cases[i].fd;
+-
+-			if (fd == 1)
+-				fd = fd1;
+-			else
+-				fd = fd2;
+-
+-			TEST(fchown(fd, user_id, group_id));
++			TEST(fchown(*test_cases[i].fd, geteuid(), getegid()));
+ 
+ 			if (TEST_RETURN == -1) {
+-				if (TEST_ERRNO == test_cases[i].exp_errno)
++				if (TEST_ERRNO == test_cases[i].exp_errno) {
+ 					tst_resm(TPASS | TTERRNO,
+ 						 "fchown failed as expected");
+-				else
++				} else {
+ 					tst_resm(TFAIL | TTERRNO,
+ 						 "fchown failed unexpectedly; "
+ 						 "expected %d - %s",
+ 						 test_cases[i].exp_errno,
+ 						 strerror(test_cases[i].
+ 							  exp_errno));
+-			} else
 +				}
-+				tst_resm(TFAIL | TTERRNO,
-+					 "fallocate(%s:%d, %d, %" PRId64 ", %"
-+					 PRId64 ") failed, expected errno:%d",
-+					 fname, fd, test_data[i].mode,
-+					 test_data[i].offset * block_size,
-+					 test_data[i].len * block_size,
-+					 test_data[i].error);
 +			} else {
-+				tst_resm(TPASS,
-+					 "fallocate(%s:%d, %d, %" PRId64 ", %"
-+					 PRId64 ") returned %d", fname, fd,
-+					 test_data[i].mode,
-+					 test_data[i].offset * block_size,
-+					 test_data[i].len * block_size,
-+					 TEST_ERRNO);
+ 				tst_resm(TFAIL, "fchown passed unexpectedly");
 +			}
-+		}
-+	}
-+
-+	cleanup();
-+
-+	tst_exit();
+ 		}
+ 
+ 	}
+@@ -171,58 +146,39 @@ int main(int ac, char **av)
+ 	tst_exit();
  }
  
--/*****************************************************************************
-- * Performs all one time setup for this test. This function is
-- * used to create temporary dirs and temporary files
-- * that may be used in the course of this test
-- ******************************************************************************/
 -void setup()
 +static void setup(void)
  {
-+	int index;
-+	int blocks;
-+	struct stat file_stat;
+-	int i;
++	struct passwd *ltpuser;
  
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	TEST_PAUSE;
  
-@@ -176,144 +199,47 @@ void setup()
+ 	tst_require_root(NULL);
+ 
+-	ltpuser = SAFE_GETPWNAM(NULL, bin_uid);
+-
+-	tst_tmpdir();
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	initgroups("root", getgid());
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+ 
+-	SAFE_SETEGID(NULL, ltpuser->pw_uid);
+-	SAFE_SETEUID(NULL, ltpuser->pw_gid);
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+ 
  	tst_tmpdir();
  
- 	sprintf(fnamer, "tfile_read_%d", getpid());
+-	for (i = 0; i < TST_TOTAL; i++)
+-		if (test_cases[i].setupfunc != NULL)
+-			test_cases[i].setupfunc();
+-}
+-
+-void setup1()
+-{
+-	int old_uid;
+-	struct passwd *nobody;
++	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
++	/* EPERM */
+ 	fd1 = SAFE_OPEN(cleanup, TEST_FILE1, O_RDWR | O_CREAT, 0666);
+ 
+-	old_uid = geteuid();
+-
+ 	SAFE_SETEUID(cleanup, 0);
+ 
+-	nobody = SAFE_GETPWNAM(cleanup, "nobody");
+-
+-	if (fchown(fd1, nobody->pw_uid, nobody->pw_gid) < 0)
++	if (fchown(fd1, 0, 0) < 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fchown failed");
+ 
+-	SAFE_SETEUID(cleanup, old_uid);
+-}
+-
+-void setup2()
+-{
++	/* EBADF */
+ 	fd2 = SAFE_OPEN(cleanup, TEST_FILE2, O_RDWR | O_CREAT, 0666);
 +
- 	sprintf(fnamew, "tfile_write_%d", getpid());
- 
--	fdr = open(fnamer, O_RDONLY | O_CREAT, S_IRUSR);
--	if (fdr == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDONLY|O_CREAT, S_IRUSR) failed", fnamer);
--	fdw = open(fnamew, O_RDWR | O_CREAT, S_IRWXU);
--	if (fdw == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, S_IRWXU) failed", fnamew);
--	get_blocksize(fdr);
--	populate_file();
--}
-+	fdr = SAFE_OPEN(cleanup, fnamer, O_RDONLY | O_CREAT, S_IRUSR);
- 
--/*****************************************************************************
-- * Gets the block size for the file system
-- ******************************************************************************/
--void get_blocksize(int fd)
--{
--	struct stat file_stat;
-+	fdw = SAFE_OPEN(cleanup, fnamew, O_RDWR | O_CREAT, S_IRWXU);
- 
--	if (fstat(fd, &file_stat) < 0)
-+	if (fstat(fdr, &file_stat) < 0) {
- 		tst_resm(TFAIL | TERRNO,
- 			 "fstat failed while getting block_size");
-+	}
- 
- 	block_size = (int)file_stat.st_blksize;
--	buf_size = block_size;
--}
- 
--/*****************************************************************************
-- * Writes data into the file
-- ******************************************************************************/
--void populate_file()
--{
--	char buf[buf_size + 1];
--	int index;
--	int blocks;
--	int data;
-+	char buf[block_size + 1];
- 	for (blocks = 0; blocks < BLOCKS_WRITTEN; blocks++) {
--		for (index = 0; index < buf_size; index++)
-+		for (index = 0; index < block_size; index++)
- 			buf[index] = 'A' + (index % 26);
--		buf[buf_size] = '\0';
--		if ((data = write(fdw, buf, buf_size)) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "Unable to write to %s", fnamew);
-+		buf[block_size] = '\0';
-+		SAFE_WRITE(cleanup, 0, fdw, buf, block_size);
- 	}
+ 	SAFE_CLOSE(cleanup, fd2);
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
  }
  
--/*****************************************************************************
-- * Wraper function to call fallocate system call
-- ******************************************************************************/
- static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
- {
- #if __WORDSIZE == 32
- 	return (long)ltp_syscall(__NR_fallocate, fd, mode,
--			     __LONG_LONG_PAIR((off_t) (offset >> 32),
--					      (off_t) offset),
--			     __LONG_LONG_PAIR((off_t) (len >> 32),
--					      (off_t) len));
-+				 __LONG_LONG_PAIR((off_t) (offset >> 32),
-+				 (off_t) offset),
-+				 __LONG_LONG_PAIR((off_t) (len >> 32),
-+				 (off_t) len));
- #else
- 	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
- #endif
- }
- 
--/*****************************************************************************
-- * Main function that calls the system call with the  appropriate parameters
-- ******************************************************************************/
--/* ac: number of command line parameters */
--/* av: pointer to the array of the command line parameters */
--int main(int ac, char **av)
+-void cleanup()
 +static void cleanup(void)
  {
-+	SAFE_CLOSE(NULL, fdw);
+ 	TEST_CLEANUP;
  
--	int test_index = 0;
--	int lc;
--	int fd;
--	char fname[255], *msg;
--
--	/***************************************************************
--	     * parse standard options
--     	***************************************************************/
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+	SAFE_CLOSE(NULL, fdr);
- 
--	/* perform global test setup, call setup() function. */
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--		for (test_index = 0; test_index < TST_TOTAL; test_index++) {
--			switch (test_data[test_index].file) {
--			case RFILE:
--				fd = fdr;
--				strcpy(fname, fnamer);
--				break;
--			case WFILE:
--				fd = fdw;
--				strcpy(fname, fnamew);
--				break;
--			default:
--				tst_brkm(TCONF, cleanup,
--					 "invalid test setting");
--				tst_exit();
--			}
--
--			TEST(fallocate
--			     (fd, test_data[test_index].mode,
--			      test_data[test_index].offset * block_size,
--			      test_data[test_index].len * block_size));
--			/* check return code */
--			if (TEST_ERRNO != test_data[test_index].error) {
--				if (TEST_ERRNO == EOPNOTSUPP
--				    || TEST_ERRNO == ENOSYS) {
--					tst_brkm(TCONF, cleanup,
--						 "fallocate system call is not implemented");
--				}
--				TEST_ERROR_LOG(TEST_ERRNO);
--				tst_resm(TFAIL | TTERRNO,
--					 "fallocate(%s:%d, %d, %" PRId64 ", %"
--					 PRId64 ") failed, expected errno:%d",
--					 fname, fd, test_data[test_index].mode,
--					 test_data[test_index].offset *
--					 block_size,
--					 test_data[test_index].len * block_size,
--					 test_data[test_index].error);
--			} else {
--				/* No Verification test, yet... */
--				tst_resm(TPASS,
--					 "fallocate(%s:%d, %d, %" PRId64 ", %"
--					 PRId64 ") returned %d", fname, fd,
--					 test_data[test_index].mode,
--					 test_data[test_index].offset *
--					 block_size,
--					 test_data[test_index].len * block_size,
--					 TEST_ERRNO);
--			}
--		}
--	}
--	cleanup();
--	tst_exit();
-+	tst_rmdir();
- }
 -- 
 1.8.2.1
 
