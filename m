@@ -1,34 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VmIyj-0006qr-3Z
-	for ltp-list@lists.sourceforge.net; Fri, 29 Nov 2013 07:59:09 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VmIyi-0001BZ-2z
-	for ltp-list@lists.sourceforge.net; Fri, 29 Nov 2013 07:59:09 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rAT7x1p0032142
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Nov 2013 07:59:02 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAT7x0km006324
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Nov 2013 07:59:01 GMT
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rAT7x0iA023795
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Nov 2013 07:59:00 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 29 Nov 2013 11:58:52 +0400
-Message-Id: <1385711934-8999-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20131128113652.GB19263@rei.Home>
-References: <20131128113652.GB19263@rei.Home>
-Subject: [LTP] [PATCH V2 1/3] autoconf check for utimensat(2)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Vjrbu-0005HQ-N1
+	for ltp-list@lists.sourceforge.net; Fri, 22 Nov 2013 14:21:30 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vjrbq-0008G7-RO
+	for ltp-list@lists.sourceforge.net; Fri, 22 Nov 2013 14:21:30 +0000
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Fri, 22 Nov 2013 14:20:59 +0000
+Message-ID: <1385130059-12150-1-git-send-email-markos.chandras@imgtec.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,95 +22,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Unfortunately, not all distributions have utimensat(2) defined (old glibc),
-so we need a way to check it in our code.
+Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+also defined in sys/ptrace.h and conflicts with the definition
+from the Linux kernel in linux/ptrace.h. We fix this by not
+including the linux/ptrace.h header if the sys/ptrace.h header
+defines the said struct. Fixes
+https://github.com/linux-test-project/ltp/issues/6
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- configure.ac        |    1 +
- m4/ltp-utimensat.m4 |   44 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 45 insertions(+), 0 deletions(-)
- create mode 100644 m4/ltp-utimensat.m4
+Build tested on glibc-2.17 and glibc-2.18 systems
+---
+ configure.ac                              | 4 ++++
+ include/config.h.default                  | 3 +++
+ testcases/kernel/syscalls/ptrace/ptrace.h | 4 +++-
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index 4846afd..4af7662 100644
+index 4846afd..d427276 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -162,6 +162,7 @@ LTP_CHECK_SYSCALL_NUMA
- LTP_CHECK_SYSCALL_QUOTACTL
- LTP_CHECK_SYSCALL_SIGNALFD
- LTP_CHECK_SYSCALL_UNSHARE
-+LTP_CHECK_SYSCALL_UTIMENSAT
- LTP_CHECK_TASKSTATS
- LTP_CHECK_TIME
- LTP_CHECK_MADVISE
-diff --git a/m4/ltp-utimensat.m4 b/m4/ltp-utimensat.m4
-new file mode 100644
-index 0000000..1f9a055
---- /dev/null
-+++ b/m4/ltp-utimensat.m4
-@@ -0,0 +1,44 @@
-+dnl
-+dnl Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+dnl
-+dnl This program is free software; you can redistribute it and/or
-+dnl modify it under the terms of the GNU General Public License as
-+dnl published by the Free Software Foundation; either version 2 of
-+dnl the License, or (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it would be useful,
-+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+dnl GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program; if not, write the Free Software Foundation,
-+dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+dnl
+@@ -48,6 +48,10 @@ AC_CHECK_HEADERS([ \
+     sys/prctl.h \
+ ])
+ 
++# glibc-2.18 defines ptrace_peeksiginfo_args in sys/ptrace.h which
++# conflicts with the one from linux kernel in linux/ptrace.h
++AC_CHECK_TYPES([struct ptrace_peeksiginfo_args],,,[#include <sys/ptrace.h>])
 +
-+dnl
-+dnl LTP_CHECK_SYSCALL_UTIMENSAT
-+dnl ----------------------------
-+dnl
-+AC_DEFUN([LTP_CHECK_SYSCALL_UTIMENSAT],[
-+	AC_MSG_CHECKING([for utimensat])
-+	AC_LINK_IFELSE([AC_LANG_SOURCE([
-+#include <stdlib.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
+ # Tools knobs
+ 
+ # Expect
+diff --git a/include/config.h.default b/include/config.h.default
+index 96e25c4..f226333 100644
+--- a/include/config.h.default
++++ b/include/config.h.default
+@@ -167,6 +167,9 @@
+ /* Define to 1 if the system has the type `struct modify_ldt_ldt_s'. */
+ #undef HAVE_STRUCT_MODIFY_LDT_LDT_S
+ 
++/* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
++#undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARG
 +
-+int main(void) {
-+	long tv_nsec;
-+	tv_nsec = UTIME_NOW;
-+	tv_nsec = UTIME_OMIT;
-+
-+	return utimensat(AT_FDCWD, NULL, NULL, 0);
-+}])],[has_utimensat="yes"])
-+
-+if test "x$has_utimensat" = "xyes"; then
-+	AC_DEFINE(HAVE_UTIMENSAT, 1, [Define to 1 if you have utimensat(2)])
-+	AC_MSG_RESULT(yes)
-+else
-+	AC_MSG_RESULT(no)
-+fi
-+])
+ /* Define to 1 if `signo' is member of `struct signalfd_siginfo'. */
+ #undef HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
+ 
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
+index f0767d7..4a43f01 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace.h
++++ b/testcases/kernel/syscalls/ptrace/ptrace.h
+@@ -19,7 +19,9 @@
+ # include <asm/ptrace.h>
+ #endif
+ #ifdef HAVE_LINUX_PTRACE_H
+-# include <linux/ptrace.h>
++# ifndef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
++#  include <linux/ptrace.h>
++# endif
+ #endif
+ #undef FU_ia64_fpreg
+ #undef FU_pt_all_user_regs
 -- 
-1.7.1
+1.8.4.3
+
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
