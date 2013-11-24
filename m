@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VleaG-0003NF-8o
-	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 12:51:12 +0000
-Received: from relay2.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 87113A7D41
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Nov 2013 13:51:05 +0100 (CET)
-Date: Wed, 27 Nov 2013 13:50:43 +0100
-From: chrubis@suse.cz
-Message-ID: <20131127125043.GB7549@rei.suse.cz>
-References: <1385362041-17578-1-git-send-email-jshao@redhat.com>
-	<20131126182827.GA15092@rei.suse.cz>
-	<20131127094113.GR14611@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1VkdHk-000215-38
+	for ltp-list@lists.sourceforge.net; Sun, 24 Nov 2013 17:15:52 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VkdHj-0008Vk-6C
+	for ltp-list@lists.sourceforge.net; Sun, 24 Nov 2013 17:15:52 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sun, 24 Nov 2013 12:15:46 -0500
+References: <1385290561-24404-1-git-send-email-gaowanlong@cn.fujitsu.com>
+In-Reply-To: <1385290561-24404-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20131127094113.GR14611@redhat.com>
-Subject: Re: [LTP] [PATCH] netns: remove accumulated errmesg assignment
+Message-Id: <201311241215.47426.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] runltp: suppress the out message when creating
+	loop device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,50 +25,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0544391111858217598=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > I wonder why there is errmesg variable at all and not just echo, it
-> > doesn't seems to be used anywhere else.
-> 
-> I wonder too, but I thought there might be some reason, so I only fix
-> the error and leave the imperfect behind.
+--===============0544391111858217598==
+Content-Type: multipart/signed; boundary="nextPart4467304.19XsQiEa4L";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I'm perfectly happy with applying this patch, but I would be even
-happier with fixing it up correctly.
+--nextPart4467304.19XsQiEa4L
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-> > Moreover the way the testcases are executed is not well designed, the
-> > runtest file 'containers' executes script container_test.sh which
-> > executes several scripts and the scripts finally executes the tescases.
-> > This is really nightmare if you are trying to find what fails and why...
-> >
-> > It would be much better to execute the testcases directly one by one
-> > from the runtest file, and in most of the cases that would just need to
-> > move code the checks if there is support for particual container to the
-> > testcases.
-> 
-> Can't agree more, but it takes time to change the whole structure in
-> testcases/kernel/containers/netns/ ...
+On Sunday 24 November 2013 05:56:01 Wanlong Gao wrote:
+> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480 &>/dev/null
 
-We can do that easily in a few steps. First we need to add checks if the
-containers are enabled to the actual testcases (that will not break
-anything), then we can add new runtest file for them and once everything
-is working, we can finally remove the original scripts.
+that's a bashism.  you have to use:
+	... >/dev/null 2>&1
+-mike
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--nextPart4467304.19XsQiEa4L
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJSkjRDAAoJEEFjO5/oN/WBsbQP/R9CQc+a4UFJtS76uypyp0EX
+vaUlIw89ukDaORok24h5i74zxlWgR/T82DnD/5E4gc62msNEFOhz0M/jwGgAjT2H
+RvQAULjD4C5tG2nzTdX69cpHwlmo6ESX8TDEF8SDN/PAClMxszvDSRN4oPjuVfoZ
+Tn2ythB0x8Cjkbl8e/3TVOZm1pqf5/JdSvegWVMyFU7hk7CXuyI8lwSmi6IXZRa6
+d9Y42QMgQ0T/HDMxCH3DVSSoTYeFloY8K+SHdgTSgWgqZW28Z1zvdA8sdcqNHnY4
+zfVjpQwlHjnuxbEqlKCfVlg9m8p8jXl/YsM1TRbrnTSlc4o0pz2/M+opFmSywpNi
+ZImlEWggphExEXVkcAY9jSh4BG43cmS5VxDsTgwD8mG71SERMiaNZ9OJnt1GRxee
+sMFhVNMgkv6MDQOVRSmBC7Vv1RPTT2l8ytNwtXY7FtpGHjIiGokVgf2jORwHfjmF
+Up1RTQ+sXFoy55RUXJCS4QAzcY/9OWHTms+ui56s4HMk7EAd3Mv/CaAmc0pyKww5
+2BzB4xCNB8dAw0RaKLO0ukx2vvo2nn2KkEt/c7c+Lx2bxuJAXv7r2fu2pa8ki9MH
+kZ8VAVfO21a1+qoqOvJRA3oObjbW1owqQl6jyV13AUMcrf5P/0bdUI63NqaELag5
+PpBtHAHR7ITcv+Kr3qlZ
+=h2gc
+-----END PGP SIGNATURE-----
+
+--nextPart4467304.19XsQiEa4L--
+
+
+--===============0544391111858217598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+--===============0544391111858217598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0544391111858217598==--
+
