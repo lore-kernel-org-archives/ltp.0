@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlzuO-0000OG-5F
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:37:24 +0000
-Date: Thu, 28 Nov 2013 12:36:52 +0100
-From: chrubis@suse.cz
-Message-ID: <20131128113652.GB19263@rei.Home>
-References: <1384353022-9088-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20131126160651.GC14089@rei.suse.cz> <5296FAB8.8050702@oracle.com>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1VktAM-0004aB-07
+	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 10:13:18 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VktAJ-0002gT-U5
+	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 10:13:17 +0000
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Mon, 25 Nov 2013 10:12:59 +0000
+Message-ID: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5296FAB8.8050702@oracle.com>
-Subject: Re: [LTP] safe_touch and utimensat
+Subject: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,60 +25,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Actually, I need.
-> 
-> I use clock_gettime() to get the current time and use it when UTIME_NOW 
-> is passed. Like this:
-> #if HAVE_UTIMENSAT
->          ret = utimensat(AT_FDCWD, pathname, times, 0);
-> #else
->          if (times == NULL) {
->                  ret = utimes(pathname, NULL);
->          } else {
->          /* stat and etc */
-> 
->                  ret = clock_gettime(CLOCK_REALTIME, &tp);
->                  if (ret == -1)
->                          tst_brkm(TBROK | TERRNO, cleanup_fn,
->                                  "Failed to clock_realtime() at %s:%d",
->                                  file, lineno);
-> 
->          /* handle UTIME_NOW and etc */
->          }
-> #endif
-> 
-> 
-> The compilation of safe_file_ops.c performs ok. libltp.a is formed. But 
-> compilations of other pieces of code using safe_touch fails with:
-> make[1]: Entering directory `/home/stas/ltp/lib/tests'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W 
-> -D_FORTIFY_SOURCE=2 -I../../include -I../../include   -L../../lib 
-> tst_process_state.c   -lltp -o tst_process_state
-> ../../lib/libltp.a(safe_file_ops.o): In function `safe_touch':
-> /home/stas/ltp/lib/safe_file_ops.c:213: undefined reference to 
-> `clock_gettime'
-> collect2: ld returned 1 exit status
-> 
-> I know, that clock_gettime() requires '-lrt'.
-> 
-> But I'm not sure about the right place inside LTP sources to put it in....
+Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+also defined in sys/ptrace.h and conflicts with the definition
+from the Linux kernel in linux/ptrace.h. We fix this by not
+including the linux/ptrace.h header if the sys/ptrace.h header
+defines the said struct. Fixes
+https://github.com/linux-test-project/ltp/issues/6
 
-What about using gettimeofday() instead?
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+Build tested on glibc-2.17 and glibc-2.18 systems
 
+Changes since v1:
+Comments: http://sourceforge.net/mailarchive/message.php?msg_id=31677254
+- Move the AC_CHECK_TYPES from configure.ac to m4/ltp-ptrace.m4
+- Fix typo in config.h.default
+---
+ include/config.h.default                  | 3 +++
+ m4/ltp-ptrace.m4                          | 3 +++
+ testcases/kernel/syscalls/ptrace/ptrace.h | 4 +++-
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/include/config.h.default b/include/config.h.default
+index 96e25c4..7095b92 100644
+--- a/include/config.h.default
++++ b/include/config.h.default
+@@ -167,6 +167,9 @@
+ /* Define to 1 if the system has the type `struct modify_ldt_ldt_s'. */
+ #undef HAVE_STRUCT_MODIFY_LDT_LDT_S
+ 
++/* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
++#undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
++
+ /* Define to 1 if `signo' is member of `struct signalfd_siginfo'. */
+ #undef HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
+ 
+diff --git a/m4/ltp-ptrace.m4 b/m4/ltp-ptrace.m4
+index 63e968e..ca360bb 100644
+--- a/m4/ltp-ptrace.m4
++++ b/m4/ltp-ptrace.m4
+@@ -40,5 +40,8 @@ save_CPPFLAGS=$CPPFLAGS
+ CPPFLAGS="$CPPFLAGS -I$srcdir/testcases/kernel/syscalls/ptrace"
+ AC_CHECK_TYPES([struct user_regs_struct, struct pt_regs],,,[#include "ptrace.h"])
+ AC_CHECK_DECLS([PTRACE_GETSIGINFO, PTRACE_O_TRACEVFORKDONE, PTRACE_SETOPTIONS],,,[#include "ptrace.h"])
++dnl glibc-2.18 defines ptrace_peeksiginfo_args in sys/ptrace.h which
++dnl conflicts with the one from linux kernel in linux/ptrace.h
++AC_CHECK_TYPES([struct ptrace_peeksiginfo_args],,,[#include <sys/ptrace.h>])
+ CPPFLAGS=$save_CPPFLAGS
+ ])
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
+index f0767d7..4a43f01 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace.h
++++ b/testcases/kernel/syscalls/ptrace/ptrace.h
+@@ -19,7 +19,9 @@
+ # include <asm/ptrace.h>
+ #endif
+ #ifdef HAVE_LINUX_PTRACE_H
+-# include <linux/ptrace.h>
++# ifndef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
++#  include <linux/ptrace.h>
++# endif
+ #endif
+ #undef FU_ia64_fpreg
+ #undef FU_pt_all_user_regs
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.4
+
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
