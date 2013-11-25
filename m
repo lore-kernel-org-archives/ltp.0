@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <deller@gmx.de>) id 1Vit7l-0004Vx-A2
-	for ltp-list@lists.sourceforge.net; Tue, 19 Nov 2013 21:46:21 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Vit7k-0003mz-6S
-	for ltp-list@lists.sourceforge.net; Tue, 19 Nov 2013 21:46:21 +0000
-Received: from p100.box ([84.173.38.207]) by mail.gmx.com (mrgmx002) with
-	ESMTPSA (Nemesis) id 0MSdz2-1WALcf3No4-00RbcK for
-	<ltp-list@lists.sourceforge.net>; Tue, 19 Nov 2013 22:46:13 +0100
-Date: Tue, 19 Nov 2013 22:46:12 +0100
-From: Helge Deller <deller@gmx.de>
-Message-ID: <20131119214612.GA2120@p100.box>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vl18N-0002Et-RW
+	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 18:43:47 +0000
+Date: Mon, 25 Nov 2013 19:43:18 +0100
+From: chrubis@suse.cz
+Message-ID: <20131125184318.GD32540@rei.suse.cz>
+References: <1385339610-862-1-git-send-email-gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] [PATCH] fix readv01 testcase for parisc architecture
+In-Reply-To: <1385339610-862-1-git-send-email-gaowanlong@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH V2] runltp: suppress the out message when creating
+ loop device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,46 +25,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-In the second test of readv01 the rd_iovec[] array was not defined or
-zero-initialized for vectors which will be accessed by the readv() syscall.
-This leads to the fact that on the parisc platform the readv syscall accessed
-random memory which is located behind the array.  Fix this problem by adding
-two more vectors with address NULL and length 0.
+Hi!
+> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> ---
+>  runltp | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/runltp b/runltp
+> index 63c625f..c8a2e20 100755
+> --- a/runltp
+> +++ b/runltp
+> @@ -956,7 +956,7 @@ main()
+>  create_block()
+>  {
+>      #create a block device
+> -    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480
+> +    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=20480 >/dev/null 2>&1
+>      if [ $? -ne 0 ]; then
+>          echo "Failed to create loopback device image, please check disk space and re-run"
+>          return 1
 
-Furthermore, in the test2 itself we tell readv() to read 4 vecors, while
-the error message behind it says that it has read CHUNK bytes "followed
-by *two* NULL vectors", which then sums up to a total of 3 vectors
-instead of 4.
-Fix this by calling readv() with only 3 vectors instead of 4.
+I remember not silencing the output because:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+* I don't care much for tidy output from runltp script,
+  it prints too much of output anyway.
 
-diff --git a/testcases/kernel/syscalls/readv/readv01.c b/testcases/kernel/syscalls/readv/readv01.c
-index d92c1be..ca83310 100644
---- a/testcases/kernel/syscalls/readv/readv01.c
-+++ b/testcases/kernel/syscalls/readv/readv01.c
-@@ -66,7 +66,9 @@ struct iovec rd_iovec[MAX_IOVEC] = {
- 	{(buf2 + CHUNK * 10), CHUNK},
- 
- 	/* Test case #2 */
--	{(buf2 + CHUNK * 11), CHUNK}
-+	{(buf2 + CHUNK * 11), CHUNK},
-+	{NULL, 0},
-+	{NULL, 0}
- };
- 
- char f_name[K_1];
-@@ -112,7 +114,7 @@ int main(int ac, char **av)
- 
- //test2:
- 		l_seek(fd, CHUNK * 12, 0);
--		if (readv(fd, (rd_iovec + 1), 4) != CHUNK) {
-+		if (readv(fd, (rd_iovec + 1), 3) != CHUNK) {
- 			tst_resm(TFAIL, "readv failed reading %d bytes, "
- 				 "followed by two NULL vectors", CHUNK);
- 		} else {
+* It's easier to tell what has happened when the command fails.
+
+But I do not really care, if you need this for something feel free to
+commit it.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Shape the Mobile Experience: Free Subscription
