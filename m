@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1VehZl-0006b2-Jz
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 08:37:57 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VehZj-0007iK-0y
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 08:37:57 +0000
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri,  8 Nov 2013 12:37:37 +0400
-Message-Id: <1383899857-4669-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH] setregid02: invalid user value fix
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VkqOl-0002K0-2O
+	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 07:15:59 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VkqOj-000796-BT
+	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 07:15:59 +0000
+Message-ID: <5292F8E3.4000903@cn.fujitsu.com>
+Date: Mon, 25 Nov 2013 15:14:43 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1385130059-12150-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1385130059-12150-1-git-send-email-markos.chandras@imgtec.com>
+Subject: Re: [LTP] [PATCH] ptrace: Fix build problems with glibc-2.18
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,48 +25,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Markos Chandras <markos.chandras@imgtec.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Commit 705926d096f7a64c9d53efeb789288e25457d68f
-introduced a bug that the value for inval_user was treated
-as '-1' when passed to 16-bit version of setregid().
+On 11/22/2013 10:20 PM, Markos Chandras wrote:
+> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+> also defined in sys/ptrace.h and conflicts with the definition
+> from the Linux kernel in linux/ptrace.h. We fix this by not
+> including the linux/ptrace.h header if the sys/ptrace.h header
+> defines the said struct. Fixes
+> https://github.com/linux-test-project/ltp/issues/6
+> 
+> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+> ---
+> Build tested on glibc-2.17 and glibc-2.18 systems
+> ---
+>  configure.ac                              | 4 ++++
+>  include/config.h.default                  | 3 +++
+>  testcases/kernel/syscalls/ptrace/ptrace.h | 4 +++-
+>  3 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 4846afd..d427276 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -48,6 +48,10 @@ AC_CHECK_HEADERS([ \
+>      sys/prctl.h \
+>  ])
+>  
+> +# glibc-2.18 defines ptrace_peeksiginfo_args in sys/ptrace.h which
+> +# conflicts with the one from linux kernel in linux/ptrace.h
+> +AC_CHECK_TYPES([struct ptrace_peeksiginfo_args],,,[#include <sys/ptrace.h>])
 
-Fixed it the same way as it's done for setreuid test cases.
+We generally place this like checks to m4/*.
 
-Reported-by: Honggyu Kim <hong.gyu.kim@lge.com>
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/syscalls/setregid/setregid02.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> +
+>  # Tools knobs
+>  
+>  # Expect
+> diff --git a/include/config.h.default b/include/config.h.default
+> index 96e25c4..f226333 100644
+> --- a/include/config.h.default
+> +++ b/include/config.h.default
+> @@ -167,6 +167,9 @@
+>  /* Define to 1 if the system has the type `struct modify_ldt_ldt_s'. */
+>  #undef HAVE_STRUCT_MODIFY_LDT_LDT_S
+>  
+> +/* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
+> +#undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARG
 
-diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
-index e67a7df..2b84b26 100644
---- a/testcases/kernel/syscalls/setregid/setregid02.c
-+++ b/testcases/kernel/syscalls/setregid/setregid02.c
-@@ -39,7 +39,7 @@ TCID_DEFINE(setregid02);
- 
- static gid_t neg_one = -1;
- 
--static gid_t inval_user = (USHRT_MAX);
-+static gid_t inval_user = USHRT_MAX - 2;
- static struct passwd *ltpuser;
- 
- static struct group nobody, root, bin;
--- 
-1.7.1
+Missed an "S" here?
+
+Thanks,
+Wanlong Gao
+
+> +
+>  /* Define to 1 if `signo' is member of `struct signalfd_siginfo'. */
+>  #undef HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
+>  
+> diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
+> index f0767d7..4a43f01 100644
+> --- a/testcases/kernel/syscalls/ptrace/ptrace.h
+> +++ b/testcases/kernel/syscalls/ptrace/ptrace.h
+> @@ -19,7 +19,9 @@
+>  # include <asm/ptrace.h>
+>  #endif
+>  #ifdef HAVE_LINUX_PTRACE_H
+> -# include <linux/ptrace.h>
+> +# ifndef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
+> +#  include <linux/ptrace.h>
+> +# endif
+>  #endif
+>  #undef FU_ia64_fpreg
+>  #undef FU_pt_all_user_regs
+> 
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
