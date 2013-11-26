@@ -2,20 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vj6qf-0000jc-49
-	for ltp-list@lists.sourceforge.net; Wed, 20 Nov 2013 12:25:37 +0000
-Received: from relay2.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id B3D1EA76EE
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 20 Nov 2013 13:25:26 +0100 (CET)
-Date: Wed, 20 Nov 2013 13:25:07 +0100
+	(envelope-from <metan@suse.de>) id 1VlKmE-0001lb-B1
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 15:42:14 +0000
+Date: Tue, 26 Nov 2013 16:41:43 +0100
 From: chrubis@suse.cz
-Message-ID: <20131120122505.GB2168@rei.nue.novell.com>
-References: <20131120095902.GB30274@quack.suse.cz>
+Message-ID: <20131126154142.GA14089@rei.suse.cz>
+References: <1384497891.12576.3.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20131120095902.GB30274@quack.suse.cz>
-Subject: Re: [LTP] fanotify tests
+In-Reply-To: <1384497891.12576.3.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] creat/creat06.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,1226 +24,256 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
->   Hello,
+> cleanup of creat06.c
 > 
->   since I have been doing some changes to in-kernel fanotify
-> implementation, I wrote a set of tests to excercise fanotify system calls.
-> Can they be merged into LTP? The patch is attached.
-> 
-
-Generally it looks good, see review bellow.
-
-> >From 98982b848c2e5bf86443750b726e4a0fef6f0a49 Mon Sep 17 00:00:00 2001
-> From: Jan Kara <jack@suse.cz>
-> Date: Wed, 20 Nov 2013 00:06:47 +0100
-> Subject: [PATCH] fanotify: Add tests verifying fanotify syscalls
-> 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 > ---
->  configure.ac                                    |   1 +
->  testcases/kernel/syscalls/fanotify/Makefile     |  23 ++
->  testcases/kernel/syscalls/fanotify/fanotify.h   |  39 ++
->  testcases/kernel/syscalls/fanotify/fanotify01.c | 459 ++++++++++++++++++++++++
->  testcases/kernel/syscalls/fanotify/fanotify02.c | 306 ++++++++++++++++
->  testcases/kernel/syscalls/fanotify/fanotify03.c | 334 +++++++++++++++++
->  testcases/kernel/syscalls/fanotify/fanotify04.c | 328 +++++++++++++++++
->  7 files changed, 1490 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fanotify/Makefile
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify.h
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify01.c
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify02.c
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify03.c
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify04.c
-
-You are missing a runtest entries so that the tests are executed by
-default. Look at files in a runtest/ directory. In this case we should
-add them at least to runtest/syscalls file.
-
-> diff --git a/testcases/kernel/syscalls/fanotify/Makefile b/testcases/kernel/syscalls/fanotify/Makefile
-> new file mode 100644
-> index 000000000000..91da9ff96d11
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/Makefile
-> @@ -0,0 +1,23 @@
-> +#
-> +#  Copyright (c) SWSoft, 2007
-
-This copyright looks like copy & paste error.
-
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> new file mode 100644
-> index 000000000000..436e67da8945
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -0,0 +1,39 @@
-> +/*
-> + * fanotify testcase common definitions.
-> + *
-> + * Copyright (c) 2012 Linux Test Project.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + *
-> + * Jan Kara, November 2013
-> + */
-> +
-> +#ifndef	_FANOTIFY_H
-> +#define	_FANOTIFY_H
-> +
-> +/* fanotify(7) wrappers */
-> +
-> +#define	myfanotify_init(flags, event_f_flags) \
-> +	syscall(__NR_fanotify_init, flags, event_f_flags)
-> +
-> +#define	myfanotify_mark(fd, flags, mask, dfd, pathname)	\
-> +	syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname)
-> +
-> +#endif /* _FANOTIFY_H */
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-> new file mode 100644
-> index 000000000000..f4229ec8dbca
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-> @@ -0,0 +1,459 @@
-> +/*
-> + * Copyright (c) 2013 SUSE.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + *
-> + * Started by Jan Kara <jack@suse.cz>
-> + *
-> + * DESCRIPTION
-> + *     Check that fanotify work for a file
-> + */
-> +#include "config.h"
-> +
-> +#include <stdio.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <sys/fcntl.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <sys/syscall.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "linux_syscall_numbers.h"
-> +#include "fanotify.h"
-> +
-> +#if defined(HAVE_SYS_FANOTIFY_H)
-> +#include <sys/fanotify.h>
-> +
-> +#define EVENT_MAX 1024
-> +/* size of the event structure, not counting name */
-> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
-> +/* reasonable guess as to size of 1024 events */
-> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
-> +
-> +char *TCID = "fanotify01";
-> +int TST_TOTAL = 12;
+>  testcases/kernel/syscalls/creat/creat06.c | 146 ++++++++++--------------------
+>  1 file changed, 48 insertions(+), 98 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/creat/creat06.c b/testcases/kernel/syscalls/creat/creat06.c
+> index 51e46ab..6247c11 100644
+> --- a/testcases/kernel/syscalls/creat/creat06.c
+> +++ b/testcases/kernel/syscalls/creat/creat06.c
+> @@ -13,8 +13,8 @@
+>   *   the GNU General Public License for more details.
+>   *
+>   *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + *   along with this program;  if not, write to the Free Software Foundation,
+> + *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+>  
+>  /*
+> @@ -70,84 +70,62 @@
+>  #include <fcntl.h>
+>  #include "test.h"
+>  #include "usctest.h"
+> -
+> -void setup(void);
+> -void cleanup(void);
+> -
+> -char user1name[] = "nobody";
+> -
+> -char *TCID = "creat06";
+> -int fileHandle = 0;
+> -
+> -int exp_enos[] = { EISDIR, ENAMETOOLONG, ENOENT, ENOTDIR, EFAULT, EACCES, 0 };
+> -
+> -#define	MODE1	0444
+> -#define	MODE2	0666
+> -#define NSIZE	1000
+> -
+> -char long_name[] =
+> -    "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+> -
+> -char good_dir[NSIZE];
+> -char no_dir[] = "testfile/testdir";
+> -char not_dir[] = "file1/testdir";
+> -char test6_file[] = "dir6/file6";
+> -char nobody_uid[] = "nobody";
+> -
+> -struct passwd *ltpuser;
+> -struct test_case_t {
+> +#include "safe_macros.h"
 > +
 > +static void setup(void);
 > +static void cleanup(void);
 > +
-> +#define BUF_SIZE 256
-> +static char fname[BUF_SIZE];
-> +static char buf[BUF_SIZE];
-> +static int fd, fd_notify;
+> +#define	MODE1		0444
+> +#define	MODE2		0666
+> +#define NSIZE		1000
+> +#define NO_DIR		"testfile/testdir"
+> +#define NOT_DIR		"file1/testdir"
+> +#define TEST6_FILE	"dir6/file6"
 > +
-> +static unsigned long long event_set[EVENT_MAX];
-> +
-> +static char event_buf[EVENT_BUF_LEN];
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	char *msg;
-> +
-> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		int ret, len, i = 0, test_num = 0;
-> +
-> +		tst_count = 0;
-> +
-> +		if (myfanotify_mark(fd_notify, FAN_MARK_ADD, FAN_ACCESS | FAN_MODIFY |
-> +				    FAN_CLOSE | FAN_OPEN, AT_FDCWD, fname) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			    "fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS | "
-> +			    "FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
-> +			    "failed", fd_notify, fname);
-> +		}
-> +
-> +		/*
-> +		 * generate sequence of events
-> +		 */
-> +		if ((fd = open(fname, O_RDONLY)) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "open(%s, O_RDONLY) failed", fname);
-> +		}
-> +		event_set[tst_count] = FAN_OPEN;
-> +		tst_count++;
-> +
-> +		if (read(fd, buf, BUF_SIZE) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "read(%d, buf, %d) failed", fd, BUF_SIZE);
-> +		}
-> +		event_set[tst_count] = FAN_ACCESS;
-> +		tst_count++;
-> +
-> +		if (close(fd) == -1) {
-> +			tst_brkm(TBROK, cleanup, "close(%s) failed", fname);
-> +		}
+> +static char long_name[PATH_MAX+2];
+> +static char good_dir[NSIZE];
+> +static int filehandle;
+> +static char *bad_addr;
+> +static struct passwd *ltpuser;
 
-Please use SAFE_OPEN(), SAFE_CLOSE() and SAFE_READ() see include/safe_macros.h
+The ltpuser variable don't need to be a global one, it's used only in
+the setup, the same goes for bad_addr.
 
-> +		event_set[tst_count] = FAN_CLOSE_NOWRITE;
-> +		tst_count++;
+> +static struct test_case_t {
+>  	char *fname;
+>  	int mode;
+>  	int error;
+> +	void (*setup)(void);
+>  } TC[] = {
+> -	/* The file name is an existing directory */
+> -	{
+> -	good_dir, MODE1, EISDIR},
+> -	    /* The file name is too long - ENAMETOOLONG */
+> -	{
+> -	long_name, MODE1, ENAMETOOLONG},
+> -	    /* Attempt to create a file in a directory that doesn't exist - ENOENT */
+> -	{
+> -	no_dir, MODE1, ENOENT},
+> -	    /* a compent of the file's path is not a directory - ENOTDIR */
+> -	{
+> -	not_dir, MODE1, ENOTDIR},
+> +	{good_dir, MODE1, EISDIR, NULL},
+> +	{long_name, MODE1, ENAMETOOLONG, NULL},
+> +	{NO_DIR, MODE1, ENOENT, NULL},
+> +	{NOT_DIR, MODE1, ENOTDIR, NULL},
+>  #if !defined(UCLINUX)
+> -	    /* The file address is bad - EFAULT */
+> -	{
+> -	(char *)-1, MODE1, EFAULT},
+> +	{(char *)-1, MODE1, EFAULT, NULL},
+>  #endif
+> -	    /* The directory lacks execute permission - EACCES */
+> -	{
+> -	test6_file, MODE1, EACCES}
+> +	{TEST6_FILE, MODE1, EACCES, NULL},
+>  };
+>  
+> -int TST_TOTAL = (sizeof(TC) / sizeof(*TC));
+> -
+> -char *bad_addr = 0;
+> +char *TCID = "creat06";
+> +int TST_TOTAL = ARRAY_SIZE(TC);
+> +static int exp_enos[] = { EISDIR, ENAMETOOLONG, ENOENT, ENOTDIR,
+> +			  EFAULT, EACCES, 0 };
+>  
+>  int main(int ac, char **av)
+>  {
+>  	int lc;
+> -	char *msg;
+>  	int i;
+>  
+> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+> -		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> -
+>  	setup();
+>  
+> -	/* set up the expected errnos */
+>  	TEST_EXP_ENOS(exp_enos);
+>  
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  
+> -		/* reset tst_count in case we are looping */
+>  		tst_count = 0;
+>  
+> -		/* loop through the test cases */
+>  		for (i = 0; i < TST_TOTAL; i++) {
+>  
+> +			if (TC[i].setup)
+> +				TC[i].setup();
 > +
-> +		/*
-> +		 * Get list of events so far. We get events here to avoid
-> +		 * merging of following events with the previous ones.
-> +		 */
-> +		if ((ret = read(fd_notify, event_buf, EVENT_BUF_LEN)) < 0) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "read(%d, buf, %zu) failed",
-> +				 fd_notify, EVENT_BUF_LEN);
-> +
-> +		}
-> +		len = ret;
-> +
-> +		if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
-> +		}
-> +		event_set[tst_count] = FAN_OPEN;
-> +		tst_count++;
-> +
-> +		if (write(fd, fname, strlen(fname)) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "write(%d, %s, %d) failed", fd, fname,
-> +				 (int)strlen(fname));
-> +		}
-> +		event_set[tst_count] = FAN_MODIFY;
-> +		tst_count++;
-> +
-> +		if (close(fd) == -1) {
-> +			tst_brkm(TBROK, cleanup, "close(%s) failed", fname);
-> +		}
-> +		event_set[tst_count] = FAN_CLOSE_WRITE;
-> +		tst_count++;
-> +
-> +		/*
-> +		 * get another list of events
-> +		 */
-> +		ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +		if (ret < 0) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "read(%d, buf, %zu) failed",
-> +				 fd_notify, EVENT_BUF_LEN);
-> +
-> +		}
-> +		len += ret;
-> +
-> +		/*
-> +		 * Ignore mask testing
-> +		 */
-> +
-> +		/* Ignore access events */
-> +		if (myfanotify_mark(fd_notify,
-> +				    FAN_MARK_ADD | FAN_MARK_IGNORED_MASK,
-> +				    FAN_ACCESS, AT_FDCWD, fname) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			     "fanotify_mark (%d, FAN_MARK_ADD | "
-> +			     "FAN_MARK_IGNORED_MASK, FAN_ACCESS, "
-> +			     "AT_FDCWD, %s) failed", fd_notify, fname);
-> +		}
-> +
-> +		if ((fd = open(fname, O_RDWR)) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "open(%s, O_RDWR) failed", fname);
-> +		}
-> +		event_set[tst_count] = FAN_OPEN;
-> +		tst_count++;
-> +
-> +		/* This event should be ignored */
-> +		if (read(fd, buf, BUF_SIZE) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "read(%d, buf, %d) failed", fd, BUF_SIZE);
-> +		}
-> +
-> +		/*
-> +		 * get another list of events to verify the last one got ignored
-> +		 */
-> +		ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +		if (ret < 0) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "read(%d, buf, %zu) failed",
-> +				 fd_notify, EVENT_BUF_LEN);
-> +
-> +		}
-> +		len += ret;
-> +
-> +		lseek(fd, 0, SEEK_SET);
-> +		/* Generate modify event to clear ignore mask */
-> +		if (write(fd, fname, 1) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "write(%d, %s, 1) failed", fd, fname);
-> +		}
-> +		event_set[tst_count] = FAN_MODIFY;
-> +		tst_count++;
-> +
-> +		/*
-> +		 * This event shouldn't be ignored because previous modification
-> +		 * should have removed the ignore mask
-> +		 */
-> +		if (read(fd, buf, BUF_SIZE) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "read(%d, buf, %d) failed", fd, BUF_SIZE);
-> +		}
-> +		event_set[tst_count] = FAN_ACCESS;
-> +		tst_count++;
-> +
-> +		if (close(fd) == -1) {
-> +			tst_brkm(TBROK, cleanup, "close(%s) failed", fname);
-> +		}
-> +		event_set[tst_count] = FAN_CLOSE_WRITE;
-> +		tst_count++;
-> +
-> +		/* Read events to verify previous access was properly generated */
-> +		ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +		if (ret < 0) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "read(%d, buf, %zu) failed",
-> +				 fd_notify, EVENT_BUF_LEN);
-> +
-> +		}
-> +		len += ret;
-> +
-> +		/*
-> +		 * Now ignore open & close events regardless of file
-> +		 * modifications
-> +		 */
-> +		if (myfanotify_mark(fd_notify,
-> +				    FAN_MARK_ADD | FAN_MARK_IGNORED_MASK | FAN_MARK_IGNORED_SURV_MODIFY,
-> +				    FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			     "fanotify_mark (%d, FAN_MARK_ADD | "
-> +			     "FAN_MARK_IGNORED_MASK | "
-> +			     "FAN_MARK_IGNORED_SURV_MODIFY, FAN_OPEN | "
-> +			     "FAN_CLOSE, AT_FDCWD, %s) failed", fd_notify,
-> +			     fname);
-> +		}
-> +
-> +		/* This event should be ignored */
-> +		if ((fd = open(fname, O_RDWR)) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "open(%s, O_RDWR) failed", fname);
-> +		}
-> +
-> +		if (write(fd, fname, 1) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "write(%d, %s, 1) failed", fd, fname);
-> +		}
-> +		event_set[tst_count] = FAN_MODIFY;
-> +		tst_count++;
-> +
-> +		/* This event should be still ignored */
-> +		if (close(fd) == -1) {
-> +			tst_brkm(TBROK, cleanup, "close(%s) failed", fname);
-> +		}
-> +
-> +		/* This event should still be ignored */
-> +		if ((fd = open(fname, O_RDWR)) == -1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "open(%s, O_RDWR) failed", fname);
-> +		}
-> +
-> +		/* Read events to verify open & close were ignored */
-> +		ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +		if (ret < 0) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "read(%d, buf, %zu) failed",
-> +				 fd_notify, EVENT_BUF_LEN);
-> +
-> +		}
-> +		len += ret;
-> +
-> +		/* Now remove open and close from ignored mask */
-> +		if (myfanotify_mark(fd_notify,
-> +				    FAN_MARK_REMOVE | FAN_MARK_IGNORED_MASK,
-> +				    FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			     "fanotify_mark (%d, FAN_MARK_REMOVE | "
-> +			     "FAN_MARK_IGNORED_MASK, FAN_OPEN | "
-> +			     "FAN_CLOSE, AT_FDCWD, %s) failed", fd_notify,
-> +			     fname);
-> +		}
-> +
-> +		if (close(fd) == -1) {
-> +			tst_brkm(TBROK, cleanup, "close(%s) failed", fname);
-> +		}
-> +		event_set[tst_count] = FAN_CLOSE_WRITE;
-> +		tst_count++;
-> +
-> +		/* Read events to verify close was generated */
-> +		ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +		if (ret < 0) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "read(%d, buf, %zu) failed",
-> +				 fd_notify, EVENT_BUF_LEN);
-> +
-> +		}
-> +		len += ret;
-> +
-> +		if (TST_TOTAL != tst_count) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "TST_TOTAL (%d) and tst_count (%d) are not "
-> +				 "equal", TST_TOTAL, tst_count);
-> +		}
-> +		tst_count = 0;
-> +
-> +
-> +		/*
-> +		 * check events
-> +		 */
-> +		while (i < len) {
-> +			struct fanotify_event_metadata *event;
-> +
-> +			event = (struct fanotify_event_metadata *)&event_buf[i];
-> +			if (test_num >= TST_TOTAL) {
-> +				tst_resm(TFAIL,
-> +					 "get unnecessary event: mask=%llx "
-> +					 "pid=%u fd=%u",
-> +					 (unsigned long long)event->mask,
-> +					 (unsigned)event->pid, event->fd);
-> +			} else if (!(event->mask & event_set[test_num])) {
-> +				tst_resm(TFAIL,
-> +					 "get event: mask=%llx (expected %llx) "
-> +					 "pid=%u fd=%u",
-> +					 (unsigned long long)event->mask,
-> +					 event_set[test_num],
-> +					 (unsigned)event->pid, event->fd);
-> +			} else if (event->pid != getpid()) {
-> +				tst_resm(TFAIL,
-> +					 "get event: mask=%llx pid=%u "
-> +					 "(expected %u) fd=%u",
-> +					 (unsigned long long)event->mask,
-> +					 (unsigned)event->pid,
-> +					 (unsigned)getpid(),
-> +					 event->fd);
-> +			} else {
-> +				if (event->fd == -2)
-> +					goto pass;
-> +				ret = read(event->fd, buf, BUF_SIZE);
-> +				if (ret != strlen(fname)) {
-> +					tst_resm(TFAIL,
-> +						 "cannot read from returned fd "
-> +						 "of event: mask=%llx pid=%u "
-> +						 "fd=%u ret=%d (errno=%d)",
-> +						 (unsigned long long)event->mask,
-> +						 (unsigned)event->pid,
-> +						 event->fd, ret, errno);
-> +				} else if (memcmp(buf, fname, strlen(fname))) {
-> +					tst_resm(TFAIL,
-> +						 "wrong data read from returned fd "
-> +						 "of event: mask=%llx pid=%u "
-> +						 "fd=%u",
-> +						 (unsigned long long)event->mask,
-> +						 (unsigned)event->pid,
-> +						 event->fd);
-> +				} else {
-> +pass:
-> +					tst_resm(TPASS,
-> +					    "get event: mask=%llx pid=%u fd=%u",
-> +					    (unsigned long long)event->mask,
-> +					    (unsigned)event->pid, event->fd);
-> +				}
-> +			}
-> +			/*
-> +			 * We have verified the data now so close fd and
-> +			 * invalidate it so that we don't check it again
-> +			 * unnecessarily
-> +			 */
-> +			close(event->fd);
-> +			event->fd = -2;
-> +			event->mask &= ~event_set[test_num];
-> +			/* No events left in current mask? Go for next event */
-> +			if (event->mask == 0) {
-> +				i += event->event_len;
-> +			}
-> +			test_num++;
-> +		}
-> +		for (; test_num < TST_TOTAL; test_num++) {
-> +			tst_resm(TFAIL, "didn't get event: mask=%llx",
-> +				 event_set[test_num]);
-> +
-> +		}
-> +		/* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
-> +		if (myfanotify_mark(fd_notify, FAN_MARK_REMOVE, FAN_ACCESS | FAN_MODIFY |
-> +				    FAN_CLOSE | FAN_OPEN, AT_FDCWD, fname) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			    "fanotify_mark (%d, FAN_MARK_REMOVE, FAN_ACCESS | "
-> +			    "FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
-> +			    "failed", fd_notify, fname);
-> +		}
-> +
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
+>  			TEST(creat(TC[i].fname, TC[i].mode));
+>  
+>  			if (TEST_RETURN != -1) {
+> @@ -155,8 +133,6 @@ int main(int ac, char **av)
+>  				continue;
+>  			}
+>  
+> -			TEST_ERROR_LOG(TEST_ERRNO);
+> -
+>  			if (TEST_ERRNO == TC[i].error) {
+>  				tst_resm(TPASS | TTERRNO,
+>  					 "got expected failure");
+> @@ -171,21 +147,15 @@ int main(int ac, char **av)
+>  	tst_exit();
+>  }
+>  
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
+> -void setup()
 > +static void setup(void)
-> +{
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  {
+>  	char *cur_dir = NULL;
+>  
+>  	tst_require_root(NULL);
+>  
+> -	ltpuser = getpwnam(nobody_uid);
+> -	if (ltpuser == NULL)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "getpwnam failed");
+> -	if (seteuid(ltpuser->pw_uid) == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "seteuid(%d) failed", ltpuser->pw_uid);
+> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
 > +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	sprintf(fname, "tfile_%d", getpid());
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+>  
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  
+> @@ -193,47 +163,27 @@ void setup()
+>  
+>  	tst_tmpdir();
+>  
+> -	/* get the current directory for the first test */
+> -	if ((cur_dir = getcwd(cur_dir, 0)) == NULL) {
+> -		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
+> -	}
+> +	cur_dir = SAFE_GETCWD(cleanup, cur_dir, 0);
+>  
+>  	strncpy(good_dir, cur_dir, NSIZE);
 
-You don't have to do this, the tst_tmpdir() creates an unique temp
-directory and changes the program working directory to it.
+What about doing one SAVE_MKDIR(cleanup, TEST_DIR, MODE) and passing the
+TEST_DIR to the first testcase instead? That would save us time while
+fidling with the absolute path...
 
-...
+> -	/* create a file that will be used in test #3 */
+> -	if ((fileHandle = creat("file1", MODE1)) == -1) {
+> -		tst_brkm(TBROK, cleanup, "couldn't create a test file");
+> -	}
+> +	if (memset(long_name, 'a', PATH_MAX+1) == NULL)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
 
-> +	}
-> +
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +}
-> +
-> +#else
-> +
-> +char *TCID = "fanotify01";
-> +int TST_TOTAL = 0;
+This part is wrong, memset() can't fail.
 
-We usually have one definition of these variables in a test at the top
-before the ifdefs.
+> +
+> +	filehandle = SAFE_CREAT(cleanup, "file1", MODE1);
 
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "system doesn't have required fanotify support");
-> +}
-> +
-> +#endif
+This file descriptor is not used at all. You should use SAFE_TOUCH()
+instead of the SAFE_CREAT() to just create the file.
 
-...
+>  #if !defined(UCLINUX)
+> -	bad_addr = mmap(0, 1, PROT_NONE,
+> -			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+> -	if (bad_addr == MAP_FAILED) {
+> -		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
+> -	}
+> +	bad_addr = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
+> +			     MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-> new file mode 100644
-> index 000000000000..68e57b2e1f88
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-> @@ -0,0 +1,334 @@
-> +/*
-> + * Copyright (c) 2013 SUSE.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + *
-> + * Started by Jan Kara <jack@suse.cz>
-> + *
-> + * DESCRIPTION
-> + *     Check that fanotify permission events work
-> + */
-> +#include "config.h"
-> +
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <sys/fcntl.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <sys/syscall.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "linux_syscall_numbers.h"
-> +#include "fanotify.h"
-> +
-> +#if defined(HAVE_SYS_FANOTIFY_H)
-> +#include <sys/fanotify.h>
-> +
-> +#define EVENT_MAX 1024
-> +/* size of the event structure, not counting name */
-> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
-> +/* reasonable guess as to size of 1024 events */
-> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
-> +
-> +char *TCID = "fanotify03";
-> +int TST_TOTAL = 3;
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +#define BUF_SIZE 256
-> +static char fname[BUF_SIZE];
-> +static char buf[BUF_SIZE];
-> +static int fd_notify, fd_notify_backup;
-> +
-> +static pid_t child_pid;
-> +static int child_ret = -1;
-> +
-> +static unsigned long long event_set[EVENT_MAX];
-> +static unsigned int event_resp[EVENT_MAX];
-> +
-> +static char event_buf[EVENT_BUF_LEN];
-> +
-> +static void generate_events(void)
-> +{
-> +	int fd;
-> +
-> +	/*
-> +	 * generate sequence of events
-> +	 */
-> +	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
-> +		exit(1);
-> +	if (write(fd, fname, 1) == -1)
-> +		exit(2);
-> +
-> +	lseek(fd, 0, SEEK_SET);
-> +	if (read(fd, buf, BUF_SIZE) != -1)
-> +		exit(3);
-> +
-> +	if (close(fd) == -1)
-> +		exit(4);
-> +}
-> +
-> +static void child_handler(int tmp)
-> +{
-> +	/*
-> +	 * Close notification fd so that we cannot block while reading
-> +	 * from it
-> +	 */
-> +	fd_notify_backup = dup(fd_notify);
-> +	if (fd_notify_backup < 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "dup(%d) failed", fd_notify);
-> +	close(fd_notify);
-> +	fd_notify = -1;
-> +	if (waitpid(-1, &child_ret, 0) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "waitpid(-1, &child_ret, 0) failed");
+The MAP_PRIVATE_EXCEPT_UCLINUX is not usefull here because you are
+inside of the #if !defined(UCLINUX), you can simply use MAP_PRIVATE
+instead.
 
-Calling tst_brkm() from signal hanled is not safe, if you need to write
-from a signal handler you need to resort to bare write().
+>  	TC[4].fname = bad_addr;
 
-Why do you need to waitpid() for the child from the signal handler
-anyway? Why just not call it in the check_child()?
+This is hacked up. You should use the per testcase setup function to
+assign the value instead.
 
-I suppose that you need to wait for the child to finish to make sure the
-fanotify events are queued in the kernel right?
-
-You can use LTP checkpoint library for that and make the parent wait
-until child has finished. See include/tst_checkpoint.h and
-lib/tests/tst_checkpoint*
-
-> +	}
-> +}
-> +
-> +static void run_child(void)
-> +{
-> +	struct sigaction child_action;
-> +
-> +	child_ret = -1;
-> +
-> +	child_action.sa_handler = child_handler;
-> +	sigemptyset(&child_action.sa_mask);
-> +	child_action.sa_flags = SA_NOCLDSTOP;
-> +	
-> +	if (sigaction(SIGCHLD, &child_action, NULL) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "sigaction(SIGCHLD, &child_action, NULL) failed");
-> +	}
-> +
-> +	switch (child_pid = fork()) {
-> +	case 0:
-> +		/* Child will generate events now */
-> +		close(fd_notify);
-> +		generate_events();
-> +		exit(0);
-> +	case -1:
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
-> +	}
-> +}
-> +
-> +static void check_child(void)
-> +{
-> +	struct sigaction child_action;
-> +
-> +	child_action.sa_handler = SIG_IGN;
-> +	sigemptyset(&child_action.sa_mask);
-> +	child_action.sa_flags = SA_NOCLDSTOP;
-> +	if (sigaction(SIGCHLD, &child_action, NULL) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "sigaction(SIGCHLD, &child_action, NULL) failed");
-> +	}
-> +	if (child_ret == -1 && waitpid(-1, &child_ret, 0) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "waitpid(-1, &child_ret, 0) failed");
-> +	}
-> +
-> +	if (WIFSIGNALED(child_ret)) {
-> +		tst_resm(TFAIL, "child exited due to signal %d",
-> +			 WTERMSIG(child_ret));
-> +	} else if (WIFEXITED(child_ret)) {
-> +		if (WEXITSTATUS(child_ret) == 0)
-> +			tst_resm(TPASS, "child exited correctly");
-> +		else
-> +			tst_resm(TFAIL, "child exited with status %d",
-> +				 WEXITSTATUS(child_ret));
-> +	} else
-> +		tst_resm(TFAIL, "child exited for unknown reason (status %d)",
-> +			 child_ret);
-> +}
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	char *msg;
-> +
-> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		int ret, len = 0, i = 0, test_num = 0;
-> +
-> +		run_child();
-> +
-> +		tst_count = 0;
-> +
-> +		event_set[tst_count] = FAN_OPEN_PERM;
-> +		event_resp[tst_count++] = FAN_ALLOW;
-> +		event_set[tst_count] = FAN_ACCESS_PERM;
-> +		event_resp[tst_count++] = FAN_DENY;
-> +
-> +		/* tst_count + 1 is for checking child return value */
-> +		if (TST_TOTAL != tst_count + 1) {
-> +			tst_brkm(TBROK, cleanup,
-> +				 "TST_TOTAL and tst_count do not match");
-> +		}
-> +		tst_count = 0;
-> +
-> +		/*
-> +		 * check events
-> +		 */
-> +		while (test_num < TST_TOTAL && child_ret == -1) {
-> +			struct fanotify_event_metadata *event;
-> +
-> +			if (i == len) {
-> +				/* Get more events */
-> +				ret = read(fd_notify, event_buf + len,
-> +					   EVENT_BUF_LEN - len);
-> +				if (child_ret != -1)
-> +					break;
-> +				if (ret < 0) {
-> +					tst_brkm(TBROK, cleanup,
-> +						 "read(%d, buf, %zu) failed",
-> +						 fd_notify, EVENT_BUF_LEN);
-> +				}
-> +				len += ret;
-> +			}
-> +
-> +			event = (struct fanotify_event_metadata *)&event_buf[i];
-> +			if (!(event->mask & event_set[test_num])) {
-> +				tst_resm(TFAIL,
-> +					 "get event: mask=%llx (expected %llx) "
-> +					 "pid=%u fd=%u",
-> +					 (unsigned long long)event->mask,
-> +					 event_set[test_num],
-> +					 (unsigned)event->pid, event->fd);
-> +			} else if (event->pid != child_pid) {
-> +				tst_resm(TFAIL,
-> +					 "get event: mask=%llx pid=%u "
-> +					 "(expected %u) fd=%u",
-> +					 (unsigned long long)event->mask,
-> +					 (unsigned)event->pid,
-> +					 (unsigned)child_pid,
-> +					 event->fd);
-> +			} else {
-> +				tst_resm(TPASS,
-> +					    "get event: mask=%llx pid=%u fd=%u",
-> +					    (unsigned long long)event->mask,
-> +					    (unsigned)event->pid, event->fd);
-> +			}
-> +			/* Write response to permission event */
-> +			if (event_set[test_num] & FAN_ALL_PERM_EVENTS) {
-> +				struct fanotify_response resp;
-> +
-> +				resp.fd = event->fd;
-> +				resp.response = event_resp[test_num];
-> +				if (write(fd_notify, &resp, sizeof(resp)) == -1) {
-> +					tst_brkm(TBROK, cleanup,
-> +						 "write(%d, resp, %zu) failed",
-> +						 fd_notify, sizeof(resp));
-> +				}
-> +			}
-> +			event->mask &= ~event_set[test_num];
-> +			/* No events left in current mask? Go for next event */
-> +			if (event->mask == 0) {
-> +				i += event->event_len;
-> +				close(event->fd);
-> +			}
-> +			test_num++;
-> +		}
-> +		for (; test_num < TST_TOTAL - 1; test_num++) {
-> +			tst_resm(TFAIL, "didn't get event: mask=%llx",
-> +				 event_set[test_num]);
-> +
-> +		}
-> +		check_child();
-> +		/* We got SIGCHLD while running, resetup fd_notify */
-> +		if (fd_notify == -1)
-> +			fd_notify = fd_notify_backup;
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-
-...
-
-> index 000000000000..aa8219b5cc7c
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify04.c
-> @@ -0,0 +1,328 @@
-> +/*
-> + * Copyright (c) 2013 SUSE.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + *
-> + * Started by Jan Kara <jack@suse.cz>
-> + *
-> + * DESCRIPTION
-> + *     Check various fanotify special flags
-> + */
-> +#include "config.h"
-> +
-> +#include <stdio.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <sys/fcntl.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <sys/syscall.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "linux_syscall_numbers.h"
-> +#include "fanotify.h"
-> +
-> +#if defined(HAVE_SYS_FANOTIFY_H)
-> +#include <sys/fanotify.h>
-> +
-> +#define EVENT_MAX 1024
-> +/* size of the event structure, not counting name */
-> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
-> +/* reasonable guess as to size of 1024 events */
-> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
-> +
-> +char *TCID = "fanotify04";
-> +int TST_TOTAL = 9;
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +#define BUF_SIZE 256
-> +static char fname[BUF_SIZE];
-> +static char sname[BUF_SIZE];
-> +static char dir[BUF_SIZE];
-> +static int fd_notify;
-> +
-> +static int len;
-> +static char event_buf[EVENT_BUF_LEN];
-> +
-> +static char *expect_str_fail(int expect)
-> +{
-> +	if (expect == 0)
-> +		return "failed";
-> +	return "unexpectedly succeeded";
-> +}
-> +
-> +static char *expect_str_pass(int expect)
-> +{
-> +	if (expect == 0)
-> +		return "succeeded";
-> +	return "failed";
-> +}
-> +
-> +static void __check_mark(char *file, unsigned long long flag, char *flagstr,
-> +			 int expect, void (*test_event)(char *))
-> +{
-> +	if (myfanotify_mark(fd_notify, FAN_MARK_ADD | flag, FAN_OPEN, AT_FDCWD,
-> +			    file) != expect) {
-> +		tst_resm(TFAIL,
-> +		    "fanotify_mark (%d, FAN_MARK_ADD | %s, FAN_OPEN, AT_FDCWD, "
-> +		    "\"%s\") %s", fd_notify, flagstr, file, expect_str_fail(expect));
-> +	} else {
-> +		tst_resm(TPASS,
-> +		    "fanotify_mark (%d, FAN_MARK_ADD | %s, FAN_OPEN, AT_FDCWD, "
-> +		    "\"%s\") %s", fd_notify, flagstr, file, expect_str_pass(expect));
-
-I usually use single quotations i.e. "foo '%s'" because they does not
-need to be escaped...
-
-> +		/* If we expected failure there's nothing to clean up */
-> +		if (expect == -1)
-> +			return;
-> +
-> +		if (test_event)
-> +			test_event(file);
-> +
-> +		if (myfanotify_mark(fd_notify, FAN_MARK_REMOVE | flag,
-> +				    FAN_OPEN, AT_FDCWD, file) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +		    	    "fanotify_mark (%d, FAN_MARK_REMOVE | %s, "
-> +			    "FAN_OPEN, AT_FDCWD, \"%s\") failed",
-> +			    fd_notify, flagstr, file);
-> +		}
-> +	}
-> +}
-> +
-> +#define check_mark(file, flag, expect, func) __check_mark(file, flag, #flag, expect, func)
-> +
-> +static void __do_open(char *file, int flag, char *flagstr)
-> +{
-> +	int fd;
-> +
-> +	if ((fd = open(file, O_RDONLY | flag)) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +		    "open(%s, O_RDONLY | %s) failed", file, flagstr);
-> +	}
-> +	if (close(fd) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +		    "close(%s) failed", file);
-> +	}
-> +}
-
-We don't use identificators with double underscores in userspace, these
-are reserved for glibc and may cause failures in future. Especially
-names like __do_open may clash.
-
-> +#define do_open(file, flag) __do_open(file, flag, #flag)
-> +
-> +static void open_file(char *file)
-> +{
-> +	do_open(file, 0);
-> +}
-> +
-> +static void open_dir(char *file)
-> +{
-> +	do_open(file, O_DIRECTORY);
-> +}
-> +
-> +static void verify_event(int mask)
-> +{
-> +	int ret;
-> +	struct fanotify_event_metadata *event;
-> +	struct stat st;
-> +
-> +	/* Read the event */
-> +	ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +	if (ret < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup, "read(%d, buf, %zu) failed",
-> +			 fd_notify, EVENT_BUF_LEN);
-> +	}
-> +	event = (struct fanotify_event_metadata *)&event_buf[len];
-> +	len += ret;
-> +
-> +	if (event->mask != FAN_OPEN) {
-> +		tst_resm(TFAIL, "got unexpected event %llx",
-> +			 (unsigned long long)event->mask);
-> +	} else if (fstat(event->fd, &st) < 0) {
-> +		tst_resm(TFAIL, "failed to stat event->fd (%s)",
-> +			 strerror(errno));
-> +	} else if ((st.st_mode & S_IFMT) != mask) {
-> +		tst_resm(TFAIL, "event->fd points to object of different type "
-> +			 "(%o != %o)", st.st_mode & S_IFMT, mask);
-> +	} else {
-> +		tst_resm(TPASS, "event generated properly for type %o", mask);
-> +	}
-> +	close(event->fd);
-> +}
-> +
-> +static void __do_open_test(char *file, int flag, char *flagstr, int mask)
-> +{
-> +	__do_open(file, flag, flagstr);
-> +
-> +	verify_event(mask);
-> +}
-> +
-> +#define do_open_test(file, flag, mask) __do_open_test(file, flag, #flag, mask)
-> +
-> +static void test_open_file(char *file)
-> +{
-> +	do_open_test(file, 0, S_IFREG);
-> +}
-> +
-> +static void verify_no_event(void)
-> +{
-> +	int ret; 
-
-                ^
-		Trailing whitespace here (and on a few other places as
-		well)
-
-> +	ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
-> +	if (ret != -1) {
-> +		struct fanotify_event_metadata *event;
-> +
-> +		event = (struct fanotify_event_metadata *)&event_buf[len];
-> +		tst_resm(TFAIL, "seen unexpected event (mask %llx)",
-> +			 (unsigned long long)event->mask);
-> +		/* Cleanup fd from the event */
-> +		close(event->fd);
-> +	} else if (errno != EAGAIN) {
-> +		tst_resm(TFAIL | TERRNO, "read(%d, buf, %zu) failed", fd_notify,
-> +			 EVENT_BUF_LEN);
-> +	} else {
-> +		tst_resm(TPASS, "No event as expected");
-> +	}
-> +}
-> +
-> +static void test_open_symlink(char *file)
-> +{
-> +	/* Since mark is on a symlink, no event should be generated by opening a file */
-> +	do_open(file, 0);
-> +	verify_no_event();
-> +}
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	char *msg;
-> +
-> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		/* Check ONLYDIR on a directory */
-> +		check_mark(".", FAN_MARK_ONLYDIR, 0, NULL);
-> +
-> +		/* Check ONLYDIR without a directory */
-> +		check_mark(fname, FAN_MARK_ONLYDIR, -1, NULL);
-> +
-> +		/* Check DONT_FOLLOW for a symlink */
-> +		check_mark(sname, FAN_MARK_DONT_FOLLOW, 0, test_open_symlink);
-> +
-> +		/* Check without DONT_FOLLOW for a symlink */
-> +		check_mark(sname, 0, 0, test_open_file);
-> +
-> +		/* Verify FAN_MARK_FLUSH destroys all inode marks */
-> +		if (myfanotify_mark(fd_notify, FAN_MARK_ADD,
-> +		    		    FAN_OPEN, AT_FDCWD, fname) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			    "fanotify_mark (%d, FAN_MARK_ADD, FAN_OPEN, "
-> +			    "AT_FDCWD, \"%s\") failed", fd_notify, fname);
-> +		}
-> +		if (myfanotify_mark(fd_notify, FAN_MARK_ADD,
-> +		    		    FAN_OPEN | FAN_ONDIR, AT_FDCWD, dir) < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			    "fanotify_mark (%d, FAN_MARK_ADD, FAN_OPEN | "
-> +			    "FAN_ONDIR, AT_FDCWD, \"%s\") failed", fd_notify,
-> +			    dir);
-> +		}
-> +		open_file(fname);
-> +		verify_event(S_IFREG);
-> +		open_dir(dir);
-> +		verify_event(S_IFDIR);
-> +		if (myfanotify_mark(fd_notify, FAN_MARK_FLUSH,
-> +		    		    0, AT_FDCWD, ".") < 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +			    "fanotify_mark (%d, FAN_MARK_FLUSH, 0, "
-> +			    "AT_FDCWD, \".\") failed", fd_notify);
-> +		}
-> +
-> +		open_dir(dir);
-> +		verify_no_event();
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int fd;
-> +
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +	sprintf(fname, "fname_%d", getpid());
-> +	if ((fd = open(fname, O_RDWR | O_CREAT, 0644)) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "open(%s, O_RDWR | O_CREAT, 0644) failed", fname);
-> +	}
-> +	if (close(fd) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "close(%d) failed", fd);
-> +	}
-> +
-> +	sprintf(sname, "symlink_%d", getpid());
-> +	if (symlink(fname, sname) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "symlink(%s, %s) failed", fname, sname);
-> +	}
-
-We also have SAFE_SYMLINK()
-
-> +	sprintf(dir, "dir_%d", getpid());
-> +	if (mkdir(dir, 0755) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup, "mkdir(%s) failed", dir);
-> +	}
-
-
-And SAFE_MKDIR() too.
-
-> +	if ((fd_notify = myfanotify_init(FAN_CLASS_NOTIF | FAN_NONBLOCK,
-> +					 O_RDONLY)) < 0) {
-> +		if (errno == ENOSYS) {
-> +			tst_brkm(TCONF, cleanup,
-> +				 "fanotify is not configured in this kernel.");
-> +		} else {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "fanotify_init failed");
-> +		}
-> +	}
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (close(fd_notify) == -1) {
-> +		tst_resm(TWARN, "close(%d) failed", fd_notify);
-> +	}
-> +
-> +	TEST_CLEANUP;
-> +	tst_rmdir();
-> +}
-> +
-> +#else
-> +
-> +char *TCID = "fanotify04";
-> +int TST_TOTAL = 0;
-> +
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "system doesn't have required fanotify support");
-> +}
-> +
-> +#endif
-
+>  #endif
+>  
+> -	/* create a directory that will be used in test #6 */
+> -	if (mkdir("dir6", MODE2) == -1) {
+> -		tst_brkm(TBROK, cleanup, "couldn't creat a test directory");
+> -	}
+> +	SAFE_MKDIR(cleanup, "dir6", MODE2);
+>  }
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
