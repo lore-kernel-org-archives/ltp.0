@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VfrKe-00081Y-Uj
-	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 13:15:09 +0000
-Date: Mon, 11 Nov 2013 14:14:56 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VlN49-0001uf-0G
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 18:08:53 +0000
+Date: Tue, 26 Nov 2013 19:08:23 +0100
 From: chrubis@suse.cz
-Message-ID: <20131111131456.GA12164@rei>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-	<1383085243-5833-4-git-send-email-vincent.hsu@linaro.org>
-	<20131107131234.GA28961@rei.suse.cz>
-	<CAARHBVsQQEdYjY59Wa80ZO6TiVvb5gfWRA4vigMPmy-+tyH0jA@mail.gmail.com>
+Message-ID: <20131126180823.GA14714@rei.suse.cz>
+References: <528A07E4.7060608@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAARHBVsQQEdYjY59Wa80ZO6TiVvb5gfWRA4vigMPmy-+tyH0jA@mail.gmail.com>
-Subject: Re: [LTP] [LNG][PATCH 3/9] ltp-networking/tcp_cmds/finger: finger
- an unknown host test will return 1 even if execution success on Ubuntu
- 12.04
+In-Reply-To: <528A07E4.7060608@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] testscripts/test_robind.sh: add fs_readonly to
+ default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,86 +25,202 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vincent Hsu <vincent.hsu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, Linaro Networking <linaro-networking@linaro.org>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > > for example:
-> > >     $ finger @xxxx || echo "test fail"
-> > >     finger: unknown host: xxxx
-> > >     getaddrinfo: No address associated with hostname
-> > >     test fail
-> >
-> > Hmm, at my computers (SUSE, Gentoo) it works as:
-> >
-> > $ finger @xxxx || echo "test fail"
-> > finger: unknown host: xxxx
-> >
-> > Are you sure that finger returns nonzero? From what package and what
-> > version does your finger come from?
-> >
-> Yes, it returns nonzero in ubuntu. I have tested it in centos before, it
-> returned zero same as your enviroment. I thinks it doen't relative to the
-> package version, because it also happened in netstat test. I considerd that
-> the default shell in ubuntu is dash not bash before, but it doesn't help
-> even I forced to use bash. Maybe it cause by the bash version or something
-> else, I could find the root cause yet. If you have time can you test it in
-> debian based distribution?
+> cleanup of testscripts/test_robind.sh
+
+Can you send the cleanup as a separate patch?
+
+> testscripts/fs_ro_tests: delete some unecessary tests
+
+Why are these tests unnecessary?
+
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  scenario_groups/default    |   1 +
+>  testscripts/fs_ro_tests    |  19 ----
+>  testscripts/test_robind.sh | 272 ++++++++++++++++++++++-----------------------
+>  3 files changed, 134 insertions(+), 158 deletions(-)
 > 
-> However, I gave by finger and bash package version below, it seems applying
-> some patch not pure packages.
-> 
-> apt-get source finger
-> Reading package lists... Done
-> Building dependency tree
-> Reading state information... Done
-> Picking 'bsd-finger' as source package instead of 'finger'
-> Need to get 37.6 kB of source archives.
-> Get:1 http://ubuntu.cs.nctu.edu.tw/ubuntu/ precise/main bsd-finger 0.17-14
-> (dsc) [1,653 B]
-> Get:2 http://ubuntu.cs.nctu.edu.tw/ubuntu/ precise/main bsd-finger 0.17-14
-> (tar) [25.5 kB]
-> Get:3 http://ubuntu.cs.nctu.edu.tw/ubuntu/ precise/main bsd-finger 0.17-14
-> (diff) [10.4 kB]
-> Fetched 37.6 kB in 0s (168 kB/s)
-> gpgv: Signature made Fri 12 Feb 2010 02:03:58 PM CST using RSA key ID
-> 947897D8
-> gpgv: Can't check signature: public key not found
-> dpkg-source: warning: failed to verify signature on ./bsd-finger_0.17-14.dsc
-> dpkg-source: info: extracting bsd-finger in bsd-finger-0.17
-> dpkg-source: info: unpacking bsd-finger_0.17.orig.tar.gz
-> dpkg-source: info: unpacking bsd-finger_0.17-14.debian.tar.bz2
-> dpkg-source: info: applying 01-legacy.patch
-> dpkg-source: info: applying 02-518559-nsswitch-sources.patch
-> dpkg-source: info: applying 03-468454-fingerd-ipv6.patch
-> dpkg-source: info: applying 04-468454-finger-ipv6.patch
-> dpkg-source: info: applying 05-547014-netgroup.patch
+> diff --git a/scenario_groups/default b/scenario_groups/default
+> index 9eca8ad..520db8b 100644
+> --- a/scenario_groups/default
+> +++ b/scenario_groups/default
+> @@ -25,3 +25,4 @@ hugetlb
+>  commands
+>  hyperthreading
+>  kernel_misc
+> +fs_readonly
 
-Looks like this is caused by the 01-legacy.patch that is part of the
-debian package and gets picked up by ubuntu as well.
+I generally don't like adding tests that are executed as a signle script
+because it's hard to tell what went wrong when some of the tests has
+failed. It would be better to split them into separate testcases.
 
-> > Btw what is wrong at the code bellow is the redirection, which does not
-> > work, the >/dev/null should be before the 2>&1. Even if your finger
-> > really returns nonzero the code bellow is quite cryptic as it looks like
-> > it redirects all output from the finger into the /dev/null but it really
-> > just redirects stderr into stdout which goes to the grep...
-> >
-> Yes, I thinks the redirection sequence is weird, I just don't want to do
-> many modifications of the  original code. Can you help to improve it?
+> diff --git a/testscripts/fs_ro_tests b/testscripts/fs_ro_tests
+> index ec4a86c..2ecd9c5 100644
+> --- a/testscripts/fs_ro_tests
+> +++ b/testscripts/fs_ro_tests
+> @@ -35,22 +35,3 @@ rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10
+>  rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:rwtest01%f
+>  rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+>  fs_inod . 10 10 1
+> -linktest.pl
+> -openfile -f10 -t10
+> -inode01
+> -inode02
+> -stream01
+> -stream02
+> -stream03
+> -stream04
+> -stream05
+> -ftest01
+> -ftest02
+> -ftest03
+> -ftest04
+> -ftest05
+> -ftest06
+> -ftest07
+> -ftest08
+> -lftest 80
+> -writetest
+> diff --git a/testscripts/test_robind.sh b/testscripts/test_robind.sh
+> index 4c01f4e..231419a 100755
+> --- a/testscripts/test_robind.sh
+> +++ b/testscripts/test_robind.sh
+> @@ -45,23 +45,20 @@
+>  $trace_logic
+>  
+>  # The test case ID, the test case count and the total number of test case
+> -TCID=${TCID:-test_robind.sh}
+> -TST_TOTAL=1
+> -TST_COUNT=1
+> -export TCID
+> -export TST_COUNT
+> -export TST_TOTAL
+> +export TCID=${TCID:-test_robind.sh}
+> +export TST_TOTAL=1
+> +export TST_COUNT=1
+>  
+>  usage()
+>  {
+> -  cat << EOF
+> -  usage: $0 [ext3,ext2,jfs,xfs,reiserfs,ramfs]
+> +	cat << EOF
+> +usage: $0 [ext3,ext2,jfs,xfs,reiserfs,ramfs]
+>  
+> -  This script verifies ReadOnly-filesystem, by mounting imagefile and
+> -  executing the filesystem tests.
+> +	This script verifies ReadOnly-filesystem, by mounting imagefile and
+> +executing the filesystem tests.
+>  
+> -  OPTIONS
+> -    -h    display this message and exit
+> +OPTIONS
+> +	-h    display this message and exit
+>  EOF
+>  }
+>  
+> @@ -81,18 +78,15 @@ trap cleanup INT
+>  #==============================================================================
+>  function cleanup
+>  {
+> -    umount ${TMPDIR}/dir3-ro 2> /dev/null > /dev/null
+> -    umount ${TMPDIR}/dir2-bound 2> /dev/null 1> /dev/null
+> -    umount ${TMPDIR}/dir1 2> /dev/null 1> /dev/null
+> -    if [ ! -z $1 ]; then {
+> -        rm -rf $1 || true
+> -    }
+> -    fi
+> +	umount ${TMPDIR}/dir3-ro 2> /dev/null > /dev/null
+> +	umount ${TMPDIR}/dir2-bound 2> /dev/null 1> /dev/null
+> +	umount ${TMPDIR}/dir1 2> /dev/null 1> /dev/null
+> +	if [ ! -z $1 ]; then
+> +		rm -rf $1 || true
+> +	fi
+>  }
+>  
+> -#===============================================================================
+> -# FUNCTION NAME:    setup
+> -#
+> +#=============================================================================== # FUNCTION NAME:    setup #
 
-Just send fixes for the redirection in separate patch first and then
-patch that fixes the finger return value.
+This newly added line looks like a mistake.
+
+Also these comments are mostly useless and only make the test source
+longer.
+
+>  # FUNCTION DESCRIPTION: Does the initailization
+>  #
+>  # PARAMETERS:   File_systems (if any )
+> @@ -101,33 +95,33 @@ function cleanup
+>  #===============================================================================
+>  function setup
+>  {
+> -    mkdir ${TMPDIR}
+> -    FAILLOG="$TMPDIR/errs.log"
+> -    PASSLOG="$TMPDIR/pass.log"
+> +	mkdir ${TMPDIR}
+> +	FAILLOG="$TMPDIR/errs.log"
+> +	PASSLOG="$TMPDIR/pass.log"
+>  
+> -    for i in $DIRS; do
+> -        rm -rf ${TMPDIR}/$i || true
+> -        mkdir -p ${TMPDIR}/$i
+> -    done;
+> +	for i in $DIRS; do
+> +		rm -rf ${TMPDIR}/$i || true
+> +		mkdir -p ${TMPDIR}/$i
+> +	done;
+>  
+> -    # Populating the default FS as ext3, if FS is not given
+> -    if [ -z "$*" ]; then
+> -        FSTYPES="ext3"
+> -    else
+> -        FSTYPES="$*"
+> -    fi
+> +	# Populating the default FS as ext3, if FS is not given
+> +	if [ -z "$*" ]; then
+> +		FSTYPES="ext3"
+> +	else
+> +		FSTYPES="$*"
+> +	fi
+>  
+> -    # set the LTPROOT directory
+> -    cd `dirname $0`
+> -    echo "${PWD}" | grep testscripts > /dev/null 2>&1
+> -    if [ $? -eq 0 ]; then
+> -        cd ..
+> -        export LTPROOT="${PWD}"
+> -        export PATH="${PATH}:${LTPROOT}/testcases/bin"
+> -    fi
+> +	# set the LTPROOT directory
+> +	cd `dirname $0`
+> +	echo "${PWD}" | grep testscripts > /dev/null 2>&1
+> +	if [ $? -eq 0 ]; then
+> +		cd ..
+> +		export LTPROOT="${PWD}"
+> +		export PATH="${PATH}:${LTPROOT}/testcases/bin"
+> +	fi
+>  
+> -    FS_Tests="${LTPROOT}/testscripts/fs_ro_tests"
+> -    cd ${TMPDIR}
+> +	FS_Tests="${LTPROOT}/testscripts/fs_ro_tests"
+> +	cd ${TMPDIR}
+>  }
+>  
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
