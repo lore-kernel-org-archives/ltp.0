@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <siva.padhy@lge.com>) id 1Vfgo9-0005kW-Jy
-	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 02:00:53 +0000
-Received: from lgeamrelo02.lge.com ([156.147.1.126])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vfgo7-0006pv-Jq
-	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 02:00:53 +0000
-From: Siva Padhy <siva.padhy@lge.com>
-Date: Mon, 11 Nov 2013 10:51:25 +0900
-Message-ID: <81212EE27BC298499DBD7CA069AAD07142E38D167A@LGEVEXMBAPSVC2.LGE.NET>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: [LTP] [PATCH V2] BindMounts: fix to properly unmount during cleanup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VlBLK-0008HJ-Tv
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 05:37:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VlBLI-0006fL-Hm
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 05:37:50 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rAQ5bC9J030489
+	for <ltp-list@lists.sourceforge.net>; Tue, 26 Nov 2013 13:37:32 +0800
+Message-ID: <1385443532.14061.0.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 26 Nov 2013 13:25:32 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] fchownat/fchownat01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,115 +28,297 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-The fs_bind testcases creates the mount directories for testing.
-When the testcase exits, those directories were not properly unmounted.
-The reason of the issues are:
+cleanup of fchownat01.c
 
- 1. Some directories were kept mounted, even after the cleanup() routine, as the unmount code is missing.
- 2. Some "umount" command execution fails, as they are dependent on some other mounted directories.
-
-Error Report
-------------
-rbind/test02    1  TPASS  :  rbind/test02: PASSED
-/kvt.new/ltp/testscripts/test_fs_bind.sh    0  TWARN  :  rbind/test02 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
-
-rbind/test38    1  TPASS  :  rbind/test38: PASSED
-/kvt.new/ltp/testscripts/test_fs_bind.sh    0  TWARN  :  rbind/test38 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
-
-This patch add/reorder the unmount code to fix the above TWARN messages.
-
-Modified-by: Jan Stancek <jstancek@redhat.com>
-Signed-off-by: Siva  <siva.padhy@lge.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/fs/fs_bind/rbind/test02 |   18 +++++++-----------
- testcases/kernel/fs/fs_bind/rbind/test38 |    4 ++--
- 2 files changed, 9 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/fchownat/fchownat01.c | 209 ++++++++----------------
+ 1 file changed, 69 insertions(+), 140 deletions(-)
 
-diff --git a/testcases/kernel/fs/fs_bind/rbind/test02 b/testcases/kernel/fs/fs_bind/rbind/test02
-index 3ab7b6c..f68f691 100755
---- a/testcases/kernel/fs/fs_bind/rbind/test02
-+++ b/testcases/kernel/fs/fs_bind/rbind/test02
-@@ -1,5 +1,4 @@
- #!/bin/bash
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
+index 8a81f41..b46a721 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat01.c
++++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
+@@ -13,8 +13,8 @@
+  *   the GNU General Public License for more details.
+  *
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  *
+  * NAME
+  *      fchownat01.c
+@@ -55,89 +55,60 @@
+ #include <signal.h>
+ #include "test.h"
+ #include "usctest.h"
+-#include "linux_syscall_numbers.h"
 -
- #
- # Copyright (c) International Business Machines  Corp., 2005
- # Author: Avantika Mathur (mathurav@us.ibm.com)
-@@ -38,9 +37,6 @@ trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LI
- while /bin/true ; do
- 	# This loop is for error recovery purposes only
+-#define TEST_CASES 6
+-#ifndef AT_FDCWD
+-#define AT_FDCWD -100
+-#endif
+-void setup();
+-void cleanup();
+-void setup_every_copy();
++#include "safe_macros.h"
++
++static void setup(void);
++static void cleanup(void);
++
++static uid_t uid;
++static gid_t gid;
++static char pathname[PATH_MAX+1];
++static char testfile[PATH_MAX+1];
++static char testfile2[PATH_MAX+1];
++static char testfile3[PATH_MAX+1];
++static int dirfd;
++static int fd;
++static int no_fd;
++static int cu_fd;
++
++static struct test_case_t {
++	int ret;
++	int flag;
++	int *fds;
++	char *filenames;
++} test_cases[] = {
++	{0, 0, &dirfd, testfile},
++	{0, 0, &dirfd, testfile2},
++	{ENOTDIR, 0, &fd, testfile},
++	{EBADF, 0, &no_fd, testfile},
++	{EINVAL, 9999, &dirfd, testfile},
++	{0, 0, &cu_fd, testfile},
++};
  
+ char *TCID = "fchownat01";
+-int TST_TOTAL = TEST_CASES;
+-char pathname[256];
+-char testfile[256];
+-char testfile2[256];
+-char testfile3[256];
+-int dirfd, fd, ret;
+-int fds[TEST_CASES];
+-char *filenames[TEST_CASES];
+-int expected_errno[TEST_CASES] = { 0, 0, ENOTDIR, EBADF, EINVAL, 0 };
+-int flags[TEST_CASES] = { 0, 0, 0, 0, 9999, 0 };
 -
+-uid_t uid;
+-gid_t gid;
 -
--
- 	"${FS_BIND_ROOT}/bin/makedir" share parent1
- 	"${FS_BIND_ROOT}/bin/makedir" priv parent2
- 	"${FS_BIND_ROOT}/bin/makedir" share share1
-@@ -74,10 +70,10 @@ if [ -n "${ERR_MSG}" ]; then
- fi
- trap '' ERR
+-int myfchownat(int dirfd, const char *filename, uid_t owner, gid_t group,
+-	       int flags)
+-{
+-	return ltp_syscall(__NR_fchownat, dirfd, filename, owner, group, flags);
+-}
++int TST_TOTAL = ARRAY_SIZE(test_cases);
+ 
+ int main(int ac, char **av)
  {
-+	umount parent2/child2/b
- 	umount parent1/child1/a
--	umount parent1/child1/b
--	umount parent1/child1
--	umount parent1/child1
-+	umount parent2/child2
-+	umount share1
- 	umount parent1/child1
- 	umount parent1/child1
- 	umount share1
-@@ -90,11 +86,11 @@ trap '' ERR
+ 	int lc;
+-	char *msg;
+ 	int i;
  
- if [ $result -ne 0 ]
- then
--        tst_resm TFAIL "rbind/test02: FAILED: rbind: shared child to private parent."
--        exit 1
-+	tst_resm TFAIL "rbind/test02: FAILED: rbind: shared child to private parent."
-+	exit 1
- else
--        tst_resm TPASS "rbind/test02: PASSED"
--        exit 0
-+	tst_resm TPASS "rbind/test02: PASSED"
-+	exit 0
- fi
- 
- 
-diff --git a/testcases/kernel/fs/fs_bind/rbind/test38 b/testcases/kernel/fs/fs_bind/rbind/test38
-index c9cf3e1..ae7477e 100755
---- a/testcases/kernel/fs/fs_bind/rbind/test38
-+++ b/testcases/kernel/fs/fs_bind/rbind/test38
-@@ -1,5 +1,4 @@
- #!/bin/bash
+-	/* Disable test if the version of the kernel is less than 2.6.16 */
+-	if ((tst_kvercmp(2, 6, 16)) < 0) {
+-		tst_resm(TWARN, "This test can only run on kernels that are ");
+-		tst_resm(TWARN, "2.6.16 and higher");
+-		exit(0);
+-	}
 -
- #
- # Copyright (c) International Business Machines  Corp., 2005
- # Author: Avantika Mathur (mathurav@us.ibm.com)
-@@ -82,10 +81,11 @@ trap '' ERR
- 	umount parent1/child1
- 	umount parent2/child1
- 	umount parent2/child1
--	umount parent2/child2
- 	umount parent2
- 	umount share1
- 	umount share1
-+	umount share2
-+	umount parent2/child2
+-	/***************************************************************
+-	 * parse standard options
+-	 ***************************************************************/
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-	/***************************************************************
+-	 * perform global setup for test
+-	 ***************************************************************/
+ 	setup();
  
- 	rm -rf parent* share*
- 	cleanup
+-	/***************************************************************
+-	 * check looping state if -c option given
+-	 ***************************************************************/
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		setup_every_copy();
+ 
+ 		tst_count = 0;
+ 
+-		/*
+-		 * Call fchownat
+-		 */
+ 		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(myfchownat
+-			     (fds[i], filenames[i], uid, gid, flags[i]));
+-
+-			/* check return code */
+-			if (TEST_ERRNO == expected_errno[i]) {
+-
+-				/***************************************************************
+-				 * only perform functional verification if flag set (-f not given)
+-				 ***************************************************************/
+-				if (STD_FUNCTIONAL_TEST) {
+-					/* No Verification test, yet... */
+-					tst_resm(TPASS,
+-						 "fchownat() returned the expected  errno %d: %s",
+-						 TEST_ERRNO,
+-						 strerror(TEST_ERRNO));
+-				}
++			TEST(fchownat(*test_cases[i].fds,
++				      test_cases[i].filenames, uid, gid,
++				      test_cases[i].flag));
++
++			if (TEST_ERRNO == test_cases[i].ret) {
++				tst_resm(TPASS,
++					 "fchownat() returned the expected "
++					 "errno %d: %s", TEST_ERRNO,
++					 strerror(TEST_ERRNO));
+ 			} else {
+ 				TEST_ERROR_LOG(TEST_ERRNO);
+ 				tst_resm(TFAIL,
+@@ -148,97 +119,55 @@ int main(int ac, char **av)
+ 
+ 	}
+ 
+-	/***************************************************************
+-	 * cleanup and exit
+-	 ***************************************************************/
+ 	cleanup();
+ 
+-	return (0);
++	tst_exit();
+ }
+ 
+-void setup_every_copy()
++void setup()
+ {
+-	/* Initialize test dir and file names */
++	uid = geteuid();
++	gid = getegid();
++
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++
+ 	sprintf(pathname, "fchownattestdir%d", getpid());
+-	sprintf(testfile, "fchownattestfile%d.txt", getpid());
+-	sprintf(testfile2, "/tmp/fchownattestfile%d.txt", getpid());
+-	sprintf(testfile3, "fchownattestdir%d/fchownattestfile%d.txt", getpid(),
+-		getpid());
+ 
+-	ret = mkdir(pathname, 0700);
+-	if (ret < 0) {
+-		perror("mkdir: ");
+-		exit(-1);
+-	}
++	SAFE_MKDIR(cleanup, pathname, 0700);
+ 
+-	dirfd = open(pathname, O_DIRECTORY);
+-	if (dirfd < 0) {
+-		perror("open: ");
+-		exit(-1);
+-	}
++	dirfd = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
+ 
+-	fd = open(testfile, O_CREAT | O_RDWR, 0600);
+-	if (fd < 0) {
+-		perror("open: ");
+-		exit(-1);
+-	}
++	sprintf(testfile, "fchownattestfile%d.txt", getpid());
+ 
+-	fd = open(testfile2, O_CREAT | O_RDWR, 0600);
+-	if (fd < 0) {
+-		perror("open: ");
+-		exit(-1);
+-	}
++	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
+ 
+-	fd = open(testfile3, O_CREAT | O_RDWR, 0600);
+-	if (fd < 0) {
+-		perror("open: ");
+-		exit(-1);
+-	}
++	sprintf(testfile2, "/tmp/fchownattestfile%d.txt", getpid());
+ 
+-	fds[0] = fds[1] = fds[4] = dirfd;
+-	fds[2] = fd;
+-	fds[3] = 100;
+-	fds[5] = AT_FDCWD;
++	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
+ 
+-	filenames[0] = filenames[2] = filenames[3] = filenames[4] =
+-	    filenames[5] = testfile;
+-	filenames[1] = testfile2;
+-}
++	sprintf(testfile3, "fchownattestdir%d/fchownattestfile%d.txt", getpid(),
++		getpid());
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup()
+-{
+-	/* Set uid and gid */
+-	uid = geteuid();
+-	gid = getegid();
++	fd = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	no_fd = 100;
+ 
+-	TEST_PAUSE;
++	cu_fd = AT_FDCWD;
+ }
+ 
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+ void cleanup()
+ {
+-	/* Remove them */
+-	char tmppathname[256];
+-	strcpy(tmppathname, pathname);
+-
+-	close(fd);
+-	unlink(testfile);
+-	unlink(testfile2);
+-	unlink(testfile3);
++	SAFE_CLOSE(NULL, fd);
++
++	SAFE_UNLINK(NULL, testfile);
++
++	SAFE_UNLINK(NULL, testfile2);
++
++	SAFE_UNLINK(NULL, testfile3);
++
+ 	rmdir(pathname);
+ 
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+ }
 -- 
-1.7.9.5
+1.8.2.1
+
+
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
