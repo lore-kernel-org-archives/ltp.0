@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VlzzO-0001he-H4
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:42:34 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VlzzN-0001eU-AL
-	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:42:34 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rASBgQiO032472
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 Nov 2013 19:42:26 +0800
-Message-ID: <1385638941.1520.6.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 28 Nov 2013 19:42:21 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 2/2] fallocate/fallocate02.c: add EFBIG
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VlKy6-0004IO-Or
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 15:54:30 +0000
+Date: Tue, 26 Nov 2013 16:54:01 +0100
+From: chrubis@suse.cz
+Message-ID: <20131126155401.GB14089@rei.suse.cz>
+References: <1384497891.12576.3.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1384497891.12576.3.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] creat/creat06.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,155 +24,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-add error with EFBIG for fallocate(2)
+Hi!
+>  int main(int ac, char **av)
+>  {
+>  	int lc;
+> -	char *msg;
+>  	int i;
+>  
+> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+> -		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> -
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- runtest/syscalls                                  |  2 +-
- testcases/kernel/syscalls/fallocate/fallocate02.c | 56 ++++++++++++++++++++++-
- 2 files changed, 55 insertions(+), 3 deletions(-)
+Also do not remove the standard option parsing code, it's useful even
+when the test does not add any additional opions.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 12bae10..5f112d3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -150,7 +150,7 @@ faccessat01 faccessat01
- 
- #fallocate test cases
- fallocate01 fallocate01
--fallocate02 fallocate02
-+fallocate02 fallocate02 -D DEVICE -T ext4
- fallocate03 fallocate03
- 
- #posix_fadvise test cases
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
-index f73ba8a..3e5fce9 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate02.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
-@@ -45,7 +45,7 @@
-  *	(Tests fallocate() for different test cases as reported in map page)
-  *
-  *	INPUT SPECIFICATIONS
-- *		No input needs to be specified
-+ *		Need ext4 while run test with EFBIG
-  *		  fallocate() in-puts are specified through test_data
-  *
-  *	OUTPUT SPECIFICATIONS
-@@ -76,6 +76,7 @@
- #include <fcntl.h>
- #include <inttypes.h>
- #include <sys/utsname.h>
-+#include <sys/mount.h>
- 
- #include "test.h"
- #include "usctest.h"
-@@ -91,16 +92,35 @@
- #endif
- 
- #define OFFSET			12
-+/*
-+ * block_size is 1024, then the maximum file size is MAX_FILE * block_size: 4T
-+ * block_size is 4096, then the maximum file size is MAX_FILE * block_size: 16T
-+ */
-+#define MAX_FILE		(4L*1024*1024*1024)
-+#define DIR_MODE		(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-+				 S_IXGRP|S_IROTH|S_IXOTH)
- 
- static void setup(void);
- static void cleanup(void);
- static inline long fallocate(int, int, loff_t, loff_t);
-+static void help(void);
- 
- static char fnamew[255];
- static char fnamer[255];
- static int fdw;
- static int fdr;
- static int block_size;
-+/* Use ext4 default to test EFBIG */
-+static char *fstype = "ext4";
-+static char *device;
-+static int dflag;
-+static int mount_flag;
-+
-+static option_t options[] = {
-+	{"T:", NULL, &fstype},
-+	{"D:", &dflag, &device},
-+	{NULL, NULL, NULL}
-+};
- 
- static struct test_data_t {
- 	int *fd;
-@@ -117,6 +137,8 @@ static struct test_data_t {
- 	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
- 	{&fdw, fnamew, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN+OFFSET), 1, EINVAL},
- 	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN-OFFSET, 1, 0},
-+	{&fdw, fnamew, DEFAULT_TEST_MODE, MAX_FILE, 1, EFBIG},
-+	{&fdw, fnamew, DEFAULT_TEST_MODE, 0, MAX_FILE, EFBIG},
- };
- 
- char *TCID = "fallocate02";
-@@ -128,10 +150,17 @@ int main(int ac, char **av)
- 	int i;
- 	char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-+
-+	/* Check for mandatory option of the testcase */
-+	if (!dflag) {
-+		tst_brkm(TBROK, NULL,
-+			 "you must specify the device used for mounting with "
-+			 "-D option");
-+	}
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -190,6 +219,17 @@ static void setup(void)
- 
- 	sprintf(fnamew, "tfile_write_%d", getpid());
- 
-+	tst_mkfs(NULL, device, fstype, NULL);
-+	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
-+	if (mount(device, "mntpoint", fstype, 0, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
-+
-+	sprintf(fnamer, "mntpoint/tfile_read_%d", getpid());
-+	sprintf(fnamew, "mntpoint/tfile_write_%d", getpid());
-+
- 	fdr = SAFE_OPEN(cleanup, fnamer, O_RDONLY | O_CREAT, S_IRUSR);
- 
- 	fdw = SAFE_OPEN(cleanup, fnamew, O_RDWR | O_CREAT, S_IRWXU);
-@@ -221,5 +261,17 @@ static void cleanup(void)
- 
- 	SAFE_CLOSE(NULL, fdr);
- 
-+	if (mount_flag && umount("mntpoint") < 0) {
-+		tst_brkm(TBROK | TERRNO, NULL,
-+			 "umount device:%s failed", device);
-+	}
-+
- 	tst_rmdir();
- }
-+
-+static void help(void)
-+{
-+	printf("-T type : specifies the type of filesystem to be mounted. "
-+	       "Default ext4.\n");
-+	printf("-D device : device used for mounting.\n");
-+}
 -- 
-1.8.2.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Rapidly troubleshoot problems before they affect your business. Most IT 
