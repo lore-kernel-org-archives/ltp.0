@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VePaM-0006u1-W3
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:25:23 +0000
-Date: Thu, 7 Nov 2013 14:25:13 +0100
+	(envelope-from <metan@suse.de>) id 1VlIjz-0005i0-Ql
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 13:31:47 +0000
+Date: Tue, 26 Nov 2013 14:31:18 +0100
 From: chrubis@suse.cz
-Message-ID: <20131107132513.GC28961@rei.suse.cz>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-	<1383085243-5833-6-git-send-email-vincent.hsu@linaro.org>
+Message-ID: <20131126133118.GA13496@rei>
+References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
+	<1384400319-30776-8-git-send-email-vincent.hsu@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383085243-5833-6-git-send-email-vincent.hsu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH 5/9] ltp-networking/tcp_cmds/tcpdump: 1.
- RHOST IP won't appear in network interfaces. It should be LHOST. 2. Host
- commad can't fetch IP in no DNS enviroment. use ping intead of it
+In-Reply-To: <1384400319-30776-8-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH 8/8] ltp-networking/iproute: fix iproute test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,39 +29,60 @@ To: Vincent Hsu <vincent.hsu@linaro.org>
 Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
 Hi!
->  testcases/network/tcp_cmds/tcpdump/tcpdump01 |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> ip02: set original mtu size back. this test will set mtu to 300.
+> ip05: if there is not only one route, using "head" command will get
+>       wrong result.
 > 
-> diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> index 4866720..6d99398 100755
-> --- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> +++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> @@ -47,8 +47,8 @@ do_setup()
->      tst_setup
+> Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
+> ---
+>  testcases/network/iproute/ip_tests.sh |    5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
->      exists awk grep host hostname ifconfig netstat ping tail tcpdump
-> -    RHOST=${RHOST:-`hostname`}
-> -    IP=`host ${RHOST} 2>/dev/null | awk '{print $4}'`
-> +    LHOST=${LHOST:-`hostname`}
-> +    IP=`ping ${LHOST} -c 1 | awk '{print $3}' | head -n1 | cut -f2 -d'(' | cut -f1 -d')'`
->      IFNUMS=`netstat -i|wc -l`
->      IFNUMS=$(( $IFNUMS - 2 ))
->      IFNAME=${IFNAME:-$(netstat -i | awk '{print $1}' | tail -n ${IFNUMS})}
+> diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
+> index ce4cabc..e16f6c4 100755
+> --- a/testcases/network/iproute/ip_tests.sh
+> +++ b/testcases/network/iproute/ip_tests.sh
+> @@ -187,6 +187,7 @@ test01()
+> 
+>  	tst_resm TINFO "Test #1: changing mtu size of eth0:1 device."
+> 
+> +	MTUSZ_BAK=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $1}'`
+>  	ip link set eth0:1 mtu 300 >$LTPTMP/tst_ip.err 2>&1
+>  	if [ $RC -ne 0 ]
+>  	then
+> @@ -198,6 +199,7 @@ test01()
+>  		if [ $MTUSZ -eq 300 ]
+>  		then
+>  			tst_resm TPASS "Test #1: changing mtu size success"
+> +			ip link set eth0:1 mtu $MTUSZ_BAK >$LTPTMP/tst_ip.err 2>&1
+>  		else
+>  			tst_resm FAIL NULL \
+>  				"Test #1: MTU value not set to 300: ifconfig returned: $MTUSZ"
+> @@ -453,7 +455,8 @@ test05()
+>  		10.6.6.6 via 127.0.0.1 dev lo
+>  		EOF
+> 
+> -		ip route show | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
+> +		ip route show | grep "10.6.6.6 via 127.0.0.1 dev lo" \
+> +		>$LTPTMP/tst_ip.out 2>&1 || RC=$?
+>  		if [ $RC -ne 0 ]
+>  		then
+>  			tst_res TFAIL $LTPTMP/tst_ip.err \
 
-Technically that fixes the problem, but the parsing is too fragile.
+Can you please fix the two over 80 chars lines that your patch adds?
 
-What about rewriting the test to use IP="127.0.0.1" and IFNAME="lo"?
+Otherwise this is fine.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
