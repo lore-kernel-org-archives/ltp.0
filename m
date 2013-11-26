@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VmKE8-0007R8-Bj
-	for ltp-list@lists.sourceforge.net; Fri, 29 Nov 2013 09:19:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VmKE5-0007A7-Ln
-	for ltp-list@lists.sourceforge.net; Fri, 29 Nov 2013 09:19:08 +0000
-Message-ID: <52985BB4.2060409@cn.fujitsu.com>
-Date: Fri, 29 Nov 2013 17:17:40 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VlIBv-00048H-VG
+	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 12:56:35 +0000
+Date: Tue, 26 Nov 2013 13:56:06 +0100
+From: chrubis@suse.cz
+Message-ID: <20131126125606.GA10489@rei>
+References: <1384400319-30776-1-git-send-email-vincent.hsu@linaro.org>
+	<1384400319-30776-7-git-send-email-vincent.hsu@linaro.org>
+	<5285BEE3.5030405@casparzhang.com>
 MIME-Version: 1.0
-References: <1385629988-12052-1-git-send-email-gaowanlong@cn.fujitsu.com>
-	<1052444498.3195483.1385716244006.JavaMail.root@redhat.com>
-In-Reply-To: <1052444498.3195483.1385716244006.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] send*: fix errno of invalid flags
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <5285BEE3.5030405@casparzhang.com>
+Subject: Re: [LTP] [LNG][PATCH 7/8] ltp-networking/tcp_cmds/netstat: fix
+ netstat test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,209 +27,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net, Vincent Hsu <vincent.hsu@linaro.org>, linaro-networking@linaro.org
 
-On 11/29/2013 05:10 PM, Jan Stancek wrote:
+Hi!
+> > The netstat command will return nozero on Ubuntu 12.04 even if
+> > execution success.
+> >
+> > for example:
+> > in Ubuntu
+> >      $ netstat -s 1>/dev/null 2>&1 ; echo $?
+> >      1
+> > in CentOS
+> >      $ netstat -s 1>/dev/null 2>&1 ; echo $?
+> >      0
+> >
+> > Signed-off-by: Vincent Hsu <vincent.hsu@linaro.org>
 > 
-> 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "LTP" <ltp-list@lists.sourceforge.net>
->> Sent: Thursday, 28 November, 2013 10:13:08 AM
->> Subject: [LTP] [PATCH] send*: fix errno of invalid flags
->>
->> After following kernel commit, the tcp_fastopen
->> sysctl is enabled default, so the errno will
->> no be ENOTSUP any more.
->>
->> Actually, the flags of send* syscall is "unsigned int",
->> then our test case passed "-1" to it will not be treated
->> as an invalid flags.
->>
->> commit 0d41cca490c274352211efac50e9598d39a9dc80
->> Author: Yuchung Cheng <ycheng@google.com>
->> Date:   Thu Oct 31 09:19:32 2013 -0700
->>
->>     tcp: enable sockets to use MSG_FASTOPEN by default
->>
->>     Applications have started to use Fast Open (e.g., Chrome browser has
->>     such an optional flag) and the feature has gone through several
->>     generations of kernels since 3.7 with many real network tests. It's
->>     time to enable this flag by default for applications to test more
->>     conveniently and extensively.
->>
->>     Signed-off-by: Yuchung Cheng <ycheng@google.com>
->>     Signed-off-by: Neal Cardwell <ncardwell@google.com>
->>     Acked-by: Eric Dumazet <edumazet@google.com>
->>     Signed-off-by: David S. Miller <davem@davemloft.net>
->>
->> Signed-off-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
->> ---
->>  testcases/kernel/syscalls/send/send01.c       | 6 ++++--
->>  testcases/kernel/syscalls/sendmsg/sendmsg01.c | 6 +++++-
->>  testcases/kernel/syscalls/sendto/sendto01.c   | 5 ++++-
->>  3 files changed, 13 insertions(+), 4 deletions(-)
-> 
-> Hi,
-> 
-> my guess is that intention of testcase "invalid flags set"
-> was to get EOPNOTSUPP out of it. But this never worked for older kernels.
-> And on new kernels this is still likely going to depend on "sysctl_tcp_fastopen".
+> This should be a bug in netstat @ Ubuntu I guess?
 
+Looks like a bug in Debian to me, I've looked into the source package
+and traced it down to the netstat.c-assorted_changes.patch, that seems
+to add ipv6 support and changes the exit(0) to exit(1) for no good
+reason.
 
-Agreed, this is what I mean. Could you please make a patch to fix send* like this?
-
-
-Thanks,
-Wanlong Gao
-
-
-> 
-> I'm running kernel < 3.6 and if I apply patch for send01.c
-> it fails with:
->   send01      6  TFAIL  :  call succeeded unexpectedly
-> 
-> sendto(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 1024, MSG_OOB|MSG_DONTROUTE|MSG_PEEK|MSG_CTRUNC|MSG_PROXY|MSG_EOR|MSG_WAITALL|MSG_TRUNC|MSG_ERRQUEUE|MSG_DONTWAIT|MSG_CONFIRM|MSG_FIN|MSG_SYN|MSG_RST|MSG_NOSIGNAL|MSG_MORE|MSG_CMSG_CLOEXEC|0xbfff0000, NULL, 0) = 1024
-> 
-> I think we should get rid of that -1 in flags and use concrete flags we know
-> to be invalid. I recall suggesting SOCK_DGRAM + MSG_OOB last time this test needed update:
-> 
-> diff --git a/testcases/kernel/syscalls/send/send01.c b/testcases/kernel/syscalls/send/send01.c
-> index d228422..6ebe131 100644
-> --- a/testcases/kernel/syscalls/send/send01.c
-> +++ b/testcases/kernel/syscalls/send/send01.c
-> @@ -72,7 +72,6 @@ static void setup(void);
->  static void setup0(void);
->  static void setup1(void);
->  static void setup2(void);
-> -static void setup3(void);
->  static void cleanup0(void);
->  static void cleanup1(void);
->  
-> @@ -143,14 +142,14 @@ static struct test_case_t tdat[] = {
->  #ifndef UCLINUX
->         /* Skip since uClinux does not implement memory protection */
->         {.domain = PF_INET,
-> -        .type = SOCK_STREAM,
-> +        .type = SOCK_DGRAM,
->          .proto = 0,
-> -        .buf = (void *)-1,
-> +        .buf = buf,
->          .buflen = sizeof(buf),
-> -        .flags = -1,
-> +        .flags = MSG_OOB,
->          .retval = -1,
-> -        .experrno = EFAULT,
-> -        .setup = setup3,
-> +        .experrno = EOPNOTSUPP,
-> +        .setup = setup1,
->          .cleanup = cleanup1,
->          .desc = "invalid flags set"}
->  #endif
-> @@ -352,11 +351,3 @@ static void setup2(void)
->                 tst_brkm(TBROK | TERRNO, cleanup, "socket setup failed connect "
->                          "test %d", testno);
->  }
-> -
-> -static void setup3(void)
-> -{
-> -       setup1();
-> -
-> -       if (tst_kvercmp(3, 6, 0) >= 0)
-> -               tdat[testno].experrno = ENOTSUP;
-> -}
-> 
-> Regards,
-> Jan
-> 
-> 
->>
->> diff --git a/testcases/kernel/syscalls/send/send01.c
->> b/testcases/kernel/syscalls/send/send01.c
->> index d228422..0d91e92 100644
->> --- a/testcases/kernel/syscalls/send/send01.c
->> +++ b/testcases/kernel/syscalls/send/send01.c
->> @@ -145,7 +145,7 @@ static struct test_case_t tdat[] = {
->>  	{.domain = PF_INET,
->>  	 .type = SOCK_STREAM,
->>  	 .proto = 0,
->> -	 .buf = (void *)-1,
->> +	 .buf = buf,
->>  	 .buflen = sizeof(buf),
->>  	 .flags = -1,
->>  	 .retval = -1,
->> @@ -357,6 +357,8 @@ static void setup3(void)
->>  {
->>  	setup1();
->>  
->> -	if (tst_kvercmp(3, 6, 0) >= 0)
->> +	if (tst_kvercmp(3, 12, 0) > 0)
->> +		tdat[testno].experrno = EINVAL;
->> +	else if (tst_kvercmp(3, 6, 0) >= 0)
->>  		tdat[testno].experrno = ENOTSUP;
->>  }
->> diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
->> b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
->> index 90fbb5d..890834c 100644
->> --- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
->> +++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
->> @@ -730,8 +730,12 @@ static void setup7(void)
->>  {
->>  	setup1();
->>  
->> -	if (tst_kvercmp(3, 6, 0) >= 0)
->> +	if (tst_kvercmp(3, 12, 0) > 0) {
->>  		tdat[testno].retval = -1;
->> +		tdat[testno].experrno = EISCONN;
->> +	} else if (tst_kvercmp(3, 6, 0) >= 0) {
->> +		tdat[testno].retval = -1;
->> +	}
->>  }
->>  
->>  static void setup8(void)
->> diff --git a/testcases/kernel/syscalls/sendto/sendto01.c
->> b/testcases/kernel/syscalls/sendto/sendto01.c
->> index a571afd..e7c8805 100644
->> --- a/testcases/kernel/syscalls/sendto/sendto01.c
->> +++ b/testcases/kernel/syscalls/sendto/sendto01.c
->> @@ -435,7 +435,10 @@ static void setup4(void)
->>  {
->>  	setup1();
->>  
->> -	if (tst_kvercmp(3, 6, 0) >= 0) {
->> +	if (tst_kvercmp(3, 12, 0) > 0) {
->> +		tdat[testno].retval = -1;
->> +		tdat[testno].experrno = EISCONN;
->> +	} else if (tst_kvercmp(3, 6, 0) >= 0) {
->>  		tdat[testno].retval = -1;
->>  		tdat[testno].experrno = ENOTSUP;
->>  	}
->> --
->> 1.8.5.rc3
->>
->>
->> ------------------------------------------------------------------------------
->> Rapidly troubleshoot problems before they affect your business. Most IT
->> organizations don't have a clear picture of how application performance
->> affects their revenue. With AppDynamics, you get 100% visibility into your
->> Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics
->> Pro!
->> http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
