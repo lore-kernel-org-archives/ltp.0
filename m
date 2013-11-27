@@ -1,31 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1VfsgV-0003re-N1
-	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 14:41:47 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VfsgT-0004Mi-Gh
-	for ltp-list@lists.sourceforge.net; Mon, 11 Nov 2013 14:41:47 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rABEfd1N003456
+	(envelope-from <alexey.kodanev@oracle.com>) id 1VldtL-0001Fi-Pw
+	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 12:06:51 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vldt5-0004kb-Gf
+	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 12:06:51 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rARC6SU9006134
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Nov 2013 14:41:39 GMT
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Nov 2013 12:06:29 GMT
 Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rABEfcNA025082
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rARC6Rww012044
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Nov 2013 14:41:39 GMT
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Nov 2013 12:06:28 GMT
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
 	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rABEfb6p022820
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Nov 2013 14:41:37 GMT
+	rARC6RS7016871
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Nov 2013 12:06:27 GMT
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 11 Nov 2013 18:41:03 +0400
-Message-Id: <1384180863-32569-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] network: tcp_fastopen: add TCP Fast Open test
+Date: Wed, 27 Nov 2013 16:06:09 +0400
+Message-Id: <1385553969-24473-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v3] network: tcp_fastopen: add TCP Fast Open test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -60,9 +60,9 @@ Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
  testcases/network/tcp_fastopen/.gitignore          |    1 +
  testcases/network/tcp_fastopen/Makefile            |   24 +
  testcases/network/tcp_fastopen/README              |   16 +
- testcases/network/tcp_fastopen/tcp_fastopen.c      |  835 ++++++++++++++++++++
- testcases/network/tcp_fastopen/tcp_fastopen_run.sh |  173 ++++
- 5 files changed, 1049 insertions(+), 0 deletions(-)
+ testcases/network/tcp_fastopen/tcp_fastopen.c      |  783 ++++++++++++++++++++
+ testcases/network/tcp_fastopen/tcp_fastopen_run.sh |  164 ++++
+ 5 files changed, 988 insertions(+), 0 deletions(-)
  create mode 100644 testcases/network/tcp_fastopen/.gitignore
  create mode 100644 testcases/network/tcp_fastopen/Makefile
  create mode 100644 testcases/network/tcp_fastopen/README
@@ -78,7 +78,7 @@ index 0000000..f321cf0
 +/tcp_fastopen
 diff --git a/testcases/network/tcp_fastopen/Makefile b/testcases/network/tcp_fastopen/Makefile
 new file mode 100644
-index 0000000..bff25e5
+index 0000000..769364f
 --- /dev/null
 +++ b/testcases/network/tcp_fastopen/Makefile
 @@ -0,0 +1,24 @@
@@ -103,7 +103,7 @@ index 0000000..bff25e5
 +include $(top_srcdir)/include/mk/testcases.mk
 +
 +INSTALL_TARGETS		:= tcp_fastopen_run.sh
-+LDLIBS			+= -lpthread
++LDLIBS			+= -lpthread -lrt
 +
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/network/tcp_fastopen/README b/testcases/network/tcp_fastopen/README
@@ -130,10 +130,10 @@ index 0000000..4e19add
 +results with TFO support enabled must be at least 3 percent faster.
 diff --git a/testcases/network/tcp_fastopen/tcp_fastopen.c b/testcases/network/tcp_fastopen/tcp_fastopen.c
 new file mode 100644
-index 0000000..5e62781
+index 0000000..05a38cd
 --- /dev/null
 +++ b/testcases/network/tcp_fastopen/tcp_fastopen.c
-@@ -0,0 +1,835 @@
+@@ -0,0 +1,783 @@
 +/*
 + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
 + *
@@ -216,8 +216,8 @@ index 0000000..5e62781
 +static int tfo_cfg_changed;
 +static int tfo_queue_size	= 100;
 +static int max_queue_len	= 100;
-+static int client_byte		= 0x43;
-+static int server_byte		= 0x53;
++static const int client_byte	= 0x43;
++static const int server_byte	= 0x53;
 +static const int start_byte	= 0x24;
 +static const int start_fin_byte	= 0x25;
 +static const int end_byte	= 0x0a;
@@ -231,7 +231,7 @@ index 0000000..5e62781
 + *  which server has to close the connection.
 + */
 +static int server_max_requests	= 3;
-+static int client_max_requests	= 2000000;
++static int client_max_requests	= 10;
 +static int clients_num		= 2;
 +static char *tcp_port		= "61000";
 +static char *server_addr	= "localhost";
@@ -247,8 +247,7 @@ index 0000000..5e62781
 +static int force_run;
 +static int verbose;
 +
-+static char *narg, *Narg, *qarg, *barg, *Barg,
-+	*rarg, *Rarg, *aarg, *Targ;
++static char *narg, *Narg, *qarg, *rarg, *Rarg, *aarg, *Targ;
 +
 +static const option_t options[] = {
 +	/* server params */
@@ -259,9 +258,7 @@ index 0000000..5e62781
 +	{"H:", NULL, &server_addr},
 +	{"a:", NULL, &aarg},
 +	{"n:", NULL, &narg},
-+	{"b:", NULL, &barg},
 +	{"N:", NULL, &Narg},
-+	{"B:", NULL, &Barg},
 +	{"T:", NULL, &Targ},
 +	{"r:", NULL, &rarg},
 +	{"d:", NULL, &rpath},
@@ -292,10 +289,8 @@ index 0000000..5e62781
 +	printf("  -r x    x - num of client requests\n");
 +	printf("  -n x    Client message size, max msg size is '%d'\n",
 +		max_msg_len);
-+	printf("  -b x    x is a byte of client message\n");
 +	printf("  -N x    Server message size, max msg size is '%d'\n",
 +		max_msg_len);
-+	printf("  -B x    x is a byte of server message\n");
 +	printf("  -T x    Reply timeout, default is '%ld' (microsec)\n",
 +		wait_timeout);
 +	printf("  -d x    x is a path to the file where results are saved\n");
@@ -352,10 +347,10 @@ index 0000000..5e62781
 +	TEST_CLEANUP;
 +}
 +
-+int sock_recv_poll(int *fd, char *buf, const int *buf_size, int *offset)
++static int sock_recv_poll(int fd, char *buf, int buf_size, int *offset)
 +{
 +	struct pollfd pfd;
-+	pfd.fd = *fd;
++	pfd.fd = fd;
 +	pfd.events = POLLIN;
 +	int len = -1;
 +	while (1) {
@@ -369,7 +364,7 @@ index 0000000..5e62781
 +			break;
 +		}
 +		if (ret == 0) {
-+			tst_resm(TFAIL, "msg timeout, sock '%d'", *fd);
++			tst_resm(TFAIL, "msg timeout, sock '%d'", fd);
 +			break;
 +		}
 +
@@ -377,8 +372,8 @@ index 0000000..5e62781
 +			break;
 +
 +		errno = 0;
-+		len = recv(*fd, buf + *offset,
-+			*buf_size - *offset, MSG_DONTWAIT);
++		len = recv(fd, buf + *offset,
++			buf_size - *offset, MSG_DONTWAIT);
 +
 +		if (len == -1 && errno == EINTR)
 +			continue;
@@ -387,22 +382,22 @@ index 0000000..5e62781
 +	}
 +
 +	if (len == 0)
-+		tst_resm(TINFO, "sock was closed '%d'", *fd);
++		tst_resm(TINFO, "sock was closed '%d'", fd);
 +
 +	return len;
 +}
 +
-+void client_recv(int *fd, char *buf)
++static void client_recv(int *fd, char *buf)
 +{
 +	int len, offset = 0;
 +
 +	while (1) {
 +
-+		len = sock_recv_poll(fd, buf, &server_msg_size, &offset);
++		len = sock_recv_poll(*fd, buf, server_msg_size, &offset);
 +
 +		/* socket closed or msg is not valid */
 +		if (len < 1 || (offset + len) > server_msg_size ||
-+			(buf[0] != start_byte && buf[0] != start_fin_byte)) {
++		   (buf[0] != start_byte && buf[0] != start_fin_byte)) {
 +			tst_resm(TFAIL | TERRNO,
 +				"recv failed, sock '%d'", *fd);
 +			shutdown(*fd, SHUT_WR);
@@ -431,47 +426,45 @@ index 0000000..5e62781
 +	}
 +}
 +
-+int client_connect_send(int *cfd)
++static int client_connect_send(const char *msg, int size)
 +{
-+	*cfd = socket(AF_INET, SOCK_STREAM, 0);
++	int cfd = socket(AF_INET, SOCK_STREAM, 0);
 +	const int flag = 1;
-+	setsockopt(*cfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
++	setsockopt(cfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
 +
-+	if (*cfd == -1) {
++	if (cfd == -1) {
 +		tst_resm(TWARN | TERRNO, "socket failed at %s:%d",
 +			__FILE__, __LINE__);
-+		return -1;
++		return cfd;
 +	}
 +
 +	if (fastopen_api == TFO_ENABLED) {
 +		/* Replaces connect() + send()/write() */
-+		if (sendto(*cfd, client_msg, client_msg_size,
-+			MSG_FASTOPEN | MSG_NOSIGNAL,
-+			remote_addrinfo->ai_addr,
-+			remote_addrinfo->ai_addrlen) != client_msg_size) {
++		if (sendto(cfd, msg, size, MSG_FASTOPEN | MSG_NOSIGNAL,
++		    remote_addrinfo->ai_addr,
++		    remote_addrinfo->ai_addrlen) != size) {
 +			tst_resm(TFAIL | TERRNO, "sendto failed");
-+			SAFE_CLOSE(NULL, *cfd);
++			SAFE_CLOSE(NULL, cfd);
 +			return -1;
 +		}
 +	} else {
 +		/* old TCP API */
-+		if (connect(*cfd, remote_addrinfo->ai_addr,
-+			remote_addrinfo->ai_addrlen)) {
++		if (connect(cfd, remote_addrinfo->ai_addr,
++		    remote_addrinfo->ai_addrlen)) {
 +			tst_resm(TFAIL | TERRNO, "connect failed");
-+			SAFE_CLOSE(NULL, *cfd);
++			SAFE_CLOSE(NULL, cfd);
 +			return -1;
 +		}
 +
-+		if (send(*cfd, client_msg, client_msg_size,
-+			MSG_NOSIGNAL) != client_msg_size) {
++		if (send(cfd, msg, size, MSG_NOSIGNAL) != client_msg_size) {
 +			tst_resm(TFAIL | TERRNO,
-+				"send failed on sock '%d'", *cfd);
-+			SAFE_CLOSE(NULL, *cfd);
++				"send failed on sock '%d'", cfd);
++			SAFE_CLOSE(NULL, cfd);
 +			return -1;
 +		}
 +	}
 +
-+	return 0;
++	return cfd;
 +}
 +
 +void *client_fn(void *arg)
@@ -480,7 +473,8 @@ index 0000000..5e62781
 +	int cfd, i;
 +
 +	/* connect & send requests */
-+	if (client_connect_send(&cfd))
++	cfd = client_connect_send(client_msg, client_msg_size);
++	if (cfd == -1)
 +		return NULL;
 +	client_recv(&cfd, buf);
 +
@@ -496,7 +490,8 @@ index 0000000..5e62781
 +			if (cfd != -1)
 +				SAFE_CLOSE(NULL, cfd);
 +
-+			if (client_connect_send(&cfd))
++			cfd = client_connect_send(client_msg, client_msg_size);
++			if (cfd == -1)
 +				return NULL;
 +			client_recv(&cfd, buf);
 +
@@ -525,47 +520,29 @@ index 0000000..5e62781
 +	return NULL;
 +}
 +
-+union uint2bytes {
-+	char byte[2];
-+	uint16_t val;
-+};
-+
-+static struct timeval tv_client_start;
-+static struct timeval tv_client_end;
-+
 +static void make_client_request(void)
 +{
 +	client_msg[0] = start_byte;
 +
-+	/* reply will be filled with this byte */
-+	client_msg[1] = server_byte;
-+
 +	/* set size for reply */
-+	union uint2bytes reply_size;
-+	reply_size.val = htons(server_msg_size);
-+
-+	/* write requested reply size to bytes 2, 3 */
-+	client_msg[2] = reply_size.byte[0];
-+	client_msg[3] = reply_size.byte[1];
-+
++	*(uint16_t *)(client_msg + 1) = htons(server_msg_size);
 +	client_msg[client_msg_size - 1] = end_byte;
 +}
 +
-+void parse_client_request(const char *recv_msg, uint16_t *send_msg_size,
-+	char *send_msg_byte)
++static int parse_client_request(const char *recv_msg)
 +{
-+	*send_msg_byte = recv_msg[1];
++	int size = ntohs(*(uint16_t *)(recv_msg + 1));
 +
-+	/* read requested reply size */
-+	union uint2bytes reply_size;
-+	reply_size.byte[0] = recv_msg[2];
-+	reply_size.byte[1] = recv_msg[3];
-+	*send_msg_size = ntohs(reply_size.val);
-+	if (*send_msg_size < 2 || *send_msg_size > max_msg_len) {
-+		tst_resm(TWARN, "wrong msg size received %u", *send_msg_size);
-+		*send_msg_size = 2;
++	if (size < 2 || size > max_msg_len) {
++		tst_resm(TWARN, "wrong msg size received %u", size);
++		size = 2;
 +	}
++
++	return size;
 +}
++
++static struct timespec tv_client_start;
++static struct timespec tv_client_end;
 +
 +static void client_init(void)
 +{
@@ -589,7 +566,7 @@ index 0000000..5e62781
 +	if (getaddrinfo(server_addr, tcp_port, &hints, &remote_addrinfo) != 0)
 +		tst_brkm(TBROK | TERRNO, cleanup, "getaddrinfo failed");
 +
-+	gettimeofday(&tv_client_start, NULL);
++	clock_gettime(CLOCK_MONOTONIC_RAW, &tv_client_start);
 +	int i;
 +	for (i = 0; i < clients_num; ++i) {
 +		if (pthread_create(&thread_ids[i], 0, client_fn, NULL) != 0) {
@@ -612,22 +589,21 @@ index 0000000..5e62781
 +
 +	threads_num = 0;
 +
-+	gettimeofday(&tv_client_end, NULL);
-+	clnt_time = (tv_client_end.tv_sec - tv_client_start.tv_sec) * 1000000 +
-+		tv_client_end.tv_usec - tv_client_start.tv_usec;
++	clock_gettime(CLOCK_MONOTONIC_RAW, &tv_client_end);
++	clnt_time = (tv_client_end.tv_sec - tv_client_start.tv_sec) * 1000 +
++		(tv_client_end.tv_nsec - tv_client_start.tv_nsec) / 1000000;
 +
-+	tst_resm(TINFO, "total time '%ld' ms", clnt_time / 1000);
++	tst_resm(TINFO, "total time '%ld' ms", clnt_time);
 +
 +	/* ask server to terminate */
-+	int cfd;
 +	client_msg[0] = start_fin_byte;
-+	if (!client_connect_send(&cfd)) {
++	int cfd = client_connect_send(client_msg, client_msg_size);
++	if (cfd != -1) {
 +		shutdown(cfd, SHUT_WR);
 +		SAFE_CLOSE(NULL, cfd);
 +	}
-+
 +	/* the script tcp_fastopen_run.sh will remove it */
-+	SAFE_FILE_PRINTF(cleanup, rpath, "%ld", clnt_time / 1000);
++	SAFE_FILE_PRINTF(cleanup, rpath, "%ld", clnt_time);
 +}
 +
 +static void client_cleanup(void)
@@ -644,15 +620,14 @@ index 0000000..5e62781
 +}
 +
 +
-+void make_server_reply(char **send_msg, const uint16_t *send_msg_size,
-+	const char *send_msg_byte)
++static char *make_server_reply(int size)
 +{
-+	*send_msg = SAFE_MALLOC(NULL, *send_msg_size);
-+	memset(*send_msg, *send_msg_byte, *send_msg_size - 1);
++	char *send_msg = SAFE_MALLOC(NULL, size);
++	memset(send_msg, server_byte, size - 1);
++	send_msg[0] = start_byte;
++	send_msg[size - 1] = end_byte;
 +
-+	(*send_msg)[0] = start_byte;
-+
-+	(*send_msg)[*send_msg_size - 1] = end_byte;
++	return send_msg;
 +}
 +
 +void *server_fn(void *cfd)
@@ -661,8 +636,8 @@ index 0000000..5e62781
 +	int num_requests = 0, offset = 0;
 +
 +	/* Reply will be constructed from first client request */
-+	char *send_msg = NULL, send_msg_byte;
-+	uint16_t send_msg_size = 0;
++	char *send_msg = NULL;
++	int send_msg_size = 0;
 +
 +	char recv_msg[max_msg_len];
 +
@@ -670,15 +645,15 @@ index 0000000..5e62781
 +	ssize_t recv_len;
 +
 +	while (1) {
-+		errno = 0;
-+		recv_len = sock_recv_poll(&client_fd, recv_msg,
-+			&max_msg_len, &offset);
++		recv_len = sock_recv_poll(client_fd, recv_msg,
++			max_msg_len, &offset);
 +
 +		if (recv_len == 0) {
 +			break;
-+		} else if (recv_len < 0 || (offset + recv_len) > max_msg_len ||
-+			(recv_msg[0] != start_byte &&
-+			recv_msg[0] != start_fin_byte)) {
++		} else
++		if (recv_len < 0 || (offset + recv_len) > max_msg_len ||
++		   (recv_msg[0] != start_byte &&
++		    recv_msg[0] != start_fin_byte)) {
 +			tst_resm(TFAIL, "recv failed, sock '%d'", client_fd);
 +			break;
 +		}
@@ -700,11 +675,8 @@ index 0000000..5e62781
 +
 +		/* if we send reply for the first time, construct it here */
 +		if (!send_msg) {
-+			parse_client_request(recv_msg, &send_msg_size,
-+				&send_msg_byte);
-+
-+			make_server_reply(&send_msg, &send_msg_size,
-+				&send_msg_byte);
++			send_msg_size = parse_client_request(recv_msg);
++			send_msg = make_server_reply(send_msg_size);
 +		}
 +
 +		/*
@@ -715,13 +687,11 @@ index 0000000..5e62781
 +			send_msg[0] = start_fin_byte;
 +
 +		if (send(client_fd, send_msg, send_msg_size,
-+			MSG_NOSIGNAL) == -1)
++		    MSG_NOSIGNAL) == -1) {
 +			tst_resm(TWARN | TERRNO, "Error while sending msg");
-+		else {
-+			if (verbose) {
-+				tst_resm_hexd(TINFO, send_msg, send_msg_size,
-+					"msg sent:");
-+			}
++		} else if (verbose) {
++			tst_resm_hexd(TINFO, send_msg, send_msg_size,
++				"msg sent:");
 +		}
 +
 +		offset = 0;
@@ -743,7 +713,7 @@ index 0000000..5e62781
 +static void server_thread_add(intptr_t client_fd)
 +{
 +	pthread_t id;
-+	if (pthread_create(&id, &attr, server_fn, (intptr_t *) client_fd)) {
++	if (pthread_create(&id, &attr, server_fn, (void *) client_fd)) {
 +		tst_brkm(TBROK | TERRNO, cleanup,
 +			"pthread_create failed at %s:%d", __FILE__, __LINE__);
 +	}
@@ -769,9 +739,11 @@ index 0000000..5e62781
 +
 +	while (bind(sfd, local_addrinfo->ai_addr,
 +		local_addrinfo->ai_addrlen) == -1) {
-+		sleep(1);
++		usleep(100000);
 +	}
 +	tst_resm(TINFO, "the name assigned");
++
++	freeaddrinfo(local_addrinfo);
 +
 +	const int flag = 1;
 +	setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
@@ -789,8 +761,6 @@ index 0000000..5e62781
 +static void server_cleanup(void)
 +{
 +	SAFE_CLOSE(NULL, sfd);
-+	if (local_addrinfo)
-+		freeaddrinfo(local_addrinfo);
 +}
 +
 +static void server_run(void)
@@ -849,17 +819,7 @@ index 0000000..5e62781
 +	}
 +}
 +
-+static void check_msg_byte(int *byte)
-+{
-+	/* these bytes are reserved */
-+	if (*byte == start_byte || *byte == start_fin_byte ||
-+		*byte == end_byte)
-+		tst_brkm(TBROK, NULL,
-+			"-B option, 0x%02x is reserved", *byte);
-+}
-+
-+/* cleanup flags */
-+void setup(int argc, char *argv[])
++static void setup(int argc, char *argv[])
 +{
 +	char *msg;
 +	msg = parse_opts(argc, argv, options, help);
@@ -867,23 +827,13 @@ index 0000000..5e62781
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
 +
 +	/* if client num is not set, use num of processors */
-+	struct sysinfo si;
-+	if (sysinfo(&si) == 0)
-+		clients_num = si.procs;
++	clients_num = sysconf(_SC_NPROCESSORS_ONLN);
 +
 +	check_opt("a", aarg, &clients_num, 1);
 +	check_opt("r", rarg, &client_max_requests, 1);
 +	check_opt("R", Rarg, &server_max_requests, 1);
 +	check_opt("n", narg, &client_msg_size, 1);
-+
-+	check_opt("b", barg, &client_byte, 0);
-+	check_msg_byte(&client_byte);
-+
 +	check_opt("N", Narg, &server_msg_size, 1);
-+
-+	check_opt("B", Barg, &server_byte, 0);
-+	check_msg_byte(&server_byte);
-+
 +	check_opt("q", qarg, &tfo_queue_size, 1);
 +	check_opt_l("T", Targ, &wait_timeout, 0L);
 +
@@ -926,8 +876,6 @@ index 0000000..5e62781
 +		tst_resm(TINFO, "clients num: %d", clients_num);
 +		tst_resm(TINFO, "client msg size: %d", client_msg_size);
 +		tst_resm(TINFO, "server msg size: %d", server_msg_size);
-+		tst_resm(TINFO, "client msg byte: %02x", client_byte);
-+		tst_resm(TINFO, "server msg byte: %02x", server_byte);
 +
 +		tcp.init	= client_init;
 +		tcp.run		= client_run;
@@ -971,10 +919,10 @@ index 0000000..5e62781
 +}
 diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
 new file mode 100755
-index 0000000..ae77b58
+index 0000000..f329a0e
 --- /dev/null
 +++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
-@@ -0,0 +1,173 @@
+@@ -0,0 +1,164 @@
 +#!/bin/bash
 +
 +# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
@@ -1081,7 +1029,6 @@ index 0000000..ae77b58
 +tfo_result_ms=0
 +bind_timeout=30
 +
-+
 +tst_kvercmp 3 7 0
 +if [ $? -eq 0 ]; then
 +	tst_brkm TCONF NULL "test must be run with kernel 3.7 or newer"
@@ -1097,14 +1044,6 @@ index 0000000..ae77b58
 +tfo_result="${TMPDIR}/tfo_result"
 +
 +trap "cleanup" EXIT
-+
-+run_remote_cmd "[ ! -e $tdir ] && mkdir -p $tdir"
-+
-+if [ "$use_ssh" = 1 ]; then
-+	scp -q ${tdir}tcp_fastopen $user_name@$remote_addr:$tdir
-+else
-+	rcp ${tdir}tcp_fastopen $user_name@$remote_addr:$tdir
-+fi
 +
 +# Run test without/with TFO
 +tcp_api_opt=("-o -O" "")
@@ -1153,11 +1092,11 @@ index 0000000..ae77b58
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
