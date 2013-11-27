@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vincent.hsu@linaro.org>) id 1VbHeu-0005ob-3g
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:08 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VbHet-00065f-Hf
-	for ltp-list@lists.sourceforge.net; Tue, 29 Oct 2013 22:21:08 +0000
-Received: by mail-ob0-f175.google.com with SMTP id wm4so615709obc.20
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Oct 2013 15:21:02 -0700 (PDT)
-From: Vincent Hsu <vincent.hsu@linaro.org>
-Date: Tue, 29 Oct 2013 15:20:43 -0700
-Message-Id: <1383085243-5833-10-git-send-email-vincent.hsu@linaro.org>
-In-Reply-To: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-Subject: [LTP] [LNG][PATCH 9/9] ltp-networking/rpc: gave precise test name
+	(envelope-from <alexey.kodanev@oracle.com>) id 1VlbYb-0002Rb-7z
+	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 09:37:17 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VlbYa-0002uu-F2
+	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 09:37:17 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rAR9b98V005734
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Nov 2013 09:37:10 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rAR9b84L015368
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Nov 2013 09:37:09 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rAR9b8DD027726
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Nov 2013 09:37:08 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 27 Nov 2013 13:36:53 +0400
+Message-Id: <1385545013-22647-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1385545013-22647-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1385545013-22647-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 2/2] lib/tst_res.c: make use of __sync_fetch_and_or to
+	bitwise test exit value
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,49 +43,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
+This is needed to insure that only one thread at a time may change
+T_exitval variable.
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |    2 +-
- testcases/network/rpc/basic_tests/rup/rup01        |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ lib/tst_res.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01 b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-index 7f8104f..cb063d8 100755
---- a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-+++ b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-@@ -57,7 +57,7 @@
-
- $trace_logic
- this_file=${0##*/}
--TC=rusers
-+TC=rpcinfo01
- TCtmp=${TCtmp:=`pwd`}
- TCbin=${TCbin:=`pwd`}
- TCsrc=${TCsrc:=$TCbin}
-diff --git a/testcases/network/rpc/basic_tests/rup/rup01 b/testcases/network/rpc/basic_tests/rup/rup01
-index 5845528..99916d4 100755
---- a/testcases/network/rpc/basic_tests/rup/rup01
-+++ b/testcases/network/rpc/basic_tests/rup/rup01
-@@ -46,7 +46,7 @@
-
- $trace_logic
- this_file=${0##*/}
--TC=rusers
-+TC=rup01
- TCtmp=${TCtmp:=`pwd`}
- TCbin=${TCbin:=`pwd`}
- TCsrc=${TCsrc:=$TCbin}
---
-1.7.9.5
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index a24982e..910f273 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -101,6 +101,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "ltp_priv.h"
++#include "config.h"
+ 
+ long TEST_RETURN;
+ int TEST_ERRNO;
+@@ -238,7 +239,11 @@ void tst_res(int ttype, char *fname, char *arg_fmt, ...)
+ 	 * Save the test result type by ORing ttype into the current exit
+ 	 * value (used by tst_exit()).
+ 	 */
++#ifdef HAVE_SYNC_FETCH_AND_OR
++	__sync_fetch_and_or(&T_exitval, ttype_result);
++#else
+ 	T_exitval |= ttype_result;
++#endif
+ 
+ 	/*
+ 	 * Unless T_out has already been set by tst_environ(), make tst_res()
+@@ -413,7 +418,11 @@ static void tst_print(char *tcid, int tnum, int ttype, char *tmesg)
+ 	 * also done here to catch internal warnings.  For internal warnings,
+ 	 * tst_print() is called directly with a case of TWARN.
+ 	 */
++#ifdef HAVE_SYNC_FETCH_AND_OR
++	__sync_fetch_and_or(&T_exitval, ttype_result);
++#else
+ 	T_exitval |= ttype_result;
++#endif
+ 
+ 	/*
+ 	 * If output mode is DISCARD, or if the output mode is NOPASS and this
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Android is increasing in popularity, but the open development platform that
-developers love is also attractive to malware creators. Download this white
-paper to learn more about secure code signing practices that can help keep
-Android apps secure.
-http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
