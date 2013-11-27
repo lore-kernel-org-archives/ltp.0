@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VlJRi-0005zy-II
-	for ltp-list@lists.sourceforge.net; Tue, 26 Nov 2013 14:16:58 +0000
-Date: Tue, 26 Nov 2013 15:16:29 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vljjo-0004jv-SK
+	for ltp-list@lists.sourceforge.net; Wed, 27 Nov 2013 18:21:24 +0000
+Date: Wed, 27 Nov 2013 19:20:56 +0100
 From: chrubis@suse.cz
-Message-ID: <20131126141629.GA13652@rei>
-References: <1384180863-32569-1-git-send-email-alexey.kodanev@oracle.com>
-	<20131125184033.GC32540@rei.suse.cz> <52947D46.3000109@oracle.com>
+Message-ID: <20131127182055.GB8163@rei>
+References: <1384853285-14025-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <52947D46.3000109@oracle.com>
-Subject: Re: [LTP] [PATCH v2] network: tcp_fastopen: add TCP Fast Open test
+In-Reply-To: <1384853285-14025-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v2] device-drivers: acpi: add new test for
+ acpi-cpufreq driver
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,71 +29,58 @@ To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> > The gettimeofday time measurement may break if someone happen to change
-> > the time while the test was running (i.e. ntp client daemon).
-> >
-> > clock_gettime(CLOCK_MONOTONIC, &tp)
-> >
-> > should be better.
-> The clock_gettime manual says that CLOCK_MONOTONIC_RAW similar to 
-> _MONOTONIC, but is not subject to NTP adjustments. So CLOCK_MONOTONIC 
-> can be adjusted, doesn't it?
+> +static void setup(void)
+> +{
+> +	tst_require_root(NULL);
+> +
+> +	if (tst_kvercmp(3, 7, 0) < 0) {
+> +		tst_brkm(TCONF, NULL,
+> +			"disable overclocking required Linux 3.7+");
+> +	}
 
-Right, the CLOCK_MONOTONIC_RAW is better choice.
+I wonder if we need to compare kernel version, becasuse we disable the
+test if the boost sysfs file is missing anyway...
 
-> >> +			tst_resm(TFAIL, "recv failed, sock '%d'", client_fd);
-> >> +			break;
-> >> +		}
-> >> +
-> >> +		offset += recv_len;
-> >> +
-> >> +		if (recv_msg[offset - 1] != end_byte) {
-> >> +			tst_resm(TINFO, "msg is not complete, continue recv");
-> >> +			continue;
-> >> +		}
-> >> +
-> >> +		if (recv_msg[0] == start_fin_byte)
-> >> +			tst_brkm(TBROK, cleanup, "client asks to terminate...");
-> > Why is this TBROK?
-> Thought about all in one function, which prints description messages, 
-> calls cleanup function and exit the program.
+If you agree to remove it I will do that while applying the patch, no
+need to send a new version.
 
-I would say this is a misuse of the API as it is...
+> +	if (access(boost, R_OK | W_OK)) {
+> +		tst_brkm(TCONF, NULL,
+> +			"acpi-cpufreq not loaded or overclock not supported");
+> +	}
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	SAFE_FILE_SCANF(NULL, boost, "%d", &boost_value);
+> +
+> +	SAFE_FILE_SCANF(NULL, up_limit, "%d", &threshold);
+> +
+> +	/* change cpu0 scaling governor */
+> +	SAFE_FILE_SCANF(NULL, governor, "%s", governor_name);
+> +	SAFE_FILE_PRINTF(cleanup, governor, "%s", "userspace");
+> +
+> +	/* use only cpu0 */
+> +	cpu_set_t set;
+> +	CPU_ZERO(&set);
+> +	CPU_SET(0, &set);
+> +	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU0");
+> +
+> +	SAFE_FILE_PRINTF(cleanup, up_limit, "11");
+> +}
 
-I suppose that you can do this in the server because the return value is
-not checked, but it's confusing when reading the code.
-
-> > guarded by locks, so in very unlikely case the value may be rewritten by
-> > a tst_resm() for example. (Two threads enters tst_res and each of them
-> > gets the value, modifies it and saves it and the result depends on the
-> > order of these operations)
-> >
-> > And the problem is if we add a locks there, all tests would need to be
-> > compiled with -lpthread, which is someting I do not want to do. :(
-> >
-> > One solution would be not using the tst_interface in this program at all
-> > as it's executed by the shell script that prints the test messages and
-> > returns exit value... And the same would simplify the propagation of the
-> > result that is currently hacked around via the tfo_result file. You
-> > could have simply printed the value into the stdout. But on the other
-> > hand this will be more work on the testcase.
-> What about built in gcc functions for atomic memory access like 
-> |__sync_fetch_and_or()?|
-
-That would be easy solution, but I doubt that these are available on
-all platforms and slightly older compilers. Perpahs we can add configure
-checks and enable it only when it's supported.
+Otherwise it looks good but has to wait for the first ACPI patch.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
