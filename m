@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VkqOl-0002K0-2O
-	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 07:15:59 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VkqOj-000796-BT
-	for ltp-list@lists.sourceforge.net; Mon, 25 Nov 2013 07:15:59 +0000
-Message-ID: <5292F8E3.4000903@cn.fujitsu.com>
-Date: Mon, 25 Nov 2013 15:14:43 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vlzwr-0001Tl-OH
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:39:57 +0000
+Date: Thu, 28 Nov 2013 12:39:28 +0100
+From: chrubis@suse.cz
+Message-ID: <20131128113928.GC19263@rei.Home>
+References: <1384784307-28731-1-git-send-email-alexey.kodanev@oracle.com>
+	<1384784307-28731-2-git-send-email-alexey.kodanev@oracle.com>
+	<20131127180449.GA8163@rei> <529725F3.6040002@oracle.com>
 MIME-Version: 1.0
-References: <1385130059-12150-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1385130059-12150-1-git-send-email-markos.chandras@imgtec.com>
-Subject: Re: [LTP] [PATCH] ptrace: Fix build problems with glibc-2.18
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <529725F3.6040002@oracle.com>
+Subject: Re: [LTP] [PATCH v4 2/2] device-drivers: acpi: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,88 +26,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 11/22/2013 10:20 PM, Markos Chandras wrote:
-> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
-> also defined in sys/ptrace.h and conflicts with the definition
-> from the Linux kernel in linux/ptrace.h. We fix this by not
-> including the linux/ptrace.h header if the sys/ptrace.h header
-> defines the said struct. Fixes
-> https://github.com/linux-test-project/ltp/issues/6
-> 
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
-> Build tested on glibc-2.17 and glibc-2.18 systems
-> ---
->  configure.ac                              | 4 ++++
->  include/config.h.default                  | 3 +++
->  testcases/kernel/syscalls/ptrace/ptrace.h | 4 +++-
->  3 files changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/configure.ac b/configure.ac
-> index 4846afd..d427276 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -48,6 +48,10 @@ AC_CHECK_HEADERS([ \
->      sys/prctl.h \
->  ])
->  
-> +# glibc-2.18 defines ptrace_peeksiginfo_args in sys/ptrace.h which
-> +# conflicts with the one from linux kernel in linux/ptrace.h
-> +AC_CHECK_TYPES([struct ptrace_peeksiginfo_args],,,[#include <sys/ptrace.h>])
+Hi!
+> >> +	while (i < TST_TOTAL) {
+> >> +
+> >> +		SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
+> >> +		SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
+> >> +
+> >> +		tst_resm(res, "Test-case '%d'", i);
+> >> +
+> >> +		/*
+> >> +		 * trigger ACPI_TRAVERSE test-case while we can
+> >> +		 * get valid next device description.
+> >> +		 */
+> >> +		if (i == ACPI_TRAVERSE && next_acpi_str())
+> >> +			continue;
+> > The same goes for the tst_resm() here.
+> >
+> > I would write this part so that reading the sys_str file triggers
+> > walking to next object with _STR argument, while writing to dev_tcase
+> > will reset the walk to root and wrote a code as:
+> >
+> > 	SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
+> > 	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
+> >
+> > 	if (i == ACPI_TRAVERSE)
+> > 		res = next_acpi_str();
+> >
+> > 	tst_resm(...);
+> >
+> > And the next_acpi_str() would loop on reading the dev_str while "null"
+> > is returned. Or even better make the read returns zero size at the end,
+> > (should be mapped to EOF in case of FILE*).
+> OK
+> > Also I would be more carefull and rather sanitized the result value, i.e.
+> >
+> > 	tst_resm(ret ? TFAIL : TPASS, "...");
+> If I do that way, next_acpi_str could also return TCONF (kernel version 
+> lower than 3.7) and then we would get TFAIL in the test-case result.
 
-We generally place this like checks to m4/*.
+Ah, hmm, so what about:
 
-> +
->  # Tools knobs
->  
->  # Expect
-> diff --git a/include/config.h.default b/include/config.h.default
-> index 96e25c4..f226333 100644
-> --- a/include/config.h.default
-> +++ b/include/config.h.default
-> @@ -167,6 +167,9 @@
->  /* Define to 1 if the system has the type `struct modify_ldt_ldt_s'. */
->  #undef HAVE_STRUCT_MODIFY_LDT_LDT_S
->  
-> +/* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
-> +#undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARG
 
-Missed an "S" here?
+	SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
+	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
 
-Thanks,
-Wanlong Gao
+	res = res ? TFAIL : TPASS;
 
-> +
->  /* Define to 1 if `signo' is member of `struct signalfd_siginfo'. */
->  #undef HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
->  
-> diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
-> index f0767d7..4a43f01 100644
-> --- a/testcases/kernel/syscalls/ptrace/ptrace.h
-> +++ b/testcases/kernel/syscalls/ptrace/ptrace.h
-> @@ -19,7 +19,9 @@
->  # include <asm/ptrace.h>
->  #endif
->  #ifdef HAVE_LINUX_PTRACE_H
-> -# include <linux/ptrace.h>
-> +# ifndef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
-> +#  include <linux/ptrace.h>
-> +# endif
->  #endif
->  #undef FU_ia64_fpreg
->  #undef FU_pt_all_user_regs
-> 
+	if (i == ACPI_TRAVERSE)
+		res = next_acpi_str();
 
+	...
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
