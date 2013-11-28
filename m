@@ -1,32 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Ve0PJ-00006q-9i
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 10:32:17 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ve0PI-000202-9T
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 10:32:17 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA6AW92v010440
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 10:32:10 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA6AW8Mg027313
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 10:32:09 GMT
-Received: from abhmt110.oracle.com (abhmt110.oracle.com [141.146.116.62])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA6AW8OW018711
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Nov 2013 10:32:08 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed,  6 Nov 2013 14:32:03 +0400
-Message-Id: <1383733923-28488-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH] fsync02: SIGFPE fix
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vm4N8-0004iW-Ms
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 16:23:22 +0000
+Date: Thu, 28 Nov 2013 17:22:49 +0100
+From: chrubis@suse.cz
+Message-ID: <20131128162248.GC17903@rei.Home>
+References: <1385546874.1596.0.camel@G08JYZSD130126>
+	<20131128135908.GA20294@rei.Home> <52976154.10500@imgtec.com>
+	<20131128160116.GB17903@rei.Home> <52976A77.3080608@imgtec.com>
+	<20131128161131.GB18195@rei.Home>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20131128161131.GB18195@rei.Home>
+Subject: Re: [LTP] [PATCH v2 1/2] confstr/confstr01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,47 +24,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: ltp-list@lists.sourceforge.net
 
-It may happen that stat_buf.f_frsize is greater than
-BLOCKSIZE (for example, if we use "non-default" FS block sizes or NFS) and
-because on (BLOCKSIZE / stat_buf.f_frsize) is 0.
+Hi!
+> > Hello,
+> > 
+> > Yep, that works fine. Thanks!
+> 
+> Fix pushed.
 
-Moved stat_buf.f_frsize to the dividend.
+And I've failed to do it right at the first time...
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/syscalls/fsync/fsync02.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+I've did a force push (these are generally wrong thing to do, but this
+is a rare expception when it makes sense). If you pulled the wrong
+version, reset the last commit and pull again.
 
-diff --git a/testcases/kernel/syscalls/fsync/fsync02.c b/testcases/kernel/syscalls/fsync/fsync02.c
-index 564f5c6..ffd2e7a 100644
---- a/testcases/kernel/syscalls/fsync/fsync02.c
-+++ b/testcases/kernel/syscalls/fsync/fsync02.c
-@@ -177,7 +177,7 @@ void setup()
- 	if (fstatvfs(fd, &stat_buf) != 0)
- 		tst_brkm(TBROK, cleanup, "fstatvfs failed");
- 
--	f_bavail = stat_buf.f_bavail / (BLOCKSIZE / stat_buf.f_frsize);
-+	f_bavail = (stat_buf.f_bavail * stat_buf.f_frsize) / BLOCKSIZE;
- 	if (f_bavail && (f_bavail < MAXBLKS))
- 		max_blks = f_bavail;
- 
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
