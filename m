@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1Vecup-0006n5-JM
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 03:39:23 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vecun-0001oi-Gu
-	for ltp-list@lists.sourceforge.net; Fri, 08 Nov 2013 03:39:23 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rA83dFC6024303
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 03:39:15 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA83dEl6013476
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 03:39:14 GMT
-Received: from abhmt112.oracle.com (abhmt112.oracle.com [141.146.116.64])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rA83dDCM027308
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Nov 2013 03:39:13 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Fri,  8 Nov 2013 11:39:08 +0800
-Message-Id: <1383881948-816-1-git-send-email-xu.simon@oracle.com>
-In-Reply-To: <20131107160214.GA9169@rei.suse.cz>
-References: <20131107160214.GA9169@rei.suse.cz>
-Subject: [LTP] [PATCH V2] rdist01: fix mistakes
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VlzyK-0006Pn-T9
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:41:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VlzyH-0001c4-24
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:41:28 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rASBfHEM032457
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Nov 2013 19:41:17 +0800
+Message-ID: <1385638872.1520.5.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 28 Nov 2013 19:41:12 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 1/2] fallocate/fallocate02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,99 +25,382 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Fix the following mistakes in the script:
-1) the way it gets dirname and basename of files is broken
-2) ${FILES} and ${HOSTS} get substituted when generating distfile
-3) the way it calculates sum of files on RHOST is broken
-4) there is no $DIRECTORIES variable
+cleanup of fallocate(2)
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/network/tcp_cmds/rdist/rdist01 | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/fallocate/fallocate02.c | 278 +++++++---------------
+ 1 file changed, 92 insertions(+), 186 deletions(-)
 
-diff --git a/testcases/network/tcp_cmds/rdist/rdist01 b/testcases/network/tcp_cmds/rdist/rdist01
-index 9e30492..4bc239f 100755
---- a/testcases/network/tcp_cmds/rdist/rdist01
-+++ b/testcases/network/tcp_cmds/rdist/rdist01
-@@ -63,8 +63,8 @@ do_setup()
-     done
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+index 37f0635..f73ba8a 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate02.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+@@ -53,7 +53,7 @@
+  *
+  *	ENVIRONMENTAL NEEDS
+  *		Test Needs to be executed on file system supporting ext4
+- *   LTP {TMP} Needs to be set to such a folder
++ *	LTP {TMP} Needs to be set to such a folder
+  *
+  *	SPECIAL PROCEDURAL REQUIREMENTS
+  *		None
+@@ -65,23 +65,6 @@
+  *		test is considered passed else test fails
+  *		Provided TEST_DEFAULT to switch b/w modes
+  *
+- *		Total 7 Test Cases :-
+- *		Various error messages from the man page
+- *
+- *	Setup:
+- *		Setup files on which fallocate is to be called
+- *
+- *	Test:
+- *		Loop if the proper options are given.
+- *		Execute system call
+- *		Check return code.
+- *		If error obtained matches with the expected error
+- *		PASS the test, otherwise TEST FAILS
+- *		Provided TEST_DEFAULT to switch b/w modes
+- *
+- *	Cleanup:
+- *		Cleanup the temporary folder
+- *
+ *************************************************************************/
  
-     for i in $FILES; do
--        BASE=${i##*/}
--        DIR=${%%/*}
-+        BASE=$(basename "$i")
-+        DIR=$(dirname "$i")
-         test -d "$DIR" || mkdir -p "$DIR"
-         if [ $? -ne 0 ] ; then
-             end_testcase "failed to create $DIR"
-@@ -94,7 +94,7 @@ create_distfile()
+ #include <stdio.h>
+@@ -97,223 +80,146 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
++#include "safe_macros.h"
+ 
+-#define BLOCKS_WRITTEN 12
++#define BLOCKS_WRITTEN		12
+ 
+ #ifdef TEST_DEFAULT
+-#define DEFAULT_TEST_MODE 0	//DEFAULT MODE
++#define DEFAULT_TEST_MODE	0
+ #else
+-#define DEFAULT_TEST_MODE 1	//FALLOC_FL_KEEP_SIZE MODE
++#define DEFAULT_TEST_MODE	1
+ #endif
+ 
+-#define OFFSET 12
++#define OFFSET			12
+ 
+-static inline long fallocate();
+-void populate_file();
+-void create_fifo();
+-void create_pipe();
+-void get_blocksize(int fd);
++static void setup(void);
++static void cleanup(void);
++static inline long fallocate(int, int, loff_t, loff_t);
+ 
+-char *TCID = "fallocate02";
+-char fnamew[255];
+-char fnamer[255];
+-int fdw;
+-int fdr;
+-enum { RFILE, WFILE, PIPE, FIFO };
+-struct test_data_t {
+-	int file;
++static char fnamew[255];
++static char fnamer[255];
++static int fdw;
++static int fdr;
++static int block_size;
++
++static struct test_data_t {
++	int *fd;
++	char *fname;
+ 	int mode;
+ 	loff_t offset;
+ 	loff_t len;
+ 	int error;
+ } test_data[] = {
+-	{
+-	RFILE, DEFAULT_TEST_MODE, 0, 1, EBADF}, {
+-	WFILE, DEFAULT_TEST_MODE, -1, 1, EINVAL}, {
+-	WFILE, DEFAULT_TEST_MODE, 1, -1, EINVAL}, {
+-	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL}, {
+-	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL}, {
+-	WFILE, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN + OFFSET), 1, EINVAL}, {
+-	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN - OFFSET, 1, 0}
++	{&fdr, fnamer, DEFAULT_TEST_MODE, 0, 1, EBADF},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, -1, 1, EINVAL},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, 1, -1, EINVAL},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN+OFFSET), 1, EINVAL},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN-OFFSET, 1, 0},
+ };
+ 
++char *TCID = "fallocate02";
++int TST_TOTAL = ARRAY_SIZE(test_data);
+ 
+-int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
+-int block_size;
+-int buf_size;
+-
+-/******************************************************************************
+- * Performs all one time clean up for this test on successful
+- * completion,  premature exit or  failure. Closes all temporary
+- * files, removes all temporary directories exits the test with
+- * appropriate return code by calling tst_exit() function.
+-******************************************************************************/
+-extern void cleanup()
++int main(int ac, char **av)
  {
-     T_FILES="FILES = ( "
-     for i in $FILES; do
--        if [ "${i%%*/}" = "." ]; then
-+        if [ $(dirname "$i") == "." ]; then
-             T_FILES="$T_FILES $i"
-         else
-             T_FILES="$T_FILES $DIR"
-@@ -105,7 +105,7 @@ create_distfile()
-     T_HOST="HOSTS = ("
-     for c_ruser in $RUSERS; do
-         for c_rhost in $HOSTS; do
--         T_HOST=$T_HOST"$c_ruser@$c_rhost "
-+         T_HOST=$T_HOST" $c_ruser@$c_rhost"
-         done
-     done
+-	/* Close all open file descriptors. */
+-	if (close(fdw) == -1)
+-		tst_resm(TWARN | TERRNO, "close(%s) failed", fnamew);
++	int lc;
++	int i;
++	char *msg;
  
-@@ -113,7 +113,7 @@ create_distfile()
-     cat <<EOF > "$TCtmp/distfile"
- $T_HOST
- $T_FILES
--${FILES} -> ${HOSTS}
-+\${FILES} -> \${HOSTS}
- EOF
+-	if (close(fdr) == -1)
+-		tst_resm(TWARN | TERRNO, "close(%s) failed", fnamer);
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-	tst_rmdir();
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
+ 
++		for (i = 0; i < TST_TOTAL; i++) {
++
++			TEST(fallocate(*test_data[i].fd, test_data[i].mode,
++				       test_data[i].offset * block_size,
++				       test_data[i].len * block_size));
++			if (TEST_ERRNO != test_data[i].error) {
++				if (TEST_ERRNO == EOPNOTSUPP ||
++				    TEST_ERRNO == ENOSYS) {
++					tst_brkm(TCONF, cleanup,
++						 "fallocate system call is not "
++						 "implemented");
++				}
++				tst_resm(TFAIL | TTERRNO,
++					 "fallocate(%s:%d, %d, %" PRId64 ", %"
++					 PRId64 ") failed, expected errno:%d",
++					 test_data[i].fname, *test_data[i].fd,
++					 test_data[i].mode,
++					 test_data[i].offset * block_size,
++					 test_data[i].len * block_size,
++					 test_data[i].error);
++			} else {
++				tst_resm(TPASS,
++					 "fallocate(%s:%d, %d, %" PRId64 ", %"
++					 PRId64 ") returned %d",
++					 test_data[i].fname, *test_data[i].fd,
++					 test_data[i].mode,
++					 test_data[i].offset * block_size,
++					 test_data[i].len * block_size,
++					 TEST_ERRNO);
++			}
++		}
++	}
++
++	cleanup();
++
++	tst_exit();
  }
  
-@@ -130,17 +130,15 @@ check_result()
-     cd $TCtmp
-     for c_rhost in $HOSTS; do
-         for c_ruser in $RUSERS; do
--            TOTAL_SUM=`rsh -n -l $c_ruser $c_rhost \
--            x=0; SUM=\$(sum -s $FILES|awk '{ print \$1 }')
--            for i in \$SUM; do
--                x=\$(( \$x + \$i ))
-+            TOTAL_SUM=0
-+            for i in $(rsh -n -l $c_ruser $c_rhost sum -s $FILES | awk '{ print $1 }'); do
-+                TOTAL_SUM=$(( $TOTAL_SUM + $i ))
-             done
--            echo \$x`
--            if [ $TOTAL_SUM = $LSUM ]; then
-+            if [ $TOTAL_SUM -eq $LSUM ]; then
-                 tst_resm TINFO "Success rdist in $c_ruser@$c_rhost "
--                rsh -n -l $c_ruser $c_rhost "rm -rf $FILES $DIRECTORIES"
-+                rsh -n -l $c_ruser $c_rhost "rm -rf $FILES"
-             else
--                end_testcase "Wrong sum doing  rdist in $curr_ruser@$curr_rhost"
-+                end_testcase "Wrong sum doing rdist in $curr_ruser@$curr_rhost"
-             fi
-        done
-    done
+-/*****************************************************************************
+- * Performs all one time setup for this test. This function is
+- * used to create temporary dirs and temporary files
+- * that may be used in the course of this test
+- ******************************************************************************/
+-void setup()
++static void setup(void)
+ {
++	struct stat file_stat;
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
+ 
+ 	tst_tmpdir();
+ 
+ 	sprintf(fnamer, "tfile_read_%d", getpid());
++
+ 	sprintf(fnamew, "tfile_write_%d", getpid());
+ 
+-	fdr = open(fnamer, O_RDONLY | O_CREAT, S_IRUSR);
+-	if (fdr == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDONLY|O_CREAT, S_IRUSR) failed", fnamer);
+-	fdw = open(fnamew, O_RDWR | O_CREAT, S_IRWXU);
+-	if (fdw == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, S_IRWXU) failed", fnamew);
+-	get_blocksize(fdr);
+-	populate_file();
+-}
++	fdr = SAFE_OPEN(cleanup, fnamer, O_RDONLY | O_CREAT, S_IRUSR);
+ 
+-/*****************************************************************************
+- * Gets the block size for the file system
+- ******************************************************************************/
+-void get_blocksize(int fd)
+-{
+-	struct stat file_stat;
++	fdw = SAFE_OPEN(cleanup, fnamew, O_RDWR | O_CREAT, S_IRWXU);
+ 
+-	if (fstat(fd, &file_stat) < 0)
+-		tst_resm(TFAIL | TERRNO,
++	if (fstat(fdr, &file_stat) < 0) {
++		tst_brkm(TFAIL | TERRNO, cleanup,
+ 			 "fstat failed while getting block_size");
++	}
+ 
+ 	block_size = (int)file_stat.st_blksize;
+-	buf_size = block_size;
+-}
+-
+-/*****************************************************************************
+- * Writes data into the file
+- ******************************************************************************/
+-void populate_file()
+-{
+-	char buf[buf_size + 1];
+-	int index;
+-	int blocks;
+-	int data;
+-	for (blocks = 0; blocks < BLOCKS_WRITTEN; blocks++) {
+-		for (index = 0; index < buf_size; index++)
+-			buf[index] = 'A' + (index % 26);
+-		buf[buf_size] = '\0';
+-		if ((data = write(fdw, buf, buf_size)) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "Unable to write to %s", fnamew);
+-	}
+ }
+ 
+-/*****************************************************************************
+- * Wraper function to call fallocate system call
+- ******************************************************************************/
+ static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+ {
+ #if __WORDSIZE == 32
+ 	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+-			     __LONG_LONG_PAIR((off_t) (offset >> 32),
+-					      (off_t) offset),
+-			     __LONG_LONG_PAIR((off_t) (len >> 32),
+-					      (off_t) len));
++				 __LONG_LONG_PAIR((off_t) (offset >> 32),
++						  (off_t) offset),
++				 __LONG_LONG_PAIR((off_t) (len >> 32),
++						  (off_t) len));
+ #else
+ 	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
+ #endif
+ }
+ 
+-/*****************************************************************************
+- * Main function that calls the system call with the  appropriate parameters
+- ******************************************************************************/
+-/* ac: number of command line parameters */
+-/* av: pointer to the array of the command line parameters */
+-int main(int ac, char **av)
++static void cleanup(void)
+ {
++	SAFE_CLOSE(NULL, fdw);
+ 
+-	int test_index = 0;
+-	int lc;
+-	int fd;
+-	char fname[255], *msg;
+-
+-	/***************************************************************
+-	     * parse standard options
+-     	***************************************************************/
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-	/* perform global test setup, call setup() function. */
+-	setup();
++	SAFE_CLOSE(NULL, fdr);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-		for (test_index = 0; test_index < TST_TOTAL; test_index++) {
+-			switch (test_data[test_index].file) {
+-			case RFILE:
+-				fd = fdr;
+-				strcpy(fname, fnamer);
+-				break;
+-			case WFILE:
+-				fd = fdw;
+-				strcpy(fname, fnamew);
+-				break;
+-			default:
+-				tst_brkm(TCONF, cleanup,
+-					 "invalid test setting");
+-				tst_exit();
+-			}
+-
+-			TEST(fallocate
+-			     (fd, test_data[test_index].mode,
+-			      test_data[test_index].offset * block_size,
+-			      test_data[test_index].len * block_size));
+-			/* check return code */
+-			if (TEST_ERRNO != test_data[test_index].error) {
+-				if (TEST_ERRNO == EOPNOTSUPP
+-				    || TEST_ERRNO == ENOSYS) {
+-					tst_brkm(TCONF, cleanup,
+-						 "fallocate system call is not implemented");
+-				}
+-				TEST_ERROR_LOG(TEST_ERRNO);
+-				tst_resm(TFAIL | TTERRNO,
+-					 "fallocate(%s:%d, %d, %" PRId64 ", %"
+-					 PRId64 ") failed, expected errno:%d",
+-					 fname, fd, test_data[test_index].mode,
+-					 test_data[test_index].offset *
+-					 block_size,
+-					 test_data[test_index].len * block_size,
+-					 test_data[test_index].error);
+-			} else {
+-				/* No Verification test, yet... */
+-				tst_resm(TPASS,
+-					 "fallocate(%s:%d, %d, %" PRId64 ", %"
+-					 PRId64 ") returned %d", fname, fd,
+-					 test_data[test_index].mode,
+-					 test_data[test_index].offset *
+-					 block_size,
+-					 test_data[test_index].len * block_size,
+-					 TEST_ERRNO);
+-			}
+-		}
+-	}
+-	cleanup();
+-	tst_exit();
++	tst_rmdir();
+ }
 -- 
-1.8.4.2
+1.8.2.1
+
+
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
