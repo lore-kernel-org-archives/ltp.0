@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <siva.padhy@lge.com>) id 1VdzgW-0006eM-Jx
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 09:46:00 +0000
-Received: from lgeamrelo02.lge.com ([156.147.1.126])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VdzgV-0001xv-6b
-	for ltp-list@lists.sourceforge.net; Wed, 06 Nov 2013 09:46:00 +0000
-From: Siva Padhy <siva.padhy@lge.com>
-Date: Wed, 6 Nov 2013 18:45:51 +0900
-Message-ID: <81212EE27BC298499DBD7CA069AAD071428CD96A5A@LGEVEXMBAPSVC2.LGE.NET>
-Content-Language: en-US
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vm2OJ-0008PL-MF
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 14:16:27 +0000
+Date: Thu, 28 Nov 2013 15:15:49 +0100
+From: chrubis@suse.cz
+Message-ID: <20131128141548.GB20294@rei.Home>
+References: <1384395907-13886-1-git-send-email-penght@cn.fujitsu.com>
+	<20131114122922.GA13348@rei>
+	<187658148.31700134.1384433325925.JavaMail.root@redhat.com>
+	<20131114125524.GD13348@rei> <5285EB6C.9000107@cn.fujitsu.com>
+	<5296D114.4070507@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] BindMounts: fix to properly unmount during cleanup
- in fs_bind
+Content-Disposition: inline
+In-Reply-To: <5296D114.4070507@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] sigaction:16-1: leave it untested on the Linux
+ kernel less than 2.6.22
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,76 +29,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Peng Haitao <penght@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-While running fs_bound testcases, some test directory structure are mounted
-using -rbind option. While exiting the testcase the umount is not properly
-done, hence the below testcase are falling into TWARN.
+Hi!
+> >>> I don't have strong preference. I'd be OK also with a text file, which would
+> >>> list which ones fail, why, relevant kernel/glibc versions, etc.
+> >>
+> >> Or a wiki page. I would love to see more LTP documentation...
+> >>
+> > 
+> > As a known bug, I think it is OK to skip the case.
+> > Although a text file or a wiki page is existent, the new users of ltp may
+> > not catch it and investigate the bug again and again.
+> > 
+> 
+> What is decision about the discuss?
 
-  fs_bind/test02
-  fs_bind/test38
+I wote for adding 'test_linux' make target which will skipp testcases
+that are expected to fail on the tested system.
 
-The warning message is as below for respective testcases
-  TWARN  :  rbind/test02 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
-  TWARN  :  rbind/test38 did not properly clean up "/tmp/ltp-XXXX9qdYqG/sandbox"
+Anybody has different idea?
 
-This patch unmount all the mounted/submounted parts of the filesystem properly.
-
-Change-Id: Ica6d1799b89e933587c11c1755dff996ddbdf8c5
-Signed-off-by: Siva <siva.padhy@lge.com>
----
- testcases/kernel/fs/fs_bind/rbind/test02 |    2 ++
- testcases/kernel/fs/fs_bind/rbind/test38 |    5 +++++
- 2 files changed, 7 insertions(+)
-
-diff --git a/testcases/kernel/fs/fs_bind/rbind/test02 b/testcases/kernel/fs/fs_bind/rbind/test02
-index 3ab7b6c..eab9cdc 100755
---- a/testcases/kernel/fs/fs_bind/rbind/test02
-+++ b/testcases/kernel/fs/fs_bind/rbind/test02
-@@ -76,8 +76,10 @@ trap '' ERR
- {
- 	umount parent1/child1/a
- 	umount parent1/child1/b
-+	umount parent2/child2/b
- 	umount parent1/child1
- 	umount parent1/child1
-+	umount parent2/child2
- 	umount parent1/child1
- 	umount parent1/child1
- 	umount share1
-diff --git a/testcases/kernel/fs/fs_bind/rbind/test38 b/testcases/kernel/fs/fs_bind/rbind/test38
-index c9cf3e1..c944ce5 100755
---- a/testcases/kernel/fs/fs_bind/rbind/test38
-+++ b/testcases/kernel/fs/fs_bind/rbind/test38
-@@ -77,6 +77,7 @@ trap '' ERR
- {
- 	umount share1/a
- 	umount parent1/child1/b
-+	umount parent2/child1/b
- 	umount parent2/child1/c
- 	umount parent1/child1
- 	umount parent1/child1
-@@ -86,6 +87,10 @@ trap '' ERR
- 	umount parent2
- 	umount share1
- 	umount share1
-+	umount parent1
-+	umount share2
-+	umount parent2/child2
-+	umount parent2
- 
- 	rm -rf parent* share*
- 	cleanup
 -- 
-1.7.9.5
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
