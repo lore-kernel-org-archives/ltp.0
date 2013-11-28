@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VgssH-0002eC-GL
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 09:06:05 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VgssG-0006bH-9V
-	for ltp-list@lists.sourceforge.net; Thu, 14 Nov 2013 09:06:05 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rAE95t7I032576
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Nov 2013 04:05:56 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id rAE95rcw002918
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Nov 2013 04:05:54 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 14 Nov 2013 10:05:51 +0100
-Message-Id: <1a7334c8ecd0ea0adb174c7c55667844d971a3f2.1384419525.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] add test for tst_checkpoint_signal_child timing out
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VlzzO-0001he-H4
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:42:34 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VlzzN-0001eU-AL
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 11:42:34 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rASBgQiO032472
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Nov 2013 19:42:26 +0800
+Message-ID: <1385638941.1520.6.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 28 Nov 2013 19:42:21 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 2/2] fallocate/fallocate02.c: add EFBIG
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,116 +25,165 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-This is simple test for patch which adds timeout to
-tst_checkpoint_signal_child().
+add error with EFBIG for fallocate(2)
 
-The test is expected to end with:
-  Failed to open fifo 'tst_checkpoint_fifo' at
-  tst_checkpoint_child_exits2.c:56: errno=ETIMEDOUT(110): Connection timed out
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- .gitignore                              |    1 +
- lib/tests/tst_checkpoint_child_exits2.c |   62 +++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+), 0 deletions(-)
- create mode 100644 lib/tests/tst_checkpoint_child_exits2.c
+ runtest/syscalls                                  |  2 +-
+ testcases/kernel/syscalls/fallocate/fallocate02.c | 56 ++++++++++++++++++++++-
+ 2 files changed, 55 insertions(+), 3 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index 140f5f4..dfee1ad 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -55,6 +55,7 @@ logfile.*
- /lib/tests/tst_tmpdir_test
- /lib/tests/tst_checkpoint_child
- /lib/tests/tst_checkpoint_child_exits
-+/lib/tests/tst_checkpoint_child_exits2
- /lib/tests/tst_checkpoint_parent
- /lib/tests/tst_checkpoint_parent_exits
- /lib/tests/tst_process_state
-diff --git a/lib/tests/tst_checkpoint_child_exits2.c b/lib/tests/tst_checkpoint_child_exits2.c
-new file mode 100644
-index 0000000..fb79145
---- /dev/null
-+++ b/lib/tests/tst_checkpoint_child_exits2.c
-@@ -0,0 +1,62 @@
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 12bae10..5f112d3 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -150,7 +150,7 @@ faccessat01 faccessat01
+ 
+ #fallocate test cases
+ fallocate01 fallocate01
+-fallocate02 fallocate02
++fallocate02 fallocate02 -D DEVICE -T ext4
+ fallocate03 fallocate03
+ 
+ #posix_fadvise test cases
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+index f73ba8a..3e5fce9 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate02.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+@@ -45,7 +45,7 @@
+  *	(Tests fallocate() for different test cases as reported in map page)
+  *
+  *	INPUT SPECIFICATIONS
+- *		No input needs to be specified
++ *		Need ext4 while run test with EFBIG
+  *		  fallocate() in-puts are specified through test_data
+  *
+  *	OUTPUT SPECIFICATIONS
+@@ -76,6 +76,7 @@
+ #include <fcntl.h>
+ #include <inttypes.h>
+ #include <sys/utsname.h>
++#include <sys/mount.h>
+ 
+ #include "test.h"
+ #include "usctest.h"
+@@ -91,16 +92,35 @@
+ #endif
+ 
+ #define OFFSET			12
 +/*
-+ * Copyright (C) 2013 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it is
-+ * free of the rightful claim of any third person regarding infringement
-+ * or the like.  Any license provided herein, whether implied or
-+ * otherwise, applies only to this software file.  Patent licenses, if
-+ * any, provided herein do not apply to combinations of this program with
-+ * other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * block_size is 1024, then the maximum file size is MAX_FILE * block_size: 4T
++ * block_size is 4096, then the maximum file size is MAX_FILE * block_size: 16T
 + */
++#define MAX_FILE		(4L*1024*1024*1024)
++#define DIR_MODE		(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
++				 S_IXGRP|S_IROTH|S_IXOTH)
+ 
+ static void setup(void);
+ static void cleanup(void);
+ static inline long fallocate(int, int, loff_t, loff_t);
++static void help(void);
+ 
+ static char fnamew[255];
+ static char fnamer[255];
+ static int fdw;
+ static int fdr;
+ static int block_size;
++/* Use ext4 default to test EFBIG */
++static char *fstype = "ext4";
++static char *device;
++static int dflag;
++static int mount_flag;
 +
-+#include <sys/wait.h>
++static option_t options[] = {
++	{"T:", NULL, &fstype},
++	{"D:", &dflag, &device},
++	{NULL, NULL, NULL}
++};
+ 
+ static struct test_data_t {
+ 	int *fd;
+@@ -117,6 +137,8 @@ static struct test_data_t {
+ 	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
+ 	{&fdw, fnamew, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN+OFFSET), 1, EINVAL},
+ 	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN-OFFSET, 1, 0},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, MAX_FILE, 1, EFBIG},
++	{&fdw, fnamew, DEFAULT_TEST_MODE, 0, MAX_FILE, EFBIG},
+ };
+ 
+ char *TCID = "fallocate02";
+@@ -128,10 +150,17 @@ int main(int ac, char **av)
+ 	int i;
+ 	char *msg;
+ 
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
 +
-+#include "test.h"
++	/* Check for mandatory option of the testcase */
++	if (!dflag) {
++		tst_brkm(TBROK, NULL,
++			 "you must specify the device used for mounting with "
++			 "-D option");
++	}
+ 	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -190,6 +219,17 @@ static void setup(void)
+ 
+ 	sprintf(fnamew, "tfile_write_%d", getpid());
+ 
++	tst_mkfs(NULL, device, fstype, NULL);
++	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
++	if (mount(device, "mntpoint", fstype, 0, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
 +
-+char *TCID = "tst_checkpoint_child_exits2";
-+int TST_TOTAL = 1;
++	sprintf(fnamer, "mntpoint/tfile_read_%d", getpid());
++	sprintf(fnamew, "mntpoint/tfile_write_%d", getpid());
 +
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+int main(void)
-+{
-+	int pid;
-+	struct tst_checkpoint checkpoint;
-+
-+	tst_tmpdir();
-+
-+	pid = fork();
-+
-+	switch (pid) {
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, NULL, "Fork failed");
-+		break;
-+	case 0:
-+		fprintf(stderr, "Child: exiting prior checkpoint init\n");
-+		exit(0);
-+		break;
-+	default:
-+		wait(NULL);
-+		TST_CHECKPOINT_INIT(&checkpoint);
-+		TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
-+		fprintf(stderr, "Parent: checkpoint reached\n");
-+		break;
+ 	fdr = SAFE_OPEN(cleanup, fnamer, O_RDONLY | O_CREAT, S_IRUSR);
+ 
+ 	fdw = SAFE_OPEN(cleanup, fnamew, O_RDWR | O_CREAT, S_IRWXU);
+@@ -221,5 +261,17 @@ static void cleanup(void)
+ 
+ 	SAFE_CLOSE(NULL, fdr);
+ 
++	if (mount_flag && umount("mntpoint") < 0) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "umount device:%s failed", device);
 +	}
 +
-+	return 0;
+ 	tst_rmdir();
+ }
++
++static void help(void)
++{
++	printf("-T type : specifies the type of filesystem to be mounted. "
++	       "Default ext4.\n");
++	printf("-D device : device used for mounting.\n");
 +}
 -- 
-1.7.1
+1.8.2.1
+
+
 
 
 ------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
