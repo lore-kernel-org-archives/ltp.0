@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VePeY-00022M-Rv
-	for ltp-list@lists.sourceforge.net; Thu, 07 Nov 2013 13:29:42 +0000
-Date: Thu, 7 Nov 2013 14:29:34 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vm284-00051o-CS
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 13:59:40 +0000
+Date: Thu, 28 Nov 2013 14:59:09 +0100
 From: chrubis@suse.cz
-Message-ID: <20131107132934.GF28961@rei.suse.cz>
-References: <1383085243-5833-1-git-send-email-vincent.hsu@linaro.org>
-	<1383085243-5833-3-git-send-email-vincent.hsu@linaro.org>
+Message-ID: <20131128135908.GA20294@rei.Home>
+References: <1385546874.1596.0.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383085243-5833-3-git-send-email-vincent.hsu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH 2/9] ltp-networking/nfs: don't use absolute
- path for showmount. showmount does not locate at /user/sbin/showmount on
- Ubuntu 12.04.
+In-Reply-To: <1385546874.1596.0.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v2 1/2] confstr/confstr01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,23 +24,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vincent Hsu <vincent.hsu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-This patch is fine, but the description is not right (the subject is too
-long). Please fix and resend.
+> cleanup the confstr01.c test case.
+> 
+
+I've changed the succes message to include the confstr value as:
+
+                                } else {
+-                                       tst_resm(TPASS, "confstr %s success",
+-                                                test_cases[i].name);
++                                       tst_resm(TPASS, "confstr %s = '%s'",
++                                                test_cases[i].name, buf);
+                                }
+                                free(buf);
+
+And pushed both patches, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
