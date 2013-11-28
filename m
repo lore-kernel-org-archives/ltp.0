@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hong.gyu.kim@lge.com>) id 1VfKUf-0000a4-Rr
-	for ltp-list@lists.sourceforge.net; Sun, 10 Nov 2013 02:11:17 +0000
-Received: from lgemrelse1q.lge.com ([156.147.1.111])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VfKUd-0003Xk-PG
-	for ltp-list@lists.sourceforge.net; Sun, 10 Nov 2013 02:11:17 +0000
-From: Honggyu Kim <hong.gyu.kim@lge.com>
-Date: Sun, 10 Nov 2013 11:11:29 +0900
-Message-Id: <1384049489-11024-1-git-send-email-hong.gyu.kim@lge.com>
-Subject: [LTP] [PATCH] ext4-new-features: fix to properly configure in ffsb
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1Vm3Wx-0002LR-Am
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 15:29:27 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vm3Ww-0004Ot-8l
+	for ltp-list@lists.sourceforge.net; Thu, 28 Nov 2013 15:29:27 +0000
+Message-ID: <52976154.10500@imgtec.com>
+Date: Thu, 28 Nov 2013 15:29:24 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+MIME-Version: 1.0
+References: <1385546874.1596.0.camel@G08JYZSD130126>
+	<20131128135908.GA20294@rei.Home>
+In-Reply-To: <20131128135908.GA20294@rei.Home>
+Subject: Re: [LTP] [PATCH v2 1/2] confstr/confstr01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,47 +25,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-configure in ext4-new-features calls configure in ffsb without arguments.
-It always configures for host machine environment even if we pass arguments 
-to configure in ext4-new-features.
+On 11/28/2013 01:59 PM, chrubis@suse.cz wrote:
+> Hi!
+>> cleanup the confstr01.c test case.
+>>
+>
+> I've changed the succes message to include the confstr value as:
+>
+>                                  } else {
+> -                                       tst_resm(TPASS, "confstr %s success",
+> -                                                test_cases[i].name);
+> +                                       tst_resm(TPASS, "confstr %s = '%s'",
+> +                                                test_cases[i].name, buf);
+>                                  }
+>                                  free(buf);
+>
+> And pushed both patches, thanks.
+>
 
-This patch passes all the arguments to configure in ffsb so that ffsb can 
-also be cross-compiled for target machine as well.
+Hi,
 
-Signed-off-by: Honggyu Kim <hong.gyu.kim@lge.com>
----
- testcases/kernel/fs/ext4-new-features/configure |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+since this change I am seeing the following build problem on a uClibc 
+based system
 
-diff --git a/testcases/kernel/fs/ext4-new-features/configure b/testcases/kernel/fs/ext4-new-features/configure
-index 12849e5..15c4f0c 100755
---- a/testcases/kernel/fs/ext4-new-features/configure
-+++ b/testcases/kernel/fs/ext4-new-features/configure
-@@ -2,7 +2,7 @@
- 
- echo "Run the ffsb's configure"
- cd ./ffsb-6.0-rc2
--./configure
-+./configure $*
- cd ..
- 
- EXT4_DEV=
+confstr01.c:50: error: '_CS_XBS5_ILP32_OFF32_CFLAGS' undeclared here 
+(not in a function)
+confstr01.c:51: error: '_CS_XBS5_ILP32_OFF32_LDFLAGS' undeclared here 
+(not in a function)
+confstr01.c:52: error: '_CS_XBS5_ILP32_OFF32_LIBS' undeclared here (not 
+in a function)
+confstr01.c:53: error: '_CS_XBS5_ILP32_OFF32_LINTFLAGS' undeclared here 
+(not in a function)
+...
+
+Reverting the recent changes in confstr01.c file seems to "fix" the problem.
+
 -- 
-1.7.9.5
+markos
 
 
 ------------------------------------------------------------------------------
-November Webinars for C, C++, Fortran Developers
-Accelerate application performance with scalable programming models. Explore
-techniques for threading, error checking, porting, and tuning. Get the most 
-from the latest Intel processors and coprocessors. See abstracts and register
-http://pubads.g.doubleclick.net/gampad/clk?id=60136231&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
