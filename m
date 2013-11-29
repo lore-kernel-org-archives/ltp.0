@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VjFeG-0002VJ-0o
-	for ltp-list@lists.sourceforge.net; Wed, 20 Nov 2013 21:49:24 +0000
-Received: from relay2.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 3C209A7B44
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 20 Nov 2013 22:49:16 +0100 (CET)
-Date: Wed, 20 Nov 2013 22:48:57 +0100
-From: chrubis@suse.cz
-Message-ID: <20131120214857.GA1106@rei.my-cloud.eu>
-References: <20131120095902.GB30274@quack.suse.cz>
-	<20131120122505.GB2168@rei.nue.novell.com>
-	<20131120203951.GE30274@quack.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VmMMy-0000dA-GO
+	for ltp-list@lists.sourceforge.net; Fri, 29 Nov 2013 11:36:24 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VmMMw-0003mp-95
+	for ltp-list@lists.sourceforge.net; Fri, 29 Nov 2013 11:36:24 +0000
+Message-ID: <52987BE0.20801@cn.fujitsu.com>
+Date: Fri, 29 Nov 2013 19:34:56 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20131120203951.GE30274@quack.suse.cz>
-Subject: Re: [LTP] fanotify tests
+References: <2ad340abd08f682ea74269d96df3bcf6e4e10a67.1385721415.git.jstancek@redhat.com>
+In-Reply-To: <2ad340abd08f682ea74269d96df3bcf6e4e10a67.1385721415.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] send*: use concrete flags for 'invalid flags set'
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,85 +28,183 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> > > +static void setup(void)
-> > > +{
-> > > +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> > > +
-> > > +	TEST_PAUSE;
-> > > +
-> > > +	tst_tmpdir();
-> > > +
-> > > +	sprintf(fname, "tfile_%d", getpid());
-> > 
-> > You don't have to do this, the tst_tmpdir() creates an unique temp
-> > directory and changes the program working directory to it.
->   I know, but it's not really any harder to generate filename like this and
-> I also use fname as a source buffer for write() and verify I can read it back
-> later correctly from fanotify() file descriptors so the uniqueness of the
-> file contents is nice.
+On 11/29/2013 06:39 PM, Jan Stancek wrote:
+> Use a concrete set of flags instead of '-1', which is
+> known to fail with EOPNOTSUPP.
+> 
+> Tested with:
+>   2.6.18-128.37.1.el5
+>   2.6.32-358.el6
+>   3.10.0-54.el7
+>   upstream 3.13.0-rc1+
 
-Ok.
+Great! thank you Jan.
 
-> > > +		/* If we expected failure there's nothing to clean up */
-> > > +		if (expect == -1)
-> > > +			return;
-> > > +
-> > > +		if (test_event)
-> > > +			test_event(file);
-> > > +
-> > > +		if (myfanotify_mark(fd_notify, FAN_MARK_REMOVE | flag,
-> > > +				    FAN_OPEN, AT_FDCWD, file) < 0) {
-> > > +			tst_brkm(TBROK | TERRNO, cleanup,
-> > > +		    	    "fanotify_mark (%d, FAN_MARK_REMOVE | %s, "
-> > > +			    "FAN_OPEN, AT_FDCWD, \"%s\") failed",
-> > > +			    fd_notify, flagstr, file);
-> > > +		}
-> > > +	}
-> > > +}
-> > > +
-> > > +#define check_mark(file, flag, expect, func) __check_mark(file, flag, #flag, expect, func)
-> > > +
-> > > +static void __do_open(char *file, int flag, char *flagstr)
-> > > +{
-> > > +	int fd;
-> > > +
-> > > +	if ((fd = open(file, O_RDONLY | flag)) < 0) {
-> > > +		tst_brkm(TBROK | TERRNO, cleanup,
-> > > +		    "open(%s, O_RDONLY | %s) failed", file, flagstr);
-> > > +	}
-> > > +	if (close(fd) < 0) {
-> > > +		tst_brkm(TBROK | TERRNO, cleanup,
-> > > +		    "close(%s) failed", file);
-> > > +	}
-> > > +}
-> > 
-> > We don't use identificators with double underscores in userspace, these
-> > are reserved for glibc and may cause failures in future. Especially
-> > names like __do_open may clash.
->   Ah right, didn't write anything serious in userspace for a while :) I've
-> changed that to a single underscore.
+Reviewed-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-That wouldn't do either, I've looked up the GNU manual that says that
-all functions or variables that begin with underscore are reserved.
 
-http://www.gnu.org/software/libc/manual/html_node/Reserved-Names.html
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/send/send01.c       |   19 +++++--------------
+>  testcases/kernel/syscalls/sendmsg/sendmsg01.c |   17 ++++-------------
+>  testcases/kernel/syscalls/sendto/sendto01.c   |   21 +++++----------------
+>  3 files changed, 14 insertions(+), 43 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/send/send01.c b/testcases/kernel/syscalls/send/send01.c
+> index d228422..6ebe131 100644
+> --- a/testcases/kernel/syscalls/send/send01.c
+> +++ b/testcases/kernel/syscalls/send/send01.c
+> @@ -72,7 +72,6 @@ static void setup(void);
+>  static void setup0(void);
+>  static void setup1(void);
+>  static void setup2(void);
+> -static void setup3(void);
+>  static void cleanup0(void);
+>  static void cleanup1(void);
+>  
+> @@ -143,14 +142,14 @@ static struct test_case_t tdat[] = {
+>  #ifndef UCLINUX
+>  	/* Skip since uClinux does not implement memory protection */
+>  	{.domain = PF_INET,
+> -	 .type = SOCK_STREAM,
+> +	 .type = SOCK_DGRAM,
+>  	 .proto = 0,
+> -	 .buf = (void *)-1,
+> +	 .buf = buf,
+>  	 .buflen = sizeof(buf),
+> -	 .flags = -1,
+> +	 .flags = MSG_OOB,
+>  	 .retval = -1,
+> -	 .experrno = EFAULT,
+> -	 .setup = setup3,
+> +	 .experrno = EOPNOTSUPP,
+> +	 .setup = setup1,
+>  	 .cleanup = cleanup1,
+>  	 .desc = "invalid flags set"}
+>  #endif
+> @@ -352,11 +351,3 @@ static void setup2(void)
+>  		tst_brkm(TBROK | TERRNO, cleanup, "socket setup failed connect "
+>  			 "test %d", testno);
+>  }
+> -
+> -static void setup3(void)
+> -{
+> -	setup1();
+> -
+> -	if (tst_kvercmp(3, 6, 0) >= 0)
+> -		tdat[testno].experrno = ENOTSUP;
+> -}
+> diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+> index 90fbb5d..c385631 100644
+> --- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+> +++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+> @@ -87,7 +87,6 @@ static void setup3(void);
+>  static void setup4(void);
+>  static void setup5(void);
+>  static void setup6(void);
+> -static void setup7(void);
+>  static void setup8(void);
+>  
+>  static void cleanup(void);
+> @@ -337,19 +336,19 @@ struct test_case_t tdat[] = {
+>  	 .desc = "invalid flags set w/ control"}
+>  	,
+>  	{.domain = PF_INET,
+> -	 .type = SOCK_STREAM,
+> +	 .type = SOCK_DGRAM,
+>  	 .proto = 0,
+>  	 .iov = iov,
+>  	 .iovcnt = 1,
+>  	 .buf = buf,
+>  	 .buflen = sizeof(buf),
+>  	 .msg = &msgdat,
+> -	 .flags = ~MSG_CMSG_COMPAT,
+> +	 .flags = MSG_OOB,
+>  	 .to = (struct sockaddr *)&sin1,
+>  	 .tolen = sizeof(sin1),
+> -	 .retval = 0,
+> +	 .retval = -1,
+>  	 .experrno = EOPNOTSUPP,
+> -	 .setup = setup7,
+> +	 .setup = setup1,
+>  	 .cleanup = cleanup1,
+>  	 .desc = "invalid flags set"}
+>  	,
+> @@ -726,14 +725,6 @@ static void setup6(void)
+>  	controllen = control->cmsg_len = 0;
+>  }
+>  
+> -static void setup7(void)
+> -{
+> -	setup1();
+> -
+> -	if (tst_kvercmp(3, 6, 0) >= 0)
+> -		tdat[testno].retval = -1;
+> -}
+> -
+>  static void setup8(void)
+>  {
+>  	setup4();
+> diff --git a/testcases/kernel/syscalls/sendto/sendto01.c b/testcases/kernel/syscalls/sendto/sendto01.c
+> index a571afd..e2422ea 100644
+> --- a/testcases/kernel/syscalls/sendto/sendto01.c
+> +++ b/testcases/kernel/syscalls/sendto/sendto01.c
+> @@ -72,7 +72,6 @@ static void setup0(void);
+>  static void setup1(void);
+>  static void setup2(void);
+>  static void setup3(void);
+> -static void setup4(void);
+>  static void cleanup(void);
+>  static void cleanup0(void);
+>  static void cleanup1(void);
+> @@ -212,16 +211,16 @@ struct test_case_t tdat[] = {
+>  	 .desc = "local endpoint shutdown"}
+>  	,
+>  	{.domain = PF_INET,
+> -	 .type = SOCK_STREAM,
+> +	 .type = SOCK_DGRAM,
+>  	 .proto = 0,
+>  	 .buf = buf,
+>  	 .buflen = sizeof(buf),
+> -	 .flags = -1,
+> +	 .flags = MSG_OOB,
+>  	 .to = &sin1,
+>  	 .tolen = sizeof(sin1),
+> -	 .retval = 0,
+> -	 .experrno = EPIPE,
+> -	 .setup = setup4,
+> +	 .retval = -1,
+> +	 .experrno = EOPNOTSUPP,
+> +	 .setup = setup1,
+>  	 .cleanup = cleanup1,
+>  	 .desc = "invalid flags set"}
+>  };
+> @@ -430,13 +429,3 @@ static void setup3(void)
+>  	if (s < 0)
+>  		tst_brkm(TBROK | TERRNO, cleanup, "socket setup failed");
+>  }
+> -
+> -static void setup4(void)
+> -{
+> -	setup1();
+> -
+> -	if (tst_kvercmp(3, 6, 0) >= 0) {
+> -		tdat[testno].retval = -1;
+> -		tdat[testno].experrno = ENOTSUP;
+> -	}
+> -}
+> 
 
-I will look at the v2 patch tomorrow.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
