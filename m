@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vnrmn-0004mL-Sh
-	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 15:21:17 +0000
-Date: Tue, 3 Dec 2013 16:20:41 +0100
-From: chrubis@suse.cz
-Message-ID: <20131203152041.GB28700@rei>
-References: <1385130616-1415-1-git-send-email-alexey.kodanev@oracle.com>
-	<20131203135829.GA28700@rei> <529DF2D7.80909@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1VnPqO-0003K5-A9
+	for ltp-list@lists.sourceforge.net; Mon, 02 Dec 2013 09:31:08 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VnPqM-0007HT-JZ
+	for ltp-list@lists.sourceforge.net; Mon, 02 Dec 2013 09:31:07 +0000
+Message-ID: <529C5356.8000404@imgtec.com>
+Date: Mon, 2 Dec 2013 09:31:02 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <529DF2D7.80909@oracle.com>
-Subject: Re: [LTP] [PATCH] device-drivers: uaccess: test access to
- user-space memory
+References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
+Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,84 +27,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> +static ssize_t sys_result(struct device *dev,
-> >> +	struct device_attribute *attr, char *buf)
-> >> +{
-> >> +	return scnprintf(buf, PAGE_SIZE, "%d\n", test_result);
-> >> +}
-> >> +static DEVICE_ATTR(result, S_IRUSR, sys_result, NULL);
-> >> +
-> >> +
-> >> +static ssize_t sys_tcase(struct device *dev,
-> >> +	struct device_attribute *attr,  const char *buf, size_t count)
-> >> +{
-> >> +	uintptr_t ptr = 0;
-> > The same as bellow, unsigned long would be more correct.
-> OK, is it because of sscanf?
+On 11/25/2013 10:12 AM, Markos Chandras wrote:
+> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+> also defined in sys/ptrace.h and conflicts with the definition
+> from the Linux kernel in linux/ptrace.h. We fix this by not
+> including the linux/ptrace.h header if the sys/ptrace.h header
+> defines the said struct. Fixes
+> https://github.com/linux-test-project/ltp/issues/6
+>
+> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+> ---
+> Build tested on glibc-2.17 and glibc-2.18 systems
+>
+> Changes since v1:
+> Comments: http://sourceforge.net/mailarchive/message.php?msg_id=31677254
+> - Move the AC_CHECK_TYPES from configure.ac to m4/ltp-ptrace.m4
+> - Fix typo in config.h.default
+> ---
+>   include/config.h.default                  | 3 +++
+>   m4/ltp-ptrace.m4                          | 3 +++
+>   testcases/kernel/syscalls/ptrace/ptrace.h | 4 +++-
+>   3 files changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/config.h.default b/include/config.h.default
+> index 96e25c4..7095b92 100644
+> --- a/include/config.h.default
+> +++ b/include/config.h.default
+> @@ -167,6 +167,9 @@
+>   /* Define to 1 if the system has the type `struct modify_ldt_ldt_s'. */
+>   #undef HAVE_STRUCT_MODIFY_LDT_LDT_S
+>
+> +/* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
+> +#undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
+> +
+>   /* Define to 1 if `signo' is member of `struct signalfd_siginfo'. */
+>   #undef HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
+>
+> diff --git a/m4/ltp-ptrace.m4 b/m4/ltp-ptrace.m4
+> index 63e968e..ca360bb 100644
+> --- a/m4/ltp-ptrace.m4
+> +++ b/m4/ltp-ptrace.m4
+> @@ -40,5 +40,8 @@ save_CPPFLAGS=$CPPFLAGS
+>   CPPFLAGS="$CPPFLAGS -I$srcdir/testcases/kernel/syscalls/ptrace"
+>   AC_CHECK_TYPES([struct user_regs_struct, struct pt_regs],,,[#include "ptrace.h"])
+>   AC_CHECK_DECLS([PTRACE_GETSIGINFO, PTRACE_O_TRACEVFORKDONE, PTRACE_SETOPTIONS],,,[#include "ptrace.h"])
+> +dnl glibc-2.18 defines ptrace_peeksiginfo_args in sys/ptrace.h which
+> +dnl conflicts with the one from linux kernel in linux/ptrace.h
+> +AC_CHECK_TYPES([struct ptrace_peeksiginfo_args],,,[#include <sys/ptrace.h>])
+>   CPPFLAGS=$save_CPPFLAGS
+>   ])
+> diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
+> index f0767d7..4a43f01 100644
+> --- a/testcases/kernel/syscalls/ptrace/ptrace.h
+> +++ b/testcases/kernel/syscalls/ptrace/ptrace.h
+> @@ -19,7 +19,9 @@
+>   # include <asm/ptrace.h>
+>   #endif
+>   #ifdef HAVE_LINUX_PTRACE_H
+> -# include <linux/ptrace.h>
+> +# ifndef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS
+> +#  include <linux/ptrace.h>
+> +# endif
+>   #endif
+>   #undef FU_ia64_fpreg
+>   #undef FU_pt_all_user_regs
+>
 
-Yes, the parameter types should always match the format string. And
-although in this case the uintptr_t would end up the same as unsigned
-long I would like see it fixed for clarity.
+Hello,
 
-> >> +	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
-> > Again I would normalize the return value here, i.e.
-> >
-> > 	if (res)
-> > 		return TFAIL;
-> >
-> > 	return TPASS;
-> OK
-> >> +	return res;
-> >> +}
-> >> +
-> >> +/*
-> >> + * Can read user-space using copy_from_user(), get_user().
-> >> + */
-> >> +static void tc_read_userspace(void)
-> >> +{
-> >> +	int res = set_ptr_to_sysfs(TC_READ_USER, user_str,
-> >> +		"can read user-space data from kernel");
-> >> +
-> >> +	tst_resm(res, "copy_from_user(), get_user(): data%smatch",
-> >> +		(res) ? " don't " : " ");
-> >> +}
-> >> +
-> >> +/*
-> >> + * Can write data from kernel-space to user-space
-> >> + * using copy_to_user(), put_user().
-> >> + */
-> >> +static void tc_write_userspace(void)
-> >> +{
-> >> +	char buf[str_size];
-> >> +	memset(buf, 0, str_size);
-> >> +
-> >> +	int res = set_ptr_to_sysfs(TC_WRITE_USER, buf,
-> >> +		"can write data from kernel to user-space");
-> >> +	tst_resm(res, "write data from kernel-space");
-> > And here as well.
-> if I rewrite set_ptr_to_sysfs, it will return TFAIL or TPASS.
-
-Sounds good.
-
-> Should I also rewrite this part to print only one result (TPASS/TFAIL) 
-> per test-case?
-
-Yes please.
-
-> int res = set_ptr_to_sysfs(TC_WRITE_USER, buf,
-> 	"can write data from kernel to user-space");
-> if (res) {
-> 	tst_resm(TFAIL, "failed to write data from kernel");
-> 	return;
-> }
+ping?
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+markos
+
 
 ------------------------------------------------------------------------------
 Rapidly troubleshoot problems before they affect your business. Most IT 
