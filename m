@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VnpL9-0008Pi-2u
-	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 12:44:35 +0000
-Date: Tue, 3 Dec 2013 13:44:03 +0100
+	(envelope-from <metan@suse.de>) id 1VnXPa-0004TT-7R
+	for ltp-list@lists.sourceforge.net; Mon, 02 Dec 2013 17:35:58 +0000
+Date: Mon, 2 Dec 2013 18:35:25 +0100
 From: chrubis@suse.cz
-Message-ID: <20131203124403.GA28667@rei>
-References: <1384931579-1063-1-git-send-email-xu.simon@oracle.com>
-	<52935340.2070106@oracle.com> <20131202142053.GA13074@rei.suse.cz>
-	<529D37F5.3000907@oracle.com>
+Message-ID: <20131202173525.GC15697@rei.suse.cz>
+References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
+	<529C5356.8000404@imgtec.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <529D37F5.3000907@oracle.com>
-Subject: Re: [LTP] [PATCH] Update sctp testsuite
+In-Reply-To: <529C5356.8000404@imgtec.com>
+Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +25,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> Could anyone help to review?
-> > Can we move it to the utils/ directory?
 > 
-> OK with me.
+> Hello,
 > 
-> > It's an externally developed testsuite so it shouldn't be placed
-> > randomly in the LTP tree.
-> >
-> > And what version of the testsuite is this, latest release or latest git?
-> 
-> The latest git.
 
-Wouldn't latest release suffice?
-
-We will have to synchronize the sources in the future too and bumping it
-to latest release when available is one of the reasonable strategies.
+Sorry for the delay, there was quite a number of patches lately and I'm
+getting to them as fast as I can.
 
 -- 
 Cyril Hrubis
