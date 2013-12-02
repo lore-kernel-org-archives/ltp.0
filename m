@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VoPr2-0008HM-LI
-	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 03:43:56 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VoPr0-0000Az-W9
-	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 03:43:56 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rB53hf6r031107
-	for <ltp-list@lists.sourceforge.net>; Thu, 5 Dec 2013 11:43:46 +0800
-Message-ID: <529FF665.9000004@cn.fujitsu.com>
-Date: Thu, 05 Dec 2013 11:43:33 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VnWFA-0004yX-UJ
+	for ltp-list@lists.sourceforge.net; Mon, 02 Dec 2013 16:21:08 +0000
+Date: Mon, 2 Dec 2013 17:20:22 +0100
+From: chrubis@suse.cz
+Message-ID: <20131202162022.GA13145@rei.suse.cz>
+References: <1385638872.1520.5.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/3] fcntl/fcntl29.c: add F_DUPFD_CLOEXEC test for
-	fcntl(2)
+Content-Disposition: inline
+In-Reply-To: <1385638872.1520.5.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH 1/2] fallocate/fallocate02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,162 +24,396 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-create a new case to test F_DUPFD_CLOEXEC for fcntl(2)
+Hi!
+> cleanup of fallocate(2)
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/fallocate/fallocate02.c | 278 +++++++---------------
+>  1 file changed, 92 insertions(+), 186 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+> index 37f0635..f73ba8a 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate02.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+> @@ -53,7 +53,7 @@
+>   *
+>   *	ENVIRONMENTAL NEEDS
+>   *		Test Needs to be executed on file system supporting ext4
+> - *   LTP {TMP} Needs to be set to such a folder
+> + *	LTP {TMP} Needs to be set to such a folder
+>   *
+>   *	SPECIAL PROCEDURAL REQUIREMENTS
+>   *		None
+> @@ -65,23 +65,6 @@
+>   *		test is considered passed else test fails
+>   *		Provided TEST_DEFAULT to switch b/w modes
+>   *
+> - *		Total 7 Test Cases :-
+> - *		Various error messages from the man page
+> - *
+> - *	Setup:
+> - *		Setup files on which fallocate is to be called
+> - *
+> - *	Test:
+> - *		Loop if the proper options are given.
+> - *		Execute system call
+> - *		Check return code.
+> - *		If error obtained matches with the expected error
+> - *		PASS the test, otherwise TEST FAILS
+> - *		Provided TEST_DEFAULT to switch b/w modes
+> - *
+> - *	Cleanup:
+> - *		Cleanup the temporary folder
+> - *
+>  *************************************************************************/
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/syscalls                          |   2 +
- testcases/kernel/syscalls/fcntl/fcntl29.c | 117 ++++++++++++++++++++++++++++++
- 2 files changed, 119 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fcntl/fcntl29.c
+I would clean this useless comments here even more. The only information
+that should stay here is a highlevel description of the testcase, i.e. a
+paragraph that describes that the test tests fallocate() error cases.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 717342e..cace2ca 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -251,6 +251,8 @@ fcntl27 fcntl27
- fcntl27_64 fcntl27_64
- fcntl28 fcntl28
- fcntl28_64 fcntl28_64
-+fcntl29 fcntl29
-+fcntl29_64 fcntl29_64
- 
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
-new file mode 100644
-index 0000000..095a316
---- /dev/null
-+++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
-@@ -0,0 +1,117 @@
-+/*
-+ * Copyright (c) 2013 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+/*
-+ * Description:
-+ * Verify that,
-+ *   Basic test for fcntl(2) using F_DUPFD_CLOEXEC argument.
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <pwd.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+char *TCID = "fcntl29";
-+
-+#if defined(F_DUPFD_CLOEXEC)
-+static void setup(void);
-+static void cleanup(void);
-+
-+static int test_fd;
-+static int dup_fd;
-+
-+int TST_TOTAL = 1;
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	char *msg;
-+	int i;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			TEST(fcntl(test_fd, F_DUPFD_CLOEXEC, dup_fd));
-+			if (TEST_RETURN < 0) {
-+				tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
-+					 "test F_DUPFD_CLOEXEC failed");
-+			}
-+
-+			TEST(fcntl(TEST_RETURN, F_GETFD));
-+			if (TEST_RETURN < 0) {
-+				tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
-+					 "test F_GETFD failed");
-+			}
-+
-+			if (TEST_RETURN & FD_CLOEXEC) {
-+				tst_resm(TPASS, "fcntl test "
-+					 "F_DUPFD_CLOEXEC success");
-+			} else {
-+				tst_resm(TFAIL, "fcntl test "
-+					 "F_DUPFD_CLOEXEC fail");
-+			}
-+
-+			SAFE_CLOSE(cleanup, dup_fd);
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	tst_tmpdir();
-+
-+	TEST_PAUSE;
-+
-+	test_fd = SAFE_CREAT(cleanup, "testfile", 0644);
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	tst_rmdir();
-+}
-+#else
-+
-+int main(int ac, char **av)
-+{
-+	tst_brkm(TCONF, NULL, "This test can only run on kernels"
-+		 "that are 2.6.24 and higher");
-+}
-+#endif
+>  #include <stdio.h>
+> @@ -97,223 +80,146 @@
+>  #include "test.h"
+>  #include "usctest.h"
+>  #include "linux_syscall_numbers.h"
+> +#include "safe_macros.h"
+>  
+> -#define BLOCKS_WRITTEN 12
+> +#define BLOCKS_WRITTEN		12
+>  
+>  #ifdef TEST_DEFAULT
+> -#define DEFAULT_TEST_MODE 0	//DEFAULT MODE
+> +#define DEFAULT_TEST_MODE	0
+>  #else
+> -#define DEFAULT_TEST_MODE 1	//FALLOC_FL_KEEP_SIZE MODE
+> +#define DEFAULT_TEST_MODE	1
+>  #endif
+>  
+> -#define OFFSET 12
+> +#define OFFSET			12
+>  
+> -static inline long fallocate();
+> -void populate_file();
+> -void create_fifo();
+> -void create_pipe();
+> -void get_blocksize(int fd);
+> +static void setup(void);
+> +static void cleanup(void);
+> +static inline long fallocate(int, int, loff_t, loff_t);
+>  
+> -char *TCID = "fallocate02";
+> -char fnamew[255];
+> -char fnamer[255];
+> -int fdw;
+> -int fdr;
+> -enum { RFILE, WFILE, PIPE, FIFO };
+> -struct test_data_t {
+> -	int file;
+> +static char fnamew[255];
+> +static char fnamer[255];
+> +static int fdw;
+> +static int fdr;
+> +static int block_size;
+> +
+> +static struct test_data_t {
+> +	int *fd;
+> +	char *fname;
+>  	int mode;
+>  	loff_t offset;
+>  	loff_t len;
+>  	int error;
+>  } test_data[] = {
+> -	{
+> -	RFILE, DEFAULT_TEST_MODE, 0, 1, EBADF}, {
+> -	WFILE, DEFAULT_TEST_MODE, -1, 1, EINVAL}, {
+> -	WFILE, DEFAULT_TEST_MODE, 1, -1, EINVAL}, {
+> -	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL}, {
+> -	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL}, {
+> -	WFILE, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN + OFFSET), 1, EINVAL}, {
+> -	WFILE, DEFAULT_TEST_MODE, BLOCKS_WRITTEN - OFFSET, 1, 0}
+> +	{&fdr, fnamer, DEFAULT_TEST_MODE, 0, 1, EBADF},
+> +	{&fdw, fnamew, DEFAULT_TEST_MODE, -1, 1, EINVAL},
+> +	{&fdw, fnamew, DEFAULT_TEST_MODE, 1, -1, EINVAL},
+> +	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL},
+> +	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
+> +	{&fdw, fnamew, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN+OFFSET), 1, EINVAL},
+> +	{&fdw, fnamew, DEFAULT_TEST_MODE, BLOCKS_WRITTEN-OFFSET, 1, 0},
+>  };
+>  
+> +char *TCID = "fallocate02";
+> +int TST_TOTAL = ARRAY_SIZE(test_data);
+>  
+> -int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
+> -int block_size;
+> -int buf_size;
+> -
+> -/******************************************************************************
+> - * Performs all one time clean up for this test on successful
+> - * completion,  premature exit or  failure. Closes all temporary
+> - * files, removes all temporary directories exits the test with
+> - * appropriate return code by calling tst_exit() function.
+> -******************************************************************************/
+> -extern void cleanup()
+> +int main(int ac, char **av)
+>  {
+> -	/* Close all open file descriptors. */
+> -	if (close(fdw) == -1)
+> -		tst_resm(TWARN | TERRNO, "close(%s) failed", fnamew);
+> +	int lc;
+> +	int i;
+> +	char *msg;
+>  
+> -	if (close(fdr) == -1)
+> -		tst_resm(TWARN | TERRNO, "close(%s) failed", fnamer);
+> +	msg = parse_opts(ac, av, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>  
+> -	tst_rmdir();
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +
+> +		tst_count = 0;
+>  
+> +		for (i = 0; i < TST_TOTAL; i++) {
+> +
+> +			TEST(fallocate(*test_data[i].fd, test_data[i].mode,
+> +				       test_data[i].offset * block_size,
+> +				       test_data[i].len * block_size));
+> +			if (TEST_ERRNO != test_data[i].error) {
+> +				if (TEST_ERRNO == EOPNOTSUPP ||
+> +				    TEST_ERRNO == ENOSYS) {
+> +					tst_brkm(TCONF, cleanup,
+> +						 "fallocate system call is not "
+> +						 "implemented");
+> +				}
+> +				tst_resm(TFAIL | TTERRNO,
+> +					 "fallocate(%s:%d, %d, %" PRId64 ", %"
+> +					 PRId64 ") failed, expected errno:%d",
+> +					 test_data[i].fname, *test_data[i].fd,
+> +					 test_data[i].mode,
+> +					 test_data[i].offset * block_size,
+> +					 test_data[i].len * block_size,
+> +					 test_data[i].error);
+> +			} else {
+> +				tst_resm(TPASS,
+> +					 "fallocate(%s:%d, %d, %" PRId64 ", %"
+> +					 PRId64 ") returned %d",
+> +					 test_data[i].fname, *test_data[i].fd,
+> +					 test_data[i].mode,
+> +					 test_data[i].offset * block_size,
+> +					 test_data[i].len * block_size,
+> +					 TEST_ERRNO);
+> +			}
+> +		}
+> +	}
+> +
+> +	cleanup();
+> +
+> +	tst_exit();
+>  }
+>  
+> -/*****************************************************************************
+> - * Performs all one time setup for this test. This function is
+> - * used to create temporary dirs and temporary files
+> - * that may be used in the course of this test
+> - ******************************************************************************/
+> -void setup()
+> +static void setup(void)
+>  {
+> +	struct stat file_stat;
+>  
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  
+>  	TEST_PAUSE;
+>  
+>  	tst_tmpdir();
+>  
+>  	sprintf(fnamer, "tfile_read_%d", getpid());
+> +
+>  	sprintf(fnamew, "tfile_write_%d", getpid());
+
+You don't have to generate unique filenames using the program pid, the
+test directory created by tst_tmpdir() is allready unique and used only
+by the running testcase.
+
+> -	fdr = open(fnamer, O_RDONLY | O_CREAT, S_IRUSR);
+> -	if (fdr == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "open(%s, O_RDONLY|O_CREAT, S_IRUSR) failed", fnamer);
+> -	fdw = open(fnamew, O_RDWR | O_CREAT, S_IRWXU);
+> -	if (fdw == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "open(%s, O_RDWR|O_CREAT, S_IRWXU) failed", fnamew);
+> -	get_blocksize(fdr);
+> -	populate_file();
+> -}
+> +	fdr = SAFE_OPEN(cleanup, fnamer, O_RDONLY | O_CREAT, S_IRUSR);
+>  
+> -/*****************************************************************************
+> - * Gets the block size for the file system
+> - ******************************************************************************/
+> -void get_blocksize(int fd)
+> -{
+> -	struct stat file_stat;
+> +	fdw = SAFE_OPEN(cleanup, fnamew, O_RDWR | O_CREAT, S_IRWXU);
+>  
+> -	if (fstat(fd, &file_stat) < 0)
+> -		tst_resm(TFAIL | TERRNO,
+> +	if (fstat(fdr, &file_stat) < 0) {
+> +		tst_brkm(TFAIL | TERRNO, cleanup,
+>  			 "fstat failed while getting block_size");
+> +	}
+>  
+
+Looks like we need SAFE_FSTAT() too. Can you create the patch, or should
+I add it to the library?
+
+>  	block_size = (int)file_stat.st_blksize;
+> -	buf_size = block_size;
+> -}
+> -
+> -/*****************************************************************************
+> - * Writes data into the file
+> - ******************************************************************************/
+> -void populate_file()
+> -{
+> -	char buf[buf_size + 1];
+> -	int index;
+> -	int blocks;
+> -	int data;
+> -	for (blocks = 0; blocks < BLOCKS_WRITTEN; blocks++) {
+> -		for (index = 0; index < buf_size; index++)
+> -			buf[index] = 'A' + (index % 26);
+> -		buf[buf_size] = '\0';
+> -		if ((data = write(fdw, buf, buf_size)) < 0)
+> -			tst_brkm(TBROK | TERRNO, cleanup,
+> -				 "Unable to write to %s", fnamew);
+> -	}
+>  }
+>  
+> -/*****************************************************************************
+> - * Wraper function to call fallocate system call
+> - ******************************************************************************/
+>  static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+>  {
+>  #if __WORDSIZE == 32
+>  	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+> -			     __LONG_LONG_PAIR((off_t) (offset >> 32),
+> -					      (off_t) offset),
+> -			     __LONG_LONG_PAIR((off_t) (len >> 32),
+> -					      (off_t) len));
+> +				 __LONG_LONG_PAIR((off_t) (offset >> 32),
+> +						  (off_t) offset),
+> +				 __LONG_LONG_PAIR((off_t) (len >> 32),
+> +						  (off_t) len));
+>  #else
+>  	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
+>  #endif
+>  }
+
+This part of the code is repeated in each of the fallocate tests, can
+you please pull it out to a fallocate.h header (add it to the same
+directory) and include it in the testcases? (ideally in follow-up patch)
+
+> -/*****************************************************************************
+> - * Main function that calls the system call with the  appropriate parameters
+> - ******************************************************************************/
+> -/* ac: number of command line parameters */
+> -/* av: pointer to the array of the command line parameters */
+> -int main(int ac, char **av)
+> +static void cleanup(void)
+>  {
+> +	SAFE_CLOSE(NULL, fdw);
+>  
+> -	int test_index = 0;
+> -	int lc;
+> -	int fd;
+> -	char fname[255], *msg;
+> -
+> -	/***************************************************************
+> -	     * parse standard options
+> -     	***************************************************************/
+> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+> -		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> -
+> -	/* perform global test setup, call setup() function. */
+> -	setup();
+> +	SAFE_CLOSE(NULL, fdr);
+>  
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -		for (test_index = 0; test_index < TST_TOTAL; test_index++) {
+> -			switch (test_data[test_index].file) {
+> -			case RFILE:
+> -				fd = fdr;
+> -				strcpy(fname, fnamer);
+> -				break;
+> -			case WFILE:
+> -				fd = fdw;
+> -				strcpy(fname, fnamew);
+> -				break;
+> -			default:
+> -				tst_brkm(TCONF, cleanup,
+> -					 "invalid test setting");
+> -				tst_exit();
+> -			}
+> -
+> -			TEST(fallocate
+> -			     (fd, test_data[test_index].mode,
+> -			      test_data[test_index].offset * block_size,
+> -			      test_data[test_index].len * block_size));
+> -			/* check return code */
+> -			if (TEST_ERRNO != test_data[test_index].error) {
+> -				if (TEST_ERRNO == EOPNOTSUPP
+> -				    || TEST_ERRNO == ENOSYS) {
+> -					tst_brkm(TCONF, cleanup,
+> -						 "fallocate system call is not implemented");
+> -				}
+> -				TEST_ERROR_LOG(TEST_ERRNO);
+> -				tst_resm(TFAIL | TTERRNO,
+> -					 "fallocate(%s:%d, %d, %" PRId64 ", %"
+> -					 PRId64 ") failed, expected errno:%d",
+> -					 fname, fd, test_data[test_index].mode,
+> -					 test_data[test_index].offset *
+> -					 block_size,
+> -					 test_data[test_index].len * block_size,
+> -					 test_data[test_index].error);
+> -			} else {
+> -				/* No Verification test, yet... */
+> -				tst_resm(TPASS,
+> -					 "fallocate(%s:%d, %d, %" PRId64 ", %"
+> -					 PRId64 ") returned %d", fname, fd,
+> -					 test_data[test_index].mode,
+> -					 test_data[test_index].offset *
+> -					 block_size,
+> -					 test_data[test_index].len * block_size,
+> -					 TEST_ERRNO);
+> -			}
+> -		}
+> -	}
+> -	cleanup();
+> -	tst_exit();
+> +	tst_rmdir();
+>  }
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
