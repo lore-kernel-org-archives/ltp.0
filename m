@@ -1,18 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VtDUS-00046h-LR
-	for ltp-list@lists.sourceforge.net; Wed, 18 Dec 2013 09:32:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VtDUQ-0006r6-9J
-	for ltp-list@lists.sourceforge.net; Wed, 18 Dec 2013 09:32:28 +0000
-Message-ID: <1387359135.1664.39.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 18 Dec 2013 17:32:15 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v5 2/2] clone/clone08.c: add new tests
+	(envelope-from <jjaburek@redhat.com>) id 1Vnn23-0007SM-PS
+	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 10:16:43 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vnn23-0001pX-2s
+	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 10:16:43 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rB3AGacM015833
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 05:16:36 -0500
+Received: from robin.brq.redhat.com (ovpn-112-58.ams2.redhat.com
+	[10.36.112.58])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id rB3AGTDP026430
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 05:16:35 -0500
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Tue,  3 Dec 2013 11:16:15 +0100
+Message-Id: <1386065776-1961-5-git-send-email-jjaburek@redhat.com>
+In-Reply-To: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
+References: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
+Subject: [LTP] [PATCH 4/5] ssh: try to prevent invalid PASS when remote cmd
+	fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,394 +34,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Add new tests for clone(2):
-CLONE_PARENT
-CLONE_CHILD_SETTID
-CLONE_PARENT_SETTID
-CLONE_STOPPED
-CLONE_THREAD
+This change does not guarantee elimination of false PASS results,
+but it makes them somewhat less likely to occur by matching sshd-like
+Permission denied line. The regexp doesn't use ^ or $ or any kind of
+more precise matching due to numerous problems with `expect' handling
+the more complicated regexp strings across versions.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
 ---
- runtest/ltplite                           |   1 +
- runtest/stress.part3                      |   1 +
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/.gitignore      |   1 +
- testcases/kernel/syscalls/clone/clone08.c | 307 ++++++++++++++++++++++++++++++
- 5 files changed, 311 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clone/clone08.c
+ testcases/network/tcp_cmds/ssh/ssh01_s1 | 6 +++---
+ testcases/network/tcp_cmds/ssh/ssh02_s1 | 6 +++---
+ testcases/network/tcp_cmds/ssh/ssh03_s1 | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 2382dec..fe6cb04 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -127,6 +127,7 @@ clone04 clone04
- clone05 clone05
- clone06 clone06
- clone07 clone07
-+clone08 clone08
+diff --git a/testcases/network/tcp_cmds/ssh/ssh01_s1 b/testcases/network/tcp_cmds/ssh/ssh01_s1
+index e64bbf0..c1cc127 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh01_s1
++++ b/testcases/network/tcp_cmds/ssh/ssh01_s1
+@@ -50,10 +50,10 @@ while 1 {
  
- close01 close01
- close02 close02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 16247e9..16b08a7 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -68,6 +68,7 @@ clone04 clone04
- clone05 clone05
- clone06 clone06
- clone07 clone07
-+clone08 clone08
+         "Are you sure you want to continue connecting (yes/no)?" { exp_send "yes\r"}
+         "assword:" {exp_send "$PASSWD\r"}
+-        "Permission denied" {
++        -re "Permission denied (.*)\." {
+             send_user "SSH would not allow $RUSER to login with invalid password, Test Passed \n"
+             send_user "\nTEST_PASSED\n"
+-            break
++            exit 0
+         }
+         "$RUSER" {
+             send_user "SSH allowed $RUSER to login with invalid pass, Test Failed \n"
+@@ -63,4 +63,4 @@ while 1 {
+     sleep 1
+ }
  
- close01 close01
- close02 close02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 12bae10..14bcd88 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -85,6 +85,7 @@ clone04 clone04
- clone05 clone05
- clone06 clone06
- clone07 clone07
-+clone08 clone08
+-exit 0
++exit 1
+diff --git a/testcases/network/tcp_cmds/ssh/ssh02_s1 b/testcases/network/tcp_cmds/ssh/ssh02_s1
+index 724ef97..d49e1e9 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh02_s1
++++ b/testcases/network/tcp_cmds/ssh/ssh02_s1
+@@ -51,10 +51,10 @@ while 1 {
  
- close01 close01
- close02 close02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 218ec0c..8c19551 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -65,6 +65,7 @@
- /clone/clone05
- /clone/clone06
- /clone/clone07
-+/clone/clone08
- /close/close01
- /close/close02
- /close/close08
-diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
-new file mode 100644
-index 0000000..ec559a3
---- /dev/null
-+++ b/testcases/kernel/syscalls/clone/clone08.c
-@@ -0,0 +1,307 @@
-+/*
-+ * Copyright (c) 2013 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program.
-+ */
-+
-+#include <errno.h>
-+#include <linux/sched.h>
-+#include <sched.h>
-+#include <sys/wait.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "clone_platform.h"
-+#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
-+
-+static pid_t ptid, ctid, tgid;
-+static void *child_stack;
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void test_clone_parent(int t);
-+static int child_clone_parent(void);
-+static pid_t parent_ppid;
-+
-+static void test_clone_tid(int t);
-+static int child_clone_child_settid(void);
-+static int child_clone_parent_settid(void);
-+
-+#ifdef CLONE_STOPPED
-+static void test_clone_stopped(int t);
-+static int child_clone_stopped(void);
-+static int stopped_flag;
-+#endif
-+
-+static void test_clone_thread(int t);
-+static int child_clone_thread(void);
-+static int tst_result;
-+
-+/*
-+ * Children cloned with CLONE_VM should avoid using any functions that
-+ * might require dl_runtime_resolve, because they share thread-local
-+ * storage with parent. If both try to resolve symbols at same time you
-+ * can crash, likely at _dl_x86_64_restore_sse().
-+ * See this thread for relevant discussion:
-+ * http://www.mail-archive.com/utrace-devel@redhat.com/msg01944.html
-+ */
-+static struct test_case {
-+	char *name;
-+	int flags;
-+	void (*testfunc)(int);
-+	int (*do_child)();
-+} test_cases[] = {
-+	{"CLONE_PARENT", CLONE_PARENT | SIGCHLD,
-+	 test_clone_parent, child_clone_parent},
-+	{"CLONE_CHILD_SETTID", CLONE_CHILD_SETTID | SIGCHLD,
-+	 test_clone_tid, child_clone_child_settid},
-+	{"CLONE_PARENT_SETTID", CLONE_PARENT_SETTID | CLONE_VM | SIGCHLD,
-+	 test_clone_tid, child_clone_parent_settid},
-+#ifdef CLONE_STOPPED
-+	{"CLONE_STOPPED", CLONE_STOPPED | CLONE_VM | SIGCHLD,
-+	 test_clone_stopped, child_clone_stopped},
-+#endif
-+	{"CLONE_THREAD", CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | SIGCHLD,
-+	 test_clone_thread, child_clone_thread},
-+};
-+
-+char *TCID = "clone08";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+
-+int main(int ac, char **av)
-+{
-+	char *msg;
-+	int i, lc;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			tst_resm(TINFO, "running %s", test_cases[i].name);
-+			test_cases[i].testfunc(i);
-+		}
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	child_stack = SAFE_MALLOC(cleanup, CHILD_STACK_SIZE);
-+}
-+
-+static void cleanup(void)
-+{
-+	free(child_stack);
-+
-+	tst_rmdir();
-+
-+	TEST_CLEANUP;
-+}
-+
-+static long clone_child(const struct test_case *t, int use_tst)
-+{
-+	TEST(ltp_clone(t->flags, t->do_child, NULL, CHILD_STACK_SIZE,
-+		child_stack, &ptid, NULL, &ctid));
-+	if (TEST_RETURN == -1) {
-+		if (use_tst) {
-+			tst_brkm(TBROK | TTERRNO, cleanup, "%s clone() failed",
-+				 t->name);
-+		} else {
-+			printf("%s clone() failed, errno: %d",
-+			       t->name, TEST_ERRNO);
-+			exit(1);
-+		}
-+	}
-+	return TEST_RETURN;
-+}
-+
-+static int wait4child(pid_t child)
-+{
-+	int status;
-+
-+	if (waitpid(child, &status, 0) == -1)
-+		tst_resm(TBROK|TERRNO, "waitpid");
-+	if (WIFEXITED(status))
-+		return WEXITSTATUS(status);
-+	else
-+		return status;
-+}
-+
-+static void test_clone_parent(int t)
-+{
-+	int status;
-+	pid_t child;
-+
-+	fflush(stdout);
-+	child = FORK_OR_VFORK();
-+	switch (child) {
-+	case 0:
-+		parent_ppid = getppid();
-+		clone_child(&test_cases[t], 0);
-+		exit(0);
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, NULL, "test_clone_parent fork");
-+	default:
-+		status = wait4child(child);
-+		if (status == 0) {
-+			/* wait for CLONE_PARENT child */
-+			status = wait4child(-1);
-+			if (status == 0) {
-+				tst_resm(TPASS, "test %s", test_cases[t].name);
-+			} else {
-+				tst_resm(TFAIL, "test %s, status: %d",
-+					 test_cases[t].name, status);
-+			}
-+		} else {
-+			tst_resm(TFAIL, "test %s, status: %d",
-+				 test_cases[t].name, status);
-+		}
-+	};
-+}
-+
-+static int child_clone_parent(void)
-+{
-+	if (parent_ppid == getppid())
-+		exit(0);
-+	printf("FAIL: getppid != parent_ppid (%d != %d)\n",
-+	       parent_ppid, getppid());
-+	exit(1);
-+}
-+
-+static void test_clone_tid(int t)
-+{
-+	int status;
-+	pid_t child;
-+
-+	child = clone_child(&test_cases[t], 1);
-+	status = wait4child(child);
-+	if (status == 0) {
-+		tst_resm(TPASS, "test %s", test_cases[t].name);
-+	} else {
-+		tst_resm(TFAIL, "test %s, status: %d",
-+			 test_cases[t].name, status);
-+	}
-+}
-+
-+static int child_clone_child_settid(void)
-+{
-+	if (ctid == ltp_syscall(__NR_getpid))
-+		ltp_syscall(__NR_exit, 0);
-+	printf("FAIL: ctid != getpid() (%d != %d)\n",
-+	       ctid, getpid());
-+	ltp_syscall(__NR_exit, 1);
-+	return 0;
-+}
-+
-+static int child_clone_parent_settid(void)
-+{
-+	if (ptid == ltp_syscall(__NR_getpid))
-+		ltp_syscall(__NR_exit, 0);
-+	printf("FAIL: ptid != getpid() (%d != %d)\n",
-+	       ptid, getpid());
-+	ltp_syscall(__NR_exit, 1);
-+	return 0;
-+}
-+
-+#ifdef CLONE_STOPPED
-+static void test_clone_stopped(int t)
-+{
-+	int i;
-+	int status;
-+	int flag;
-+	pid_t child;
-+
-+	stopped_flag = 0;
-+	child = clone_child(&test_cases[t], 1);
-+
-+	/* give the kernel scheduler chance to run the CLONE_STOPPED thread*/
-+	for (i = 0; i < 100; i++) {
-+		sched_yield();
-+		usleep(1000);
-+	}
-+
-+	flag = stopped_flag;
-+	if (kill(child, SIGCONT) != 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "kill SIGCONT failed");
-+
-+	status = wait4child(child);
-+	if (status == 0 && flag == 0) {
-+		tst_resm(TPASS, "test %s", test_cases[t].name);
-+	} else {
-+		tst_resm(TFAIL, "test %s, status: %d, flag: %d",
-+			 test_cases[t].name, status, flag);
-+	}
-+}
-+
-+static int child_clone_stopped(void)
-+{
-+	stopped_flag = 1;
-+	ltp_syscall(__NR_exit, 0);
-+	return 0;
-+}
-+#endif
-+
-+static void test_clone_thread(int t)
-+{
-+	pid_t child;
-+	int i, status;
-+
-+	fflush(stdout);
-+	child = FORK_OR_VFORK();
-+	switch (child) {
-+	case 0:
-+		tgid = ltp_syscall(__NR_getpid);
-+		tst_result = -1;
-+		clone_child(&test_cases[t], 0);
-+
-+		for (i = 0; i < 5000; i++) {
-+			sched_yield();
-+			usleep(1000);
-+			if (tst_result != -1)
-+				break;
-+		}
-+		ltp_syscall(__NR_exit, tst_result);
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, NULL, "test_clone_thread fork");
-+	default:
-+		status = wait4child(child);
-+		if (status == 0) {
-+			tst_resm(TPASS, "test %s", test_cases[t].name);
-+		} else {
-+			tst_resm(TFAIL, "test %s, status: %d",
-+				 test_cases[t].name, status);
-+		}
-+	};
-+}
-+
-+static int child_clone_thread(void)
-+{
-+	if (tgid == ltp_syscall(__NR_getpid))
-+		tst_result = TPASS;
-+	else
-+		tst_result = TFAIL;
-+	ltp_syscall(__NR_exit, 0);
-+	return 0;
-+}
+         "Are you sure you want to continue connecting (yes/no)?" { exp_send "yes\r"}
+         "assword:" {exp_send "$PASSWD\r"}
+-        "Permission denied" {
++        -re "Permission denied (.*)\." {
+             send_user "SSH would not allow $RUSER to login with invalid password, Test Passed \n"
+             send_user "\nTEST_PASSED\n"
+-            break
++            exit 0
+         }
+         "$RUSER" {
+             send_user "SSH allowed $RUSER to login with invalid pass, Test Failed \n"
+@@ -64,4 +64,4 @@ while 1 {
+     sleep 1
+ }
+ 
+-exit 0
++exit 1
+diff --git a/testcases/network/tcp_cmds/ssh/ssh03_s1 b/testcases/network/tcp_cmds/ssh/ssh03_s1
+index 9463a7f..bf6aada 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh03_s1
++++ b/testcases/network/tcp_cmds/ssh/ssh03_s1
+@@ -48,16 +48,16 @@ while 1 {
+ 
+         "Are you sure you want to continue connecting (yes/no)?" { exp_send "yes\r"}
+         "assword:" {exp_send "$PASSWD\r"}
+-        "Permission denied" {
++        -re "Permission denied (.*)\." {
+             send_user "\nSSH would not allow $RUSER to login, Test FAILED \n"
+             exit 1
+         }
+         "$RUSER" {
+             send_user "SSH allowed $RUSER to login, Test PASSED \n"
+-            break
++            exit 0
+         }
+     }
+     sleep 1
+ }
+ 
+-exit 0
++exit 1
 -- 
-1.8.2.1
-
-
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
@@ -417,7 +132,7 @@ Rapidly troubleshoot problems before they affect your business. Most IT
 organizations don't have a clear picture of how application performance 
 affects their revenue. With AppDynamics, you get 100% visibility into your 
 Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
