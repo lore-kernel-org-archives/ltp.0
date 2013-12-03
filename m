@@ -1,31 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1VtXKf-0006NB-1U
-	for ltp-list@lists.sourceforge.net; Thu, 19 Dec 2013 06:43:41 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VtXKe-000384-1o
-	for ltp-list@lists.sourceforge.net; Thu, 19 Dec 2013 06:43:40 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rBJ6hXkE031380
+	(envelope-from <jjaburek@redhat.com>) id 1VnoP1-0004K0-FW
+	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 11:44:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VnoP0-0005um-6h
+	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 11:44:31 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rB3BiOgF020601
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Dec 2013 06:43:34 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rBJ6hXrw020034
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Dec 2013 06:43:33 GMT
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rBJ6hXQL020025
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Dec 2013 06:43:33 GMT
-From: Simon Xu <xu.simon@oracle.com>
-Date: Thu, 19 Dec 2013 14:43:29 +0800
-Message-Id: <1387435409-557-1-git-send-email-xu.simon@oracle.com>
-Subject: [LTP]  [PATCH] rwho01: fix mistakes
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 06:44:24 -0500
+Received: from robin.brq.redhat.com (ovpn-112-58.ams2.redhat.com
+	[10.36.112.58])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id rB3BiL1T032363
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 06:44:22 -0500
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Tue,  3 Dec 2013 12:44:13 +0100
+Message-Id: <1386071053-2350-1-git-send-email-jjaburek@redhat.com>
+Subject: [LTP] [PATCH] cmdlib/end_testcase: don't call tst_cleanup,
+	exit on pass
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,113 +38,70 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-1) fix the way it checks whether rwhod is running
-2) fix the way it checks whether rwhod is started on remote host
-3) fix do_cleanup, and no need to call tst_cleanup() in do_cleanup()
-   because it's called in end_testcase anyways
-4) call do_cleanup() after do_test()
-5) shorten sleep time to 5 seconds as 20 seconds are not necessary
+Calling tst_cleanup explicitly causes the EXIT trap to be emptied,
+removing possible user-defined cleanup routines. It also doesn't make
+sense - tst_setup does NOT always set an EXIT trap, only when $TCtmp
+is set. And even then, the trap is correctly executed *after*
+end_testcase (with this change applied). Removing explicit tst_cleanup
+in end_testcase helps scenarios where no trap was set in tst_setup
+with the test author being responsible for trapping cleanup.
 
-Signed-off-by: Simon Xu <xu.simon@oracle.com>
+At least 18 tests already re-define entire end_testcase() exactly
+because of this inability to execute custom cleanup.
+Applying this change also makes (at least) ssh tests perform correct
+cleanup on test failure.
+
+As for the 'exit 0' change - it makes sense from the looks and name
+of the function. The following tests use end_testcase without arguments:
+
+network/tcp_cmds/arp/arp01
+network/tcp_cmds/echo/echo01
+network/tcp_cmds/finger/finger01
+network/tcp_cmds/ftp/ftp01
+network/tcp_cmds/ftp/ftp02
+network/tcp_cmds/ftp/ftp03
+network/tcp_cmds/ftp/ftp04
+network/tcp_cmds/ftp/ftp05
+network/tcp_cmds/host/host01
+network/tcp_cmds/netstat/netstat01
+network/tcp_cmds/perf_lan/perf_lan
+network/tcp_cmds/ping/ping01
+network/tcp_cmds/rcp/rcp01
+network/tcp_cmds/rdist/rdist01
+network/tcp_cmds/rsh/rsh01
+network/tcp_cmds/rwho/rwho01
+network/tcp_cmds/sendfile/sendfile01
+network/tcp_cmds/tcpdump/tcpdump01
+
+and all except one use it only as the last line in the test.
+
+The one exception is network/tcp_cmds/perf_lan/perf_lan, which uses
+end_testcase in a trapped handler as well, but - again - as a last cmd.
+The 'exit 0' change would actually improve the test, since it's
+apparently meant to end when interrupt_testcase is called.
+
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
 ---
- testcases/network/tcp_cmds/rwho/rwho01 | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+ testcases/lib/cmdlib.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
-index eb31642..5f507ea 100755
---- a/testcases/network/tcp_cmds/rwho/rwho01
-+++ b/testcases/network/tcp_cmds/rwho/rwho01
-@@ -48,14 +48,14 @@
- #
- #-----------------------------------------------------------------------
- 
-+LHOST_PID=""
-+RHOST_PID=""
-+
- do_setup()
+diff --git a/testcases/lib/cmdlib.sh b/testcases/lib/cmdlib.sh
+index d6f43d2..f5f1cb1 100644
+--- a/testcases/lib/cmdlib.sh
++++ b/testcases/lib/cmdlib.sh
+@@ -86,9 +86,9 @@ tst_setup()
+ #=============================================================================
+ end_testcase()
  {
--
-     TCtmp=${TCtmp:-$LTPROOT/testcases/bin/$TC${EXEC_SUFFIX}$$}
- 
--    PID=0
--    RHOST_PID=0
--    SLEEPTIME=${SLEEPTIME:-20}
-+    SLEEPTIME=${SLEEPTIME:-5}
-     NUMLOOPS=${NUMLOOPS:-25}
-     OUTFILE=${OUTFILE:-$TCtmp/${TC}.out}
- 
-@@ -68,21 +68,18 @@ do_setup()
- 
-     trap do_cleanup EXIT
- 
--    if ! ps -ef | awk '/rwhod/ && $0 !~ /awk/'; then
-+    if ! pgrep -x rwhod > /dev/null; then
-         tst_resm TINFO "Starting rwhod on $LHOST"
-         rwhod || end_testcase "Unable to start rwhod on $LHOST"
--        PID=1
-+        LHOST_PID=$(pgrep -x rwhod)
-         sleep $SLEEPTIME
-     fi
- 
--    if ! rsh -n -l root $RHOST ps -ef | awk '/rwhod/ && $0 !~ /awk/'; then
-+    if [ "$(rsh -n -l root $RHOST pgrep -x rwhod)" == "" ]; then
-         tst_resm TINFO "Starting rwhod on $RHOST"
--        if ! rsh -n -l root $RHOST /usr/sbin/rwhod; then
--            end_testcase "Unable to start rwhod on $RHOST"
--        fi
--        RHOST_PID=$(rsh -n -l root $RHOST ps -ef | awk '/rwhod/ && $0 !~ /awk/ {print $2 ; exit}')
-+        rsh -n -l root $RHOST /usr/sbin/rwhod
-+        RHOST_PID=$(rsh -n -l root $RHOST pgrep -x rwhod)
-         if [ -z "$RHOST_PID" ]; then
--            RHOST_PID=0
-             end_testcase "Unable to start rwhod on $RHOST"
-         fi
-         sleep $SLEEPTIME
-@@ -92,7 +89,6 @@ do_setup()
-     if [ -z "$RHOSTNAME" ]; then
-         end_testcase "Unable to determine RHOSTNAME"
-     fi
--
- }
- 
- #-----------------------------------------------------------------------
-@@ -103,7 +99,6 @@ do_setup()
- 
- do_test()
- {
--
-     while [ $TST_COUNT -le $NUMLOOPS ]; do
-         rwho -a > $OUTFILE
-         HOST=`grep $LHOST $OUTFILE | sed 's/[^ ]* *//; s/:.*//' | uniq`
-@@ -130,18 +125,15 @@ do_test()
- 
- do_cleanup()
- {
--    if [ $PID -ne 0 ]; then
-+    if [ -n "$LHOST_PID" ]; then
-         tst_resm TINFO "Stopping rwhod on $LHOST"
-         killall rwhod
-     fi
- 
--    if [ $RHOST_PID -ne 0 ]; then
-+    if [ -n "$RHOST_PID" ]; then
-         tst_resm TINFO "Stopping rwhod on $RHOST"
-         rsh -n -l root $RHOST "killall rwhod"
-     fi
--
 -    tst_cleanup
--
- }
- 
- #-----------------------------------------------------------------------
-@@ -154,4 +146,5 @@ do_cleanup()
- read_opts $*
- do_setup
- do_test
-+do_cleanup
- end_testcase
+     if [ $# -eq 0 ]; then
+         tst_resm TPASS "Test successful"
++        exit 0
+     else
+         tst_resm TFAIL "Test broken: $*"
+         exit 1
 -- 
-1.8.4.2
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
@@ -155,7 +109,7 @@ Rapidly troubleshoot problems before they affect your business. Most IT
 organizations don't have a clear picture of how application performance 
 affects their revenue. With AppDynamics, you get 100% visibility into your 
 Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
