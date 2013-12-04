@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vuu4A-0001pD-7s
-	for ltp-list@lists.sourceforge.net; Mon, 23 Dec 2013 01:12:18 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vuu46-0006dZ-FH
-	for ltp-list@lists.sourceforge.net; Mon, 23 Dec 2013 01:12:18 +0000
-Message-ID: <52B78DDB.8080203@cn.fujitsu.com>
-Date: Mon, 23 Dec 2013 09:11:55 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1387358991.1664.37.camel@G08JYZSD130126>
-In-Reply-To: <1387358991.1664.37.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v5 1/2] lib/cloner.c: add more args
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Vo8kP-0005Po-48
+	for ltp-list@lists.sourceforge.net; Wed, 04 Dec 2013 09:27:57 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vo8kN-00052f-PV
+	for ltp-list@lists.sourceforge.net; Wed, 04 Dec 2013 09:27:57 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rB49RmMY025423
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 09:27:49 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rB49RmHV017006
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 09:27:48 GMT
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rB49RlqA017001
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 09:27:47 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed,  4 Dec 2013 13:27:31 +0400
+Message-Id: <1386149252-26939-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v2 1/2] device-drivers: uaccess: test access to
+	user-space memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,28 +36,403 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>, Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-On 12/18/2013 05:29 PM, zenglg.jy wrote:
-> add args with ptid and ctid in ltp_clone().
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Test checks kernel API to safely access user-space memory using
+copy_to_user(), copy_from_user(), get_user(), put_user() functions.
 
-Applied, thank you.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/kernel/device-drivers/uaccess/.gitignore |    8 +
+ testcases/kernel/device-drivers/uaccess/Makefile   |   33 +++++
+ .../kernel/device-drivers/uaccess/ltp_uaccess.c    |  140 ++++++++++++++++++++
+ .../kernel/device-drivers/uaccess/ltp_uaccess.h    |   32 +++++
+ testcases/kernel/device-drivers/uaccess/uaccess.c  |  121 +++++++++++++++++
+ 5 files changed, 334 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/device-drivers/uaccess/.gitignore
+ create mode 100644 testcases/kernel/device-drivers/uaccess/Makefile
+ create mode 100644 testcases/kernel/device-drivers/uaccess/ltp_uaccess.c
+ create mode 100644 testcases/kernel/device-drivers/uaccess/ltp_uaccess.h
+ create mode 100644 testcases/kernel/device-drivers/uaccess/uaccess.c
 
-Wanlong Gao
+diff --git a/testcases/kernel/device-drivers/uaccess/.gitignore b/testcases/kernel/device-drivers/uaccess/.gitignore
+new file mode 100644
+index 0000000..cf59b68
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uaccess/.gitignore
+@@ -0,0 +1,8 @@
++/ltp_uaccess.ko
++/uaccess
++/*.mod.c
++/modules.order
++/.tmp_versions
++/.*.ko
++/.*.cmd
++/Module.symvers
+diff --git a/testcases/kernel/device-drivers/uaccess/Makefile b/testcases/kernel/device-drivers/uaccess/Makefile
+new file mode 100644
+index 0000000..b0e50e8
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uaccess/Makefile
+@@ -0,0 +1,33 @@
++# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++
++ifneq ($(KERNELRELEASE),)
++
++obj-m := ltp_uaccess.o
++
++else
++
++top_srcdir	?= ../../../..
++include $(top_srcdir)/include/mk/testcases.mk
++
++REQ_VERSION_MAJOR	:= 2
++REQ_VERSION_PATCH	:= 6
++MAKE_TARGETS		:= uaccess ltp_uaccess.ko
++
++include $(top_srcdir)/include/mk/module.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++endif
+diff --git a/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c b/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c
+new file mode 100644
+index 0000000..e628ba9
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c
+@@ -0,0 +1,140 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <asm-generic/uaccess.h>
++#include "ltp_uaccess.h"
++
++MODULE_AUTHOR("Alexey Kodanev <alexey.kodanev@oracle.com>");
++MODULE_DESCRIPTION("User-space access LTP test");
++MODULE_LICENSE("GPL");
++
++#define prk_err(fmt, ...) \
++	pr_err(DEV_NAME ": " fmt "\n", ##__VA_ARGS__)
++#define prk_info(fmt, ...) \
++	pr_info(DEV_NAME ": " fmt "\n", ##__VA_ARGS__)
++
++/*
++ * Test-case result,
++ * if test is passed, value will be set to 0
++ */
++static int test_result;
++
++static void device_release(struct device *dev)
++{
++	prk_info("device released");
++}
++
++static struct device tdev = {
++	.init_name	= DEV_NAME,
++	.release	= device_release
++};
++
++static ssize_t sys_result(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	return scnprintf(buf, PAGE_SIZE, "%d\n", test_result);
++}
++static DEVICE_ATTR(result, S_IRUSR, sys_result, NULL);
++
++
++static ssize_t sys_tcase(struct device *dev,
++	struct device_attribute *attr,  const char *buf, size_t count)
++{
++	unsigned long ptr = 0;
++	int tc = 0;
++	char *str, ch, buffer[str_size];
++
++	sscanf(buf, "%d %lu", &tc, &ptr);
++	str = (char *) ptr;
++	test_result = 0;
++
++	switch (tc) {
++	case TC_READ_USER:
++		if (copy_from_user(buffer, str, str_size))
++			prk_err("copy_from_user() failed");
++		test_result = strncmp(test_str, buffer, str_size) ? 1 : 0;
++		if (get_user(ch, str))
++			prk_err("get_user() failed");
++		test_result |= ch != test_str[0];
++	break;
++	case TC_WRITE_USER:
++		if (copy_to_user(str + 1, test_str + 1, str_size - 1)) {
++			prk_err("copy_to_user() failed");
++			test_result = 1;
++		}
++		/* write the first skipped character */
++		if (put_user(test_str[0], str)) {
++			prk_err("put_user() failed");
++			test_result |= 1;
++		}
++	break;
++	}
++
++	return count;
++}
++static DEVICE_ATTR(tcase, S_IWUSR, NULL, sys_tcase);
++
++static int uaccess_init(void)
++{
++	int err = 0;
++	prk_info("Starting module");
++
++	err = device_register(&tdev);
++	if (err) {
++		prk_err("Unable to register device");
++		goto err0;
++	}
++	prk_info("device registered");
++
++	err = device_create_file(&tdev, &dev_attr_result);
++	if (err) {
++		prk_err("Can't create sysfs file 'result'");
++		goto err1;
++	}
++
++	err = device_create_file(&tdev, &dev_attr_tcase);
++	if (err) {
++		prk_err(": Can't create sysfs file 'tc'");
++		goto err2;
++	}
++
++	return 0;
++
++err2:
++	device_remove_file(&tdev, &dev_attr_result);
++err1:
++	device_unregister(&tdev);
++err0:
++	return err;
++}
++module_init(uaccess_init)
++
++static void uaccess_exit(void)
++{
++	prk_info("Unloading module");
++
++	device_remove_file(&tdev, &dev_attr_result);
++	device_remove_file(&tdev, &dev_attr_tcase);
++	device_unregister(&tdev);
++}
++module_exit(uaccess_exit)
+diff --git a/testcases/kernel/device-drivers/uaccess/ltp_uaccess.h b/testcases/kernel/device-drivers/uaccess/ltp_uaccess.h
+new file mode 100644
+index 0000000..90141c9
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uaccess/ltp_uaccess.h
+@@ -0,0 +1,32 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#ifndef LTP_UACCESS_H
++#define LTP_UACCESS_H
++
++#define DEV_NAME "ltp_uaccess"
++
++static const char test_str[]	= "Test string";
++static const int str_size	= sizeof(test_str) + 1;
++
++enum {
++	TC_READ_USER = 0,
++	TC_WRITE_USER
++};
++
++#endif /* LTP_UACCESS_H */
+diff --git a/testcases/kernel/device-drivers/uaccess/uaccess.c b/testcases/kernel/device-drivers/uaccess/uaccess.c
+new file mode 100644
+index 0000000..e0fe7d9
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uaccess/uaccess.c
+@@ -0,0 +1,121 @@
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ * Test checks kernel API to safely access user-space memory using
++ * copy_to_user(), copy_from_user(), get_user(), put_user() functions.
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "tst_module.h"
++#include "safe_macros.h"
++#include "safe_stdio.h"
++
++#include "ltp_uaccess.h"
++
++char *TCID = DEV_NAME;
++
++static const char dev_result[]	= "/sys/devices/" DEV_NAME "/result";
++static const char dev_tcase[]	= "/sys/devices/" DEV_NAME "/tcase";
++static const char module_name[]	= DEV_NAME ".ko";
++static int module_loaded;
++
++static void cleanup(void)
++{
++	if (module_loaded)
++		tst_module_unload(NULL, module_name);
++
++	TEST_CLEANUP;
++}
++
++static int set_ptr_to_sysfs(int id, const void *ptr, const char *descr)
++{
++	int res;
++	tst_resm(TINFO, "TC %d: %s, ptr '%p'", id, descr, ptr);
++	SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d %lu", id, (unsigned long) ptr);
++	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
++	if (res)
++		return TFAIL;
++
++	return TPASS;
++}
++
++/*
++ * Read user-space memory using copy_from_user(), get_user().
++ */
++static void tc_read_userspace(void)
++{
++	int res = set_ptr_to_sysfs(TC_READ_USER, test_str,
++		"read user-space memory from kernel");
++
++	tst_resm(res, "copy_from_user(), get_user(): strings%sequal",
++		(res) ? " not " : " ");
++}
++
++/*
++ * Write from kernel-space to user-space
++ * using copy_to_user(), put_user().
++ */
++static void tc_write_userspace(void)
++{
++	char buf[str_size];
++	memset(buf, 0, str_size);
++
++	int res = set_ptr_to_sysfs(TC_WRITE_USER, buf,
++		"write from kernel-space to user-space");
++	if (res) {
++		tst_resm(TFAIL, "failed to write from kernel");
++		return;
++	}
++
++	res = strncmp(buf, test_str, str_size) ? TFAIL : TPASS;
++	tst_resm(res, "copy_to_user(), put_user(): strings%sequal",
++		(res) ? " not " : " ");
++}
++
++int main(int argc, char *argv[])
++{
++	char *msg;
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	tst_require_root(NULL);
++
++	if (tst_kvercmp(2, 6, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			"Test must be run with kernel 2.6 or newer");
++	}
++
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	tst_module_load(NULL, module_name, NULL);
++	module_loaded = 1;
++
++	tc_read_userspace();
++	tc_write_userspace();
++
++	cleanup();
++	tst_exit();
++}
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+Sponsored by Intel(R) XDK 
+Develop, test and display web and hybrid apps with a single code base.
+Download it for free now!
+http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
