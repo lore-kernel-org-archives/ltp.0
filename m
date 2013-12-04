@@ -1,30 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1Vnn22-0005M6-LU
-	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 10:16:42 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vnn21-00017i-LW
-	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 10:16:42 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rB3AGZFA022590
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1VoBNl-0002Xx-Cp
+	for ltp-list@lists.sourceforge.net; Wed, 04 Dec 2013 12:16:45 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VoBNk-0000kG-HZ
+	for ltp-list@lists.sourceforge.net; Wed, 04 Dec 2013 12:16:45 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rB4CGcFj016906
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 05:16:35 -0500
-Received: from robin.brq.redhat.com (ovpn-112-58.ams2.redhat.com
-	[10.36.112.58])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id rB3AGTDO026430
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 05:16:34 -0500
-From: Jiri Jaburek <jjaburek@redhat.com>
-Date: Tue,  3 Dec 2013 11:16:14 +0100
-Message-Id: <1386065776-1961-4-git-send-email-jjaburek@redhat.com>
-In-Reply-To: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
-References: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
-Subject: [LTP] [PATCH 3/5] ssh: properly create/remove user home dir,
-	if possible
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 12:16:38 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rB4CGbEM012068
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 12:16:37 GMT
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rB4CGb8h012051
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 12:16:37 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed,  4 Dec 2013 16:16:28 +0400
+Message-Id: <1386159388-23713-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <529D7CFE.9090104@oracle.com>
+References: <529D7CFE.9090104@oracle.com>
+Subject: [LTP] [PATCH V3 3/3] safe_touch: use utimes(2) if utimensat(2) is
+	not defined
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,242 +44,123 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-(this change is identical across ssh01, ssh02, ssh03)
+If utimensat(2) is not defined on the platform we switch
+to using utimes(2).
 
-The main motivation is that "mkdir /home/userdir" is not sufficient
-to ensure that a user can access that directory. mkdir does not account
-for security labels (ie. SELinux), umask of the calling shell and
-possibly other variables.
-This change fixes the following error, which can be triggered in some
-RHEL configurations using SELinux MLS policy:
-
-  Could not chdir to home directory /home/ssh_usr3: Permission denied
-  bash: /home/ssh_usr3/.bashrc: Permission denied
-
-and even though ssh01 and ssh02 tests PASS successfully, they would not
-reveal a possible TFAIL (user is able to login) due to the chdir/bash
-fails shown above - both tests would falsely PASS in a scenario where
-ssh login was successful, matching ssh-unrelated "Permission denied".
-This is not yet fixed.
-
-The mkdir of home dir was actually happening in tst_setup, a quick fix
-(workaround) - instead of this slightly more invasive rewrite - could
-therefore be as simple as doing `rm -Rf' directly on /home/$TEST_USER
-and not setting TCtmp, letting useradd -m create the homedir.
-
-The do_cleanup trap has been moved up to perform userdel in case
-something in do_setup fails.
-
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/network/tcp_cmds/ssh/ssh01 | 36 ++++++++++++++++++------------------
- testcases/network/tcp_cmds/ssh/ssh02 | 36 ++++++++++++++++++------------------
- testcases/network/tcp_cmds/ssh/ssh03 | 36 ++++++++++++++++++------------------
- 3 files changed, 54 insertions(+), 54 deletions(-)
+ include/safe_file_ops.h |    1 +
+ lib/safe_file_ops.c     |   53 +++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 52 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/tcp_cmds/ssh/ssh01 b/testcases/network/tcp_cmds/ssh/ssh01
-index f8fe4d6..6abbf0d 100755
---- a/testcases/network/tcp_cmds/ssh/ssh01
-+++ b/testcases/network/tcp_cmds/ssh/ssh01
-@@ -38,33 +38,32 @@ do_setup()
-     export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-     export TEST_USER_HOMEDIR="/home/$TEST_USER"
+diff --git a/include/safe_file_ops.h b/include/safe_file_ops.h
+index 77ad594..1815984 100644
+--- a/include/safe_file_ops.h
++++ b/include/safe_file_ops.h
+@@ -36,6 +36,7 @@
  
--    # erase user if he/she already exists, so we can have a clean env
--    TCtmp=/home/$TEST_USER
--
--    rm -Rf $TCtmp
--
--    tst_setup
--
-     exists expect ssh ssh01_s1 useradd userdel
+ #include <sys/stat.h>
  
--    userdel $TEST_USER
-+    trap do_cleanup EXIT
-+
-+    # erase user if he/she already exists, so we can have a clean env
-+    userdel -r $TEST_USER
-+    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
-     sleep 1
++#include "lapi/utime.h"
+ #include "test.h"
  
--    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-+    tst_setup
-+
-+    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER \
-+    -d "$TEST_USER_HOMEDIR"; then
-         end_testcase "Could not add test user $TEST_USER to system $RHOST."
-     fi
+ /*
+diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+index 8cfd264..f9c316d 100644
+--- a/lib/safe_file_ops.c
++++ b/lib/safe_file_ops.c
+@@ -21,11 +21,15 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
  
-     # create users home diretory (SLES 8 does not do this, even when specified
-     # in adduser)
--    USER_UID=$(id -u $TEST_USER)
--    USER_GID=$(id -g $TEST_USER)
--    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
--        end_testcase "Failed to create $TEST_USER_HOMEDIR"
-+    if [ ! -d "$TEST_USER_HOMEDIR" ]; then
-+        USER_UID=$(id -u $TEST_USER)
-+        USER_GID=$(id -g $TEST_USER)
-+        if ! mkdir -p "$TEST_USER_HOMEDIR"; then
-+            end_testcase "Failed to create $TEST_USER_HOMEDIR"
-+        fi
-+        chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
-     fi
--    chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
--
--    trap do_cleanup EXIT
--
++#include "config.h"
+ #include <stdarg.h>
+ #include <stdio.h>
++#include <sys/time.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <unistd.h>
++#include <utime.h>
+ 
+ #include "safe_file_ops.h"
+ 
+@@ -69,6 +73,22 @@ static int count_scanf_conversions(const char *fmt)
+ 	return cnt;
  }
  
- #-----------------------------------------------------------------------
-@@ -73,7 +72,8 @@ do_setup()
- 
- do_cleanup()
- {
--    userdel $TEST_USER
-+    userdel -r $TEST_USER
-+    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
-     tst_cleanup
- }
- 
-diff --git a/testcases/network/tcp_cmds/ssh/ssh02 b/testcases/network/tcp_cmds/ssh/ssh02
-index 919e20d..d63e3ea 100755
---- a/testcases/network/tcp_cmds/ssh/ssh02
-+++ b/testcases/network/tcp_cmds/ssh/ssh02
-@@ -38,33 +38,32 @@ do_setup()
-     export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-     export TEST_USER_HOMEDIR="/home/$TEST_USER"
- 
--    # erase user if he/she already exists, so we can have a clean env
--    TCtmp=/home/$TEST_USER
--
--    rm -Rf $TCtmp
--
--    tst_setup
--
-     exists expect ssh ssh02_s1 useradd userdel
- 
--    userdel $TEST_USER
-+    trap do_cleanup EXIT
++static void set_time(struct timeval *res, struct timespec *src,
++			long cur_tv_sec, long cur_tv_usec)
++{
++	switch (src->tv_nsec) {
++	case UTIME_NOW:
++	break;
++	case UTIME_OMIT:
++		res->tv_sec = cur_tv_sec;
++		res->tv_usec = cur_tv_usec;
++	break;
++	default:
++		res->tv_sec = src->tv_sec;
++		res->tv_usec = src->tv_nsec / 1000;
++	}
++}
 +
-+    # erase user if he/she already exists, so we can have a clean env
-+    userdel -r $TEST_USER
-+    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
-     sleep 1
+ void safe_file_scanf(const char *file, const int lineno,
+ 		     void (*cleanup_fn) (void),
+ 		     const char *path, const char *fmt, ...)
+@@ -186,10 +206,39 @@ void safe_touch(const char *file, const int lineno,
+ 				pathname, file, lineno);
+ 	}
  
--    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-+    tst_setup
 +
-+    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER \
-+    -d "$TEST_USER_HOMEDIR"; then
-         end_testcase "Could not add test user $TEST_USER to system $RHOST."
-     fi
- 
-     # create users home diretory (SLES 8 does not do this, even when specified
-     # in adduser)
--    USER_UID=$(id -u $TEST_USER)
--    USER_GID=$(id -g $TEST_USER)
--    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
--        end_testcase "Failed to create $TEST_USER_HOMEDIR"
-+    if [ ! -d "$TEST_USER_HOMEDIR" ]; then
-+        USER_UID=$(id -u $TEST_USER)
-+        USER_GID=$(id -g $TEST_USER)
-+        if ! mkdir -p "$TEST_USER_HOMEDIR"; then
-+            end_testcase "Failed to create $TEST_USER_HOMEDIR"
-+        fi
-+        chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
-     fi
--    chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
--
--    trap do_cleanup EXIT
--
- }
- 
- #-----------------------------------------------------------------------
-@@ -73,7 +72,8 @@ do_setup()
- 
- do_cleanup()
- {
--    userdel $TEST_USER
-+    userdel -r $TEST_USER
-+    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
-     tst_cleanup
- }
- 
-diff --git a/testcases/network/tcp_cmds/ssh/ssh03 b/testcases/network/tcp_cmds/ssh/ssh03
-index fe5919c..ee89465 100755
---- a/testcases/network/tcp_cmds/ssh/ssh03
-+++ b/testcases/network/tcp_cmds/ssh/ssh03
-@@ -38,33 +38,32 @@ do_setup()
-     export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-     export TEST_USER_HOMEDIR="/home/$TEST_USER"
- 
--    # erase user if he/she already exists, so we can have a clean env
--    TCtmp=/home/$TEST_USER
--
--    rm -Rf $TCtmp
--
--    tst_setup
--
-     exists expect ssh ssh03_s1 useradd userdel
- 
--    userdel $TEST_USER
-+    trap do_cleanup EXIT
++#if HAVE_UTIMENSAT
+ 	ret = utimensat(AT_FDCWD, pathname, times, 0);
++#else
++	if (times == NULL) {
++		ret = utimes(pathname, NULL);
++	} else {
++		struct stat sb;
++		struct timeval cotimes[2];
 +
-+    # erase user if he/she already exists, so we can have a clean env
-+    userdel -r $TEST_USER
-+    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
-     sleep 1
- 
--    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-+    tst_setup
++		ret = stat(pathname, &sb);
++		if (ret == -1)
++			tst_brkm(TBROK | TERRNO, cleanup_fn,
++				"Failed to stat file '%s' at %s:%d",
++				pathname, file, lineno);
 +
-+    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER \
-+    -d "$TEST_USER_HOMEDIR"; then
-         end_testcase "Could not add test user $TEST_USER to system $RHOST."
-     fi
- 
-     # create users home diretory (SLES 8 does not do this, even when specified
-     # in adduser)
--    USER_UID=$(id -u $TEST_USER)
--    USER_GID=$(id -g $TEST_USER)
--    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
--        end_testcase "Failed to create $TEST_USER_HOMEDIR"
-+    if [ ! -d "$TEST_USER_HOMEDIR" ]; then
-+        USER_UID=$(id -u $TEST_USER)
-+        USER_GID=$(id -g $TEST_USER)
-+        if ! mkdir -p "$TEST_USER_HOMEDIR"; then
-+            end_testcase "Failed to create $TEST_USER_HOMEDIR"
-+        fi
-+        chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
-     fi
--    chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
--
--    trap do_cleanup EXIT
--
++		ret = gettimeofday(cotimes, NULL);
++		if (ret == -1)
++			tst_brkm(TBROK | TERRNO, cleanup_fn,
++				"Failed to gettimeofday() at %s:%d",
++				file, lineno);
++		cotimes[1] = cotimes[0];
++
++		set_time(cotimes, times,
++			sb.st_atime, sb.st_atim.tv_nsec / 1000);
++		set_time(cotimes + 1, times + 1,
++			sb.st_mtime, sb.st_mtim.tv_nsec / 1000);
++
++		ret = utimes(pathname, cotimes);
++	}
++#endif
+ 	if (ret == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-			"Failed to do utimensat() on file '%s' at %s:%d",
++			"Failed to update the access/modification times on file '%s' at %s:%d",
+ 			pathname, file, lineno);
  }
- 
- #-----------------------------------------------------------------------
-@@ -73,7 +72,8 @@ do_setup()
- 
- do_cleanup()
- {
--    userdel $TEST_USER
-+    userdel -r $TEST_USER
-+    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
-     tst_cleanup
- }
- 
+-
 -- 
-1.8.3.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+Sponsored by Intel(R) XDK 
+Develop, test and display web and hybrid apps with a single code base.
+Download it for free now!
+http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
