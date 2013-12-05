@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vr4Ys-000777-Nd
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:36:10 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VoXJQ-0001Tl-Og
+	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 11:41:44 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vr4Yq-0004tr-90
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:36:10 +0000
-Message-ID: <1386848136.1603.22.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 12 Dec 2013 19:35:36 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v4 2/2] clone/clone08.c: add new flags
+	id 1VoXJP-0001nZ-Lw
+	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 11:41:44 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rB5Bfgfu028705
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Dec 2013 19:41:42 +0800
+Message-ID: <52A0666F.4050401@cn.fujitsu.com>
+Date: Thu, 05 Dec 2013 19:41:35 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 2/3] fcntl/fcntl30.c: add F_SETPIPE_SZ,
+ F_GETPIPE_SZ test for fcntl(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,83 +29,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Add new case for clone(2)
-CLONE_PARENT
-CLONE_CHILD_SETTID
-CLONE_PARENT_SETTID
-CLONE_STOPPED
-CLONE_THREAD
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+create a new case to test F_SETPIPE_SZ, F_GETPIPE_SZ for fcntl(2)
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- runtest/ltplite                           |   1 +
- runtest/stress.part3                      |   1 +
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/.gitignore      |   1 +
- testcases/kernel/syscalls/clone/clone08.c | 350 ++++++++++++++++++++++++++++++
- 5 files changed, 354 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clone/clone08.c
+ runtest/syscalls                          |   2 +
+ testcases/kernel/syscalls/fcntl/fcntl30.c | 144 ++++++++++++++++++++++++++++++
+ 2 files changed, 146 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fcntl/fcntl30.c
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 2382dec..fe6cb04 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -127,6 +127,7 @@ clone04 clone04
- clone05 clone05
- clone06 clone06
- clone07 clone07
-+clone08 clone08
- 
- close01 close01
- close02 close02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 16247e9..16b08a7 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -68,6 +68,7 @@ clone04 clone04
- clone05 clone05
- clone06 clone06
- clone07 clone07
-+clone08 clone08
- 
- close01 close01
- close02 close02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 717342e..a17fec7 100644
+index cace2ca..489f318 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -85,6 +85,7 @@ clone04 clone04
- clone05 clone05
- clone06 clone06
- clone07 clone07
-+clone08 clone08
+@@ -253,6 +253,8 @@ fcntl28 fcntl28
+ fcntl28_64 fcntl28_64
+ fcntl29 fcntl29
+ fcntl29_64 fcntl29_64
++fcntl30 fcntl30
++fcntl30_64 fcntl30_64
  
- close01 close01
- close02 close02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index bbefb25..91cf0f1 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -65,6 +65,7 @@
- /clone/clone05
- /clone/clone06
- /clone/clone07
-+/clone/clone08
- /close/close01
- /close/close02
- /close/close08
-diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
 new file mode 100644
-index 0000000..19b47c8
+index 0000000..d72c31d
 --- /dev/null
-+++ b/testcases/kernel/syscalls/clone/clone08.c
-@@ -0,0 +1,350 @@
++++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
+@@ -0,0 +1,144 @@
 +/*
 + * Copyright (c) 2013 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of version 2 of the GNU General Public License as
@@ -116,74 +77,45 @@ index 0000000..19b47c8
 + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 + */
 +
++/*
++ * Description:
++ * Verify that,
++ *     Basic test for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ argument.
++ */
++
++
++#include <stdio.h>
 +#include <errno.h>
-+#include <linux/sched.h>
-+#include <sched.h>
-+#include <sys/wait.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <signal.h>
++#include <sys/types.h>
++#include <pwd.h>
++
 +#include "test.h"
 +#include "usctest.h"
-+#include "clone_platform.h"
 +#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
 +
-+#define BUFSIZE 512
++char *TCID = "fcntl30";
 +
-+static pid_t parent_ppid;
-+static pid_t ptid, ctid;
-+static pid_t tgid;
-+static void *child_stack;
-+static int tst_result;
++#if defined(F_SETPIPE_SZ) && defined(F_GETPIPE_SZ)
 +
 +static void setup(void);
 +static void cleanup(void);
 +
-+static void do_master_child_setup(void);
-+static void do_master_child(int i);
-+static void wait_child(pid_t child, int index);
++static int pipe_fds[2];
++static int test_fd;
++static int orig_pipe_size;
++static int new_pipe_size;
 +
-+static int child_clone_parent(void);
-+
-+static int child_clone_child_settid(void);
-+static int child_clone_parent_settid(void);
-+
-+static int child_clone_thread(void);
-+static int check_clone_thread_terminated(pid_t tgid);
-+static int get_threas_num(pid_t tgid);
-+
-+#ifdef CLONE_STOPPED
-+static int stopped_flag;
-+static void test_clone_stopped(int tid);
-+static int child_clone_stopped(void);
-+#endif
-+
-+static struct test_case {
-+	char *name;
-+	int flags;
-+	void (*testfunc)(int);
-+	int (*do_child)();
-+} test_cases[] = {
-+	{"CLONE_PARENT", CLONE_PARENT | SIGCHLD, NULL, child_clone_parent},
-+	{"CLONE_CHILD_SETTID", CLONE_CHILD_SETTID | CLONE_VM | SIGCHLD, NULL,
-+	 child_clone_child_settid},
-+	{"CLONE_PARENT_SETTID", CLONE_PARENT_SETTID | CLONE_VM | SIGCHLD, NULL,
-+	 child_clone_parent_settid},
-+#ifdef CLONE_STOPPED
-+	{"CLONE_STOPPED", CLONE_STOPPED | CLONE_VM | SIGCHLD,
-+	 test_clone_stopped, child_clone_stopped},
-+#endif
-+	{"CLONE_THREAD", CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | SIGCHLD,
-+	 NULL, child_clone_thread},
-+};
-+
-+char *TCID = "clone08";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
++int TST_TOTAL = 1;
 +
 +int main(int ac, char **av)
 +{
 +	int lc;
 +	char *msg;
 +	int i;
-+	pid_t child;
 +
 +	msg = parse_opts(ac, av, NULL, NULL);
 +	if (msg != NULL)
@@ -192,275 +124,96 @@ index 0000000..19b47c8
 +	setup();
 +
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
 +		tst_count = 0;
 +
 +		for (i = 0; i < TST_TOTAL; i++) {
++			TEST(fcntl(test_fd, F_SETPIPE_SZ, new_pipe_size));
++			if (TEST_RETURN < 0) {
++				tst_brkm(TFAIL | TTERRNO, cleanup,
++					 "fcntl test F_SETPIPE_SZ failed");
++			}
 +
-+			fflush(stdout);
-+
-+			child = FORK_OR_VFORK();
-+			if (child < 0) {
-+				tst_brkm(TBROK, cleanup, "Fork failed");
-+			} else if (child == 0) {
-+				do_master_child(i);
++			TEST(fcntl(test_fd, F_GETPIPE_SZ));
++			if (TEST_RETURN < 0) {
++				tst_brkm(TFAIL | TTERRNO, cleanup,
++					 "fcntl test F_GETPIPE_SZ failed");
++			}
++			tst_resm(TINFO, "orig_pipe_size: %d new_pipe_size: %d",
++				 orig_pipe_size, new_pipe_size);
++			if (TEST_RETURN >= new_pipe_size) {
++				tst_resm(TPASS, "fcntl test F_GETPIPE_SZ"
++					 "and F_SETPIPE_SZ success");
 +			} else {
-+				wait_child(child, i);
-+				/*
-+				 * for CLONE_PARENT, we need to wait twice and
-+				 * ignore CLONE_PARENT thread return status.
-+				 */
-+				if (test_cases[i].flags & CLONE_PARENT)
-+					wait_child(child, i);
++				tst_resm(TFAIL, "fcntl test F_GETPIPE_SZ"
++					 "and F_SETPIPE_SZ fail");
++			}
++
++			/* restore the original pipe size*/
++			TEST(fcntl(test_fd, F_SETPIPE_SZ, orig_pipe_size));
++			if (TEST_RETURN < 0) {
++				tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
++					 "restore orignal pipe size failed");
 +			}
 +		}
 +	}
 +
 +	cleanup();
-+
 +	tst_exit();
-+}
-+
-+static void do_master_child_setup(void)
-+{
-+	parent_ppid = getppid();
-+
-+	tgid = ltp_syscall(__NR_getpid);
-+
-+	tst_result = TFAIL;
-+
-+#ifdef CLONE_STOPPED
-+	stopped_flag = 0;
-+#endif
-+}
-+
-+static void do_master_child(int i)
-+{
-+	int status;
-+
-+	do_master_child_setup();
-+
-+	TEST(ltp_clone(test_cases[i].flags, test_cases[i].do_child, NULL,
-+		       CHILD_STACK_SIZE, child_stack, &ptid, NULL, &ctid));
-+
-+	if (TEST_RETURN == -1)
-+		exit(TBROK);
-+
-+	if (test_cases[i].testfunc != NULL)
-+		test_cases[i].testfunc(TEST_RETURN);
-+
-+	if (test_cases[i].flags & CLONE_PARENT) {
-+		/*
-+		 * parent process will wait CLONE_PARENT thread to
-+		 * get test result.
-+		 */
-+		exit(0);
-+	} else if (test_cases[i].flags & CLONE_THREAD) {
-+		int ret;
-+
-+		ret = check_clone_thread_terminated(tgid);
-+		if (ret == 0) {
-+			fprintf(stderr,
-+				"CLONE_THREAD thread does't terminated in "
-+				"time\n");
-+			exit(TBROK);
-+		}
-+	} else {
-+		if (wait(&status) == -1) {
-+			fprintf(stderr, "%s wait failed in do_master_child\n",
-+				test_cases[i].name);
-+			exit(TBROK);
-+		}
-+	}
-+
-+	exit(tst_result);
-+}
-+
-+void show_test_result(int status, int index)
-+{
-+	int ret;
-+
-+	if (WIFEXITED(status)) {
-+		ret = WEXITSTATUS(status);
-+		if (ret == TPASS || ret == TFAIL) {
-+			tst_resm(ret, "test %s %s", test_cases[index].name,
-+				 ret ? "failed" : "success");
-+		} else {
-+			tst_brkm(TBROK, cleanup, "test %s failed",
-+				 test_cases[index].name);
-+		}
-+	} else {
-+		tst_brkm(TBROK, cleanup, "%s clone() exit abnormally",
-+			 test_cases[index].name);
-+	}
-+}
-+
-+static void wait_child(pid_t child, int index)
-+{
-+	int status;
-+	pid_t exit_pid;
-+
-+	exit_pid = wait(&status);
-+	if (exit_pid == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup, "%s wait failed",
-+			 test_cases[index].name);
-+	} else if (test_cases[index].flags & CLONE_PARENT) {
-+		if (exit_pid != child)
-+			show_test_result(status, index);
-+	} else {
-+		show_test_result(status, index);
-+	}
 +}
 +
 +static void setup(void)
 +{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
++	if ((tst_kvercmp(2, 6, 35)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels"
++			 "that are 2.6.35 and higher");
++	}
 +
-+	TEST_PAUSE;
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 +
 +	tst_tmpdir();
 +
-+	child_stack = SAFE_MALLOC(NULL, CHILD_STACK_SIZE);
++	TEST_PAUSE;
++
++	SAFE_PIPE(cleanup, pipe_fds);
++	test_fd = pipe_fds[1];
++
++	TEST(fcntl(test_fd, F_GETPIPE_SZ));
++	if (TEST_RETURN < 0) {
++		tst_brkm(TFAIL, cleanup,
++			 "fcntl get pipe size failed");
++	}
++
++	orig_pipe_size = TEST_RETURN;
++	new_pipe_size = orig_pipe_size * 2;
 +}
 +
 +static void cleanup(void)
 +{
-+	free(child_stack);
++	TEST_CLEANUP;
++
++	SAFE_CLOSE(NULL, pipe_fds[0]);
++	SAFE_CLOSE(NULL, pipe_fds[1]);
 +
 +	tst_rmdir();
-+
-+	TEST_CLEANUP;
 +}
++#else
 +
-+static int child_clone_parent(void)
++int main(int ac, char **av)
 +{
-+	if (parent_ppid == getppid())
-+		tst_result = TPASS;
-+	else
-+		tst_result = TFAIL;
-+	exit(tst_result);
-+}
-+
-+static int child_clone_child_settid(void)
-+{
-+	if (ctid == getpid())
-+		tst_result = TPASS;
-+	else
-+		tst_result = TFAIL;
-+
-+	exit(tst_result);
-+}
-+
-+static int child_clone_parent_settid(void)
-+{
-+	if (ptid == getpid())
-+		tst_result = TPASS;
-+	else
-+		tst_result = TFAIL;
-+
-+	exit(tst_result);
-+}
-+
-+#ifdef CLONE_STOPPED
-+static void test_clone_stopped(int tid)
-+{
-+	int i;
-+
-+	/* give the kernel scheduler chance to run the CLONE_STOPPED thread*/
-+	for (i = 0; i < 100; i++) {
-+		sched_yield();
-+		usleep(1000);
-+	}
-+	/*
-+	 * if stopped_flag is not changed in the above time interval,
-+	 * we think the CLONE_STOPPED thread is stopped.
-+	 */
-+	if (stopped_flag == 1)
-+		tst_result = TFAIL;
-+	else
-+		tst_result = TPASS;
-+
-+	if (kill(tid, SIGCONT) != 0) {
-+		fprintf(stderr, "kill SIGCONT failed\n");
-+		tst_result = TBROK;
-+	}
-+}
-+
-+static int child_clone_stopped(void)
-+{
-+	stopped_flag = 1;
-+	exit(tst_result);
++	tst_brkm(TCONF, NULL, "This test can only run on kernels"
++		 "that are 2.6.35 and higher");
 +}
 +#endif
-+
-+/* check whether CLONE_THREAD thread was terminated */
-+static int check_clone_thread_terminated(pid_t tgid)
-+{
-+	int i;
-+	int num;
-+
-+	for (i = 0; i < 5000; i++) {
-+		num = get_threas_num(tgid);
-+		if (num == 1)
-+			return 1;
-+		sched_yield();
-+		usleep(1000);
-+	}
-+	return 0;
-+}
-+
-+static int get_threas_num(pid_t tgid)
-+{
-+	FILE *fp;
-+	int ret;
-+	char com[BUFSIZE];
-+	int thread_nums;
-+
-+	ret = sprintf(com, "ls /proc/%d/task/ | wc -l", tgid);
-+	if (ret < 0) {
-+		fprintf(stderr, "sprintf failed\n");
-+		exit(TBROK);
-+	}
-+
-+	fp = popen(com, "r");
-+	if (!fp) {
-+		fprintf(stderr, "run:ls /proc/%d/task/ | wc -l failed\n", tgid);
-+		exit(TBROK);
-+	}
-+
-+	ret = fscanf(fp, "%d", &thread_nums);
-+	if (ret != 1) {
-+		fprintf(stderr,
-+			"could not get the numbers of threads in current "
-+			"thread group\n");
-+		exit(TBROK);
-+	}
-+	pclose(fp);
-+	return thread_nums;
-+}
-+
-+static int child_clone_thread(void)
-+{
-+	if (tgid == ltp_syscall(__NR_getpid))
-+		tst_result = TPASS;
-+	else
-+		tst_result = TFAIL;
-+
-+	ltp_syscall(__NR_exit, 0);
-+	return 0;
-+}
 -- 
-1.8.3.1
-
+1.8.2.1
 
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+Sponsored by Intel(R) XDK 
+Develop, test and display web and hybrid apps with a single code base.
+Download it for free now!
+http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
