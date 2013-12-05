@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VovVH-00084v-Uz
-	for ltp-list@lists.sourceforge.net; Fri, 06 Dec 2013 13:31:35 +0000
-Date: Fri, 6 Dec 2013 14:31:01 +0100
-From: chrubis@suse.cz
-Message-ID: <20131206133101.GA2791@rei.Home>
-References: <1385130616-1415-1-git-send-email-alexey.kodanev@oracle.com>
-	<20131203135829.GA28700@rei> <529DF2D7.80909@oracle.com>
-	<52A06A52.1070801@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VoXJO-0000Gq-1j
+	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 11:41:42 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VoXJM-0001nZ-K3
+	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 11:41:42 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rB5BfWbo028702
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Dec 2013 19:41:32 +0800
+Message-ID: <52A06664.3020904@cn.fujitsu.com>
+Date: Thu, 05 Dec 2013 19:41:24 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52A06A52.1070801@oracle.com>
-Subject: Re: [LTP] [PATCH] device-drivers: uaccess: test access to
- user-space memory
+Subject: [LTP] [PATCH 1/3] fcntl/fcntl29.c: add F_DUPFD_CLOEXEC test for
+	fcntl(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,30 +29,165 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >>> Test checks kernel API to safely access user-space memory using
-> >>> +static const char user_str[]    = "User Data";
-> >>> +static const char kern_str[]    = "Kern Data";
-> >>> +static const int str_size    = 10;
-> >> What about defining only one string and setting the size to sizeof() + 1
-> >>
-> >> static const char test_str[] = "Test string";
-> >> static const int str_size = sizeof(test_str) + 1;
-> >>
-> >> I don't like constants that needs to be updated when surrounding code
-> >> changes.
-> > Yes, it looks much better!
-> I missed it, do we need to add 1 to sizeof as it already counts null 
-> character? If not, should I send a new version to fix it?
 
-Ah my bad, we should not, I will fix that when I apply the patch.
+create a new case to test F_DUPFD_CLOEXEC for fcntl(2)
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runtest/syscalls                          |   2 +
+ testcases/kernel/syscalls/fcntl/fcntl29.c | 124 ++++++++++++++++++++++++++++++
+ 2 files changed, 126 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fcntl/fcntl29.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 717342e..cace2ca 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -251,6 +251,8 @@ fcntl27 fcntl27
+ fcntl27_64 fcntl27_64
+ fcntl28 fcntl28
+ fcntl28_64 fcntl28_64
++fcntl29 fcntl29
++fcntl29_64 fcntl29_64
+ 
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
+new file mode 100644
+index 0000000..5202086
+--- /dev/null
++++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
+@@ -0,0 +1,124 @@
++/*
++ * Copyright (c) 2013 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++/*
++ * Description:
++ * Verify that,
++ *   Basic test for fcntl(2) using F_DUPFD_CLOEXEC argument.
++ */
++
++#include <stdio.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <signal.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <pwd.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++
++char *TCID = "fcntl29";
++
++#if defined(F_DUPFD_CLOEXEC)
++static void setup(void);
++static void cleanup(void);
++
++static int test_fd;
++static int dup_fd;
++
++int TST_TOTAL = 1;
++
++int main(int ac, char **av)
++{
++	int lc;
++	char *msg;
++	int i;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++) {
++			TEST(fcntl(test_fd, F_DUPFD_CLOEXEC, dup_fd));
++			if (TEST_RETURN < 0) {
++				tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
++					 "test F_DUPFD_CLOEXEC failed");
++			}
++
++			TEST(fcntl(TEST_RETURN, F_GETFD));
++			if (TEST_RETURN < 0) {
++				tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
++					 "test F_GETFD failed");
++			}
++
++			if (TEST_RETURN & FD_CLOEXEC) {
++				tst_resm(TPASS, "fcntl test "
++					 "F_DUPFD_CLOEXEC success");
++			} else {
++				tst_resm(TFAIL, "fcntl test "
++					 "F_DUPFD_CLOEXEC fail");
++			}
++
++			SAFE_CLOSE(cleanup, dup_fd);
++		}
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	if ((tst_kvercmp(2, 6, 24)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels"
++			 "that are 2.6.24 and higher");
++	}
++
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	tst_tmpdir();
++
++	TEST_PAUSE;
++
++	test_fd = SAFE_CREAT(cleanup, "testfile", 0644);
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++
++	SAFE_CLOSE(NULL, test_fd);
++
++	tst_rmdir();
++}
++#else
++
++int main(int ac, char **av)
++{
++	tst_brkm(TCONF, NULL, "This test can only run on kernels"
++		 "that are 2.6.24 and higher");
++}
++#endif
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
+
 
 ------------------------------------------------------------------------------
 Sponsored by Intel(R) XDK 
