@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vqla3-0006N5-6g
-	for ltp-list@lists.sourceforge.net; Wed, 11 Dec 2013 15:20:07 +0000
-Received: from relay1.suse.de (unknown [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 59AA0A7D45
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 11 Dec 2013 16:19:59 +0100 (CET)
-Date: Wed, 11 Dec 2013 16:19:28 +0100
-From: chrubis@suse.cz
-Message-ID: <20131211151928.GA30754@rei.Home>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
-Subject: [LTP] [RFC] LTP Test Writing Guidelines
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VqIJt-0000AI-J1
+	for ltp-list@lists.sourceforge.net; Tue, 10 Dec 2013 08:05:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VqIJr-0005yQ-R1
+	for ltp-list@lists.sourceforge.net; Tue, 10 Dec 2013 08:05:29 +0000
+Message-ID: <1386662708.2253.5.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 10 Dec 2013 16:05:08 +0800
+In-Reply-To: <1984791658.2366560.1386662045610.JavaMail.root@redhat.com>
+References: <1386590786.2041.6.camel@G08JYZSD130126>
+	<121189672.2070796.1386605732731.JavaMail.root@redhat.com>
+	<1984791658.2366560.1386662045610.JavaMail.root@redhat.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH v3 2/2] clone/clone08.c: Add new flags
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,531 +26,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Good news everyone!
-
-As number of contributors grows I've finally started to address our lack
-of documentation. I've written down a short introduction on how to write
-a LTP test. It's intended to cover just enough so that you can write a
-reasonable LTP testcase without any prior knowledge as well as to codify
-some of the rules we formed but were not written down till now.
-
-The text is attached as an asciidoc formatted plaintext and can be
-viewed in html form at [1].
-
-The attached text is a draft and it's likely that there are mistakes or
-important things missing. For example, as far as I know, we do not have
-a uniform coding style for shell scripts nor clear documentation for the
-shell LTP library functions, this should be ideally addressed as well.
-
-As usuall comments and patches are welcome ;).
-
-[1] http://metan.ucw.cz/outgoing/LTP_Test_Writing_Guidelines.html
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="LTP_Test_Writing_Guidelines.txt"
-
-LTP Test Writing Guidelines
-===========================
-
-This document describes LTP guidelines and LTP test interface and is intended
-for anybody who want to write or modify a LTP testcase. It's not a definitive
-guide and it's not, by any means, a substitute for common sense.
-
-
-1. General Rules
-----------------
-
-1.1 Simplicity
-~~~~~~~~~~~~~~
-
-For all it's worth keep the testcases simple or better as simple as possible.
-The kernel and libc are tricky beasts themselves and the complexity imposed by
-their interfaces is is quite high. Concentrate on the interface you want to
-test and follow the UNIX philosophy. It's a good idea to make the test as
-self-contained as possible too (it should not depend on tools or libraries that
-are not widely available).
-
-Do not reinvent the wheel
-
-* Use LTP standard interface
-* Do roll add custom PASS/FAIL reporting functions
-* Do not write Makefiles from scratch
-  use LTP build system instead, etc.
-* ...
-
-1.2 Code duplication
-~~~~~~~~~~~~~~~~~~~~
-
-Copy & paste is a good servant but very poor master. If you are about to copy a
-large part of the code from one testcase to another, think what would happen if
-you find bug in the code that has been copied all around the tree. What about
-moving it to a library instead?
-
-The same goes for short but complicated parts, whenever you are about to copy &
-paste a syscall wrapper that packs arguments accordingly to machine
-architecture or similarly complicated code, put it into a header instead.
-
-1.3 Coding style
-~~~~~~~~~~~~~~~~
-
-LTP adopted Linux kernel coding style. If you aren't familiar with its rules
-locate 'linux/Documentation/CodingStyle' in the kernel sources and read it,
-it's a well written introduction.
-
-There is also a checkpatch (see 'linux/scripts/checkpatch.pl') script that can
-be used to check your patches before the submission.
-
-NOTE: If checkpatch does not report any problems, the code still may be wrong
-      as the tool only looks for common mistakes.
-
-TODO: bash code coding style?
-
-1.4 Commenting code
-~~~~~~~~~~~~~~~~~~~
-
-Comments can sometimes save you day but they can easily do more harm than
-good. There has been several cases where comments and actual implementation
-were drifting slowly apart which yielded into API misuses and hard to find
-bugs. Remember there is only one thing worse than no documentation, wrong
-documentation.
-
-Generally everybody should write code that is obvious (which unfortunately
-isn't always possible). If there is a code that needs to be commented keep it
-short and to the point. Never ever comment the obvious.
-
-In case of LTP testcases it's customary to add a paragraph with highlevel test
-description somewhere at the beginning of the file (usually right under the GPL
-header). This helps other people to understand the overall goal of the test
-before they dive into the technical details.
-
-1.5 Backward compatibility
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-LTP test should be as backward compatible as possible. Think of an enterprise
-distributions with long term support (more than five years since the initial
-release) or of an embedded platform that needs to use several years old
-toolchain supplied by the manufacturer.
-
-Therefore LTP test for more current features should be able to cope with older
-systems. It should at least compile fine and if it's not appropriate for the
-configuration it should return 'TCONF' (see test interface description below).
-
-There are several types of checks we use:
-
-The *configure script* is usually used to detect availability of function
-declarations in system headers. It's used to disable tests at compile time.
-
-The *tst_kvercmp()* which is runtime kernel version detection and comparison
-and is used to disable tests at runtime.
-
-Checking the *errno* value is another type of runtime check. Most of the
-syscalls returns either 'EINVAL' or 'ENOSYS' when syscall was not implemented
-or was disabled upon kernel compilation.
-
-Sometimes it also makes sense to define a few macros instead of creating
-configure test. One example are Linux specific POSIX clock ids in
-'include/lapi/posix_clocks.h'.
-
-1.6 License
-~~~~~~~~~~~
-
-Code contributed to LTP should be licensed under GPLv2+ (GNU GPL version 2 or
-any later version).
-
-2. Writing a testcase
----------------------
-
-2.1 LTP Structure
-~~~~~~~~~~~~~~~~~
-
-The structure of LTP is quite simple. Each test is a binary written either in
-portable shell (no bashishm) or C. The test gets a configuration via
-environment variables and/or command line parameters, it prints additional
-information into the stdout and reports overall success/failure via the exit
-value.
-
-Tests are generally placed under the 'testcases/' directory. Everything that
-is a syscall or (slightly confusingly) glibc syscall wrapper goes under
-'testcases/kernel/syscalls/'. Then there is 'testcases/open_posix_testsuite'
-which is a well maintained fork of the upstream project that has been dead
-since 2005 and also a number of directories with tests for more specific
-features.
-
-2.1.1 Runtest Files
-^^^^^^^^^^^^^^^^^^^
-
-The list of tests to be executed is stored in runtest files under the
-'runtest/' directory. The default set of runtest files to be executed is
-stored in 'scenario_groups/default'. When you add a test you should add
-corresponding entires into some runtest files as well.
-
-For syscall tests (these placed under 'testcases/kernel/syscalls/') use
-'runtest/syscalls' file, for kernel related tests for memory management we
-have 'runtest/mm', etc.
-
-2.1.2 Datafiles
-^^^^^^^^^^^^^^^
-
-If your test needs datafiles to work, these should be generally put into a
-subdirectory named with 'TCID' (see below) and installed into the
-'testcases/data/' directory and later retrieved as
-'$LTPROOT/testcases/data/TCID/...'. See
-'testcases/network/rpc/basic_tests/rpc01/' for example.
-
-NOTE: There may be some convenience interface added later.
-
-2.1.3 Subexecutables
-^^^^^^^^^^^^^^^^^^^^
-
-If you test needs to execute a binary place it in the same directory as the
-testcase and name the file starting with 'TCID_' (again see below). Once the
-test is executed by the framework the path to the directory with all LTP
-binaries is added to the '$PATH' and you can execute it just by it's name.
-
-TIP: If you need to execute such test from the LTP tree you can add path to
-     current directory to '$PATH' manually with: 'PATH="$PATH::" ./foo01'.
-
-
-2.2 Writing a test in C
-~~~~~~~~~~~~~~~~~~~~~~~
-
-2.2.1 Basic test structure
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Let's start with an example, following code is a simple test for a getenv().
-
-[source,c]
--------------------------------------------------------------------------------
-/*
- * This is test for basic functionality of getenv().
- *
- *  - create an env variable and verify that getenv() can get get it
- *
- *  - call getenv() with nonexisting variable name, check that it returns NULL
- */
-
-#include "test.h"
-
-char *TCID = "getenv01";
-int TST_TOTAL = 1;
-
-#define TEST_ENV "LTP_TEST_ENV"
-#define TEST_NE_ENV "LTP_TEST_THIS_DOES_NOT_EXIST"
-#define TEST_ENV_VAL "val"
-
-static void setup(void)
-{
-	if (setenv(TEST_ENV, TEST_ENV_VAL, 1))
-		tst_brkm(TBROK | TERRNO, NULL, "setenv() failed");
-}
-
-static void test(void)
-{
-	char *ret;
-
-	ret = getenv(TEST_EVN);
-
-	if (ret) {
-		if (!strcmp(ret, TEST_ENV_VAL))
-			tst_resm(TPASS, "getenv(" TEST_ENV ") = '"
-			         TEST_ENV_VAL "'");
-		else
-			tst_resm(TFAIL, "getenv(" TEST_ENV "} = '%s', "
-			         "expected '" TEST_ENV_VAL "'", ret);
-	} else {
-		tst_resm(TFAIL, "getenv(" TEST_ENV ") = NULL");
-	}
-
-	ret = getenv(TEST_NE_ENV);
-
-	if (ret)
-		tst_resm(TFAIL, "getenv(" TEST_NE_ENV ") = '%s'", ret);
-	else
-		tst_resm(TPASS, "getenv(" TEST_NE_ENV ")" = NULL);
-}
-
-int main(int argc, char *argv[])
-{
-	const char *msg;
-	int lc;
-
-	if ((msg = parse_opts(argc, argv, NULL, NULL))
-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-
-	setup();
-
-	for (lc = 0; TEST_LOOPING(lc); lc++)
-		test();
-
-	tst_exit();
-}
--------------------------------------------------------------------------------
-
-Each test must define 'TCID' and 'TST_TOTAL'.
-
-'TCID' defines test name (usually syscall/libcall name + number) and is used
-as a base for temporary directory name (if 'tst_tmpdir()' is used). In most of
-the cases the 'TCID' is the same as test filename (without the extension).
-
-'TST_TOTAL' defines total number of tests.
-
-NOTE: The test should report 'TST_TOTAL' PASSES/FAILS on each iteration.
-
-The overall test initialization is usually done in a 'setup()' function and
-the overall cleanup is done in a 'cleanup()' function. Here 'cleanup()' is
-omitted as the test don't have to clean anything up. Usually it's called right
-before the 'tst_exit()' to do the cleanup and passed to library functions that
-can exit the test execution, for example 'tst_brkm()', so that the test can do
-a cleanup before it exits.
-
-WARNING: Never pass a cleanup function to functions called from cleanup.
-         If you don't see why this is a problem you are not ready to write
-	 a testcase yet.
-
-The 'parse_opts()' parses the test argument, it's important to use it even if
-the test has no (other than default) parameters.
-
-The last important thing is the 'TEST_LOOPING()' macro, each test has standard
-options so that it can be executed N times or for M seconds.
-
-NOTE: The 'test()' function must work correctly even if executed several times
-      from test main loop.
-
-
-2.2.2 Basic test interface
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-[source,c]
--------------------------------------------------------------------------------
-void tst_resm(int ttype, char *arg_fmt, ...);
--------------------------------------------------------------------------------
-
-Printf-like function to report test result, it's mostly used with ttype:
-
-|==============================
-| 'TPASS' | Test has passed.
-| 'TFAIL' | Test has failed.
-| 'TINFO' | General message.
-|==============================
-
-[source,c]
--------------------------------------------------------------------------------
-void tst_brkm(int ttype, void (*cleanup)(void), char *arg_fmt, ...);
--------------------------------------------------------------------------------
-
-Printf-like function to report error and exit the test, it can be used with ttype:
-
-|============================================================
-| 'TBROK' | Something has failed in test preparation phase.
-| 'TCONF' | test is not appropriate for current configuration
-            (syscall not implemented, unsupported arch, ...)
-| 'TFAIL' | test has failed
-|============================================================
-
-
-[source,c]
--------------------------------------------------------------------------------
-void tst_require_root(void (*cleanup)(void));
--------------------------------------------------------------------------------
-
-Abort the test if it's not executed with root privileges. If needed this should
-be one of the first checks in the test 'setup()'.
-
-WARNING: The cleanup parameter is deprecated and should always be 'NULL'.
-
-
-[source,c]
--------------------------------------------------------------------------------
-void tst_exit(void);
--------------------------------------------------------------------------------
-
-Exits the tests, note that this function has no parameters, the PASSES/FAILS
-reported by the 'tst_resm()' interfaces were stored and are used for the exit
-value.
-
-
-2.2.3 Test temporary directory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If the test needs to create files (which is common case) it must create a test
-temporary directory in LTP temp directory and work with files only inside of
-this directory. Happily there are easy to use library functions exactly for
-this purpose.
-
-[source,c]
--------------------------------------------------------------------------------
-void tst_tmpdir(void);
--------------------------------------------------------------------------------
-
-Creates a directory with a unique name (based on the test 'TCID') under the
-LTP temporary directory (defaults to '/tmp/') and changes the test working
-directory to it. It's usually called from the test 'setup()'.
-
-[source,c]
--------------------------------------------------------------------------------
-void tst_rmdir(void);
--------------------------------------------------------------------------------
-
-Removes the directory recursively and is usually called from test 'cleanup()'.
-
-It's important to close all file descriptors before the test calls
-'tst_rmdir()' otherwise the test may break on NFS mounted temp dir (look for
-"NFS silly rename").
-
-2.2.4 Safe macros
-^^^^^^^^^^^^^^^^^
-
-Safe macros aids to simplify error checking in test preparation. Instead of
-calling system API functions, checking for their return value and aborting the
-test if operation has failed you just use corresponding safe macro.
-
-Use them whenever it's possible.
-
-NOTE: You cannot use them from child processes because they call test 'tst_'
-      API.
-
-Instead of writing:
-
-[source,c]
--------------------------------------------------------------------------------
-	fd = open("/dev/null", O_RDONLY);
-	if (fd < 0)
-		tst_brkm(TBROK | TERRNO, cleanup, "opening /dev/null failed");
--------------------------------------------------------------------------------
-
-You write just:
-
-[source,c]
--------------------------------------------------------------------------------
-	fd = SAFE_OPEN(cleanup, "/dev/null", O_RDONLY);
--------------------------------------------------------------------------------
-
-They can also simplify reading and writing of sysfs files, you can, for
-example do:
-
-[source,c]
--------------------------------------------------------------------------------
-	SAFE_FILE_SCANF(cleanup, "/proc/sys/kernel/pid_max", "%lu", &pid_max);
--------------------------------------------------------------------------------
-
-See 'include/safe_macros.h', 'include/safe_stdio.h' and
-'include/safe_file_ops.h' for a complete list.
-
-Runtime kernel version detection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-[source,c]
--------------------------------------------------------------------------------
-int tst_kvercmp(int r1, int r2, int r3);
-
-struct tst_kern_exv {
-        char *dist_name;
-        char *extra_ver;
-};
-
-int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
--------------------------------------------------------------------------------
-
-These two functions are intended for runtime kernel version detection. They
-parse the output from 'uname()' and compare them with the passed values.
-
-The return value is similar to the 'strcmp()' function, i.e. zero means equal,
-negative value means that the kernel is older than than the expected value and
-positive means that it's newer.
-
-The second function 'tst_kvercmp2()' allows for specifying per-vendor table of
-kernel versions as vendors typically backport fixes to their kernels and the
-test may be relevant even if the kernel version does not suggests so. See
-'testcases/kernel/syscalls/inotify/inotify04.c' for example usage.
-
-2.2.5 Fork() and Parent-child synchronization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-As LTP tests are written for Linux most of the test involves fork()-ing and
-parent-child process synchronization. But first of all:
-
-WARNING: Usage of test interface ('tst_resm()', 'tst_brkm()', 'tst_exit()',
-         ...) from child process is forbidden.
-
-If you happen to use the interface from a child process the outcome would
-likely be disastrous. Just to name a few examples:
-
-* Imagine the 'cleanup()' is called both from the parent and child, the test
-  will likely fail in 'tst_rmdir()' because the directory was removed
-  already by the child.
-
-* The test failures reported via 'tst_resm()' are not propagated from the
-  child to the parent (how could they, it's just a static variable in the
-  test library). And the test will report success even when the test in child
-  process has reported failure.
-
-* And many more...
-
-Now to the child-parent synchronization. We have a checkpoint library code
-that works even for two different processes, all they need to is to run with
-the same working directory (they use FIFO for synchronization). The checkpoint
-interface provides two pairs or signal and wait functions. One pair to be used
-to signal child from parent and second to signal parent from child.
-
-For the details of the interface look into the 'include/tst_checkpoint.h' and
-'lib/tests/tst_checkpoint_*'.
-
-There is also an interface that allows parent to wait until child is blocked
-in kernel (for example waits in 'pause()') see 'include/tst_process_state.h'
-for more.
-
-2.2.6 Kernel Modules
-^^^^^^^^^^^^^^^^^^^^
-
-There are certain cases where the test needs a kernel part and userspace part,
-happily LTP can build a kernel module and then insert it to the kernel on test
-start for you. See 'testcases/kernel/device-drivers/block' for details.
-
-
-3. Test Contribution Checklist
-------------------------------
-
-1. Test compiles and runs fine (check with -i 10 too)
-2. Checkpatch does not report any errors
-3. The runtest entires are in place
-4. Test files are added into corresponding .gitignore files
-5. Patches apply over the latest git
-
---DocE+STaALJfprDB
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
+
+On Tue, 2013-12-10 at 02:54 -0500, Jan Stancek wrote:
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Jan Stancek" <jstancek@redhat.com>
+> > To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+> > Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
+> > Sent: Monday, 9 December, 2013 5:15:32 PM
+> > Subject: Re: [LTP] [PATCH v3 2/2] clone/clone08.c: Add new flags
+> > 
+> > 
+> > 
+> > I was running v3 with only "CLONE_THREAD" testcase enabled:
+> > -       {"CLONE_PARENT", CLONE_PARENT | CLONE_VM | SIGCHLD, NULL,
+> > -        child_clone_parent},
+> > -       {"CLONE_CHILD_SETTID", CLONE_CHILD_SETTID | CLONE_VM | SIGCHLD, NULL,
+> > -        child_clone_child_settid},
+> > -       {"CLONE_PARENT_SETTID", CLONE_PARENT_SETTID | CLONE_VM | SIGCHLD,
+> > NULL,
+> > -        child_clone_parent_settid},
+> > -#ifdef CLONE_STOPPED
+> > -       {"CLONE_STOPPED", CLONE_STOPPED | CLONE_VM | SIGCHLD,
+> > -        test_clone_stopped, child_clone_stopped},
+> > -#endif
+> > 
+> > and I see it failing/crashing sometimes. I usually see one of these failures:
+> > 
+> > 1. clone08     4  TBROK  :  Failed to read from pipe at clone08.c:168:
+> > errno=EAGAIN(11): Resource temporarily unavailable
+> > 2. clone08     1  TBROK  :  The other end of the pipe was closed unexpectedly
+> > at clone08.c:168
+> > 3. clone08     4  TPASS  :  test CLONE_THREAD success
+> >    clone08     1  TBROK  :  unexpected signal 11 received (pid = 8234).
+> >    clone08     2  TBROK  :  Remaining cases broken
+> >    clone08     1  TFAIL  :  son process exits error
+> > 4. no error, but test doesn't execute as many times as specified on command
+> > line
+> > 5. clone08     1  TBROK  :  unexpected signal 4 received (pid = 28936).
+> 
+> Some of above are caused by multiple threads reusing same stack area.
+> Trouble is that with single master child you can't be sure when
+> CLONE_THREAD child finished using its stack.
+> 
+> The idea I mentioned in v2 was basically what you did, but the loop for testcases
+> would be outside master child - which means spawning master_child for each testcase.
+> 
+> I'm travelling these days, but I can have a look at idea above later this week
+> and see how viable it is.
+> 
+
+OK, thanks. I am working on it.
+
+Best regards,
+Zeng
+
+> Regards,
+> Jan
+> 
+> > 
+> > Regards,
+> > Jan
+> > 
+> > ------------------------------------------------------------------------------
+> > Sponsored by Intel(R) XDK
+> > Develop, test and display web and hybrid apps with a single code base.
+> > Download it for free now!
+> > http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+
+
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
---DocE+STaALJfprDB
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Sponsored by Intel(R) XDK 
+Develop, test and display web and hybrid apps with a single code base.
+Download it for free now!
+http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---DocE+STaALJfprDB--
-
