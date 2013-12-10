@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vq107-0008I6-Vi
-	for ltp-list@lists.sourceforge.net; Mon, 09 Dec 2013 13:35:56 +0000
-Date: Mon, 9 Dec 2013 14:35:20 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VqNoq-00051M-6g
+	for ltp-list@lists.sourceforge.net; Tue, 10 Dec 2013 13:57:48 +0000
+Date: Tue, 10 Dec 2013 14:57:10 +0100
 From: chrubis@suse.cz
-Message-ID: <20131209133520.GA22158@rei.suse.cz>
-References: <20131203124403.GA28667@rei>
-	<1386301876-598-1-git-send-email-xu.simon@oracle.com>
+Message-ID: <20131210135709.GB25334@rei>
+References: <1385534272-32414-1-git-send-email-vincent.hsu@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1386301876-598-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH] Move sctp to utils and bump it to 1.0.15
+In-Reply-To: <1385534272-32414-1-git-send-email-vincent.hsu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH V2 0/2] fixing over 80 chars
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,17 +24,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Vincent Hsu <vincent.hsu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
 Hi!
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+> I've fixed the over 80 characters lines that my patches adds,
+> but there are other lines over 80 chars in the same file.
+> eg.
+>     checkpatch.pl -f testcases/network/iproute/ip_tests.sh
+>     ....
+>     WARNING: line over 80 characters
+>     #575: FILE: network/iproute/ip_tests.sh:575:
+>     +                       ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err \
+>     total: 0 errors, 22 warnings, 611 lines checked
+> 
+> BTW, some test files combine spaces and tabs for indentation, and also have
+> over 80 chars lines.
+> eg.
+>     testcases/network/multicast/*
+>     testcases/network/nfs/*
+> 
+> Maybe you could clean up them when you have time :)
 
-Pushed, thanks.
+There is a lot of legacy and messed up code and we are fixing it as fast
+as we can...
 
-I still don't like that it installs binaries that are not clearly to be
-part of the sctp, i.e. test_1_to_1_addrs and so, but this patch is
-obvious improvement over the previous situation.
+But in order to get somewhere newly added code should be clean,
+otherwise we will never get to a clean codebase.
 
 -- 
 Cyril Hrubis
