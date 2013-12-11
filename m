@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vr4Sb-0006qI-Fq
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:29:41 +0000
-Date: Thu, 12 Dec 2013 12:29:05 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1VqkgK-0000rg-EO
+	for ltp-list@lists.sourceforge.net; Wed, 11 Dec 2013 14:22:32 +0000
+Date: Wed, 11 Dec 2013 15:21:54 +0100
 From: chrubis@suse.cz
-Message-ID: <20131212112905.GA10634@rei.Home>
-References: <0457982F240D534B8C4CD82E5311A37E1A3B7B6531@SGSINEXC014.vestas.net>
+Message-ID: <20131211142153.GA30263@rei.Home>
+References: <20131128162847.GD17903@rei.Home>
+	<201311281447.04432.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0457982F240D534B8C4CD82E5311A37E1A3B7B6531@SGSINEXC014.vestas.net>
-Subject: Re: [LTP] LTP mount,mtest05mem and times testcase related problem
+In-Reply-To: <201311281447.04432.vapier@gentoo.org>
+Subject: Re: [LTP] LTP sf.net repo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,45 +25,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Haresh Chavda <HACAD@vestas.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> We are using LTP "ltp-full-20130503" on linux kernel version 3.10.10-rt7+.
-> We found that mount, times and  mtest05mem are failing.
+> > The syncing script broke again (about two weeks ago).
+> > 
+> > If nobody will object, I will remove the repo from sourceforge replacing
+> > it with a repo with only README file that will point to github repos.
+> > 
+> > Or has anybody better idea?
 > 
-> We got following error by mount syscall,
-> mount02     4  TBROK  :  umount of mnt_8649 failed: errno=EBUSY(16): Device or resource busy
-> mount02     5  TBROK  :  Remaining cases broken
+> i guess it's got to happen at some point :)
 
-That looks like two bugs to me. One is that mount() returns unexpected error
-(unexpected by the test) and the second is that the test tries to unmount() the
-mountpoint even if it wasn't mounted.
-
-Can you try to debug this failure further, I would advice to comment out
-following lines to see which test assertion has failed.
-
-      if (umount(mntpoint) == -1)
-              tst_brkm(TBROK | TERRNO, cleanup,
-                       "umount of %s failed",
-                       Mntpoint);
-
-
-> For times syscall testcase we doesn't get status about TPASS for "times03".
-> I feel that "times03" testcase need to be modified to generate TPASS status.
-
-I've tried it myself, the test does not print anything to the stdout, which
-should be fixed. But at least the test exit value is zero, which means that the
-test passed.
-
-> For mtest05mem syscall we got following error,
-> mmstress    0  TINFO  :  test6: Test case tests the race condition between simultaneous fork -exec - exit faults in the same address space.
-> mmstress    6  TFAIL  :  TEST 6 Failed
-> We found that there are two files named "dummy" in separate folders(mtest05 and cap_bound). So when we build and install LTP, one of the binary "dummy" is replaced by other one.
-> The possible solution could be to modify the make file to generate binaries with relevant name.
-
-That one of the install collisions we have in the tree. I will fix this
-one, thanks for reporting.
+FYI I've just did so.
 
 -- 
 Cyril Hrubis
