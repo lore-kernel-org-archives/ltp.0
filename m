@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1VrBS5-0004ky-LF
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 18:57:37 +0000
-Date: Thu, 12 Dec 2013 19:57:00 +0100
+	(envelope-from <metan@suse.de>) id 1VrBqo-00061L-IS
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 19:23:10 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 4AD3CABCA
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 12 Dec 2013 19:23:03 +0000 (UTC)
+Date: Thu, 12 Dec 2013 20:22:34 +0100
 From: chrubis@suse.cz
-Message-ID: <20131212185659.GA16609@rei>
-References: <1386149252-26939-1-git-send-email-alexey.kodanev@oracle.com>
-	<1386149252-26939-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20131212192233.GA18427@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1386149252-26939-2-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 2/2] device-drivers: uaccess: enable build and run
+Subject: [LTP] vacation and release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,11 +26,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-Both pushed, thanks.
+I'm on the vacation till the end of the calendar year, I will be back on
+monday 6. 1. See you then ;).
+
+What I'm not that much happy about is that there are still patches
+waiting for review (hint: you can help with the review process too), but
+at least the lag haven't grown larger and hopefully most of you will
+have some time off around the new year too...
+
+Moreover it's about the time we do another release. I suggest that we do
+it shortly after the 6. 1. Or has anybody better idea?
+
+And it would be nice if you do some testing meanwhile (I will do more
+exhaustive testing once I return too). We may also declare some freeze
+period where only small and obvious fixes go into the git... What I
+would love to see is more proper release procedures (not too formal or
+complicated, just to do a bit of testing to have better quality
+releases).
 
 -- 
 Cyril Hrubis
