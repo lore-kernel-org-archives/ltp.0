@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VtDS9-0007X0-C9
-	for ltp-list@lists.sourceforge.net; Wed, 18 Dec 2013 09:30:05 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vr4Xd-000842-Hz
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:34:53 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VtDS7-0006ls-PN
-	for ltp-list@lists.sourceforge.net; Wed, 18 Dec 2013 09:30:05 +0000
-Message-ID: <1387358991.1664.37.camel@G08JYZSD130126>
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vr4Xa-000423-HB
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:34:53 +0000
+Message-ID: <1386848074.1603.21.camel@G08JYZSD130126>
 From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 18 Dec 2013 17:29:51 +0800
+Date: Thu, 12 Dec 2013 19:34:34 +0800
 Mime-Version: 1.0
-Subject: [LTP] [PATCH v5 1/2] lib/cloner.c: add more args
+Subject: [LTP] [PATCH v4 1/2] lib/cloner.c: add more args
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
