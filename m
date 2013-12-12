@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VsS7Z-0004UK-7R
-	for ltp-list@lists.sourceforge.net; Mon, 16 Dec 2013 06:57:41 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VsS7Y-0004Ug-Bg
-	for ltp-list@lists.sourceforge.net; Mon, 16 Dec 2013 06:57:41 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 16 Dec 2013 01:58:02 -0500
-References: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
-MIME-Version: 1.0
-Message-Id: <201312160158.02840.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed
-	architectures
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vr3U1-0007vM-UX
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 10:27:05 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vr3U0-0000Nn-0u
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 10:27:05 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBCAQtsg022498
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Dec 2013 18:26:56 +0800
+Message-ID: <1386844012.1603.17.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 12 Dec 2013 18:26:52 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 1/2] getrlimit/getrlimit01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +25,212 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6142507494234227101=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============6142507494234227101==
-Content-Type: multipart/signed; boundary="nextPart1774352.VbW7fjQgO6";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1774352.VbW7fjQgO6
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Friday 13 December 2013 07:31:02 Markos Chandras wrote:
-> Commit 6f22494d19b605ded308dc0fa713e91cb873f44a
-> "Move sctp to utils and bump it to 1.0.15"
->=20
-> introduced a build failure for the prefixed architectures.
-> We need to take into consideration the __USER_LABEL_PREFIX__
-> for architectures that define it when creating symbol aliases.
->=20
-> The following upstream patch (0600c8968cc2dea04cbf13ec739216e2939d08fe)
-> fixes the build for the Meta(metag) architecture
->=20
-> [...]
-> utils/sctp/func_tests/test_connectx.c:151: undefined reference to
-> `_sctp_connectx' utils/sctp/func_tests/test_connectx.c:163: undefined
-> reference to `_sctp_connectx' [...]
->=20
-> Build tested on x86_64 and metag.
-
-we really should fix this instead by not using any symbol renaming.  symbol=
-=20
-versions might make sense when dealing with a released project and a stable=
-=20
-shared library API, but it makes no sense in LTP.
-
-perhaps better to have a compile time knob to disable it all ?
-=2Dmike
-
---nextPart1774352.VbW7fjQgO6
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSrqR6AAoJEEFjO5/oN/WBb6IP/3MxfGNcVYSLpcDERRseCHFt
-sBAaSmOmcDCVbA6sR6QEKBMB0oiGQ/IZkoeZCASmfcYG+wCJOu1GpxtYkG7XJ7Ys
-abgiNWcQqXRM7KT77vUiEIeUNXR1BgLEQbiKd1mq5l8OrrvsNjNaj4ze1NA8wSN3
-1kMBOGvWwTOUZqfbdCi4ndcZHZg4TThPXBk1Bu/tj9pyO5WqLhDW+3mma/YeYKDK
-Wp9vK9S72DHbM0mxJbqr6PUgkwpjw9V5POQow51XaY2jPfNVbUznSXfkUN56o2kZ
-9uGm9OUm8OfxY5+jd/PpxGA9oToXBOYU/jIcSKKt/OU9z+ZxhbqYBA3/PUk3oNwA
-kFYrl04VXnAbYYk6J4ZwG51QTSe3ko1nf4IuQumkBCnQqwspJIPx9INtC32THpoV
-qhr4Yn29CHOtPkyer6izTvQClvXhhtC7mdZ6T2IFwHAi4qfC4EAj+pHADXwflnRP
-cqXCr4MgHWyA1/jHLLeTJeyl7g36JjziAd7yEoWUsYUTTSYfDzrBGhIOQWXNq2wR
-raCbMwFFIA+n7D2Gg5fAa9lCvV2bktblvusKCeGyfv8lZoiRDBlhqtoC2aklcB2n
-8g9Sb9BFTcMDcr1QtfzR6OyZmHIOgRBxCxOo4B1SfMFeb6Ye09Pea9nYENQ2xldY
-411565xprwL+rv/jo/ME
-=+Qyn
------END PGP SIGNATURE-----
-
---nextPart1774352.VbW7fjQgO6--
-
-
---===============6142507494234227101==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+
+cleanup the getrlimit01.c
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/getrlimit/getrlimit01.c | 123 +++++-----------------
+ 1 file changed, 29 insertions(+), 94 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit01.c b/testcases/kernel/syscalls/getrlimit/getrlimit01.c
+index 3fe846b..f397a19 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit01.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit01.c
+@@ -1,6 +1,7 @@
+ /*
+  *
+  *   Copyright (c) Wipro Technologies, 2002. All Rights Reserved.
++ *   Author: Suresh Babu V. <suresh.babu@wipro.com>
+  *
+  *   This program is free software;  you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -17,53 +18,9 @@
+  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+-/****************************************************************************
+- *
+- *    TEST IDENTIFIER	: getrlimit01
+- *
+- *    TEST TITLE	: test for checking functionality of getrlimit(2)
+- *  $
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST CASE TOTAL	: 11
+- *
+- *    AUTHOR		: Suresh Babu V. <suresh.babu@wipro.com>
+- *
+- *    SIGNALS
+- *      Uses SIGUSR1 to pause before test if option set.
+- *      (See the parse_opts(3) man page).
+- *
+- * DESCRIPTION
+- *      Verify that,
+- *	getrlimit(2) call will be successful for all possible resource types.
+- *
+- * Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed
+- *		Issue sys call failed to get resource limits.
+- *      Otherwise,
+- *		Issue sys call is successful and got resource limits.
+- *
+- *   Cleanup:
+- *	Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  getrlimit01 [-c n] [-e] [-i n] [-I x] [-P x] [-p] [-t] [-h]
+- *     where,  -c n  : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-p   : Pause for SIGUSR1 before starting.
+- *		-t   : Turn on syscall timing.
+- *		-h   : Display usage information.
+- *
+- ***************************************************************************/
++/*
++ *   Test for checking functionality of getrlimit(2)
++ */
+ #include <stdio.h>
+ #include <errno.h>
+ #include <sys/time.h>
+@@ -74,94 +31,72 @@
+ static void cleanup(void);
+ static void setup(void);
+ 
+-char *TCID = "getrlimit01";
+-
+ static struct rlimit rlim;
+ static struct test_t {
+ 	int res;
+ 	char *res_str;
+ } testcases[] = {
+-	{
+-	RLIMIT_CPU, "RLIMIT_CPU"}, {
+-	RLIMIT_FSIZE, "RLIMIT_FSIZE"}, {
+-	RLIMIT_DATA, "RLIMIT_DATA"}, {
+-	RLIMIT_STACK, "RLIMIT_STACK"}, {
+-	RLIMIT_CORE, "RLIMIT_CORE"}, {
+-	RLIMIT_RSS, "RLIMIT_RSS"}, {
+-	RLIMIT_NPROC, "RLIMIT_NPROC"}, {
+-	RLIMIT_NOFILE, "RLIMIT_NOFILE"}, {
+-	RLIMIT_MEMLOCK, "RLIMIT_MEMLOCK"}, {
+-	RLIMIT_AS, "RLIMIT_AS"}, {
+-	RLIMIT_LOCKS, "RLIMIT_LOCKS"}
++	{RLIMIT_CPU, "RLIMIT_CPU"},
++	{RLIMIT_FSIZE, "RLIMIT_FSIZE"},
++	{RLIMIT_DATA, "RLIMIT_DATA"},
++	{RLIMIT_STACK, "RLIMIT_STACK"},
++	{RLIMIT_CORE, "RLIMIT_CORE"},
++	{RLIMIT_RSS, "RLIMIT_RSS"},
++	{RLIMIT_NPROC, "RLIMIT_NPROC"},
++	{RLIMIT_NOFILE, "RLIMIT_NOFILE"},
++	{RLIMIT_MEMLOCK, "RLIMIT_MEMLOCK"},
++	{RLIMIT_AS, "RLIMIT_AS"},
++	{RLIMIT_LOCKS, "RLIMIT_LOCKS"},
+ };
+ 
+-int TST_TOTAL = sizeof(testcases) / sizeof(*testcases);
++char *TCID = "getrlimit01";
++int TST_TOTAL = ARRAY_SIZE(testcases);
+ 
+ int main(int ac, char **av)
+ {
+ 	int i;
+ 	int lc;
+-	char *msg;		/* parse_opts() return message */
++	char *msg;
+ 
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-		tst_exit();
+-	}
+ 
+-	/* Do initial setup */
+ 	setup();
+ 
+-	/* check for looping state if -i option is given */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
+ 		tst_count = 0;
+ 
+ 		for (i = 0; i < TST_TOTAL; ++i) {
+ 
+-			/*
+-			 * Test the system call with different resoruce types
+-			 * with codes 0 to 10
+-			 */
+ 			TEST(getrlimit(testcases[i].res, &rlim));
+ 
+ 			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL, "getrlimit() failed to get %s "
+-					 "values. errno is %d",
++				tst_resm(TFAIL,
++					 "getrlimit() test %s failed errno: %d",
+ 					 testcases[i].res_str, TEST_ERRNO);
+ 			} else {
+-				tst_resm(TPASS, "getrlimit() returned %d; "
+-					 "got %s values ",
+-					 TEST_ERRNO, testcases[i].res_str);
++				tst_resm(TPASS,
++					 "getrlimit() test %s success",
++					 testcases[i].res_str);
+ 			}
+ 		}
+ 	}
+-	/* do cleanup and exit */
++
+ 	cleanup();
+ 
+ 	tst_exit();
+ }
+ 
+-/*
+- * setup() - performs all one time setup for this test.
+- */
+-void setup()
++static void setup(void)
+ {
+-	/* capture the signals */
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+-	/* Pause if the option was specified */
+ 	TEST_PAUSE;
+ }
+ 
+-/*
+- * cleanup()  - performs all one time cleanup for this test
+- *		completion or premature exit.
+- */
+-void cleanup()
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+ }
+-- 
+1.8.2.1
+
+
+
 
 ------------------------------------------------------------------------------
 Rapidly troubleshoot problems before they affect your business. Most IT 
@@ -103,16 +238,7 @@ organizations don't have a clear picture of how application performance
 affects their revenue. With AppDynamics, you get 100% visibility into your 
 Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
 http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
---===============6142507494234227101==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6142507494234227101==--
-
