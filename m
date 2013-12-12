@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1VoRWm-0008Pj-39
-	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 05:31:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VoRWk-0004Nl-KX
-	for ltp-list@lists.sourceforge.net; Thu, 05 Dec 2013 05:31:08 +0000
-Message-ID: <52A00F3C.8040607@cn.fujitsu.com>
-Date: Thu, 05 Dec 2013 13:29:32 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vr51w-0003vM-JL
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 12:06:12 +0000
+Date: Thu, 12 Dec 2013 13:05:36 +0100
+From: chrubis@suse.cz
+Message-ID: <20131212120536.GB10634@rei.Home>
+References: <1386839686-7711-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-References: <529FF665.9000004@cn.fujitsu.com>
-	<201312050024.50466.vapier@gentoo.org>
-In-Reply-To: <201312050024.50466.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 1/3] fcntl/fcntl29.c: add F_DUPFD_CLOEXEC test for
- fcntl(2)
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1386839686-7711-1-git-send-email-markos.chandras@imgtec.com>
+Subject: Re: [LTP] [PATCH] utils: sctp: Fix build for prefixed architectures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,63 +24,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang xiaoguang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Markos Chandras <markos.chandras@imgtec.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 12/05/2013 01:24 PM, Mike Frysinger wrote:
-> On Wednesday 04 December 2013 22:43:33 Xiaoguang Wang wrote:
->> +#if defined(F_DUPFD_CLOEXEC)
->> ...
->> +#else
->> +
->> +int main(int ac, char **av)
->> +{
->> +	tst_brkm(TCONF, NULL, "This test can only run on kernels"
->> +		 "that are 2.6.24 and higher");
->> +}
->> +#endif
+Hi!
+> Commit 6f22494d19b605ded308dc0fa713e91cb873f44a
+> "Move sctp to utils and bump it to 1.0.15"
 > 
-> an ifdef test on a define provided by the C library is not a good marker to 
-> control kernel version functionality
+> introduced a build failure for the prefixed architectures.
+> We need to take into consideration the __USER_LABEL_PREFIX__
+> for architectures that define it when creating symbol aliases.
 > 
->> +			TEST(fcntl(test_fd, F_DUPFD_CLOEXEC, dup_fd));
->> +			if (TEST_RETURN < 0) {
->> +				tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
->> +					 "test F_DUPFD_CLOEXEC failed");
->> +			}
+> Fixes the build for the Meta(metag) architecture
 > 
-> what happens when you run this on an older kernel ?  should you be doing a 
-> runtime kernel version test here ?
+> [...]
+> utils/sctp/func_tests/test_connectx.c:151: undefined reference to `_sctp_connectx'
+> utils/sctp/func_tests/test_connectx.c:163: undefined reference to `_sctp_connectx'
+> [...]
+> 
+> Build tested on x86_64 and metag.
 
-Yeah, why not use "tst_kvercmp()" here?
+The sctp utils has upstream at:
 
-Thanks,
-Wanlong Gao
+https://github.com/borkmann/lksctp-tools
 
-> -mike
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Sponsored by Intel(R) XDK 
-> Develop, test and display web and hybrid apps with a single code base.
-> Download it for free now!
-> http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+Are these fixes included there?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
