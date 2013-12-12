@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VvP8l-0000rc-Ki
-	for ltp-list@lists.sourceforge.net; Tue, 24 Dec 2013 10:23:07 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VvP8g-0007LA-Vu
-	for ltp-list@lists.sourceforge.net; Tue, 24 Dec 2013 10:23:07 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBOAMoDC023914
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Dec 2013 18:22:54 +0800
-Message-ID: <52B95D7B.9050803@cn.fujitsu.com>
-Date: Tue, 24 Dec 2013 18:10:03 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Vr4Sb-0006qI-Fq
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:29:41 +0000
+Date: Thu, 12 Dec 2013 12:29:05 +0100
+From: chrubis@suse.cz
+Message-ID: <20131212112905.GA10634@rei.Home>
+References: <0457982F240D534B8C4CD82E5311A37E1A3B7B6531@SGSINEXC014.vestas.net>
 MIME-Version: 1.0
-Subject: [LTP] semop/semop04.c: fix a bug when running with -i option
+Content-Disposition: inline
+In-Reply-To: <0457982F240D534B8C4CD82E5311A37E1A3B7B6531@SGSINEXC014.vestas.net>
+Subject: Re: [LTP] LTP mount,mtest05mem and times testcase related problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,52 +24,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Haresh Chavda <HACAD@vestas.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-semop/semop04.c: fix a bug when running with -i option
+Hi!
+> We are using LTP "ltp-full-20130503" on linux kernel version 3.10.10-rt7+.
+> We found that mount, times and  mtest05mem are failing.
+> 
+> We got following error by mount syscall,
+> mount02     4  TBROK  :  umount of mnt_8649 failed: errno=EBUSY(16): Device or resource busy
+> mount02     5  TBROK  :  Remaining cases broken
 
-If we run semop04 like this: ./semop04 -i 2,
-its output will be:
+That looks like two bugs to me. One is that mount() returns unexpected error
+(unexpected by the test) and the second is that the test tries to unmount() the
+mountpoint even if it wasn't mounted.
 
-semop04     1  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
-semop04     2  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
-semop04     1  TBROK  :  semctl() failed
-semop04     2  TBROK  :  Remaining cases broken.
+Can you try to debug this failure further, I would advice to comment out
+following lines to see which test assertion has failed.
 
-Actually in the second iteration, semctl will return ERANGE. This is
-because the val variable will be less than zero in the sceond iteration.
+      if (umount(mntpoint) == -1)
+              tst_brkm(TBROK | TERRNO, cleanup,
+                       "umount of %s failed",
+                       Mntpoint);
 
-Variable should be reset to 1 before this actual errno test.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ipc/semop/semop04.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> For times syscall testcase we doesn't get status about TPASS for "times03".
+> I feel that "times03" testcase need to be modified to generate TPASS status.
 
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/ipc/semop/semop04.c
-index 2725378..f7efd86 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop04.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop04.c
-@@ -80,7 +80,7 @@ int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
--	int val = 1;		/* value for SETVAL */
-+	int val;		/* value for SETVAL */
- 
- 	int i;
- 
-@@ -96,6 +96,7 @@ int main(int ac, char **av)
- 		/* reset tst_count in case we are looping */
- 		tst_count = 0;
- 
-+		val = 1;
- 		for (i = 0; i < TST_TOTAL; i++) {
- 
- 			/* initialize the s_buf buffer */
+I've tried it myself, the test does not print anything to the stdout, which
+should be fixed. But at least the test exit value is zero, which means that the
+test passed.
+
+> For mtest05mem syscall we got following error,
+> mmstress    0  TINFO  :  test6: Test case tests the race condition between simultaneous fork -exec - exit faults in the same address space.
+> mmstress    6  TFAIL  :  TEST 6 Failed
+> We found that there are two files named "dummy" in separate folders(mtest05 and cap_bound). So when we build and install LTP, one of the binary "dummy" is replaced by other one.
+> The possible solution could be to modify the make file to generate binaries with relevant name.
+
+That one of the install collisions we have in the tree. I will fix this
+one, thanks for reporting.
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Rapidly troubleshoot problems before they affect your business. Most IT 
