@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vpzbo-0006sv-JD
-	for ltp-list@lists.sourceforge.net; Mon, 09 Dec 2013 12:06:44 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vr4Ys-000777-Nd
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:36:10 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vpzbm-00051i-2P
-	for ltp-list@lists.sourceforge.net; Mon, 09 Dec 2013 12:06:44 +0000
-Message-ID: <1386590786.2041.6.camel@G08JYZSD130126>
+	id 1Vr4Yq-0004tr-90
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 11:36:10 +0000
+Message-ID: <1386848136.1603.22.camel@G08JYZSD130126>
 From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 09 Dec 2013 20:06:26 +0800
+Date: Thu, 12 Dec 2013 19:35:36 +0800
 Mime-Version: 1.0
-Subject: [LTP] [PATCH v3 2/2] clone/clone08.c: Add new flags
+Subject: [LTP] [PATCH v4 2/2] clone/clone08.c: add new flags
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,11 +28,6 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-From 0b159a7cf724a698e9ce087932249a6d9f1b701e Mon Sep 17 00:00:00 2001
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 9 Dec 2013 19:37:38 +0800
-Subject: [PATCH] clone/clone08.c: Add new flags
-
 Add new case for clone(2)
 CLONE_PARENT
 CLONE_CHILD_SETTID
@@ -46,8 +41,8 @@ Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
  runtest/stress.part3                      |   1 +
  runtest/syscalls                          |   1 +
  testcases/kernel/syscalls/.gitignore      |   1 +
- testcases/kernel/syscalls/clone/clone08.c | 301 ++++++++++++++++++++++++++++++
- 5 files changed, 305 insertions(+)
+ testcases/kernel/syscalls/clone/clone08.c | 350 ++++++++++++++++++++++++++++++
+ 5 files changed, 354 insertions(+)
  create mode 100644 testcases/kernel/syscalls/clone/clone08.c
 
 diff --git a/runtest/ltplite b/runtest/ltplite
@@ -75,7 +70,7 @@ index 16247e9..16b08a7 100644
  close01 close01
  close02 close02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 12bae10..14bcd88 100644
+index 717342e..a17fec7 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
 @@ -85,6 +85,7 @@ clone04 clone04
@@ -87,7 +82,7 @@ index 12bae10..14bcd88 100644
  close01 close01
  close02 close02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 218ec0c..8c19551 100644
+index bbefb25..91cf0f1 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
 @@ -65,6 +65,7 @@
@@ -100,10 +95,10 @@ index 218ec0c..8c19551 100644
  /close/close08
 diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
 new file mode 100644
-index 0000000..1c49888
+index 0000000..19b47c8
 --- /dev/null
 +++ b/testcases/kernel/syscalls/clone/clone08.c
-@@ -0,0 +1,301 @@
+@@ -0,0 +1,350 @@
 +/*
 + * Copyright (c) 2013 Fujitsu Ltd.
 + * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
@@ -121,11 +116,6 @@ index 0000000..1c49888
 + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 + */
 +
-+#if defined UCLINUX && !__THROW
-+/* workaround for libc bug */
-+#define __THROW
-+#endif
-+
 +#include <errno.h>
 +#include <linux/sched.h>
 +#include <sched.h>
@@ -136,8 +126,7 @@ index 0000000..1c49888
 +#include "safe_macros.h"
 +#include "linux_syscall_numbers.h"
 +
-+#define PASS		0
-+#define FAIL		1
++#define BUFSIZE 512
 +
 +static pid_t parent_ppid;
 +static pid_t ptid, ctid;
@@ -147,14 +136,19 @@ index 0000000..1c49888
 +
 +static void setup(void);
 +static void cleanup(void);
++
 +static void do_master_child_setup(void);
-+static void do_master_child(void);
++static void do_master_child(int i);
++static void wait_child(pid_t child, int index);
 +
 +static int child_clone_parent(void);
-+static void wait_process_terminated(int pid);
++
 +static int child_clone_child_settid(void);
 +static int child_clone_parent_settid(void);
++
 +static int child_clone_thread(void);
++static int check_clone_thread_terminated(pid_t tgid);
++static int get_threas_num(pid_t tgid);
 +
 +#ifdef CLONE_STOPPED
 +static int stopped_flag;
@@ -168,8 +162,7 @@ index 0000000..1c49888
 +	void (*testfunc)(int);
 +	int (*do_child)();
 +} test_cases[] = {
-+	{"CLONE_PARENT", CLONE_PARENT | CLONE_VM | SIGCHLD, NULL,
-+	 child_clone_parent},
++	{"CLONE_PARENT", CLONE_PARENT | SIGCHLD, NULL, child_clone_parent},
 +	{"CLONE_CHILD_SETTID", CLONE_CHILD_SETTID | CLONE_VM | SIGCHLD, NULL,
 +	 child_clone_child_settid},
 +	{"CLONE_PARENT_SETTID", CLONE_PARENT_SETTID | CLONE_VM | SIGCHLD, NULL,
@@ -185,14 +178,12 @@ index 0000000..1c49888
 +char *TCID = "clone08";
 +int TST_TOTAL = ARRAY_SIZE(test_cases);
 +
-+static struct tst_checkpoint checkpoint;
-+
 +int main(int ac, char **av)
 +{
++	int lc;
 +	char *msg;
-+	pid_t child_pid;
-+	pid_t exit_child_pid;
-+	int status;
++	int i;
++	pid_t child;
 +
 +	msg = parse_opts(ac, av, NULL, NULL);
 +	if (msg != NULL)
@@ -200,31 +191,33 @@ index 0000000..1c49888
 +
 +	setup();
 +
-+	child_pid = FORK_OR_VFORK();
-+	if (child_pid < 0) {
-+		tst_brkm(TBROK, cleanup, "Fork failed");
-+	} else if (child_pid == 0) {
-+		do_master_child();
-+	} else {
-+		/* wait child and CLONE_PARENT */
-+		while (1) {
-+			exit_child_pid = waitpid(-1, &status, WNOHANG);
-+			if (exit_child_pid == -1) {
-+				break;
-+			} else if (exit_child_pid == 0) {
-+				sched_yield();
-+				usleep(1000);
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++) {
++
++			fflush(stdout);
++
++			child = FORK_OR_VFORK();
++			if (child < 0) {
++				tst_brkm(TBROK, cleanup, "Fork failed");
++			} else if (child == 0) {
++				do_master_child(i);
 +			} else {
-+				if (!WIFEXITED(status) ||
-+				    (WEXITSTATUS(status) != 0)) {
-+					tst_resm(TFAIL,
-+						 "son process exits error");
-+				}
++				wait_child(child, i);
++				/*
++				 * for CLONE_PARENT, we need to wait twice and
++				 * ignore CLONE_PARENT thread return status.
++				 */
++				if (test_cases[i].flags & CLONE_PARENT)
++					wait_child(child, i);
 +			}
 +		}
 +	}
 +
 +	cleanup();
++
 +	tst_exit();
 +}
 +
@@ -232,65 +225,91 @@ index 0000000..1c49888
 +{
 +	parent_ppid = getppid();
 +
-+	tgid = getpid();
++	tgid = ltp_syscall(__NR_getpid);
 +
-+	TST_CHECKPOINT_INIT(&checkpoint);
++	tst_result = TFAIL;
++
++#ifdef CLONE_STOPPED
++	stopped_flag = 0;
++#endif
 +}
 +
-+static void do_master_child(void)
++static void do_master_child(int i)
 +{
-+	int lc;
-+	int i;
 +	int status;
 +
 +	do_master_child_setup();
 +
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
++	TEST(ltp_clone(test_cases[i].flags, test_cases[i].do_child, NULL,
++		       CHILD_STACK_SIZE, child_stack, &ptid, NULL, &ctid));
 +
-+#ifdef CLONE_STOPPED
-+		stopped_flag = 0;
-+#endif
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			tst_result = FAIL;
++	if (TEST_RETURN == -1)
++		exit(TBROK);
 +
-+			TEST(ltp_clone(test_cases[i].flags,
-+			     test_cases[i].do_child, NULL, CHILD_STACK_SIZE,
-+			     child_stack, &ptid, NULL, &ctid));
++	if (test_cases[i].testfunc != NULL)
++		test_cases[i].testfunc(TEST_RETURN);
 +
-+			if (TEST_RETURN == -1) {
-+				tst_resm(TFAIL | TTERRNO, "%s clone() failed",
-+					 test_cases[i].name);
-+				continue;
-+			}
++	if (test_cases[i].flags & CLONE_PARENT) {
++		/*
++		 * parent process will wait CLONE_PARENT thread to
++		 * get test result.
++		 */
++		exit(0);
++	} else if (test_cases[i].flags & CLONE_THREAD) {
++		int ret;
 +
-+			if (test_cases[i].testfunc != NULL)
-+				test_cases[i].testfunc(TEST_RETURN);
-+
-+			if (test_cases[i].flags & CLONE_PARENT) {
-+				wait_process_terminated(TEST_RETURN);
-+			} else if (test_cases[i].flags & CLONE_THREAD) {
-+				TST_CHECKPOINT_PARENT_WAIT(NULL,
-+							   &checkpoint);
-+			} else {
-+				if (wait(&status) == -1) {
-+					tst_brkm(TBROK | TERRNO, NULL,
-+						 "wait failed, status: %d",
-+						 status);
-+				}
-+			}
-+
-+			if (tst_result == PASS) {
-+				tst_resm(TPASS, "test %s success",
-+					 test_cases[i].name);
-+			} else {
-+				tst_resm(TFAIL, "test %s fail",
-+					 test_cases[i].name);
-+			}
++		ret = check_clone_thread_terminated(tgid);
++		if (ret == 0) {
++			fprintf(stderr,
++				"CLONE_THREAD thread does't terminated in "
++				"time\n");
++			exit(TBROK);
++		}
++	} else {
++		if (wait(&status) == -1) {
++			fprintf(stderr, "%s wait failed in do_master_child\n",
++				test_cases[i].name);
++			exit(TBROK);
 +		}
 +	}
 +
-+	tst_exit();
++	exit(tst_result);
++}
++
++void show_test_result(int status, int index)
++{
++	int ret;
++
++	if (WIFEXITED(status)) {
++		ret = WEXITSTATUS(status);
++		if (ret == TPASS || ret == TFAIL) {
++			tst_resm(ret, "test %s %s", test_cases[index].name,
++				 ret ? "failed" : "success");
++		} else {
++			tst_brkm(TBROK, cleanup, "test %s failed",
++				 test_cases[index].name);
++		}
++	} else {
++		tst_brkm(TBROK, cleanup, "%s clone() exit abnormally",
++			 test_cases[index].name);
++	}
++}
++
++static void wait_child(pid_t child, int index)
++{
++	int status;
++	pid_t exit_pid;
++
++	exit_pid = wait(&status);
++	if (exit_pid == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup, "%s wait failed",
++			 test_cases[index].name);
++	} else if (test_cases[index].flags & CLONE_PARENT) {
++		if (exit_pid != child)
++			show_test_result(status, index);
++	} else {
++		show_test_result(status, index);
++	}
 +}
 +
 +static void setup(void)
@@ -301,7 +320,7 @@ index 0000000..1c49888
 +
 +	tst_tmpdir();
 +
-+	child_stack = SAFE_MALLOC(cleanup, CHILD_STACK_SIZE);
++	child_stack = SAFE_MALLOC(NULL, CHILD_STACK_SIZE);
 +}
 +
 +static void cleanup(void)
@@ -316,39 +335,18 @@ index 0000000..1c49888
 +static int child_clone_parent(void)
 +{
 +	if (parent_ppid == getppid())
-+		tst_result = PASS;
++		tst_result = TPASS;
 +	else
-+		tst_result = FAIL;
-+	exit(0);
-+}
-+
-+/*
-+ * for CLONE_PARENT thread, the calling process can't get its
-+ * status using wait(2), so here using kill(pid, 0) to ensure
-+ * the CLONE_PARENT thread does not exist.
-+ */
-+static void wait_process_terminated(int pid)
-+{
-+	int ret;
-+
-+	while (1) {
-+		ret = kill(pid, 0);
-+		if (ret == 0) {
-+			sched_yield();
-+			usleep(1000);
-+			continue;
-+		}
-+		if (errno == ESRCH)
-+			break;
-+	}
++		tst_result = TFAIL;
++	exit(tst_result);
 +}
 +
 +static int child_clone_child_settid(void)
 +{
 +	if (ctid == getpid())
-+		tst_result = PASS;
++		tst_result = TPASS;
 +	else
-+		tst_result = FAIL;
++		tst_result = TFAIL;
 +
 +	exit(tst_result);
 +}
@@ -356,9 +354,9 @@ index 0000000..1c49888
 +static int child_clone_parent_settid(void)
 +{
 +	if (ptid == getpid())
-+		tst_result = PASS;
++		tst_result = TPASS;
 +	else
-+		tst_result = FAIL;
++		tst_result = TFAIL;
 +
 +	exit(tst_result);
 +}
@@ -378,12 +376,14 @@ index 0000000..1c49888
 +	 * we think the CLONE_STOPPED thread is stopped.
 +	 */
 +	if (stopped_flag == 1)
-+		tst_result = FAIL;
++		tst_result = TFAIL;
 +	else
-+		tst_result = PASS;
++		tst_result = TPASS;
 +
-+	if (kill(tid, SIGCONT) != 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "kill SIGCONT failed");
++	if (kill(tid, SIGCONT) != 0) {
++		fprintf(stderr, "kill SIGCONT failed\n");
++		tst_result = TBROK;
++	}
 +}
 +
 +static int child_clone_stopped(void)
@@ -393,29 +393,74 @@ index 0000000..1c49888
 +}
 +#endif
 +
++/* check whether CLONE_THREAD thread was terminated */
++static int check_clone_thread_terminated(pid_t tgid)
++{
++	int i;
++	int num;
++
++	for (i = 0; i < 5000; i++) {
++		num = get_threas_num(tgid);
++		if (num == 1)
++			return 1;
++		sched_yield();
++		usleep(1000);
++	}
++	return 0;
++}
++
++static int get_threas_num(pid_t tgid)
++{
++	FILE *fp;
++	int ret;
++	char com[BUFSIZE];
++	int thread_nums;
++
++	ret = sprintf(com, "ls /proc/%d/task/ | wc -l", tgid);
++	if (ret < 0) {
++		fprintf(stderr, "sprintf failed\n");
++		exit(TBROK);
++	}
++
++	fp = popen(com, "r");
++	if (!fp) {
++		fprintf(stderr, "run:ls /proc/%d/task/ | wc -l failed\n", tgid);
++		exit(TBROK);
++	}
++
++	ret = fscanf(fp, "%d", &thread_nums);
++	if (ret != 1) {
++		fprintf(stderr,
++			"could not get the numbers of threads in current "
++			"thread group\n");
++		exit(TBROK);
++	}
++	pclose(fp);
++	return thread_nums;
++}
++
 +static int child_clone_thread(void)
 +{
-+	if (tgid == getpid())
-+		tst_result = PASS;
++	if (tgid == ltp_syscall(__NR_getpid))
++		tst_result = TPASS;
 +	else
-+		tst_result = FAIL;
++		tst_result = TFAIL;
 +
-+	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
-+
-+	ltp_syscall(__NR_exit);
++	ltp_syscall(__NR_exit, 0);
 +	return 0;
 +}
 -- 
-1.8.2.1
+1.8.3.1
 
 
 
 
 ------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
