@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <HACAD@vestas.com>) id 1VqynX-0008JH-JV
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 05:26:55 +0000
-Received: from mail1.bemta5.messagelabs.com ([195.245.231.142])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VqynV-0002e0-DP
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 05:26:55 +0000
-From: Haresh Chavda <HACAD@vestas.com>
-Date: Thu, 12 Dec 2013 13:05:45 +0800
-Message-ID: <0457982F240D534B8C4CD82E5311A37E1A3B7B6531@SGSINEXC014.vestas.net>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: [LTP] LTP mount,mtest05mem and times testcase related problem
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Vr8ku-0008U0-Lq
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 16:04:52 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vr8kt-0005AX-0T
+	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 16:04:52 +0000
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 12 Dec 2013 17:04:28 +0100
+Message-Id: <521398c934ca3ceee3971b8ade272e9f9accfc11.1386862937.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v4b 2/2] clone/clone08.c: add new flags
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,136 +21,392 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5295934791680555811=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
---===============5295934791680555811==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_0457982F240D534B8C4CD82E5311A37E1A3B7B6531SGSINEXC014ve_"
-
---_000_0457982F240D534B8C4CD82E5311A37E1A3B7B6531SGSINEXC014ve_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-We are using LTP "ltp-full-20130503" on linux kernel version 3.10.10-rt7+.
-We found that mount, times and  mtest05mem are failing.
-
-We got following error by mount syscall,
-mount02     4  TBROK  :  umount of mnt_8649 failed: errno=3DEBUSY(16): Devi=
-ce or resource busy
-mount02     5  TBROK  :  Remaining cases broken
-
-For times syscall testcase we doesn't get status about TPASS for "times03".
-I feel that "times03" testcase need to be modified to generate TPASS status=
-.
-
-For mtest05mem syscall we got following error,
-mmstress    0  TINFO  :  test6: Test case tests the race condition between =
-simultaneous fork -exec - exit faults in the same address space.
-mmstress    6  TFAIL  :  TEST 6 Failed
-We found that there are two files named "dummy" in separate folders(mtest05=
- and cap_bound). So when we build and install LTP, one of the binary "dummy=
-" is replaced by other one.
-The possible solution could be to modify the make file to generate binaries=
- with relevant name.
-
-Please let me know if you have faced the similar problem in the past and ha=
-ve any work around in the sub sequent releases.
-
-Thanks & regards
-Haresh Chavda
-
-
---_000_0457982F240D534B8C4CD82E5311A37E1A3B7B6531SGSINEXC014ve_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
-osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
-//www.w3.org/TR/REC-html40"><head><meta http-equiv=3DContent-Type content=
-=3D"text/html; charset=3Dus-ascii"><meta name=3DGenerator content=3D"Micros=
-oft Word 14 (filtered medium)"><style><!--
-/* Font Definitions */
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
-/* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri","sans-serif";}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:"Calibri","sans-serif";
-	color:windowtext;}
-.MsoChpDefault
-	{mso-style-type:export-only;
-	font-family:"Calibri","sans-serif";}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
---></style><!--[if gte mso 9]><xml>
-<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
-<o:shapelayout v:ext=3D"edit">
-<o:idmap v:ext=3D"edit" data=3D"1" />
-</o:shapelayout></xml><![endif]--></head><body lang=3DEN-US link=3Dblue vli=
-nk=3Dpurple><div class=3DWordSection1><p class=3DMsoNormal>Hi,<o:p></o:p></=
-p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>We are usi=
-ng LTP &#8220;ltp-full-20130503&#8221; on linux kernel version 3.10.10-rt7+=
-.<o:p></o:p></p><p class=3DMsoNormal>We found that mount, times and &nbsp;m=
-test05mem are failing.<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p>=
-</p><p class=3DMsoNormal>We got following error by mount syscall, <o:p></o:=
-p></p><p class=3DMsoNormal><b><i>mount02&nbsp;&nbsp;&nbsp;&nbsp; 4&nbsp; TB=
-ROK&nbsp; :&nbsp; umount of mnt_8649 failed: errno=3DEBUSY(16): Device or r=
-esource busy<o:p></o:p></i></b></p><p class=3DMsoNormal><b><i>mount02&nbsp;=
-&nbsp;&nbsp;&nbsp; 5&nbsp; TBROK&nbsp; :&nbsp; Remaining cases broken<o:p><=
-/o:p></i></b></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNo=
-rmal>For times syscall testcase we doesn&#8217;t get status about TPASS for=
- &#8220;times03&#8221;.<o:p></o:p></p><p class=3DMsoNormal>I feel that &#82=
-20;times03&#8221; testcase need to be modified to generate TPASS status.<o:=
-p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>=
-For mtest05mem syscall we got following error,<o:p></o:p></p><p class=3DMso=
-Normal><b><i>mmstress&nbsp;&nbsp;&nbsp; 0&nbsp; TINFO&nbsp; :&nbsp; test6: =
-Test case tests the race condition between simultaneous fork -exec - exit f=
-aults in the same address space.<o:p></o:p></i></b></p><p class=3DMsoNormal=
-><b><i>mmstress&nbsp;&nbsp;&nbsp; 6&nbsp; TFAIL&nbsp; :&nbsp; TEST 6 Failed=
-<o:p></o:p></i></b></p><p class=3DMsoNormal>We found that there are two fil=
-es named &#8220;dummy&#8221; in separate folders(mtest05 and cap_bound). So=
- when we build and install LTP, one of the binary &#8220;dummy&#8221; is re=
-placed by other one.<o:p></o:p></p><p class=3DMsoNormal>The possible soluti=
-on could be to modify the make file to generate binaries with relevant name=
-.<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNor=
-mal>Please let me know if you have faced the similar problem in the past an=
-d have any work around in the sub sequent releases. <o:p></o:p></p><p class=
-=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>Thanks &amp; regards=
-<o:p></o:p></p><p class=3DMsoNormal>Haresh Chavda<o:p></o:p></p><p class=3D=
-MsoNormal><o:p>&nbsp;</o:p></p></div></body></html>=
-
---_000_0457982F240D534B8C4CD82E5311A37E1A3B7B6531SGSINEXC014ve_--
-
-
---===============5295934791680555811==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, zenglg.jy@cn.fujitsu.com
+
+From: zenglg.jy <zenglg.jy@cn.fujitsu.com>
+
+Add new case for clone(2)
+CLONE_PARENT
+CLONE_CHILD_SETTID
+CLONE_PARENT_SETTID
+CLONE_STOPPED
+CLONE_THREAD
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ runtest/ltplite                           |    1 +
+ runtest/stress.part3                      |    1 +
+ runtest/syscalls                          |    1 +
+ testcases/kernel/syscalls/.gitignore      |    1 +
+ testcases/kernel/syscalls/clone/clone08.c |  303 +++++++++++++++++++++++++++++
+ 5 files changed, 307 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/clone/clone08.c
+
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 2382dec..fe6cb04 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -127,6 +127,7 @@ clone04 clone04
+ clone05 clone05
+ clone06 clone06
+ clone07 clone07
++clone08 clone08
+ 
+ close01 close01
+ close02 close02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 16247e9..16b08a7 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -68,6 +68,7 @@ clone04 clone04
+ clone05 clone05
+ clone06 clone06
+ clone07 clone07
++clone08 clone08
+ 
+ close01 close01
+ close02 close02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 717342e..a17fec7 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -85,6 +85,7 @@ clone04 clone04
+ clone05 clone05
+ clone06 clone06
+ clone07 clone07
++clone08 clone08
+ 
+ close01 close01
+ close02 close02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index bbefb25..91cf0f1 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -65,6 +65,7 @@
+ /clone/clone05
+ /clone/clone06
+ /clone/clone07
++/clone/clone08
+ /close/close01
+ /close/close02
+ /close/close08
+diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
+new file mode 100644
+index 0000000..d4dce84
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone/clone08.c
+@@ -0,0 +1,303 @@
++/*
++ * Copyright (c) 2013 Fujitsu Ltd.
++ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program.
++ */
++
++#include <errno.h>
++#include <linux/sched.h>
++#include <sched.h>
++#include <sys/wait.h>
++#include "test.h"
++#include "usctest.h"
++#include "clone_platform.h"
++#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
++
++static pid_t ptid, ctid, tgid;
++static void *child_stack;
++
++static void setup(void);
++static void cleanup(void);
++
++static void test_clone_parent(int t);
++static int child_clone_parent(void);
++static pid_t parent_ppid;
++
++static void test_clone_tid(int t);
++static int child_clone_child_settid(void);
++static int child_clone_parent_settid(void);
++
++#ifdef CLONE_STOPPED
++static void test_clone_stopped(int t);
++static int child_clone_stopped(void);
++static int stopped_flag;
++#endif
++
++static void test_clone_thread(int t);
++static int child_clone_thread(void);
++static int tst_result;
++
++/*
++ * Children cloned with CLONE_VM should avoid using any functions that
++ * might require dl_runtime_resolve, because they share thread-local
++ * storage with parent. If both try to resolve symbols at same time you
++ * can crash, likely at _dl_x86_64_restore_sse().
++ * See this thread for relevant discussion:
++ * http://www.mail-archive.com/utrace-devel@redhat.com/msg01944.html
++ */
++static struct test_case {
++	char *name;
++	int flags;
++	void (*testfunc)(int);
++	int (*do_child)();
++} test_cases[] = {
++	{"CLONE_PARENT", CLONE_PARENT | SIGCHLD,
++	 test_clone_parent, child_clone_parent},
++	{"CLONE_CHILD_SETTID", CLONE_CHILD_SETTID | SIGCHLD,
++	 test_clone_tid, child_clone_child_settid},
++	{"CLONE_PARENT_SETTID", CLONE_PARENT_SETTID | CLONE_VM | SIGCHLD,
++	 test_clone_tid, child_clone_parent_settid},
++#ifdef CLONE_STOPPED
++	{"CLONE_STOPPED", CLONE_STOPPED | CLONE_VM | SIGCHLD,
++	 test_clone_stopped, child_clone_stopped},
++#endif
++	{"CLONE_THREAD", CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | SIGCHLD,
++	 test_clone_thread, child_clone_thread},
++};
++
++char *TCID = "clone08";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++
++int main(int ac, char **av)
++{
++	char *msg;
++	int i, lc;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		for (i = 0; i < TST_TOTAL; i++) {
++			tst_resm(TINFO, "running %s", test_cases[i].name);
++			test_cases[i].testfunc(i);
++		}
++	}
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++
++	tst_tmpdir();
++
++	child_stack = SAFE_MALLOC(cleanup, CHILD_STACK_SIZE);
++}
++
++static void cleanup(void)
++{
++	free(child_stack);
++
++	tst_rmdir();
++
++	TEST_CLEANUP;
++}
++
++static long clone_child(const struct test_case *t, int use_tst)
++{
++	TEST(ltp_clone(t->flags, t->do_child, NULL, CHILD_STACK_SIZE,
++		child_stack, &ptid, NULL, &ctid));
++	if (TEST_RETURN == -1) {
++		if (use_tst) {
++			tst_brkm(TBROK | TTERRNO, cleanup, "%s clone() failed",
++				t->name);
++		} else {
++			printf("%s clone() failed, errno: %d",
++				t->name, TEST_ERRNO);
++			exit(1);
++		}
++	}
++	return TEST_RETURN;
++}
++
++static int wait4child(pid_t child)
++{
++	int status;
++
++	if (waitpid(child, &status, 0) == -1)
++		tst_resm(TBROK|TERRNO, "waitpid");
++	if (WIFEXITED(status))
++		return WEXITSTATUS(status);
++	else
++		return status;
++}
++
++static void test_clone_parent(int t)
++{
++	int status;
++	pid_t child;
++
++	fflush(stdout);
++	child = FORK_OR_VFORK();
++	switch (child) {
++	case 0:
++		parent_ppid = getppid();
++		clone_child(&test_cases[t], 0);
++		exit(0);
++	case -1:
++		tst_brkm(TBROK | TERRNO, NULL, "test_clone_parent fork");
++	default:
++		status = wait4child(child);
++		if (status == 0) {
++			/* wait for CLONE_PARENT child */
++			status = wait4child(-1);
++			if (status == 0)
++				tst_resm(TPASS, "test %s", test_cases[t].name);
++			else
++				tst_resm(TFAIL, "test %s, status: %d",
++					test_cases[t].name, status);
++		} else {
++			tst_resm(TFAIL, "test %s, status: %d",
++				test_cases[t].name, status);
++		}
++	};
++}
++
++static int child_clone_parent(void)
++{
++	if (parent_ppid == getppid())
++		exit(0);
++	printf("FAIL: getppid != parent_ppid "
++		"(%d != %d)\n", parent_ppid, getppid());
++	exit(1);
++}
++
++static void test_clone_tid(int t)
++{
++	int status;
++	pid_t child;
++
++	child = clone_child(&test_cases[t], 1);
++	status = wait4child(child);
++	if (status == 0)
++		tst_resm(TPASS, "test %s", test_cases[t].name);
++	else
++		tst_resm(TFAIL, "test %s, status: %d",
++			test_cases[t].name, status);
++}
++
++static int child_clone_child_settid(void)
++{
++	if (ctid == ltp_syscall(__NR_getpid))
++		ltp_syscall(__NR_exit, 0);
++	printf("FAIL: ctid != getpid() "
++		"(%d != %d)\n", ctid, getpid());
++	ltp_syscall(__NR_exit, 1);
++	return 0;
++}
++
++static int child_clone_parent_settid(void)
++{
++	if (ptid == ltp_syscall(__NR_getpid))
++		ltp_syscall(__NR_exit, 0);
++	printf("FAIL: ptid != getpid() "
++		"(%d != %d)\n", ptid, getpid());
++	ltp_syscall(__NR_exit, 1);
++	return 0;
++}
++
++#ifdef CLONE_STOPPED
++static void test_clone_stopped(int t)
++{
++	int i;
++	int status;
++	int flag;
++	pid_t child;
++
++	stopped_flag = 0;
++	child = clone_child(&test_cases[t], 1);
++
++	/* give the kernel scheduler chance to run the CLONE_STOPPED thread*/
++	for (i = 0; i < 100; i++) {
++		sched_yield();
++		usleep(1000);
++	}
++
++	flag = stopped_flag;
++	if (kill(child, SIGCONT) != 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "kill SIGCONT failed");
++
++	status = wait4child(child);
++	if (status == 0 && flag == 0)
++		tst_resm(TPASS, "test %s", test_cases[t].name);
++	else
++		tst_resm(TFAIL, "test %s, status: %d, flag: %d",
++				test_cases[t].name, status, flag);
++}
++
++static int child_clone_stopped(void)
++{
++	stopped_flag = 1;
++	ltp_syscall(__NR_exit, 0);
++	return 0;
++}
++#endif
++
++static void test_clone_thread(int t)
++{
++	pid_t child;
++	int i, status;
++
++	fflush(stdout);
++	child = FORK_OR_VFORK();
++	switch (child) {
++	case 0:
++		tgid = ltp_syscall(__NR_getpid);
++		tst_result = -1;
++		clone_child(&test_cases[t], 0);
++
++		for (i = 0; i < 5000; i++) {
++			sched_yield();
++			usleep(1000);
++			if (tst_result != -1)
++				break;
++		}
++		ltp_syscall(__NR_exit, tst_result);
++	case -1:
++		tst_brkm(TBROK | TERRNO, NULL, "test_clone_parent fork");
++	default:
++		status = wait4child(child);
++		if (status == 0)
++			tst_resm(TPASS, "test %s", test_cases[t].name);
++		else
++			tst_resm(TFAIL, "test %s, status: %d",
++				test_cases[t].name, status);
++	};
++}
++
++static int child_clone_thread(void)
++{
++	if (tgid == ltp_syscall(__NR_getpid))
++		tst_result = TPASS;
++	else
++		tst_result = TFAIL;
++	ltp_syscall(__NR_exit, 0);
++	return 0;
++}
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Rapidly troubleshoot problems before they affect your business. Most IT 
@@ -160,16 +414,7 @@ organizations don't have a clear picture of how application performance
 affects their revenue. With AppDynamics, you get 100% visibility into your 
 Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
 http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
---===============5295934791680555811==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5295934791680555811==--
-
