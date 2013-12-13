@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Vq3dz-00088H-9C
-	for ltp-list@lists.sourceforge.net; Mon, 09 Dec 2013 16:25:15 +0000
-Date: Mon, 9 Dec 2013 17:24:39 +0100
-From: chrubis@suse.cz
-Message-ID: <20131209162439.GA20068@rei.suse.cz>
-References: <1386331038.2041.1.camel@G08JYZSD130126>
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1VrRu1-0000yw-FB
+	for ltp-list@lists.sourceforge.net; Fri, 13 Dec 2013 12:31:33 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VrRu0-0006f6-6Z
+	for ltp-list@lists.sourceforge.net; Fri, 13 Dec 2013 12:31:33 +0000
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Fri, 13 Dec 2013 12:31:02 +0000
+Message-ID: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1386331038.2041.1.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2 2/2] fchmod/fchmod06.c: add EROFS test for
-	fchmod(2)
+Subject: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed architectures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,142 +25,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> add EROFS test in fchmod06.c
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  runtest/ltplite                             |  2 +-
->  runtest/stress.part3                        |  2 +-
->  runtest/syscalls                            |  2 +-
->  testcases/kernel/syscalls/fchmod/fchmod06.c | 64 ++++++++++++++++++++++++++++-
->  4 files changed, 65 insertions(+), 5 deletions(-)
-> 
-> diff --git a/runtest/ltplite b/runtest/ltplite
-> index 2382dec..253d91e 100644
-> --- a/runtest/ltplite
-> +++ b/runtest/ltplite
-> @@ -183,7 +183,7 @@ fchmod02 fchmod02
->  fchmod03 fchmod03
->  fchmod04 fchmod04
->  fchmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod05
-> -fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod06
-> +fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod06 -D DEVICE -T DEVICE_FS_TYPE
->  fchmod07 fchmod07
->  
->  fchown01 fchown01
-> diff --git a/runtest/stress.part3 b/runtest/stress.part3
-> index 16247e9..5eca4f0 100644
-> --- a/runtest/stress.part3
-> +++ b/runtest/stress.part3
-> @@ -124,7 +124,7 @@ fchmod02 fchmod02
->  fchmod03 fchmod03
->  fchmod04 fchmod04
->  fchmod05 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod05
-> -fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod06
-> +fchmod06 cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR;fchmod06 -D DEVICE -T DEVICE_FS_TYPE
->  fchmod07 fchmod07
->  
->  fchown01 fchown01
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 12bae10..adc5b6f 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -172,7 +172,7 @@ fchmod02 fchmod02
->  fchmod03 fchmod03
->  fchmod04 fchmod04
->  fchmod05 fchmod05
-> -fchmod06 fchmod06
-> +fchmod06 fchmod06 -D DEVICE -T DEVICE_FS_TYPE
->  fchmod07 fchmod07
+Commit 6f22494d19b605ded308dc0fa713e91cb873f44a
+"Move sctp to utils and bump it to 1.0.15"
 
-It looks like the 'cp -p $LTPROOT/testcases/bin/change_owner $TMPDIR' is
-a mistake. It's not used by the testcase at all.
+introduced a build failure for the prefixed architectures.
+We need to take into consideration the __USER_LABEL_PREFIX__
+for architectures that define it when creating symbol aliases.
 
-Moreover 'git grep change_owner' does not seem to suggest any usage.
+The following upstream patch (0600c8968cc2dea04cbf13ec739216e2939d08fe)
+fixes the build for the Meta(metag) architecture
 
-Looking into the git log the usage of change_owner was removed but the
-runtest files were not updated and the file wasn't deleted from the
-tree.
+[...]
+utils/sctp/func_tests/test_connectx.c:151: undefined reference to `_sctp_connectx'
+utils/sctp/func_tests/test_connectx.c:163: undefined reference to `_sctp_connectx'
+[...]
 
-Can you please test that chmod and fchmod testcases runs fine without
-the change_owner binary in the runtest files and with the change owner
-srouce source removed from their directories and send a patch to remove
-them?
+Build tested on x86_64 and metag.
 
->  #fchmodat test cases diff --git
->  a/testcases/kernel/syscalls/fchmod/fchmod06.c
->  b/testcases/kernel/syscalls/fchmod/fchmod06.c index 93895a0..9608673
->  100644 --- a/testcases/kernel/syscalls/fchmod/fchmod06.c +++
->  b/testcases/kernel/syscalls/fchmod/fchmod06.c @@ -38,6 +38,7 @@
->  #include <unistd.h> #include <grp.h> #include <pwd.h> +#include
->  <sys/mount.h>
->  
->  #include "test.h" #include "usctest.h" @@ -45,6 +46,17 @@
->  
->  static int fd1; static int fd2; +static int fd3; +static char *fstype
->  = "ext2"; +static char *device; +static int dflag; +static int
->  mount_flag; + +static option_t options[] = { +	{"T:", NULL,
->  &fstype}, +	{"D:", &dflag, &device}, +	{NULL, NULL, NULL} +};
->  
->  static struct test_case_t { char *name; @@ -54,14 +66,16 @@ static
->  struct test_case_t { } test_cases[] = { {"EPERM", &fd1, 0644, EPERM},
->  {"EBADF", &fd2, 0644, EBADF}, +	{"EROFS", &fd3, 0644, EROFS}, };
->  
->  char *TCID = "fchmod06"; int TST_TOTAL = ARRAY_SIZE(test_cases);
->  -static int exp_enos[] = { EPERM, EBADF, 0 }; +static int exp_enos[]
->  = { EPERM, EBADF, EROFS, 0 };
->  
->  static void setup(void); static void cleanup(void); +static void
->  help(void);
->  
->  int main(int ac, char **av) { @@ -69,9 +83,17 @@ int main(int ac,
->  char **av) char *msg; int i;
->  
-> -	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) +	msg =
-> parse_opts(ac, av, options, help); +	if (msg != NULL) tst_brkm(TBROK,
-> NULL, "OPTION PARSING ERROR - %s", msg);
->  
-> +	/* Check for mandatory option of the testcase */ +	if
-> (!dflag) { +		tst_brkm(TBROK, NULL, +			 "you
-> must specify the device used for mounting with " +
-> "-D option"); +	} + setup();
->  
->  	TEST_EXP_ENOS(exp_enos); @@ -122,6 +144,30 @@ static void
->  	setup(void)
->  
->  	tst_tmpdir();
->  
-> +	tst_mkfs(NULL, device, fstype, NULL); + +
-> SAFE_MKDIR(cleanup, "mntpoint", 0755); + +	if (mount(device,
-> "mntpoint", fstype, 0, NULL) < 0) { +		tst_brkm(TBROK | TERRNO,
-> cleanup, +			 "mount device:%s failed", device); +
-> } +	mount_flag = 1; + +	/* Create a file in the file system,
-> then remount it as read-only */ +	fd3 = SAFE_CREAT(cleanup,
-> "mntpoint/tfile_3", 0644); + +	SAFE_CLOSE(cleanup, fd3);
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+Upstream:
+https://github.com/borkmann/lksctp-tools/commit/0600c8968cc2dea04cbf13ec739216e2939d08fe
+---
+ utils/sctp/lib/connectx.c | 11 +++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-I've changed this two for SAFE_TOUCH() as:
-
--       fd3 = SAFE_CREAT(cleanup, "mntpoint/tfile_3", 0644);
--
--       SAFE_CLOSE(cleanup, fd3);
-+       SAFE_TOUCH(cleanup, "mntpoint/tfile_3", 0644, NULL);
-
-
-The rest was fine, pushed.
-
+diff --git a/utils/sctp/lib/connectx.c b/utils/sctp/lib/connectx.c
+index 50cf4c8..8e5a1f8 100644
+--- a/utils/sctp/lib/connectx.c
++++ b/utils/sctp/lib/connectx.c
+@@ -179,7 +179,10 @@ int sctp_connectx3(int fd, struct sockaddr *addrs, int addrcnt,
+ 	return __connectx(fd, addrs, addrs_size, id);
+ }
+ 
+-__asm__(".symver __sctp_connectx, sctp_connectx@");
+-__asm__(".symver sctp_connectx_orig, sctp_connectx@VERS_1");
+-__asm__(".symver sctp_connectx2, sctp_connectx@VERS_2");
+-__asm__(".symver sctp_connectx3, sctp_connectx@@VERS_3");
++#define __SYMPFX(pfx, sym) #pfx sym
++#define _SYMPFX(pfx, sym) __SYMPFX(pfx, sym)
++#define SYMPFX(sym) _SYMPFX(__USER_LABEL_PREFIX__, #sym)
++#define SYMVER(name, name2) __asm__(".symver " SYMPFX(name) "," SYMPFX(name2))
++
++SYMVER(__sctp_connectx, sctp_connectx@);
++SYMVER(sctp_connectx_orig, sctp_connectx@VERS_1);
++SYMVER(sctp_connectx2, sctp_connectx@VERS_2);
++SYMVER(sctp_connectx3, sctp_connectx@@VERS_3);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.5.1
+
+
 
 ------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
