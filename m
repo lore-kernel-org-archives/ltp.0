@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1VrP42-0005dl-Dx
-	for ltp-list@lists.sourceforge.net; Fri, 13 Dec 2013 09:29:42 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VrP40-0002mQ-Ky
-	for ltp-list@lists.sourceforge.net; Fri, 13 Dec 2013 09:29:42 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rBD9TXt0021679
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Dec 2013 04:29:34 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
-	ESMTP id rBD9TWax025209
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Dec 2013 04:29:33 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 13 Dec 2013 10:29:27 +0100
-Message-Id: <69b0ae6d4039f97ac8bc68975640f8a79ac69aa2.1386926927.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] get_robust_list01: use pid_max instead of UINT16_MAX
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VrRMG-0004Dc-KA
+	for ltp-list@lists.sourceforge.net; Fri, 13 Dec 2013 11:56:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VrRMF-00056m-Cn
+	for ltp-list@lists.sourceforge.net; Fri, 13 Dec 2013 11:56:40 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBDBuWNL012530
+	for <ltp-list@lists.sourceforge.net>; Fri, 13 Dec 2013 19:56:32 +0800
+Message-ID: <1386935787.1665.2.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 13 Dec 2013 19:56:27 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 2/2] getpeername/getpeername01.c: add EINVAL error
+ number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,50 +26,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-UINT16_MAX can be a valid pid number on some systems.
+Add EINVAL error number test.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Zuo Faqi <zuofq.jy@cn.fujitsu.com>
 ---
- .../syscalls/get_robust_list/get_robust_list01.c   |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ testcases/kernel/syscalls/getpeername/getpeername01.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-index dd5e726..17da538 100644
---- a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-+++ b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-@@ -68,6 +68,7 @@ struct robust_list_head {
+diff --git a/testcases/kernel/syscalls/getpeername/getpeername01.c b/testcases/kernel/syscalls/getpeername/getpeername01.c
+index 7aa72cb..7ed90f2 100644
+--- a/testcases/kernel/syscalls/getpeername/getpeername01.c
++++ b/testcases/kernel/syscalls/getpeername/getpeername01.c
+@@ -39,6 +39,7 @@
+ static struct sockaddr_in server_addr;
+ static struct sockaddr_in fsin1;
+ static socklen_t sinlen;
++static socklen_t invalid_sinlen;
+ static int sv[2];
+ 
+ static void setup(void);
+@@ -72,12 +73,14 @@ struct test_case_t {
+ 	 cleanup4, "EFAULT"},
+ 	{-1, (struct sockaddr *)&fsin1, (socklen_t *)1, -1, EFAULT, setup4,
+ 	 cleanup4, "EFAULT"},
++	{-1, (struct sockaddr *)&fsin1, &invalid_sinlen, -1, EINVAL, setup4,
++	 cleanup4, "EINVAL"},
+ #endif
  };
  
- int exp_enos[] = { ESRCH, EPERM, EFAULT, 0 };
-+static unsigned int pid_max;
+ char *TCID = "getpeername01";
+ int TST_TOTAL = ARRAY_SIZE(test_cases);
+-static int exp_enos[] = { EBADF, ENOTSOCK, ENOTCONN, EFAULT, 0 };
++static int exp_enos[] = { EBADF, ENOTSOCK, ENOTCONN, EFAULT, EINVAL, 0 };
  
- void setup(void);
- void cleanup(void);
-@@ -134,7 +135,7 @@ int main(int argc, char **argv)
- 		 * find the task specified by the pid argument.
- 		 */
+ int main(int argc, char *argv[])
+ {
+@@ -141,6 +144,7 @@ static void setup(void)
+ 	server_addr.sin_addr.s_addr = INADDR_ANY;
  
--		TEST(ltp_syscall(__NR_get_robust_list, UINT16_MAX,
-+		TEST(ltp_syscall(__NR_get_robust_list, pid_max,
- 				      (struct robust_list_head *)&head,
- 				      &len_ptr));
- 
-@@ -190,6 +191,7 @@ void setup(void)
- 	tst_require_root(NULL);
- 
- 	TEST_EXP_ENOS(exp_enos);
-+	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/pid_max", "%u", &pid_max);
- 
- 	TEST_PAUSE;
+ 	sinlen = sizeof(fsin1);
++	invalid_sinlen = -1;
  }
+ 
+ static void cleanup(void)
 -- 
-1.7.1
+1.8.2.1
+
+
 
 
 ------------------------------------------------------------------------------
