@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vr3U1-0007vM-UX
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 10:27:05 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vr3U0-0000Nn-0u
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 10:27:05 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBCAQtsg022498
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Dec 2013 18:26:56 +0800
-Message-ID: <1386844012.1603.17.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 12 Dec 2013 18:26:52 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 1/2] getrlimit/getrlimit01.c: cleanup
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Vv7OP-0007aY-DC
+	for ltp-list@lists.sourceforge.net; Mon, 23 Dec 2013 15:26:05 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vv7ON-0002vx-DV
+	for ltp-list@lists.sourceforge.net; Mon, 23 Dec 2013 15:26:05 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rBNFPvWl011377
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Dec 2013 15:25:57 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBNFPu0D008967
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Dec 2013 15:25:57 GMT
+Received: from ubhmt102.oracle.com (ubhmt102.oracle.com [156.151.24.7])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBNFPuvR025253
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Dec 2013 15:25:56 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 23 Dec 2013 19:25:48 +0400
+Message-Id: <1387812348-23017-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1387812348-23017-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1387812348-23017-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 3/3] rpc01: fix compile-time warnings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,211 +39,165 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-cleanup the getrlimit01.c
+And also removed host_address logic from rpc_server (since it is not
+used there anyway).
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/getrlimit/getrlimit01.c | 123 +++++-----------------
- 1 file changed, 29 insertions(+), 94 deletions(-)
+ testcases/network/rpc/basic_tests/rpc01/librpc01.c |    4 ++--
+ testcases/network/rpc/basic_tests/rpc01/librpc01.h |    4 ++--
+ testcases/network/rpc/basic_tests/rpc01/rpc1.c     |   15 +++++++++------
+ .../network/rpc/basic_tests/rpc01/rpc_server.c     |   17 ++++++-----------
+ 4 files changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit01.c b/testcases/kernel/syscalls/getrlimit/getrlimit01.c
-index 3fe846b..f397a19 100644
---- a/testcases/kernel/syscalls/getrlimit/getrlimit01.c
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit01.c
-@@ -1,6 +1,7 @@
- /*
-  *
-  *   Copyright (c) Wipro Technologies, 2002. All Rights Reserved.
-+ *   Author: Suresh Babu V. <suresh.babu@wipro.com>
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -17,53 +18,9 @@
-  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+diff --git a/testcases/network/rpc/basic_tests/rpc01/librpc01.c b/testcases/network/rpc/basic_tests/rpc01/librpc01.c
+index b726aa0..447b7cd 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/librpc01.c
++++ b/testcases/network/rpc/basic_tests/rpc01/librpc01.c
+@@ -19,7 +19,7 @@
+ #include <rpc/xdr.h>
+ #include "librpc01.h"
  
--/****************************************************************************
-- *
-- *    TEST IDENTIFIER	: getrlimit01
-- *
-- *    TEST TITLE	: test for checking functionality of getrlimit(2)
-- *  $
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST CASE TOTAL	: 11
-- *
-- *    AUTHOR		: Suresh Babu V. <suresh.babu@wipro.com>
-- *
-- *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
-- *
-- * DESCRIPTION
-- *      Verify that,
-- *	getrlimit(2) call will be successful for all possible resource types.
-- *
-- * Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed
-- *		Issue sys call failed to get resource limits.
-- *      Otherwise,
-- *		Issue sys call is successful and got resource limits.
-- *
-- *   Cleanup:
-- *	Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- *  getrlimit01 [-c n] [-e] [-i n] [-I x] [-P x] [-p] [-t] [-h]
-- *     where,  -c n  : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-p   : Pause for SIGUSR1 before starting.
-- *		-t   : Turn on syscall timing.
-- *		-h   : Display usage information.
-- *
-- ***************************************************************************/
-+/*
-+ *   Test for checking functionality of getrlimit(2)
-+ */
- #include <stdio.h>
- #include <errno.h>
- #include <sys/time.h>
-@@ -74,94 +31,72 @@
- static void cleanup(void);
- static void setup(void);
+-int xdr_receive_data(XDR *xdrs, struct data **buffer)
++bool_t xdr_receive_data(XDR *xdrs, struct data **buffer)
+ {
+ 	struct data *bp;
+ 	int i, rc;
+@@ -35,7 +35,7 @@ int xdr_receive_data(XDR *xdrs, struct data **buffer)
+ 	return rc;
+ }
  
--char *TCID = "getrlimit01";
--
- static struct rlimit rlim;
- static struct test_t {
- 	int res;
- 	char *res_str;
- } testcases[] = {
--	{
--	RLIMIT_CPU, "RLIMIT_CPU"}, {
--	RLIMIT_FSIZE, "RLIMIT_FSIZE"}, {
--	RLIMIT_DATA, "RLIMIT_DATA"}, {
--	RLIMIT_STACK, "RLIMIT_STACK"}, {
--	RLIMIT_CORE, "RLIMIT_CORE"}, {
--	RLIMIT_RSS, "RLIMIT_RSS"}, {
--	RLIMIT_NPROC, "RLIMIT_NPROC"}, {
--	RLIMIT_NOFILE, "RLIMIT_NOFILE"}, {
--	RLIMIT_MEMLOCK, "RLIMIT_MEMLOCK"}, {
--	RLIMIT_AS, "RLIMIT_AS"}, {
--	RLIMIT_LOCKS, "RLIMIT_LOCKS"}
-+	{RLIMIT_CPU, "RLIMIT_CPU"},
-+	{RLIMIT_FSIZE, "RLIMIT_FSIZE"},
-+	{RLIMIT_DATA, "RLIMIT_DATA"},
-+	{RLIMIT_STACK, "RLIMIT_STACK"},
-+	{RLIMIT_CORE, "RLIMIT_CORE"},
-+	{RLIMIT_RSS, "RLIMIT_RSS"},
-+	{RLIMIT_NPROC, "RLIMIT_NPROC"},
-+	{RLIMIT_NOFILE, "RLIMIT_NOFILE"},
-+	{RLIMIT_MEMLOCK, "RLIMIT_MEMLOCK"},
-+	{RLIMIT_AS, "RLIMIT_AS"},
-+	{RLIMIT_LOCKS, "RLIMIT_LOCKS"},
+-int xdr_send_data(XDR *xdrs, struct data *buffer)
++bool_t xdr_send_data(XDR *xdrs, struct data *buffer)
+ {
+ 	int i, rc;
+ 	char *p;
+diff --git a/testcases/network/rpc/basic_tests/rpc01/librpc01.h b/testcases/network/rpc/basic_tests/rpc01/librpc01.h
+index aae3901..0fa7969 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/librpc01.h
++++ b/testcases/network/rpc/basic_tests/rpc01/librpc01.h
+@@ -28,7 +28,7 @@ struct data {
+ 	char *data;
  };
  
--int TST_TOTAL = sizeof(testcases) / sizeof(*testcases);
-+char *TCID = "getrlimit01";
-+int TST_TOTAL = ARRAY_SIZE(testcases);
+-int xdr_receive_data(XDR *xdrs, struct data **buffer);
+-int xdr_send_data(XDR *xdrs, struct data *buffer);
++bool_t xdr_receive_data(XDR *xdrs, struct data **buffer);
++bool_t xdr_send_data(XDR *xdrs, struct data *buffer);
  
- int main(int ac, char **av)
+ #endif /* __LIBRPC_H__ */
+diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc1.c b/testcases/network/rpc/basic_tests/rpc01/rpc1.c
+index 57a338e..570c39c 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/rpc1.c
++++ b/testcases/network/rpc/basic_tests/rpc01/rpc1.c
+@@ -125,8 +125,9 @@ int main(int argc, char *argv[])
+ 		*p = getc(fp);
+ 	fclose(fp);
+ 
+-	rc = callrpc(server, program, version, 1, xdr_send_data, &buffer,
+-		     xdr_receive_data, &return_buffer);
++	rc = callrpc(server, program, version, 1, (xdrproc_t)xdr_send_data,
++			(char *)&buffer, (xdrproc_t)xdr_receive_data,
++			(char *)&return_buffer);
+ 	do_compare(rc, "callrpc", &buffer, return_buffer->data);
+ 
+ 	server_sin.sin_port = 0;
+@@ -140,8 +141,9 @@ int main(int argc, char *argv[])
+ 	}
+ 	timeout.tv_usec = 0;
+ 	timeout.tv_sec = 30;
+-	rc = (int)clnt_call(clnt, 1, xdr_send_data, &buffer,
+-			    xdr_receive_data, &return_buffer, timeout);
++	rc = (int)clnt_call(clnt, 1, (xdrproc_t)xdr_send_data,
++				(char *)&buffer, (xdrproc_t)xdr_receive_data,
++				(char *)&return_buffer, timeout);
+ 	clnt_destroy(clnt);
+ 	do_compare(rc, "udp transport", &buffer, return_buffer->data);
+ 
+@@ -154,8 +156,9 @@ int main(int argc, char *argv[])
+ 	}
+ 	timeout.tv_usec = 0;
+ 	timeout.tv_sec = 30;
+-	rc = (int)clnt_call(clnt, 1, xdr_send_data, &buffer,
+-			    xdr_receive_data, &return_buffer, timeout);
++	rc = (int)clnt_call(clnt, 1, (xdrproc_t)xdr_send_data,
++				(char *)&buffer, (xdrproc_t)xdr_receive_data,
++				(char *)&return_buffer, timeout);
+ 	clnt_destroy(clnt);
+ 	do_compare(rc, "tcp transport", &buffer, return_buffer->data);
+ 
+diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc_server.c b/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
+index e0b5001..61c383b 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
++++ b/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
+@@ -11,8 +11,6 @@
+ int debug = 0;
+ int program = 2000333;
+ int version = 10;
+-char host_name[100];
+-long host_address;
+ 
+ void breakpoint(void);
+ void service_request(struct svc_req *rqstp, SVCXPRT * transp);
+@@ -20,7 +18,6 @@ void service_request(struct svc_req *rqstp, SVCXPRT * transp);
+ int main(int argc, char *argv[])
  {
- 	int i;
- 	int lc;
--	char *msg;		/* parse_opts() return message */
-+	char *msg;
+ 	SVCXPRT *transp;
+-	struct hostent *hp;
+ 	int i, n;
  
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--		tst_exit();
--	}
+ 	for (i = 1; i < argc; i++) {
+@@ -70,7 +67,7 @@ int main(int argc, char *argv[])
+ 			close(i);
+ 		open("/dev/null", O_RDONLY);
+ 		open("/dev/null", O_WRONLY);
+-		dup(1);
++		i = dup(1);
  
--	/* Do initial setup */
- 	setup();
- 
--	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
- 		tst_count = 0;
- 
- 		for (i = 0; i < TST_TOTAL; ++i) {
- 
--			/*
--			 * Test the system call with different resoruce types
--			 * with codes 0 to 10
--			 */
- 			TEST(getrlimit(testcases[i].res, &rlim));
- 
- 			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL, "getrlimit() failed to get %s "
--					 "values. errno is %d",
-+				tst_resm(TFAIL,
-+					 "getrlimit() test %s failed errno: %d",
- 					 testcases[i].res_str, TEST_ERRNO);
- 			} else {
--				tst_resm(TPASS, "getrlimit() returned %d; "
--					 "got %s values ",
--					 TEST_ERRNO, testcases[i].res_str);
-+				tst_resm(TPASS,
-+					 "getrlimit() test %s success",
-+					 testcases[i].res_str);
- 			}
+ 		if ((i = open("/dev/tty", O_RDWR)) >= 0) {
+ 			ioctl(i, TIOCNOTTY, 0);
+@@ -78,10 +75,6 @@ int main(int argc, char *argv[])
  		}
  	}
--	/* do cleanup and exit */
-+
- 	cleanup();
  
- 	tst_exit();
- }
- 
--/*
-- * setup() - performs all one time setup for this test.
-- */
--void setup()
-+static void setup(void)
- {
--	/* capture the signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Pause if the option was specified */
- 	TEST_PAUSE;
- }
- 
--/*
-- * cleanup()  - performs all one time cleanup for this test
-- *		completion or premature exit.
-- */
--void cleanup()
-+static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
+-	gethostname(host_name, 100);
+-	if (hp = gethostbyname(host_name))
+-		host_address = *((long *)hp->h_addr_list[0]);
 -
- }
+ 	pmap_unset(program, version);
+ 	transp = svcudp_create(RPC_ANYSOCK);
+ 	svc_register(transp, program, version, service_request, IPPROTO_UDP);
+@@ -97,7 +90,7 @@ void service_request(struct svc_req *rqstp, SVCXPRT * transp)
+ 
+ 	switch (rqstp->rq_proc) {
+ 	case 0:
+-		svc_sendreply(transp, xdr_void, (char *)0);
++		svc_sendreply(transp, (xdrproc_t)xdr_void, (char *)0);
+ 		breakpoint();
+ 		return;
+ 
+@@ -105,8 +98,10 @@ void service_request(struct svc_req *rqstp, SVCXPRT * transp)
+ 		exit(0);
+ 
+ 	case 1:
+-		svc_getargs(transp, xdr_receive_data, (unsigned char *)&buffer);
+-		svc_sendreply(transp, xdr_send_data, (unsigned char *)buffer);
++		svc_getargs(transp, (xdrproc_t)xdr_receive_data,
++				(char *)&buffer);
++		svc_sendreply(transp, (xdrproc_t)xdr_send_data,
++				(char *)buffer);
+ 		free(buffer->data);
+ 		free(buffer);
+ 		return;
 -- 
-1.8.2.1
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
