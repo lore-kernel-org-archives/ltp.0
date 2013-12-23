@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Vw6z1-0007UQ-T5
-	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 09:11:59 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vw6z0-0007m4-GZ
-	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 09:11:59 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBQ9Bm0B020674
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 17:11:48 +0800
-Message-ID: <1388049105.1587.22.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 26 Dec 2013 17:11:45 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] link/link08.c: add new tests for link(2)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Vv7OV-0006JQ-CO
+	for ltp-list@lists.sourceforge.net; Mon, 23 Dec 2013 15:26:11 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vv7OM-0002vt-DI
+	for ltp-list@lists.sourceforge.net; Mon, 23 Dec 2013 15:26:11 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rBNFPu1O011360
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Dec 2013 15:25:56 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBNFPtoN025225
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Dec 2013 15:25:56 GMT
+Received: from ubhmt102.oracle.com (ubhmt102.oracle.com [156.151.24.7])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBNFPtWL008904
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Dec 2013 15:25:55 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 23 Dec 2013 19:25:47 +0400
+Message-Id: <1387812348-23017-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 2/3] rpc01: moved common functions to a lib
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,259 +38,275 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Add new error number tests for link(2):
-EPERM, EXDEV, EROFS
+"Decipher"-functions xdr_receive_data and xdr_send_data are used
+by both rpc_server and rpc1, so moved them to a separate library.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- runtest/ltplite                         |   1 +
- runtest/stress.part3                    |   1 +
- runtest/syscalls                        |   1 +
- testcases/kernel/syscalls/.gitignore    |   1 +
- testcases/kernel/syscalls/link/link08.c | 177 ++++++++++++++++++++++++++++++++
- 5 files changed, 181 insertions(+)
- create mode 100644 testcases/kernel/syscalls/link/link08.c
+ testcases/network/rpc/basic_tests/rpc01/Makefile   |   10 ++++-
+ testcases/network/rpc/basic_tests/rpc01/librpc01.c |   49 ++++++++++++++++++++
+ testcases/network/rpc/basic_tests/rpc01/librpc01.h |   34 ++++++++++++++
+ testcases/network/rpc/basic_tests/rpc01/rpc1.c     |   39 +---------------
+ .../network/rpc/basic_tests/rpc01/rpc_server.c     |   39 +---------------
+ 5 files changed, 94 insertions(+), 77 deletions(-)
+ create mode 100644 testcases/network/rpc/basic_tests/rpc01/librpc01.c
+ create mode 100644 testcases/network/rpc/basic_tests/rpc01/librpc01.h
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index c90bc48..9d733be 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -380,6 +380,7 @@ link04 link04
- link05 link05
- link06 link06
- link07 link07
-+link08 link08 -D DEVICE -T DEVICE_FS_TYPE
+diff --git a/testcases/network/rpc/basic_tests/rpc01/Makefile b/testcases/network/rpc/basic_tests/rpc01/Makefile
+index 732d816..68ea85e 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/Makefile
++++ b/testcases/network/rpc/basic_tests/rpc01/Makefile
+@@ -28,7 +28,15 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ CPPFLAGS		+= -Wno-error
  
- listen01 listen01
+ INSTALL_TARGETS		:= rpc01
+-
+ SUBDIRS			:= datafiles
  
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index eac28d0..979054a 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -313,6 +313,7 @@ link04 link04
- link05 link05
- link06 link06
- link07 link07
-+link08 link08 -D DEVICE -T DEVICE_FS_TYPE
- 
- listen01 listen01
- 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 5985a01..0017186 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -483,6 +483,7 @@ link04 link04
- link05 link05
- link06 link06
- link07 link07
-+link08 link08 -D DEVICE -T DEVICE_FS_TYPE
- 
- #linkat test cases
- linkat01 linkat01
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index bbefb25..9f0aa1f 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -443,6 +443,7 @@
- /link/link05
- /link/link06
- /link/link07
-+/link/link08
- /linkat/linkat01
- /listen/listen01
- /llseek/llseek01
-diff --git a/testcases/kernel/syscalls/link/link08.c b/testcases/kernel/syscalls/link/link08.c
++LIBSRCS			:= $(abs_srcdir)/librpc01.c
++INTERNAL_LIB		:= librpc01.a
++LDFLAGS			+= -L$(abs_srcdir)
++LDLIBS			+= -lrpc01
++
++MAKE_TARGETS		:= rpc1 rpc_server
++$(MAKE_TARGETS): $(INTERNAL_LIB)
++
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
++include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/network/rpc/basic_tests/rpc01/librpc01.c b/testcases/network/rpc/basic_tests/rpc01/librpc01.c
 new file mode 100644
-index 0000000..71ee562
+index 0000000..b726aa0
 --- /dev/null
-+++ b/testcases/kernel/syscalls/link/link08.c
-@@ -0,0 +1,177 @@
++++ b/testcases/network/rpc/basic_tests/rpc01/librpc01.c
+@@ -0,0 +1,49 @@
 +/*
-+ * Copyright (c) International Business Machines  Corp., 2007
-+ * Copyright (c) 2013 Fujitsu Ltd.
++ * Copyright (c) 2013 Linux Test Project.
 + *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
 + *
-+ * This program is distributed in the hope that it will be useful,
++ * This program is distributed in the hope that it would be useful,
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU Library General Public License for more details.
++ * GNU General Public License for more details.
 + *
 + * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ *
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 + */
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <pwd.h>
-+#include <sys/mount.h>
++#include <rpc/xdr.h>
++#include "librpc01.h"
 +
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
++int xdr_receive_data(XDR *xdrs, struct data **buffer)
++{
++	struct data *bp;
++	int i, rc;
++	char *p;
 +
-+#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-+			 S_IXGRP|S_IROTH|S_IXOTH)
-+#define	TEST_FILE	"testfile"
-+#define	TEST_FILE1	"testfile1"
-+#define	TEST_FILE2	"mntpoint/testfile2"
-+#define	TEST_FILE3	"mntpoint/testfile3"
++	bp = *buffer = (struct data *)malloc(sizeof(struct data));
++	rc = xdr_long(xdrs, &(bp->address));
++	rc = rc && xdr_long(xdrs, &bp->request_id);
++	rc = rc && xdr_long(xdrs, &bp->data_length);
++	p = (*buffer)->data = (char *)malloc(bp->data_length);
++	for (i = 0; rc && i < bp->data_length; p++, i++)
++		rc = xdr_char(xdrs, p);
++	return rc;
++}
 +
-+static void setup(void);
-+static void cleanup(void);
-+static void help(void);
++int xdr_send_data(XDR *xdrs, struct data *buffer)
++{
++	int i, rc;
++	char *p;
 +
-+static char *fstype = "ext2";
-+static char *device;
-+static int dflag;
-+static int mount_flag;
++	rc = xdr_long(xdrs, &buffer->address);
++	rc = rc && xdr_long(xdrs, &buffer->request_id);
++	rc = rc && xdr_long(xdrs, &buffer->data_length);
++	for (i = 0, p = buffer->data; rc && i < buffer->data_length; i++, p++)
++		rc = xdr_char(xdrs, p);
++	return rc;
++}
+diff --git a/testcases/network/rpc/basic_tests/rpc01/librpc01.h b/testcases/network/rpc/basic_tests/rpc01/librpc01.h
+new file mode 100644
+index 0000000..aae3901
+--- /dev/null
++++ b/testcases/network/rpc/basic_tests/rpc01/librpc01.h
+@@ -0,0 +1,34 @@
++/*
++ * Copyright (c) 2013 Linux Test Project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
 +
-+static option_t options[] = {
-+	{"T:", NULL, &fstype},
-+	{"D:", &dflag, &device},
-+	{NULL, NULL, NULL}
++#ifndef __LIBRPC_H__
++#define __LIBRPC_H__
++
++#include <rpc/xdr.h>
++
++struct data {
++	long address;
++	long request_id;
++	long data_length;
++	char *data;
 +};
 +
-+static struct test_case_t {
-+	char *oldpath;
-+	char *newpath;
-+	char *exp_errval;
-+	int exp_errno;
-+} test_cases[] = {
-+	{TEST_FILE1, TEST_FILE, "EPERM", EPERM},
-+	{TEST_FILE2, TEST_FILE, "EXDEV", EXDEV},
-+	{TEST_FILE2, TEST_FILE3, "EROFS", EROFS},
-+};
++int xdr_receive_data(XDR *xdrs, struct data **buffer);
++int xdr_send_data(XDR *xdrs, struct data *buffer);
 +
-+char *TCID = "link08";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = { EPERM, EXDEV, EROFS, 0 };
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	char *msg;
-+	int i;
-+
-+	msg = parse_opts(ac, av, options, help);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	if (!dflag) {
-+		tst_brkm(TBROK, NULL,
-+			 "you must specify the device used for mounting with "
-+			 "-D option");
-+	}
-+
-+	setup();
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+
-+			TEST(link(test_cases[i].oldpath,
-+				  test_cases[i].newpath));
-+
-+			if (TEST_RETURN != -1) {
-+				tst_resm(TFAIL,
-+					 "link() returned %ld, expected -1, "
-+					 "errno=%d", TEST_RETURN,
-+					 test_cases[i].exp_errno);
-+			} else {
-+				TEST_ERROR_LOG(TEST_ERRNO);
-+
-+				if (TEST_ERRNO == test_cases[i].exp_errno) {
-+					tst_resm(TPASS,
-+						 "link() fails with expected "
-+						 "error %s errno:%d",
-+						 test_cases[i].exp_errval,
-+						 TEST_ERRNO);
-+				} else {
-+					tst_resm(TFAIL,
-+						 "link() fails, %s, errno=%d, "
-+						 "expected errno=%d",
-+						 test_cases[i].exp_errval,
-+						 TEST_ERRNO,
-+						 test_cases[i].exp_errno);
-+				}
-+			}
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	SAFE_MKDIR(cleanup, TEST_FILE1, DIR_MODE);
-+
-+	tst_mkfs(NULL, device, fstype, NULL);
-+	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
-+	if (mount(device, "mntpoint", fstype, 0, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
-+	SAFE_TOUCH(cleanup, TEST_FILE2, 0644, NULL);
-+	if (mount(device, "mntpoint", fstype,
-+		  MS_REMOUNT | MS_RDONLY, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	if (mount_flag && umount("mntpoint") < 0) {
-+		tst_brkm(TBROK | TERRNO, NULL,
-+			 "umount device:%s failed", device);
-+	}
-+
-+	tst_rmdir();
-+}
-+
-+static void help(void)
-+{
-+	printf("-T type   : specifies the type of filesystem to be mounted. "
-+	       "Default ext2.\n");
-+	printf("-D device : device used for mounting.\n");
-+}
++#endif /* __LIBRPC_H__ */
+diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc1.c b/testcases/network/rpc/basic_tests/rpc01/rpc1.c
+index 946cb21..57a338e 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/rpc1.c
++++ b/testcases/network/rpc/basic_tests/rpc01/rpc1.c
+@@ -9,6 +9,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include "librpc01.h"
+ 
+ int program = 2000333;
+ int version = 10;
+@@ -17,15 +18,6 @@ char *file_name = NULL;
+ char host_name[100];
+ long host_address;
+ 
+-struct data {
+-	long address;
+-	long request_id;
+-	long data_length;
+-	char *data;
+-};
+-
+-int xdr_receive_data(XDR *, struct data **);
+-int xdr_send_data(XDR *, struct data *);
+ void do_compare(int, char *, struct data *, char *);
+ void usage_error(char *program_name);
+ 
+@@ -187,35 +179,6 @@ void do_compare(int rpc_rc, char *msg, struct data *buffer, char *ret_data)
+ 	}
+ }
+ 
+-int xdr_receive_data(XDR * xdrs, struct data **buffer)
+-{
+-	struct data *bp;
+-	int i, rc;
+-	char *p;
+-
+-	bp = *buffer = (struct data *)malloc(sizeof(struct data));
+-	rc = xdr_long(xdrs, &(bp->address));
+-	rc = rc && xdr_long(xdrs, &bp->request_id);
+-	rc = rc && xdr_long(xdrs, &bp->data_length);
+-	p = (*buffer)->data = (char *)malloc(bp->data_length);
+-	for (i = 0; rc && i < bp->data_length; p++, i++)
+-		rc = xdr_char(xdrs, p);
+-	return (rc);
+-}
+-
+-int xdr_send_data(XDR * xdrs, struct data *buffer)
+-{
+-	int i, rc;
+-	char *p;
+-
+-	rc = xdr_long(xdrs, &buffer->address);
+-	rc = rc && xdr_long(xdrs, &buffer->request_id);
+-	rc = rc && xdr_long(xdrs, &buffer->data_length);
+-	for (i = 0, p = buffer->data; rc && i < buffer->data_length; i++, p++)
+-		rc = xdr_char(xdrs, p);
+-	return (rc);
+-}
+-
+ void usage_error(char *program_name)
+ {
+ 	fprintf(stderr,
+diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc_server.c b/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
+index 4fdff8e..e0b5001 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
++++ b/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
+@@ -6,6 +6,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <rpc/rpc.h>
++#include "librpc01.h"
+ 
+ int debug = 0;
+ int program = 2000333;
+@@ -13,17 +14,8 @@ int version = 10;
+ char host_name[100];
+ long host_address;
+ 
+-struct data {
+-	long address;
+-	long request_id;
+-	long data_length;
+-	char *data;
+-};
+-
+ void breakpoint(void);
+ void service_request(struct svc_req *rqstp, SVCXPRT * transp);
+-int xdr_receive_data(XDR * xdrs, struct data **buffer);
+-int xdr_send_data(XDR * xdrs, struct data *buffer);
+ 
+ int main(int argc, char *argv[])
+ {
+@@ -125,35 +117,6 @@ void service_request(struct svc_req *rqstp, SVCXPRT * transp)
+ 	}
+ }
+ 
+-int xdr_receive_data(XDR * xdrs, struct data **buffer)
+-{
+-	struct data *bp;
+-	int i, rc;
+-	char *p;
+-
+-	bp = *buffer = (struct data *)malloc(sizeof(struct data));
+-	rc = xdr_long(xdrs, &(bp->address));
+-	rc = rc && xdr_long(xdrs, &bp->request_id);
+-	rc = rc && xdr_long(xdrs, &bp->data_length);
+-	p = (*buffer)->data = (char *)malloc(bp->data_length);
+-	for (i = 0; rc && i < bp->data_length; p++, i++)
+-		rc = xdr_char(xdrs, p);
+-	return (rc);
+-}
+-
+-int xdr_send_data(XDR * xdrs, struct data *buffer)
+-{
+-	int i, rc;
+-	char *p;
+-
+-	rc = xdr_long(xdrs, &buffer->address);
+-	rc = rc && xdr_long(xdrs, &buffer->request_id);
+-	rc = rc && xdr_long(xdrs, &buffer->data_length);
+-	for (i = 0, p = buffer->data; rc && i < buffer->data_length; i++, p++)
+-		rc = xdr_char(xdrs, p);
+-	return (rc);
+-}
+-
+ void breakpoint(void)
+ {
+ 	if (debug)
 -- 
-1.8.2.1
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
