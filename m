@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Vvcok-0001Ze-H5
-	for ltp-list@lists.sourceforge.net; Wed, 25 Dec 2013 00:59:22 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VvQNw-0003gT-VJ
+	for ltp-list@lists.sourceforge.net; Tue, 24 Dec 2013 11:42:53 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vvcoj-0001Ks-Oa
-	for ltp-list@lists.sourceforge.net; Wed, 25 Dec 2013 00:59:22 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBP0xEEh004360
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Dec 2013 08:59:14 +0800
-Message-ID: <52BA2DD5.9030509@cn.fujitsu.com>
-Date: Wed, 25 Dec 2013 08:59:01 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <52B960D4.5050506@cn.fujitsu.com>
-In-Reply-To: <52B960D4.5050506@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] semop/semop04.c: fix a bug when running with -i
- option
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VvQNv-0008JA-Bf
+	for ltp-list@lists.sourceforge.net; Tue, 24 Dec 2013 11:42:52 +0000
+Message-ID: <1387885358.1622.104.camel@G08JYZSD130126>
+From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 24 Dec 2013 19:42:38 +0800
+In-Reply-To: <1387884941.1622.98.camel@G08JYZSD130126>
+References: <1387884941.1622.98.camel@G08JYZSD130126>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH v3 1/4] fallocate/fallocate.h: move inline function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,31 +27,228 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: Mike Frysinger <vapier@gentoo.org>
 
-On 12/24/2013 06:24 PM, Xiaoguang Wang wrote:
-> If we run semop04 like this: ./semop04 -i 2,
-> its output will be:
+On Tue, 2013-12-24 at 19:35 +0800, zenglg.jy wrote:
+> >From edb98f0b69c16f612f79fe24d10597af47424f13 Mon Sep 17 00:00:00 2001
+> From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> Date: Tue, 24 Dec 2013 19:21:32 +0800
+> Subject: [PATCH] fallocate/fallocate.h: move inline function
 > 
-> semop04     1  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
-> semop04     2  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
-> semop04     1  TBROK  :  semctl() failed
-> semop04     2  TBROK  :  Remaining cases broken.
+> Moved common inline function to fallocate.h
 > 
-> Actually in the second iteration, semctl will return ERANGE. This is
-> because the val variable will be less than zero in the sceond iteration.
-> 
-> Variable val should be reset to 1 before this actual errno test.
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 > ---
->  testcases/kernel/syscalls/ipc/semop/semop04.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  testcases/kernel/syscalls/fallocate/fallocate.h   | 47 +++++++++++++++++++++++
+>  testcases/kernel/syscalls/fallocate/fallocate01.c | 23 +----------
+>  testcases/kernel/syscalls/fallocate/fallocate02.c | 19 +--------
+>  testcases/kernel/syscalls/fallocate/fallocate03.c | 19 +--------
+>  4 files changed, 50 insertions(+), 58 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/fallocate/fallocate.h
+> 
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate.h b/testcases/kernel/syscalls/fallocate/fallocate.h
+> new file mode 100644
+> index 0000000..e47338b
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate.h
+> @@ -0,0 +1,47 @@
+> +/*
+> + * Copyright (c) International Business Machines  Corp., 2007
+> + * Copyright (c) 2013 Fujitsu Ltd.
+> + *
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU Library General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+> + *
+> + */
+> +
+> +#ifndef FALLOCATE_H
+> +#define FALLOCATE_H
+> +
+> +#include <sys/types.h>
+> +#include <endian.h>
+> +#include "linux_syscall_numbers.h"
+> +
+> +static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+> +{
+> +/*
+> + * Use __WORDSIZE will fail on ABI's that have 64bit registers but 32bit
+> + * longs like MIPS n32 and x86_64 x32
+> + */
 
-Applied, thank you.
+I do not know about the ABI's problem. Could someone give me a help.
+Best regards,
+Zeng
 
-Wanlong Gao
+> +#if __WORDSIZE == 64 || defined __powerpc64__ || defined __mips64 ||\
+> +defined __x86_64__ || defined __sparc64__
+> +	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
+> +
+> +#else
+> +	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+> +				 __LONG_LONG_PAIR((off_t) (offset >> 32),
+> +						  (off_t) offset),
+> +				 __LONG_LONG_PAIR((off_t) (len >> 32),
+> +						  (off_t) len));
+> +#endif
+> +}
+> +
+> +#endif /* FALLOCATE.H */
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
+> index 0240687..eec39fa 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate01.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
+> @@ -100,12 +100,10 @@
+>  
+>  #include "test.h"
+>  #include "usctest.h"
+> -#include "linux_syscall_numbers.h"
+> +#include "fallocate.h"
+>  
+>  #define BLOCKS_WRITTEN 12
+>  
+> -/* Local Function */
+> -static inline long fallocate();
+>  void get_blocksize(int);
+>  void populate_files(int fd);
+>  void runtest(int, int, loff_t);
+> @@ -183,16 +181,10 @@ void get_blocksize(int fd)
+>  void populate_files(int fd)
+>  {
+>  	char buf[buf_size + 1];
+> -	char *fname;
+>  	int index;
+>  	int blocks;
+>  	int data;
+>  
+> -	if (fd == fd_mode1)
+> -		fname = fname_mode1;
+> -	else
+> -		fname = fname_mode2;
+> -
+>  	for (blocks = 0; blocks < BLOCKS_WRITTEN; blocks++) {
+>  		for (index = 0; index < buf_size; index++)
+>  			buf[index] = 'A' + (index % 26);
+> @@ -239,19 +231,6 @@ int main(int ac, char **av)
+>  	tst_exit();
+>  }
+>  
+> -static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+> -{
+> -#if __WORDSIZE == 32
+> -	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+> -			     __LONG_LONG_PAIR((off_t) (offset >> 32),
+> -					      (off_t) offset),
+> -			     __LONG_LONG_PAIR((off_t) (len >> 32),
+> -					      (off_t) len));
+> -#else
+> -	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
+> -#endif
+> -}
+> -
+>  /*****************************************************************************
+>   * Calls the system call, with appropriate parameters and writes data
+>   ******************************************************************************/
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+> index 37f0635..e5e482c 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate02.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+> @@ -96,7 +96,7 @@
+>  
+>  #include "test.h"
+>  #include "usctest.h"
+> -#include "linux_syscall_numbers.h"
+> +#include "fallocate.h"
+>  
+>  #define BLOCKS_WRITTEN 12
+>  
+> @@ -108,7 +108,6 @@
+>  
+>  #define OFFSET 12
+>  
+> -static inline long fallocate();
+>  void populate_file();
+>  void create_fifo();
+>  void create_pipe();
+> @@ -225,22 +224,6 @@ void populate_file()
+>  }
+>  
+>  /*****************************************************************************
+> - * Wraper function to call fallocate system call
+> - ******************************************************************************/
+> -static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+> -{
+> -#if __WORDSIZE == 32
+> -	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+> -			     __LONG_LONG_PAIR((off_t) (offset >> 32),
+> -					      (off_t) offset),
+> -			     __LONG_LONG_PAIR((off_t) (len >> 32),
+> -					      (off_t) len));
+> -#else
+> -	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
+> -#endif
+> -}
+> -
+> -/*****************************************************************************
+>   * Main function that calls the system call with the  appropriate parameters
+>   ******************************************************************************/
+>  /* ac: number of command line parameters */
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate03.c b/testcases/kernel/syscalls/fallocate/fallocate03.c
+> index 973b2d7..a42dcad 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate03.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate03.c
+> @@ -95,7 +95,7 @@
+>  
+>  #include "test.h"
+>  #include "usctest.h"
+> -#include "linux_syscall_numbers.h"
+> +#include "fallocate.h"
+>  
+>  #define BLOCKS_WRITTEN 12
+>  #define HOLE_SIZE_IN_BLOCKS 12
+> @@ -103,7 +103,6 @@
+>  #define FALLOC_FL_KEEP_SIZE 1	//Need to be removed once the glibce support is provided
+>  #define TRUE 0
+>  
+> -static inline long fallocate();
+>  void get_blocksize(int);
+>  void populate_file();
+>  void file_seek(off_t);
+> @@ -219,22 +218,6 @@ void populate_file()
+>  }
+>  
+>  /*****************************************************************************
+> - * Wraper function to call fallocate system call
+> - ******************************************************************************/
+> -static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+> -{
+> -#if __WORDSIZE == 32
+> -	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+> -			     __LONG_LONG_PAIR((off_t) (offset >> 32),
+> -					      (off_t) offset),
+> -			     __LONG_LONG_PAIR((off_t) (len >> 32),
+> -					      (off_t) len));
+> -#else
+> -	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
+> -#endif
+> -}
+> -
+> -/*****************************************************************************
+>   * Main function that calls the system call with the  appropriate parameters
+>   ******************************************************************************/
+>  /* ac: number of command line parameters */
+
 
 
 ------------------------------------------------------------------------------
