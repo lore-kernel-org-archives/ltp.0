@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vw4Li-00069y-4m
-	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 06:23:14 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VvP8l-0000rc-Ki
+	for ltp-list@lists.sourceforge.net; Tue, 24 Dec 2013 10:23:07 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vw4Lh-000660-5U
-	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 06:23:14 +0000
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VvP8g-0007LA-Vu
+	for ltp-list@lists.sourceforge.net; Tue, 24 Dec 2013 10:23:07 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBQ6N5xm008562
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 14:23:06 +0800
-Message-ID: <52BBCB45.2000502@cn.fujitsu.com>
-Date: Thu, 26 Dec 2013 14:23:01 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBOAMoDC023914
+	for <ltp-list@lists.sourceforge.net>; Tue, 24 Dec 2013 18:22:54 +0800
+Message-ID: <52B95D7B.9050803@cn.fujitsu.com>
+Date: Tue, 24 Dec 2013 18:10:03 +0800
 From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2] semop/semop02.c: add ERANGE error value test
+Subject: [LTP] semop/semop04.c: fix a bug when running with -i option
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,86 +30,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+semop/semop04.c: fix a bug when running with -i option
+
+If we run semop04 like this: ./semop04 -i 2,
+its output will be:
+
+semop04     1  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
+semop04     2  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
+semop04     1  TBROK  :  semctl() failed
+semop04     2  TBROK  :  Remaining cases broken.
+
+Actually in the second iteration, semctl will return ERANGE. This is
+because the val variable will be less than zero in the sceond iteration.
+
+Variable should be reset to 1 before this actual errno test.
 
 Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/ipc/semop/semop02.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/ipc/semop/semop04.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop02.c b/testcases/kernel/syscalls/ipc/semop/semop02.c
-index 08fc43c..b2ed38c 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop02.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop02.c
-@@ -19,7 +19,7 @@
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/ipc/semop/semop04.c
+index 2725378..f7efd86 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop04.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop04.c
+@@ -80,7 +80,7 @@ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	char *msg;
+-	int val = 1;		/* value for SETVAL */
++	int val;		/* value for SETVAL */
  
- /*
-  * DESCRIPTION
-- *	semop02 - test for E2BIG, EACCES, EFAULT and EINVAL errors
-+ *	semop02 - test for E2BIG, EACCES, EFAULT, EINVAL and ERANGE errors
-  *
-  * HISTORY
-  *	03/2001 - Written by Wayne Boyer
-@@ -29,6 +29,7 @@
-  *        conflict with the key from another task.
-  */
+ 	int i;
  
-+#define _GNU_SOURCE
- #include <pwd.h>
- #include "test.h"
- #include "safe_macros.h"
-@@ -38,7 +39,7 @@ char *TCID = "semop02";
+@@ -96,6 +96,7 @@ int main(int ac, char **av)
+ 		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
  
- static void semop_verify(int i);
++		val = 1;
+ 		for (i = 0; i < TST_TOTAL; i++) {
  
--static int exp_enos[] = { E2BIG, EACCES, EFAULT, EINVAL, 0 };
-+static int exp_enos[] = { E2BIG, EACCES, EFAULT, EINVAL, ERANGE, 0 };
- int sem_id_1 = -1;	/* a semaphore set with read & alter permissions */
- int sem_id_2 = -1;	/* a semaphore set without read & alter permissions */
- int bad_id = -1;
-@@ -50,7 +51,6 @@ int badbuf = -1;
- #define NSOPS	5		/* a resonable number of operations */
- #define	BIGOPS	1024		/* a value that is too large for the number */
- 				/* of semop operations that are permitted   */
--
- struct test_case_t {
- 	int *semid;
- 	struct sembuf *t_sbuf;
-@@ -61,7 +61,8 @@ struct test_case_t {
- 	{&sem_id_2, (struct sembuf *)&s_buf, NSOPS, EACCES},
- 	{&sem_id_1, (struct sembuf *)-1, NSOPS, EFAULT},
- 	{&sem_id_1, (struct sembuf *)&s_buf, 0, EINVAL},
--	{&bad_id, (struct sembuf *)&s_buf, NSOPS, EINVAL}
-+	{&bad_id, (struct sembuf *)&s_buf, NSOPS, EINVAL},
-+	{&sem_id_1, (struct sembuf *)&s_buf, 1, ERANGE}
- };
- 
- int TST_TOTAL = ARRAY_SIZE(TC);
-@@ -94,6 +95,8 @@ void setup(void)
- 	char nobody_uid[] = "nobody";
- 	struct passwd *ltpuser;
- 	key_t semkey2;
-+	struct seminfo ipc_buf;
-+	union semun arr;
- 
- 	tst_require_root(NULL);
- 
-@@ -127,6 +130,16 @@ void setup(void)
- 		tst_brkm(TBROK | TERRNO, cleanup,
- 			 "couldn't create semaphore in setup");
- 	}
-+
-+	arr.ipc_buf = &ipc_buf;
-+	if (semctl(sem_id_1, 0, IPC_INFO, arr) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "semctl() IPC_INFO failed");
-+
-+	/* for ERANGE errno test */
-+	arr.val = 1;
-+	s_buf[0].sem_op = ipc_buf.semvmx;
-+	if (semctl(sem_id_1, 0, SETVAL, arr) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "semctl() SETVAL failed");
- }
- 
- static void semop_verify(int i)
+ 			/* initialize the s_buf buffer */
 -- 
 1.8.2.1
 
