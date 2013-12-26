@@ -1,29 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1Vnn21-0007Ry-5k
-	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 10:16:41 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vnn20-0001Yb-22
-	for ltp-list@lists.sourceforge.net; Tue, 03 Dec 2013 10:16:41 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id rB3AGXqF022586
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 05:16:34 -0500
-Received: from robin.brq.redhat.com (ovpn-112-58.ams2.redhat.com
-	[10.36.112.58])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id rB3AGTDN026430
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Dec 2013 05:16:33 -0500
-From: Jiri Jaburek <jjaburek@redhat.com>
-Date: Tue,  3 Dec 2013 11:16:13 +0100
-Message-Id: <1386065776-1961-3-git-send-email-jjaburek@redhat.com>
-In-Reply-To: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
-References: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
-Subject: [LTP] [PATCH 2/5] ssh: remove unused ssh_set_passwd script
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1VwAR3-0001r7-Fb
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 12:53:09 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VwAR1-0003hk-Vo
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 12:53:09 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBQCr0TM031010
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 20:53:00 +0800
+Message-ID: <52BC269D.9060009@cn.fujitsu.com>
+Date: Thu, 26 Dec 2013 20:52:45 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] controllers/memcg_lib.sh: reset root cgroup's
+ memory.use_hierarchy to 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,59 +26,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This script is not used anywhere in the suite. Furthermore,
-the same functionality is already provided by passwd(1) itself:
+For some linux distribution, such as RHEL7U0Beta,
+memory.use_hierarchy is 1 by default, which will caused some tests
+failed, such as memcg_stat_test.sh. According to kernel
+Documentation/cgroups/memory.txt's description, the default value
+should be 0, and some ltp tests are written based on this assumption,
+so here we reset the root cgroup's memory.use_hierarchy to 0
+before the test.
 
-  echo "my secret pass" | passwd --stdin myusername
-
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/network/tcp_cmds/ssh/ssh_set_passwd | 28 ---------------------------
- 1 file changed, 28 deletions(-)
- delete mode 100755 testcases/network/tcp_cmds/ssh/ssh_set_passwd
+ .../controllers/memcg/functional/memcg_lib.sh      | 23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/testcases/network/tcp_cmds/ssh/ssh_set_passwd b/testcases/network/tcp_cmds/ssh/ssh_set_passwd
-deleted file mode 100755
-index 1b7bb7d..0000000
---- a/testcases/network/tcp_cmds/ssh/ssh_set_passwd
-+++ /dev/null
-@@ -1,28 +0,0 @@
--#!/usr/bin/expect
--#
--# Set Password for a specific new user
--# This script should be run as 'root'
--#
--# Example:
--#		./set_passwd USER PASSWD
--#
--
--if { [llength $argv] < 2} {
--	exit 1
--}
--
--set USER [lindex $argv 0]
--set PASSWD [lindex $argv 1]
--
--set timeout 30
--
--spawn passwd $USER
--expect "password:"
--sleep 1
--send "$PASSWD\r"
--expect "Re-type password:"
--sleep 1
--send "$PASSWD\r"
--expect succeed
--
--exit 0
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 16e30ec..f93b291 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -38,6 +38,7 @@ HUGEPAGESIZE=`grep Hugepagesize /proc/meminfo | awk '{ print $2 }'`
+ HUGEPAGESIZE=$(( $HUGEPAGESIZE * 1024 ))
+ PASS=0
+ FAIL=1
++orig_memory_use_hierarchy="none"
+ 
+ cur_id=0
+ failed=0
+@@ -396,6 +397,15 @@ test_move_charge()
+ 
+ cleanup()
+ {
++	if [ "$orig_memory_use_hierarchy" != "none" ];then
++		echo $orig_memory_use_hierarchy > \
++		     /dev/memcg/memory.use_hierarchy
++		if [ $? -ne 0 ];then
++			tst_resm TINFO "restore "\
++				 "/dev/memcg/memory.use_hierarchy failed"
++		fi
++	fi
++	orig_memory_use_hierarchy="none"
+ 	killall -9 memcg_process 2>/dev/null
+ 	if [ -e /dev/memcg ]; then
+ 		umount /dev/memcg 2>/dev/null
+@@ -409,4 +419,17 @@ do_mount()
+ 
+ 	mkdir /dev/memcg 2> /dev/null
+ 	mount -t cgroup -omemory memcg /dev/memcg
++
++	# For some linux distribution, such as RHEL7U0Beta,
++	# memory.use_hierarchy is 1 by default, which will caused some tests
++	# failed, such as memcg_stat_test.sh. According to kernel
++	# Documentation/cgroups/memory.txt's description, the default value
++	# should be 0, and some ltp tests are written based on this assumption,
++	# so here we reset the root cgroup's memory.use_hierarchy to 0
++	# before the test.
++	orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
++	echo 0 > /dev/memcg/memory.use_hierarchy
++	if [ $? -ne 0 ];then
++		tst_resm TINFO "set /dev/memcg/memory.use_hierarchy to 0 failed"
++	fi
+ }
 -- 
-1.8.3.1
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
@@ -93,7 +99,7 @@ Rapidly troubleshoot problems before they affect your business. Most IT
 organizations don't have a clear picture of how application performance 
 affects their revenue. With AppDynamics, you get 100% visibility into your 
 Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
