@@ -1,33 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Vo8kT-0001M2-W4
-	for ltp-list@lists.sourceforge.net; Wed, 04 Dec 2013 09:28:02 +0000
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Vw6uv-0005x3-VW
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 09:07:45 +0000
 Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vo8kT-00052s-7m
-	for ltp-list@lists.sourceforge.net; Wed, 04 Dec 2013 09:28:01 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vw6uv-0000gt-7r
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 09:07:45 +0000
 Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
 	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rB49RrbY024964
+	ESMTP id rBQ97cK8011211
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 09:27:54 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 09:07:39 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
 	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rB49RqBw016697
+	rBQ97bVS027365
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 09:27:53 GMT
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rB49RqMQ016678
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Dec 2013 09:27:52 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  4 Dec 2013 13:27:32 +0400
-Message-Id: <1386149252-26939-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1386149252-26939-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1386149252-26939-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/2] device-drivers: uaccess: enable build and run
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 09:07:38 GMT
+Received: from ubhmt120.oracle.com (ubhmt120.oracle.com [156.151.24.25])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBQ97bq1023232
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 09:07:37 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 26 Dec 2013 13:07:22 +0400
+Message-Id: <1388048842-28373-6-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 5/5] rpc_stdcall_basic_lib: fixed IS_EX match
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,43 +43,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Since we stripped off the '.bin' suffix from the
+binaries of rpc-tirpc-full-test-suite, the IS_EX condition
+in some of rpc_stdcall_basic_lib match false conditions.
+
+Use full cmdline for grep.
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- runtest/kernel_misc                      |    1 +
- testcases/kernel/device-drivers/Makefile |    1 +
- 2 files changed, 2 insertions(+), 0 deletions(-)
+ .../scripts/rpc_stdcall_svc_freeargs.sh            |    2 +-
+ .../scripts/rpc_stdcall_svc_getargs.sh             |    2 +-
+ .../scripts/rpc_stdcall_svc_sendreply.sh           |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index 3e3d016..51b2a6c 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -4,3 +4,4 @@ rtc01 rtc01
- block_dev block_dev
- tpci tpci
- tbio tbio
-+uaccess uaccess
-diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
-index 9f80094..b4ed12b 100644
---- a/testcases/kernel/device-drivers/Makefile
-+++ b/testcases/kernel/device-drivers/Makefile
-@@ -22,5 +22,6 @@ SUBDIRS		:= block \
- 		   pci \
- 		   rtc \
- 		   tbio \
-+		   uaccess \
+diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_freeargs.sh b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_freeargs.sh
+index 3af075b..36b1d33 100755
+--- a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_freeargs.sh
++++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_freeargs.sh
+@@ -104,7 +104,7 @@ then
+ 	exit 2
+ fi
  
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
+-IS_EX=`$REMOTESHELL $CLIENTUSER@$CLIENTIP "ps -e | grep $TESTSVCBIN"`
++IS_EX=`$REMOTESHELL $CLIENTUSER@$CLIENTIP "ps -ef | grep $TESTSVC | grep -v grep"`
+ 
+ if [ "$IS_EX" ]
+ then
+diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_getargs.sh b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_getargs.sh
+index 2878ffa..f62c514 100755
+--- a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_getargs.sh
++++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_getargs.sh
+@@ -104,7 +104,7 @@ then
+ 	exit 2
+ fi
+ 
+-IS_EX=`$REMOTESHELL $CLIENTUSER@$CLIENTIP "ps -e | grep $TESTSVCBIN"`
++IS_EX=`$REMOTESHELL $CLIENTUSER@$CLIENTIP "ps -ef | grep $TESTSVC | grep -v grep"`
+ 
+ if [ "$IS_EX" ]
+ then
+diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_sendreply.sh b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_sendreply.sh
+index 66e3a24..f8df4fc 100755
+--- a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_sendreply.sh
++++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/rpc_stdcall_svc_sendreply.sh
+@@ -104,7 +104,7 @@ then
+ 	exit 2
+ fi
+ 
+-IS_EX=`$REMOTESHELL $CLIENTUSER@$CLIENTIP "ps -e | grep $TESTSVCBIN"`
++IS_EX=`$REMOTESHELL $CLIENTUSER@$CLIENTIP "ps -ef | grep $TESTSVC | grep -v grep"`
+ 
+ if [ "$IS_EX" ]
+ then
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
