@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1VwV7C-0006ai-IP
-	for ltp-list@lists.sourceforge.net; Fri, 27 Dec 2013 10:58:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VwV7A-0002DR-Js
-	for ltp-list@lists.sourceforge.net; Fri, 27 Dec 2013 10:58:02 +0000
-Message-ID: <1388141867.1656.0.camel@G08JYZSD130126>
-From: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 27 Dec 2013 18:57:47 +0800
-In-Reply-To: <201312250423.10814.vapier@gentoo.org>
-References: <1387884941.1622.98.camel@G08JYZSD130126>
-	<1387885358.1622.104.camel@G08JYZSD130126>
-	<201312250423.10814.vapier@gentoo.org>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH v3 1/4] fallocate/fallocate.h: move inline function
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Vw6uo-0005LB-L7
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 09:07:38 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vw6un-00071g-Pz
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 09:07:38 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
+	ESMTP id rBQ97U1C028245
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 09:07:31 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBQ97UxK001926
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 09:07:30 GMT
+Received: from ubhmt120.oracle.com (ubhmt120.oracle.com [156.151.24.25])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	rBQ97TcP027143
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 09:07:29 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 26 Dec 2013 13:07:17 +0400
+Message-Id: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] rpc-tirpc-full-test-suite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,90 +36,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On Wed, 2013-12-25 at 04:23 -0500, Mike Frysinger wrote:
-> On Tuesday 24 December 2013 06:42:38 zenglg.jy wrote:
-> > On Tue, 2013-12-24 at 19:35 +0800, zenglg.jy wrote:
-> > > >From edb98f0b69c16f612f79fe24d10597af47424f13 Mon Sep 17 00:00:00 2001
-> > > 
-> > > From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> > > Date: Tue, 24 Dec 2013 19:21:32 +0800
-> > > Subject: [PATCH] fallocate/fallocate.h: move inline function
-> > > 
-> > > Moved common inline function to fallocate.h
-> > > 
-> > > Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> > > ---
-> > > 
-> > >  testcases/kernel/syscalls/fallocate/fallocate.h   | 47
-> > >  +++++++++++++++++++++++
-> > >  testcases/kernel/syscalls/fallocate/fallocate01.c | 23 +----------
-> > >  testcases/kernel/syscalls/fallocate/fallocate02.c | 19 +--------
-> > >  testcases/kernel/syscalls/fallocate/fallocate03.c | 19 +-------- 4
-> > >  files changed, 50 insertions(+), 58 deletions(-)
-> > >  create mode 100644 testcases/kernel/syscalls/fallocate/fallocate.h
-> > > 
-> > > diff --git a/testcases/kernel/syscalls/fallocate/fallocate.h
-> > > b/testcases/kernel/syscalls/fallocate/fallocate.h new file mode 100644
-> > > index 0000000..e47338b
-> > > --- /dev/null
-> > > +++ b/testcases/kernel/syscalls/fallocate/fallocate.h
-> > > @@ -0,0 +1,47 @@
-> > > +/*
-> > > + * Copyright (c) International Business Machines  Corp., 2007
-> > > + * Copyright (c) 2013 Fujitsu Ltd.
-> > > + *
-> > > + * This program is free software;  you can redistribute it and/or modify
-> > > + * it under the terms of the GNU General Public License as published by
-> > > + * the Free Software Foundation; either version 2 of the License, or
-> > > + * (at your option) any later version.
-> > > + *
-> > > + * This program is distributed in the hope that it will be useful,
-> > > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > > + * GNU Library General Public License for more details.
-> > > + *
-> > > + * You should have received a copy of the GNU General Public License
-> > > + * along with this program; if not, write to the Free Software
-> > > + * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-> > > USA. + *
-> > > + */
-> > > +
-> > > +#ifndef FALLOCATE_H
-> > > +#define FALLOCATE_H
-> > > +
-> > > +#include <sys/types.h>
-> > > +#include <endian.h>
-> > > +#include "linux_syscall_numbers.h"
-> > > +
-> > > +static inline long fallocate(int fd, int mode, loff_t offset, loff_t
-> > > len) +{
-> > > +/*
-> > > + * Use __WORDSIZE will fail on ABI's that have 64bit registers but 32bit
-> > > + * longs like MIPS n32 and x86_64 x32
-> > > + */
-> > 
-> > I do not know about the ABI's problem. Could someone give me a help.
-> 
-> you can check for mips n32 by doing:
->         #if defined(__mips__) && _MIPS_SIM == _ABIN32
-> 
-> you can check for x86_64 x32 by doing:
->         #if defined(__x86_64__) && defined(__ILP32__)
-> 
-> these should use the 64bit code path
+Hi!
 
-Thank you very much!
-Best regards,
-Zeng
+I found that run_rpc_test.sh fails during ltpstress.sh execution. And it fails
+because the rpc-tirpc-full-test-suite is not compiled.
 
-> -mike
+So I:
+* integrated a part of the rpc-tirpc-full-test-suite into the LTP
+  building process (added Makefiles and etc). This part is the one
+  which was executed by run_rpc_tests.sh.
 
+* changed the description of the testcases in runtest/.
+  To ease debugging.
+
+I couldn't find a solution to make 'make' add the '.bin' suffix to the produced
+binaries. Therefore I had to fix some of the test scripts for that fact.
+
+Does anybody know how to do that?
+
+Thank you.
+
+PS: in my environment rpc_broadc_basic_lib fails. But it fails with the current git
+version as well. I've not yet figured out why.
 
 
 ------------------------------------------------------------------------------
