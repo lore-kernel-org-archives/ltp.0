@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Vr2TB-0001JV-UC
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 09:22:10 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vr2TA-0004kQ-TH
-	for ltp-list@lists.sourceforge.net; Thu, 12 Dec 2013 09:22:09 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id rBC9M2bh003298
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Dec 2013 09:22:03 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rBC9M2Ef024464
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Dec 2013 09:22:02 GMT
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	rBC9M2fZ024449
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Dec 2013 09:22:02 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 12 Dec 2013 13:21:55 +0400
-Message-Id: <1386840115-9703-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1383124058-13133-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1383124058-13133-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V3 2/2] setpgid03: use tst_checkpoint interface
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vw4LU-00069V-9Q
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 06:23:00 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vw4LS-00065F-4h
+	for ltp-list@lists.sourceforge.net; Thu, 26 Dec 2013 06:23:00 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id rBQ6Mm21008554
+	for <ltp-list@lists.sourceforge.net>; Thu, 26 Dec 2013 14:22:48 +0800
+Message-ID: <52BBCB33.8010904@cn.fujitsu.com>
+Date: Thu, 26 Dec 2013 14:22:43 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 1/2] semop/semop02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,218 +25,288 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-I came accross the following rare issue:
 
-setpgid03    1  TPASS  :  setpgid SUCCESS to set errno to EPERM
-setpgid03    2  TFAIL  :  setpgid FAILED, expect EACCES got 1
+* Delete some useless commtents.
+* Move the test body form main to a new
+  semop_verify function.
+* Use some SAFE_* macros.
+* Some cleanup.
 
-I suppose it may happen if the test host is under stress.
-
-To prevent this it would be better to use tst_checkpoint interface
-for parent-child synchronisations.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/.gitignore               |    1 +
- testcases/kernel/syscalls/setpgid/setpgid03.c      |   57 ++++++++++++++++----
- .../kernel/syscalls/setpgid/setpgid03_child.c      |   31 +++++++++++
- 3 files changed, 78 insertions(+), 11 deletions(-)
- create mode 100644 testcases/kernel/syscalls/setpgid/setpgid03_child.c
+ testcases/kernel/syscalls/ipc/semop/semop02.c | 175 +++++++++-----------------
+ 1 file changed, 58 insertions(+), 117 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index bbefb25..6ce8900 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -777,6 +777,7 @@
- /setpgid/setpgid01
- /setpgid/setpgid02
- /setpgid/setpgid03
-+/setpgid/setpgid03_child
- /setpgrp/setpgrp01
- /setpgrp/setpgrp02
- /setpriority/setpriority01
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
-index 2c47bc4..b9ecddd 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid03.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
-@@ -1,5 +1,6 @@
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop02.c b/testcases/kernel/syscalls/ipc/semop/semop02.c
+index b97cc3f..08fc43c 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop02.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop02.c
+@@ -18,56 +18,30 @@
+  */
+ 
  /*
-  * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+- * NAME
+- *	semop02.c
+- *
+  * DESCRIPTION
+  *	semop02 - test for E2BIG, EACCES, EFAULT and EINVAL errors
   *
-  * This program is free software;  you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -31,12 +32,17 @@
- #include "test.h"
- #include "usctest.h"
+- * ALGORITHM
+- *	create a semaphore set with read and alter permissions
+- *	create a semaphore set without read and alter permissions
+- *	loop if that option was specified
+- *	call semop with five different invalid cases
+- *	check the errno value
+- *	  issue a PASS message if we get E2BIG, EACCES, EFAULT or EINVAL
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  semop02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+  * HISTORY
+  *	03/2001 - Written by Wayne Boyer
+  *
+  *      10/03/2008 Renaud Lottiaux (Renaud.Lottiaux@kerlabs.com)
+  *      - Fix concurrency issue. The second key used for this test could
+  *        conflict with the key from another task.
+- *
+- * RESTRICTIONS
+- *	none
+  */
+-#include <pwd.h>
  
-+#define TEST_APP "setpgid03_child"
++#include <pwd.h>
++#include "test.h"
++#include "safe_macros.h"
+ #include "ipcsem.h"
+ 
+ char *TCID = "semop02";
+-int TST_TOTAL = 5;
+ 
+-int exp_enos[] = { E2BIG, EACCES, EFAULT, EINVAL, 0 };
++static void semop_verify(int i);
+ 
+-int sem_id_1 = -1;		/* a semaphore set with read & alter permissions */
+-int sem_id_2 = -1;		/* a semaphore set without read & alter permissions */
++static int exp_enos[] = { E2BIG, EACCES, EFAULT, EINVAL, 0 };
++int sem_id_1 = -1;	/* a semaphore set with read & alter permissions */
++int sem_id_2 = -1;	/* a semaphore set without read & alter permissions */
+ int bad_id = -1;
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
+ 
+ struct sembuf s_buf[PSEMS];
+ 
+@@ -78,143 +52,110 @@ int badbuf = -1;
+ 				/* of semop operations that are permitted   */
+ 
+ struct test_case_t {
+-	int *semid;		/* the semaphore id */
+-	struct sembuf *t_sbuf;	/* the first in an array of sembuf structures */
+-	unsigned t_ops;		/* the number of elements in the above array */
+-	int error;		/* the expected error number */
++	int *semid;
++	struct sembuf *t_sbuf;
++	unsigned t_ops;
++	int error;
+ } TC[] = {
+-	/* E2BIG - the number of operations is too big */
+-	{
+-	&sem_id_1, (struct sembuf *)&s_buf, BIGOPS, E2BIG},
+-	    /* EACCES - the semaphore set has no access permission */
+-	{
+-	&sem_id_2, (struct sembuf *)&s_buf, NSOPS, EACCES},
+-	    /* EFAULT - the address for the s_buf value is not accessible */
+-	{
+-	&sem_id_1, (struct sembuf *)-1, NSOPS, EFAULT},
+-	    /* EINVAL - the number of elments (t_ops) is 0 */
+-	{
+-	&sem_id_1, (struct sembuf *)&s_buf, 0, EINVAL},
+-	    /* EINVAL - the semaphore set doesn't exist */
+-	{
+-	&bad_id, (struct sembuf *)&s_buf, NSOPS, EINVAL}
++	{&sem_id_1, (struct sembuf *)&s_buf, BIGOPS, E2BIG},
++	{&sem_id_2, (struct sembuf *)&s_buf, NSOPS, EACCES},
++	{&sem_id_1, (struct sembuf *)-1, NSOPS, EFAULT},
++	{&sem_id_1, (struct sembuf *)&s_buf, 0, EINVAL},
++	{&bad_id, (struct sembuf *)&s_buf, NSOPS, EINVAL}
+ };
+ 
++int TST_TOTAL = ARRAY_SIZE(TC);
 +
- char *TCID = "setpgid03";
- int TST_TOTAL = 1;
- 
-+static struct tst_checkpoint checkpoint;
-+
- static void do_child(void);
- static void setup(void);
- static void cleanup(void);
-+static void alarm_handler(int signo);
- 
  int main(int ac, char **av)
  {
-@@ -76,7 +82,7 @@ int main(int ac, char **av)
- #endif
- 		}
+ 	int lc;
+ 	char *msg;
+ 	int i;
  
--		sleep(1);
-+		TST_CHECKPOINT_PARENT_WAIT(cleanup, &checkpoint);
- 		rval = setpgid(pid, getppid());
- 		if (errno == EPERM) {
- 			tst_resm(TPASS,
-@@ -86,7 +92,7 @@ int main(int ac, char **av)
- 				"setpgid FAILED, expect %d, return %d",
- 				EPERM, errno);
- 		}
--		sleep(1);
-+		TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
+-
+-	setup();		/* global setup */
  
- 		if (wait(&status) < 0)
- 			tst_resm(TFAIL | TERRNO, "wait() for child 1 failed");
-@@ -105,13 +111,13 @@ int main(int ac, char **av)
+-	/* The following loop checks looping state if -i option given */
++	setup();
  
- 		}
- 		if (pid == 0) {
--			if (execlp("sleep", "sleep", "3", NULL) < 0) {
-+			if (execlp(TEST_APP, TEST_APP, NULL) < 0)
- 				perror("exec failed");
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+ 
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			/*
+-			 * use the TEST macro to make the call
+-			 */
+-
+-			TEST(semop(*(TC[i].semid), TC[i].t_sbuf, TC[i].t_ops));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
 -			}
-+
- 			exit(127);
- 		}
+-
+-			TEST_ERROR_LOG(TEST_ERRNO);
+-
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS, "expected failure - errno = "
+-					 "%d : %s", TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TFAIL, "unexpected error - "
+-					 "%d : %s", TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			}
+-		}
++		for (i = 0; i < TST_TOTAL; i++)
++			semop_verify(i);
+ 	}
  
--		sleep(1);
-+		TST_CHECKPOINT_PARENT_WAIT(cleanup, &checkpoint);
- 		rval = setpgid(pid, getppid());
- 		if (errno == EACCES) {
- 			tst_resm(TPASS,
-@@ -120,6 +126,7 @@ int main(int ac, char **av)
- 			tst_resm(TFAIL,
- 				"setpgid FAILED, expect EACCES got %d", errno);
- 		}
-+		TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
- 
- 		if (wait(&status) < 0)
- 			tst_resm(TFAIL | TERRNO, "wait() for child 2 failed");
-@@ -133,23 +140,49 @@ int main(int ac, char **av)
+ 	cleanup();
+-
  	tst_exit();
  }
  
-+static void alarm_handler(int signo)
-+{
-+	printf("CHILD: checkpoint timed out\n");
-+
-+	exit(3);
-+}
-+
- static void do_child(void)
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+ void setup(void)
  {
--	int exno = 0;
-+	unsigned int timeout = checkpoint.timeout / 1000;
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(struct sigaction));
-+	sa.sa_handler = alarm_handler;
-+
-+	if (sigaction(SIGALRM, &sa, NULL) < 0) {
-+		printf("CHILD: sigaction() failed, errno: %d\n", errno);
-+		exit(1);
-+	}
++	char nobody_uid[] = "nobody";
++	struct passwd *ltpuser;
+ 	key_t semkey2;
  
- 	if (setsid() < 0) {
--		printf("setsid() failed, errno: %d\n", errno);
--		exno = 1;
-+		printf("CHILD: setsid() failed, errno: %d\n", errno);
-+		exit(2);
- 	}
--	sleep(2);
--	exit(exno);
+-	/* Switch to nobody user for correct error code collection */
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, NULL, "Test must be run as root");
+-	}
+-	ltpuser = getpwnam(nobody_uid);
+-	if (seteuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setreuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setreuid");
+-	}
++	tst_require_root(NULL);
 +
-+	alarm(timeout);
-+	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
-+
-+	alarm(timeout);
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
-+
-+	exit(0);
- }
++	ltpuser = SAFE_GETPWNAM(NULL, nobody_uid);
++	SAFE_SETUID(NULL, ltpuser->pw_uid);
  
- static void setup(void)
- {
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
  
-+	tst_tmpdir();
-+
-+	TST_CHECKPOINT_INIT(&checkpoint);
-+	checkpoint.timeout = 10000;
-+
- 	umask(0);
+-	/* Set up the expected error numbers for -e option */
+ 	TEST_EXP_ENOS(exp_enos);
  
  	TEST_PAUSE;
-@@ -157,5 +190,7 @@ static void setup(void)
  
- static void cleanup(void)
- {
-+	tst_rmdir();
-+
- 	TEST_CLEANUP;
- }
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid03_child.c b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-new file mode 100644
-index 0000000..c4cf892
---- /dev/null
-+++ b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-@@ -0,0 +1,31 @@
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include "test.h"
-+
-+char *TCID = "setpgid03_child";
-+
-+static struct tst_checkpoint checkpoint = { .timeout = 10000, .retval = 1};
-+
-+int main(void)
-+{
-+	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
-+
-+	return 0;
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+ 	tst_tmpdir();
+ 
+ 	/* get an IPC resource key */
+ 	semkey = getipckey();
+ 
+ 	/* create a semaphore set with read and alter permissions */
+-	if ((sem_id_1 =
+-	     semget(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA)) == -1) {
+-		tst_brkm(TBROK, cleanup, "couldn't create semaphore in setup");
++	sem_id_1 = semget(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
++	if (sem_id_1 == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "couldn't create semaphore in setup");
+ 	}
+ 
+ 	/* Get an new IPC resource key. */
+ 	semkey2 = getipckey();
+ 
+ 	/* create a semaphore set without read and alter permissions */
+-	if ((sem_id_2 = semget(semkey2, PSEMS, IPC_CREAT | IPC_EXCL)) == -1) {
+-		tst_brkm(TBROK, cleanup, "couldn't create semaphore in setup");
++	sem_id_2 = semget(semkey2, PSEMS, IPC_CREAT | IPC_EXCL);
++	if (sem_id_2 == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "couldn't create semaphore in setup");
++	}
 +}
++
++static void semop_verify(int i)
++{
++	TEST(semop(*(TC[i].semid), TC[i].t_sbuf, TC[i].t_ops));
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "call succeeded unexpectedly");
++		return;
++	}
++
++	TEST_ERROR_LOG(TEST_ERRNO);
++
++	if (TEST_ERRNO == TC[i].error) {
++		tst_resm(TPASS | TTERRNO, "semop failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "semop failed unexpectedly; expected: "
++			 "%d - %s", TC[i].error, strerror(TC[i].error));
+ 	}
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+ void cleanup(void)
+ {
+ 	/* if they exist, remove the semaphore resources */
+ 	rm_sema(sem_id_1);
+ 	rm_sema(sem_id_2);
+ 
+-	tst_rmdir();
+-
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+ 
++	tst_rmdir();
+ }
 -- 
-1.7.1
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
