@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W35YZ-0005Hh-1d
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 15:05:31 +0000
-Date: Tue, 14 Jan 2014 16:05:05 +0100
-From: chrubis@suse.cz
-Message-ID: <20140114150505.GB21469@rei>
-References: <52CFC6D1.4060006@oracle.com>
-	<1389605723-17937-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20140113173855.GD1945@rei> <52D4F37C.4050409@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52D4F37C.4050409@oracle.com>
-Subject: Re: [LTP] [PATCH 2/2] setregid02, setresuid03: inval_user fix
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vyelc-0006aH-Lq
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jan 2014 09:40:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vyela-00070a-Gi
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jan 2014 09:40:40 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s029eUZw020721
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jan 2014 17:40:30 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Thu, 2 Jan 2014 17:39:32 +0800
+Message-Id: <1388655575-4078-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH 1/4] delete_module/delete_module01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,86 +24,239 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > Hmm, the setresuid03 did not fail because the EPERM check kicks in even
-> > before the check for correct uid/gid. Which should probably be fixed
-> > because there does not seem to be a setresuid test for invalid values
-> > that would actually excercise such checks, but that can be fixed after
-> > the release.
-> 
-> Hmm. I took a brief look at setregid() and setresuid() syscalls sources.
-> And it seems that the only thing they care about is not "validity" or 
-> "invalidity" of uid/gid. It's the process permission (capabilities).
-> 
-> Given enough permission we can change real, effective or saved uid 
-> values with setresuid() to arbitrary values. If we don't have such 
-> permission we can change our uids only to the one of the current real, 
-> effective or saved uid values, in the other case we will receive EPERM. 
-> Actually, man setresuid states that :-[
-> 
-> setresuid() may return EINVAL, but I don't think we can raise it by 
-> passing an unused uid value to setresuid() (if we have permission 
-> setresuid() returns 0 if we don't - it returns EPERM).
+* Delete some useless commtents.
+* Use SAFE_* macros.
+* Make tests only run in kernel 2.6.0 or higher.
+* Some cleanup and fixes.
 
-I was under an impression that there are some checks (possibly in libc)
-because the test comments talks about invalid uids and gids, but
-thinking about it this behavior makes more sense (and checking both
-kernel source and libc source indeed proves this). Sorry for the
-confusion.
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ .../kernel/module/delete_module/delete_module01.c  | 160 ++++++---------------
+ 1 file changed, 45 insertions(+), 115 deletions(-)
 
-Note that the uid_valid() and gid_valid() checks are defined in
-include/linux/uidgid.h and can fail only if the value is ((kgid_t)-1) so
-as far as I can see the EINVAL cannot be triggered at all. And the same
-goes for uid.
-
-> So it's not bad that we are introducing tst_get_unused_uid, 
-> tst_get_unused_gid functions and setting inval_user in a more formal way.
-> But It looks like passing inval_user value is the same as passing
-> any other uid != real|effective|saved uid of the current process....
-> 
-> Since we have in setresuid03 a full set for nobody uid:
-> 	setresuid(nobody, -1, -1)
-> 	setresuid(-1, -1, nobody)
-> 	setresuid(-1, nobody, -1)
-> what do you think about adding setresuid(inval_user, -1, -1) to the test 
-> case? Just in case...
-> 
-> Related to setregid02.
-> Even that test_data contains EINVAL for the last two members, setregid() 
-> doesn't return EINVAL for them. It returns EPERM for all the test cases.
-> 
-> You said that on SUSE setregid02 fails. I added a group with 65533 gid 
-> and executed setregid02 (current git version) and it passed. Could you 
-> check it again in your environment?
-
-I looked again at setregid02 it sets it's uid and gid (actually all of
-them because it uses setuid() and setgid() as a root) to nobody's uid
-and gid before the test starts and by a coincidence these are set to
-65534 and 65533 on SUSE. Which explains the failure.
-
-The setresuid03 uses bin user instead.
-
-Now let's keep the code as it is for the release, it works good enough
-and fix these a better way after it. One of the options is to set all
-three uids/gids to known values and loop on all possible uids/gids and
-expect EPERM on everything but the ones we set previously.
-
+diff --git a/testcases/kernel/module/delete_module/delete_module01.c b/testcases/kernel/module/delete_module/delete_module01.c
+index b96564d..e41e862 100644
+--- a/testcases/kernel/module/delete_module/delete_module01.c
++++ b/testcases/kernel/module/delete_module/delete_module01.c
+@@ -14,157 +14,87 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  *
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER   : delete_module01
+- *
+- *    EXECUTED BY       : root / superuser
+- *
+- *    TEST TITLE        : Basic tests for delete_module(2)
+- *
+- *    TEST CASE TOTAL   : 1
+- *
+- *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
+- *
+- *    SIGNALS
+- *		 Uses SIGUSR1 to pause before test if option set.
+- *		 (See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *		 This is a Phase I test for the delete_module(2) system call.
+- *		 It is intended to provide limited exposure of the system call.
+- *
+- *		 Setup:
+- *		   Setup signal handling.
+- *		   Test caller is superuser
+- *		   Pause for SIGUSR1 if option specified.
+- *		   Initialize modname for each child process.
+- *
+- *		 Test:
+- *		  Loop if the proper options are given.
+- *		   Create module entry
+- *		   Execute system call
+- *		   Check return code, if system call failed (return=-1),
+- *		   	issue a FAIL message with the errno.
+- *		   Otherwise, Issue PASS message.
+- *
+- *		 Cleanup:
+- *		   Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  delete_module01 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
+- *		 		 where,  -c n : Run n copies concurrently.
+- *			 		 -e   : Turn on errno logging.
+- *		 	 		 -f   : Turn off functional testing
+- *		 	 		 -h   : Show help screen
+- *		 	 		 -i n : Execute test n times.
+- *		 	 		 -I x : Execute test for x seconds.
+- *		 	 		 -p   : Pause for SIGUSR1 before
+- *		 	 		 	starting test.
+- *		 	 		 -P x : Pause for x seconds between
+- *		 	 		 	iterations.
+- *		 	 		 -t   : Turn on syscall timing.
++
++/*
++ *    AUTHOR: Madhu T L <madhu.tarikere@wipro.com>
+  *
+- ****************************************************************/
++ *    DESCRIPTION:
++ *    	Basic tests for delete_module(2)
++ *    	1) insmod dummy_del_mod.ko
++ *    	2) call delete_module(2) to remove dummy_del_mod.ko
++ */
+ 
+-#include <libgen.h>
+ #include <errno.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "tst_module.h"
++#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
+ 
+-static void setup(void);
++#define MODULE_NAME	"dummy_del_mod"
++#define MODULE_NAME_KO	"dummy_del_mod.ko"
++
++static void setup(int argc, char *argv[]);
+ static void cleanup(void);
+ 
+-char *TCID = "delete_module01";	/* Test program identifier.    */
+-int TST_TOTAL = 1;		/* Total number of test cases. */
++
++char *TCID = "delete_module01";
++int TST_TOTAL = 1;
++static int module_loaded;
+ 
+ int main(int argc, char **argv)
+ {
+ 	int lc;
+-	char *msg;
+-	char cmd[PATH_MAX];
+-	char *module_name = "dummy_del_mod";
+-
+-	if ((msg = parse_opts(argc, argv, NULL, NULL)) != (char *)NULL) {
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
+ 
+-	setup();
++	setup(argc, argv);
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+ 
+-		/* Execute system call */
+-		sprintf(cmd, "/sbin/insmod %s/%s.ko", dirname(argv[0]),
+-			module_name);
+-
+-		/* Insmod the module */
+-		if ((system(cmd)) != 0) {
+-			tst_resm(TBROK, "Failed to load %s module",
+-				 module_name);
+-			printf("system() failed; cannot test init_module: "
+-			       "errno=%i\n", errno);
+-			goto EXIT;
++		/* insert dummy_del_mod.ko */
++		if (module_loaded == 0) {
++			tst_module_load(NULL, MODULE_NAME_KO, NULL);
++			module_loaded = 1;
+ 		}
+ 
+-		/* Test the system call */
+-		TEST(delete_module(module_name));
+-
+-		/* check return code */
++		TEST(ltp_syscall(__NR_delete_module, MODULE_NAME, 0));
+ 		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "delete_module() failed to remove"
+-				 " module entry for %s, errno=%d : %s",
+-				 module_name, TEST_ERRNO, strerror(TEST_ERRNO));
++			tst_resm(TFAIL | TTERRNO, "delete_module() failed to "
++				 "remove module entry for %s ", MODULE_NAME);
+ 		} else {
+-			tst_resm(TPASS, "delete_module() successful, returned"
+-				 " %d", TEST_RETURN);
++			tst_resm(TPASS, "delete_module() successful");
++			module_loaded = 0;
+ 		}
+ 
+ 	}
+ 
+-	/* perform global cleanup and exit */
+-EXIT:
+ 	cleanup();
+-
++	tst_exit();
+ }
+ 
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
++static void setup(int argc, char *argv[])
+ {
++	char *msg;
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	/* Check whether we are root  */
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, NULL, "Must be root for this test!");
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
++	if (tst_kvercmp(2, 6, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			 "Test must be run with kernel 2.6 or newer");
+ 	}
+ 
+-	/*
+-	 * if (tst_kvercmp(2,5,48) >= 0)
+-	 * tst_brkm(TCONF, NULL, "This test will not work on "
+-	 *                              "kernels after 2.5.48");
+-	 */
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -c option.
+-	 */
+-	TEST_PAUSE;
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	tst_require_root(NULL);
+ 
++	TEST_PAUSE;
+ }
+ 
+-/*
+- * cleanup()
+- *	performs all ONE TIME cleanup for this test at
+- *	completion or premature exit
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
++	if (module_loaded == 1)
++		tst_module_unload(NULL, MODULE_NAME_KO);
+ 	TEST_CLEANUP;
+-
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
