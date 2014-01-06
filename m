@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1W8pHc-0001X0-Fy
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 10:55:44 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W8pHZ-0004FZ-Q4
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 10:55:44 +0000
-Date: Thu, 30 Jan 2014 05:55:35 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <882926271.1663183.1391079335500.JavaMail.root@redhat.com>
-In-Reply-To: <52DDD0BA.4070906@oracle.com>
-References: <1386729875-487-1-git-send-email-xu.simon@oracle.com>
-	<52BA384B.3070308@oracle.com> <52DDD0BA.4070906@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jjaburek@redhat.com>) id 1W08XL-0005r2-Q7
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 11:40:03 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W08XK-00081Q-Gf
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 11:40:03 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s06BdujC013262
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jan 2014 06:39:56 -0500
+Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id s06BdtOQ006727
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jan 2014 06:39:56 -0500
+Message-ID: <52CA960B.9080709@redhat.com>
+Date: Mon, 06 Jan 2014 12:39:55 +0100
+From: Jiri Jaburek <jjaburek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] xinetd_tests.sh: explicitly enable IPv6
+References: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
+In-Reply-To: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
+Subject: Re: [LTP] [PATCH 0/5] various tcp_cmds/ssh/* fixes, rewrites
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,84 +36,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Simon Xu" <xu.simon@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 21 January, 2014 2:43:22 AM
-> Subject: Re: [LTP] [PATCH] xinetd_tests.sh: explicitly enable IPv6
+On 12/03/2013 11:16 AM, Jiri Jaburek wrote:
+> Jiri Jaburek (5):
+>   ssh: unify code style amongst ssh tests
+>   ssh: remove unused ssh_set_passwd script
+>   ssh: properly create/remove user home dir, if possible
+>   ssh: try to prevent invalid PASS when remote cmd fails
+>   ssh: don't use crypt-based pre-encrypted passwords
 > 
-> Could anyone help to review this?
+>  testcases/network/tcp_cmds/ssh/ssh01          | 42 ++++++++++++------------
+>  testcases/network/tcp_cmds/ssh/ssh01_s1       | 39 +++++++++++++----------
+>  testcases/network/tcp_cmds/ssh/ssh02          | 39 +++++++++++------------
+>  testcases/network/tcp_cmds/ssh/ssh02_s1       | 17 +++++-----
+>  testcases/network/tcp_cmds/ssh/ssh03          | 46 +++++++++++++--------------
+>  testcases/network/tcp_cmds/ssh/ssh03_s1       | 15 +++++----
+>  testcases/network/tcp_cmds/ssh/ssh_set_passwd | 28 ----------------
+>  7 files changed, 103 insertions(+), 123 deletions(-)
+>  delete mode 100755 testcases/network/tcp_cmds/ssh/ssh_set_passwd
 > 
-> Thanks
-> Simon
-> 
-> On 2013/12/25 9:43, Simon Xu wrote:
-> > Could anyone help to review this?
-> >
-> > Thanks
-> > Simon
-> >
-> > On 2013/12/11 10:44, Simon Xu wrote:
-> >> Explicitly enable IPv6 because on older systems xinetd only listens
-> >> on IPv4 by default.
-> >>
-> >> Signed-off-by: Simon Xu <xu.simon@oracle.com>
 
-Hi,
+Could somebody review these changes, please? All patches should be well
+commented using commit messages.
 
-Looks good to me. According to [1] it's supported since around 1.8.9,
-which appears to be older than anything I could find in RHEL distros.
+Thanks,
+Jiri
 
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
-[1] http://www.tldp.org/HOWTO/Linux%2BIPv6-HOWTO/hints-daemons-xinetd.html
-
-Regards,
-Jan
-
-> >> ---
-> >>    testcases/network/xinetd/xinetd_tests.sh | 1 +
-> >>    1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/testcases/network/xinetd/xinetd_tests.sh
-> >> b/testcases/network/xinetd/xinetd_tests.sh
-> >> index 5024280..dac23a8 100755
-> >> --- a/testcases/network/xinetd/xinetd_tests.sh
-> >> +++ b/testcases/network/xinetd/xinetd_tests.sh
-> >> @@ -134,6 +134,7 @@ service telnet
-> >>        server          = /usr/sbin/in.telnetd
-> >>        server_args     = -n
-> >>        no_access       =
-> >> +    flags           = IPv6
-> >>    }
-> >>    EOF
-> >>    RC=$?
-> 
-> ------------------------------------------------------------------------------
-> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-> Learn Why More Businesses Are Choosing CenturyLink Cloud For
-> Critical Workloads, Development Environments & Everything In Between.
-> Get a Quote or Start a Free Trial Today.
-> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
