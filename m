@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W1FMi-00071U-Dg
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 13:09:40 +0000
-Date: Thu, 9 Jan 2014 14:09:19 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W0DGU-00064i-J1
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 16:42:58 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 3AE94AC3E
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  6 Jan 2014 16:42:51 +0000 (UTC)
+Date: Mon, 6 Jan 2014 17:42:41 +0100
 From: chrubis@suse.cz
-Message-ID: <20140109130919.GF5125@rei.Home>
-References: <1387358991.1664.37.camel@G08JYZSD130126>
-	<20140107140910.GD27135@rei.Home>
-	<1389191490.2879.27.camel@G08JYZSD130126>
-	<201401090803.39606.vapier@gentoo.org>
+Message-ID: <20140106164241.GA20375@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201401090803.39606.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7
- arguments
+Subject: [LTP] Happy new year
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,46 +26,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > +AC_DEFUN([LTP_CHECK_CLONE7ARGS],[
-> > +AH_TEMPLATE(HAVE_CLONE7ARGS,
-> > +[Define to 1 if clone() supports 7 arguments.])
-> > +AC_MSG_CHECKING([for CLONE7ARGS])
-> > +AC_TRY_LINK([#define _GNU_SOURCE
-> > +		#include <sched.h>
-> > +		#include <stdlib.h>],
-> > +		[
-> > +		#if !defined(__ia64__)
-> > +		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
-> > +		#endif
-> > +		],
-> > +		AC_DEFINE(HAVE_CLONE7ARGS) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
-> > +])
-> 
-> you aren't really testing for "clone takes 7 args", you're testing for "clone 
-> has varargs support".  rename the define (and use _ in its name), and drop the 
-> ia64 check as it isn't needed.
+First of all happy new year to everyone. I'm back and I've managed to
+read most of mails stacked up in my mailbox (not including patches).
 
-I wouldn't call it varargs because there are only three more pointers to
-pass to clone() and the only reason it's defined as varargs is to be
-compatible with the previous clone definition...
-
-Frankly if they did clone7() in glibc instead it would be much more
-clear and easier to figure out.
+As I wrote before I've leaved for my vacation it's about the time for
+another release. Everyone please get latest LTP git and do a compilation
+and testrun to make sure it works in your environment. And especially
+let me know if you have patches that fixes LTP build or a regression,
+these should get into the git ASAP.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
