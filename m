@@ -1,24 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1W01DV-00059c-4i
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 03:51:05 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W01DS-00083M-H7
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 03:51:04 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s063oskQ010219
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jan 2014 11:50:54 +0800
-Message-ID: <52CA27E3.8060100@cn.fujitsu.com>
-Date: Mon, 06 Jan 2014 11:49:55 +0800
-From: Wang Xiaoguang <wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1W0WzJ-0005H7-MK
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:46:33 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W0WzI-0000Ga-Gy
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:46:33 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s07DkQRd008242
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jan 2014 08:46:26 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s07DkNGV006781
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jan 2014 08:46:26 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  7 Jan 2014 14:46:17 +0100
+Message-Id: <0b8108bfd30d8b684c7c264670254473fb8c43d3.1389101980.git.jstancek@redhat.com>
+In-Reply-To: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
+References: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <52B1565D.50406@cn.fujitsu.com>
-In-Reply-To: <52B1565D.50406@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] getdents/getdents05.c: add ENOENT test for
-	getdents(2)
+Subject: [LTP] [PATCH 3/3] syscalls/dup3_02: define O_CLOEXEC if needed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,219 +33,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Could anyone help to review this?
-
-Thanks,
-Xiaoguang Wang
-
-
-On 12/18/2013 04:01 PM, Xiaoguang Wang wrote:
-> create a new case to test ENOENT error value for getdents(2)
->
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  runtest/ltplite                                 |   1 +
->  runtest/stress.part3                            |   1 +
->  runtest/syscalls                                |   2 +
->  testcases/kernel/syscalls/getdents/getdents05.c | 133 ++++++++++++++++++++++++
->  4 files changed, 137 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/getdents/getdents05.c
->
-> diff --git a/runtest/ltplite b/runtest/ltplite
-> index c90bc48..953f5a6 100644
-> --- a/runtest/ltplite
-> +++ b/runtest/ltplite
-> @@ -277,6 +277,7 @@ getdents01 getdents01
->  getdents02 getdents02
->  getdents03 getdents03
->  getdents04 getdents04
-> +getdents05 getdents05
->  
->  getdomainname01 getdomainname01
->  
-> diff --git a/runtest/stress.part3 b/runtest/stress.part3
-> index eac28d0..a4b1a66 100644
-> --- a/runtest/stress.part3
-> +++ b/runtest/stress.part3
-> @@ -216,6 +216,7 @@ getdents01 getdents01
->  getdents02 getdents02
->  getdents03 getdents03
->  getdents04 getdents04
-> +getdents05 getdents05
->  
->  getdomainname01 getdomainname01
->  
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index c5bbe8f..aa2d30c 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -327,11 +327,13 @@ getdents01 getdents01
->  getdents02 getdents02
->  getdents03 getdents03
->  getdents04 getdents04
-> +getdents05 getdents05
->  
->  getdents01_64 getdents01 -l
->  getdents02_64 getdents02 -l
->  getdents03_64 getdents03 -l
->  getdents04_64 getdents04 -l
-> +getdents05_64 getdents05 -l
->  
->  getdomainname01 getdomainname01
->  
-> diff --git a/testcases/kernel/syscalls/getdents/getdents05.c b/testcases/kernel/syscalls/getdents/getdents05.c
-> new file mode 100644
-> index 0000000..b4df82a
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/getdents/getdents05.c
-> @@ -0,0 +1,133 @@
-> +/*
-> + * Copyright (c) 2013 Fujitsu Ltd.
-> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +/*
-> + * Test Description:
-> + *   test ENOENT error value for getdents(2)
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +#include "getdents.h"
-> +
-> +static void cleanup(void);
-> +static void setup(void);
-> +
-> +#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-> +			 S_IXGRP|S_IROTH|S_IXOTH)
-> +#define TEST_DIR	"test_dir"
-> +
-> +char *TCID = "getdents05";
-> +int TST_TOTAL = 1;
-> +
-> +static int exp_enos[] = { ENOENT, 0 };
-> +
-> +static int longsyscall;
-> +
-> +static option_t options[] = {
-> +		/* -l long option. Tests getdents64 */
-> +		{"l", &longsyscall, NULL},
-> +		{NULL, NULL, NULL}
-> +};
-> +
-> +static void help(void)
-> +{
-> +	printf("  -l      Test the getdents64 system call\n");
-> +}
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	char *msg;
-> +	int rval, fd;
-> +	struct linux_dirent64 dir64;
-> +	struct linux_dirent dir;
-> +
-> +	msg = parse_opts(ac, av, options, &help);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		SAFE_MKDIR(cleanup, TEST_DIR, DIR_MODE);
-> +
-> +		fd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
-> +		if (rmdir(TEST_DIR) == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "rmdir(%s) failed", TEST_DIR);
-> +		}
-> +
-> +		if (longsyscall)
-> +			rval = getdents64(fd, &dir64, sizeof(dir64));
-> +		else
-> +			rval = getdents(fd, &dir, sizeof(dir));
-> +
-> +		if (rval < 0) {
-> +			TEST_ERROR_LOG(errno);
-> +
-> +			switch (errno) {
-> +			case ENOENT:
-> +				tst_resm(TPASS, "getdents failed as "
-> +					 "expected with ENOENT");
-> +			break;
-> +			case ENOSYS:
-> +				tst_resm(TCONF, "syscall not implemented");
-> +			break;
-> +			default:
-> +				tst_resm(TFAIL | TERRNO,
-> +					 "getdents failed unexpectedly");
-> +			break;
-> +			}
-> +		} else {
-> +			tst_resm(TFAIL, "getdents call succeeded unexpectedly");
-> +		}
-> +
-> +		SAFE_CLOSE(cleanup, fd);
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	tst_tmpdir();
-> +
-> +	TEST_EXP_ENOS(exp_enos);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	tst_rmdir();
-> +}
-
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+VGhpcyBpcyB0byBmaXggY29tcGlsYXRpb24gb24gUkhFTDUuMzoKICBnY2MgLWcgLU8yIC1nIC1P
+MiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRF9GT1JUSUZZX1NPVVJDRT0yCiAg
+LUkvcm9vdC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVk
+ZQogIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4vLi4vLi4vbGliICBkdXAzXzAyLmMg
+ICAtbGx0cCAtbyBkdXAzXzAyCiAgZHVwM18wMi5jOjU1OiBlcnJvcjog4oCYT19DTE9FWEVD4oCZ
+IHVuZGVjbGFyZWQgaGVyZSAobm90IGluIGEgZnVuY3Rpb24pCiAgbWFrZVs0XTogKioqIFtkdXAz
+XzAyXSBFcnJvciAxCiAgbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2R1cDMnCiAgbWFrZVszXTogKioqIFthbGxdIEVycm9yIDIK
+CkluIHNpbWlsYXIgbWFubmVyIGFzIGluIGR1cDNfMDEuYywgZGVmaW5lIE9fQ0xPRVhFQyBpZiBu
+ZWVkZWQuCgpTaWduZWQtb2ZmLWJ5OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0LmNvbT4K
+LS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2R1cDMvZHVwM18wMi5jIHwgICAgMyArKysK
+IDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZHVwMy9kdXAzXzAyLmMgYi90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2R1cDMvZHVwM18wMi5jCmluZGV4IDA0MDFkZGMuLjNhNDU1ZGEg
+MTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZHVwMy9kdXAzXzAyLmMKKysr
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9kdXAzL2R1cDNfMDIuYwpAQCAtMzcsNiArMzcs
+OSBAQAogI2luY2x1ZGUgInNhZmVfbWFjcm9zLmgiCiAjaW5jbHVkZSAibGludXhfc3lzY2FsbF9u
+dW1iZXJzLmgiCiAKKyNpZm5kZWYgT19DTE9FWEVDCisjZGVmaW5lIE9fQ0xPRVhFQyAwMjAwMDAw
+MAorI2VuZGlmCiAKIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwogc3RhdGljIHZvaWQgY2xlYW51
+cCh2b2lkKTsKLS0gCjEuNy4xCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClJhcGlkbHkgdHJvdWJs
+ZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5IGFmZmVjdCB5b3VyIGJ1c2luZXNzLiBNb3N0IElU
+IApvcmdhbml6YXRpb25zIGRvbid0IGhhdmUgYSBjbGVhciBwaWN0dXJlIG9mIGhvdyBhcHBsaWNh
+dGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0cyB0aGVpciByZXZlbnVlLiBXaXRoIEFwcER5bmFtaWNz
+LCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0eSBpbnRvIHlvdXIgCkphdmEsLk5FVCwgJiBQSFAgYXBw
+bGljYXRpb24uIFN0YXJ0IHlvdXIgMTUtZGF5IEZSRUUgVFJJQUwgb2YgQXBwRHluYW1pY3MgUHJv
+IQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9ODQzNDk4MzEm
+aXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAt
+bGlzdAo=
