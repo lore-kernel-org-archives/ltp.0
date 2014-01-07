@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W5Fjs-00088N-Vu
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 14:22:09 +0000
-Date: Mon, 20 Jan 2014 15:21:42 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W0Wwh-0002JY-Lv
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:43:51 +0000
+Date: Tue, 7 Jan 2014 14:43:33 +0100
 From: chrubis@suse.cz
-Message-ID: <20140120142142.GA993@rei.suse.cz>
-References: <1386065776-1961-1-git-send-email-jjaburek@redhat.com>
-	<52CA960B.9080709@redhat.com>
-	<257752569.438158.1389618844997.JavaMail.root@redhat.com>
+Message-ID: <20140107134333.GC27135@rei.Home>
+References: <201312131727523165685@163.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <257752569.438158.1389618844997.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH 0/5] various tcp_cmds/ssh/* fixes, rewrites
+In-Reply-To: <201312131727523165685@163.com>
+Subject: Re: [LTP] running ltp test error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jiri Jaburek <jjaburek@redhat.com>
+To: ?????? <mybrotherandi@163.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-This can go in now. Jan can you please check it in?
+> Hi, I'm RocupWan. I modified the file cmdlib.sh, and I did't call
+> tst_cleanup, but I also got the error that
+> /opt/ltp/testcases/bin/cmdlib.sh: line 88: 12 Aborted, tst_resm TFAIL
+> "Test broken: $*".  I don't know what brought the error. So will
+> anyone help me? 
+
+If you modified something and tests started to fail, you are on your own
+unless you prove there is a bug in the code LTP ships.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
