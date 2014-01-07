@@ -1,18 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W88Ct-0006FC-0S
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jan 2014 12:55:59 +0000
-Date: Tue, 28 Jan 2014 13:55:28 +0100
-From: chrubis@suse.cz
-Message-ID: <20140128125528.GA5824@rei>
-References: <1386128618-28341-1-git-send-email-penght@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1W0WzK-0002TU-AQ
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:46:34 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W0WzG-0006iT-RD
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:46:34 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s07DkOmE008228
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jan 2014 08:46:24 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s07DkNGT006781
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jan 2014 08:46:24 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  7 Jan 2014 14:46:15 +0100
+Message-Id: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1386128618-28341-1-git-send-email-penght@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] sigaction:16-1: leave it untested on the Linux
- kernel less than 2.6.22
+Subject: [LTP] [PATCH 1/3] lib: errnos: use ERFKILL only if it's defined
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,37 +31,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peng Haitao <penght@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> As the Linux signal(7) said:
-> POSIX semaphore interfaces: sem_wait(3) and sem_timedwait(3) (since Linux 2.6.22; beforehand, always failed with EINTR).
-> 
-> So, on Linux, we just leave this untested when the kernel version
-> is less than 2.6.22.
-> 
-
-The patch is good, but my original point still stands. I do not like
-that the test is disabled by default. I wouldn't add the filter-broken
-target to all target but rather left it on user whether to filter them
-or not. And update the README to have this kind of information (the
-README should probably be rewritten anyways).
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+VGhpcyBpcyB0byBmaXggY29tcGlsYXRpb24gb24gUkhFTDUuMzoKICBJbiBmaWxlIGluY2x1ZGVk
+IGZyb20gdHN0X3Jlcy5jOjIxNjoKICBlcnJub3MuaDogSW4gZnVuY3Rpb24g4oCYc3RyZXJybm9k
+ZWbigJk6CiAgZXJybm9zLmg6MTY0OiBlcnJvcjog4oCYRVJGS0lMTOKAmSB1bmRlY2xhcmVkIChm
+aXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKICBlcnJub3MuaDoxNjQ6IGVycm9yOiAoRWFjaCB1
+bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNlCiAgZXJybm9zLmg6MTY0
+OiBlcnJvcjogZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCiAgZXJybm9zLmg6MTY0
+OiBlcnJvcjogYXJyYXkgaW5kZXggaW4gaW5pdGlhbGl6ZXIgbm90IG9mIGludGVnZXIgdHlwZQog
+IGVycm5vcy5oOjE2NDogZXJyb3I6IChuZWFyIGluaXRpYWxpemF0aW9uIGZvciDigJhlcnJub19w
+YWlyc+KAmSkKICBtYWtlWzFdOiAqKiogW3RzdF9yZXMub10gRXJyb3IgMQoKU2lnbmVkLW9mZi1i
+eTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5jb20+Ci0tLQogbGliL2Vycm5vcy5oIHwg
+ICAgMiArKwogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0p
+CgpkaWZmIC0tZ2l0IGEvbGliL2Vycm5vcy5oIGIvbGliL2Vycm5vcy5oCmluZGV4IDc5N2FlZDQu
+LmVlOTYyMGIgMTAwNjQ0Ci0tLSBhL2xpYi9lcnJub3MuaAorKysgYi9saWIvZXJybm9zLmgKQEAg
+LTE2MSw3ICsxNjEsOSBAQCBzdGF0aWMgY29uc3QgY2hhciAqc3RyZXJybm9kZWYoaW50IGVycikK
+IAkJUEFJUihFS0VZUkVKRUNURUQpCiAJCVBBSVIoRU9XTkVSREVBRCkKIAkJUEFJUihFTk9UUkVD
+T1ZFUkFCTEUpCisjaWZkZWYgRVJGS0lMTAogCQlQQUlSKEVSRktJTEwpCisjZW5kaWYKICNpZmRl
+ZiBFSFdQT0lTT04KIAkJUEFJUihFSFdQT0lTT04pCiAjZW5kaWYKLS0gCjEuNy4xCgoKLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tClJhcGlkbHkgdHJvdWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5
+IGFmZmVjdCB5b3VyIGJ1c2luZXNzLiBNb3N0IElUIApvcmdhbml6YXRpb25zIGRvbid0IGhhdmUg
+YSBjbGVhciBwaWN0dXJlIG9mIGhvdyBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0cyB0
+aGVpciByZXZlbnVlLiBXaXRoIEFwcER5bmFtaWNzLCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0eSBp
+bnRvIHlvdXIgCkphdmEsLk5FVCwgJiBQSFAgYXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUtZGF5
+IEZSRUUgVFJJQUwgb2YgQXBwRHluYW1pY3MgUHJvIQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xp
+Y2submV0L2dhbXBhZC9jbGs/aWQ9ODQzNDk4MzEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGlu
+ZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
