@@ -2,23 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W1Fe0-0003vx-Dd
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 13:27:32 +0000
-Date: Thu, 9 Jan 2014 14:27:11 +0100
+	(envelope-from <metan@suse.de>) id 1W0WkN-0005OQ-OM
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:31:07 +0000
+Date: Tue, 7 Jan 2014 14:30:50 +0100
 From: chrubis@suse.cz
-Message-ID: <20140109132710.GG5125@rei.Home>
-References: <1387358991.1664.37.camel@G08JYZSD130126>
-	<20140107140910.GD27135@rei.Home>
-	<1389191490.2879.27.camel@G08JYZSD130126>
-	<20140108151501.GA1556@rei>
-	<1389254938.2025.3.camel@G08JYZSD130126>
-	<20140109113619.GB5125@rei.Home>
-	<1389269411.2149.8.camel@G08JYZSD130126>
+Message-ID: <20140107133050.GB27135@rei.Home>
+References: <CAK25hWNxjNX5E5ga1YYNorSZ8nJHU2Pzy=+OHCdQtfN+PWvSxg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1389269411.2149.8.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH???v3] lib/cloner.c: add function ltp_clone7 when
- clone supports???7 arguments
+In-Reply-To: <CAK25hWNxjNX5E5ga1YYNorSZ8nJHU2Pzy=+OHCdQtfN+PWvSxg@mail.gmail.com>
+Subject: Re: [LTP] IOZone test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,29 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
+To: Saket Sinha <saket.sinha89@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +++ b/m4/ltp-clone7args.m4
-> @@ -0,0 +1,36 @@
-> +dnl
-> +dnl Copyright (c) Linux Test Project, 2013
-> +dnl
+>  I wanted to know the status of IOZone in the latest release of LTP. It is
+> documented that IOZone is supported in LTP but I cannot find it in the
+> source tree under \ltp-full-20130904\runtest.
+> 
+> Kindly help. Otherwise do I need include IOZone as a new test in LTP.
 
-This is not that much important but it's 2014 allready...
-(I can fix that myself once we agree what should go in)
+I do not understand the question. IOZone is a benchmark that is not part
+of the LTP (and as far as I know it never was). If you want to run
+IOZone download it from the IOZone upstream and do as you wish.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
