@@ -1,22 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1W0z0d-0005CL-Ba
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 19:41:47 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1W0z0c-0008Dz-8F
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 19:41:47 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 8 Jan 2014 14:41:42 -0500
-References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
-	<201401060749.29230.vapier@gentoo.org>
-	<52CD3B93.8090605@imgtec.com>
-In-Reply-To: <52CD3B93.8090605@imgtec.com>
+	(envelope-from <jstancek@redhat.com>) id 1W0WzK-0006Ch-37
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:46:34 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W0WzJ-00071q-66
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:46:34 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s07DkPRh019657
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jan 2014 08:46:26 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s07DkNGU006781
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jan 2014 08:46:24 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  7 Jan 2014 14:46:16 +0100
+Message-Id: <7f26ec5fbdf900ddb77ec9a40debc5291498ab1b.1389101980.git.jstancek@redhat.com>
+In-Reply-To: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
+References: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Message-Id: <201401081441.43107.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
+Subject: [LTP] [PATCH 2/3] cpuset/cpuset_syscall_test: check
+	HAVE_DECL_MPOL_F_MEMS_ALLOWED
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,109 +34,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4715410593988590013=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
---===============4715410593988590013==
-Content-Type: multipart/signed; boundary="nextPart13000905.Gu5baIAjOR";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart13000905.Gu5baIAjOR
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday 08 January 2014 06:50:43 Markos Chandras wrote:
-> On 01/06/2014 12:49 PM, Mike Frysinger wrote:
-> > On Monday 06 January 2014 06:45:43 Markos Chandras wrote:
-> >> On 01/05/2014 10:27 PM, Mike Frysinger wrote:
-> >>> On Monday 25 November 2013 05:12:59 Markos Chandras wrote:
-> >>>> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
-> >>>> also defined in sys/ptrace.h and conflicts with the definition
-> >>>> from the Linux kernel in linux/ptrace.h. We fix this by not
-> >>>> including the linux/ptrace.h header if the sys/ptrace.h header
-> >>>> defines the said struct. Fixes
-> >>>> https://github.com/linux-test-project/ltp/issues/6
-> >>>=20
-> >>> i'm somewhat inclined to undo this as it's really a bug in glibc-2.18
-> >>>=20
-> >>> that should be fixed in glibc-2.19:
-> >>> 	https://sourceware.org/ml/libc-alpha/2014-01/msg00078.html
-> >>=20
-> >> Ehm that would break the build for people already using 2.18. Even if a
-> >> new 2.18 is released with the fix, people using the old one will still
-> >> face the same problem.
-> >=20
-> > i'm aware that would be the situation.  i'm fine with that.
->=20
-> It's not my call to make, but forcing people to update their glibc in
-> order to build LTP is a bit too much. I suggest to keep this workaround
-> for X months, until more people have been moved to a fixed glibc version.
-
-i'm not forcing people to update their glibc.  i am forcing them to get the=
-ir=20
-distro to land a simple fix.  or run a simple sed script as root to fix the=
-ir=20
-header.
-
-> strace also has similar fix
-> http://sourceforge.net/p/strace/code/ci/0b4060f61f1bb101b5d8d084714b7d2fe=
-ac
-> db199/
-
-yes, and i already commented there
-=2Dmike
-
---nextPart13000905.Gu5baIAjOR
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSzan3AAoJEEFjO5/oN/WB8BgP/2SKEwE2GjEtH8BckCfJXDRm
-R7+//4piQ4Ex2CBCd1g5KpPZipohg4Xsr6wyXfC9JZCAsHGifMhFcLGoqPm3JANT
-GB+vvSROsoMDsB7K5mfu5WF10TL5U2YUAb03Vw6VD3zH4vZGJWehXjkHmtNpQteq
-+LiPyMoK4hlKsmAA82a+SPfJmJGBDF+6lff3OsqIzJiBasBtRKyIVyFicwuXreJw
-xujT6P5qy5mn9VyD7iqUqdyQ1NAJb/812thAMYdG9xuEOk5Jjcod6mJWbo9cVkjM
-i17f2vDBpuhFhs8rhXkvIBHsMprLx8PJP6kFkMEsH9ILO5+QzgnQeyvpDPqbZBML
-FJ6Ft2Eej38a/oZ2nYZUYeRMdad5Oq21fFwFAowBBe1ZgQyd7WTztHTsrOWWkUDc
-L0hq10EE5B7z3u5mKpvCCzRyT5jZS6vRz8ytwyDo3VbDpF0zTeMp9JsjMtIm0at/
-pBK0ypmCSe61s0ho7EvPWjyh3kL0WBHou7HwMPayRkkJocswaynArkWpnzjXqDWe
-21fC8TZDhWySqecxD4PVrU1B36rj95JlKydwytl1owarU/YppHu03V2he1sCq9Tv
-7ZXfbP39nbrHUh6+tfrE8qSfNy3WHwJl6+Z+292syizrcMY9NKhbbDX9Sh3bpFHj
-mI6lUo4VSb6RR7VCOVgY
-=7D1a
------END PGP SIGNATURE-----
-
---nextPart13000905.Gu5baIAjOR--
-
-
---===============4715410593988590013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
---===============4715410593988590013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4715410593988590013==--
-
+VGhpcyBpcyB0byBmaXggY29tcGlsYXRpb24gb24gUkhFTDUuMzoKICBnY2MgLWcgLU8yIC1nIC1P
+MiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtRF9GT1JUSUZZX1NPVVJDRT0yCiAg
+LUkvcm9vdC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlIC1ETlVNQV9WRVJTSU9OMV9DT01Q
+QVRJQklMSVRZCiAgLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vLi4vaW5j
+bHVkZQogIC1ML3Jvb3QvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0L2Nw
+dXNldF9zeXNjYWxsX3Rlc3QvLi4vY3B1c2V0X2xpYgogIC1ML3Jvb3QvbHRwL3Rlc3RjYXNlcy9r
+ZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0L2NwdXNldF9zeXNjYWxsX3Rlc3QvLi4vLi4vbGliY29u
+dHJvbGxlcnMKICAtTC4uLy4uLy4uLy4uLy4uL2xpYiAgY3B1c2V0X3N5c2NhbGxfdGVzdC5jICAg
+LWxsdHAgLWxjcHVfc2V0CiAgLWxjb250cm9sbGVycyAtbGx0cCAtbG51bWEgLW8gY3B1c2V0X3N5
+c2NhbGxfdGVzdAogIGNwdXNldF9zeXNjYWxsX3Rlc3QuYzogSW4gZnVuY3Rpb24g4oCYdGVzdF9n
+ZXRfbWVtcG9saWN54oCZOgogIGNwdXNldF9zeXNjYWxsX3Rlc3QuYzoxOTA6IGVycm9yOiDigJhN
+UE9MX0ZfTUVNU19BTExPV0VE4oCZIHVuZGVjbGFyZWQKICAoZmlyc3QgdXNlIGluIHRoaXMgZnVu
+Y3Rpb24pCiAgY3B1c2V0X3N5c2NhbGxfdGVzdC5jOjE5MDogZXJyb3I6IChFYWNoIHVuZGVjbGFy
+ZWQgaWRlbnRpZmllciBpcwogIHJlcG9ydGVkIG9ubHkgb25jZQogIGNwdXNldF9zeXNjYWxsX3Rl
+c3QuYzoxOTA6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKICBtYWtl
+WzVdOiAqKiogW2NwdXNldF9zeXNjYWxsX3Rlc3RdIEVycm9yIDEKClRoaXMgcGF0Y2ggcmVzdG9y
+ZXMgY2hlY2sgd2hpY2ggaGFzIGJlZW4gcmVtb3ZlZCBieSB0aGlzIGNvbW1pdDoKICBjb21taXQg
+ODcxNTZhMDVhMmZmZDUwZjVlNDY3ZDZmOTg2ZGFhZTlkYTdiOWNmNwogIEF1dGhvcjogU3Rhbmlz
+bGF2IEtob2xtYW5za2lraCA8c3RhbmlzbGF2Lmtob2xtYW5za2lraEBvcmFjbGUuY29tPgogIERh
+dGU6ICAgVHVlIE9jdCAxIDE3OjQ0OjUwIDIwMTMgKzA0MDAKICAgIGNwdXNldC9jcHVzZXRfc3lz
+Y2FsbF90ZXN0OiBmaXhlcwoKU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJl
+ZGhhdC5jb20+Ci0tLQogLi4uL2NwdXNldF9zeXNjYWxsX3Rlc3QvY3B1c2V0X3N5c2NhbGxfdGVz
+dC5jICAgICAgfCAgICA0ICsrKysKIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAw
+IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMv
+Y3B1c2V0L2NwdXNldF9zeXNjYWxsX3Rlc3QvY3B1c2V0X3N5c2NhbGxfdGVzdC5jIGIvdGVzdGNh
+c2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRf
+c3lzY2FsbF90ZXN0LmMKaW5kZXggZGQzNWNkMC4uZTIwMjI5NSAxMDA2NDQKLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRf
+c3lzY2FsbF90ZXN0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQv
+Y3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2FsbF90ZXN0LmMKQEAgLTE4Niw4ICsxODYs
+MTIgQEAgdm9pZCB0ZXN0X2dldF9tZW1wb2xpY3kodm9pZCkKIAkJcmV0ID0gMTsKIAkJcmV0dXJu
+OwogCX0KKyNpZiBIQVZFX0RFQ0xfTVBPTF9GX01FTVNfQUxMT1dFRAogCXJldCA9IGdldF9tZW1w
+b2xpY3koTlVMTCwgYml0bWFza19tYXNrKG5tYXNrKSwgYml0bWFza19uYml0cyhubWFzayksIDAs
+CiAJCQkgICAgTVBPTF9GX01FTVNfQUxMT1dFRCk7CisjZWxzZQorCXJldCA9IC0xOworI2VuZGlm
+CiAKIAliaXRtYXNrX2Rpc3BsYXlsaXN0KHN0ciwgMjU2LCBubWFzayk7CiAJcHV0cyhzdHIpOwot
+LSAKMS43LjEKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmFwaWRseSB0cm91Ymxlc2hvb3QgcHJv
+YmxlbXMgYmVmb3JlIHRoZXkgYWZmZWN0IHlvdXIgYnVzaW5lc3MuIE1vc3QgSVQgCm9yZ2FuaXph
+dGlvbnMgZG9uJ3QgaGF2ZSBhIGNsZWFyIHBpY3R1cmUgb2YgaG93IGFwcGxpY2F0aW9uIHBlcmZv
+cm1hbmNlIAphZmZlY3RzIHRoZWlyIHJldmVudWUuIFdpdGggQXBwRHluYW1pY3MsIHlvdSBnZXQg
+MTAwJSB2aXNpYmlsaXR5IGludG8geW91ciAKSmF2YSwuTkVULCAmIFBIUCBhcHBsaWNhdGlvbi4g
+U3RhcnQgeW91ciAxNS1kYXkgRlJFRSBUUklBTCBvZiBBcHBEeW5hbWljcyBQcm8hCmh0dHA6Ly9w
+dWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD04NDM0OTgzMSZpdT0vNDE0MC9v
+c3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
