@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1W5AiJ-0001Ou-Ak
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 09:00:11 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W5AiF-0007So-Ko
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 09:00:11 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0K8s0g0009268
-	for <ltp-list@lists.sourceforge.net>; Mon, 20 Jan 2014 16:54:20 +0800
-Message-ID: <52DCE3E7.9060109@cn.fujitsu.com>
-Date: Mon, 20 Jan 2014 16:52:55 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W0uyU-0000he-7Q
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 15:23:18 +0000
+Date: Wed, 8 Jan 2014 16:22:59 +0100
+From: chrubis@suse.cz
+Message-ID: <20140108152259.GB1556@rei>
+References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
+	<201401051727.10564.vapier@gentoo.org>
 MIME-Version: 1.0
-References: <52DCE226.4030500@cn.fujitsu.com>
-In-Reply-To: <52DCE226.4030500@cn.fujitsu.com>
-Subject: Re: [LTP] lib/tst_mkfs.c:  problem about tst_mkfs()
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <201401051727.10564.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,65 +25,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Xiaoguang <wangxg.fnst@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On 01/20/2014 04:45 PM, Wang Xiaoguang wrote:
-> Hi,
+Hi!
+> > Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+> > also defined in sys/ptrace.h and conflicts with the definition
+> > from the Linux kernel in linux/ptrace.h. We fix this by not
+> > including the linux/ptrace.h header if the sys/ptrace.h header
+> > defines the said struct. Fixes
+> > https://github.com/linux-test-project/ltp/issues/6
 > 
->     When I used tst_mkfs() to build a file system with extra mkfs
-> options, like that:
->     tst_mkfs(NULL, device, "ext4", "-b 1024"); /* device is /dev/loop0 */
->  
->     It will output this error message:
->     TINFO  :  Formatting /dev/loop0 with ext4 extra opts='-b 1024'
->     mke2fs 1.42.7 (21-Jan-2013)
->     mkfs.ext4: invalid blocks '/dev/loop0' on device 'ext4'
-> 
-> I look through tst_mkfs()'s implementations,
->     the call chain is: tst_mkfs =>  tst_run_cmd => tst_run_cmd_fds
-> =>  _exit(execvp(argv[0], (char *const *)argv));
-> 
->    in this case argv will be like that:
->    char *argv[] = {"mkfs", "-t", "ext4", "-b 1024", "/dev/loop0", NULL},
-> then we finally call mkfs like that:
->    mkfs -t ext4 "-b 1024" /dev/loop0  # this may make command mkfs parse
->                                                            # arguments failed.
-> 
-> Indeed the right command should be:  mkfs -t ext4 -b 1024 /dev/loop0.
-> 
-> So I think there are some problems here, if we want to pass extra fs options.
-> Would you please review this? If so, I can send a patch to fix this.
+> i'm somewhat inclined to undo this as it's really a bug in glibc-2.18 that 
+> should be fixed in glibc-2.19:
+> 	https://sourceware.org/ml/libc-alpha/2014-01/msg00078.html
 
-Should be fixed, please send a patch.
+Let's keep it for the next release (which will happen anytime soon). The
+ptrace tests are messy and the ptrace.h needs to be fixed anyway.
 
-Thanks,
-Wanlong Gao
+Or do you insist on removing it before the release? I don't like that
+idea much but I can change my opinion if you provide reasonable
+arguments.
 
-> 
-> Thanks,
-> Xiaoguang Wang
-> 
-> 
-> ------------------------------------------------------------------------------
-> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-> Learn Why More Businesses Are Choosing CenturyLink Cloud For
-> Critical Workloads, Development Environments & Everything In Between.
-> Get a Quote or Start a Free Trial Today. 
-> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
