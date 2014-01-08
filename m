@@ -1,35 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1W5QNq-0000aW-LB
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 01:44:06 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1W5QNp-0004TG-6J
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 01:44:06 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s0L1hwZ4027483
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 01:43:59 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s0L1hvmx022527
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 01:43:58 GMT
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s0L1hu82023412
-	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 01:43:57 GMT
-Message-ID: <52DDD0D9.40309@oracle.com>
-Date: Tue, 21 Jan 2014 09:43:53 +0800
-From: Simon Xu <xu.simon@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1W0z0d-0005CL-Ba
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 19:41:47 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1W0z0c-0008Dz-8F
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 19:41:47 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 8 Jan 2014 14:41:42 -0500
+References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
+	<201401060749.29230.vapier@gentoo.org>
+	<52CD3B93.8090605@imgtec.com>
+In-Reply-To: <52CD3B93.8090605@imgtec.com>
 MIME-Version: 1.0
-References: <1386750816-782-1-git-send-email-xu.simon@oracle.com>
-	<52BA386D.50903@oracle.com>
-In-Reply-To: <52BA386D.50903@oracle.com>
-Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
+Message-Id: <201401081441.43107.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,453 +26,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4715410593988590013=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
-Could anyone help to review this?
+--===============4715410593988590013==
+Content-Type: multipart/signed; boundary="nextPart13000905.Gu5baIAjOR";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks
-Simon
+--nextPart13000905.Gu5baIAjOR
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-On 2013/12/25 9:44, Simon Xu wrote:
-> Could anyone help to review this?
->
-> Thanks
-> Simon
->
-> On 2013/12/11 16:33, Simon Xu wrote:
->> 1) Eliminate '|| RC=$?' because because it may not be excecuted and the
->>      original value in RC can mess things up.  Also remove the RC=0
->>      initializations that are now unnecessary.
->> 2) Exit test immediately with non-zero return code when a test fails.
->> 3) Add missing parameters in calling tst_brk and tst_brkm
->>
->> Signed-off-by: Simon Xu <xu.simon@oracle.com>
->> ---
->>    testcases/network/iproute/ip_tests.sh | 128 ++++++++++++++++++++--------------
->>    1 file changed, 74 insertions(+), 54 deletions(-)
->>
->> diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
->> index 0416300..ed20540 100755
->> --- a/testcases/network/iproute/ip_tests.sh
->> +++ b/testcases/network/iproute/ip_tests.sh
->> @@ -45,7 +45,6 @@ set +x
->>    init()
->>    {
->>    
->> -	export RC=0					# Return code from commands.
->>    	export TST_TOTAL=2			# total numner of tests in this file.
->>    	export TCID="ip_tests  "		# this is the init function.
->>    	export TST_COUNT=0			# init identifier,
->> @@ -61,15 +60,17 @@ init()
->>    	trap "cleanup" 0
->>    
->>    	# create the tmp directory for this testcase.
->> -	mkdir -p $LTPTMP/ >/dev/null 2>&1 || RC=$?
->> +	mkdir -p $LTPTMP/ >/dev/null 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->> -		tst_brkm TBROK "INIT: Unable to create temporary directory"
->> +		tst_brkm TBROK NULL "INIT: Unable to create temporary directory"
->>    		return $RC
->>    	fi
->>    
->>    	# Check to see if test harness functions are in the path.
->> -	which tst_resm  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	which tst_resm  >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brkm TBROK NULL \
->> @@ -77,7 +78,8 @@ init()
->>    		return $RC
->>    	fi
->>    
->> -	which awk  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	which awk  >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brkm TBROK NULL \
->> @@ -85,7 +87,8 @@ init()
->>    		return $RC
->>    	fi
->>    
->> -	which ip  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	which ip  >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brkm TBROK NULL \
->> @@ -93,7 +96,8 @@ init()
->>    		return $RC
->>    	fi
->>    
->> -	which ifconfig  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	which ifconfig  >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brkm TBROK NULL \
->> @@ -104,24 +108,25 @@ init()
->>    	tst_resm TINFO "INIT: Inititalizing tests."
->>    
->>    	# Aliasing eth0 to create private network.
->> -	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->> -		tst_brk TBROK "INIT: failed aliasing eth0:1 with IP 10.1.1.12"
->> +		tst_brk TBROK NULL NULL "INIT: failed aliasing eth0:1 with IP 10.1.1.12"
->>    		return $RC
->>    	else
->> -		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 \
->> -			|| RC=$?
->> +		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->> -			tst_brk TBROK "INIT: failed adding route to 10.1.1.12"
->> +			tst_brk TBROK NULL NULL "INIT: failed adding route to 10.1.1.12"
->>    			return $RC
->>    		else
->>    			tst_resm TINFO "INIT: added alias: `ifconfig eth0:1`"
->>    		fi
->>    	fi
->>    
->> -	cat > $LTPTMP/tst_ip02.exp <<-EOF || RC=$?
->> +	cat > $LTPTMP/tst_ip02.exp <<-EOF
->>    	1:
->>    	link/loopback
->>    	2:
->> @@ -129,7 +134,7 @@ init()
->>    	3:
->>    	link/ether
->>    	EOF
->> -
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brkm TBROK NULL "INIT: failed creating expected output for test02"
->> @@ -151,9 +156,9 @@ cleanup()
->>    {
->>    	TCID=dhcpd
->>    	TST_COUNT=0
->> -	RC=0
->>    
->> -	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -eq 0 ]
->>    	then
->>    		/sbin/ifconfig eth0:1 down >$LTPTMP/tst_ip.err 2>&1
->> @@ -178,7 +183,6 @@ cleanup()
->>    
->>    test01()
->>    {
->> -	RC=0			# Return value from commands.
->>    	TCID=ip01	    # Name of the test case.
->>    	TST_COUNT=1		# Test number.
->>    
->> @@ -225,7 +229,6 @@ test01()
->>    
->>    test02()
->>    {
->> -	RC=0			# Return value from commands.
->>    	TCID=ip02	    # Name of the test case.
->>    	TST_COUNT=2		# Test number.
->>    
->> @@ -236,7 +239,8 @@ test02()
->>    	tst_resm TINFO \
->>    	 "Test #2: Installing dummy.o in kernel"
->>    
->> -	modprobe dummy >$LTPTMP/tst_ip.out 2>&1 || RC=$?
->> +	modprobe dummy >$LTPTMP/tst_ip.out 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brk TBROK $LTPTMP/tst_ip.out NULL \
->> @@ -244,7 +248,8 @@ test02()
->>    		return $RC
->>    	fi
->>    
->> -	ip link show dummy0 | grep dummy0 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ip link show dummy0 | grep dummy0 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_res TFAIL $LTPTMP/tst_ip.err "Test #2: ip command failed. Reason:"
->> @@ -275,14 +280,14 @@ test02()
->>    
->>    test03()
->>    {
->> -	RC=0			# Return value from commands.
->>    	TCID=ip03	    # Name of the test case.
->>    	TST_COUNT=3		# Test number.
->>    
->>    	tst_resm TINFO \
->>    	 "Test #3: ip addr add - adds a new protolcol address to the device"
->>    
->> -	ip addr add 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ip addr add 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -291,7 +296,8 @@ test03()
->>    	else
->>    		tst_resm TINFO \
->>    		 "Test #3: ip addr show dev <device> - shows protocol address."
->> -		ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +		ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -301,14 +307,16 @@ test03()
->>    
->>    		tst_resm TINFO \
->>    		 "Test #3: ip addr del <ip> dev <device> - deletes protocol address."
->> -		ip addr del 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +		ip addr del 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->>    				"Test #3: ip addr del command failed. Reason: "
->>    			return $RC
->>    		else
->> -			ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +			ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1
->> +			RC=$?
->>    			if [ $RC -eq 0 ]
->>    			then
->>    				tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -342,14 +350,14 @@ test03()
->>    
->>    test04()
->>    {
->> -	RC=0			# Return value from commands.
->>    	TCID=ip04	    # Name of the test case.
->>    	TST_COUNT=4		# Test number.
->>    
->>    	tst_resm TINFO \
->>    	 "Test #4: ip neigh add - adds a new neighbour to arp tables."
->>    
->> -	ip neigh add 127.0.0.1 dev lo nud reachable >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ip neigh add 127.0.0.1 dev lo nud reachable >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -363,7 +371,8 @@ test04()
->>    		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
->>    		EOF
->>    
->> -		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
->> +		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -371,7 +380,8 @@ test04()
->>    			return $RC
->>    		else
->>    			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
->> -				>$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +				>$LTPTMP/tst_ip.err 2>&1
->> +			RC=$?
->>    			if [ $RC -ne 0 ]
->>    			then
->>    				tst_res FAIL $LTPTMP/tst_ip.err \
->> @@ -383,14 +393,16 @@ test04()
->>    		tst_resm TINFO \
->>    		 "Test #4: ip neigh del - deletes neighbour from the arp table."
->>    
->> -		ip neigh del 127.0.0.1 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +		ip neigh del 127.0.0.1 dev lo >$LTPTMP/tst_ip.err 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->>    				"Test #4: ip neigh del command failed return = $RC. Reason: "
->>    			return $RC
->>    		else
->> -			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$" >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$" >$LTPTMP/tst_ip.err 2>&1
->> +			RC=$?
->>    			if [ $RC -eq 0 ]
->>    			then
->>    				tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -423,7 +435,6 @@ test04()
->>    
->>    test05()
->>    {
->> -	RC=0			# Return value from commands.
->>    	TCID=ip05	    # Name of the test case.
->>    	TST_COUNT=5		# Test number.
->>    
->> @@ -434,7 +445,8 @@ test05()
->>    	tst_resm TINFO \
->>    	 "Test #5: create an interface with inet 10.6.6.6 alias to eth0"
->>    
->> -	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
->> @@ -442,7 +454,8 @@ test05()
->>    		return $RC
->>    	fi
->>    
->> -	ip route add 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ip route add 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -458,7 +471,8 @@ test05()
->>    		EOF
->>    
->>    		ip route show | grep "10.6.6.6 via 127.0.0.1 dev lo" \
->> -			>$LTPTMP/tst_ip.out 2>&1 || RC=$?
->> +			>$LTPTMP/tst_ip.out 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -466,7 +480,8 @@ test05()
->>    			return $RC
->>    		else
->>    			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
->> -				>$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +				>$LTPTMP/tst_ip.err 2>&1
->> +			RC=$?
->>    			if [ $RC -ne 0 ]
->>    			then
->>    				tst_res FAIL $LTPTMP/tst_ip.err \
->> @@ -478,14 +493,16 @@ test05()
->>    		tst_resm TINFO \
->>    		 "Test #5: ip route del - deletes route from the route table."
->>    
->> -		ip route del 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +		ip route del 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->>    				"Test #5: ip route del command failed return = $RC. Reason: "
->>    			return $RC
->>    		else
->> -			ip route show | grep 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +			ip route show | grep 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
->> +			RC=$?
->>    			if [ $RC -eq 0 ]
->>    			then
->>    				tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -518,14 +535,14 @@ test05()
->>    
->>    test06()
->>    {
->> -	RC=0			# Return value from commands.
->>    	TCID=ip06	    # Name of the test case.
->>    	TST_COUNT=6		# Test number.
->>    
->>    	tst_resm TINFO \
->>    	 "Test #6: ip maddr add - adds a new multicast addr"
->>    
->> -	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
->> @@ -533,7 +550,8 @@ test06()
->>    		return $RC
->>    	fi
->>    
->> -	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
->> +	RC=$?
->>    	if [ $RC -ne 0 ]
->>    	then
->>    		tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -547,7 +565,8 @@ test06()
->>            link  66:66:00:00:00:66 static
->>    		EOF
->>    
->> -		ip maddr show | grep "66:66:00:00:00:66" >$LTPTMP/tst_ip.out 2>&1 || RC=$?
->> +		ip maddr show | grep "66:66:00:00:00:66" >$LTPTMP/tst_ip.out 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -555,7 +574,8 @@ test06()
->>    			return $RC
->>    		else
->>    			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
->> -				&>$LTPTMP/tst_ip.err || RC=$?
->> +				&>$LTPTMP/tst_ip.err
->> +			RC=$?
->>    			if [ $RC -ne 0 ]
->>    			then
->>    				tst_res FAIL $LTPTMP/tst_ip.err \
->> @@ -567,15 +587,16 @@ test06()
->>    		tst_resm TINFO \
->>    		 "Test #6: ip maddr del - deletes multicast addr."
->>    
->> -		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->> +		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
->> +		RC=$?
->>    		if [ $RC -ne 0 ]
->>    		then
->>    			tst_res TFAIL $LTPTMP/tst_ip.err \
->>    				"Test #6: ip maddr del command failed return = $RC. Reason: "
->>    			return $RC
->>    		else
->> -			ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err \
->> -				|| RC=$?
->> +			ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err
->> +			RC=$?
->>    			if [ $RC -eq 0 ]
->>    			then
->>    				tst_res TFAIL $LTPTMP/tst_ip.err \
->> @@ -599,15 +620,14 @@ test06()
->>    # Exit:			- zero on success
->>    # 				- non-zero on failure.
->>    TFAILCNT=0			# Set TFAILCNT to 0, increment on failure.
->> -RC=0				# Return code from test.
->>    
->>    init || exit $RC
->>    
->> -test01 || RC=$?
->> -test02 || RC=$?
->> -test03 || RC=$?
->> -test04 || RC=$?
->> -test05 || RC=$?
->> -test06 || RC=$?
->> +test01 || exit $RC
->> +test02 || exit $RC
->> +test03 || exit $RC
->> +test04 || exit $RC
->> +test05 || exit $RC
->> +test06 || exit $RC
->>    
->> -exit $RC
->> +exit 0
+On Wednesday 08 January 2014 06:50:43 Markos Chandras wrote:
+> On 01/06/2014 12:49 PM, Mike Frysinger wrote:
+> > On Monday 06 January 2014 06:45:43 Markos Chandras wrote:
+> >> On 01/05/2014 10:27 PM, Mike Frysinger wrote:
+> >>> On Monday 25 November 2013 05:12:59 Markos Chandras wrote:
+> >>>> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+> >>>> also defined in sys/ptrace.h and conflicts with the definition
+> >>>> from the Linux kernel in linux/ptrace.h. We fix this by not
+> >>>> including the linux/ptrace.h header if the sys/ptrace.h header
+> >>>> defines the said struct. Fixes
+> >>>> https://github.com/linux-test-project/ltp/issues/6
+> >>>=20
+> >>> i'm somewhat inclined to undo this as it's really a bug in glibc-2.18
+> >>>=20
+> >>> that should be fixed in glibc-2.19:
+> >>> 	https://sourceware.org/ml/libc-alpha/2014-01/msg00078.html
+> >>=20
+> >> Ehm that would break the build for people already using 2.18. Even if a
+> >> new 2.18 is released with the fix, people using the old one will still
+> >> face the same problem.
+> >=20
+> > i'm aware that would be the situation.  i'm fine with that.
+>=20
+> It's not my call to make, but forcing people to update their glibc in
+> order to build LTP is a bit too much. I suggest to keep this workaround
+> for X months, until more people have been moved to a fixed glibc version.
+
+i'm not forcing people to update their glibc.  i am forcing them to get the=
+ir=20
+distro to land a simple fix.  or run a simple sed script as root to fix the=
+ir=20
+header.
+
+> strace also has similar fix
+> http://sourceforge.net/p/strace/code/ci/0b4060f61f1bb101b5d8d084714b7d2fe=
+ac
+> db199/
+
+yes, and i already commented there
+=2Dmike
+
+--nextPart13000905.Gu5baIAjOR
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJSzan3AAoJEEFjO5/oN/WB8BgP/2SKEwE2GjEtH8BckCfJXDRm
+R7+//4piQ4Ex2CBCd1g5KpPZipohg4Xsr6wyXfC9JZCAsHGifMhFcLGoqPm3JANT
+GB+vvSROsoMDsB7K5mfu5WF10TL5U2YUAb03Vw6VD3zH4vZGJWehXjkHmtNpQteq
++LiPyMoK4hlKsmAA82a+SPfJmJGBDF+6lff3OsqIzJiBasBtRKyIVyFicwuXreJw
+xujT6P5qy5mn9VyD7iqUqdyQ1NAJb/812thAMYdG9xuEOk5Jjcod6mJWbo9cVkjM
+i17f2vDBpuhFhs8rhXkvIBHsMprLx8PJP6kFkMEsH9ILO5+QzgnQeyvpDPqbZBML
+FJ6Ft2Eej38a/oZ2nYZUYeRMdad5Oq21fFwFAowBBe1ZgQyd7WTztHTsrOWWkUDc
+L0hq10EE5B7z3u5mKpvCCzRyT5jZS6vRz8ytwyDo3VbDpF0zTeMp9JsjMtIm0at/
+pBK0ypmCSe61s0ho7EvPWjyh3kL0WBHou7HwMPayRkkJocswaynArkWpnzjXqDWe
+21fC8TZDhWySqecxD4PVrU1B36rj95JlKydwytl1owarU/YppHu03V2he1sCq9Tv
+7ZXfbP39nbrHUh6+tfrE8qSfNy3WHwJl6+Z+292syizrcMY9NKhbbDX9Sh3bpFHj
+mI6lUo4VSb6RR7VCOVgY
+=7D1a
+-----END PGP SIGNATURE-----
+
+--nextPart13000905.Gu5baIAjOR--
+
+
+--===============4715410593988590013==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+--===============4715410593988590013==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4715410593988590013==--
+
