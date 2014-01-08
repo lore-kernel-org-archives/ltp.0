@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W1Ggx-0007QO-VG
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 14:34:40 +0000
-Date: Thu, 9 Jan 2014 15:34:17 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W0shm-0000Sx-L2
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 12:57:54 +0000
+Date: Wed, 8 Jan 2014 13:57:35 +0100
 From: chrubis@suse.cz
-Message-ID: <20140109143417.GA28639@rei>
-References: <1387358991.1664.37.camel@G08JYZSD130126>
-	<201401090803.39606.vapier@gentoo.org>
-	<20140109130919.GF5125@rei.Home>
-	<201401090900.59568.vapier@gentoo.org>
+Message-ID: <20140108125734.GA1203@rei.Home>
+References: <1388746143.1609.19.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201401090900.59568.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7
- arguments
+In-Reply-To: <1388746143.1609.19.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] dup3/dup3_02.c: fix O_CLOEXEC undeclared
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,32 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > > you aren't really testing for "clone takes 7 args", you're testing for
-> > > "clone has varargs support".  rename the define (and use _ in its name),
-> > > and drop the ia64 check as it isn't needed.
-> > 
-> > I wouldn't call it varargs because there are only three more pointers to
-> > pass to clone() and the only reason it's defined as varargs is to be
-> > compatible with the previous clone definition...
+> O_CLOEXEC is not defined in RHEL5. When execute make,
+> "dup3_02.c:55: error: ???O_CLOEXEC??? undeclared here (not in a function)"
+> will be outputed.
 > 
-> fair enough.  the define still needs renaming like CLONE_ACCEPTS_7_ARGS.
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 
-OK.
+I've pushed a sligtly different patch that moves all the O_CLOEXEC
+definitions that were scattered around the sources into lapi/fcntl.h
+header. Thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
