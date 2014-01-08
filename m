@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1W83Ee-0007mg-SS
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jan 2014 07:37:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W83Ec-0001vb-8q
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jan 2014 07:37:28 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0S7bIj4023436
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Jan 2014 15:37:18 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 28 Jan 2014 15:36:04 +0800
-Message-Id: <1390894565-463-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH 1/2] mknod/mknod07.c: cleanup
+	(envelope-from <Markos.Chandras@imgtec.com>) id 1W0reu-00077C-Lg
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 11:50:52 +0000
+Received: from multi.imgtec.com ([194.200.65.239])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1W0ret-0002pN-EM
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 11:50:52 +0000
+Message-ID: <52CD3B93.8090605@imgtec.com>
+Date: Wed, 8 Jan 2014 11:50:43 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+MIME-Version: 1.0
+References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
+	<201401051727.10564.vapier@gentoo.org>
+	<52CA9767.4040101@imgtec.com>
+	<201401060749.29230.vapier@gentoo.org>
+In-Reply-To: <201401060749.29230.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,267 +27,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Delete some useless commtents.
-Move the test body form main() to mknod_verify().
-Some cleanup.
+On 01/06/2014 12:49 PM, Mike Frysinger wrote:
+> On Monday 06 January 2014 06:45:43 Markos Chandras wrote:
+>> On 01/05/2014 10:27 PM, Mike Frysinger wrote:
+>>> On Monday 25 November 2013 05:12:59 Markos Chandras wrote:
+>>>> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
+>>>> also defined in sys/ptrace.h and conflicts with the definition
+>>>> from the Linux kernel in linux/ptrace.h. We fix this by not
+>>>> including the linux/ptrace.h header if the sys/ptrace.h header
+>>>> defines the said struct. Fixes
+>>>> https://github.com/linux-test-project/ltp/issues/6
+>>>
+>>> i'm somewhat inclined to undo this as it's really a bug in glibc-2.18
+>>> that should be fixed in glibc-2.19:
+>>> 	https://sourceware.org/ml/libc-alpha/2014-01/msg00078.html
+>>
+>> Ehm that would break the build for people already using 2.18. Even if a
+>> new 2.18 is released with the fix, people using the old one will still
+>> face the same problem.
+>
+> i'm aware that would be the situation.  i'm fine with that.
+> -mike
+>
+It's not my call to make, but forcing people to update their glibc in 
+order to build LTP is a bit too much. I suggest to keep this workaround 
+for X months, until more people have been moved to a fixed glibc version.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/mknod/mknod07.c | 165 ++++++++++--------------------
- 1 file changed, 53 insertions(+), 112 deletions(-)
+strace also has similar fix
+http://sourceforge.net/p/strace/code/ci/0b4060f61f1bb101b5d8d084714b7d2feacdb199/
 
-diff --git a/testcases/kernel/syscalls/mknod/mknod07.c b/testcases/kernel/syscalls/mknod/mknod07.c
-index 6cdf980..09ff604 100644
---- a/testcases/kernel/syscalls/mknod/mknod07.c
-+++ b/testcases/kernel/syscalls/mknod/mknod07.c
-@@ -18,7 +18,6 @@
-  */
- 
- /*
-- * Test Name: mknod07
-  *
-  * Test Description:
-  * Verify that,
-@@ -27,44 +26,6 @@
-  *   2) mknod(2) returns -1 and sets errno to EACCES if parent directory
-  *	does not allow  write  permission  to  the process.
-  *
-- * Expected Result:
-- *  mknod() should fail with return value -1 and set expected errno.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	if errno set == expected errno
-- *		Issue sys call fails with expected return value and errno.
-- *	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory(s)/file(s) created.
-- *
-- * Usage:  <for command-line>
-- *  mknod07 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  This test should be executed by non-super-user only.
-  */
- 
- #include <stdio.h>
-@@ -79,73 +40,48 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
- 
--#define MODE_RWX	S_IFIFO | S_IRWXU | S_IRWXG | S_IRWXO
--#define NEWMODE		S_IFIFO | S_IRUSR | S_IRGRP | S_IROTH
--#define SOCKET_MODE	S_IFSOCK| S_IRWXU | S_IRWXG | S_IRWXO
--#define DIR_TEMP	"testdir_1"
-+#define DIR_TEMP		"testdir_1"
-+#define DIR_TEMP_MODE		(S_IRUSR | S_IXUSR)
- 
--void setup2();			/* setup function to test mknod for EACCES */
-+#define FIFO_MODE	(S_IFIFO | S_IRUSR | S_IRGRP | S_IROTH)
-+#define SOCKET_MODE	(S_IFSOCK | S_IRWXU | S_IRWXG | S_IRWXO)
-+#define CHR_MODE	(S_IFCHR | S_IRUSR | S_IWUSR)
-+#define BLK_MODE 	(S_IFBLK | S_IRUSR | S_IWUSR)
- 
--struct test_case_t {		/* test case struct. to hold ref. test cond's */
-+
-+static struct test_case_t {
- 	char *pathname;
- 	int mode;
- 	int exp_errno;
--	void (*setupfunc) (void);
- } test_cases[] = {
--	{
--	"tnode_1", SOCKET_MODE, EACCES, NULL}, {
--"tnode_2", NEWMODE, EACCES, setup2},};
-+	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES },
-+	{ "testdir_1/tnode_2", FIFO_MODE, EACCES },
-+	{ "tnode_3", CHR_MODE, EPERM },
-+	{ "tnode_4", BLK_MODE, EPERM },
-+};
- 
- char *TCID = "mknod07";
--int TST_TOTAL = 2;
--int exp_enos[] = { EPERM, EACCES, 0 };
--
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = { EPERM, EACCES, 0 };
- 
--void setup();			/* setup function for the tests */
--void cleanup();			/* cleanup function for the tests */
-+static void setup(int ac, char **argv);
-+static void mknod_verify(int i);
-+static void cleanup(void);
- 
- int main(int ac, char **av)
- {
- 	int lc;
--	char *msg;
--	char *node_name;	/* ptr. for node name created */
- 	int i;
--	int mode;		/* creation mode for the node created */
--
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
--	setup();
- 
--	TEST_EXP_ENOS(exp_enos);
-+	setup(ac, av);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
- 		tst_count = 0;
- 
--		for (i = 0; i < TST_TOTAL; i++) {
--			node_name = test_cases[i].pathname;
--			mode = test_cases[i].mode;
--
--			TEST(mknod(node_name, mode, 0));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "mknod succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == test_cases[i].exp_errno)
--				tst_resm(TPASS | TTERRNO,
--					 "mknod failed as expected");
--			else
--				tst_resm(TFAIL | TTERRNO,
--					 "mknod failed unexpectedly; expected: "
--					 "%d - %s", test_cases[i].exp_errno,
--					 strerror(test_cases[i].exp_errno));
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			mknod_verify(i);
- 
- 	}
- 
-@@ -153,51 +89,56 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--void setup()
-+static void setup(int ac, char **av)
- {
--	int i;
-+	char *msg;
-+	char nobody_uid[] = "nobody";
-+	struct passwd *ltpuser;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--	if (seteuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid failed");
--
--	TEST_PAUSE;
-+	TEST_EXP_ENOS(exp_enos);
- 
- 	tst_tmpdir();
- 
--	if (mkdir(DIR_TEMP, MODE_RWX) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "mkdir failed");
--
--	if (chmod(DIR_TEMP, MODE_RWX) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "chmod failed");
-+	TEST_PAUSE;
- 
--	if (chdir(DIR_TEMP) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "chdir failed");
-+	ltpuser = SAFE_GETPWNAM(cleanup, nobody_uid);
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
- 
--	for (i = 0; i < TST_TOTAL; i++)
--		if (test_cases[i].setupfunc != NULL)
--			test_cases[i].setupfunc();
-+	SAFE_MKDIR(cleanup, DIR_TEMP, DIR_TEMP_MODE);
- }
- 
--void setup2()
-+static void mknod_verify(int i)
- {
--	if (chmod(".", NEWMODE) < 0)
--		tst_brkm(TBROK, cleanup, "chmod failed");
-+	TEST(mknod(test_cases[i].pathname, test_cases[i].mode, 0));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "mknod succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == test_cases[i].exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "mknod failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "mknod failed unexpectedly; expected: "
-+			 "%d - %s", test_cases[i].exp_errno,
-+			 strerror(test_cases[i].exp_errno));
-+	}
- }
- 
--void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
--	if (seteuid(0) == -1)
--		tst_resm(TBROK, "seteuid(0) failed");
-+	SAFE_SETEUID(NULL, 0);
- 
- 	tst_rmdir();
--
- }
+other projects may have one too. Such fixes keep systems with 2.18 
+working for now and it really does not affect anyone with <2.18.
+
+but like I said, it not really my call to make. whatever works for you.
+
 -- 
-1.8.2.1
+markos
 
 
 ------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
