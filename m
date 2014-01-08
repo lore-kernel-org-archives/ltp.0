@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W0tDX-0007GO-Nr
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 13:30:43 +0000
-Date: Wed, 8 Jan 2014 14:30:24 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W0skV-0000do-VW
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 13:00:44 +0000
+Date: Wed, 8 Jan 2014 14:00:24 +0100
 From: chrubis@suse.cz
-Message-ID: <20140108133024.GA1340@rei>
-References: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
-	<201312160158.02840.vapier@gentoo.org>
-	<52B43BDD.7080304@imgtec.com>
-	<201401051730.25397.vapier@gentoo.org>
+Message-ID: <20140108130024.GB1203@rei.Home>
+References: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <201401051730.25397.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed
- architectures
+In-Reply-To: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] lib: errnos: use ERFKILL only if it's defined
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +24,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> sure, but i'm not sure this change covers everything
+> This is to fix compilation on RHEL5.3:
+>   In file included from tst_res.c:216:
+>   errnos.h: In function ???strerrnodef???:
+>   errnos.h:164: error: ???ERFKILL??? undeclared (first use in this function)
+>   errnos.h:164: error: (Each undeclared identifier is reported only once
+>   errnos.h:164: error: for each function it appears in.)
+>   errnos.h:164: error: array index in initializer not of integer type
+>   errnos.h:164: error: (near initialization for ???errno_pairs???)
+>   make[1]: *** [tst_res.o] Error 1
 > 
-> there's still:
-> extern int sctp_connectx_orig (int)
->     __attribute ((alias ("__sctp_connectx")));
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  lib/errnos.h |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
 > 
-> i vaguely recall gcc doesn't add symbol prefixes to the alias attribute.  the 
-> documentation implies that too:
-> 
-> The alias attribute causes the declaration to be emitted as an alias for 
-> another symbol, which must be specified. For instance,
->           void __f () { /* Do something. */; }
->           void f () __attribute__ ((weak, alias ("__f")));
-> defines ???f??? to be a weak alias for ???__f???. In C++, the mangled name for the 
-> target must be used. It is an error if ???__f??? is not defined in the same 
-> translation unit.
-> 
-> since this still needs fixing upstream, might be a good time to also include a 
-> knob to turn this crap off entirely ? :)
+> diff --git a/lib/errnos.h b/lib/errnos.h
+> index 797aed4..ee9620b 100644
+> --- a/lib/errnos.h
+> +++ b/lib/errnos.h
+> @@ -161,7 +161,9 @@ static const char *strerrnodef(int err)
+>  		PAIR(EKEYREJECTED)
+>  		PAIR(EOWNERDEAD)
+>  		PAIR(ENOTRECOVERABLE)
+> +#ifdef ERFKILL
+>  		PAIR(ERFKILL)
+> +#endif
+>  #ifdef EHWPOISON
+>  		PAIR(EHWPOISON)
+>  #endif
 
-What is the status? This is a build failure and so should be fixed
-before the release which should happen soon enough (generally right
-after we get rid of build failures on older distros and exotic
-hardware).
-
-We have a few options here:
-
-* Apply the patch that is not clean but was applied in upstream
-
-* Disable the sctp build temporarily
-
-* Fix this correctly (and I'm not going to do this myself)
+Pushed and added few more so that we are compatible back to the SLES9
+and RHEL4. Thanks.
 
 -- 
 Cyril Hrubis
