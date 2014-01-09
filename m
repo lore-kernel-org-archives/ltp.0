@@ -1,30 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1W8dqo-0006pW-W0
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jan 2014 22:43:19 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W8dqn-0002i7-Pd
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jan 2014 22:43:18 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s0TMh98a021469
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 29 Jan 2014 17:43:11 -0500
-Received: from tarantula.localdomain (ovpn-113-197.phx2.redhat.com
-	[10.3.113.197])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s0TMh8jr020433
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 29 Jan 2014 17:43:09 -0500
-Date: Wed, 29 Jan 2014 16:43:07 -0600
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20140129224307.GL30688@tarantula.localdomain>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1W1Faa-0002Ut-Hm
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 13:24:00 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W1FaY-00034G-Jx
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 13:24:00 +0000
+Date: Thu, 9 Jan 2014 08:23:48 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1382348670.13310097.1389273828896.JavaMail.root@redhat.com>
+In-Reply-To: <201401090803.39606.vapier@gentoo.org>
+References: <1387358991.1664.37.camel@G08JYZSD130126>
+	<20140107140910.GD27135@rei.Home>
+	<1389191490.2879.27.camel@G08JYZSD130126>
+	<201401090803.39606.vapier@gentoo.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix glb_run type for disktest
+Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7
+ arguments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,54 +31,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-disktest/main.c and disktest/timer.c fail to compile on certain
-platforms due to mismatch in types -- short vs long -- with a
-gcc error "relocation truncated to fit"
 
-Thanks to Kyle McMartin for the hint on how to fix the error!
----
- testcases/kernel/io/disktest/main.c  | 2 +-
- testcases/kernel/io/disktest/timer.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/io/disktest/main.c b/testcases/kernel/io/disktest/main.c
-index 5e5b91a37a12..9484ec103601 100644
---- a/testcases/kernel/io/disktest/main.c
-+++ b/testcases/kernel/io/disktest/main.c
-@@ -290,7 +290,7 @@ void *threadedMain(void *vtest)
- 	int i;
- 	unsigned char *sharedMem;
- 
--	extern unsigned long glb_run;
-+	extern unsigned short glb_run;
- 	extern int signal_action;
- 
- 	test->args->pid = GETPID();
-diff --git a/testcases/kernel/io/disktest/timer.c b/testcases/kernel/io/disktest/timer.c
-index 45ae09f17b38..f47fa7dde496 100644
---- a/testcases/kernel/io/disktest/timer.c
-+++ b/testcases/kernel/io/disktest/timer.c
-@@ -86,7 +86,7 @@ void *ChildTimer(void *vtest)
- 	test_env_t *env = test->env;
- 
- 	extern int signal_action;
--	extern unsigned long glb_run;
-+	extern unsigned short glb_run;
- 
- #ifdef _DEBUG
- 	PDBG3(DBUG, args, "In timer %lu, %d\n", time(NULL), env->bContinue);
--- 
-1.8.3.1
+----- Original Message -----
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 9 January, 2014 2:03:38 PM
+> Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7	arguments
+> 
+> On Wednesday 08 January 2014 09:31:30 Zeng Linggang wrote:
+> > +AC_DEFUN([LTP_CHECK_CLONE7ARGS],[
+> > +AH_TEMPLATE(HAVE_CLONE7ARGS,
+> > +[Define to 1 if clone() supports 7 arguments.])
+> > +AC_MSG_CHECKING([for CLONE7ARGS])
+> > +AC_TRY_LINK([#define _GNU_SOURCE
+> > +		#include <sched.h>
+> > +		#include <stdlib.h>],
+> > +		[
+> > +		#if !defined(__ia64__)
+> > +		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
+> > +		#endif
+> > +		],
+> > +		AC_DEFINE(HAVE_CLONE7ARGS) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
+> > +])
+> 
+> you aren't really testing for "clone takes 7 args", you're testing for "clone
+> has varargs support".  rename the define (and use _ in its name), and drop
+> the
+> ia64 check as it isn't needed.
 
+Why not? It should matter, according to clone(2) you should be using __clone2() on ia64:
+   ia64
+       On ia64, a different interface is used:
+
+       int __clone2(int (*fn)(void *),
+                    void *child_stack_base, size_t stack_size,
+                    int flags, void *arg, ...
+                 /* pid_t *ptid, struct user_desc *tls, pid_t *ctid */ );
+
+# cat a.c
+#define _GNU_SOURCE
+#include <sched.h>
+#include <stdlib.h>
+
+int main()
+{
+	clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
+	return 0;
+}
+
+# uname -m
+ia64
+
+# gcc a.c
+/tmp/cc0QVVOU.o: In function `main':
+a.c:(.text+0x42): undefined reference to `clone'
+collect2: ld returned 1 exit status
+
+So perhaps we should add #else and test for __clone2 on ia64.
+
+Regards,
+Jan
+
+> -mike
+> 
+> ------------------------------------------------------------------------------
+> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+> Learn Why More Businesses Are Choosing CenturyLink Cloud For
+> Critical Workloads, Development Environments & Everything In Between.
+> Get a Quote or Start a Free Trial Today.
+> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
