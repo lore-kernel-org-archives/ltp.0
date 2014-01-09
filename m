@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ashagow@gmail.com>) id 1W33O8-0005Rn-7U
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 12:46:36 +0000
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1W33O6-0001gB-Qs
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 12:46:36 +0000
-Received: by mail-wi0-f177.google.com with SMTP id hm2so639200wib.16
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Jan 2014 04:46:28 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1W1GK4-0001rQ-MD
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 14:11:00 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W1GK3-0005n7-C6
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 14:11:00 +0000
+Date: Thu, 9 Jan 2014 09:10:52 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <256751357.13345901.1389276652247.JavaMail.root@redhat.com>
+In-Reply-To: <201401090851.42915.vapier@gentoo.org>
+References: <1387358991.1664.37.camel@G08JYZSD130126>
+	<201401090803.39606.vapier@gentoo.org>
+	<1382348670.13310097.1389273828896.JavaMail.root@redhat.com>
+	<201401090851.42915.vapier@gentoo.org>
 MIME-Version: 1.0
-In-Reply-To: <CADqC_Hq=ivTffZYogdg9doXU1zdGJZM34OhM0deuHJ7RNrO-Gg@mail.gmail.com>
-References: <CADqC_Hq=ivTffZYogdg9doXU1zdGJZM34OhM0deuHJ7RNrO-Gg@mail.gmail.com>
-Date: Tue, 14 Jan 2014 18:16:28 +0530
-Message-ID: <CADqC_HrK3E-yrpMFkKAgEg=Eyt9GO0TafKcmD9eG4ZL2zhBVCA@mail.gmail.com>
-From: Asha Gowda <ashagow@gmail.com>
-Subject: Re: [LTP] Issue with commands
+Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7
+ arguments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,550 +28,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4433217898446243465=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============4433217898446243465==
-Content-Type: multipart/alternative; boundary=f46d043c07e0bde44004efed94e5
-
---f46d043c07e0bde44004efed94e5
-Content-Type: text/plain; charset=ISO-8859-1
-
-HI,
-
-Actually I am getting the same response for all the commands listed before
-"sh: $'mail_tests.sh\r': command not found"
-
-What could be the issue?
-
-Thanks,
-Asha
-
-
-On Tue, Jan 14, 2014 at 6:09 PM, Asha Gowda <ashagow@gmail.com> wrote:
-
-> Hi,
->
-> I am trting to run SEPtember LTP release and found that commands are not
-> working for me : Here are the logs : Can you please let mek now the issues:
->
->
-> Running tests.......
-> <<<test_start>>>
-> tag=ar stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; ar01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'ar01\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=ld stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; ld01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'ld01\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=ldd stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; ldd01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'ldd01\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=nm stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; nm01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'nm01\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=objdump stime=4106
-> "mdline="export TCsrc=$LTPROOT/testcases/bin; objdump01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'objdump01\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=file stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; file_test.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'file_test.sh\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=tar stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; tar_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'tar_tests.sh\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=cron stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; cron_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'cron_tests.sh\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=logrotate stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; logrotate_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'logrotate_tests.sh\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=mail stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; mail_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'mail_tests.sh\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=cpio stime=4106
-> "mdline="export TCdat=$LTPROOT/testcases/bin; cpio_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> sh: $'cpio_tests.sh\r': command not found
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=127 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=unzip01 stime=4106
-> "mdline="unzip_tests.sh $LTPROOT/testcases/data/tst_unzip_file.zip
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> ': No such file or directorySEP/ltp/testcases/data/tst_unzip_file.zip
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=1 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=gzip01 stime=4106
-> "mdline="gzip_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag gzip01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=cp_tests01 stime=4106
-> "mdline="cp_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag cp_tests01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=ln_tests01 stime=4106
-> "mdline="ln_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag ln_tests01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=mkdir_tests01 stime=4106
-> "mdline="mkdir_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag mkdir_tests01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=mv_tests01 stime=4106
-> "mdline="mv_tests.sh
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag mv_tests01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=size01 stime=4106
-> "mdline="size01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag size01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=sssd01 stime=4106
-> "mdline="sssd01
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag sssd01) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=sssd02 stime=4106
-> "mdline="sssd02
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag sssd02) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=sssd03 stime=4106
-> "mdline="sssd03
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> <<<execution_status>>>
-> ' (tag sssd03) failed.  errno:2  No such file or directory"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> incrementing stop
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: 20130904
->
-> Thanks,
-> Asha
->
-
---f46d043c07e0bde44004efed94e5
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">HI,<div><br></div><div>Actually I am getting the same resp=
-onse for all the commands listed before &quot;sh: $&#39;mail_tests.sh\r&#39=
-;: command not found&quot;</div><div><br></div><div>What could be the issue=
-?</div>
-<div><br></div><div>Thanks,</div><div>Asha</div></div><div class=3D"gmail_e=
-xtra"><br><br><div class=3D"gmail_quote">On Tue, Jan 14, 2014 at 6:09 PM, A=
-sha Gowda <span dir=3D"ltr">&lt;<a href=3D"mailto:ashagow@gmail.com" target=
-=3D"_blank">ashagow@gmail.com</a>&gt;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex"><div dir=3D"ltr">Hi,<div><br></div><div>I am=
- trting to run SEPtember LTP release and found that commands are not workin=
-g for me : Here are the logs : Can you please let mek now the issues:</div>
-<div><br></div><div><br></div>
-<div><div>Running tests.......</div><div>&lt;&lt;&lt;test_start&gt;&gt;&gt;=
-</div><div>tag=3Dar stime=3D4106</div><div>&quot;mdline=3D&quot;export TCda=
-t=3D$LTPROOT/testcases/bin; ar01</div><div>contacts=3D&quot;&quot;</div><di=
-v>analysis=3Dexit</div>
-
-<div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><div>sh: $&#39;ar01\r&#39;: c=
-ommand not found</div><div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><d=
-iv>initiation_status=3D&quot;ok&quot;</div><div>duration=3D0 termination_ty=
-pe=3Dexited termination_id=3D127 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dld stime=3D4106</di=
-v><div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; ld01</di=
-v><div>
-contacts=3D&quot;&quot;</div>
-<div>analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><di=
-v>sh: $&#39;ld01\r&#39;: command not found</div><div>&lt;&lt;&lt;execution_=
-status&gt;&gt;&gt;</div><div>initiation_status=3D&quot;ok&quot;</div><div>
-duration=3D0 termination_type=3Dexited termination_id=3D127 corefile=3Dno</=
-div>
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dldd stime=3D4106</d=
-iv><div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; ldd01</=
-div><div>
-
-contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&lt;&lt;&lt;tes=
-t_output&gt;&gt;&gt;</div><div>sh: $&#39;ldd01\r&#39;: command not found</d=
-iv><div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>initiation_statu=
-s=3D&quot;ok&quot;</div>
-
-<div>duration=3D0 termination_type=3Dexited termination_id=3D127 corefile=
-=3Dno</div><div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt=
-;&gt;</div><div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dnm stime=
-=3D4106</div>
-<div>
-&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; nm01</div><div>=
-contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&lt;&lt;&lt;tes=
-t_output&gt;&gt;&gt;</div><div>sh: $&#39;nm01\r&#39;: command not found</di=
-v><div>
-
-&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>initiation_status=3D&quo=
-t;ok&quot;</div><div>duration=3D0 termination_type=3Dexited termination_id=
-=3D127 corefile=3Dno</div><div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;=
-test_end&gt;&gt;&gt;</div>
-
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dobjdump stime=3D410=
-6</div><div>&quot;mdline=3D&quot;export TCsrc=3D$LTPROOT/testcases/bin; obj=
-dump01</div><div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><di=
-v>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div>
-
-<div>sh: $&#39;objdump01\r&#39;: command not found</div><div>&lt;&lt;&lt;ex=
-ecution_status&gt;&gt;&gt;</div><div>initiation_status=3D&quot;ok&quot;</di=
-v><div>duration=3D0 termination_type=3Dexited termination_id=3D127 corefile=
-=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dfile stime=3D4106</=
-div><div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; file_t=
-est.sh</div>
-
-<div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&lt;&lt;&l=
-t;test_output&gt;&gt;&gt;</div><div>sh: $&#39;file_test.sh\r&#39;: command =
-not found</div><div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>init=
-iation_status=3D&quot;ok&quot;</div>
-
-<div>duration=3D0 termination_type=3Dexited termination_id=3D127 corefile=
-=3Dno</div><div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt=
-;&gt;</div><div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dtar stim=
-e=3D4106</div>
-
-<div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; tar_tests.=
-sh</div><div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&l=
-t;&lt;&lt;test_output&gt;&gt;&gt;</div><div>sh: $&#39;tar_tests.sh\r&#39;: =
-command not found</div>
-
-<div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>initiation_status=
-=3D&quot;ok&quot;</div><div>duration=3D0 termination_type=3Dexited terminat=
-ion_id=3D127 corefile=3Dno</div><div>cutime=3D0 cstime=3D0</div><div>&lt;&l=
-t;&lt;test_end&gt;&gt;&gt;</div>
-
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dcron stime=3D4106</=
-div><div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; cron_t=
-ests.sh</div><div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><d=
-iv>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div>
-
-<div>sh: $&#39;cron_tests.sh\r&#39;: command not found</div><div>&lt;&lt;&l=
-t;execution_status&gt;&gt;&gt;</div><div>initiation_status=3D&quot;ok&quot;=
-</div><div>duration=3D0 termination_type=3Dexited termination_id=3D127 core=
-file=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dlogrotate stime=3D4=
-106</div><div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; l=
-ogrotate_tests.sh</div>
-
-<div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&lt;&lt;&l=
-t;test_output&gt;&gt;&gt;</div><div>sh: $&#39;logrotate_tests.sh\r&#39;: co=
-mmand not found</div><div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><di=
-v>
-
-initiation_status=3D&quot;ok&quot;</div><div>duration=3D0 termination_type=
-=3Dexited termination_id=3D127 corefile=3Dno</div><div>cutime=3D0 cstime=3D=
-0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div><div>&lt;&lt;&lt;test_sta=
-rt&gt;&gt;&gt;</div>
-
-<div>tag=3Dmail stime=3D4106</div><div>&quot;mdline=3D&quot;export TCdat=3D=
-$LTPROOT/testcases/bin; mail_tests.sh</div><div>contacts=3D&quot;&quot;</di=
-v><div>analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><=
-div>sh: $&#39;mail_tests.sh\r&#39;: command not found</div>
-
-<div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>initiation_status=
-=3D&quot;ok&quot;</div><div>duration=3D0 termination_type=3Dexited terminat=
-ion_id=3D127 corefile=3Dno</div><div>cutime=3D0 cstime=3D0</div><div>&lt;&l=
-t;&lt;test_end&gt;&gt;&gt;</div>
-
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dcpio stime=3D4106</=
-div><div>&quot;mdline=3D&quot;export TCdat=3D$LTPROOT/testcases/bin; cpio_t=
-ests.sh</div><div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><d=
-iv>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div>
-
-<div>sh: $&#39;cpio_tests.sh\r&#39;: command not found</div><div>&lt;&lt;&l=
-t;execution_status&gt;&gt;&gt;</div><div>initiation_status=3D&quot;ok&quot;=
-</div><div>duration=3D0 termination_type=3Dexited termination_id=3D127 core=
-file=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dunzip01 stime=3D410=
-6</div><div>&quot;mdline=3D&quot;unzip_tests.sh $LTPROOT/testcases/data/tst=
-_unzip_file.zip</div>
-
-<div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&lt;&lt;&l=
-t;test_output&gt;&gt;&gt;</div><div>&#39;: No such file or directorySEP/ltp=
-/testcases/data/tst_unzip_file.zip</div><div>&lt;&lt;&lt;execution_status&g=
-t;&gt;&gt;</div>
-
-<div>initiation_status=3D&quot;ok&quot;</div><div>duration=3D0 termination_=
-type=3Dexited termination_id=3D1 corefile=3Dno</div><div>cutime=3D0 cstime=
-=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div><div>&lt;&lt;&lt;test_=
-start&gt;&gt;&gt;</div>
-
-<div>tag=3Dgzip01 stime=3D4106</div><div>&quot;mdline=3D&quot;gzip_tests.sh=
-</div><div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit</div><div>&lt;=
-&lt;&lt;test_output&gt;&gt;&gt;</div><div>&lt;&lt;&lt;execution_status&gt;&=
-gt;&gt;</div>
-
-<div>&#39; (tag gzip01) failed. =A0errno:2 =A0No such file or directory&quo=
-t;</div><div>duration=3D0 termination_type=3Dexited termination_id=3D2 core=
-file=3Dno</div><div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt=
-;&gt;&gt;</div>
-
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dcp_tests01 stime=3D=
-4106</div><div>&quot;mdline=3D&quot;cp_tests.sh</div><div>contacts=3D&quot;=
-&quot;</div><div>analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&=
-gt;</div>
-
-<div>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag cp_tests=
-01) failed. =A0errno:2 =A0No such file or directory&quot;</div><div>duratio=
-n=3D0 termination_type=3Dexited termination_id=3D2 corefile=3Dno</div><div>=
-cutime=3D0 cstime=3D0</div>
-
-<div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div><div>&lt;&lt;&lt;test_start&gt;&=
-gt;&gt;</div><div>tag=3Dln_tests01 stime=3D4106</div><div>&quot;mdline=3D&q=
-uot;ln_tests.sh</div><div>contacts=3D&quot;&quot;</div><div>analysis=3Dexit=
-</div>
-
-<div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><div>&lt;&lt;&lt;execution_st=
-atus&gt;&gt;&gt;</div><div>&#39; (tag ln_tests01) failed. =A0errno:2 =A0No =
-such file or directory&quot;</div><div>duration=3D0 termination_type=3Dexit=
-ed termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dmkdir_tests01 stime=
-=3D4106</div><div>&quot;mdline=3D&quot;mkdir_tests.sh</div><div>contacts=3D=
-&quot;&quot;</div>
-
-<div>analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><di=
-v>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag mkdir_tests=
-01) failed. =A0errno:2 =A0No such file or directory&quot;</div><div>duratio=
-n=3D0 termination_type=3Dexited termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dmv_tests01 stime=3D=
-4106</div><div>&quot;mdline=3D&quot;mv_tests.sh</div><div>contacts=3D&quot;=
-&quot;</div>
-
-<div>analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><di=
-v>&lt;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag mv_tests01)=
- failed. =A0errno:2 =A0No such file or directory&quot;</div><div>duration=
-=3D0 termination_type=3Dexited termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dsize01 stime=3D4106=
-</div><div>&quot;mdline=3D&quot;size01</div><div>contacts=3D&quot;&quot;</d=
-iv><div>
-
-analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><div>&lt=
-;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag size01) failed. =
-=A0errno:2 =A0No such file or directory&quot;</div><div>duration=3D0 termin=
-ation_type=3Dexited termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dsssd01 stime=3D4106=
-</div><div>&quot;mdline=3D&quot;sssd01</div><div>contacts=3D&quot;&quot;</d=
-iv><div>
-
-analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><div>&lt=
-;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag sssd01) failed. =
-=A0errno:2 =A0No such file or directory&quot;</div><div>duration=3D0 termin=
-ation_type=3Dexited termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dsssd02 stime=3D4106=
-</div><div>&quot;mdline=3D&quot;sssd02</div><div>contacts=3D&quot;&quot;</d=
-iv><div>
-
-analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><div>&lt=
-;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag sssd02) failed. =
-=A0errno:2 =A0No such file or directory&quot;</div><div>duration=3D0 termin=
-ation_type=3Dexited termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>&lt;&lt;&lt;test_start&gt;&gt;&gt;</div><div>tag=3Dsssd03 stime=3D4106=
-</div><div>&quot;mdline=3D&quot;sssd03</div><div>contacts=3D&quot;&quot;</d=
-iv><div>
-
-analysis=3Dexit</div><div>&lt;&lt;&lt;test_output&gt;&gt;&gt;</div><div>&lt=
-;&lt;&lt;execution_status&gt;&gt;&gt;</div><div>&#39; (tag sssd03) failed. =
-=A0errno:2 =A0No such file or directory&quot;</div><div>duration=3D0 termin=
-ation_type=3Dexited termination_id=3D2 corefile=3Dno</div>
-
-<div>cutime=3D0 cstime=3D0</div><div>&lt;&lt;&lt;test_end&gt;&gt;&gt;</div>=
-<div>incrementing stop</div><div>INFO: ltp-pan reported some tests FAIL</di=
-v><div>LTP Version: 20130904</div></div><div><br></div><div>Thanks,</div><d=
-iv>
-
-Asha</div></div>
-</blockquote></div><br></div>
-
---f46d043c07e0bde44004efed94e5--
-
-
---===============4433217898446243465==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
+
+
+
+
+
+----- Original Message -----
+> From: "Mike Frysinger" <vapier@gentoo.org>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 9 January, 2014 2:51:42 PM
+> Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7 arguments
+> 
+> On Thursday 09 January 2014 08:23:48 Jan Stancek wrote:
+> > ----- Original Message -----
+> > 
+> > > From: "Mike Frysinger" <vapier@gentoo.org>
+> > > To: ltp-list@lists.sourceforge.net
+> > > Sent: Thursday, 9 January, 2014 2:03:38 PM
+> > > Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports
+> > > 7	arguments
+> > > 
+> > > On Wednesday 08 January 2014 09:31:30 Zeng Linggang wrote:
+> > > > +AC_DEFUN([LTP_CHECK_CLONE7ARGS],[
+> > > > +AH_TEMPLATE(HAVE_CLONE7ARGS,
+> > > > +[Define to 1 if clone() supports 7 arguments.])
+> > > > +AC_MSG_CHECKING([for CLONE7ARGS])
+> > > > +AC_TRY_LINK([#define _GNU_SOURCE
+> > > > +		#include <sched.h>
+> > > > +		#include <stdlib.h>],
+> > > > +		[
+> > > > +		#if !defined(__ia64__)
+> > > > +		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
+> > > > +		#endif
+> > > > +		],
+> > > > +		AC_DEFINE(HAVE_CLONE7ARGS) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
+> > > > +])
+> > > 
+> > > you aren't really testing for "clone takes 7 args", you're testing for
+> > > "clone has varargs support".  rename the define (and use _ in its name),
+> > > and drop the
+> > > ia64 check as it isn't needed.
+> > 
+> > Why not? It should matter, according to clone(2) you should be using
+> > __clone2() on ia64: ia64
+> >        On ia64, a different interface is used:
+> 
+> exactly.  why does a clone() test have any bearing at all on ia64 behavior ?
+> the code that checks the define won't get used in the __ia64__ case, so
+> having
+> a define here is pointless.
+
+I thought the check applies to whole ltp_clone, since that is what is called
+by testcases checking this define.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 CenturyLink Cloud: The Leader in Enterprise Cloud Services.
@@ -578,16 +96,7 @@ Learn Why More Businesses Are Choosing CenturyLink Cloud For
 Critical Workloads, Development Environments & Everything In Between.
 Get a Quote or Start a Free Trial Today. 
 http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
---===============4433217898446243465==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4433217898446243465==--
-
