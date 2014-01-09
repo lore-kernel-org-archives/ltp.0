@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1W3gWr-0007CR-6t
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jan 2014 06:34:13 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W3gWo-0003zo-Hw
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jan 2014 06:34:13 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0G6Wxkc004910
-	for <ltp-list@lists.sourceforge.net>; Thu, 16 Jan 2014 14:33:02 +0800
-Message-ID: <1389853977.2282.9.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 16 Jan 2014 14:32:57 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 1/2] lstat/lstat02.c: cleanup
+	(envelope-from <metan@suse.de>) id 1W1Ic4-0004vL-4Y
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 16:37:44 +0000
+Date: Thu, 9 Jan 2014 17:37:16 +0100
+From: chrubis@suse.cz
+Message-ID: <20140109163716.GA8938@rei>
+References: <1387358991.1664.37.camel@G08JYZSD130126>
+	<20140109113619.GB5125@rei.Home>
+	<1389269411.2149.8.camel@G08JYZSD130126>
+	<201401090947.12749.vapier@gentoo.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
+In-Reply-To: <201401090947.12749.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH???v3] lib/cloner.c: add function ltp_clone7 when
+ clone supports???7 arguments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,469 +26,274 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-* Make use of SAFE_MACROS()
-* setup(void) --> setup(int ac, char **av)
-* Add lstat_verify()
-* Some cleanup
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+And here is a patch. (note that it should be applied over the two
+allready commited patches)
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: inline;
+	filename="0001-lib-cloner.c-add-ltp_clone7-and-fix-build.patch"
+
+From eeb4ae48cb0dfcb3b89d1a368a8870dc5f35aae2 Mon Sep 17 00:00:00 2001
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 9 Jan 2014 20:10:11 +0800
+Subject: [PATCH 1/2] lib/cloner.c: add ltp_clone7() and fix build
+
+The seven argument clone breaks compilation on older distributions
+(SLES10, RHEL4, etc.). It was introduced by commit 5f5cb63b7ddb.
+
+This commit adds a configure check and ltp_clone7() library function.
+
+Now the ltp_clone() is the same old ltp_clone() with five arguments and
+ltp_clone7() is the new one with eight arguments (but it calls clone
+with seven arguments, thus the name).
+
+Tests that does not need the additional arguments should call the
+ltp_clone() the rest should call ltp_clone7(). If seven argument clone
+is not supproted the ltp_clone7() will return -1 and set errno to
+ENOSYS.
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/lstat/lstat02.c | 345 +++++++-----------------------
- 1 file changed, 77 insertions(+), 268 deletions(-)
+ configure.ac                              |  1 +
+ include/test.h                            |  4 ++-
+ lib/cloner.c                              | 55 ++++++++++++++++++++++---------
+ m4/ltp-clone7args.m4                      | 38 +++++++++++++++++++++
+ testcases/kernel/syscalls/clone/clone08.c |  9 +++--
+ 5 files changed, 88 insertions(+), 19 deletions(-)
+ create mode 100644 m4/ltp-clone7args.m4
 
-diff --git a/testcases/kernel/syscalls/lstat/lstat02.c b/testcases/kernel/syscalls/lstat/lstat02.c
-index 7111cce..387e544 100644
---- a/testcases/kernel/syscalls/lstat/lstat02.c
-+++ b/testcases/kernel/syscalls/lstat/lstat02.c
-@@ -1,6 +1,6 @@
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-+ *   07/2001 Ported by Wayne Boyer
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -13,17 +13,14 @@
-  *   the GNU General Public License for more details.
-  *
-  *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   along with this program;  if not, write to the Free Software Foundation,
-+ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+diff --git a/configure.ac b/configure.ac
+index 4af7662..9e3df00 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -171,5 +171,6 @@ LTP_CHECK_FS_IOC_FLAGS
+ LTP_CHECK_MREMAP_FIXED
+ LTP_CHECK_KERNEL_DEVEL
+ LTP_CHECK_XFS_QUOTACTL
++LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+ 
+ AC_OUTPUT
+diff --git a/include/test.h b/include/test.h
+index ffc1c8c..5211aea 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -199,7 +199,9 @@ void maybe_run_child(void (*child)(), char *fmt, ...);
+ int self_exec(char *argv0, char *fmt, ...);
+ 
+ /* Functions from lib/cloner.c */
+-int ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
++int ltp_clone(unsigned long flags, int (*fn)(void *arg), void *arg,
++		size_t stack_size, void *stack);
++int ltp_clone7(unsigned long flags, int (*fn)(void *arg), void *arg,
+ 		size_t stack_size, void *stack, ...);
+ int ltp_clone_malloc(unsigned long clone_flags, int (*fn)(void *arg),
+ 		void *arg, size_t stacksize);
+diff --git a/lib/cloner.c b/lib/cloner.c
+index cb4dc6e..d6aa428 100644
+--- a/lib/cloner.c
++++ b/lib/cloner.c
+@@ -18,7 +18,7 @@
   */
--
- /*
-- * Test Name: lstat02
-- *
-  * Test Description:
-  *   Verify that,
-  *   1) lstat(2) returns -1 and sets errno to EACCES if search permission is
-- *      denied on a component of the path prefix.
-+ *	denied on a component of the path prefix.
-  *   2) lstat(2) returns -1 and sets errno to ENOENT if the specified file
-  *	does not exists or empty string.
-  *   3) lstat(2) returns -1 and sets errno to EFAULT if pathname points
-@@ -32,46 +29,6 @@
-  *	component is too long.
-  *   5) lstat(2) returns -1 and sets errno to ENOTDIR if the directory
-  *	component in pathname is not a directory.
-- *
-- * Expected Result:
-- *  lstat() should fail with return value -1 and set expected errno.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	if errno set == expected errno
-- *   		Issue sys call fails with expected return value and errno.
-- *   	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory(s)/file(s) created.
-- *
-- * Usage:  <for command-line>
-- *  lstat02 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  This test should be executed by 'non-super-user' only.
-  */
+ 
+ #ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
++# define _GNU_SOURCE
+ #endif
  
  #include <stdio.h>
-@@ -88,289 +45,141 @@
- 
+@@ -29,6 +29,7 @@
+ #include <sched.h>
+ #include <stdarg.h>
  #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
++#include "config.h"
  
- #define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
- #define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
--#define DIR_TEMP	"testdir_1"
--#define TEST_FILE1	"testdir_1/tfile_1"
--#define SFILE1		"testdir_1/sfile_1"
--#define TEST_FILE2	"t_file/tfile_2"
--#define SFILE2		"t_file/sfile_2"
--
--int no_setup();
--int setup1();			/* setup function to test chmod for EACCES */
--int setup2();			/* setup function to test chmod for ENOTDIR */
--int longpath_setup();		/* setup function to test chmod for ENAMETOOLONG */
-+#define TEST_DIR	"test_dir"
-+#define TEST_EACCES	TEST_DIR"/test_eacces"
-+#define TEST_ENOTDIR	"test_file/test_enotdir"
+ #undef clone			/* we want to use clone() */
  
--char Longpathname[PATH_MAX + 2];
-+static char longpathname[PATH_MAX + 2];
- 
- #if !defined(UCLINUX)
--char High_address_node[64];
--#endif /* if !defined(UCLINUX) */
-+static void bad_addr_setup(int);
-+static void high_address_setup(int);
-+#endif
- 
--struct test_case_t {		/* test case struct. to hold ref. test cond's */
-+static struct test_case_t {
- 	char *pathname;
--	char *desc;
- 	int exp_errno;
--	int (*setupfunc) ();
--} Test_cases[] = {
--	{
--	SFILE1, "No Search permissions to process", EACCES, setup1},
-+	void (*setup) ();
-+} test_cases[] = {
-+	{TEST_EACCES, EACCES, NULL},
-+	{"", ENOENT, NULL},
- #if !defined(UCLINUX)
--	{
--	(char *)-1, "Negative address", EFAULT, no_setup}, {
--	High_address_node, "Address beyond address space", EFAULT,
--		    no_setup},
-+	{NULL, EFAULT, bad_addr_setup},
-+	{NULL, EFAULT, high_address_setup},
+@@ -39,30 +40,25 @@ extern int __clone2(int (*fn) (void *arg), void *child_stack_base,
+ 		    pid_t *parent_tid, void *tls, pid_t *child_tid);
  #endif
--	{
--	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
--	"", "Pathname is empty", ENOENT, no_setup}, {
--	SFILE2, "Path contains regular file", ENOTDIR, setup2}, {
--	NULL, NULL, 0, no_setup}
-+	{longpathname, ENAMETOOLONG, NULL},
-+	{TEST_ENOTDIR, ENOTDIR, NULL},
+ 
++#ifndef CLONE_SUPPORTS_7_ARGS
++# define clone(fn, stack, flags, arg, ptid, tls, ctid) \
++         clone(fn, stack, flags, arg)
++#endif
++
+ /*
+  * ltp_clone: wrapper for clone to hide the architecture dependencies.
+  *   1. hppa takes bottom of stack and no stacksize (stack grows up)
+  *   2. __ia64__ takes bottom of stack and uses clone2
+  *   3. all others take top of stack (stack grows down)
+  */
+-int
+-ltp_clone(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+-	  size_t stack_size, void *stack, ...)
++static int
++ltp_clone_(unsigned long flags, int (*fn)(void *arg), void *arg,
++	   size_t stack_size, void *stack, pid_t *ptid, void *tls, pid_t *ctid)
+ {
+ 	int ret;
+-	pid_t *parent_tid, *child_tid;
+-	void *tls;
+-	va_list arg_clone;
+-
+-	va_start(arg_clone, stack);
+-	parent_tid = va_arg(arg_clone, pid_t *);
+-	tls = va_arg(arg_clone, void *);
+-	child_tid = va_arg(arg_clone, pid_t *);
+-	va_end(arg_clone);
+ 
+ #if defined(__ia64__)
+-	ret = clone2(fn, stack, stack_size, clone_flags, arg,
+-		     parent_tid, tls, child_tid);
++	ret = clone2(fn, stack, stack_size, flags, arg, ptid, tls, ctid);
+ #else
+ # if defined(__hppa__) || defined(__metag__)
+ 	/*
+@@ -78,12 +74,39 @@ ltp_clone(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+ 		stack += stack_size;
+ # endif
+ 
+-	ret = clone(fn, stack, clone_flags, arg, parent_tid, tls, child_tid);
++	ret = clone(fn, stack, flags, arg, ptid, tls, ctid);
+ #endif
+ 
+ 	return ret;
+ }
+ 
++int ltp_clone(unsigned long flags, int (*fn)(void *arg), void *arg,
++              size_t stack_size, void *stack)
++{
++	return ltp_clone_(flags, fn, arg, stack_size, stack, NULL, NULL, NULL);
++}
++
++int ltp_clone7(unsigned long flags, int (*fn)(void *arg), void *arg,
++               size_t stack_size, void *stack, ...)
++{
++	pid_t *ptid, *ctid;
++	void *tls;
++	va_list arg_clone;
++
++	va_start(arg_clone, stack);
++	ptid = va_arg(arg_clone, pid_t *);
++	tls = va_arg(arg_clone, void *);
++	ctid = va_arg(arg_clone, pid_t *);
++	va_end(arg_clone);
++
++#ifdef CLONE_SUPPORTS_7_ARGS
++	return ltp_clone_(flags, fn, arg, stack_size, stack, ptid, tls, ctid);
++#else
++	errno = ENOSYS;
++	return -1;
++#endif
++}
++
+ /*
+  * ltp_clone_malloc: also does the memory allocation for clone with a
+  * caller-specified size.
+diff --git a/m4/ltp-clone7args.m4 b/m4/ltp-clone7args.m4
+new file mode 100644
+index 0000000..5857575
+--- /dev/null
++++ b/m4/ltp-clone7args.m4
+@@ -0,0 +1,38 @@
++dnl
++dnl Copyright (c) Linux Test Project, 2014
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program;  if not, write to the Free Software
++dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++dnl
++
++dnl
++dnl LTP_CHECK_CLONE_SUPPORTS_7_ARGS
++dnl -------------------------------
++dnl
++AC_DEFUN([LTP_CHECK_CLONE_SUPPORTS_7_ARGS],[
++AH_TEMPLATE(CLONE_SUPPORTS_7_ARGS,
++[Define to 1 if clone() supports 7 arguments.])
++AC_MSG_CHECKING([if clone() supports 7 args])
++AC_TRY_LINK([#define _GNU_SOURCE
++		#include <sched.h>
++		#include <stdlib.h>],
++		[
++		#ifdef __ia64__
++		__clone2(NULL, NULL, 0, 0, NULL, NULL, NULL, NULL);
++		#else
++		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
++		#endif
++		],
++		AC_DEFINE(CLONE_SUPPORTS_7_ARGS) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
++])
+diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
+index b098f4a..1258b4e 100644
+--- a/testcases/kernel/syscalls/clone/clone08.c
++++ b/testcases/kernel/syscalls/clone/clone08.c
+@@ -24,6 +24,8 @@
+ #include "safe_macros.h"
+ #include "linux_syscall_numbers.h"
+ 
++char *TCID = "clone08";
++
+ static pid_t ptid, ctid, tgid;
+ static void *child_stack;
+ 
+@@ -76,7 +78,6 @@ static struct test_case {
+ 	 test_clone_thread, child_clone_thread},
  };
  
- char *TCID = "lstat02";
--int TST_TOTAL = sizeof(Test_cases) / sizeof(*Test_cases);
--int exp_enos[] = { EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
--
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
--
--char *bad_addr = 0;
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = { EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
- 
--void setup();			/* Main setup function for the tests */
--void cleanup();			/* cleanup function for the test */
-+static void setup(int, char **);
-+static void lstat_verify(int);
-+static void cleanup(void);
+-char *TCID = "clone08";
+ int TST_TOTAL = ARRAY_SIZE(test_cases);
  
  int main(int ac, char **av)
+@@ -122,8 +123,12 @@ static void cleanup(void)
+ 
+ static long clone_child(const struct test_case *t, int use_tst)
  {
--	struct stat stat_buf;	/* stat structure buffer */
- 	int lc;
--	char *msg;
--	char *file_name;	/* ptr. for file name whose mode is modified */
--	char *test_desc;	/* test specific error message */
--	int ind;		/* counter to test different test conditions */
--
--	msg = parse_opts(ac, av, NULL, NULL);
--	if (msg != NULL) {
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+	int i;
- 
--	}
--
--	/*
--	 * Invoke setup function to call individual test setup functions
--	 * to simulate test conditions.
--	 */
--	setup();
-+	setup(ac, av);
- 
--	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		tst_count = 0;
- 
--		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
--			file_name = Test_cases[ind].pathname;
--			test_desc = Test_cases[ind].desc;
--
--#if !defined(UCLINUX)
--			if (file_name == High_address_node) {
--				file_name = (char *)get_high_address();
--			}
--#endif
--
--			/*
--			 * Call lstat(2) to test different test conditions.
--			 * verify that it fails with -1 return value and
--			 * sets appropriate errno.
--			 */
--			TEST(lstat(file_name, &stat_buf));
--
--			/* Check return code from lstat(2) */
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL,
--					 "lstat(2) returned %ld, expected"
--					 " -1, errno:%d", TEST_RETURN,
--					 Test_cases[ind].exp_errno);
--				continue;
--			}
--			TEST_ERROR_LOG(TEST_ERRNO);
--			if (TEST_ERRNO == Test_cases[ind].exp_errno) {
--				tst_resm(TPASS, "lstat() fails, %s, errno:%d",
--					 test_desc, TEST_ERRNO);
--			} else {
--				tst_resm(TFAIL, "lstat() fails, %s, errno:%d, "
--					 "expected errno:%d", test_desc,
--					 TEST_ERRNO, Test_cases[ind].exp_errno);
--			}
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			lstat_verify(i);
- 	}
- 
--	/*
--	 * Invoke cleanup() to delete the test directory/file(s) created
--	 * in the setup().
--	 */
- 	cleanup();
- 	tst_exit();
--	tst_exit();
--
- }
- 
--/*
-- * setup(void) - performs all ONE TIME setup for this test.
-- * 	Exit the test program on receipt of unexpected signals.
-- *	Create a temporary directory and change directory to it.
-- *	Invoke individual test setup functions according to the order
-- *	set in struct. definition.
-- */
--void setup()
-+static void setup(int ac, char **av)
- {
--	int ind;
-+	char *msg;
-+	struct passwd *ltpuser;
+-	TEST(ltp_clone(t->flags, t->do_child, NULL, CHILD_STACK_SIZE,
++	TEST(ltp_clone7(t->flags, t->do_child, NULL, CHILD_STACK_SIZE,
+ 		child_stack, &ptid, NULL, &ctid));
 +
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--	/* Capture unexpected signals */
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--	ltpuser = getpwnam(nobody_uid);
--	if (setuid(ltpuser->pw_uid) == -1) {
--		tst_resm(TINFO, "setuid failed to "
--			 "to set the effective uid to %d", ltpuser->pw_uid);
--		perror("setuid");
--	}
-+	tst_require_root(NULL);
++	if (TEST_RETURN == -1 && TTERRNO == ENOSYS)
++		tst_brmk(TCONF, cleanup, "clone does not support 7 args");
 +
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
- 
- 	TEST_PAUSE;
- 
--	/* Make a temp dir and cd to it */
- 	tst_tmpdir();
- 
--#if !defined(UCLINUX)
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK, cleanup, "mmap failed");
--	}
--	Test_cases[2].pathname = bad_addr;
--#endif
-+	SAFE_MKDIR(cleanup, TEST_DIR, MODE_RWX);
-+	SAFE_TOUCH(cleanup, TEST_EACCES, 0666, NULL);
-+	if (chmod(TEST_DIR, FILE_MODE) < 0)
-+		tst_brkm(TBROK, cleanup, "chmod(2) of %s failed", TEST_DIR);
- 
--	/* call individual setup functions */
--	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
--		Test_cases[ind].setupfunc();
--	}
-+	SAFE_TOUCH(cleanup, "test_file", MODE_RWX, NULL);
-+
-+	memset(longpathname, 'a', PATH_MAX+1);
- }
- 
--/*
-- * no_setup() - Some test conditions for lstat(2) do not any setup.
-- *              Hence, this function just returns 0.
-- *  		This function simply returns 0.
-- */
--int no_setup()
-+#if !defined(UCLINUX)
-+static void bad_addr_setup(int i)
- {
--	return 0;
-+	test_cases[i].pathname = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
-+					   MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
- }
- 
--/*
-- * setup1() - setup function for a test condition for which lstat(2)
-- *	      returns -1 and sets errno to EACCES.
-- *  Create a test directory under temporary directory and create a test file
-- *  under this directory with mode "0666" permissions.
-- *  Modify the mode permissions on test directory such that process will not
-- *  have search permissions on test directory.
-- *
-- *  The function returns 0.
-- */
--int setup1()
-+static void high_address_setup(int i)
- {
--	int fd;			/* file handle for testfile */
-+	test_cases[i].pathname = (char *)get_high_address();
-+}
-+#endif
- 
--	if (mkdir(DIR_TEMP, MODE_RWX) < 0) {
--		tst_brkm(TBROK, cleanup, "mkdir(2) of %s failed", DIR_TEMP);
--	}
-+static void lstat_verify(int i)
-+{
-+	struct stat stat_buf;
- 
--	if ((fd = open(TEST_FILE1, O_RDWR | O_CREAT, 0666)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, 0666) failed, errno=%d : %s",
--			 TEST_FILE1, errno, strerror(errno));
--	}
--	if (close(fd) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "close(%s) Failed, errno=%d : %s",
--			 TEST_FILE1, errno, strerror(errno));
--	}
-+	if (test_cases[i].setup != NULL)
-+		test_cases[i].setup(i);
- 
--	/* Create a symlink of testfile */
--	if (symlink(TEST_FILE1, SFILE1) < 0) {
--		tst_brkm(TBROK, cleanup,
--			 "symlink() of %s Failed, errno=%d : %s",
--			 TEST_FILE1, errno, strerror(errno));
--	}
-+	TEST(lstat(test_cases[i].pathname, &stat_buf));
- 
--	/* Modify mode permissions on test directory */
--	if (chmod(DIR_TEMP, FILE_MODE) < 0) {
--		tst_brkm(TBROK, cleanup, "chmod(2) of %s failed", DIR_TEMP);
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "lstat() returned %ld, expected -1, errno=%d",
-+			 TEST_RETURN, test_cases[i].exp_errno);
-+		return;
- 	}
--	return 0;
--}
- 
--/*
-- * setup2() - setup function for a test condition for which lstat(2)
-- *	     returns -1 and sets errno to ENOTDIR.
-- *
-- *  Create a test file under temporary directory so that test tries to
-- *  change mode of a testfile "tfile_2" under "t_file" which happens to be
-- *  another regular file.
-- */
--int setup2()
--{
--	int fd;			/* file handle */
-+	TEST_ERROR_LOG(TEST_ERRNO);
- 
--	if ((fd = open("t_file", O_RDWR | O_CREAT, MODE_RWX)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(2) on t_file failed, errno=%d : %s",
--			 errno, strerror(errno));
-+	if (TEST_ERRNO == test_cases[i].exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "lstat() failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "lstat() failed unexpectedly; expected: %d - %s",
-+			 test_cases[i].exp_errno,
-+			 strerror(test_cases[i].exp_errno));
- 	}
--	if (close(fd) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "close(t_file) Failed, errno=%d : %s",
--			 errno, strerror(errno));
--	}
--	return 0;
- }
- 
--/*
-- * longpath_setup() - setup to create a node with a name length exceeding
-- *                    the MAX. length of PATH_MAX.
-- *		      This function retruns 0.
-- */
--int longpath_setup()
-+static void cleanup(void)
- {
--	int ind;		/* counter variable */
-+	SAFE_SETEUID(cleanup, 0);
- 
--	for (ind = 0; ind <= (PATH_MAX + 1); ind++) {
--		Longpathname[ind] = 'a';
--	}
--	return 0;
--}
--
--/*
-- * cleanup() - Performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- */
--void cleanup()
--{
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
- 
--	/* Restore mode permissions on test directory created in setup2() */
--	if (chmod(DIR_TEMP, MODE_RWX) < 0) {
--		tst_brkm(TBROK, NULL, "chmod(2) of %s failed", DIR_TEMP);
--	}
--
- 	tst_rmdir();
--
- }
+ 	if (TEST_RETURN == -1) {
+ 		if (use_tst) {
+ 			tst_brkm(TBROK | TTERRNO, cleanup, "%s clone() failed",
 -- 
-1.8.4.2
+1.8.3.2
 
 
-
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 CenturyLink Cloud: The Leader in Enterprise Cloud Services.
@@ -495,7 +301,16 @@ Learn Why More Businesses Are Choosing CenturyLink Cloud For
 Critical Workloads, Development Environments & Everything In Between.
 Get a Quote or Start a Free Trial Today. 
 http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--OXfL5xGRrasGEqWY--
+
