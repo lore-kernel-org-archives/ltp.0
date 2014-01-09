@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W0WkN-0005OQ-OM
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:31:07 +0000
-Date: Tue, 7 Jan 2014 14:30:50 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W1EFZ-0002qe-6E
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 11:58:13 +0000
+Date: Thu, 9 Jan 2014 12:57:53 +0100
 From: chrubis@suse.cz
-Message-ID: <20140107133050.GB27135@rei.Home>
-References: <CAK25hWNxjNX5E5ga1YYNorSZ8nJHU2Pzy=+OHCdQtfN+PWvSxg@mail.gmail.com>
+Message-ID: <20140109115753.GD5125@rei.Home>
+References: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
+	<201401051730.25397.vapier@gentoo.org> <20140108133024.GA1340@rei>
+	<201401081644.28915.vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAK25hWNxjNX5E5ga1YYNorSZ8nJHU2Pzy=+OHCdQtfN+PWvSxg@mail.gmail.com>
-Subject: Re: [LTP] IOZone test
+In-Reply-To: <201401081644.28915.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed
+ architectures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,30 +27,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Saket Sinha <saket.sinha89@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Markos Chandras <Markos.Chandras@imgtec.com>
 
 Hi!
->  I wanted to know the status of IOZone in the latest release of LTP. It is
-> documented that IOZone is supported in LTP but I cannot find it in the
-> source tree under \ltp-full-20130904\runtest.
-> 
-> Kindly help. Otherwise do I need include IOZone as a new test in LTP.
+> if it's in upstream, then i don't see a problem merging it into ltp.  it isn't 
+> 100% correct, but it still seems better than the status quo.
 
-I do not understand the question. IOZone is a benchmark that is not part
-of the LTP (and as far as I know it never was). If you want to run
-IOZone download it from the IOZone upstream and do as you wish.
+And seems like you were right, I've tried the patch and the build fails
+for me on x86_64.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
