@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W0wQd-00076e-6F
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jan 2014 16:56:27 +0000
-Date: Wed, 8 Jan 2014 17:56:06 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W1Fe0-0003vx-Dd
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 13:27:32 +0000
+Date: Thu, 9 Jan 2014 14:27:11 +0100
 From: chrubis@suse.cz
-Message-ID: <20140108165606.GA2178@rei>
-References: <1383899857-4669-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20140109132710.GG5125@rei.Home>
+References: <1387358991.1664.37.camel@G08JYZSD130126>
+	<20140107140910.GD27135@rei.Home>
+	<1389191490.2879.27.camel@G08JYZSD130126>
+	<20140108151501.GA1556@rei>
+	<1389254938.2025.3.camel@G08JYZSD130126>
+	<20140109113619.GB5125@rei.Home>
+	<1389269411.2149.8.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1383899857-4669-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] setregid02: invalid user value fix
+In-Reply-To: <1389269411.2149.8.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH???v3] lib/cloner.c: add function ltp_clone7 when
+ clone supports???7 arguments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,50 +31,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> Commit 705926d096f7a64c9d53efeb789288e25457d68f
-> introduced a bug that the value for inval_user was treated
-> as '-1' when passed to 16-bit version of setregid().
-> 
-> Fixed it the same way as it's done for setreuid test cases.
-> 
-> Reported-by: Honggyu Kim <hong.gyu.kim@lge.com>
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  testcases/kernel/syscalls/setregid/setregid02.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
-> index e67a7df..2b84b26 100644
-> --- a/testcases/kernel/syscalls/setregid/setregid02.c
-> +++ b/testcases/kernel/syscalls/setregid/setregid02.c
-> @@ -39,7 +39,7 @@ TCID_DEFINE(setregid02);
->  
->  static gid_t neg_one = -1;
->  
-> -static gid_t inval_user = (USHRT_MAX);
-> +static gid_t inval_user = USHRT_MAX - 2;
->  static struct passwd *ltpuser;
+> +++ b/m4/ltp-clone7args.m4
+> @@ -0,0 +1,36 @@
+> +dnl
+> +dnl Copyright (c) Linux Test Project, 2013
+> +dnl
 
-Unfortunately I've found that in SLES user nobody has UID precisely
-USHRT_MAX - 2 and the test fails :(
-
-Thinking of correct solution, we probably need some
-tst_get_unused_uid(). What do you think?
+This is not that much important but it's 2014 allready...
+(I can fix that myself once we agree what should go in)
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
