@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1W1Gcl-000770-7S
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 14:30:19 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1W1Gck-0006LM-4g
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 14:30:19 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 9 Jan 2014 09:30:12 -0500
-References: <1387358991.1664.37.camel@G08JYZSD130126>
-	<201401090851.42915.vapier@gentoo.org>
-	<256751357.13345901.1389276652247.JavaMail.root@redhat.com>
-In-Reply-To: <256751357.13345901.1389276652247.JavaMail.root@redhat.com>
-MIME-Version: 1.0
-Message-Id: <201401090930.13714.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports 7
-	arguments
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1W1aHj-0003XQ-KA
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jan 2014 11:29:55 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W1aHh-00050t-24
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jan 2014 11:29:55 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0ABTe08017986
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jan 2014 19:29:42 +0800
+Message-ID: <1389353374.2061.9.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 10 Jan 2014 19:29:34 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] linkat/linkat02.c: add new error number tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,108 +25,373 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2848990762397727652=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============2848990762397727652==
-Content-Type: multipart/signed; boundary="nextPart1655933.lDr60NL6Qy";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1655933.lDr60NL6Qy
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thursday 09 January 2014 09:10:52 Jan Stancek wrote:
-> ----- Original Message -----
->=20
-> > From: "Mike Frysinger" <vapier@gentoo.org>
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: ltp-list@lists.sourceforge.net
-> > Sent: Thursday, 9 January, 2014 2:51:42 PM
-> > Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone supports
-> > 7 arguments
-> >=20
-> > On Thursday 09 January 2014 08:23:48 Jan Stancek wrote:
-> > > ----- Original Message -----
-> > >=20
-> > > > From: "Mike Frysinger" <vapier@gentoo.org>
-> > > > To: ltp-list@lists.sourceforge.net
-> > > > Sent: Thursday, 9 January, 2014 2:03:38 PM
-> > > > Subject: Re: [LTP] [PATCH] clone/clone08.c: check whether clone
-> > > > supports 7	arguments
-> > > >=20
-> > > > On Wednesday 08 January 2014 09:31:30 Zeng Linggang wrote:
-> > > > > +AC_DEFUN([LTP_CHECK_CLONE7ARGS],[
-> > > > > +AH_TEMPLATE(HAVE_CLONE7ARGS,
-> > > > > +[Define to 1 if clone() supports 7 arguments.])
-> > > > > +AC_MSG_CHECKING([for CLONE7ARGS])
-> > > > > +AC_TRY_LINK([#define _GNU_SOURCE
-> > > > > +		#include <sched.h>
-> > > > > +		#include <stdlib.h>],
-> > > > > +		[
-> > > > > +		#if !defined(__ia64__)
-> > > > > +		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
-> > > > > +		#endif
-> > > > > +		],
-> > > > > +		AC_DEFINE(HAVE_CLONE7ARGS) AC_MSG_RESULT(yes),
-> > > > > AC_MSG_RESULT(no)) +])
-> > > >=20
-> > > > you aren't really testing for "clone takes 7 args", you're testing
-> > > > for "clone has varargs support".  rename the define (and use _ in
-> > > > its name), and drop the
-> > > > ia64 check as it isn't needed.
-> > >=20
-> > > Why not? It should matter, according to clone(2) you should be using
-> > > __clone2() on ia64: ia64
-> > >=20
-> > >        On ia64, a different interface is used:
-> > exactly.  why does a clone() test have any bearing at all on ia64
-> > behavior ? the code that checks the define won't get used in the
-> > __ia64__ case, so having
-> > a define here is pointless.
->=20
-> I thought the check applies to whole ltp_clone, since that is what is
-> called by testcases checking this define.
-
-there's debate as to whether that's how we want to take things :).  we'll s=
-ort=20
-it out there.
-=2Dmike
-
---nextPart1655933.lDr60NL6Qy
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSzrJ1AAoJEEFjO5/oN/WBj9kP/jwlLPLq1aD2GBvxbq1yBCwq
-Z/XaX4YNJhJ9m2udNpZ1HAv7tVlBC5jH5FV6xaMUIRjut3y0y9V7VKm91pUUDjq7
-dsblYLvuudJqRVEj+fGjyWsQkagI4hRgQZRUCpo6Wf2RKoCWArDMwXGgeP2+JYvE
-gRpoESmcvGJ/nBO5XSN59W7oQ5Vj2FTo2DFpWU+0HuOVWbvuB4OUpHB8dJAeiJml
-sapSz+21xdDCFK+ODMYCm1DeCVqJf65WKlU6yB/5dIbT/rXqBESDjdbyV/waNwRH
-lEvTciUNZ8wELt3QInUae3HGQELIweTKPV4hipmCn8r1kjeBhDoQMQ0zKvfE09yy
-SaxQvL6NqvVMD15h0NWBNrGEpBHrEkRnYMiVg1/GSufEziS5Wj7BhoclwWOULzE0
-tcHkH4ZhtRb2775UTSXDKZnPzy+8KgsV37nYGqG2CSbuX392Bit8n+5kh9YEsHZ5
-04x8zNXOV1QsCWAAK83jzpCNcP7qgJA/i6Zwz188s70TQG+K69tTTQi/X+/PzAIl
-BkkQEqWl44VwWKMSHo4TJP+fVNgit7iUs0MlafKcj+0wIXOwCYemQ/VHfTX0AJAj
-7WJTqy4JdksuYK+uSiXyQmWwEhYdB9qJsa3nZa6WWb+NNXSDnkST5h0S7zfmc7GO
-8NObS624kYT5/4H02Ayj
-=oWGY
------END PGP SIGNATURE-----
-
---nextPart1655933.lDr60NL6Qy--
-
-
---===============2848990762397727652==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+
+Add new error number tests for linkat(2):
+* ENAMETOOLONG
+* EEXIST
+* ELOOP
+* EACCES
+* EMLINK
+* EROFS
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/.gitignore        |   1 +
+ testcases/kernel/syscalls/linkat/linkat02.c | 311 ++++++++++++++++++++++++++++
+ 3 files changed, 313 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/linkat/linkat02.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index afa7976..02fb9ad 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -487,6 +487,7 @@ link07 link07
+ 
+ #linkat test cases
+ linkat01 linkat01
++linkat01 linkat01 -D DEVICE -T DEVICE_FS_TYPE
+ 
+ listen01 listen01
+ 
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 91cf0f1..d1a8547 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -445,6 +445,7 @@
+ /link/link06
+ /link/link07
+ /linkat/linkat01
++/linkat/linkat02
+ /listen/listen01
+ /llseek/llseek01
+ /llseek/llseek02
+diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
+new file mode 100644
+index 0000000..7f9da3d
+--- /dev/null
++++ b/testcases/kernel/syscalls/linkat/linkat02.c
+@@ -0,0 +1,311 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program.
++ */
++/*
++ * Test that linkat() fails and sets the proper errno values.
++ */
++
++#define _GNU_SOURCE
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <error.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++#include <signal.h>
++#include <pwd.h>
++#include <sys/mount.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++#include "safe_macros.h"
++
++#ifndef AT_FDCWD
++# define AT_FDCWD -100
++#endif
++#ifndef AT_SYMLINK_FOLLOW
++# define AT_SYMLINK_FOLLOW 0x400
++#endif
++
++#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
++			 S_IXGRP|S_IROTH|S_IXOTH)
++#define TEST_FILE	"testfile"
++#define TEST_EXIST	"testexist"
++#define TEST_ELOOP	"testeloop"
++#define TEST_EACCES	"./tmp/testeeacces"
++#define TEST_EACCES2	"./tmp/testeeacces2"
++#define TEST_EROFS	"mntpoint"
++#define TEST_EROFS2	"mntpoint/testerofs2"
++#define TEST_EMLINK	"mntpoint/testemlink"
++#define BASENAME	"mntpoint/basename"
++
++static long link_max;
++static char lname[PATH_MAX];
++static char nametoolong[PATH_MAX+2];
++static char *fstype = "ext2";
++static char *device;
++static int dflag;
++static int mount_flag;
++
++static void setup(void);
++static void cleanup(void);
++
++static int  setup_eacces(void);
++static int  setup_erofs(void);
++static void cleanup_erofs(void);
++static void cleanup_eacces(void);
++static int  setup_emlink(void);
++static void cleanup_emlink(void);
++static void help(void);
++
++static option_t options[] = {
++	{"T:", NULL, &fstype},
++	{"D:", &dflag, &device},
++	{NULL, NULL, NULL}
++};
++
++static struct test_struct {
++	const char *oldfn;
++	const char *newfn;
++	int flags;
++	int expected_errno;
++	int (*setupfunc) ();
++	void (*cleanfunc) ();
++} test_cases[] = {
++	{TEST_FILE, nametoolong, 0, ENAMETOOLONG, NULL, NULL},
++	{nametoolong, TEST_FILE, 0, ENAMETOOLONG, NULL, NULL},
++	{TEST_EXIST, TEST_EXIST, 0, EEXIST, NULL, NULL},
++	{TEST_ELOOP, TEST_FILE, AT_SYMLINK_FOLLOW, ELOOP, NULL, NULL},
++	{TEST_EACCES, TEST_EACCES2, 0, EACCES, setup_eacces, cleanup_eacces},
++	{TEST_EROFS, TEST_EROFS2, 0, EROFS, setup_erofs, cleanup_erofs},
++	{TEST_EMLINK, lname, 0, EMLINK, setup_emlink, cleanup_emlink},
++};
++
++char *TCID = "linkat02";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++
++static struct passwd *ltpuser;
++static void verify_linkat(struct test_struct *);
++
++static int exp_enos[] = { ENAMETOOLONG, EEXIST, ELOOP,
++			  EACCES, EROFS, EMLINK, 0 };
++
++int main(int ac, char **av)
++{
++	int lc;
++	char *msg;
++	int i;
++
++	msg = parse_opts(ac, av, options, help);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	if (!dflag) {
++		tst_brkm(TBROK, NULL,
++			 "you must specify the device used for mounting with "
++			 "-D option");
++	}
++
++	setup();
++
++	TEST_EXP_ENOS(exp_enos);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			verify_linkat(&test_cases[i]);
++
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void verify_linkat(struct test_struct *desc)
++{
++	if (desc->setupfunc != NULL) {
++		if (desc->setupfunc() != 0) {
++			if (desc->cleanfunc() != NULL)
++				desc->cleanfunc();
++			return;
++		}
++	}
++
++	TEST(ltp_syscall(__NR_linkat, AT_FDCWD, desc->oldfn,
++			 AT_FDCWD, desc->newfn, desc->flags));
++
++	if (desc->cleanfunc != NULL)
++		desc->cleanfunc();
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL,
++			 "linkat(%s, %s, %s, %s, %d) succeeded unexpectedly",
++			 "AT_FDCWD", desc->oldfn,
++			 "AT_FDCWD", desc->newfn, desc->flags);
++		return;
++	}
++
++	if (TEST_ERRNO == desc->expected_errno) {
++		tst_resm(TPASS | TTERRNO, "linkat failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "linkat failed unexpectedly; expected: "
++			 "%d - %s", desc->expected_errno,
++			 strerror(desc->expected_errno));
++	}
++}
++
++static void setup(void)
++{
++	if ((tst_kvercmp(2, 6, 16)) < 0)
++		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.16 or newer");
++
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	tst_tmpdir();
++
++	TEST_PAUSE;
++
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++
++	SAFE_TOUCH(cleanup, TEST_FILE, 0644, NULL);
++
++	memset(nametoolong, 'a', PATH_MAX+1);
++
++	SAFE_TOUCH(cleanup, TEST_EXIST, 0644, NULL);
++
++	SAFE_SYMLINK(cleanup, TEST_ELOOP, "test_file_eloop2");
++	SAFE_SYMLINK(cleanup, "test_file_eloop2", TEST_ELOOP);
++
++	SAFE_MKDIR(cleanup, "./tmp", DIR_MODE);
++	SAFE_TOUCH(cleanup, TEST_EACCES, 0666, NULL);
++
++	tst_mkfs(NULL, device, fstype, NULL);
++	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
++}
++
++static int setup_emlink(void)
++{
++	if (mount(device, "mntpoint", fstype, 0, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
++
++	SAFE_TOUCH(cleanup_emlink, TEST_EMLINK, 0666, NULL);
++
++	link_max = 0;
++
++	while (1) {
++		sprintf(lname, "%s%ld", BASENAME, ++link_max);
++		TEST(link(TEST_EMLINK, lname));
++		if (TEST_RETURN == -1) {
++			link_max--;
++			switch (TEST_ERRNO) {
++			case ENOSPC:
++				tst_resm(TCONF,
++					 "the device has no space for the new "
++					 "directory entry. link(%s, %s) failed",
++					 TEST_EMLINK, lname);
++				return 1;
++			case EMLINK:
++				tst_resm(TINFO, "for %s the max links is %ld",
++					 fstype, link_max+1);
++				return 0;
++			default:
++				tst_resm(TFAIL | TERRNO,
++					 "link(%s, %s[0-%ld]) ret %ld, ",
++					 TEST_EMLINK, BASENAME, link_max,
++					 TEST_RETURN);
++				return 1;
++			}
++		}
++	}
++}
++
++static void cleanup_emlink(void)
++{
++	long i;
++
++	for (i = 1; i <= link_max; i++) {
++		sprintf(lname, "%s%ld", BASENAME, i);
++		SAFE_UNLINK(cleanup, lname);
++	}
++
++	SAFE_UNLINK(cleanup, TEST_EMLINK);
++
++	if (mount_flag && umount("mntpoint") < 0) {
++		mount_flag = 0;
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "umount device:%s failed", device);
++	}
++	mount_flag = 0;
++}
++
++static int setup_eacces(void)
++{
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++	return 0;
++}
++
++static void cleanup_eacces(void)
++{
++	SAFE_SETEUID(cleanup, 0);
++}
++
++static int setup_erofs(void)
++{
++	if (mount(device, "mntpoint", fstype, MS_RDONLY, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_erofs,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
++	return 0;
++}
++
++static void cleanup_erofs(void)
++{
++	if (mount_flag && umount("mntpoint") < 0) {
++		mount_flag = 0;
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "umount device:%s failed", device);
++	}
++	mount_flag = 0;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++
++	if (mount_flag && umount("mntpoint") < 0) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "umount device:%s failed", device);
++	}
++
++	tst_rmdir();
++}
++
++static void help(void)
++{
++	printf("-T type   : specifies the type of filesystem to be mounted. "
++	       "Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
++}
+-- 
+1.8.4.2
+
+
+
 
 ------------------------------------------------------------------------------
 CenturyLink Cloud: The Leader in Enterprise Cloud Services.
@@ -136,16 +399,7 @@ Learn Why More Businesses Are Choosing CenturyLink Cloud For
 Critical Workloads, Development Environments & Everything In Between.
 Get a Quote or Start a Free Trial Today. 
 http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
---===============2848990762397727652==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2848990762397727652==--
-
