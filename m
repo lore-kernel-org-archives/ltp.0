@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vyelj-0002o5-6u
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jan 2014 09:40:47 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vyeli-00070a-9w
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jan 2014 09:40:47 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s029eX7t020732
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jan 2014 17:40:33 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 2 Jan 2014 17:39:35 +0800
-Message-Id: <1388655575-4078-4-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1388655575-4078-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1388655575-4078-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH 4/4] module/delete_module: make delete_module tests
-	run default
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W2lNk-0005JA-By
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jan 2014 17:33:00 +0000
+Date: Mon, 13 Jan 2014 18:32:30 +0100
+From: chrubis@suse.cz
+Message-ID: <20140113173230.GC1945@rei>
+References: <52CFC6D1.4060006@oracle.com>
+	<1389605723-17937-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1389605723-17937-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 1/2] lib: tst_get_unused_uid, tst_get_unused_gid
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,107 +22,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-module/delete_module/Makefile: make some fixes to conform to
-module compile in kernel 2.6 series and higher
+Hi!
+> @@ -0,0 +1,86 @@
+> +/*
+> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> +#include <grp.h>
+> +#include <limits.h>
+> +#include <pwd.h>
+> +#include <stdlib.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +
+> +uid_t tst_get_unused_uid(void)
+> +{
+> +	struct passwd pwd;
+> +	struct passwd *result;
+> +	char *buf;
+> +	size_t bufsize;
 
-testcases/kernel/Makefile: make it include module test
+I've changed the bufsize to long, because size_t is unsigned.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- scenario_groups/default                        |  1 +
- testcases/kernel/Makefile                      |  1 +
- testcases/kernel/module/delete_module/Makefile | 35 ++++++++------------------
- 3 files changed, 13 insertions(+), 24 deletions(-)
+Side note: I wonder why ltp has only -Wall and not -Wall -W which prints
+warnings when signed and unsigned types are compared...
 
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 9eca8ad..ff23c7c 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -25,3 +25,4 @@ hugetlb
- commands
- hyperthreading
- kernel_misc
-+modules
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index fa6a191..6bffe79 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -53,6 +53,7 @@ SUBDIRS			+= connectors \
- 			   security \
- 			   timers \
- 			   tracing \
-+			   module \
- 
- ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
- SUBDIRS			+= power_management
-diff --git a/testcases/kernel/module/delete_module/Makefile b/testcases/kernel/module/delete_module/Makefile
-index 83b1648..95693b1 100644
---- a/testcases/kernel/module/delete_module/Makefile
-+++ b/testcases/kernel/module/delete_module/Makefile
-@@ -18,36 +18,23 @@
- # description		 : make file for the delete_module(2) testcases	  #
- ###########################################################################
- 
--top_srcdir		?= ../../../..
--
--include $(top_srcdir)/include/mk/testcases.mk
--
--CFLAGS			+= -D_GNU_SOURCE
-+ifneq ($(KERNELRELEASE),)
- 
--LOCALVERSION		?= $(shell uname -r)
-+obj-m := dummy_del_mod.o dummy_del_mod_dep.o
- 
--MODULEDIR		:= $(DESTDIR)/lib/modules/$(LOCALVERSION)/build
-+else
- 
--# KBuild make variables...
--MODCFLAGS		+= $(MODULEDIR)
-+top_srcdir		?= ../../../..
- 
--export EXTRA_CFLAGS	:= $(CFLAGS)
--export EXTRA_CPPFLAGS	:= $(CPPFLAGS)
--export EXTRA_LDFLAGS	:= $(LDFLAGS)
-+include $(top_srcdir)/include/mk/testcases.mk
- 
--obj-m			:= dummy_del_mod.o dummy_del_mod_dep.o
--MODULES			:= dummy_del_mod.ko dummy_del_mod_dep.ko
-+REQ_VERSION_MAJOR	:= 2
-+REQ_VERSION_PATCH	:= 6
- 
--# New make infra variables...
--CLEAN_TARGETS		:= .dummy* *.mod.c .tmp_version *.ko
--INSTALL_TARGETS		:= $(MODULES)
--MAKE_TARGETS		:= delete_module01 delete_module02 delete_module03
-+MAKE_TARGETS		:= delete_module01 delete_module02 delete_module03 \
-+			   dummy_del_mod.ko dummy_del_mod_dep.ko
- 
-+include $(top_srcdir)/include/mk/module.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
--$(MAKE_TARGETS): | make-module
--
--# KBuild will gripe because we redefine CFLAGS if KBUILD_NOPEDANTIC isn't set.
--.PHONY: make-module
--make-module:
--	make -C $(MODULEDIR) KBUILD_NOPEDANTIC=1 SUBDIRS=$(abs_srcdir) modules
-+endif
+> +	int s;
+> +	uid_t uid;
+> +
+> +	bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+> +	if (bufsize == -1)
+> +		bufsize = 16384;
+> +
+> +	buf = malloc(bufsize);
+> +	if (buf == NULL)
+> +		return -1;
+> +
+> +	for (uid = 0; uid <= UINT_MAX - 1; uid++) {
+> +		s = getpwuid_r(uid, &pwd, buf, bufsize, &result);
+> +		if (result == NULL) {
+
+I've added a free(buf) here otherwise we will leak memory.
+
+> +			if (s == 0)
+> +				return uid;
+> +			else
+> +				return -1;
+> +		}
+> +	}
+> +
+> +	free(buf);
+> +	return -1;
+> +}
+
+And the same for the second one.
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
