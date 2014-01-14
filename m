@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W1EAt-0007X0-Oi
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 11:53:23 +0000
-Date: Thu, 9 Jan 2014 12:53:03 +0100
+	(envelope-from <metan@suse.de>) id 1W34O0-0001gg-Jf
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 13:50:32 +0000
+Date: Tue, 14 Jan 2014 14:50:07 +0100
 From: chrubis@suse.cz
-Message-ID: <20140109115303.GC5125@rei.Home>
-References: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
+Message-ID: <20140114135007.GA21469@rei>
+References: <CADqC_Hq=ivTffZYogdg9doXU1zdGJZM34OhM0deuHJ7RNrO-Gg@mail.gmail.com>
+	<CADqC_HrK3E-yrpMFkKAgEg=Eyt9GO0TafKcmD9eG4ZL2zhBVCA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
-Subject: Re: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed
- architectures
+In-Reply-To: <CADqC_HrK3E-yrpMFkKAgEg=Eyt9GO0TafKcmD9eG4ZL2zhBVCA@mail.gmail.com>
+Subject: Re: [LTP] Issue with commands
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,26 +25,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <markos.chandras@imgtec.com>
+To: Asha Gowda <ashagow@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Unfortunatelly after the patch is applied the build on x86_64 fails
-(you have to do a make clean before the test to get rid of object files)
+> Actually I am getting the same response for all the commands listed before
+> "sh: $'mail_tests.sh\r': command not found"
+> 
+> What could be the issue?
 
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/home/metan/Work/git/ltp-dev/testcases/kernel/include -I/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/../include -I/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/../testlib -DLTP -I../../../include -I../../../include   -L/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/../lib -L/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/../testlib -L../../../lib  test_connectx.c   -lltp -lsctputil -lsctp -lpthread -o test_connectx
-/tmp/cc8twJXc.o: In function `main':
-/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/test_connectx.c:151: undefined reference to `sctp_connectx'
-/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/test_connectx.c:163: undefined reference to `sctp_connectx'
-/tmp/cc8twJXc.o: In function `test_connectx':
-/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/../testlib/sctputil.h:175: undefined reference to `sctp_connectx'
-/tmp/cc8twJXc.o: In function `main':
-/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/test_connectx.c:234: undefined reference to `sctp_connectx'
-/home/metan/Work/git/ltp-dev/utils/sctp/func_tests/test_connectx.c:245: undefined reference to `sctp_connectx'
-collect2: error: ld returned 1 exit status
-make[1]: *** [test_connectx] Error 1
-make[1]: Leaving directory `/home/metan/Work/git/ltp-dev/utils/sctp/func_tests'
-make: *** [all] Error 2
+Looks like corrupted text files, most likely wrongly unpacked archive,
+have unpacked it on Windows and then copied them to Linux machine?
 
 -- 
 Cyril Hrubis
