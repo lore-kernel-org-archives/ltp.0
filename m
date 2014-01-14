@@ -1,18 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W2lNk-0005JA-By
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jan 2014 17:33:00 +0000
-Date: Mon, 13 Jan 2014 18:32:30 +0100
-From: chrubis@suse.cz
-Message-ID: <20140113173230.GC1945@rei>
-References: <52CFC6D1.4060006@oracle.com>
-	<1389605723-17937-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anasuya@linux.vnet.ibm.com>) id 1W337u-0006Li-5d
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 12:29:50 +0000
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1W337s-0004Rg-SF
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 12:29:50 +0000
+Received: from /spool/local
+	by e28smtp03.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <anasuya@linux.vnet.ibm.com>; 
+	Tue, 14 Jan 2014 17:59:40 +0530
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by d28dlp02.in.ibm.com (Postfix) with ESMTP id 9D90D394004E
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 14 Jan 2014 17:59:37 +0530 (IST)
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	s0ECTWBk50200668
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jan 2014 17:59:32 +0530
+Received: from d28av02.in.ibm.com (localhost [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	s0ECTaJB011823
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jan 2014 17:59:37 +0530
+Received: from oc5474148834.ibm.com ([9.124.39.82])
+	by d28av02.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	s0ECTa0p011809
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jan 2014 17:59:36 +0530
+Message-ID: <52D52DB0.3020003@linux.vnet.ibm.com>
+Date: Tue, 14 Jan 2014 17:59:36 +0530
+From: Anasuya M Shankar <anasuya@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1389605723-17937-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 1/2] lib: tst_get_unused_uid, tst_get_unused_gid
+Subject: [LTP] [PATCH]:config.guess: Inclusion of ppc64le architecture
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,81 +46,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> @@ -0,0 +1,86 @@
-> +/*
-> + * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + */
-> +
-> +#include <grp.h>
-> +#include <limits.h>
-> +#include <pwd.h>
-> +#include <stdlib.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +
-> +uid_t tst_get_unused_uid(void)
-> +{
-> +	struct passwd pwd;
-> +	struct passwd *result;
-> +	char *buf;
-> +	size_t bufsize;
+The patch is to provide support for power little endian architecture.
+The ./configure command fails when this is not taken care on ppc64le 
+machines.
 
-I've changed the bufsize to long, because size_t is unsigned.
+Signed-off-by: Anasuya M Shankar <anasuya@linux.vnet.ibm.com>
 
-Side note: I wonder why ltp has only -Wall and not -Wall -W which prints
-warnings when signed and unsigned types are compared...
+--- config.guess.orig    2014-01-14 17:21:55.601214002 +0530
++++ config.guess    2014-01-14 17:22:13.746971128 +0530
+@@ -952,6 +952,9 @@ EOF
+      ppc64:Linux:*:*)
+      echo powerpc64-unknown-linux-gnu
+      exit ;;
++    ppc64le:Linux:*:*)
++        echo powerpc64le-unknown-linux-gnu
++        exit ;;
+      ppc:Linux:*:*)
+      echo powerpc-unknown-linux-gnu
+      exit ;;
 
-> +	int s;
-> +	uid_t uid;
-> +
-> +	bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
-> +	if (bufsize == -1)
-> +		bufsize = 16384;
-> +
-> +	buf = malloc(bufsize);
-> +	if (buf == NULL)
-> +		return -1;
-> +
-> +	for (uid = 0; uid <= UINT_MAX - 1; uid++) {
-> +		s = getpwuid_r(uid, &pwd, buf, bufsize, &result);
-> +		if (result == NULL) {
+Thanks
+Anasuya M Shankar.
 
-I've added a free(buf) here otherwise we will leak memory.
-
-> +			if (s == 0)
-> +				return uid;
-> +			else
-> +				return -1;
-> +		}
-> +	}
-> +
-> +	free(buf);
-> +	return -1;
-> +}
-
-And the same for the second one.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 CenturyLink Cloud: The Leader in Enterprise Cloud Services.
