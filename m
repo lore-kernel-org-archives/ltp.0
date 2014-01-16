@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1W8qj3-0007Y7-9W
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 12:28:09 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1W3gWr-0007CR-6t
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jan 2014 06:34:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W8pqk-00065i-1C
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 11:32:04 +0000
-Date: Thu, 30 Jan 2014 06:31:55 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2085388669.1674106.1391081515715.JavaMail.root@redhat.com>
-In-Reply-To: <52DDD0ED.6040702@oracle.com>
-References: <1387171228-505-1-git-send-email-xu.simon@oracle.com>
-	<52BA3898.3050909@oracle.com> <52DDD0ED.6040702@oracle.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] sctp: Avoid using file descriptor 0 to
-	get	ENOTSOCK
+	id 1W3gWo-0003zo-Hw
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jan 2014 06:34:13 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0G6Wxkc004910
+	for <ltp-list@lists.sourceforge.net>; Thu, 16 Jan 2014 14:33:02 +0800
+Message-ID: <1389853977.2282.9.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jan 2014 14:32:57 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 1/2] lstat/lstat02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,605 +28,473 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+
+* Make use of SAFE_MACROS()
+* setup(void) --> setup(int ac, char **av)
+* Add lstat_verify()
+* Some cleanup
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/lstat/lstat02.c | 345 +++++++-----------------------
+ 1 file changed, 77 insertions(+), 268 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/lstat/lstat02.c b/testcases/kernel/syscalls/lstat/lstat02.c
+index 7111cce..387e544 100644
+--- a/testcases/kernel/syscalls/lstat/lstat02.c
++++ b/testcases/kernel/syscalls/lstat/lstat02.c
+@@ -1,6 +1,6 @@
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
++ *   07/2001 Ported by Wayne Boyer
+  *
+  *   This program is free software;  you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -13,17 +13,14 @@
+  *   the GNU General Public License for more details.
+  *
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+-
+ /*
+- * Test Name: lstat02
+- *
+  * Test Description:
+  *   Verify that,
+  *   1) lstat(2) returns -1 and sets errno to EACCES if search permission is
+- *      denied on a component of the path prefix.
++ *	denied on a component of the path prefix.
+  *   2) lstat(2) returns -1 and sets errno to ENOENT if the specified file
+  *	does not exists or empty string.
+  *   3) lstat(2) returns -1 and sets errno to EFAULT if pathname points
+@@ -32,46 +29,6 @@
+  *	component is too long.
+  *   5) lstat(2) returns -1 and sets errno to ENOTDIR if the directory
+  *	component in pathname is not a directory.
+- *
+- * Expected Result:
+- *  lstat() should fail with return value -1 and set expected errno.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	if errno set == expected errno
+- *   		Issue sys call fails with expected return value and errno.
+- *   	Otherwise,
+- *		Issue sys call fails with unexpected errno.
+- *   Otherwise,
+- *	Issue sys call returns unexpected value.
+- *
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory(s)/file(s) created.
+- *
+- * Usage:  <for command-line>
+- *  lstat02 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS:
+- *  This test should be executed by 'non-super-user' only.
+  */
+ 
+ #include <stdio.h>
+@@ -88,289 +45,141 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "safe_macros.h"
+ 
+ #define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
+ #define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+-#define DIR_TEMP	"testdir_1"
+-#define TEST_FILE1	"testdir_1/tfile_1"
+-#define SFILE1		"testdir_1/sfile_1"
+-#define TEST_FILE2	"t_file/tfile_2"
+-#define SFILE2		"t_file/sfile_2"
+-
+-int no_setup();
+-int setup1();			/* setup function to test chmod for EACCES */
+-int setup2();			/* setup function to test chmod for ENOTDIR */
+-int longpath_setup();		/* setup function to test chmod for ENAMETOOLONG */
++#define TEST_DIR	"test_dir"
++#define TEST_EACCES	TEST_DIR"/test_eacces"
++#define TEST_ENOTDIR	"test_file/test_enotdir"
+ 
+-char Longpathname[PATH_MAX + 2];
++static char longpathname[PATH_MAX + 2];
+ 
+ #if !defined(UCLINUX)
+-char High_address_node[64];
+-#endif /* if !defined(UCLINUX) */
++static void bad_addr_setup(int);
++static void high_address_setup(int);
++#endif
+ 
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
++static struct test_case_t {
+ 	char *pathname;
+-	char *desc;
+ 	int exp_errno;
+-	int (*setupfunc) ();
+-} Test_cases[] = {
+-	{
+-	SFILE1, "No Search permissions to process", EACCES, setup1},
++	void (*setup) ();
++} test_cases[] = {
++	{TEST_EACCES, EACCES, NULL},
++	{"", ENOENT, NULL},
+ #if !defined(UCLINUX)
+-	{
+-	(char *)-1, "Negative address", EFAULT, no_setup}, {
+-	High_address_node, "Address beyond address space", EFAULT,
+-		    no_setup},
++	{NULL, EFAULT, bad_addr_setup},
++	{NULL, EFAULT, high_address_setup},
+ #endif
+-	{
+-	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
+-	"", "Pathname is empty", ENOENT, no_setup}, {
+-	SFILE2, "Path contains regular file", ENOTDIR, setup2}, {
+-	NULL, NULL, 0, no_setup}
++	{longpathname, ENAMETOOLONG, NULL},
++	{TEST_ENOTDIR, ENOTDIR, NULL},
+ };
+ 
+ char *TCID = "lstat02";
+-int TST_TOTAL = sizeof(Test_cases) / sizeof(*Test_cases);
+-int exp_enos[] = { EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
+-
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
+-
+-char *bad_addr = 0;
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++static int exp_enos[] = { EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
+ 
+-void setup();			/* Main setup function for the tests */
+-void cleanup();			/* cleanup function for the test */
++static void setup(int, char **);
++static void lstat_verify(int);
++static void cleanup(void);
+ 
+ int main(int ac, char **av)
+ {
+-	struct stat stat_buf;	/* stat structure buffer */
+ 	int lc;
+-	char *msg;
+-	char *file_name;	/* ptr. for file name whose mode is modified */
+-	char *test_desc;	/* test specific error message */
+-	int ind;		/* counter to test different test conditions */
+-
+-	msg = parse_opts(ac, av, NULL, NULL);
+-	if (msg != NULL) {
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++	int i;
+ 
+-	}
+-
+-	/*
+-	 * Invoke setup function to call individual test setup functions
+-	 * to simulate test conditions.
+-	 */
+-	setup();
++	setup(ac, av);
+ 
+-	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
+ 		tst_count = 0;
+ 
+-		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-			file_name = Test_cases[ind].pathname;
+-			test_desc = Test_cases[ind].desc;
+-
+-#if !defined(UCLINUX)
+-			if (file_name == High_address_node) {
+-				file_name = (char *)get_high_address();
+-			}
+-#endif
+-
+-			/*
+-			 * Call lstat(2) to test different test conditions.
+-			 * verify that it fails with -1 return value and
+-			 * sets appropriate errno.
+-			 */
+-			TEST(lstat(file_name, &stat_buf));
+-
+-			/* Check return code from lstat(2) */
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL,
+-					 "lstat(2) returned %ld, expected"
+-					 " -1, errno:%d", TEST_RETURN,
+-					 Test_cases[ind].exp_errno);
+-				continue;
+-			}
+-			TEST_ERROR_LOG(TEST_ERRNO);
+-			if (TEST_ERRNO == Test_cases[ind].exp_errno) {
+-				tst_resm(TPASS, "lstat() fails, %s, errno:%d",
+-					 test_desc, TEST_ERRNO);
+-			} else {
+-				tst_resm(TFAIL, "lstat() fails, %s, errno:%d, "
+-					 "expected errno:%d", test_desc,
+-					 TEST_ERRNO, Test_cases[ind].exp_errno);
+-			}
+-		}
++		for (i = 0; i < TST_TOTAL; i++)
++			lstat_verify(i);
+ 	}
+ 
+-	/*
+-	 * Invoke cleanup() to delete the test directory/file(s) created
+-	 * in the setup().
+-	 */
+ 	cleanup();
+ 	tst_exit();
+-	tst_exit();
+-
+ }
+ 
+-/*
+- * setup(void) - performs all ONE TIME setup for this test.
+- * 	Exit the test program on receipt of unexpected signals.
+- *	Create a temporary directory and change directory to it.
+- *	Invoke individual test setup functions according to the order
+- *	set in struct. definition.
+- */
+-void setup()
++static void setup(int ac, char **av)
+ {
+-	int ind;
++	char *msg;
++	struct passwd *ltpuser;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-	/* Capture unexpected signals */
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+-	/* Switch to nobody user for correct error code collection */
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, NULL, "Test must be run as root");
+-	}
+-	ltpuser = getpwnam(nobody_uid);
+-	if (setuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setuid");
+-	}
++	tst_require_root(NULL);
++
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+ 
+ 	TEST_PAUSE;
+ 
+-	/* Make a temp dir and cd to it */
+ 	tst_tmpdir();
+ 
+-#if !defined(UCLINUX)
+-	bad_addr = mmap(0, 1, PROT_NONE,
+-			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+-	if (bad_addr == MAP_FAILED) {
+-		tst_brkm(TBROK, cleanup, "mmap failed");
+-	}
+-	Test_cases[2].pathname = bad_addr;
+-#endif
++	SAFE_MKDIR(cleanup, TEST_DIR, MODE_RWX);
++	SAFE_TOUCH(cleanup, TEST_EACCES, 0666, NULL);
++	if (chmod(TEST_DIR, FILE_MODE) < 0)
++		tst_brkm(TBROK, cleanup, "chmod(2) of %s failed", TEST_DIR);
+ 
+-	/* call individual setup functions */
+-	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-		Test_cases[ind].setupfunc();
+-	}
++	SAFE_TOUCH(cleanup, "test_file", MODE_RWX, NULL);
++
++	memset(longpathname, 'a', PATH_MAX+1);
+ }
+ 
+-/*
+- * no_setup() - Some test conditions for lstat(2) do not any setup.
+- *              Hence, this function just returns 0.
+- *  		This function simply returns 0.
+- */
+-int no_setup()
++#if !defined(UCLINUX)
++static void bad_addr_setup(int i)
+ {
+-	return 0;
++	test_cases[i].pathname = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
++					   MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+ }
+ 
+-/*
+- * setup1() - setup function for a test condition for which lstat(2)
+- *	      returns -1 and sets errno to EACCES.
+- *  Create a test directory under temporary directory and create a test file
+- *  under this directory with mode "0666" permissions.
+- *  Modify the mode permissions on test directory such that process will not
+- *  have search permissions on test directory.
+- *
+- *  The function returns 0.
+- */
+-int setup1()
++static void high_address_setup(int i)
+ {
+-	int fd;			/* file handle for testfile */
++	test_cases[i].pathname = (char *)get_high_address();
++}
++#endif
+ 
+-	if (mkdir(DIR_TEMP, MODE_RWX) < 0) {
+-		tst_brkm(TBROK, cleanup, "mkdir(2) of %s failed", DIR_TEMP);
+-	}
++static void lstat_verify(int i)
++{
++	struct stat stat_buf;
+ 
+-	if ((fd = open(TEST_FILE1, O_RDWR | O_CREAT, 0666)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, 0666) failed, errno=%d : %s",
+-			 TEST_FILE1, errno, strerror(errno));
+-	}
+-	if (close(fd) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "close(%s) Failed, errno=%d : %s",
+-			 TEST_FILE1, errno, strerror(errno));
+-	}
++	if (test_cases[i].setup != NULL)
++		test_cases[i].setup(i);
+ 
+-	/* Create a symlink of testfile */
+-	if (symlink(TEST_FILE1, SFILE1) < 0) {
+-		tst_brkm(TBROK, cleanup,
+-			 "symlink() of %s Failed, errno=%d : %s",
+-			 TEST_FILE1, errno, strerror(errno));
+-	}
++	TEST(lstat(test_cases[i].pathname, &stat_buf));
+ 
+-	/* Modify mode permissions on test directory */
+-	if (chmod(DIR_TEMP, FILE_MODE) < 0) {
+-		tst_brkm(TBROK, cleanup, "chmod(2) of %s failed", DIR_TEMP);
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "lstat() returned %ld, expected -1, errno=%d",
++			 TEST_RETURN, test_cases[i].exp_errno);
++		return;
+ 	}
+-	return 0;
+-}
+ 
+-/*
+- * setup2() - setup function for a test condition for which lstat(2)
+- *	     returns -1 and sets errno to ENOTDIR.
+- *
+- *  Create a test file under temporary directory so that test tries to
+- *  change mode of a testfile "tfile_2" under "t_file" which happens to be
+- *  another regular file.
+- */
+-int setup2()
+-{
+-	int fd;			/* file handle */
++	TEST_ERROR_LOG(TEST_ERRNO);
+ 
+-	if ((fd = open("t_file", O_RDWR | O_CREAT, MODE_RWX)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(2) on t_file failed, errno=%d : %s",
+-			 errno, strerror(errno));
++	if (TEST_ERRNO == test_cases[i].exp_errno) {
++		tst_resm(TPASS | TTERRNO, "lstat() failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "lstat() failed unexpectedly; expected: %d - %s",
++			 test_cases[i].exp_errno,
++			 strerror(test_cases[i].exp_errno));
+ 	}
+-	if (close(fd) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "close(t_file) Failed, errno=%d : %s",
+-			 errno, strerror(errno));
+-	}
+-	return 0;
+ }
+ 
+-/*
+- * longpath_setup() - setup to create a node with a name length exceeding
+- *                    the MAX. length of PATH_MAX.
+- *		      This function retruns 0.
+- */
+-int longpath_setup()
++static void cleanup(void)
+ {
+-	int ind;		/* counter variable */
++	SAFE_SETEUID(cleanup, 0);
+ 
+-	for (ind = 0; ind <= (PATH_MAX + 1); ind++) {
+-		Longpathname[ind] = 'a';
+-	}
+-	return 0;
+-}
+-
+-/*
+- * cleanup() - Performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- */
+-void cleanup()
+-{
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+ 
+-	/* Restore mode permissions on test directory created in setup2() */
+-	if (chmod(DIR_TEMP, MODE_RWX) < 0) {
+-		tst_brkm(TBROK, NULL, "chmod(2) of %s failed", DIR_TEMP);
+-	}
+-
+ 	tst_rmdir();
+-
+ }
+-- 
+1.8.4.2
 
 
------ Original Message -----
-> From: "Simon Xu" <xu.simon@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 21 January, 2014 2:44:13 AM
-> Subject: Re: [LTP] [PATCH] sctp: Avoid using file descriptor 0 to get	ENOTSOCK
-> 
-> Could anyone help to review this?
 
-Given that this is identical to c43ead6daa0b9ae5763d6cf3d21357a789651417 from
-https://github.com/borkmann/lksctp-tools :
-
-Acked-by: Jan Stancek <jstancek@redhat.com>
-
-Regards,
-Jan
-
-> 
-> Thanks
-> Simon
-> 
-> On 2013/12/25 9:44, Simon Xu wrote:
-> > Could anyone help to review this?
-> >
-> > Thanks
-> > Simon
-> >
-> > On 2013/12/16 13:20, Simon Xu wrote:
-> >> On some systems, errno will not be ENOTSOCK when operating on file
-> >> descriptor
-> >> 0 in an ssh session:
-> >>
-> >> test_1_to_1_accept_close.c    2  TBROK  :  accept with invalid
-> >> socketerror:-1, errno:22
-> >> test_1_to_1_addrs.c    2  TBROK  :  sctp_getladdrs with invalid socket
-> >> error:-1, errno:95
-> >> test_1_to_1_connect.c    2  TBROK  :  connect with invalid socket
-> >> error:-1, errno:22
-> >> test_1_to_1_recvfrom.c    2  TBROK  :  recvfrom with invalid socket
-> >> count:0, errno:9
-> >> test_1_to_1_recvmsg.c    2  TBROK  :  recvmsg with invalid socket count:0,
-> >> errno:9
-> >> test_1_to_1_send.c    2  TBROK  :  send with invalid socket count:15,
-> >> errno:9
-> >> test_1_to_1_sendmsg.c    2  TBROK  :  sendmsg with invalid socket
-> >> count:-1, errno:106
-> >> test_1_to_1_shutdown.c    2  TBROK  :  shutdown with an invalid socket
-> >> error:0, errno:9
-> >> test_1_to_1_socket_bind_listen.c    6  TBROK  :  bind() with invalid
-> >> socket descriptor error:-1, errno:22
-> >> test_1_to_1_sockopt.c    2  TBROK  :  setsockopt with an invalid socket
-> >> error:-1, errno:95
-> >> test_getname.c    9  TBROK  :  getsockname on an invalid socket error:0
-> >> errno:9
-> >>
-> >> This patch gets a non-socket file descriptor by creating a temporary file
-> >> to replace file descriptor 0.
-> >>
-> >> https://github.com/borkmann/lksctp-tools/commit/c43ead6daa0b9ae5763d6cf3d21357a789651417
-> >> Signed-off-by: Simon Xu <xu.simon@oracle.com>
-> >> ---
-> >>    utils/sctp/func_tests/test_1_to_1_accept_close.c   | 17 ++++++++++--
-> >>    utils/sctp/func_tests/test_1_to_1_addrs.c          | 32
-> >>    ++++++++++++++++++----
-> >>    utils/sctp/func_tests/test_1_to_1_connect.c        | 17 ++++++++++--
-> >>    utils/sctp/func_tests/test_1_to_1_recvfrom.c       | 17 ++++++++++--
-> >>    utils/sctp/func_tests/test_1_to_1_recvmsg.c        | 17 ++++++++++--
-> >>    utils/sctp/func_tests/test_1_to_1_send.c           | 17 ++++++++++--
-> >>    utils/sctp/func_tests/test_1_to_1_sendmsg.c        | 17 ++++++++++--
-> >>    utils/sctp/func_tests/test_1_to_1_shutdown.c       | 17 ++++++++++--
-> >>    .../func_tests/test_1_to_1_socket_bind_listen.c    | 32
-> >>    ++++++++++++++++++----
-> >>    utils/sctp/func_tests/test_1_to_1_sockopt.c        | 32
-> >>    ++++++++++++++++++----
-> >>    utils/sctp/func_tests/test_getname.c               | 32
-> >>    ++++++++++++++++++----
-> >>    11 files changed, 202 insertions(+), 45 deletions(-)
-> >>
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_accept_close.c
-> >> b/utils/sctp/func_tests/test_1_to_1_accept_close.c
-> >> index ea1c57a..cbb1814 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_accept_close.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_accept_close.c
-> >> @@ -78,6 +78,8 @@ main(int argc, char *argv[])
-> >>    	int sk,lstn_sk,clnt_sk[SK_MAX],acpt_sk,pf_class;
-> >>    	int new_sk[SK_MAX],clnt2_sk[SK_MAX];
-> >>    	int error;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            struct sockaddr_in conn_addr,lstn_addr,acpt_addr;
-> >>    
-> >> @@ -134,10 +136,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "accept() with a bad socket descriptor - EBADF");
-> >>    
-> >>            /*accept() TEST2: Invalid socket ENOTSOCK, Expected error*/
-> >> -        error = accept(0, (struct sockaddr *) &acpt_addr, &len);
-> >> -        if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = accept(fd, (struct sockaddr *) &acpt_addr, &len);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "accept with invalid socket"
-> >> -                         "error:%d, errno:%d", error, errno);
-> >> +                         "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "accept() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_addrs.c
-> >> b/utils/sctp/func_tests/test_1_to_1_addrs.c
-> >> index 40eed7f..5d56918 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_addrs.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_addrs.c
-> >> @@ -92,6 +92,8 @@ main(int argc, char *argv[])
-> >>            char * buffer_rcv;
-> >>    	char incmsg[CMSG_SPACE(sizeof(sctp_cmsg_data_t))];
-> >>    	struct sockaddr *laddrs, *paddrs;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            struct sockaddr_in conn_addr,lstn_addr,acpt_addr;
-> >>    	struct sockaddr_in *addr;
-> >> @@ -176,10 +178,19 @@ main(int argc, char *argv[])
-> >>    		 "EBADF");
-> >>    
-> >>    	/*sctp_getladdrs() TEST2: Invalid socket, ENOTSOCK Expected error*/
-> >> -	error = sctp_getladdrs(0, 0, &laddrs);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = sctp_getladdrs(fd, 0, &laddrs);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "sctp_getladdrs with invalid socket "
-> >> -			 "error:%d, errno:%d", error, errno);
-> >> +			 "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "sctp_getladdrs() with invalid socket - ENOTSOCK");
-> >>    
-> >> @@ -225,10 +236,19 @@ main(int argc, char *argv[])
-> >>    		 "EBADF");
-> >>    
-> >>    	/*sctp_getpaddrs() TEST7: Invalid socket, ENOTSOCK Expected error*/
-> >> -	error = sctp_getpaddrs(0, 0, &paddrs);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = sctp_getpaddrs(fd, 0, &paddrs);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "sctp_getpaddrs with invalid socket "
-> >> -			 "error:%d, errno:%d", error, errno);
-> >> +			 "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "sctp_getpaddrs() with invalid socket - ENOTSOCK");
-> >>    	
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_connect.c
-> >> b/utils/sctp/func_tests/test_1_to_1_connect.c
-> >> index 6670f72..e1993e4 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_connect.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_connect.c
-> >> @@ -72,6 +72,8 @@ main(int argc, char *argv[])
-> >>    	socklen_t len;
-> >>    	int sk,lstn_sk,clnt_sk[SK_MAX],acpt_sk[SK_MAX],pf_class;
-> >>    	int sk1,clnt2_sk;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            struct sockaddr_in conn_addr,lstn_addr,acpt_addr;
-> >>    
-> >> @@ -120,10 +122,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "connect() with bad socket descriptor - EBADF");
-> >>    	
-> >>    	/*connect () TEST2: Invalid socket, ENOTSOCK Expected error*/
-> >> -	error = connect(0, (const struct sockaddr *) &conn_addr, len);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = connect(fd, (const struct sockaddr *) &conn_addr, len);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "connect with invalid socket "
-> >> -                         "error:%d, errno:%d", error, errno);
-> >> +                         "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "connect() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_recvfrom.c
-> >> b/utils/sctp/func_tests/test_1_to_1_recvfrom.c
-> >> index a4bdf6a..0ede562 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_recvfrom.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_recvfrom.c
-> >> @@ -69,6 +69,8 @@ main(int argc, char *argv[])
-> >>            char *message = "hello, world!\n";
-> >>    	char *message_rcv;
-> >>            int count;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            struct sockaddr_in conn_addr,lstn_addr,svr_addr;
-> >>    
-> >> @@ -122,11 +124,20 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "recvfrom() with a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*recvfrom () TEST2: Invalid socket , ENOTSOCK Expected error*/
-> >> -	count = recvfrom(0, message_rcv, msg_count, flag,
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	count = recvfrom(fd, message_rcv, msg_count, flag,
-> >>    			 (struct sockaddr *)&svr_addr, &len);
-> >> -	if (count != -1 || errno != ENOTSOCK)
-> >> +	if (count == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (count != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "recvfrom with invalid socket "
-> >> -			 "count:%d, errno:%d", count, errno);
-> >> +			 "count:%d, errno:%d", count, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "recvfrom() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_recvmsg.c
-> >> b/utils/sctp/func_tests/test_1_to_1_recvmsg.c
-> >> index ceccc31..5f06bb6 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_recvmsg.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_recvmsg.c
-> >> @@ -67,6 +67,8 @@ main(int argc, char *argv[])
-> >>            socklen_t len;
-> >>    	int sk,pf_class,lstn_sk,acpt_sk;
-> >>    	int flag = 0;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    	struct msghdr inmessage;
-> >>            char *message = "hello, world!\n";
-> >>    	struct iovec iov_rcv;
-> >> @@ -128,10 +130,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "recvmsg() with a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*recvmsg () TEST2: Invalid socket , ENOTSOCK Expected error*/
-> >> -	count = recvmsg(0, &inmessage, flag);
-> >> -	if (count != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	count = recvmsg(fd, &inmessage, flag);
-> >> +	if (count == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (count != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "recvmsg with invalid socket "
-> >> -			 "count:%d, errno:%d", count, errno);
-> >> +			 "count:%d, errno:%d", count, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "recvmsg() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_send.c
-> >> b/utils/sctp/func_tests/test_1_to_1_send.c
-> >> index 4966020..8d9516c 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_send.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_send.c
-> >> @@ -69,6 +69,8 @@ main(int argc, char *argv[])
-> >>    	int sk,sk1,pf_class,lstn_sk,acpt_sk,acpt1_sk, flag, count;
-> >>            char *message = "hello, world!\n";
-> >>            char *message_rcv;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            struct sockaddr_in conn_addr,lstn_addr,svr_addr;
-> >>    
-> >> @@ -118,10 +120,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "send() with a bad socket descriptor - EBADF");
-> >>    	
-> >>    	/*send () TEST2: Invalid socket, ENOTSOCK Expected error*/
-> >> -	count = send(0, message, len_snd, flag);
-> >> -	if (count != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	count = send(fd, message, len_snd, flag);
-> >> +	if (count == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (count != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "send with invalid socket "
-> >> -			 "count:%d, errno:%d", count, errno);
-> >> +			 "count:%d, errno:%d", count, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "send() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_sendmsg.c
-> >> b/utils/sctp/func_tests/test_1_to_1_sendmsg.c
-> >> index 7ac0b54..13c920d 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_sendmsg.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_sendmsg.c
-> >> @@ -86,6 +86,8 @@ main(int argc, char *argv[])
-> >>            struct sockaddr_in conn_addr,lstn_addr,svr_addr;
-> >>            struct iovec iov_rcv;
-> >>    	char incmsg[CMSG_SPACE(sizeof(sctp_cmsg_data_t))];
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>    	/* Rather than fflush() throughout the code, set stdout to
-> >>             * be unbuffered.
-> >> @@ -151,10 +153,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "sendmsg() with a bad socket descriptor - EBADF");
-> >>    	
-> >>    	/*sendmsg () TEST2: Invalid socket, ENOTSOCK Expected error*/
-> >> -	count = sendmsg(0, &outmessage, flag);
-> >> -	if (count != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	count = sendmsg(fd, &outmessage, flag);
-> >> +	if (count == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (count != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "sendmsg with invalid socket "
-> >> -			 "count:%d, errno:%d", count, errno);
-> >> +			 "count:%d, errno:%d", count, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "sendmsg() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_shutdown.c
-> >> b/utils/sctp/func_tests/test_1_to_1_shutdown.c
-> >> index de505f7..c209498 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_shutdown.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_shutdown.c
-> >> @@ -70,6 +70,8 @@ main(int argc, char *argv[])
-> >>            char *message = "hello, world!\n";
-> >>    	char msgbuf[100];
-> >>    	int pf_class;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            /* Rather than fflush() throughout the code, set stdout to
-> >>    	 * be unbuffered.
-> >> @@ -112,10 +114,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "shutdown() with a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*shutdown() TEST2: Invalid socket, ENOTSOCK Expected error*/
-> >> -        error = shutdown(0, SHUT_WR);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = shutdown(fd, SHUT_WR);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "shutdown with an invalid socket "
-> >> -			 "error:%d, errno:%d", error, errno);
-> >> +			 "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "shutdown() with an invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_socket_bind_listen.c
-> >> b/utils/sctp/func_tests/test_1_to_1_socket_bind_listen.c
-> >> index 6ba9c98..06c6847 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_socket_bind_listen.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_socket_bind_listen.c
-> >> @@ -85,6 +85,8 @@ main(int argc, char *argv[])
-> >>            int sk,pf_class;
-> >>    	int error = 0;
-> >>    	int uid;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            struct sockaddr_in bind_addr;
-> >>    
-> >> @@ -141,10 +143,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "bind() with invalid address length - EINVAL");
-> >>    
-> >>    	/*bind() TEST6: Invalid socket descriptor, ENOTSOCK Expect Error*/
-> >> -	error = bind(0, (struct sockaddr *) &bind_addr, sizeof(bind_addr));
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = bind(fd, (struct sockaddr *) &bind_addr, sizeof(bind_addr));
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "bind() with invalid socket "
-> >> -			 "descriptor error:%d, errno:%d", error, errno);
-> >> +			 "descriptor error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "bind() with invalid socket descriptor - ENOTSOCK");
-> >>    
-> >> @@ -247,10 +258,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "listen() with bad socket descriptor - EBADF");
-> >>    
-> >>    	/*listen() TEST14: Invalid socket ENOTSOCK, Expected error*/
-> >> -	error = listen(0, 3);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = listen(fd, 3);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "listen() with invalid socket "
-> >> -			 "error:%d, errno:%d", error, errno);
-> >> +			 "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "listen() with invalid socket - ENOTSOCK");
-> >>    
-> >> diff --git a/utils/sctp/func_tests/test_1_to_1_sockopt.c
-> >> b/utils/sctp/func_tests/test_1_to_1_sockopt.c
-> >> index e222991..4cd84da 100644
-> >> --- a/utils/sctp/func_tests/test_1_to_1_sockopt.c
-> >> +++ b/utils/sctp/func_tests/test_1_to_1_sockopt.c
-> >> @@ -98,6 +98,8 @@ main(void)
-> >>    	struct sctp_prim sprimaddr;/*SCTP_PRIMARY_ADDR set*/
-> >>    	struct sctp_assocparams sassocparams;  /* SCTP_ASSOCPARAMS set */
-> >>    	struct sctp_assocparams gassocparams;  /* SCTP_ASSOCPARAMS get */
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>    	/* Rather than fflush() throughout the code, set stdout to
-> >>             * be unbuffered.
-> >> @@ -118,10 +120,19 @@ main(void)
-> >>    	tst_resm(TPASS, "setsockopt() with a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*setsockopt() TEST2: Invalid socket ENOTSOCK, Expected error*/
-> >> -        error = setsockopt(0, IPPROTO_SCTP, 0, 0, 0);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = setsockopt(fd, IPPROTO_SCTP, 0, 0, 0);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "setsockopt with an invalid socket "
-> >> -			 "error:%d, errno:%d", error, errno);
-> >> +			 "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "setsockopt() with an invalid socket - ENOTSOCK");
-> >>    
-> >> @@ -159,10 +170,19 @@ main(void)
-> >>    	tst_resm(TPASS, "getsockopt() with a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*getsockopt() TEST7: Invalid socket ENOTSOCK, Expected error*/
-> >> -        error = getsockopt(0, IPPROTO_SCTP, 0, 0, 0);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = getsockopt(fd, IPPROTO_SCTP, 0, 0, 0);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "getsockopt with an invalid socket "
-> >> -			 "error:%d, errno:%d", error, errno);
-> >> +			 "error:%d, errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "getsockopt() with an invalid socket - ENOTSOCK");
-> >>    #if 0
-> >> diff --git a/utils/sctp/func_tests/test_getname.c
-> >> b/utils/sctp/func_tests/test_getname.c
-> >> index d7011f6..0d4d080 100644
-> >> --- a/utils/sctp/func_tests/test_getname.c
-> >> +++ b/utils/sctp/func_tests/test_getname.c
-> >> @@ -66,6 +66,8 @@ main(int argc, char *argv[])
-> >>    	socklen_t len;
-> >>    	int error;
-> >>    	int pf_class;
-> >> +	int fd, err_no = 0;
-> >> +	char filename[21];
-> >>    
-> >>            /* Rather than fflush() throughout the code, set stdout to
-> >>    	 * be unbuffered.
-> >> @@ -208,10 +210,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "getsockname on a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*getsockname(): Invalid socket, ENOTSOCK expected error*/
-> >> -	error = getsockname(0, (struct sockaddr *)&clt_local_addr, &len);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = getsockname(fd, (struct sockaddr *)&clt_local_addr, &len);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "getsockname on an invalid socket "
-> >> -			 "error:%d errno:%d", error, errno);
-> >> +			 "error:%d errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "getsockname on an invalid socket - ENOTSOCK");
-> >>    
-> >> @@ -234,10 +245,19 @@ main(int argc, char *argv[])
-> >>    	tst_resm(TPASS, "getpeername on a bad socket descriptor - EBADF");
-> >>    
-> >>    	/*getpeername(): Invalid socket, ENOTSOCK expected error*/
-> >> -	error = getpeername(0, (struct sockaddr *)&clt_local_addr, &len);
-> >> -	if (error != -1 || errno != ENOTSOCK)
-> >> +	strcpy(filename, "/tmp/sctptest.XXXXXX");
-> >> +	fd = mkstemp(filename);
-> >> +	if (fd == -1)
-> >> +		tst_brkm(TBROK, tst_exit, "Failed to mkstemp %s: %s",
-> >> +				filename, strerror(errno));
-> >> +	error = getpeername(fd, (struct sockaddr *)&clt_local_addr, &len);
-> >> +	if (error == -1)
-> >> +		err_no = errno;
-> >> +	close(fd);
-> >> +	unlink(filename);
-> >> +	if (error != -1 || err_no != ENOTSOCK)
-> >>    		tst_brkm(TBROK, tst_exit, "getpeername on an invalid socket "
-> >> -			 "error:%d errno:%d", error, errno);
-> >> +			 "error:%d errno:%d", error, err_no);
-> >>    
-> >>    	tst_resm(TPASS, "getpeername on an invalid socket - ENOTSOCK");
-> 
-> ------------------------------------------------------------------------------
-> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-> Learn Why More Businesses Are Choosing CenturyLink Cloud For
-> Critical Workloads, Development Environments & Everything In Between.
-> Get a Quote or Start a Free Trial Today.
-> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
