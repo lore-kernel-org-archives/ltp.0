@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1W2iHK-0008DK-Oc
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jan 2014 14:14:10 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1W2iHJ-00006j-5H
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jan 2014 14:14:10 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.1) with
-	ESMTP id s0DEE2dJ003391
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Jan 2014 14:14:03 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s0DEE1N5000260
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Jan 2014 14:14:02 GMT
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s0DEE1Ia022760
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Jan 2014 14:14:01 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 13 Jan 2014 18:13:56 +0400
-Message-Id: <1389622436-28019-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH] syscalls/lchown: 16-bit fixes and minor cleanup
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sedat.dilek@gmail.com>) id 1W5BTn-00058H-Pu
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 09:49:15 +0000
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1W5BTn-0002Wg-3q
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 09:49:15 +0000
+Received: by mail-wi0-f169.google.com with SMTP id e4so4198592wiv.4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 20 Jan 2014 01:49:08 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 20 Jan 2014 10:49:08 +0100
+Message-ID: <CA+icZUW10VjLz6V+yXwVHCaY6cMP2CJVowaGzsvt=+qrvG-G=g@mail.gmail.com>
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: multipart/mixed; boundary=001a1134d2309bab6b04f063cd23
+Subject: [LTP] runltp-lite: Creates no logs below results-dir
+Reply-To: sedat.dilek@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,382 +27,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/syscalls/lchown/lchown01.c |   86 +++++-------------------
- testcases/kernel/syscalls/lchown/lchown02.c |   96 +++++++--------------------
- testcases/kernel/syscalls/utils/compat_16.h |    5 ++
- 3 files changed, 49 insertions(+), 138 deletions(-)
+--001a1134d2309bab6b04f063cd23
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/testcases/kernel/syscalls/lchown/lchown01.c b/testcases/kernel/syscalls/lchown/lchown01.c
-index 738f0b9..8762883 100644
---- a/testcases/kernel/syscalls/lchown/lchown01.c
-+++ b/testcases/kernel/syscalls/lchown/lchown01.c
-@@ -1,25 +1,22 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
- /*
-- * Test Name: lchown01
-- *
-  * Test Description:
-  *  Verify that, lchown(2) succeeds to change the owner and group of a file
-  *  specified by path to any numeric owner(uid)/group(gid) values when invoked
-@@ -29,44 +26,9 @@
-  *  lchown(2) should return 0 and the ownership set on the file should match
-  *  the numeric values contained in owner and group respectively.
-  *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *	Verify the Functionality of system call
-- *      if successful,
-- *		Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  lchown01 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-  * HISTORY
-  *	07/2001 Ported by Wayne Boyer
-  *	11/2010 Code cleanup by Cyril Hrubis chrubis@suse.cz
-- *
-- * RESTRICTIONS:
-- *  This test should be run by 'super-user' (root) only.
-- *
-  */
- 
- #include <stdio.h>
-@@ -79,12 +41,13 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define TESTFILE	"testfile"
- #define SFILE		"slink_file"
- 
--char *TCID = "lchown01";
-+TCID_DEFINE(lchown01);
- int TST_TOTAL = 5;
- 
- struct test_case_t {
-@@ -103,8 +66,8 @@ static struct test_case_t test_cases[] = {
- 	{NULL, 0, 0}
- };
- 
--void setup(void);
--void cleanup(void);
-+static void setup(void);
-+static void cleanup(void);
- 
- int main(int argc, char *argv[])
- {
-@@ -132,7 +95,7 @@ int main(int argc, char *argv[])
- 			 * group id (numeric values) to set it on
- 			 * symlink of testfile.
- 			 */
--			TEST(lchown(SFILE, user_id, group_id));
-+			TEST(LCHOWN(cleanup, SFILE, user_id, group_id));
- 
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL,
-@@ -193,13 +156,7 @@ int main(int argc, char *argv[])
- 	tst_exit();
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- *	     Create a temporary directory and change directory to it.
-- *	     Create a test file under temporary directory and close it
-- *	     Create a symlink of testfile under temporary directory.
-- */
--void setup(void)
-+static void setup(void)
- {
- 	int fd;
- 
-@@ -222,12 +179,7 @@ void setup(void)
- 	}
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- *	       Remove the test directory and testfile created in the setup.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
-diff --git a/testcases/kernel/syscalls/lchown/lchown02.c b/testcases/kernel/syscalls/lchown/lchown02.c
-index 4b20410..52185cf 100644
---- a/testcases/kernel/syscalls/lchown/lchown02.c
-+++ b/testcases/kernel/syscalls/lchown/lchown02.c
-@@ -1,20 +1,19 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
- /*
-@@ -39,43 +38,9 @@
-  * Expected Result:
-  *  lchown() should fail with return value -1 and set expected errno.
-  *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	if errno set == expected errno
-- *		Issue sys call fails with expected return value and errno.
-- *	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory(s)/file(s) created.
-- *
-- * Usage:  <for command-line>
-- *  lchown02 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-  * HISTORY
-  *	07/2001 Ported by Wayne Boyer
-  *      11/2010 Rewritten by Cyril Hrubis chrubis@suse.cz
-- *
-- * RESTRICTIONS:
-- *
-  */
- 
- #include <stdio.h>
-@@ -93,6 +58,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define TEST_USER       "nobody"
- #define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
-@@ -105,7 +71,7 @@
- #define TFILE3          "t_file"
- #define SFILE3		"t_file/sfile"
- 
--char *TCID = "lchown02";
-+TCID_DEFINE(lchown02);
- int TST_TOTAL = 7;
- 
- static void setup_eperm(int pos);
-@@ -140,8 +106,8 @@ static struct passwd *ltpuser;
- static int exp_enos[] =
-     { EPERM, EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
- 
--void setup(void);
--void cleanup(void);
-+static void setup(void);
-+static void cleanup(void);
- 
- int main(int argc, char *argv[])
- {
-@@ -159,7 +125,9 @@ int main(int argc, char *argv[])
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	user_id = geteuid();
-+	UID16_CHECK(user_id, lchown, cleanup);
- 	group_id = getegid();
-+	GID16_CHECK(group_id, lchown, cleanup);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
-@@ -173,7 +141,7 @@ int main(int argc, char *argv[])
- 			 * verify that it fails with -1 return value and
- 			 * sets appropriate errno.
- 			 */
--			TEST(lchown(file_name, user_id, group_id));
-+			TEST(LCHOWN(cleanup, file_name, user_id, group_id));
- 
- 			/* Check return code from lchown(2) */
- 			if (TEST_RETURN == -1) {
-@@ -200,14 +168,7 @@ int main(int argc, char *argv[])
- 	tst_exit();
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- *
-- *	Exit the test program on receipt of unexpected signals.
-- *	Create a temporary directory and change directory to it.
-- *	Invoke individual test setup functions.
-- */
--void setup(void)
-+static void setup(void)
- {
- 	int i;
- 
-@@ -239,7 +200,7 @@ void setup(void)
-  *
-  * Create test file and symlink with uid 0.
-  */
--void setup_eperm(int pos LTP_ATTRIBUTE_UNUSED)
-+static void setup_eperm(int pos LTP_ATTRIBUTE_UNUSED)
- {
- 	int fd;
- 
-@@ -272,7 +233,7 @@ void setup_eperm(int pos LTP_ATTRIBUTE_UNUSED)
-  *  Modify the mode permissions on test directory such that process will not
-  *  have search permissions on test directory.
-  */
--void setup_eacces(int pos LTP_ATTRIBUTE_UNUSED)
-+static void setup_eacces(int pos LTP_ATTRIBUTE_UNUSED)
- {
- 	int fd;
- 
-@@ -337,7 +298,7 @@ static void setup_highaddress(int pos)
-  *
-  * Create a regular file "t_file" to call lchown(2) on "t_file/sfile" later.
-  */
--void setup_enotdir(int pos LTP_ATTRIBUTE_UNUSED)
-+static void setup_enotdir(int pos LTP_ATTRIBUTE_UNUSED)
- {
- 	int fd;
- 
-@@ -355,20 +316,13 @@ void setup_enotdir(int pos LTP_ATTRIBUTE_UNUSED)
-  * longpath_setup() - setup to create a node with a name length exceeding
-  *                    the length of PATH_MAX.
-  */
--void setup_longpath(int pos)
-+static void setup_longpath(int pos)
- {
- 	memset(test_cases[pos].pathname, 'a', PATH_MAX + 1);
- 	test_cases[pos].pathname[PATH_MAX + 1] = '\0';
- }
- 
--/*
-- * cleanup() - Performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *
-- *	Remove temporary directory and sub-directories/files under it
-- *	created during setup().
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
-diff --git a/testcases/kernel/syscalls/utils/compat_16.h b/testcases/kernel/syscalls/utils/compat_16.h
-index 47f9912..e30dfba 100644
---- a/testcases/kernel/syscalls/utils/compat_16.h
-+++ b/testcases/kernel/syscalls/utils/compat_16.h
-@@ -125,4 +125,9 @@ int SETREGID(void (cleanup)(void), GID_T rgid, GID_T egid)
- {
- 	LTP_CREATE_SYSCALL(setregid, cleanup, rgid, egid);
- }
-+
-+int LCHOWN(void (cleanup)(void), const char *path, UID_T owner, GID_T group)
-+{
-+	LTP_CREATE_SYSCALL(lchown, cleanup, path, owner, group);
-+}
- #endif /* __LTP_COMPAT_16_H__ */
--- 
-1.7.1
+Happy new 2014,
 
+congrats to ltp-full-20140115!
+
+Recently, I have tested it with Linux v3.13-rc8+ (IPC-syscalls and runltp-lite)
+
+  $ ./runltp -f syscalls-ipc
+
+  $ ./runltplite.sh
+
+The 1st result-log is attached.
+Is it possible that runltp-lite also saves its output to results-dir?
+
+Thanks.
+
+Regards,
+- Sedat -
+
+--001a1134d2309bab6b04f063cd23
+Content-Type: text/x-log; charset=US-ASCII;
+	name="LTP_RUN_ON-2014_Jan_17-10h_36m_39s.log"
+Content-Disposition: attachment; 
+	filename="LTP_RUN_ON-2014_Jan_17-10h_36m_39s.log"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hqnjvna20
+
+VGVzdCBTdGFydCBUaW1lOiBGcmkgSmFuIDE3IDEwOjM2OjQwIDIwMTQKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGNhc2UgICAgICAgICAgICAgICAgICAgICAg
+IFJlc3VsdCAgICAgRXhpdCBWYWx1ZQotLS0tLS0tLSAgICAgICAgICAgICAgICAgICAgICAgLS0t
+LS0tICAgICAtLS0tLS0tLS0tCm1zZ2N0bDAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAg
+ICAgIDAgICAgCm1zZ2N0bDAyICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAg
+Cm1zZ2N0bDAzICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2N0bDA0
+ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2N0bDA1ICAgICAgICAg
+ICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2N0bDA2ICAgICAgICAgICAgICAgICAg
+ICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2N0bDA3ICAgICAgICAgICAgICAgICAgICAgICBQQVNT
+ICAgICAgIDAgICAgCm1zZ2N0bDA4ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAg
+ICAgCm1zZ2N0bDA5ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2N0
+bDEwICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2N0bDExICAgICAg
+ICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2dldDAxICAgICAgICAgICAgICAg
+ICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ2dldDAyICAgICAgICAgICAgICAgICAgICAgICBQ
+QVNTICAgICAgIDAgICAgCm1zZ2dldDAzICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAg
+IDAgICAgCm1zZ2dldDA0ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1z
+Z3JjdjAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3JjdjAyICAg
+ICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3JjdjAzICAgICAgICAgICAg
+ICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3JjdjA0ICAgICAgICAgICAgICAgICAgICAg
+ICBQQVNTICAgICAgIDAgICAgCm1zZ3JjdjA1ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAg
+ICAgIDAgICAgCm1zZ3JjdjA2ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAg
+Cm1zZ3NuZDAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3NuZDAy
+ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3NuZDAzICAgICAgICAg
+ICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3NuZDA0ICAgICAgICAgICAgICAgICAg
+ICAgICBQQVNTICAgICAgIDAgICAgCm1zZ3NuZDA1ICAgICAgICAgICAgICAgICAgICAgICBQQVNT
+ICAgICAgIDAgICAgCm1zZ3NuZDA2ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAg
+ICAgCnNlbWN0bDAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWN0
+bDAyICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWN0bDAzICAgICAg
+ICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWN0bDA0ICAgICAgICAgICAgICAg
+ICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWN0bDA1ICAgICAgICAgICAgICAgICAgICAgICBQ
+QVNTICAgICAgIDAgICAgCnNlbWN0bDA2ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAg
+IDAgICAgCnNlbWN0bDA3ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNl
+bWdldDAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWdldDAyICAg
+ICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWdldDAzICAgICAgICAgICAg
+ICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbWdldDA1ICAgICAgICAgICAgICAgICAgICAg
+ICBQQVNTICAgICAgIDAgICAgCnNlbWdldDA2ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAg
+ICAgIDAgICAgCnNlbW9wMDEgICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAg
+CnNlbW9wMDIgICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbW9wMDMg
+ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbW9wMDQgICAgICAgICAg
+ICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNlbW9wMDUgICAgICAgICAgICAgICAgICAg
+ICAgICBQQVNTICAgICAgIDAgICAgCnNobWF0MDEgICAgICAgICAgICAgICAgICAgICAgICBQQVNT
+ICAgICAgIDAgICAgCnNobWF0MDIgICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAg
+ICAgCnNobWF0MDMgICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWN0
+bDAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWN0bDAyICAgICAg
+ICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWN0bDAzICAgICAgICAgICAgICAg
+ICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWN0bDA0ICAgICAgICAgICAgICAgICAgICAgICBQ
+QVNTICAgICAgIDAgICAgCnNobWR0MDEgICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAg
+IDAgICAgCnNobWR0MDIgICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNo
+bWdldDAxICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWdldDAyICAg
+ICAgICAgICAgICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWdldDAzICAgICAgICAgICAg
+ICAgICAgICAgICBQQVNTICAgICAgIDAgICAgCnNobWdldDA0ICAgICAgICAgICAgICAgICAgICAg
+ICBQQVNTICAgICAgIDAgICAgCnNobWdldDA1ICAgICAgICAgICAgICAgICAgICAgICBQQVNTICAg
+ICAgIDAgICAgCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQpUb3RhbCBUZXN0czogNTgKVG90YWwgRmFpbHVyZXM6IDAKS2VybmVsIFZlcnNpb246IDMuMTMu
+MC1yYzgtNDktaW5pemEtc21hbGwKTWFjaGluZSBBcmNoaXRlY3R1cmU6IHg4Nl82NApIb3N0bmFt
+ZTogZmFtYm94Cgo=
+--001a1134d2309bab6b04f063cd23
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 CenturyLink Cloud: The Leader in Enterprise Cloud Services.
@@ -419,7 +127,16 @@ Learn Why More Businesses Are Choosing CenturyLink Cloud For
 Critical Workloads, Development Environments & Everything In Between.
 Get a Quote or Start a Free Trial Today. 
 http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+--001a1134d2309bab6b04f063cd23
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--001a1134d2309bab6b04f063cd23--
+
