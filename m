@@ -1,39 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anasuya@linux.vnet.ibm.com>) id 1W337u-0006Li-5d
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 12:29:50 +0000
-Received: from e28smtp03.in.ibm.com ([122.248.162.3])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1W337s-0004Rg-SF
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jan 2014 12:29:50 +0000
-Received: from /spool/local
-	by e28smtp03.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <anasuya@linux.vnet.ibm.com>; 
-	Tue, 14 Jan 2014 17:59:40 +0530
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by d28dlp02.in.ibm.com (Postfix) with ESMTP id 9D90D394004E
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Jan 2014 17:59:37 +0530 (IST)
-Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	s0ECTWBk50200668
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jan 2014 17:59:32 +0530
-Received: from d28av02.in.ibm.com (localhost [127.0.0.1])
-	by d28av02.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	s0ECTaJB011823
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jan 2014 17:59:37 +0530
-Received: from oc5474148834.ibm.com ([9.124.39.82])
-	by d28av02.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	s0ECTa0p011809
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jan 2014 17:59:36 +0530
-Message-ID: <52D52DB0.3020003@linux.vnet.ibm.com>
-Date: Tue, 14 Jan 2014 17:59:36 +0530
-From: Anasuya M Shankar <anasuya@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH]:config.guess: Inclusion of ppc64le architecture
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1W5BM9-0002fv-Ax
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 09:41:21 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W5BM7-0001Jc-RW
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jan 2014 09:41:21 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0K9fDaK012811
+	for <ltp-list@lists.sourceforge.net>; Mon, 20 Jan 2014 17:41:13 +0800
+Message-ID: <1390210861.6682.14.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 20 Jan 2014 17:41:01 +0800
+In-Reply-To: <1390210456.6682.12.camel@G08JYZSD130126>
+References: <1390210456.6682.12.camel@G08JYZSD130126>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 2/2] mkdir/mkdir03.c: add new error number tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,29 +30,184 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-The patch is to provide support for power little endian architecture.
-The ./configure command fails when this is not taken care on ppc64le 
-machines.
+Add ELOOP, EROFS error number tests fof mkdir(2)
 
-Signed-off-by: Anasuya M Shankar <anasuya@linux.vnet.ibm.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ runtest/ltplite                           |  2 +-
+ runtest/stress.part3                      |  2 +-
+ runtest/syscalls                          |  2 +-
+ testcases/kernel/syscalls/mkdir/mkdir03.c | 58 +++++++++++++++++++++++++++++--
+ 4 files changed, 58 insertions(+), 6 deletions(-)
 
---- config.guess.orig    2014-01-14 17:21:55.601214002 +0530
-+++ config.guess    2014-01-14 17:22:13.746971128 +0530
-@@ -952,6 +952,9 @@ EOF
-      ppc64:Linux:*:*)
-      echo powerpc64-unknown-linux-gnu
-      exit ;;
-+    ppc64le:Linux:*:*)
-+        echo powerpc64le-unknown-linux-gnu
-+        exit ;;
-      ppc:Linux:*:*)
-      echo powerpc-unknown-linux-gnu
-      exit ;;
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 4b5300d..edc67e8 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -415,7 +415,7 @@ mlockall03 mlockall03
+ 
+ mkdir01 mkdir01
+ mkdir02 mkdir02
+-mkdir03 mkdir03
++mkdir03 mkdir03 -D DEVICE -T DEVICE_FS_TYPE
+ mkdir04 mkdir04
+ mkdir05 mkdir05
+ mkdir05A symlink01 -T mkdir05
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index bb4807c..66ad4c6 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -348,7 +348,7 @@ mlockall03 mlockall03
+ 
+ mkdir01 mkdir01
+ mkdir02 mkdir02
+-mkdir03 mkdir03
++mkdir03 mkdir03 -D DEVICE -T DEVICE_FS_TYPE
+ mkdir04 mkdir04
+ mkdir05 mkdir05
+ mkdir05A symlink01 -T mkdir05
+diff --git a/runtest/syscalls b/runtest/syscalls
+index afa7976..bebf2b5 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -530,7 +530,7 @@ mlockall03 mlockall03
+ 
+ mkdir01 mkdir01
+ mkdir02 mkdir02
+-mkdir03 mkdir03
++mkdir03 mkdir03 -D DEVICE -T DEVICE_FS_TYPE
+ mkdir04 mkdir04
+ mkdir05 mkdir05
+ mkdir05A symlink01 -T mkdir05
+diff --git a/testcases/kernel/syscalls/mkdir/mkdir03.c b/testcases/kernel/syscalls/mkdir/mkdir03.c
+index 3aabe1c..b983f79 100644
+--- a/testcases/kernel/syscalls/mkdir/mkdir03.c
++++ b/testcases/kernel/syscalls/mkdir/mkdir03.c
+@@ -19,7 +19,7 @@
+ /*
+  * DESCRIPTION
+  *	check mkdir() with various error conditions that should produce
+- *	EFAULT, ENAMETOOLONG, EEXIST, ENOENT and ENOTDIR
++ *	EFAULT, ENAMETOOLONG, EEXIST, ENOENT, ENOTDIR, ELOOP and EROFS
+  */
+ 
+ #include <errno.h>
+@@ -27,6 +27,7 @@
+ #include <sys/stat.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
++#include <sys/mount.h>
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
+@@ -35,16 +36,32 @@ static void setup(int ac, char **av);
+ static void bad_addr_setup(int);
+ static void mkdir_verify(int);
+ static void cleanup(void);
++static void help(void);
+ 
+ #define TST_EEXIST	"tst_eexist"
+ #define TST_ENOENT	"tst_enoent/tst"
+ #define TST_ENOTDIR	"tst_enotdir/tst"
++#define TST_EROFS	"mntpoint/tst_erofs"
+ #define MODE		0777
++#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
++			 S_IXGRP|S_IROTH|S_IXOTH)
+ 
+ char *TCID = "mkdir03";
+ 
+ static char long_dir[PATH_MAX+2];
+-static int exp_enos[] = { EFAULT, ENAMETOOLONG, EEXIST, ENOENT, ENOTDIR, 0 };
++static char loop_dir[PATH_MAX];
++static char *fstype = "ext2";
++static char *device;
++static int dflag;
++static int mount_flag;
++
++static option_t options[] = {
++	{"T:", NULL, &fstype},
++	{"D:", &dflag, &device},
++	{NULL, NULL, NULL}
++};
++static int exp_enos[] = { EFAULT, ENAMETOOLONG, EEXIST, ENOENT, ENOTDIR,
++			  ELOOP, EROFS, 0 };
+ 
+ static struct test_case_t {
+ 	char *pathname;
+@@ -59,6 +76,8 @@ static struct test_case_t {
+ 	{TST_EEXIST, MODE, EEXIST, NULL},
+ 	{TST_ENOENT, MODE, ENOENT, NULL},
+ 	{TST_ENOTDIR, MODE, ENOTDIR, NULL},
++	{loop_dir, MODE, ELOOP, NULL},
++	{TST_EROFS, MODE, EROFS, NULL},
+ };
+ 
+ int TST_TOTAL = ARRAY_SIZE(TC);
+@@ -87,11 +106,18 @@ static void setup(int ac, char **av)
+ {
+ 	char *msg;
+ 	struct stat statbuf;
++	int i;
+ 
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
++	if (!dflag) {
++		tst_brkm(TBROK, NULL,
++			 "you must specify the device used for mounting with "
++			 "-D option");
++	}
++
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
+@@ -107,6 +133,20 @@ static void setup(int ac, char **av)
+ 	if (stat(TST_ENOENT, &statbuf) != -1)
+ 		tst_brkm(TBROK, cleanup, "directory exists - test #4");
+ 
++	SAFE_MKDIR(cleanup, "test_eloop", DIR_MODE);
++	SAFE_SYMLINK(cleanup, "../test_eloop", "test_eloop/test_eloop");
++	strcpy(loop_dir, ".");
++	for (i = 0; i < 43; i++)
++		strcat(loop_dir, "/test_eloop");
++
++	tst_mkfs(NULL, device, fstype, NULL);
++	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
++	if (mount(device, "mntpoint", fstype, MS_RDONLY, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
++
+ 	TEST_EXP_ENOS(exp_enos);
+ }
+ 
+@@ -146,5 +186,17 @@ static void cleanup(void)
+ {
+ 	TEST_CLEANUP;
+ 
++	if (mount_flag && umount("mntpoint") < 0) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "umount device:%s failed", device);
++	}
++
+ 	tst_rmdir();
+ }
++
++static void help(void)
++{
++	printf("-T type   : specifies the type of filesystem to be mounted. "
++	       "Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
++}
+-- 
+1.8.4.2
 
-Thanks
-Anasuya M Shankar.
+
 
 
 ------------------------------------------------------------------------------
