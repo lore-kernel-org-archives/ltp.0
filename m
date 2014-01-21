@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Vyelc-0006aH-Lq
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jan 2014 09:40:40 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1W5YCp-0007vl-KG
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 10:05:15 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vyela-00070a-Gi
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jan 2014 09:40:40 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W5YCn-0002IY-CR
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 10:05:15 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s029eUZw020721
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jan 2014 17:40:30 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0LA44jO009870
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 18:04:04 +0800
 From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 2 Jan 2014 17:39:32 +0800
-Message-Id: <1388655575-4078-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH 1/4] delete_module/delete_module01.c: cleanup
+Date: Tue, 21 Jan 2014 18:02:52 +0800
+Message-Id: <1390298574-2966-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH v2 1/3] fcntl/fcntl29.c: add F_DUPFD_CLOEXEC test for
+	fcntl(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,233 +31,208 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-* Delete some useless commtents.
-* Use SAFE_* macros.
-* Make tests only run in kernel 2.6.0 or higher.
-* Some cleanup and fixes.
+create a new case to test F_DUPFD_CLOEXEC for fcntl(2)
 
 Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- .../kernel/module/delete_module/delete_module01.c  | 160 ++++++---------------
- 1 file changed, 45 insertions(+), 115 deletions(-)
+ runtest/ltplite                           |   1 +
+ runtest/stress.part3                      |   1 +
+ runtest/syscalls                          |   2 +
+ testcases/kernel/syscalls/.gitignore      |   2 +
+ testcases/kernel/syscalls/fcntl/fcntl29.c | 124 ++++++++++++++++++++++++++++++
+ 5 files changed, 130 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fcntl/fcntl29.c
 
-diff --git a/testcases/kernel/module/delete_module/delete_module01.c b/testcases/kernel/module/delete_module/delete_module01.c
-index b96564d..e41e862 100644
---- a/testcases/kernel/module/delete_module/delete_module01.c
-+++ b/testcases/kernel/module/delete_module/delete_module01.c
-@@ -14,157 +14,87 @@
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  *
-  */
--/**********************************************************
-- *
-- *    TEST IDENTIFIER   : delete_module01
-- *
-- *    EXECUTED BY       : root / superuser
-- *
-- *    TEST TITLE        : Basic tests for delete_module(2)
-- *
-- *    TEST CASE TOTAL   : 1
-- *
-- *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
-- *
-- *    SIGNALS
-- *		 Uses SIGUSR1 to pause before test if option set.
-- *		 (See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *		 This is a Phase I test for the delete_module(2) system call.
-- *		 It is intended to provide limited exposure of the system call.
-- *
-- *		 Setup:
-- *		   Setup signal handling.
-- *		   Test caller is superuser
-- *		   Pause for SIGUSR1 if option specified.
-- *		   Initialize modname for each child process.
-- *
-- *		 Test:
-- *		  Loop if the proper options are given.
-- *		   Create module entry
-- *		   Execute system call
-- *		   Check return code, if system call failed (return=-1),
-- *		   	issue a FAIL message with the errno.
-- *		   Otherwise, Issue PASS message.
-- *
-- *		 Cleanup:
-- *		   Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- *  delete_module01 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
-- *		 		 where,  -c n : Run n copies concurrently.
-- *			 		 -e   : Turn on errno logging.
-- *		 	 		 -f   : Turn off functional testing
-- *		 	 		 -h   : Show help screen
-- *		 	 		 -i n : Execute test n times.
-- *		 	 		 -I x : Execute test for x seconds.
-- *		 	 		 -p   : Pause for SIGUSR1 before
-- *		 	 		 	starting test.
-- *		 	 		 -P x : Pause for x seconds between
-- *		 	 		 	iterations.
-- *		 	 		 -t   : Turn on syscall timing.
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 4b5300d..196e2a2 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -223,6 +223,7 @@ fcntl26 fcntl26
+ # The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
+ # fcntl27 fcntl27
+ # fcntl28 fcntl28
++fcntl29 fcntl29
+ 
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index bb4807c..946f4ea 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -162,6 +162,7 @@ fcntl26 fcntl26
+ # The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
+ # fcntl27 fcntl27
+ # fcntl28 fcntl28
++fcntl29 fcntl29
+ 
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index afa7976..b45faab 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -252,6 +252,8 @@ fcntl27 fcntl27
+ fcntl27_64 fcntl27_64
+ fcntl28 fcntl28
+ fcntl28_64 fcntl28_64
++fcntl29 fcntl29
++fcntl29_64 fcntl29_64
+ 
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 1caf8e3..1ab13d8 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -214,6 +214,8 @@
+ /fcntl/fcntl27_64
+ /fcntl/fcntl28
+ /fcntl/fcntl28_64
++/fcntl/fcntl29
++/fcntl/fcntl29_64
+ /fdatasync/fdatasync01
+ /fdatasync/fdatasync02
+ /flock/flock01
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
+new file mode 100644
+index 0000000..d45296d
+--- /dev/null
++++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
+@@ -0,0 +1,124 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
 +
 +/*
-+ *    AUTHOR: Madhu T L <madhu.tarikere@wipro.com>
-  *
-- ****************************************************************/
-+ *    DESCRIPTION:
-+ *    	Basic tests for delete_module(2)
-+ *    	1) insmod dummy_del_mod.ko
-+ *    	2) call delete_module(2) to remove dummy_del_mod.ko
++ * Description:
++ * Verify that,
++ *   Basic test for fcntl(2) using F_DUPFD_CLOEXEC argument.
 + */
- 
--#include <libgen.h>
- #include <errno.h>
- #include "test.h"
- #include "usctest.h"
-+#include "tst_module.h"
++
++#include <stdio.h>
++#include <errno.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <signal.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <pwd.h>
++
++#include "test.h"
++#include "usctest.h"
 +#include "safe_macros.h"
-+#include "linux_syscall_numbers.h"
- 
--static void setup(void);
-+#define MODULE_NAME	"dummy_del_mod"
-+#define MODULE_NAME_KO	"dummy_del_mod.ko"
 +
-+static void setup(int argc, char *argv[]);
- static void cleanup(void);
- 
--char *TCID = "delete_module01";	/* Test program identifier.    */
--int TST_TOTAL = 1;		/* Total number of test cases. */
-+
-+char *TCID = "delete_module01";
++char *TCID = "fcntl29";
 +int TST_TOTAL = 1;
-+static int module_loaded;
- 
- int main(int argc, char **argv)
- {
- 	int lc;
--	char *msg;
--	char cmd[PATH_MAX];
--	char *module_name = "dummy_del_mod";
--
--	if ((msg = parse_opts(argc, argv, NULL, NULL)) != (char *)NULL) {
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
--	setup();
-+	setup(argc, argv);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
- 
--		/* Execute system call */
--		sprintf(cmd, "/sbin/insmod %s/%s.ko", dirname(argv[0]),
--			module_name);
--
--		/* Insmod the module */
--		if ((system(cmd)) != 0) {
--			tst_resm(TBROK, "Failed to load %s module",
--				 module_name);
--			printf("system() failed; cannot test init_module: "
--			       "errno=%i\n", errno);
--			goto EXIT;
-+		/* insert dummy_del_mod.ko */
-+		if (module_loaded == 0) {
-+			tst_module_load(NULL, MODULE_NAME_KO, NULL);
-+			module_loaded = 1;
- 		}
- 
--		/* Test the system call */
--		TEST(delete_module(module_name));
--
--		/* check return code */
-+		TEST(ltp_syscall(__NR_delete_module, MODULE_NAME, 0));
- 		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "delete_module() failed to remove"
--				 " module entry for %s, errno=%d : %s",
--				 module_name, TEST_ERRNO, strerror(TEST_ERRNO));
-+			tst_resm(TFAIL | TTERRNO, "delete_module() failed to "
-+				 "remove module entry for %s ", MODULE_NAME);
- 		} else {
--			tst_resm(TPASS, "delete_module() successful, returned"
--				 " %d", TEST_RETURN);
-+			tst_resm(TPASS, "delete_module() successful");
-+			module_loaded = 0;
- 		}
- 
- 	}
- 
--	/* perform global cleanup and exit */
--EXIT:
- 	cleanup();
--
-+	tst_exit();
- }
- 
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
-+static void setup(int argc, char *argv[])
- {
++
++#if defined(F_DUPFD_CLOEXEC)
++static void setup(void);
++static void cleanup(void);
++
++static int test_fd;
++static int dup_fd;
++
++
++int main(int ac, char **av)
++{
++	int lc;
 +	char *msg;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
-+	msg = parse_opts(argc, argv, NULL, NULL);
++
++	msg = parse_opts(ac, av, NULL, NULL);
 +	if (msg != NULL)
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-+	if (tst_kvercmp(2, 6, 0) < 0) {
-+		tst_brkm(TCONF, NULL,
-+			 "Test must be run with kernel 2.6 or newer");
- 	}
- 
--	/*
--	 * if (tst_kvercmp(2,5,48) >= 0)
--	 * tst_brkm(TCONF, NULL, "This test will not work on "
--	 *                              "kernels after 2.5.48");
--	 */
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -c option.
--	 */
--	TEST_PAUSE;
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		TEST(fcntl(test_fd, F_DUPFD_CLOEXEC, dup_fd));
++		if (TEST_RETURN < 0) {
++			tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
++				 "test F_DUPFD_CLOEXEC failed");
++		}
++		dup_fd = TEST_RETURN;
++
++		TEST(fcntl(dup_fd, F_GETFD));
++		if (TEST_RETURN < 0) {
++			tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
++				 "test F_GETFD failed");
++		}
++
++		if (TEST_RETURN & FD_CLOEXEC) {
++			tst_resm(TPASS, "fcntl test "
++				 "F_DUPFD_CLOEXEC success");
++		} else {
++			tst_resm(TFAIL, "fcntl test "
++				 "F_DUPFD_CLOEXEC fail");
++		}
++
++		SAFE_CLOSE(cleanup, dup_fd);
++		dup_fd = 0;
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	if ((tst_kvercmp(2, 6, 24)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels"
++			 "that are 2.6.24 and higher");
++	}
++
 +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 +
-+	tst_require_root(NULL);
- 
++	tst_tmpdir();
++
 +	TEST_PAUSE;
- }
- 
--/*
-- * cleanup()
-- *	performs all ONE TIME cleanup for this test at
-- *	completion or premature exit
-- */
--void cleanup(void)
++
++	test_fd = SAFE_CREAT(cleanup, "testfile", 0644);
++}
++
 +static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
-+	if (module_loaded == 1)
-+		tst_module_unload(NULL, MODULE_NAME_KO);
- 	TEST_CLEANUP;
--
- }
++{
++	TEST_CLEANUP;
++
++	if (test_fd > 0)
++		SAFE_CLOSE(NULL, test_fd);
++
++	tst_rmdir();
++}
++#else
++
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "This test can only run on kernels"
++		 "that are 2.6.24 and higher");
++}
++#endif
 -- 
 1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
