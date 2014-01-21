@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W1HA1-00040u-JA
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jan 2014 15:04:41 +0000
-Date: Thu, 9 Jan 2014 16:04:20 +0100
-From: chrubis@suse.cz
-Message-ID: <20140109150420.GI5125@rei.Home>
-References: <1387358991.1664.37.camel@G08JYZSD130126>
-	<20140109113619.GB5125@rei.Home>
-	<1389269411.2149.8.camel@G08JYZSD130126>
-	<201401090947.12749.vapier@gentoo.org>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1W5QNd-0000QB-Sn
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 01:43:53 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1W5QNd-0004Sq-4C
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 01:43:53 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s0L1hkgp012007
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 01:43:47 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s0L1hkm8023207
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 01:43:46 GMT
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s0L1hjBR011761
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jan 2014 01:43:45 GMT
+Message-ID: <52DDD0BA.4070906@oracle.com>
+Date: Tue, 21 Jan 2014 09:43:22 +0800
+From: Simon Xu <xu.simon@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201401090947.12749.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH???v3] lib/cloner.c: add function ltp_clone7 when
- clone supports???7 arguments
+References: <1386729875-487-1-git-send-email-xu.simon@oracle.com>
+	<52BA384B.3070308@oracle.com>
+In-Reply-To: <52BA384B.3070308@oracle.com>
+Subject: Re: [LTP] [PATCH] xinetd_tests.sh: explicitly enable IPv6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,64 +42,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > So create m4/ltp-clone7args.m4 to check whether clone support 7 arguments.
-> > If HAVE_CLONE7ARGS is defined, ltp_clone7 will be defined in lib/cloner.c.
-> > 
-> > When tests need pass 7 arguments to clone, ltp_clone7 should be used. When
-> > HAVE_CLONE7ARGS is not defined, make these tests return TCONF, like
-> > clone08.
-> 
-> the current clone function is broken.  you cannot call va_args on an arg that
-> doesn't exist.  but if the suggestions below are implemented, this shouldn't
-> be a problem anymore.
-> 
-> > --- a/include/test.h
-> > +++ b/include/test.h
-> > 
-> >  /* Functions from lib/cloner.c */
-> >  int ltp_clone(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
-> > +		size_t stack_size, void *stack);
-> > +#ifdef HAVE_CLONE7ARGS
-> > +int ltp_clone7(unsigned long clone_flags, int (*fn)(void *arg), void *arg,
-> >  		size_t stack_size, void *stack, ...);
-> > +#endif
-> 
-> always define this prototype
-> 
-> > --- a/lib/cloner.c
-> > +++ b/lib/cloner.c
-> 
-> add a helper here like:
-> 
-> #ifndef CLONE_SUPPORTS_7_ARGS
-> # define clone(fn, stack, flags, arg, ptid, tls, ctid) clone(fn, stack, flags, arg)
-> #endif
-> 
-> rename the existing ltp_clone to a static _ltp_clone
-> 
-> create a new ltp_clone that just calls _ltp_clone and passes in NULL for the
-> additional 3 args
-> 
-> in the new ltp_clone7, have it do:
-> #ifdef CLONE_SUPPORTS_7_ARGS
-> 	... call _ltp_clone ...
-> #else
-> 	... call TCONF or TBROK or something ...
-> #endif
-> 
-> that should keep all the test logic simple as Cyril suggested.  no need for
-> them to check ifdefs, just call ltp_clone7 instead.
+Could anyone help to review this?
 
-I will finish this one, the solution is nearly ready and I have the
-means to quickly test it on most of the distros/archs.
+Thanks
+Simon
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 2013/12/25 9:43, Simon Xu wrote:
+> Could anyone help to review this?
+>
+> Thanks
+> Simon
+>
+> On 2013/12/11 10:44, Simon Xu wrote:
+>> Explicitly enable IPv6 because on older systems xinetd only listens
+>> on IPv4 by default.
+>>
+>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+>> ---
+>>    testcases/network/xinetd/xinetd_tests.sh | 1 +
+>>    1 file changed, 1 insertion(+)
+>>
+>> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+>> index 5024280..dac23a8 100755
+>> --- a/testcases/network/xinetd/xinetd_tests.sh
+>> +++ b/testcases/network/xinetd/xinetd_tests.sh
+>> @@ -134,6 +134,7 @@ service telnet
+>>        server          = /usr/sbin/in.telnetd
+>>        server_args     = -n
+>>        no_access       =
+>> +    flags           = IPv6
+>>    }
+>>    EOF
+>>    RC=$?
 
 ------------------------------------------------------------------------------
 CenturyLink Cloud: The Leader in Enterprise Cloud Services.
