@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W2med-0000W1-Fb
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jan 2014 18:54:31 +0000
-Date: Mon, 13 Jan 2014 19:54:06 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W5bGf-0007KA-4I
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jan 2014 13:21:25 +0000
+Date: Tue, 21 Jan 2014 14:20:57 +0100
 From: chrubis@suse.cz
-Message-ID: <20140113185405.GA2315@rei>
-References: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
-	<20140109115303.GC5125@rei.Home> <52CE9B15.4070307@imgtec.com>
-	<52CFC57F.9000004@imgtec.com>
+Message-ID: <20140121132057.GB22655@rei.Home>
+References: <1383124058-13133-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1386840115-9703-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20140120160927.GA1280@rei.suse.cz> <52DE7063.8070305@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <52CFC57F.9000004@imgtec.com>
-Subject: Re: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed
- architectures
+In-Reply-To: <52DE7063.8070305@oracle.com>
+Subject: Re: [LTP] [PATCH V3 2/2] setpgid03: use tst_checkpoint interface
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,17 +26,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> I am also able to build the upstream code directly from their repository.
+> > The timeout should better be handled, if handled at all, in the
+> > checkpoint code. I would not care much about this case because when the
+> > parent is dead does not talk to the child the test will fail anyway...
+> >
 > 
-> Could you please double check the patch you applied? :)
+> I didn't care about the test failure in such case. I cared about that 
+> without alarm() the child will keep running (i.e. blocking on IO) even 
+> after the parent is dead.
 
-And indeed it was misapplied, for same strange reason the 'git am' dropped
-last two lines of the patch. Which keeps me wonder how many patches has
-been corrupted silently :(
+I've noticed that as well, the child will continue to run and because it
+called setsid() the test driver (pan) will not kill it because it left
+it's parent process group.
+
+> But I agree that it's not the best place to handle this inside the test 
+> case.
+
+I was thinking of adding the alarm() code into the checkpoint child
+code. This should fix the problem once for all. But even then this
+codepath happens only when something went wrong so this has not big
+priority...
 
 -- 
 Cyril Hrubis
