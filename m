@@ -2,17 +2,30 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1W89ch-0000sc-OX
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jan 2014 14:26:43 +0000
-Date: Tue, 28 Jan 2014 15:26:13 +0100
-From: chrubis@suse.cz
-Message-ID: <20140128142612.GA7155@rei>
-References: <1385553969-24473-1-git-send-email-alexey.kodanev@oracle.com>
-	<20131212163910.GD10634@rei.Home> <52DFB880.2080705@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52DFB880.2080705@oracle.com>
-Subject: Re: [LTP] [PATCH v3] network: tcp_fastopen: add TCP Fast Open test
+	(envelope-from <sweekar.pinto@oracle.com>) id 1W6H6K-0007MF-IN
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jan 2014 10:01:32 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1W6H6J-0004R2-Hx
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jan 2014 10:01:32 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s0NA1PtO000885
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Jan 2014 10:01:25 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s0NA1OXo003929
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Jan 2014 10:01:25 GMT
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s0NA1OC1003908
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Jan 2014 10:01:24 GMT
+From: Sweekar Pinto <sweekar.pinto@oracle.com>
+Date: Wed, 22 Jan 2014 17:13:37 -0500
+Message-Id: <1390428817-31923-1-git-send-email-sweekar.pinto@oracle.com>
+Subject: [LTP] [PATCH 1/3] Fixed compile errors in crasher.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,186 +35,143 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: lisa.vaz@oracle.com
 
-Hi!
-> >> +struct tcp_func {
-> >> +	void (*init)(void);
-> >> +	void (*run)(void);
-> >> +	void (*cleanup)(void);
-> >> +};
-> >> +static struct tcp_func tcp;
-> >> +
-> >> +#define MAX_THREADS	10000
-> >> +static pthread_attr_t attr;
-> >> +static pthread_t *thread_ids;
-> >> +static int threads_num;
-> >> +
-> >> +static struct addrinfo *remote_addrinfo;
-> >> +static struct addrinfo *local_addrinfo;
-> >> +static const struct linger clo = { 1, 3 };
-> >> +
-> >> +static void cleanup(void)
-> >> +{
-> >> +	static int first = 1;
-> >> +	if (!first)
-> >> +		return;
-> >> +	first = 0;
-> > There is still chance for a race condition here. But this could be
-> > easily fixed by pthread_once().
-> >
-> > static pthread_once_t cleanup_executed = PTHREAD_ONCE_INIT;
-> >
-> > static void do_cleanup(void)
-> > {
-> > 	/* Do the cleanup here */
-> > }
-> >
-> > static void cleanup(void)
-> > {
-> > 	pthread_once(&cleanup_executed, do_cleanup);
-> > }
-> >
-> > Thinking of the problems with LTP library thread safety again. One of
-> > the solutions may be having two tst_res.c implementaions. Note that the
-> > source of thread safety problems is the cleanup function which is
-> > executed by the tst_brkm() and the exitval that is in the test library
-> > too.
-> >
-> > If we did so then we will have tst_res.c we have now and one providing
-> > thread safe implemenation using pthread synchronization primitives
-> > (likely both will be implemented on the top of the common code).
-> >
-> > And if we could switch which one gets linked to a test at the linker
-> > phase depending whether it uses pthreads or not the thread safety
-> > problem will be fixed once for all.
-> >
-> > I will think about this a bit more.
-> As I understand correctly we need to create one more library libltp_mt.a 
-> and implement the same but in the thread-safe way, right?
+-Conditional inclusion of asm.h for kernel > 3.4
+-The owner field of proc_dir_entry has been removed
 
-That is one of the posible solutions.
+Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+---
+ testcases/kdump/lib/crasher/crasher.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-I would create the thread safe library on the top of the one we have now
-and created set of calls with _r suffix (as libc does with strerror(),
-ctime(), ...). Then we can use these when needed and link the the test
-against both -lltp and -lltp_mt (or whatever it gets called). That would
-include all the tst_res() functions and maybe some other, we can add
-these once they.
-
-The open question is the callback() because we either need to redirect
-all calls that gets the callback pointer as an parameter or create the
-callback indirection (with pthread once) in the test. I would rather see
-the second variant. What we can do is a macro that will decleare the
-pthread once etc given the name of the real callback and the name of the
-resulting function.
-
-> So the following part of tst_brk() also requires synchronization, 
-> tst_brk_entered in particular.
-> 
-> void tst_brk(int ttype, char *fname, void (*func) (void), char *arg_fmt, 
-> ...)
-> {
->        ...
-> 
->          /*
->           * If no cleanup function was specified, just return to the caller.
->           * Otherwise call the specified function.
-> */
->          if (func != NULL) {
-> tst_brk_entered++;
->                  (*func) ();
-> tst_brk_entered--;
-> }
->          if (tst_brk_entered == 0)
-> tst_exit();
-> 
-> }
-> 
-> tst_brk_entered and T_exitval, tst_count can be implemented with gcc 
-> atomic bultins. Cleanup function as you suggested will be implemented 
-> with pthread_once in a test. Then we can exit with TCONF if a test with 
-> libltp thread-safety requirements can't find gcc atomic built-ins.
-
-This part is a hack for being able to call safe macros from within the
-test cleanup(). All safe macros call tst_brkm() if something has failed
-which will exit the cleanup() prematurely. But this does not work well
-or reliably. I would vote for removing this part and forbiding calling
-safe macros from within the test cleanup(), people tend to pass the
-cleanup function pointer to these without thinking which creates
-infinite recursion and the test is killed when stack is filled up...
-
-> Anyway, I'm thinking that at least for now I won't use tst_res.c in the 
-> test, once thread-safe ltplib is done I will make use of it here.
-
-OK. But we should fix the LTP lib as well.
-
-> >> +
-> >> +static void make_client_request(void)
-> >> +{
-> >> +	client_msg[0] = start_byte;
-> >> +
-> >> +	/* set size for reply */
-> >> +	*(uint16_t *)(client_msg + 1) = htons(server_msg_size);
-> > This will generate unaligned access on some architectures.
-> >
-> > What you need is to set the value byte by byte:
-> >
-> > client_msg[1] = (sever_msg_size>>8) & 0xff;
-> > client_msg[2] = sever_msg_size & 0xff;
-> >
-> >> +	client_msg[client_msg_size - 1] = end_byte;
-> >> +}
-> >> +
-> >> +static int parse_client_request(const char *recv_msg)
-> >> +{
-> >> +	int size = ntohs(*(uint16_t *)(recv_msg + 1));
-> > Here as well, you need to construct the value byte by byte as:
-> >
-> > uint16_t val = htons(((((uint16_t)recv_msg[1])<<8) + recv_msg[2]));
-> OK, but I think it is better to use an union as follows, isn't it?
-> 
-> union net_size_field {
->          char bytes[2];
->          uint16_t value;
-> };
-> 
-> static void make_client_request(void)
-> {
->          ...
->          union net_size_field net_size;
->          net_size.value = htons(server_msg_size);
->          client_msg[1] = net_size.bytes[0];
->          client_msg[2] = net_size.bytes[1];
->          ..
-> }
-> 
-> static int parse_client_request(const char *recv_msg)
-> {
->          union net_size_field net_size;
->          net_size.bytes[0] = recv_msg[1];
->          net_size.bytes[1] = recv_msg[2];
->          int size = ntohs(net_size.value);
->          ...
-> }
-> 
-
-That should work as well.
-
+diff --git a/testcases/kdump/lib/crasher/crasher.c b/testcases/kdump/lib/crasher/crasher.c
+index bc192dc..2b01412 100644
+--- a/testcases/kdump/lib/crasher/crasher.c
++++ b/testcases/kdump/lib/crasher/crasher.c
+@@ -25,7 +25,10 @@
+ #include <linux/proc_fs.h>
+ #include <linux/spinlock.h>
+ #include <asm/uaccess.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 4, 0)
+ #include <asm/system.h>
++#endif
+ 
+ MODULE_LICENSE("GPL");
+ 
+@@ -46,7 +49,7 @@ static int crasher_write(struct file *file, const char *buffer,
+ 			 unsigned long count, void *data)
+ {
+ 	char value, *a;
+-	spinlock_t mylock = SPIN_LOCK_UNLOCKED;
++	DEFINE_SPINLOCK(mylock);
+ 
+ 	/* grab the first byte the user gave us, ignore the rest */
+ 	if (copy_from_user(&value, buffer, 1))
+@@ -94,7 +97,6 @@ int crasher_init(void)
+ 
+ 	crasher_proc->read_proc = crasher_read;
+ 	crasher_proc->write_proc = crasher_write;
+-	crasher_proc->owner = THIS_MODULE;
+ 	return 0;
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
+
+From f58a6316dc168781daa76edf4d78a217e2af2628 Mon Sep 17 00:00:00 2001
+From: Sweekar Pinto <sweekar.pinto@oracle.com>
+Date: Wed, 22 Jan 2014 17:05:01 -0500
+Subject: [PATCH 2/3] Fix passwordless ssh for network(ssh) dump test
+
+-Force ssh to use kdumps rsa key to run commands remotely
+
+Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+---
+ testcases/kdump/runkdump.sh |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kdump/runkdump.sh b/testcases/kdump/runkdump.sh
+index e2e681c..cd6ee1c 100755
+--- a/testcases/kdump/runkdump.sh
++++ b/testcases/kdump/runkdump.sh
+@@ -95,7 +95,7 @@ PrepareVerify ()
+             exit 1
+         fi
+ 
+-        file=$(ssh "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore \
++        file=$(ssh -i ~/.ssh/kdump_id_rsa "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore* \
+          2>/dev/null | head -1")
+ 
+         mkdir -p "${COREDIR}/${last}"
+@@ -103,7 +103,7 @@ PrepareVerify ()
+         if [ "${file}" ]; then
+             # Not fatal error.
+             set +e
+-            scp "${SCP_PATH}:${file}" "${COREDIR}/${last}"
++            scp  -i ~/.ssh/kdump_id_rsa "${SCP_PATH}:${file}" "${COREDIR}/${last}"
+             set -e
+         fi
+ 
+@@ -116,7 +116,7 @@ PrepareVerify ()
+         COREDIR=/mnt"${COREDIR}"
+     fi
+ 
+-    vmcore=$(ls -t "${COREDIR}"/*/vmcore 2>/dev/null | head -1)
++    vmcore=$(ls -t "${COREDIR}"/*/vmcore* 2>/dev/null | head -1)
+ }
+ 
+ VerifyTest ()
+-- 
+1.7.1
+
+
+From 76ab06883327fdcdf038af5dd96a036e0b077818 Mon Sep 17 00:00:00 2001
+From: Sweekar Pinto <sweekar.pinto@oracle.com>
+Date: Wed, 22 Jan 2014 17:08:23 -0500
+Subject: [PATCH 3/3] Change crashkernel param to 256M@128M
+
+-Change the crashkernel parm of x86 and default arch to 256M@128M as this is found to be the best fit
+Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+---
+ testcases/kdump/lib/setup.sh |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kdump/lib/setup.sh b/testcases/kdump/lib/setup.sh
+index 5bc54bb..3e53f1a 100755
+--- a/testcases/kdump/lib/setup.sh
++++ b/testcases/kdump/lib/setup.sh
+@@ -86,11 +86,11 @@ echo "Modify Boot Loader."
+ if [ "${arch}" = "ppc64" ]; then
+     args="crashkernel=256M@32M xmon=off"
+ elif [ "${arch}" = "i686" ]; then
+-    args="crashkernel=128M@16M nmi_watchdog=1"
++    args="crashkernel=256M@128M nmi_watchdog=1"
+ elif [ "${arch}" = "ia64" ]; then
+     args="crashkernel=512M@256M"
+ else
+-    args="crashkernel=128M@16M"
++    args="crashkernel=256M@128M"
+ fi
+ 
+ if [ -x "/sbin/grubby" ]; then
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today. 
+http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
