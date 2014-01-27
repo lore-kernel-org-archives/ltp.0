@@ -2,19 +2,27 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1W1aAW-000065-4v
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jan 2014 11:22:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	(envelope-from <cxie@redhat.com>) id 1W7gkt-0007qt-TU
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jan 2014 07:37:15 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W1aAT-0001GE-E7
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jan 2014 11:22:28 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0ABMG9c017833
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jan 2014 19:22:16 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Fri, 10 Jan 2014 19:21:15 +0800
-Message-Id: <1389352876-28625-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH] llseek/llseek03.c: add SEEK_CUR, SEEK_END flag test
+	id 1W7gkp-00046S-JD
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jan 2014 07:37:15 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s0R7b5cv019259
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 27 Jan 2014 02:37:05 -0500
+Received: from iMadper (dhcp-13-43.nay.redhat.com [10.66.13.43])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id s0R7b2YT011514
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 27 Jan 2014 02:37:04 -0500
+From: Madper Xie <cxie@redhat.com>
+Date: Mon, 27 Jan 2014 15:37:01 +0800
+Message-ID: <87mwihq3j6.fsf@redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] syscalls/fork: add new case fork14
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,294 +32,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-create a new case to test SEEK_CUR, SEEK_END flag for llseek(2)
+This testcase is a reproducer for https://lkml.org/lkml/2012/4/24/328.
+Modified from Siddhesh Poyarekar's testcase posted on above link.
+Since vma length in dup_mmap is calculated and stored in a unsigned
+int, which is insufficient and hence overflows for very large maps
+(beyond 16TB). Once overflow occurred, the fork after mmaped memory >
+16TB will succeed incorrectly.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+    This case will run following loop:
+             + mmap one (more) GB memory
+             + fork and check return value.
+    When mmaped more than 16 * 1024 GB, it will check if fork still fail.
+    Expected result: Fork failed even if mmaped memory > 16 * 1024 GB
 ---
- runtest/ltplite                             |   1 +
- runtest/stress.part3                        |   1 +
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/.gitignore        |   1 +
- testcases/kernel/syscalls/llseek/llseek03.c | 214 ++++++++++++++++++++++++++++
- 5 files changed, 218 insertions(+)
- create mode 100644 testcases/kernel/syscalls/llseek/llseek03.c
+ runtest/syscalls                        |   1 +
+ testcases/kernel/syscalls/fork/fork14.c | 118 ++++++++++++++++++++++++++++++++
+ 2 files changed, 119 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fork/fork14.c
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 4b5300d..dab0bea 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -386,6 +386,7 @@ listen01 listen01
- 
- llseek01 llseek01
- llseek02 llseek02
-+llseek03 llseek03
- 
- lseek01 lseek01
- lseek02 lseek02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index bb4807c..98fd57f 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -319,6 +319,7 @@ listen01 listen01
- 
- llseek01 llseek01
- llseek02 llseek02
-+llseek03 llseek03
- 
- lseek01 lseek01
- lseek02 lseek02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index afa7976..bebcca9 100644
+index afa7976..4cf90e8 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -492,6 +492,7 @@ listen01 listen01
+@@ -277,6 +277,7 @@ fork09 fork09
+ fork10 fork10
+ fork11 fork11
+ fork13 fork13 -i 1000000
++fork14 fork14
  
- llseek01 llseek01
- llseek02 llseek02
-+llseek03 llseek03
+ fpathconf01 fpathconf01
  
- lseek01 lseek01
- lseek02 lseek02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 91cf0f1..8e351a3 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -448,6 +448,7 @@
- /listen/listen01
- /llseek/llseek01
- /llseek/llseek02
-+/llseek/llseek03
- /lseek/lseek01
- /lseek/lseek02
- /lseek/lseek03
-diff --git a/testcases/kernel/syscalls/llseek/llseek03.c b/testcases/kernel/syscalls/llseek/llseek03.c
+diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
 new file mode 100644
-index 0000000..99d0c06
+index 0000000..65d124b
 --- /dev/null
-+++ b/testcases/kernel/syscalls/llseek/llseek03.c
-@@ -0,0 +1,214 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++++ b/testcases/kernel/syscalls/fork/fork14.c
+@@ -0,0 +1,118 @@
++/*********************************************************************
++ * Copyright (C) 2014  Red Hat, Inc.
 + *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
 + *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 + *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+/*
-+ * Description:
-+ * Verify that,
-+ *    1. llseek() succeeds to set the file pointer position to the current
-+ *  specified location, when 'whence' value is set to SEEK_CUR and the data
-+ *  read from the specified location should match the expected data.
-+ *    2. llseek() succeeds to set the file pointer position to the end of
-+ *  the file when 'whence' value set to SEEK_END and any attempts to read
-+ *  from that position should return 0.
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
 + *
-+ */
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ *
++ * This test is a reporducer for this patch:
++ *              https://lkml.org/lkml/2012/4/24/328
++ * Since vma length in dup_mmap is calculated and stored in a unsigned
++ * int, it will overflow when length of mmaped memory > 16 TB. When
++ * overflow occur, fork will  incorrectly succeed. The patch above
++ * fixed it.
++ ********************************************************************/
 +
-+#define _GNU_SOURCE
-+
++#include <sys/mman.h>
++#include <sys/wait.h>
++#include <stdio.h>
 +#include <unistd.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <utime.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/resource.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <inttypes.h>
-+
 +#include "test.h"
 +#include "usctest.h"
-+#include "safe_macros.h"
 +
-+#define TEST_FILE "testfile"
++char *TCID = "fork14";
++int TST_TOTAL = 1;
 +
-+static void setup(int ac, char **av);
++#define GB		(1024 * 1024 * 1024L)
++
++/* set mmap threshold to 16TB */
++#define LARGE		(16 * 1024)
++#define EXTENT		(16 * 1024 + 10)
++
++static void setup(void);
 +static void cleanup(void);
-+
-+static void setup_seekcur(void);
-+static void testfunc_seekcur(void);
-+static void cleanup_seekcur(void);
-+
-+static void setup_seekend(void);
-+static void testfunc_seekend(void);
-+static void cleanup_seekend(void);
-+
-+static struct test_case_t {
-+	int whence;
-+	void (*setup)(void);
-+	void (*testfunc)(void);
-+	void (*cleanup)(void);
-+} test_cases[] = {
-+	{ SEEK_CUR, setup_seekcur, testfunc_seekcur, cleanup_seekcur},
-+	{ SEEK_END, setup_seekend, testfunc_seekend, cleanup_seekend},
-+};
-+
-+char *TCID = "llseek03";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static char read_buf[BUFSIZ];
-+
-+static int fd;
-+static size_t file_size;
++static int  fork_test(void);
 +
 +int main(int ac, char **av)
 +{
-+	int lc;
-+	int i;
-+
-+	setup(ac, av);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+			if (test_cases[i].setup)
-+				test_cases[i].setup();
-+			if (test_cases[i].testfunc)
-+				test_cases[i].testfunc();
-+			if (test_cases[i].cleanup)
-+				test_cases[i].cleanup();
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(int ac, char **av)
-+{
++	int lc, ret;
 +	char *msg;
-+	char write_buf[BUFSIZ];
-+	struct stat stat_buf;
 +
 +	msg = parse_opts(ac, av, NULL, NULL);
 +	if (msg != NULL)
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++/*
++ * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
++ * Since a 32bit program can't mmap so many memory.
++ */
++#if __WORDSIZE == 32
++	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
++#endif
++	setup();
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
 +
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++		ret = fork_test();
++		if (ret == 0)
++			tst_resm(TPASS, "fork failed as expected.");
++	}
++	cleanup();
++	tst_exit();
++}
 +
-+	tst_tmpdir();
-+
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
 +	TEST_PAUSE;
-+
-+	if (strcpy(write_buf, "abcdefgh") != write_buf)
-+		tst_brkm(TBROK | TERRNO, NULL, "strcpy failed");
-+
-+	fd = SAFE_CREAT(cleanup, TEST_FILE, 0644);
-+
-+	SAFE_WRITE(cleanup, 1, fd, write_buf, strlen(write_buf));
-+
-+	if (fstat(fd, &stat_buf) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "fstat of %s failed", TEST_FILE);
-+	}
-+	file_size = stat_buf.st_size;
-+
-+	SAFE_CLOSE(cleanup, fd);
-+}
-+
-+static void setup_seekcur(void)
-+{
-+	/* reopen TEST_FILE and file offset will be 0 */
-+	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDONLY);
-+
-+	/* after read, file offset will be 4 */
-+	SAFE_READ(cleanup, 1, fd, read_buf, 4);
-+}
-+
-+static void testfunc_seekcur(void)
-+{
-+	TEST(lseek64(fd, (loff_t) 1, SEEK_CUR));
-+
-+	if (TEST_RETURN == (loff_t) -1) {
-+		tst_resm(TFAIL | TTERRNO, "llseek failed on %s ", TEST_FILE);
-+		return;
-+	}
-+
-+	if (TEST_RETURN != 5) {
-+		tst_resm(TFAIL, "llseek return a incorrect file offset");
-+		return;
-+	}
-+
-+	memset(read_buf, 0, sizeof(read_buf));
-+
-+	/* the expected characters are "fgh" */
-+	SAFE_READ(cleanup, 1, fd, read_buf, 3);
-+
-+	if (strcmp(read_buf, "fgh"))
-+		tst_resm(TFAIL, "test SEEK_SET for llseek failed");
-+	else
-+		tst_resm(TPASS, "test SEEK_SET for llseek success");
-+}
-+
-+static void cleanup_seekcur(void)
-+{
-+	SAFE_CLOSE(cleanup, fd);
-+}
-+
-+static void setup_seekend(void)
-+{
-+	/* reopen TEST_FILE and file offset will be 0 */
-+	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDONLY);
-+}
-+
-+static void testfunc_seekend(void)
-+{
-+	ssize_t nread;
-+
-+	TEST(lseek64(fd, (loff_t) 0, SEEK_END));
-+
-+	if (TEST_RETURN == (loff_t) -1) {
-+		tst_resm(TFAIL | TTERRNO, "llseek failed on %s ", TEST_FILE);
-+		return;
-+	}
-+
-+	if (TEST_RETURN != file_size) {
-+		tst_resm(TFAIL, "llseek return a incorrect file offset");
-+		return;
-+	}
-+
-+	memset(read_buf, 0, sizeof(read_buf));
-+
-+	nread = SAFE_READ(cleanup, 0, fd, read_buf, file_size);
-+	if (nread > 0)
-+		tst_resm(TFAIL, "test SEEK_END for llseek failed");
-+	else
-+		tst_resm(TPASS, "test SEEK_END for llseek success");
-+
-+}
-+static void cleanup_seekend(void)
-+{
-+	SAFE_CLOSE(cleanup, fd);
 +}
 +
 +static void cleanup(void)
 +{
 +	TEST_CLEANUP;
++}
 +
-+	tst_rmdir();
++static int fork_test(void)
++{
++	int i, ret = 0;
++	void *addr;
++
++	for (i = 0; i < EXTENT; i++) {
++		addr = mmap(NULL, (size_t) 1 * GB, PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++		if (addr == MAP_FAILED)
++			tst_brkm(TBROK|TERRNO, cleanup, "mmap");
++		switch (fork()) {
++		case -1:
++			break;
++		case 0:
++			exit(0);
++		default:
++			if (waitpid(-1, NULL, 0) == -1)
++				tst_brkm(TBROK|TERRNO,
++					cleanup, "waitpid");
++
++			if (i >= LARGE) {
++				tst_brkm(TFAIL, NULL,
++					"Fork succeeds incorrectly");
++				ret++;
++			}
++		}
++	}
++	return ret;
 +}
 -- 
-1.8.2.1
+1.8.5.3
 
 
 ------------------------------------------------------------------------------
