@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1W09cd-0006DV-7b
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 12:49:35 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1W09cc-0000cS-4m
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jan 2014 12:49:35 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 6 Jan 2014 07:49:28 -0500
-References: <1385374379-25949-1-git-send-email-markos.chandras@imgtec.com>
-	<201401051727.10564.vapier@gentoo.org>
-	<52CA9767.4040101@imgtec.com>
-In-Reply-To: <52CA9767.4040101@imgtec.com>
-MIME-Version: 1.0
-Message-Id: <201401060749.29230.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] ptrace: Fix build problems with glibc-2.18
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1W83Ei-0007mw-Ct
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jan 2014 07:37:32 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W83Ef-0001vb-G9
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jan 2014 07:37:30 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s0S7bJms023439
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 Jan 2014 15:37:19 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 28 Jan 2014 15:36:05 +0800
+Message-Id: <1390894565-463-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1390894565-463-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1390894565-463-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2] mknod/mknod07.c: add EROFS and ELOOP error value
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +27,212 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9118143452612215678=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Markos Chandras <Markos.Chandras@imgtec.com>
 
---===============9118143452612215678==
-Content-Type: multipart/signed; boundary="nextPart1501621.nDjXIO67zW";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runtest/ltplite                           |  2 +-
+ runtest/stress.part3                      |  2 +-
+ runtest/syscalls                          |  2 +-
+ testcases/kernel/syscalls/mknod/mknod07.c | 63 ++++++++++++++++++++++++++++++-
+ 4 files changed, 64 insertions(+), 5 deletions(-)
 
---nextPart1501621.nDjXIO67zW
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 78e8801..d88bf5e 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -429,7 +429,7 @@ mknod03 mknod03
+ mknod04 mknod04
+ mknod05 mknod05
+ mknod06 mknod06
+-mknod07 mknod07
++mknod07 mknod07 -D DEVICE -T DEVICE_FS_TYPE
+ mknod08 mknod08
+ mknod09 mknod09
+ 
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 3b73c0c..b3de12a 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -362,7 +362,7 @@ mknod03 mknod03
+ mknod04 mknod04
+ mknod05 mknod05
+ mknod06 mknod06
+-mknod07 mknod07
++mknod07 mknod07 -D DEVICE -T DEVICE_FS_TYPE
+ mknod08 mknod08
+ mknod09 mknod09
+ 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index d6c6c6b..246fcd2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -548,7 +548,7 @@ mknod03 mknod03
+ mknod04 mknod04
+ mknod05 mknod05
+ mknod06 mknod06
+-mknod07 mknod07
++mknod07 mknod07 -D DEVICE -T DEVICE_FS_TYPE
+ mknod08 mknod08
+ mknod09 mknod09
+ 
+diff --git a/testcases/kernel/syscalls/mknod/mknod07.c b/testcases/kernel/syscalls/mknod/mknod07.c
+index 09ff604..7e507b1 100644
+--- a/testcases/kernel/syscalls/mknod/mknod07.c
++++ b/testcases/kernel/syscalls/mknod/mknod07.c
+@@ -25,6 +25,10 @@
+  *	the caller is not super-user.
+  *   2) mknod(2) returns -1 and sets errno to EACCES if parent directory
+  *	does not allow  write  permission  to  the process.
++ *   3) mknod(2) returns -1 and sets errno to EROFS if pathname refers to
++ *      a file on a read-only file system.
++ *   4) mknod(2) returns -1 and sets errno to ELOOP if Too many symbolic
++ *      links were encountered in resolving pathname.
+  *
+  */
+ 
+@@ -37,6 +41,7 @@
+ #include <pwd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/mount.h>
+ 
+ #include "test.h"
+ #include "usctest.h"
+@@ -44,12 +49,27 @@
+ 
+ #define DIR_TEMP		"testdir_1"
+ #define DIR_TEMP_MODE		(S_IRUSR | S_IXUSR)
++#define DIR_MODE		(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
++				 S_IXGRP|S_IROTH|S_IXOTH)
++#define MNT_POINT		"mntpoint"
+ 
+ #define FIFO_MODE	(S_IFIFO | S_IRUSR | S_IRGRP | S_IROTH)
+ #define SOCKET_MODE	(S_IFSOCK | S_IRWXU | S_IRWXG | S_IRWXO)
+ #define CHR_MODE	(S_IFCHR | S_IRUSR | S_IWUSR)
+ #define BLK_MODE 	(S_IFBLK | S_IRUSR | S_IWUSR)
+ 
++static char *fstype = "ext2";
++static char *device;
++static int dflag;
++static int mount_flag;
++
++static char tst_eloop[PATH_MAX];
++
++static option_t options[] = {
++	{"T:", NULL, &fstype},
++	{"D:", &dflag, &device},
++	{NULL, NULL, NULL}
++};
+ 
+ static struct test_case_t {
+ 	char *pathname;
+@@ -60,15 +80,18 @@ static struct test_case_t {
+ 	{ "testdir_1/tnode_2", FIFO_MODE, EACCES },
+ 	{ "tnode_3", CHR_MODE, EPERM },
+ 	{ "tnode_4", BLK_MODE, EPERM },
++	{ "mntpoint/tnode_5", SOCKET_MODE, EROFS },
++	{ tst_eloop, FIFO_MODE, ELOOP },
+ };
+ 
+ char *TCID = "mknod07";
+ int TST_TOTAL = ARRAY_SIZE(test_cases);
+-static int exp_enos[] = { EPERM, EACCES, 0 };
++static int exp_enos[] = { EPERM, EACCES, EROFS, ELOOP, 0 };
+ 
+ static void setup(int ac, char **argv);
+ static void mknod_verify(int i);
+ static void cleanup(void);
++static void help(void);
+ 
+ int main(int ac, char **av)
+ {
+@@ -91,16 +114,25 @@ int main(int ac, char **av)
+ 
+ static void setup(int ac, char **av)
+ {
++	int i;
+ 	char *msg;
+ 	char nobody_uid[] = "nobody";
+ 	struct passwd *ltpuser;
+ 
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, help);
+ 	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
++	/* Check for mandatory option of the testcase */
++	if (!dflag) {
++		tst_brkm(TBROK, NULL, "you must specify the device "
++			 "used for mounting with -D option");
++	}
++
+ 	tst_require_root(NULL);
+ 
++	tst_mkfs(NULL, device, fstype, NULL);
++
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_EXP_ENOS(exp_enos);
+@@ -109,10 +141,25 @@ static void setup(int ac, char **av)
+ 
+ 	TEST_PAUSE;
+ 
++	/* mount a read-only file system for EROFS test */
++	SAFE_MKDIR(cleanup, MNT_POINT, DIR_MODE);
++	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
++
+ 	ltpuser = SAFE_GETPWNAM(cleanup, nobody_uid);
+ 	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+ 
+ 	SAFE_MKDIR(cleanup, DIR_TEMP, DIR_TEMP_MODE);
++
++	/* create this pathname for ELOOP test */
++	SAFE_MKDIR(cleanup, "test_eloop", DIR_MODE);
++	SAFE_SYMLINK(cleanup, "../test_eloop", "test_eloop/test_eloop");
++	strcpy(tst_eloop, ".");
++	for (i = 0; i < 50; i++)
++		strcat(tst_eloop, "/test_eloop");
+ }
+ 
+ static void mknod_verify(int i)
+@@ -140,5 +187,17 @@ static void cleanup(void)
+ 
+ 	SAFE_SETEUID(NULL, 0);
+ 
++	if (mount_flag && umount(MNT_POINT) < 0) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "umount device:%s failed", device);
++	}
++
+ 	tst_rmdir();
+ }
++
++static void help(void)
++{
++	printf("-T type   : specifies the type of filesystem to be mounted. "
++	       "Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
++}
+-- 
+1.8.2.1
 
-On Monday 06 January 2014 06:45:43 Markos Chandras wrote:
-> On 01/05/2014 10:27 PM, Mike Frysinger wrote:
-> > On Monday 25 November 2013 05:12:59 Markos Chandras wrote:
-> >> Since glibc-2.18, the struct ptrace_peeksiginfo_args is
-> >> also defined in sys/ptrace.h and conflicts with the definition
-> >> from the Linux kernel in linux/ptrace.h. We fix this by not
-> >> including the linux/ptrace.h header if the sys/ptrace.h header
-> >> defines the said struct. Fixes
-> >> https://github.com/linux-test-project/ltp/issues/6
-> >=20
-> > i'm somewhat inclined to undo this as it's really a bug in glibc-2.18
-> > that should be fixed in glibc-2.19:
-> > 	https://sourceware.org/ml/libc-alpha/2014-01/msg00078.html
->=20
-> Ehm that would break the build for people already using 2.18. Even if a
-> new 2.18 is released with the fix, people using the old one will still
-> face the same problem.
-
-i'm aware that would be the situation.  i'm fine with that.
-=2Dmike
-
---nextPart1501621.nDjXIO67zW
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSyqZZAAoJEEFjO5/oN/WBCmgP/2TBB2070WYC0rnP0vs7JssV
-atUJXgNKkl0yPo+t1Kr+4446Py04DXYV3ctcN75py6k1/SF3nbSkYfvZ9f/jFn8O
-kkLowyTxMltQhUCE4HV7WTGI3oYMkzRssNdwMFg4Mpnw3VeKdx0Csfrh/n/aQTq/
-RhfwQujF9mzP52VMPTpbAsFyUD/ZYJFtbQcsNcHABsYCy4WFLX3c4ugqHphyOp3l
-dLwBkKQuuxbzeVLlCZoDGsj786vdB+p7aBm0bjuy6aklEEMqzV8IXKdabByHwD5e
-zgA0p76rWMXkYoH6CGRA7BczueQxxLC5dyVkrM7LmBjfIJOVWI4OG3gIYitOGQy4
-fvvIOLOMuUvv56znYOu1Ve+0UYQUDEZ47n5wwxIl3yGjYb32PfnJYe0EN9YZ/QzD
-6HtfXRjS9KPodm55wV79hF0UdfaKFQWaSB+Axt0xD5THp/sSjAzNrQ1D/956LYO6
-zxr1utY0tFf5Pyi3KAmy2zmMv2tDV2lYuQZKjU8R3nzcUge+YmGsf6dPfdN+xsgi
-2wBBwmOacb8Q/OPcp65hlNLZvyTcyASGAC4rVyx1fcNWfmdLk8r3HCdItB2umYNQ
-X0IG2WeIRbWA9HPvfc5d0FrbMZ+o0kmi9kJ8jU6diva+QvK4DGK9yR8T54EHB1PM
-0EywwSp+I8MgaW+AIyHH
-=gArU
------END PGP SIGNATURE-----
-
---nextPart1501621.nDjXIO67zW--
-
-
---===============9118143452612215678==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
---===============9118143452612215678==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+WatchGuard Dimension instantly turns raw network data into actionable 
+security intelligence. It gives you real-time visual feedback on key
+security issues and trends.  Skip the complicated setup - simply import
+a virtual appliance and go from zero to informed in seconds.
+http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9118143452612215678==--
-
