@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1W7k7U-0000yk-Al
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jan 2014 11:12:48 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W7k7R-00040F-Ef
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jan 2014 11:12:48 +0000
-Date: Mon, 27 Jan 2014 06:12:38 -0500 (EST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1W8oyb-0001W1-69
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 10:36:05 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1W8oyY-0004MJ-PJ
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 10:36:04 +0000
+Date: Thu, 30 Jan 2014 05:35:56 -0500 (EST)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1927689120.7067888.1390821158238.JavaMail.root@redhat.com>
-In-Reply-To: <87mwihq3j6.fsf@redhat.com>
-References: <87mwihq3j6.fsf@redhat.com>
+Message-ID: <1421375175.1655489.1391078156014.JavaMail.root@redhat.com>
+In-Reply-To: <20140129224307.GL30688@tarantula.localdomain>
+References: <20140129224307.GL30688@tarantula.localdomain>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] syscalls/fork: add new case fork14
+Subject: Re: [LTP] [PATCH] fix glb_run type for disktest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,200 +27,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Madper Xie <cxie@redhat.com>
+To: Jeffrey Bastian <jbastian@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 
-
 ----- Original Message -----
-> From: "Madper Xie" <cxie@redhat.com>
+> From: "Jeffrey Bastian" <jbastian@redhat.com>
 > To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 27 January, 2014 8:37:01 AM
-> Subject: [LTP] [PATCH] syscalls/fork: add new case fork14
+> Sent: Wednesday, 29 January, 2014 11:43:07 PM
+> Subject: [LTP] [PATCH] fix glb_run type for disktest
 > 
-> This testcase is a reproducer for https://lkml.org/lkml/2012/4/24/328.
-> Modified from Siddhesh Poyarekar's testcase posted on above link.
-> Since vma length in dup_mmap is calculated and stored in a unsigned
-> int, which is insufficient and hence overflows for very large maps
-> (beyond 16TB). Once overflow occurred, the fork after mmaped memory >
-> 16TB will succeed incorrectly.
+> disktest/main.c and disktest/timer.c fail to compile on certain
+> platforms due to mismatch in types -- short vs long -- with a
+> gcc error "relocation truncated to fit"
 > 
->     This case will run following loop:
->              + mmap one (more) GB memory
->              + fork and check return value.
->     When mmaped more than 16 * 1024 GB, it will check if fork still fail.
->     Expected result: Fork failed even if mmaped memory > 16 * 1024 GB
+> Thanks to Kyle McMartin for the hint on how to fix the error!
 > ---
 
-Hi,
+Hi Jeff,
 
-you are missing Signed-off-by line in commit message.
-
-Also it would be nice to mention upstream commit id:
-  commit 7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
-  Author: Siddhesh Poyarekar <siddhesh.poyarekar@gmail.com>
-  Date:   Tue May 29 15:06:22 2012 -0700
-    mm/fork: fix overflow in vma length when copying mmap on clone
-
-This has been fixed starting with 3.5, do we want to run this testcase
-on older kernels as well?
+pushed with added "Signed-off-by" line.
 
 Regards,
 Jan
 
->  runtest/syscalls                        |   1 +
->  testcases/kernel/syscalls/fork/fork14.c | 118
->  ++++++++++++++++++++++++++++++++
->  2 files changed, 119 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fork/fork14.c
+>  testcases/kernel/io/disktest/main.c  | 2 +-
+>  testcases/kernel/io/disktest/timer.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index afa7976..4cf90e8 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -277,6 +277,7 @@ fork09 fork09
->  fork10 fork10
->  fork11 fork11
->  fork13 fork13 -i 1000000
-> +fork14 fork14
+> diff --git a/testcases/kernel/io/disktest/main.c
+> b/testcases/kernel/io/disktest/main.c
+> index 5e5b91a37a12..9484ec103601 100644
+> --- a/testcases/kernel/io/disktest/main.c
+> +++ b/testcases/kernel/io/disktest/main.c
+> @@ -290,7 +290,7 @@ void *threadedMain(void *vtest)
+>  	int i;
+>  	unsigned char *sharedMem;
 >  
->  fpathconf01 fpathconf01
+> -	extern unsigned long glb_run;
+> +	extern unsigned short glb_run;
+>  	extern int signal_action;
 >  
-> diff --git a/testcases/kernel/syscalls/fork/fork14.c
-> b/testcases/kernel/syscalls/fork/fork14.c
-> new file mode 100644
-> index 0000000..65d124b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fork/fork14.c
-> @@ -0,0 +1,118 @@
-> +/*********************************************************************
-> + * Copyright (C) 2014  Red Hat, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it
-> + * is free of the rightful claim of any third person regarding
-> + * infringement or the like.  Any license provided herein, whether
-> + * implied or otherwise, applies only to this software file.  Patent
-> + * licenses, if any, provided herein do not apply to combinations of
-> + * this program with other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + *
-> + * This test is a reporducer for this patch:
-> + *              https://lkml.org/lkml/2012/4/24/328
-> + * Since vma length in dup_mmap is calculated and stored in a unsigned
-> + * int, it will overflow when length of mmaped memory > 16 TB. When
-> + * overflow occur, fork will  incorrectly succeed. The patch above
-> + * fixed it.
-> + ********************************************************************/
-> +
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +char *TCID = "fork14";
-> +int TST_TOTAL = 1;
-> +
-> +#define GB		(1024 * 1024 * 1024L)
-> +
-> +/* set mmap threshold to 16TB */
-> +#define LARGE		(16 * 1024)
-> +#define EXTENT		(16 * 1024 + 10)
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +static int  fork_test(void);
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc, ret;
-> +	char *msg;
-> +
-> +	msg = parse_opts(ac, av, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +/*
-> + * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
-> + * Since a 32bit program can't mmap so many memory.
-> + */
-> +#if __WORDSIZE == 32
-> +	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
-> +#endif
-> +	setup();
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		ret = fork_test();
-> +		if (ret == 0)
-> +			tst_resm(TPASS, "fork failed as expected.");
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +}
-> +
-> +static int fork_test(void)
-> +{
-> +	int i, ret = 0;
-> +	void *addr;
-> +
-> +	for (i = 0; i < EXTENT; i++) {
-> +		addr = mmap(NULL, (size_t) 1 * GB, PROT_READ | PROT_WRITE,
-> +			MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +		if (addr == MAP_FAILED)
-> +			tst_brkm(TBROK|TERRNO, cleanup, "mmap");
-> +		switch (fork()) {
-> +		case -1:
-> +			break;
-> +		case 0:
-> +			exit(0);
-> +		default:
-> +			if (waitpid(-1, NULL, 0) == -1)
-> +				tst_brkm(TBROK|TERRNO,
-> +					cleanup, "waitpid");
-> +
-> +			if (i >= LARGE) {
-> +				tst_brkm(TFAIL, NULL,
-> +					"Fork succeeds incorrectly");
-> +				ret++;
-> +			}
-> +		}
-> +	}
-> +	return ret;
-> +}
+>  	test->args->pid = GETPID();
+> diff --git a/testcases/kernel/io/disktest/timer.c
+> b/testcases/kernel/io/disktest/timer.c
+> index 45ae09f17b38..f47fa7dde496 100644
+> --- a/testcases/kernel/io/disktest/timer.c
+> +++ b/testcases/kernel/io/disktest/timer.c
+> @@ -86,7 +86,7 @@ void *ChildTimer(void *vtest)
+>  	test_env_t *env = test->env;
+>  
+>  	extern int signal_action;
+> -	extern unsigned long glb_run;
+> +	extern unsigned short glb_run;
+>  
+>  #ifdef _DEBUG
+>  	PDBG3(DBUG, args, "In timer %lu, %d\n", time(NULL), env->bContinue);
 > --
-> 1.8.5.3
+> 1.8.3.1
 > 
 > 
 > ------------------------------------------------------------------------------
-> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-> Learn Why More Businesses Are Choosing CenturyLink Cloud For
-> Critical Workloads, Development Environments & Everything In Between.
-> Get a Quote or Start a Free Trial Today.
-> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+> WatchGuard Dimension instantly turns raw network data into actionable
+> security intelligence. It gives you real-time visual feedback on key
+> security issues and trends.  Skip the complicated setup - simply import
+> a virtual appliance and go from zero to informed in seconds.
+> http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
@@ -228,11 +100,11 @@ Jan
 > 
 
 ------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+WatchGuard Dimension instantly turns raw network data into actionable 
+security intelligence. It gives you real-time visual feedback on key
+security issues and trends.  Skip the complicated setup - simply import
+a virtual appliance and go from zero to informed in seconds.
+http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
