@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1VzwDE-0003qf-Ie
-	for ltp-list@lists.sourceforge.net; Sun, 05 Jan 2014 22:30:28 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VzwDD-0001lJ-J1
-	for ltp-list@lists.sourceforge.net; Sun, 05 Jan 2014 22:30:28 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 5 Jan 2014 17:30:24 -0500
-References: <1386937862-12687-1-git-send-email-markos.chandras@imgtec.com>
-	<201312160158.02840.vapier@gentoo.org>
-	<52B43BDD.7080304@imgtec.com>
-In-Reply-To: <52B43BDD.7080304@imgtec.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1W8toh-0003dZ-Pu
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jan 2014 15:46:11 +0000
+Date: Thu, 30 Jan 2014 16:45:36 +0100
+From: chrubis@suse.cz
+Message-ID: <20140130154536.GA21467@rei>
+References: <52A999D4.2040108@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <201401051730.25397.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH v2] utils: sctp: Fix build for prefixed
-	architectures
+Content-Disposition: inline
+In-Reply-To: <52A999D4.2040108@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 2/2] fs/ext4-new-features: add
+ ext4-new-features tests to default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,123 +22,355 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3306084574157214342=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Markos Chandras <Markos.Chandras@imgtec.com>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============3306084574157214342==
-Content-Type: multipart/signed; boundary="nextPart8538867.RamLi3LURd";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hi!
+> Remove run_ext4_test.sh which calls all feature tests directly.
+> Now we treat every feature as a signle test in fs_ext4 runtest file,
+> keep one entry per test.
+> Like that:
+> 	ext4-nsec-timestamps    ext4_nsec_timestamps_test.sh -D $LTP_BIG_DEV
+> 	ext4-uninit-groups      ext4_uninit_groups_test.sh -D $LTP_BIG_DEV
+> 
+> Configure script has been removed and ffsb has been moved to utils directory.
+> 
+> If want to run these tests, user should specify a big block device
+> when run runltp, which will be parsed in ext4_setup() defined in ext4_funcs.sh.
+> 
+> Currently enable ext4-nsec-timestamps, ext4-persist-prealloc,
+> ext4-subdir-limit, ext4-uninit-groups test.
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  runtest/fs_ext4                                    |   5 +-
+>  scenario_groups/default                            |   1 +
+>  .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |   5 +-
+>  .../ext4-inode-version/ext4_inode_version_test.sh  |   5 +-
+>  .../ext4-journal-checksum/ext4_journal_checksum.sh |   5 +-
+>  .../ext4_nsec_timestamps_test.sh                   |   4 +-
+>  .../ext4-online-defrag/ext4_online_defrag_test.sh  |   5 +-
+>  .../ext4_persist_prealloc_test.sh                  |   5 +-
+>  .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |   4 +-
+>  .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |   4 +-
+>  .../kernel/fs/ext4-new-features/ext4_funcs.sh      |  60 +++++--
+>  .../kernel/fs/ext4-new-features/run_ext4_test.sh   | 179 ---------------------
+>  12 files changed, 59 insertions(+), 223 deletions(-)
+>  delete mode 100755 testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
+> 
+> diff --git a/runtest/fs_ext4 b/runtest/fs_ext4
+> index c65ebab..2206b39 100644
+> --- a/runtest/fs_ext4
+> +++ b/runtest/fs_ext4
+> @@ -1 +1,4 @@
+> -ext4_new_feature_test	run_ext4_test.sh
+> +ext4-nsec-timestamps	ext4_nsec_timestamps_test.sh -D $LTP_BIG_DEV
+> +ext4-uninit-groups	ext4_uninit_groups_test.sh -D $LTP_BIG_DEV
+> +ext4-persist-prealloc	ext4_persist_prealloc_test.sh -D $LTP_BIG_DEV
+> +ext4-subdir-limit	ext4_subdir_limit_test.sh -D $LTP_BIG_DEV
+> diff --git a/scenario_groups/default b/scenario_groups/default
+> index 9eca8ad..893909c 100644
+> --- a/scenario_groups/default
+> +++ b/scenario_groups/default
+> @@ -25,3 +25,4 @@ hugetlb
+>  commands
+>  hyperthreading
+>  kernel_misc
+> +fs_ext4
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> index dfa34c4..e40a1d1 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> @@ -28,11 +28,8 @@ export TCID="ext4-delalloc-mballoc"
+>  export TST_TOTAL=17
+>  export TST_COUNT=1
+>  
+> -# $1: the test config
+> -
+>  export TEST_DIR=$PWD
+>  
+> -read_config $1
+>  
+>  # Case 17: mount ext4 partition to ext3
+>  ext4_test_remount()
+> @@ -124,7 +121,7 @@ ext4_test_delalloc_mballoc()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  DELALLOC=( "delalloc" "nodelalloc" )
+>  DIRECT_IO=( 0 1 )
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+> index 998c3e4..f558571 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+> @@ -33,9 +33,6 @@ export TST_COUNT=1
+>  
+>  export TEST_DIR=$PWD
+>  
+> -# $1: the test config
+> -read_config $1
+> -
+>  # Test that inode version is not 32 bits with 128 inode size
+>  ext4_test_128_inode_version()
+>  {
+> @@ -145,7 +142,7 @@ test_inode_version()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  RET=0
+>  
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> index 1fd9bba..6a011b6 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> @@ -31,11 +31,8 @@ export TCID="ext4-journal-checksum"
+>  export TST_TOTAL=36
+>  export TST_COUNT=1
+>  
+> -# $1: the test config
+> -
+>  export TEST_DIR=$PWD
+>  
+> -read_config $1
+>  
+>  # Use ffsb to test journal checksumming
+>  # $1: journal mode: writeback, ordered, journal
+> @@ -100,7 +97,7 @@ ext4_test_journal_checksum()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  DATA=( "writeback" "ordered" "journal" )
+>  COMMIT=( 1 100 )
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> index c91c1af..710bc00 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> @@ -31,8 +31,6 @@ export TCID="ext4-nsec-timestamps"
+>  export TST_TOTAL=2
+>  export TST_COUNT=1
+>  
+> -# $1: the test config
+> -read_config $1
+>  
+>  TEST_DIR=$PWD
+>  
+> @@ -173,7 +171,7 @@ ext4_test_nsec_timestamps()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  RET=0
+>  
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+> index 2aa3e5b..9845404 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+> @@ -30,9 +30,6 @@ export TST_COUNT=1
+>  
+>  export TEST_DIR=$PWD
+>  
+> -# $1: the test config
+> -read_config $1
+> -
+>  # How to age filesystem
+>  EMPTY=1
+>  SMALL=2
+> @@ -173,7 +170,7 @@ ext4_test_online_defrag()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  rm -f $LTPROOT/output/ext4_online_defrag_result.txt
+>  
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> index e41b104..a83a84f 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> @@ -33,9 +33,6 @@ export TST_COUNT=1
+>  
+>  export TEST_DIR=$PWD
+>  
+> -# $1: the test config
+> -read_config $1
+> -
+>  # The test path of fallocate
+>  export TMPDIR=$PWD/mnt_point/
+>  
+> @@ -91,7 +88,7 @@ ext4_test_persist_prealloc()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  RET=0
+>  
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+> index fdb6a08..e6ff372 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+> @@ -31,8 +31,6 @@ export TCID="ext4-subdir-limit"
+>  export TST_TOTAL=10
+>  export TST_COUNT=1
+>  
+> -# $1: the test config
+> -read_config $1
+>  
+>  TEST_DIR=$PWD
+>  SHORT_DIR=1
+> @@ -138,7 +136,7 @@ ext4_run_case()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  DIR_LEN=( $SHORT_DIR $LONG_DIR )
+>  PARENT_DIR=( "mnt_point" "mnt_point/sub" )
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+> index e6d49e1..2f4911c 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+> @@ -29,8 +29,6 @@ export TST_TOTAL=24
+>  export TST_COUNT=1
+>  
+>  export TEST_DIR=$PWD
+> -# $1: the test config
+> -read_config $1
+>  
+>  # How to age filesystem
+>  EMPTY=1
+> @@ -128,7 +126,7 @@ ext4_test_uninit_groups()
+>  }
+>  
+>  # main
+> -ext4_setup
+> +ext4_setup "$@"
+>  
+>  ORLOV=( "orlov" "oldalloc" )
+>  DELALLOC=( "delalloc" "nodelalloc" )
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+> index b469bab..ddc67a2 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+> @@ -25,23 +25,55 @@
+>  
+>  ext4_setup()
+>  {
+> +	tst_kvercmp 2 6 31
+> +	if [ $? -eq 0 ]; then
+> +		tst_brkm TCONF ignored "kernel is below 2.6.31"
+> +		exit 0
+> +	fi
+> +
+> +	if [ "$USER" != root ]; then
+> +		tst_brkm TCONF ignored "Test must be run as root"
+> +		exit 0
+> +	fi
 
---nextPart8538867.RamLi3LURd
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+This should be:
 
-On Friday 20 December 2013 07:45:17 Markos Chandras wrote:
-> On 12/16/2013 06:58 AM, Mike Frysinger wrote:
-> > On Friday 13 December 2013 07:31:02 Markos Chandras wrote:
-> >> Commit 6f22494d19b605ded308dc0fa713e91cb873f44a
-> >> "Move sctp to utils and bump it to 1.0.15"
-> >>=20
-> >> introduced a build failure for the prefixed architectures.
-> >> We need to take into consideration the __USER_LABEL_PREFIX__
-> >> for architectures that define it when creating symbol aliases.
-> >>=20
-> >> The following upstream patch (0600c8968cc2dea04cbf13ec739216e2939d08fe)
-> >> fixes the build for the Meta(metag) architecture
-> >>=20
-> >> [...]
-> >> utils/sctp/func_tests/test_connectx.c:151: undefined reference to
-> >> `_sctp_connectx' utils/sctp/func_tests/test_connectx.c:163: undefined
-> >> reference to `_sctp_connectx' [...]
-> >>=20
-> >> Build tested on x86_64 and metag.
-> >=20
-> > we really should fix this instead by not using any symbol renaming.=20
-> > symbol versions might make sense when dealing with a released project
-> > and a stable shared library API, but it makes no sense in LTP.
-> >=20
-> > perhaps better to have a compile time knob to disable it all ?
-> > -mike
->=20
-> Well whatever works best. Personally I would avoid deviating from
-> third-party code unless it's really necessary.
+if [ $(id -u) != 0 ]; then
 
-sure, but i'm not sure this change covers everything
+or even better we can create a shell function tst_require_root and put
+it some common shell library. There is allready testcases/lib/cmdlib.sh
+but it's used only in small part of the tescases.
 
-there's still:
-extern int sctp_connectx_orig (int)
-    __attribute ((alias ("__sctp_connectx")));
+> +	EXT4_SUPPORT1=`grep -w ext4 /proc/filesystems | cut -f2`
+> +	EXT4_SUPPORT2=`grep -w ext4 /proc/modules | cut -f1`
+> +	if [ "$EXT4_SUPPORT1" != "ext4" ] && [ "$EXT4_SUPPORT2" != "ext4" ];then
+> +		tst_brkm TCONF ignored "Ext4 is not supported"
+> +		exit 0
+> +	fi
+> +
+> +	if [ ! -f "ffsb" ]; then
+> +		tst_brkm TCONF ignored "ffsb does not exist. Please " \
+> +			"check whether ffsb was configed and compiled"
+> +		exit 0
+> +	fi
 
-i vaguely recall gcc doesn't add symbol prefixes to the alias attribute.  t=
-he=20
-documentation implies that too:
+This should rather check that ffsb is in $PATH. There is exists()
+function in the cmdlib.sh allready, what about using it?
 
-The alias attribute causes the declaration to be emitted as an alias for=20
-another symbol, which must be specified. For instance,
-          void __f () { /* Do something. */; }
-          void f () __attribute__ ((weak, alias ("__f")));
-defines =E2=80=98f=E2=80=99 to be a weak alias for =E2=80=98__f=E2=80=99. I=
-n C++, the mangled name for the=20
-target must be used. It is an error if =E2=80=98__f=E2=80=99 is not defined=
- in the same=20
-translation unit.
+> +	while getopts D:T: arg
+> +	do
+> +		case $arg in
+> +		D)
+> +			export EXT4_DEV=$OPTARG
+> +			;;
+> +		T)
+> +			export FILE_SYSTEM_TYPE=$OPTARG
+> +			;;
+> +		\?)
+> +			echo "not supproted option"
+> +			;;
+> +		esac
+> +	done
+> +
+> +	# "d" indicates a invalid block device(read runltp)
+> +	if [ "$EXT4_DEV" = "d" ];then
+> +		tst_brkm TCONF ignored "tests need a big block device(5G-10G)"
+> +		exit 0
+> +	fi
+> +
+>  	mkdir mnt_point
+>  }
 
-since this still needs fixing upstream, might be a good time to also includ=
-e a=20
-knob to turn this crap off entirely ? :)
-=2Dmike
+Hmm, I would rather see a test for LTP_BIG_DEV being empty. There is no
+need to pass the device via parameters once we have exported it as shell
+variable. So we can set it empty in the runltp (if not passed by user)
+and use it as:
 
---nextPart8538867.RamLi3LURd
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+if [ -z "$LTP_BIG_DEV" ]; then
+...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+>  ext4_cleanup()
+>  {
+> -	rmdir mnt_point
+> -}
+> -
+> -# $1: the config file
+> -read_config()
+> -{
+> -	while read config
+> -	do
+> -		echo $config | grep -q -E ".*=.*"
+> -		if [ $? -eq 0 ]; then
+> -			export $config
+> -		fi
+> -	done < $1
+> +	rm -rf mnt_point
+>  }
 
-iQIcBAABAgAGBQJSyd0BAAoJEEFjO5/oN/WBAeoQAIglppaUlx0T1XpCjw2pRvwc
-mZeH9SQSqL295xsdwIdnKAzjVAYCMe7c/YRDy4NH/5bpqAyXSR4yFe/ArdCR2tKS
-6ZLE6vALE9iQ5gYGMfOoAnY0Id0Nfq8G2fCgIEORApQs0vdK/vKywXVHTwZMeoM+
-n0wgUOKJ7oN2OD11KJ5cH31z+yhobh/p7DoEvRSlrItRZwNFjiBF7i3w4URV6SFB
-0ox1fQ+mXGcBZigJ1xWHXRAv3wfgrbuj52LBFgZa13f85WH6Ubi9eo+FA1ju4Q2q
-2xbc+gAKuk5k2oa2NKCCeyHgjimqjnTO0oEAznyOSY5j+F1chRNydPzKLi9x9U+s
-frSYVCV0bgjkPJj+uKEGcZpmuJ3dWDcjvvLXphQlYu917t+Y0AxWjbliutzn+099
-1Amd+AmOZfvJCARHyph7vdp55fKET8yJt7QRPfowT1VBzW4GXbo572xQhwvbqK7+
-EytkyHvE21dfstHYXDFXMbpJTETb8Oj3eQrhvKiTEO7dZWuw0c33xPRxb0FTtBA9
-cyzFFgllqh2jniccsjRzoc5O2dr8B8bRlv5joHQbU5l5cbwVc6WGbZzYz9HG6wud
-5TKRXYXjqIKmK4eD/PA9ZjP277besbFgwXtI3Z2QSRNdNQ8Hqx/q9rtv79ypGHa+
-wYPCMZOkJdSYTksuHxJN
-=CX8H
------END PGP SIGNATURE-----
+The rest looks good.
 
---nextPart8538867.RamLi3LURd--
-
-
---===============3306084574157214342==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
---===============3306084574157214342==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+WatchGuard Dimension instantly turns raw network data into actionable 
+security intelligence. It gives you real-time visual feedback on key
+security issues and trends.  Skip the complicated setup - simply import
+a virtual appliance and go from zero to informed in seconds.
+http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3306084574157214342==--
-
