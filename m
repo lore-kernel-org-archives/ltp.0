@@ -1,30 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1WB3FK-0002c7-L7
-	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 14:14:34 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WB3FI-0004iV-Hh
-	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 14:14:34 +0000
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s15EEQ27023245
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 09:14:26 -0500
-Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id s15EEP6g018961
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 09:14:26 -0500
-Message-ID: <52F24741.50904@redhat.com>
-Date: Wed, 05 Feb 2014 15:14:25 +0100
-From: Jiri Jaburek <jjaburek@redhat.com>
+	(envelope-from <metan@suse.de>) id 1WAKWs-0007ma-Dk
+	for ltp-list@lists.sourceforge.net; Mon, 03 Feb 2014 14:29:42 +0000
+Date: Mon, 3 Feb 2014 15:29:10 +0100
+From: chrubis@suse.cz
+Message-ID: <20140203142910.GA3996@rei>
+References: <1390298574-2966-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1386071053-2350-1-git-send-email-jjaburek@redhat.com>
-In-Reply-To: <1386071053-2350-1-git-send-email-jjaburek@redhat.com>
-Subject: Re: [LTP] [PATCH] cmdlib/end_testcase: don't call tst_cleanup,
- exit on pass
+Content-Disposition: inline
+In-Reply-To: <1390298574-2966-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 1/3] fcntl/fcntl29.c: add F_DUPFD_CLOEXEC test
+ for fcntl(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,13 +25,219 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Could somebody please review this? .. It's still valid.
+Hi!
+> create a new case to test F_DUPFD_CLOEXEC for fcntl(2)
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  runtest/ltplite                           |   1 +
+>  runtest/stress.part3                      |   1 +
+>  runtest/syscalls                          |   2 +
+>  testcases/kernel/syscalls/.gitignore      |   2 +
+>  testcases/kernel/syscalls/fcntl/fcntl29.c | 124 ++++++++++++++++++++++++++++++
+>  5 files changed, 130 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fcntl/fcntl29.c
+> 
+> diff --git a/runtest/ltplite b/runtest/ltplite
+> index 4b5300d..196e2a2 100644
+> --- a/runtest/ltplite
+> +++ b/runtest/ltplite
+> @@ -223,6 +223,7 @@ fcntl26 fcntl26
+>  # The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
+>  # fcntl27 fcntl27
+>  # fcntl28 fcntl28
+> +fcntl29 fcntl29
+>  
+>  fdatasync01 fdatasync01
+>  fdatasync02 fdatasync02
+> diff --git a/runtest/stress.part3 b/runtest/stress.part3
+> index bb4807c..946f4ea 100644
+> --- a/runtest/stress.part3
+> +++ b/runtest/stress.part3
+> @@ -162,6 +162,7 @@ fcntl26 fcntl26
+>  # The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
+>  # fcntl27 fcntl27
+>  # fcntl28 fcntl28
+> +fcntl29 fcntl29
+>  
+>  fdatasync01 fdatasync01
+>  fdatasync02 fdatasync02
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index afa7976..b45faab 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -252,6 +252,8 @@ fcntl27 fcntl27
+>  fcntl27_64 fcntl27_64
+>  fcntl28 fcntl28
+>  fcntl28_64 fcntl28_64
+> +fcntl29 fcntl29
+> +fcntl29_64 fcntl29_64
+>  
+>  fdatasync01 fdatasync01
+>  fdatasync02 fdatasync02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 1caf8e3..1ab13d8 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -214,6 +214,8 @@
+>  /fcntl/fcntl27_64
+>  /fcntl/fcntl28
+>  /fcntl/fcntl28_64
+> +/fcntl/fcntl29
+> +/fcntl/fcntl29_64
+>  /fdatasync/fdatasync01
+>  /fdatasync/fdatasync02
+>  /flock/flock01
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
+> new file mode 100644
+> index 0000000..d45296d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
+> @@ -0,0 +1,124 @@
+> +/*
+> + * Copyright (c) 2014 Fujitsu Ltd.
+> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +
+> +/*
+> + * Description:
+> + * Verify that,
+> + *   Basic test for fcntl(2) using F_DUPFD_CLOEXEC argument.
+> + */
+> +
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <string.h>
+> +#include <signal.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <pwd.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "safe_macros.h"
+> +
+> +char *TCID = "fcntl29";
+> +int TST_TOTAL = 1;
+> +
+> +#if defined(F_DUPFD_CLOEXEC)
 
-Thanks,
-Jiri
+You added a runtime test but the ifdef and the message if not found is
+still wrong.
 
+What I would do is to is to add F_DUPFD_CLOEXEC to the
+include/lapi/fcntl.h (in similar manner to the O_CLOEXEC) include it
+here and remove the ifdefs completly.
+
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +static int test_fd;
+> +static int dup_fd;
+> +
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	char *msg;
+> +
+> +	msg = parse_opts(ac, av, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		TEST(fcntl(test_fd, F_DUPFD_CLOEXEC, dup_fd));
+
+It would be more clear to explicitly pass zero instead of the dup_fd
+here.
+
+> +		if (TEST_RETURN < 0) {
+> +			tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
+> +				 "test F_DUPFD_CLOEXEC failed");
+> +		}
+> +		dup_fd = TEST_RETURN;
+> +
+> +		TEST(fcntl(dup_fd, F_GETFD));
+> +		if (TEST_RETURN < 0) {
+> +			tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
+> +				 "test F_GETFD failed");
+			close dup_fd here?
+> +		}
+> +
+> +		if (TEST_RETURN & FD_CLOEXEC) {
+> +			tst_resm(TPASS, "fcntl test "
+> +				 "F_DUPFD_CLOEXEC success");
+> +		} else {
+> +			tst_resm(TFAIL, "fcntl test "
+> +				 "F_DUPFD_CLOEXEC fail");
+> +		}
+> +
+> +		SAFE_CLOSE(cleanup, dup_fd);
+> +		dup_fd = 0;
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if ((tst_kvercmp(2, 6, 24)) < 0) {
+> +		tst_brkm(TCONF, NULL, "This test can only run on kernels"
+> +			 "that are 2.6.24 and higher");
+> +	}
+> +
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +
+> +	tst_tmpdir();
+> +
+> +	TEST_PAUSE;
+> +
+> +	test_fd = SAFE_CREAT(cleanup, "testfile", 0644);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +
+> +	if (test_fd > 0)
+> +		SAFE_CLOSE(NULL, test_fd);
+> +
+> +	tst_rmdir();
+> +}
+> +#else
+> +
+> +int main(void)
+> +{
+> +	tst_brkm(TCONF, NULL, "This test can only run on kernels"
+> +		 "that are 2.6.24 and higher");
+> +}
+> +#endif
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
