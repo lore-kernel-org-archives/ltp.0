@@ -1,19 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WB1Hz-0003WY-SO
-	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 12:09:11 +0000
-Date: Wed, 5 Feb 2014 13:08:35 +0100
-From: chrubis@suse.cz
-Message-ID: <20140205120835.GB24916@rei.suse.cz>
-References: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1387812348-23017-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1387812348-23017-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jbastian@redhat.com>) id 1WAoiw-00083M-5J
+	for ltp-list@lists.sourceforge.net; Tue, 04 Feb 2014 22:44:10 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WAoiu-0002fr-TQ
+	for ltp-list@lists.sourceforge.net; Tue, 04 Feb 2014 22:44:10 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s14Mi2X3004502
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Feb 2014 17:44:02 -0500
+Received: from tarantula.localdomain (ovpn-113-35.phx2.redhat.com
+	[10.3.113.35])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s14Mi0lV018665
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Feb 2014 17:44:02 -0500
+Date: Tue, 4 Feb 2014 16:44:00 -0600
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20140204224400.GA8297@tarantula.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1387812348-23017-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 3/3] rpc01: fix compile-time warnings
+Subject: [LTP] [PATCH] use inotify_init1(0) for inotify tests on aarch64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +37,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> And also removed host_address logic from rpc_server (since it is not
-> used there anyway).
+aarch64 (and possibly other new architectures) does not implement
+the __ARCH_WANT_SYSCALL_NO_FLAGS syscalls, so use inotify_init1(0)
+instead of inotify_init(void)
 
-I've removed a few useless (char *) cast (mostly pointers from malloc())
-and changed (char *)0 to NULL and commited, thanks.
+Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
+---
+ testcases/kernel/syscalls/inotify/inotify.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/testcases/kernel/syscalls/inotify/inotify.h b/testcases/kernel/syscalls/inotify/inotify.h
+index e396947c4f98..68fe3b5f6426 100644
+--- a/testcases/kernel/syscalls/inotify/inotify.h
++++ b/testcases/kernel/syscalls/inotify/inotify.h
+@@ -30,8 +30,13 @@
+ 
+ /* inotify(7) wrappers */
+ 
++#if __NR_inotify_init != __LTP__NR_INVALID_SYSCALL
+ #define	myinotify_init() \
+ 	syscall(__NR_inotify_init)
++#else
++#define	myinotify_init() \
++	syscall(__NR_inotify_init1, 0)
++#endif
+ 
+ #define	myinotify_add_watch(fd, pathname, mask)	\
+ 	syscall(__NR_inotify_add_watch, fd, pathname, mask)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
