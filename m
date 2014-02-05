@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WGUC5-0005nh-66
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 14:01:41 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 64205AC86
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 20 Feb 2014 14:01:34 +0000 (UTC)
-Date: Thu, 20 Feb 2014 15:01:28 +0100
-From: chrubis@suse.cz
-Message-ID: <20140220140128.GA25930@rei>
-References: <1392642413-11071-1-git-send-email-jack@suse.cz>
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WAzxo-0001h1-0G
+	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 10:44:16 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WAzxn-0002TL-62
+	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 10:44:15 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s15Ai8Wp014732
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 10:44:09 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s15Ai7Rw021626
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 10:44:08 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s15Ai7DE020409
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 10:44:07 GMT
+Message-ID: <52F215F4.4000301@oracle.com>
+Date: Wed, 05 Feb 2014 14:44:04 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1392642413-11071-1-git-send-email-jack@suse.cz>
-Subject: Re: [LTP] [PATCH] syscalls/inotify: Extend tests to verify cookie
-	value
+References: <1387875605-801-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1387875605-801-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH] runtest/stress.part1: fix cmdline for nfsstress
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,61 +42,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> +				if (event->mask == IN_MOVED_FROM) {
-> +					if (event->cookie == 0)
-> +						goto cookie_fail;
-> +					stored_cookie = event->cookie;
-> +				} else if (event->mask == IN_MOVED_TO) {
-> +					if (event->cookie != stored_cookie)
-> +						goto cookie_fail;
-> +					stored_cookie = UINT_MAX;
-> +				} else {
-> +					if (event->cookie != 0)
-> +						goto cookie_fail;
-> +				}
->  				tst_resm(TPASS,
->  					 "get event: wd=%d mask=%x"
->  					 " cookie=%u len=%u name=\"%s\"",
->  					 event->wd, event->mask, event->cookie,
->  					 event->len, event->name);
-> -
-> +				goto next;
-> +cookie_fail:
-> +				tst_resm(TFAIL,
-> +					 "get event: wd=%d mask=%x cookie=%u "
-> +					 "(wrong) len=%u name=\"%s\"",
-> +					 event->wd, event->mask,
-> +					 event->cookie, event->len,
-> +					 event->name);
->  			} else {
->  				tst_resm(TFAIL, "get event: wd=%d mask=%x "
->  					 "(expected %x) cookie=%u len=%u "
-> @@ -241,6 +261,7 @@ int main(int ac, char **av)
->  					 strcmp(event_set[test_num].name,
->  						event->name));
->  			}
-> +next:
 
-Hmm, shouldn't we rather add a variable named failed, initialize it to
-zero, set it to non-zero values ono failure and branch tst_resm() on it?
+On 12/24/2013 01:00 PM, Stanislav Kholmanskikh wrote:
+> TCbin is exported with an incorrect path therefore nfsstress
+> test cases fail.
+>
+> Fixed with the correct path.
+>
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
 
-The goto statements are getting a bit out of hand in this part...
+Hello!
 
-Otherwise it's fine.
+Could anybody help to review this?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks.
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
 Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
