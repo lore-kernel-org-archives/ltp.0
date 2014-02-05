@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1WDtAg-0003db-0x
-	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 10:05:30 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WDtAf-0001wv-8e
-	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 10:05:29 +0000
-Message-ID: <52FC98EC.80406@oracle.com>
-Date: Thu, 13 Feb 2014 14:05:32 +0400
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WB1o8-0007E8-4W
+	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 12:42:24 +0000
+Date: Wed, 5 Feb 2014 13:41:52 +0100
+From: chrubis@suse.cz
+Message-ID: <20140205124152.GA25594@rei.suse.cz>
+References: <1386935787.1665.2.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <1392112090-13853-1-git-send-email-alexey.kodanev@oracle.com>
-	<1392112090-13853-3-git-send-email-alexey.kodanev@oracle.com>
-	<5757763.zAWEHsmlGc@vapier>
-In-Reply-To: <5757763.zAWEHsmlGc@vapier>
-Subject: Re: [LTP] [PATCH 4/4] lib: add tst_res_r.c
+Content-Disposition: inline
+In-Reply-To: <1386935787.1665.2.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH 2/2] getpeername/getpeername01.c: add EINVAL error
+ number test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,34 +25,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-On 02/13/2014 12:47 PM, Mike Frysinger wrote:
-> On Tuesday, February 11, 2014 13:48:10 Alexey Kodanev wrote:
->> +static int get_tst_count()
-> random note: never never never use () with functions.  always always always
-> use (void).  i'm guessing you're not aware, but what you've written here may
-> be called (warning free!) like so:
-> 	get_tst_count(1, 2, 3);
->
-> yes, even with -W -Wall -Wextra.  please stamp this horrible habit out of your
-> code.
-Thank you for explanation!
-There is a trick to try g++ to compile the code, it will throw an error 
-on that and stops compilation.
+> Add EINVAL error number test.
+> 
+> Signed-off-by: Zuo Faqi <zuofq.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/getpeername/getpeername01.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getpeername/getpeername01.c b/testcases/kernel/syscalls/getpeername/getpeername01.c
+> index 7aa72cb..7ed90f2 100644
+> --- a/testcases/kernel/syscalls/getpeername/getpeername01.c
+> +++ b/testcases/kernel/syscalls/getpeername/getpeername01.c
+> @@ -39,6 +39,7 @@
+>  static struct sockaddr_in server_addr;
+>  static struct sockaddr_in fsin1;
+>  static socklen_t sinlen;
+> +static socklen_t invalid_sinlen;
+>  static int sv[2];
+>  
+>  static void setup(void);
+> @@ -72,12 +73,14 @@ struct test_case_t {
+>  	 cleanup4, "EFAULT"},
+>  	{-1, (struct sockaddr *)&fsin1, (socklen_t *)1, -1, EFAULT, setup4,
+>  	 cleanup4, "EFAULT"},
+> +	{-1, (struct sockaddr *)&fsin1, &invalid_sinlen, -1, EINVAL, setup4,
+> +	 cleanup4, "EINVAL"},
+>  #endif
+>  };
 
-Best regards,
-Alexey
+I've moved the new test before the UCLINUX ifdef because the test should
+work on uClinux.
 
+Pushed both patches, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android apps run on BlackBerry 10
-Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-Now with support for Jelly Bean, Bluetooth, Mapview and more.
-Get your Android app in front of a whole new audience.  Start now.
-http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
