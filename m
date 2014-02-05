@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WB1Jg-0005he-Q4
-	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 12:10:56 +0000
-Date: Wed, 5 Feb 2014 13:10:24 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WB1Hz-0003WY-SO
+	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 12:09:11 +0000
+Date: Wed, 5 Feb 2014 13:08:35 +0100
 From: chrubis@suse.cz
-Message-ID: <20140205121024.GC24916@rei.suse.cz>
+Message-ID: <20140205120835.GB24916@rei.suse.cz>
 References: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<52F21663.7040704@oracle.com>
+	<1387812348-23017-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1387812348-23017-3-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <52F21663.7040704@oracle.com>
-Subject: Re: [LTP] [PATCH 1/3] runtest/stress.part3: fix cmd for the rpc01
- test case
+In-Reply-To: <1387812348-23017-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 3/3] rpc01: fix compile-time warnings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,11 +30,11 @@ To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> 
-> Could anybody review this series of patches?
+> And also removed host_address logic from rpc_server (since it is not
+> used there anyway).
 
-Pushed, (with additional cleanup for the second one), sorry for the
-delay.
+I've removed a few useless (char *) cast (mostly pointers from malloc())
+and changed (char *)0 to NULL and commited, thanks.
 
 -- 
 Cyril Hrubis
