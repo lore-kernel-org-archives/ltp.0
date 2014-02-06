@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1WEFId-0000zB-5o
-	for ltp-list@lists.sourceforge.net; Fri, 14 Feb 2014 09:43:11 +0000
-Received: from e06smtp14.uk.ibm.com ([195.75.94.110])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WEFIb-0001Ps-44
-	for ltp-list@lists.sourceforge.net; Fri, 14 Feb 2014 09:43:11 +0000
-Received: from /spool/local
-	by e06smtp14.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
-	Fri, 14 Feb 2014 09:43:02 -0000
-Message-ID: <52FDE52A.4070002@linux.vnet.ibm.com>
-Date: Fri, 14 Feb 2014 10:43:06 +0100
-From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WBOFz-0006eb-Tg
+	for ltp-list@lists.sourceforge.net; Thu, 06 Feb 2014 12:40:39 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WBOFy-0004mp-JZ
+	for ltp-list@lists.sourceforge.net; Thu, 06 Feb 2014 12:40:39 +0000
+Date: Thu, 6 Feb 2014 07:40:32 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <136022909.5430461.1391690432110.JavaMail.root@redhat.com>
+In-Reply-To: <20140204224400.GA8297@tarantula.localdomain>
+References: <20140204224400.GA8297@tarantula.localdomain>
 MIME-Version: 1.0
-References: <CA+G9fYuT4TSs=3j6K9zztsTgFNVp2YG6JT-2Q_L==1P5G+SBew@mail.gmail.com>
-In-Reply-To: <CA+G9fYuT4TSs=3j6K9zztsTgFNVp2YG6JT-2Q_L==1P5G+SBew@mail.gmail.com>
-Subject: Re: [LTP] How to get the Linux kernel coverage data on ARM arch
- when I run LTP test?
+Subject: Re: [LTP] [PATCH] use inotify_init1(0) for inotify tests on aarch64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,47 +27,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Naresh Kamboju <naresh.kamboju@linaro.org>, Arnd Bergmann <arnd.bergmann@linaro.org>, fhrbata@redhat.com, Paul Larson <paul.larson@canonical.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>, Mark Brown <mark.brown@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Deepak Saxena <dsaxena@linaro.org>, Milosz Wasilewski <milosz.wasilewski@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Jeffrey Bastian <jbastian@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 14.02.2014 10:02, Naresh Kamboju wrote:
-> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01# gcov kernel/gcov/base.c -o
->  /sys/kernel/debug/gcov/tmp/linux-linaro-3.13-2014.01/kernel/gcov/
-> File 'kernel/gcov/base.c'
-> Lines executed:43.18% of 44
-> Creating 'base.c.gcov'
+
+
+----- Original Message -----
+> From: "Jeffrey Bastian" <jbastian@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 4 February, 2014 11:44:00 PM
+> Subject: [LTP] [PATCH] use inotify_init1(0) for inotify tests on aarch64
 > 
-> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01#
+> aarch64 (and possibly other new architectures) does not implement
+> the __ARCH_WANT_SYSCALL_NO_FLAGS syscalls, so use inotify_init1(0)
+> instead of inotify_init(void)
 > 
-> The above experiment gives coverage of a single file base.c when i run
-> gcov manually.
-> Is there any way to get Linux kernel coverage of all files after
-> running LTP test cases ?
+> Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
 
-1. Reset coverage data: lcov -z
-2. Run LTP (or any other test case)
-3. Capture coverage data: lcov -c -o coverage.info
-4. Generate HTML output: genhtml coverage.info -o out
-5. View HTML output: <browser> out/index.html
+Looks good to me.
 
-More information on lcov can be found on the page behind the second URL
-your quoted in your mail.
-
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
 
 Regards,
-  Peter Oberparleiter
+Jan
 
--- 
-Peter Oberparleiter
-Linux on System z Development - IBM Germany
-
+> ---
+>  testcases/kernel/syscalls/inotify/inotify.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/inotify/inotify.h
+> b/testcases/kernel/syscalls/inotify/inotify.h
+> index e396947c4f98..68fe3b5f6426 100644
+> --- a/testcases/kernel/syscalls/inotify/inotify.h
+> +++ b/testcases/kernel/syscalls/inotify/inotify.h
+> @@ -30,8 +30,13 @@
+>  
+>  /* inotify(7) wrappers */
+>  
+> +#if __NR_inotify_init != __LTP__NR_INVALID_SYSCALL
+>  #define	myinotify_init() \
+>  	syscall(__NR_inotify_init)
+> +#else
+> +#define	myinotify_init() \
+> +	syscall(__NR_inotify_init1, 0)
+> +#endif
+>  
+>  #define	myinotify_add_watch(fd, pathname, mask)	\
+>  	syscall(__NR_inotify_add_watch, fd, pathname, mask)
+> --
+> 1.8.3.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> Managing the Performance of Cloud-Based Applications
+> Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+> Read the Whitepaper.
+> http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Android apps run on BlackBerry 10
-Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-Now with support for Jelly Bean, Bluetooth, Mapview and more.
-Get your Android app in front of a whole new audience.  Start now.
-http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
