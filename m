@@ -1,26 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WIMI7-00054n-NK
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 17:59:39 +0000
-Date: Tue, 25 Feb 2014 18:59:23 +0100
-From: chrubis@suse.cz
-Message-ID: <20140225175923.GB17609@rei>
-References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
-	<775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE401@SAFEX1NODE23.st.com>
-	<1636908988.6999631.1392977205402.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
-	<387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
-	<1110699270.7050041.1392980994165.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE578@SAFEX1NODE23.st.com>
-	<1275798317.7097152.1392986267877.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE5AE@SAFEX1NODE23.st.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <D2A2C37B00D2EA4CB1886D29B96695C55AE5AE@SAFEX1NODE23.st.com>
-Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+	(envelope-from <alexey.kodanev@oracle.com>) id 1WBliq-0008H4-VW
+	for ltp-list@lists.sourceforge.net; Fri, 07 Feb 2014 13:44:01 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WBliq-0007bP-2l
+	for ltp-list@lists.sourceforge.net; Fri, 07 Feb 2014 13:44:00 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s17DhrDQ014517
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Feb 2014 13:43:54 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s17DhqMf025860
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Feb 2014 13:43:53 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s17DhqwK025848
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Feb 2014 13:43:52 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri,  7 Feb 2014 17:43:54 +0400
+Message-Id: <1391780634-23420-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1391780634-23420-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1391780634-23420-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 2/4] lib/test.h: create macro to declare init/cleanup
+	functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,74 +38,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi!
-> > > > Now, "do_fallocate()" needs fallocate() op. but on ext3 this is 
-> > > > not supported i.e. ENOTSUP.
-> > 
-> > >>Do you have kernel compiled with CONFIG_TMPFS=y?
-> > 
-> > No. I've just checked kernel with above option: the reported madvise03 
-> > testcase worked fine (usage of shmem_fallocate()).
-> > So your analysis of my scenario is corret.
-> > Please , discard posted patch.
-> 
-> >>We can still handle this with some patch to skip first testcase if kernel is compiled without "CONFIG_TMPFS=y". I think that qualifies as TCONF.
-> >>I'll leave it up to you.
-> 
-> Hmmm....yes... as TCONF(and not TFAIL) is of course the right exit code in case of TMPFS not enabled on kernel side.
-> I let you know...
-
-Generally LTP tests should handle gracefully when syscall returns ENOSYS
-or ENOTSUP, in reality only cases that has been catched by somebody are
-handled.
-
-What about following patch?
-
-madvise/madvise03: Return TCONF on ENOTSUP
-
-If support for TMPFS (CONFIG_TMPFS) is not compiled in kernel madvise
-will return ENOTSUP for these testcases. Return TCONF rather than TFAIL
-int this case.
-
-Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/syscalls/madvise/madvise03.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/test.h |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise03.c b/testcases/kernel/syscalls/madvise/madvise03.c
-index aeae429..02b28d2 100644
---- a/testcases/kernel/syscalls/madvise/madvise03.c
-+++ b/testcases/kernel/syscalls/madvise/madvise03.c
-@@ -157,6 +157,11 @@ static void cleanup(void)
- static void check_and_print(char *advice)
- {
- 	if (TEST_RETURN == -1) {
-+		if (TEST_ERRNO == ENOTSUP && !strcmp(advice, "MADV_REMOVE")) {
-+			tst_resm(TCONF, "madvise MADV_REMOVE returned ENOTSUP"
-+			         " CONFIG_TMPFS=y not in kernel .config?");
-+			return;
-+		}
- 		tst_resm(TFAIL,
- 			 "madvise test for %s failed with "
- 			 "return = %ld, errno = %d : %s",
-
+diff --git a/include/test.h b/include/test.h
+index 29824d3..1195dac 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+  * Copyright (c) 2009-2013 Cyril Hrubis chrubis@suse.cz
++ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of version 2 of the GNU General Public License as
+@@ -114,6 +115,36 @@
+ extern int Forker_pids[];
+ extern int Forker_npids;
+ 
++/*
++ * Macro to use for making functions called only once in
++ * multi-threaded tests such as init or cleanup function.
++ * The first call to @name_fn function by any thread shall
++ * call the @exec_fn. Subsequent calls shall not call @exec_fn.
++ * *_fn functions must not take any arguments.
++ */
++#define DECLARE_ONCE_FN(name_fn, exec_fn)			\
++	static pthread_once_t executed = PTHREAD_ONCE_INIT;	\
++	static void name_fn(void)				\
++	{							\
++		pthread_once(&executed, exec_fn);		\
++	}
++
++/*
++ * Will be defined if test is compiled with -pthread.
++ * Then we can use thread-safe versions.
++ */
++#ifdef _REENTRANT
++
++#define tst_resm	tst_resm_r
++#define tst_resm_hexd	tst_resm_hexd
++#define tst_brk		tst_brk_r
++#define tst_brkm	tst_brkm_r
++#define tst_flush	tst_flush_r
++#define tst_exit	tst_exit_r
++#define tst_environ	tst_environ_r
++
++#endif /* _REENTRANT */
++
+ /* lib/tst_res.c */
+ const char *strttype(int ttype);
+ void tst_res(int ttype, char *fname, char *arg_fmt, ...)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
