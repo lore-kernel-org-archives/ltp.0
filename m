@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WCq1N-0006WY-H9
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 12:31:33 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WCq1K-00083Y-Fs
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 12:31:33 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1ABI01v004561
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Feb 2014 19:18:03 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 10 Feb 2014 19:16:38 +0800
-Message-Id: <1392030999-4431-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH v3 1/2] testcases/lib/cmdlib.sh: add
-	tst_require_root() function
+	(envelope-from <metan@suse.de>) id 1WCuNd-00040f-Ia
+	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 17:10:49 +0000
+Date: Mon, 10 Feb 2014 18:10:15 +0100
+From: chrubis@suse.cz
+Message-ID: <20140210171014.GA4186@rei>
+References: <1386729875-487-1-git-send-email-xu.simon@oracle.com>
+	<52BA384B.3070308@oracle.com> <52DDD0BA.4070906@oracle.com>
+	<882926271.1663183.1391079335500.JavaMail.root@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <882926271.1663183.1391079335500.JavaMail.root@redhat.com>
+Subject: Re: [LTP] [PATCH] xinetd_tests.sh: explicitly enable IPv6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,93 +23,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Replace is_root() with tst_require_root().
+Hi!
+> Looks good to me. According to [1] it's supported since around 1.8.9,
+> which appears to be older than anything I could find in RHEL distros.
+> 
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
+> 
+> [1] http://www.tldp.org/HOWTO/Linux%2BIPv6-HOWTO/hints-daemons-xinetd.html
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/commands/sssd/sssd-lib.sh                        | 2 +-
- testcases/kernel/security/integrity/ima/tests/ima_setup.sh | 6 +-----
- testcases/kernel/syscalls/syslog/syslog-lib.sh             | 2 +-
- testcases/lib/cmdlib.sh                                    | 7 +++++--
- 4 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/testcases/commands/sssd/sssd-lib.sh b/testcases/commands/sssd/sssd-lib.sh
-index d63ed6d..9c84729 100755
---- a/testcases/commands/sssd/sssd-lib.sh
-+++ b/testcases/commands/sssd/sssd-lib.sh
-@@ -73,7 +73,7 @@ cleanup()
- 
- setup()
- {
--	is_root || exit 1
-+	tst_require_root
- 
- 	trap '	disable_traps
- 		tst_resm TBROK "Testing is terminating due to a signal"
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 33dd8b2..4013e1f 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -95,11 +95,7 @@ setup()
- 		PATH=$PATH:$LTPBIN
- 	fi
- 
--	# Must be root
--	if ! is_root; then
--		tst_resm TCONF "You must be root to execute this test"
--		return 1
--	fi
-+	tst_require_root
- 
- 	# create the temporary directory used by this testcase
- 	LTPIMA=$LTPTMP/ima
-diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-index b656515..b67a8f2 100755
---- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
-+++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-@@ -59,7 +59,7 @@ cleanup()
- 
- setup()
- {
--	is_root || exit 1
-+	tst_require_root
- 
- 	trap '	disable_traps
- 		tst_resm TBROK "Testing is terminating due to a signal"
-diff --git a/testcases/lib/cmdlib.sh b/testcases/lib/cmdlib.sh
-index d6f43d2..09d2cf1 100644
---- a/testcases/lib/cmdlib.sh
-+++ b/testcases/lib/cmdlib.sh
-@@ -114,9 +114,12 @@ incr_tst_count()
-     : $(( TST_COUNT += 1 ))
- }
- 
--is_root()
-+tst_require_root()
- {
--    [ "x$(id -ru)" = x0 ]
-+	if [ "x$(id -u)" != "x0" ]; then
-+		tst_resm TCONF "You must be root to execute this test"
-+		exit 0
-+	fi
- }
- 
- #
+Pushed, thanks.
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Android&trade; apps run on BlackBerry&reg;10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
