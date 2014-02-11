@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WEGPk-0002QU-1V
-	for ltp-list@lists.sourceforge.net; Fri, 14 Feb 2014 10:54:36 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WEGPi-0005XW-Ak
-	for ltp-list@lists.sourceforge.net; Fri, 14 Feb 2014 10:54:35 +0000
-Date: Fri, 14 Feb 2014 05:54:26 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1392372746.2085.11.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1392372746.2085.11.camel@G08JYZSD130126>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WDE5A-0001oO-7m
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 14:13:04 +0000
+Date: Tue, 11 Feb 2014 15:12:21 +0100
+From: chrubis@suse.cz
+Message-ID: <20140211141221.GA9577@rei.suse.cz>
+References: <52B2F462.5070507@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] mlock/mlock02.c: add EPERM errno test
+Content-Disposition: inline
+In-Reply-To: <52B2F462.5070507@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] msgrcv/msgrcv07.c: add MSG_EXCEPT,
+ MSG_NOERROR flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,210 +25,340 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, 14 February, 2014 11:12:26 AM
-> Subject: [LTP] [PATCH 2/2] mlock/mlock02.c: add EPERM errno test
+Hi!
+> create a new case to test MSG_EXCEPT, MSG_NOERROR flag for msgrcv(2)
 > 
-> Add EPERM errno test for mlock(2).
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 > ---
->  testcases/kernel/syscalls/mlock/mlock02.c | 42
->  +++++++++++++++++++++++++++++--
->  1 file changed, 40 insertions(+), 2 deletions(-)
+>  runtest/ltplite                                 |   1 +
+>  runtest/stress.part3                            |   1 +
+>  runtest/syscalls                                |   1 +
+>  runtest/syscalls-ipc                            |   1 +
+>  testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c | 227 ++++++++++++++++++++++++
+>  5 files changed, 231 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
 > 
-> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
-> b/testcases/kernel/syscalls/mlock/mlock02.c
-> index a635d24..1e87777 100644
-> --- a/testcases/kernel/syscalls/mlock/mlock02.c
-> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
-> @@ -20,11 +20,15 @@
->   * ALGORITHM
->   * 	test 1:
->   *		Call mlock with a NULL address.  ENOMEM should be returned
-
-Hi,
-
-ENOMEM (Linux 2.6.9 and later) the caller had a non-zero RLIMIT_MEMLOCK soft resource limit,
-       but tried to lock more memory than the limit permitted.
-ENOMEM Some of the specified address range does not correspond to mapped pages in
-       the address space of the process.
-
-We seem to be mixing these two together. Will test 1 return ENOMEM
-because we passed NULL or because RLIMIT_MEMLOCK was low enough?
-Consider this example:
-
-$ cat a.c
-#include <unistd.h>
-#include <sys/mman.h>
-#include <errno.h>
-#include <sys/resource.h>
-#include <stdio.h>
-
-int main(void)
-{
-        char dummy[4096];
-        struct rlimit rl;
-
-        rl.rlim_cur = 1;
-        rl.rlim_max = 1;
-
-        if (mlock(NULL, 1024))
-                perror("mlock(NULL, 1024)");
-
-        if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0)
-                perror("setrlimit");
-
-        if (mlock(dummy, 1024))
-                perror("mlock(dummy, 1024)");
-
-        return 0;
-}
-
-$ ./a.out
-mlock(NULL, 1024): Cannot allocate memory
-mlock(dummy, 1024): Cannot allocate memory
-
-
-> + *	test 2:
-> + *		The  caller  was  not  privileged and its RLIMIT_MEMLOCK soft
-> + *		resource limit was 0. EPERM should be returned
->   */
+> diff --git a/runtest/ltplite b/runtest/ltplite
+> index c90bc48..d22008a 100644
+> --- a/runtest/ltplite
+> +++ b/runtest/ltplite
+> @@ -488,6 +488,7 @@ msgrcv03 msgrcv03
+>  msgrcv04 msgrcv04
+>  msgrcv05 msgrcv05
+>  msgrcv06 msgrcv06
+> +msgrcv07 msgrcv07
 >  
->  #include <errno.h>
->  #include <unistd.h>
->  #include <sys/mman.h>
-> +#include <pwd.h>
->  #include "test.h"
->  #include "usctest.h"
->  #include "safe_macros.h"
-> @@ -32,20 +36,26 @@
->  char *TCID = "mlock02";
+>  msgsnd01 msgsnd01
+>  msgsnd02 msgsnd02
+> diff --git a/runtest/stress.part3 b/runtest/stress.part3
+> index eac28d0..b833c68 100644
+> --- a/runtest/stress.part3
+> +++ b/runtest/stress.part3
+> @@ -411,6 +411,7 @@ msgrcv03 msgrcv03
+>  msgrcv04 msgrcv04
+>  msgrcv05 msgrcv05
+>  msgrcv06 msgrcv06
+> +msgrcv07 msgrcv07
 >  
->  static void *addr1;
-> +static struct passwd *ltpuser;
->  static void setup(void);
->  static void mlock_verify(int);
-> +static void setup2(void);
-> +static void cleanup2(void);
->  static void cleanup(void);
+>  msgsnd01 msgsnd01
+>  msgsnd02 msgsnd02
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index c5bbe8f..1eb23d2 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -639,6 +639,7 @@ msgrcv03 msgrcv03
+>  msgrcv04 msgrcv04
+>  msgrcv05 msgrcv05
+>  msgrcv06 msgrcv06
+> +msgrcv07 msgrcv07
 >  
->  static struct test_case_t {
->  	void **addr;
->  	int len;
->  	int error;
-> +	void (*setupfunc) ();
-> +	void (*cleanupfunc) ();
->  } TC[] = {
-> -	{&addr1, 1024, ENOMEM},
-> +	{&addr1, 1024, ENOMEM, NULL, NULL},
-> +	{&addr1, 1024, EPERM, setup2, cleanup2},
->  };
+>  msgsnd01 msgsnd01
+>  msgsnd02 msgsnd02
+> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+> index f57a96e..ea1447c 100644
+> --- a/runtest/syscalls-ipc
+> +++ b/runtest/syscalls-ipc
+> @@ -21,6 +21,7 @@ msgrcv03 msgrcv03
+>  msgrcv04 msgrcv04
+>  msgrcv05 msgrcv05
+>  msgrcv06 msgrcv06
+> +msgrcv07 msgrcv07
 >  
->  int TST_TOTAL = ARRAY_SIZE(TC);
-> -static int exp_enos[] = { ENOMEM, 0 };
-> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
->  
->  #if !defined(UCLINUX)
->  
-> @@ -85,6 +95,8 @@ int main(void)
->  
->  static void setup(void)
->  {
-> +	struct rlimit rl;
+>  msgsnd01 msgsnd01
+>  msgsnd02 msgsnd02
+> diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+> new file mode 100644
+> index 0000000..576f2ff
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+> @@ -0,0 +1,227 @@
+> +/*
+> + * Copyright (c) 2013 Fujitsu Ltd.
+> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
 > +
->  	TEST_PAUSE;
->  
->  #ifdef __ia64__
-> @@ -92,12 +104,28 @@ static void setup(void)
->  #else
->  	addr1 = NULL;
->  #endif
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+> +/*
+> + * Description:
+> + *     Basic test for msgrcv(2) using MSG_EXCEPT, MSG_NOERROR
+> + */
 > +
-> +	rl.rlim_cur = 0;
-
-rlim_max is not initialised, so it can fail if you run mlock02 as user
-and it has non-zero value:
-setrlimit(RLIMIT_MEMLOCK, {rlim_cur=0, rlim_max=4216848}) = -1 EPERM (Operation not permitted)
-
-Initialising it to zero:
-    +rl.rlim_max = 0;
-will make the testcase work for root, but it's failing for unprivileged user:
-
-$ ./mlock02
-mlock02     1  TFAIL  :  mlock didn't fail as expected; expected - 12 : Cannot allocate memory: TEST_ERRNO=EPERM(1): Operation not permitted
-mlock02     2  TBROK  :  seteuid failed at mlock02.c:146: errno=EPERM(1): Operation not permitted
-mlock02     3  TBROK  :  Remaining cases broken
-
-Regards,
-Jan
-
+> +#define  _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "ipcmsg.h"
 > +
-> +	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-> +		tst_resm(TWARN,
-> +			 "setrlimit failed to set the resource for "
-> +			 "RLIMIT_MEMLOCK to check for mlock()");
-> +		return;
+> +
+> +#define MSGTYPE1	1
+> +#define MSGTYPE2	2
+> +#define MSG1	"message type1"
+> +#define MSG2	"message type2"
+> +
+> +static void wait4child(pid_t child, int index);
+> +static void creat_msg_queue(void);
+
+The definition for creat_msg_queue is not needed here (the function code
+is before the code that calls it).
+
+> +static void setup_msg_except(void);
+> +static void test_msg_except(int index);
+> +static void cleanup_msg_except(void);
+> +
+> +static void setup_msg_noerror(void);
+> +static void test_msg_noerror(int index);
+> +static void cleanup_msg_noerror(void);
+> +
+> +static int msgq_id;
+> +MSGBUF rcv_buf, snd_buf1, snd_buf2;
+> +static int tst_result;
+> +
+> +static struct test_case_t {
+> +	int msgflg;
+> +	void (*setup)(void);
+> +	void (*testfunc)(int index);
+> +	void (*cleanup)(void);
+> +	char *des;
+> +} test_cases[] = {
+> +	{MSG_EXCEPT, setup_msg_except, test_msg_except, cleanup_msg_except,
+> +	 "MSG_EXCEPT"},
+> +	{MSG_NOERROR, setup_msg_noerror, test_msg_noerror,
+> +	 cleanup_msg_noerror, "MSG_NOERROR"},
+> +};
+> +
+> +char *TCID = "msgrcv07";
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	char *msg;
+> +	int i;
+> +
+> +	msg = parse_opts(ac, av, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++) {
+> +			if (test_cases[i].setup)
+> +				test_cases[i].setup();
+> +			if (test_cases[i].testfunc)
+> +				test_cases[i].testfunc(i);
+> +			if (test_cases[i].cleanup)
+> +				test_cases[i].cleanup();
+
+		       It looks to me like splitting the test to setup,
+		       testfunc and cleanup is artificial. Keep things
+		       simple only testfunc would do here. Also passing
+		       a pointer test_case_t structure or the flag
+		       directly is a bit cleaner solution than passing
+		       an array index.
+
+> +		}
 > +	}
->  }
->  
->  static void mlock_verify(int i)
->  {
-> +	if (TC[i].setupfunc != NULL)
-> +		TC[i].setupfunc();
 > +
->  	TEST(mlock(*(TC[i].addr), TC[i].len));
->  
-> +	if (TC[i].cleanupfunc != NULL)
-> +		TC[i].cleanupfunc();
-> +
->  	if (TEST_RETURN != -1) {
->  		tst_resm(TFAIL, "mlock succeeded unexpectedly");
->  		return;
-> @@ -112,6 +140,16 @@ static void mlock_verify(int i)
->  	}
->  }
->  
-> +static void setup2(void)
-> +{
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +	cleanup();
+> +	tst_exit();
 > +}
 > +
-> +static void cleanup2(void)
+> +void setup(void)
 > +{
-> +	SAFE_SETEUID(cleanup, 0);
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	tst_tmpdir();
+
+There is no need to create temporary directory if test does not work
+with files.
+
+> +	TEST_PAUSE;
+> +
+> +	snd_buf1.mtype = MSGTYPE1;
+> +	strcpy(snd_buf1.mtext, MSG1);
+> +	snd_buf2.mtype = MSGTYPE2;
+> +	strcpy(snd_buf2.mtext, MSG2);
+
+You can initialize these statically as:
+
+MSGBUF snd_buf1 = {.mtype = MSGTYPE1, .mtext = MSG1};
+
 > +}
 > +
->  static void cleanup(void)
->  {
->  	TEST_CLEANUP;
-> --
-> 1.8.4.2
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Android apps run on BlackBerry 10
-> Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-> Now with support for Jelly Bean, Bluetooth, Mapview and more.
-> Get your Android app in front of a whole new audience.  Start now.
-> http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> +void creat_msg_queue(void)
+> +{
+> +	msgkey = getipckey();
+> +
+> +	/* create a message queue with read/write permission */
+> +	msgq_id = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
+
+You can use IPC_PRIVATE.
+
+> +	if (msgq_id == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Can't create message queue");
+> +}
+> +
+> +void setup_msg_except(void)
+> +{
+> +	creat_msg_queue();
+> +
+> +	/* put the MSG1 on the queue */
+> +	if (msgsnd(msgq_id, &snd_buf1, MSGSIZE, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Can't enqueue message");
+> +
+> +	/* put the MSG2 on the queue */
+> +	if (msgsnd(msgq_id, &snd_buf2, MSGSIZE, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Can't enqueue message");
+> +}
+> +
+> +void test_msg_except(int index)
+> +{
+> +	pid_t child_pid;
+> +
+> +	fflush(stdout);
+> +	child_pid = FORK_OR_VFORK();
+
+Don't use FORK_OR_VFORK() in code that is not ported to uClinux and do
+not flush the output manually, use tst_fork() instead.
+
+> +	if (child_pid == -1) {
+> +		tst_brkm(TBROK, cleanup, "fork failed");
+> +	} else if (child_pid > 0) {
+> +		wait4child(child_pid, index);
+> +	} else {
+> +		TEST(msgrcv(msgq_id, &rcv_buf, MSGSIZE, MSGTYPE2,
+> +		     test_cases[index].msgflg));
+> +		if (TEST_RETURN == -1) {
+> +			fprintf(stderr, "msgrcv failed\n");
+> +			exit(TBROK);
+> +		}
+> +		/* check the received message */
+> +		if (strcmp(rcv_buf.mtext, MSG1) == 0)
+> +			tst_result = TPASS;
+> +		else
+> +			tst_result = TFAIL;
+
+What about checking the message type here as well?
+
+> +		exit(tst_result);
+> +	}
+> +}
+> +
+> +static void cleanup_msg_except(void)
+> +{
+> +	rm_queue(msgq_id);
+> +}
+> +
+> +static void setup_msg_noerror(void)
+> +{
+> +	creat_msg_queue();
+> +
+> +	/* put the MSG1 on the queue */
+> +	if (msgsnd(msgq_id, &snd_buf1, MSGSIZE, 0) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Can't enqueue message");
+> +}
+> +
+> +static void test_msg_noerror(int index)
+> +{
+> +	pid_t child_pid;
+> +	int msg_len;
+> +
+> +	fflush(stdout);
+> +	child_pid = FORK_OR_VFORK();
+
+The same here.
+
+> +	if (child_pid == -1) {
+> +		tst_brkm(TBROK, cleanup, "fork failed");
+> +	} else if (child_pid > 0) {
+> +		wait4child(child_pid, index);
+> +	} else {
+> +		msg_len = sizeof(MSG1) / 2;
+> +		TEST(msgrcv(msgq_id, &rcv_buf, msg_len, MSGTYPE1,
+> +		     test_cases[index].msgflg));
+
+What about checking the message type and that the half of the message is
+correct here?
+
+> +		if (TEST_RETURN == -1)
+> +			tst_result = TFAIL;
+> +		else
+> +			tst_result = TPASS;
+> +		exit(tst_result);
+> +	}
+> +}
+> +
+> +static void cleanup_msg_noerror(void)
+> +{
+> +	rm_queue(msgq_id);
+> +}
+> +
+> +static void wait4child(pid_t child, int index)
+> +{
+> +	int status;
+> +	int ret;
+> +
+> +	if (waitpid(child, &status, 0) == -1)
+> +		tst_resm(TBROK | TERRNO, "waitpid");
+> +	if (WIFEXITED(status))
+> +		ret = WEXITSTATUS(status);
+> +	else
+> +		ret = status;
+
+		I would just add the tst_resm and brkm directly to these
+		ifs, setting variable in a few ifs and then branching on
+		the very same value seems like pointless work.
+
+> +	if (ret == 0) {
+> +		tst_resm(TPASS, "test %s success", test_cases[index].des);
+> +	} else if (ret == 1) {
+> +		tst_resm(TFAIL, "test %s failed, status: %d",
+> +			 test_cases[index].des, status);
+> +	} else {
+> +		tst_brkm(TBROK | TERRNO, cleanup, "msgrcv failed unexpectedly");
+> +	}
+> +}
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Android apps run on BlackBerry 10
