@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WGlYQ-0000pv-3c
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 08:33:54 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGlYO-0002kh-MK
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 08:33:54 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1L8Xhox025679
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 16:33:44 +0800
-Message-ID: <1392971619.3069.3.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 21 Feb 2014 16:33:39 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] mq_notify/mq_notify02.c: add new error tests
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WDF7K-0006Wk-2B
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 15:19:22 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WDF7H-0004iA-2f
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 15:19:22 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s1BFJCxq032404
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 15:19:13 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1BFJCmI000716
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 15:19:12 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s1BFJBMo013641
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 15:19:11 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 11 Feb 2014 19:19:04 +0400
+Message-Id: <1392131944-27263-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1392131944-27263-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <20140211142336.GA14876@rei.Home>
+	<1392131944-27263-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V2 2/2] msgctl11: process message queues by portions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,159 +39,201 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Add EINVAL error tests for mq_notify(2).
+As /proc/sys/kernel/msgmni value scales with an amount of host memory,
+on systems with several tens gigabytes of ram this testcase fails
+with "Not enough free pids" error.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Now if the amount of free pids is not enough to use all the queues at once
+we process the queues by portions (with the size based on an amount of free pids).
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- runtest/syscalls                                  |  1 +
- testcases/kernel/syscalls/.gitignore              |  1 +
- testcases/kernel/syscalls/mq_notify/mq_notify02.c | 97 +++++++++++++++++++++++
- 3 files changed, 99 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mq_notify/mq_notify02.c
+ testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   71 ++++++++++++++++-------
+ 1 files changed, 50 insertions(+), 21 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index aec49ad..dcfceeb 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -608,6 +608,7 @@ mprotect02 mprotect02
- mprotect03 mprotect03
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+index 63ff88f..9ef18da 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+@@ -60,6 +60,7 @@ static int rkidarray[MAXNKIDS];
+ static int wkidarray[MAXNKIDS];
+ static int tid;
+ static int nprocs, nreps, nkids, MSGMNI;
++static int maxnprocs;
+ static int procstat;
  
- mq_notify01 mq_notify01
-+mq_notify02 mq_notify02
- mq_open01 mq_open01
- mq_timedreceive01 mq_timedreceive01
- mq_timedsend01 mq_timedsend01
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d461569..c9552c6 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -550,6 +550,7 @@
- /mprotect/mprotect02
- /mprotect/mprotect03
- /mq_notify/mq_notify01
-+/mq_notify/mq_notify02
- /mq_open/mq_open01
- /mq_timedreceive/mq_timedreceive01
- /mq_timedsend/mq_timedsend01
-diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify02.c b/testcases/kernel/syscalls/mq_notify/mq_notify02.c
-new file mode 100644
-index 0000000..46ae3e3
---- /dev/null
-+++ b/testcases/kernel/syscalls/mq_notify/mq_notify02.c
-@@ -0,0 +1,97 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program.
-+ */
-+/*
-+ * ALGORITHM
-+ *	test 1:
-+ *		sevp->sigev_notify = -1, EINVAL should be returned.
-+ *	test 2:
-+ *		sevp->sigev_notify = SIGEV_SIGNAL and sevp->sigev_signo > _NSG,
-+ *		EINVAL should be returned.
-+ */
+ void setup(void);
+@@ -67,6 +68,7 @@ void cleanup(void);
+ 
+ static void term(int);
+ static int dotest(key_t, int);
++static void dotest_iteration(int off);
+ static void cleanup_msgqueue(int i, int tid);
+ 
+ #ifdef UCLINUX
+@@ -84,8 +86,7 @@ static void do_child_3_uclinux(void);
+ 
+ int main(int argc, char **argv)
+ {
+-	int i, j, ok, pid;
+-	int count, status;
++	int i, j, ok;
+ 
+ #ifdef UCLINUX
+ 	char *msg;
+@@ -109,7 +110,6 @@ int main(int argc, char **argv)
+ 	if (argc == 1) {
+ 		/* Set default parameters */
+ 		nreps = MAXNREPS;
+-		nprocs = MSGMNI;
+ 		nkids = maxnkids;
+ 	} else if (argc == 4) {
+ 		if (atoi(argv[1]) > MAXNREPS) {
+@@ -120,13 +120,12 @@ int main(int argc, char **argv)
+ 		} else {
+ 			nreps = atoi(argv[1]);
+ 		}
+-		if (atoi(argv[2]) > MSGMNI) {
++		if (atoi(argv[2]) > maxnprocs) {
+ 			tst_resm(TCONF,
+ 				 "Requested number of processes too large, setting to Max. of %d",
+-				 MSGMNI);
+-			nprocs = MSGMNI;
++				 maxnprocs);
+ 		} else {
+-			nprocs = atoi(argv[2]);
++			maxnprocs = atoi(argv[2]);
+ 		}
+ 		if (atoi(argv[3]) > maxnkids) {
+ 			tst_resm(TCONF,
+@@ -153,7 +152,7 @@ int main(int argc, char **argv)
+ 	/* Set up array of unique keys for use in allocating message
+ 	 * queues
+ 	 */
+-	for (i = 0; i < nprocs; i++) {
++	for (i = 0; i < MSGMNI; i++) {
+ 		ok = 1;
+ 		do {
+ 			/* Get random key */
+@@ -172,13 +171,45 @@ int main(int argc, char **argv)
+ 			}
+ 		} while (ok == 0);
+ 	}
+-	/* Fork a number of processes (nprocs), each of which will
++	/* Fork a number of processes, each of which will
+ 	 * create a message queue with several (nkids) reader/writer
+ 	 * pairs which will read and write a number (iterations)
+ 	 * of random length messages with specific values (keys).
++	 *
++	 * We do not fork more than maxnprocs at a time and
++	 * we fork until all the message queues get used.
+ 	 */
+ 
++	if (MSGMNI <= maxnprocs) {
++		nprocs = MSGMNI;
++		dotest_iteration(0);
++	} else {
++		for (i = 0; i < (MSGMNI / maxnprocs); i++) {
++			nprocs = maxnprocs;
++			dotest_iteration(i*(MSGMNI / maxnprocs));
++		}
 +
-+#include <errno.h>
-+#include <mqueue.h>
-+#include "test.h"
-+#include "usctest.h"
-+
-+char *TCID = "mq_notify02";
-+static void setup(void);
-+static void cleanup(void);
-+
-+static struct test_case_t {
-+	struct sigevent sevp;
-+	int exp_errno;
-+} test_cases[] = {
-+	{{.sigev_notify = -1}, EINVAL},
-+	{{.sigev_notify = SIGEV_SIGNAL, .sigev_signo = _NSIG+1}, EINVAL},
-+};
-+
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static void mq_notify_verify(struct test_case_t *);
-+static int exp_enos[] = { EINVAL, 0 };
-+
-+int main(int argc, char **argv)
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++)
-+			mq_notify_verify(&test_cases[i]);
++		nprocs = MSGMNI % maxnprocs;
++		dotest_iteration(i*(MSGMNI / maxnprocs));
 +	}
++
++	tst_resm(TPASS, "msgctl11 ran successfully!");
++
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void setup(void)
++static void dotest_iteration(int off)
 +{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	key_t key;
++	int i, count, status;
++	pid_t pid;
 +
-+	TEST_PAUSE;
-+}
++	memset(pidarray, 0, sizeof(pidarray));
 +
-+static void mq_notify_verify(struct test_case_t *test)
-+{
-+	TEST(mq_notify(0, &(test->sevp)));
+ 	for (i = 0; i < nprocs; i++) {
++		key = keyarray[off + i];
 +
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "mq_notify() succeeded unexpectedly");
-+		return;
-+	}
+ 		if ((pid = FORK_OR_VFORK()) < 0)
+ 			tst_brkm(TFAIL, cleanup,
+ 				 "Fork failed (may be OK if under stress)");
+@@ -186,13 +217,13 @@ int main(int argc, char **argv)
+ 		/* Child does this */
+ 		if (pid == 0) {
+ #ifdef UCLINUX
+-			if (self_exec(argv[0], "ndd", 1, keyarray[i], i) < 0) {
++			if (self_exec(argv0, "ndd", 1, key, i) < 0) {
+ 				printf("\tself_exec failed\n");
+ 				exit(FAIL);
+ 			}
+ #else
+ 			procstat = 1;
+-			exit(dotest(keyarray[i], i));
++			exit(dotest(key, i));
+ #endif
+ 		}
+ 		pidarray[i] = pid;
+@@ -219,11 +250,6 @@ int main(int argc, char **argv)
+ 		tst_brkm(TFAIL, cleanup,
+ 			 "Wrong number of children exited, Saw %d, Expected %d",
+ 			 count, nprocs);
+-
+-	tst_resm(TPASS, "msgctl11 ran successfully!");
+-
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ #ifdef UCLINUX
+@@ -447,6 +473,8 @@ void setup(void)
+ 		tst_brkm(TBROK, cleanup,
+ 			 "Max number of message queues already used, cannot create more.");
+ 
++	tst_resm(TINFO, "Found %d available message queues", MSGMNI);
 +
-+	if (TEST_ERRNO == test->exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "mq_notify failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "mq_notify failed unexpectedly; expected: %d - %s",
-+			 test->exp_errno, strerror(test->exp_errno));
-+	}
-+}
+ 	free_pids = get_free_pids();
+ 	if (free_pids < 0) {
+ 		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
+@@ -454,11 +482,12 @@ void setup(void)
+ 		tst_brkm(TBROK, cleanup, "No free pids");
+ 	}
+ 
+-	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
+-		maxnkids = ((free_pids / 4) / MSGMNI);
+-		if (!maxnkids)
+-			tst_brkm(TBROK, cleanup, "Not enough free pids");
+-	}
++	/* We don't use more than a half of available pids.
++	 * For each child we fork up to 2*maxnkids grandchildren. */
++	maxnprocs = (free_pids / 2) / (1 + 2 * maxnkids);
 +
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
++	if (!maxnprocs)
++		tst_brkm(TBROK, cleanup, "Not enough free pids");
+ 
+ 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
+ }
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
