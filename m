@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WGm6T-00024s-M6
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 09:09:05 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGm6S-0004JB-9J
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 09:09:05 +0000
-Date: Fri, 21 Feb 2014 04:08:51 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
-In-Reply-To: <D2A2C37B00D2EA4CB1886D29B96695C55AE388@SAFEX1NODE23.st.com>
-References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
-	<5307080F.8000702@cn.fujitsu.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE388@SAFEX1NODE23.st.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WDFUk-0007LS-Pw
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 15:43:34 +0000
+Date: Tue, 11 Feb 2014 16:42:59 +0100
+From: chrubis@suse.cz
+Message-ID: <20140211154258.GB15043@rei.Home>
+References: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1388048842-28373-3-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+Content-Disposition: inline
+In-Reply-To: <1388048842-28373-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 2/5] rpc-tirpc-full-test-suite: enabled build of
+ the rpc test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,125 +26,197 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+Hi!
+> Nothing from rpc-tirpc-full-test-suite is built during LTP compilation,
+> but some of the rpc test cases are needed to run runtest/rpc and
+> runtest/stress.part3 (executed by ltpstress.sh).
+> 
+> Therefore:
+>  * Added necessary Makefiles to enable building and installation
+>    of these test scripts (from 'rpc_ts_wizard.sh -allrpc')
+>  * Since rpc-tirpc-full-test-suite initially used the '.bin' suffix
+>    to mark binaries (and LTP doesn't) I removed this suffix from
+>    the scripts.
+> 
+> It seems that runtest/tirpc is not executed automatically (maybe it's not
+> used at all now) therefore I've not touched the tirpc part of the suite.
+
+That is probably because it's currently broken, but it should either be
+fixed or removed.
+
+> diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/Makefile b/testcases/network/rpc/rpc-tirpc-full-test-suite/Makefile
+> new file mode 100644
+> index 0000000..91f9324
+> --- /dev/null
+> +++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/Makefile
+> @@ -0,0 +1,27 @@
+> +#
+> +#    Copyright (C) 2013, Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +#    This program is free software; you can redistribute it and/or modify
+> +#    it under the terms of the GNU General Public License as published by
+> +#    the Free Software Foundation; either version 2 of the License, or
+> +#    (at your option) any later version.
+> +#
+> +#    This program is distributed in the hope that it will be useful,
+> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +#    GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program; if not, write to the Free Software Foundation, Inc.,
+> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> +#
+> +
+> +top_srcdir		?= ../../../..
+> +top_rpcsrcdir		?= $(abs_srcdir)
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(top_rpcsrcdir)/Makefile.inc
+> +
+> +INSTALL_TARGETS		:= rpc_ts_run.sh rpc*basic*_lib.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/Makefile.inc b/testcases/network/rpc/rpc-tirpc-full-test-suite/Makefile.inc
+> new file mode 100644
+> index 0000000..1fafbd4
+> --- /dev/null
+> +++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/Makefile.inc
+> @@ -0,0 +1,3 @@
+> +INSTALL_BASE_DIR	:= testcases/network/rpc
+> +CUR_DIR			:= $(shell echo $(abs_srcdir) | sed 's/.*testcases\/network\/rpc\///')
+
+This is a bit messy. Why don't we install the binaries to the same
+directory rest of the binaries go?
+
+Ah, some of the binaries are named as 1-basic etc and there are
+collisions. I would consider renaming these binaries with more
+descriptive names...
+
+> +INSTALL_DIR		:= $(INSTALL_BASE_DIR)/$(CUR_DIR)
+
+> diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/Makefile b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/Makefile
+> new file mode 100644
+> index 0000000..c2d4b55
+> --- /dev/null
+> +++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/scripts/Makefile
+> @@ -0,0 +1,27 @@
+> +#
+> +#    Copyright (C) 2013, Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +#    This program is free software; you can redistribute it and/or modify
+> +#    it under the terms of the GNU General Public License as published by
+> +#    the Free Software Foundation; either version 2 of the License, or
+> +#    (at your option) any later version.
+> +#
+> +#    This program is distributed in the hope that it will be useful,
+> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +#    GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program; if not, write to the Free Software Foundation, Inc.,
+> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> +#
+> +
+> +top_srcdir		?= ../../../../..
+> +top_rpcsrcdir		?= ../
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(top_rpcsrcdir)/Makefile.inc
+> +
+> +INSTALL_TARGETS		:= rpc_*.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
 
+> diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/Makefile b/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/Makefile
+> new file mode 100644
+> index 0000000..3bbbb8d
+> --- /dev/null
+> +++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/Makefile
+> @@ -0,0 +1,28 @@
+> +#
+> +#    Copyright (C) 2013, Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +#    This program is free software; you can redistribute it and/or modify
+> +#    it under the terms of the GNU General Public License as published by
+> +#    the Free Software Foundation; either version 2 of the License, or
+> +#    (at your option) any later version.
+> +#
+> +#    This program is distributed in the hope that it will be useful,
+> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +#    GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program; if not, write to the Free Software Foundation, Inc.,
+> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> +#
+> +
+> +top_srcdir		?= ../../../../..
+> +top_rpcsrcdir		?= ../
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(top_rpcsrcdir)/Makefile.inc
+> +
+> +CPPFLAGS	+= -I/usr/include/tirpc
+> +LDLIBS		+= -ltirpc -lpthread
 
------ Original Message -----
-> From: "Francesco RUNDO" <francesco.rundo@st.com>
-> To: gaowanlong@cn.fujitsu.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 21 February, 2014 9:38:52 AM
-> Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
-> 
-> The requested log:
-> 
-> with patch:
-> madvise03    1  TCONF  :  madvise test for MADV_REMOVE unsupported return =
-> -1, errno = 95 : Operation not supported
-> madvise03    2  TPASS  :  madvise test for MADV_DONTFORK PASSED
-> madvise03    3  TPASS  :  madvise test for MADV_DOFORK PASSED
-> 
-> Without patch (original one):
-> madvise03    1  TFAIL  :  madvise test for MADV_REMOVE failed with return =
-> -1, errno = 95 : Operation not supported
-> madvise03    2  TPASS  :  madvise test for MADV_DONTFORK PASSED
-> madvise03    3  TPASS  :  madvise test for MADV_DOFORK PASSED
+The -ltirpc needs a configure check.
 
-Hi,
+> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
 
-what kernel/architecture this fails with?
-According to man page testcase should be using supported fs:
+> diff --git a/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/rpc_suite/rpc/rpc_addrmanagmt_pmap_getmaps/Makefile b/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/rpc_suite/rpc/rpc_addrmanagmt_pmap_getmaps/Makefile
+> new file mode 100644
+> index 0000000..c2cea11
+> --- /dev/null
+> +++ b/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/rpc_suite/rpc/rpc_addrmanagmt_pmap_getmaps/Makefile
+> @@ -0,0 +1,25 @@
+> +#
+> +#    Copyright (C) 2013, Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +#    This program is free software; you can redistribute it and/or modify
+> +#    it under the terms of the GNU General Public License as published by
+> +#    the Free Software Foundation; either version 2 of the License, or
+> +#    (at your option) any later version.
+> +#
+> +#    This program is distributed in the hope that it will be useful,
+> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +#    GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program; if not, write to the Free Software Foundation, Inc.,
+> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> +#
+> +
+> +top_srcdir		?= ../../../../../../../..
+> +top_rpcsrcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(top_rpcsrcdir)/Makefile.inc
+> +include ../Makefile.inc
 
-MADV_REMOVE (Since Linux 2.6.16)
-    Free up a given range of pages and its associated backing store.
-    Currently, only shmfs/tmpfs supports this; other file systems return with the
-    error ENOSYS.
+In such simple case I would consider adding the LDLIBS += -lnsl directly
+here instead of the include. But it's fine anyway.
 
-Regards,
-Jan
 
-> 
-> 
-> Regards,
-> FR
-> 
-> -----Original Message-----
-> From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> Sent: Friday, February 21, 2014 9:02 AM
-> To: Francesco RUNDO
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
-> 
-> On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
-> > Changed exit code from TFAIL to TCONF  in case of unsupported syscall.
-> > The "madvise" syscall needs kernel support as well as fs support as
-> > -for specific advice- it requires specific filesystem operations such
-> > as fallocate().
-> 
-> Could you paste the running log on not supported system?
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> > So, if kernel support is missed or fs doesn't provide specific
-> > operation needed for such "advice" scenario of that syscall, the right
-> > exit code (according to LTP defs) is not TFAIL as it is not a failure
-> > but it is TCONF as the syscall is unsupported.
-> > 
-> > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-> > ---
-> >  testcases/kernel/syscalls/madvise/madvise03.c |   17 +++++++++++++----
-> >  1 files changed, 13 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
-> > b/testcases/kernel/syscalls/madvise/madvise03.c
-> > index b0c17e8..23dd9a6 100644
-> > --- a/testcases/kernel/syscalls/madvise/madvise03.c
-> > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
-> > @@ -160,10 +160,19 @@ static void cleanup(void)  static void
-> > check_and_print(char *advice)  {
-> >  	if (TEST_RETURN == -1) {
-> > -		tst_resm(TFAIL,
-> > -			 "madvise test for %s failed with "
-> > -			 "return = %ld, errno = %d : %s",
-> > -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
-> > +		if (TEST_ERRNO != ENOTSUP) {
-> > +			tst_resm(TFAIL,
-> > +				 "madvise test for %s failed with "
-> > +				 "return = %ld, errno = %d : %s",
-> > +				 advice, TEST_RETURN, TEST_ERRNO,
-> > +				 strerror(TEST_ERRNO));
-> > +		} else {
-> > +			tst_resm(TCONF,
-> > +				"madvise test for %s unsupported "
-> > +				"return = %ld, errno = %d : %s",
-> > +				advice, TEST_RETURN, TEST_ERRNO,
-> > +				strerror(TEST_ERRNO));
-> > +		}
-> >  	} else if (STD_FUNCTIONAL_TEST) {
-> >  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
-> >  	}
-> > 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Managing the Performance of Cloud-Based Applications
-> Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-> Read the Whitepaper.
-> http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+The rest looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
