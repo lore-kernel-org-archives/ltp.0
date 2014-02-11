@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sweekar.pinto@oracle.com>) id 1WGogn-0000L7-IL
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:54:45 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WGogm-0002un-FY
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:54:45 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1LBsc1x003528
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:54:38 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1LBsbAW002759
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:54:38 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1LBsbPY014705
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:54:37 GMT
-From: Sweekar Pinto <sweekar.pinto@oracle.com>
-Date: Thu, 20 Feb 2014 19:05:53 -0500
-Message-Id: <1392941153-8643-3-git-send-email-sweekar.pinto@oracle.com>
-In-Reply-To: <1392941153-8643-1-git-send-email-sweekar.pinto@oracle.com>
-References: <1392941153-8643-1-git-send-email-sweekar.pinto@oracle.com>
-Subject: [LTP] [PATCH v2 3/3] Change crashkernel param to 256M@128M
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WDEzS-0005X1-2L
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 15:11:14 +0000
+Date: Tue, 11 Feb 2014 16:10:34 +0100
+From: chrubis@suse.cz
+Message-ID: <20140211151034.GA15043@rei.Home>
+References: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] rpc-tirpc-full-test-suite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,49 +21,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
--We always get "crashkernel reservation failed -memory is in use"
- with crashkernel=64M@16M or crashkernel=128M@16M on all of our
- x86 test hardware. Here 256M@128M seems to be the best fit
- based on empirical data.
+Hi!
+> I found that run_rpc_test.sh fails during ltpstress.sh execution. And it fails
+> because the rpc-tirpc-full-test-suite is not compiled.
+> 
+> So I:
+> * integrated a part of the rpc-tirpc-full-test-suite into the LTP
+>   building process (added Makefiles and etc). This part is the one
+>   which was executed by run_rpc_tests.sh.
+> 
+> * changed the description of the testcases in runtest/.
+>   To ease debugging.
+> 
+> I couldn't find a solution to make 'make' add the '.bin' suffix to the produced
+> binaries. Therefore I had to fix some of the test scripts for that fact.
 
-Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
----
- testcases/kdump/lib/setup.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+I think that we are better without the bin suffix as it's not standard
+suffix for binaries on Linux.
 
-diff --git a/testcases/kdump/lib/setup.sh b/testcases/kdump/lib/setup.sh
-index 5bc54bb..3e53f1a 100755
---- a/testcases/kdump/lib/setup.sh
-+++ b/testcases/kdump/lib/setup.sh
-@@ -86,11 +86,11 @@ echo "Modify Boot Loader."
- if [ "${arch}" = "ppc64" ]; then
-     args="crashkernel=256M@32M xmon=off"
- elif [ "${arch}" = "i686" ]; then
--    args="crashkernel=128M@16M nmi_watchdog=1"
-+    args="crashkernel=256M@128M nmi_watchdog=1"
- elif [ "${arch}" = "ia64" ]; then
-     args="crashkernel=512M@256M"
- else
--    args="crashkernel=128M@16M"
-+    args="crashkernel=256M@128M"
- fi
- 
- if [ -x "/sbin/grubby" ]; then
+> Does anybody know how to do that?
+
+As far as I know you need to write a custom rule for that because the
+one make has by default matches %: %.c and not %.bin: %.c
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
