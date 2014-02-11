@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WI8V7-0008Qf-L0
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 03:16:09 +0000
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WD8Q6-0005Fw-Pl
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 08:10:18 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WI8V6-0007wo-5L
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 03:16:09 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WD8Q3-0005bV-J2
+	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 08:10:18 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1P3FmMJ013124
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 11:15:57 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1B8A0Ki028566
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 16:10:00 +0800
 From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 25 Feb 2014 11:03:31 +0800
-Message-Id: <1393297412-12914-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH v2 1/2] mknod/mknod07.c: cleanup
+Date: Tue, 11 Feb 2014 16:08:40 +0800
+Message-Id: <1392106121-5480-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1392106121-5480-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1392106121-5480-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH v2 3/4] delete_module/delete_module03.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,270 +32,302 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Delete some useless comment.
-Move the test body from main() to mknod_verify().
-Some cleanup.
+* Delete some useless commtents and fix some.
+* Use SAFE_* macros.
+* Some cleanup.
 
 Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/mknod/mknod07.c | 160 ++++++++++--------------------
- 1 file changed, 50 insertions(+), 110 deletions(-)
+ .../kernel/module/delete_module/delete_module03.c  | 220 +++++++--------------
+ 1 file changed, 70 insertions(+), 150 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mknod/mknod07.c b/testcases/kernel/syscalls/mknod/mknod07.c
-index 6cdf980..5ab2e3a 100644
---- a/testcases/kernel/syscalls/mknod/mknod07.c
-+++ b/testcases/kernel/syscalls/mknod/mknod07.c
-@@ -1,6 +1,7 @@
- /*
+diff --git a/testcases/kernel/module/delete_module/delete_module03.c b/testcases/kernel/module/delete_module/delete_module03.c
+index f38c03a..6a654c8 100644
+--- a/testcases/kernel/module/delete_module/delete_module03.c
++++ b/testcases/kernel/module/delete_module/delete_module03.c
+@@ -14,202 +14,122 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
   *
-  *   Copyright (c) International Business Machines  Corp., 2001
-+ *   07/2001 Ported by Wayne Boyer
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -13,12 +14,11 @@
-  *   the GNU General Public License for more details.
-  *
-  *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   along with this program;  if not, write to the Free Software Foundation,
-+ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
- 
- /*
-- * Test Name: mknod07
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER   : delete_module03
+- *
+- *    EXECUTED BY       : root / superuser
+- *
+- *    TEST TITLE        : Checking error conditions for delete_module(2)
+- *
+- *    TEST CASE TOTAL   : 1
+- *
+- *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
+- *
+- *    SIGNALS
+- *      Uses SIGUSR1 to pause before test if option set.
+- *      (See the parse_opts(3) man page).
++
++/*
++ *    AUTHOR: Madhu T L <madhu.tarikere@wipro.com>
   *
-  * Test Description:
-  * Verify that,
-@@ -27,44 +27,6 @@
-  *   2) mknod(2) returns -1 and sets errno to EACCES if parent directory
-  *	does not allow  write  permission  to  the process.
+  *    DESCRIPTION
+- *      Verify that, delete_module(2) returns -1 and sets errno to EBUSY, if
+- *		 tried to remove a module in-use.
+- *
+- *      Setup:
+- *        Setup signal handling.
+- *        Test caller is super user
+- *        Set expected errnos for logging
+- *        Pause for SIGUSR1 if option specified.
+- *		   Insert loadable modules
+- *
+- *      Test:
+- *       Loop if the proper options are given.
+- *        Execute system call
+- *        Check return code and error number, if matching,
+- *                   Issue PASS message
+- *        Otherwise,
+- *                   Issue FAIL message
+- *
+- *      Cleanup:
+- *        Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  delete_module03 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
+- *		 		 where,  -c n : Run n copies concurrently. (no
+- *		 		 		effect)
+- *	 		 		 -e   : Turn on errno logging.
+- *	 		 		 -f   : Turn off functional testing
+- *	 		 		 -h   : Show help screen
+- *	 		 		 -i n : Execute test n times.
+- *	 		 		 -I x : Execute test for x seconds.
+- *	 		 		 -p   : Pause for SIGUSR1 before
+- *	 		 		 	starting
+- *	 		 		 -P x : Pause for x seconds between
+- *	 		 		 	iterations.
+- *	 		 		 -t   : Turn on syscall timing.
+- *
+- * RESTRICTIONS
+- *		 -c option has no effect for this testcase, even if used allows
+- *		 only one instance to run at a time.
+- *
+- * CHANGELOG
++ *      Verify that, delete_module(2) returns -1 and sets errno to EWOULDBLOCK,
++ *      if tried to remove a module while other modules depend on this module.
   *
-- * Expected Result:
-- *  mknod() should fail with return value -1 and set expected errno.
+- *  11/22/02 -	Added "--force" to insmod options and redirected output to
+- *  		/dev/null. This was done to allow kernel mismatches, b/c it
+- *  		doesn't matter in this case.
+- *		Robbie Williamson <robbiew@us.ibm.com>
 - *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	if errno set == expected errno
-- *		Issue sys call fails with expected return value and errno.
-- *	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory(s)/file(s) created.
-- *
-- * Usage:  <for command-line>
-- *  mknod07 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  This test should be executed by non-super-user only.
-  */
+- ****************************************************************/
++ */
  
- #include <stdio.h>
-@@ -79,125 +41,103 @@
- 
+-#include <libgen.h>
+ #include <errno.h>
+-#include <pwd.h>
  #include "test.h"
  #include "usctest.h"
++#include "tst_module.h"
 +#include "safe_macros.h"
++#include "linux_syscall_numbers.h"
  
--#define MODE_RWX	S_IFIFO | S_IRWXU | S_IRWXG | S_IRWXO
--#define NEWMODE		S_IFIFO | S_IRUSR | S_IRGRP | S_IROTH
--#define SOCKET_MODE	S_IFSOCK| S_IRWXU | S_IRWXG | S_IRWXO
--#define DIR_TEMP	"testdir_1"
-+#define DIR_TEMP		"testdir_1"
-+#define DIR_TEMP_MODE		(S_IRUSR | S_IXUSR)
+-#define DUMMY_MOD		 "dummy_del_mod"
+-#define DUMMY_MOD_DEP		 "dummy_del_mod_dep"
+-#define EXP_RET_VAL		 -1
+-#define EXP_ERRNO		 EWOULDBLOCK
+-/*#define EXP_ERRNO		 EBUSY */
++#define DUMMY_MOD		"dummy_del_mod"
++#define DUMMY_MOD_KO		"dummy_del_mod.ko"
++#define DUMMY_MOD_DEP		"dummy_del_mod_dep"
++#define DUMMY_MOD_DEP_KO	"dummy_del_mod_dep.ko"
++
++static int dummy_mod_loaded;
++static int dummy_mod_dep_loaded;
  
--void setup2();			/* setup function to test mknod for EACCES */
-+#define FIFO_MODE	(S_IFIFO | S_IRUSR | S_IRGRP | S_IROTH)
-+#define SOCKET_MODE	(S_IFSOCK | S_IRWXU | S_IRWXG | S_IRWXO)
-+#define CHR_MODE	(S_IFCHR | S_IRUSR | S_IWUSR)
-+#define BLK_MODE	(S_IFBLK | S_IRUSR | S_IWUSR)
+ char *TCID = "delete_module03";
+-/*static int exp_enos[] = {EBUSY, 0}; */
+ static int exp_enos[] = { EWOULDBLOCK, 0 };
  
--struct test_case_t {		/* test case struct. to hold ref. test cond's */
-+static struct test_case_t {
- 	char *pathname;
- 	int mode;
- 	int exp_errno;
--	void (*setupfunc) (void);
- } test_cases[] = {
--	{
--	"tnode_1", SOCKET_MODE, EACCES, NULL}, {
--"tnode_2", NEWMODE, EACCES, setup2},};
-+	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES },
-+	{ "testdir_1/tnode_2", FIFO_MODE, EACCES },
-+	{ "tnode_3", CHR_MODE, EPERM },
-+	{ "tnode_4", BLK_MODE, EPERM },
-+};
+ int TST_TOTAL = 1;
  
- char *TCID = "mknod07";
--int TST_TOTAL = 2;
--int exp_enos[] = { EPERM, EACCES, 0 };
--
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = { EPERM, EACCES, 0 };
+-static void setup(void);
++static void setup();
+ static void cleanup(void);
  
--void setup();			/* setup function for the tests */
--void cleanup();			/* cleanup function for the tests */
-+static void setup(void);
-+static void mknod_verify(const struct test_case_t *test_case);
-+static void cleanup(void);
- 
- int main(int ac, char **av)
+ int main(int argc, char **argv)
  {
  	int lc;
  	char *msg;
--	char *node_name;	/* ptr. for node name created */
- 	int i;
--	int mode;		/* creation mode for the node created */
+-	char cmd[50];
  
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	msg = parse_opts(ac, av, NULL, NULL);
+-	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
++	msg = parse_opts(argc, argv, NULL, NULL);
 +	if (msg != NULL)
  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
  
+-	if (STD_COPIES != 1) {
+-		tst_resm(TINFO, "-c option has no effect for this testcase - "
+-			 "doesn't allow running more than one instance "
+-			 "at a time");
+-		STD_COPIES = 1;
+-	}
+-
+-	/* Load first kernel module */
+-	if (sprintf(cmd, "/sbin/insmod %s/%s.ko", dirname(argv[0]),
+-		    DUMMY_MOD) <= 0) {
+-		tst_resm(TBROK, "sprintf failed");
+-		return 1;
+-	}
+-	if ((system(cmd)) != 0) {
+-		tst_resm(TBROK, "Failed to load %s module", DUMMY_MOD);
+-		return 1;
+-	}
+-
+-	/* Load dependant kernel module */
+-	if (sprintf(cmd, "/sbin/insmod %s/%s.ko", dirname(argv[0]),
+-		    DUMMY_MOD_DEP) <= 0) {
+-		tst_resm(TBROK, "sprintf failed");
+-		goto END;
+-	}
+-	if ((system(cmd)) != 0) {
+-		tst_resm(TBROK, "Failed to load %s module", DUMMY_MOD_DEP);
+-		goto END;
+-	}
+-
  	setup();
  
--	TEST_EXP_ENOS(exp_enos);
--
  	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
+-		/* reset tst_count in case we are looping */
  		tst_count = 0;
  
--		for (i = 0; i < TST_TOTAL; i++) {
--			node_name = test_cases[i].pathname;
--			mode = test_cases[i].mode;
+-		/* Test the system call */
+-		TEST(delete_module(DUMMY_MOD));
 -
--			TEST(mknod(node_name, mode, 0));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "mknod succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == test_cases[i].exp_errno)
--				tst_resm(TPASS | TTERRNO,
--					 "mknod failed as expected");
--			else
--				tst_resm(TFAIL | TTERRNO,
--					 "mknod failed unexpectedly; expected: "
--					 "%d - %s", test_cases[i].exp_errno,
--					 strerror(test_cases[i].exp_errno));
--		}
--
-+		for (i = 0; i < TST_TOTAL; i++)
-+			mknod_verify(&test_cases[i]);
+-		TEST_ERROR_LOG(TEST_ERRNO);
+-		if ((TEST_RETURN == (int)EXP_RET_VAL) &&
+-		    (TEST_ERRNO == EXP_ERRNO)) {
+-			tst_resm(TPASS, "Expected failure for module in-use, "
+-				 "errno: %d", TEST_ERRNO);
++		TEST(ltp_syscall(__NR_delete_module, DUMMY_MOD, 0));
++		TEST_ERROR_LOG(errno);
++
++		if (TEST_RETURN < 0) {
++			switch (errno) {
++			case EWOULDBLOCK:
++				tst_resm(TPASS | TTERRNO,
++					 "delete_module() failed as expected");
++			break;
++			default:
++				tst_resm(TFAIL | TTERRNO, "delete_module() "
++					 "failed unexpectedly; expected: "
++					 "%d - %s", EWOULDBLOCK,
++					 strerror(EWOULDBLOCK));
++			break;
++			}
+ 		} else {
+-			tst_resm(TFAIL, "Unexpected results for module in-use; "
+-				 "returned %d (expected %d), errno %d "
+-				 "(expected %d)", TEST_RETURN,
+-				 EXP_RET_VAL, TEST_ERRNO, EXP_ERRNO);
++			tst_resm(TFAIL, "delete_module()"
++				 "succeeded unexpectedly");
++			dummy_mod_loaded = 0;
++			/*
++			 * insmod DUMMY_MOD_KO again in case running
++			 * with -i option
++			 */
++			tst_module_load(cleanup, DUMMY_MOD_KO, NULL);
++			dummy_mod_loaded = 1;
+ 		}
  	}
- 
++
  	cleanup();
- 	tst_exit();
+-END:
+-	if (system("rmmod " DUMMY_MOD) != 0) {
+-		tst_resm(TBROK, "Failed to unload %s module", DUMMY_MOD);
+-		return 1;
+-	}
++	tst_exit();
+ 
  }
  
--void setup()
+-/*
+- * setup()
+- *	performs all ONE TIME setup for this test
+- */
+-void setup(void)
 +static void setup(void)
  {
--	int i;
-+	struct passwd *ltpuser;
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
  
  	tst_require_root(NULL);
  
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--	if (seteuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid failed");
+-	tst_tmpdir();
 -
--	TEST_PAUSE;
-+	TEST_EXP_ENOS(exp_enos);
+-	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
  
- 	tst_tmpdir();
- 
--	if (mkdir(DIR_TEMP, MODE_RWX) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "mkdir failed");
--
--	if (chmod(DIR_TEMP, MODE_RWX) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "chmod failed");
-+	TEST_PAUSE;
- 
--	if (chdir(DIR_TEMP) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "chdir failed");
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
- 
--	for (i = 0; i < TST_TOTAL; i++)
--		if (test_cases[i].setupfunc != NULL)
--			test_cases[i].setupfunc();
-+	SAFE_MKDIR(cleanup, DIR_TEMP, DIR_TEMP_MODE);
- }
- 
--void setup2()
-+static void mknod_verify(const struct test_case_t *test_case)
- {
--	if (chmod(".", NEWMODE) < 0)
--		tst_brkm(TBROK, cleanup, "chmod failed");
-+	TEST(mknod(test_case->pathname, test_case->mode, 0));
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -c option.
+-	 */
++	/* Load first kernel module */
++	tst_module_load(cleanup, DUMMY_MOD_KO, NULL);
++	dummy_mod_loaded = 1;
 +
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "mknod succeeded unexpectedly");
-+		return;
++	/* Load dependant kernel module */
++	tst_module_load(cleanup, DUMMY_MOD_DEP_KO, NULL);
++	dummy_mod_dep_loaded = 1;
++
++	if (STD_COPIES != 1) {
++		tst_resm(TINFO, "-c option has no effect for this testcase - "
++			 "doesn't allow running more than one instance "
++			 "at a time");
++		STD_COPIES = 1;
 +	}
 +
-+	if (TEST_ERRNO == test_case->exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "mknod failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "mknod failed unexpectedly; expected: "
-+			 "%d - %s", test_case->exp_errno,
-+			 strerror(test_case->exp_errno));
-+	}
+ 	TEST_PAUSE;
  }
  
--void cleanup()
+-/*
+- * cleanup()
+- *	performs all ONE TIME cleanup for this test at
+- *	completion or premature exit
+- */
+-void cleanup(void)
 +static void cleanup(void)
  {
+ 	/* Unload dependent kernel module */
+-	if (system("rmmod " DUMMY_MOD_DEP) != 0) {
+-		tst_resm(TBROK, "Failed to unload %s module", DUMMY_MOD_DEP);
+-	}
++	if (dummy_mod_dep_loaded == 1)
++		tst_module_unload(NULL, DUMMY_MOD_DEP_KO);
++
+ 	/* Unload first kernel module */
+-	if (system("rmmod " DUMMY_MOD) != 0) {
+-		tst_resm(TBROK, "Failed to unload %s module", DUMMY_MOD);
+-	}
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
++	if (dummy_mod_loaded == 1)
++		tst_module_unload(NULL, DUMMY_MOD_KO);
++
  	TEST_CLEANUP;
- 
- 	if (seteuid(0) == -1)
--		tst_resm(TBROK, "seteuid(0) failed");
-+		tst_resm(TINFO | TERRNO, "Failet to seteuid(0) before cleanup");
- 
- 	tst_rmdir();
--
+-	tst_rmdir();
  }
 -- 
 1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
