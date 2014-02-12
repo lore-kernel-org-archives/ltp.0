@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WE0RA-000229-Oq
-	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 17:51:00 +0000
-Date: Thu, 13 Feb 2014 18:50:49 +0100
-From: chrubis@suse.cz
-Message-ID: <20140213175049.GA19125@rei.suse.cz>
-References: <1390428817-31923-1-git-send-email-sweekar.pinto@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1390428817-31923-1-git-send-email-sweekar.pinto@oracle.com>
-Subject: Re: [LTP] [PATCH 1/3] Fixed compile errors in crasher.c
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WDUrR-0004RF-Hk
+	for ltp-list@lists.sourceforge.net; Wed, 12 Feb 2014 08:08:01 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WDUrI-00004z-Lg
+	for ltp-list@lists.sourceforge.net; Wed, 12 Feb 2014 08:08:01 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1C87VrT004605
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Feb 2014 16:07:31 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 12 Feb 2014 16:06:10 +0800
+Message-Id: <1392192370-9976-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <52FB25CE.7090704@cn.fujitsu.com>
+References: <52FB25CE.7090704@cn.fujitsu.com>
+Subject: [LTP] [PATCH v2] msgrcv/msgrcv07.c: add MSG_EXCEPT,
+	MSG_NOERROR flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,132 +27,271 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sweekar Pinto <sweekar.pinto@oracle.com>
-Cc: lisa.vaz@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-The whole patchset is send in one email and 'git am' applies only the
-first patch. Can you please resend it correctly?
+create a new case to test MSG_EXCEPT, MSG_NOERROR flag for msgrcv(2)
 
-> -Conditional inclusion of asm.h for kernel > 3.4
-> -The owner field of proc_dir_entry has been removed
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runtest/ltplite                                 |   1 +
+ runtest/stress.part3                            |   1 +
+ runtest/syscalls                                |   1 +
+ runtest/syscalls-ipc                            |   1 +
+ testcases/kernel/syscalls/.gitignore            |   1 +
+ testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c | 177 ++++++++++++++++++++++++
+ 6 files changed, 182 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
 
-When was this removed? If this is relatively recent change we should add
-an ifdef around the initalization instead of removing it.
-
-> Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
-> ---
->  testcases/kdump/lib/crasher/crasher.c |    6 ++++--
->  1 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kdump/lib/crasher/crasher.c b/testcases/kdump/lib/crasher/crasher.c
-> index bc192dc..2b01412 100644
-> --- a/testcases/kdump/lib/crasher/crasher.c
-> +++ b/testcases/kdump/lib/crasher/crasher.c
-> @@ -25,7 +25,10 @@
->  #include <linux/proc_fs.h>
->  #include <linux/spinlock.h>
->  #include <asm/uaccess.h>
-> +#include <linux/version.h>
-> +#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 4, 0)
->  #include <asm/system.h>
-> +#endif
-
-The inner include should look like:
-
-# include <asm/system.h>
-
->  MODULE_LICENSE("GPL");
->  
-> @@ -46,7 +49,7 @@ static int crasher_write(struct file *file, const char *buffer,
->  			 unsigned long count, void *data)
->  {
->  	char value, *a;
-> -	spinlock_t mylock = SPIN_LOCK_UNLOCKED;
-> +	DEFINE_SPINLOCK(mylock);
->  
->  	/* grab the first byte the user gave us, ignore the rest */
->  	if (copy_from_user(&value, buffer, 1))
-> @@ -94,7 +97,6 @@ int crasher_init(void)
->  
->  	crasher_proc->read_proc = crasher_read;
->  	crasher_proc->write_proc = crasher_write;
-> -	crasher_proc->owner = THIS_MODULE;
->  	return 0;
->  }
->  
-> -- 
-> 1.7.1
-> 
-> 
-> >From f58a6316dc168781daa76edf4d78a217e2af2628 Mon Sep 17 00:00:00 2001
-> From: Sweekar Pinto <sweekar.pinto@oracle.com>
-> Date: Wed, 22 Jan 2014 17:05:01 -0500
-> Subject: [PATCH 2/3] Fix passwordless ssh for network(ssh) dump test
-> 
-> -Force ssh to use kdumps rsa key to run commands remotely
-> 
-> Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
-> ---
->  testcases/kdump/runkdump.sh |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kdump/runkdump.sh b/testcases/kdump/runkdump.sh
-> index e2e681c..cd6ee1c 100755
-> --- a/testcases/kdump/runkdump.sh
-> +++ b/testcases/kdump/runkdump.sh
-> @@ -95,7 +95,7 @@ PrepareVerify ()
->              exit 1
->          fi
->  
-> -        file=$(ssh "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore \
-> +        file=$(ssh -i ~/.ssh/kdump_id_rsa "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore* \
->           2>/dev/null | head -1")
->  
->          mkdir -p "${COREDIR}/${last}"
-> @@ -103,7 +103,7 @@ PrepareVerify ()
->          if [ "${file}" ]; then
->              # Not fatal error.
->              set +e
-> -            scp "${SCP_PATH}:${file}" "${COREDIR}/${last}"
-> +            scp  -i ~/.ssh/kdump_id_rsa "${SCP_PATH}:${file}" "${COREDIR}/${last}"
->              set -e
->          fi
->  
-> @@ -116,7 +116,7 @@ PrepareVerify ()
->          COREDIR=/mnt"${COREDIR}"
->      fi
->  
-> -    vmcore=$(ls -t "${COREDIR}"/*/vmcore 2>/dev/null | head -1)
-> +    vmcore=$(ls -t "${COREDIR}"/*/vmcore* 2>/dev/null | head -1)
-
-This change is not explained in the commit message.
-
->  }
->  
->  VerifyTest ()
-> -- 
-> 1.7.1
-> 
-> 
-> >From 76ab06883327fdcdf038af5dd96a036e0b077818 Mon Sep 17 00:00:00 2001
-> From: Sweekar Pinto <sweekar.pinto@oracle.com>
-> Date: Wed, 22 Jan 2014 17:08:23 -0500
-> Subject: [PATCH 3/3] Change crashkernel param to 256M@128M
-> 
-> -Change the crashkernel parm of x86 and default arch to 256M@128M as this is found to be the best fit
-
-Can you elaborate further? The kernel documentation
-(Documentation/kdump/kdump.txt) still says 64M@16M.
-
-Also format the commit message to 80 chars.
-
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 2f8f977..0fffa00 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -489,6 +489,7 @@ msgrcv03 msgrcv03
+ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
++msgrcv07 msgrcv07
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 5703d13..55e9b49 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -412,6 +412,7 @@ msgrcv03 msgrcv03
+ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
++msgrcv07 msgrcv07
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 083c240..53bab14 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -642,6 +642,7 @@ msgrcv03 msgrcv03
+ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
++msgrcv07 msgrcv07
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index 02b6e45..bd9bf30 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -23,6 +23,7 @@ msgrcv03 msgrcv03
+ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
++msgrcv07 msgrcv07
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index b622244..4fc27f8 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -386,6 +386,7 @@
+ /ipc/msgrcv/msgrcv04
+ /ipc/msgrcv/msgrcv05
+ /ipc/msgrcv/msgrcv06
++/ipc/msgrcv/msgrcv07
+ /ipc/msgsnd/msgsnd01
+ /ipc/msgsnd/msgsnd02
+ /ipc/msgsnd/msgsnd03
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+new file mode 100644
+index 0000000..aac0b44
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+@@ -0,0 +1,177 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++/*
++ * Description:
++ *     Basic test for msgrcv(2) using MSG_EXCEPT, MSG_NOERROR
++ */
++
++#define  _GNU_SOURCE
++#include <sys/wait.h>
++#include "test.h"
++#include "usctest.h"
++#include "ipcmsg.h"
++
++
++#define MSGTYPE1	1
++#define MSGTYPE2	2
++#define MSG1	"message type1"
++#define MSG2	"message type2"
++
++static void wait4child(pid_t child, char *tst_flag);
++
++static void test_msg_except(void);
++static void test_msg_noerror(void);
++
++static void (*testfunc[])(void) = { test_msg_except, test_msg_noerror };
++
++char *TCID = "msgrcv07";
++int TST_TOTAL = ARRAY_SIZE(testfunc);
++
++int main(int ac, char **av)
++{
++	int lc;
++	char *msg;
++	int i;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			(*testfunc[i])();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++}
++
++static void test_msg_except(void)
++{
++	pid_t child_pid;
++	int msgq_id;
++	MSGBUF snd_buf1 = {.mtype = MSGTYPE1, .mtext = MSG1};
++	MSGBUF snd_buf2 = {.mtype = MSGTYPE2, .mtext = MSG2};
++	MSGBUF rcv_buf;
++
++	msgq_id = msgget(IPC_PRIVATE, MSG_RW);
++	if (msgq_id == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Can't create message queue");
++
++	if (msgsnd(msgq_id, &snd_buf1, MSGSIZE, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Can't enqueue message");
++
++	if (msgsnd(msgq_id, &snd_buf2, MSGSIZE, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Can't enqueue message");
++
++	child_pid = tst_fork();
++	if (child_pid == -1) {
++		tst_brkm(TBROK, cleanup, "fork failed");
++	} else if (child_pid > 0) {
++		wait4child(child_pid, "MSG_EXCEPT");
++	} else {
++		memset(&rcv_buf, 0, sizeof(rcv_buf));
++		TEST(msgrcv(msgq_id, &rcv_buf, MSGSIZE, MSGTYPE2, MSG_EXCEPT));
++		if (TEST_RETURN == -1) {
++			fprintf(stderr, "msgrcv(MSG_EXCEPT) failed\n");
++			exit(TBROK);
++		}
++		/* check the received message */
++		if (strcmp(rcv_buf.mtext, MSG1) == 0 &&
++		    rcv_buf.mtype == MSGTYPE1)
++			exit(TPASS);
++		else
++			exit(TFAIL);
++	}
++
++	rm_queue(msgq_id);
++}
++
++
++static void test_msg_noerror(void)
++{
++	pid_t child_pid;
++	int msg_len, msgq_id;
++	MSGBUF snd_buf1 = {.mtype = MSGTYPE1, .mtext = MSG1};
++	MSGBUF rcv_buf;
++
++	msgq_id = msgget(IPC_PRIVATE, MSG_RW);
++	if (msgq_id == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Can't create message queue");
++
++	if (msgsnd(msgq_id, &snd_buf1, MSGSIZE, 0) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "Can't enqueue message");
++
++	child_pid = tst_fork();
++	if (child_pid == -1) {
++		tst_brkm(TBROK, cleanup, "fork failed");
++	} else if (child_pid > 0) {
++		wait4child(child_pid, "MSG_NOERROR");
++	} else {
++		msg_len = sizeof(MSG1) / 2;
++		memset(&rcv_buf, 0, sizeof(rcv_buf));
++
++		TEST(msgrcv(msgq_id, &rcv_buf, msg_len, MSGTYPE1, MSG_NOERROR));
++		if (TEST_RETURN == -1)
++			exit(TFAIL);
++
++		if (strncmp(rcv_buf.mtext, MSG1, msg_len) == 0 &&
++		    rcv_buf.mtype == MSGTYPE1)
++			exit(TPASS);
++		exit(TFAIL);
++	}
++
++	rm_queue(msgq_id);
++}
++
++static void wait4child(pid_t child, char *tst_flag)
++{
++	int status;
++	int ret;
++
++	if (waitpid(child, &status, 0) == -1)
++		tst_resm(TBROK | TERRNO, "waitpid");
++	if (WIFEXITED(status)) {
++		ret = WEXITSTATUS(status);
++		if (ret == 0)
++			tst_resm(TPASS, "test %s success", tst_flag);
++		else if (ret == 1)
++			tst_resm(TFAIL, "test %s failed", tst_flag);
++		else
++			tst_brkm(TBROK, cleanup, "msgrcv failed unexpectedly");
++	} else {
++		tst_brkm(TBROK, cleanup, "child process terminated "
++			 "abnormally. status: %d", status);
++	}
++}
++
++void cleanup(void)
++{
++	TEST_CLEANUP;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 Android apps run on BlackBerry 10
