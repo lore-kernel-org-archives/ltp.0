@@ -1,27 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WGQGz-0005Kn-KY
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 09:50:29 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGQGx-0006oV-TL
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 09:50:29 +0000
-Message-ID: <1392889813.2053.10.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 20 Feb 2014 17:50:13 +0800
-In-Reply-To: <1392889204.2053.7.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1392372746.2085.11.camel@G08JYZSD130126>
-	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-	<1392802716.2083.4.camel@G08JYZSD130126>
-	<1392802803.2083.5.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v3 2/2] mlock/mlock02.c: add EPERM and ENOMEM errno
-	tests
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1WDTgm-0002GS-C5
+	for ltp-list@lists.sourceforge.net; Wed, 12 Feb 2014 06:52:56 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WDTgk-0003e0-Kr
+	for ltp-list@lists.sourceforge.net; Wed, 12 Feb 2014 06:52:56 +0000
+Message-ID: <52FB1A26.5070002@oracle.com>
+Date: Wed, 12 Feb 2014 14:52:22 +0800
+From: Simon Xu <xu.simon@oracle.com>
+MIME-Version: 1.0
+References: <1386750816-782-1-git-send-email-xu.simon@oracle.com>
+	<52BA386D.50903@oracle.com> <52DDD0D9.40309@oracle.com>
+	<2063328347.1666006.1391079813144.JavaMail.root@redhat.com>
+	<52F83C96.9090802@oracle.com>
+	<404815959.572342.1392042957279.JavaMail.zimbra@redhat.com>
+In-Reply-To: <404815959.572342.1392042957279.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,152 +32,533 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-Add EPERM and ENOMEM errno tests for mlock(2).
+On 2014/2/10 22:35, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> From: "Simon Xu" <xu.simon@oracle.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Monday, 10 February, 2014 3:42:30 AM
+>> Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
+>>
+>> On 2014/1/30 19:03, Jan Stancek wrote:
+>>> ----- Original Message -----
+>>>> From: "Simon Xu" <xu.simon@oracle.com>
+>>>> To: ltp-list@lists.sourceforge.net
+>>>> Sent: Tuesday, 21 January, 2014 2:43:53 AM
+>>>> Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
+>>>>
+>>>> Could anyone help to review this?
+>>>>
+>>>> Thanks
+>>>> Simon
+>>>>
+>>>> On 2013/12/25 9:44, Simon Xu wrote:
+>>>>> Could anyone help to review this?
+>>>>>
+>>>>> Thanks
+>>>>> Simon
+>>>>>
+>>>>> On 2013/12/11 16:33, Simon Xu wrote:
+>>>>>> 1) Eliminate '|| RC=$?' because because it may not be excecuted and the
+>>>>>>        original value in RC can mess things up.
+>>> Hi,
+>>>
+>>> "original value in RC can mess things up"
+>>> Can you elaborate on this? Isn't original value (initialized to) 0?
+>> It's been a while since I created the patch, I remember I had some issue
+>> where a command succeeds but test fails because RC was not 0 before the
+>> command executes.  Anyway, I think
+>>
+>> RC=0
+>> ...
+>> ...
+>> command || RC=$?
+>> check RC value
+>>
+>> is bad design.  It's error prone.  While
+>>
+>> command
+>> RC=$?
+>> check RC value
+>>
+>> is simple and robust.
+> I see what you mean, it's easier to make new bug if you're not careful with RC
+> at every single place. The rest looks good to me:
+>
+> Acked-by: Jan Stancek <jstancek@redhat.com>
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/mlock/mlock02.c | 65 +++++++++++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 3 deletions(-)
+I double checked all places where I modified the RC logic and retested 
+the script, it works fine.
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
-index 811d141..79f1d29 100644
---- a/testcases/kernel/syscalls/mlock/mlock02.c
-+++ b/testcases/kernel/syscalls/mlock/mlock02.c
-@@ -20,13 +20,22 @@
-  * ALGORITHM
-  * 	test 1:
-  *		Call mlock with a NULL address.  ENOMEM should be returned
-+ *	test 2:
-+ *		The caller was not privileged and its RLIMIT_MEMLOCK soft
-+ *		resource limit was 0. EPERM should be returned
-+ *	test 3:
-+ *		The caller was not privileged and its RLIMIT_MEMLOCK soft
-+ *		resource limit was nonzero, but tried to lock more memory than
-+ *		the limit permitted. ENOMEM should be returned
-  */
- 
- #include <errno.h>
- #include <unistd.h>
- #include <sys/mman.h>
-+#include <pwd.h>
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
- 
- char *TCID = "mlock02";
- 
-@@ -36,21 +45,29 @@ struct test_case_t {
- 	void **addr;
- 	int len;
- 	int error;
--	void (*setupfunc) (struct test_case_t *);
-+	void (*setupfunc) ();
-+	void (*cleanupfunc) (void);
- };
- 
- static void *addr1;
-+static char addr2[1024];
-+static struct passwd *ltpuser;
- static void setup(void);
- static void setup1(struct test_case_t *);
-+static void setup2(void);
-+static void setup3(void);
-+static void cleanup2(void);
- static void cleanup(void);
- static void mlock_verify(struct test_case_t *);
- 
- static struct test_case_t TC[] = {
--	{&addr1, 1024, ENOMEM, setup1},
-+	{&addr1, 1024, ENOMEM, setup1, NULL},
-+	{(void **)&addr2, 1024, EPERM, setup2, cleanup2},
-+	{(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
- };
- 
- int TST_TOTAL = ARRAY_SIZE(TC);
--static int exp_enos[] = { ENOMEM, 0 };
-+static int exp_enos[] = { ENOMEM, EPERM, 0 };
- 
- int main(int ac, char **av)
- {
-@@ -76,9 +93,13 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
-+
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
- }
- 
- static void mlock_verify(struct test_case_t *test)
-@@ -88,6 +109,9 @@ static void mlock_verify(struct test_case_t *test)
- 
- 	TEST(mlock(*(test->addr), test->len));
- 
-+	if (test->cleanupfunc != NULL)
-+		test->cleanupfunc();
-+
- 	if (TEST_RETURN != -1) {
- 		tst_resm(TFAIL, "mlock succeeded unexpectedly");
- 		return;
-@@ -111,6 +135,41 @@ static void setup1(struct test_case_t *test)
- #endif
- }
- 
-+static void setup2(void)
-+{
-+	struct rlimit rl;
-+
-+	rl.rlim_max = 0;
-+	rl.rlim_cur = 0;
-+	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-+		tst_brkm(TBROK, cleanup,
-+			 "setrlimit failed to set the resource for "
-+			 "RLIMIT_MEMLOCK to check for mlock()");
-+	}
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+}
-+
-+static void setup3(void)
-+{
-+	struct rlimit rl;
-+
-+	rl.rlim_max = 1;
-+	rl.rlim_cur = 1;
-+	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-+		tst_brkm(TBROK, cleanup,
-+			 "setrlimit failed to set the resource for "
-+			 "RLIMIT_MEMLOCK to check for mlock()");
-+	}
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+}
-+
-+static void cleanup2(void)
-+{
-+	SAFE_SETEUID(cleanup, 0);
-+}
-+
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
--- 
-1.8.4.2
+Thanks
+Simon
 
-
+>>>> Also remove the RC=0
+>>>>>>        initializations that are now unnecessary.
+>>>>>> 2) Exit test immediately with non-zero return code when a test fails.
+>>>>>> 3) Add missing parameters in calling tst_brk and tst_brkm
+>>>>>>
+>>>>>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+>>>>>> ---
+>>>>>>      testcases/network/iproute/ip_tests.sh | 128
+>>>>>>      ++++++++++++++++++++--------------
+>>>>>>      1 file changed, 74 insertions(+), 54 deletions(-)
+>>>>>>
+>>>>>> diff --git a/testcases/network/iproute/ip_tests.sh
+>>>>>> b/testcases/network/iproute/ip_tests.sh
+>>>>>> index 0416300..ed20540 100755
+>>>>>> --- a/testcases/network/iproute/ip_tests.sh
+>>>>>> +++ b/testcases/network/iproute/ip_tests.sh
+>>>>>> @@ -45,7 +45,6 @@ set +x
+>>>>>>      init()
+>>>>>>      {
+>>>>>>      
+>>>>>> -	export RC=0					# Return code from commands.
+>>>>>>      	export TST_TOTAL=2			# total numner of tests in this file.
+>>>>>>      	export TCID="ip_tests  "		# this is the init function.
+>>>>>>      	export TST_COUNT=0			# init identifier,
+>>>>>> @@ -61,15 +60,17 @@ init()
+>>>>>>      	trap "cleanup" 0
+>>>>>>      
+>>>>>>      	# create the tmp directory for this testcase.
+>>>>>> -	mkdir -p $LTPTMP/ >/dev/null 2>&1 || RC=$?
+>>>>>> +	mkdir -p $LTPTMP/ >/dev/null 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>> -		tst_brkm TBROK "INIT: Unable to create temporary directory"
+>>>>>> +		tst_brkm TBROK NULL "INIT: Unable to create temporary directory"
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>>      	# Check to see if test harness functions are in the path.
+>>>>>> -	which tst_resm  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	which tst_resm  >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brkm TBROK NULL \
+>>>>>> @@ -77,7 +78,8 @@ init()
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	which awk  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	which awk  >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brkm TBROK NULL \
+>>>>>> @@ -85,7 +87,8 @@ init()
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	which ip  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	which ip  >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brkm TBROK NULL \
+>>>>>> @@ -93,7 +96,8 @@ init()
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	which ifconfig  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	which ifconfig  >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brkm TBROK NULL \
+>>>>>> @@ -104,24 +108,25 @@ init()
+>>>>>>      	tst_resm TINFO "INIT: Inititalizing tests."
+>>>>>>      
+>>>>>>      	# Aliasing eth0 to create private network.
+>>>>>> -	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>> -		tst_brk TBROK "INIT: failed aliasing eth0:1 with IP 10.1.1.12"
+>>>>>> +		tst_brk TBROK NULL NULL "INIT: failed aliasing eth0:1 with IP
+>>>>>> 10.1.1.12"
+>>>>>>      		return $RC
+>>>>>>      	else
+>>>>>> -		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 \
+>>>>>> -			|| RC=$?
+>>>>>> +		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>> -			tst_brk TBROK "INIT: failed adding route to 10.1.1.12"
+>>>>>> +			tst_brk TBROK NULL NULL "INIT: failed adding route to 10.1.1.12"
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>>      			tst_resm TINFO "INIT: added alias: `ifconfig eth0:1`"
+>>>>>>      		fi
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	cat > $LTPTMP/tst_ip02.exp <<-EOF || RC=$?
+>>>>>> +	cat > $LTPTMP/tst_ip02.exp <<-EOF
+>>>>>>      	1:
+>>>>>>      	link/loopback
+>>>>>>      	2:
+>>>>>> @@ -129,7 +134,7 @@ init()
+>>>>>>      	3:
+>>>>>>      	link/ether
+>>>>>>      	EOF
+>>>>>> -
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brkm TBROK NULL "INIT: failed creating expected output for
+>>>>>>      		test02"
+>>>>>> @@ -151,9 +156,9 @@ cleanup()
+>>>>>>      {
+>>>>>>      	TCID=dhcpd
+>>>>>>      	TST_COUNT=0
+>>>>>> -	RC=0
+>>>>>>      
+>>>>>> -	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -eq 0 ]
+>>>>>>      	then
+>>>>>>      		/sbin/ifconfig eth0:1 down >$LTPTMP/tst_ip.err 2>&1
+>>>>>> @@ -178,7 +183,6 @@ cleanup()
+>>>>>>      
+>>>>>>      test01()
+>>>>>>      {
+>>>>>> -	RC=0			# Return value from commands.
+>>>>>>      	TCID=ip01	    # Name of the test case.
+>>>>>>      	TST_COUNT=1		# Test number.
+>>>>>>      
+>>>>>> @@ -225,7 +229,6 @@ test01()
+>>>>>>      
+>>>>>>      test02()
+>>>>>>      {
+>>>>>> -	RC=0			# Return value from commands.
+>>>>>>      	TCID=ip02	    # Name of the test case.
+>>>>>>      	TST_COUNT=2		# Test number.
+>>>>>>      
+>>>>>> @@ -236,7 +239,8 @@ test02()
+>>>>>>      	tst_resm TINFO \
+>>>>>>      	 "Test #2: Installing dummy.o in kernel"
+>>>>>>      
+>>>>>> -	modprobe dummy >$LTPTMP/tst_ip.out 2>&1 || RC=$?
+>>>>>> +	modprobe dummy >$LTPTMP/tst_ip.out 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brk TBROK $LTPTMP/tst_ip.out NULL \
+>>>>>> @@ -244,7 +248,8 @@ test02()
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	ip link show dummy0 | grep dummy0 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	ip link show dummy0 | grep dummy0 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_res TFAIL $LTPTMP/tst_ip.err "Test #2: ip command failed.
+>>>>>>      		Reason:"
+>>>>>> @@ -275,14 +280,14 @@ test02()
+>>>>>>      
+>>>>>>      test03()
+>>>>>>      {
+>>>>>> -	RC=0			# Return value from commands.
+>>>>>>      	TCID=ip03	    # Name of the test case.
+>>>>>>      	TST_COUNT=3		# Test number.
+>>>>>>      
+>>>>>>      	tst_resm TINFO \
+>>>>>>      	 "Test #3: ip addr add - adds a new protolcol address to the
+>>>>>>      	 device"
+>>>>>>      
+>>>>>> -	ip addr add 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	ip addr add 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -291,7 +296,8 @@ test03()
+>>>>>>      	else
+>>>>>>      		tst_resm TINFO \
+>>>>>>      		 "Test #3: ip addr show dev <device> - shows protocol address."
+>>>>>> -		ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1 ||
+>>>>>> RC=$?
+>>>>>> +		ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -301,14 +307,16 @@ test03()
+>>>>>>      
+>>>>>>      		tst_resm TINFO \
+>>>>>>      		 "Test #3: ip addr del <ip> dev <device> - deletes protocol
+>>>>>>      		 address."
+>>>>>> -		ip addr del 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +		ip addr del 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>>      				"Test #3: ip addr del command failed. Reason: "
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>> -			ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1 ||
+>>>>>> RC=$?
+>>>>>> +			ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -eq 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -342,14 +350,14 @@ test03()
+>>>>>>      
+>>>>>>      test04()
+>>>>>>      {
+>>>>>> -	RC=0			# Return value from commands.
+>>>>>>      	TCID=ip04	    # Name of the test case.
+>>>>>>      	TST_COUNT=4		# Test number.
+>>>>>>      
+>>>>>>      	tst_resm TINFO \
+>>>>>>      	 "Test #4: ip neigh add - adds a new neighbour to arp tables."
+>>>>>>      
+>>>>>> -	ip neigh add 127.0.0.1 dev lo nud reachable >$LTPTMP/tst_ip.err 2>&1
+>>>>>> ||
+>>>>>> RC=$?
+>>>>>> +	ip neigh add 127.0.0.1 dev lo nud reachable >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -363,7 +371,8 @@ test04()
+>>>>>>      		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
+>>>>>>      		EOF
+>>>>>>      
+>>>>>> -		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
+>>>>>> +		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -371,7 +380,8 @@ test04()
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>>      			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
+>>>>>> -				>$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +				>$LTPTMP/tst_ip.err 2>&1
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -ne 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res FAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -383,14 +393,16 @@ test04()
+>>>>>>      		tst_resm TINFO \
+>>>>>>      		 "Test #4: ip neigh del - deletes neighbour from the arp table."
+>>>>>>      
+>>>>>> -		ip neigh del 127.0.0.1 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +		ip neigh del 127.0.0.1 dev lo >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>>      				"Test #4: ip neigh del command failed return = $RC. Reason: "
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>> -			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$"
+>>>>>>> $LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$"
+>>>>>>> $LTPTMP/tst_ip.err 2>&1
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -eq 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -423,7 +435,6 @@ test04()
+>>>>>>      
+>>>>>>      test05()
+>>>>>>      {
+>>>>>> -	RC=0			# Return value from commands.
+>>>>>>      	TCID=ip05	    # Name of the test case.
+>>>>>>      	TST_COUNT=5		# Test number.
+>>>>>>      
+>>>>>> @@ -434,7 +445,8 @@ test05()
+>>>>>>      	tst_resm TINFO \
+>>>>>>      	 "Test #5: create an interface with inet 10.6.6.6 alias to eth0"
+>>>>>>      
+>>>>>> -	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err
+>>>>>> 2>&1
+>>>>>> || RC=$?
+>>>>>> +	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err
+>>>>>> 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
+>>>>>> @@ -442,7 +454,8 @@ test05()
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	ip route add 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +	ip route add 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -458,7 +471,8 @@ test05()
+>>>>>>      		EOF
+>>>>>>      
+>>>>>>      		ip route show | grep "10.6.6.6 via 127.0.0.1 dev lo" \
+>>>>>> -			>$LTPTMP/tst_ip.out 2>&1 || RC=$?
+>>>>>> +			>$LTPTMP/tst_ip.out 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -466,7 +480,8 @@ test05()
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>>      			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
+>>>>>> -				>$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +				>$LTPTMP/tst_ip.err 2>&1
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -ne 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res FAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -478,14 +493,16 @@ test05()
+>>>>>>      		tst_resm TINFO \
+>>>>>>      		 "Test #5: ip route del - deletes route from the route table."
+>>>>>>      
+>>>>>> -		ip route del 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +		ip route del 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>>      				"Test #5: ip route del command failed return = $RC. Reason: "
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>> -			ip route show | grep 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>>>>>> +			ip route show | grep 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -eq 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -518,14 +535,14 @@ test05()
+>>>>>>      
+>>>>>>      test06()
+>>>>>>      {
+>>>>>> -	RC=0			# Return value from commands.
+>>>>>>      	TCID=ip06	    # Name of the test case.
+>>>>>>      	TST_COUNT=6		# Test number.
+>>>>>>      
+>>>>>>      	tst_resm TINFO \
+>>>>>>      	 "Test #6: ip maddr add - adds a new multicast addr"
+>>>>>>      
+>>>>>> -	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err
+>>>>>> 2>&1
+>>>>>> || RC=$?
+>>>>>> +	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err
+>>>>>> 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
+>>>>>> @@ -533,7 +550,8 @@ test06()
+>>>>>>      		return $RC
+>>>>>>      	fi
+>>>>>>      
+>>>>>> -	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 ||
+>>>>>> RC=$?
+>>>>>> +	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +	RC=$?
+>>>>>>      	if [ $RC -ne 0 ]
+>>>>>>      	then
+>>>>>>      		tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -547,7 +565,8 @@ test06()
+>>>>>>              link  66:66:00:00:00:66 static
+>>>>>>      		EOF
+>>>>>>      
+>>>>>> -		ip maddr show | grep "66:66:00:00:00:66" >$LTPTMP/tst_ip.out 2>&1 ||
+>>>>>> RC=$?
+>>>>>> +		ip maddr show | grep "66:66:00:00:00:66" >$LTPTMP/tst_ip.out 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -555,7 +574,8 @@ test06()
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>>      			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
+>>>>>> -				&>$LTPTMP/tst_ip.err || RC=$?
+>>>>>> +				&>$LTPTMP/tst_ip.err
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -ne 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res FAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -567,15 +587,16 @@ test06()
+>>>>>>      		tst_resm TINFO \
+>>>>>>      		 "Test #6: ip maddr del - deletes multicast addr."
+>>>>>>      
+>>>>>> -		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 ||
+>>>>>> RC=$?
+>>>>>> +		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
+>>>>>> +		RC=$?
+>>>>>>      		if [ $RC -ne 0 ]
+>>>>>>      		then
+>>>>>>      			tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>>      				"Test #6: ip maddr del command failed return = $RC. Reason: "
+>>>>>>      			return $RC
+>>>>>>      		else
+>>>>>> -			ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err \
+>>>>>> -				|| RC=$?
+>>>>>> +			ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err
+>>>>>> +			RC=$?
+>>>>>>      			if [ $RC -eq 0 ]
+>>>>>>      			then
+>>>>>>      				tst_res TFAIL $LTPTMP/tst_ip.err \
+>>>>>> @@ -599,15 +620,14 @@ test06()
+>>>>>>      # Exit:			- zero on success
+>>>>>>      # 				- non-zero on failure.
+>>>>>>      TFAILCNT=0			# Set TFAILCNT to 0, increment on failure.
+>>>>>> -RC=0				# Return code from test.
+>>>>>>      
+>>>>>>      init || exit $RC
+>>>>>>      
+>>>>>> -test01 || RC=$?
+>>>>>> -test02 || RC=$?
+>>>>>> -test03 || RC=$?
+>>>>>> -test04 || RC=$?
+>>>>>> -test05 || RC=$?
+>>>>>> -test06 || RC=$?
+>>>>>> +test01 || exit $RC
+>>>>>> +test02 || exit $RC
+>>>>>> +test03 || exit $RC
+>>>>>> +test04 || exit $RC
+>>>>>> +test05 || exit $RC
+>>>>>> +test06 || exit $RC
+>>>>>>      
+>>>>>> -exit $RC
+>>>>>> +exit 0
+>>>> ------------------------------------------------------------------------------
+>>>> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+>>>> Learn Why More Businesses Are Choosing CenturyLink Cloud For
+>>>> Critical Workloads, Development Environments & Everything In Between.
+>>>> Get a Quote or Start a Free Trial Today.
+>>>> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+>>>> _______________________________________________
+>>>> Ltp-list mailing list
+>>>> Ltp-list@lists.sourceforge.net
+>>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>>
+>>
 
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
