@@ -1,36 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WAzzc-00017Y-7U
-	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 10:46:08 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WAzzY-0005Be-Ot
-	for ltp-list@lists.sourceforge.net; Wed, 05 Feb 2014 10:46:08 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s15AjwO5016460
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 10:45:59 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s15Ajvq0023927
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 10:45:58 GMT
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s15AjvGG025080
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Feb 2014 10:45:57 GMT
-Message-ID: <52F21663.7040704@oracle.com>
-Date: Wed, 05 Feb 2014 14:45:55 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WDcWB-0000Oc-C7
+	for ltp-list@lists.sourceforge.net; Wed, 12 Feb 2014 16:18:35 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 0F495AC7B
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 12 Feb 2014 16:18:28 +0000 (UTC)
+Date: Wed, 12 Feb 2014 17:18:00 +0100
+From: chrubis@suse.cz
+Message-ID: <20140212161800.GC4905@rei.suse.cz>
 MIME-Version: 1.0
-References: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1387812348-23017-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 1/3] runtest/stress.part3: fix cmd for the rpc01
- test case
+Content-Disposition: inline
+Subject: [LTP] [RFC] Calling SAFE_MACROS() from test cleanup()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,28 +27,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+
+Hi!
+Currently we have a ugly hack that allows SAFE_MACROS() to be called
+from test cleanup. See tst_brk() function in the tst_res.c especially:
+
+        /*
+         * If no cleanup function was specified, just return to the caller.
+         * Otherwise call the specified function.
+         */
+        if (func != NULL) {
+                tst_brk_entered++;
+                (*func) ();
+                tst_brk_entered--;
+        }
+        if (tst_brk_entered == 0)
+                tst_exit();
 
 
+This piece of code detects if tst_brk() was called from tst_brk() recursively
+and aborts only if it gets back to the first instance, which is ugly and
+non-intuitive.
 
-On 12/23/2013 07:25 PM, Stanislav Kholmanskikh wrote:
-> Patch 9a7031ab2778600249947882d9f00acc9bcc1310 fixed some paths in
-> the rpc01 test script, so we shouldn't set TCbin before calling.
->
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
+It has been added here in order not to abort a cleanup() if one of the
+SAFE_MACROS() has failed (in which case it calls tst_brkm()).
 
-Hello!
+If nobody object in a week or so I would:
 
-Could anybody review this series of patches?
+* Add a deprecation warning in case that SAFE_MACRO was called from a cleanup()
 
-Thanks.
+* Add a deprecation warning in case tst_brkm() was called recursively
+
+* Patches that use SAFE_MACROS() or tst_brkm() in cleanup will not be accepted anymore
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
