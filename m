@@ -1,37 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shubham@linux.vnet.ibm.com>) id 1WGR9w-0002aS-QD
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 10:47:16 +0000
-Received: from e28smtp06.in.ibm.com ([122.248.162.6])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WGR9v-0006fu-9U
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 10:47:16 +0000
-Received: from /spool/local
-	by e28smtp06.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
-	Thu, 20 Feb 2014 16:17:07 +0530
-Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
-	by d28dlp01.in.ibm.com (Postfix) with ESMTP id 5F5FDE0056
-	for <Ltp-list@lists.sourceforge.net>;
-	Thu, 20 Feb 2014 16:20:31 +0530 (IST)
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay02.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	s1KAktb656819826
-	for <Ltp-list@lists.sourceforge.net>; Thu, 20 Feb 2014 16:16:55 +0530
-Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
-	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	s1KAl2nZ012885
-	for <Ltp-list@lists.sourceforge.net>; Thu, 20 Feb 2014 16:17:02 +0530
-Message-ID: <5305DD26.1090907@linux.vnet.ibm.com>
-Date: Thu, 20 Feb 2014 16:17:02 +0530
-From: shubham <shubham@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1WDtAg-0003db-0x
+	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 10:05:30 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WDtAf-0001wv-8e
+	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 10:05:29 +0000
+Message-ID: <52FC98EC.80406@oracle.com>
+Date: Thu, 13 Feb 2014 14:05:32 +0400
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-References: <CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com>
-In-Reply-To: <CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com>
-Subject: Re: [LTP] Please remove me from this mail group
+References: <1392112090-13853-1-git-send-email-alexey.kodanev@oracle.com>
+	<1392112090-13853-3-git-send-email-alexey.kodanev@oracle.com>
+	<5757763.zAWEHsmlGc@vapier>
+In-Reply-To: <5757763.zAWEHsmlGc@vapier>
+Subject: Re: [LTP] [PATCH 4/4] lib: add tst_res_r.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,101 +26,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9124595722063563132=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "sujesh.k.p Kp" <sujeshlx@gmail.com>
-Cc: Ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---===============9124595722063563132==
-Content-Type: multipart/alternative;
-	boundary="------------030907010700080109050302"
-
-This is a multi-part message in MIME format.
---------------030907010700080109050302
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 02/20/2014 03:25 PM, sujesh.k.p Kp wrote:
->
->
->
-> ------------------------------------------------------------------------------
-> Managing the Performance of Cloud-Based Applications
-> Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-> Read the Whitepaper.
-> http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
->
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-You can unsubscribe on your own...
-
---------------030907010700080109050302
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=ISO-8859-1"
-      http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    On 02/20/2014 03:25 PM, sujesh.k.p Kp wrote:
-    <blockquote
-cite="mid:CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com"
-      type="cite">
-      <div dir="ltr"><br>
-      </div>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-<a class="moz-txt-link-freetext" href="http://pubads.g.doubleclick.net/gampad/clk?id=121054471&amp;iu=/4140/ostg.clktrk">http://pubads.g.doubleclick.net/gampad/clk?id=121054471&amp;iu=/4140/ostg.clktrk</a></pre>
-      <br>
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-</pre>
-    </blockquote>
-    You can unsubscribe on your own...<br>
-  </body>
-</html>
-
---------------030907010700080109050302--
-
-
-
---===============9124595722063563132==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
+
+Hi!
+On 02/13/2014 12:47 PM, Mike Frysinger wrote:
+> On Tuesday, February 11, 2014 13:48:10 Alexey Kodanev wrote:
+>> +static int get_tst_count()
+> random note: never never never use () with functions.  always always always
+> use (void).  i'm guessing you're not aware, but what you've written here may
+> be called (warning free!) like so:
+> 	get_tst_count(1, 2, 3);
+>
+> yes, even with -W -Wall -Wextra.  please stamp this horrible habit out of your
+> code.
+Thank you for explanation!
+There is a trick to try g++ to compile the code, it will throw an error 
+on that and stops compilation.
+
+Best regards,
+Alexey
+
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
---===============9124595722063563132==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9124595722063563132==--
-
-
