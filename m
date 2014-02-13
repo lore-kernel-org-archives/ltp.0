@@ -1,29 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WGm1T-00026U-Cy
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 09:03:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGm1R-0005Hi-Bs
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 09:03:55 +0000
-Message-ID: <1392973420.3069.12.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 21 Feb 2014 17:03:40 +0800
-In-Reply-To: <929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-	<1392802716.2083.4.camel@G08JYZSD130126>
-	<1392802803.2083.5.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-	<1392889813.2053.10.camel@G08JYZSD130126>
-	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH v3 2/2] mlock/mlock02.c: add EPERM and ENOMEM
- errno tests
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WDzNv-0001Pb-QQ
+	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 16:43:35 +0000
+Date: Thu, 13 Feb 2014 17:43:25 +0100
+From: chrubis@suse.cz
+Message-ID: <20140213164325.GA18531@rei.suse.cz>
+References: <52BC269D.9060009@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <52BC269D.9060009@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] controllers/memcg_lib.sh: reset root cgroup's
+ memory.use_hierarchy to 0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,133 +25,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, 2014-02-20 at 08:03 -0500, Jan Stancek wrote:
-> >  	int error;
-> > > -	void (*setupfunc) (struct test_case_t *);
-> > > +	void (*setupfunc) ();
-> > 
-> > If you don't want any parameters add void.
-> > 
-> > > +	void (*cleanupfunc) (void);
-> > >  };
-> > >  
-> > >  static void *addr1;
-> > > +static char addr2[1024];
-> > > +static struct passwd *ltpuser;
-> > >  static void setup(void);
-> > >  static void setup1(struct test_case_t *);
-> > > +static void setup2(void);
-> > > +static void setup3(void);
-> > > +static void cleanup2(void);
-> > >  static void cleanup(void);
-> > >  static void mlock_verify(struct test_case_t *);
-> > >  
-> > >  static struct test_case_t TC[] = {
-> > > -	{&addr1, 1024, ENOMEM, setup1},
-> > > +	{&addr1, 1024, ENOMEM, setup1, NULL},
-> > > +	{(void **)&addr2, 1024, EPERM, setup2, cleanup2},
-> > > +	{(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
-> > >  };
-> > 
-> > I think I misunderstood intent of **addr. As you outlined it
-> > above, we can remove one pointer entirely along with addr1:
-> > 
-> > -static void *addr1;
-> > 
-> >  struct test_case_t {
-> > -       void **addr;
-> > +       void *addr;
-> > 
-> >  static struct test_case_t TC[] = {
-> > -       {&addr1, 1024, ENOMEM, setup1, NULL},
-> > -       {(void **)&addr2, 1024, EPERM, setup2, cleanup2},
-> > -       {(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
-> > +       {NULL, 1024, ENOMEM, setup1, NULL},
-> > +       {addr2, 1024, EPERM, setup2, cleanup2},
-> > +       {addr2, 1024, ENOMEM, setup3, cleanup2},
-> > 
-> >  static void mlock_verify(struct test_case_t *test)
-> > -       TEST(mlock(*(test->addr), test->len));
-> > +       TEST(mlock(test->addr, test->len));
-> > 
-> >  static void setup1(struct test_case_t *test)
-> > -#else
-> > -       *test->addr = NULL;
-> > 
-> > 
-> > I'm going to try this testcase on ia64 to have a look at that
-> > ia64 specific setup.
-> 
-> ia64 maps something at that area with pagesize length:
-> 
-> # cat /proc/self/maps 
-> 00000000-00004000 r--p 00000000 00:00 0 
-> 2000000000000000-200000000003c000 r-xp 00000000 fd:00 950277             /lib/ld-2.5.so
-> 2000000000048000-2000000000050000 rw-p 00038000 fd:00 950277             /lib/ld-2.5.so
-> 2000000000050000-20000000002c0000 r-xp 00000000 fd:00 950284             /lib/libc-2.5.so
-> 20000000002c0000-20000000002cc000 ---p 00270000 fd:00 950284             /lib/libc-2.5.so
-> 20000000002cc000-20000000002d4000 rw-p 0026c000 fd:00 950284             /lib/libc-2.5.so
-> 20000000002d4000-20000000002e4000 rw-p 20000000002d4000 00:00 0 
-> 20000000002e4000-2000000003af4000 r--p 00000000 fd:00 69955              /usr/lib/locale/locale-archive
-> 4000000000000000-4000000000008000 r-xp 00000000 fd:00 524317             /bin/cat
-> 6000000000004000-600000000000c000 rw-p 00004000 fd:00 524317             /bin/cat
-> 600000000000c000-6000000000030000 rw-p 600000000000c000 00:00 0          [heap]
-> 600007fffffa8000-600007fffffac000 rw-p 600007fffffa8000 00:00 0 
-> 60000ffffff50000-60000ffffffa4000 rw-p 60000ffffffa8000 00:00 0          [stack]
-> a000000000000000-a000000000020000 r-xp 00000000 00:00 0                  [vdso]
-> 
-> I think we can make that generic and get rid of that ifdef:
-> 
->  static void setup1(struct test_case_t *test)
+Hi!
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index 16e30ec..f93b291 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -38,6 +38,7 @@ HUGEPAGESIZE=`grep Hugepagesize /proc/meminfo | awk '{ print $2 }'`
+>  HUGEPAGESIZE=$(( $HUGEPAGESIZE * 1024 ))
+>  PASS=0
+>  FAIL=1
+> +orig_memory_use_hierarchy="none"
+>  
+>  cur_id=0
+>  failed=0
+> @@ -396,6 +397,15 @@ test_move_charge()
+>  
+>  cleanup()
 >  {
-> -#ifdef __ia64__
-> -       test->len = getpagesize() + 1;
-> -#else
-> -       *test->addr = NULL;
-> -#endif
-> +       /* find some unmapped area */
-> +       test->addr = mmap(NULL, getpagesize(), PROT_NONE,
-> +                MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +       if (test->addr == MAP_FAILED)
-> +               tst_brkm(TBROK | TERRNO, cleanup, "mmap");
-> +       if (munmap(test->addr, getpagesize()) < 0)
-> +               tst_brkm(TBROK | TERRNO, cleanup, "munmap");
+> +	if [ "$orig_memory_use_hierarchy" != "none" ];then
+
+It would be a bit better to check for non empty string here, because if
+the:
+
+orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
+
+has failed for any reason the value would be set to empty string and we
+will write only newline into the /dev/memcg/... file which will likely
+result in error.
+
+> +		echo $orig_memory_use_hierarchy > \
+> +		     /dev/memcg/memory.use_hierarchy
+> +		if [ $? -ne 0 ];then
+> +			tst_resm TINFO "restore "\
+> +				 "/dev/memcg/memory.use_hierarchy failed"
+> +		fi
+> +	fi
+> +	orig_memory_use_hierarchy="none"
+>  	killall -9 memcg_process 2>/dev/null
+>  	if [ -e /dev/memcg ]; then
+>  		umount /dev/memcg 2>/dev/null
+> @@ -409,4 +419,17 @@ do_mount()
+>  
+>  	mkdir /dev/memcg 2> /dev/null
+>  	mount -t cgroup -omemory memcg /dev/memcg
+> +
+> +	# For some linux distribution, such as RHEL7U0Beta,
+> +	# memory.use_hierarchy is 1 by default, which will caused some tests
+> +	# failed, such as memcg_stat_test.sh. According to kernel
+> +	# Documentation/cgroups/memory.txt's description, the default value
+> +	# should be 0, and some ltp tests are written based on this assumption,
+> +	# so here we reset the root cgroup's memory.use_hierarchy to 0
+> +	# before the test.
+
+I would keep this a bit shorter (it's comment in the code, not poetry :)
+
+Such as:
+
+# The default value for memory.use_hierarchy is 0 and some of tests
+# (memcg_stat_test.sh) expects it so while there are distributions
+# (RHEL7U0Beta for example) that sets it to 1.
+
+The fact that we set it to 0 before the test is obvious from the code.
+
+> +	orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
+> +	echo 0 > /dev/memcg/memory.use_hierarchy
+
+What about setting this only when the orig value is not 0?
+
+Moreover setting the orig value to empty if it's 0 to avoid the
+restoration in cleanup()?
+
+> +	if [ $? -ne 0 ];then
+> +		tst_resm TINFO "set /dev/memcg/memory.use_hierarchy to 0 failed"
+> +	fi
 >  }
-> 
-> Works for me on x86 and ia64. I can post it afterwards (rebased to latest
-> version of your patches).
-> 
 
-Using SAFE_MACRO() will look well.
- {
--#ifdef __ia64__
--       test->len = getpagesize() + 1;
--#else
--       *test->addr = NULL;
--#endif
-+       test->addr = SAFE_MMAP(cleanup, NULL, getpagesize(), PROT_NONE,
-+                              MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
- }
-
-And thanks a lot.
-Best regards,
-Zeng
-
-
-> Regards,
-> Jan
-> 
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
