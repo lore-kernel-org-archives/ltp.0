@@ -1,32 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <a22017@motorola.com>) id 1WIqaw-0006bG-LJ
-	for ltp-list@lists.sourceforge.net; Thu, 27 Feb 2014 02:21:06 +0000
-Received: from exprod5og104.obsmtp.com ([64.18.0.178])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WIqav-0003P8-DK
-	for ltp-list@lists.sourceforge.net; Thu, 27 Feb 2014 02:21:06 +0000
-Received: from DE01MGRG01.AM.MOT-MOBILITY.COM ([10.22.94.167])
-	by DE01MGRG01.AM.MOT-MOBILITY.COM (8.14.3/8.14.3) with ESMTP id
-	s1R1mvcc020297 for <ltp-list@lists.sourceforge.net>;
-	Wed, 26 Feb 2014 20:48:57 -0500 (EST)
-Received: from mail-qg0-f45.google.com (mail-qg0-f45.google.com
-	[209.85.192.45])
-	by DE01MGRG01.AM.MOT-MOBILITY.COM (8.14.3/8.14.3) with ESMTP id
-	s1R1mk7g020244
-	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=OK)
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 26 Feb 2014 20:48:57 -0500 (EST)
-Received: by mail-qg0-f45.google.com with SMTP id j5so3780730qga.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 26 Feb 2014 17:48:56 -0800 (PST)
+	(envelope-from <metan@suse.de>) id 1WE0RA-000229-Oq
+	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 17:51:00 +0000
+Date: Thu, 13 Feb 2014 18:50:49 +0100
+From: chrubis@suse.cz
+Message-ID: <20140213175049.GA19125@rei.suse.cz>
+References: <1390428817-31923-1-git-send-email-sweekar.pinto@oracle.com>
 MIME-Version: 1.0
-Date: Wed, 26 Feb 2014 17:48:56 -0800
-Message-ID: <CACwVHNonCpBcvNSwVCt=2Sdm_nOROszqpOF-h+L_9z29EQTsnw@mail.gmail.com>
-From: Sandy Sun <a22017@motorola.com>
-Subject: [LTP] About msgsnd05 Test Case Return Value Check
+Content-Disposition: inline
+In-Reply-To: <1390428817-31923-1-git-send-email-sweekar.pinto@oracle.com>
+Subject: Re: [LTP] [PATCH 1/3] Fixed compile errors in crasher.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,191 +21,140 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8294750927090705433=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============8294750927090705433==
-Content-Type: multipart/alternative; boundary=001a11c239943b526f04f3598662
-
---001a11c239943b526f04f3598662
-Content-Type: text/plain; charset=UTF-8
-
-Hi All,
-
-We found msgsnd05 doesn't check the test result from child thread in parent
-thread, otherwise parent thread will always return 0 even when the result
-of the child thread is failed.
-
-
-Here is a patch to fix this problem, is it better to check child
-thread result in parent thread? Thank you!
-
-
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-index 523b13e..2df1c2d 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-@@ -94,6 +94,7 @@ int main(int ac, char **av)
-        int lc;                 /* loop counter */
-        char *msg;              /* message returned from parse_opts */
-        pid_t c_pid;
-+       int status;
-
-        /* parse standard options */
-        if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-@@ -166,7 +167,12 @@ int main(int ac, char **av)
-                                tst_brkm(TBROK, cleanup, "kill failed");
-                        }
-
--                       waitpid(c_pid, NULL, 0);
-+                       /* wait for the child to finish */
-+                       wait(&status);
-+                       /* make sure the child returned a good exit status*/
-+                       if (WIFEXITED(status) == 0) {
-+                               tst_resm(TFAIL, "Failures reported above");
-+                       }
-                }
-        }
-
-@@ -180,6 +186,7 @@ int main(int ac, char **av)
-  */
- void do_child()
- {
-+       int retval = 0;
-        if (sync_pipe_notify(sync_pipes) == -1)
-                tst_brkm(TBROK, cleanup, "sync_pipe_notify failed");
-
-@@ -201,13 +208,14 @@ void do_child()
-                         TEST_ERRNO, strerror(TEST_ERRNO));
-                break;
-        default:
-+               retval = 1;
-                tst_resm(TFAIL,
-                         "call failed with an unexpected error - %d : %s",
-                         TEST_ERRNO, strerror(TEST_ERRNO));
-                break;        }
- -       exit(0);
-
-+       exit(retval);
- }
-
- void
-
-BRs,
-Sandy
-
---001a11c239943b526f04f3598662
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><font face=3D"courier new, monospace">Hi All,</font><div><=
-font face=3D"courier new, monospace"><br></font></div><div><font face=3D"co=
-urier new, monospace">We found msgsnd05=C2=A0<span style=3D"color:rgb(53,53=
-,53);font-size:9pt">doesn&#39;t check the test result=C2=A0</span></font><s=
-pan style=3D"font-family:&#39;courier new&#39;,monospace;color:rgb(53,53,53=
-);font-size:9pt">from child thread in parent thread, otherwise parent=C2=A0=
-</span><span style=3D"font-family:&#39;courier new&#39;,monospace;color:rgb=
-(53,53,53);font-size:9pt">thread will always return 0 even when the result =
-of=C2=A0</span><font face=3D"courier new, monospace" style=3D"color:rgb(53,=
-53,53);font-size:9pt">the child thread is failed</font><span style=3D"color=
-:rgb(53,53,53);font-size:9pt">.</span></div>
-<pre class=3D"" style=3D"font-size:9pt;margin-top:0px;margin-bottom:0px;col=
-or:rgb(53,53,53)"><br></pre><pre class=3D"" style=3D"font-size:9pt;margin-t=
-op:0px;margin-bottom:0px;color:rgb(53,53,53)">Here is a patch to fix this p=
-roblem, is it better to check child thread result in parent thread? Thank y=
-ou!</pre>
-<pre class=3D"" style=3D"font-size:9pt;margin-top:0px;margin-bottom:0px;col=
-or:rgb(53,53,53)"><br></pre><pre class=3D"" style=3D"margin-top:0px;margin-=
-bottom:0px"><font color=3D"#353535">diff --git a/testcases/kernel/syscalls/=
-ipc/msgsnd/msgsnd05.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-index 523b13e..2df1c2d 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-@@ -94,6 +94,7 @@ int main(int ac, char **av)
-        int lc;                 /* loop counter */
-        char *msg;              /* message returned from parse_opts */
-        pid_t c_pid;
-+       int status;
-=20
-        /* parse standard options */
-        if ((msg =3D parse_opts(ac, av, NULL, NULL)) !=3D NULL) {
-@@ -166,7 +167,12 @@ int main(int ac, char **av)
-                                tst_brkm(TBROK, cleanup, &quot;kill failed&=
-quot;);
-                        }
-=20
--                       waitpid(c_pid, NULL, 0);
-+                       /* wait for the child to finish */
-+                       wait(&amp;status);
-+                       /* make sure the child returned a good exit status*=
-/
-+                       if (WIFEXITED(status) =3D=3D 0) {
-+                               tst_resm(TFAIL, &quot;Failures reported abo=
-ve&quot;);
-+                       }
-                }
-        }
-=20
-@@ -180,6 +186,7 @@ int main(int ac, char **av)
-  */
- void do_child()
- {
-+       int retval =3D 0;
-        if (sync_pipe_notify(sync_pipes) =3D=3D -1)
-                tst_brkm(TBROK, cleanup, &quot;sync_pipe_notify failed&quot=
-;);
-=20
-@@ -201,13 +208,14 @@ void do_child()
-                         TEST_ERRNO, strerror(TEST_ERRNO));
-                break;
-        default:
-+               retval =3D 1;
-                tst_resm(TFAIL,
-                         &quot;call failed with an unexpected error - %d : =
-%s&quot;,
-                         TEST_ERRNO, strerror(TEST_ERRNO));
-                break;
-<font face=3D"times new roman, serif">        }
-=20
-</font><font face=3D"courier new, monospace">-       exit(0);</font></font>=
-<span style=3D"color:rgb(53,53,53);font-size:9pt"><font face=3D"courier new=
-, monospace">
-</font></span></pre><div><div><font face=3D"courier new, monospace">+ =C2=
-=A0 =C2=A0 =C2=A0 exit(retval);</font></div><div><font face=3D"courier new,=
- monospace">=C2=A0}</font></div><div><font face=3D"times new roman, serif">=
-=C2=A0</font></div><div><font face=3D"courier new, monospace">=C2=A0void</f=
-ont></div>
-</div><div><font face=3D"courier new, monospace"><br></font></div><div><spa=
-n style=3D"font-family:&#39;courier new&#39;,monospace">BRs,</span><br></di=
-v><div><font face=3D"courier new, monospace">Sandy</font></div></div>
-
---001a11c239943b526f04f3598662--
-
-
---===============8294750927090705433==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Sweekar Pinto <sweekar.pinto@oracle.com>
+Cc: lisa.vaz@oracle.com, ltp-list@lists.sourceforge.net
+
+Hi!
+The whole patchset is send in one email and 'git am' applies only the
+first patch. Can you please resend it correctly?
+
+> -Conditional inclusion of asm.h for kernel > 3.4
+> -The owner field of proc_dir_entry has been removed
+
+When was this removed? If this is relatively recent change we should add
+an ifdef around the initalization instead of removing it.
+
+> Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+> ---
+>  testcases/kdump/lib/crasher/crasher.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kdump/lib/crasher/crasher.c b/testcases/kdump/lib/crasher/crasher.c
+> index bc192dc..2b01412 100644
+> --- a/testcases/kdump/lib/crasher/crasher.c
+> +++ b/testcases/kdump/lib/crasher/crasher.c
+> @@ -25,7 +25,10 @@
+>  #include <linux/proc_fs.h>
+>  #include <linux/spinlock.h>
+>  #include <asm/uaccess.h>
+> +#include <linux/version.h>
+> +#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 4, 0)
+>  #include <asm/system.h>
+> +#endif
+
+The inner include should look like:
+
+# include <asm/system.h>
+
+>  MODULE_LICENSE("GPL");
+>  
+> @@ -46,7 +49,7 @@ static int crasher_write(struct file *file, const char *buffer,
+>  			 unsigned long count, void *data)
+>  {
+>  	char value, *a;
+> -	spinlock_t mylock = SPIN_LOCK_UNLOCKED;
+> +	DEFINE_SPINLOCK(mylock);
+>  
+>  	/* grab the first byte the user gave us, ignore the rest */
+>  	if (copy_from_user(&value, buffer, 1))
+> @@ -94,7 +97,6 @@ int crasher_init(void)
+>  
+>  	crasher_proc->read_proc = crasher_read;
+>  	crasher_proc->write_proc = crasher_write;
+> -	crasher_proc->owner = THIS_MODULE;
+>  	return 0;
+>  }
+>  
+> -- 
+> 1.7.1
+> 
+> 
+> >From f58a6316dc168781daa76edf4d78a217e2af2628 Mon Sep 17 00:00:00 2001
+> From: Sweekar Pinto <sweekar.pinto@oracle.com>
+> Date: Wed, 22 Jan 2014 17:05:01 -0500
+> Subject: [PATCH 2/3] Fix passwordless ssh for network(ssh) dump test
+> 
+> -Force ssh to use kdumps rsa key to run commands remotely
+> 
+> Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+> ---
+>  testcases/kdump/runkdump.sh |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kdump/runkdump.sh b/testcases/kdump/runkdump.sh
+> index e2e681c..cd6ee1c 100755
+> --- a/testcases/kdump/runkdump.sh
+> +++ b/testcases/kdump/runkdump.sh
+> @@ -95,7 +95,7 @@ PrepareVerify ()
+>              exit 1
+>          fi
+>  
+> -        file=$(ssh "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore \
+> +        file=$(ssh -i ~/.ssh/kdump_id_rsa "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore* \
+>           2>/dev/null | head -1")
+>  
+>          mkdir -p "${COREDIR}/${last}"
+> @@ -103,7 +103,7 @@ PrepareVerify ()
+>          if [ "${file}" ]; then
+>              # Not fatal error.
+>              set +e
+> -            scp "${SCP_PATH}:${file}" "${COREDIR}/${last}"
+> +            scp  -i ~/.ssh/kdump_id_rsa "${SCP_PATH}:${file}" "${COREDIR}/${last}"
+>              set -e
+>          fi
+>  
+> @@ -116,7 +116,7 @@ PrepareVerify ()
+>          COREDIR=/mnt"${COREDIR}"
+>      fi
+>  
+> -    vmcore=$(ls -t "${COREDIR}"/*/vmcore 2>/dev/null | head -1)
+> +    vmcore=$(ls -t "${COREDIR}"/*/vmcore* 2>/dev/null | head -1)
+
+This change is not explained in the commit message.
+
+>  }
+>  
+>  VerifyTest ()
+> -- 
+> 1.7.1
+> 
+> 
+> >From 76ab06883327fdcdf038af5dd96a036e0b077818 Mon Sep 17 00:00:00 2001
+> From: Sweekar Pinto <sweekar.pinto@oracle.com>
+> Date: Wed, 22 Jan 2014 17:08:23 -0500
+> Subject: [PATCH 3/3] Change crashkernel param to 256M@128M
+> 
+> -Change the crashkernel parm of x86 and default arch to 256M@128M as this is found to be the best fit
+
+Can you elaborate further? The kernel documentation
+(Documentation/kdump/kdump.txt) still says 64M@16M.
+
+Also format the commit message to 80 chars.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
---===============8294750927090705433==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8294750927090705433==--
-
