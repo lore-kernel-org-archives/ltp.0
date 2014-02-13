@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WGRXb-0003TN-Nf
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 11:11:43 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGRXa-0007pw-62
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 11:11:43 +0000
-Date: Thu, 20 Feb 2014 06:05:29 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1392889813.2053.10.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1392372746.2085.11.camel@G08JYZSD130126>
-	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-	<1392802716.2083.4.camel@G08JYZSD130126>
-	<1392802803.2083.5.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-	<1392889813.2053.10.camel@G08JYZSD130126>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1WE5MB-0005jx-W6
+	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 23:06:12 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WE5MB-0000sI-2j
+	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 23:06:11 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 13 Feb 2014 18:06:09 -0500
+Message-ID: <2020103.1jVMlSvdbW@vapier>
+In-Reply-To: <52FC98EC.80406@oracle.com>
+References: <1392112090-13853-1-git-send-email-alexey.kodanev@oracle.com>
+	<5757763.zAWEHsmlGc@vapier> <52FC98EC.80406@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3 2/2] mlock/mlock02.c: add EPERM and ENOMEM
- errno tests
+Subject: Re: [LTP] [PATCH 4/4] lib: add tst_res_r.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,210 +25,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4392507272694393453=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+
+--===============4392507272694393453==
+Content-Type: multipart/signed; boundary="nextPart3407659.fqBfvI1Qv0";
+	micalg="pgp-sha1"; protocol="application/pgp-signature"
+
+
+--nextPart3407659.fqBfvI1Qv0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+
+On Thursday, February 13, 2014 14:05:32 Alexey Kodanev wrote:
+> On 02/13/2014 12:47 PM, Mike Frysinger wrote:
+> > On Tuesday, February 11, 2014 13:48:10 Alexey Kodanev wrote:
+> >> +static int get_tst_count()
+> >=20
+> > random note: never never never use () with functions.  always alway=
+s
+> > always
+> > use (void).  i'm guessing you're not aware, but what you've written=
+ here
+> > may>=20
+> > be called (warning free!) like so:
+> > =09get_tst_count(1, 2, 3);
+> >=20
+> > yes, even with -W -Wall -Wextra.  please stamp this horrible habit =
+out of
+> > your code.
+>=20
+> Thank you for explanation!
+> There is a trick to try g++ to compile the code, it will throw an err=
+or
+> on that and stops compilation.
+
+yeah, C++ fixed this historical wart of C.  sorry for not clarifying.
+
+iiuc (and i could be wrong as i'm not old enough to have lived through =
+it),=20
+this dates back to when C (ANSI?) didn't have prototypes.  with a lot o=
+f code=20
+out there relying on the behavior, gcc never stopped accepting it.
+
+i wonder if we could argue for like a newer GNU standard to reject it.
+=2Dmike
+--nextPart3407659.fqBfvI1Qv0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAABAgAGBQJS/U/hAAoJEEFjO5/oN/WBDQcP/1f9ENcQzFQ10BMkSl2h8oYe
+/rIDSZmeaQg1Y+m9HJgqN92xSxdPlDPAQ/h9i9Zr+G8KGD6tXMF90aPeoNAP+XXC
+T4jR9jnKkAYzYVQXdyicuNBVaE+nP2qINH8RO7XhubeertPdAFJAuhIAB2K4cPAq
+phYMsXQQpkDDXxf1bZwBcMo0uyIeSM8FkmVnA4rCJV4ZzVoX6D0G0VZEMsexvzg6
+hdbZ5rZqIImg28Xkcy8Tycc6KFCbUb0/8zqe6ey4nHG3uU19Z3Z5ajWg4aVjU3iI
+5s58YyfkwMAyJugj5SW1JFyYvLs58tKwnP3x/l18Vnj8NgEBoQfU8wF/6UIezCZA
+4H0fcYCFA4wcTKd1RJga54HBArVgId7BJpFcmRl47Wn1ZNwgdHA1JYFxAuGsvfdF
+KlAGuWkcwWum0nTJuKy9yaXHhwjnk9DT8UQ0SmhXzIt0KwH40xMZKnNUJBOCI5hb
+uiKAUEQQTs3bxxTMu7nVbAZHa41ZYwNAgSUSihU6rLds+ZApi/vb0EFE9ZEwoSKU
+l191SPBEzQudyL8OTDd1ZFfbod79xd9qRZgKf+YwRJxwGVsc60D/3in9fiPhbFwV
+TVhB5P/T7yBTZqwrNM1Uf02bmxch763LILY1N/iqHOB+hm2WbEcnM1siW6viLMWn
+EOf2iFUHipdq/F1BvLVy
+=dMHZ
+-----END PGP SIGNATURE-----
+
+--nextPart3407659.fqBfvI1Qv0--
 
 
 
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Thursday, 20 February, 2014 10:50:13 AM
-> Subject: [PATCH v3 2/2] mlock/mlock02.c: add EPERM and ENOMEM errno tests
-> 
-> Add EPERM and ENOMEM errno tests for mlock(2).
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-
-Hi,
-
-part1 looks good to me, comments for part2 are inline.
-
-> ---
->  testcases/kernel/syscalls/mlock/mlock02.c | 65
->  +++++++++++++++++++++++++++++--
->  1 file changed, 62 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
-> b/testcases/kernel/syscalls/mlock/mlock02.c
-> index 811d141..79f1d29 100644
-> --- a/testcases/kernel/syscalls/mlock/mlock02.c
-> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
-> @@ -20,13 +20,22 @@
->   * ALGORITHM
->   * 	test 1:
->   *		Call mlock with a NULL address.  ENOMEM should be returned
-> + *	test 2:
-> + *		The caller was not privileged and its RLIMIT_MEMLOCK soft
-> + *		resource limit was 0. EPERM should be returned
-> + *	test 3:
-> + *		The caller was not privileged and its RLIMIT_MEMLOCK soft
-> + *		resource limit was nonzero, but tried to lock more memory than
-> + *		the limit permitted. ENOMEM should be returned
->   */
->  
->  #include <errno.h>
->  #include <unistd.h>
->  #include <sys/mman.h>
-> +#include <pwd.h>
->  #include "test.h"
->  #include "usctest.h"
-> +#include "safe_macros.h"
->  
->  char *TCID = "mlock02";
->  
-> @@ -36,21 +45,29 @@ struct test_case_t {
->  	void **addr;
->  	int len;
->  	int error;
-> -	void (*setupfunc) (struct test_case_t *);
-> +	void (*setupfunc) ();
-
-If you don't want any parameters add void.
-
-> +	void (*cleanupfunc) (void);
->  };
->  
->  static void *addr1;
-> +static char addr2[1024];
-> +static struct passwd *ltpuser;
->  static void setup(void);
->  static void setup1(struct test_case_t *);
-> +static void setup2(void);
-> +static void setup3(void);
-> +static void cleanup2(void);
->  static void cleanup(void);
->  static void mlock_verify(struct test_case_t *);
->  
->  static struct test_case_t TC[] = {
-> -	{&addr1, 1024, ENOMEM, setup1},
-> +	{&addr1, 1024, ENOMEM, setup1, NULL},
-> +	{(void **)&addr2, 1024, EPERM, setup2, cleanup2},
-> +	{(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
->  };
-
-I think I misunderstood intent of **addr. As you outlined it
-above, we can remove one pointer entirely along with addr1:
-
--static void *addr1;
-
- struct test_case_t {
--       void **addr;
-+       void *addr;
-
- static struct test_case_t TC[] = {
--       {&addr1, 1024, ENOMEM, setup1, NULL},
--       {(void **)&addr2, 1024, EPERM, setup2, cleanup2},
--       {(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
-+       {NULL, 1024, ENOMEM, setup1, NULL},
-+       {addr2, 1024, EPERM, setup2, cleanup2},
-+       {addr2, 1024, ENOMEM, setup3, cleanup2},
-
- static void mlock_verify(struct test_case_t *test)
--       TEST(mlock(*(test->addr), test->len));
-+       TEST(mlock(test->addr, test->len));
-
- static void setup1(struct test_case_t *test)
--#else
--       *test->addr = NULL;
-
-
-I'm going to try this testcase on ia64 to have a look at that
-ia64 specific setup.
-
-Regards,
-Jan
-
->  
->  int TST_TOTAL = ARRAY_SIZE(TC);
-> -static int exp_enos[] = { ENOMEM, 0 };
-> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
->  
->  int main(int ac, char **av)
->  {
-> @@ -76,9 +93,13 @@ int main(int ac, char **av)
->  
->  static void setup(void)
->  {
-> +	tst_require_root(NULL);
-> +
->  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->  
->  	TEST_PAUSE;
-> +
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
->  }
->  
->  static void mlock_verify(struct test_case_t *test)
-> @@ -88,6 +109,9 @@ static void mlock_verify(struct test_case_t *test)
->  
->  	TEST(mlock(*(test->addr), test->len));
->  
-> +	if (test->cleanupfunc != NULL)
-> +		test->cleanupfunc();
-> +
->  	if (TEST_RETURN != -1) {
->  		tst_resm(TFAIL, "mlock succeeded unexpectedly");
->  		return;
-> @@ -111,6 +135,41 @@ static void setup1(struct test_case_t *test)
->  #endif
->  }
->  
-> +static void setup2(void)
-> +{
-> +	struct rlimit rl;
-> +
-> +	rl.rlim_max = 0;
-> +	rl.rlim_cur = 0;
-> +	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-> +		tst_brkm(TBROK, cleanup,
-> +			 "setrlimit failed to set the resource for "
-> +			 "RLIMIT_MEMLOCK to check for mlock()");
-> +	}
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +}
-> +
-> +static void setup3(void)
-> +{
-> +	struct rlimit rl;
-> +
-> +	rl.rlim_max = 1;
-> +	rl.rlim_cur = 1;
-> +	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-> +		tst_brkm(TBROK, cleanup,
-> +			 "setrlimit failed to set the resource for "
-> +			 "RLIMIT_MEMLOCK to check for mlock()");
-> +	}
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +}
-> +
-> +static void cleanup2(void)
-> +{
-> +	SAFE_SETEUID(cleanup, 0);
-> +}
-> +
->  static void cleanup(void)
->  {
->  	TEST_CLEANUP;
-> --
-> 1.8.4.2
-> 
-> 
-> 
-> 
+--===============4392507272694393453==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+--===============4392507272694393453==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4392507272694393453==--
+
+
