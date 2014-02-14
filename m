@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WI0nD-0000ws-Sl
-	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 19:02:19 +0000
-Date: Mon, 24 Feb 2014 20:01:59 +0100
-From: chrubis@suse.cz
-Message-ID: <20140224190159.GA31562@rei>
-References: <1389352876-28625-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1389352876-28625-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] llseek/llseek03.c: add SEEK_CUR,
-	SEEK_END flag test
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WEFlB-0000gm-9H
+	for ltp-list@lists.sourceforge.net; Fri, 14 Feb 2014 10:12:41 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WEFl9-0003la-WB
+	for ltp-list@lists.sourceforge.net; Fri, 14 Feb 2014 10:12:41 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1EACW2W016634
+	for <ltp-list@lists.sourceforge.net>; Fri, 14 Feb 2014 18:12:32 +0800
+Message-ID: <1392372746.2085.11.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 14 Feb 2014 18:12:26 +0800
+In-Reply-To: <1392372604.2085.10.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH 2/2] mlock/mlock02.c: add EPERM errno test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,259 +30,131 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> new file mode 100644
-> index 0000000..99d0c06
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/llseek/llseek03.c
-> @@ -0,0 +1,214 @@
-> +/*
-> + * Copyright (c) 2014 Fujitsu Ltd.
-> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +/*
-> + * Description:
-> + * Verify that,
-> + *    1. llseek() succeeds to set the file pointer position to the current
-> + *  specified location, when 'whence' value is set to SEEK_CUR and the data
-> + *  read from the specified location should match the expected data.
-> + *    2. llseek() succeeds to set the file pointer position to the end of
-> + *  the file when 'whence' value set to SEEK_END and any attempts to read
-> + *  from that position should return 0.
-> + *
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <utime.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <sys/resource.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <inttypes.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +
-> +#define TEST_FILE "testfile"
-> +
-> +static void setup(int ac, char **av);
-> +static void cleanup(void);
-> +
-> +static void setup_seekcur(void);
-> +static void testfunc_seekcur(void);
-> +static void cleanup_seekcur(void);
-> +
-> +static void setup_seekend(void);
-> +static void testfunc_seekend(void);
-> +static void cleanup_seekend(void);
-> +
-> +static struct test_case_t {
-> +	int whence;
-> +	void (*setup)(void);
-> +	void (*testfunc)(void);
-> +	void (*cleanup)(void);
-> +} test_cases[] = {
-> +	{ SEEK_CUR, setup_seekcur, testfunc_seekcur, cleanup_seekcur},
-> +	{ SEEK_END, setup_seekend, testfunc_seekend, cleanup_seekend},
-> +};
-> +
-> +char *TCID = "llseek03";
-> +int TST_TOTAL = ARRAY_SIZE(test_cases);
-> +static char read_buf[BUFSIZ];
-> +
-> +static int fd;
-> +static size_t file_size;
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	int i;
-> +
-> +	setup(ac, av);
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		for (i = 0; i < TST_TOTAL; i++) {
-> +			if (test_cases[i].setup)
-> +				test_cases[i].setup();
-> +			if (test_cases[i].testfunc)
-> +				test_cases[i].testfunc();
-> +			if (test_cases[i].cleanup)
-> +				test_cases[i].cleanup();
-> +		}
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(int ac, char **av)
-> +{
-> +	char *msg;
-> +	char write_buf[BUFSIZ];
-> +	struct stat stat_buf;
-> +
-> +	msg = parse_opts(ac, av, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	tst_tmpdir();
-> +
-> +	TEST_PAUSE;
-> +
-> +	if (strcpy(write_buf, "abcdefgh") != write_buf)
-> +		tst_brkm(TBROK | TERRNO, NULL, "strcpy failed");
+Add EPERM errno test for mlock(2).
 
-strcpy() does not fail.
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mlock/mlock02.c | 42 +++++++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 2 deletions(-)
 
-> +	fd = SAFE_CREAT(cleanup, TEST_FILE, 0644);
-> +
-> +	SAFE_WRITE(cleanup, 1, fd, write_buf, strlen(write_buf));
-
-Moreover you don't have to copy the string to the buffer to pass it
-here. You can do:
-
-#define STR "abcdefgh"
-
-SAFE_WRITE(cleanup, 1, fd, STR, sizeof(STR) - 1);
-
-> +	if (fstat(fd, &stat_buf) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "fstat of %s failed", TEST_FILE);
-> +	}
-> +	file_size = stat_buf.st_size;
-> +
-> +	SAFE_CLOSE(cleanup, fd);
-> +}
-> +
-> +static void setup_seekcur(void)
-> +{
-> +	/* reopen TEST_FILE and file offset will be 0 */
-> +	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDONLY);
-> +
-> +	/* after read, file offset will be 4 */
-> +	SAFE_READ(cleanup, 1, fd, read_buf, 4);
-> +}
-> +
-> +static void testfunc_seekcur(void)
-> +{
-> +	TEST(lseek64(fd, (loff_t) 1, SEEK_CUR));
-> +
-> +	if (TEST_RETURN == (loff_t) -1) {
-> +		tst_resm(TFAIL | TTERRNO, "llseek failed on %s ", TEST_FILE);
-> +		return;
-> +	}
-> +
-> +	if (TEST_RETURN != 5) {
-> +		tst_resm(TFAIL, "llseek return a incorrect file offset");
-> +		return;
-> +	}
-> +
-> +	memset(read_buf, 0, sizeof(read_buf));
-> +
-> +	/* the expected characters are "fgh" */
-> +	SAFE_READ(cleanup, 1, fd, read_buf, 3);
-> +
-> +	if (strcmp(read_buf, "fgh"))
-> +		tst_resm(TFAIL, "test SEEK_SET for llseek failed");
-
-This message should bettter describe what has happened.
-
-"Read wrong bytes after llseek"
-
-> +	else
-> +		tst_resm(TPASS, "test SEEK_SET for llseek success");
-> +}
-> +
-> +static void cleanup_seekcur(void)
-> +{
-> +	SAFE_CLOSE(cleanup, fd);
-> +}
-> +
-> +static void setup_seekend(void)
-> +{
-> +	/* reopen TEST_FILE and file offset will be 0 */
-> +	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDONLY);
-> +}
-> +
-> +static void testfunc_seekend(void)
-> +{
-> +	ssize_t nread;
-> +
-> +	TEST(lseek64(fd, (loff_t) 0, SEEK_END));
-> +
-> +	if (TEST_RETURN == (loff_t) -1) {
-> +		tst_resm(TFAIL | TTERRNO, "llseek failed on %s ", TEST_FILE);
-> +		return;
-> +	}
-> +
-> +	if (TEST_RETURN != file_size) {
-> +		tst_resm(TFAIL, "llseek return a incorrect file offset");
-> +		return;
-> +	}
-> +
-> +	memset(read_buf, 0, sizeof(read_buf));
-> +
-> +	nread = SAFE_READ(cleanup, 0, fd, read_buf, file_size);
-> +	if (nread > 0)
-> +		tst_resm(TFAIL, "test SEEK_END for llseek failed");
-
-Here as well:
-
-"Read bytes after llseek to end of file."
-
-> +	else
-> +		tst_resm(TPASS, "test SEEK_END for llseek success");
-> +
-> +}
-> +static void cleanup_seekend(void)
-> +{
-> +	SAFE_CLOSE(cleanup, fd);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	tst_rmdir();
-> +}
-
+diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
+index a635d24..1e87777 100644
+--- a/testcases/kernel/syscalls/mlock/mlock02.c
++++ b/testcases/kernel/syscalls/mlock/mlock02.c
+@@ -20,11 +20,15 @@
+  * ALGORITHM
+  * 	test 1:
+  *		Call mlock with a NULL address.  ENOMEM should be returned
++ *	test 2:
++ *		The  caller  was  not  privileged and its RLIMIT_MEMLOCK soft
++ *		resource limit was 0. EPERM should be returned
+  */
+ 
+ #include <errno.h>
+ #include <unistd.h>
+ #include <sys/mman.h>
++#include <pwd.h>
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
+@@ -32,20 +36,26 @@
+ char *TCID = "mlock02";
+ 
+ static void *addr1;
++static struct passwd *ltpuser;
+ static void setup(void);
+ static void mlock_verify(int);
++static void setup2(void);
++static void cleanup2(void);
+ static void cleanup(void);
+ 
+ static struct test_case_t {
+ 	void **addr;
+ 	int len;
+ 	int error;
++	void (*setupfunc) ();
++	void (*cleanupfunc) ();
+ } TC[] = {
+-	{&addr1, 1024, ENOMEM},
++	{&addr1, 1024, ENOMEM, NULL, NULL},
++	{&addr1, 1024, EPERM, setup2, cleanup2},
+ };
+ 
+ int TST_TOTAL = ARRAY_SIZE(TC);
+-static int exp_enos[] = { ENOMEM, 0 };
++static int exp_enos[] = { ENOMEM, EPERM, 0 };
+ 
+ #if !defined(UCLINUX)
+ 
+@@ -85,6 +95,8 @@ int main(void)
+ 
+ static void setup(void)
+ {
++	struct rlimit rl;
++
+ 	TEST_PAUSE;
+ 
+ #ifdef __ia64__
+@@ -92,12 +104,28 @@ static void setup(void)
+ #else
+ 	addr1 = NULL;
+ #endif
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++
++	rl.rlim_cur = 0;
++
++	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
++		tst_resm(TWARN,
++			 "setrlimit failed to set the resource for "
++			 "RLIMIT_MEMLOCK to check for mlock()");
++		return;
++	}
+ }
+ 
+ static void mlock_verify(int i)
+ {
++	if (TC[i].setupfunc != NULL)
++		TC[i].setupfunc();
++
+ 	TEST(mlock(*(TC[i].addr), TC[i].len));
+ 
++	if (TC[i].cleanupfunc != NULL)
++		TC[i].cleanupfunc();
++
+ 	if (TEST_RETURN != -1) {
+ 		tst_resm(TFAIL, "mlock succeeded unexpectedly");
+ 		return;
+@@ -112,6 +140,16 @@ static void mlock_verify(int i)
+ 	}
+ }
+ 
++static void setup2(void)
++{
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++}
++
++static void cleanup2(void)
++{
++	SAFE_SETEUID(cleanup, 0);
++}
++
+ static void cleanup(void)
+ {
+ 	TEST_CLEANUP;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Android apps run on BlackBerry 10
+Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
+Now with support for Jelly Bean, Bluetooth, Mapview and more.
+Get your Android app in front of a whole new audience.  Start now.
+http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
