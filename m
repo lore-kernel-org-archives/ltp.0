@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WI8cf-000438-O2
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 03:23:57 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WI8ce-0007H2-BA
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 03:23:57 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1P3NmsO013600
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 11:23:48 +0800
-Message-ID: <530C0C72.6090900@cn.fujitsu.com>
-Date: Tue, 25 Feb 2014 11:22:26 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1389867964-8072-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1389867964-8072-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] madvise/madvise02.c: extend EINVAL test for
- MADV_MERGEABLE and MADV_UNMERGEABLE advice
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1WFlLc-00041l-0o
+	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 14:08:32 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WFlLa-0007bQ-7N
+	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 14:08:31 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s1IE8NpJ008911
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Feb 2014 14:08:24 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s1IE8Mrm000458
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Feb 2014 14:08:23 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1IE8MdU004087
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Feb 2014 14:08:22 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 18 Feb 2014 18:08:30 +0400
+Message-Id: <1392732510-25892-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v3] lib/test.h: add macro to declare init/cleanup
+	functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,110 +36,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Hi,
+Macro to use for making functions called only once in multi-threaded
+tests such as init or cleanup function.
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ include/test.h |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+diff --git a/include/test.h b/include/test.h
+index d46fdbf..78f13c2 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -111,6 +111,21 @@ pid_t tst_vfork(void);
+ #endif
  
-Please ignore this patch. I do something wrong, thanks.
-
-Regards,
-Xiaoguang Wang
-
-
-On 02/25/2014 11:09 AM, Xiaoguang Wang wrote:
-> From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
->
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/madvise/madvise02.c | 38 ++++++++++++++++++++++++---
->  1 file changed, 34 insertions(+), 4 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
-> index e7f4656..08ed717 100644
-> --- a/testcases/kernel/syscalls/madvise/madvise02.c
-> +++ b/testcases/kernel/syscalls/madvise/madvise02.c
-> @@ -27,6 +27,8 @@
->   *  2. advice is not a valid value
->   *  3. application is attempting to release
->   *     locked or shared pages (with MADV_DONTNEED)
-> + *  4. MADV_MERGEABLE or MADV_UNMERGEABLE was specified in advice,
-> + *     but kernel was not configured with CONFIG_KSM
->   *
->   * (B) Test Case for ENOMEM
->   *  4. addresses in the specified range are not currently mapped
-> @@ -52,9 +54,14 @@
->  #include "usctest.h"
->  
->  #define MM_RLIMIT_RSS 5
-> +/*
-> + * when kernel is 2.6.32 or newer and /sys/kernel/mm/ksm is exist,
-> + * we think kernel was configured with CONFIG_KSM.
-> + */
-> +#define KSM_SYS_DIR	"/sys/kernel/mm/ksm"
->  
->  char *TCID = "madvise02";
-> -int TST_TOTAL = 7;
-> +int TST_TOTAL = 8;
->  
->  static void setup(void);
->  static void cleanup(void);
-> @@ -128,11 +135,34 @@ int main(int argc, char *argv[])
->  		TEST(madvise(file, stat.st_size, MADV_DONTNEED));
->  		check_and_print(EINVAL);
->  
-> -		if (munmap(file, stat.st_size) == -1)
-> -			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
->  #endif /* if !defined(UCLINUX) */
->  
-> +#if defined(MADV_MERGEABLE) && defined(MADV_UNMERGEABLE)
->  		/* Test Case 4 */
-> +		if (tst_kvercmp(2, 6, 32) < 0) {
-> +			tst_resm(TCONF, "kernel samepage merging (KSM) needs "
-> +				 "2.6.32 or higher, skip EINVAL test for "
-> +				 "MADV_MERGEABLE and MADV_UNMERGEABLE.");
-> +		} else {
-> +			if (access(KSM_SYS_DIR, F_OK) < 0) {
-> +				tst_resm(TINFO, "kernel was not configured "
-> +					 "with CONFIG_KSM");
-> +
-> +				TEST(madvise(file, stat.st_size,
-> +				     MADV_MERGEABLE));
-> +				check_and_print(EINVAL);
-> +
-> +				TEST(madvise(file, stat.st_size,
-> +				     MADV_UNMERGEABLE));
-> +				check_and_print(EINVAL);
-> +			}
-> +		}
-> +#endif
-> +
-> +		if (munmap(file, stat.st_size) == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
-> +
-> +		/* Test Case 5 */
->  
->  		/* We cannot be sure, which region is mapped, which is
->  		 * not, at runtime.
-> @@ -169,7 +199,7 @@ int main(int argc, char *argv[])
->  		TEST(madvise(low, len, MADV_NORMAL));
->  		check_and_print(ENOMEM);
->  
-> -		/* Test Case 5 */
-> +		/* Test Case 6 */
->  		/* Unmap the file map from low */
->  		if (munmap(low, stat.st_size / 2) < 0)
->  			tst_brkm(TBROK | TERRNO, cleanup,
+ /*
++ * Macro to use for making functions called only once in
++ * multi-threaded tests such as init or cleanup function.
++ * The first call to @name_fn function by any thread shall
++ * call the @exec_fn. Subsequent calls shall not call @exec_fn.
++ * *_fn functions must not take any arguments.
++ */
++#define DECLARE_ONCE_FN(name_fn, exec_fn)				\
++	void name_fn(void)						\
++	{								\
++		static pthread_once_t name_fn##_ex = PTHREAD_ONCE_INIT;	\
++		pthread_once(&name_fn##_ex, exec_fn);			\
++	}
++
++
++/*
+  * lib/forker.c
+  */
+ extern int Forker_pids[];
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
