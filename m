@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WBP7y-0003o9-TV
-	for ltp-list@lists.sourceforge.net; Thu, 06 Feb 2014 13:36:26 +0000
-Date: Thu, 6 Feb 2014 14:35:55 +0100
-From: chrubis@suse.cz
-Message-ID: <20140206133555.GB4105@rei.suse.cz>
-References: <20140205114813.GA24916@rei.suse.cz>
-	<1391690656-23047-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <naresh.kamboju@linaro.org>) id 1WFlgr-0004za-3R
+	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 14:30:29 +0000
+Received: from mail-yh0-f54.google.com ([209.85.213.54])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WFlgp-0005vu-Pt
+	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 14:30:29 +0000
+Received: by mail-yh0-f54.google.com with SMTP id z6so15363278yhz.41
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Feb 2014 06:30:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1391690656-23047-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] nfsstress: fix paths
+In-Reply-To: <52FDE52A.4070002@linux.vnet.ibm.com>
+References: <CA+G9fYuT4TSs=3j6K9zztsTgFNVp2YG6JT-2Q_L==1P5G+SBew@mail.gmail.com>
+	<52FDE52A.4070002@linux.vnet.ibm.com>
+Date: Tue, 18 Feb 2014 20:00:21 +0530
+Message-ID: <CA+G9fYv9+Fhyz=nVZQZXxLU0YMTJadfr1XVVVb9P=inEfUaDuA@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [LTP] How to get the Linux kernel coverage data on ARM arch
+ when I run LTP test?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,27 +32,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, Milosz Wasilewski <milosz.wasilewski@linaro.org>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>, fhrbata@redhat.com, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Deepak Saxena <dsaxena@linaro.org>, Mark Brown <mark.brown@linaro.org>, Arnd Bergmann <arnd.bergmann@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
-Hi!
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  runtest/stress.part1                      |    8 ++++----
->  testcases/network/nfs/nfsstress/nfsstress |    6 ++----
->  2 files changed, 6 insertions(+), 8 deletions(-)
+On 14 February 2014 15:13, Peter Oberparleiter
+<oberpar@linux.vnet.ibm.com> wrote:
+> On 14.02.2014 10:02, Naresh Kamboju wrote:
+>> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01# gcov kernel/gcov/base.c -o
+>>  /sys/kernel/debug/gcov/tmp/linux-linaro-3.13-2014.01/kernel/gcov/
+>> File 'kernel/gcov/base.c'
+>> Lines executed:43.18% of 44
+>> Creating 'base.c.gcov'
+>>
+>> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01#
+>>
+>> The above experiment gives coverage of a single file base.c when i run
+>> gcov manually.
+>> Is there any way to get Linux kernel coverage of all files after
+>> running LTP test cases ?
+>
+> 1. Reset coverage data: lcov -z
+> 2. Run LTP (or any other test case)
+> 3. Capture coverage data: lcov -c -o coverage.info
+> 4. Generate HTML output: genhtml coverage.info -o out
+> 5. View HTML output: <browser> out/index.html
 
-Pushed, thanks.
+It is working !!!
+LTP executed on linux-linaro build on vexpress-tc2 target.
+Please find results obtained
+http://people.linaro.org/~naresh.kamboju/linux-linaro-coverage-by-ltp/
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The plan is to run all linaro test suite and to get coverage date.
+
+Peter Oberparleiter,
+Thank you very much for your help.
+
+Best regards
+Naresh Kamboju
+
+>
+> More information on lcov can be found on the page behind the second URL
+> your quoted in your mail.
+>
+>
+> Regards,
+>   Peter Oberparleiter
+>
+> --
+> Peter Oberparleiter
+> Linux on System z Development - IBM Germany
+>
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
 Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
