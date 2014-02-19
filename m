@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WGROX-0000s8-K3
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 11:02:21 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGROV-0007F3-Ed
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 11:02:21 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1KB27GW014491
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Feb 2014 19:02:08 +0800
-Message-ID: <1392894122.2053.11.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 20 Feb 2014 19:02:02 +0800
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] modify_ldt/modify_ldt03.c: add a new test
+	(envelope-from <pradeep.bola.ext@nsn.com>) id 1WFwyo-0000yc-KL
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 02:33:46 +0000
+Received: from demumfd002.nsn-inter.net ([93.183.12.31])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WFwyn-0006wy-6w
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 02:33:46 +0000
+Received: from demuprx016.emea.nsn-intra.net ([10.150.129.55])
+	by demumfd002.nsn-inter.net (8.12.11.20060308/8.12.11) with ESMTP id
+	s1J2XZ7X012206
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 03:33:36 +0100
+Received: from USCHHTC002.nsn-intra.net ([10.159.161.15])
+	by demuprx016.emea.nsn-intra.net (8.12.11.20060308/8.12.11) with ESMTP
+	id s1J2XYJb003897
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 03:33:35 +0100
+From: "Bola, Pradeep (EXT-Tata Consultancy Ser - US/Arlington Heights)"
+	<pradeep.bola.ext@nsn.com>
+Date: Wed, 19 Feb 2014 02:33:32 +0000
+Message-ID: <D29743B70598864B880A3BE89C6E96946FEA75@USCHMBX004.nsn-intra.net>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: [LTP] Support needed for LINUX POSIX compliance test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,199 +34,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1547607761321446741=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Add func=0 argument test for modify_ldt(2).
+--===============1547607761321446741==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_"
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- runtest/ltplite                                    |   1 +
- runtest/stress.part3                               |   1 +
- runtest/syscalls                                   |   1 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- .../kernel/syscalls/modify_ldt/modify_ldt03.c      | 110 +++++++++++++++++++++
- 5 files changed, 114 insertions(+)
- create mode 100644 testcases/kernel/syscalls/modify_ldt/modify_ldt03.c
+--_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 4b5300d..c7a5fd0 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -448,6 +448,7 @@ mmap09 mmap09
- 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-+modify_ldt03 modify_ldt03
- 
- #
- # These tests require an unmounted block device
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index bb4807c..d9a846a 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -381,6 +381,7 @@ mmap09 mmap09
- 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-+modify_ldt03 modify_ldt03
- 
- mprotect01 mprotect01
- mprotect02 mprotect02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index afa7976..a6b265c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -576,6 +576,7 @@ mmap14 mmap14
- 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-+modify_ldt03 modify_ldt03
- 
- #
- # These tests require an unmounted block device
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 1caf8e3..f7bd5b1 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -520,6 +520,7 @@
- /mmap/mmap14
- /modify_ldt/modify_ldt01
- /modify_ldt/modify_ldt02
-+/modify_ldt/modify_ldt03
- /mount/mount01
- /mount/mount02
- /mount/mount03
-diff --git a/testcases/kernel/syscalls/modify_ldt/modify_ldt03.c b/testcases/kernel/syscalls/modify_ldt/modify_ldt03.c
-new file mode 100644
-index 0000000..7dce116
---- /dev/null
-+++ b/testcases/kernel/syscalls/modify_ldt/modify_ldt03.c
-@@ -0,0 +1,110 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program.
-+ */
-+/*
-+ * DESCRIPTION
-+ *	Basic test for modify_ldt(2) using func=0 argument.
-+ */
-+
-+#include "config.h"
-+#include "test.h"
-+#include "usctest.h"
-+
-+TCID_DEFINE(modify_ldt03);
-+int TST_TOTAL = 1;
-+
-+#if defined(__i386__) && defined(HAVE_MODIFY_LDT)
-+
-+#ifdef HAVE_ASM_LDT_H
-+#include <asm/ldt.h>
-+#endif
-+extern int modify_ldt(int, void *, unsigned long);
-+
-+#include <asm/unistd.h>
-+#include <string.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include "safe_macros.h"
-+
-+static unsigned long bytecount = 10;
-+static void *ptr;
-+static void cleanup(void);
-+static void setup(void);
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+
-+		tst_count = 0;
-+
-+		TEST(modify_ldt(0, ptr, bytecount));
-+
-+		if (TEST_RETURN < 0) {
-+			tst_resm(TFAIL | TTERRNO,
-+				 "modify_ldt() failed with errno: %s",
-+				 strerror(TEST_ERRNO));
-+		} else {
-+			tst_resm(TPASS, "modify_ldt() tested success");
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	ptr = SAFE_MALLOC(cleanup, bytecount);
-+}
-+
-+static void cleanup(void)
-+{
-+	free(ptr);
-+
-+	TEST_CLEANUP;
-+}
-+
-+#elif HAVE_MODIFY_LDT
-+
-+int main(void)
-+{
-+	tst_resm(TCONF,
-+		 "modify_ldt is available but not tested on the platform than "
-+		 "__i386__");
-+	tst_exit();
-+}
-+
-+#else /* if defined(__i386__) */
-+
-+int main(void)
-+{
-+	tst_resm(TINFO, "modify_ldt03 test only for ix86");
-+	tst_exit();
-+}
-+
-+#endif /* if defined(__i386__) */
--- 
-1.8.4.2
+Hi,
+
+We are planning to use LTP for doing POSIX compliance test for one of our p=
+roject.
+LTP covers most of the LINUX POSIX functions.
+
+But I am unable to test few of the stdio POSIX functionalities.
+Few of POSIX functions: atoi, atol, calloc, malloc, free, errno, scanf, spr=
+ints, system etc .
+
+Can you please let me know how to verify these stdio commands using LTP?
+
+Also need support for testing POSIX compliance for few of the LINUX command=
+s.
+POSIX Linux commands: arp, cd, mv, date, echo, file, gdb, kill etc.
+
+Regards,
+Pradeep Bola
 
 
 
+
+--_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Exchange Server">
+<!-- converted from rtf -->
+<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left:=
+ #800000 2px solid; } --></style>
+</head>
+<body>
+<font face=3D"Calibri" size=3D"2"><span style=3D"font-size:11pt;">
+<div>Hi,</div>
+<div>&nbsp;</div>
+<div>We are planning to use LTP for doing POSIX compliance test for one of =
+our project.</div>
+<div>LTP covers most of the LINUX POSIX functions.</div>
+<div>&nbsp;</div>
+<div>But I am unable to test few of the stdio POSIX functionalities.</div>
+<div>Few of POSIX functions: atoi, atol, calloc, malloc, free, errno, scanf=
+, sprints, system etc .</div>
+<div>&nbsp;</div>
+<div>Can you please let me know how to verify these stdio commands using LT=
+P?</div>
+<div>&nbsp;</div>
+<div>Also need support for testing POSIX compliance for few of the LINUX co=
+mmands.</div>
+<div>POSIX Linux commands: arp, cd, mv, date, echo, file, gdb, kill etc. </=
+div>
+<div>&nbsp;</div>
+<div>Regards,</div>
+<div>Pradeep Bola</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+</span></font>
+</body>
+</html>
+
+--_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_--
+
+
+--===============1547607761321446741==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
 Read the Whitepaper.
 http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+--===============1547607761321446741==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1547607761321446741==--
+
