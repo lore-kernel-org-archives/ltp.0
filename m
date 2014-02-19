@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WG4vc-0004Jb-Ij
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 11:03:00 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WG4va-0007pt-NM
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 11:03:00 +0000
-Date: Wed, 19 Feb 2014 06:02:42 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <195443697.5664448.1392807762480.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1392802716.2083.4.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1392372746.2085.11.camel@G08JYZSD130126>
-	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-	<1392802716.2083.4.camel@G08JYZSD130126>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WGBIj-000708-MU
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 17:51:17 +0000
+Date: Wed, 19 Feb 2014 18:51:05 +0100
+From: chrubis@suse.cz
+Message-ID: <20140219175105.GA22691@rei>
+References: <1390428817-31923-1-git-send-email-sweekar.pinto@oracle.com>
+	<20140213175049.GA19125@rei.suse.cz> <5301EB5E.2010606@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2 1/2] mlock/mlock02.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <5301EB5E.2010606@oracle.com>
+Subject: Re: [LTP] [PATCH 1/3] Fixed compile errors in crasher.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,164 +22,149 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Sweekar Pinto <sweekar.pinto@oracle.com>
+Cc: lisa.vaz@oracle.com, ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIlplbmcgTGluZ2dhbmciIDx6
-ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+Cj4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJl
-ZGhhdC5jb20+Cj4gQ2M6ICJsdHAtbGlzdCIgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dD4KPiBTZW50OiBXZWRuZXNkYXksIDE5IEZlYnJ1YXJ5LCAyMDE0IDEwOjM4OjM2IEFNCj4gU3Vi
-amVjdDogW1BBVENIIHYyIDEvMl0gbWxvY2svbWxvY2swMi5jOiBjbGVhbnVwCj4gCj4gKiBEZWxl
-dGUgc29tZSB1c2VsZXNzIGNvbW10ZW50cy4KPiAqIE1vdmUgdGhlIHRlc3QgYm9keSBmb3JtIG1h
-aW4oKSB0byBtbG9ja192ZXJpZnkoKS4KPiAqIFNvbWUgY2xlYW51cC4KPiAKPiBTaWduZWQtb2Zm
-LWJ5OiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+CgpIaSwKCkkgaGF2
-ZSB0cm91YmxlIGNvbXBpbGluZyB0aGlzIHBhdGNoIChjb21tZW50cyBpbmxpbmUpOgokIG1ha2UK
-bWFrZSAtQyAiL3Vzci9zcmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZSIgLWYgIi91c3Iv
-c3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvTWFrZWZpbGUiIGFsbAptYWtlWzFdOiBF
-bnRlcmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUn
-Cm1ha2VbMV06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuCm1ha2VbMV06IExlYXZpbmcg
-ZGlyZWN0b3J5IGAvdXNyL3NyYy9sdHAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlJwpnY2MgLWcg
-LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtVyAtRF9GT1JUSUZZ
-X1NPVVJDRT0yIC1JL3Vzci9zcmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZSAtSS4uLy4u
-Ly4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi9saWIg
-IG1sb2NrMDIuYyAgIC1sbHRwIC1vIG1sb2NrMDIKbWxvY2swMi5jOiBJbiBmdW5jdGlvbiDigJht
-bG9ja192ZXJpZnnigJk6Cm1sb2NrMDIuYzo5MDogZXJyb3I6IHZvaWQgdmFsdWUgbm90IGlnbm9y
-ZWQgYXMgaXQgb3VnaHQgdG8gYmUKbWFrZTogKioqIFttbG9jazAyXSBFcnJvciAxCgo+IC0tLQo+
-ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYyB8IDE0Mwo+ICArKysr
-KysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDYzIGluc2VydGlv
-bnMoKyksIDgwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9t
-bG9jay9tbG9jazAyLmMKPiBpbmRleCBlZGQ5ZTQ1Li4xZDFjODUzIDEwMDY0NAo+IC0tLSBhL3Rl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMi5jCj4gKysrIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9jazAyLmMKPiBAQCAtMSw2ICsxLDYgQEAKPiAgLyoK
-PiAtICoKPiAgICogICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
-ZXMgIENvcnAuLCAyMDAyCj4gKyAqCTA2LzIwMDIgV3JpdHRlbiBieSBQYXVsIExhcnNvbgo+ICAg
-Kgo+ICAgKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3Ry
-aWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo+ICAgKiAgIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
-R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cj4gQEAgLTEzLDcwICsx
-Myw0OCBAQAo+ICAgKiAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
-ZXRhaWxzLgo+ICAgKgo+ICAgKiAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2Yg
-dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCj4gLSAqICAgYWxvbmcgd2l0aCB0aGlzIHBy
-b2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCj4gLSAqICAgRm91bmRh
-dGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQQo+
-IDAyMTEwLTEzMDEgVVNBCj4gKyAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3Qs
-IHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCj4gRm91bmRhdGlvbiwKPiArICogICBJbmMuLCA1
-MSBGcmFua2xpbiBTdHJlZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNB
-Cj4gICAqLwo+IC0KPiAgLyoKPiAtICogTkFNRQo+IC0gKiAJbWxvY2swMi5jCj4gLSAqCj4gLSAq
-IERFU0NSSVBUSU9OCj4gLSAqIAlUZXN0IHRvIHNlZSB0aGUgcHJvcGVyIGVycm9ycyBhcmUgcmV0
-dXJuZWQgYnkgbWxvY2sKPiAtICokCj4gICAqIEFMR09SSVRITQo+ICAgKiAJdGVzdCAxOgo+ICAg
-KgkJQ2FsbCBtbG9jayB3aXRoIGEgTlVMTCBhZGRyZXNzLiAgRU5PTUVNIHNob3VsZCBiZSByZXR1
-cm5lZAo+IC0gKgo+IC0gKiBVU0FHRTogIDxmb3IgY29tbWFuZC1saW5lPgo+IC0gKiAgICAgICAg
-IC1jIG4gICAgUnVuIG4gY29waWVzIGNvbmN1cnJlbnRseQo+IC0gKiAgICAgICAgIC1lICAgICAg
-VHVybiBvbiBlcnJubyBsb2dnaW5nCj4gLSAqICAgICAgICAgLWYgICAgICBUdXJuIG9mZiBmdW5j
-dGlvbmFsIHRlc3RpbmcKPiAtICogICAgICAgICAtaCAgICAgIFNob3cgdGhpcyBoZWxwIHNjcmVl
-bgo+IC0gKiAgICAgICAgIC1pIG4gICAgRXhlY3V0ZSB0ZXN0IG4gdGltZXMKPiAtICogICAgICAg
-ICAtSSB4ICAgIEV4ZWN1dGUgdGVzdCBmb3IgeCBzZWNvbmRzCj4gLSAqICAgICAgICAgLXAgICAg
-ICBQYXVzZSBmb3IgU0lHVVNSMSBiZWZvcmUgc3RhcnRpbmcKPiAtICogICAgICAgICAtUCB4ICAg
-IFBhdXNlIGZvciB4IHNlY29uZHMgYmV0d2VlbiBpdGVyYXRpb25zCj4gLSAqICAgICAgICAgLXQg
-ICAgICBUdXJuIG9uIHN5c2NhbGwgdGltaW5nCj4gLSAqCj4gLSAqIEhJU1RPUlkKPiAtICoJMDYv
-MjAwMiBXcml0dGVuIGJ5IFBhdWwgTGFyc29uCj4gLSAqCj4gLSAqIFJFU1RSSUNUSU9OUwo+IC0g
-KiAJTm9uZQo+ICAgKi8KPiArCj4gICNpbmNsdWRlIDxlcnJuby5oPgo+ICAjaW5jbHVkZSA8dW5p
-c3RkLmg+Cj4gICNpbmNsdWRlIDxzeXMvbW1hbi5oPgo+ICAjaW5jbHVkZSAidGVzdC5oIgo+ICAj
-aW5jbHVkZSAidXNjdGVzdC5oIgo+ICAKPiAtdm9pZCBzZXR1cCgpOwo+IC12b2lkIHNldHVwMSgp
-Owo+IC12b2lkIGNsZWFudXAoKTsKPiAtCj4gIGNoYXIgKlRDSUQgPSAibWxvY2swMiI7Cj4gLWlu
-dCBUU1RfVE9UQUwgPSAxOwo+IC0KPiAtaW50IGV4cF9lbm9zW10gPSB7IEVOT01FTSwgMCB9Owo+
-ICAKPiAtdm9pZCAqYWRkcjE7Cj4gKyNpZiAhZGVmaW5lZChVQ0xJTlVYKQo+ICAKPiAgc3RydWN0
-IHRlc3RfY2FzZV90IHsKPiAgCXZvaWQgKiphZGRyOwo+ICAJaW50IGxlbjsKPiAgCWludCBlcnJv
-cjsKPiAgCXZvaWQgKCpzZXR1cGZ1bmMpICgpOwoKc2hvdWxkIGxpc3QgcGFyYW1ldGVycyBvciB2
-b2lkCgo+IC19IFRDW10gPSB7Cj4gLQkvKiBtbG9jayBzaG91bGQgcmV0dXJuIEVOT01FTSB3aGVu
-IHNvbWUgb3IgYWxsIG9mIHRoZSBhZGRyZXNzCj4gLQkgKiByYW5nZSBwb2ludGVkIHRvIGJ5IGFk
-ZHIgYW5kIGxlbiBhcmUgbm90IHZhbGlkIG1hcHBlZCBwYWdlcwo+IC0JICogaW4gdGhlIGFkZHJl
-c3Mgc3BhY2Ugb2YgdGhlIHByb2Nlc3MKPiAtCSAqLwo+IC0Jewo+IC0JJmFkZHIxLCAxMDI0LCBF
-Tk9NRU0sIHNldHVwMX0KPiAgfTsKPiAgCj4gLSNpZiAhZGVmaW5lZChVQ0xJTlVYKQo+ICtzdGF0
-aWMgdm9pZCAqYWRkcjE7Cj4gK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+ICsjaWZkZWYgX19p
-YTY0X18KPiArc3RhdGljIHZvaWQgc2V0dXAxKGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqKTsK
-CldoeSBkaWZmZXJlbnQgcHJvdG90eXBlIGZvciBpYTY0PwpJIGRvbid0IHRoaW5rIHRoaXMgcGFy
-YW1ldGVyIHNob3VsZCBiZSBjb25zdCwgaXQncyBsaWtlbHkgc2V0dXBmdW5jKCkKd2lsbCB3YW50
-IHRvIG1vZGlmeSB0aGUgc3RydWN0LgoKPiArI2Vsc2UKPiArc3RhdGljIHZvaWQgc2V0dXAxKHZv
-aWQpOwo+ICsjZW5kaWYKPiArc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKPiArc3RhdGljIHZv
-aWQgbWxvY2tfdmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqKTsKPiArCj4gK3N0YXRp
-YyBzdHJ1Y3QgdGVzdF9jYXNlX3QgVENbXSA9IHsKPiArCXsmYWRkcjEsIDEwMjQsIEVOT01FTSwg
-c2V0dXAxfSwKPiArfTsKPiArCj4gK2ludCBUU1RfVE9UQUwgPSBBUlJBWV9TSVpFKFRDKTsKPiAr
-c3RhdGljIGludCBleHBfZW5vc1tdID0geyBFTk9NRU0sIDAgfTsKPiAgCj4gIGludCBtYWluKGlu
-dCBhYywgY2hhciAqKmF2KQo+ICB7Cj4gQEAgLTkxLDYyICs2OSw2NyBAQCBpbnQgbWFpbihpbnQg
-YWMsIGNoYXIgKiphdikKPiAgCVRFU1RfRVhQX0VOT1MoZXhwX2Vub3MpOwo+ICAKPiAgCWZvciAo
-bGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysrKSB7Cj4gLQo+ICAJCXRzdF9jb3VudCA9IDA7
-Cj4gLQo+IC0JCWZvciAoaSA9IDA7IGkgPCBUU1RfVE9UQUw7IGkrKykgewo+IC0KPiAtCQkJaWYg
-KFRDW2ldLnNldHVwZnVuYyAhPSBOVUxMKQo+IC0JCQkJVENbaV0uc2V0dXBmdW5jKCk7Cj4gLQo+
-IC0JCQlURVNUKG1sb2NrKCooVENbaV0uYWRkciksIFRDW2ldLmxlbikpOwo+IC0KPiAtCQkJaWYg
-KFRFU1RfUkVUVVJOID09IC0xKSB7Cj4gLQkJCQlpZiAoVEVTVF9FUlJOTyAhPSBUQ1tpXS5lcnJv
-cikKPiAtCQkJCQl0c3RfYnJrbShURkFJTCB8IFRURVJSTk8sIGNsZWFudXAsCj4gLQkJCQkJCSAi
-bWxvY2sgZGlkbid0IGZhaWwgYXMgZXhwZWN0ZWQ7ICIKPiAtCQkJCQkJICJleHBlY3RlZCAtICVk
-IDogJXMiLAo+IC0JCQkJCQkgVENbaV0uZXJyb3IsCj4gLQkJCQkJCSBzdHJlcnJvcihUQ1tpXS5l
-cnJvcikpOwo+IC0JCQkJZWxzZQo+IC0JCQkJCXRzdF9yZXNtKFRQQVNTIHwgVFRFUlJOTywKPiAt
-CQkJCQkJICJtbG9jayBmYWlsZWQgYXMgZXhwZWN0ZWQiKTsKPiAtCQkJfSBlbHNlCj4gLQkJCQl0
-c3RfYnJrbShURkFJTCwgY2xlYW51cCwKPiAtCQkJCQkgIm1sb2NrIHN1Y2NlZWRlZCB1bmV4cGVj
-dGVkbHkiKTsKPiAtCQl9Cj4gKwkJZm9yIChpID0gMDsgaSA8IFRTVF9UT1RBTDsgaSsrKQo+ICsJ
-CQltbG9ja192ZXJpZnkoJlRDW2ldKTsKPiAgCX0KPiAgCj4gIAljbGVhbnVwKCk7Cj4gLQo+ICAJ
-dHN0X2V4aXQoKTsKPiAgfQo+ICAKPiAtI2Vsc2UKPiAtCj4gLWludCBtYWluKCkKPiArc3RhdGlj
-IHZvaWQgc2V0dXAodm9pZCkKPiAgewo+IC0JdHN0X2Jya20oVENPTkYsIE5VTEwsICJ0ZXN0IGlz
-IG5vdCBhdmFpbGFibGUgb24gdUNsaW51eCIpOwo+IC19Cj4gLQo+IC0jZW5kaWYgLyogaWYgIWRl
-ZmluZWQoVUNMSU5VWCkgKi8KPiArCXRzdF9zaWcoTk9GT1JLLCBERUZfSEFORExFUiwgY2xlYW51
-cCk7Cj4gIAo+IC12b2lkIHNldHVwKCkKPiAtewo+ICAJVEVTVF9QQVVTRTsKPiAgfQo+ICAKPiAt
-dm9pZCBzZXR1cDEoKQo+ICtzdGF0aWMgdm9pZCBtbG9ja192ZXJpZnkoY29uc3Qgc3RydWN0IHRl
-c3RfY2FzZV90ICp0ZXN0KQo+ICB7Cj4gKwlpZiAodGVzdC0+c2V0dXBmdW5jKHRlc3QpID09IC0x
-KQoKc2V0dXBmdW5jIHJldHVybnMgdm9pZAoKPiArCQlyZXR1cm47Cj4gKwo+ICsJVEVTVChtbG9j
-aygqKHRlc3QtPmFkZHIpLCB0ZXN0LT5sZW4pKTsKPiArCj4gKwlpZiAoVEVTVF9SRVRVUk4gIT0g
-LTEpIHsKPiArCQl0c3RfcmVzbShURkFJTCwgIm1sb2NrIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHki
-KTsKPiArCQlyZXR1cm47Cj4gKwl9Cj4gKwo+ICsJaWYgKFRFU1RfRVJSTk8gIT0gdGVzdC0+ZXJy
-b3IpIHsKPiArCQl0c3RfcmVzbShURkFJTCB8IFRURVJSTk8sCj4gKwkJCSAibWxvY2sgZGlkbid0
-IGZhaWwgYXMgZXhwZWN0ZWQ7IGV4cGVjdGVkIC0gJWQgOiAlcyIsCj4gKwkJCSB0ZXN0LT5lcnJv
-ciwgc3RyZXJyb3IodGVzdC0+ZXJyb3IpKTsKPiArCX0gZWxzZSB7Cj4gKwkJdHN0X3Jlc20oVFBB
-U1MgfCBUVEVSUk5PLCAibWxvY2sgZmFpbGVkIGFzIGV4cGVjdGVkIik7Cj4gKwl9Cj4gK30KPiAr
-Cj4gICNpZmRlZiBfX2lhNjRfXwo+IC0JVENbMF0ubGVuID0gZ2V0cGFnZXNpemUoKSArIDE7Cj4g
-K3N0YXRpYyB2b2lkIHNldHVwMShjb25zdCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKnRlc3QpCj4gK3sK
-PiArCXRlc3QtPmxlbiA9IGdldHBhZ2VzaXplKCkgKyAxOwoKTm90IHJlbGV2YW50IHRvIHRoaXMg
-Y2xlYW51cCBwYXRjaDogQW55IGlkZWEgd2h5IGlhNjQgbmVlZHMgdGhpcyBzZXR1cD8gCgo+ICt9
-Cj4gICNlbHNlCj4gK3N0YXRpYyB2b2lkIHNldHVwMSh2b2lkKQo+ICt7Cj4gIAlhZGRyMSA9IE5V
-TEw7CgpJZiB5b3UgaGFkIHNhbWUgcHJvdG90eXBlIHlvdSBjb3VsZCBhbHNvIGRvOgogICoodGVz
-dC0+YWRkcikgPSBOVUxMOwp3aGljaCBpcyBub3QgbmVlZGVkIGZvciB0aGlzIHNpbmdsZSB0ZXN0
-Y2FzZSwgYnV0IEknbSBhc3N1bWluZyBwYXJ0IDIKb2YgdGhlIHBhdGNoc2V0IHdpbGwgbW9kaWZ5
-IGFkZHIxLCBzbyByZXNldHRpbmcgdmFsdWUgd2lsbCBiZSBuZWVkZWQuCgo+IC0jZW5kaWYKPiAg
-fQo+ICsjZW5kaWYKPiAgCj4gLXZvaWQgY2xlYW51cCgpCj4gK3N0YXRpYyB2b2lkIGNsZWFudXAo
-dm9pZCkKPiAgewo+ICAJVEVTVF9DTEVBTlVQOwo+ICt9Cj4gKwo+ICsjZWxzZQo+ICAKPiAraW50
-IFRTVF9UT1RBTCA9IDE7Cj4gKwo+ICtpbnQgbWFpbih2b2lkKQo+ICt7Cj4gKwl0c3RfYnJrbShU
-Q09ORiwgTlVMTCwgInRlc3QgaXMgbm90IGF2YWlsYWJsZSBvbiB1Q2xpbnV4Iik7Cj4gIH0KPiAr
-Cj4gKyNlbmRpZiAvKiBpZiAhZGVmaW5lZChVQ0xJTlVYKSAqLwo+IC0tCj4gMS44LjQuMgo+IAo+
-IAoKSGVyZSBpcyBwYXRjaCB3aGljaCBtYWRlIGl0IGNvbXBpbGUtYWJsZSBmb3IgbWU6CgpkaWZm
-IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9jazAyLmMgYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwppbmRleCAxZDFjODUzLi5jZmE5
-MTc2IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIu
-YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwpAQCAtMzYs
-MTggKzM2LDE0IEBAIHN0cnVjdCB0ZXN0X2Nhc2VfdCB7CiAJdm9pZCAqKmFkZHI7CiAJaW50IGxl
-bjsKIAlpbnQgZXJyb3I7Ci0Jdm9pZCAoKnNldHVwZnVuYykgKCk7CisJaW50ICgqc2V0dXBmdW5j
-KSAoc3RydWN0IHRlc3RfY2FzZV90ICopOwogfTsKIAogc3RhdGljIHZvaWQgKmFkZHIxOwogc3Rh
-dGljIHZvaWQgc2V0dXAodm9pZCk7Ci0jaWZkZWYgX19pYTY0X18KLXN0YXRpYyB2b2lkIHNldHVw
-MShjb25zdCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKik7Ci0jZWxzZQotc3RhdGljIHZvaWQgc2V0dXAx
-KHZvaWQpOwotI2VuZGlmCitzdGF0aWMgaW50IHNldHVwMShzdHJ1Y3QgdGVzdF9jYXNlX3QgKik7
-CiBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpOwotc3RhdGljIHZvaWQgbWxvY2tfdmVyaWZ5KGNv
-bnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqKTsKK3N0YXRpYyB2b2lkIG1sb2NrX3ZlcmlmeShzdHJ1
-Y3QgdGVzdF9jYXNlX3QgKik7CiAKIHN0YXRpYyBzdHJ1Y3QgdGVzdF9jYXNlX3QgVENbXSA9IHsK
-IAl7JmFkZHIxLCAxMDI0LCBFTk9NRU0sIHNldHVwMX0sCkBAIC04NSw3ICs4MSw3IEBAIHN0YXRp
-YyB2b2lkIHNldHVwKHZvaWQpCiAJVEVTVF9QQVVTRTsKIH0KIAotc3RhdGljIHZvaWQgbWxvY2tf
-dmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkKK3N0YXRpYyB2b2lkIG1sb2Nr
-X3ZlcmlmeShzdHJ1Y3QgdGVzdF9jYXNlX3QgKnRlc3QpCiB7CiAJaWYgKHRlc3QtPnNldHVwZnVu
-Yyh0ZXN0KSA9PSAtMSkKIAkJcmV0dXJuOwpAQCAtMTA2LDE3ICsxMDIsMTQgQEAgc3RhdGljIHZv
-aWQgbWxvY2tfdmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkKIAl9CiB9CiAK
-LSNpZmRlZiBfX2lhNjRfXwotc3RhdGljIHZvaWQgc2V0dXAxKGNvbnN0IHN0cnVjdCB0ZXN0X2Nh
-c2VfdCAqdGVzdCkKK3N0YXRpYyBpbnQgc2V0dXAxKHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkK
-IHsKKyNpZmRlZiBfX2lhNjRfXwogCXRlc3QtPmxlbiA9IGdldHBhZ2VzaXplKCkgKyAxOwotfQot
-I2Vsc2UKLXN0YXRpYyB2b2lkIHNldHVwMSh2b2lkKQotewotCWFkZHIxID0gTlVMTDsKLX0KICNl
-bmRpZgorCSoodGVzdC0+YWRkcikgPSBOVUxMOworCXJldHVybiAwOworfQogCiBzdGF0aWMgdm9p
-ZCBjbGVhbnVwKHZvaWQpCiB7CgpSZWdhcmRzLApKYW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpN
-YW5hZ2luZyB0aGUgUGVyZm9ybWFuY2Ugb2YgQ2xvdWQtQmFzZWQgQXBwbGljYXRpb25zClRha2Ug
-YWR2YW50YWdlIG9mIHdoYXQgdGhlIENsb3VkIGhhcyB0byBvZmZlciAtIEF2b2lkIENvbW1vbiBQ
-aXRmYWxscy4KUmVhZCB0aGUgV2hpdGVwYXBlci4KaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNr
-Lm5ldC9nYW1wYWQvY2xrP2lkPTEyMTA1NDQ3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> >> Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+> >> ---
+> >>   testcases/kdump/lib/crasher/crasher.c |    6 ++++--
+> >>   1 files changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/testcases/kdump/lib/crasher/crasher.c b/testcases/kdump/lib/crasher/crasher.c
+> >> index bc192dc..2b01412 100644
+> >> --- a/testcases/kdump/lib/crasher/crasher.c
+> >> +++ b/testcases/kdump/lib/crasher/crasher.c
+> >> @@ -25,7 +25,10 @@
+> >>   #include <linux/proc_fs.h>
+> >>   #include <linux/spinlock.h>
+> >>   #include <asm/uaccess.h>
+> >> +#include <linux/version.h>
+> >> +#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 4, 0)
+> >>   #include <asm/system.h>
+> >> +#endif
+> > The inner include should look like:
+> >
+> > # include <asm/system.h>
+> Not sure what you mean here?
+
+Just indentation of the inner include blocks. The preprocesor directives
+are usually indented by spaces between the # and the keyword such as:
+
+#ifdef ...
+# if ...
+#  include ...
+# endif
+#endif
+
+> >>   MODULE_LICENSE("GPL");
+> >>   
+> >> @@ -46,7 +49,7 @@ static int crasher_write(struct file *file, const char *buffer,
+> >>   			 unsigned long count, void *data)
+> >>   {
+> >>   	char value, *a;
+> >> -	spinlock_t mylock = SPIN_LOCK_UNLOCKED;
+> >> +	DEFINE_SPINLOCK(mylock);
+> >>   
+> >>   	/* grab the first byte the user gave us, ignore the rest */
+> >>   	if (copy_from_user(&value, buffer, 1))
+> >> @@ -94,7 +97,6 @@ int crasher_init(void)
+> >>   
+> >>   	crasher_proc->read_proc = crasher_read;
+> >>   	crasher_proc->write_proc = crasher_write;
+> >> -	crasher_proc->owner = THIS_MODULE;
+> >>   	return 0;
+> >>   }
+> >>   
+> >> -- 
+> >> 1.7.1
+> >>
+> >>
+> >> >From f58a6316dc168781daa76edf4d78a217e2af2628 Mon Sep 17 00:00:00 2001
+> >> From: Sweekar Pinto <sweekar.pinto@oracle.com>
+> >> Date: Wed, 22 Jan 2014 17:05:01 -0500
+> >> Subject: [PATCH 2/3] Fix passwordless ssh for network(ssh) dump test
+> >>
+> >> -Force ssh to use kdumps rsa key to run commands remotely
+> >>
+> >> Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+> >> ---
+> >>   testcases/kdump/runkdump.sh |    6 +++---
+> >>   1 files changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/testcases/kdump/runkdump.sh b/testcases/kdump/runkdump.sh
+> >> index e2e681c..cd6ee1c 100755
+> >> --- a/testcases/kdump/runkdump.sh
+> >> +++ b/testcases/kdump/runkdump.sh
+> >> @@ -95,7 +95,7 @@ PrepareVerify ()
+> >>               exit 1
+> >>           fi
+> >>   
+> >> -        file=$(ssh "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore \
+> >> +        file=$(ssh -i ~/.ssh/kdump_id_rsa "${SCP_PATH}" "ls -t ${COREDIR}/*/vmcore* \
+> >>            2>/dev/null | head -1")
+> >>   
+> >>           mkdir -p "${COREDIR}/${last}"
+> >> @@ -103,7 +103,7 @@ PrepareVerify ()
+> >>           if [ "${file}" ]; then
+> >>               # Not fatal error.
+> >>               set +e
+> >> -            scp "${SCP_PATH}:${file}" "${COREDIR}/${last}"
+> >> +            scp  -i ~/.ssh/kdump_id_rsa "${SCP_PATH}:${file}" "${COREDIR}/${last}"
+> >>               set -e
+> >>           fi
+> >>   
+> >> @@ -116,7 +116,7 @@ PrepareVerify ()
+> >>           COREDIR=/mnt"${COREDIR}"
+> >>       fi
+> >>   
+> >> -    vmcore=$(ls -t "${COREDIR}"/*/vmcore 2>/dev/null | head -1)
+> >> +    vmcore=$(ls -t "${COREDIR}"/*/vmcore* 2>/dev/null | head -1)
+> Some versions of kexec-tools append the date to the vmcore file. Hence 
+> the vmcore*.
+
+This is missing from the commit message. Imagine that you are trying to
+figure out why this change was needed, without a proper description in
+the commit message this will take hours to figure out.
+
+> > This change is not explained in the commit message.
+> >
+> >>   }
+> >>   
+> >>   VerifyTest ()
+> >> -- 
+> >> 1.7.1
+> >>
+> >>
+> >> >From 76ab06883327fdcdf038af5dd96a036e0b077818 Mon Sep 17 00:00:00 2001
+> >> From: Sweekar Pinto <sweekar.pinto@oracle.com>
+> >> Date: Wed, 22 Jan 2014 17:08:23 -0500
+> >> Subject: [PATCH 3/3] Change crashkernel param to 256M@128M
+> >>
+> >> -Change the crashkernel parm of x86 and default arch to 256M@128M as this is found to be the best fit
+> > Can you elaborate further? The kernel documentation
+> > (Documentation/kdump/kdump.txt) still says 64M@16M.
+> We always get a "crashkernel reservation failed - memory is in use" with 
+> crashkernel=64M@16M on all of our test hardware.
+> 256M@128M seems to be the best fit based on empirical data.
+
+Ok, this explanation should be in the commit message so that anybody who
+looks at the commit can figure out why the numbers were changed this
+way.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
