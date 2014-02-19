@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1WCgpX-0004fj-UP
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 02:42:45 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WCgpW-0002uh-5R
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 02:42:43 +0000
-Message-ID: <52F83C96.9090802@oracle.com>
-Date: Mon, 10 Feb 2014 10:42:30 +0800
-From: Simon Xu <xu.simon@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WG5Lb-0000sI-DK
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 11:29:51 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WG5LZ-0007lp-RH
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 11:29:51 +0000
+Date: Wed, 19 Feb 2014 06:29:41 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1392802803.2083.5.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1392372746.2085.11.camel@G08JYZSD130126>
+	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
+	<1392802716.2083.4.camel@G08JYZSD130126>
+	<1392802803.2083.5.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <1386750816-782-1-git-send-email-xu.simon@oracle.com>
-	<52BA386D.50903@oracle.com> <52DDD0D9.40309@oracle.com>
-	<2063328347.1666006.1391079813144.JavaMail.root@redhat.com>
-In-Reply-To: <2063328347.1666006.1391079813144.JavaMail.root@redhat.com>
-Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
+Subject: Re: [LTP] [PATCH v2 2/2] mlock/mlock02.c: add EPERM and ENOMEM
+ errno tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,514 +29,131 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On 2014/1/30 19:03, Jan Stancek wrote:
->
-> ----- Original Message -----
->> From: "Simon Xu" <xu.simon@oracle.com>
->> To: ltp-list@lists.sourceforge.net
->> Sent: Tuesday, 21 January, 2014 2:43:53 AM
->> Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
->>
->> Could anyone help to review this?
->>
->> Thanks
->> Simon
->>
->> On 2013/12/25 9:44, Simon Xu wrote:
->>> Could anyone help to review this?
->>>
->>> Thanks
->>> Simon
->>>
->>> On 2013/12/11 16:33, Simon Xu wrote:
->>>> 1) Eliminate '|| RC=$?' because because it may not be excecuted and the
->>>>       original value in RC can mess things up.
-> Hi,
->
-> "original value in RC can mess things up"
-> Can you elaborate on this? Isn't original value (initialized to) 0?
-
-It's been a while since I created the patch, I remember I had some issue 
-where a command succeeds but test fails because RC was not 0 before the 
-command executes.  Anyway, I think
-
-RC=0
-...
-...
-command || RC=$?
-check RC value
-
-is bad design.  It's error prone.  While
-
-command
-RC=$?
-check RC value
-
-is simple and robust.
-
-
-Thanks
-Simon
-
->> Also remove the RC=0
->>>>       initializations that are now unnecessary.
->>>> 2) Exit test immediately with non-zero return code when a test fails.
->>>> 3) Add missing parameters in calling tst_brk and tst_brkm
->>>>
->>>> Signed-off-by: Simon Xu <xu.simon@oracle.com>
->>>> ---
->>>>     testcases/network/iproute/ip_tests.sh | 128
->>>>     ++++++++++++++++++++--------------
->>>>     1 file changed, 74 insertions(+), 54 deletions(-)
->>>>
->>>> diff --git a/testcases/network/iproute/ip_tests.sh
->>>> b/testcases/network/iproute/ip_tests.sh
->>>> index 0416300..ed20540 100755
->>>> --- a/testcases/network/iproute/ip_tests.sh
->>>> +++ b/testcases/network/iproute/ip_tests.sh
->>>> @@ -45,7 +45,6 @@ set +x
->>>>     init()
->>>>     {
->>>>     
->>>> -	export RC=0					# Return code from commands.
->>>>     	export TST_TOTAL=2			# total numner of tests in this file.
->>>>     	export TCID="ip_tests  "		# this is the init function.
->>>>     	export TST_COUNT=0			# init identifier,
->>>> @@ -61,15 +60,17 @@ init()
->>>>     	trap "cleanup" 0
->>>>     
->>>>     	# create the tmp directory for this testcase.
->>>> -	mkdir -p $LTPTMP/ >/dev/null 2>&1 || RC=$?
->>>> +	mkdir -p $LTPTMP/ >/dev/null 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>> -		tst_brkm TBROK "INIT: Unable to create temporary directory"
->>>> +		tst_brkm TBROK NULL "INIT: Unable to create temporary directory"
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>>     	# Check to see if test harness functions are in the path.
->>>> -	which tst_resm  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	which tst_resm  >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brkm TBROK NULL \
->>>> @@ -77,7 +78,8 @@ init()
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>> -	which awk  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	which awk  >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brkm TBROK NULL \
->>>> @@ -85,7 +87,8 @@ init()
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>> -	which ip  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	which ip  >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brkm TBROK NULL \
->>>> @@ -93,7 +96,8 @@ init()
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>> -	which ifconfig  >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	which ifconfig  >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brkm TBROK NULL \
->>>> @@ -104,24 +108,25 @@ init()
->>>>     	tst_resm TINFO "INIT: Inititalizing tests."
->>>>     
->>>>     	# Aliasing eth0 to create private network.
->>>> -	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>> -		tst_brk TBROK "INIT: failed aliasing eth0:1 with IP 10.1.1.12"
->>>> +		tst_brk TBROK NULL NULL "INIT: failed aliasing eth0:1 with IP
->>>> 10.1.1.12"
->>>>     		return $RC
->>>>     	else
->>>> -		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 \
->>>> -			|| RC=$?
->>>> +		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>> -			tst_brk TBROK "INIT: failed adding route to 10.1.1.12"
->>>> +			tst_brk TBROK NULL NULL "INIT: failed adding route to 10.1.1.12"
->>>>     			return $RC
->>>>     		else
->>>>     			tst_resm TINFO "INIT: added alias: `ifconfig eth0:1`"
->>>>     		fi
->>>>     	fi
->>>>     
->>>> -	cat > $LTPTMP/tst_ip02.exp <<-EOF || RC=$?
->>>> +	cat > $LTPTMP/tst_ip02.exp <<-EOF
->>>>     	1:
->>>>     	link/loopback
->>>>     	2:
->>>> @@ -129,7 +134,7 @@ init()
->>>>     	3:
->>>>     	link/ether
->>>>     	EOF
->>>> -
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brkm TBROK NULL "INIT: failed creating expected output for
->>>>     		test02"
->>>> @@ -151,9 +156,9 @@ cleanup()
->>>>     {
->>>>     	TCID=dhcpd
->>>>     	TST_COUNT=0
->>>> -	RC=0
->>>>     
->>>> -	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -eq 0 ]
->>>>     	then
->>>>     		/sbin/ifconfig eth0:1 down >$LTPTMP/tst_ip.err 2>&1
->>>> @@ -178,7 +183,6 @@ cleanup()
->>>>     
->>>>     test01()
->>>>     {
->>>> -	RC=0			# Return value from commands.
->>>>     	TCID=ip01	    # Name of the test case.
->>>>     	TST_COUNT=1		# Test number.
->>>>     
->>>> @@ -225,7 +229,6 @@ test01()
->>>>     
->>>>     test02()
->>>>     {
->>>> -	RC=0			# Return value from commands.
->>>>     	TCID=ip02	    # Name of the test case.
->>>>     	TST_COUNT=2		# Test number.
->>>>     
->>>> @@ -236,7 +239,8 @@ test02()
->>>>     	tst_resm TINFO \
->>>>     	 "Test #2: Installing dummy.o in kernel"
->>>>     
->>>> -	modprobe dummy >$LTPTMP/tst_ip.out 2>&1 || RC=$?
->>>> +	modprobe dummy >$LTPTMP/tst_ip.out 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brk TBROK $LTPTMP/tst_ip.out NULL \
->>>> @@ -244,7 +248,8 @@ test02()
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>> -	ip link show dummy0 | grep dummy0 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	ip link show dummy0 | grep dummy0 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_res TFAIL $LTPTMP/tst_ip.err "Test #2: ip command failed.
->>>>     		Reason:"
->>>> @@ -275,14 +280,14 @@ test02()
->>>>     
->>>>     test03()
->>>>     {
->>>> -	RC=0			# Return value from commands.
->>>>     	TCID=ip03	    # Name of the test case.
->>>>     	TST_COUNT=3		# Test number.
->>>>     
->>>>     	tst_resm TINFO \
->>>>     	 "Test #3: ip addr add - adds a new protolcol address to the device"
->>>>     
->>>> -	ip addr add 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	ip addr add 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -291,7 +296,8 @@ test03()
->>>>     	else
->>>>     		tst_resm TINFO \
->>>>     		 "Test #3: ip addr show dev <device> - shows protocol address."
->>>> -		ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +		ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -301,14 +307,16 @@ test03()
->>>>     
->>>>     		tst_resm TINFO \
->>>>     		 "Test #3: ip addr del <ip> dev <device> - deletes protocol address."
->>>> -		ip addr del 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +		ip addr del 127.6.6.6 dev lo >$LTPTMP/tst_ip.err 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>>     				"Test #3: ip addr del command failed. Reason: "
->>>>     			return $RC
->>>>     		else
->>>> -			ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +			ip addr show dev lo | grep 127.6.6.6 >$LTPTMP/tst_ip.err 2>&1
->>>> +			RC=$?
->>>>     			if [ $RC -eq 0 ]
->>>>     			then
->>>>     				tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -342,14 +350,14 @@ test03()
->>>>     
->>>>     test04()
->>>>     {
->>>> -	RC=0			# Return value from commands.
->>>>     	TCID=ip04	    # Name of the test case.
->>>>     	TST_COUNT=4		# Test number.
->>>>     
->>>>     	tst_resm TINFO \
->>>>     	 "Test #4: ip neigh add - adds a new neighbour to arp tables."
->>>>     
->>>> -	ip neigh add 127.0.0.1 dev lo nud reachable >$LTPTMP/tst_ip.err 2>&1 ||
->>>> RC=$?
->>>> +	ip neigh add 127.0.0.1 dev lo nud reachable >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -363,7 +371,8 @@ test04()
->>>>     		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
->>>>     		EOF
->>>>     
->>>> -		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
->>>> +		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -371,7 +380,8 @@ test04()
->>>>     			return $RC
->>>>     		else
->>>>     			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
->>>> -				>$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +				>$LTPTMP/tst_ip.err 2>&1
->>>> +			RC=$?
->>>>     			if [ $RC -ne 0 ]
->>>>     			then
->>>>     				tst_res FAIL $LTPTMP/tst_ip.err \
->>>> @@ -383,14 +393,16 @@ test04()
->>>>     		tst_resm TINFO \
->>>>     		 "Test #4: ip neigh del - deletes neighbour from the arp table."
->>>>     
->>>> -		ip neigh del 127.0.0.1 dev lo >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +		ip neigh del 127.0.0.1 dev lo >$LTPTMP/tst_ip.err 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>>     				"Test #4: ip neigh del command failed return = $RC. Reason: "
->>>>     			return $RC
->>>>     		else
->>>> -			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$"
->>>>> $LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$"
->>>>> $LTPTMP/tst_ip.err 2>&1
->>>> +			RC=$?
->>>>     			if [ $RC -eq 0 ]
->>>>     			then
->>>>     				tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -423,7 +435,6 @@ test04()
->>>>     
->>>>     test05()
->>>>     {
->>>> -	RC=0			# Return value from commands.
->>>>     	TCID=ip05	    # Name of the test case.
->>>>     	TST_COUNT=5		# Test number.
->>>>     
->>>> @@ -434,7 +445,8 @@ test05()
->>>>     	tst_resm TINFO \
->>>>     	 "Test #5: create an interface with inet 10.6.6.6 alias to eth0"
->>>>     
->>>> -	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
->>>> || RC=$?
->>>> +	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
->>>> @@ -442,7 +454,8 @@ test05()
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>> -	ip route add 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +	ip route add 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -458,7 +471,8 @@ test05()
->>>>     		EOF
->>>>     
->>>>     		ip route show | grep "10.6.6.6 via 127.0.0.1 dev lo" \
->>>> -			>$LTPTMP/tst_ip.out 2>&1 || RC=$?
->>>> +			>$LTPTMP/tst_ip.out 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -466,7 +480,8 @@ test05()
->>>>     			return $RC
->>>>     		else
->>>>     			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
->>>> -				>$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +				>$LTPTMP/tst_ip.err 2>&1
->>>> +			RC=$?
->>>>     			if [ $RC -ne 0 ]
->>>>     			then
->>>>     				tst_res FAIL $LTPTMP/tst_ip.err \
->>>> @@ -478,14 +493,16 @@ test05()
->>>>     		tst_resm TINFO \
->>>>     		 "Test #5: ip route del - deletes route from the route table."
->>>>     
->>>> -		ip route del 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +		ip route del 10.6.6.6 via 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>>     				"Test #5: ip route del command failed return = $RC. Reason: "
->>>>     			return $RC
->>>>     		else
->>>> -			ip route show | grep 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1 || RC=$?
->>>> +			ip route show | grep 127.0.0.1 >$LTPTMP/tst_ip.err 2>&1
->>>> +			RC=$?
->>>>     			if [ $RC -eq 0 ]
->>>>     			then
->>>>     				tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -518,14 +535,14 @@ test05()
->>>>     
->>>>     test06()
->>>>     {
->>>> -	RC=0			# Return value from commands.
->>>>     	TCID=ip06	    # Name of the test case.
->>>>     	TST_COUNT=6		# Test number.
->>>>     
->>>>     	tst_resm TINFO \
->>>>     	 "Test #6: ip maddr add - adds a new multicast addr"
->>>>     
->>>> -	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
->>>> || RC=$?
->>>> +	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
->>>> @@ -533,7 +550,8 @@ test06()
->>>>     		return $RC
->>>>     	fi
->>>>     
->>>> -	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 ||
->>>> RC=$?
->>>> +	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
->>>> +	RC=$?
->>>>     	if [ $RC -ne 0 ]
->>>>     	then
->>>>     		tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -547,7 +565,8 @@ test06()
->>>>             link  66:66:00:00:00:66 static
->>>>     		EOF
->>>>     
->>>> -		ip maddr show | grep "66:66:00:00:00:66" >$LTPTMP/tst_ip.out 2>&1 ||
->>>> RC=$?
->>>> +		ip maddr show | grep "66:66:00:00:00:66" >$LTPTMP/tst_ip.out 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -555,7 +574,8 @@ test06()
->>>>     			return $RC
->>>>     		else
->>>>     			diff -iwB  $LTPTMP/tst_ip.out $LTPTMP/tst_ip.exp \
->>>> -				&>$LTPTMP/tst_ip.err || RC=$?
->>>> +				&>$LTPTMP/tst_ip.err
->>>> +			RC=$?
->>>>     			if [ $RC -ne 0 ]
->>>>     			then
->>>>     				tst_res FAIL $LTPTMP/tst_ip.err \
->>>> @@ -567,15 +587,16 @@ test06()
->>>>     		tst_resm TINFO \
->>>>     		 "Test #6: ip maddr del - deletes multicast addr."
->>>>     
->>>> -		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1 ||
->>>> RC=$?
->>>> +		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
->>>> +		RC=$?
->>>>     		if [ $RC -ne 0 ]
->>>>     		then
->>>>     			tst_res TFAIL $LTPTMP/tst_ip.err \
->>>>     				"Test #6: ip maddr del command failed return = $RC. Reason: "
->>>>     			return $RC
->>>>     		else
->>>> -			ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err \
->>>> -				|| RC=$?
->>>> +			ip maddr show | grep "66:66:00:00:00:66" &>$LTPTMP/tst_ip.err
->>>> +			RC=$?
->>>>     			if [ $RC -eq 0 ]
->>>>     			then
->>>>     				tst_res TFAIL $LTPTMP/tst_ip.err \
->>>> @@ -599,15 +620,14 @@ test06()
->>>>     # Exit:			- zero on success
->>>>     # 				- non-zero on failure.
->>>>     TFAILCNT=0			# Set TFAILCNT to 0, increment on failure.
->>>> -RC=0				# Return code from test.
->>>>     
->>>>     init || exit $RC
->>>>     
->>>> -test01 || RC=$?
->>>> -test02 || RC=$?
->>>> -test03 || RC=$?
->>>> -test04 || RC=$?
->>>> -test05 || RC=$?
->>>> -test06 || RC=$?
->>>> +test01 || exit $RC
->>>> +test02 || exit $RC
->>>> +test03 || exit $RC
->>>> +test04 || exit $RC
->>>> +test05 || exit $RC
->>>> +test06 || exit $RC
->>>>     
->>>> -exit $RC
->>>> +exit 0
->> ------------------------------------------------------------------------------
->> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
->> Learn Why More Businesses Are Choosing CenturyLink Cloud For
->> Critical Workloads, Development Environments & Everything In Between.
->> Get a Quote or Start a Free Trial Today.
->> http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-
-
-------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIlplbmcgTGluZ2dhbmciIDx6
+ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+Cj4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJl
+ZGhhdC5jb20+Cj4gQ2M6ICJsdHAtbGlzdCIgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dD4KPiBTZW50OiBXZWRuZXNkYXksIDE5IEZlYnJ1YXJ5LCAyMDE0IDEwOjQwOjAzIEFNCj4gU3Vi
+amVjdDogW1BBVENIIHYyIDIvMl0gbWxvY2svbWxvY2swMi5jOiBhZGQgRVBFUk0gYW5kIEVOT01F
+TSBlcnJubyB0ZXN0cwo+IAo+IEFkZCBFUEVSTSBhbmQgRU5PTUVNIGVycm5vIHRlc3RzIGZvciBt
+bG9jaygyKS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcuanlAY24u
+ZnVqaXRzdS5jb20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxv
+Y2swMi5jIHwgODgKPiAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLQo+ICAxIGZpbGUg
+Y2hhbmdlZCwgODEgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKCkhpLAoKYXMgbWVudGlv
+bmVkIGluIHBhcnQxLCB0aGVyZSBhcmUgc29tZSBjb21waWxhdGlvbiBpc3N1ZXM6CkxldCdzIHBy
+ZXRlbmQgd2UgYXJlIG9uIGlhNjQgKGV4dHJhIC1EX19pYTY0X18gcGFzc2VkIHRvIGdjYyk6CiQg
+Z2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgLVcgLURf
+Rk9SVElGWV9TT1VSQ0U9MiAtSS91c3Ivc3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUg
+LUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4vLi4v
+Li4vbGliICBtbG9jazAyLmMgICAtbGx0cCAtbyBtbG9jazAyIC1EX19pYTY0X18KbWxvY2swMi5j
+OiBJbiBmdW5jdGlvbiDigJhzZXR1cDHigJk6Cm1sb2NrMDIuYzoxMzM6IGVycm9yOiBhc3NpZ25t
+ZW50IG9mIHJlYWQtb25seSBsb2NhdGlvbiDigJgqdGVzdOKAmQoKCj4gCj4gZGlmZiAtLWdpdCBh
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMi5jCj4gYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwo+IGluZGV4IDFkMWM4NTMuLjZjY2QyODEg
+MTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9jazAyLmMK
+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwo+IEBAIC0y
+MCwxMyArMjAsMjIgQEAKPiAgICogQUxHT1JJVEhNCj4gICAqIAl0ZXN0IDE6Cj4gICAqCQlDYWxs
+IG1sb2NrIHdpdGggYSBOVUxMIGFkZHJlc3MuICBFTk9NRU0gc2hvdWxkIGJlIHJldHVybmVkCj4g
+KyAqCXRlc3QgMjoKPiArICoJCVRoZSBjYWxsZXIgd2FzIG5vdCBwcml2aWxlZ2VkIGFuZCBpdHMg
+UkxJTUlUX01FTUxPQ0sgc29mdAo+ICsgKgkJcmVzb3VyY2UgbGltaXQgd2FzIDAuIEVQRVJNIHNo
+b3VsZCBiZSByZXR1cm5lZAo+ICsgKgl0ZXN0IDM6Cj4gKyAqCQlUaGUgY2FsbGVyIHdhcyBub3Qg
+cHJpdmlsZWdlZCBhbmQgaXRzIFJMSU1JVF9NRU1MT0NLIHNvZnQKPiArICoJCXJlc291cmNlIGxp
+bWl0IHdhcyBub256ZXJvLCBidXQgdHJpZWQgdG8gbG9jayBtb3JlIG1lbW9yeSB0aGFuCj4gKyAq
+CQl0aGUgbGltaXQgcGVybWl0dGVkLiBFTk9NRU0gc2hvdWxkIGJlIHJldHVybmVkCj4gICAqLwo+
+ICAKPiAgI2luY2x1ZGUgPGVycm5vLmg+Cj4gICNpbmNsdWRlIDx1bmlzdGQuaD4KPiAgI2luY2x1
+ZGUgPHN5cy9tbWFuLmg+Cj4gKyNpbmNsdWRlIDxwd2QuaD4KPiAgI2luY2x1ZGUgInRlc3QuaCIK
+PiAgI2luY2x1ZGUgInVzY3Rlc3QuaCIKPiArI2luY2x1ZGUgInNhZmVfbWFjcm9zLmgiCj4gIAo+
+ICBjaGFyICpUQ0lEID0gIm1sb2NrMDIiOwo+ICAKPiBAQCAtMzYsMjUgKzQ1LDMyIEBAIHN0cnVj
+dCB0ZXN0X2Nhc2VfdCB7Cj4gIAl2b2lkICoqYWRkcjsKPiAgCWludCBsZW47Cj4gIAlpbnQgZXJy
+b3I7Cj4gLQl2b2lkICgqc2V0dXBmdW5jKSAoKTsKPiArCWludCAoKnNldHVwZnVuYykgKCk7Cj4g
+Kwl2b2lkICgqY2xlYW51cGZ1bmMpICgpOwoKc2hvdWxkIGxpc3QgcGFyYW1ldGVycyBvciB2b2lk
+Cgo+ICB9Owo+ICAKPiAgc3RhdGljIHZvaWQgKmFkZHIxOwo+ICtzdGF0aWMgc3RydWN0IHBhc3N3
+ZCAqbHRwdXNlcjsKPiAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCk7Cj4gICNpZmRlZiBfX2lhNjRf
+Xwo+IC1zdGF0aWMgdm9pZCBzZXR1cDEoY29uc3Qgc3RydWN0IHRlc3RfY2FzZV90ICopOwo+ICtz
+dGF0aWMgaW50IHNldHVwMShjb25zdCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKik7Cj4gICNlbHNlCj4g
+LXN0YXRpYyB2b2lkIHNldHVwMSh2b2lkKTsKPiArc3RhdGljIGludCBzZXR1cDEodm9pZCk7Cj4g
+ICNlbmRpZgo+ICtzdGF0aWMgaW50IHNldHVwMih2b2lkKTsKPiArc3RhdGljIGludCBzZXR1cDMo
+dm9pZCk7Cj4gK3N0YXRpYyB2b2lkIGNsZWFudXAyKHZvaWQpOwo+ICBzdGF0aWMgdm9pZCBjbGVh
+bnVwKHZvaWQpOwo+ICBzdGF0aWMgdm9pZCBtbG9ja192ZXJpZnkoY29uc3Qgc3RydWN0IHRlc3Rf
+Y2FzZV90ICopOwo+ICAKPiAgc3RhdGljIHN0cnVjdCB0ZXN0X2Nhc2VfdCBUQ1tdID0gewo+IC0J
+eyZhZGRyMSwgMTAyNCwgRU5PTUVNLCBzZXR1cDF9LAo+ICsJeyZhZGRyMSwgMTAyNCwgRU5PTUVN
+LCBzZXR1cDEsIE5VTEx9LAo+ICsJeyZhZGRyMSwgMTAyNCwgRVBFUk0sIHNldHVwMiwgY2xlYW51
+cDJ9LAo+ICsJeyZhZGRyMSsxMDI0LCAxMDI0LCBFTk9NRU0sIHNldHVwMywgY2xlYW51cDJ9LAoK
+V2hhdCBpcyBhdCB0aGlzIG1lbW9yeSBsb2NhdGlvbj8gSXQgYXBwZWFycyB0byBiZSBmcm9tIGhl
+YXA6CgooZ2RiKSBiIHNldHVwMwpCcmVha3BvaW50IDEgYXQgMHg0MDFiMzA6IGZpbGUgbWxvY2sw
+Mi5jLCBsaW5lIDE2OC4KKGdkYikgcgpTdGFydGluZyBwcm9ncmFtOiAvdXNyL3NyYy9sdHAvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9jazAyIAouLi4KQnJlYWtwb2ludCAxLCBz
+ZXR1cDMgKCkgYXQgbWxvY2swMi5jOjE2OAoxNjgJewpNaXNzaW5nIHNlcGFyYXRlIGRlYnVnaW5m
+b3MsIHVzZTogZGVidWdpbmZvLWluc3RhbGwgZ2xpYmMtMi4xMi0xLjEzMi5lbDYueDg2XzY0Cgoo
+Z2RiKSBwL3ggJmFkZHIxCiQzID0gMHg2MDg3MjgKCihnZGIpIHAveCAmYWRkcjErMTAyNAokNCA9
+IDB4NjBhNzI4CgooZ2RiKSBpbmZvIHByb2MgbWFwCnByb2Nlc3MgNTI0CmNtZGxpbmUgPSAnL3Vz
+ci9zcmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMicKY3dkID0g
+Jy91c3Ivc3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrJwpleGUgPSAnL3Vz
+ci9zcmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMicKTWFwcGVk
+IGFkZHJlc3Mgc3BhY2VzOgoKICAgICAgICAgIFN0YXJ0IEFkZHIgICAgICAgICAgIEVuZCBBZGRy
+ICAgICAgIFNpemUgICAgIE9mZnNldCBvYmpmaWxlCiAgICAgICAgICAgIDB4NDAwMDAwICAgICAg
+ICAgICAweDQwOTAwMCAgICAgMHg5MDAwICAgICAgICAgIDAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIC91c3Ivc3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2Nr
+MDIKICAgICAgICAgICAgMHg2MDgwMDAgICAgICAgICAgIDB4NjA5MDAwICAgICAweDEwMDAgICAg
+IDB4ODAwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL3Vzci9zcmMvbHRwL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMgogICAgICAgICAgICAweDYwOTAwMCAgICAg
+ICAgICAgMHg2MmUwMDAgICAgMHgyNTAwMCAgICAgICAgICAwICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBbaGVhcF0KCgo+ICB9Owo+ICAKPiAgaW50IFRTVF9UT1RBTCA9IEFSUkFZ
+X1NJWkUoVEMpOwo+IC1zdGF0aWMgaW50IGV4cF9lbm9zW10gPSB7IEVOT01FTSwgMCB9Owo+ICtz
+dGF0aWMgaW50IGV4cF9lbm9zW10gPSB7IEVOT01FTSwgRVBFUk0sIDAgfTsKPiAgCj4gIGludCBt
+YWluKGludCBhYywgY2hhciAqKmF2KQo+ICB7Cj4gQEAgLTgzLDYgKzk5LDggQEAgc3RhdGljIHZv
+aWQgc2V0dXAodm9pZCkKPiAgCXRzdF9zaWcoTk9GT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7
+Cj4gIAo+ICAJVEVTVF9QQVVTRTsKPiArCj4gKwlsdHB1c2VyID0gU0FGRV9HRVRQV05BTShjbGVh
+bnVwLCAibm9ib2R5Iik7Cj4gIH0KPiAgCj4gIHN0YXRpYyB2b2lkIG1sb2NrX3ZlcmlmeShjb25z
+dCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKnRlc3QpCj4gQEAgLTkyLDYgKzExMCw5IEBAIHN0YXRpYyB2
+b2lkIG1sb2NrX3ZlcmlmeShjb25zdCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKnRlc3QpCj4gIAo+ICAJ
+VEVTVChtbG9jaygqKHRlc3QtPmFkZHIpLCB0ZXN0LT5sZW4pKTsKPiAgCj4gKwlpZiAodGVzdC0+
+Y2xlYW51cGZ1bmMgIT0gTlVMTCkKPiArCQl0ZXN0LT5jbGVhbnVwZnVuYygpOwo+ICsKPiAgCWlm
+IChURVNUX1JFVFVSTiAhPSAtMSkgewo+ICAJCXRzdF9yZXNtKFRGQUlMLCAibWxvY2sgc3VjY2Vl
+ZGVkIHVuZXhwZWN0ZWRseSIpOwo+ICAJCXJldHVybjsKPiBAQCAtMTA3LDE3ICsxMjgsNzAgQEAg
+c3RhdGljIHZvaWQgbWxvY2tfdmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdAo+ICp0ZXN0
+KQo+ICB9Cj4gIAo+ICAjaWZkZWYgX19pYTY0X18KPiAtc3RhdGljIHZvaWQgc2V0dXAxKGNvbnN0
+IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkKPiArc3RhdGljIGludCBzZXR1cDEoY29uc3Qgc3Ry
+dWN0IHRlc3RfY2FzZV90ICp0ZXN0KQo+ICB7Cj4gIAl0ZXN0LT5sZW4gPSBnZXRwYWdlc2l6ZSgp
+ICsgMTsKPiArCXJldHVybiAwOwo+ICB9Cj4gICNlbHNlCj4gLXN0YXRpYyB2b2lkIHNldHVwMSh2
+b2lkKQo+ICtzdGF0aWMgaW50IHNldHVwMSh2b2lkKQo+ICB7Cj4gIAlhZGRyMSA9IE5VTEw7Cj4g
+KwlyZXR1cm4gMDsKPiAgfQo+ICAjZW5kaWYKPiAgCj4gK3N0YXRpYyBpbnQgc2V0dXAyKHZvaWQp
+Cj4gK3sKPiArCXN0cnVjdCBybGltaXQgcmw7Cj4gKwo+ICsJaWYgKGdldGV1aWQoKSAhPSAwKSB7
+Cj4gKwkJdHN0X3Jlc20oVFdBUk4sICJUZXN0IG5lZWRzIHRvIGJlIHJ1biBhcyByb290Iik7Cj4g
+KwkJcmV0dXJuIC0xOwo+ICsJfQoKSWYgeW91IGFkZCB0c3RfcmVxdWlyZV9yb290KE5VTEwpOyB0
+byBzZXR1cCgpIHRoYXQgd2lsbCBicmVhayB3aXRoIFRDT05GIGFuZCB5b3UgY2FuIHJlbW92ZSB0
+aGlzLgoKPiArCj4gKwlybC5ybGltX21heCA9IDA7Cj4gKwlybC5ybGltX2N1ciA9IDA7Cj4gKwlp
+ZiAoc2V0cmxpbWl0KFJMSU1JVF9NRU1MT0NLLCAmcmwpICE9IDApIHsKPiArCQl0c3RfcmVzbShU
+V0FSTiwKPiArCQkJICJzZXRybGltaXQgZmFpbGVkIHRvIHNldCB0aGUgcmVzb3VyY2UgZm9yICIK
+PiArCQkJICJSTElNSVRfTUVNTE9DSyB0byBjaGVjayBmb3IgbWxvY2soKSIpOwoKSSdkIGV4cGVj
+dCBUQlJPSyBoZXJlLgoKPiArCQlyZXR1cm4gLTE7Cj4gKwl9Cj4gKwo+ICsJU0FGRV9TRVRFVUlE
+KGNsZWFudXAsIGx0cHVzZXItPnB3X3VpZCk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4g
+K3N0YXRpYyBpbnQgc2V0dXAzKHZvaWQpCj4gK3sKPiArCXN0cnVjdCBybGltaXQgcmw7Cj4gKwo+
+ICsJaWYgKGdldGV1aWQoKSAhPSAwKSB7Cj4gKwkJdHN0X3Jlc20oVFdBUk4sICJUZXN0IG5lZWRz
+IHRvIGJlIHJ1biBhcyByb290Iik7Cj4gKwkJcmV0dXJuIC0xOwo+ICsJfQoKc2FtZSBhcyBpbiBz
+ZXR1cDIsIGNhbiBiZSByZW1vdmVkIGlmIHlvdSBhZGQgdHN0X3JlcXVpcmVfcm9vdChOVUxMKTsg
+dG8gc2V0dXAoKQoKPiArCj4gKwlybC5ybGltX21heCA9IDE7Cj4gKwlybC5ybGltX2N1ciA9IDE7
+Cj4gKwlpZiAoc2V0cmxpbWl0KFJMSU1JVF9NRU1MT0NLLCAmcmwpICE9IDApIHsKPiArCQl0c3Rf
+cmVzbShUV0FSTiwKPiArCQkJICJzZXRybGltaXQgZmFpbGVkIHRvIHNldCB0aGUgcmVzb3VyY2Ug
+Zm9yICIKPiArCQkJICJSTElNSVRfTUVNTE9DSyB0byBjaGVjayBmb3IgbWxvY2soKSIpOwoKSSdk
+IGV4cGVjdCBUQlJPSyBoZXJlIGFzIHdlbGwuCgo+ICsJCXJldHVybiAtMTsKPiArCX0KPiArCj4g
+KwlTQUZFX1NFVEVVSUQoY2xlYW51cCwgbHRwdXNlci0+cHdfdWlkKTsKPiArCj4gKwlyZXR1cm4g
+MDsKPiArfQoKRm9yIHNldHVwMiBhbmQgc2V0dXAzIEknZCBzdWdnZXN0IHRvIHNldCAqYWRkciB0
+byBzb21lIHJlYXNvbmFibGUgdmFsdWUsCnNvIHRoYXQgd2hlbiBtbG9jayByZXR1cm5zIEVOT01F
+TSB3ZSBrbm93IGl0IHdhc24ndCBiZWNhdXNlICphZGRyIHdhcyBOVUxMLgoKUmVnYXJkcywKSmFu
+Cgo+ICsKPiArc3RhdGljIHZvaWQgY2xlYW51cDIodm9pZCkKPiArewo+ICsJU0FGRV9TRVRFVUlE
+KGNsZWFudXAsIDApOwo+ICt9Cj4gKwo+ICBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpCj4gIHsK
+PiAgCVRFU1RfQ0xFQU5VUDsKPiAtLQo+IDEuOC40LjIKPiAKPiAKPiAKPiAKCi0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQpNYW5hZ2luZyB0aGUgUGVyZm9ybWFuY2Ugb2YgQ2xvdWQtQmFzZWQgQXBwbGlj
+YXRpb25zClRha2UgYWR2YW50YWdlIG9mIHdoYXQgdGhlIENsb3VkIGhhcyB0byBvZmZlciAtIEF2
+b2lkIENvbW1vbiBQaXRmYWxscy4KUmVhZCB0aGUgV2hpdGVwYXBlci4KaHR0cDovL3B1YmFkcy5n
+LmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTEyMTA1NDQ3MSZpdT0vNDE0MC9vc3RnLmNs
+a3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
+bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
+bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
