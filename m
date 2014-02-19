@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WGgQ3-0007CH-Pj
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 03:04:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGgQ0-0002zT-NR
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 03:04:55 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1L34hiU002928
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:04:43 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Fri, 21 Feb 2014 11:03:09 +0800
-Message-Id: <1392951789-12569-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH] msync/msync03.c: add EBUSY test for msync(2)
+	(envelope-from <jstancek@redhat.com>) id 1WG4vc-0004Jb-Ij
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 11:03:00 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WG4va-0007pt-NM
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 11:03:00 +0000
+Date: Wed, 19 Feb 2014 06:02:42 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <195443697.5664448.1392807762480.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1392802716.2083.4.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1392372746.2085.11.camel@G08JYZSD130126>
+	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
+	<1392802716.2083.4.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2 1/2] mlock/mlock02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,677 +27,164 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Merge msync03.c, msync04.c, msync05.c into one msync03
-test, which contains EINVAL and ENOMEM error value tests.
-
-And add new EBUSY error value test.
-
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/ltplite                           |   2 -
- runtest/stress.part3                      |   2 -
- runtest/syscalls                          |   2 -
- testcases/kernel/syscalls/.gitignore      |   2 -
- testcases/kernel/syscalls/msync/msync03.c | 225 ++++++++++++++++++------------
- testcases/kernel/syscalls/msync/msync04.c | 158 ---------------------
- testcases/kernel/syscalls/msync/msync05.c | 136 ------------------
- 7 files changed, 136 insertions(+), 391 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/msync/msync04.c
- delete mode 100644 testcases/kernel/syscalls/msync/msync05.c
-
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 4bd1c53..40e194d 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -504,8 +504,6 @@ msgsnd06 msgsnd06
- msync01 msync01
- msync02 msync02
- msync03 msync03
--msync04 msync04
--msync05 msync05
- 
- munlock01 munlock01
- munlock02 munlock02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index d631c19..aa89495 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -427,8 +427,6 @@ msgsnd06 msgsnd06
- msync01 msync01
- msync02 msync02
- msync03 msync03
--msync04 msync04
--msync05 msync05
- 
- munlock01 munlock01
- munlock02 munlock02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 540c130..8a31c56 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -658,8 +658,6 @@ msgsnd06 msgsnd06
- msync01 msync01
- msync02 msync02
- msync03 msync03
--msync04 msync04
--msync05 msync05
- 
- munlock01 munlock01
- munlock02 munlock02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 2fc0c99..de489f7 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -560,8 +560,6 @@
- /msync/msync01
- /msync/msync02
- /msync/msync03
--/msync/msync04
--/msync/msync05
- /munlock/munlock01
- /munlock/munlock02
- /munlockall/munlockall01
-diff --git a/testcases/kernel/syscalls/msync/msync03.c b/testcases/kernel/syscalls/msync/msync03.c
-index e152f2c..cc1f186 100644
---- a/testcases/kernel/syscalls/msync/msync03.c
-+++ b/testcases/kernel/syscalls/msync/msync03.c
-@@ -1,138 +1,185 @@
- /*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  */
- 
- /*
-- * Test Name: msync03
-- *
-- * Test Description:
-- *  Verify that, msync() fails, when the region to synchronize, is outside
-- *  the address space of the process.
-- *
-- * Expected Result:
-- *  msync() should fail with a return value of -1, and errno should be
-- *  set to EINVAL.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *      if errno set == expected errno
-- *              Issue sys call fails with expected return value and errno.
-- *      Otherwise,
-- *              Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *      Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *
-- * Usage:  <for command-line>
-- *  msync03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *	       -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  None.
-+ * Description:
-+ * Verify that,
-+ *  1. msync() fails with -1 return value and sets errno to EBUSY
-+ *     if MS_INVALIDATE was specified in flags, and a memory lock
-+ *     exists for the specified address range.
-+ *  2. msync() fails with -1 return value and sets errno to EINVAL
-+ *     if addr is not a multiple of PAGESIZE; or any bit other than
-+ *     MS_ASYNC | MS_INVALIDATE | MS_SYNC is set in flags; or both
-+ *     MS_SYNC and MS_ASYNC are set in flags.
-+ *  3. msync() fails with -1 return value and sets errno to ENOMEM
-+ *     if the indicated memory (or part of it) was not mapped.
-  */
-+
-+#include <stdio.h>
- #include <errno.h>
- #include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
- #include <sys/mman.h>
-+#include <sys/mount.h>
-+#include <pwd.h>
- #include <sys/resource.h>
- 
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
-+
-+#define INV_SYNC	-1
-+#define TEMPFILE	"msync_file"
-+#define BUF_SIZE	256
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static int fd;
-+static char *addr1;
-+static char *addr2;
-+static char *addr3;
-+
-+#if !defined(UCLINUX)
-+static char *addr4;
-+#endif
-+
-+static size_t page_sz;
-+
-+static struct test_case_t {
-+	char **addr;
-+	int flags;
-+	int exp_errno;
-+} test_cases[] = {
-+	{ &addr1, MS_INVALIDATE, EBUSY },
-+	{ &addr1, MS_ASYNC | MS_SYNC, EINVAL },
-+	{ &addr1, INV_SYNC, EINVAL },
-+	{ &addr2, MS_SYNC, EINVAL },
-+	{ &addr3, MS_SYNC, EINVAL },
-+#if !defined(UCLINUX)
-+	{ &addr4, MS_SYNC, ENOMEM },
-+#endif
-+};
-+
-+static void msync_verify(struct test_case_t *tc);
- 
- char *TCID = "msync03";
--int TST_TOTAL = 1;
--
--void *addr;			/* addr of memory mapped region */
--size_t page_sz;			/* system page size */
--
--int exp_enos[] = { EINVAL, 0 };
--
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static int exp_enos[] = { EBUSY, EINVAL, ENOMEM, 0 };
- 
- int main(int ac, char **av)
- {
--	int lc;
-+	int i, lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	setup();
- 
--	TEST_EXP_ENOS(exp_enos);
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
- 		tst_count = 0;
- 
--		TEST(msync(addr, page_sz, MS_ASYNC));
--
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "msync() returns unexpected "
--				 "value %ld, expected:-1", TEST_RETURN);
--			continue;
--		}
--
--		if (errno == EINVAL)
--			tst_resm(TPASS, "msync failed with EINVAL as expected");
--		else
--			tst_resm(TFAIL | TERRNO, "msync failed unexpectedly");
-+		for (i = 0; i < TST_TOTAL; i++)
-+			msync_verify(&test_cases[i]);
- 	}
- 
- 	cleanup();
- 	tst_exit();
- }
- 
--void setup()
-+static void setup(void)
- {
--	struct rlimit brkval;
-+	size_t nwrite = 0;
-+	char write_buf[BUF_SIZE];
-+	struct rlimit rl;
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	tst_tmpdir();
-+
- 	TEST_PAUSE;
- 
--	if ((page_sz = getpagesize()) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "getpagesize failed");
-+	page_sz = (size_t)sysconf(_SC_PAGESIZE);
-+
-+	fd = SAFE_OPEN(cleanup, TEMPFILE, O_RDWR | O_CREAT, 0666);
-+
-+	memset(write_buf, 'a', BUF_SIZE);
-+	while (nwrite < page_sz) {
-+		SAFE_WRITE(cleanup, 1, fd, write_buf, BUF_SIZE);
-+		nwrite += BUF_SIZE;
-+	}
-+
-+	addr1 = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
-+			  MAP_SHARED | MAP_LOCKED, fd, 0);
-+
-+	/* addr2 is not a multiple of PAGESIZE */
-+	addr2 = addr1 + 1;
-+
-+	/* addr3 is outside the address space of the process */
-+	if (getrlimit(RLIMIT_DATA, &rl) < 0)
-+		tst_brkm(TBROK | TERRNO, NULL, "getrlimit failed");
-+	addr3 = (char *)rl.rlim_max;
- 
--	getrlimit(RLIMIT_DATA, &brkval);
-+#if !defined(UCLINUX)
-+	/* memory pointed to by addr4 was not mapped */
-+	addr4 =  get_high_address();
-+#endif
-+}
-+
-+static void msync_verify(struct test_case_t *tc)
-+{
-+	TEST(msync(*(tc->addr), page_sz, tc->flags));
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "msync succeeded unexpectedly");
-+		return;
-+	}
-+
-+	TEST_ERROR_LOG(TEST_ERRNO);
- 
--	addr = (void *)brkval.rlim_max;
-+	if (TEST_ERRNO == tc->exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "msync failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "msync failed unexpectedly; expected: "
-+			 "%d - %s", tc->exp_errno,
-+			 strerror(tc->exp_errno));
-+	}
- }
- 
--void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
-+	if (munmap(addr1, page_sz) < 0)
-+		tst_resm(TWARN | TERRNO, "munmap() failed");
-+
-+	if (fd > 0 && close(fd) < 0)
-+		tst_resm(TWARN | TERRNO, "close() failed");
-+
-+	if (unlink(TEMPFILE) < 0)
-+		tst_resm(TWARN | TERRNO, "unlink(%s) failed", TEMPFILE);
-+
-+	tst_rmdir();
- }
-diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
-deleted file mode 100644
-index a739e62..0000000
---- a/testcases/kernel/syscalls/msync/msync04.c
-+++ /dev/null
-@@ -1,158 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Name: msync04
-- *
-- * Test Description:
-- *  Verify that, msync() fails, when the region to synchronize, is mapped
-- *  but the flags argument is invalid.
-- *
-- * Expected Result:
-- *  msync() should fail with a return value of -1, and set errno EINVAL.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *      if errno set == expected errno
-- *              Issue sys call fails with expected return value and errno.
-- *      Otherwise,
-- *              Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *      Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory(s)/file(s) created.
-- *
-- * Usage:  <for command-line>
-- *  msync04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  None.
-- */
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <sys/mman.h>
--
--#include "test.h"
--#include "usctest.h"
--
--#define TEMPFILE	"msync_file"
--#define BUF_SIZE	256
--#define INV_SYNC	-1
--
--char *TCID = "msync04";
--int TST_TOTAL = 1;
--
--char *addr;			/* addr of memory mapped region */
--size_t page_sz;			/* system page size */
--int fildes;			/* file descriptor for tempfile */
--
--int exp_enos[] = { EINVAL, 0 };
--
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
--
--int main(int ac, char **av)
--{
--	TEST_EXP_ENOS(exp_enos);
--
--	tst_count = 0;
--
--	setup();
--
--	TEST(msync(addr, page_sz, INV_SYNC));
--
--	if (TEST_RETURN != -1)
--		tst_resm(TFAIL, "msync succeeded unexpectedly");
--	else if (TEST_ERRNO == EINVAL)
--		tst_resm(TPASS, "msync failed with EINVAL as expected");
--	else
--		tst_resm(TFAIL | TTERRNO, "msync failed unexpectedly");
--
--	cleanup();
--
--	tst_exit();
--}
--
--void setup()
--{
--	int c_total = 0, nwrite = 0;	/* no. of bytes to be written */
--	char tst_buf[BUF_SIZE];	/* buffer to hold data to be written */
--
--	TEST_PAUSE;
--
--	if ((page_sz = getpagesize()) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "getpagesize failed");
--
--	tst_tmpdir();
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	/* Creat a temporary file used for mapping */
--	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
--
--	/* Write one page size of char data into temporary file */
--	while (c_total < page_sz) {
--		if ((nwrite = write(fildes, tst_buf, sizeof(tst_buf))) <= 0)
--			tst_brkm(TBROK, cleanup, "write failed");
--		else
--			c_total += nwrite;
--	}
--
--	addr = mmap(0, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_PRIVATE,
--		    fildes, 0);
--
--	/* Check for the return value of mmap() */
--	if (addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
--}
--
--void cleanup()
--{
--	TEST_CLEANUP;
--
--	if (munmap(addr, page_sz) == -1)
--		tst_brkm(TBROK, NULL, "munmap failed");
--
--	/* Close the temporary file */
--	if (close(fildes) == -1)
--		tst_brkm(TBROK, NULL, "close failed");
--
--	tst_rmdir();
--}
-diff --git a/testcases/kernel/syscalls/msync/msync05.c b/testcases/kernel/syscalls/msync/msync05.c
-deleted file mode 100644
-index eaf28ab..0000000
---- a/testcases/kernel/syscalls/msync/msync05.c
-+++ /dev/null
-@@ -1,136 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Name: msync05
-- *
-- * Test Description:
-- *  Verify that, msync() fails, when the region to synchronize, was not
-- *  mapped.
-- *
-- * Expected Result:
-- *  msync() should fail with a return value of -1, and set errno ENOMEM.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *      if errno set == expected errno
-- *              Issue sys call fails with expected return value and errno.
-- *      Otherwise,
-- *              Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *      Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *
-- * Usage:  <for command-line>
-- *  msync05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *	03/2002 Paul Larson: expected error should be ENOMEM not EFAULT
-- *
-- * RESTRICTIONS:
-- *  None.
-- */
--#include <errno.h>
--#include <unistd.h>
--#include <sys/mman.h>
--
--#include "test.h"
--#include "usctest.h"
--
--char *TCID = "msync05";
--int TST_TOTAL = 1;
--
--void *addr;			/* addr of memory mapped region */
--size_t page_sz;			/* system page size */
--
--int exp_enos[] = { ENOMEM, 0 };
--
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
--
--#if !defined(UCLINUX)
--int main(int ac, char **av)
--{
--	int lc;
--	char *msg;
--
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
--		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--
--	setup();
--
--	TEST_EXP_ENOS(exp_enos);
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(msync(addr, page_sz, MS_SYNC));
--
--		if (TEST_RETURN != -1)
--			tst_resm(TFAIL, "msync succeeded unexpectedly");
--		else if (TEST_ERRNO == ENOMEM)
--			tst_resm(TPASS, "msync failed as expected with ENOMEM");
--		else
--			tst_resm(TFAIL | TTERRNO, "msync failed unexpectedly");
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--void setup()
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	if ((page_sz = getpagesize()) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "getpagesize failed");
--
--	addr = get_high_address();
--}
--
--void cleanup()
--{
--	TEST_CLEANUP;
--}
--
--#else
--int main()
--{
--	tst_brkm(TCONF, NULL, "test is not available on uClinux");
--}
--#endif /* if !defined(UCLINUX) */
--- 
-1.8.2.1
-
-
-------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIlplbmcgTGluZ2dhbmciIDx6
+ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+Cj4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJl
+ZGhhdC5jb20+Cj4gQ2M6ICJsdHAtbGlzdCIgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dD4KPiBTZW50OiBXZWRuZXNkYXksIDE5IEZlYnJ1YXJ5LCAyMDE0IDEwOjM4OjM2IEFNCj4gU3Vi
+amVjdDogW1BBVENIIHYyIDEvMl0gbWxvY2svbWxvY2swMi5jOiBjbGVhbnVwCj4gCj4gKiBEZWxl
+dGUgc29tZSB1c2VsZXNzIGNvbW10ZW50cy4KPiAqIE1vdmUgdGhlIHRlc3QgYm9keSBmb3JtIG1h
+aW4oKSB0byBtbG9ja192ZXJpZnkoKS4KPiAqIFNvbWUgY2xlYW51cC4KPiAKPiBTaWduZWQtb2Zm
+LWJ5OiBaZW5nIExpbmdnYW5nIDx6ZW5nbGcuanlAY24uZnVqaXRzdS5jb20+CgpIaSwKCkkgaGF2
+ZSB0cm91YmxlIGNvbXBpbGluZyB0aGlzIHBhdGNoIChjb21tZW50cyBpbmxpbmUpOgokIG1ha2UK
+bWFrZSAtQyAiL3Vzci9zcmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZSIgLWYgIi91c3Iv
+c3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvTWFrZWZpbGUiIGFsbAptYWtlWzFdOiBF
+bnRlcmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUn
+Cm1ha2VbMV06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuCm1ha2VbMV06IExlYXZpbmcg
+ZGlyZWN0b3J5IGAvdXNyL3NyYy9sdHAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlJwpnY2MgLWcg
+LU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtVyAtRF9GT1JUSUZZ
+X1NPVVJDRT0yIC1JL3Vzci9zcmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZSAtSS4uLy4u
+Ly4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi9saWIg
+IG1sb2NrMDIuYyAgIC1sbHRwIC1vIG1sb2NrMDIKbWxvY2swMi5jOiBJbiBmdW5jdGlvbiDigJht
+bG9ja192ZXJpZnnigJk6Cm1sb2NrMDIuYzo5MDogZXJyb3I6IHZvaWQgdmFsdWUgbm90IGlnbm9y
+ZWQgYXMgaXQgb3VnaHQgdG8gYmUKbWFrZTogKioqIFttbG9jazAyXSBFcnJvciAxCgo+IC0tLQo+
+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYyB8IDE0Mwo+ICArKysr
+KysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDYzIGluc2VydGlv
+bnMoKyksIDgwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9t
+bG9jay9tbG9jazAyLmMKPiBpbmRleCBlZGQ5ZTQ1Li4xZDFjODUzIDEwMDY0NAo+IC0tLSBhL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWxvY2svbWxvY2swMi5jCj4gKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9jazAyLmMKPiBAQCAtMSw2ICsxLDYgQEAKPiAgLyoK
+PiAtICoKPiAgICogICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
+ZXMgIENvcnAuLCAyMDAyCj4gKyAqCTA2LzIwMDIgV3JpdHRlbiBieSBQYXVsIExhcnNvbgo+ICAg
+Kgo+ICAgKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3Ry
+aWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo+ICAgKiAgIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
+R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cj4gQEAgLTEzLDcwICsx
+Myw0OCBAQAo+ICAgKiAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
+ZXRhaWxzLgo+ICAgKgo+ICAgKiAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2Yg
+dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCj4gLSAqICAgYWxvbmcgd2l0aCB0aGlzIHBy
+b2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCj4gLSAqICAgRm91bmRh
+dGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQQo+
+IDAyMTEwLTEzMDEgVVNBCj4gKyAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3Qs
+IHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCj4gRm91bmRhdGlvbiwKPiArICogICBJbmMuLCA1
+MSBGcmFua2xpbiBTdHJlZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNB
+Cj4gICAqLwo+IC0KPiAgLyoKPiAtICogTkFNRQo+IC0gKiAJbWxvY2swMi5jCj4gLSAqCj4gLSAq
+IERFU0NSSVBUSU9OCj4gLSAqIAlUZXN0IHRvIHNlZSB0aGUgcHJvcGVyIGVycm9ycyBhcmUgcmV0
+dXJuZWQgYnkgbWxvY2sKPiAtICokCj4gICAqIEFMR09SSVRITQo+ICAgKiAJdGVzdCAxOgo+ICAg
+KgkJQ2FsbCBtbG9jayB3aXRoIGEgTlVMTCBhZGRyZXNzLiAgRU5PTUVNIHNob3VsZCBiZSByZXR1
+cm5lZAo+IC0gKgo+IC0gKiBVU0FHRTogIDxmb3IgY29tbWFuZC1saW5lPgo+IC0gKiAgICAgICAg
+IC1jIG4gICAgUnVuIG4gY29waWVzIGNvbmN1cnJlbnRseQo+IC0gKiAgICAgICAgIC1lICAgICAg
+VHVybiBvbiBlcnJubyBsb2dnaW5nCj4gLSAqICAgICAgICAgLWYgICAgICBUdXJuIG9mZiBmdW5j
+dGlvbmFsIHRlc3RpbmcKPiAtICogICAgICAgICAtaCAgICAgIFNob3cgdGhpcyBoZWxwIHNjcmVl
+bgo+IC0gKiAgICAgICAgIC1pIG4gICAgRXhlY3V0ZSB0ZXN0IG4gdGltZXMKPiAtICogICAgICAg
+ICAtSSB4ICAgIEV4ZWN1dGUgdGVzdCBmb3IgeCBzZWNvbmRzCj4gLSAqICAgICAgICAgLXAgICAg
+ICBQYXVzZSBmb3IgU0lHVVNSMSBiZWZvcmUgc3RhcnRpbmcKPiAtICogICAgICAgICAtUCB4ICAg
+IFBhdXNlIGZvciB4IHNlY29uZHMgYmV0d2VlbiBpdGVyYXRpb25zCj4gLSAqICAgICAgICAgLXQg
+ICAgICBUdXJuIG9uIHN5c2NhbGwgdGltaW5nCj4gLSAqCj4gLSAqIEhJU1RPUlkKPiAtICoJMDYv
+MjAwMiBXcml0dGVuIGJ5IFBhdWwgTGFyc29uCj4gLSAqCj4gLSAqIFJFU1RSSUNUSU9OUwo+IC0g
+KiAJTm9uZQo+ICAgKi8KPiArCj4gICNpbmNsdWRlIDxlcnJuby5oPgo+ICAjaW5jbHVkZSA8dW5p
+c3RkLmg+Cj4gICNpbmNsdWRlIDxzeXMvbW1hbi5oPgo+ICAjaW5jbHVkZSAidGVzdC5oIgo+ICAj
+aW5jbHVkZSAidXNjdGVzdC5oIgo+ICAKPiAtdm9pZCBzZXR1cCgpOwo+IC12b2lkIHNldHVwMSgp
+Owo+IC12b2lkIGNsZWFudXAoKTsKPiAtCj4gIGNoYXIgKlRDSUQgPSAibWxvY2swMiI7Cj4gLWlu
+dCBUU1RfVE9UQUwgPSAxOwo+IC0KPiAtaW50IGV4cF9lbm9zW10gPSB7IEVOT01FTSwgMCB9Owo+
+ICAKPiAtdm9pZCAqYWRkcjE7Cj4gKyNpZiAhZGVmaW5lZChVQ0xJTlVYKQo+ICAKPiAgc3RydWN0
+IHRlc3RfY2FzZV90IHsKPiAgCXZvaWQgKiphZGRyOwo+ICAJaW50IGxlbjsKPiAgCWludCBlcnJv
+cjsKPiAgCXZvaWQgKCpzZXR1cGZ1bmMpICgpOwoKc2hvdWxkIGxpc3QgcGFyYW1ldGVycyBvciB2
+b2lkCgo+IC19IFRDW10gPSB7Cj4gLQkvKiBtbG9jayBzaG91bGQgcmV0dXJuIEVOT01FTSB3aGVu
+IHNvbWUgb3IgYWxsIG9mIHRoZSBhZGRyZXNzCj4gLQkgKiByYW5nZSBwb2ludGVkIHRvIGJ5IGFk
+ZHIgYW5kIGxlbiBhcmUgbm90IHZhbGlkIG1hcHBlZCBwYWdlcwo+IC0JICogaW4gdGhlIGFkZHJl
+c3Mgc3BhY2Ugb2YgdGhlIHByb2Nlc3MKPiAtCSAqLwo+IC0Jewo+IC0JJmFkZHIxLCAxMDI0LCBF
+Tk9NRU0sIHNldHVwMX0KPiAgfTsKPiAgCj4gLSNpZiAhZGVmaW5lZChVQ0xJTlVYKQo+ICtzdGF0
+aWMgdm9pZCAqYWRkcjE7Cj4gK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+ICsjaWZkZWYgX19p
+YTY0X18KPiArc3RhdGljIHZvaWQgc2V0dXAxKGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqKTsK
+CldoeSBkaWZmZXJlbnQgcHJvdG90eXBlIGZvciBpYTY0PwpJIGRvbid0IHRoaW5rIHRoaXMgcGFy
+YW1ldGVyIHNob3VsZCBiZSBjb25zdCwgaXQncyBsaWtlbHkgc2V0dXBmdW5jKCkKd2lsbCB3YW50
+IHRvIG1vZGlmeSB0aGUgc3RydWN0LgoKPiArI2Vsc2UKPiArc3RhdGljIHZvaWQgc2V0dXAxKHZv
+aWQpOwo+ICsjZW5kaWYKPiArc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKTsKPiArc3RhdGljIHZv
+aWQgbWxvY2tfdmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqKTsKPiArCj4gK3N0YXRp
+YyBzdHJ1Y3QgdGVzdF9jYXNlX3QgVENbXSA9IHsKPiArCXsmYWRkcjEsIDEwMjQsIEVOT01FTSwg
+c2V0dXAxfSwKPiArfTsKPiArCj4gK2ludCBUU1RfVE9UQUwgPSBBUlJBWV9TSVpFKFRDKTsKPiAr
+c3RhdGljIGludCBleHBfZW5vc1tdID0geyBFTk9NRU0sIDAgfTsKPiAgCj4gIGludCBtYWluKGlu
+dCBhYywgY2hhciAqKmF2KQo+ICB7Cj4gQEAgLTkxLDYyICs2OSw2NyBAQCBpbnQgbWFpbihpbnQg
+YWMsIGNoYXIgKiphdikKPiAgCVRFU1RfRVhQX0VOT1MoZXhwX2Vub3MpOwo+ICAKPiAgCWZvciAo
+bGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysrKSB7Cj4gLQo+ICAJCXRzdF9jb3VudCA9IDA7
+Cj4gLQo+IC0JCWZvciAoaSA9IDA7IGkgPCBUU1RfVE9UQUw7IGkrKykgewo+IC0KPiAtCQkJaWYg
+KFRDW2ldLnNldHVwZnVuYyAhPSBOVUxMKQo+IC0JCQkJVENbaV0uc2V0dXBmdW5jKCk7Cj4gLQo+
+IC0JCQlURVNUKG1sb2NrKCooVENbaV0uYWRkciksIFRDW2ldLmxlbikpOwo+IC0KPiAtCQkJaWYg
+KFRFU1RfUkVUVVJOID09IC0xKSB7Cj4gLQkJCQlpZiAoVEVTVF9FUlJOTyAhPSBUQ1tpXS5lcnJv
+cikKPiAtCQkJCQl0c3RfYnJrbShURkFJTCB8IFRURVJSTk8sIGNsZWFudXAsCj4gLQkJCQkJCSAi
+bWxvY2sgZGlkbid0IGZhaWwgYXMgZXhwZWN0ZWQ7ICIKPiAtCQkJCQkJICJleHBlY3RlZCAtICVk
+IDogJXMiLAo+IC0JCQkJCQkgVENbaV0uZXJyb3IsCj4gLQkJCQkJCSBzdHJlcnJvcihUQ1tpXS5l
+cnJvcikpOwo+IC0JCQkJZWxzZQo+IC0JCQkJCXRzdF9yZXNtKFRQQVNTIHwgVFRFUlJOTywKPiAt
+CQkJCQkJICJtbG9jayBmYWlsZWQgYXMgZXhwZWN0ZWQiKTsKPiAtCQkJfSBlbHNlCj4gLQkJCQl0
+c3RfYnJrbShURkFJTCwgY2xlYW51cCwKPiAtCQkJCQkgIm1sb2NrIHN1Y2NlZWRlZCB1bmV4cGVj
+dGVkbHkiKTsKPiAtCQl9Cj4gKwkJZm9yIChpID0gMDsgaSA8IFRTVF9UT1RBTDsgaSsrKQo+ICsJ
+CQltbG9ja192ZXJpZnkoJlRDW2ldKTsKPiAgCX0KPiAgCj4gIAljbGVhbnVwKCk7Cj4gLQo+ICAJ
+dHN0X2V4aXQoKTsKPiAgfQo+ICAKPiAtI2Vsc2UKPiAtCj4gLWludCBtYWluKCkKPiArc3RhdGlj
+IHZvaWQgc2V0dXAodm9pZCkKPiAgewo+IC0JdHN0X2Jya20oVENPTkYsIE5VTEwsICJ0ZXN0IGlz
+IG5vdCBhdmFpbGFibGUgb24gdUNsaW51eCIpOwo+IC19Cj4gLQo+IC0jZW5kaWYgLyogaWYgIWRl
+ZmluZWQoVUNMSU5VWCkgKi8KPiArCXRzdF9zaWcoTk9GT1JLLCBERUZfSEFORExFUiwgY2xlYW51
+cCk7Cj4gIAo+IC12b2lkIHNldHVwKCkKPiAtewo+ICAJVEVTVF9QQVVTRTsKPiAgfQo+ICAKPiAt
+dm9pZCBzZXR1cDEoKQo+ICtzdGF0aWMgdm9pZCBtbG9ja192ZXJpZnkoY29uc3Qgc3RydWN0IHRl
+c3RfY2FzZV90ICp0ZXN0KQo+ICB7Cj4gKwlpZiAodGVzdC0+c2V0dXBmdW5jKHRlc3QpID09IC0x
+KQoKc2V0dXBmdW5jIHJldHVybnMgdm9pZAoKPiArCQlyZXR1cm47Cj4gKwo+ICsJVEVTVChtbG9j
+aygqKHRlc3QtPmFkZHIpLCB0ZXN0LT5sZW4pKTsKPiArCj4gKwlpZiAoVEVTVF9SRVRVUk4gIT0g
+LTEpIHsKPiArCQl0c3RfcmVzbShURkFJTCwgIm1sb2NrIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHki
+KTsKPiArCQlyZXR1cm47Cj4gKwl9Cj4gKwo+ICsJaWYgKFRFU1RfRVJSTk8gIT0gdGVzdC0+ZXJy
+b3IpIHsKPiArCQl0c3RfcmVzbShURkFJTCB8IFRURVJSTk8sCj4gKwkJCSAibWxvY2sgZGlkbid0
+IGZhaWwgYXMgZXhwZWN0ZWQ7IGV4cGVjdGVkIC0gJWQgOiAlcyIsCj4gKwkJCSB0ZXN0LT5lcnJv
+ciwgc3RyZXJyb3IodGVzdC0+ZXJyb3IpKTsKPiArCX0gZWxzZSB7Cj4gKwkJdHN0X3Jlc20oVFBB
+U1MgfCBUVEVSUk5PLCAibWxvY2sgZmFpbGVkIGFzIGV4cGVjdGVkIik7Cj4gKwl9Cj4gK30KPiAr
+Cj4gICNpZmRlZiBfX2lhNjRfXwo+IC0JVENbMF0ubGVuID0gZ2V0cGFnZXNpemUoKSArIDE7Cj4g
+K3N0YXRpYyB2b2lkIHNldHVwMShjb25zdCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKnRlc3QpCj4gK3sK
+PiArCXRlc3QtPmxlbiA9IGdldHBhZ2VzaXplKCkgKyAxOwoKTm90IHJlbGV2YW50IHRvIHRoaXMg
+Y2xlYW51cCBwYXRjaDogQW55IGlkZWEgd2h5IGlhNjQgbmVlZHMgdGhpcyBzZXR1cD8gCgo+ICt9
+Cj4gICNlbHNlCj4gK3N0YXRpYyB2b2lkIHNldHVwMSh2b2lkKQo+ICt7Cj4gIAlhZGRyMSA9IE5V
+TEw7CgpJZiB5b3UgaGFkIHNhbWUgcHJvdG90eXBlIHlvdSBjb3VsZCBhbHNvIGRvOgogICoodGVz
+dC0+YWRkcikgPSBOVUxMOwp3aGljaCBpcyBub3QgbmVlZGVkIGZvciB0aGlzIHNpbmdsZSB0ZXN0
+Y2FzZSwgYnV0IEknbSBhc3N1bWluZyBwYXJ0IDIKb2YgdGhlIHBhdGNoc2V0IHdpbGwgbW9kaWZ5
+IGFkZHIxLCBzbyByZXNldHRpbmcgdmFsdWUgd2lsbCBiZSBuZWVkZWQuCgo+IC0jZW5kaWYKPiAg
+fQo+ICsjZW5kaWYKPiAgCj4gLXZvaWQgY2xlYW51cCgpCj4gK3N0YXRpYyB2b2lkIGNsZWFudXAo
+dm9pZCkKPiAgewo+ICAJVEVTVF9DTEVBTlVQOwo+ICt9Cj4gKwo+ICsjZWxzZQo+ICAKPiAraW50
+IFRTVF9UT1RBTCA9IDE7Cj4gKwo+ICtpbnQgbWFpbih2b2lkKQo+ICt7Cj4gKwl0c3RfYnJrbShU
+Q09ORiwgTlVMTCwgInRlc3QgaXMgbm90IGF2YWlsYWJsZSBvbiB1Q2xpbnV4Iik7Cj4gIH0KPiAr
+Cj4gKyNlbmRpZiAvKiBpZiAhZGVmaW5lZChVQ0xJTlVYKSAqLwo+IC0tCj4gMS44LjQuMgo+IAo+
+IAoKSGVyZSBpcyBwYXRjaCB3aGljaCBtYWRlIGl0IGNvbXBpbGUtYWJsZSBmb3IgbWU6CgpkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbG9jay9tbG9jazAyLmMgYi90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwppbmRleCAxZDFjODUzLi5jZmE5
+MTc2IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIu
+YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21sb2NrL21sb2NrMDIuYwpAQCAtMzYs
+MTggKzM2LDE0IEBAIHN0cnVjdCB0ZXN0X2Nhc2VfdCB7CiAJdm9pZCAqKmFkZHI7CiAJaW50IGxl
+bjsKIAlpbnQgZXJyb3I7Ci0Jdm9pZCAoKnNldHVwZnVuYykgKCk7CisJaW50ICgqc2V0dXBmdW5j
+KSAoc3RydWN0IHRlc3RfY2FzZV90ICopOwogfTsKIAogc3RhdGljIHZvaWQgKmFkZHIxOwogc3Rh
+dGljIHZvaWQgc2V0dXAodm9pZCk7Ci0jaWZkZWYgX19pYTY0X18KLXN0YXRpYyB2b2lkIHNldHVw
+MShjb25zdCBzdHJ1Y3QgdGVzdF9jYXNlX3QgKik7Ci0jZWxzZQotc3RhdGljIHZvaWQgc2V0dXAx
+KHZvaWQpOwotI2VuZGlmCitzdGF0aWMgaW50IHNldHVwMShzdHJ1Y3QgdGVzdF9jYXNlX3QgKik7
+CiBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpOwotc3RhdGljIHZvaWQgbWxvY2tfdmVyaWZ5KGNv
+bnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqKTsKK3N0YXRpYyB2b2lkIG1sb2NrX3ZlcmlmeShzdHJ1
+Y3QgdGVzdF9jYXNlX3QgKik7CiAKIHN0YXRpYyBzdHJ1Y3QgdGVzdF9jYXNlX3QgVENbXSA9IHsK
+IAl7JmFkZHIxLCAxMDI0LCBFTk9NRU0sIHNldHVwMX0sCkBAIC04NSw3ICs4MSw3IEBAIHN0YXRp
+YyB2b2lkIHNldHVwKHZvaWQpCiAJVEVTVF9QQVVTRTsKIH0KIAotc3RhdGljIHZvaWQgbWxvY2tf
+dmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkKK3N0YXRpYyB2b2lkIG1sb2Nr
+X3ZlcmlmeShzdHJ1Y3QgdGVzdF9jYXNlX3QgKnRlc3QpCiB7CiAJaWYgKHRlc3QtPnNldHVwZnVu
+Yyh0ZXN0KSA9PSAtMSkKIAkJcmV0dXJuOwpAQCAtMTA2LDE3ICsxMDIsMTQgQEAgc3RhdGljIHZv
+aWQgbWxvY2tfdmVyaWZ5KGNvbnN0IHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkKIAl9CiB9CiAK
+LSNpZmRlZiBfX2lhNjRfXwotc3RhdGljIHZvaWQgc2V0dXAxKGNvbnN0IHN0cnVjdCB0ZXN0X2Nh
+c2VfdCAqdGVzdCkKK3N0YXRpYyBpbnQgc2V0dXAxKHN0cnVjdCB0ZXN0X2Nhc2VfdCAqdGVzdCkK
+IHsKKyNpZmRlZiBfX2lhNjRfXwogCXRlc3QtPmxlbiA9IGdldHBhZ2VzaXplKCkgKyAxOwotfQot
+I2Vsc2UKLXN0YXRpYyB2b2lkIHNldHVwMSh2b2lkKQotewotCWFkZHIxID0gTlVMTDsKLX0KICNl
+bmRpZgorCSoodGVzdC0+YWRkcikgPSBOVUxMOworCXJldHVybiAwOworfQogCiBzdGF0aWMgdm9p
+ZCBjbGVhbnVwKHZvaWQpCiB7CgpSZWdhcmRzLApKYW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpN
+YW5hZ2luZyB0aGUgUGVyZm9ybWFuY2Ugb2YgQ2xvdWQtQmFzZWQgQXBwbGljYXRpb25zClRha2Ug
+YWR2YW50YWdlIG9mIHdoYXQgdGhlIENsb3VkIGhhcyB0byBvZmZlciAtIEF2b2lkIENvbW1vbiBQ
+aXRmYWxscy4KUmVhZCB0aGUgV2hpdGVwYXBlci4KaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNr
+Lm5ldC9nYW1wYWQvY2xrP2lkPTEyMTA1NDQ3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
+IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
