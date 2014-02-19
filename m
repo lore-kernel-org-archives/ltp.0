@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WDzNv-0001Pb-QQ
-	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 16:43:35 +0000
-Date: Thu, 13 Feb 2014 17:43:25 +0100
-From: chrubis@suse.cz
-Message-ID: <20140213164325.GA18531@rei.suse.cz>
-References: <52BC269D.9060009@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <52BC269D.9060009@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] controllers/memcg_lib.sh: reset root cgroup's
- memory.use_hierarchy to 0
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WG3sF-0000x8-Jx
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 09:55:27 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WG3sE-0005Uf-Ak
+	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 09:55:27 +0000
+Message-ID: <1392802803.2083.5.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Wed, 19 Feb 2014 17:40:03 +0800
+In-Reply-To: <1392802716.2083.4.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1392372746.2085.11.camel@G08JYZSD130126>
+	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
+	<1392802716.2083.4.camel@G08JYZSD130126>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH v2 2/2] mlock/mlock02.c: add EPERM and ENOMEM errno
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,94 +31,184 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> index 16e30ec..f93b291 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> @@ -38,6 +38,7 @@ HUGEPAGESIZE=`grep Hugepagesize /proc/meminfo | awk '{ print $2 }'`
->  HUGEPAGESIZE=$(( $HUGEPAGESIZE * 1024 ))
->  PASS=0
->  FAIL=1
-> +orig_memory_use_hierarchy="none"
->  
->  cur_id=0
->  failed=0
-> @@ -396,6 +397,15 @@ test_move_charge()
->  
->  cleanup()
->  {
-> +	if [ "$orig_memory_use_hierarchy" != "none" ];then
+Add EPERM and ENOMEM errno tests for mlock(2).
 
-It would be a bit better to check for non empty string here, because if
-the:
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mlock/mlock02.c | 88 ++++++++++++++++++++++++++++---
+ 1 file changed, 81 insertions(+), 7 deletions(-)
 
-orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
-
-has failed for any reason the value would be set to empty string and we
-will write only newline into the /dev/memcg/... file which will likely
-result in error.
-
-> +		echo $orig_memory_use_hierarchy > \
-> +		     /dev/memcg/memory.use_hierarchy
-> +		if [ $? -ne 0 ];then
-> +			tst_resm TINFO "restore "\
-> +				 "/dev/memcg/memory.use_hierarchy failed"
-> +		fi
-> +	fi
-> +	orig_memory_use_hierarchy="none"
->  	killall -9 memcg_process 2>/dev/null
->  	if [ -e /dev/memcg ]; then
->  		umount /dev/memcg 2>/dev/null
-> @@ -409,4 +419,17 @@ do_mount()
->  
->  	mkdir /dev/memcg 2> /dev/null
->  	mount -t cgroup -omemory memcg /dev/memcg
-> +
-> +	# For some linux distribution, such as RHEL7U0Beta,
-> +	# memory.use_hierarchy is 1 by default, which will caused some tests
-> +	# failed, such as memcg_stat_test.sh. According to kernel
-> +	# Documentation/cgroups/memory.txt's description, the default value
-> +	# should be 0, and some ltp tests are written based on this assumption,
-> +	# so here we reset the root cgroup's memory.use_hierarchy to 0
-> +	# before the test.
-
-I would keep this a bit shorter (it's comment in the code, not poetry :)
-
-Such as:
-
-# The default value for memory.use_hierarchy is 0 and some of tests
-# (memcg_stat_test.sh) expects it so while there are distributions
-# (RHEL7U0Beta for example) that sets it to 1.
-
-The fact that we set it to 0 before the test is obvious from the code.
-
-> +	orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
-> +	echo 0 > /dev/memcg/memory.use_hierarchy
-
-What about setting this only when the orig value is not 0?
-
-Moreover setting the orig value to empty if it's 0 to avoid the
-restoration in cleanup()?
-
-> +	if [ $? -ne 0 ];then
-> +		tst_resm TINFO "set /dev/memcg/memory.use_hierarchy to 0 failed"
-> +	fi
->  }
-
+diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
+index 1d1c853..6ccd281 100644
+--- a/testcases/kernel/syscalls/mlock/mlock02.c
++++ b/testcases/kernel/syscalls/mlock/mlock02.c
+@@ -20,13 +20,22 @@
+  * ALGORITHM
+  * 	test 1:
+  *		Call mlock with a NULL address.  ENOMEM should be returned
++ *	test 2:
++ *		The caller was not privileged and its RLIMIT_MEMLOCK soft
++ *		resource limit was 0. EPERM should be returned
++ *	test 3:
++ *		The caller was not privileged and its RLIMIT_MEMLOCK soft
++ *		resource limit was nonzero, but tried to lock more memory than
++ *		the limit permitted. ENOMEM should be returned
+  */
+ 
+ #include <errno.h>
+ #include <unistd.h>
+ #include <sys/mman.h>
++#include <pwd.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "mlock02";
+ 
+@@ -36,25 +45,32 @@ struct test_case_t {
+ 	void **addr;
+ 	int len;
+ 	int error;
+-	void (*setupfunc) ();
++	int (*setupfunc) ();
++	void (*cleanupfunc) ();
+ };
+ 
+ static void *addr1;
++static struct passwd *ltpuser;
+ static void setup(void);
+ #ifdef __ia64__
+-static void setup1(const struct test_case_t *);
++static int setup1(const struct test_case_t *);
+ #else
+-static void setup1(void);
++static int setup1(void);
+ #endif
++static int setup2(void);
++static int setup3(void);
++static void cleanup2(void);
+ static void cleanup(void);
+ static void mlock_verify(const struct test_case_t *);
+ 
+ static struct test_case_t TC[] = {
+-	{&addr1, 1024, ENOMEM, setup1},
++	{&addr1, 1024, ENOMEM, setup1, NULL},
++	{&addr1, 1024, EPERM, setup2, cleanup2},
++	{&addr1+1024, 1024, ENOMEM, setup3, cleanup2},
+ };
+ 
+ int TST_TOTAL = ARRAY_SIZE(TC);
+-static int exp_enos[] = { ENOMEM, 0 };
++static int exp_enos[] = { ENOMEM, EPERM, 0 };
+ 
+ int main(int ac, char **av)
+ {
+@@ -83,6 +99,8 @@ static void setup(void)
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
++
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+ }
+ 
+ static void mlock_verify(const struct test_case_t *test)
+@@ -92,6 +110,9 @@ static void mlock_verify(const struct test_case_t *test)
+ 
+ 	TEST(mlock(*(test->addr), test->len));
+ 
++	if (test->cleanupfunc != NULL)
++		test->cleanupfunc();
++
+ 	if (TEST_RETURN != -1) {
+ 		tst_resm(TFAIL, "mlock succeeded unexpectedly");
+ 		return;
+@@ -107,17 +128,70 @@ static void mlock_verify(const struct test_case_t *test)
+ }
+ 
+ #ifdef __ia64__
+-static void setup1(const struct test_case_t *test)
++static int setup1(const struct test_case_t *test)
+ {
+ 	test->len = getpagesize() + 1;
++	return 0;
+ }
+ #else
+-static void setup1(void)
++static int setup1(void)
+ {
+ 	addr1 = NULL;
++	return 0;
+ }
+ #endif
+ 
++static int setup2(void)
++{
++	struct rlimit rl;
++
++	if (geteuid() != 0) {
++		tst_resm(TWARN, "Test needs to be run as root");
++		return -1;
++	}
++
++	rl.rlim_max = 0;
++	rl.rlim_cur = 0;
++	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
++		tst_resm(TWARN,
++			 "setrlimit failed to set the resource for "
++			 "RLIMIT_MEMLOCK to check for mlock()");
++		return -1;
++	}
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++
++	return 0;
++}
++
++static int setup3(void)
++{
++	struct rlimit rl;
++
++	if (geteuid() != 0) {
++		tst_resm(TWARN, "Test needs to be run as root");
++		return -1;
++	}
++
++	rl.rlim_max = 1;
++	rl.rlim_cur = 1;
++	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
++		tst_resm(TWARN,
++			 "setrlimit failed to set the resource for "
++			 "RLIMIT_MEMLOCK to check for mlock()");
++		return -1;
++	}
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++
++	return 0;
++}
++
++static void cleanup2(void)
++{
++	SAFE_SETEUID(cleanup, 0);
++}
++
+ static void cleanup(void)
+ {
+ 	TEST_CLEANUP;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
 
 ------------------------------------------------------------------------------
-Android apps run on BlackBerry 10
-Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-Now with support for Jelly Bean, Bluetooth, Mapview and more.
-Get your Android app in front of a whole new audience.  Start now.
-http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
