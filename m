@@ -1,38 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1WCgTl-0008GC-4v
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 02:20:13 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WCgTi-00030R-BL
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 02:20:13 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1A2K2vW025603
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Feb 2014 02:20:02 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s1A2K1J9029837
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Feb 2014 02:20:01 GMT
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1A2K1s6015657
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Feb 2014 02:20:01 GMT
-Message-ID: <52F83739.4000106@oracle.com>
-Date: Mon, 10 Feb 2014 10:19:37 +0800
-From: Simon Xu <xu.simon@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WGXSI-0000F0-Gp
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 17:30:38 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 94A38AC9F
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 20 Feb 2014 17:30:31 +0000 (UTC)
+Date: Thu, 20 Feb 2014 18:30:25 +0100
+From: chrubis@suse.cz
+Message-ID: <20140220173025.GA9580@rei>
+References: <1392916577-7097-1-git-send-email-jack@suse.cz>
 MIME-Version: 1.0
-References: <1387171228-505-1-git-send-email-xu.simon@oracle.com>
-	<52BA3898.3050909@oracle.com> <52DDD0ED.6040702@oracle.com>
-	<2085388669.1674106.1391081515715.JavaMail.root@redhat.com>
-	<20140204132922.GA6597@rei>
-In-Reply-To: <20140204132922.GA6597@rei>
-Subject: Re: [LTP] [PATCH] sctp: Avoid using file descriptor 0 to
-	get	ENOTSOCK
+Content-Disposition: inline
+In-Reply-To: <1392916577-7097-1-git-send-email-jack@suse.cz>
+Subject: Re: [LTP] [PATCH v2] syscalls/inotify: Extend tests to verify
+	cookie value
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,28 +29,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Kara <jack@suse.cz>
+Cc: ltp-list@lists.sourceforge.net
 
-Any extra steps needed before applying it in LTP?
+Hi!
+> Extend inotify01 and inotify02 tests to verify cookie value returned by
+> the kernel is sane (0 for all except rename events and matches for the
+> two rename events). There has been a kernel bug caused by commit
+> 7053aee26a35 which would be caught by these tests.
 
-Thanks
-Simon
+Pushed to git, thanks.
 
-On 2014/2/4 21:29, chrubis@suse.cz wrote:
-> Hi!
->> Given that this is identical to c43ead6daa0b9ae5763d6cf3d21357a789651417 from
->> https://github.com/borkmann/lksctp-tools :
->>
->> Acked-by: Jan Stancek <jstancek@redhat.com>
-> I would be tempted to put the repeated code fragemnts into single place
-> (header included by all of the testcases). But given that the patch is
-> in upstream I'm OK with applying it in LTP as well.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
 Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
