@@ -1,29 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <francesco.rundo@st.com>) id 1WGpDo-0001pd-IB
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 12:28:52 +0000
-Received: from eu1sys200aog122.obsmtp.com ([207.126.144.153])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WGpDm-0004Lq-OX
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 12:28:52 +0000
-From: Francesco RUNDO <francesco.rundo@st.com>
-Date: Fri, 21 Feb 2014 12:28:14 +0000
-Message-ID: <D2A2C37B00D2EA4CB1886D29B96695C55AE578@SAFEX1NODE23.st.com>
-References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
-	<5307080F.8000702@cn.fujitsu.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE388@SAFEX1NODE23.st.com>
-	<775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE401@SAFEX1NODE23.st.com>
-	<1636908988.6999631.1392977205402.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
-	<387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
-	<1110699270.7050041.1392980994165.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1110699270.7050041.1392980994165.JavaMail.zimbra@redhat.com>
-Content-Language: en-US
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sujeshlx@gmail.com>) id 1WGQLc-0000eC-Rp
+	for Ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 09:55:16 +0000
+Received: from mail-vc0-f182.google.com ([209.85.220.182])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WGQLc-0005EN-AL
+	for Ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 09:55:16 +0000
+Received: by mail-vc0-f182.google.com with SMTP id id10so1634328vcb.13
+	for <Ltp-list@lists.sourceforge.net>;
+	Thu, 20 Feb 2014 01:55:10 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+Date: Thu, 20 Feb 2014 15:25:10 +0530
+Message-ID: <CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com>
+From: "sujesh.k.p Kp" <sujeshlx@gmail.com>
+Subject: [LTP] Please remove me from this mail group
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,141 +25,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7562283023925668565=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Ltp-list@lists.sourceforge.net
+
+--===============7562283023925668565==
+Content-Type: multipart/alternative; boundary=089e01538a7a448e2004f2d3804a
+
+--089e01538a7a448e2004f2d3804a
+Content-Type: text/plain; charset=ISO-8859-1
 
 
-> > Now, "do_fallocate()" needs fallocate() op. but on ext3 this is not 
-> > supported i.e. ENOTSUP.
 
->>Do you have kernel compiled with CONFIG_TMPFS=y?
+--089e01538a7a448e2004f2d3804a
+Content-Type: text/html; charset=ISO-8859-1
 
-No. I've just checked kernel with above option: the reported madvise03 testcase worked fine (usage of shmem_fallocate()).
-So your analysis of my scenario is corret.
-Please , discard posted patch.
+<div dir="ltr"><br></div>
 
-Thanks so much.
-FR
+--089e01538a7a448e2004f2d3804a--
 
-> 
-> madvise(start=0x7fcff6d66000 len_in=0x1000 behavior=0x9) Call Trace:
->  0xffffffff81150130 : shmem_fallocate+0x0/0x300 [kernel]
->  0xffffffff8122d056 : shm_fallocate+0x26/0x40 [kernel]
->  0xffffffff811a0089 : do_fallocate+0xf9/0x190 [kernel]
->  0xffffffff8115ac95 : SyS_madvise+0x355/0x7a0 [kernel]
->  0xffffffff815d05d9 : system_call_fastpath+0x16/0x1b [kernel]
-> 
-> Do you have possibility to run original testcase with strace?
-> # strace ./madvise03 2>&1 | grep -v abcdefghijklmnopqrstuvwxyz12345
-> 
-> Regards,
-> Jan
-> 
-> > This is the reason for which I consider this scenario as not 
-> > supported and not ENOSYS as the system call is supported as the 
-> > remaining scenarios worked fine (MADV_DONTFORK and MADV_DOFORK).
-> > 
-> > Regards
-> > FR
-> > > 
-> > > Regards,
-> > > FR
-> > > 
-> > > >>Regards,
-> > > >>Jan
-> > > 
-> > > 
-> > > > 
-> > > > 
-> > > > Regards,
-> > > > FR
-> > > > 
-> > > > -----Original Message-----
-> > > > From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> > > > Sent: Friday, February 21, 2014 9:02 AM
-> > > > To: Francesco RUNDO
-> > > > Cc: ltp-list@lists.sourceforge.net
-> > > > Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test 
-> > > > exit code
-> > > > 
-> > > > On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
-> > > > > Changed exit code from TFAIL to TCONF  in case of unsupported 
-> > > > > syscall.
-> > > > > The "madvise" syscall needs kernel support as well as fs 
-> > > > > support as -for specific advice- it requires specific 
-> > > > > filesystem operations such as fallocate().
-> > > > 
-> > > > Could you paste the running log on not supported system?
-> > > > 
-> > > > Thanks,
-> > > > Wanlong Gao
-> > > > 
-> > > > > So, if kernel support is missed or fs doesn't provide specific 
-> > > > > operation needed for such "advice" scenario of that syscall, 
-> > > > > the right exit code (according to LTP defs) is not TFAIL as it 
-> > > > > is not a failure but it is TCONF as the syscall is unsupported.
-> > > > > 
-> > > > > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-> > > > > ---
-> > > > >  testcases/kernel/syscalls/madvise/madvise03.c |   17
-> > > > >  +++++++++++++----
-> > > > >  1 files changed, 13 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > b/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > index b0c17e8..23dd9a6 100644
-> > > > > --- a/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > @@ -160,10 +160,19 @@ static void cleanup(void)  static void 
-> > > > > check_and_print(char *advice)  {
-> > > > >  	if (TEST_RETURN == -1) {
-> > > > > -		tst_resm(TFAIL,
-> > > > > -			 "madvise test for %s failed with "
-> > > > > -			 "return = %ld, errno = %d : %s",
-> > > > > -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
-> > > > > +		if (TEST_ERRNO != ENOTSUP) {
-> > > > > +			tst_resm(TFAIL,
-> > > > > +				 "madvise test for %s failed with "
-> > > > > +				 "return = %ld, errno = %d : %s",
-> > > > > +				 advice, TEST_RETURN, TEST_ERRNO,
-> > > > > +				 strerror(TEST_ERRNO));
-> > > > > +		} else {
-> > > > > +			tst_resm(TCONF,
-> > > > > +				"madvise test for %s unsupported "
-> > > > > +				"return = %ld, errno = %d : %s",
-> > > > > +				advice, TEST_RETURN, TEST_ERRNO,
-> > > > > +				strerror(TEST_ERRNO));
-> > > > > +		}
-> > > > >  	} else if (STD_FUNCTIONAL_TEST) {
-> > > > >  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
-> > > > >  	}
-> > > > > 
-> > > > 
-> > > > 
-> > > > ----------------------------------------------------------------
-> > > > ----
-> > > > --
-> > > > -------- Managing the Performance of Cloud-Based Applications 
-> > > > Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-> > > > Read the Whitepaper.
-> > > > http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.
-> > > > clktrk _______________________________________________
-> > > > Ltp-list mailing list
-> > > > Ltp-list@lists.sourceforge.net
-> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > > > 
-> > > 
-> > 
->
+
+--===============7562283023925668565==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
 Read the Whitepaper.
 http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+--===============7562283023925668565==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7562283023925668565==--
+
