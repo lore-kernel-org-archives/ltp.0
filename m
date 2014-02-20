@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1W0X7B-0006X3-J9
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:54:41 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W0X79-0007Mi-Uu
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jan 2014 13:54:41 +0000
-Date: Tue, 7 Jan 2014 08:54:30 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1651380188.12117119.1389102870918.JavaMail.root@redhat.com>
-In-Reply-To: <1388746143.1609.19.camel@G08JYZSD130126>
-References: <1388746143.1609.19.camel@G08JYZSD130126>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WGUqd-0000Si-S3
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 14:43:35 +0000
+Date: Thu, 20 Feb 2014 15:43:23 +0100
+From: chrubis@suse.cz
+Message-ID: <20140220144323.GA9177@rei>
+References: <1d493ab679dd89f48f100209f59cd268bfcceb0d.1389605779.git.jstancek@redhat.com>
+	<956250964.4933831.1392716586384.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] dup3/dup3_02.c: fix O_CLOEXEC undeclared
+Content-Disposition: inline
+In-Reply-To: <956250964.4933831.1392716586384.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH/RFC] sigaltstack02: avoid using MINSIGSTKSZ
+ defined by glibc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,51 +23,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogInplbmdsZy5qeSIgPHplbmds
-Zy5qeUBjbi5mdWppdHN1LmNvbT4KPiBUbzogImx0cC1saXN0IiA8bHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Pgo+IFNlbnQ6IEZyaWRheSwgMyBKYW51YXJ5LCAyMDE0IDExOjQ5OjAzIEFN
-Cj4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBkdXAzL2R1cDNfMDIuYzogZml4IE9fQ0xPRVhFQyB1
-bmRlY2xhcmVkCj4gCj4gT19DTE9FWEVDIGlzIG5vdCBkZWZpbmVkIGluIFJIRUw1LiBXaGVuIGV4
-ZWN1dGUgbWFrZSwKPiAiZHVwM18wMi5jOjU1OiBlcnJvcjog4oCYT19DTE9FWEVD4oCZIHVuZGVj
-bGFyZWQgaGVyZSAobm90IGluIGEgZnVuY3Rpb24pIgo+IHdpbGwgYmUgb3V0cHV0ZWQuCj4gCj4g
-U2lnbmVkLW9mZi1ieTogWmVuZyBMaW5nZ2FuZyA8emVuZ2xnLmp5QGNuLmZ1aml0c3UuY29tPgoK
-SSBvdmVybG9va2VkIHRoaXMgZW1haWwgYW5kIHNlbnQgaWRlbnRpY2FsIHBhdGNoIHRvZGF5OgoK
-UmV2aWV3ZWQtYnk6IEphbiBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgoKCj4gLS0tCj4g
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZHVwMy9kdXAzXzAyLmMgfCAzICsrKwo+ICAxIGZp
-bGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvZHVwMy9kdXAzXzAyLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvZHVwMy9kdXAzXzAyLmMKPiBpbmRleCAwNDAxZGRjLi45ZDVlZjE1IDEwMDY0NAo+IC0tLSBh
-L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZHVwMy9kdXAzXzAyLmMKPiArKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2R1cDMvZHVwM18wMi5jCj4gQEAgLTM3LDYgKzM3LDkgQEAKPiAg
-I2luY2x1ZGUgInNhZmVfbWFjcm9zLmgiCj4gICNpbmNsdWRlICJsaW51eF9zeXNjYWxsX251bWJl
-cnMuaCIKPiAgCj4gKyNpZm5kZWYgT19DTE9FWEVDCj4gKyMgZGVmaW5lIE9fQ0xPRVhFQyAwMjAw
-MDAwMAo+ICsjZW5kaWYKPiAgCj4gIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+ICBzdGF0aWMg
-dm9pZCBjbGVhbnVwKHZvaWQpOwo+IC0tCj4gMS44LjIuMQo+IAo+IAo+IAo+IAo+IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQo+IFJhcGlkbHkgdHJvdWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5
-IGFmZmVjdCB5b3VyIGJ1c2luZXNzLiBNb3N0IElUCj4gb3JnYW5pemF0aW9ucyBkb24ndCBoYXZl
-IGEgY2xlYXIgcGljdHVyZSBvZiBob3cgYXBwbGljYXRpb24gcGVyZm9ybWFuY2UKPiBhZmZlY3Rz
-IHRoZWlyIHJldmVudWUuIFdpdGggQXBwRHluYW1pY3MsIHlvdSBnZXQgMTAwJSB2aXNpYmlsaXR5
-IGludG8geW91cgo+IEphdmEsLk5FVCwgJiBQSFAgYXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUt
-ZGF5IEZSRUUgVFJJQUwgb2YgQXBwRHluYW1pY3MKPiBQcm8hCj4gaHR0cDovL3B1YmFkcy5nLmRv
-dWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTg0MzQ5ODMxJml1PS80MTQwL29zdGcuY2xrdHJr
-Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAt
-bGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClJhcGlkbHkgdHJvdWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0
-aGV5IGFmZmVjdCB5b3VyIGJ1c2luZXNzLiBNb3N0IElUIApvcmdhbml6YXRpb25zIGRvbid0IGhh
-dmUgYSBjbGVhciBwaWN0dXJlIG9mIGhvdyBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0
-cyB0aGVpciByZXZlbnVlLiBXaXRoIEFwcER5bmFtaWNzLCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0
-eSBpbnRvIHlvdXIgCkphdmEsLk5FVCwgJiBQSFAgYXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUt
-ZGF5IEZSRUUgVFJJQUwgb2YgQXBwRHluYW1pY3MgUHJvIQpodHRwOi8vcHViYWRzLmcuZG91Ymxl
-Y2xpY2submV0L2dhbXBhZC9jbGs/aWQ9ODQzNDk4MzEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFp
-bGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hi!
+> > The value of MINSIGSTKSZ defined by glibc can be different
+> > as the value defined by kernel. Recent change for ppc
+> > is now causing sigaltstack02 to fail:
+> > https://sourceware.org/ml/libc-alpha/2013-08/msg00093.html
+> > 
+> > Use value which is low enough for all kernel versions.
+> > 
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> 
+> Any thoughts/ideas?
+
+So they fixed the size in glibc which broke the test because the
+MINSIGSTKSZ - 1 is not small enough now. I wonder if we can pass
+even smaller value (zero) there and get the same result...
+
+Anyway the change looks good to me,
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
