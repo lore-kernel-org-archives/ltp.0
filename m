@@ -1,31 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1WG729-0001tI-8p
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 13:17:53 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WG726-0003WB-O4
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 13:17:52 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1JDHhCB028716
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 13:17:44 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1JDHhDe025379
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 13:17:43 GMT
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1JDHh4L008781
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 13:17:43 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 19 Feb 2014 17:17:30 +0400
-Message-Id: <1392815850-14039-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] include/config.mk: add -Wold-style-definition
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shubham@linux.vnet.ibm.com>) id 1WGR9w-0002aS-QD
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 10:47:16 +0000
+Received: from e28smtp06.in.ibm.com ([122.248.162.6])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WGR9v-0006fu-9U
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 10:47:16 +0000
+Received: from /spool/local
+	by e28smtp06.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <shubham@linux.vnet.ibm.com>; 
+	Thu, 20 Feb 2014 16:17:07 +0530
+Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
+	by d28dlp01.in.ibm.com (Postfix) with ESMTP id 5F5FDE0056
+	for <Ltp-list@lists.sourceforge.net>;
+	Thu, 20 Feb 2014 16:20:31 +0530 (IST)
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay02.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	s1KAktb656819826
+	for <Ltp-list@lists.sourceforge.net>; Thu, 20 Feb 2014 16:16:55 +0530
+Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	s1KAl2nZ012885
+	for <Ltp-list@lists.sourceforge.net>; Thu, 20 Feb 2014 16:17:02 +0530
+Message-ID: <5305DD26.1090907@linux.vnet.ibm.com>
+Date: Thu, 20 Feb 2014 16:17:02 +0530
+From: shubham <shubham@linux.vnet.ibm.com>
+MIME-Version: 1.0
+References: <CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com>
+In-Reply-To: <CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com>
+Subject: Re: [LTP] Please remove me from this mail group
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,45 +41,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9124595722063563132=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, Alexey Kodanev <alexey.kodanev@oracle.com>
+To: "sujesh.k.p Kp" <sujeshlx@gmail.com>
+Cc: Ltp-list@lists.sourceforge.net
 
-Make compiler warn about old-style prototypes which were commonly
-used before ANSI C. Using old-style function definition could result
-in bugs that are not tracked down at compile time.
+This is a multi-part message in MIME format.
+--===============9124595722063563132==
+Content-Type: multipart/alternative;
+	boundary="------------030907010700080109050302"
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- include/mk/config.mk.in |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+This is a multi-part message in MIME format.
+--------------030907010700080109050302
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index acdbdb5..c83d08c 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -66,7 +66,7 @@ DEBUG_CXXFLAGS		?= $(DEBUG_CFLAGS)
- OPT_CFLAGS		?= -O2 -fno-strict-aliasing -pipe
- OPT_CXXFLAGS		?= $(OPT_CFLAGS)
- 
--WCFLAGS			?= -Wall -W
-+WCFLAGS			?= -Wall -W -Wold-style-definition
- WCXXFLAGS		?= $(WCFLAGS)
- 
- LDFLAGS			+= $(WLDFLAGS)
--- 
-1.7.1
+On 02/20/2014 03:25 PM, sujesh.k.p Kp wrote:
+>
+>
+>
+> ------------------------------------------------------------------------------
+> Managing the Performance of Cloud-Based Applications
+> Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+> Read the Whitepaper.
+> http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+>
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+You can unsubscribe on your own...
 
+--------------030907010700080109050302
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    On 02/20/2014 03:25 PM, sujesh.k.p Kp wrote:
+    <blockquote
+cite="mid:CA+YMQO9+vPHUE+sf+E4Fjqd6t5_RtzCYf4xqEq0AqpwL361wpw@mail.gmail.com"
+      type="cite">
+      <div dir="ltr"><br>
+      </div>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">------------------------------------------------------------------------------
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+<a class="moz-txt-link-freetext" href="http://pubads.g.doubleclick.net/gampad/clk?id=121054471&amp;iu=/4140/ostg.clktrk">http://pubads.g.doubleclick.net/gampad/clk?id=121054471&amp;iu=/4140/ostg.clktrk</a></pre>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <br>
+      <pre wrap="">_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+</pre>
+    </blockquote>
+    You can unsubscribe on your own...<br>
+  </body>
+</html>
+
+--------------030907010700080109050302--
+
+
+
+--===============9124595722063563132==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
 Read the Whitepaper.
 http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+--===============9124595722063563132==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9124595722063563132==--
+
+
