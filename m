@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WDtGJ-0003rx-UI
-	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 10:11:20 +0000
-Date: Thu, 13 Feb 2014 11:11:10 +0100
+	(envelope-from <metan@suse.de>) id 1WGUC5-0005nh-66
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 14:01:41 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 64205AC86
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 20 Feb 2014 14:01:34 +0000 (UTC)
+Date: Thu, 20 Feb 2014 15:01:28 +0100
 From: chrubis@suse.cz
-Message-ID: <20140213101110.GA1737@rei.suse.cz>
-References: <1392112090-13853-1-git-send-email-alexey.kodanev@oracle.com>
-	<1392112090-13853-3-git-send-email-alexey.kodanev@oracle.com>
-	<5757763.zAWEHsmlGc@vapier>
+Message-ID: <20140220140128.GA25930@rei>
+References: <1392642413-11071-1-git-send-email-jack@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5757763.zAWEHsmlGc@vapier>
-Subject: Re: [LTP] [PATCH 4/4] lib: add tst_res_r.c
+In-Reply-To: <1392642413-11071-1-git-send-email-jack@suse.cz>
+Subject: Re: [LTP] [PATCH] syscalls/inotify: Extend tests to verify cookie
+	value
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,24 +29,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Alexey Kodanev <alexey.kodanev@oracle.com>, ltp-list@lists.sourceforge.net, vasily.isaenko@oracle.com
+To: Jan Kara <jack@suse.cz>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> yes, even with -W -Wall -Wextra.  please stamp this horrible habit out of your
+> +				if (event->mask == IN_MOVED_FROM) {
+> +					if (event->cookie == 0)
+> +						goto cookie_fail;
+> +					stored_cookie = event->cookie;
+> +				} else if (event->mask == IN_MOVED_TO) {
+> +					if (event->cookie != stored_cookie)
+> +						goto cookie_fail;
+> +					stored_cookie = UINT_MAX;
+> +				} else {
+> +					if (event->cookie != 0)
+> +						goto cookie_fail;
+> +				}
+>  				tst_resm(TPASS,
+>  					 "get event: wd=%d mask=%x"
+>  					 " cookie=%u len=%u name=\"%s\"",
+>  					 event->wd, event->mask, event->cookie,
+>  					 event->len, event->name);
+> -
+> +				goto next;
+> +cookie_fail:
+> +				tst_resm(TFAIL,
+> +					 "get event: wd=%d mask=%x cookie=%u "
+> +					 "(wrong) len=%u name=\"%s\"",
+> +					 event->wd, event->mask,
+> +					 event->cookie, event->len,
+> +					 event->name);
+>  			} else {
+>  				tst_resm(TFAIL, "get event: wd=%d mask=%x "
+>  					 "(expected %x) cookie=%u len=%u "
+> @@ -241,6 +261,7 @@ int main(int ac, char **av)
+>  					 strcmp(event_set[test_num].name,
+>  						event->name));
+>  			}
+> +next:
 
-The -W is older name for -Wextra (look at -Wextra in gcc man page).
+Hmm, shouldn't we rather add a variable named failed, initialize it to
+zero, set it to non-zero values ono failure and branch tst_resm() on it?
+
+The goto statements are getting a bit out of hand in this part...
+
+Otherwise it's fine.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Android apps run on BlackBerry 10
-Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-Now with support for Jelly Bean, Bluetooth, Mapview and more.
-Get your Android app in front of a whole new audience.  Start now.
-http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
