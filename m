@@ -1,34 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WIJBZ-00051t-NX
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 14:40:41 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WIJBY-0005ZS-MC
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 14:40:41 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1PEeYVJ016633
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:34 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s1PEeX42020429
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:34 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1PEeXIC023460
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:33 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 25 Feb 2014 18:40:26 +0400
-Message-Id: <1393339227-13527-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140225140017.GC14376@rei>
-References: <20140225140017.GC14376@rei>
-Subject: [LTP] [PATCH V3 1/2] msgctl11: cleanup and fflush removed
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WGRXb-0003TN-Nf
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 11:11:43 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WGRXa-0007pw-62
+	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 11:11:43 +0000
+Date: Thu, 20 Feb 2014 06:05:29 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1392889813.2053.10.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1392372746.2085.11.camel@G08JYZSD130126>
+	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
+	<1392802716.2083.4.camel@G08JYZSD130126>
+	<1392802803.2083.5.camel@G08JYZSD130126>
+	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
+	<1392889204.2053.7.camel@G08JYZSD130126>
+	<1392889813.2053.10.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v3 2/2] mlock/mlock02.c: add EPERM and ENOMEM
+ errno tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,234 +32,209 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Performed some cleanup and removed fflush() from the
-testcase.
 
-fflush() before FORK_OR_VFORK() is not needed because of
-commit 3f0510cb2d18720e294e89fbdb4ce38e0ede47d6
 
-fflush() before exit() is redundant.
+----- Original Message -----
+> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
+> Sent: Thursday, 20 February, 2014 10:50:13 AM
+> Subject: [PATCH v3 2/2] mlock/mlock02.c: add EPERM and ENOMEM errno tests
+> 
+> Add EPERM and ENOMEM errno tests for mlock(2).
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   83 ++++++++--------------
- 1 files changed, 30 insertions(+), 53 deletions(-)
+Hi,
 
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-index 57f4ae0..63ff88f 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-@@ -77,9 +77,9 @@ static int pid_uclinux;
- static int child_process_uclinux;
- static int rkid_uclinux;
- 
--static void do_child_1_uclinux();
--static void do_child_2_uclinux();
--static void do_child_3_uclinux();
-+static void do_child_1_uclinux(void);
-+static void do_child_2_uclinux(void);
-+static void do_child_3_uclinux(void);
- #endif
- 
- int main(int argc, char **argv)
-@@ -137,21 +137,19 @@ int main(int argc, char **argv)
- 			nkids = atoi(argv[3]);
- 		}
- 	} else {
--		tst_resm(TCONF,
-+		tst_brkm(TCONF, cleanup,
- 			 " Usage: %s [ number of iterations  number of processes number of read/write pairs ]",
- 			 argv[0]);
--		tst_exit();
- 	}
- 
- 	procstat = 0;
- 	srand48((unsigned)getpid() + (unsigned)(getppid() << 16));
- 	tid = -1;
- 
--	/* Setup signal handleing routine */
--	if (sigset(SIGTERM, term) == SIG_ERR) {
--		tst_resm(TFAIL, "Sigset SIGTERM failed");
--		tst_exit();
--	}
-+	/* Setup signal handling routine */
-+	if (sigset(SIGTERM, term) == SIG_ERR)
-+		tst_brkm(TFAIL, cleanup, "Sigset SIGTERM failed");
-+
- 	/* Set up array of unique keys for use in allocating message
- 	 * queues
- 	 */
-@@ -181,18 +179,16 @@ int main(int argc, char **argv)
- 	 */
- 
- 	for (i = 0; i < nprocs; i++) {
--		fflush(stdout);
--		if ((pid = FORK_OR_VFORK()) < 0) {
--			tst_resm(TFAIL,
--				 "\tFork failed (may be OK if under stress)");
--			tst_exit();
--		}
-+		if ((pid = FORK_OR_VFORK()) < 0)
-+			tst_brkm(TFAIL, cleanup,
-+				 "Fork failed (may be OK if under stress)");
-+
- 		/* Child does this */
- 		if (pid == 0) {
- #ifdef UCLINUX
- 			if (self_exec(argv[0], "ndd", 1, keyarray[i], i) < 0) {
--				tst_resm(TFAIL, "\tself_exec failed");
--				tst_exit();
-+				printf("\tself_exec failed\n");
-+				exit(FAIL);
- 			}
- #else
- 			procstat = 1;
-@@ -205,11 +201,9 @@ int main(int argc, char **argv)
- 	count = 0;
- 	while (1) {
- 		if ((wait(&status)) > 0) {
--			if (status >> 8 != PASS) {
--				tst_resm(TFAIL, "Child exit status = %d",
--					 status >> 8);
--				tst_exit();
--			}
-+			if (status >> 8 != PASS)
-+				tst_brkm(TFAIL, cleanup,
-+					"Child exit status = %d", status >> 8);
- 			count++;
- 		} else {
- 			if (errno != EINTR) {
-@@ -221,19 +215,15 @@ int main(int argc, char **argv)
- 		}
- 	}
- 	/* Make sure proper number of children exited */
--	if (count != nprocs) {
--		tst_resm(TFAIL,
-+	if (count != nprocs)
-+		tst_brkm(TFAIL, cleanup,
- 			 "Wrong number of children exited, Saw %d, Expected %d",
- 			 count, nprocs);
--		tst_exit();
--	}
- 
- 	tst_resm(TPASS, "msgctl11 ran successfully!");
- 
- 	cleanup();
--
--	return (0);
--
-+	tst_exit();
- }
- 
- #ifdef UCLINUX
-@@ -276,8 +266,8 @@ static void cleanup_msgqueue(int i, int tid)
- 	}
- 
- 	if (msgctl(tid, IPC_RMID, 0) < 0) {
--		tst_resm(TFAIL | TERRNO, "Msgctl error in cleanup");
--		tst_exit();
-+		printf("Msgctl error in cleanup_msgqueue %d\n", errno);
-+		exit(FAIL);
- 	}
- }
- 
-@@ -298,7 +288,6 @@ static int dotest(key_t key, int child_process)
- 	exit_status = PASS;
- 
- 	for (i = 0; i < nkids; i++) {
--		fflush(stdout);
- 		if ((pid = FORK_OR_VFORK()) < 0) {
- 			printf("Fork failure in the first child of child group %d\n",
- 				child_process);
-@@ -321,7 +310,6 @@ static int dotest(key_t key, int child_process)
- #endif
- 		}
- 		rkidarray[i] = pid;
--		fflush(stdout);
- 		if ((pid = FORK_OR_VFORK()) < 0) {
- 			printf("Fork failure in the second child of child group %d\n",
- 				child_process);
-@@ -420,7 +408,6 @@ static void term(int sig)
- 	}
- 
- 	if (procstat == 2) {
--		fflush(stdout);
- 		exit(PASS);
- 	}
- 
-@@ -453,32 +440,24 @@ void setup(void)
- 
- 	nr_msgqs = get_max_msgqueues();
- 	if (nr_msgqs < 0)
--		cleanup();
-+		tst_brkm(TBROK, cleanup, "get_max_msgqueues() failed");
- 
- 	MSGMNI = nr_msgqs - get_used_msgqueues();
--	if (MSGMNI <= 0) {
--		tst_resm(TBROK,
-+	if (MSGMNI <= 0)
-+		tst_brkm(TBROK, cleanup,
- 			 "Max number of message queues already used, cannot create more.");
--		cleanup();
--	}
- 
- 	free_pids = get_free_pids();
- 	if (free_pids < 0) {
--		tst_resm(TBROK, "Can't obtain free_pid count");
--		tst_exit();
--	}
--
--	else if (!free_pids) {
--		tst_resm(TBROK, "No free pids");
--		tst_exit();
-+		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
-+	} else if (!free_pids) {
-+		tst_brkm(TBROK, cleanup, "No free pids");
- 	}
- 
- 	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
- 		maxnkids = ((free_pids / 4) / MSGMNI);
--		if (!maxnkids) {
--			tst_resm(TBROK, "Not enough free pids");
--			tst_exit();
--		}
-+		if (!maxnkids)
-+			tst_brkm(TBROK, cleanup, "Not enough free pids");
- 	}
- 
- 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
-@@ -496,7 +475,6 @@ void cleanup(void)
- #ifdef DEBUG
- 	tst_resm(TINFO, "Removing the message queue");
- #endif
--	fflush(stdout);
- 	(void)msgctl(tid, IPC_RMID, NULL);
- 	if ((status = msgctl(tid, IPC_STAT, NULL)) != -1) {
- 		(void)msgctl(tid, IPC_RMID, NULL);
-@@ -504,6 +482,5 @@ void cleanup(void)
- 
- 	}
- 
--	fflush(stdout);
- 	tst_rmdir();
- }
--- 
-1.7.1
+part1 looks good to me, comments for part2 are inline.
 
+> ---
+>  testcases/kernel/syscalls/mlock/mlock02.c | 65
+>  +++++++++++++++++++++++++++++--
+>  1 file changed, 62 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
+> b/testcases/kernel/syscalls/mlock/mlock02.c
+> index 811d141..79f1d29 100644
+> --- a/testcases/kernel/syscalls/mlock/mlock02.c
+> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
+> @@ -20,13 +20,22 @@
+>   * ALGORITHM
+>   * 	test 1:
+>   *		Call mlock with a NULL address.  ENOMEM should be returned
+> + *	test 2:
+> + *		The caller was not privileged and its RLIMIT_MEMLOCK soft
+> + *		resource limit was 0. EPERM should be returned
+> + *	test 3:
+> + *		The caller was not privileged and its RLIMIT_MEMLOCK soft
+> + *		resource limit was nonzero, but tried to lock more memory than
+> + *		the limit permitted. ENOMEM should be returned
+>   */
+>  
+>  #include <errno.h>
+>  #include <unistd.h>
+>  #include <sys/mman.h>
+> +#include <pwd.h>
+>  #include "test.h"
+>  #include "usctest.h"
+> +#include "safe_macros.h"
+>  
+>  char *TCID = "mlock02";
+>  
+> @@ -36,21 +45,29 @@ struct test_case_t {
+>  	void **addr;
+>  	int len;
+>  	int error;
+> -	void (*setupfunc) (struct test_case_t *);
+> +	void (*setupfunc) ();
+
+If you don't want any parameters add void.
+
+> +	void (*cleanupfunc) (void);
+>  };
+>  
+>  static void *addr1;
+> +static char addr2[1024];
+> +static struct passwd *ltpuser;
+>  static void setup(void);
+>  static void setup1(struct test_case_t *);
+> +static void setup2(void);
+> +static void setup3(void);
+> +static void cleanup2(void);
+>  static void cleanup(void);
+>  static void mlock_verify(struct test_case_t *);
+>  
+>  static struct test_case_t TC[] = {
+> -	{&addr1, 1024, ENOMEM, setup1},
+> +	{&addr1, 1024, ENOMEM, setup1, NULL},
+> +	{(void **)&addr2, 1024, EPERM, setup2, cleanup2},
+> +	{(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
+>  };
+
+I think I misunderstood intent of **addr. As you outlined it
+above, we can remove one pointer entirely along with addr1:
+
+-static void *addr1;
+
+ struct test_case_t {
+-       void **addr;
++       void *addr;
+
+ static struct test_case_t TC[] = {
+-       {&addr1, 1024, ENOMEM, setup1, NULL},
+-       {(void **)&addr2, 1024, EPERM, setup2, cleanup2},
+-       {(void **)&addr2, 1024, ENOMEM, setup3, cleanup2},
++       {NULL, 1024, ENOMEM, setup1, NULL},
++       {addr2, 1024, EPERM, setup2, cleanup2},
++       {addr2, 1024, ENOMEM, setup3, cleanup2},
+
+ static void mlock_verify(struct test_case_t *test)
+-       TEST(mlock(*(test->addr), test->len));
++       TEST(mlock(test->addr, test->len));
+
+ static void setup1(struct test_case_t *test)
+-#else
+-       *test->addr = NULL;
+
+
+I'm going to try this testcase on ia64 to have a look at that
+ia64 specific setup.
+
+Regards,
+Jan
+
+>  
+>  int TST_TOTAL = ARRAY_SIZE(TC);
+> -static int exp_enos[] = { ENOMEM, 0 };
+> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
+>  
+>  int main(int ac, char **av)
+>  {
+> @@ -76,9 +93,13 @@ int main(int ac, char **av)
+>  
+>  static void setup(void)
+>  {
+> +	tst_require_root(NULL);
+> +
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  
+>  	TEST_PAUSE;
+> +
+> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+>  }
+>  
+>  static void mlock_verify(struct test_case_t *test)
+> @@ -88,6 +109,9 @@ static void mlock_verify(struct test_case_t *test)
+>  
+>  	TEST(mlock(*(test->addr), test->len));
+>  
+> +	if (test->cleanupfunc != NULL)
+> +		test->cleanupfunc();
+> +
+>  	if (TEST_RETURN != -1) {
+>  		tst_resm(TFAIL, "mlock succeeded unexpectedly");
+>  		return;
+> @@ -111,6 +135,41 @@ static void setup1(struct test_case_t *test)
+>  #endif
+>  }
+>  
+> +static void setup2(void)
+> +{
+> +	struct rlimit rl;
+> +
+> +	rl.rlim_max = 0;
+> +	rl.rlim_cur = 0;
+> +	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
+> +		tst_brkm(TBROK, cleanup,
+> +			 "setrlimit failed to set the resource for "
+> +			 "RLIMIT_MEMLOCK to check for mlock()");
+> +	}
+> +
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +}
+> +
+> +static void setup3(void)
+> +{
+> +	struct rlimit rl;
+> +
+> +	rl.rlim_max = 1;
+> +	rl.rlim_cur = 1;
+> +	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
+> +		tst_brkm(TBROK, cleanup,
+> +			 "setrlimit failed to set the resource for "
+> +			 "RLIMIT_MEMLOCK to check for mlock()");
+> +	}
+> +
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +}
+> +
+> +static void cleanup2(void)
+> +{
+> +	SAFE_SETEUID(cleanup, 0);
+> +}
+> +
+>  static void cleanup(void)
+>  {
+>  	TEST_CLEANUP;
+> --
+> 1.8.4.2
+> 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
