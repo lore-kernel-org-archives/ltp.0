@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cxie@redhat.com>) id 1WHyJb-0007AP-I3
-	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 16:23:35 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WHyJZ-0005rk-3O
-	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 16:23:35 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s1OGNQRx016371
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Feb 2014 11:23:26 -0500
-Received: from iMadper (vpn1-115-90.nay.redhat.com [10.66.115.90])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s1OGNNFN008776
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Feb 2014 11:23:25 -0500
-From: Madper Xie <cxie@redhat.com>
-Date: Tue, 25 Feb 2014 00:23:22 +0800
-Message-ID: <87r46seayt.fsf@redhat.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] syscalls/fork: add new case fork14
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WGlYQ-0000pv-3c
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 08:33:54 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WGlYO-0002kh-MK
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 08:33:54 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1L8Xhox025679
+	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 16:33:44 +0800
+Message-ID: <1392971619.3069.3.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 21 Feb 2014 16:33:39 +0800
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] mq_notify/mq_notify02.c: add new error tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,125 +28,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
+Add EINVAL error tests for mq_notify(2).
 
-This testcase is a reproducer for https://lkml.org/lkml/2012/4/24/328.[1]
-Modified from Siddhesh Poyarekar's testcase posted on above link.
-Since vma length in dup_mmap is calculated and stored in a unsigned
-int, which is insufficient and hence overflows for very large maps
-(beyond 16TB). Once overflow occurred, the fork after mmaped memory >
-16TB will succeed incorrectly.
-
-    This case will run following loop:
-             + mmap one (more) GB memory
-             + fork and check return value.
-    When mmaped more than 16 * 1024 GB, it will check if fork still fail.
-    Expected result: Fork failed even if mmaped memory > 16 * 1024 GB
-
-The issue has been fixed by:
-  commit 7edc8b0ac16cbaed7cb4ea4c6b95ce98d2997e84
-  Author: Siddhesh Poyarekar <siddhesh.poyarekar@gmail.com>
-    mm/fork: fix overflow in vma length when copying mmap on clone
-
-Signed-off-by: Madper Xie <cxie@redhat.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                        |   1 +
- testcases/kernel/syscalls/fork/fork14.c | 116 ++++++++++++++++++++++++++++++++
- 2 files changed, 117 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fork/fork14.c
+ runtest/syscalls                                  |  1 +
+ testcases/kernel/syscalls/.gitignore              |  1 +
+ testcases/kernel/syscalls/mq_notify/mq_notify02.c | 97 +++++++++++++++++++++++
+ 3 files changed, 99 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mq_notify/mq_notify02.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 540c130..d895ecc 100644
+index aec49ad..dcfceeb 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -281,6 +281,7 @@ fork09 fork09
- fork10 fork10
- fork11 fork11
- fork13 fork13 -i 1000000
-+fork14 fork14
+@@ -608,6 +608,7 @@ mprotect02 mprotect02
+ mprotect03 mprotect03
  
- fpathconf01 fpathconf01
- 
-diff --git a/testcases/kernel/syscalls/fork/fork14.c b/testcases/kernel/syscalls/fork/fork14.c
+ mq_notify01 mq_notify01
++mq_notify02 mq_notify02
+ mq_open01 mq_open01
+ mq_timedreceive01 mq_timedreceive01
+ mq_timedsend01 mq_timedsend01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index d461569..c9552c6 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -550,6 +550,7 @@
+ /mprotect/mprotect02
+ /mprotect/mprotect03
+ /mq_notify/mq_notify01
++/mq_notify/mq_notify02
+ /mq_open/mq_open01
+ /mq_timedreceive/mq_timedreceive01
+ /mq_timedsend/mq_timedsend01
+diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify02.c b/testcases/kernel/syscalls/mq_notify/mq_notify02.c
 new file mode 100644
-index 0000000..93a2a3a
+index 0000000..46ae3e3
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fork/fork14.c
-@@ -0,0 +1,116 @@
-+/*********************************************************************
-+ * Copyright (C) 2014  Red Hat, Inc.
++++ b/testcases/kernel/syscalls/mq_notify/mq_notify02.c
+@@ -0,0 +1,97 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
 + *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 + *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ * 02110-1301, USA.
-+ *
-+ * This test is a reporducer for this patch:
-+ *              https://lkml.org/lkml/2012/4/24/328
-+ * Since vma length in dup_mmap is calculated and stored in a unsigned
-+ * int, it will overflow when length of mmaped memory > 16 TB. When
-+ * overflow occur, fork will  incorrectly succeed. The patch above
-+ * fixed it.
-+ ********************************************************************/
++ * You should have received a copy of the GNU General Public License along
++ * with this program.
++ */
++/*
++ * ALGORITHM
++ *	test 1:
++ *		sevp->sigev_notify = -1, EINVAL should be returned.
++ *	test 2:
++ *		sevp->sigev_notify = SIGEV_SIGNAL and sevp->sigev_signo > _NSG,
++ *		EINVAL should be returned.
++ */
 +
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#include <unistd.h>
++#include <errno.h>
++#include <mqueue.h>
 +#include "test.h"
 +#include "usctest.h"
 +
-+char *TCID = "fork14";
-+int TST_TOTAL = 1;
-+
-+#define GB		(1024 * 1024 * 1024L)
-+
-+/* set mmap threshold to 16TB */
-+#define LARGE		(16 * 1024)
-+#define EXTENT		(16 * 1024 + 10)
-+
++char *TCID = "mq_notify02";
 +static void setup(void);
 +static void cleanup(void);
-+static int  fork_test(void);
 +
-+int main(int ac, char **av)
++static struct test_case_t {
++	struct sigevent sevp;
++	int exp_errno;
++} test_cases[] = {
++	{{.sigev_notify = -1}, EINVAL},
++	{{.sigev_notify = SIGEV_SIGNAL, .sigev_signo = _NSIG+1}, EINVAL},
++};
++
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++static void mq_notify_verify(struct test_case_t *);
++static int exp_enos[] = { EINVAL, 0 };
++
++int main(int argc, char **argv)
 +{
-+	int lc, ret;
++	int lc;
++	int i;
 +	char *msg;
 +
-+	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(argc, argv, NULL, NULL);
 +	if (msg != NULL)
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+/*
-+ * Tested on ppc64/x86_64/i386/s390x. And only 64bit has this issue.
-+ * Since a 32bit program can't mmap so many memory.
-+ */
-+#if __WORDSIZE == 32
-+	tst_brkm(TCONF, NULL, "This test is only for 64bit.");
-+#endif
++
 +	setup();
++
++	TEST_EXP_ENOS(exp_enos);
++
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
-+
-+		ret = fork_test();
-+		if (ret == 0)
-+			tst_resm(TPASS, "fork failed as expected.");
++		for (i = 0; i < TST_TOTAL; i++)
++			mq_notify_verify(&test_cases[i]);
 +	}
 +	cleanup();
 +	tst_exit();
@@ -161,52 +140,44 @@ index 0000000..93a2a3a
 +
 +static void setup(void)
 +{
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
 +	TEST_PAUSE;
++}
++
++static void mq_notify_verify(struct test_case_t *test)
++{
++	TEST(mq_notify(0, &(test->sevp)));
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "mq_notify() succeeded unexpectedly");
++		return;
++	}
++
++	if (TEST_ERRNO == test->exp_errno) {
++		tst_resm(TPASS | TTERRNO, "mq_notify failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "mq_notify failed unexpectedly; expected: %d - %s",
++			 test->exp_errno, strerror(test->exp_errno));
++	}
 +}
 +
 +static void cleanup(void)
 +{
 +	TEST_CLEANUP;
 +}
-+
-+static int fork_test(void)
-+{
-+	int i, ret = 0;
-+	void *addr;
-+
-+	for (i = 0; i < EXTENT; i++) {
-+		addr = mmap(NULL, 1 * GB, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+		switch (fork()) {
-+		case -1:
-+			break;
-+		case 0:
-+			exit(0);
-+		default:
-+			if (waitpid(-1, NULL, 0) == -1)
-+				tst_brkm(TBROK|TERRNO,
-+					cleanup, "waitpid");
-+
-+			if (i >= LARGE) {
-+				tst_brkm(TFAIL, NULL,
-+					"Fork succeeds incorrectly");
-+				ret++;
-+			}
-+		}
-+	}
-+	return ret;
-+}
 -- 
-1.9.0
+1.8.4.2
+
+
 
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
