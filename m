@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WFmUR-0004nV-4W
-	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 15:21:43 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WFmUP-00056e-Tt
-	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 15:21:43 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1IFLXcR008457
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Feb 2014 23:21:34 +0800
-Message-ID: <1392736891.2654.15.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 18 Feb 2014 23:21:31 +0800
-In-Reply-To: <1392736686.2654.13.camel@G08JYZSD130126>
-References: <1390210456.6682.12.camel@G08JYZSD130126>
-	<1390210861.6682.14.camel@G08JYZSD130126>
-	<1392736686.2654.13.camel@G08JYZSD130126>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v2 2/2] mkdir/mkdir03.c: add new error number tests
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <francesco.rundo@st.com>) id 1WGpRJ-0002RF-LE
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 12:42:49 +0000
+Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WGpRH-0004oa-O8
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 12:42:49 +0000
+From: Francesco RUNDO <francesco.rundo@st.com>
+Date: Fri, 21 Feb 2014 12:42:31 +0000
+Message-ID: <D2A2C37B00D2EA4CB1886D29B96695C55AE5AE@SAFEX1NODE23.st.com>
+References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
+	<775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE401@SAFEX1NODE23.st.com>
+	<1636908988.6999631.1392977205402.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
+	<387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
+	<1110699270.7050041.1392980994165.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE578@SAFEX1NODE23.st.com>
+	<1275798317.7097152.1392986267877.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1275798317.7097152.1392986267877.JavaMail.zimbra@redhat.com>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,153 +36,168 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-Add ELOOP, EROFS error number tests fof mkdir(2)
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/mkdir/mkdir03.c | 61 +++++++++++++++++++++++++++++--
- 1 file changed, 58 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir03.c b/testcases/kernel/syscalls/mkdir/mkdir03.c
-index f0f444f..8058fcf 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir03.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir03.c
-@@ -19,7 +19,7 @@
- /*
-  * DESCRIPTION
-  *	check mkdir() with various error conditions that should produce
-- *	EFAULT, ENAMETOOLONG, EEXIST, ENOENT and ENOTDIR
-+ *	EFAULT, ENAMETOOLONG, EEXIST, ENOENT, ENOTDIR, ELOOP and EROFS
-  */
- 
- #include <errno.h>
-@@ -27,6 +27,8 @@
- #include <sys/stat.h>
- #include <sys/mman.h>
- #include <fcntl.h>
-+#include <sys/mount.h>
-+
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-@@ -36,16 +38,34 @@ struct test_case_t;
- static void mkdir_verify(struct test_case_t *tc);
- static void bad_addr_setup(struct test_case_t *tc);
- static void cleanup(void);
-+static void help(void);
- 
- #define TST_EEXIST	"tst_eexist"
- #define TST_ENOENT	"tst_enoent/tst"
- #define TST_ENOTDIR	"tst_enotdir/tst"
- #define MODE		0777
- 
-+#define MNT_POINT	"mntpoint"
-+#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-+			 S_IXGRP|S_IROTH|S_IXOTH)
-+#define TST_EROFS      "mntpoint/tst_erofs"
-+
- char *TCID = "mkdir03";
- 
- static char long_dir[PATH_MAX+2];
--static int exp_enos[] = { EFAULT, ENAMETOOLONG, EEXIST, ENOENT, ENOTDIR, 0 };
-+static char loop_dir[PATH_MAX] = ".";
-+static char *fstype = "ext2";
-+static char *device;
-+static int mount_flag;
-+
-+static option_t options[] = {
-+	{"T:", NULL, &fstype},
-+	{"D:", NULL, &device},
-+	{NULL, NULL, NULL}
-+};
-+
-+static int exp_enos[] = { EFAULT, ENAMETOOLONG, EEXIST, ENOENT,
-+			  ENOTDIR, ELOOP, EROFS, 0 };
- 
- static struct test_case_t {
- 	char *pathname;
-@@ -60,6 +80,8 @@ static struct test_case_t {
- 	{TST_EEXIST, MODE, EEXIST, NULL},
- 	{TST_ENOENT, MODE, ENOENT, NULL},
- 	{TST_ENOTDIR, MODE, ENOTDIR, NULL},
-+	{loop_dir, MODE, ELOOP, NULL},
-+	{TST_EROFS, MODE, EROFS, NULL},
- };
- 
- int TST_TOTAL = ARRAY_SIZE(TC);
-@@ -69,10 +91,16 @@ int main(int ac, char **av)
- 	int i, lc;
- 	char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-+	if (!device) {
-+		tst_brkm(TBROK, NULL,
-+			 "you must specify the device used for mounting with "
-+			 "-D option");
-+	}
-+
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -87,6 +115,10 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
-+	int i;
-+
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_EXP_ENOS(exp_enos);
-@@ -100,6 +132,19 @@ static void setup(void)
- 	SAFE_TOUCH(cleanup, TST_EEXIST, MODE, NULL);
- 
- 	SAFE_TOUCH(cleanup, "tst_enotdir", MODE, NULL);
-+
-+	SAFE_MKDIR(cleanup, "test_eloop", DIR_MODE);
-+	SAFE_SYMLINK(cleanup, "../test_eloop", "test_eloop/test_eloop");
-+	for (i = 0; i < 43; i++)
-+		strcat(loop_dir, "/test_eloop");
-+
-+	tst_mkfs(NULL, device, fstype, NULL);
-+	SAFE_MKDIR(cleanup, MNT_POINT, DIR_MODE);
-+	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
- }
- 
- #if !defined(UCLINUX)
-@@ -138,5 +183,15 @@ static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
-+	if (mount_flag && umount(MNT_POINT) < 0)
-+		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-+
- 	tst_rmdir();
- }
-+
-+static void help(void)
-+{
-+	printf("-T type   : specifies the type of filesystem to be mounted. "
-+	       "Default ext2.\n");
-+	printf("-D device : device used for mounting.\n");
-+}
--- 
-1.8.4.2
+To: Jan Stancek <jstancek@redhat.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 
 
+-----Original Message-----
+From: Jan Stancek [mailto:jstancek@redhat.com] 
+Sent: Friday, February 21, 2014 1:38 PM
+To: Francesco RUNDO
+Cc: gaowanlong@cn.fujitsu.com; ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
 
+
+
+----- Original Message -----
+> From: "Francesco RUNDO" <francesco.rundo@st.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
+> Sent: Friday, 21 February, 2014 1:28:14 PM
+> Subject: RE: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+> 
+> 
+> > > Now, "do_fallocate()" needs fallocate() op. but on ext3 this is 
+> > > not supported i.e. ENOTSUP.
+> 
+> >>Do you have kernel compiled with CONFIG_TMPFS=y?
+> 
+> No. I've just checked kernel with above option: the reported madvise03 
+> testcase worked fine (usage of shmem_fallocate()).
+> So your analysis of my scenario is corret.
+> Please , discard posted patch.
+
+>>We can still handle this with some patch to skip first testcase if kernel is compiled without "CONFIG_TMPFS=y". I think that qualifies as TCONF.
+>>I'll leave it up to you.
+
+Hmmm....yes... as TCONF(and not TFAIL) is of course the right exit code in case of TMPFS not enabled on kernel side.
+I let you know...
+Regards,
+FR
+
+
+
+>>Regards,
+>>Jan
+
+> 
+> Thanks so much.
+> FR
+> 
+> > 
+> > madvise(start=0x7fcff6d66000 len_in=0x1000 behavior=0x9) Call Trace:
+> >  0xffffffff81150130 : shmem_fallocate+0x0/0x300 [kernel]
+> >  0xffffffff8122d056 : shm_fallocate+0x26/0x40 [kernel]
+> >  0xffffffff811a0089 : do_fallocate+0xf9/0x190 [kernel]
+> >  0xffffffff8115ac95 : SyS_madvise+0x355/0x7a0 [kernel]
+> >  0xffffffff815d05d9 : system_call_fastpath+0x16/0x1b [kernel]
+> > 
+> > Do you have possibility to run original testcase with strace?
+> > # strace ./madvise03 2>&1 | grep -v abcdefghijklmnopqrstuvwxyz12345
+> > 
+> > Regards,
+> > Jan
+> > 
+> > > This is the reason for which I consider this scenario as not 
+> > > supported and not ENOSYS as the system call is supported as the 
+> > > remaining scenarios worked fine (MADV_DONTFORK and MADV_DOFORK).
+> > > 
+> > > Regards
+> > > FR
+> > > > 
+> > > > Regards,
+> > > > FR
+> > > > 
+> > > > >>Regards,
+> > > > >>Jan
+> > > > 
+> > > > 
+> > > > > 
+> > > > > 
+> > > > > Regards,
+> > > > > FR
+> > > > > 
+> > > > > -----Original Message-----
+> > > > > From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+> > > > > Sent: Friday, February 21, 2014 9:02 AM
+> > > > > To: Francesco RUNDO
+> > > > > Cc: ltp-list@lists.sourceforge.net
+> > > > > Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test 
+> > > > > exit code
+> > > > > 
+> > > > > On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
+> > > > > > Changed exit code from TFAIL to TCONF  in case of 
+> > > > > > unsupported syscall.
+> > > > > > The "madvise" syscall needs kernel support as well as fs 
+> > > > > > support as -for specific advice- it requires specific 
+> > > > > > filesystem operations such as fallocate().
+> > > > > 
+> > > > > Could you paste the running log on not supported system?
+> > > > > 
+> > > > > Thanks,
+> > > > > Wanlong Gao
+> > > > > 
+> > > > > > So, if kernel support is missed or fs doesn't provide 
+> > > > > > specific operation needed for such "advice" scenario of that 
+> > > > > > syscall, the right exit code (according to LTP defs) is not 
+> > > > > > TFAIL as it is not a failure but it is TCONF as the syscall is unsupported.
+> > > > > > 
+> > > > > > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+> > > > > > ---
+> > > > > >  testcases/kernel/syscalls/madvise/madvise03.c |   17
+> > > > > >  +++++++++++++----
+> > > > > >  1 files changed, 13 insertions(+), 4 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > > b/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > > index b0c17e8..23dd9a6 100644
+> > > > > > --- a/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > > @@ -160,10 +160,19 @@ static void cleanup(void)  static void 
+> > > > > > check_and_print(char *advice)  {
+> > > > > >  	if (TEST_RETURN == -1) {
+> > > > > > -		tst_resm(TFAIL,
+> > > > > > -			 "madvise test for %s failed with "
+> > > > > > -			 "return = %ld, errno = %d : %s",
+> > > > > > -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
+> > > > > > +		if (TEST_ERRNO != ENOTSUP) {
+> > > > > > +			tst_resm(TFAIL,
+> > > > > > +				 "madvise test for %s failed with "
+> > > > > > +				 "return = %ld, errno = %d : %s",
+> > > > > > +				 advice, TEST_RETURN, TEST_ERRNO,
+> > > > > > +				 strerror(TEST_ERRNO));
+> > > > > > +		} else {
+> > > > > > +			tst_resm(TCONF,
+> > > > > > +				"madvise test for %s unsupported "
+> > > > > > +				"return = %ld, errno = %d : %s",
+> > > > > > +				advice, TEST_RETURN, TEST_ERRNO,
+> > > > > > +				strerror(TEST_ERRNO));
+> > > > > > +		}
+> > > > > >  	} else if (STD_FUNCTIONAL_TEST) {
+> > > > > >  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+> > > > > >  	}
+> > > > > > 
+> > > > > 
+> > > > > 
+> > > > > --------------------------------------------------------------
+> > > > > --
+> > > > > ----
+> > > > > --
+> > > > > -------- Managing the Performance of Cloud-Based Applications 
+> > > > > Take advantage of what the Cloud has to offer - Avoid Common 
+> > > > > Pitfalls.
+> > > > > Read the Whitepaper.
+> > > > > http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.
+> > > > > clktrk _______________________________________________
+> > > > > Ltp-list mailing list
+> > > > > Ltp-list@lists.sourceforge.net 
+> > > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > > > 
+> > > > 
+> > > 
+> >
+> 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
 Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
