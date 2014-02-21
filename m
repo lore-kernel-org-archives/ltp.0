@@ -1,17 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WHunC-0008Hn-5x
-	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 12:37:54 +0000
-Date: Mon, 24 Feb 2014 13:37:40 +0100
-From: chrubis@suse.cz
-Message-ID: <20140224123740.GA23791@rei>
-References: <CAPxN80CzjoOyhTwsPii42+u2qxO=u5oe0B_jok7TozzX-=nNow@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAPxN80CzjoOyhTwsPii42+u2qxO=u5oe0B_jok7TozzX-=nNow@mail.gmail.com>
-Subject: Re: [LTP] LTP syscall question
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sweekar.pinto@oracle.com>) id 1WGogn-0000L7-IL
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:54:45 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WGogm-0002un-FY
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:54:45 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s1LBsc1x003528
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:54:38 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1LBsbAW002759
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:54:38 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1LBsbPY014705
+	for <ltp-list@lists.sourceforge.net>; Fri, 21 Feb 2014 11:54:37 GMT
+From: Sweekar Pinto <sweekar.pinto@oracle.com>
+Date: Thu, 20 Feb 2014 19:05:53 -0500
+Message-Id: <1392941153-8643-3-git-send-email-sweekar.pinto@oracle.com>
+In-Reply-To: <1392941153-8643-1-git-send-email-sweekar.pinto@oracle.com>
+References: <1392941153-8643-1-git-send-email-sweekar.pinto@oracle.com>
+Subject: [LTP] [PATCH v2 3/3] Change crashkernel param to 256M@128M
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,58 +37,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jessica Foest <jessica.foest@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> I'm a new user of LTP tool , my goal is to execute some system calls using
-> LTP and to intercept them using a kernel tracer .
-> 
-> i do this example :
-> 
-> /opt/ltp/runltp -q -p -l result.03.log -f
-> /home/jessica/LTP-test/test-syscall.txt
-> 
-> the content of the test-syscall.txt file is :
-> #Tag       Test case
-> #---------------------------------------
-> fork01      fork01
-> chdir01     symlink01 -T chdir01
-> #----------------------------------------
-> 
-> the problem is that i didn't intercept the syscall fork and the syscall
-> chdir using my tracer in the kernel space.
-> 
-> So i wanna ask :
-> Which processes are responsible of the execution of these system calls ?
-> Does this tool, i mean LTP, really execute these system calls ( fork and
-> chdir ) in the kernel space?
+-We always get "crashkernel reservation failed -memory is in use"
+ with crashkernel=64M@16M or crashkernel=128M@16M on all of our
+ x86 test hardware. Here 256M@128M seems to be the best fit
+ based on empirical data.
 
-The test itself (standalone executable binary) calls the syscall to be
-tested. But these are not the only syscalls that the test calls you
-cannot write a test that calls a single syscall. You can run most of the
-tests directly (without the runltp script) if you execute the cmdline
-(marked as Test case in your example file) in the directory with the
-test binaries or if you add the path to your PATH.
+Signed-off-by: Sweekar Pinto <sweekar.pinto@oracle.com>
+---
+ testcases/kdump/lib/setup.sh |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Moreover the runltp tool that runs LTP tests forks a few times before
-the actual test is executed. You cannot run new program without doing
-fork() beforehand in UNIX. So in your place, I would double check if the
-kernel tracing works.
-
+diff --git a/testcases/kdump/lib/setup.sh b/testcases/kdump/lib/setup.sh
+index 5bc54bb..3e53f1a 100755
+--- a/testcases/kdump/lib/setup.sh
++++ b/testcases/kdump/lib/setup.sh
+@@ -86,11 +86,11 @@ echo "Modify Boot Loader."
+ if [ "${arch}" = "ppc64" ]; then
+     args="crashkernel=256M@32M xmon=off"
+ elif [ "${arch}" = "i686" ]; then
+-    args="crashkernel=128M@16M nmi_watchdog=1"
++    args="crashkernel=256M@128M nmi_watchdog=1"
+ elif [ "${arch}" = "ia64" ]; then
+     args="crashkernel=512M@256M"
+ else
+-    args="crashkernel=128M@16M"
++    args="crashkernel=256M@128M"
+ fi
+ 
+ if [ -x "/sbin/grubby" ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
