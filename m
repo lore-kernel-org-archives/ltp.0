@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1WG3Zx-0002B0-8C
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 09:36:33 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WG3Zv-0008J7-Rh
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 09:36:33 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1J9aMYC020760
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 17:36:23 +0800
-Message-ID: <53047A95.4010502@cn.fujitsu.com>
-Date: Wed, 19 Feb 2014 17:34:13 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <francesco.rundo@st.com>) id 1WGldV-00018H-4s
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 08:39:09 +0000
+Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WGldT-0005uX-6K
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 08:39:09 +0000
+From: Francesco RUNDO <francesco.rundo@st.com>
+Date: Fri, 21 Feb 2014 08:38:52 +0000
+Message-ID: <D2A2C37B00D2EA4CB1886D29B96695C55AE388@SAFEX1NODE23.st.com>
+References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
+	<5307080F.8000702@cn.fujitsu.com>
+In-Reply-To: <5307080F.8000702@cn.fujitsu.com>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <1390210456.6682.12.camel@G08JYZSD130126>	<1390210861.6682.14.camel@G08JYZSD130126>
-	<1392736686.2654.13.camel@G08JYZSD130126>
-In-Reply-To: <1392736686.2654.13.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2 1/2] mkdir/mkdir03.c: cleanup
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,22 +29,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: "gaowanlong@cn.fujitsu.com" <gaowanlong@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On 02/18/2014 11:18 PM, Zeng Linggang wrote:
-> Fix FSF address
-> Make use of SAFE_MACROS()
-> Some cleanup
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/mkdir/mkdir03.c | 283 +++++++-----------------------
->  1 file changed, 61 insertions(+), 222 deletions(-)
+The requested log:
 
-Applied, thank you.
+with patch:
+madvise03    1  TCONF  :  madvise test for MADV_REMOVE unsupported return = -1, errno = 95 : Operation not supported
+madvise03    2  TPASS  :  madvise test for MADV_DONTFORK PASSED
+madvise03    3  TPASS  :  madvise test for MADV_DOFORK PASSED
 
+Without patch (original one):
+madvise03    1  TFAIL  :  madvise test for MADV_REMOVE failed with return = -1, errno = 95 : Operation not supported
+madvise03    2  TPASS  :  madvise test for MADV_DONTFORK PASSED
+madvise03    3  TPASS  :  madvise test for MADV_DOFORK PASSED
+
+
+Regards,
+FR
+
+-----Original Message-----
+From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com] 
+Sent: Friday, February 21, 2014 9:02 AM
+To: Francesco RUNDO
+Cc: ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+
+On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
+> Changed exit code from TFAIL to TCONF  in case of unsupported syscall. 
+> The "madvise" syscall needs kernel support as well as fs support as 
+> -for specific advice- it requires specific filesystem operations such 
+> as fallocate().
+
+Could you paste the running log on not supported system?
+
+Thanks,
 Wanlong Gao
+
+> So, if kernel support is missed or fs doesn't provide specific 
+> operation needed for such "advice" scenario of that syscall, the right 
+> exit code (according to LTP defs) is not TFAIL as it is not a failure 
+> but it is TCONF as the syscall is unsupported.
+> 
+> Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+> ---
+>  testcases/kernel/syscalls/madvise/madvise03.c |   17 +++++++++++++----
+>  1 files changed, 13 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/madvise/madvise03.c 
+> b/testcases/kernel/syscalls/madvise/madvise03.c
+> index b0c17e8..23dd9a6 100644
+> --- a/testcases/kernel/syscalls/madvise/madvise03.c
+> +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+> @@ -160,10 +160,19 @@ static void cleanup(void)  static void 
+> check_and_print(char *advice)  {
+>  	if (TEST_RETURN == -1) {
+> -		tst_resm(TFAIL,
+> -			 "madvise test for %s failed with "
+> -			 "return = %ld, errno = %d : %s",
+> -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
+> +		if (TEST_ERRNO != ENOTSUP) {
+> +			tst_resm(TFAIL,
+> +				 "madvise test for %s failed with "
+> +				 "return = %ld, errno = %d : %s",
+> +				 advice, TEST_RETURN, TEST_ERRNO,
+> +				 strerror(TEST_ERRNO));
+> +		} else {
+> +			tst_resm(TCONF,
+> +				"madvise test for %s unsupported "
+> +				"return = %ld, errno = %d : %s",
+> +				advice, TEST_RETURN, TEST_ERRNO,
+> +				strerror(TEST_ERRNO));
+> +		}
+>  	} else if (STD_FUNCTIONAL_TEST) {
+>  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+>  	}
+> 
 
 
 ------------------------------------------------------------------------------
