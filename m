@@ -1,25 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <naresh.kamboju@linaro.org>) id 1WFlgr-0004za-3R
-	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 14:30:29 +0000
-Received: from mail-yh0-f54.google.com ([209.85.213.54])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WFlgp-0005vu-Pt
-	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 14:30:29 +0000
-Received: by mail-yh0-f54.google.com with SMTP id z6so15363278yhz.41
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 18 Feb 2014 06:30:22 -0800 (PST)
+	(envelope-from <jstancek@redhat.com>) id 1WGnza-0006PI-5x
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:10:06 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WGnzY-0001RX-Be
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:10:06 +0000
+Date: Fri, 21 Feb 2014 06:09:54 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1110699270.7050041.1392980994165.JavaMail.zimbra@redhat.com>
+In-Reply-To: <387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
+References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
+	<5307080F.8000702@cn.fujitsu.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE388@SAFEX1NODE23.st.com>
+	<775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE401@SAFEX1NODE23.st.com>
+	<1636908988.6999631.1392977205402.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
+	<387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <52FDE52A.4070002@linux.vnet.ibm.com>
-References: <CA+G9fYuT4TSs=3j6K9zztsTgFNVp2YG6JT-2Q_L==1P5G+SBew@mail.gmail.com>
-	<52FDE52A.4070002@linux.vnet.ibm.com>
-Date: Tue, 18 Feb 2014 20:00:21 +0530
-Message-ID: <CA+G9fYv9+Fhyz=nVZQZXxLU0YMTJadfr1XVVVb9P=inEfUaDuA@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [LTP] How to get the Linux kernel coverage data on ARM arch
- when I run LTP test?
+Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,56 +34,173 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, Milosz Wasilewski <milosz.wasilewski@linaro.org>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>, fhrbata@redhat.com, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Deepak Saxena <dsaxena@linaro.org>, Mark Brown <mark.brown@linaro.org>, Arnd Bergmann <arnd.bergmann@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Francesco RUNDO <francesco.rundo@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 14 February 2014 15:13, Peter Oberparleiter
-<oberpar@linux.vnet.ibm.com> wrote:
-> On 14.02.2014 10:02, Naresh Kamboju wrote:
->> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01# gcov kernel/gcov/base.c -o
->>  /sys/kernel/debug/gcov/tmp/linux-linaro-3.13-2014.01/kernel/gcov/
->> File 'kernel/gcov/base.c'
->> Lines executed:43.18% of 44
->> Creating 'base.c.gcov'
->>
->> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01#
->>
->> The above experiment gives coverage of a single file base.c when i run
->> gcov manually.
->> Is there any way to get Linux kernel coverage of all files after
->> running LTP test cases ?
->
-> 1. Reset coverage data: lcov -z
-> 2. Run LTP (or any other test case)
-> 3. Capture coverage data: lcov -c -o coverage.info
-> 4. Generate HTML output: genhtml coverage.info -o out
-> 5. View HTML output: <browser> out/index.html
 
-It is working !!!
-LTP executed on linux-linaro build on vexpress-tc2 target.
-Please find results obtained
-http://people.linaro.org/~naresh.kamboju/linux-linaro-coverage-by-ltp/
 
-The plan is to run all linaro test suite and to get coverage date.
 
-Peter Oberparleiter,
-Thank you very much for your help.
 
-Best regards
-Naresh Kamboju
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "Francesco RUNDO" <francesco.rundo@st.com>
+> Cc: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
+> Sent: Friday, 21 February, 2014 12:01:22 PM
+> Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Francesco RUNDO" <francesco.rundo@st.com>
+> > To: "Jan Stancek" <jstancek@redhat.com>
+> > Cc: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
+> > Sent: Friday, 21 February, 2014 11:25:03 AM
+> > Subject: RE: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+> > 
+> > 
+> > >>Why should this case be unsupported when addr1 is backed by shared
+> > >>memory?
+> > >>  TEST(madvise(addr1, 4096, MADV_REMOVE));
+> > 
+> > The reported scenario MADV_REMOVE is managed -at kernel side- by
+> > madvise_remove() function on KERNEL_ROOT/mm/madvice.c.
+> > From this file I got (mm/madvice.c):
+> > 
+> > ==
+> > static long madvise_remove(struct vm_area_struct *vma,
+> > 				struct vm_area_struct **prev,
+> > 				unsigned long start, unsigned long end)
+> > {
+> > [snip]
+> > error = do_fallocate(f, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
+> > 		        offset, end - start);
+> > [snip]
+> > }
+> > ==
+> > 
+> > Now, "do_fallocate()" needs fallocate() op. but on ext3 this is not
+> > supported
+> > i.e. ENOTSUP.
+> 
+> This is the "unexpected part" for me. What I expect and get on x86_64
+> with 3.10 based kernel is call to shmem_fallocate():
 
->
-> More information on lcov can be found on the page behind the second URL
-> your quoted in your mail.
->
->
+Do you have kernel compiled with CONFIG_TMPFS=y?
+
+Regards,
+Jan
+
+> 
+> madvise(start=0x7fcff6d66000 len_in=0x1000 behavior=0x9)
+> Call Trace:
+>  0xffffffff81150130 : shmem_fallocate+0x0/0x300 [kernel]
+>  0xffffffff8122d056 : shm_fallocate+0x26/0x40 [kernel]
+>  0xffffffff811a0089 : do_fallocate+0xf9/0x190 [kernel]
+>  0xffffffff8115ac95 : SyS_madvise+0x355/0x7a0 [kernel]
+>  0xffffffff815d05d9 : system_call_fastpath+0x16/0x1b [kernel]
+> 
+> Do you have possibility to run original testcase with strace?
+> # strace ./madvise03 2>&1 | grep -v abcdefghijklmnopqrstuvwxyz12345
+> 
 > Regards,
->   Peter Oberparleiter
->
-> --
-> Peter Oberparleiter
-> Linux on System z Development - IBM Germany
->
+> Jan
+> 
+> > This is the reason for which I consider this scenario as not supported and
+> > not ENOSYS as the system call is supported as the remaining scenarios
+> > worked
+> > fine (MADV_DONTFORK and MADV_DOFORK).
+> > 
+> > Regards
+> > FR
+> > > 
+> > > Regards,
+> > > FR
+> > > 
+> > > >>Regards,
+> > > >>Jan
+> > > 
+> > > 
+> > > > 
+> > > > 
+> > > > Regards,
+> > > > FR
+> > > > 
+> > > > -----Original Message-----
+> > > > From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+> > > > Sent: Friday, February 21, 2014 9:02 AM
+> > > > To: Francesco RUNDO
+> > > > Cc: ltp-list@lists.sourceforge.net
+> > > > Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit
+> > > > code
+> > > > 
+> > > > On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
+> > > > > Changed exit code from TFAIL to TCONF  in case of unsupported
+> > > > > syscall.
+> > > > > The "madvise" syscall needs kernel support as well as fs support
+> > > > > as -for specific advice- it requires specific filesystem
+> > > > > operations such as fallocate().
+> > > > 
+> > > > Could you paste the running log on not supported system?
+> > > > 
+> > > > Thanks,
+> > > > Wanlong Gao
+> > > > 
+> > > > > So, if kernel support is missed or fs doesn't provide specific
+> > > > > operation needed for such "advice" scenario of that syscall, the
+> > > > > right exit code (according to LTP defs) is not TFAIL as it is not
+> > > > > a failure but it is TCONF as the syscall is unsupported.
+> > > > > 
+> > > > > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+> > > > > ---
+> > > > >  testcases/kernel/syscalls/madvise/madvise03.c |   17
+> > > > >  +++++++++++++----
+> > > > >  1 files changed, 13 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > b/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > index b0c17e8..23dd9a6 100644
+> > > > > --- a/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > > @@ -160,10 +160,19 @@ static void cleanup(void)  static void
+> > > > > check_and_print(char *advice)  {
+> > > > >  	if (TEST_RETURN == -1) {
+> > > > > -		tst_resm(TFAIL,
+> > > > > -			 "madvise test for %s failed with "
+> > > > > -			 "return = %ld, errno = %d : %s",
+> > > > > -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
+> > > > > +		if (TEST_ERRNO != ENOTSUP) {
+> > > > > +			tst_resm(TFAIL,
+> > > > > +				 "madvise test for %s failed with "
+> > > > > +				 "return = %ld, errno = %d : %s",
+> > > > > +				 advice, TEST_RETURN, TEST_ERRNO,
+> > > > > +				 strerror(TEST_ERRNO));
+> > > > > +		} else {
+> > > > > +			tst_resm(TCONF,
+> > > > > +				"madvise test for %s unsupported "
+> > > > > +				"return = %ld, errno = %d : %s",
+> > > > > +				advice, TEST_RETURN, TEST_ERRNO,
+> > > > > +				strerror(TEST_ERRNO));
+> > > > > +		}
+> > > > >  	} else if (STD_FUNCTIONAL_TEST) {
+> > > > >  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+> > > > >  	}
+> > > > > 
+> > > > 
+> > > > 
+> > > > --------------------------------------------------------------------
+> > > > --
+> > > > -------- Managing the Performance of Cloud-Based Applications Take
+> > > > advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+> > > > Read the Whitepaper.
+> > > > http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.
+> > > > clktrk _______________________________________________
+> > > > Ltp-list mailing list
+> > > > Ltp-list@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > > 
+> > > 
+> > 
+> 
 
 ------------------------------------------------------------------------------
 Managing the Performance of Cloud-Based Applications
