@@ -1,17 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WDzxd-0003mo-FV
-	for ltp-list@lists.sourceforge.net; Thu, 13 Feb 2014 17:20:29 +0000
-Date: Thu, 13 Feb 2014 18:20:19 +0100
-From: chrubis@suse.cz
-Message-ID: <20140213172019.GA19020@rei.suse.cz>
-References: <1388049047.1587.21.camel@G08JYZSD130126>
+	(envelope-from <jstancek@redhat.com>) id 1WGnwk-0005h2-Jt
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:07:10 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WGnwi-00031S-L4
+	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 11:07:10 +0000
+Date: Fri, 21 Feb 2014 06:01:22 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
+In-Reply-To: <D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
+References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
+	<5307080F.8000702@cn.fujitsu.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE388@SAFEX1NODE23.st.com>
+	<775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE401@SAFEX1NODE23.st.com>
+	<1636908988.6999631.1392977205402.JavaMail.zimbra@redhat.com>
+	<D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1388049047.1587.21.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] lchown/lchown03.c: add EROFS error number test
+Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,196 +33,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "zenglg.jy" <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Francesco RUNDO <francesco.rundo@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> @@ -372,6 +372,7 @@ kill12 kill12
->  
->  lchown01 lchown01
->  lchown02 lchown02
-> +lchown03 lchown03 -D DEVICE -T DEVICE_FS_TYPE
 
-Please fix the DEVICE and DEVICE_FS_TYPE to the new format.
 
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/lchown/lchown03.c
-> @@ -0,0 +1,162 @@
-> +/*
-> + * Copyright (c) 2013 Fujitsu Ltd.
-> + * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program.
-> + */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <grp.h>
-> +#include <pwd.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/mman.h>
-> +#include <sys/mount.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +
-> +#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-> +			 S_IXGRP|S_IROTH|S_IXOTH)
-> +#define TEST_FILE	"mntpoint"
-> +
-> +static char *fstype = "ext2";
-> +static char *device;
-> +static int dflag;
-> +static int mount_flag;
-> +
-> +static option_t options[] = {
-> +	{"T:", NULL, &fstype},
-> +	{"D:", &dflag, &device},
-> +	{NULL, NULL, NULL}
-> +};
-> +
-> +static struct test_case_t {
-> +	char *pathname;
-> +	char *desc;
-> +	int exp_errno;
-> +	void (*setup) (int pos);
-> +} test_cases[] = {
-> +	{TEST_FILE, "EROFS", EROFS, NULL},
-> +};
+----- Original Message -----
+> From: "Francesco RUNDO" <francesco.rundo@st.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
+> Sent: Friday, 21 February, 2014 11:25:03 AM
+> Subject: RE: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+> 
+> 
+> >>Why should this case be unsupported when addr1 is backed by shared memory?
+> >>  TEST(madvise(addr1, 4096, MADV_REMOVE));
+> 
+> The reported scenario MADV_REMOVE is managed -at kernel side- by
+> madvise_remove() function on KERNEL_ROOT/mm/madvice.c.
+> From this file I got (mm/madvice.c):
+> 
+> ==
+> static long madvise_remove(struct vm_area_struct *vma,
+> 				struct vm_area_struct **prev,
+> 				unsigned long start, unsigned long end)
+> {
+> [snip]
+> error = do_fallocate(f, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
+> 		        offset, end - start);
+> [snip]
+> }
+> ==
+> 
+> Now, "do_fallocate()" needs fallocate() op. but on ext3 this is not supported
+> i.e. ENOTSUP.
 
-As in the msgclt13.c it does not make sense to create a test_case_t if
-you don't intend to add testcases here.
+This is the "unexpected part" for me. What I expect and get on x86_64
+with 3.10 based kernel is call to shmem_fallocate():
 
-> +char *TCID = "lchown03";
-> +int TST_TOTAL = ARRAY_SIZE(test_cases);
-> +static int exp_enos[] = { EROFS, 0 };
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +static void help(void);
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	char *msg;
-> +	uid_t user_id;
-> +	gid_t group_id;
-> +	int i;
-> +
-> +	msg = parse_opts(argc, argv, options, help);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	if (!dflag) {
-> +		tst_brkm(TBROK, NULL,
-> +			 "you must specify the device used for mounting with "
-> +			 "-D option");
-> +	}
+madvise(start=0x7fcff6d66000 len_in=0x1000 behavior=0x9)
+Call Trace:
+ 0xffffffff81150130 : shmem_fallocate+0x0/0x300 [kernel]
+ 0xffffffff8122d056 : shm_fallocate+0x26/0x40 [kernel]
+ 0xffffffff811a0089 : do_fallocate+0xf9/0x190 [kernel]
+ 0xffffffff8115ac95 : SyS_madvise+0x355/0x7a0 [kernel]
+ 0xffffffff815d05d9 : system_call_fastpath+0x16/0x1b [kernel]
 
-No need for the dflag.
+Do you have possibility to run original testcase with strace?
+# strace ./madvise03 2>&1 | grep -v abcdefghijklmnopqrstuvwxyz12345
 
-> +	setup();
-> +
-> +	TEST_EXP_ENOS(exp_enos);
-> +
-> +	user_id = geteuid();
-> +	group_id = getegid();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		for (i = 0; i < TST_TOTAL; i++) {
-> +
-> +			TEST(lchown(test_cases[i].pathname, user_id, group_id));
-> +
-> +			if (TEST_RETURN == -1) {
-> +				TEST_ERROR_LOG(TEST_ERRNO);
-> +				if (TEST_ERRNO == test_cases[i].exp_errno) {
-> +					tst_resm(TPASS,
-> +						 "lchown(2) fails,%s, errno:%d",
-> +						 test_cases[i].desc,
-> +						 TEST_ERRNO);
-> +				} else {
-> +					tst_resm(TFAIL,
-> +						 "lchown(2) fails, %s, errno:"
-> +						 "%d, expected errno:%d",
-> +						 test_cases[i].desc, TEST_ERRNO,
-> +						 test_cases[i].exp_errno);
-> +				}
-> +			} else {
-> +				tst_resm(TFAIL,
-> +					 "lchown(2) returned %ld, expected -1, "
-> +					 "errno:%d", TEST_RETURN,
-> +					 test_cases[i].exp_errno);
-> +			}
-> +		}
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	tst_require_root(NULL);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	tst_mkfs(NULL, device, fstype, NULL);
-> +	SAFE_MKDIR(cleanup, TEST_FILE, DIR_MODE);
-> +	if (mount(device, TEST_FILE, fstype, MS_RDONLY, NULL) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "mount device:%s failed", device);
-> +	}
-> +	mount_flag = 1;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	if (mount_flag && umount(TEST_FILE) < 0) {
-> +		tst_brkm(TBROK | TERRNO, NULL,
-> +			 "umount device:%s failed", device);
+Regards,
+Jan
 
-Again I would rather change this to tst_resm(TWARN | TERRNO, ...) to
-avoid problems with the tst_brkm().
-
-> +	}
-> +
-> +	tst_rmdir();
-> +}
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> This is the reason for which I consider this scenario as not supported and
+> not ENOSYS as the system call is supported as the remaining scenarios worked
+> fine (MADV_DONTFORK and MADV_DOFORK).
+> 
+> Regards
+> FR
+> > 
+> > Regards,
+> > FR
+> > 
+> > >>Regards,
+> > >>Jan
+> > 
+> > 
+> > > 
+> > > 
+> > > Regards,
+> > > FR
+> > > 
+> > > -----Original Message-----
+> > > From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
+> > > Sent: Friday, February 21, 2014 9:02 AM
+> > > To: Francesco RUNDO
+> > > Cc: ltp-list@lists.sourceforge.net
+> > > Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit
+> > > code
+> > > 
+> > > On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
+> > > > Changed exit code from TFAIL to TCONF  in case of unsupported syscall.
+> > > > The "madvise" syscall needs kernel support as well as fs support
+> > > > as -for specific advice- it requires specific filesystem
+> > > > operations such as fallocate().
+> > > 
+> > > Could you paste the running log on not supported system?
+> > > 
+> > > Thanks,
+> > > Wanlong Gao
+> > > 
+> > > > So, if kernel support is missed or fs doesn't provide specific
+> > > > operation needed for such "advice" scenario of that syscall, the
+> > > > right exit code (according to LTP defs) is not TFAIL as it is not
+> > > > a failure but it is TCONF as the syscall is unsupported.
+> > > > 
+> > > > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+> > > > ---
+> > > >  testcases/kernel/syscalls/madvise/madvise03.c |   17 +++++++++++++----
+> > > >  1 files changed, 13 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > b/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > index b0c17e8..23dd9a6 100644
+> > > > --- a/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
+> > > > @@ -160,10 +160,19 @@ static void cleanup(void)  static void
+> > > > check_and_print(char *advice)  {
+> > > >  	if (TEST_RETURN == -1) {
+> > > > -		tst_resm(TFAIL,
+> > > > -			 "madvise test for %s failed with "
+> > > > -			 "return = %ld, errno = %d : %s",
+> > > > -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
+> > > > +		if (TEST_ERRNO != ENOTSUP) {
+> > > > +			tst_resm(TFAIL,
+> > > > +				 "madvise test for %s failed with "
+> > > > +				 "return = %ld, errno = %d : %s",
+> > > > +				 advice, TEST_RETURN, TEST_ERRNO,
+> > > > +				 strerror(TEST_ERRNO));
+> > > > +		} else {
+> > > > +			tst_resm(TCONF,
+> > > > +				"madvise test for %s unsupported "
+> > > > +				"return = %ld, errno = %d : %s",
+> > > > +				advice, TEST_RETURN, TEST_ERRNO,
+> > > > +				strerror(TEST_ERRNO));
+> > > > +		}
+> > > >  	} else if (STD_FUNCTIONAL_TEST) {
+> > > >  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+> > > >  	}
+> > > > 
+> > > 
+> > > 
+> > > --------------------------------------------------------------------
+> > > --
+> > > -------- Managing the Performance of Cloud-Based Applications Take
+> > > advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+> > > Read the Whitepaper.
+> > > http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.
+> > > clktrk _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > > 
+> > 
+> 
 
 ------------------------------------------------------------------------------
-Android apps run on BlackBerry 10
-Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-Now with support for Jelly Bean, Bluetooth, Mapview and more.
-Get your Android app in front of a whole new audience.  Start now.
-http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
