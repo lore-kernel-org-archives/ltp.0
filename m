@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WGUS0-00029G-0e
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 14:18:08 +0000
-Date: Thu, 20 Feb 2014 15:17:51 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WHv8p-0005PP-MH
+	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 13:00:15 +0000
+Date: Mon, 24 Feb 2014 14:00:02 +0100
 From: chrubis@suse.cz
-Message-ID: <20140220141751.GB25930@rei>
-References: <1385101595.1552.11.camel@G08JYZSD130126>
-	<20131209165309.GA20943@rei.suse.cz>
-	<1390209846.6682.8.camel@G08JYZSD130126>
-	<1390210118.6682.10.camel@G08JYZSD130126>
-	<20140213160241.GB17666@rei.suse.cz>
-	<1392736971.2654.17.camel@G08JYZSD130126>
-	<1392737429.2654.20.camel@G08JYZSD130126>
+Message-ID: <20140224130002.GB23791@rei>
+References: <462077908.7898377.1393243192528.JavaMail.zimbra@redhat.com>
+	<1264301891.7910240.1393244817542.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1392737429.2654.20.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v3 2/2] fchown/fchown04.c: add EROFS error number
-	test
+In-Reply-To: <1264301891.7910240.1393244817542.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] make -j64 failure while building ltp-20140115
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,23 +25,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
 Hi!
-> Add EROFS error number test for fchown(2)
+> I ran into build failure (see below) with ltp-20140115. This happened only once and all
+> my attempts to recreate it failed. LTP is run as part of automated testing across
+> multiple systems/architectures, where each system starts from clean installation.
+> 
+> It looks like that build process should continue with:
+>   /mnt/tests/kernel/RHEL6/ltp-lite/ltp-full-20140115/testcases/network/rpc/basic_tests/rpc01/datafiles
+> but instead for some reason it jumped to root directory:
+>   make[7]: Entering directory `/'
 
-Both pushed, thanks.
+Hmm, that looks really strange. One posibility is that '/' somehow made
+it into SUBDIRS variable (that would be the get_make_dirs function in
+include/mk/functions.mk). But unless we are able to reproduce the issue
+the chances to figure out what happened are pretty small.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
