@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WCq1R-0007nI-Ag
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 12:31:37 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WCq1O-00083Y-DF
-	for ltp-list@lists.sourceforge.net; Mon, 10 Feb 2014 12:31:37 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1ABI01w004561
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Feb 2014 19:18:04 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 10 Feb 2014 19:16:39 +0800
-Message-Id: <1392030999-4431-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1392030999-4431-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1392030999-4431-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH v3 2/2] fs/ext4-new-features: add ext4-new-features
-	tests to default
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WI1HE-0005tj-30
+	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 19:33:20 +0000
+Date: Mon, 24 Feb 2014 20:33:05 +0100
+From: chrubis@suse.cz
+Message-ID: <20140224193305.GC31562@rei>
+References: <1389353374.2061.9.camel@G08JYZSD130126>
+	<1389409991.2061.14.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1389409991.2061.14.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v2] linkat/linkat02.c: add new error number tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,427 +22,395 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Remove run_ext4_test.sh which calls all feature tests directly.
-Now we treat every feature as a signle test in fs_ext4 runtest file,
-keep one entry per test.
-Like that:
-	ext4-nsec-timestamps    ext4_nsec_timestamps_test.sh
-	ext4-uninit-groups      ext4_uninit_groups_test.sh
+Hi!
+> Add new error number tests for linkat(2):
+> * ENAMETOOLONG
+> * EEXIST
+> * ELOOP
+> * EACCES
+> * EMLINK
+> * EROFS
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                            |   1 +
+>  testcases/kernel/syscalls/.gitignore        |   1 +
+>  testcases/kernel/syscalls/linkat/linkat02.c | 296 ++++++++++++++++++++++++++++
+>  3 files changed, 298 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/linkat/linkat02.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index afa7976..4a6b891 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -487,6 +487,7 @@ link07 link07
+>  
+>  #linkat test cases
+>  linkat01 linkat01
+> +linkat02 linkat02 -D DEVICE -T DEVICE_FS_TYPE
 
-Configure script has been removed and ffsb has been moved to utils directory.
+Please update the entry to the new format.
 
-If want to run these tests, user should specify a big block device
-when running runltp script.
+>  listen01 listen01
+>  
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 91cf0f1..d1a8547 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -445,6 +445,7 @@
+>  /link/link06
+>  /link/link07
+>  /linkat/linkat01
+> +/linkat/linkat02
+>  /listen/listen01
+>  /llseek/llseek01
+>  /llseek/llseek02
+> diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
+> new file mode 100644
+> index 0000000..af5162a
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/linkat/linkat02.c
+> @@ -0,0 +1,296 @@
+> +/*
+> + * Copyright (c) 2014 Fujitsu Ltd.
+> + * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program.
+> + */
+> +/*
+> + * Test that linkat() fails and sets the proper errno values.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <unistd.h>
+> +#include <error.h>
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <signal.h>
+> +#include <pwd.h>
+> +#include <sys/mount.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "linux_syscall_numbers.h"
+> +#include "safe_macros.h"
+> +
+> +#ifndef AT_FDCWD
+> +# define AT_FDCWD -100
+> +#endif
+> +#ifndef AT_SYMLINK_FOLLOW
+> +# define AT_SYMLINK_FOLLOW 0x400
+> +#endif
 
-Currently enable ext4-nsec-timestamps, ext4-persist-prealloc,
-ext4-subdir-limit, ext4-uninit-groups test.
+Please put these two defines into include/lapi/fcntl.h
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/fs_ext4                                    |   5 +-
- scenario_groups/default                            |   1 +
- .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |   3 -
- .../ext4-inode-version/ext4_inode_version_test.sh  |   3 -
- .../ext4-journal-checksum/ext4_journal_checksum.sh |   3 -
- .../ext4_nsec_timestamps_test.sh                   |   2 -
- .../ext4-online-defrag/ext4_online_defrag_test.sh  |   3 -
- .../ext4_persist_prealloc_test.sh                  |   3 -
- .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |   2 -
- .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |   2 -
- .../kernel/fs/ext4-new-features/ext4_funcs.sh      |  41 +++--
- .../kernel/fs/ext4-new-features/run_ext4_test.sh   | 179 ---------------------
- 12 files changed, 32 insertions(+), 215 deletions(-)
- delete mode 100755 testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
+> +#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+> +			 S_IXGRP|S_IROTH|S_IXOTH)
+> +#define TEST_FILE	"testfile"
+> +#define TEST_EXIST	"testexist"
+> +#define TEST_ELOOP	"testeloop"
+> +#define TEST_EACCES	"./tmp/testeeacces"
+> +#define TEST_EACCES2	"./tmp/testeeacces2"
+> +#define TEST_EROFS	"mntpoint"
+> +#define TEST_EROFS2	"mntpoint/testerofs2"
+> +#define TEST_EMLINK	"mntpoint/testemlink"
+> +#define BASENAME	"mntpoint/basename"
+> +
+> +static long link_max;
+> +static char lname[PATH_MAX];
+> +static char nametoolong[PATH_MAX+2];
+> +static char *fstype = "ext2";
+> +static char *device;
+> +static int dflag;
+> +static int mount_flag;
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +static void setup_eacces(void);
+> +static void setup_erofs(void);
+> +static void cleanup_erofs(void);
+> +static void cleanup_eacces(void);
+> +static void setup_emlink(void);
+> +static void cleanup_emlink(void);
+> +static void help(void);
+> +
+> +static option_t options[] = {
+> +	{"T:", NULL, &fstype},
+> +	{"D:", &dflag, &device},
+> +	{NULL, NULL, NULL}
+> +};
+> +
+> +static struct test_struct {
+> +	const char *oldfn;
+> +	const char *newfn;
 
-diff --git a/runtest/fs_ext4 b/runtest/fs_ext4
-index c65ebab..35697c5 100644
---- a/runtest/fs_ext4
-+++ b/runtest/fs_ext4
-@@ -1 +1,4 @@
--ext4_new_feature_test	run_ext4_test.sh
-+ext4-nsec-timestamps	ext4_nsec_timestamps_test.sh
-+ext4-uninit-groups	ext4_uninit_groups_test.sh
-+ext4-persist-prealloc	ext4_persist_prealloc_test.sh
-+ext4-subdir-limit	ext4_subdir_limit_test.sh
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 9eca8ad..893909c 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -25,3 +25,4 @@ hugetlb
- commands
- hyperthreading
- kernel_misc
-+fs_ext4
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-index dfa34c4..55ea6ae 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-@@ -28,11 +28,8 @@ export TCID="ext4-delalloc-mballoc"
- export TST_TOTAL=17
- export TST_COUNT=1
- 
--# $1: the test config
--
- export TEST_DIR=$PWD
- 
--read_config $1
- 
- # Case 17: mount ext4 partition to ext3
- ext4_test_remount()
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-index 998c3e4..18c1d20 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-@@ -33,9 +33,6 @@ export TST_COUNT=1
- 
- export TEST_DIR=$PWD
- 
--# $1: the test config
--read_config $1
--
- # Test that inode version is not 32 bits with 128 inode size
- ext4_test_128_inode_version()
- {
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-index 1fd9bba..3a0f26a 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-@@ -31,11 +31,8 @@ export TCID="ext4-journal-checksum"
- export TST_TOTAL=36
- export TST_COUNT=1
- 
--# $1: the test config
--
- export TEST_DIR=$PWD
- 
--read_config $1
- 
- # Use ffsb to test journal checksumming
- # $1: journal mode: writeback, ordered, journal
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-index c91c1af..0730e87 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-@@ -31,8 +31,6 @@ export TCID="ext4-nsec-timestamps"
- export TST_TOTAL=2
- export TST_COUNT=1
- 
--# $1: the test config
--read_config $1
- 
- TEST_DIR=$PWD
- 
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-index 2aa3e5b..28ba161 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-@@ -30,9 +30,6 @@ export TST_COUNT=1
- 
- export TEST_DIR=$PWD
- 
--# $1: the test config
--read_config $1
--
- # How to age filesystem
- EMPTY=1
- SMALL=2
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-index e41b104..92b27c1 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-@@ -33,9 +33,6 @@ export TST_COUNT=1
- 
- export TEST_DIR=$PWD
- 
--# $1: the test config
--read_config $1
--
- # The test path of fallocate
- export TMPDIR=$PWD/mnt_point/
- 
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-index fdb6a08..47807b1 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-@@ -31,8 +31,6 @@ export TCID="ext4-subdir-limit"
- export TST_TOTAL=10
- export TST_COUNT=1
- 
--# $1: the test config
--read_config $1
- 
- TEST_DIR=$PWD
- SHORT_DIR=1
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-index e6d49e1..b21d262 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-@@ -29,8 +29,6 @@ export TST_TOTAL=24
- export TST_COUNT=1
- 
- export TEST_DIR=$PWD
--# $1: the test config
--read_config $1
- 
- # How to age filesystem
- EMPTY=1
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-index b469bab..9909054 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-@@ -23,25 +23,38 @@
- ##                                                                            ##
- ################################################################################
- 
-+. cmdlib.sh
-+
- ext4_setup()
- {
-+	tst_kvercmp 2 6 31
-+	if [ $? -eq 0 ]; then
-+		tst_brkm TCONF ignored "kernel is below 2.6.31"
-+		exit 0
-+	fi
-+
-+	tst_require_root
-+
-+	EXT4_SUPPORT1=`grep -w ext4 /proc/filesystems | cut -f2`
-+	EXT4_SUPPORT2=`grep -w ext4 /proc/modules | cut -f1`
-+	if [ "$EXT4_SUPPORT1" != "ext4" ] && [ "$EXT4_SUPPORT2" != "ext4" ];then
-+		tst_brkm TCONF ignored "Ext4 is not supported"
-+		exit 0
-+	fi
-+
-+	exists ffsb
-+
-+	if [ -z "$LTP_BIG_DEV" ];then
-+		tst_brkm TCONF ignored "tests need a big block device(5G-10G)"
-+		exit 0
-+	else
-+		EXT4_DEV=$LTP_BIG_DEV
-+	fi
-+
- 	mkdir mnt_point
- }
- 
- ext4_cleanup()
- {
--	rmdir mnt_point
-+	rm -rf mnt_point
- }
--
--# $1: the config file
--read_config()
--{
--	while read config
--	do
--		echo $config | grep -q -E ".*=.*"
--		if [ $? -eq 0 ]; then
--			export $config
--		fi
--	done < $1
--}
--
-diff --git a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh b/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
-deleted file mode 100755
-index bfbd844..0000000
---- a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
-+++ /dev/null
-@@ -1,179 +0,0 @@
--#! /bin/bash
--
--################################################################################
--#                                                                              #
--# Copyright (c) 2009 FUJITSU LIMITED                                           #
--#                                                                              #
--# This program is free software;  you can redistribute it and#or modify        #
--# it under the terms of the GNU General Public License as published by         #
--# the Free Software Foundation; either version 2 of the License, or            #
--# (at your option) any later version.                                          #
--#                                                                              #
--# This program is distributed in the hope that it will be useful, but          #
--# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY   #
--# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License     #
--# for more details.                                                            #
--#                                                                              #
--# You should have received a copy of the GNU General Public License            #
--# along with this program;  if not, write to the Free Software                 #
--# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA      #
--#                                                                              #
--################################################################################
--# Name Of File: run_ext4_test.sh                                               #
--#                                                                              #
--# Description: This file runs the tests for ext4 filesystem's new features.    #
--#                                                                              #
--# Precaution:   In order to avoid destroying the important data on the disk,   #
--#               specify a free partition to be used for test please.           #
--#                                                                              #
--# Author:       Li Zefan    <lizf@cn.fujitsu.com>                              #
--#                                                                              #
--# History:                                                                     #
--#                                                                              #
--#  DATE      NAME        EMAIL                    DESC                         #
--#                                                                              #
--#  09/10/08  Li Zefan    <lizf@cn.fujitsu.com>    Created this test            #
--#  08/25/09  Miao Xie    <miaox@cn.fujitsu.com>   Moved to LTP                 #
--#                                                                              #
--################################################################################
--
--source ext4_funcs.sh;
--
--export TCID="ext4_new_feature"
--export TST_TOTAL=1
--export TST_COUNT=1
--
--tst_kvercmp 2 6 31
--if [ $? -eq 0 ]; then
--	tst_brkm TCONF ignored "kernel is below 2.6.31"
--	exit 0
--fi
--
--if [ "$USER" != root ]; then
--	tst_brkm TCONF ignored "Test must be run as root"
--	exit 0
--fi
--
--EXT4_SUPPORT1=`grep -w ext4 /proc/filesystems | cut -f2`
--EXT4_SUPPORT2=`grep -w ext4 /proc/modules | cut -f1`
--if [  "$EXT4_SUPPORT1" != "ext4" ] && [ "$EXT4_SUPPORT2" != "ext4" ]; then
--	tst_brkm TCONF ignored "Ext4 is not supported"
--	exit 0
--fi
--
--if [ ! -f "ffsb" ]; then
--	tst_brkm TCONF ignored "ffsb does not exist.Please check whether ffsb was configed and compiled"
--	exit 0
--fi
--
--if [ ! -f "ext4-test-config" ]; then
--	tst_brkm TCONF ignored "Config file ext4-test-config does not exist. Please check whether the configure wan ran"
--	exit 0
--fi
--
--cd $LTPROOT/testcases/bin/
--
--RET=0
--
--echo "EXT4 NEW FEATURE TESTING";
--echo "TEST STARTED: Please avoid using system while this test executes";
--
--echo " "
--echo "Ext4 block allocation test"
--if [ -f "ext4-alloc-test.sh" ]; then
--	./ext4-alloc-test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 journal checksum test"
--if [ -f "ext4_journal_checksum.sh" ]; then
--	./ext4_journal_checksum.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 subdir limit test"
--if [ -f "ext4_subdir_limit_test.sh" ]; then
--	./ext4_subdir_limit_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 nanosecond timestamp test"
--if [ -f "ext4_nsec_timestamps_test.sh" ]; then
--	./ext4_nsec_timestamps_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 persist prealloc test"
--if [ -f "ext4_persist_prealloc_test.sh" ]; then
--	./ext4_persist_prealloc_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 inode version test"
--if [ -f "ext4_inode_version_test.sh" ]; then
--	./ext4_inode_version_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 uninit groups test"
--if [ -f "ext4_uninit_groups_test.sh" ]; then
--	./ext4_uninit_groups_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--echo " "
--echo "Ext4 online defrag test"
--echo "The output of defrag program is in the file"\
--	"LTPROOT/output/ext4_online_defrag.txt"
--if [ -f "ext4_online_defrag_test.sh" ]; then
--	./ext4_online_defrag_test.sh ./ext4-test-config
--	if [ $? -ne 0 ]; then
--		RET=1
--	fi
--else
--	echo "Shell file is not installed..Please check Makefile..."
--	RET=1
--fi
--
--exit $RET
+This isn't wrong but fn is usually short for function. Perhaps oldfname
+and newfname would be a bit clearer.
+
+> +	int flags;
+> +	int expected_errno;
+> +	void (*setupfunc) ();
+> +	void (*cleanfunc) ();
+> +} test_cases[] = {
+> +	{TEST_FILE, nametoolong, 0, ENAMETOOLONG, NULL, NULL},
+> +	{nametoolong, TEST_FILE, 0, ENAMETOOLONG, NULL, NULL},
+> +	{TEST_EXIST, TEST_EXIST, 0, EEXIST, NULL, NULL},
+> +	{TEST_ELOOP, TEST_FILE, AT_SYMLINK_FOLLOW, ELOOP, NULL, NULL},
+> +	{TEST_EACCES, TEST_EACCES2, 0, EACCES, setup_eacces, cleanup_eacces},
+> +	{TEST_EROFS, TEST_EROFS2, 0, EROFS, setup_erofs, cleanup_erofs},
+> +	{TEST_EMLINK, lname, 0, EMLINK, setup_emlink, cleanup_emlink},
+> +};
+> +
+> +char *TCID = "linkat02";
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +
+> +static struct passwd *ltpuser;
+> +static void verify_linkat(struct test_struct *);
+> +
+> +static int exp_enos[] = { ENAMETOOLONG, EEXIST, ELOOP,
+> +			  EACCES, EROFS, EMLINK, 0 };
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	char *msg;
+> +	int i;
+> +
+> +	msg = parse_opts(ac, av, options, help);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	if (!dflag) {
+
+You can remove the dflag and use !device instead.
+
+> +		tst_brkm(TBROK, NULL,
+> +			 "you must specify the device used for mounting with "
+> +			 "-D option");
+> +	}
+> +
+> +	setup();
+> +
+> +	TEST_EXP_ENOS(exp_enos);
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++)
+> +			verify_linkat(&test_cases[i]);
+> +
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void verify_linkat(struct test_struct *desc)
+> +{
+> +	if (desc->setupfunc != NULL)
+> +		desc->setupfunc();
+> +
+> +	TEST(ltp_syscall(__NR_linkat, AT_FDCWD, desc->oldfn,
+> +			 AT_FDCWD, desc->newfn, desc->flags));
+> +
+> +	if (desc->cleanfunc != NULL)
+> +		desc->cleanfunc();
+> +
+> +	if (TEST_RETURN != -1) {
+> +		tst_resm(TFAIL,
+> +			 "linkat(%s, %s, %s, %s, %d) succeeded unexpectedly",
+> +			 "AT_FDCWD", desc->oldfn,
+> +			 "AT_FDCWD", desc->newfn, desc->flags);
+> +		return;
+> +	}
+> +
+> +	if (TEST_ERRNO == desc->expected_errno) {
+> +		tst_resm(TPASS | TTERRNO, "linkat failed as expected");
+> +	} else {
+> +		tst_resm(TFAIL | TTERRNO,
+> +			 "linkat failed unexpectedly; expected: "
+> +			 "%d - %s", desc->expected_errno,
+> +			 strerror(desc->expected_errno));
+> +	}
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if ((tst_kvercmp(2, 6, 16)) < 0)
+> +		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.16 or newer");
+> +
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +
+> +	tst_tmpdir();
+> +
+> +	TEST_PAUSE;
+> +
+> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+> +
+> +	SAFE_TOUCH(cleanup, TEST_FILE, 0644, NULL);
+> +
+> +	memset(nametoolong, 'a', PATH_MAX+1);
+> +
+> +	SAFE_TOUCH(cleanup, TEST_EXIST, 0644, NULL);
+> +
+> +	SAFE_SYMLINK(cleanup, TEST_ELOOP, "test_file_eloop2");
+> +	SAFE_SYMLINK(cleanup, "test_file_eloop2", TEST_ELOOP);
+> +
+> +	SAFE_MKDIR(cleanup, "./tmp", DIR_MODE);
+> +	SAFE_TOUCH(cleanup, TEST_EACCES, 0666, NULL);
+> +
+> +	tst_mkfs(NULL, device, fstype, NULL);
+> +	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
+> +}
+> +
+> +static void setup_emlink(void)
+> +{
+> +	if (mount(device, "mntpoint", fstype, 0, NULL) < 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "mount device:%s failed", device);
+> +	}
+> +	mount_flag = 1;
+> +
+> +	SAFE_TOUCH(cleanup, TEST_EMLINK, 0666, NULL);
+> +
+> +	link_max = 0;
+> +
+> +	while (1) {
+> +		sprintf(lname, "%s%ld", BASENAME, ++link_max);
+> +		TEST(link(TEST_EMLINK, lname));
+> +		if (TEST_RETURN == -1) {
+> +			switch (TEST_ERRNO) {
+> +			case EMLINK:
+> +				tst_resm(TINFO, "for %s the max links is %ld",
+> +					 fstype, link_max);
+> +				break;
+> +			default:
+> +				tst_brkm(TBROK | TERRNO, cleanup_emlink,
+> +					 "Unexpected error: ");
+                                If we fail here the cleanup that does
+				tst_rmdir() will not be called. What
+				is needed here is another cleanup
+				function that calls the cleanup_emlink()
+				and then the test overall cleanup()
+> +				break;
+> +			}
+> +			break;
+> +		}
+> +	}
+
+        Do we need to recreate the links in each emlink setup? Can't we
+	just remount the device RW here and RO in the EROFS case?
+
+> +}
+> +
+> +static void cleanup_emlink(void)
+> +{
+> +	long i;
+> +
+> +	for (i = 1; i < link_max; i++) {
+> +		sprintf(lname, "%s%ld", BASENAME, i);
+> +		SAFE_UNLINK(cleanup, lname);
+> +	}
+> +
+> +	SAFE_UNLINK(cleanup, TEST_EMLINK);
+> +
+> +	if (mount_flag && umount("mntpoint") < 0) {
+> +		mount_flag = 0;
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "umount device:%s failed", device);
+> +	}
+> +	mount_flag = 0;
+> +}
+> +
+> +static void setup_eacces(void)
+> +{
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +}
+> +
+> +static void cleanup_eacces(void)
+> +{
+> +	SAFE_SETEUID(cleanup, 0);
+
+This would not work unless the test was executed by root. Is
+tst_require_root(NULL) missing from setup?
+
+> +}
+> +
+> +static void setup_erofs(void)
+> +{
+> +	if (mount(device, "mntpoint", fstype, MS_RDONLY, NULL) < 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "mount device:%s failed", device);
+> +	}
+> +	mount_flag = 1;
+> +}
+> +
+> +static void cleanup_erofs(void)
+> +{
+> +	if (mount_flag && umount("mntpoint") < 0) {
+> +		mount_flag = 0;
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "umount device:%s failed", device);
+> +	}
+> +	mount_flag = 0;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +
+> +	if (mount_flag && umount("mntpoint") < 0) {
+> +		tst_brkm(TBROK | TERRNO, NULL,
+> +			 "umount device:%s failed", device);
+
+Hmm, I would rather use tst_resm(TWARN, ...) here so that the cleanup()
+will continue to the tst_rmdir() here. Even if the tst_rmdir() is not
+able to remove all files, it will remove at least some.
+
+> +	}
+> +
+> +	tst_rmdir();
+> +}
+> +
+> +static void help(void)
+> +{
+> +	printf("-T type   : specifies the type of filesystem to be mounted. "
+> +	       "Default ext2.\n");
+> +	printf("-D device : device used for mounting.\n");
+> +}
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
