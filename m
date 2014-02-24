@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WAKWs-0007ma-Dk
-	for ltp-list@lists.sourceforge.net; Mon, 03 Feb 2014 14:29:42 +0000
-Date: Mon, 3 Feb 2014 15:29:10 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WHyCa-0006r7-7m
+	for ltp-list@lists.sourceforge.net; Mon, 24 Feb 2014 16:16:20 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 49A59ACA4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 24 Feb 2014 16:16:13 +0000 (UTC)
+Date: Mon, 24 Feb 2014 17:16:05 +0100
 From: chrubis@suse.cz
-Message-ID: <20140203142910.GA3996@rei>
-References: <1390298574-2966-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140224161605.GC30419@rei>
+References: <1393254911-1836-1-git-send-email-jack@suse.cz>
+	<1393254911-1836-2-git-send-email-jack@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1390298574-2966-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/3] fcntl/fcntl29.c: add F_DUPFD_CLOEXEC test
- for fcntl(2)
+In-Reply-To: <1393254911-1836-2-git-send-email-jack@suse.cz>
+Subject: Re: [LTP] [PATCH 2/2 v3] syscalls/fanotify: Test generation of
+ overflow events
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,225 +30,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Jan Kara <jack@suse.cz>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> create a new case to test F_DUPFD_CLOEXEC for fcntl(2)
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  runtest/ltplite                           |   1 +
->  runtest/stress.part3                      |   1 +
->  runtest/syscalls                          |   2 +
->  testcases/kernel/syscalls/.gitignore      |   2 +
->  testcases/kernel/syscalls/fcntl/fcntl29.c | 124 ++++++++++++++++++++++++++++++
->  5 files changed, 130 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fcntl/fcntl29.c
-> 
-> diff --git a/runtest/ltplite b/runtest/ltplite
-> index 4b5300d..196e2a2 100644
-> --- a/runtest/ltplite
-> +++ b/runtest/ltplite
-> @@ -223,6 +223,7 @@ fcntl26 fcntl26
->  # The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
->  # fcntl27 fcntl27
->  # fcntl28 fcntl28
-> +fcntl29 fcntl29
->  
->  fdatasync01 fdatasync01
->  fdatasync02 fdatasync02
-> diff --git a/runtest/stress.part3 b/runtest/stress.part3
-> index bb4807c..946f4ea 100644
-> --- a/runtest/stress.part3
-> +++ b/runtest/stress.part3
-> @@ -162,6 +162,7 @@ fcntl26 fcntl26
->  # The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
->  # fcntl27 fcntl27
->  # fcntl28 fcntl28
-> +fcntl29 fcntl29
->  
->  fdatasync01 fdatasync01
->  fdatasync02 fdatasync02
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index afa7976..b45faab 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -252,6 +252,8 @@ fcntl27 fcntl27
->  fcntl27_64 fcntl27_64
->  fcntl28 fcntl28
->  fcntl28_64 fcntl28_64
-> +fcntl29 fcntl29
-> +fcntl29_64 fcntl29_64
->  
->  fdatasync01 fdatasync01
->  fdatasync02 fdatasync02
-> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-> index 1caf8e3..1ab13d8 100644
-> --- a/testcases/kernel/syscalls/.gitignore
-> +++ b/testcases/kernel/syscalls/.gitignore
-> @@ -214,6 +214,8 @@
->  /fcntl/fcntl27_64
->  /fcntl/fcntl28
->  /fcntl/fcntl28_64
-> +/fcntl/fcntl29
-> +/fcntl/fcntl29_64
->  /fdatasync/fdatasync01
->  /fdatasync/fdatasync02
->  /flock/flock01
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
-> new file mode 100644
-> index 0000000..d45296d
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
-> @@ -0,0 +1,124 @@
-> +/*
-> + * Copyright (c) 2014 Fujitsu Ltd.
-> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +/*
-> + * Description:
-> + * Verify that,
-> + *   Basic test for fcntl(2) using F_DUPFD_CLOEXEC argument.
-> + */
-> +
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <pwd.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +
-> +char *TCID = "fcntl29";
-> +int TST_TOTAL = 1;
-> +
-> +#if defined(F_DUPFD_CLOEXEC)
+> Test whether overflow event is properly generated when we don't read
+> fanotify descriptor and generate enough events.
 
-You added a runtime test but the ifdef and the message if not found is
-still wrong.
-
-What I would do is to is to add F_DUPFD_CLOEXEC to the
-include/lapi/fcntl.h (in similar manner to the O_CLOEXEC) include it
-here and remove the ifdefs completly.
-
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +static int test_fd;
-> +static int dup_fd;
-> +
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	char *msg;
-> +
-> +	msg = parse_opts(ac, av, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		TEST(fcntl(test_fd, F_DUPFD_CLOEXEC, dup_fd));
-
-It would be more clear to explicitly pass zero instead of the dup_fd
-here.
-
-> +		if (TEST_RETURN < 0) {
-> +			tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
-> +				 "test F_DUPFD_CLOEXEC failed");
-> +		}
-> +		dup_fd = TEST_RETURN;
-> +
-> +		TEST(fcntl(dup_fd, F_GETFD));
-> +		if (TEST_RETURN < 0) {
-> +			tst_brkm(TFAIL | TTERRNO, cleanup, "fcntl "
-> +				 "test F_GETFD failed");
-			close dup_fd here?
-> +		}
-> +
-> +		if (TEST_RETURN & FD_CLOEXEC) {
-> +			tst_resm(TPASS, "fcntl test "
-> +				 "F_DUPFD_CLOEXEC success");
-> +		} else {
-> +			tst_resm(TFAIL, "fcntl test "
-> +				 "F_DUPFD_CLOEXEC fail");
-> +		}
-> +
-> +		SAFE_CLOSE(cleanup, dup_fd);
-> +		dup_fd = 0;
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	if ((tst_kvercmp(2, 6, 24)) < 0) {
-> +		tst_brkm(TCONF, NULL, "This test can only run on kernels"
-> +			 "that are 2.6.24 and higher");
-> +	}
-> +
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	tst_tmpdir();
-> +
-> +	TEST_PAUSE;
-> +
-> +	test_fd = SAFE_CREAT(cleanup, "testfile", 0644);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	if (test_fd > 0)
-> +		SAFE_CLOSE(NULL, test_fd);
-> +
-> +	tst_rmdir();
-> +}
-> +#else
-> +
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "This test can only run on kernels"
-> +		 "that are 2.6.24 and higher");
-> +}
-> +#endif
+Both pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
