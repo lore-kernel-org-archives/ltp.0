@@ -1,34 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WIJBa-0000nB-LO
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 14:40:42 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WIJBZ-0007Qx-O5
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 14:40:42 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1PEeZBk002261
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WIJjT-0006bI-Ve
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 15:15:44 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WIJjS-0003jW-Fo
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 15:15:43 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s1PFFaId003161
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:36 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s1PEeYqu020497
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:35 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1PEeYBV001558
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:34 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 25 Feb 2014 18:40:27 +0400
-Message-Id: <1393339227-13527-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140225140017.GC14376@rei>
-References: <20140225140017.GC14376@rei>
-Subject: [LTP] [PATCH V3 2/2] msgctl11: process message queues by portions
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 10:15:36 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id s1PFFZI2026260
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 10:15:35 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 25 Feb 2014 16:15:31 +0100
+Message-Id: <8fcc00aaf04977590c7ffe20ce94d91b795869d8.1393341171.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] move_pages: print errno if move_pages fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,206 +35,196 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-/proc/sys/kernel/msgmni value scales with the amount of the host memory.
+Also remove lines which set TEST_ERRNO, since TTERRNO is never used.
 
-On systems with several tens gigabytes of ram this value is rather big (and
-even may reach its limit - IPCMI (32768), defined in include/linux/ipc.h) and
-therefore the test case fails with "Not enough free pids" error.
-
-Now we process all avaliable message queues by portions (with the size based
-on the amount of free pids).
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   80 ++++++++++++++++-------
- 1 files changed, 55 insertions(+), 25 deletions(-)
+ .../kernel/syscalls/move_pages/move_pages01.c      |    4 +---
+ .../kernel/syscalls/move_pages/move_pages02.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages03.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages04.c      |    1 -
+ .../kernel/syscalls/move_pages/move_pages05.c      |    1 -
+ .../kernel/syscalls/move_pages/move_pages06.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages07.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages08.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages09.c      |    1 -
+ .../kernel/syscalls/move_pages/move_pages10.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages11.c      |    3 +--
+ 11 files changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-index 63ff88f..2be34b8 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-@@ -52,6 +52,7 @@ int TST_TOTAL = 1;
- #define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
- #endif
- #define MAXNKIDS	10
-+#define DEFNKIDS	2
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages01.c b/testcases/kernel/syscalls/move_pages/move_pages01.c
+index df4ec70..211a174 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages01.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages01.c
+@@ -95,10 +95,8 @@ int main(int argc, char **argv)
+ 			continue;
  
- static int maxnkids = MAXNKIDS;	/* Used if pid_max is exceeded */
- static key_t keyarray[MAXNPROCS];
-@@ -60,6 +61,7 @@ static int rkidarray[MAXNKIDS];
- static int wkidarray[MAXNKIDS];
- static int tid;
- static int nprocs, nreps, nkids, MSGMNI;
-+static int maxnprocs;
- static int procstat;
- 
- void setup(void);
-@@ -67,6 +69,7 @@ void cleanup(void);
- 
- static void term(int);
- static int dotest(key_t, int);
-+static void dotest_iteration(int off);
- static void cleanup_msgqueue(int i, int tid);
- 
- #ifdef UCLINUX
-@@ -84,8 +87,7 @@ static void do_child_3_uclinux(void);
- 
- int main(int argc, char **argv)
- {
--	int i, j, ok, pid;
--	int count, status;
-+	int i, j, ok;
- 
- #ifdef UCLINUX
- 	char *msg;
-@@ -109,27 +111,25 @@ int main(int argc, char **argv)
- 	if (argc == 1) {
- 		/* Set default parameters */
- 		nreps = MAXNREPS;
--		nprocs = MSGMNI;
--		nkids = maxnkids;
-+		nkids = DEFNKIDS;
- 	} else if (argc == 4) {
- 		if (atoi(argv[1]) > MAXNREPS) {
--			tst_resm(TCONF,
-+			tst_resm(TINFO,
- 				 "Requested number of iterations too large, setting to Max. of %d",
- 				 MAXNREPS);
- 			nreps = MAXNREPS;
- 		} else {
- 			nreps = atoi(argv[1]);
- 		}
--		if (atoi(argv[2]) > MSGMNI) {
--			tst_resm(TCONF,
-+		if (atoi(argv[2]) > maxnprocs) {
-+			tst_resm(TINFO,
- 				 "Requested number of processes too large, setting to Max. of %d",
--				 MSGMNI);
--			nprocs = MSGMNI;
-+				 maxnprocs);
- 		} else {
--			nprocs = atoi(argv[2]);
-+			maxnprocs = atoi(argv[2]);
- 		}
- 		if (atoi(argv[3]) > maxnkids) {
--			tst_resm(TCONF,
-+			tst_resm(TINFO,
- 				 "Requested number of read/write pairs too large; setting to Max. of %d",
- 				 maxnkids);
- 			nkids = maxnkids;
-@@ -153,7 +153,7 @@ int main(int argc, char **argv)
- 	/* Set up array of unique keys for use in allocating message
- 	 * queues
- 	 */
--	for (i = 0; i < nprocs; i++) {
-+	for (i = 0; i < MSGMNI; i++) {
- 		ok = 1;
- 		do {
- 			/* Get random key */
-@@ -172,13 +172,45 @@ int main(int argc, char **argv)
- 			}
- 		} while (ok == 0);
- 	}
--	/* Fork a number of processes (nprocs), each of which will
-+	/* Fork a number of processes, each of which will
- 	 * create a message queue with several (nkids) reader/writer
- 	 * pairs which will read and write a number (iterations)
- 	 * of random length messages with specific values (keys).
-+	 *
-+	 * We do not fork more than maxnprocs at a time and
-+	 * we fork until all the message queues get used.
- 	 */
- 
-+	if (MSGMNI <= maxnprocs) {
-+		nprocs = MSGMNI;
-+		dotest_iteration(0);
-+	} else {
-+		for (i = 0; i < (MSGMNI / maxnprocs); i++) {
-+			nprocs = maxnprocs;
-+			dotest_iteration(i*(MSGMNI / maxnprocs));
-+		}
-+
-+		nprocs = MSGMNI % maxnprocs;
-+		dotest_iteration(i*(MSGMNI / maxnprocs));
-+	}
-+
-+	tst_resm(TPASS, "msgctl11 ran successfully!");
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void dotest_iteration(int off)
-+{
-+	key_t key;
-+	int i, count, status;
-+	pid_t pid;
-+
-+	memset(pidarray, 0, sizeof(pidarray));
-+
- 	for (i = 0; i < nprocs; i++) {
-+		key = keyarray[off + i];
-+
- 		if ((pid = FORK_OR_VFORK()) < 0)
- 			tst_brkm(TFAIL, cleanup,
- 				 "Fork failed (may be OK if under stress)");
-@@ -186,13 +218,13 @@ int main(int argc, char **argv)
- 		/* Child does this */
- 		if (pid == 0) {
- #ifdef UCLINUX
--			if (self_exec(argv[0], "ndd", 1, keyarray[i], i) < 0) {
-+			if (self_exec(argv0, "ndd", 1, key, i) < 0) {
- 				printf("\tself_exec failed\n");
- 				exit(FAIL);
- 			}
- #else
- 			procstat = 1;
--			exit(dotest(keyarray[i], i));
-+			exit(dotest(key, i));
- #endif
- 		}
- 		pidarray[i] = pid;
-@@ -219,11 +251,6 @@ int main(int argc, char **argv)
- 		tst_brkm(TFAIL, cleanup,
- 			 "Wrong number of children exited, Saw %d, Expected %d",
- 			 count, nprocs);
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, NULL, status, 0);
+-		TEST_ERRNO = errno;
 -
--	tst_resm(TPASS, "msgctl11 ran successfully!");
--
--	cleanup();
--	tst_exit();
- }
+ 		if (ret != 0) {
+-			tst_resm(TFAIL, "retrieving NUMA nodes failed");
++			tst_resm(TFAIL|TERRNO, "move_pages failed");
+ 			free_pages(pages, TEST_PAGES);
+ 			continue;
+ 		}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages02.c b/testcases/kernel/syscalls/move_pages/move_pages02.c
+index ddd0e38..9ce4bd7 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages02.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages02.c
+@@ -109,9 +109,8 @@ int main(int argc, char **argv)
+ 		ret =
+ 		    numa_move_pages(0, TEST_PAGES, pages, nodes, status,
+ 				    MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret != 0) {
+-			tst_resm(TFAIL, "retrieving NUMA nodes failed");
++			tst_resm(TFAIL|TERRNO, "move_pages failed");
+ 			free_pages(pages, TEST_PAGES);
+ 			continue;
+ 		}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages03.c b/testcases/kernel/syscalls/move_pages/move_pages03.c
+index 5c26748..f2b2088 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages03.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages03.c
+@@ -171,9 +171,8 @@ int main(int argc, char **argv)
  
- #ifdef UCLINUX
-@@ -447,6 +474,8 @@ void setup(void)
- 		tst_brkm(TBROK, cleanup,
- 			 "Max number of message queues already used, cannot create more.");
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE_ALL);
+-		TEST_ERRNO = errno;
+ 		if (ret != 0) {
+-			tst_resm(TFAIL, "retrieving NUMA nodes failed");
++			tst_resm(TFAIL|TERRNO, "move_pages failed");
+ 			goto err_kill_child;
+ 		}
  
-+	tst_resm(TINFO, "Found %d available message queues", MSGMNI);
-+
- 	free_pids = get_free_pids();
- 	if (free_pids < 0) {
- 		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
-@@ -454,11 +483,12 @@ void setup(void)
- 		tst_brkm(TBROK, cleanup, "No free pids");
- 	}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
+index 4ceca0d..03f9feb 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages04.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
+@@ -123,7 +123,6 @@ int main(int argc, char **argv)
  
--	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
--		maxnkids = ((free_pids / 4) / MSGMNI);
--		if (!maxnkids)
--			tst_brkm(TBROK, cleanup, "Not enough free pids");
--	}
-+	/* We don't use more than a half of available pids.
-+	 * For each child we fork up to 2*maxnkids grandchildren. */
-+	maxnprocs = (free_pids / 2) / (1 + 2 * maxnkids);
-+
-+	if (!maxnprocs)
-+		tst_brkm(TBROK, cleanup, "Not enough free pids");
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1) {
+ 			tst_resm(TFAIL | TERRNO,
+ 				 "move_pages unexpectedly failed");
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages05.c b/testcases/kernel/syscalls/move_pages/move_pages05.c
+index 11c0bc1..7be9219 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages05.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages05.c
+@@ -178,7 +178,6 @@ int main(int argc, char **argv)
  
- 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
- }
+ 		ret = numa_move_pages(0, N_TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1) {
+ 			tst_resm(TFAIL | TERRNO,
+ 				 "move_pages unexpectedly failed");
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages06.c b/testcases/kernel/syscalls/move_pages/move_pages06.c
+index 54c4387..fd86317 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages06.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages06.c
+@@ -109,12 +109,11 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == ENODEV)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "ENODEV as expected");
+ 		else
+-			tst_resm(TFAIL, "move pages did not fail "
++			tst_resm(TFAIL|TERRNO, "move pages did not fail "
+ 				 "with ENODEV");
+ 
+ 		free_pages(pages, TEST_PAGES);
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages07.c b/testcases/kernel/syscalls/move_pages/move_pages07.c
+index cb0772e..822121e 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages07.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
+@@ -119,12 +119,11 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(ipid, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == ESRCH)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "ESRCH as expected");
+ 		else
+-			tst_resm(TFAIL, "move pages did not fail "
++			tst_resm(TFAIL|TERRNO, "move pages did not fail "
+ 				 "with ESRCH");
+ 
+ err_free_pages:
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages08.c b/testcases/kernel/syscalls/move_pages/move_pages08.c
+index 159a6ea..6974b6c 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages08.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages08.c
+@@ -106,12 +106,11 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, ULONG_MAX, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == E2BIG)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "E2BIG as expected");
+ 		else
+-			tst_resm(TFAIL, "move pages did not fail "
++			tst_resm(TFAIL|TERRNO, "move pages did not fail "
+ 				 "with E2BIG");
+ 
+ 		free_pages(pages, TEST_PAGES);
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages09.c b/testcases/kernel/syscalls/move_pages/move_pages09.c
+index 53d2189..ff55621 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages09.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages09.c
+@@ -105,7 +105,6 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 
+ 		/*
+ 		 * commit e78bbfa8262424417a29349a8064a535053912b9
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages10.c b/testcases/kernel/syscalls/move_pages/move_pages10.c
+index 7880ae9..e825b87 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages10.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages10.c
+@@ -108,12 +108,11 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_STRICT);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == EINVAL)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "EINVAL as expected");
+ 		else
+-			tst_resm(TFAIL, "move_pages did not fail "
++			tst_resm(TFAIL|TERRNO, "move_pages did not fail "
+ 				 "with EINVAL");
+ 
+ 		free_pages(pages, TEST_PAGES);
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
+index 094d548..eb01572 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages11.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
+@@ -173,12 +173,11 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE_ALL);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == EPERM)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "EPERM as expected");
+ 		else
+-			tst_resm(TFAIL, "move_pages did not fail "
++			tst_resm(TFAIL|TERRNO, "move_pages did not fail "
+ 				 "with EPERM");
+ 
+ 		/* Test done. Ask child to terminate. */
 -- 
 1.7.1
 
