@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WG3sF-0000x8-Jx
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 09:55:27 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WG3sE-0005Uf-Ak
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 09:55:27 +0000
-Message-ID: <1392802803.2083.5.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 19 Feb 2014 17:40:03 +0800
-In-Reply-To: <1392802716.2083.4.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1392372746.2085.11.camel@G08JYZSD130126>
-	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-	<1392802716.2083.4.camel@G08JYZSD130126>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v2 2/2] mlock/mlock02.c: add EPERM and ENOMEM errno
-	tests
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WIL2s-0001C4-HI
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 16:39:50 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WIL2r-0007Ar-43
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 16:39:50 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s1PGdgP9029485
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 11:39:42 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s1PGdfbW019982
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 11:39:41 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 25 Feb 2014 17:39:38 +0100
+Message-Id: <4c7b16f6fd58cb2bc21fb73df14694ec8c51fa40.1393346308.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2] move_pages: print errno if move_pages fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,187 +30,231 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Add EPERM and ENOMEM errno tests for mlock(2).
+Also remove lines which set TEST_ERRNO, since TTERRNO is never used.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/mlock/mlock02.c | 88 ++++++++++++++++++++++++++++---
- 1 file changed, 81 insertions(+), 7 deletions(-)
+ .../kernel/syscalls/move_pages/move_pages01.c      |    4 +---
+ .../kernel/syscalls/move_pages/move_pages02.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages03.c      |    3 +--
+ .../kernel/syscalls/move_pages/move_pages04.c      |    1 -
+ .../kernel/syscalls/move_pages/move_pages05.c      |    1 -
+ .../kernel/syscalls/move_pages/move_pages06.c      |    5 ++---
+ .../kernel/syscalls/move_pages/move_pages07.c      |    5 ++---
+ .../kernel/syscalls/move_pages/move_pages08.c      |    5 ++---
+ .../kernel/syscalls/move_pages/move_pages09.c      |    4 ++--
+ .../kernel/syscalls/move_pages/move_pages10.c      |    5 ++---
+ .../kernel/syscalls/move_pages/move_pages11.c      |    5 ++---
+ 11 files changed, 15 insertions(+), 26 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
-index 1d1c853..6ccd281 100644
---- a/testcases/kernel/syscalls/mlock/mlock02.c
-+++ b/testcases/kernel/syscalls/mlock/mlock02.c
-@@ -20,13 +20,22 @@
-  * ALGORITHM
-  * 	test 1:
-  *		Call mlock with a NULL address.  ENOMEM should be returned
-+ *	test 2:
-+ *		The caller was not privileged and its RLIMIT_MEMLOCK soft
-+ *		resource limit was 0. EPERM should be returned
-+ *	test 3:
-+ *		The caller was not privileged and its RLIMIT_MEMLOCK soft
-+ *		resource limit was nonzero, but tried to lock more memory than
-+ *		the limit permitted. ENOMEM should be returned
-  */
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages01.c b/testcases/kernel/syscalls/move_pages/move_pages01.c
+index df4ec70..211a174 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages01.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages01.c
+@@ -95,10 +95,8 @@ int main(int argc, char **argv)
+ 			continue;
  
- #include <errno.h>
- #include <unistd.h>
- #include <sys/mman.h>
-+#include <pwd.h>
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, NULL, status, 0);
+-		TEST_ERRNO = errno;
+-
+ 		if (ret != 0) {
+-			tst_resm(TFAIL, "retrieving NUMA nodes failed");
++			tst_resm(TFAIL|TERRNO, "move_pages failed");
+ 			free_pages(pages, TEST_PAGES);
+ 			continue;
+ 		}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages02.c b/testcases/kernel/syscalls/move_pages/move_pages02.c
+index ddd0e38..9ce4bd7 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages02.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages02.c
+@@ -109,9 +109,8 @@ int main(int argc, char **argv)
+ 		ret =
+ 		    numa_move_pages(0, TEST_PAGES, pages, nodes, status,
+ 				    MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret != 0) {
+-			tst_resm(TFAIL, "retrieving NUMA nodes failed");
++			tst_resm(TFAIL|TERRNO, "move_pages failed");
+ 			free_pages(pages, TEST_PAGES);
+ 			continue;
+ 		}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages03.c b/testcases/kernel/syscalls/move_pages/move_pages03.c
+index 5c26748..f2b2088 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages03.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages03.c
+@@ -171,9 +171,8 @@ int main(int argc, char **argv)
  
- char *TCID = "mlock02";
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE_ALL);
+-		TEST_ERRNO = errno;
+ 		if (ret != 0) {
+-			tst_resm(TFAIL, "retrieving NUMA nodes failed");
++			tst_resm(TFAIL|TERRNO, "move_pages failed");
+ 			goto err_kill_child;
+ 		}
  
-@@ -36,25 +45,32 @@ struct test_case_t {
- 	void **addr;
- 	int len;
- 	int error;
--	void (*setupfunc) ();
-+	int (*setupfunc) ();
-+	void (*cleanupfunc) ();
- };
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages04.c b/testcases/kernel/syscalls/move_pages/move_pages04.c
+index 4ceca0d..03f9feb 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages04.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages04.c
+@@ -123,7 +123,6 @@ int main(int argc, char **argv)
  
- static void *addr1;
-+static struct passwd *ltpuser;
- static void setup(void);
- #ifdef __ia64__
--static void setup1(const struct test_case_t *);
-+static int setup1(const struct test_case_t *);
- #else
--static void setup1(void);
-+static int setup1(void);
- #endif
-+static int setup2(void);
-+static int setup3(void);
-+static void cleanup2(void);
- static void cleanup(void);
- static void mlock_verify(const struct test_case_t *);
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1) {
+ 			tst_resm(TFAIL | TERRNO,
+ 				 "move_pages unexpectedly failed");
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages05.c b/testcases/kernel/syscalls/move_pages/move_pages05.c
+index 11c0bc1..7be9219 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages05.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages05.c
+@@ -178,7 +178,6 @@ int main(int argc, char **argv)
  
- static struct test_case_t TC[] = {
--	{&addr1, 1024, ENOMEM, setup1},
-+	{&addr1, 1024, ENOMEM, setup1, NULL},
-+	{&addr1, 1024, EPERM, setup2, cleanup2},
-+	{&addr1+1024, 1024, ENOMEM, setup3, cleanup2},
- };
+ 		ret = numa_move_pages(0, N_TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1) {
+ 			tst_resm(TFAIL | TERRNO,
+ 				 "move_pages unexpectedly failed");
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages06.c b/testcases/kernel/syscalls/move_pages/move_pages06.c
+index 54c4387..9d9e13f 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages06.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages06.c
+@@ -109,13 +109,12 @@ int main(int argc, char **argv)
  
- int TST_TOTAL = ARRAY_SIZE(TC);
--static int exp_enos[] = { ENOMEM, 0 };
-+static int exp_enos[] = { ENOMEM, EPERM, 0 };
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == ENODEV)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "ENODEV as expected");
+ 		else
+-			tst_resm(TFAIL, "move pages did not fail "
+-				 "with ENODEV");
++			tst_resm(TFAIL|TERRNO, "move pages did not fail "
++				 "with ENODEV ret: %d", ret);
  
- int main(int ac, char **av)
- {
-@@ -83,6 +99,8 @@ static void setup(void)
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 		free_pages(pages, TEST_PAGES);
+ 	}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages07.c b/testcases/kernel/syscalls/move_pages/move_pages07.c
+index cb0772e..57c4f07 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages07.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
+@@ -119,13 +119,12 @@ int main(int argc, char **argv)
  
- 	TEST_PAUSE;
-+
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
- }
+ 		ret = numa_move_pages(ipid, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == ESRCH)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "ESRCH as expected");
+ 		else
+-			tst_resm(TFAIL, "move pages did not fail "
+-				 "with ESRCH");
++			tst_resm(TFAIL|TERRNO, "move pages did not fail "
++				 "with ESRCH ret: %d", ret);
  
- static void mlock_verify(const struct test_case_t *test)
-@@ -92,6 +110,9 @@ static void mlock_verify(const struct test_case_t *test)
+ err_free_pages:
+ 		free_pages(pages, TEST_PAGES);
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages08.c b/testcases/kernel/syscalls/move_pages/move_pages08.c
+index 159a6ea..d0c2719 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages08.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages08.c
+@@ -106,13 +106,12 @@ int main(int argc, char **argv)
  
- 	TEST(mlock(*(test->addr), test->len));
+ 		ret = numa_move_pages(0, ULONG_MAX, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == E2BIG)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "E2BIG as expected");
+ 		else
+-			tst_resm(TFAIL, "move pages did not fail "
+-				 "with E2BIG");
++			tst_resm(TFAIL|TERRNO, "move pages did not fail "
++				 "with E2BIG ret: %d", ret);
  
-+	if (test->cleanupfunc != NULL)
-+		test->cleanupfunc();
-+
- 	if (TEST_RETURN != -1) {
- 		tst_resm(TFAIL, "mlock succeeded unexpectedly");
- 		return;
-@@ -107,17 +128,70 @@ static void mlock_verify(const struct test_case_t *test)
- }
+ 		free_pages(pages, TEST_PAGES);
+ 	}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages09.c b/testcases/kernel/syscalls/move_pages/move_pages09.c
+index 53d2189..7d4e662 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages09.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages09.c
+@@ -105,7 +105,6 @@ int main(int argc, char **argv)
  
- #ifdef __ia64__
--static void setup1(const struct test_case_t *test)
-+static int setup1(const struct test_case_t *test)
- {
- 	test->len = getpagesize() + 1;
-+	return 0;
- }
- #else
--static void setup1(void)
-+static int setup1(void)
- {
- 	addr1 = NULL;
-+	return 0;
- }
- #endif
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+-		TEST_ERRNO = errno;
  
-+static int setup2(void)
-+{
-+	struct rlimit rl;
-+
-+	if (geteuid() != 0) {
-+		tst_resm(TWARN, "Test needs to be run as root");
-+		return -1;
-+	}
-+
-+	rl.rlim_max = 0;
-+	rl.rlim_cur = 0;
-+	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-+		tst_resm(TWARN,
-+			 "setrlimit failed to set the resource for "
-+			 "RLIMIT_MEMLOCK to check for mlock()");
-+		return -1;
-+	}
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+
-+	return 0;
-+}
-+
-+static int setup3(void)
-+{
-+	struct rlimit rl;
-+
-+	if (geteuid() != 0) {
-+		tst_resm(TWARN, "Test needs to be run as root");
-+		return -1;
-+	}
-+
-+	rl.rlim_max = 1;
-+	rl.rlim_cur = 1;
-+	if (setrlimit(RLIMIT_MEMLOCK, &rl) != 0) {
-+		tst_resm(TWARN,
-+			 "setrlimit failed to set the resource for "
-+			 "RLIMIT_MEMLOCK to check for mlock()");
-+		return -1;
-+	}
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+
-+	return 0;
-+}
-+
-+static void cleanup2(void)
-+{
-+	SAFE_SETEUID(cleanup, 0);
-+}
-+
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
+ 		/*
+ 		 * commit e78bbfa8262424417a29349a8064a535053912b9
+@@ -123,7 +122,8 @@ int main(int argc, char **argv)
+ 				tst_resm(TPASS, "move_pages failed with "
+ 					 "ENOENT as expected");
+ 			else
+-				tst_resm(TFAIL | TERRNO, "move_pages");
++				tst_resm(TFAIL | TERRNO, "move_pages did not "
++					"fail with ENOENT ret: %d", ret);
+ 		}
+ 
+ 		free_pages(pages, TEST_PAGES);
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages10.c b/testcases/kernel/syscalls/move_pages/move_pages10.c
+index 7880ae9..130957d 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages10.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages10.c
+@@ -108,13 +108,12 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_STRICT);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == EINVAL)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "EINVAL as expected");
+ 		else
+-			tst_resm(TFAIL, "move_pages did not fail "
+-				 "with EINVAL");
++			tst_resm(TFAIL|TERRNO, "move_pages did not fail "
++				 "with EINVAL ret: %d", ret);
+ 
+ 		free_pages(pages, TEST_PAGES);
+ 	}
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
+index 094d548..a42f46b 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages11.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
+@@ -173,13 +173,12 @@ int main(int argc, char **argv)
+ 
+ 		ret = numa_move_pages(0, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE_ALL);
+-		TEST_ERRNO = errno;
+ 		if (ret == -1 && errno == EPERM)
+ 			tst_resm(TPASS, "move_pages failed with "
+ 				 "EPERM as expected");
+ 		else
+-			tst_resm(TFAIL, "move_pages did not fail "
+-				 "with EPERM");
++			tst_resm(TFAIL|TERRNO, "move_pages did not fail "
++				 "with EPERM ret: %d", ret);
+ 
+ 		/* Test done. Ask child to terminate. */
+ 		if (sem_post(&sem[SEM_PARENT_TEST]) == -1)
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
