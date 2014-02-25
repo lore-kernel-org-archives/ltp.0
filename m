@@ -1,25 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WFgM4-0005YO-4w
-	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 08:48:40 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WFgM2-0004u0-Tf
-	for ltp-list@lists.sourceforge.net; Tue, 18 Feb 2014 08:48:40 +0000
-Date: Tue, 18 Feb 2014 03:48:32 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <939053986.4914307.1392713312472.JavaMail.zimbra@redhat.com>
-In-Reply-To: <52FB1A26.5070002@oracle.com>
-References: <1386750816-782-1-git-send-email-xu.simon@oracle.com>
-	<52BA386D.50903@oracle.com> <52DDD0D9.40309@oracle.com>
-	<2063328347.1666006.1391079813144.JavaMail.root@redhat.com>
-	<52F83C96.9090802@oracle.com>
-	<404815959.572342.1392042957279.JavaMail.zimbra@redhat.com>
-	<52FB1A26.5070002@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WIJx3-00077D-Qu
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 15:29:45 +0000
+Date: Tue, 25 Feb 2014 16:29:31 +0100
+From: chrubis@suse.cz
+Message-ID: <20140225152930.GA15483@rei>
+References: <8fcc00aaf04977590c7ffe20ce94d91b795869d8.1393341171.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
+Content-Disposition: inline
+In-Reply-To: <8fcc00aaf04977590c7ffe20ce94d91b795869d8.1393341171.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] move_pages: print errno if move_pages fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,33 +24,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> -		TEST_ERRNO = errno;
+>  		if (ret == -1 && errno == EPERM)
+>  			tst_resm(TPASS, "move_pages failed with "
+>  				 "EPERM as expected");
+>  		else
+> -			tst_resm(TFAIL, "move_pages did not fail "
+> +			tst_resm(TFAIL|TERRNO, "move_pages did not fail "
+>  				 "with EPERM");
 
------ Original Message -----
-> From: "Simon Xu" <xu.simon@oracle.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 12 February, 2014 7:52:22 AM
-> Subject: Re: [LTP] [PATCH] ip_tests.sh: fix errors
-> 
-> I double checked all places where I modified the RC logic and retested
-> the script, it works fine.
+I would consider printing value or ret too here, because we may get here
+in case that the move_pages() hasn't failed at all and the errno would
+be undefined in this case.
 
-Pushed, thank you,
-Jan
+Otherwise it's fine.
 
-> 
-> Thanks
-> Simon
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
