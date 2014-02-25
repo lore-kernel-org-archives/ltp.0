@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WBPkx-0003FT-MI
-	for ltp-list@lists.sourceforge.net; Thu, 06 Feb 2014 14:16:43 +0000
-Date: Thu, 6 Feb 2014 15:16:12 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WIILS-0006ll-Bw
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 13:46:50 +0000
+Date: Tue, 25 Feb 2014 14:46:36 +0100
 From: chrubis@suse.cz
-Message-ID: <20140206141612.GC4105@rei.suse.cz>
-References: <1387364436.1634.2.camel@G08JYZSD130126>
-	<20140205150500.GB28615@rei.suse.cz>
-	<1391688594.4999.5.camel@G08JYZSD130126>
-	<20140206141353.GA29219@rei.suse.cz>
+Message-ID: <20140225134636.GB14376@rei>
+References: <1389853977.2282.9.camel@G08JYZSD130126>
+	<1389854521.2282.10.camel@G08JYZSD130126>
+	<1392710999.2036.16.camel@G08JYZSD130126>
+	<1392711579.2036.18.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140206141353.GA29219@rei.suse.cz>
-Subject: Re: [LTP] [PATCH v2 2/2] msgctl/msgctl13.c: add IPC_RMID test
+In-Reply-To: <1392711579.2036.18.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v2 2/2] lstat/lstat02.c: add ELOOP errno test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,22 +31,84 @@ To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > +
-> > +char *TCID = "acct13";
+> Add ELOOP errno test for lstat(2)
 > 
-> I've fixned this to be msgct rather than acct (in both testcases).
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/lstat/lstat02.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/lstat/lstat02.c b/testcases/kernel/syscalls/lstat/lstat02.c
+> index d108c12..b9494e2 100644
+> --- a/testcases/kernel/syscalls/lstat/lstat02.c
+> +++ b/testcases/kernel/syscalls/lstat/lstat02.c
+> @@ -29,6 +29,8 @@
+>   *	component is too long.
+>   *   5) lstat(2) returns -1 and sets errno to ENOTDIR if the directory
+>   *	component in pathname is not a directory.
+> + *   6) lstat(2) returns -1 and sets errno to ELOOP if the pathname has too
+> + *	many symbolic links encountered while traversing.
+>   */
+>  
+>  #include <stdio.h>
+> @@ -55,6 +57,7 @@
+>  #define TEST_ENOTDIR	"test_file/test_enotdir"
+>  
+>  static char longpathname[PATH_MAX + 2];
+> +static char elooppathname[PATH_MAX] = ".";
+>  
+>  #if !defined(UCLINUX)
+>  static void bad_addr_setup(int);
+> @@ -74,11 +77,13 @@ static struct test_case_t {
+>  #endif
+>  	{longpathname, ENAMETOOLONG, NULL},
+>  	{TEST_ENOTDIR, ENOTDIR, NULL},
+> +	{elooppathname, ELOOP, NULL},
+>  };
+>  
+>  char *TCID = "lstat02";
+>  int TST_TOTAL = ARRAY_SIZE(test_cases);
+> -static int exp_enos[] = { EACCES, EFAULT, ENAMETOOLONG, ENOENT, ENOTDIR, 0 };
+> +static int exp_enos[] = { EACCES, EFAULT, ENAMETOOLONG, ENOENT,
+> +			  ENOTDIR, ELOOP, 0 };
+>  
+>  static void setup(void);
+>  static void lstat_verify(int);
+> @@ -110,6 +115,7 @@ int main(int ac, char **av)
+>  
+>  static void setup(void)
+>  {
+> +	int i;
+>  	struct passwd *ltpuser;
+>  
+>  	tst_require_root(NULL);
+> @@ -131,6 +137,11 @@ static void setup(void)
+>  	SAFE_TOUCH(cleanup, "test_file", MODE_RWX, NULL);
+>  
+>  	memset(longpathname, 'a', PATH_MAX+1);
+> +
+> +	SAFE_MKDIR(cleanup, "test_eloop", MODE_RWX);
+> +	SAFE_SYMLINK(cleanup, "../test_eloop", "test_eloop/test_eloop");
+> +	for (i = 0; i < 43; i++)
+> +		strcat(elooppathname, "/test_eloop");
+>  }
 
-Should be msgctl (I got it right in the source code...).
+Hmm, where has the 43 came from?
+
+Moreover the elloppathname size is PATH_MAX, you cannot be sure that the
+whole string will fit (it likely will, but I would rather have value
+based on the actual string length).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
