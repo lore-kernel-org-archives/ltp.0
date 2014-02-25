@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WIepR-0000Xp-Up
-	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 13:47:17 +0000
-Date: Wed, 26 Feb 2014 14:47:03 +0100
-From: chrubis@suse.cz
-Message-ID: <20140226134703.GA27609@rei>
-References: <1388048842-28373-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20140211151034.GA15043@rei.Home> <530C7004.3060102@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WI8cf-000438-O2
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 03:23:57 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WI8ce-0007H2-BA
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 03:23:57 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1P3NmsO013600
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 11:23:48 +0800
+Message-ID: <530C0C72.6090900@cn.fujitsu.com>
+Date: Tue, 25 Feb 2014 11:22:26 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <530C7004.3060102@oracle.com>
-Subject: Re: [LTP] rpc-tirpc-full-test-suite
+References: <1389867964-8072-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1389867964-8072-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] madvise/madvise02.c: extend EINVAL test for
+ MADV_MERGEABLE and MADV_UNMERGEABLE advice
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,133 +31,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> I found that run_rpc_test.sh fails during ltpstress.sh execution. And it fails
-> >> because the rpc-tirpc-full-test-suite is not compiled.
-> >>
-> >> So I:
-> >> * integrated a part of the rpc-tirpc-full-test-suite into the LTP
-> >>    building process (added Makefiles and etc). This part is the one
-> >>    which was executed by run_rpc_tests.sh.
-> >>
-> >> * changed the description of the testcases in runtest/.
-> >>    To ease debugging.
-> >>
-> >> I couldn't find a solution to make 'make' add the '.bin' suffix to the produced
-> >> binaries. Therefore I had to fix some of the test scripts for that fact.
-> >
-> > I think that we are better without the bin suffix as it's not standard
-> > suffix for binaries on Linux.
-> >
-> >> Does anybody know how to do that?
-> >
-> > As far as I know you need to write a custom rule for that because the
-> > one make has by default matches %: %.c and not %.bin: %.c
-> >
-> 
-> Thank you for review.
-> 
-> Addressing your comments I propose the following:
-> 
-> 1. Introduce configure option to enable building of 
-> rpc-tirpc-full-test-suite (--with-rpc-tirpc-full-test-suite).
-> If this option is set, ./configure will check for libtirpc (necessary 
-> requirement for building TI-RPC test binaries).
+Hi,
+ 
+Please ignore this patch. I do something wrong, thanks.
 
-I would rather see it compiled automatically if libtirpc is found.
-Anything that is not compiled by default gets less testing and tend to
-break.
+Regards,
+Xiaoguang Wang
 
-You can skip the whole subdirectory in rpc/Makefile if tirpc is not
-found with:
 
-ifeq ($(RPC_LIBS),)
-FILTER_OUT_DIRS+=rpc-tirpc-full-test-suite
-endif
-
-Assuming that the RPC_LIBS behaves the same way as NUMA_LIBS for
-example.
-
-And please shorten the directory names when you are at it,
-rpc-tirpc-full-test-suite is far to long and tirpc or similar would do
-the same job.
-
-> 2. Rename the test suite binaries using this scheme:
-> rpc_stdcall_callrpc/1-basic.c -> rpc_stdcall_callrpc/rpc_callrpc.c
-> rpc_stdcall_callrpc/2-stress.c -> rpc_stdcall_callrpc/rpc_callrpc_stress.c
+On 02/25/2014 11:09 AM, Xiaoguang Wang wrote:
+> From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 >
-> tirpc_toplevel_clnt_call/1-basic.c -> tirpc_clnt_call.c
-> tirpc_toplevel_clnt_call/2-stress.c -> tirpc_clnt_call_stress.c
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/madvise/madvise02.c | 38 ++++++++++++++++++++++++---
+>  1 file changed, 34 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
+> index e7f4656..08ed717 100644
+> --- a/testcases/kernel/syscalls/madvise/madvise02.c
+> +++ b/testcases/kernel/syscalls/madvise/madvise02.c
+> @@ -27,6 +27,8 @@
+>   *  2. advice is not a valid value
+>   *  3. application is attempting to release
+>   *     locked or shared pages (with MADV_DONTNEED)
+> + *  4. MADV_MERGEABLE or MADV_UNMERGEABLE was specified in advice,
+> + *     but kernel was not configured with CONFIG_KSM
+>   *
+>   * (B) Test Case for ENOMEM
+>   *  4. addresses in the specified range are not currently mapped
+> @@ -52,9 +54,14 @@
+>  #include "usctest.h"
+>  
+>  #define MM_RLIMIT_RSS 5
+> +/*
+> + * when kernel is 2.6.32 or newer and /sys/kernel/mm/ksm is exist,
+> + * we think kernel was configured with CONFIG_KSM.
+> + */
+> +#define KSM_SYS_DIR	"/sys/kernel/mm/ksm"
+>  
+>  char *TCID = "madvise02";
+> -int TST_TOTAL = 7;
+> +int TST_TOTAL = 8;
+>  
+>  static void setup(void);
+>  static void cleanup(void);
+> @@ -128,11 +135,34 @@ int main(int argc, char *argv[])
+>  		TEST(madvise(file, stat.st_size, MADV_DONTNEED));
+>  		check_and_print(EINVAL);
+>  
+> -		if (munmap(file, stat.st_size) == -1)
+> -			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
+>  #endif /* if !defined(UCLINUX) */
+>  
+> +#if defined(MADV_MERGEABLE) && defined(MADV_UNMERGEABLE)
+>  		/* Test Case 4 */
+> +		if (tst_kvercmp(2, 6, 32) < 0) {
+> +			tst_resm(TCONF, "kernel samepage merging (KSM) needs "
+> +				 "2.6.32 or higher, skip EINVAL test for "
+> +				 "MADV_MERGEABLE and MADV_UNMERGEABLE.");
+> +		} else {
+> +			if (access(KSM_SYS_DIR, F_OK) < 0) {
+> +				tst_resm(TINFO, "kernel was not configured "
+> +					 "with CONFIG_KSM");
+> +
+> +				TEST(madvise(file, stat.st_size,
+> +				     MADV_MERGEABLE));
+> +				check_and_print(EINVAL);
+> +
+> +				TEST(madvise(file, stat.st_size,
+> +				     MADV_UNMERGEABLE));
+> +				check_and_print(EINVAL);
+> +			}
+> +		}
+> +#endif
+> +
+> +		if (munmap(file, stat.st_size) == -1)
+> +			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
+> +
+> +		/* Test Case 5 */
+>  
+>  		/* We cannot be sure, which region is mapped, which is
+>  		 * not, at runtime.
+> @@ -169,7 +199,7 @@ int main(int argc, char *argv[])
+>  		TEST(madvise(low, len, MADV_NORMAL));
+>  		check_and_print(ENOMEM);
+>  
+> -		/* Test Case 5 */
+> +		/* Test Case 6 */
+>  		/* Unmap the file map from low */
+>  		if (munmap(low, stat.st_size / 2) < 0)
+>  			tst_brkm(TBROK | TERRNO, cleanup,
 
-Sounds reasonable to me.
-
-> Make corresponding changes in current execution/building infrastructure 
-> under rpc-tirpc-full-test-suite. Maybe someone will need it. And I don't 
-> feel that I have a right to remove all these shell scripts and etc.
-
-I would personaly remove the current execution/building infrastructure
-and focus on the LTP integration. Managing two parallel systems is much
-more work and unless somebody will use the current system it will get
-broken sooner or later.
-
-> 3. Add corresponding Makefiles under 
-> testcases/network/rpc/rpc-tirpc-full-test-suite.
-> All binaries will be installed into LTPROOT/testcases/bin.
-> No names ending with '.bin'!
-> 
-> 4. Remove 'run_rpc_test.sh' from runtest/rpc and from 
-> runtest/stress.part3, because rpc-tirpc-full-test-suite is an optional 
-> component.
-> 
-> 5. Remove files runtest/rpctirpc, runtest/tirpc. They are useless.
-> 
-> 6. Introduce new wrappers for execution of RPC and TI-RPC test cases 
-> from rpc-tirpc-full-test-suite inside LTP framework.
-> 
-> Make it as simple as possible. The algorithm will be:
->    * Set TCID
->    * Start a test rpc server (if necessary) on $RHOST
->    * Execute a test client and pass it the value of $RHOST.
->      Get return code from the client.
->    * Stop the test server and do some cleanup
->    * Basing on the client return code print either TPASS or TFAIL
-> 
-> So we use only 2 compluters - local and $RHOST. Connects to $RHOST are 
-> with rsh.
-
-Can we default to running the server on localhost if REMOTE host wasn't
-configured?
-
-> 7. Create files runtest/rpc_tests, runtest/tirpc_tests.
-> 
-> rpc_tests will contain the testcases which now should be executed by 
-> run_rpc_tests.sh. Like this:
-> rpc_get_myaddress run_ltp_rpc_test.sh rpc_get_myaddress
-> rpc_pmap_getmaps run_ltp_rpc_test.sh rpc_pmap_getmaps
-> rpc_pmap_getport run_ltp_rpc_test.sh rpc_pmap_getport
-> 
-> tirpc_tests will containt the testcases which now should be executed by 
-> run_tirpc_tests.sh. Like this:
-> tirpc_rpc_call run_ltp_tirpc_test.sh tirpc_rpc_call
-> tirpc_rpcb_getaddr run_ltp_tirpc_test.sh tirpc_rpcb_getaddr
-> 
-> A TCID for each test binary.
-
-Looks good.
-
-> This looks like a big amount of work, so I want to discuss this before 
-> submitting any patches for review. :)
-> 
-> What do you think?
-
-Apart from minor things this sounds like a good plan.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Flow-based real-time traffic analytics software. Cisco certified tool.
