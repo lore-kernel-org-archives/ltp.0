@@ -1,30 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <pradeep.bola.ext@nsn.com>) id 1WFwyo-0000yc-KL
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 02:33:46 +0000
-Received: from demumfd002.nsn-inter.net ([93.183.12.31])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WFwyn-0006wy-6w
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 02:33:46 +0000
-Received: from demuprx016.emea.nsn-intra.net ([10.150.129.55])
-	by demumfd002.nsn-inter.net (8.12.11.20060308/8.12.11) with ESMTP id
-	s1J2XZ7X012206
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 03:33:36 +0100
-Received: from USCHHTC002.nsn-intra.net ([10.159.161.15])
-	by demuprx016.emea.nsn-intra.net (8.12.11.20060308/8.12.11) with ESMTP
-	id s1J2XYJb003897
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Feb 2014 03:33:35 +0100
-From: "Bola, Pradeep (EXT-Tata Consultancy Ser - US/Arlington Heights)"
-	<pradeep.bola.ext@nsn.com>
-Date: Wed, 19 Feb 2014 02:33:32 +0000
-Message-ID: <D29743B70598864B880A3BE89C6E96946FEA75@USCHMBX004.nsn-intra.net>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: [LTP] Support needed for LINUX POSIX compliance test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WI7vS-0007ES-Mt
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 02:39:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WI7vR-0001k9-0e
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 02:39:18 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1P2d9qI011227
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 10:39:09 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 25 Feb 2014 10:37:39 +0800
+Message-Id: <1393295859-10240-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH] llseek/llseek03.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,107 +24,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1547607761321446741=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
---===============1547607761321446741==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_"
-
---_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-We are planning to use LTP for doing POSIX compliance test for one of our p=
-roject.
-LTP covers most of the LINUX POSIX functions.
-
-But I am unable to test few of the stdio POSIX functionalities.
-Few of POSIX functions: atoi, atol, calloc, malloc, free, errno, scanf, spr=
-ints, system etc .
-
-Can you please let me know how to verify these stdio commands using LTP?
-
-Also need support for testing POSIX compliance for few of the LINUX command=
-s.
-POSIX Linux commands: arp, cd, mv, date, echo, file, gdb, kill etc.
-
-Regards,
-Pradeep Bola
-
-
-
-
---_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
->
-<meta name=3D"Generator" content=3D"Microsoft Exchange Server">
-<!-- converted from rtf -->
-<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left:=
- #800000 2px solid; } --></style>
-</head>
-<body>
-<font face=3D"Calibri" size=3D"2"><span style=3D"font-size:11pt;">
-<div>Hi,</div>
-<div>&nbsp;</div>
-<div>We are planning to use LTP for doing POSIX compliance test for one of =
-our project.</div>
-<div>LTP covers most of the LINUX POSIX functions.</div>
-<div>&nbsp;</div>
-<div>But I am unable to test few of the stdio POSIX functionalities.</div>
-<div>Few of POSIX functions: atoi, atol, calloc, malloc, free, errno, scanf=
-, sprints, system etc .</div>
-<div>&nbsp;</div>
-<div>Can you please let me know how to verify these stdio commands using LT=
-P?</div>
-<div>&nbsp;</div>
-<div>Also need support for testing POSIX compliance for few of the LINUX co=
-mmands.</div>
-<div>POSIX Linux commands: arp, cd, mv, date, echo, file, gdb, kill etc. </=
-div>
-<div>&nbsp;</div>
-<div>Regards,</div>
-<div>Pradeep Bola</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-</span></font>
-</body>
-</html>
-
---_000_D29743B70598864B880A3BE89C6E96946FEA75USCHMBX004nsnintr_--
-
-
---===============1547607761321446741==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Remove the meaningless code using strcpy in setup() and
+fix some output messages.
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/llseek/llseek03.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/llseek/llseek03.c b/testcases/kernel/syscalls/llseek/llseek03.c
+index 02f5d95..8ab2899 100644
+--- a/testcases/kernel/syscalls/llseek/llseek03.c
++++ b/testcases/kernel/syscalls/llseek/llseek03.c
+@@ -85,7 +85,6 @@ int main(int ac, char **av)
+ static void setup(void)
+ {
+ 	int fd;
+-	char write_buf[BUFSIZ];
+ 	struct stat stat_buf;
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+@@ -94,12 +93,10 @@ static void setup(void)
+ 
+ 	TEST_PAUSE;
+ 
+-	if (strcpy(write_buf, "abcdefgh") != write_buf)
+-		tst_brkm(TBROK | TERRNO, NULL, "strcpy failed");
+-
+ 	fd = SAFE_CREAT(cleanup, TEST_FILE, 0644);
+ 
+-	SAFE_WRITE(cleanup, 1, fd, write_buf, strlen(write_buf));
++	#define STR "abcdefgh"
++	SAFE_WRITE(cleanup, 1, fd, STR, sizeof(STR) - 1);
+ 
+ 	SAFE_FSTAT(cleanup, fd, &stat_buf);
+ 
+@@ -137,7 +134,7 @@ static void testfunc_seekcur(void)
+ 	SAFE_READ(cleanup, 1, fd, read_buf, 3);
+ 
+ 	if (strcmp(read_buf, "fgh"))
+-		tst_resm(TFAIL, "test SEEK_SET for llseek failed");
++		tst_resm(TFAIL, "Read wrong bytes after llseek");
+ 	else
+ 		tst_resm(TPASS, "test SEEK_SET for llseek success");
+ 
+@@ -162,7 +159,7 @@ static void testfunc_seekend(void)
+ 		goto cleanup_seekend;
+ 	}
+ 
+-	if (TEST_RETURN != file_size) {
++	if (TEST_RETURN != (long)file_size) {
+ 		tst_resm(TFAIL, "llseek return a incorrect file offset");
+ 		goto cleanup_seekend;
+ 	}
+@@ -171,7 +168,7 @@ static void testfunc_seekend(void)
+ 
+ 	nread = SAFE_READ(cleanup, 0, fd, read_buf, file_size);
+ 	if (nread > 0)
+-		tst_resm(TFAIL, "test SEEK_END for llseek failed");
++		tst_resm(TFAIL, "Read bytes after llseek to end of file");
+ 	else
+ 		tst_resm(TPASS, "test SEEK_END for llseek success");
+ 
+-- 
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
---===============1547607761321446741==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1547607761321446741==--
-
