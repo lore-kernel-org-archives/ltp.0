@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WIH58-0007Cl-Cp
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 12:25:54 +0000
-Date: Tue, 25 Feb 2014 13:25:39 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WIHVd-0001UR-Tr
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 12:53:17 +0000
+Date: Tue, 25 Feb 2014 13:53:02 +0100
 From: chrubis@suse.cz
-Message-ID: <20140225122538.GA12159@rei.Home>
-References: <20140211142336.GA14876@rei.Home>
-	<1392131944-27263-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1392131944-27263-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20140221181117.GA15723@rei> <530C5E99.6050809@oracle.com>
+Message-ID: <20140225125302.GB12159@rei.Home>
+References: <1389353374.2061.9.camel@G08JYZSD130126>
+	<1389409991.2061.14.camel@G08JYZSD130126>
+	<20140224193305.GC31562@rei>
+	<1393309618.1952.52.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <530C5E99.6050809@oracle.com>
-Subject: Re: [LTP] [PATCH V2 2/2] msgctl11: process message queues by
-	portions
+In-Reply-To: <1393309618.1952.52.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v3] linkat/linkat02.c: add new error number tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,51 +27,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >> -	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
-> >> -		maxnkids = ((free_pids / 4) / MSGMNI);
-> >> -		if (!maxnkids)
-> >> -			tst_brkm(TBROK, cleanup, "Not enough free pids");
-> >> -	}
-> >
-> > Removing this part of the code makes the test run more than ten times
-> > longer because now the maximal number of reader/writer pairs is set to
-> > default value (10) and not to 1 which is what the code did previously. I
-> > guess that this was intentional but it took me some time to figure that
-> > out.
-> 
-> Hmmm. Could you elaborate on that? About '1' value.
-> 
-> For example, given that:
->   free_pids = 32333
->   MSGMNI = 4000
->   MAXNKIDS = 10
-> maxnkids will evaluate to 2. But if MSGMNI is 9000, the initial version 
-> of msgctl11 will fail with "Not enough free pids".
-> 
-> In some situations this expression:
->    (MSGMNI * MAXNKIDS * 2) > (free_pids / 2)
-> may evaluate to false, and maxnkids will be MAXNKIDS (10).
-> 
-> So the original version may execute faster under __some__ circumstances 
-> where the maxnkids value is evaluated to be < 10.
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "linux_syscall_numbers.h"
+> +#include "safe_macros.h"
+> +#include "fcntl.h"
 
-On my systems /proc/sys/kernel/pid_max is set to 32768 and MSGMNI is
-from 2000 to 7000 on most of the machines I've seen. So the value of
-maxnkids was between 1 and 4 previously but it defaults to 10 after this
-patch which increases the test runtime by minute or two.
+I've changed this to "lapi/fcntl.h". Note that ../../../../include/lapi/
+is not passed to the compiler as -I so the lapi/fcntl.h is not found and
+this include defaults to /usr/include/fcntl.h (because /usr/include/ is
+is in the default search path).
 
-Thinking of this again the most behavior preserving change would be:
 
-	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2))
-	        maxnkids = MAX(1, ((free_pids / 4) / MSGMNI));
-
-Which would scale the number of kids to the free pids but will not abort
-the test if there is not enough free pids. The drawback is that the code
-is complicated enough even without this change...
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
