@@ -1,29 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <francesco.rundo@st.com>) id 1WGpRJ-0002RF-LE
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 12:42:49 +0000
-Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WGpRH-0004oa-O8
-	for ltp-list@lists.sourceforge.net; Fri, 21 Feb 2014 12:42:49 +0000
-From: Francesco RUNDO <francesco.rundo@st.com>
-Date: Fri, 21 Feb 2014 12:42:31 +0000
-Message-ID: <D2A2C37B00D2EA4CB1886D29B96695C55AE5AE@SAFEX1NODE23.st.com>
-References: <1392969112-15851-1-git-send-email-francesco.rundo@st.com>
-	<775921692.6959618.1392973731667.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE401@SAFEX1NODE23.st.com>
-	<1636908988.6999631.1392977205402.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE486@SAFEX1NODE23.st.com>
-	<387845948.7047521.1392980482074.JavaMail.zimbra@redhat.com>
-	<1110699270.7050041.1392980994165.JavaMail.zimbra@redhat.com>
-	<D2A2C37B00D2EA4CB1886D29B96695C55AE578@SAFEX1NODE23.st.com>
-	<1275798317.7097152.1392986267877.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1275798317.7097152.1392986267877.JavaMail.zimbra@redhat.com>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WIJBa-0000nB-LO
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 14:40:42 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WIJBZ-0007Qx-O5
+	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 14:40:42 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s1PEeZBk002261
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:36 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s1PEeYqu020497
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:35 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1PEeYBV001558
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Feb 2014 14:40:34 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 25 Feb 2014 18:40:27 +0400
+Message-Id: <1393339227-13527-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20140225140017.GC14376@rei>
+References: <20140225140017.GC14376@rei>
+Subject: [LTP] [PATCH V3 2/2] msgctl11: process message queues by portions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,176 +38,221 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
+
+/proc/sys/kernel/msgmni value scales with the amount of the host memory.
+
+On systems with several tens gigabytes of ram this value is rather big (and
+even may reach its limit - IPCMI (32768), defined in include/linux/ipc.h) and
+therefore the test case fails with "Not enough free pids" error.
+
+Now we process all avaliable message queues by portions (with the size based
+on the amount of free pids).
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   80 ++++++++++++++++-------
+ 1 files changed, 55 insertions(+), 25 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+index 63ff88f..2be34b8 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+@@ -52,6 +52,7 @@ int TST_TOTAL = 1;
+ #define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
+ #endif
+ #define MAXNKIDS	10
++#define DEFNKIDS	2
+ 
+ static int maxnkids = MAXNKIDS;	/* Used if pid_max is exceeded */
+ static key_t keyarray[MAXNPROCS];
+@@ -60,6 +61,7 @@ static int rkidarray[MAXNKIDS];
+ static int wkidarray[MAXNKIDS];
+ static int tid;
+ static int nprocs, nreps, nkids, MSGMNI;
++static int maxnprocs;
+ static int procstat;
+ 
+ void setup(void);
+@@ -67,6 +69,7 @@ void cleanup(void);
+ 
+ static void term(int);
+ static int dotest(key_t, int);
++static void dotest_iteration(int off);
+ static void cleanup_msgqueue(int i, int tid);
+ 
+ #ifdef UCLINUX
+@@ -84,8 +87,7 @@ static void do_child_3_uclinux(void);
+ 
+ int main(int argc, char **argv)
+ {
+-	int i, j, ok, pid;
+-	int count, status;
++	int i, j, ok;
+ 
+ #ifdef UCLINUX
+ 	char *msg;
+@@ -109,27 +111,25 @@ int main(int argc, char **argv)
+ 	if (argc == 1) {
+ 		/* Set default parameters */
+ 		nreps = MAXNREPS;
+-		nprocs = MSGMNI;
+-		nkids = maxnkids;
++		nkids = DEFNKIDS;
+ 	} else if (argc == 4) {
+ 		if (atoi(argv[1]) > MAXNREPS) {
+-			tst_resm(TCONF,
++			tst_resm(TINFO,
+ 				 "Requested number of iterations too large, setting to Max. of %d",
+ 				 MAXNREPS);
+ 			nreps = MAXNREPS;
+ 		} else {
+ 			nreps = atoi(argv[1]);
+ 		}
+-		if (atoi(argv[2]) > MSGMNI) {
+-			tst_resm(TCONF,
++		if (atoi(argv[2]) > maxnprocs) {
++			tst_resm(TINFO,
+ 				 "Requested number of processes too large, setting to Max. of %d",
+-				 MSGMNI);
+-			nprocs = MSGMNI;
++				 maxnprocs);
+ 		} else {
+-			nprocs = atoi(argv[2]);
++			maxnprocs = atoi(argv[2]);
+ 		}
+ 		if (atoi(argv[3]) > maxnkids) {
+-			tst_resm(TCONF,
++			tst_resm(TINFO,
+ 				 "Requested number of read/write pairs too large; setting to Max. of %d",
+ 				 maxnkids);
+ 			nkids = maxnkids;
+@@ -153,7 +153,7 @@ int main(int argc, char **argv)
+ 	/* Set up array of unique keys for use in allocating message
+ 	 * queues
+ 	 */
+-	for (i = 0; i < nprocs; i++) {
++	for (i = 0; i < MSGMNI; i++) {
+ 		ok = 1;
+ 		do {
+ 			/* Get random key */
+@@ -172,13 +172,45 @@ int main(int argc, char **argv)
+ 			}
+ 		} while (ok == 0);
+ 	}
+-	/* Fork a number of processes (nprocs), each of which will
++	/* Fork a number of processes, each of which will
+ 	 * create a message queue with several (nkids) reader/writer
+ 	 * pairs which will read and write a number (iterations)
+ 	 * of random length messages with specific values (keys).
++	 *
++	 * We do not fork more than maxnprocs at a time and
++	 * we fork until all the message queues get used.
+ 	 */
+ 
++	if (MSGMNI <= maxnprocs) {
++		nprocs = MSGMNI;
++		dotest_iteration(0);
++	} else {
++		for (i = 0; i < (MSGMNI / maxnprocs); i++) {
++			nprocs = maxnprocs;
++			dotest_iteration(i*(MSGMNI / maxnprocs));
++		}
++
++		nprocs = MSGMNI % maxnprocs;
++		dotest_iteration(i*(MSGMNI / maxnprocs));
++	}
++
++	tst_resm(TPASS, "msgctl11 ran successfully!");
++
++	cleanup();
++	tst_exit();
++}
++
++static void dotest_iteration(int off)
++{
++	key_t key;
++	int i, count, status;
++	pid_t pid;
++
++	memset(pidarray, 0, sizeof(pidarray));
++
+ 	for (i = 0; i < nprocs; i++) {
++		key = keyarray[off + i];
++
+ 		if ((pid = FORK_OR_VFORK()) < 0)
+ 			tst_brkm(TFAIL, cleanup,
+ 				 "Fork failed (may be OK if under stress)");
+@@ -186,13 +218,13 @@ int main(int argc, char **argv)
+ 		/* Child does this */
+ 		if (pid == 0) {
+ #ifdef UCLINUX
+-			if (self_exec(argv[0], "ndd", 1, keyarray[i], i) < 0) {
++			if (self_exec(argv0, "ndd", 1, key, i) < 0) {
+ 				printf("\tself_exec failed\n");
+ 				exit(FAIL);
+ 			}
+ #else
+ 			procstat = 1;
+-			exit(dotest(keyarray[i], i));
++			exit(dotest(key, i));
+ #endif
+ 		}
+ 		pidarray[i] = pid;
+@@ -219,11 +251,6 @@ int main(int argc, char **argv)
+ 		tst_brkm(TFAIL, cleanup,
+ 			 "Wrong number of children exited, Saw %d, Expected %d",
+ 			 count, nprocs);
+-
+-	tst_resm(TPASS, "msgctl11 ran successfully!");
+-
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ #ifdef UCLINUX
+@@ -447,6 +474,8 @@ void setup(void)
+ 		tst_brkm(TBROK, cleanup,
+ 			 "Max number of message queues already used, cannot create more.");
+ 
++	tst_resm(TINFO, "Found %d available message queues", MSGMNI);
++
+ 	free_pids = get_free_pids();
+ 	if (free_pids < 0) {
+ 		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
+@@ -454,11 +483,12 @@ void setup(void)
+ 		tst_brkm(TBROK, cleanup, "No free pids");
+ 	}
+ 
+-	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
+-		maxnkids = ((free_pids / 4) / MSGMNI);
+-		if (!maxnkids)
+-			tst_brkm(TBROK, cleanup, "Not enough free pids");
+-	}
++	/* We don't use more than a half of available pids.
++	 * For each child we fork up to 2*maxnkids grandchildren. */
++	maxnprocs = (free_pids / 2) / (1 + 2 * maxnkids);
++
++	if (!maxnprocs)
++		tst_brkm(TBROK, cleanup, "Not enough free pids");
+ 
+ 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
+ }
+-- 
+1.7.1
 
 
-
------Original Message-----
-From: Jan Stancek [mailto:jstancek@redhat.com] 
-Sent: Friday, February 21, 2014 1:38 PM
-To: Francesco RUNDO
-Cc: gaowanlong@cn.fujitsu.com; ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
-
-
-
------ Original Message -----
-> From: "Francesco RUNDO" <francesco.rundo@st.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: gaowanlong@cn.fujitsu.com, ltp-list@lists.sourceforge.net
-> Sent: Friday, 21 February, 2014 1:28:14 PM
-> Subject: RE: [LTP] [PATCH] madvise/madvise03.c: Changed test exit code
-> 
-> 
-> > > Now, "do_fallocate()" needs fallocate() op. but on ext3 this is 
-> > > not supported i.e. ENOTSUP.
-> 
-> >>Do you have kernel compiled with CONFIG_TMPFS=y?
-> 
-> No. I've just checked kernel with above option: the reported madvise03 
-> testcase worked fine (usage of shmem_fallocate()).
-> So your analysis of my scenario is corret.
-> Please , discard posted patch.
-
->>We can still handle this with some patch to skip first testcase if kernel is compiled without "CONFIG_TMPFS=y". I think that qualifies as TCONF.
->>I'll leave it up to you.
-
-Hmmm....yes... as TCONF(and not TFAIL) is of course the right exit code in case of TMPFS not enabled on kernel side.
-I let you know...
-Regards,
-FR
-
-
-
->>Regards,
->>Jan
-
-> 
-> Thanks so much.
-> FR
-> 
-> > 
-> > madvise(start=0x7fcff6d66000 len_in=0x1000 behavior=0x9) Call Trace:
-> >  0xffffffff81150130 : shmem_fallocate+0x0/0x300 [kernel]
-> >  0xffffffff8122d056 : shm_fallocate+0x26/0x40 [kernel]
-> >  0xffffffff811a0089 : do_fallocate+0xf9/0x190 [kernel]
-> >  0xffffffff8115ac95 : SyS_madvise+0x355/0x7a0 [kernel]
-> >  0xffffffff815d05d9 : system_call_fastpath+0x16/0x1b [kernel]
-> > 
-> > Do you have possibility to run original testcase with strace?
-> > # strace ./madvise03 2>&1 | grep -v abcdefghijklmnopqrstuvwxyz12345
-> > 
-> > Regards,
-> > Jan
-> > 
-> > > This is the reason for which I consider this scenario as not 
-> > > supported and not ENOSYS as the system call is supported as the 
-> > > remaining scenarios worked fine (MADV_DONTFORK and MADV_DOFORK).
-> > > 
-> > > Regards
-> > > FR
-> > > > 
-> > > > Regards,
-> > > > FR
-> > > > 
-> > > > >>Regards,
-> > > > >>Jan
-> > > > 
-> > > > 
-> > > > > 
-> > > > > 
-> > > > > Regards,
-> > > > > FR
-> > > > > 
-> > > > > -----Original Message-----
-> > > > > From: Wanlong Gao [mailto:gaowanlong@cn.fujitsu.com]
-> > > > > Sent: Friday, February 21, 2014 9:02 AM
-> > > > > To: Francesco RUNDO
-> > > > > Cc: ltp-list@lists.sourceforge.net
-> > > > > Subject: Re: [LTP] [PATCH] madvise/madvise03.c: Changed test 
-> > > > > exit code
-> > > > > 
-> > > > > On 02/21/2014 03:51 PM, Francesco RUNDO wrote:
-> > > > > > Changed exit code from TFAIL to TCONF  in case of 
-> > > > > > unsupported syscall.
-> > > > > > The "madvise" syscall needs kernel support as well as fs 
-> > > > > > support as -for specific advice- it requires specific 
-> > > > > > filesystem operations such as fallocate().
-> > > > > 
-> > > > > Could you paste the running log on not supported system?
-> > > > > 
-> > > > > Thanks,
-> > > > > Wanlong Gao
-> > > > > 
-> > > > > > So, if kernel support is missed or fs doesn't provide 
-> > > > > > specific operation needed for such "advice" scenario of that 
-> > > > > > syscall, the right exit code (according to LTP defs) is not 
-> > > > > > TFAIL as it is not a failure but it is TCONF as the syscall is unsupported.
-> > > > > > 
-> > > > > > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-> > > > > > ---
-> > > > > >  testcases/kernel/syscalls/madvise/madvise03.c |   17
-> > > > > >  +++++++++++++----
-> > > > > >  1 files changed, 13 insertions(+), 4 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > > b/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > > index b0c17e8..23dd9a6 100644
-> > > > > > --- a/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > > +++ b/testcases/kernel/syscalls/madvise/madvise03.c
-> > > > > > @@ -160,10 +160,19 @@ static void cleanup(void)  static void 
-> > > > > > check_and_print(char *advice)  {
-> > > > > >  	if (TEST_RETURN == -1) {
-> > > > > > -		tst_resm(TFAIL,
-> > > > > > -			 "madvise test for %s failed with "
-> > > > > > -			 "return = %ld, errno = %d : %s",
-> > > > > > -			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
-> > > > > > +		if (TEST_ERRNO != ENOTSUP) {
-> > > > > > +			tst_resm(TFAIL,
-> > > > > > +				 "madvise test for %s failed with "
-> > > > > > +				 "return = %ld, errno = %d : %s",
-> > > > > > +				 advice, TEST_RETURN, TEST_ERRNO,
-> > > > > > +				 strerror(TEST_ERRNO));
-> > > > > > +		} else {
-> > > > > > +			tst_resm(TCONF,
-> > > > > > +				"madvise test for %s unsupported "
-> > > > > > +				"return = %ld, errno = %d : %s",
-> > > > > > +				advice, TEST_RETURN, TEST_ERRNO,
-> > > > > > +				strerror(TEST_ERRNO));
-> > > > > > +		}
-> > > > > >  	} else if (STD_FUNCTIONAL_TEST) {
-> > > > > >  		tst_resm(TPASS, "madvise test for %s PASSED", advice);
-> > > > > >  	}
-> > > > > > 
-> > > > > 
-> > > > > 
-> > > > > --------------------------------------------------------------
-> > > > > --
-> > > > > ----
-> > > > > --
-> > > > > -------- Managing the Performance of Cloud-Based Applications 
-> > > > > Take advantage of what the Cloud has to offer - Avoid Common 
-> > > > > Pitfalls.
-> > > > > Read the Whitepaper.
-> > > > > http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.
-> > > > > clktrk _______________________________________________
-> > > > > Ltp-list mailing list
-> > > > > Ltp-list@lists.sourceforge.net 
-> > > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > > > > 
-> > > > 
-> > > 
-> >
-> 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
