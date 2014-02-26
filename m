@@ -1,35 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WIaEk-0005zt-Ju
-	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 08:53:06 +0000
+	id 1WIaEi-0004tN-VF
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 08:53:05 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WIaEj-0008Qx-LW
-	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 08:53:06 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WIaEi-0003fY-4Z
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 08:53:04 +0000
 Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
 	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1Q8qwp8018523
+	ESMTP id s1Q8qv6D018507
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:52:59 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1Q8qvfa014809
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
 	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:52:58 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1Q8quaL014775
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:52:56 GMT
 Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1Q8qvHJ016800
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:52:57 GMT
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1Q8qu2S014771
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:52:56 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 26 Feb 2014 12:52:41 +0400
-Message-Id: <1393404766-18032-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 1/6] testcases/network: added mc_gethost binary to
-	.gitignore
+Date: Wed, 26 Feb 2014 12:52:40 +0400
+Message-Id: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] .gitignore fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,25 +43,11 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/network/.gitignore |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Hi!
 
-diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
-index cad0ac3..5ff27d8 100644
---- a/testcases/network/.gitignore
-+++ b/testcases/network/.gitignore
-@@ -9,6 +9,7 @@
- /lib6/getaddrinfo_01
- /lib6/in6_01
- /lib6/in6_02
-+/multicast/mc_gethost/mc_gethost
- /multicast/mc_commo/mc_recv
- /multicast/mc_commo/mc_send
- /multicast/mc_member/member
--- 
-1.7.1
+This series should fix current lacks in the .gitignore files of LTP.
+
+Thanks.
 
 
 ------------------------------------------------------------------------------
