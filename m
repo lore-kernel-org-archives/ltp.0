@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1WGN4U-0006Ku-29
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 06:25:22 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WGN4S-0007zw-Nf
-	for ltp-list@lists.sourceforge.net; Thu, 20 Feb 2014 06:25:22 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1K6P6Dk026007
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Feb 2014 14:25:13 +0800
-Message-ID: <53059F45.6000901@cn.fujitsu.com>
-Date: Thu, 20 Feb 2014 14:23:01 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WIc9R-0006py-Sh
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 10:55:45 +0000
+Date: Wed, 26 Feb 2014 11:55:32 +0100
+From: chrubis@suse.cz
+Message-ID: <20140226105531.GA23267@rei>
+References: <1389853977.2282.9.camel@G08JYZSD130126>
+	<1389854521.2282.10.camel@G08JYZSD130126>
+	<1392710999.2036.16.camel@G08JYZSD130126>
+	<1392711579.2036.18.camel@G08JYZSD130126>
+	<20140225134636.GB14376@rei>
+	<1393408265.2066.13.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <1388049105.1587.22.camel@G08JYZSD130126>
-	<1392732018.2654.7.camel@G08JYZSD130126>
-In-Reply-To: <1392732018.2654.7.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2] link/link08.c: add new error tests
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1393408265.2066.13.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v2 2/2] lstat/lstat02.c: add ELOOP errno test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,33 +32,54 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On 02/18/2014 10:00 PM, Zeng Linggang wrote:
-> Add new error number tests for link(2):
-> * EPERM
-> * EXDEV
-> * EROFS
-> * ELOOP
+Hi!
+> > > +	SAFE_MKDIR(cleanup, "test_eloop", MODE_RWX);
+> > > +	SAFE_SYMLINK(cleanup, "../test_eloop", "test_eloop/test_eloop");
+> > > +	for (i = 0; i < 43; i++)
+> > > +		strcat(elooppathname, "/test_eloop");
+> > >  }
+> > 
+> > Hmm, where has the 43 came from?
+> > 
 > 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  runtest/ltplite                         |   1 +
->  runtest/stress.part3                    |   1 +
->  runtest/syscalls                        |   1 +
->  testcases/kernel/syscalls/.gitignore    |   1 +
->  testcases/kernel/syscalls/link/link08.c | 191 ++++++++++++++++++++++++++++++++
->  5 files changed, 195 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/link/link08.c
+> I notice that the consecutive symlinks limits in kernel is hardwired to
+> 40 in RHEL 5, 6, 7, but I'm not sure whether this value is the same in
+> all linux kernels.
 
-Applied, thank you.
+I've looked into the kernel sources and it's hardcoded to 40 in
+fs/namei.c in follow_link() so I guess that we are fine with this value.
 
-Wanlong Gao
+We should probably add a short comment about where the number came from.
 
+> And the layer of the directory test_eloop/test_eloop is 2, if we want
+> the test return ELOOP errno , the layer must more than 41. 43 = 2 + 41.
+> 
+> > Moreover the elloppathname size is PATH_MAX, you cannot be sure that the
+> > whole string will fit (it likely will, but I would rather have value
+> > based on the actual string length).
+> > 
+> 
+> How about:
+> static char elooppathname[(sizeof("/test_eloop") - 1) * 43 + 2] = ".";
+
+I would simplify this to:
+
+#define ELOPFILE "/test_eloop"
+
+static char elooppathname[sizeof(ELOPFILE) * 43] = ".";
+
+That way the buffer would be a few bytes longer than we need.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
