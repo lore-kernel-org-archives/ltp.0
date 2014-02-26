@@ -1,17 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WIJx3-00077D-Qu
-	for ltp-list@lists.sourceforge.net; Tue, 25 Feb 2014 15:29:45 +0000
-Date: Tue, 25 Feb 2014 16:29:31 +0100
-From: chrubis@suse.cz
-Message-ID: <20140225152930.GA15483@rei>
-References: <8fcc00aaf04977590c7ffe20ce94d91b795869d8.1393341171.git.jstancek@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8fcc00aaf04977590c7ffe20ce94d91b795869d8.1393341171.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] move_pages: print errno if move_pages fail
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WIaEp-00060P-Vx
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 08:53:12 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WIaEp-00071b-7v
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 08:53:11 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s1Q8r4LY018800
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:53:05 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1Q8r4O9017157
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:53:04 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s1Q8r39o017142
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 08:53:04 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 26 Feb 2014 12:52:46 +0400
+Message-Id: <1393404766-18032-7-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 6/6] updated .gitignore for new tests in lib/tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,31 +38,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> -		TEST_ERRNO = errno;
->  		if (ret == -1 && errno == EPERM)
->  			tst_resm(TPASS, "move_pages failed with "
->  				 "EPERM as expected");
->  		else
-> -			tst_resm(TFAIL, "move_pages did not fail "
-> +			tst_resm(TFAIL|TERRNO, "move_pages did not fail "
->  				 "with EPERM");
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .gitignore |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-I would consider printing value or ret too here, because we may get here
-in case that the move_pages() hasn't failed at all and the errno would
-be undefined in this case.
-
-Otherwise it's fine.
-
+diff --git a/.gitignore b/.gitignore
+index 5f7f200..1e9c911 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -59,3 +59,5 @@ logfile.*
+ /lib/tests/tst_checkpoint_parent
+ /lib/tests/tst_checkpoint_parent_exits
+ /lib/tests/tst_process_state
++/lib/tests/tst_cleanup_once
++/lib/tests/tst_safe_macros
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Flow-based real-time traffic analytics software. Cisco certified tool.
