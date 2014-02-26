@@ -2,17 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WG8Kx-0008ID-Q8
-	for ltp-list@lists.sourceforge.net; Wed, 19 Feb 2014 14:41:23 +0000
-Date: Wed, 19 Feb 2014 15:41:12 +0100
+	(envelope-from <metan@suse.de>) id 1WIdzb-0006BV-Ih
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 12:53:43 +0000
+Date: Wed, 26 Feb 2014 13:53:30 +0100
 From: chrubis@suse.cz
-Message-ID: <20140219144112.GC2138@rei>
-References: <37DEC8B3-1B3C-4FD3-99F8-3E5436311195@gmx.net>
+Message-ID: <20140226125330.GA27210@rei.Home>
+References: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <37DEC8B3-1B3C-4FD3-99F8-3E5436311195@gmx.net>
-Subject: Re: [LTP] runltplite access06 test relies on DEVICE and
- DEVICE_FS_TYPE
+In-Reply-To: <1393404766-18032-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] .gitignore fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,37 +24,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Harry Weppner <harry.weppner@gmx.net>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> using runltplite, access06 is reported as broken because DEVICE and
-> DEVICE_FS_TYPE aren't set.
->
-> Unlike runltp there's no command line option or fallback mechanism
-> implemented in the runltplite script. Should access06 be taken out of
-> runltplite!?
+> This series should fix current lacks in the .gitignore files of LTP.
 
-There is increasing number testcases that needs a device for EROFS error
-tests.
-
-Ideally runltplite.sh should prepare and export the device just as
-runltp does, this should fix the testruns for now. Do you care to send a
-patch? :)
-
-Better solution would be to skip the EROFS test if device wasn't set and
-print a warning but this would require changes in the LTP test library
-(I have this on my longterm TODO).
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
