@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WDF7K-0006Wk-2B
-	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 15:19:22 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WDF7H-0004iA-2f
-	for ltp-list@lists.sourceforge.net; Tue, 11 Feb 2014 15:19:22 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s1BFJCxq032404
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 15:19:13 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s1BFJCmI000716
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 15:19:12 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s1BFJBMo013641
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Feb 2014 15:19:11 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 11 Feb 2014 19:19:04 +0400
-Message-Id: <1392131944-27263-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1392131944-27263-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <20140211142336.GA14876@rei.Home>
-	<1392131944-27263-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V2 2/2] msgctl11: process message queues by portions
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WIWgX-0002Tr-Ew
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 05:05:33 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WIWgU-0000Ct-T0
+	for ltp-list@lists.sourceforge.net; Wed, 26 Feb 2014 05:05:33 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1Q55JhF009926
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Feb 2014 13:05:19 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 26 Feb 2014 13:03:48 +0800
+Message-Id: <1393391028-9854-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH] fallocate/fallocate02.c: fix compilation error on
+	RHEL5.10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,196 +30,123 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-As /proc/sys/kernel/msgmni value scales with an amount of host memory,
-on systems with several tens gigabytes of ram this testcase fails
-with "Not enough free pids" error.
+add #define _GNU_SOURCE in order to have LLONG_MAX defined in RHEL5.10.
 
-Now if the amount of free pids is not enough to use all the queues at once
-we process the queues by portions (with the size based on an amount of free pids).
+ltp-fallocate.m4: create a configure check for fallocate() syscall and
+define the wrapper only when it's not available.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+fallocate02.c: delete this test item "{&fdw, FNAMEW, DEFAULT_TEST_MODE,
+BLOCKS_WRITTEN-OFFSET, 1, 0}". Fallocate02 is to test various error
+conditions for fallocate() syscall, usually these error conditions
+can be checked in vfs layer. Here this test item, which the expected
+return value is 0, is dependent on whether the underlying file systems
+implement fallocate. So here we choose to remove it, or may specify a
+block device, which contains a ext4 file system.
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |   71 ++++++++++++++++-------
- 1 files changed, 50 insertions(+), 21 deletions(-)
+ configure.ac                                      |  1 +
+ m4/ltp-fallocate.m4                               | 25 +++++++++++++++++++++++
+ testcases/kernel/syscalls/fallocate/fallocate.h   |  3 +++
+ testcases/kernel/syscalls/fallocate/fallocate02.c |  2 +-
+ 4 files changed, 30 insertions(+), 1 deletion(-)
+ create mode 100644 m4/ltp-fallocate.m4
 
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-index 63ff88f..9ef18da 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-@@ -60,6 +60,7 @@ static int rkidarray[MAXNKIDS];
- static int wkidarray[MAXNKIDS];
- static int tid;
- static int nprocs, nreps, nkids, MSGMNI;
-+static int maxnprocs;
- static int procstat;
+diff --git a/configure.ac b/configure.ac
+index 89a86b3..b954ede 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -171,5 +171,6 @@ LTP_CHECK_KERNEL_DEVEL
+ LTP_CHECK_XFS_QUOTACTL
+ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+ LTP_CHECK_MKDIRAT
++LTP_CHECK_FALLOCATE
  
- void setup(void);
-@@ -67,6 +68,7 @@ void cleanup(void);
+ AC_OUTPUT
+diff --git a/m4/ltp-fallocate.m4 b/m4/ltp-fallocate.m4
+new file mode 100644
+index 0000000..c7d509e
+--- /dev/null
++++ b/m4/ltp-fallocate.m4
+@@ -0,0 +1,25 @@
++dnl
++dnl Copyright (c) Linux Test Project, 2014
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program;  if not, write to the Free Software
++dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++dnl
++
++dnl
++dnl LTP_CHECK_FALLOCATE
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_FALLOCATE],[
++AC_CHECK_FUNCS(fallocate,,)
++])
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate.h b/testcases/kernel/syscalls/fallocate/fallocate.h
+index 358e610..22b2f51 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate.h
++++ b/testcases/kernel/syscalls/fallocate/fallocate.h
+@@ -23,8 +23,10 @@
  
- static void term(int);
- static int dotest(key_t, int);
-+static void dotest_iteration(int off);
- static void cleanup_msgqueue(int i, int tid);
+ #include <sys/types.h>
+ #include <endian.h>
++#include "config.h"
+ #include "linux_syscall_numbers.h"
  
- #ifdef UCLINUX
-@@ -84,8 +86,7 @@ static void do_child_3_uclinux(void);
- 
- int main(int argc, char **argv)
++#if !defined(HAVE_FALLOCATE)
+ static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
  {
--	int i, j, ok, pid;
--	int count, status;
-+	int i, j, ok;
- 
- #ifdef UCLINUX
- 	char *msg;
-@@ -109,7 +110,6 @@ int main(int argc, char **argv)
- 	if (argc == 1) {
- 		/* Set default parameters */
- 		nreps = MAXNREPS;
--		nprocs = MSGMNI;
- 		nkids = maxnkids;
- 	} else if (argc == 4) {
- 		if (atoi(argv[1]) > MAXNREPS) {
-@@ -120,13 +120,12 @@ int main(int argc, char **argv)
- 		} else {
- 			nreps = atoi(argv[1]);
- 		}
--		if (atoi(argv[2]) > MSGMNI) {
-+		if (atoi(argv[2]) > maxnprocs) {
- 			tst_resm(TCONF,
- 				 "Requested number of processes too large, setting to Max. of %d",
--				 MSGMNI);
--			nprocs = MSGMNI;
-+				 maxnprocs);
- 		} else {
--			nprocs = atoi(argv[2]);
-+			maxnprocs = atoi(argv[2]);
- 		}
- 		if (atoi(argv[3]) > maxnkids) {
- 			tst_resm(TCONF,
-@@ -153,7 +152,7 @@ int main(int argc, char **argv)
- 	/* Set up array of unique keys for use in allocating message
- 	 * queues
- 	 */
--	for (i = 0; i < nprocs; i++) {
-+	for (i = 0; i < MSGMNI; i++) {
- 		ok = 1;
- 		do {
- 			/* Get random key */
-@@ -172,13 +171,45 @@ int main(int argc, char **argv)
- 			}
- 		} while (ok == 0);
- 	}
--	/* Fork a number of processes (nprocs), each of which will
-+	/* Fork a number of processes, each of which will
- 	 * create a message queue with several (nkids) reader/writer
- 	 * pairs which will read and write a number (iterations)
- 	 * of random length messages with specific values (keys).
-+	 *
-+	 * We do not fork more than maxnprocs at a time and
-+	 * we fork until all the message queues get used.
- 	 */
- 
-+	if (MSGMNI <= maxnprocs) {
-+		nprocs = MSGMNI;
-+		dotest_iteration(0);
-+	} else {
-+		for (i = 0; i < (MSGMNI / maxnprocs); i++) {
-+			nprocs = maxnprocs;
-+			dotest_iteration(i*(MSGMNI / maxnprocs));
-+		}
-+
-+		nprocs = MSGMNI % maxnprocs;
-+		dotest_iteration(i*(MSGMNI / maxnprocs));
-+	}
-+
-+	tst_resm(TPASS, "msgctl11 ran successfully!");
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void dotest_iteration(int off)
-+{
-+	key_t key;
-+	int i, count, status;
-+	pid_t pid;
-+
-+	memset(pidarray, 0, sizeof(pidarray));
-+
- 	for (i = 0; i < nprocs; i++) {
-+		key = keyarray[off + i];
-+
- 		if ((pid = FORK_OR_VFORK()) < 0)
- 			tst_brkm(TFAIL, cleanup,
- 				 "Fork failed (may be OK if under stress)");
-@@ -186,13 +217,13 @@ int main(int argc, char **argv)
- 		/* Child does this */
- 		if (pid == 0) {
- #ifdef UCLINUX
--			if (self_exec(argv[0], "ndd", 1, keyarray[i], i) < 0) {
-+			if (self_exec(argv0, "ndd", 1, key, i) < 0) {
- 				printf("\tself_exec failed\n");
- 				exit(FAIL);
- 			}
- #else
- 			procstat = 1;
--			exit(dotest(keyarray[i], i));
-+			exit(dotest(key, i));
+ 	/* Deal with 32bit ABIs that have 64bit syscalls. */
+@@ -40,5 +42,6 @@ static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+ 						  (off_t) len));
  #endif
- 		}
- 		pidarray[i] = pid;
-@@ -219,11 +250,6 @@ int main(int argc, char **argv)
- 		tst_brkm(TFAIL, cleanup,
- 			 "Wrong number of children exited, Saw %d, Expected %d",
- 			 count, nprocs);
--
--	tst_resm(TPASS, "msgctl11 ran successfully!");
--
--	cleanup();
--	tst_exit();
  }
++#endif
  
- #ifdef UCLINUX
-@@ -447,6 +473,8 @@ void setup(void)
- 		tst_brkm(TBROK, cleanup,
- 			 "Max number of message queues already used, cannot create more.");
+ #endif /* FALLOCATE_H */
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+index 6412050..f2d466b 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate02.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+@@ -24,6 +24,7 @@
+  *	check fallocate() with various error conditions that should produce
+  *	EBADF, EINVAL and EFBIG.
+  */
++#define _GNU_SOURCE
  
-+	tst_resm(TINFO, "Found %d available message queues", MSGMNI);
-+
- 	free_pids = get_free_pids();
- 	if (free_pids < 0) {
- 		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
-@@ -454,11 +482,12 @@ void setup(void)
- 		tst_brkm(TBROK, cleanup, "No free pids");
- 	}
- 
--	if ((MSGMNI * MAXNKIDS * 2) > (free_pids / 2)) {
--		maxnkids = ((free_pids / 4) / MSGMNI);
--		if (!maxnkids)
--			tst_brkm(TBROK, cleanup, "Not enough free pids");
--	}
-+	/* We don't use more than a half of available pids.
-+	 * For each child we fork up to 2*maxnkids grandchildren. */
-+	maxnprocs = (free_pids / 2) / (1 + 2 * maxnkids);
-+
-+	if (!maxnprocs)
-+		tst_brkm(TBROK, cleanup, "Not enough free pids");
- 
- 	tst_resm(TINFO, "Using upto %d pids", free_pids / 2);
- }
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -73,7 +74,6 @@ static struct test_data_t {
+ 	{&fdw, FNAMEW, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL},
+ 	{&fdw, FNAMEW, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
+ 	{&fdw, FNAMEW, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN+OFFSET), 1, EINVAL},
+-	{&fdw, FNAMEW, DEFAULT_TEST_MODE, BLOCKS_WRITTEN-OFFSET, 1, 0},
+ 	{&fdw, FNAMEW, DEFAULT_TEST_MODE, MAX_FILESIZE, 1, EFBIG},
+ 	{&fdw, FNAMEW, DEFAULT_TEST_MODE, 1, MAX_FILESIZE, EFBIG},
+ };
 -- 
-1.7.1
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Android apps run on BlackBerry 10
-Introducing the new BlackBerry 10.2.1 Runtime for Android apps.
-Now with support for Jelly Bean, Bluetooth, Mapview and more.
-Get your Android app in front of a whole new audience.  Start now.
-http://pubads.g.doubleclick.net/gampad/clk?id=124407151&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
