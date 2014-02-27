@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WBOJk-000725-Nr
-	for ltp-list@lists.sourceforge.net; Thu, 06 Feb 2014 12:44:32 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WBOJj-0006dx-Uz
-	for ltp-list@lists.sourceforge.net; Thu, 06 Feb 2014 12:44:32 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s16CiPn8030849
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Feb 2014 12:44:26 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s16CiOUD025262
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Feb 2014 12:44:25 GMT
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s16CiOLJ029394
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Feb 2014 12:44:24 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu,  6 Feb 2014 16:44:16 +0400
-Message-Id: <1391690656-23047-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140205114813.GA24916@rei.suse.cz>
-References: <20140205114813.GA24916@rei.suse.cz>
-Subject: [LTP] [PATCH] nfsstress: fix paths
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1WIu04-00010c-P0
+	for ltp-list@lists.sourceforge.net; Thu, 27 Feb 2014 05:59:16 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WIu01-0000dV-2L
+	for ltp-list@lists.sourceforge.net; Thu, 27 Feb 2014 05:59:16 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s1R5wq6h006467
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Feb 2014 13:59:04 +0800
+Message-ID: <530ED407.4020905@cn.fujitsu.com>
+Date: Thu, 27 Feb 2014 13:58:31 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1393417946-8817-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1393417946-8817-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 1/2] mknod/mknod07.c: cleanup
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,65 +28,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- runtest/stress.part1                      |    8 ++++----
- testcases/network/nfs/nfsstress/nfsstress |    6 ++----
- 2 files changed, 6 insertions(+), 8 deletions(-)
+On 02/26/2014 08:32 PM, Xiaoguang Wang wrote:
+> Delete some useless comment.
+> Move the test body from main() to mknod_verify().
+> Some cleanup.
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/mknod/mknod07.c | 160 ++++++++++--------------------
+>  1 file changed, 50 insertions(+), 110 deletions(-)
 
-diff --git a/runtest/stress.part1 b/runtest/stress.part1
-index d879aaf..529716c 100644
---- a/runtest/stress.part1
-+++ b/runtest/stress.part1
-@@ -194,10 +194,10 @@ nfs03 export VERSION=2 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; nfs
- nfs03 export VERSION=3 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/bin; nfs04
- nfs03 export VERSION=3 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; nfs04
- 
--nfsstress export VERSION=2 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/network/nfs/nfsstress; nfsstress 20 50 1
--nfsstress export VERSION=2 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/network/nfs/nfsstress; nfsstress 20 50 1
--nfsstress export VERSION=3 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/network/nfs/nfsstress; nfsstress 20 50 1
--nfsstress export VERSION=3 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/network/nfs/nfsstress; nfsstress 20 50 1
-+nfsstress export VERSION=2 SOCKET_TYPE=udp; nfsstress 20 50 1
-+nfsstress export VERSION=2 SOCKET_TYPE=tcp; nfsstress 20 50 1
-+nfsstress export VERSION=3 SOCKET_TYPE=udp; nfsstress 20 50 1
-+nfsstress export VERSION=3 SOCKET_TYPE=tcp; nfsstress 20 50 1
- 
- nfsx-linux export VERSION=2 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
- nfsx-linux export VERSION=2 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
-diff --git a/testcases/network/nfs/nfsstress/nfsstress b/testcases/network/nfs/nfsstress/nfsstress
-index 3e078d9..6e337d9 100755
---- a/testcases/network/nfs/nfsstress/nfsstress
-+++ b/testcases/network/nfs/nfsstress/nfsstress
-@@ -43,11 +43,9 @@ $trace_logic
- # Initialize local variables
- #-----------------------------------------------------------------------
- TC=${TC:=nfsstress}
--TCbin=${TCbin:=`pwd`}
--TCdat=${TCdat:=$TCbin}
-+TCbin=${TCbin:=$LTPROOT/testcases/bin}
- TCsrc=${TCsrc:=$TCbin}
--TCtmp=${TCtmp:=$TCbin/$TC$$}
--TCdump=${TCdump:=$TCbin}
-+TCtmp=${TCtmp:=$TMPDIR/$TC$$}
- RHOST=${RHOST:=`hostname|awk {'print $1'}`}
- export TCID=$TC
- export TST_TOTAL=1
--- 
-1.7.1
+Applied, thank you.
+
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
