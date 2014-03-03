@@ -1,18 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WPXQv-0007ko-1N
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 13:18:25 +0000
-Date: Mon, 17 Mar 2014 14:18:03 +0100
-From: chrubis@suse.cz
-Message-ID: <20140317131803.GA3532@rei>
-References: <1392809376-13063-1-git-send-email-alexey.kodanev@oracle.com>
-	<20140313144804.GB2503@rei.suse.cz> <5326CE7C.5070603@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WKZU0-0002Bf-QM
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 20:29:04 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WKZTz-0002ut-64
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 20:29:04 +0000
+Date: Mon, 3 Mar 2014 15:28:49 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <40197796.12723624.1393878529754.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1393845909.1984.13.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
+	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
+	<1393832848.1991.19.camel@G08JYZSD130126>
+	<1393833079.1991.22.camel@G08JYZSD130126>
+	<1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
+	<1393845775.1984.10.camel@G08JYZSD130126>
+	<1393845909.1984.13.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5326CE7C.5070603@oracle.com>
-Subject: Re: [LTP] [PATCH v5] network: tcp_fastopen: add TCP Fast Open test
+Subject: Re: [LTP] [PATCH v5 3/3] mlock/mlock02.c: add EPERM and ENOMEM
+ errno tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +35,179 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > This version looks good. I would be happier if the shell part was ported
-> > to the new test.sh but I can live with it as it is now.
-> >
-> > And this patch is blocked by the thread safety patch for the tst_res.c.
-> > I guess I will commit it next week, it has been on the ML long enough.
-> >
-> OK, thanks. I can do porting later along with the fix which I would like 
-> to add to the test: there is recently added tst_get_unused_port() 
-> function, but how can I use it in the script, should I add it to 
-> tools/apicmds?
 
-Yes please.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+----- Original Message -----
+> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
+> Sent: Monday, 3 March, 2014 12:25:09 PM
+> Subject: [PATCH v5 3/3] mlock/mlock02.c: add EPERM and ENOMEM errno tests
+> 
+> Add EPERM and ENOMEM errno tests for mlock(2).
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+
+Looks good to me.
+
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+
+> ---
+>  testcases/kernel/syscalls/mlock/mlock02.c | 82
+>  ++++++++++++++++++++++++++++++-
+>  1 file changed, 80 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
+> b/testcases/kernel/syscalls/mlock/mlock02.c
+> index 95c499d..bfed030 100644
+> --- a/testcases/kernel/syscalls/mlock/mlock02.c
+> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
+> @@ -23,11 +23,20 @@
+>   *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
+>   *      if some of the specified address range does not correspond to
+>   *      mapped pages in the address space of the process.
+> + *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
+> + *      if (Linux  2.6.9  and  later)  the caller had a non-zero
+> RLIMIT_MEMLOCK
+> + *      soft resource limit, but tried to lock more memory than the limit
+> + *      permitted.  This limit is not enforced if the process is privileged
+> + *      (CAP_IPC_LOCK).
+> + *   3. mlock() fails with -1 return value and sets errno to EPERM,
+> + *      if (Linux 2.6.9 and later) the caller was not privileged
+> (CAP_IPC_LOCK)
+> + *      and its RLIMIT_MEMLOCK soft resource limit was 0.
+>   */
+>  
+>  #include <errno.h>
+>  #include <unistd.h>
+>  #include <sys/mman.h>
+> +#include <pwd.h>
+>  
+>  #include "test.h"
+>  #include "usctest.h"
+> @@ -40,14 +49,18 @@ char *TCID = "mlock02";
+>  static void setup(void);
+>  static void cleanup(void);
+>  static void test_enomem1(void);
+> +static void test_enomem2(void);
+> +static void test_eperm(void);
+>  static void mlock_verify(const void *, const size_t, const int);
+>  
+>  static size_t len;
+> +static struct rlimit original;
+> +static struct passwd *ltpuser;
+>  
+> -static void (*test_func[])(void) = { test_enomem1 };
+> +static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm
+> };
+>  
+>  int TST_TOTAL = ARRAY_SIZE(test_func);
+> -static int exp_enos[] = { ENOMEM, 0 };
+> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
+>  
+>  int main(int ac, char **av)
+>  {
+> @@ -73,11 +86,17 @@ int main(int ac, char **av)
+>  
+>  static void setup(void)
+>  {
+> +	tst_require_root(NULL);
+> +
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  
+>  	TEST_PAUSE;
+>  
+> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+> +
+>  	len = getpagesize();
+> +
+> +	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+>  }
+>  
+>  static void test_enomem1(void)
+> @@ -111,6 +130,65 @@ static void test_enomem1(void)
+>  	mlock_verify(addr, len, ENOMEM);
+>  }
+>  
+> +static void test_enomem2(void)
+> +{
+> +	void *addr;
+> +	struct rlimit rl;
+> +
+> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
+> +		tst_resm(TCONF,
+> +			 "ENOMEM error value test for this condition needs "
+> +			 "kernel 2.6.9 or higher");
+> +		return;
+> +	}
+> +
+> +	rl.rlim_max = len - 1;
+> +	rl.rlim_cur = len - 1;
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+> +
+> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> +
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +
+> +	mlock_verify(addr, len, ENOMEM);
+> +
+> +	SAFE_SETEUID(cleanup, 0);
+> +
+> +	SAFE_MUNMAP(cleanup, addr, len);
+> +
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+> +}
+> +
+> +static void test_eperm(void)
+> +{
+> +	void *addr;
+> +	struct rlimit rl;
+> +
+> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
+> +		tst_resm(TCONF,
+> +			 "EPERM error value test needs kernel 2.6.9 or higher");
+> +		return;
+> +	}
+> +
+> +	rl.rlim_max = 0;
+> +	rl.rlim_cur = 0;
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+> +
+> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> +
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +
+> +	mlock_verify(addr, len, EPERM);
+> +
+> +	SAFE_SETEUID(cleanup, 0);
+> +
+> +	SAFE_MUNMAP(cleanup, addr, len);
+> +
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+> +}
+> +
+>  static void mlock_verify(const void *addr, const size_t len, const int
+>  error)
+>  {
+>  	TEST(mlock(addr, len));
+> --
+> 1.8.4.2
+> 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
