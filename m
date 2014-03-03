@@ -1,18 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WSrCB-0008Lm-Fa
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 17:00:55 +0000
-Date: Wed, 26 Mar 2014 18:00:28 +0100
-From: chrubis@suse.cz
-Message-ID: <20140326170027.GA11941@rei.Home>
-References: <20140326131946.GD9168@rei.suse.cz>
-	<1395851259-14416-1-git-send-email-xu.simon@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1395851259-14416-1-git-send-email-xu.simon@oracle.com>
-Subject: Re: [LTP] [PATCH] xinetd_test.sh: restart xinetd by restart_daemon()
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WKNbF-0008Dw-Me
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 07:47:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WKNbE-0004iz-1x
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 07:47:45 +0000
+Message-ID: <1393832848.1991.19.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 03 Mar 2014 15:47:28 +0800
+In-Reply-To: <929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
+	<1392802716.2083.4.camel@G08JYZSD130126>
+	<1392802803.2083.5.camel@G08JYZSD130126>
+	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
+	<1392889204.2053.7.camel@G08JYZSD130126>
+	<1392889813.2053.10.camel@G08JYZSD130126>
+	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
+	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH v4 1/3] safe_macros: Add SAFE_GETRLIMIT and
+	SAFE_SETRLIMIT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,40 +36,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Simon Xu <xu.simon@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Signed-off-by: Simon Xu <xu.simon@oracle.com>
-> ---
->  testcases/network/xinetd/xinetd_tests.sh | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
-> index dac23a8..38cd7b0 100755
-> --- a/testcases/network/xinetd/xinetd_tests.sh
-> +++ b/testcases/network/xinetd/xinetd_tests.sh
-> @@ -63,6 +63,8 @@ init()
->      export TST_TOTAL=2
->      export TCID="xinetd"
->      export TST_COUNT=0
-> +    export XINETD_DAEMON='xinetd'
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ include/safe_macros.h | 10 ++++++++++
+ lib/safe_macros.c     | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-I would be for passing the xinetd directly to the restart_daemon (just
-calling restart_daemon xinetd) function unless you know that there is a
-distribution that named it differently and we will need the runtime name
-detection.
-
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index 207affc..bdd974c 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -196,5 +196,15 @@ int safe_lstat(const char *file, const int lineno, void (cleanup_fn)(void),
+ #define SAFE_LSTAT(cleanup_fn, path, buf) \
+ 	safe_lstat(__FILE__, __LINE__, (cleanup_fn), (path), (buf))
+ 
++int safe_getrlimit(const char *file, const int lineno, void (cleanup_fn)(void),
++		   int resource, struct rlimit *rlim);
++#define SAFE_GETRLIMIT(cleanup_fn, resource, rlim) \
++	safe_getrlimit(__FILE__, __LINE__, (cleanup_fn), (resource), (rlim))
++
++int safe_setrlimit(const char *file, const int lineno, void (cleanup_fn)(void),
++		   int resource, const struct rlimit *rlim);
++#define SAFE_SETRLIMIT(cleanup_fn, resource, rlim) \
++	safe_setrlimit(__FILE__, __LINE__, (cleanup_fn), (resource), (rlim))
++
+ #endif /* __SAFE_MACROS_H__ */
+ #endif /* __TEST_H__ */
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index ad24195..e8795ef 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -500,3 +500,33 @@ int safe_lstat(const char *file, const int lineno,
+ 
+ 	return rval;
+ }
++
++int safe_getrlimit(const char *file, const int lineno,
++		   void (cleanup_fn)(void), int resource, struct rlimit *rlim)
++{
++	int rval;
++
++	rval = getrlimit(resource, rlim);
++
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "getrlimit failed at %s:%d", file, lineno);
++	}
++
++	return rval;
++}
++
++int safe_setrlimit(const char *file, const int lineno, void (cleanup_fn)(void),
++		   int resource, const struct rlimit *rlim)
++{
++	int rval;
++
++	rval = setrlimit(resource, rlim);
++
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "setrlimit failed at %s:%d", file, lineno);
++	}
++
++	return rval;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
