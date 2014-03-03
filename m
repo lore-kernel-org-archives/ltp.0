@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vapier@gentoo.org>) id 1WMnKy-00014l-Da
-	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 23:40:56 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WMnKw-00089P-J8
-	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 23:40:56 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 09 Mar 2014 19:40:52 -0400
-Message-ID: <10580235.j7E8ls0tGP@vapier>
-In-Reply-To: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
-References: <cover.1394190599.git.jstancek@redhat.com>
-	<b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] add tst_get_unused_port()
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WKNet-0008S4-79
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 07:51:31 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WKNer-0000Lt-O1
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 07:51:31 +0000
+Message-ID: <1393833079.1991.22.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 03 Mar 2014 15:51:19 +0800
+In-Reply-To: <1393832848.1991.19.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
+	<1392802716.2083.4.camel@G08JYZSD130126>
+	<1392802803.2083.5.camel@G08JYZSD130126>
+	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
+	<1392889204.2053.7.camel@G08JYZSD130126>
+	<1392889813.2053.10.camel@G08JYZSD130126>
+	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
+	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
+	<1393832848.1991.19.camel@G08JYZSD130126>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH v4 3/3] mlock/mlock02.c: add EPERM and ENOMEM errno
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,74 +34,154 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9181301570483375625=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---===============9181301570483375625==
-Content-Type: multipart/signed; boundary="nextPart11540571.i1ZPf3DYRc";
-	micalg="pgp-sha1"; protocol="application/pgp-signature"
-
-
---nextPart11540571.i1ZPf3DYRc
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="us-ascii"
-
-On Fri 07 Mar 2014 12:39:24 Jan Stancek wrote:
-> Returns unused port number for specified domain/type.
-
-the new func isn't race free, but it is way better than the current cod=
-e, and=20
-the race is pretty small.  so LGTM.
-
-> +unsigned short tst_get_unused_port(unsigned short family, int type,
-> +=09void (cleanup_fn)(void))
-> +{
-> +=09int sock;
-> +=09struct sockaddr_in addr4;
-> +=09struct sockaddr_in6 addr6;
-
-the current code works, but isn't the point of sockaddr_storage to avoi=
-d this=20
-duplicated storage logic ?  so you could just do:
-=09struct sockaddr_storage _addr;
-=09struct sockaddr *addr =3D (struct sockaddr *)&_addr;
-=09struct sockaddr_in *addr4 =3D (struct sockaddr_in *)addr;
-=09struct sockaddr_in6 *addr6 =3D (struct sockaddr_in6 *)addr;
-=2Dmike
---nextPart11540571.i1ZPf3DYRc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAABAgAGBQJTHPwFAAoJEEFjO5/oN/WBYnMP/2hifyZMIaqVinnVrJDrOhcm
-VjCwYV+7adFhvXxhT16xBfJKLkLaFQbdpR0ZT9l59/fNbfnYcSPqdEpPgawZTSwp
-wXEKnIB3GcfF4jg4C3WLCMZ+VzlqB5udfdyl4qIJ8FvXITaVIR2Ound57Yr6t3kt
-IomYihdb66c7Tgb9ViwQ1vYxZSVvvRd9+xRLTzO8nY4X/76Gr0IW/CS94xXy0gs+
-8z72yBBAf/jUd6/HVtEae+ZZi8dFgMbuOGozmnMZz2FuBHUEJ2Z8I67RgAdK9DjO
-RxyJ/EHz3LShrnnquD0Mju97NA8DZ7lOGbpDOulQXV4OstlRemO6JnwTHHE7Zq2q
-oWmuhWufLaMt4CNff1Aglgiswuo8Kr7i5swNwBDliyaaXjBhwISfciTvUZe6QKJf
-7pDyZwbxIX24bBBU+qt2ThRAkRphv7oUzg8m3m/ixcsb1MQbR6//DzXlRlUn15Nt
-7F6qNFwA4lRhZSNVMDQs0MsGlkaUvcFfEcbxgBv3vZg/Dt2JXPVS8lXSE2QupFmE
-/nDGjznVJyAQE5sDyjTVqvWPQrP5wq1/6r24Kih3AU0CL1Zb/iSG7h5fQ5U0bOkO
-nfYm3TI/kbImpuRnGMbEpaDYRZiAoJ//+4paVV/dTgTxNToJsV/UnhZZ5WusQTWn
-3mpkDu2bvEtdAcNazpBj
-=ysEw
------END PGP SIGNATURE-----
-
---nextPart11540571.i1ZPf3DYRc--
-
-
-
---===============9181301570483375625==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
+
+Add EPERM and ENOMEM errno tests for mlock(2).
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mlock/mlock02.c | 82 ++++++++++++++++++++++++++++++-
+ 1 file changed, 80 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
+index a6f99e6..b7579ac 100644
+--- a/testcases/kernel/syscalls/mlock/mlock02.c
++++ b/testcases/kernel/syscalls/mlock/mlock02.c
+@@ -23,11 +23,20 @@
+  *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
+  *      if some of the specified address range does not correspond to
+  *      mapped pages in the address space of the process.
++ *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
++ *      if (Linux  2.6.9  and  later)  the caller had a non-zero RLIMIT_MEMLOCK
++ *      soft resource limit, but tried to lock more memory than the limit
++ *      permitted.  This limit is not enforced if the process is privileged
++ *      (CAP_IPC_LOCK).
++ *   3. mlock() fails with -1 return value and sets errno to EPERM,
++ *      if (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
++ *      and its RLIMIT_MEMLOCK soft resource limit was 0.
+  */
+ 
+ #include <errno.h>
+ #include <unistd.h>
+ #include <sys/mman.h>
++#include <pwd.h>
+ 
+ #include "test.h"
+ #include "usctest.h"
+@@ -40,14 +49,18 @@ char *TCID = "mlock02";
+ static void setup(void);
+ static void cleanup(void);
+ static void test_enomem1(void);
++static void test_enomem2(void);
++static void test_eperm(void);
+ static void mlock_verify(const void *, const size_t, const int);
+ 
+ static size_t len;
++static struct rlimit original;
++static struct passwd *ltpuser;
+ 
+-static void (*test_func[])(void) = { test_enomem1 };
++static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm };
+ 
+ int TST_TOTAL = ARRAY_SIZE(test_func);
+-static int exp_enos[] = { ENOMEM, 0 };
++static int exp_enos[] = { ENOMEM, EPERM, 0 };
+ 
+ int main(int ac, char **av)
+ {
+@@ -73,11 +86,17 @@ int main(int ac, char **av)
+ 
+ static void setup(void)
+ {
++	tst_require_root(NULL);
++
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
+ 
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++
+ 	len = getpagesize();
++
++	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+ }
+ 
+ static void test_enomem1(void)
+@@ -111,6 +130,65 @@ static void test_enomem1(void)
+ 	mlock_verify(addr, len, ENOMEM);
+ }
+ 
++static void test_enomem2(void)
++{
++	void *addr;
++	struct rlimit rl;
++
++	if ((tst_kvercmp(2, 6, 9)) < 0) {
++		tst_resm(TCONF,
++			 "ENOMEM error value test for this condition needs "
++			 "kernel 2.6.9 or higher");
++		return;
++	}
++
++	rl.rlim_max = len;
++	rl.rlim_cur = len;
++	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
++
++	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
++			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++
++	mlock_verify(&addr, len, ENOMEM);
++
++	SAFE_SETEUID(cleanup, 0);
++
++	SAFE_MUNMAP(cleanup, addr, len);
++
++	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
++}
++
++static void test_eperm(void)
++{
++	void *addr;
++	struct rlimit rl;
++
++	if ((tst_kvercmp(2, 6, 9)) < 0) {
++		tst_resm(TCONF,
++			 "EPERM error value test needs kernel 2.6.9 or higher");
++		return;
++	}
++
++	rl.rlim_max = 0;
++	rl.rlim_cur = 0;
++	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
++
++	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
++			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++
++	mlock_verify(&addr, len, EPERM);
++
++	SAFE_SETEUID(cleanup, 0);
++
++	SAFE_MUNMAP(cleanup, addr, len);
++
++	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
++}
++
+ static void mlock_verify(const void *addr, const size_t len, const int error)
+ {
+ 	TEST(mlock(addr, len));
+-- 
+1.8.4.2
+
+
+
 
 ------------------------------------------------------------------------------
 Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
@@ -100,17 +189,7 @@ With Perforce, you get hassle-free workflows. Merge that actually works.
 Faster operations. Version large binaries.  Built-in WAN optimization and the
 freedom to use Git, Perforce or both. Make the move to Perforce.
 http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
---===============9181301570483375625==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9181301570483375625==--
-
-
