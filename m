@@ -1,35 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WSSI5-0003hE-44
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:25:21 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WSSI4-0003vw-Cf
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:25:21 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2PEPEaf006469
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:14 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2PEPDSu017991
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:13 GMT
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2PEPD89017974
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:13 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 25 Mar 2014 18:24:32 +0400
-Message-Id: <1395757480-27424-7-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V2 06/14] Removed run_rpc_tests.sh from runtest/rpc,
-	runtest/stress.part3
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WKOqU-0000J2-6J
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 09:07:34 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WKOqS-0004OV-Mi
+	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 09:07:34 +0000
+Date: Mon, 3 Mar 2014 04:07:14 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1393833079.1991.22.camel@G08JYZSD130126>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
+	<1392889204.2053.7.camel@G08JYZSD130126>
+	<1392889813.2053.10.camel@G08JYZSD130126>
+	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
+	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
+	<1393832848.1991.19.camel@G08JYZSD130126>
+	<1393833079.1991.22.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v4 3/3] mlock/mlock02.c: add EPERM and ENOMEM
+ errno tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,56 +32,217 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Building of the rpt-tirpc test suite depends on the libtirpc availability,
-but runtest/rpc and runtest/stress.part3 contain only test cases, which
-are built by default.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- runtest/rpc          |    1 -
- runtest/stress.part3 |    1 -
- 2 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/runtest/rpc b/runtest/rpc
-index c9e5f0d..b65268c 100644
---- a/runtest/rpc
-+++ b/runtest/rpc
-@@ -2,7 +2,6 @@
- #
- # PLEASE READ THE README FILE IN /rpc BEFORE RUNNING THESE.
- #
--run_rpc_tests.sh run_rpc_tests.sh
- rpc01 rpc01
- rpcinfo rpcinfo01
- rup rup01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 1453eb1..9c860c4 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -890,6 +890,5 @@ hangup01 hangup01
- mc_cmds mc_cmds
- mc_opts export TCsrc=$LTPROOT/testcases/network/multicast/mc_opts; mc_opts
- rpc01 rpc01
--run_rpc_tests.sh export TCbin=$LTPROOT/testcases/network/rpc/rpc-tirpc-full-test-suite; run_rpc_tests.sh
- perf_lan perf_lan
- 
--- 
-1.7.1
+----- Original Message -----
+> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
+> Sent: Monday, 3 March, 2014 8:51:19 AM
+> Subject: [PATCH v4 3/3] mlock/mlock02.c: add EPERM and ENOMEM errno tests
+> 
+> Add EPERM and ENOMEM errno tests for mlock(2).
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/mlock/mlock02.c | 82
+>  ++++++++++++++++++++++++++++++-
+>  1 file changed, 80 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
+> b/testcases/kernel/syscalls/mlock/mlock02.c
+> index a6f99e6..b7579ac 100644
+> --- a/testcases/kernel/syscalls/mlock/mlock02.c
+> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
+> @@ -23,11 +23,20 @@
+>   *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
+>   *      if some of the specified address range does not correspond to
+>   *      mapped pages in the address space of the process.
+> + *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
+> + *      if (Linux  2.6.9  and  later)  the caller had a non-zero
+> RLIMIT_MEMLOCK
+> + *      soft resource limit, but tried to lock more memory than the limit
+> + *      permitted.  This limit is not enforced if the process is privileged
+> + *      (CAP_IPC_LOCK).
+> + *   3. mlock() fails with -1 return value and sets errno to EPERM,
+> + *      if (Linux 2.6.9 and later) the caller was not privileged
+> (CAP_IPC_LOCK)
+> + *      and its RLIMIT_MEMLOCK soft resource limit was 0.
+>   */
+>  
+>  #include <errno.h>
+>  #include <unistd.h>
+>  #include <sys/mman.h>
+> +#include <pwd.h>
+>  
+>  #include "test.h"
+>  #include "usctest.h"
+> @@ -40,14 +49,18 @@ char *TCID = "mlock02";
+>  static void setup(void);
+>  static void cleanup(void);
+>  static void test_enomem1(void);
+> +static void test_enomem2(void);
+> +static void test_eperm(void);
+>  static void mlock_verify(const void *, const size_t, const int);
+>  
+>  static size_t len;
+> +static struct rlimit original;
+> +static struct passwd *ltpuser;
+>  
+> -static void (*test_func[])(void) = { test_enomem1 };
+> +static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm
+> };
+>  
+>  int TST_TOTAL = ARRAY_SIZE(test_func);
+> -static int exp_enos[] = { ENOMEM, 0 };
+> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
+>  
+>  int main(int ac, char **av)
+>  {
+> @@ -73,11 +86,17 @@ int main(int ac, char **av)
+>  
+>  static void setup(void)
+>  {
+> +	tst_require_root(NULL);
+> +
+>  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>  
+>  	TEST_PAUSE;
+>  
+> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+> +
+>  	len = getpagesize();
+> +
+> +	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+>  }
+>  
+>  static void test_enomem1(void)
+> @@ -111,6 +130,65 @@ static void test_enomem1(void)
+>  	mlock_verify(addr, len, ENOMEM);
+>  }
+>  
+> +static void test_enomem2(void)
+> +{
+> +	void *addr;
+> +	struct rlimit rl;
+> +
+> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
+> +		tst_resm(TCONF,
+> +			 "ENOMEM error value test for this condition needs "
+> +			 "kernel 2.6.9 or higher");
+> +		return;
+> +	}
+> +
 
+Hi,
+
+
+
+> +	rl.rlim_max = len;
+> +	rl.rlim_cur = len;
+
+"tried to  lock  more  memory than the limit permitted."
+You currently allow as much as you try to mlock.
+
+I'd suggest:
+-       rl.rlim_max = len;
+-       rl.rlim_cur = len;
++       rl.rlim_max = len - 1;
++       rl.rlim_cur = len - 1;
+
+
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+> +
+> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
+
+Trying to mlock PROT_NONE will give you ENOMEM no matter how big the limit is.
+I suggest PROT_READ here.
+
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> +
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +
+> +	mlock_verify(&addr, len, ENOMEM);
+
+This is trying to mlock memory location of "addr" variable,
+not the area that was just allocated with mmap.
+
+Notice the address passed to mlock() in this strace output:
+  mmap(NULL, 4096, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, 0, 0) = 0x7fe39bfbc000
+  setresuid(-1, 99, -1)                   = 0
+  mlock(0x7fff721089a8, 4096)             = -1 ENOMEM (Cannot allocate memory)
+
+-       mlock_verify(&addr, len, ENOMEM);
++       mlock_verify(addr, len, ENOMEM);
+
+> +
+> +	SAFE_SETEUID(cleanup, 0);
+> +
+> +	SAFE_MUNMAP(cleanup, addr, len);
+> +
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+> +}
+> +
+> +static void test_eperm(void)
+> +{
+> +	void *addr;
+> +	struct rlimit rl;
+> +
+> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
+> +		tst_resm(TCONF,
+> +			 "EPERM error value test needs kernel 2.6.9 or higher");
+> +		return;
+> +	}
+> +
+> +	rl.rlim_max = 0;
+> +	rl.rlim_cur = 0;
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+> +
+> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> +
+> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> +
+> +	mlock_verify(&addr, len, EPERM);
+
+Same as in test_enomem2():
+-       mlock_verify(&addr, len, EPERM);
++       mlock_verify(addr, len, EPERM);
+
+Regards,
+Jan
+
+> +
+> +	SAFE_SETEUID(cleanup, 0);
+> +
+> +	SAFE_MUNMAP(cleanup, addr, len);
+> +
+> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+> +}
+> +
+>  static void mlock_verify(const void *addr, const size_t len, const int
+>  error)
+>  {
+>  	TEST(mlock(addr, len));
+> --
+> 1.8.4.2
+> 
+> 
+> 
+> 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
