@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WLseB-0003XW-TA
-	for ltp-list@lists.sourceforge.net; Fri, 07 Mar 2014 11:08:59 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WLse9-0007ZF-TX
-	for ltp-list@lists.sourceforge.net; Fri, 07 Mar 2014 11:08:59 +0000
-Date: Fri, 7 Mar 2014 06:08:49 -0500 (EST)
+	(envelope-from <jstancek@redhat.com>) id 1WKwrw-00065X-1r
+	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 21:27:20 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WKwru-0007F2-BC
+	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 21:27:20 +0000
+Date: Tue, 4 Mar 2014 16:27:10 -0500 (EST)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <638164819.632620.1394190529292.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1394070844-20617-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1394070844-20617-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <1394074914.13282748.1393968430203.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1392978149-10836-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1392978149-10836-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3] mprotect/mprotect04.c: add PROT_NONE,
-	PROT_EXEC flag test
+Subject: Re: [LTP] [PATCH] mprotect/mprotect04.c: add PROT_NONE,
+ PROT_EXEC flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +28,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: gux.fnst@cn.fujitsu.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
 
 
 ----- Original Message -----
-> From: "Xing Gu" <gux.fnst@cn.fujitsu.com>
+> From: "Gu Xing" <gux.fnst@cn.fujitsu.com>
 > To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 6 March, 2014 2:54:04 AM
-> Subject: [LTP] [PATCH v3] mprotect/mprotect04.c: add PROT_NONE,	PROT_EXEC flag test
+> Sent: Friday, 21 February, 2014 11:22:29 AM
+> Subject: [LTP] [PATCH] mprotect/mprotect04.c: add PROT_NONE,	PROT_EXEC flag test
 > 
 > create a new case to test PROT_NONE, PROT_EXEC flag for mprotect(2)
 > 
-> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
-
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
-Looks good to me, regards,
-Jan
-
+> Signed-off-by: Gu Xing <gux.fnst@cn.fujitsu.com>
 > ---
 >  runtest/ltplite                                 |   1 +
 >  runtest/stress.part3                            |   1 +
 >  runtest/syscalls                                |   1 +
 >  testcases/kernel/syscalls/.gitignore            |   1 +
->  testcases/kernel/syscalls/mprotect/mprotect04.c | 171
+>  testcases/kernel/syscalls/mprotect/mprotect04.c | 204
 >  ++++++++++++++++++++++++
->  5 files changed, 175 insertions(+)
+>  5 files changed, 208 insertions(+)
 >  create mode 100644 testcases/kernel/syscalls/mprotect/mprotect04.c
 > 
 > diff --git a/runtest/ltplite b/runtest/ltplite
@@ -111,13 +105,13 @@ Jan
 > diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c
 > b/testcases/kernel/syscalls/mprotect/mprotect04.c
 > new file mode 100644
-> index 0000000..17ee73d
+> index 0000000..1390175
 > --- /dev/null
 > +++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
-> @@ -0,0 +1,171 @@
+> @@ -0,0 +1,204 @@
 > +/*
 > + * Copyright (c) 2014 Fujitsu Ltd.
-> + * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
+> + * Author: Gu Xing <gux.fnst@cn.fujitsu.com>
 > + *
 > + * This program is free software; you can redistribute it and/or modify it
 > + * under the terms of version 2 of the GNU General Public License as
@@ -150,11 +144,26 @@ Jan
 > +#include <errno.h>
 > +#include <string.h>
 > +#include <sys/mman.h>
+> +#include <bits/wordsize.h>
 > +#include <stdlib.h>
 > +
 > +#include "test.h"
 > +#include "usctest.h"
 > +#include "safe_macros.h"
+> +
+> +#define TEST_FILE1 "testfile1"
+> +
+> +#if __WORDSIZE == 64
+> +typedef unsigned long long psint_t;
+> +#else
+> +typedef unsigned int psint_t;
+> +#endif
+
+Hi,
+
+You could use uintptr_t, but I think you can avoid also that,
+see below.
+
 > +
 > +static void sighandler(int sig);
 > +
@@ -164,6 +173,7 @@ Jan
 > +static void testfunc_protnone(void);
 > +
 > +static void exec_func(void);
+> +static int (*func)(void);
 > +static void testfunc_protexec(void);
 > +
 > +static void (*testfunc[])(void) = { testfunc_protnone, testfunc_protexec };
@@ -171,8 +181,9 @@ Jan
 > +char *TCID = "mprotect04";
 > +int TST_TOTAL = ARRAY_SIZE(testfunc);
 > +
-> +static volatile int sigsegv_caught;
+> +static int pass;
 > +static sigjmp_buf env;
+> +static int page_sz;
 > +
 > +int main(int ac, char **av)
 > +{
@@ -200,11 +211,11 @@ Jan
 > +static void sighandler(int sig)
 > +{
 > +	if (sig == SIGSEGV) {
-> +		sigsegv_caught = 1;
+> +		pass = 1;
 > +		siglongjmp(env, 1);
 > +	} else {
 > +		tst_brkm(TBROK, cleanup, "received an unexpected signal: %d",
-> +				 sig);
+> +			 sig);
 > +	}
 > +}
 > +
@@ -213,36 +224,73 @@ Jan
 > +	tst_sig(NOFORK, sighandler, cleanup);
 > +
 > +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
 > +}
 > +
 > +static void testfunc_protnone(void)
 > +{
-> +	char *addr;
-> +	int page_sz;
+> +	int fd;
+> +	int write_sz;
+> +	const char buf[] = "abcdefghijklmnopqistuvwxyz";
+> +	char *addr = MAP_FAILED;
+No need to initialize it, that value is immediately thrown away.
+
 > +
-> +	sigsegv_caught = 0;
+> +	fd = SAFE_OPEN(cleanup, TEST_FILE1, O_RDWR | O_CREAT, 0777);
 > +
 > +	page_sz = getpagesize();
+Is there any reason for page_sz to be global variable?
+
 > +
-> +	addr = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
-> +					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	do {
+> +		if ((size_t)page_sz > strlen(buf))
+> +			write_sz = strlen(buf);
+> +		else
+> +			write_sz = page_sz;
 > +
-> +	/* Change the protection to PROT_NONE. */
-> +	TEST(mprotect(addr, page_sz, PROT_NONE));
+> +		page_sz -= SAFE_WRITE(cleanup, 1, fd, buf, write_sz);
+> +
+> +	} while (page_sz > 0);
+> +
+> +	addr = SAFE_MMAP(cleanup, 0, sizeof(buf), PROT_READ | PROT_WRITE,
+> +			 MAP_SHARED, fd, 0);
+
+Not sure why you need a file. Not that it's bad, it seems unnecessary,
+as you could do:
+        addr = SAFE_MMAP(cleanup, 0, getpagesize(), PROT_READ | PROT_WRITE,
+                         MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+
+> +
+> +	/* Change the protection to NONE. */
+> +	TEST(mprotect(addr, sizeof(buf), PROT_NONE));
 > +
 > +	if (TEST_RETURN == -1) {
 > +		tst_resm(TFAIL | TTERRNO, "mprotect failed");
-> +	} else {
-> +		if (sigsetjmp(env, 1) == 0)
-> +			addr[0] = 1;
-> +
-> +		if (sigsegv_caught)
-> +			tst_resm(TPASS, "test PROT_NONE for mprotect success");
-> +		else
-> +			tst_resm(TFAIL, "test PROT_NONE for mprotect failed");
+> +		goto cleanup_protnone;
 > +	}
+If you add else here, you can remove goto.
+
 > +
-> +	SAFE_MUNMAP(cleanup, addr, page_sz);
+> +	if (sigsetjmp(env, 1) == 0)
+> +		addr[0] = 1;
+> +
+> +	if (pass)
+> +		tst_resm(TPASS, "test PROT_NONE for mprotect success");
+> +	else
+> +		tst_resm(TFAIL, "test PROT_NONE for mprotect failed");
+> +
+> +	pass = 0;
+Resetting this value before test looks easier to follow.
+
+> +
+> +cleanup_protnone:
+> +	SAFE_MUNMAP(cleanup, addr, sizeof(buf));
+> +	addr = MAP_FAILED;
+No need to reset addr here.
+
+> +
+> +	SAFE_CLOSE(cleanup, fd);
 > +}
 > +
 > +static void exec_func(void)
@@ -252,38 +300,55 @@ Jan
 > +
 > +static void testfunc_protexec(void)
 > +{
-> +	int page_sz;
-> +	int (*func)(void);
-> +
-> +	sigsegv_caught = 0;
+> +	psint_t base_func;
 > +
 > +	page_sz = getpagesize();
 > +
-> +	func = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
-> +					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	func = SAFE_MALLOC(cleanup, page_sz);
 > +
-> +	memcpy(func, exec_func, page_sz);
+> +	bcopy(exec_func, func, page_sz);
 > +
-> +	/* Change the protection to PROT_EXEC. */
-> +	TEST(mprotect(func, page_sz, PROT_EXEC));
+> +	base_func = (psint_t)func & ~(page_sz - 1);
+> +
+> +	/* Change the protection to EXEC. */
+> +	TEST(mprotect((void *)base_func, page_sz, PROT_EXEC));
+
+You malloc page, align that address and then change protection
+for memory that can be also outside what you just allocated.
+
+It fails for me with:
+mprotect04    2  TFAIL  :  mprotect failed: TEST_ERRNO=EACCES(13): Permission denied
+
+Also I don't see any free for that malloc.
+I'd suggest mmap instead, the result will be already aligned on page.
+
 > +
 > +	if (TEST_RETURN == -1) {
 > +		tst_resm(TFAIL | TTERRNO, "mprotect failed");
-> +	} else {
-> +		if (sigsetjmp(env, 1) == 0)
-> +			(*func)();
-> +
-> +		if (sigsegv_caught)
-> +			tst_resm(TFAIL, "test PROT_EXEC for mprotect failed");
-> +		else
-> +			tst_resm(TPASS, "test PROT_EXEC for mprotect success");
+> +		return;
 > +	}
 > +
-> +	SAFE_MUNMAP(cleanup, func, page_sz);
+> +	if (sigsetjmp(env, 1) == 0)
+> +		(*func)();
+> +
+> +	if (pass)
+> +		tst_resm(TFAIL, "test PROT_EXEC for mprotect failed");
+This looks bit confusing, I'd suggest to rename variable to
+something like "sighandler_called" and again reset value before test.
+
+Regards,
+Jan
+
+> +	else
+> +		tst_resm(TPASS, "test PROT_EXEC for mprotect success");
+> +
+> +	pass = 0;
 > +}
 > +
 > +static void cleanup(void)
 > +{
+> +	tst_rmdir();
+> +
 > +	TEST_CLEANUP;
 > +}
 > --
@@ -291,12 +356,10 @@ Jan
 > 
 > 
 > ------------------------------------------------------------------------------
-> Subversion Kills Productivity. Get off Subversion & Make the Move to
-> Perforce.
-> With Perforce, you get hassle-free workflows. Merge that actually works.
-> Faster operations. Version large binaries.  Built-in WAN optimization and the
-> freedom to use Git, Perforce or both. Make the move to Perforce.
-> http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+> Managing the Performance of Cloud-Based Applications
+> Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+> Read the Whitepaper.
+> http://pubads.g.doubleclick.net/gampad/clk?id=121054471&iu=/4140/ostg.clktrk
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
