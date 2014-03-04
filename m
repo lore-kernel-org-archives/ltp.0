@@ -1,17 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WMzfp-0000iO-2m
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 12:51:17 +0000
-Date: Mon, 10 Mar 2014 13:50:58 +0100
-From: chrubis@suse.cz
-Message-ID: <20140310125058.GA10346@rei>
-References: <531CAEB1.3060905@xenomai.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <531CAEB1.3060905@xenomai.org>
-Subject: Re: [LTP] out of tree build
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WKifV-0004aE-W6
+	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 06:17:34 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WKifU-0000dw-EZ
+	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 06:17:33 +0000
+Message-ID: <1393913835.2005.2.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 04 Mar 2014 14:17:15 +0800
+In-Reply-To: <531565C1.6080103@cn.fujitsu.com>
+References: <1392372604.2085.10.camel@G08JYZSD130126>
+	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
+	<1392889204.2053.7.camel@G08JYZSD130126>
+	<1392889813.2053.10.camel@G08JYZSD130126>
+	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
+	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
+	<1393832848.1991.19.camel@G08JYZSD130126>
+	<1393833079.1991.22.camel@G08JYZSD130126>
+	<1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
+	<1393845775.1984.10.camel@G08JYZSD130126>
+	<531565C1.6080103@cn.fujitsu.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH v5 1/3] safe_macros: Add SAFE_GETRLIMIT and
+ SAFE_SETRLIMIT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,39 +38,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
-Cc: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Hi,
+On Tue, 2014-03-04 at 13:33 +0800, Wanlong Gao wrote:
+> On 03/03/2014 07:22 PM, Zeng Linggang wrote:
+> > Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> > ---
+> >  include/safe_macros.h | 10 ++++++++++
+> >  lib/safe_macros.c     | 30 ++++++++++++++++++++++++++++++
+> >  2 files changed, 40 insertions(+)
 > 
-> I have tried building LTP january release, and found that the following 
-> changes were necessary.
+> 
+> Applied the series, thank you.
+> 
 
-We did not test it for some time (I've looked at the history and it has
-been broken for at least two years) sorry.
+:) Thank you very much.
 
-Now to the patch. Generally it looks good to me, most of the changes are
-fixes in paths that should not break anything.
+Best regards,
+Zeng
 
-Have you tried in tree build with the changes, was it working fine?
+> Wanlong Gao
+> 
 
-Does the patch apply over the latest git? Ideally you should send a
-signed patch against latest git (output from git format-patch).
 
-And it would be a good idea to add out-of-tree build instructions into
-the doc/mini-howto-building-ltp-from-git.txt too.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
