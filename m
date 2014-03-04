@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WSQRh-0004nk-1H
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 12:27:09 +0000
-Date: Tue, 25 Mar 2014 13:26:44 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WKtQd-0005W0-6n
+	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 17:46:55 +0000
+Date: Tue, 4 Mar 2014 18:46:39 +0100
 From: chrubis@suse.cz
-Message-ID: <20140325122644.GA1806@rei>
-References: <CAE1O6mijvWG84ntBC3eep6gStru_WXC_wMayOO0UcsNvsE4v8w@mail.gmail.com>
+Message-ID: <20140304174639.GA9278@rei>
+References: <1393391028-9854-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAE1O6mijvWG84ntBC3eep6gStru_WXC_wMayOO0UcsNvsE4v8w@mail.gmail.com>
-Subject: Re: [LTP] LTP mm test fails,
- may be test case have some unclear problem
+In-Reply-To: <1393391028-9854-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] fallocate/fallocate02.c: fix compilation error on
+ RHEL5.10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,62 +25,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Levi Wang <wangli5665@gmail.com>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> LTP testing on RHEL-7.0 hit this issue. it's re-emerge not often.
+> add #define _GNU_SOURCE in order to have LLONG_MAX defined in RHEL5.10.
 > 
-> Does anyone know this?
+> ltp-fallocate.m4: create a configure check for fallocate() syscall and
+> define the wrapper only when it's not available.
 > 
-> -----[cut here ]----
-> 
-> <<<test_start>>>
-> tag=oom01 stime=1392954542
-> cmdline="oom01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> oom01       0  TINFO  :  set overcommit_memory to 2
-> oom01       0  TINFO  :  allocating 3221225472 bytes.
-> oom01       0  TINFO  :  allocating 3221225472 bytes.
-> oom01       0  TINFO  :  allocating 3221225472 bytes.
-> oom01       0  TINFO  :  allocating 3221225472 bytes.
-> oom01       0  TINFO  :  set overcommit_memory to 2
-> oom01       0  TINFO  :  expected victim is 31115.
-> oom01       0  TINFO  :  set overcommit_memory to 0
-> oom01       0  TINFO  :  expected victim is 31135.
-> oom01       1  TFAIL  :  the victim unexpectedly failed: 9
-> oom01       0  TINFO  :  set overcommit_memory to 1
-> oom01       0  TINFO  :  start normal OOM testing.
-> oom01       0  TINFO  :  expected victim is 31496.
-> oom01       0  TINFO  :  start OOM testing for mlocked pages.
-> oom01       0  TINFO  :  expected victim is 31514.
-> oom01       0  TINFO  :  start OOM testing for KSM pages.
-> oom01       0  TINFO  :  expected victim is 31525.
-> oom01       0  TINFO  :  set overcommit_memory to 0
-> <<<execution_status>>>
+> fallocate02.c: delete this test item "{&fdw, FNAMEW, DEFAULT_TEST_MODE,
+> BLOCKS_WRITTEN-OFFSET, 1, 0}". Fallocate02 is to test various error
+> conditions for fallocate() syscall, usually these error conditions
+> can be checked in vfs layer. Here this test item, which the expected
+> return value is 0, is dependent on whether the underlying file systems
+> implement fallocate. So here we choose to remove it, or may specify a
+> block device, which contains a ext4 file system.
 
-Hmm, the test does not expect to have it's children killed while the
-child mmaps and dirties more and more memory. So it seems to be test
-that asserts that mmap() returns failure before the test is killed with
-oom although the documentation in the test source code says that the
-test increases memory consumption untill OOM is triggered.
-
-Anyway there seems to be something wrong with the test. I would say that
-there is no guarantee that mmap() will fail before OOM tries to kill the
-process if overcommit is set to 0 or 1.
+This is OK. But please split it into two patches, one that fixes
+compilation and one that removes the testcase.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
