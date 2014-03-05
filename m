@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WN15v-0004Ru-It
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 14:22:19 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WN15u-0007Ac-DQ
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 14:22:19 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2AEMB8a014648
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Mar 2014 10:22:12 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s2AEMA08023963
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Mar 2014 10:22:10 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 10 Mar 2014 15:22:34 +0100
-Message-Id: <2618bd2ff004c79412ab2045f9a1d6c9f8afccec.1394460184.git.jstancek@redhat.com>
-In-Reply-To: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
-References: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
-Subject: [LTP] (no subject)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WL1ZY-0000YS-2z
+	for ltp-list@lists.sourceforge.net; Wed, 05 Mar 2014 02:28:40 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WL1ZW-0001TU-Gz
+	for ltp-list@lists.sourceforge.net; Wed, 05 Mar 2014 02:28:40 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s252SUC5012078
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Mar 2014 10:28:30 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 5 Mar 2014 10:26:50 +0800
+Message-Id: <1393986411-29379-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1393986411-29379-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1393986411-29379-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH v2 2/3] m4/ltp-fallocate.m4: add configure check for
+	fallocate(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,136 +33,91 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 7 Mar 2014 10:08:30 +0100
-Subject: [PATCH v2 1/2] add tst_get_unused_port()
+ltp-fallocate.m4: create a configure check for fallocate() syscall and
+define the wrapper only when it's not available.
 
-Returns unused port number for specified domain/type.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- include/test.h |    7 +++++
- lib/tst_net.c  |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 87 insertions(+), 0 deletions(-)
- create mode 100644 lib/tst_net.c
+ configure.ac                                    |  1 +
+ m4/ltp-fallocate.m4                             | 25 +++++++++++++++++++++++++
+ testcases/kernel/syscalls/fallocate/fallocate.h |  3 +++
+ 3 files changed, 29 insertions(+)
+ create mode 100644 m4/ltp-fallocate.m4
 
-Changes in v2:
-- use sockaddr_storage as suggested by Mike
-
-diff --git a/include/test.h b/include/test.h
-index 81fca3e..49a0f47 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -288,6 +288,13 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
- uid_t tst_get_unused_uid(void);
- gid_t tst_get_unused_gid(void);
+diff --git a/configure.ac b/configure.ac
+index ea6fa85..0004a55 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -172,5 +172,6 @@ LTP_CHECK_XFS_QUOTACTL
+ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+ LTP_CHECK_MKDIRAT
+ LTP_CHECK_FCHOWNAT
++LTP_CHECK_FALLOCATE
  
-+/* lib/tst_net.c
-+ *
-+ * Return unused port
-+ */
-+unsigned short tst_get_unused_port(unsigned short family, int type,
-+	void (cleanup_fn)(void));
-+
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/lib/tst_net.c b/lib/tst_net.c
+ AC_OUTPUT
+diff --git a/m4/ltp-fallocate.m4 b/m4/ltp-fallocate.m4
 new file mode 100644
-index 0000000..3391dee
+index 0000000..c7d509e
 --- /dev/null
-+++ b/lib/tst_net.c
-@@ -0,0 +1,80 @@
-+/*
-+ * Copyright (C) 2014 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it
-+ * is free of the rightful claim of any third person regarding
-+ * infringement or the like.  Any license provided herein, whether
-+ * implied or otherwise, applies only to this software file.  Patent
-+ * licenses, if any, provided herein do not apply to combinations of
-+ * this program with other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation, Inc.
-+ */
++++ b/m4/ltp-fallocate.m4
+@@ -0,0 +1,25 @@
++dnl
++dnl Copyright (c) Linux Test Project, 2014
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program;  if not, write to the Free Software
++dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++dnl
 +
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+
-+#include "test.h"
-+
-+unsigned short tst_get_unused_port(unsigned short family, int type,
-+	void (cleanup_fn)(void))
-+{
-+	int sock;
-+	socklen_t slen;
-+	struct sockaddr_storage _addr;
-+	struct sockaddr *addr = (struct sockaddr *)&_addr;
-+	struct sockaddr_in *addr4 = (struct sockaddr_in *)addr;
-+	struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)addr;
-+
-+	switch (family) {
-+	case AF_INET:
-+		addr4->sin_family = AF_INET;
-+		addr4->sin_port = 0;
-+		addr4->sin_addr.s_addr = INADDR_ANY;
-+		slen = sizeof(*addr4);
-+		break;
-+
-+	case AF_INET6:
-+		addr6->sin6_family = AF_INET6;
-+		addr6->sin6_port = 0;
-+		addr6->sin6_addr = in6addr_any;
-+		slen = sizeof(*addr6);
-+		break;
-+
-+	default:
-+		tst_brkm(TBROK, cleanup_fn,
-+			"tst_get_unused_port unknown family");
-+	}
-+
-+	sock = socket(addr->sa_family, type, 0);
-+	if (sock < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "socket failed");
-+
-+	if (bind(sock, addr, slen) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "bind failed");
-+
-+	if (getsockname(sock, addr, &slen) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "getsockname failed");
-+
-+	if (close(sock) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "close failed");
-+
-+	switch (family) {
-+	case AF_INET:
-+		return addr4->sin_port;
-+	case AF_INET6:
-+		return addr6->sin6_port;
-+	default:
-+		return -1;
-+	}
-+}
++dnl
++dnl LTP_CHECK_FALLOCATE
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_FALLOCATE],[
++AC_CHECK_FUNCS(fallocate,,)
++])
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate.h b/testcases/kernel/syscalls/fallocate/fallocate.h
+index 358e610..22b2f51 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate.h
++++ b/testcases/kernel/syscalls/fallocate/fallocate.h
+@@ -23,8 +23,10 @@
+ 
+ #include <sys/types.h>
+ #include <endian.h>
++#include "config.h"
+ #include "linux_syscall_numbers.h"
+ 
++#if !defined(HAVE_FALLOCATE)
+ static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+ {
+ 	/* Deal with 32bit ABIs that have 64bit syscalls. */
+@@ -40,5 +42,6 @@ static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+ 						  (off_t) len));
+ #endif
+ }
++#endif
+ 
+ #endif /* FALLOCATE_H */
 -- 
-1.7.1
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
