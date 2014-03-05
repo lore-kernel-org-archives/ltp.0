@@ -2,34 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WS1kX-0004QV-HW
-	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:04:57 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WS1kV-0004gB-O3
-	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:04:57 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2OA4nQw000688
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:49 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2OA4mI9024492
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:48 GMT
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2OA4mC0028918
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:48 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 24 Mar 2014 14:04:39 +0400
-Message-Id: <1395655481-12161-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <532C4201.3030605@oracle.com>
-References: <532C4201.3030605@oracle.com>
-Subject: [LTP] [PATCH V2 2/4] testscripts/isofs.sh: use the new shell
-	interface
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WL4ch-0006JY-Ux
+	for ltp-list@lists.sourceforge.net; Wed, 05 Mar 2014 05:44:07 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WL4cf-000710-43
+	for ltp-list@lists.sourceforge.net; Wed, 05 Mar 2014 05:44:07 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s255ht5b023551
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Mar 2014 13:43:56 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Wed, 5 Mar 2014 13:44:17 +0800
+Message-Id: <1393998257-29002-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH v2] mprotect/mprotect04.c: add PROT_NONE,
+	PROT_EXEC flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,186 +30,261 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+From: Gu Xing <gux.fnst@cn.fujitsu.com>
+
+create a new case to test PROT_NONE, PROT_EXEC flag for mprotect(2)
+
+Signed-off-by: Gu Xing <gux.fnst@cn.fujitsu.com>
 ---
- testscripts/isofs.sh |  105 ++++++++++++++++++++++---------------------------
- 1 files changed, 47 insertions(+), 58 deletions(-)
+ runtest/ltplite                                 |   1 +
+ runtest/stress.part3                            |   1 +
+ runtest/syscalls                                |   1 +
+ testcases/kernel/syscalls/.gitignore            |   1 +
+ testcases/kernel/syscalls/mprotect/mprotect04.c | 176 ++++++++++++++++++++++++
+ 5 files changed, 180 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mprotect/mprotect04.c
 
-diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
-index ec1f2fc..2bb2555 100755
---- a/testscripts/isofs.sh
-+++ b/testscripts/isofs.sh
-@@ -24,26 +24,34 @@
- # mounts the ISO9660 file system with different mount options.
- #
+diff --git a/runtest/ltplite b/runtest/ltplite
+index c6d647d..a9686a0 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -463,6 +463,7 @@ modify_ldt02 modify_ldt02
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+ mprotect03 mprotect03
++mprotect04 mprotect04
  
--USAGE="$0"
-+TCID=isofs
-+TST_TOTAL=77
-+. test.sh
+ mremap01 mremap01
+ mremap02 mremap02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index b9b8d7a..6f521cf 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -386,6 +386,7 @@ modify_ldt02 modify_ldt02
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+ mprotect03 mprotect03
++mprotect04 mprotect04
+ 
+ mremap01 mremap01
+ mremap02 mremap02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 13716d7..d803987 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -606,6 +606,7 @@ move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 04755
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+ mprotect03 mprotect03
++mprotect04 mprotect04
+ 
+ mq_notify01 mq_notify01
+ mq_open01 mq_open01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 42b0eed..7642b11 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -550,6 +550,7 @@
+ /mprotect/mprotect01
+ /mprotect/mprotect02
+ /mprotect/mprotect03
++/mprotect/mprotect04
+ /mq_notify/mq_notify01
+ /mq_open/mq_open01
+ /mq_timedreceive/mq_timedreceive01
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+new file mode 100644
+index 0000000..3d4a600
+--- /dev/null
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -0,0 +1,176 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Gu Xing <gux.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++/*
++ * Description:
++ *   Verify that,
++ *   1) mprotect() succeeds to set a region of memory with no access,
++ *      when 'prot' is set to PROT_NONE. An attempt to access the contents
++ *      of the region gives rise to the signal SIGSEGV.
++ *   2) mprotect() succeeds to set a region of memory to be executed, when
++ *      'prot' is set to PROT_EXEC.
++ */
 +
- NO_CLEANUP=""
- 
- usage()
- {
--	echo "USAGE: $USAGE <optional> -n -h -d [directory name]"
-+	echo "USAGE: $0 <optional> -n -h -d [directory name]"
- 	exit
- }
- 
--#Initialize directory variables
--MNT_POINT="/tmp/isofs_$$"
-+cleanup()
++#include <signal.h>
++#include <setjmp.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <bits/wordsize.h>
++#include <stdlib.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++
++static void sighandler(int sig);
++
++static void setup(void);
++static void cleanup(void);
++
++static void testfunc_protnone(void);
++
++static void exec_func(void);
++static int (*func)(void);
++static void testfunc_protexec(void);
++
++static void (*testfunc[])(void) = { testfunc_protnone, testfunc_protexec };
++
++char *TCID = "mprotect04";
++int TST_TOTAL = ARRAY_SIZE(testfunc);
++
++static int sigsegv_caught;
++static sigjmp_buf env;
++
++int main(int ac, char **av)
 +{
-+	if [ "$NO_CLEANUP" = "no" ]; then
-+		tst_resm TINFO "Temporary directory $PWD was not removed"
-+	else
-+		tst_rmdir
-+	fi
++	int lc;
++	int i;
++	char *msg;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			(*testfunc[i])();
++	}
++
++	cleanup();
++	tst_exit();
 +}
 +
++static void sighandler(int sig)
++{
++	if (sig == SIGSEGV) {
++		sigsegv_caught = 1;
++		siglongjmp(env, 1);
++	} else {
++		tst_brkm(TBROK, cleanup, "received an unexpected signal: %d",
++				 sig);
++	}
++}
 +
- COPY_DIR="/etc/"
--TEMP_DIR="/tmp/for_isofs_test"
--MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
- 
- while getopts :hnd: arg; do
- 	case $arg in
- 	d)
- 		COPY_DIR=$OPTARG
--		MAKE_FILE_SYS_DIR="/tmp/for_isofs_test"$COPY_DIR
- 		;;
- 	h)
- 		echo ""
-@@ -60,32 +68,22 @@ while getopts :hnd: arg; do
- 	esac
- done
- 
--##############################################################
--#
--# Make sure that uid=root is running this script.
--# Validate the command line arguments.
--#
--##############################################################
--
--if [ $UID != 0 ]
--then
--	echo "FAILED: Must have root access to execute this script"
--	exit 1
-+if [ ! -e "$COPY_DIR" ]; then
-+	tst_brkm TCONF "$COPY_DIR not found"
- fi
- 
-+tst_require_root
++static void setup(void)
++{
++	tst_sig(NOFORK, sighandler, cleanup);
 +
-+tst_tmpdir
-+TST_CLEANUP=cleanup
++	TEST_PAUSE;
 +
-+MNT_POINT="$PWD/mnt"
-+MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
++	tst_tmpdir();
++}
 +
- mkdir -p -m 777 $MNT_POINT
- mkdir -p $MAKE_FILE_SYS_DIR
- 
--
--if [ -e "$COPY_DIR" ]; then
--	cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
--else
--	echo "$COPY_DIR not found"
--	echo "use the -d option to copy a different directory into"
--	echo "/tmp to makethe ISO9660 file system with different"
--	echo "options"
--	usage
--fi
-+cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
- 
- # Make ISO9660 file system with different options.
- # Mount the ISO9660 file system with different mount options.
-@@ -99,14 +97,17 @@ for mkisofs_opt in \
- 	"-f -l -D -J -L -R" \
- 	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
- do
--	echo "Running mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR  Command"
-+	rm -f isofs.iso
- 	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
--	if [ $? != 0 ]
--	then
--		rm -rf isofs.iso $MNT_POINT
--		echo "FAILED: mkisofs -o isofs.iso $mkisofs_opt $MAKE_FILE_SYS_DIR failed"
--		exit 1
-+	if [ $? -eq 0 ]; then
-+		tst_resm TPASS \
-+			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
-+	else
-+		tst_resm TFAIL \
-+			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
-+		continue
- 	fi
++static void testfunc_protnone(void)
++{
++	char *addr;
++	int page_sz;
 +
- 	for mount_opt in \
- 		"loop" \
- 		"loop,norock" \
-@@ -120,36 +121,24 @@ do
- 		"loop,block=512,unhide,session=2"
- 		# "loop,sbsector=32"
- 	do
--		echo "Running mount -o $mount_opt isofs.iso $MNT_POINT Command"
- 		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
--		if [ $? != 0 ]
--		then
--			rm -rf isofs.iso $MNT_POINT
--			echo "FAILED: mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT failed"
--			exit 1
-+		if [ $? -ne 0 ]; then
-+			tst_resm TFAIL \
-+				"mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT"
-+			continue
- 		fi
--		echo "Running ls -lR $MNT_POINT Command"
++	sigsegv_caught = 0;
 +
- 		ls -lR $MNT_POINT
- 		exportfs -i -o no_root_squash,rw *:$MNT_POINT
- 		exportfs -u :$MNT_POINT
++	page_sz = getpagesize();
 +
- 		umount $MNT_POINT
-+		if [ $? -ne 0 ]; then
-+			tst_resm TFAIL "umount $MNT_POINT"
-+		fi
++	addr = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
++					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 +
-+		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
- 	done
--	rm -rf isofs.iso
- done
- 
--#######################################################
--#
--# Just before exit, perform the cleanup.
--#
--#######################################################
--
--if [ "$NO_CLEANUP" == "no" ]; then
--	echo "$MAKE_FILE_SYS_DIR and $MNT_POINT were not removed"
--	echo "These directories will have to be removed manually"
--else
--	rm -rf $TEMP_DIR
--	rm -rf $MNT_POINT
--fi
--
--echo "PASSED: $0 passed!"
--exit 0
-+tst_exit
++	/* Change the protection to PROT_NONE. */
++	TEST(mprotect(addr, page_sz, PROT_NONE));
++
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TTERRNO, "mprotect failed");
++	} else {
++		if (sigsetjmp(env, 1) == 0)
++			addr[0] = 1;
++
++		if (sigsegv_caught)
++			tst_resm(TPASS, "test PROT_NONE for mprotect success");
++		else
++			tst_resm(TFAIL, "test PROT_NONE for mprotect failed");
++	}
++
++	SAFE_MUNMAP(cleanup, addr, page_sz);
++}
++
++static void exec_func(void)
++{
++	return;
++}
++
++static void testfunc_protexec(void)
++{
++	int page_sz;
++
++	sigsegv_caught = 0;
++
++	page_sz = getpagesize();
++
++	func = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
++					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++	bcopy(exec_func, func, page_sz);
++
++	/* Change the protection to PROT_EXEC. */
++	TEST(mprotect(func, page_sz, PROT_EXEC));
++
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TTERRNO, "mprotect failed");
++	} else {
++		if (sigsetjmp(env, 1) == 0)
++			(*func)();
++
++		if (sigsegv_caught)
++			tst_resm(TFAIL, "test PROT_EXEC for mprotect failed");
++		else
++			tst_resm(TPASS, "test PROT_EXEC for mprotect success");
++	}
++
++	SAFE_MUNMAP(cleanup, func, page_sz);
++}
++
++static void cleanup(void)
++{
++	tst_rmdir();
++
++	TEST_CLEANUP;
++}
 -- 
-1.7.1
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
