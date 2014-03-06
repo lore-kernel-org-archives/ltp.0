@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1WPzk8-0008EC-7O
-	for ltp-list@lists.sourceforge.net; Tue, 18 Mar 2014 19:32:08 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WPzk7-000354-0U
-	for ltp-list@lists.sourceforge.net; Tue, 18 Mar 2014 19:32:08 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2IJW0DM001032
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Mar 2014 15:32:00 -0400
-Received: from tarantula.localdomain (ovpn-113-111.phx2.redhat.com
-	[10.3.113.111])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s2IJVvou010338
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Mar 2014 15:31:58 -0400
-Date: Tue, 18 Mar 2014 14:31:56 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20140318193156.GD15827@tarantula.localdomain>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WLZrM-0005No-Kg
+	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 15:05:20 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WLZrJ-0008QP-7O
+	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 15:05:20 +0000
+Date: Thu, 6 Mar 2014 10:05:08 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <115590897.213936.1394118308156.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1394117640-14933-1-git-send-email-liuhangbin@gmail.com>
+References: <1394117640-14933-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] update ffsb autotools files for aarch64
+Subject: Re: [LTP] [PATCH] containers/netns: fix header file path
+	for	check_netns_enabled.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,50 +28,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-The autotools files for ffsb -- utils/ffsb-6.0-rc2/config.guess and
-utils/ffsb-6.0-rc2/config.sub -- do not understand aarch64 and it fails
-to build:
-
-=======================================================================
-...
-make[1]: Entering directory `.../ltp-full-20140115/utils'
-cd ffsb-6.0-rc2; ./configure
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether build environment is sane... yes
-checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
-checking for gawk... gawk
-checking whether make sets $(MAKE)... yes
-checking build system type... ./config.guess: unable to guess system type
-
-This script, last modified 2009-08-19, has failed to recognize
-the operating system you are using. It is advised that you
-download the most up to date version of the config scripts from
-
-  http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD
-and
-  http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD
-...
-=======================================================================
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
-Updating to the latest config.{guess,sub} files from gnu.org does
-indeed fix the problem.
 
-I could attach a patch, but it's nearly 50 KiB and really not very
-interesting.  Could someone with commit rights update the autotools
-files?
+----- Original Message -----
+> From: "Hangbin Liu" <liuhangbin@gmail.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 6 March, 2014 3:54:00 PM
+> Subject: [LTP] [PATCH] containers/netns: fix header file path for	check_netns_enabled.c
+> 
+> CLONE_NEWNET and CLONE_NEWNS are defined in linux/sched.h, not sched.h
 
-Thanks!
-Jeff Bastian
+/usr/include/bits/sched.h:# define CLONE_NEWNS   0x00020000 /* Set to create new namespace.  */
+sched.h includes bits/sched.h
+
+Where (distro, glibc version) do you see this fail when you include only sched.h?
+
+Regards,
+Jan
+
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  testcases/kernel/containers/netns/check_netns_enabled.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/containers/netns/check_netns_enabled.c
+> b/testcases/kernel/containers/netns/check_netns_enabled.c
+> index ab8ee2f..7bb2324 100644
+> --- a/testcases/kernel/containers/netns/check_netns_enabled.c
+> +++ b/testcases/kernel/containers/netns/check_netns_enabled.c
+> @@ -20,7 +20,7 @@
+>  * when trying to use CLONE_NEWNET and CLONE_NEWNS.
+>  ***************************************************************************/
+>  #include <stdio.h>
+> -#include <sched.h>
+> +#include <linux/sched.h>
+>  #include "config.h"
+>  #include "libclone.h"
+>  #include "linux_syscall_numbers.h"
+> --
+> 1.8.1.4
+> 
+> 
+> ------------------------------------------------------------------------------
+> Subversion Kills Productivity. Get off Subversion & Make the Move to
+> Perforce.
+> With Perforce, you get hassle-free workflows. Merge that actually works.
+> Faster operations. Version large binaries.  Built-in WAN optimization and the
+> freedom to use Git, Perforce or both. Make the move to Perforce.
+> http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
