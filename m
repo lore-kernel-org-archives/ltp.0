@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WO4uU-0003FS-Ap
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 12:38:54 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WO4uT-00050D-9P
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 12:38:54 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2DCckWK024702
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 12:38:47 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2DCckLm004449
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 12:38:46 GMT
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2DCckwp004444
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 12:38:46 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 13 Mar 2014 16:38:25 +0400
-Message-Id: <1394714306-9678-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/3] isofs.sh: be more quiet
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1WLZgg-0007Ht-5b
+	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 14:54:18 +0000
+Received: from mail-pb0-f53.google.com ([209.85.160.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WLZgc-0007Rq-NU
+	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 14:54:18 +0000
+Received: by mail-pb0-f53.google.com with SMTP id rp16so2684047pbb.26
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Mar 2014 06:54:08 -0800 (PST)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Thu,  6 Mar 2014 22:54:00 +0800
+Message-Id: <1394117640-14933-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] containers/netns: fix header file path for
+	check_netns_enabled.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,45 +30,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+CLONE_NEWNET and CLONE_NEWNS are defined in linux/sched.h, not sched.h
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- testscripts/isofs.sh |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/containers/netns/check_netns_enabled.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
-index 9031922..fd42a3c 100755
---- a/testscripts/isofs.sh
-+++ b/testscripts/isofs.sh
-@@ -131,7 +131,7 @@ for mkisofs_opt in \
- 	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
- do
-         echo "Running mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR  Command"
--	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
-+	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
- 	if [ $? != 0 ]
- 	then
- 		rm -rf isofs.iso $MNT_POINT $TEMP_DIR
-@@ -160,7 +160,7 @@ do
- 			exit 1
- 		fi
- 		echo "Running ls -lR $MNT_POINT Command"
--		ls -lR $MNT_POINT
-+		ls -lR $MNT_POINT > /dev/null
- 		exportfs -i -o no_root_squash,rw *:$MNT_POINT
- 		exportfs -u :$MNT_POINT
- 		umount $MNT_POINT
+diff --git a/testcases/kernel/containers/netns/check_netns_enabled.c b/testcases/kernel/containers/netns/check_netns_enabled.c
+index ab8ee2f..7bb2324 100644
+--- a/testcases/kernel/containers/netns/check_netns_enabled.c
++++ b/testcases/kernel/containers/netns/check_netns_enabled.c
+@@ -20,7 +20,7 @@
+ * when trying to use CLONE_NEWNET and CLONE_NEWNS.
+ ***************************************************************************/
+ #include <stdio.h>
+-#include <sched.h>
++#include <linux/sched.h>
+ #include "config.h"
+ #include "libclone.h"
+ #include "linux_syscall_numbers.h"
 -- 
-1.7.9.5
+1.8.1.4
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
