@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WSk5j-0001Al-MJ
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 09:25:47 +0000
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WLpa4-0005qX-DU
+	for ltp-list@lists.sourceforge.net; Fri, 07 Mar 2014 07:52:32 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WSk5i-0007N4-JE
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 09:25:47 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WLpa2-000068-Ez
+	for ltp-list@lists.sourceforge.net; Fri, 07 Mar 2014 07:52:32 +0000
 Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2Q9Pb8p029545
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 17:25:37 +0800
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s277q1qW013269
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Mar 2014 15:52:10 +0800
 From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 26 Mar 2014 17:23:45 +0800
-Message-Id: <1395825825-22165-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH v2] lib/tst_mkfs.c: fix a bug when calling tst_mkfs()
-	with extra mkfs options
+Date: Fri, 7 Mar 2014 15:50:32 +0800
+Message-Id: <1394178632-14462-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1394178632-14462-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1394178632-14462-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH 2/2] munmap/munmap03.c: make EINVAL error value tests
+	sufficient
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,108 +33,106 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-When we use tst_mkfs() to build a file system with extra mkfs options, like that:
-    tst_mkfs(NULL, device, "ext4", "-b 1024"); /* device is /dev/loop0 */
-
-It will output some error message, like that:
-    TINFO  :  Formatting /dev/loop0 with ext4 extra opts='-b 1024'
-    mke2fs 1.42.7 (21-Jan-2013)
-    mkfs.ext4: invalid blocks '/dev/loop0' on device 'ext4'
-
-In tst_mkfs()'s implementations:
-   argv is defined as below statments:
-       const char *argv[] = {"mkfs", "-t", fs_type, NULL, NULL, NULL, NULL};
-   So in the above mkfs case,
-       the argv's value will be {"mkfs", "-t", "ext4", "-b 1024", "/dev/loop0", NULL};
-   then when finally calling execvp(argv[0], (char *const *)argv), the number of
-arguments is 5. It's like that we call (mkfs -t ext4 "-b 1024" /dev/loop0) in shell,
-but the right command shoule be (mkfs -t ext4 -b 1024 /dev/loop0 # 6 args).
-Of course, the true reason is that we didn't assign correct arguments to argv array
-towards extra mkfs options.
-
-With this patch, if user wants to pass extra mkfs options, he should do like below:
-	const char *const opts[] = { "-b", "1024", NULL };
-	tst_mkfs(NULL, device, "ext4", opts);
-
 Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- include/test.h |  2 +-
- lib/tst_mkfs.c | 26 +++++++++++++++++---------
- 2 files changed, 18 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/munmap/munmap03.c | 45 ++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/include/test.h b/include/test.h
-index 32b9680..cf00e63 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -269,7 +269,7 @@ void tst_run_cmd(void (cleanup_fn)(void),
-  * @fs_opts: extra mkfs options
-  */
- void tst_mkfs(void (cleanup_fn)(void), const char *dev,
--              const char *fs_type, const char *fs_opts);
-+	      const char *fs_type, const char *const fs_opts[]);
- 
- /* lib/tst_fill_file.c
+diff --git a/testcases/kernel/syscalls/munmap/munmap03.c b/testcases/kernel/syscalls/munmap/munmap03.c
+index f906e4d..8d3e49a 100644
+--- a/testcases/kernel/syscalls/munmap/munmap03.c
++++ b/testcases/kernel/syscalls/munmap/munmap03.c
+@@ -23,6 +23,11 @@
+  *   1. munmap() fails with -1 return value and sets errno to EINVAL
+  *      if addresses in the range [addr,addr+len) are outside the valid
+  *	range for the address space of a process.
++ *   2. munmap() fails with -1 return value and sets errno to EINVAL
++ *      if the len argument is 0.
++ *   3. munmap() fails with -1 return value and sets errno to EINVAL
++ *      if the addr argument is not a multiple of the page size as
++ *      returned by sysconf().
   *
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index cee04dd..46483e7 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -19,17 +19,17 @@
- #include "test.h"
+  * HISTORY
+  *	07/2001 Ported by Wayne Boyer
+@@ -42,13 +47,17 @@
+ char *TCID = "munmap03";
  
- void tst_mkfs(void (cleanup_fn)(void), const char *dev,
--              const char *fs_type, const char *fs_opts)
-+	      const char *fs_type, const char *const fs_opts[])
- {
--	tst_resm(TINFO, "Formatting %s with %s extra opts='%s'",
--	        dev, fs_type, fs_opts ? fs_opts : "");
-+	int i, pos = 3;
+ static size_t page_sz;
++static char *global_addr;
++static size_t global_maplen;
+ static int exp_enos[] = { EINVAL, 0 };
+ 
+ static void setup(void);
+ static void cleanup(void);
+ 
+ static void test_einval1(void);
+-static void (*testfunc[])(void) = { test_einval1 };
++static void test_einval2(void);
++static void test_einval3(void);
++static void (*testfunc[])(void) = { test_einval1, test_einval2, test_einval3 };
+ int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ int main(int ac, char **av)
+@@ -81,6 +90,11 @@ static void setup(void)
+ 	TEST_PAUSE;
+ 
+ 	page_sz = (size_t)sysconf(_SC_PAGESIZE);
 +
-+	/* here I think 1024 is enough for argv and fs_opts_str. */
-+	const char *argv[1024] = {"mkfs", "-t", fs_type};
-+	char fs_opts_str[1024] = "";
++	global_maplen = page_sz * 2;
++	global_addr = SAFE_MMAP(cleanup, NULL, global_maplen, PROT_READ |
++				PROT_WRITE, MAP_PRIVATE_EXCEPT_UCLINUX |
++				MAP_ANONYMOUS, -1, 0);
+ }
  
- 	if (!fs_type)
- 		tst_brkm(TBROK, cleanup_fn, "No fs_type specified");
+ static void check_and_print(int expected_errno)
+@@ -114,8 +128,37 @@ static void test_einval1(void)
+ 	check_and_print(EINVAL);
+ }
  
--	const char *argv[] = {"mkfs", "-t", fs_type, NULL, NULL, NULL, NULL};
--	int pos = 3;
--
- 	/*
- 	 * mkfs.xfs and mkfs.btrfs aborts if it finds a filesystem
- 	 * superblock on the device, which is the case here as we
-@@ -40,10 +40,18 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
- 		argv[pos++] = "-f";
- 	}
- 
--	if (fs_opts)
--		argv[pos++] = fs_opts;
-+	if (fs_opts) {
-+		for (i = 0; fs_opts[i]; i++) {
-+			argv[pos++] = fs_opts[i];
-+			strcat(fs_opts_str, " ");
-+			strcat(fs_opts_str, fs_opts[i]);
-+		}
++static void test_einval2(void)
++{
++	char *addr = global_addr;
++	size_t map_len = 0;
++
++	if (tst_kvercmp(2, 6, 12) < 0) {
++		tst_resm(TCONF,
++			 "EINVAL error value test for this condition needs "
++			 "kernel 2.6.12 or higher");
++		return;
 +	}
++
++	TEST(munmap(addr, map_len));
++
++	check_and_print(EINVAL);
++}
++
++static void test_einval3(void)
++{
++	char *addr = (char *)(global_addr + 1);
++	size_t map_len = page_sz;
++
++	TEST(munmap(addr, map_len));
++
++	check_and_print(EINVAL);
++}
++
+ static void cleanup(void)
+ {
+ 	TEST_CLEANUP;
  
--	argv[pos] = dev;
-+	argv[pos++] = dev;
-+	argv[pos] = NULL;
- 
-+	tst_resm(TINFO, "Formatting %s with %s extra opts='%s'",
-+		 dev, fs_type, fs_opts ? fs_opts_str : "");
- 	tst_run_cmd(cleanup_fn, argv, "/dev/null", NULL);
++	if (munmap(global_addr, global_maplen) == -1)
++		tst_resm(TWARN | TERRNO, "munmap failed");
  }
 -- 
 1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
