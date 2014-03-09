@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ciprian.barbu@linaro.org>) id 1WN1tZ-0006U3-Rj
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:13:37 +0000
-Received: from mail-la0-f47.google.com ([209.85.215.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WN1tZ-0000JC-3Q
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:13:37 +0000
-Received: by mail-la0-f47.google.com with SMTP id y1so4665348lam.6
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 10 Mar 2014 08:13:30 -0700 (PDT)
-From: Ciprian Barbu <ciprian.barbu@linaro.org>
-Date: Mon, 10 Mar 2014 16:06:37 +0100
-Message-Id: <1394463997-14528-1-git-send-email-ciprian.barbu@linaro.org>
-Subject: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and measurement to
-	pass default profile to run_c_files.sh
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1WMnKy-00014l-Da
+	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 23:40:56 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WMnKw-00089P-J8
+	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 23:40:56 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sun, 09 Mar 2014 19:40:52 -0400
+Message-ID: <10580235.j7E8ls0tGP@vapier>
+In-Reply-To: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+References: <cover.1394190599.git.jstancek@redhat.com>
+	<b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH 1/2] add tst_get_unused_port()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,72 +25,92 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9181301570483375625=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ciprian.barbu@linaro.org
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Ciprian Barbu <ciprian.barbu@linaro.org>
 
-Upstream-Status: Pending
----
- testcases/realtime/func/hrtimer-prio/run_auto.sh |    4 +++-
- testcases/realtime/func/measurement/run_auto.sh  |    6 ++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
+--===============9181301570483375625==
+Content-Type: multipart/signed; boundary="nextPart11540571.i1ZPf3DYRc";
+	micalg="pgp-sha1"; protocol="application/pgp-signature"
 
-diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-index 366e746..ec3d83a 100644
---- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
-+++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-@@ -1,5 +1,7 @@
- #! /bin/bash
- 
-+profile=${1:-default}
-+
- if [ ! $SCRIPTS_DIR ]; then
-         # assume we're running standalone
-         export SCRIPTS_DIR=../../scripts/
-@@ -7,4 +9,4 @@ fi
- 
- source $SCRIPTS_DIR/setenv.sh
- 
--$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
-+$SCRIPTS_DIR/run_c_files.sh $profile "hrtimer-prio"
-diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
-index 3011964..439f721 100644
---- a/testcases/realtime/func/measurement/run_auto.sh
-+++ b/testcases/realtime/func/measurement/run_auto.sh
-@@ -1,5 +1,7 @@
- #! /bin/bash
- 
-+profile=${1:-default}
-+
- if [ ! $SCRIPTS_DIR ]; then
-         # assume we're running standalone
-         export SCRIPTS_DIR=../../scripts/
-@@ -13,7 +15,7 @@ source $SCRIPTS_DIR/setenv.sh
- # issues right now.
- 
- LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
--$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
-+$SCRIPTS_DIR/run_c_files.sh $profile "rdtsc-latency"
- 
- LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
--$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
-+$SCRIPTS_DIR/run_c_files.sh $profile "preempt_timing"
--- 
-1.7.9.5
 
+--nextPart11540571.i1ZPf3DYRc
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+
+On Fri 07 Mar 2014 12:39:24 Jan Stancek wrote:
+> Returns unused port number for specified domain/type.
+
+the new func isn't race free, but it is way better than the current cod=
+e, and=20
+the race is pretty small.  so LGTM.
+
+> +unsigned short tst_get_unused_port(unsigned short family, int type,
+> +=09void (cleanup_fn)(void))
+> +{
+> +=09int sock;
+> +=09struct sockaddr_in addr4;
+> +=09struct sockaddr_in6 addr6;
+
+the current code works, but isn't the point of sockaddr_storage to avoi=
+d this=20
+duplicated storage logic ?  so you could just do:
+=09struct sockaddr_storage _addr;
+=09struct sockaddr *addr =3D (struct sockaddr *)&_addr;
+=09struct sockaddr_in *addr4 =3D (struct sockaddr_in *)addr;
+=09struct sockaddr_in6 *addr6 =3D (struct sockaddr_in6 *)addr;
+=2Dmike
+--nextPart11540571.i1ZPf3DYRc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAABAgAGBQJTHPwFAAoJEEFjO5/oN/WBYnMP/2hifyZMIaqVinnVrJDrOhcm
+VjCwYV+7adFhvXxhT16xBfJKLkLaFQbdpR0ZT9l59/fNbfnYcSPqdEpPgawZTSwp
+wXEKnIB3GcfF4jg4C3WLCMZ+VzlqB5udfdyl4qIJ8FvXITaVIR2Ound57Yr6t3kt
+IomYihdb66c7Tgb9ViwQ1vYxZSVvvRd9+xRLTzO8nY4X/76Gr0IW/CS94xXy0gs+
+8z72yBBAf/jUd6/HVtEae+ZZi8dFgMbuOGozmnMZz2FuBHUEJ2Z8I67RgAdK9DjO
+RxyJ/EHz3LShrnnquD0Mju97NA8DZ7lOGbpDOulQXV4OstlRemO6JnwTHHE7Zq2q
+oWmuhWufLaMt4CNff1Aglgiswuo8Kr7i5swNwBDliyaaXjBhwISfciTvUZe6QKJf
+7pDyZwbxIX24bBBU+qt2ThRAkRphv7oUzg8m3m/ixcsb1MQbR6//DzXlRlUn15Nt
+7F6qNFwA4lRhZSNVMDQs0MsGlkaUvcFfEcbxgBv3vZg/Dt2JXPVS8lXSE2QupFmE
+/nDGjznVJyAQE5sDyjTVqvWPQrP5wq1/6r24Kih3AU0CL1Zb/iSG7h5fQ5U0bOkO
+nfYm3TI/kbImpuRnGMbEpaDYRZiAoJ//+4paVV/dTgTxNToJsV/UnhZZ5WusQTWn
+3mpkDu2bvEtdAcNazpBj
+=ysEw
+-----END PGP SIGNATURE-----
+
+--nextPart11540571.i1ZPf3DYRc--
+
+
+
+--===============9181301570483375625==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+--===============9181301570483375625==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9181301570483375625==--
+
+
