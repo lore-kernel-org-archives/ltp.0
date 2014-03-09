@@ -1,24 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ciprian.barbu@linaro.org>) id 1WQxOC-0003of-1F
-	for ltp-list@lists.sourceforge.net; Fri, 21 Mar 2014 11:13:28 +0000
-Received: from mail-ee0-f50.google.com ([74.125.83.50])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WQxOB-0004iS-0W
-	for ltp-list@lists.sourceforge.net; Fri, 21 Mar 2014 11:13:28 +0000
-Received: by mail-ee0-f50.google.com with SMTP id c13so1656571eek.37
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 04:13:20 -0700 (PDT)
-Message-ID: <532C194C.7090307@linaro.org>
-Date: Fri, 21 Mar 2014 12:49:48 +0200
-From: Ciprian Barbu <ciprian.barbu@linaro.org>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gilles.chanteperdrix@xenomai.org>)
+	id 1WMiBl-00089m-QV
+	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 18:11:05 +0000
+Received: from sd-51317.dedibox.fr ([62.210.215.82])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1WMiBk-0005aw-N3
+	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 18:11:05 +0000
+Received: from men13-3-82-231-18-196.fbx.proxad.net ([82.231.18.196]
+	helo=hermes.local) by sd-51317.dedibox.fr with esmtpsa
+	(TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <gilles.chanteperdrix@xenomai.org>)
+	id 1WMiBe-00050C-GR
+	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 19:10:58 +0100
+Received: from localhost ([127.0.0.1] helo=hermes.local)
+	by hermes.local with esmtpsa (TLS1.0:DHE_RSA_CAMELLIA_256_CBC_SHA1:256)
+	(Exim 4.80) (envelope-from <gilles.chanteperdrix@xenomai.org>)
+	id 1WMiBe-00009P-08
+	for ltp-list@lists.sourceforge.net; Sun, 09 Mar 2014 19:10:58 +0100
+Message-ID: <531CAEB1.3060905@xenomai.org>
+Date: Sun, 09 Mar 2014 19:10:57 +0100
+From: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
 MIME-Version: 1.0
-References: <1394464444-23803-1-git-send-email-ciprian.barbu@linaro.org>
-In-Reply-To: <1394464444-23803-1-git-send-email-ciprian.barbu@linaro.org>
-Subject: Re: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and
- measurement to pass default profile to run_c_files.sh
+Subject: [LTP] out of tree build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,74 +37,166 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ciprian Barbu <ciprian.barbu@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
+To: ltp-list@lists.sourceforge.net
 
-Hello,
 
-On 10.03.2014 17:14, Ciprian Barbu wrote:
-> Signed-off-by: Ciprian Barbu <ciprian.barbu@linaro.org>
->
-> Upstream-Status: Pending
-> ---
->   testcases/realtime/func/hrtimer-prio/run_auto.sh |    4 +++-
->   testcases/realtime/func/measurement/run_auto.sh  |    6 ++++--
->   2 files changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-> index 366e746..ec3d83a 100644
-> --- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
-> +++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-> @@ -1,5 +1,7 @@
->   #! /bin/bash
->
-> +profile=${1:-default}
-> +
->   if [ ! $SCRIPTS_DIR ]; then
->           # assume we're running standalone
->           export SCRIPTS_DIR=../../scripts/
-> @@ -7,4 +9,4 @@ fi
->
->   source $SCRIPTS_DIR/setenv.sh
->
-> -$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
-> +$SCRIPTS_DIR/run_c_files.sh $profile "hrtimer-prio"
-> diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
-> index 3011964..439f721 100644
-> --- a/testcases/realtime/func/measurement/run_auto.sh
-> +++ b/testcases/realtime/func/measurement/run_auto.sh
-> @@ -1,5 +1,7 @@
->   #! /bin/bash
->
-> +profile=${1:-default}
-> +
->   if [ ! $SCRIPTS_DIR ]; then
->           # assume we're running standalone
->           export SCRIPTS_DIR=../../scripts/
-> @@ -13,7 +15,7 @@ source $SCRIPTS_DIR/setenv.sh
->   # issues right now.
->
->   LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
-> -$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
-> +$SCRIPTS_DIR/run_c_files.sh $profile "rdtsc-latency"
->
->   LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
-> -$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
-> +$SCRIPTS_DIR/run_c_files.sh $profile "preempt_timing"
->
+Hi,
 
-Sorry if I'm being insistent, has anyone got the chance to look at this 
-patch? I would like to know if it can be applied to master.
+I have tried building LTP january release, and found that the following 
+changes were necessary.
 
-Kind regards,
-Ciprian
+Regards.
+
+diff -Naurdp ltp-full-20140115.orig/Makefile ltp-full-20140115/Makefile
+--- ltp-full-20140115.orig/Makefile	2014-01-15 17:51:29.000000000 +0100
++++ ltp-full-20140115/Makefile	2014-03-09 16:27:39.672310295 +0100
+@@ -176,7 +176,7 @@ Version:
+ 	if git describe >/dev/null 2>&1; then \
+ 		git describe > "$@"; \
+ 	else \
+-		cp VERSION "$@"; \
++		cp $(top_srcdir)/VERSION "$@"; \
+ 	fi
+ 
+ $(INSTALL_DIR)/Version: Version
+diff -Naurdp ltp-full-20140115.orig/testcases/kernel/include/lib.mk ltp-full-20140115/testcases/kernel/include/lib.mk
+--- ltp-full-20140115.orig/testcases/kernel/include/lib.mk	2014-01-15 17:51:29.000000000 +0100
++++ ltp-full-20140115/testcases/kernel/include/lib.mk	2014-03-09 18:47:53.350459134 +0100
+@@ -16,10 +16,13 @@
+ #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #
+ 
+-KERNEL_DIR		:= $(top_srcdir)/testcases/kernel
++KERNEL_SRCDIR		:= $(top_srcdir)/testcases/kernel
++LIBKERNTEST_SRCDIR	:= $(KERNEL_SRCDIR)/lib
++
++KERNEL_DIR		:= $(top_builddir)/testcases/kernel
+ LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
+ LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
+-CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_DIR)/include
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_SRCDIR)/include
+ LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
+ LDFLAGS			+= -L$(LIBKERNTEST_DIR)
+ 
+@@ -27,11 +30,11 @@ $(LIBKERNTEST_DIR):
+ 	mkdir -p "$@"
+ 
+ $(LIBKERNTEST): $(LIBKERNTEST_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" all
+ 
+ MAKE_DEPS		+= $(LIBKERNTEST)
+ 
+ trunk-clean:: | lib-clean
+ 
+ lib-clean:: $(LIBKERNTEST_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" clean
+diff -Naurdp ltp-full-20140115.orig/testcases/kernel/lib/Makefile ltp-full-20140115/testcases/kernel/lib/Makefile
+--- ltp-full-20140115.orig/testcases/kernel/lib/Makefile	2014-01-15 17:51:29.000000000 +0100
++++ ltp-full-20140115/testcases/kernel/lib/Makefile	2014-03-09 18:03:12.474885871 +0100
+@@ -22,7 +22,7 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../include
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(abs_srcdir)/../include
+ INTERNAL_LIB		:= libkerntest.a
+ 
+ include $(top_srcdir)/include/mk/lib.mk
+diff -Naurdp ltp-full-20140115.orig/testcases/kernel/mem/include/libmem.mk ltp-full-20140115/testcases/kernel/mem/include/libmem.mk
+--- ltp-full-20140115.orig/testcases/kernel/mem/include/libmem.mk	2014-01-15 17:51:29.000000000 +0100
++++ ltp-full-20140115/testcases/kernel/mem/include/libmem.mk	2014-03-09 18:52:04.124003580 +0100
+@@ -16,11 +16,14 @@
+ #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ #
+ 
+-MEM_DIR			:= $(top_srcdir)/testcases/kernel/mem
++MEM_SRCDIR		:= $(top_srcdir)/testcases/kernel/mem
++LIBMEM_SRCDIR		:= $(MEM_SRCDIR)/lib
++
++MEM_DIR			:= $(top_builddir)/testcases/kernel/mem
+ LIBMEM_DIR		:= $(MEM_DIR)/lib
+ LIBMEM			:= $(LIBMEM_DIR)/libmem.a
+ FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
+-CFLAGS			+= -I$(MEM_DIR)/include
++CFLAGS			+= -I$(MEM_SRCDIR)/include
+ LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+ LDFLAGS			+= -L$(LIBMEM_DIR)
+ 
+@@ -28,13 +31,13 @@ $(LIBMEM_DIR):
+ 	mkdir -p "$@"
+ 
+ $(LIBMEM): $(LIBMEM_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" all
+ 
+ MAKE_DEPS		+= $(LIBMEM)
+ 
+ trunk-clean:: | lib-clean
+ 
+ lib-clean:: $(LIBMEM_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" clean
+ 
+ include $(top_srcdir)/testcases/kernel/include/lib.mk
+diff -Naurdp ltp-full-20140115.orig/testcases/kernel/mem/lib/Makefile ltp-full-20140115/testcases/kernel/mem/lib/Makefile
+--- ltp-full-20140115.orig/testcases/kernel/mem/lib/Makefile	2014-01-15 17:51:29.000000000 +0100
++++ ltp-full-20140115/testcases/kernel/mem/lib/Makefile	2014-03-09 18:15:15.718987539 +0100
+@@ -20,7 +20,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CFLAGS			+= -I../include
++CPPFLAGS		+= -I$(abs_srcdir)/../include
+ INTERNAL_LIB		:= libmem.a
+ 
+ include $(top_srcdir)/testcases/kernel/include/lib.mk
+diff -Naurdp ltp-full-20140115.orig/utils/ffsb-6.0-rc2/stamp-h ltp-full-20140115/utils/ffsb-6.0-rc2/stamp-h
+--- ltp-full-20140115.orig/utils/ffsb-6.0-rc2/stamp-h	1970-01-01 01:00:00.000000000 +0100
++++ ltp-full-20140115/utils/ffsb-6.0-rc2/stamp-h	2014-03-09 17:19:19.784615242 +0100
+@@ -0,0 +1 @@
++timestamp
+diff -Naurdp ltp-full-20140115.orig/utils/Makefile ltp-full-20140115/utils/Makefile
+--- ltp-full-20140115.orig/utils/Makefile	2014-01-15 17:51:29.000000000 +0100
++++ ltp-full-20140115/utils/Makefile	2014-03-09 17:41:04.629421233 +0100
+@@ -28,18 +28,18 @@ FFSBDIR			:= ffsb-6.0-rc2
+ FILTER_OUT_DIRS		:= $(FFSBDIR)
+ FFSB			:= $(FFSBDIR)/ffsb
+ 
+-$(FFSB): $(FFSBDIR)
+-	cd $^; ./configure
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-	cp $(FFSBDIR)/ffsb ffsb
++unexport MAKEFLAGS
++
++$(FFSB): $(abs_srcdir)/$(FFSBDIR)
++	mkdir -p $(FFSBDIR)
++	cd $(FFSBDIR) && "$^/configure" && $(MAKE) all
+ 
+ trunk-all: $(FFSB)
+ 
+ trunk-clean:: | ffsb-clean
+ 
+-ffsb-clean:: $(FFSBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-	rm -rf ffsb
++ffsb-clean:: $(abs_srcdir)/$(FFSBDIR)
++	cd $(FFSBDIR); $(MAKE) clean
+ 
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+
+
+-- 
+                                                                Gilles.
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
+With Perforce, you get hassle-free workflows. Merge that actually works. 
+Faster operations. Version large binaries.  Built-in WAN optimization and the
+freedom to use Git, Perforce or both. Make the move to Perforce.
+http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
