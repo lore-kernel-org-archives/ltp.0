@@ -1,26 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WNihe-0007vb-Qr
-	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 12:56:10 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WN1BS-0003Zb-17
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 14:28:02 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WNihc-0001R3-MP
-	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 12:56:10 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2CCtxri032565
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WN1BQ-0000cc-QI
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 14:28:01 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2AERsTv026942
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 Mar 2014 08:55:59 -0400
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Mar 2014 10:27:54 -0400
 Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s2CCtvdm018857
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 Mar 2014 08:55:58 -0400
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with
+	ESMTP id s2AERrgB028596
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Mar 2014 10:27:54 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 12 Mar 2014 13:55:47 +0100
-Message-Id: <b0a5209e870097e04ba474c1ca6d64de91523462.1394628698.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v3 1/2] add tst_get_unused_port()
+Date: Mon, 10 Mar 2014 15:28:18 +0100
+Message-Id: <2618bd2ff004c79412ab2045f9a1d6c9f8afccec.1394461554.git.jstancek@redhat.com>
+In-Reply-To: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+References: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2 1/2] add tst_get_unused_port()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,7 +48,7 @@ Signed-off-by: Jan Stancek <jstancek@redhat.com>
  create mode 100644 lib/tst_net.c
 
 diff --git a/include/test.h b/include/test.h
-index 81fca3e..32b9680 100644
+index 81fca3e..49a0f47 100644
 --- a/include/test.h
 +++ b/include/test.h
 @@ -288,6 +288,13 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
@@ -57,15 +59,15 @@ index 81fca3e..32b9680 100644
 + *
 + * Return unused port
 + */
-+unsigned short tst_get_unused_port(void (cleanup_fn)(void),
-+	unsigned short family, int type);
++unsigned short tst_get_unused_port(unsigned short family, int type,
++	void (cleanup_fn)(void));
 +
  #ifdef TST_USE_COMPAT16_SYSCALL
  #define TCID_BIT_SUFFIX "_16"
  #elif  TST_USE_NEWER64_SYSCALL
 diff --git a/lib/tst_net.c b/lib/tst_net.c
 new file mode 100644
-index 0000000..f55e107
+index 0000000..3391dee
 --- /dev/null
 +++ b/lib/tst_net.c
 @@ -0,0 +1,80 @@
@@ -97,8 +99,8 @@ index 0000000..f55e107
 +
 +#include "test.h"
 +
-+unsigned short tst_get_unused_port(void (cleanup_fn)(void),
-+	unsigned short family, int type)
++unsigned short tst_get_unused_port(unsigned short family, int type,
++	void (cleanup_fn)(void))
 +{
 +	int sock;
 +	socklen_t slen;
