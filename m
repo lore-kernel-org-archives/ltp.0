@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WTAjz-0004u9-RG
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:53:07 +0000
-Date: Thu, 27 Mar 2014 14:52:39 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WN07W-0001nT-Ii
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 13:19:54 +0000
+Date: Mon, 10 Mar 2014 14:19:37 +0100
 From: chrubis@suse.cz
-Message-ID: <20140327135239.GD4234@rei>
-References: <1395926898-11327-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20140310131937.GB10346@rei>
+References: <1394421090-2780-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1395926898-11327-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] doc: test-writing-guidelines
+In-Reply-To: <1394421090-2780-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCHv2] containers/netns: Add missed definition for
+ check_netns_enabled.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,42 +25,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Add thread-safety paragraph
-> Add example of how to use TST_DECLARE_ONCE_FN
+> CLONE_NEWNET and CLONE_NEWNS are defined in bit/sched.h, and need __USE_GNU
+> defined first. Do the same as par_chld_ipv6.c and two_children_ns.c did, just
+> define _GNU_SOURCE directly.
+> 
+> Also remove duplicate CLONE_NEWNET definition cause we won't run netns test if
+> CLONE_NEWNET and CLONE_NEWNS are not defined.
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  testcases/kernel/containers/libclone/libclone.h         | 4 ----
+>  testcases/kernel/containers/netns/check_netns_enabled.c | 3 +++
+>  2 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/libclone/libclone.h b/testcases/kernel/containers/libclone/libclone.h
+> index 9380cec..50e00f7 100644
+> --- a/testcases/kernel/containers/libclone/libclone.h
+> +++ b/testcases/kernel/containers/libclone/libclone.h
+> @@ -73,10 +73,6 @@
+>  #define CLONE_NEWPID            0x20000000
+>  #endif
+>  
+> -#ifndef CLONE_NEWNET
+> -#define CLONE_NEWNET		0x40000000
+> -#endif
 
-Pushed with minor changes:
+The clone flags has been added to glibc-2.8 in
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a7250b7..9c3ea2a 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -675,12 +675,12 @@ bellow:
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
- It is safe to use library 'tst_' functions in multi-threaded tests.
--Synchronization mechanism enabled only if the test is linked with pthread
-+Synchronization mechanism is enabled only if the test is linked with pthread
- library, otherwise no-op stubs (defined in libc) are used.
- 
--Also, LTP has a help "TST_DECLARE_ONCE_FN" macro to declare a function which
--must be run only once (e.g. init or cleanup function), but might be called
--by multiple threads in the same time. See example below:
-+Also, LTP has a helper "TST_DECLARE_ONCE_FN" macro to declare a function which
-+must be run only once (e.g. init or cleanup function), but might be called by
-+multiple threads at the same time. See example below:
+commit 0ab7632d38f52e2a540b3550f69ec0ed293c0cdb
+Author: Ulrich Drepper <drepper@redhat.com>
+Date:   Mon Mar 24 16:03:48 2008 +0000
+
+    * sysdeps/unix/sysv/linux/bits/sched.h: Add new CLONE_* flags,
+
+        remove CLONE_STOPPED.
 
 
-And also updated the online version in GitHub wiki. Thanks.
+And if I remeber right, we agreed that we should support at least 2.3.3
+so that LTP builds on older enterprise distributions. So we should keep
+these ifdefs a bit longer. Or is there a good reason to remove it?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
