@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WQhyi-00013j-Jj
-	for ltp-list@lists.sourceforge.net; Thu, 20 Mar 2014 18:46:08 +0000
-Date: Thu, 20 Mar 2014 19:45:46 +0100
-From: chrubis@suse.cz
-Message-ID: <20140320184545.GB5013@rei.Home>
-References: <1393914721-5288-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1393914721-5288-4-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1393914721-5288-4-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 3/4] mknodat/mknodat02.c: add ELOOP and EROFS
- error value test
+	(envelope-from <ciprian.barbu@linaro.org>) id 1WN1tZ-0006U3-Rj
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:13:37 +0000
+Received: from mail-la0-f47.google.com ([209.85.215.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WN1tZ-0000JC-3Q
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:13:37 +0000
+Received: by mail-la0-f47.google.com with SMTP id y1so4665348lam.6
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 10 Mar 2014 08:13:30 -0700 (PDT)
+From: Ciprian Barbu <ciprian.barbu@linaro.org>
+Date: Mon, 10 Mar 2014 16:06:37 +0100
+Message-Id: <1394463997-14528-1-git-send-email-ciprian.barbu@linaro.org>
+Subject: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and measurement to
+	pass default profile to run_c_files.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,29 +25,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ciprian.barbu@linaro.org
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
-Hi!
-> And create mknodat.h to encapsulate mknodat syscall.
->
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Signed-off-by: Ciprian Barbu <ciprian.barbu@linaro.org>
 
-Pushed, thanks.
+Upstream-Status: Pending
+---
+ testcases/realtime/func/hrtimer-prio/run_auto.sh |    4 +++-
+ testcases/realtime/func/measurement/run_auto.sh  |    6 ++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-PS: I've fixed the mknodat01 testcase, which was wrong on several
-    things. Most problematic was return 0; in main() instead of
-    tst_exit(), so the test returned success no matter what happened.
-
-    And it looks like most of the *at testcases are similarily wrong :(
-    At least I've allready fixed the mkdirat01 and mknodat01...
-
+diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+index 366e746..ec3d83a 100644
+--- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
++++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+@@ -1,5 +1,7 @@
+ #! /bin/bash
+ 
++profile=${1:-default}
++
+ if [ ! $SCRIPTS_DIR ]; then
+         # assume we're running standalone
+         export SCRIPTS_DIR=../../scripts/
+@@ -7,4 +9,4 @@ fi
+ 
+ source $SCRIPTS_DIR/setenv.sh
+ 
+-$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
++$SCRIPTS_DIR/run_c_files.sh $profile "hrtimer-prio"
+diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
+index 3011964..439f721 100644
+--- a/testcases/realtime/func/measurement/run_auto.sh
++++ b/testcases/realtime/func/measurement/run_auto.sh
+@@ -1,5 +1,7 @@
+ #! /bin/bash
+ 
++profile=${1:-default}
++
+ if [ ! $SCRIPTS_DIR ]; then
+         # assume we're running standalone
+         export SCRIPTS_DIR=../../scripts/
+@@ -13,7 +15,7 @@ source $SCRIPTS_DIR/setenv.sh
+ # issues right now.
+ 
+ LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
+-$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
++$SCRIPTS_DIR/run_c_files.sh $profile "rdtsc-latency"
+ 
+ LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
+-$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
++$SCRIPTS_DIR/run_c_files.sh $profile "preempt_timing"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
