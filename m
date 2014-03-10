@@ -1,20 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WNiLX-0006rM-E4
-	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 12:33:19 +0000
-Date: Wed, 12 Mar 2014 13:33:00 +0100
-From: chrubis@suse.cz
-Message-ID: <20140312123300.GA21693@rei>
-References: <1391607438-529-1-git-send-email-alexey.kodanev@oracle.com>
-	<20140311165448.GA11407@rei> <532024B6.9080603@oracle.com>
-	<20140312104505.GA13689@rei.Home> <53204BC4.5040605@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53204BC4.5040605@oracle.com>
-Subject: Re: [LTP] [PATCH] device-drivers/rcu: add wrapper script for
- rcutorture test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WN15v-0004Ru-It
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 14:22:19 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WN15u-0007Ac-DQ
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 14:22:19 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2AEMB8a014648
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Mar 2014 10:22:12 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s2AEMA08023963
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Mar 2014 10:22:10 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 10 Mar 2014 15:22:34 +0100
+Message-Id: <2618bd2ff004c79412ab2045f9a1d6c9f8afccec.1394460184.git.jstancek@redhat.com>
+In-Reply-To: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+References: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+Subject: [LTP] (no subject)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,36 +32,135 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >>> This is quite fragile, if anything has added a line into dmesg while the
-> >>> test was running it will fail. Better approach would be to save the
-> >>> dmesg output into a file and grep it for the rcutorture resutl.
-> >> Why copy it to a file? I'm thinking about changing to this command, it
-> >> will return the last test result.
-> >>
-> >> result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
-> > I was just thinking how to make the race window as small as possible. In
-> > order to do that I would save the output right after the test has
-> > finished etc.
-> >
-> > But it's quite unlikely that the whole kernel log buffer will be filled
-> > with messages meanwhile.
-> >
-> Got it, so I will save it to a file, then parse the file with sed, OK?
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 7 Mar 2014 10:08:30 +0100
+Subject: [PATCH v2 1/2] add tst_get_unused_port()
 
-Giving it second though piping it to sed directly is also acceptable.
-The kernel log buffer is not that small and the code will be a bit less
-complicated.
+Returns unused port number for specified domain/type.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/test.h |    7 +++++
+ lib/tst_net.c  |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+), 0 deletions(-)
+ create mode 100644 lib/tst_net.c
+
+Changes in v2:
+- use sockaddr_storage as suggested by Mike
+
+diff --git a/include/test.h b/include/test.h
+index 81fca3e..49a0f47 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -288,6 +288,13 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ uid_t tst_get_unused_uid(void);
+ gid_t tst_get_unused_gid(void);
+ 
++/* lib/tst_net.c
++ *
++ * Return unused port
++ */
++unsigned short tst_get_unused_port(unsigned short family, int type,
++	void (cleanup_fn)(void));
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/tst_net.c b/lib/tst_net.c
+new file mode 100644
+index 0000000..3391dee
+--- /dev/null
++++ b/lib/tst_net.c
+@@ -0,0 +1,80 @@
++/*
++ * Copyright (C) 2014 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation, Inc.
++ */
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++
++#include "test.h"
++
++unsigned short tst_get_unused_port(unsigned short family, int type,
++	void (cleanup_fn)(void))
++{
++	int sock;
++	socklen_t slen;
++	struct sockaddr_storage _addr;
++	struct sockaddr *addr = (struct sockaddr *)&_addr;
++	struct sockaddr_in *addr4 = (struct sockaddr_in *)addr;
++	struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)addr;
++
++	switch (family) {
++	case AF_INET:
++		addr4->sin_family = AF_INET;
++		addr4->sin_port = 0;
++		addr4->sin_addr.s_addr = INADDR_ANY;
++		slen = sizeof(*addr4);
++		break;
++
++	case AF_INET6:
++		addr6->sin6_family = AF_INET6;
++		addr6->sin6_port = 0;
++		addr6->sin6_addr = in6addr_any;
++		slen = sizeof(*addr6);
++		break;
++
++	default:
++		tst_brkm(TBROK, cleanup_fn,
++			"tst_get_unused_port unknown family");
++	}
++
++	sock = socket(addr->sa_family, type, 0);
++	if (sock < 0)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "socket failed");
++
++	if (bind(sock, addr, slen) < 0)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "bind failed");
++
++	if (getsockname(sock, addr, &slen) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "getsockname failed");
++
++	if (close(sock) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "close failed");
++
++	switch (family) {
++	case AF_INET:
++		return addr4->sin_port;
++	case AF_INET6:
++		return addr6->sin6_port;
++	default:
++		return -1;
++	}
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
