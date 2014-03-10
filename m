@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ciprian.barbu@linaro.org>) id 1WN1zu-0005WZ-UY
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:20:10 +0000
-Received: from mail-la0-f46.google.com ([209.85.215.46])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WN1zr-0000Vc-2Q
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:20:10 +0000
-Received: by mail-la0-f46.google.com with SMTP id hr17so4735164lab.33
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 10 Mar 2014 08:20:00 -0700 (PDT)
-From: Ciprian Barbu <ciprian.barbu@linaro.org>
-Date: Mon, 10 Mar 2014 16:14:04 +0100
-Message-Id: <1394464444-23803-1-git-send-email-ciprian.barbu@linaro.org>
-Subject: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and measurement to
-	pass default profile to run_c_files.sh
+	(envelope-from <rostedt@goodmis.org>) id 1WN2MQ-00075r-KX
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:43:26 +0000
+Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.229]
+	helo=cdptpa-oedge-vip.email.rr.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WN2MP-00033P-N4
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:43:26 +0000
+Date: Mon, 10 Mar 2014 11:27:56 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+Message-ID: <20140310112756.22f8a872@gandalf.local.home>
+In-Reply-To: <20140310151744.GA14639@localhost.localdomain>
+References: <531DC318.7060504@gmail.com>
+	<20140310151744.GA14639@localhost.localdomain>
+MIME-Version: 1.0
+Subject: Re: [LTP] Testing absence of ticks with nohz_full
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,64 +26,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: linaro-networking@linaro.org
+To: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: Melo <acme@infradead.org>, Discussions <ltp-list@lists.sourceforge.net>, Arnaldo@suse.de, Kevin Hilman <khilman@linaro.org>, Namhyung Kim <namhyung@gmail.com>, Linux@suse.de, Darren Hart <darren@dvhart.com>, Johannes Berg <johannes@sipsolutions.net>, Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>
 
-Signed-off-by: Ciprian Barbu <ciprian.barbu@linaro.org>
+On Mon, 10 Mar 2014 16:17:48 +0100
+Frederic Weisbecker <fweisbec@gmail.com> wrote:
 
-Upstream-Status: Pending
----
- testcases/realtime/func/hrtimer-prio/run_auto.sh |    4 +++-
- testcases/realtime/func/measurement/run_auto.sh  |    6 ++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-index 366e746..ec3d83a 100644
---- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
-+++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-@@ -1,5 +1,7 @@
- #! /bin/bash
- 
-+profile=${1:-default}
-+
- if [ ! $SCRIPTS_DIR ]; then
-         # assume we're running standalone
-         export SCRIPTS_DIR=../../scripts/
-@@ -7,4 +9,4 @@ fi
- 
- source $SCRIPTS_DIR/setenv.sh
- 
--$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
-+$SCRIPTS_DIR/run_c_files.sh $profile "hrtimer-prio"
-diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
-index 3011964..439f721 100644
---- a/testcases/realtime/func/measurement/run_auto.sh
-+++ b/testcases/realtime/func/measurement/run_auto.sh
-@@ -1,5 +1,7 @@
- #! /bin/bash
- 
-+profile=${1:-default}
-+
- if [ ! $SCRIPTS_DIR ]; then
-         # assume we're running standalone
-         export SCRIPTS_DIR=../../scripts/
-@@ -13,7 +15,7 @@ source $SCRIPTS_DIR/setenv.sh
- # issues right now.
- 
- LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
--$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
-+$SCRIPTS_DIR/run_c_files.sh $profile "rdtsc-latency"
- 
- LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
--$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
-+$SCRIPTS_DIR/run_c_files.sh $profile "preempt_timing"
--- 
-1.7.9.5
+> On both cases you want to use trace events. So I'd rather suggest you to use perf tools
+> or trace-cmd.
+> 
+> I believe that trace-cmd unfortunately uses per CPU periodic wake up on live
+> recording CPUs so perhaps it's not a good candidate to test isolation. Too bad
+> because kernelshark is cool for an overview.
 
+Actually, it's not per-cpu. There's a thread per-cpu, but they do not
+need to run on the CPU they monitor. Heck, you can have all threads on
+just one CPU. Actually, they are not threads, they are forked children,
+but you get the idea.
+
+Now that I have wakeup working (with help of irq_work), I should also
+be able to have them only wake if there's something to trace.
+
+
+> 
+> Also perf supports some script languages for post processing: python, perl, etc...
+> I think trace-cmd too but rather for custom display of events.
+
+Yeah, you can write python plugins that will change the display of the
+output. I'm not sure about full integrating with python though.
+
+> 
+> Adding a few more people in Cc.
+
+Me too.
+
+-- Steve
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
