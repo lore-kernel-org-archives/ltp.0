@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WSdvX-0007qy-T1
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 02:50:51 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WSdvW-0000xe-GP
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 02:50:51 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2Q2ofVO005753
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 10:50:42 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 26 Mar 2014 10:48:57 +0800
-Message-Id: <1395802137-30383-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH] lib/safe_macros.c: fix output message error in
-	safe_creat()
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ciprian.barbu@linaro.org>) id 1WN1se-0006RL-VS
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:12:41 +0000
+Received: from mail-la0-f44.google.com ([209.85.215.44])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WN1se-0000Hl-4s
+	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:12:40 +0000
+Received: by mail-la0-f44.google.com with SMTP id hr13so4803032lab.3
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 10 Mar 2014 08:12:33 -0700 (PDT)
+From: Ciprian Barbu <ciprian.barbu@linaro.org>
+Date: Mon, 10 Mar 2014 16:12:26 +0100
+Message-Id: <1394464346-54378-1-git-send-email-ciprian.barbu@linaro.org>
+Subject: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and measurement to
+	pass default profile to run_c_files.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,27 +30,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: linaro-networking@linaro.org
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Signed-off-by: Ciprian Barbu <ciprian.barbu@linaro.org>
+
+Upstream-Status: Pending
 ---
- lib/safe_macros.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/realtime/func/hrtimer-prio/run_auto.sh |    4 +++-
+ testcases/realtime/func/measurement/run_auto.sh  |    6 ++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 7bc3f04..6f85c11 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -62,7 +62,7 @@ safe_creat(const char *file, const int lineno, void (*cleanup_fn) (void),
+diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+index 366e746..ec3d83a 100644
+--- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
++++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+@@ -1,5 +1,7 @@
+ #! /bin/bash
  
- 	rval = creat(pathname, mode);
- 	if (rval == -1)
--		tst_brkm(TBROK | TERRNO, cleanup_fn, "pipe failed at %s:%d",
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "creat failed at %s:%d",
- 			 file, lineno);
++profile=${1:-default}
++
+ if [ ! $SCRIPTS_DIR ]; then
+         # assume we're running standalone
+         export SCRIPTS_DIR=../../scripts/
+@@ -7,4 +9,4 @@ fi
  
- 	return (rval);
+ source $SCRIPTS_DIR/setenv.sh
+ 
+-$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
++$SCRIPTS_DIR/run_c_files.sh $profile "hrtimer-prio"
+diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
+index 3011964..439f721 100644
+--- a/testcases/realtime/func/measurement/run_auto.sh
++++ b/testcases/realtime/func/measurement/run_auto.sh
+@@ -1,5 +1,7 @@
+ #! /bin/bash
+ 
++profile=${1:-default}
++
+ if [ ! $SCRIPTS_DIR ]; then
+         # assume we're running standalone
+         export SCRIPTS_DIR=../../scripts/
+@@ -13,7 +15,7 @@ source $SCRIPTS_DIR/setenv.sh
+ # issues right now.
+ 
+ LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
+-$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
++$SCRIPTS_DIR/run_c_files.sh $profile "rdtsc-latency"
+ 
+ LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
+-$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
++$SCRIPTS_DIR/run_c_files.sh $profile "preempt_timing"
 -- 
-1.8.2.1
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
