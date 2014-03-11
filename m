@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WQfdC-0001A4-27
-	for ltp-list@lists.sourceforge.net; Thu, 20 Mar 2014 16:15:46 +0000
-Date: Thu, 20 Mar 2014 17:15:22 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WNPxL-0006zP-Cn
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 16:55:07 +0000
+Date: Tue, 11 Mar 2014 17:54:48 +0100
 From: chrubis@suse.cz
-Message-ID: <20140320161522.GB4432@rei.Home>
-References: <1393304401-22031-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140311165448.GA11407@rei>
+References: <1391607438-529-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1393304401-22031-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] mincore/mincore01.c: cleanup
+In-Reply-To: <1391607438-529-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers/rcu: add wrapper script for
+ rcutorture test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,19 +25,227 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Delete some useless comments.
-> Move the test body from main() to mincore_verify().
-> Use some SAFE_* macros.
-> Make ENOMEM error value tests sufficient.
+> One of the possible ways to test RCU is to use rcutorture kernel module.
+> The test requires that kernel configured with CONFIG_RCU_TORTURE_TEST.
+> It runs rcutorture module using particular options and then inspects
+> dmesg output for module's test results.
+> For more information, please read Linux Documentation: RCU/torture.txt
 > 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  runtest/kernel_misc                                |    1 +
+>  testcases/kernel/device-drivers/Makefile           |    1 +
+>  testcases/kernel/device-drivers/rcu/Makefile       |   22 ++++
+>  testcases/kernel/device-drivers/rcu/rcu_torture.sh |  120 ++++++++++++++++++++
+>  4 files changed, 144 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/device-drivers/rcu/Makefile
+>  create mode 100755 testcases/kernel/device-drivers/rcu/rcu_torture.sh
+> 
+> diff --git a/runtest/kernel_misc b/runtest/kernel_misc
+> index c1826fb..8f37cc6 100644
+> --- a/runtest/kernel_misc
+> +++ b/runtest/kernel_misc
+> @@ -7,3 +7,4 @@ tbio tbio
+>  ltp_acpi ltp_acpi
+>  ltp_acpi_cpufreq ltp_acpi_cpufreq
+>  uaccess uaccess
+> +rcu_torture.sh rcu_torture.sh
+> diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
+> index d207736..37b6c64 100644
+> --- a/testcases/kernel/device-drivers/Makefile
+> +++ b/testcases/kernel/device-drivers/Makefile
+> @@ -21,6 +21,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
+>  SUBDIRS		:= acpi \
+>  		   block \
+>  		   pci \
+> +		   rcu \
+>  		   rtc \
+>  		   tbio \
+>  		   uaccess
+> diff --git a/testcases/kernel/device-drivers/rcu/Makefile b/testcases/kernel/device-drivers/rcu/Makefile
+> new file mode 100644
+> index 0000000..96c6b5b
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/rcu/Makefile
+> @@ -0,0 +1,22 @@
+> +# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, write the Free Software Foundation,
+> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +
+> +top_srcdir	?= ../../../..
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +INSTALL_TARGETS		:= rcu_torture.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/device-drivers/rcu/rcu_torture.sh b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+> new file mode 100755
+> index 0000000..c3db889
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+> @@ -0,0 +1,120 @@
+> +#!/bin/sh
+> +# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, write the Free Software Foundation,
+> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+> +#
+> +# One of the possible ways to test RCU is to use rcutorture kernel module.
+> +# The test requiers that kernel configured with CONFIG_RCU_TORTURE_TEST.
+> +# It runs rcutorture module using particular options and then inspects
+> +# dmesg output for module's test results.
+> +# For more information, please read Linux Documentation: RCU/torture.txt
+> +
+> +export RC=0
+> +export TST_TOTAL=14
+> +export TCID="rcu_torture"
+> +export TST_COUNT=0
+> +# default options
+> +test_time=60
+> +num_readers=10
+> +num_writers=5
+> +
+> +while getopts :ht:r:w: opt; do
+> +	case "$opt" in
+> +	h)
+> +		echo "Usage:"
+> +		echo "h        help"
+> +		echo "t x      time in seconds for each test-case"
+> +		echo "r x      number of readers"
+> +		echo "w x      number of writers"
+> +		exit 0
+> +	;;
+> +	t) test_time=$OPTARG ;;
+> +	r) num_readers=$OPTARG ;;
+> +	w) num_writers=$OPTARG ;;
+> +	*)
+> +		tst_brkm TBROK NULL "unknown option: $opt"
+> +		exit 2
+> +	;;
+> +	esac
+> +done
+> +
+> +cleanup()
+> +{
+> +	rmmod rcutorture > /dev/null 2>&1
+> +}
+> +
+> +if [ "`id -u`" -ne 0 ]; then
+> +	tst_brkm TCONF NULL "Test must be run as root"
+> +	exit 0
+> +fi
+> +
+> +# check if module is present
+> +modprobe rcutorture > /dev/null 2>&1
+> +if [ $? -ne 0 ]; then
+> +	tst_brkm TCONF NULL "Test requiers rcutorture module"
+> +	exit 0
+> +fi
+> +cleanup
+> +
+> +trap cleanup EXIT
+> +
+> +rcu_type="rcu rcu_sync rcu_expedited rcu_bh rcu_bh_sync rcu_bh_expedited \
+> +          srcu srcu_sync srcu_expedited srcu_raw srcu_raw_sync sched \
+> +          sched_sync sched_expedited"
+> +
+> +est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
+> +tst_resm TINFO "estimate time $est_time min"
+> +
+> +for type in $rcu_type; do
+> +
+> +	tst_resm TINFO "tc$TST_COUNT: $type running ($test_time sec)..."
+> +
+> +	modprobe rcutorture nreaders=$num_readers nfakewriters=$num_writers \
+> +	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
+> +	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
+> +	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
+> +	         test_boost_duration=4 shutdown_secs=0 \
+> +	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
+> +	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
+> +	         > /dev/null 2>&1
+> +
+> +	if [ $? -ne 0 ]; then
+> +		tst_brkm TBROK NULL "failed to load module"
+> +		exit 2
+> +	fi
+> +
+> +	sleep $test_time
+> +
+> +	rmmod rcutorture > /dev/null 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		tst_brkm TBROK NULL "failed to unload module"
+> +		exit 2
+> +	fi
+> +
+> +	# check module status in dmesg
+> +	result_str=`dmesg | tail -n 1`
 
-I've cleaned up one more trailing whitespace (that was in the original
-file as well) and pushed, thanks.
+This is quite fragile, if anything has added a line into dmesg while the
+test was running it will fail. Better approach would be to save the
+dmesg output into a file and grep it for the rcutorture resutl.
+
+> +	echo "$result_str" | grep SUCCESS > /dev/null 2>&1
+> +	if [ $? -eq 0 ]; then
+> +		tst_resm TPASS "tc$TST_COUNT: completed"
+> +	else
+> +		tst_resm TFAIL "tc$TST_COUNT: failed, please check dmesg"
+> +		RC=1
+
+What about using the test.sh library I've send as a RFC into the mailing
+list instead? Have you seen the code? It's modeled more closely to the C
+interface and stores the exit value internally, manages the TST_COUNT,
+etc...
+
+(http://sourceforge.net/p/ltp/mailman/message/31941597/)
+
+> +	fi
+> +	TST_COUNT=$(( $TST_COUNT + 1 ))
+> +done
+> +
+> +exit $RC
+> -- 
+> 1.7.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> Managing the Performance of Cloud-Based Applications
+> Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+> Read the Whitepaper.
+> http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
 Cyril Hrubis
