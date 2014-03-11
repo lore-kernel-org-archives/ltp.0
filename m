@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WTAnU-0000E3-Hg
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:44 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WTAnT-00027c-Qm
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:44 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2RDubIZ012764
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:38 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2RDuaQm013711
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:37 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2RDuap3013687
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:36 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 27 Mar 2014 17:56:23 +0400
-Message-Id: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] rpc-tirpc: TI-RPC fixes
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WNOY1-00081w-4P
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 15:24:53 +0000
+Date: Tue, 11 Mar 2014 16:24:35 +0100
+From: chrubis@suse.cz
+Message-ID: <20140311152435.GE10778@rei>
+References: <b187cebc670c5e8d23f2405d95f82405a0416095.1394190599.git.jstancek@redhat.com>
+	<2618bd2ff004c79412ab2045f9a1d6c9f8afccec.1394461554.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2618bd2ff004c79412ab2045f9a1d6c9f8afccec.1394461554.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2 1/2] add tst_get_unused_port()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,26 +22,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
+> Returns unused port number for specified domain/type.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  include/test.h |    7 +++++
+>  lib/tst_net.c  |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 87 insertions(+), 0 deletions(-)
+>  create mode 100644 lib/tst_net.c
+> 
+> diff --git a/include/test.h b/include/test.h
+> index 81fca3e..49a0f47 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -288,6 +288,13 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+>  uid_t tst_get_unused_uid(void);
+>  gid_t tst_get_unused_gid(void);
+>  
+> +/* lib/tst_net.c
+> + *
+> + * Return unused port
+> + */
+> +unsigned short tst_get_unused_port(unsigned short family, int type,
+> +	void (cleanup_fn)(void));
 
-This series fixes errors in the "bottom level" and "expert level" test binaries.
+Just am minor nit to the API. Most of the tst_ functions as well as
+SAFE_MACROS() have cleanup callback as first parameter. Let's be
+consistent with that.
 
-After applying only these test cases may fail (from runtest/tirpc_tests):
-tirpc_authsys_create           FAIL       1    
-tirpc_authdes_create           FAIL       1    
-tirpc_authdes_seccreate        FAIL       1    
-
-Thanks.
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
