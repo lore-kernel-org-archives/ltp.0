@@ -1,29 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WKQxh-0003TG-4H
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 11:23:09 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WKQxf-0000UF-3x
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 11:23:09 +0000
-Message-ID: <1393845775.1984.10.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 03 Mar 2014 19:22:55 +0800
-In-Reply-To: <1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-	<1392889813.2053.10.camel@G08JYZSD130126>
-	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-	<1393832848.1991.19.camel@G08JYZSD130126>
-	<1393833079.1991.22.camel@G08JYZSD130126>
-	<1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v5 1/3] safe_macros: Add SAFE_GETRLIMIT and
-	SAFE_SETRLIMIT
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WNMX4-0000mG-8y
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:15:46 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WNMX2-0000hx-Cf
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:15:46 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2BDFbb6028007
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:15:38 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2BDFaek016107
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:15:37 GMT
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2BDFajE016701
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:15:36 GMT
+Message-ID: <531F0C71.2030209@oracle.com>
+Date: Tue, 11 Mar 2014 17:15:29 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+Subject: [LTP] testscripts/ltpstress.sh and its log file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,85 +40,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- include/safe_macros.h | 10 ++++++++++
- lib/safe_macros.c     | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+)
+Hi!
 
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index 207affc..bdd974c 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -196,5 +196,15 @@ int safe_lstat(const char *file, const int lineno, void (cleanup_fn)(void),
- #define SAFE_LSTAT(cleanup_fn, path, buf) \
- 	safe_lstat(__FILE__, __LINE__, (cleanup_fn), (path), (buf))
- 
-+int safe_getrlimit(const char *file, const int lineno, void (cleanup_fn)(void),
-+		   int resource, struct rlimit *rlim);
-+#define SAFE_GETRLIMIT(cleanup_fn, resource, rlim) \
-+	safe_getrlimit(__FILE__, __LINE__, (cleanup_fn), (resource), (rlim))
-+
-+int safe_setrlimit(const char *file, const int lineno, void (cleanup_fn)(void),
-+		   int resource, const struct rlimit *rlim);
-+#define SAFE_SETRLIMIT(cleanup_fn, resource, rlim) \
-+	safe_setrlimit(__FILE__, __LINE__, (cleanup_fn), (resource), (rlim))
-+
- #endif /* __SAFE_MACROS_H__ */
- #endif /* __TEST_H__ */
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index ad24195..e8795ef 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -500,3 +500,33 @@ int safe_lstat(const char *file, const int lineno,
- 
- 	return rval;
- }
-+
-+int safe_getrlimit(const char *file, const int lineno,
-+		   void (cleanup_fn)(void), int resource, struct rlimit *rlim)
-+{
-+	int rval;
-+
-+	rval = getrlimit(resource, rlim);
-+
-+	if (rval == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "getrlimit failed at %s:%d", file, lineno);
-+	}
-+
-+	return rval;
-+}
-+
-+int safe_setrlimit(const char *file, const int lineno, void (cleanup_fn)(void),
-+		   int resource, const struct rlimit *rlim)
-+{
-+	int rval;
-+
-+	rval = setrlimit(resource, rlim);
-+
-+	if (rval == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "setrlimit failed at %s:%d", file, lineno);
-+	}
-+
-+	return rval;
-+}
--- 
-1.8.4.2
+Is it made by intent that ltpstress.sh writes one single log file (by 
+default /tmp/ltpstress.log)?
 
+ From the other side it uses a separate output file for each of ltp-pan 
+instances.
 
+ltp-pan does not use any locking mechanism to coordinate writing to its 
+log/output files. So we may have problems here (concurrent writing from 
+different processes). Or not?
 
+Thanks.
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
