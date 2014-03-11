@@ -1,33 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WNMX4-0000mG-8y
-	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:15:46 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WNMX2-0000hx-Cf
-	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:15:46 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2BDFbb6028007
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:15:38 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2BDFaek016107
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:15:37 GMT
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2BDFajE016701
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:15:36 GMT
-Message-ID: <531F0C71.2030209@oracle.com>
-Date: Tue, 11 Mar 2014 17:15:29 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	(envelope-from <metan@suse.de>) id 1WNOri-0000Tr-Vm
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 15:45:15 +0000
+Date: Tue, 11 Mar 2014 16:44:57 +0100
+From: chrubis@suse.cz
+Message-ID: <20140311154457.GG10778@rei>
+References: <1394416647-3926-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] testscripts/ltpstress.sh and its log file
+Content-Disposition: inline
+In-Reply-To: <1394416647-3926-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4] mprotect/mprotect04.c: add PROT_NONE,
+ PROT_EXEC flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,21 +25,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
+> create a new case to test PROT_NONE, PROT_EXEC flag for mprotect(2)
+> 
+> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
 
-Is it made by intent that ltpstress.sh writes one single log file (by 
-default /tmp/ltpstress.log)?
+There is no need to resend a patch with additional signed-off-by lines,
+I can add these myself ;).
 
- From the other side it uses a separate output file for each of ltp-pan 
-instances.
-
-ltp-pan does not use any locking mechanism to coordinate writing to its 
-log/output files. So we may have problems here (concurrent writing from 
-different processes). Or not?
-
-Thanks.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
