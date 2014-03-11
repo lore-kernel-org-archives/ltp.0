@@ -1,31 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1WSLLu-0000oi-HB
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 07:00:50 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WSLLt-0007Zj-7l
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 07:00:50 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2P70gOa000359
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 07:00:43 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2P70fP9005125
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 07:00:42 GMT
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s2P70f50005955
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 07:00:41 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 25 Mar 2014 11:01:06 +0400
-Message-Id: <1395730866-28862-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] lib/test_net.sh: add network help script
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+From: Chuck Lever <chucklever@gmail.com>
+In-Reply-To: <531F3008.8040901@oracle.com>
+Date: Tue, 11 Mar 2014 11:52:04 -0400
+Message-Id: <FEE6B7DC-E9E5-4AA0-81F0-3FA10858B5B1@gmail.com>
+References: <5318674C.9010602@oracle.com>
+	<5C05564D-9678-4A77-9904-AEDD496204C0@gmail.com>
+	<53199C4F.209@oracle.com>
+	<FC239229-AFB2-4D2A-9138-C20FF2780936@gmail.com>
+	<531E13B6.2040003@oracle.com>
+	<A0CACF04-F2D5-4E26-9EDF-720CCED714AE@gmail.com>
+	<531F3008.8040901@oracle.com>
+Subject: Re: [LTP] [Libtirpc-devel] svcfd_create differences between
+	libtirpc and glibc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,130 +22,176 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, libtirpc List <libtirpc-devel@lists.sourceforge.net>
 
-Add tst_rhost_run() library function to run commands on remote host.
-Supported options:
--b run in background
--s safe option, if something goes wrong, will exit with TBROK
--c specify command to run
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+On Mar 11, 2014, at 11:47 AM, Stanislav Kholmanskikh <stanislav.kholmanskik=
+h@oracle.com> wrote:
+
+> CC-in LTP mailing list (I should have do it in the first e-mail)
+> =
+
+> On 11.03.2014 18:52, Chuck Lever wrote:
+>> =
+
+>> On Mar 10, 2014, at 3:34 PM, Stanislav Kholmanskikh <stanislav.kholmansk=
+ikh@oracle.com> wrote:
+>> =
+
+>>> =
+
+>>> On 07.03.2014 18:53, Chuck Lever wrote:
+>>>>> Is this patch a suitable fix to this bug (sorry for spaces):
+>>>>> =
+
+>>>>> diff --git a/src/svc_vc.c b/src/svc_vc.c
+>>>>> index d65a35e..fcd472d 100644
+>>>>> --- a/src/svc_vc.c
+>>>>> +++ b/src/svc_vc.c
+>>>>> @@ -218,6 +218,12 @@ svc_fd_create(fd, sendsize, recvsize)
+>>>>> =
+
+>>>>>        slen =3D sizeof (struct sockaddr_storage);
+>>>>>        if (getsockname(fd, (struct sockaddr *)(void *)&ss, &slen) < 0=
+) {
+>>>>> +               /* if fd is not a network socket, leave the address
+>>>>> +                * fields unitialized
+>>>>> +                */
+>>>>> +               if (errno =3D=3D ENOTSOCK)
+>>>>> +                       return ret;
+>>>>> +
+>>>>>                warnx("svc_fd_create: could not retrieve local addr");
+>>>>>                goto freedata;
+>>>>>        }
+>>>>> =
+
+>>>>> ?
+>>>>> =
+
+>>>>> It works in my case.
+>>>>> =
+
+>>>>> Since makefd_xprt() returns a SVCXPRT structure which has xp_ltaddr, =
+xp_rtaddr and xp_raddr filled with zeroes, both xp_ltaddr.buf and xp_rtaddr=
+.buf will point to NULL in my case.
+>>>>> I suppose, that it should not be an issue, but I'm unsure :)
+>>>>> =
+
+>>>>> If it's ok I'll resend it the right way.
+>>>> =
+
+>>>> The library now returns an xprt that is not fully initialized. That ma=
+y not be terribly useful behavior.
+>>>> =
+
+>>>> But that seems like the only way to get test-for-test compatibility wi=
+th glibc. Perhaps the new comment could reflect that.
+>>>> =
+
+>>>> Is there any information about exactly what that test is trying to det=
+ermine? What is fd 0 when that test is run?
+>>> =
+
+>>> fd 0 is stdin in the tests. And svcfd_create() function is used to perf=
+orm a functional testing of itself and other functions (like svc_destroy).
+>> =
+
+>> To be clear, I=92m not formally objecting to your patch. As a reviewer, =
+I=92m just trying to understand whether the proposed fix is appropriate. Th=
+anks for sticking with it!
+>> =
+
+> =
+
+> To be clear, I don't insist on applying any changes to the libtirpc code.=
+ :) In general, I just want to find the failing part. Whether it's the test=
+ or libtirpc.
+> =
+
+>>> For example:
+>>> =
+
+>>> https://github.com/linux-test-project/ltp/blob/master/testcases/network=
+/rpc/rpc-tirpc-full-test-suite/tests_pack/rpc_suite/rpc/rpc_createdestroy_s=
+vcfd_create/1-basic.c
+>>> =
+
+>>> and here fd is not explicitly set to 0 (but I'm inclined that this is a=
+ bug):
+>>> https://github.com/linux-test-project/ltp/blob/master/testcases/network=
+/rpc/rpc-tirpc-full-test-suite/tests_pack/rpc_suite/rpc/rpc_createdestroy_s=
+vc_destroy/1-basic.c
+>> =
+
+>> It would be nice to have some code samples other than test cases so we c=
+an see how svcfd_create() is used in the real world. So far, my search resu=
+lts have produced only documentation and header files.
+>> =
+
+>> However, this:
+>> =
+
+>>   http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp?topic=3D%2=
+Fcom.ibm.aix.progcomm%2Fdoc%2Fprogcomc%2Fstart_rpc_inetd.htm
+>> =
+
+>> suggests that svcfd_create() expects a connected TCP socket.
+>> =
+
+>> This is why the test case confuses me: Although the inetd daemon would p=
+ass fd 0 to svcfd_create(), as the test case does, NULL should be the corre=
+ct result when passing in a socket that is not a connected TCP socket, I wo=
+uld think.
+>> =
+
+>> Is the test program simply run from a terminal, or is it part of some la=
+rger infrastructure that would actually provide a TCP socket as fd 0?
+> =
+
+> This suite has an infrastructure to execute such programs. In general the=
+ logic is:
+> * It starts an rpc server like this (in background):
+>  ./rpc_svc_1 <program number>
+>  This server registers <program number> and version 1 to rpcbind
+> * Then it executes a test binary, passing it the host where rpc_svc_1 is =
+running and the program number. Like this:
+>  ./test_binary 127.0.0.1 <program number>
+
+Then I would think a network socket is a requirement for the test to run co=
+rrectly.
+
+> * The test binary do its job and returns/prints either 0 or 1 (success or=
+ failure).
+> =
+
+> Of course, there are some variations.
+> =
+
+> But the programs I mentioned above, in fact, don't perform any calls to t=
+he running rpc server, therefore they can be executed simply from a termina=
+l, therefore (I think), fd is stdin.
+> =
+
+> So, to sums up, the evil is in the tests and the right action would be mo=
+difying the tests to pass svcfd_create() a connected TCP socket. Right?
+
+I guess I would try to make sure the test is running as it is supposed to. =
+It looks like the test is designed to try out an API that inetd wants to us=
+e, and it invokes that API just like inetd does in practice.
+
+--
+Chuck Lever
+chucklever@gmail.com
+
+
+
+
+---------------------------------------------------------------------------=
 ---
-v2: Reset OPTIND
-    echo only if output is not empty
-    Remove setting $LTPROOT/testcases/bin in PATH
-
- testcases/lib/test.sh     |    1 +
- testcases/lib/test_net.sh |   77 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 78 insertions(+), 0 deletions(-)
- create mode 100644 testcases/lib/test_net.sh
-
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 3f8a0f4..25248d9 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -23,6 +23,7 @@
- 
- export LTP_RET_VAL=0
- export TST_COUNT=1
-+export TST_LIB_LOADED=1
- 
- # Exit values map
- tst_flag2mask()
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-new file mode 100644
-index 0000000..b7b32b2
---- /dev/null
-+++ b/testcases/lib/test_net.sh
-@@ -0,0 +1,77 @@
-+#!/bin/sh
-+# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
-+
-+[ -z "$TST_LIB_LOADED" ] && . test.sh
-+
-+# Run command on remote host.
-+# Options:
-+# -b run in background
-+# -s safe option, if something goes wrong, will exit with TBROK
-+# -c specify command to run
-+
-+tst_rhost_run()
-+{
-+	# this is needed to run tools/apicmds on remote host
-+	local pre_cmd="TCID=$TCID TST_COUNT=1 TST_TOTAL=1"
-+	local post_cmd=
-+	local out=
-+	local user="root"
-+	local cmd=
-+	local safe=0
-+
-+	OPTIND=0
-+
-+	while getopts :bsc:u: opt; do
-+		case "$opt" in
-+		b)
-+			pre_cmd="$pre_cmd nohup"
-+			post_cmd=" > /dev/null 2>&1 &"
-+			out="1> /dev/null"
-+		;;
-+		s) safe=1 ;;
-+		c) cmd=$OPTARG ;;
-+		u) user=$OPTARG ;;
-+		*)
-+			tst_brkm TBROK "tst_rhost_run: unknown option: $opt"
-+		;;
-+		esac
-+	done
-+
-+	OPTIND=0
-+
-+	[ -z "$cmd" ] && tst_brkm TBROK "command not defined"
-+
-+	local output=
-+	local ret=
-+	if [ -n "$TST_USE_SSH" -a "$TST_USE_SSH" -eq 1 ]; then
-+		output=`ssh -n -q $user@$RHOST "sh -c \
-+			'$pre_cmd $cmd $post_cmd'" $out 2> /dev/null`
-+	else
-+		output=`rsh -n -l $user $RHOST "sh -c \
-+			'$pre_cmd $cmd $post_cmd'" $out 2> /dev/null`
-+	fi
-+	ret=$?
-+	[ $ret -ne 0 -a "$safe" -eq 1 ] && \
-+		tst_brkm TBROK "failed to run '$cmd' on '$RHOST'"
-+
-+	[ -z "$out" -a -n "$output" ] && echo "$output"
-+
-+	return $ret
-+}
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
 "Graph Databases" is the definitive new guide to graph databases and their
 applications. Written by three acclaimed leaders in the field,
