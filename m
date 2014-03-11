@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gilles.chanteperdrix@xenomai.org>)
-	id 1WRRg2-0006bx-Ni
-	for ltp-list@lists.sourceforge.net; Sat, 22 Mar 2014 19:33:54 +0000
-Received: from sd-51317.dedibox.fr ([62.210.215.82])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1WRRg1-0000gM-HM
-	for ltp-list@lists.sourceforge.net; Sat, 22 Mar 2014 19:33:54 +0000
-From: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
-Date: Sat, 22 Mar 2014 20:33:27 +0100
-Message-Id: <1395516807-27706-1-git-send-email-gilles.chanteperdrix@xenomai.org>
-In-Reply-To: <20140310125058.GA10346@rei>
-References: <20140310125058.GA10346@rei>
-Subject: [LTP] [PATCH] build: fix out-of-tree build
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WNMMt-0002GZ-5k
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:05:15 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WNMMs-0000LJ-Cg
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:05:15 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2BD57nO007188
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:05:08 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2BD562L008376
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:05:07 GMT
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s2BD56gc004522
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:05:06 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 11 Mar 2014 17:04:56 +0400
+Message-Id: <1394543097-21115-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 1/2] ltpstress.sh: added cmdline option to set
+	temporary directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,174 +42,94 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-
-Signed-off-by: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- Makefile                                         |    2 +-
- testcases/kernel/include/lib.mk                  |   11 +++++++----
- testcases/kernel/lib/Makefile                    |    2 +-
- testcases/kernel/mem/include/libmem.mk           |   11 +++++++----
- testcases/kernel/mem/lib/Makefile                |    2 +-
- testcases/network/rpc/basic_tests/rpc01/Makefile |    2 +-
- utils/Makefile                                   |   14 +++++++-------
- 7 files changed, 25 insertions(+), 19 deletions(-)
+ testscripts/ltpstress.sh |   35 ++++++++++++++++++++++-------------
+ 1 file changed, 22 insertions(+), 13 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 71efca4..297f8e7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -176,7 +176,7 @@ Version:
- 	if git describe >/dev/null 2>&1; then \
- 		git describe > "$@"; \
- 	else \
--		cp VERSION "$@"; \
-+		cp $(top_srcdir)/VERSION "$@"; \
- 	fi
+diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
+index 49fc5a2..d87148d 100755
+--- a/testscripts/ltpstress.sh
++++ b/testscripts/ltpstress.sh
+@@ -35,8 +35,6 @@ if [ $? -eq 0 ]; then
+  cd ..
+  export LTPROOT=${PWD}
+ fi
+-export TMPBASE="/tmp"
+-export TMP="${TMPBASE}/ltpstress-$$"
+ export PATH=$LTPROOT/testcases/bin:$PATH
+ memsize=0
+ hours=24
+@@ -57,7 +55,7 @@ usage()
+ {
  
- $(INSTALL_DIR)/Version: Version
-diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
-index 624134b..c193ca3 100644
---- a/testcases/kernel/include/lib.mk
-+++ b/testcases/kernel/include/lib.mk
-@@ -16,10 +16,13 @@
- #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- #
+ 	cat <<-END >&2
+-	usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ] [ -n ] [ -t duration ] [ [-S]|[-T] ]
++	usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ] [ -n ] [ -t duration ] [ -x TMPDIR ] [ [-S]|[-T] ]
  
--KERNEL_DIR		:= $(top_srcdir)/testcases/kernel
-+KERNEL_SRCDIR		:= $(abs_top_srcdir)/testcases/kernel
-+LIBKERNTEST_SRCDIR	:= $(KERNEL_SRCDIR)/lib
+     -d datafile     Data file for 'sar' or 'top' to log to. Default is "/tmp/ltpstress.data".
+     -i # (in sec)   Interval that 'sar' or 'top' should take snapshots. Default is 10 seconds.
+@@ -68,6 +66,7 @@ usage()
+     -S              Use 'sar' to measure data.
+     -T              Use LTP's modified 'top' tool to measure data.
+     -t duration     Execute the testsuite for given duration in hours. Default is 24.
++    -x TMPDIR       Directory where temporary files will be created.
+ 
+ 	example: ${0##*/} -d /tmp/sardata -l /tmp/ltplog.$$ -m 128 -t 24 -S
+ 	END
+@@ -84,16 +83,7 @@ check_memsize()
+   leftover_memsize=$memsize
+ }
+ 
+-
+-mkdir -p ${TMP}
+-
+-cd ${TMP}
+-if [ $? -ne 0 ]; then
+-  echo "could not cd ${TMP} ... exiting"
+-  exit
+-fi
+-
+-while getopts d:hi:I:l:STt:m:n\? arg
++while getopts d:hi:I:l:STt:m:nx:\? arg
+ do  case $arg in
+ 
+ 	d)	datafile="$OPTARG";;
+@@ -137,11 +127,30 @@ do  case $arg in
+         t)      hours=$OPTARG
+ 		duration=$(($hours * 60 * 60));;
+ 
++	x)	export TMPBASE=$(readlink -f ${OPTARG});;
 +
-+KERNEL_DIR		:= $(abs_top_builddir)/testcases/kernel
- LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
- LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
--CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_DIR)/include
-+CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_SRCDIR)/include
- LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
- LDFLAGS			+= -L$(LIBKERNTEST_DIR)
+         \?)     echo "Help info:"
+ 		usage;;
+         esac
+ done
  
-@@ -27,11 +30,11 @@ $(LIBKERNTEST_DIR):
- 	mkdir -p "$@"
- 
- $(LIBKERNTEST): $(LIBKERNTEST_DIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-+	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" all
- 
- MAKE_DEPS		+= $(LIBKERNTEST)
- 
- trunk-clean:: | lib-clean
- 
- lib-clean:: $(LIBKERNTEST_DIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-+	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" clean
-diff --git a/testcases/kernel/lib/Makefile b/testcases/kernel/lib/Makefile
-index db094e8..c4af8df 100644
---- a/testcases/kernel/lib/Makefile
-+++ b/testcases/kernel/lib/Makefile
-@@ -22,7 +22,7 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../include
-+CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(abs_srcdir)/../include
- INTERNAL_LIB		:= libkerntest.a
- 
- include $(top_srcdir)/include/mk/lib.mk
-diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
-index fdf38a1..7ebcf05 100644
---- a/testcases/kernel/mem/include/libmem.mk
-+++ b/testcases/kernel/mem/include/libmem.mk
-@@ -16,11 +16,14 @@
- #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- #
- 
--MEM_DIR			:= $(top_srcdir)/testcases/kernel/mem
-+MEM_SRCDIR		:= $(top_srcdir)/testcases/kernel/mem
-+LIBMEM_SRCDIR		:= $(MEM_SRCDIR)/lib
++export TMP="${TMPBASE}/ltpstress-$$"
++export TMPDIR=${TMP}
++mkdir -p ${TMP}
 +
-+MEM_DIR			:= $(top_builddir)/testcases/kernel/mem
- LIBMEM_DIR		:= $(MEM_DIR)/lib
- LIBMEM			:= $(LIBMEM_DIR)/libmem.a
- FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
--CFLAGS			+= -I$(MEM_DIR)/include
-+CFLAGS			+= -I$(MEM_SRCDIR)/include
- LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
- LDFLAGS			+= -L$(LIBMEM_DIR)
- 
-@@ -28,13 +31,13 @@ $(LIBMEM_DIR):
- 	mkdir -p "$@"
- 
- $(LIBMEM): $(LIBMEM_DIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-+	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" all
- 
- MAKE_DEPS		+= $(LIBMEM)
- 
- trunk-clean:: | lib-clean
- 
- lib-clean:: $(LIBMEM_DIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-+	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" clean
- 
- include $(top_srcdir)/testcases/kernel/include/lib.mk
-diff --git a/testcases/kernel/mem/lib/Makefile b/testcases/kernel/mem/lib/Makefile
-index 6bc5863..d4624e9 100644
---- a/testcases/kernel/mem/lib/Makefile
-+++ b/testcases/kernel/mem/lib/Makefile
-@@ -20,7 +20,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--CFLAGS			+= -I../include
-+CPPFLAGS		+= -I$(abs_srcdir)/../include
- INTERNAL_LIB		:= libmem.a
- 
- include $(top_srcdir)/testcases/kernel/include/lib.mk
-diff --git a/testcases/network/rpc/basic_tests/rpc01/Makefile b/testcases/network/rpc/basic_tests/rpc01/Makefile
-index 68ea85e..7815cbb 100644
---- a/testcases/network/rpc/basic_tests/rpc01/Makefile
-+++ b/testcases/network/rpc/basic_tests/rpc01/Makefile
-@@ -32,7 +32,7 @@ SUBDIRS			:= datafiles
- 
- LIBSRCS			:= $(abs_srcdir)/librpc01.c
- INTERNAL_LIB		:= librpc01.a
--LDFLAGS			+= -L$(abs_srcdir)
-+LDFLAGS			+= -L$(abs_builddir)
- LDLIBS			+= -lrpc01
- 
- MAKE_TARGETS		:= rpc1 rpc_server
-diff --git a/utils/Makefile b/utils/Makefile
-index 58cec7c..d2d4324 100644
---- a/utils/Makefile
-+++ b/utils/Makefile
-@@ -28,18 +28,18 @@ FFSBDIR			:= ffsb-6.0-rc2
- FILTER_OUT_DIRS		:= $(FFSBDIR)
- FFSB			:= $(FFSBDIR)/ffsb
- 
--$(FFSB): $(FFSBDIR)
--	cd $^; ./configure
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
--	cp $(FFSBDIR)/ffsb ffsb
-+unexport MAKEFLAGS
++# to write as user nobody into tst_tmpdir()
++chmod 777 $TMP || \
++{
++	echo "unable to chmod 777 $TMP ... aborting"
++	exit 1
++}
 +
-+$(FFSB): $(abs_srcdir)/$(FFSBDIR)
-+	mkdir -p $(FFSBDIR)
-+	cd $(FFSBDIR) && "$^/configure" && $(MAKE) all
- 
- trunk-all: $(FFSB)
- 
- trunk-clean:: | ffsb-clean
- 
--ffsb-clean:: $(FFSBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
--	rm -rf ffsb
-+ffsb-clean:: $(abs_srcdir)/$(FFSBDIR)
-+	cd $(FFSBDIR); $(MAKE) clean
- 
- 
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
++cd $TMP || \
++{
++	echo "could not cd ${TMP} ... exiting"
++	exit 1
++}
++
+ if [ $NO_NETWORK -eq 0 ];then
+   # Networking setup
+   echo `hostname` >> /root/.rhosts
 -- 
-1.7.10.4
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
