@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WO5IP-0002xe-Tt
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 13:03:37 +0000
-Date: Thu, 13 Mar 2014 14:03:19 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WNPzC-00027s-7f
+	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 16:57:02 +0000
+Date: Tue, 11 Mar 2014 17:56:44 +0100
 From: chrubis@suse.cz
-Message-ID: <20140313130319.GB31515@rei.suse.cz>
-References: <1394707260-20121-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20140311165644.GB11407@rei>
+References: <1391607438-529-1-git-send-email-alexey.kodanev@oracle.com>
+	<20140311165448.GA11407@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1394707260-20121-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2] device-drivers/rcu: add wrapper script for
+In-Reply-To: <20140311165448.GA11407@rei>
+Subject: Re: [LTP] [PATCH] device-drivers/rcu: add wrapper script for
  rcutorture test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,36 +30,22 @@ To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> One of the possible ways to test RCU is to use rcutorture kernel module.
-> The test requires that kernel configured with CONFIG_RCU_TORTURE_TEST.
-> It runs rcutorture module using particular options and then inspects
-> dmesg output for module's test results.
-> For more information, please read Linux Documentation: RCU/torture.txt
+> > +	rmmod rcutorture > /dev/null 2>&1
+> > +	if [ $? -ne 0 ]; then
+> > +		tst_brkm TBROK NULL "failed to unload module"
+> > +		exit 2
+> > +	fi
+> > +
+> > +	# check module status in dmesg
+> > +	result_str=`dmesg | tail -n 1`
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
-> v2: Make use of new LTP shell library
->     Parse dmesg output with sed
-> 
->  runtest/kernel_misc                                |    1 +
->  testcases/kernel/device-drivers/rcu/Makefile       |   22 ++++
->  testcases/kernel/device-drivers/rcu/rcu_torture.sh |  105 ++++++++++++++++++++
->  3 files changed, 128 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/device-drivers/rcu/Makefile
->  create mode 100755 testcases/kernel/device-drivers/rcu/rcu_torture.sh
-> 
-> diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-> index c1826fb..8f37cc6 100644
-> --- a/runtest/kernel_misc
-> +++ b/runtest/kernel_misc
-> @@ -7,3 +7,4 @@ tbio tbio
->  ltp_acpi ltp_acpi
->  ltp_acpi_cpufreq ltp_acpi_cpufreq
->  uaccess uaccess
-> +rcu_torture.sh rcu_torture.sh
+> This is quite fragile, if anything has added a line into dmesg while the
+> test was running it will fail. Better approach would be to save the
+> dmesg output into a file and grep it for the rcutorture resutl.
 
-I've changed this label from rcu_torture.sh to just rcu_torture and
-pushed the patch, thanks.
+And the best possible solution would be to add a more convinient
+interface to the module itself, but that would need to be comunicated
+with kernel upstream.
 
 -- 
 Cyril Hrubis
