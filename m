@@ -1,32 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WSSHf-0003fk-2Q
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:24:55 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WSSHe-00012j-7r
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:24:55 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2PEOmIU030123
+	(envelope-from <jstancek@redhat.com>) id 1WNihe-0007vb-Qr
+	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 12:56:10 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WNihc-0001R3-MP
+	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 12:56:10 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2CCtxri032565
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:24:48 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2PEOlE0013862
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:24:48 GMT
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2PEOlMR013858
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:24:47 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 25 Mar 2014 18:24:26 +0400
-Message-Id: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] V2 rpc-tirpc-full-test-suite
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Mar 2014 08:55:59 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx12.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s2CCtvdm018857
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Mar 2014 08:55:58 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 12 Mar 2014 13:55:47 +0100
+Message-Id: <b0a5209e870097e04ba474c1ca6d64de91523462.1394628698.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v3 1/2] add tst_get_unused_port()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,43 +35,122 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Hi!
+Returns unused port number for specified domain/type.
 
-This is a second try of integration of rpc-tirpc-full-test-suite into LTP.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/test.h |    7 +++++
+ lib/tst_net.c  |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+), 0 deletions(-)
+ create mode 100644 lib/tst_net.c
 
-It's done according our discussed plan.
-
-I still have the following failures of runtest/rpc_tests:
- * rpc_clnt_broadcast - it fails if linked if -ltirpc. But, I suppose, it's
-   a test case error.
- * rpc_svc_destroy - an issue regarding svcfd_create, which we discussed
-   in the libtirpc mailing list (no final decision yet)
- * rpc_svcfd_create - the same
- * rpc_xprt_register - the same
- * rpc_xprt_unregister - the same
-
-and of runtest/tirpc_tests:
- * tirpc_authsys_create
- * tirpc_authdes_create
- * tirpc_authdes_seccreate
- * tirpc_clnt_dg_create - this is an issue with tirpc_svc_5
- * tirpc_svc_dg_create - the same
- * tirpc_clnt_vc_create - the same
- * tirpc_svc_vc_create
- * tirpc_bottomlevel_clnt_call - issue with tirpc_svc_5
- * tirpc_rpcb_set
-
-I have a proposal how to fix most of these failures.
-
-For example, some of them use svc_vc_create/clnt_vc_create with RPC_ANYFD
-parameter (which should not work, as I understand). 
-But before comitting any further fixes I want to discuss it in
-the libtirpc mailing list.
-
-Thank you.
-
+diff --git a/include/test.h b/include/test.h
+index 81fca3e..32b9680 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -288,6 +288,13 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ uid_t tst_get_unused_uid(void);
+ gid_t tst_get_unused_gid(void);
+ 
++/* lib/tst_net.c
++ *
++ * Return unused port
++ */
++unsigned short tst_get_unused_port(void (cleanup_fn)(void),
++	unsigned short family, int type);
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/tst_net.c b/lib/tst_net.c
+new file mode 100644
+index 0000000..f55e107
+--- /dev/null
++++ b/lib/tst_net.c
+@@ -0,0 +1,80 @@
++/*
++ * Copyright (C) 2014 Linux Test Project, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation, Inc.
++ */
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++
++#include "test.h"
++
++unsigned short tst_get_unused_port(void (cleanup_fn)(void),
++	unsigned short family, int type)
++{
++	int sock;
++	socklen_t slen;
++	struct sockaddr_storage _addr;
++	struct sockaddr *addr = (struct sockaddr *)&_addr;
++	struct sockaddr_in *addr4 = (struct sockaddr_in *)addr;
++	struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)addr;
++
++	switch (family) {
++	case AF_INET:
++		addr4->sin_family = AF_INET;
++		addr4->sin_port = 0;
++		addr4->sin_addr.s_addr = INADDR_ANY;
++		slen = sizeof(*addr4);
++		break;
++
++	case AF_INET6:
++		addr6->sin6_family = AF_INET6;
++		addr6->sin6_port = 0;
++		addr6->sin6_addr = in6addr_any;
++		slen = sizeof(*addr6);
++		break;
++
++	default:
++		tst_brkm(TBROK, cleanup_fn,
++			"tst_get_unused_port unknown family");
++	}
++
++	sock = socket(addr->sa_family, type, 0);
++	if (sock < 0)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "socket failed");
++
++	if (bind(sock, addr, slen) < 0)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "bind failed");
++
++	if (getsockname(sock, addr, &slen) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "getsockname failed");
++
++	if (close(sock) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "close failed");
++
++	switch (family) {
++	case AF_INET:
++		return addr4->sin_port;
++	case AF_INET6:
++		return addr6->sin6_port;
++	default:
++		return -1;
++	}
++}
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
