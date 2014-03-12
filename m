@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WTBG3-0006sp-MQ
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 14:26:15 +0000
-Date: Thu, 27 Mar 2014 15:25:48 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WNj86-0001Kg-Nh
+	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 13:23:30 +0000
+Date: Wed, 12 Mar 2014 14:23:12 +0100
 From: chrubis@suse.cz
-Message-ID: <20140327142548.GA5448@rei>
-References: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<532C1813.9060609@oracle.com> <532C4201.3030605@oracle.com>
-	<2329840.m4xvHeQu3f@vapier>
+Message-ID: <20140312132312.GA21844@rei>
+References: <1391607438-529-1-git-send-email-alexey.kodanev@oracle.com>
+	<20140311165448.GA11407@rei> <20140311165644.GB11407@rei>
+	<532028A6.5030106@oracle.com> <20140312105108.GB13689@rei.Home>
+	<53205971.5070608@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2329840.m4xvHeQu3f@vapier>
-Subject: Re: [LTP] [PATCH 2/3] isofs.sh: be more quiet
+In-Reply-To: <53205971.5070608@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers/rcu: add wrapper script for
+ rcutorture test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +28,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> that might work.  certainly the current code, if it's trying to make the 
-> script "sleep" in hopes the device is no longer in use by udev/whatever, is 
-> also broken.
+> > So for the time being I would go with the test as it is and try to
+> > start a discussion about making the module more friendly to automated
+> > testing on LKML. Does that sound reasonably?
+> Yes it does.
+> 
+> One more thing, e.g we have kernel which is not configured with 
+> rcutorture but we have kernel-devel. What if we copy rcutorture source 
+> file to LTP and build it when the above condition is true?
 
-Last time I've seen this problem the offender was GNOME gvfsd-trash
-process. There are even several bugreports for that.
+I would like to avoid adding the module source into the LTP git tree,
+because that would bring another piece of code depending on unstable
+kernel API which will fail to compile sooner or later.
+
+And trying to install kernel source package and locating the module
+source is IMHO overcomplicated.
+
+Or do you have a better ide how to do this?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
