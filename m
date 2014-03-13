@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WNMMt-0002GZ-5k
-	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:05:15 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WNMMs-0000LJ-Cg
-	for ltp-list@lists.sourceforge.net; Tue, 11 Mar 2014 13:05:15 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2BD57nO007188
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:05:08 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2BD562L008376
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:05:07 GMT
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s2BD56gc004522
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Mar 2014 13:05:06 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 11 Mar 2014 17:04:56 +0400
-Message-Id: <1394543097-21115-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 1/2] ltpstress.sh: added cmdline option to set
-	temporary directory
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WO5CD-0007KJ-P3
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 12:57:14 +0000
+Date: Thu, 13 Mar 2014 13:56:53 +0100
+From: chrubis@suse.cz
+Message-ID: <20140313125653.GA31515@rei.suse.cz>
+References: <b0a5209e870097e04ba474c1ca6d64de91523462.1394628698.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <b0a5209e870097e04ba474c1ca6d64de91523462.1394628698.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v3 1/2] add tst_get_unused_port()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,100 +21,22 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testscripts/ltpstress.sh |   35 ++++++++++++++++++++++-------------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+Hi!
+> Returns unused port number for specified domain/type.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
-index 49fc5a2..d87148d 100755
---- a/testscripts/ltpstress.sh
-+++ b/testscripts/ltpstress.sh
-@@ -35,8 +35,6 @@ if [ $? -eq 0 ]; then
-  cd ..
-  export LTPROOT=${PWD}
- fi
--export TMPBASE="/tmp"
--export TMP="${TMPBASE}/ltpstress-$$"
- export PATH=$LTPROOT/testcases/bin:$PATH
- memsize=0
- hours=24
-@@ -57,7 +55,7 @@ usage()
- {
- 
- 	cat <<-END >&2
--	usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ] [ -n ] [ -t duration ] [ [-S]|[-T] ]
-+	usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ] [ -n ] [ -t duration ] [ -x TMPDIR ] [ [-S]|[-T] ]
- 
-     -d datafile     Data file for 'sar' or 'top' to log to. Default is "/tmp/ltpstress.data".
-     -i # (in sec)   Interval that 'sar' or 'top' should take snapshots. Default is 10 seconds.
-@@ -68,6 +66,7 @@ usage()
-     -S              Use 'sar' to measure data.
-     -T              Use LTP's modified 'top' tool to measure data.
-     -t duration     Execute the testsuite for given duration in hours. Default is 24.
-+    -x TMPDIR       Directory where temporary files will be created.
- 
- 	example: ${0##*/} -d /tmp/sardata -l /tmp/ltplog.$$ -m 128 -t 24 -S
- 	END
-@@ -84,16 +83,7 @@ check_memsize()
-   leftover_memsize=$memsize
- }
- 
--
--mkdir -p ${TMP}
--
--cd ${TMP}
--if [ $? -ne 0 ]; then
--  echo "could not cd ${TMP} ... exiting"
--  exit
--fi
--
--while getopts d:hi:I:l:STt:m:n\? arg
-+while getopts d:hi:I:l:STt:m:nx:\? arg
- do  case $arg in
- 
- 	d)	datafile="$OPTARG";;
-@@ -137,11 +127,30 @@ do  case $arg in
-         t)      hours=$OPTARG
- 		duration=$(($hours * 60 * 60));;
- 
-+	x)	export TMPBASE=$(readlink -f ${OPTARG});;
-+
-         \?)     echo "Help info:"
- 		usage;;
-         esac
- done
- 
-+export TMP="${TMPBASE}/ltpstress-$$"
-+export TMPDIR=${TMP}
-+mkdir -p ${TMP}
-+
-+# to write as user nobody into tst_tmpdir()
-+chmod 777 $TMP || \
-+{
-+	echo "unable to chmod 777 $TMP ... aborting"
-+	exit 1
-+}
-+
-+cd $TMP || \
-+{
-+	echo "could not cd ${TMP} ... exiting"
-+	exit 1
-+}
-+
- if [ $NO_NETWORK -eq 0 ];then
-   # Networking setup
-   echo `hostname` >> /root/.rhosts
+Acked.
+
 -- 
-1.7.9.5
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
