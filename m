@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1WO5VU-0003XV-On
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 13:17:08 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1WO5VT-0001JS-CL
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 13:17:08 +0000
-From: <liljegren.mats2@gmail.com>
-Date: Thu, 13 Mar 2014 14:03:49 +0100
-Message-ID: <1394715829-35808-1-git-send-email-liljegren.mats2@gmail.com>
+	(envelope-from <liljegren.mats2@gmail.com>) id 1WO2qr-0004v7-B7
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 10:27:01 +0000
+Received: from mail-ee0-f52.google.com ([74.125.83.52])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WO2qq-000378-HT
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 10:27:01 +0000
+Received: by mail-ee0-f52.google.com with SMTP id e49so318033eek.39
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 03:26:54 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] .gitignore: Add files created when building
-	stress_floppy tests
+Date: Thu, 13 Mar 2014 11:26:54 +0100
+Message-ID: <CA+xJJ1_uSNtC88O4AHdVqQXnr0E56VF-EgOZ=OWKDzLyAqaAvg@mail.gmail.com>
+From: Mats Liljegren <liljegren.mats2@gmail.com>
+Subject: [LTP] Versioned files modified by build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,32 +28,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Mats Liljegren <mats.liljegren@enea.com>
+To: Linux Test Project General Discussions <ltp-list@lists.sourceforge.net>
 
-From: Mats Liljegren <mats.liljegren@enea.com>
+After building in-tree (GIT), I get the following when issuing "git
+status" command:
 
-Signed-off-by: Mats Liljegren <mats.liljegren@enea.com>
----
- .gitignore |    5 +++++
- 1 file changed, 5 insertions(+)
+# On branch master
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#       modified:   utils/ffsb-6.0-rc2/config.h.in
+#       modified:   utils/ffsb-6.0-rc2/configure
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#       testcases/kernel/io/stress_floppy/1000K_file
+#       testcases/kernel/io/stress_floppy/100K_file
+#       testcases/kernel/io/stress_floppy/10K_file
+#       testcases/kernel/io/stress_floppy/dumpdir/
 
-diff --git a/.gitignore b/.gitignore
-index 1e9c911..9da07b9 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -61,3 +61,8 @@ logfile.*
- /lib/tests/tst_process_state
- /lib/tests/tst_cleanup_once
- /lib/tests/tst_safe_macros
-+
-+/testcases/kernel/io/stress_floppy/1000K_file
-+/testcases/kernel/io/stress_floppy/100K_file
-+/testcases/kernel/io/stress_floppy/10K_file
-+/testcases/kernel/io/stress_floppy/dumpdir/
--- 
-1.7.10.4
+This would suggest that the files utils/ffsb-6.0-rc2/config.h.in and
+utils/ffsb-6.0-rc2/configure are version controlled. Are they supposed
+to?
 
+Should above untracked files be added to .gitignore?
+
+Or am I supposed to build somewhere else?
+
+Regards
+Mats Liljegren
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
