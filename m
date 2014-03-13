@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WPuBl-00080g-70
-	for ltp-list@lists.sourceforge.net; Tue, 18 Mar 2014 13:36:17 +0000
-Date: Tue, 18 Mar 2014 14:35:54 +0100
-From: chrubis@suse.cz
-Message-ID: <20140318133554.GA12227@rei>
-References: <1392894122.2053.11.camel@G08JYZSD130126>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1WO5yd-0005U6-Lg
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 13:47:15 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WO5yc-0001y5-8w
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 13:47:15 +0000
+From: <liljegren.mats2@gmail.com>
+Date: Thu, 13 Mar 2014 14:46:55 +0100
+Message-ID: <1394718415-16640-1-git-send-email-liljegren.mats2@gmail.com>
+In-Reply-To: <20140313132002.GD31515@rei.suse.cz>
+References: <20140313132002.GD31515@rei.suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1392894122.2053.11.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] modify_ldt/modify_ldt03.c: add a new test
+Subject: [LTP] [PATCH] testcases/kernel/io/stress_floppy/.gitignore: File
+	added
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,47 +28,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Mats Liljegren <mats.liljegren@enea.com>
 
-Hi!
-> +#include "config.h"
-> +#include "test.h"
-> +#include "usctest.h"
-> +
-> +TCID_DEFINE(modify_ldt03);
+From: Mats Liljegren <mats.liljegren@enea.com>
 
-This macro is primarily used to define right TCID when compiling two
-tests from one source (the _16 ones). There is no need to use it
-otherwise.
+Signed-off-by: Mats Liljegren <mats.liljegren@enea.com>
+---
+ testcases/kernel/io/stress_floppy/.gitignore |    4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 testcases/kernel/io/stress_floppy/.gitignore
 
-> +int TST_TOTAL = 1;
-> +
-> +#if defined(__i386__) && defined(HAVE_MODIFY_LDT)
-> +
-> +#ifdef HAVE_ASM_LDT_H
-> +#include <asm/ldt.h>
-> +#endif
-> +extern int modify_ldt(int, void *, unsigned long);
-> +
-> +#include <asm/unistd.h>
-> +#include <string.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include "safe_macros.h"
-> +
-> +static unsigned long bytecount = 10;
-
-Where did you get this number from? Is this sizeof(struct user_desc) ?
-
-> +static void *ptr;
-
-Do you need to allocate the memory, wouldn't char buf[bytecount] do the
-same?
-
+diff --git a/testcases/kernel/io/stress_floppy/.gitignore b/testcases/kernel/io/stress_floppy/.gitignore
+new file mode 100644
+index 0000000..41ea989
+--- /dev/null
++++ b/testcases/kernel/io/stress_floppy/.gitignore
+@@ -0,0 +1,4 @@
++/1000K_file
++/100K_file
++/10K_file
++/dumpdir/
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
