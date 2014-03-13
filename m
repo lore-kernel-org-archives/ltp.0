@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WLWyC-0001MS-Ka
-	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 12:00:12 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WLWyA-0000lA-R7
-	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 12:00:12 +0000
-Message-ID: <1394105651.2061.12.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 06 Mar 2014 19:34:11 +0800
-In-Reply-To: <5305B472.4010909@oracle.com>
-References: <1392862246.1997.6.camel@G08JYZSD130126>
-	<5305B472.4010909@oracle.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] lib/tst_uid_gid.c: fix checking return value
- errors about getpwuid_r/getgrgid_r
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WO4uS-0001rO-KF
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 12:38:52 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WO4uR-000508-PW
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 12:38:52 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2DCcj4e003804
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 12:38:46 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2DCcinB029607
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 12:38:45 GMT
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s2DCci4r010191
+	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 12:38:44 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 13 Mar 2014 16:38:24 +0400
+Message-Id: <1394714306-9678-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 1/3] isofs.sh: use $TMPDIR for temporary directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,102 +38,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On Thu, 2014-02-20 at 11:53 +0400, Stanislav Kholmanskikh wrote:
-> Hi!
-> 
-> On 02/20/2014 06:10 AM, Zeng Linggang wrote:
-> > When we  call getgrgid_r()  to  verify whether the corresponding gid is
-> > existent, if not, getgrgid_r() will return 0 or ENOENT or ESRCH or
-> > EBADF or EPERM...
-> >
-> > But tst_get_unused_gid() only check return value 0, this is not complete.
-> > For example, if the gid is not existent, getgrgid_r() in RHEL7 beta will
-> > return ENOENT, which will cause tst_get_unused_gid failed incorrectly.
-> > This is the same for getpwuid_r().
-> 
-> Thank you.
-> 
-> I was puzzled by these two sentences in the getgrgid_r man (RHEL6):
-> "If no matching  group  record was  found,  these  functions  return  0 
->   and  store  NULL  in *result.  In case of error, an error number is
-> returned, and NULL is stored in *result."
-> 
-> Maybe update the man page according with 
-> http://www.gnu.org/software/libc/manual/html_node/Lookup-Group.html. I 
-> think that there the return values are described more clear.
-> 
-> What do you think?
-> 
+If $TMPDIR is not set, use /tmp.
 
-Hi,
-So sorry for the late response.
-I think there is a little different in RHEL7.0Beta.
-If no gid was found, it returned ENOENT in RHEL7.0Beta.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testscripts/isofs.sh |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-[root@RHEL7U0Beta_zenglg tmp]# cat test.c 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <grp.h>
-#include <unistd.h>
-#include <limits.h>
-
-int main(void)
-{
-        gid_t gid;
-        int s;
-        struct group grp;
-        char *buf;
-        long bufsize;
-        struct group *result;
-
-        bufsize = sysconf(_SC_GETGR_R_SIZE_MAX);
-        if (bufsize == -1)
-                bufsize = 16384;
-
-        buf = malloc(bufsize);
-        if (buf == NULL)
-                return -1;
-
-        for (gid = 0; gid <= UINT_MAX - 1; gid++) {
-                s = getgrgid_r(gid, &grp, buf, bufsize, &result);
-                if (result == NULL) {
-                        free(buf);
-                        printf("s: %d\tgid: %d\n", s, gid);
-                        if (s == 0)
-                                return gid;
-                        else
-                                return -1;
-                }
-        }
-}
-
-
-Here is the result that output:
-[root@RHEL5U10GA_Intel64 tmp]# ./test 
-s: 0    gid: 11
-
-[root@RHEL6U5GA_Intel64 tmp]# ./test 
-s: 0    gid: 13
-
-[root@RHEL7U0Beta_zenglg tmp]# ./test 
-s: 2    gid: 13
-
-Best regards,
-Zeng
+diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+index e6a3b09..9031922 100755
+--- a/testscripts/isofs.sh
++++ b/testscripts/isofs.sh
+@@ -60,21 +60,22 @@ NO_CLEANUP=""
+   }
+ 
+ #Initialize directory variables
+-    MNT_POINT="/tmp/isofs_$$"
++    TMPDIR=${TMPDIR:-/tmp}
++    MNT_POINT="$TMPDIR/isofs_$$"
+     COPY_DIR="/etc/"
+-    TEMP_DIR="/tmp/for_isofs_test"
++    TEMP_DIR="$TMPDIR/for_isofs_test"
+     MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
+ 
+    while getopts :hnd: arg
+       do  case $arg in
+ 	  d)
+              COPY_DIR=$OPTARG
+-    	     MAKE_FILE_SYS_DIR="/tmp/for_isofs_test"$COPY_DIR
++    	     MAKE_FILE_SYS_DIR=${TEMP_DIR}${COPY_DIR}
+ 	    ;;
+ 	  h)
+ 	    echo ""
+             echo "n - The directories created will not be removed"
+-            echo "d - Specify a directory to copy into /tmp"
++            echo "d - Specify a directory to copy into $TEMP_DIR"
+ 	    echo "h - Help options"
+ 	    echo ""
+ 	    usage
+@@ -133,7 +134,7 @@ do
+ 	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
+ 	if [ $? != 0 ]
+ 	then
+-		rm -rf isofs.iso $MNT_POINT
++		rm -rf isofs.iso $MNT_POINT $TEMP_DIR
+ 		echo "FAILED: mkisofs -o isofs.iso $mkisofs_opt $MAKE_FILE_SYS_DIR failed"
+ 		exit 1
+ 	fi
+@@ -154,7 +155,7 @@ do
+ 		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
+ 		if [ $? != 0 ]
+ 		then
+-			rm -rf isofs.iso $MNT_POINT
++			rm -rf isofs.iso $MNT_POINT $TEMP_DIR
+ 			echo "FAILED: mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT failed"
+ 			exit 1
+ 		fi
+-- 
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
