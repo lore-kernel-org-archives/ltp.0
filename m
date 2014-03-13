@@ -1,23 +1,47 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WMvLP-0004Vd-Rv
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 08:13:55 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WMvLO-0004D7-3K
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 08:13:55 +0000
-Message-ID: <1394439199.1952.5.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 10 Mar 2014 16:13:19 +0800
-In-Reply-To: <53186BC5.7050406@oracle.com>
-References: <1392862246.1997.6.camel@G08JYZSD130126>
-	<5305B472.4010909@oracle.com> <1394105651.2061.12.camel@G08JYZSD130126>
-	<53186BC5.7050406@oracle.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] lib/tst_uid_gid.c: fix checking return value
- errors about getpwuid_r/getgrgid_r
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <root@localhost.localdomain>) id 1WNwF4-0006KL-VT
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 03:23:34 +0000
+Received: from fgwmail5.fujitsu.co.jp ([192.51.44.35])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WNwF3-0007dB-2n
+	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 03:23:34 +0000
+Received: from m2.gw.fujitsu.co.jp (unknown [10.0.50.72])
+	by fgwmail5.fujitsu.co.jp (Postfix) with ESMTP id 8DBD93EE125
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
+Received: from smail (m2 [127.0.0.1])
+	by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 7EEDF45DE4D
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
+Received: from s2.gw.fujitsu.co.jp (s2.gw.nic.fujitsu.com [10.0.50.92])
+	by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 6826145DE3E
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
+Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 5C01D1DB803A
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
+Received: from s00.gw.fujitsu.co.jp (s00.gw.nic.fujitsu.com [133.161.11.15])
+	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 092711DB802C
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
+Received: from s00.gw.fujitsu.co.jp (kw-mxio2.gw.nic.fujitsu.com
+	[10.0.237.142])
+	by s00.gw.fujitsu.co.jp (Postfix) with ESMTP id E746D4E24B
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:25 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.225.127])
+	by s00.gw.fujitsu.co.jp (Postfix) with ESMTP id A648C8A002
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Mar 2014 12:23:25 +0900 (JST)
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Thu, 13 Mar 2014 11:23:37 +0800
+Message-Id: <1394681017-5443-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH v5] mprotect/mprotect04.c: add PROT_NONE,
+	PROT_EXEC flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,77 +51,254 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Thu, 2014-03-06 at 16:36 +0400, Stanislav Kholmanskikh wrote:
-> 
-> On 06.03.2014 15:34, Zeng Linggang wrote:
-> > On Thu, 2014-02-20 at 11:53 +0400, Stanislav Kholmanskikh wrote:
-> >> Hi!
-> >>
-> >> On 02/20/2014 06:10 AM, Zeng Linggang wrote:
-> >>> When we  call getgrgid_r()  to  verify whether the corresponding gid is
-> >>> existent, if not, getgrgid_r() will return 0 or ENOENT or ESRCH or
-> >>> EBADF or EPERM...
-> >>>
-> >>> But tst_get_unused_gid() only check return value 0, this is not complete.
-> >>> For example, if the gid is not existent, getgrgid_r() in RHEL7 beta will
-> >>> return ENOENT, which will cause tst_get_unused_gid failed incorrectly.
-> >>> This is the same for getpwuid_r().
-> >>
-> >> Thank you.
-> >>
-> >> I was puzzled by these two sentences in the getgrgid_r man (RHEL6):
-> >> "If no matching  group  record was  found,  these  functions  return  0
-> >>    and  store  NULL  in *result.  In case of error, an error number is
-> >> returned, and NULL is stored in *result."
-> >>
-> >> Maybe update the man page according with
-> >> http://www.gnu.org/software/libc/manual/html_node/Lookup-Group.html. I
-> >> think that there the return values are described more clear.
-> >>
-> >> What do you think?
-> >>
-> >
-> > Hi,
-> > So sorry for the late response.
-> > I think there is a little different in RHEL7.0Beta.
-> > If no gid was found, it returned ENOENT in RHEL7.0Beta.
-> >
-> 
-> Yes, I got this difference at that time:)
+create a new case to test PROT_NONE, PROT_EXEC flag for mprotect(2)
 
-> I don't have any objections/comments about your patch. I just wanted to 
-> mention one logic "collision" (for me) in the man page. After reading 
-> this page it's not clear whether we should treat the "no matching group 
-> record" situation as a special case or as one of possible errors. But 
-> glibc documentation makes everything clear.
-> 
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+---
+ runtest/ltplite                                 |   1 +
+ runtest/stress.part3                            |   1 +
+ runtest/syscalls                                |   1 +
+ testcases/kernel/syscalls/.gitignore            |   1 +
+ testcases/kernel/syscalls/mprotect/mprotect04.c | 173 ++++++++++++++++++++++++
+ 5 files changed, 177 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mprotect/mprotect04.c
 
-:)
-OK, thanks. I know what you mean. The man page for getgrgid_r() really
-makes us puzzle. I also think the glibc documentation description " If
-no group is found or if an error occurred, the pointer returned in
-result is a null pointer. The function returns zero or an error code" is
-not clear enough. I think the correct implementation should be "If no
-group found, this function returns 0 and sets result to a null pointer.
-If an error occurs, this function should return an error code".  I think
-it would be more accurate.
-
-At the same time, I notice the difference in /etc/nsswitch.conf.  In
-RHEL6.5GA, for group name service, the configure is "group:      files",
-but in RHEL7.0beta, this configure is "group:      files sss". It seems
-that service sssd forms this return value difference or the configure
-influences the glibc's work.
-
-When I modified the "group:      files sss" to "group:      files" in
-RHEL7.0beta, the test program will return 0.
-
-Thanks.
+diff --git a/runtest/ltplite b/runtest/ltplite
+index c6d647d..a9686a0 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -463,6 +463,7 @@ modify_ldt02 modify_ldt02
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+ mprotect03 mprotect03
++mprotect04 mprotect04
+ 
+ mremap01 mremap01
+ mremap02 mremap02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index b9b8d7a..6f521cf 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -386,6 +386,7 @@ modify_ldt02 modify_ldt02
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+ mprotect03 mprotect03
++mprotect04 mprotect04
+ 
+ mremap01 mremap01
+ mremap02 mremap02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 13716d7..d803987 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -606,6 +606,7 @@ move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 04755
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+ mprotect03 mprotect03
++mprotect04 mprotect04
+ 
+ mq_notify01 mq_notify01
+ mq_open01 mq_open01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 42b0eed..7642b11 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -550,6 +550,7 @@
+ /mprotect/mprotect01
+ /mprotect/mprotect02
+ /mprotect/mprotect03
++/mprotect/mprotect04
+ /mq_notify/mq_notify01
+ /mq_open/mq_open01
+ /mq_timedreceive/mq_timedreceive01
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+new file mode 100644
+index 0000000..72f6b74
+--- /dev/null
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -0,0 +1,173 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++/*
++ * Description:
++ *   Verify that,
++ *   1) mprotect() succeeds to set a region of memory with no access,
++ *      when 'prot' is set to PROT_NONE. An attempt to access the contents
++ *      of the region gives rise to the signal SIGSEGV.
++ *   2) mprotect() succeeds to set a region of memory to be executed, when
++ *      'prot' is set to PROT_EXEC.
++ */
++
++#include <signal.h>
++#include <setjmp.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <stdlib.h>
++
++#include "test.h"
++#include "usctest.h"
++#include "safe_macros.h"
++
++static void sighandler(int sig);
++
++static void setup(void);
++static void cleanup(void);
++
++static void testfunc_protnone(void);
++
++static void exec_func(void);
++static void testfunc_protexec(void);
++
++static void (*testfunc[])(void) = { testfunc_protnone, testfunc_protexec };
++
++char *TCID = "mprotect04";
++int TST_TOTAL = ARRAY_SIZE(testfunc);
++
++static volatile int sigsegv_caught;
++static sigjmp_buf env;
++
++int main(int ac, char **av)
++{
++	int lc;
++	int i;
++	char *msg;
++
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			(*testfunc[i])();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void sighandler(int sig)
++{
++	if (sig == SIGSEGV) {
++		sigsegv_caught = 1;
++		siglongjmp(env, 1);
++	} else {
++		tst_brkm(TBROK, cleanup, "received an unexpected signal: %d",
++				 sig);
++	}
++
++	_exit(0);
++}
++
++static void setup(void)
++{
++	tst_sig(NOFORK, sighandler, cleanup);
++
++	TEST_PAUSE;
++}
++
++static void testfunc_protnone(void)
++{
++	char *addr;
++	int page_sz;
++
++	sigsegv_caught = 0;
++
++	page_sz = getpagesize();
++
++	addr = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
++					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++	/* Change the protection to PROT_NONE. */
++	TEST(mprotect(addr, page_sz, PROT_NONE));
++
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TTERRNO, "mprotect failed");
++	} else {
++		if (sigsetjmp(env, 1) == 0)
++			addr[0] = 1;
++
++		if (sigsegv_caught)
++			tst_resm(TPASS, "test PROT_NONE for mprotect success");
++		else
++			tst_resm(TFAIL, "test PROT_NONE for mprotect failed");
++	}
++
++	SAFE_MUNMAP(cleanup, addr, page_sz);
++}
++
++static void exec_func(void)
++{
++	return;
++}
++
++static void testfunc_protexec(void)
++{
++	int page_sz;
++	int (*func)(void);
++
++	sigsegv_caught = 0;
++
++	page_sz = getpagesize();
++
++	func = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
++					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++	memcpy(func, exec_func, page_sz);
++
++	/* Change the protection to PROT_EXEC. */
++	TEST(mprotect(func, page_sz, PROT_EXEC));
++
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TTERRNO, "mprotect failed");
++	} else {
++		if (sigsetjmp(env, 1) == 0)
++			(*func)();
++
++		if (sigsegv_caught)
++			tst_resm(TFAIL, "test PROT_EXEC for mprotect failed");
++		else
++			tst_resm(TPASS, "test PROT_EXEC for mprotect success");
++	}
++
++	SAFE_MUNMAP(cleanup, func, page_sz);
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++}
+-- 
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
