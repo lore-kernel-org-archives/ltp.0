@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WPwi3-0000GZ-VF
-	for ltp-list@lists.sourceforge.net; Tue, 18 Mar 2014 16:17:48 +0000
-Date: Tue, 18 Mar 2014 17:17:26 +0100
-From: chrubis@suse.cz
-Message-ID: <20140318161725.GB13153@rei.Home>
-References: <1392951789-12569-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1392951789-12569-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] msync/msync03.c: add EBUSY test for msync(2)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WPT0w-0002dm-SH
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 08:35:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WPT0t-0004gV-FS
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 08:35:18 +0000
+Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2H8Z7RP005737
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Mar 2014 16:35:08 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Mon, 17 Mar 2014 16:33:31 +0800
+Message-Id: <1395045211-1377-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: [LTP] [PATCH v4] fs/ext4-new-features: add ext4-new-features tests
+	to default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,64 +25,423 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Merge msync03.c, msync04.c, msync05.c into one msync03
-> test, which contains EINVAL and ENOMEM error value tests.
-> 
-> And add new EBUSY error value test.
+Remove run_ext4_test.sh which calls all feature tests directly.
+Now we treat every feature as a signle test in fs_ext4 runtest file,
+keep one entry per test.
+Like that:
+	ext4-nsec-timestamps    ext4_nsec_timestamps_test.sh
+	ext4-uninit-groups      ext4_uninit_groups_test.sh
 
-Pushed with minor changes:
+Configure script has been removed and ffsb has been moved to utils directory.
 
---- a/testcases/kernel/syscalls/msync/msync03.c
-+++ b/testcases/kernel/syscalls/msync/msync03.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  * Copyright (c) 2014 Fujitsu Ltd.
-  * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-  *
-@@ -144,7 +145,7 @@ static void setup(void)
+If want to run these tests, user should specify a big block device
+when running runltp script.
+
+Currently enable ext4-nsec-timestamps, ext4-persist-prealloc,
+ext4-subdir-limit, ext4-uninit-groups test.
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ runtest/fs_ext4                                    |   5 +-
+ scenario_groups/default                            |   1 +
+ .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |   3 -
+ .../ext4-inode-version/ext4_inode_version_test.sh  |   3 -
+ .../ext4-journal-checksum/ext4_journal_checksum.sh |   3 -
+ .../ext4_nsec_timestamps_test.sh                   |   2 -
+ .../ext4-online-defrag/ext4_online_defrag_test.sh  |   3 -
+ .../ext4_persist_prealloc_test.sh                  |   3 -
+ .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |   2 -
+ .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |   2 -
+ .../kernel/fs/ext4-new-features/ext4_funcs.sh      |  43 +++--
+ .../kernel/fs/ext4-new-features/run_ext4_test.sh   | 179 ---------------------
+ 12 files changed, 34 insertions(+), 215 deletions(-)
+ delete mode 100755 testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
+
+diff --git a/runtest/fs_ext4 b/runtest/fs_ext4
+index c65ebab..35697c5 100644
+--- a/runtest/fs_ext4
++++ b/runtest/fs_ext4
+@@ -1 +1,4 @@
+-ext4_new_feature_test	run_ext4_test.sh
++ext4-nsec-timestamps	ext4_nsec_timestamps_test.sh
++ext4-uninit-groups	ext4_uninit_groups_test.sh
++ext4-persist-prealloc	ext4_persist_prealloc_test.sh
++ext4-subdir-limit	ext4_subdir_limit_test.sh
+diff --git a/scenario_groups/default b/scenario_groups/default
+index ff23c7c..196e636 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -26,3 +26,4 @@ commands
+ hyperthreading
+ kernel_misc
+ modules
++fs_ext4
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+index dfa34c4..55ea6ae 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+@@ -28,11 +28,8 @@ export TCID="ext4-delalloc-mballoc"
+ export TST_TOTAL=17
+ export TST_COUNT=1
  
- #if !defined(UCLINUX)
-        /* memory pointed to by addr4 was not mapped */
--       addr4 =  get_high_address();
-+       addr4 = get_high_address();
- #endif
- }
- 
-@@ -172,14 +173,11 @@ static void cleanup(void)
- {
-        TEST_CLEANUP;
- 
--       if (munmap(addr1, page_sz) < 0)
-+       if (addr1 && munmap(addr1, page_sz) < 0)
-                tst_resm(TWARN | TERRNO, "munmap() failed");
- 
-        if (fd > 0 && close(fd) < 0)
-                tst_resm(TWARN | TERRNO, "close() failed");
- 
--       if (unlink(TEMPFILE) < 0)
--               tst_resm(TWARN | TERRNO, "unlink(%s) failed", TEMPFILE);
+-# $1: the test config
 -
-        tst_rmdir();
+ export TEST_DIR=$PWD
+ 
+-read_config $1
+ 
+ # Case 17: mount ext4 partition to ext3
+ ext4_test_remount()
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+index 998c3e4..18c1d20 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+@@ -33,9 +33,6 @@ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+ 
+-# $1: the test config
+-read_config $1
+-
+ # Test that inode version is not 32 bits with 128 inode size
+ ext4_test_128_inode_version()
+ {
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+index 1fd9bba..3a0f26a 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+@@ -31,11 +31,8 @@ export TCID="ext4-journal-checksum"
+ export TST_TOTAL=36
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-
+ export TEST_DIR=$PWD
+ 
+-read_config $1
+ 
+ # Use ffsb to test journal checksumming
+ # $1: journal mode: writeback, ordered, journal
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+index c91c1af..0730e87 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+@@ -31,8 +31,6 @@ export TCID="ext4-nsec-timestamps"
+ export TST_TOTAL=2
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-read_config $1
+ 
+ TEST_DIR=$PWD
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+index 2aa3e5b..28ba161 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+@@ -30,9 +30,6 @@ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+ 
+-# $1: the test config
+-read_config $1
+-
+ # How to age filesystem
+ EMPTY=1
+ SMALL=2
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+index e41b104..92b27c1 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+@@ -33,9 +33,6 @@ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+ 
+-# $1: the test config
+-read_config $1
+-
+ # The test path of fallocate
+ export TMPDIR=$PWD/mnt_point/
+ 
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+index fdb6a08..47807b1 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+@@ -31,8 +31,6 @@ export TCID="ext4-subdir-limit"
+ export TST_TOTAL=10
+ export TST_COUNT=1
+ 
+-# $1: the test config
+-read_config $1
+ 
+ TEST_DIR=$PWD
+ SHORT_DIR=1
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+index e6d49e1..b21d262 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+@@ -29,8 +29,6 @@ export TST_TOTAL=24
+ export TST_COUNT=1
+ 
+ export TEST_DIR=$PWD
+-# $1: the test config
+-read_config $1
+ 
+ # How to age filesystem
+ EMPTY=1
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+index b469bab..db289ca 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+@@ -23,25 +23,40 @@
+ ##                                                                            ##
+ ################################################################################
+ 
++. cmdlib.sh
++
+ ext4_setup()
+ {
++	tst_kvercmp 2 6 31
++	if [ $? -eq 0 ]; then
++		tst_brkm TCONF ignored "kernel is below 2.6.31"
++		exit 0
++	fi
++
++	tst_require_root
++
++	EXT4_KERNEL_SUPPORT=`grep -w ext4 /proc/filesystems | cut -f2`
++	if [ "$EXT4_KERNEL_SUPPORT" != "ext4" ]; then
++		modprobe ext4 > /dev/null 2>&1
++		if [ $? -ne 0 ]; then
++			tst_brkm TCONF ignored "Ext4 is not supported"
++			exit 0
++		fi
++	fi
++
++	exists ffsb
++
++	if [ -z "$LTP_BIG_DEV" ];then
++		tst_brkm TCONF ignored "tests need a big block device(5G-10G)"
++		exit 0
++	else
++		EXT4_DEV=$LTP_BIG_DEV
++	fi
++
+ 	mkdir mnt_point
  }
-
-
-Please do not remove copyright headers unless the test was rewritten from
-scratch. And you don't have to unlink files in tmpdir, tst_rmdir() does that
-for you, you only have to close the fds.
-
-Thanks.
-
+ 
+ ext4_cleanup()
+ {
+-	rmdir mnt_point
+-}
+-
+-# $1: the config file
+-read_config()
+-{
+-	while read config
+-	do
+-		echo $config | grep -q -E ".*=.*"
+-		if [ $? -eq 0 ]; then
+-			export $config
+-		fi
+-	done < $1
++	rm -rf mnt_point
+ }
+-
+diff --git a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh b/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
+deleted file mode 100755
+index bfbd844..0000000
+--- a/testcases/kernel/fs/ext4-new-features/run_ext4_test.sh
++++ /dev/null
+@@ -1,179 +0,0 @@
+-#! /bin/bash
+-
+-################################################################################
+-#                                                                              #
+-# Copyright (c) 2009 FUJITSU LIMITED                                           #
+-#                                                                              #
+-# This program is free software;  you can redistribute it and#or modify        #
+-# it under the terms of the GNU General Public License as published by         #
+-# the Free Software Foundation; either version 2 of the License, or            #
+-# (at your option) any later version.                                          #
+-#                                                                              #
+-# This program is distributed in the hope that it will be useful, but          #
+-# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY   #
+-# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License     #
+-# for more details.                                                            #
+-#                                                                              #
+-# You should have received a copy of the GNU General Public License            #
+-# along with this program;  if not, write to the Free Software                 #
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA      #
+-#                                                                              #
+-################################################################################
+-# Name Of File: run_ext4_test.sh                                               #
+-#                                                                              #
+-# Description: This file runs the tests for ext4 filesystem's new features.    #
+-#                                                                              #
+-# Precaution:   In order to avoid destroying the important data on the disk,   #
+-#               specify a free partition to be used for test please.           #
+-#                                                                              #
+-# Author:       Li Zefan    <lizf@cn.fujitsu.com>                              #
+-#                                                                              #
+-# History:                                                                     #
+-#                                                                              #
+-#  DATE      NAME        EMAIL                    DESC                         #
+-#                                                                              #
+-#  09/10/08  Li Zefan    <lizf@cn.fujitsu.com>    Created this test            #
+-#  08/25/09  Miao Xie    <miaox@cn.fujitsu.com>   Moved to LTP                 #
+-#                                                                              #
+-################################################################################
+-
+-source ext4_funcs.sh;
+-
+-export TCID="ext4_new_feature"
+-export TST_TOTAL=1
+-export TST_COUNT=1
+-
+-tst_kvercmp 2 6 31
+-if [ $? -eq 0 ]; then
+-	tst_brkm TCONF ignored "kernel is below 2.6.31"
+-	exit 0
+-fi
+-
+-if [ "$USER" != root ]; then
+-	tst_brkm TCONF ignored "Test must be run as root"
+-	exit 0
+-fi
+-
+-EXT4_SUPPORT1=`grep -w ext4 /proc/filesystems | cut -f2`
+-EXT4_SUPPORT2=`grep -w ext4 /proc/modules | cut -f1`
+-if [  "$EXT4_SUPPORT1" != "ext4" ] && [ "$EXT4_SUPPORT2" != "ext4" ]; then
+-	tst_brkm TCONF ignored "Ext4 is not supported"
+-	exit 0
+-fi
+-
+-if [ ! -f "ffsb" ]; then
+-	tst_brkm TCONF ignored "ffsb does not exist.Please check whether ffsb was configed and compiled"
+-	exit 0
+-fi
+-
+-if [ ! -f "ext4-test-config" ]; then
+-	tst_brkm TCONF ignored "Config file ext4-test-config does not exist. Please check whether the configure wan ran"
+-	exit 0
+-fi
+-
+-cd $LTPROOT/testcases/bin/
+-
+-RET=0
+-
+-echo "EXT4 NEW FEATURE TESTING";
+-echo "TEST STARTED: Please avoid using system while this test executes";
+-
+-echo " "
+-echo "Ext4 block allocation test"
+-if [ -f "ext4-alloc-test.sh" ]; then
+-	./ext4-alloc-test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 journal checksum test"
+-if [ -f "ext4_journal_checksum.sh" ]; then
+-	./ext4_journal_checksum.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 subdir limit test"
+-if [ -f "ext4_subdir_limit_test.sh" ]; then
+-	./ext4_subdir_limit_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 nanosecond timestamp test"
+-if [ -f "ext4_nsec_timestamps_test.sh" ]; then
+-	./ext4_nsec_timestamps_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 persist prealloc test"
+-if [ -f "ext4_persist_prealloc_test.sh" ]; then
+-	./ext4_persist_prealloc_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 inode version test"
+-if [ -f "ext4_inode_version_test.sh" ]; then
+-	./ext4_inode_version_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 uninit groups test"
+-if [ -f "ext4_uninit_groups_test.sh" ]; then
+-	./ext4_uninit_groups_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-echo " "
+-echo "Ext4 online defrag test"
+-echo "The output of defrag program is in the file"\
+-	"LTPROOT/output/ext4_online_defrag.txt"
+-if [ -f "ext4_online_defrag_test.sh" ]; then
+-	./ext4_online_defrag_test.sh ./ext4-test-config
+-	if [ $? -ne 0 ]; then
+-		RET=1
+-	fi
+-else
+-	echo "Shell file is not installed..Please check Makefile..."
+-	RET=1
+-fi
+-
+-exit $RET
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
