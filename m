@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WPShg-0006uS-Ii
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 08:15:24 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WPShc-00055S-AD
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 08:15:24 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2H8F7ta003908
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Mar 2014 16:15:10 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 17 Mar 2014 16:13:29 +0800
-Message-Id: <1395044011-31911-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH 1/3] performance_counters/performance_counter01.c:
-	cleanup
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WPYXh-0007Ah-Rc
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 14:29:29 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WPYXg-0006Ti-2G
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 14:29:29 +0000
+Message-ID: <532706B4.4060500@oracle.com>
+Date: Mon, 17 Mar 2014 18:29:08 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+References: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1394714306-9678-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<12581797.Xz9gpSyGDL@vapier>
+In-Reply-To: <12581797.Xz9gpSyGDL@vapier>
+Subject: Re: [LTP] [PATCH 2/3] isofs.sh: be more quiet
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,320 +27,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Create ltp-perf_event_open.m4 to check perf_event_open syscall.
+Hi!
 
-And according to perf_event_open()'s manpage, the official way of knowing
-if perf_event_open() support is enabled is checking for the existence
-of the file /proc/sys/kernel/perf_event_paranoid, so add this check.
+On 14.03.2014 00:56, Mike Frysinger wrote:
+> On Thu 13 Mar 2014 16:38:25 Stanislav Kholmanskikh wrote:
+>>   		echo "Running ls -lR $MNT_POINT Command"
+>> -		ls -lR $MNT_POINT
+>> +		ls -lR $MNT_POINT > /dev/null
+>
+> the point of this command is to show the contents of the mount.  if you're not
+> doing that, then delete the call (and the echo above it).
 
-According to this perf_event_open API description, rewrite this test
-case to test hardware CPU events.
-int perf_event_open(struct perf_event_attr *attr,
-	pid_t pid, int cpu, int group_fd,
-	unsigned long flags);
+Ok. I'll delete this call.
 
-Some cleanup.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- configure.ac                                       |   1 +
- m4/ltp-perf_event_open.m4                          |  38 +++++
- .../performance_counters/performance_counter01.c   | 184 +++++++++++++++------
- 3 files changed, 175 insertions(+), 48 deletions(-)
- create mode 100644 m4/ltp-perf_event_open.m4
-
-diff --git a/configure.ac b/configure.ac
-index 0004a55..8941d5c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -173,5 +173,6 @@ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
- LTP_CHECK_MKDIRAT
- LTP_CHECK_FCHOWNAT
- LTP_CHECK_FALLOCATE
-+LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
- 
- AC_OUTPUT
-diff --git a/m4/ltp-perf_event_open.m4 b/m4/ltp-perf_event_open.m4
-new file mode 100644
-index 0000000..6944870
---- /dev/null
-+++ b/m4/ltp-perf_event_open.m4
-@@ -0,0 +1,38 @@
-+dnl
-+dnl Copyright (c) Linux Test Project, 2014
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program;  if not, write to the Free Software
-+dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
-+dnl ----------------------------
-+dnl
-+AC_DEFUN([LTP_CHECK_SYSCALL_PERF_EVENT_OPEN],[AC_LINK_IFELSE([AC_LANG_SOURCE([
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <linux/perf_event.h>
-+int main(void) {
-+	struct perf_event_attr pe;
-+	syscall(__NR_perf_event_open, &pe, 0, -1, -1, 0);
-+	return 0;
-+}])],[has_perf_event_open_syscall="yes"])
-+if test "x$has_perf_event_open_syscall" = "xyes"; then
-+	AC_DEFINE(HAVE_PERF_EVENT_OPEN_SYSCALL,1,[Define to 1 if you have the perf_event_open syscall support on your system])
-+else
-+	AC_DEFINE(HAVE_PERF_EVENT_OPEN_SYSCALL,0,[Define to 0 if you do not have the perf_event_open syscall support on your system])
-+fi
-+])
-diff --git a/testcases/kernel/performance_counters/performance_counter01.c b/testcases/kernel/performance_counters/performance_counter01.c
-index 6d7cbc9..4641701 100644
---- a/testcases/kernel/performance_counters/performance_counter01.c
-+++ b/testcases/kernel/performance_counters/performance_counter01.c
-@@ -22,13 +22,13 @@
-  * Very simple performance counter testcase.
-  * Picked up from: http://lkml.org/lkml/2008/12/5/17
-  */
-+
- #include <sys/types.h>
- #include <sys/ioctl.h>
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <sys/uio.h>
- #include <linux/unistd.h>
--
- #include <assert.h>
- #include <unistd.h>
- #include <stdlib.h>
-@@ -36,73 +36,161 @@
- #include <string.h>
- #include <stdio.h>
- #include <fcntl.h>
-+#include "config.h"
-+#if HAVE_PERF_EVENT_OPEN_SYSCALL
-+#include <linux/perf_event.h>
-+#endif
- 
--/* Harness Specific Include Files. */
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
--
--/* Extern Global Variables */
--extern int tst_count;
--extern char *TESTDIR;		/* temporary dir created by tst_tmpdir() */
--/* Global Variables */
--char *TCID = "performance_counter01";	/* test program identifier.          */
--int TST_TOTAL = 1;
--
--enum hw_event_types {
--	PERF_COUNT_CYCLES,
--	PERF_COUNT_INSTRUCTIONS,
--	PERF_COUNT_CACHE_REFERENCES,
--	PERF_COUNT_CACHE_MISSES,
--	PERF_COUNT_BRANCH_INSTRUCTIONS,
--	PERF_COUNT_BRANCH_MISSES,
-+#include "safe_macros.h"
-+
-+char *TCID = "performance_counter01";
-+int TST_TOTAL = 6;
-+
-+#if HAVE_PERF_EVENT_OPEN_SYSCALL
-+static void setup(void);
-+static void cleanup(void);
-+
-+static struct test_case_t {
-+	const char *name;
-+	unsigned long long val;
-+} hw_event_types[] = {
-+	{ "PERF_COUNT_HW_CPU_CYCLES", PERF_COUNT_HW_CPU_CYCLES },
-+	{ "PERF_COUNT_HW_INSTRUCTIONS", PERF_COUNT_HW_INSTRUCTIONS },
-+	{ "PERF_COUNT_HW_CACHE_REFERENCES", PERF_COUNT_HW_CACHE_REFERENCES },
-+	{ "PERF_COUNT_HW_CACHE_MISSES", PERF_COUNT_HW_CACHE_MISSES },
-+	{ "PERF_COUNT_HW_BRANCH_INSTRUCTIONS",
-+	  PERF_COUNT_HW_BRANCH_INSTRUCTIONS },
-+	{ "PERF_COUNT_HW_BRANCH_MISSES", PERF_COUNT_HW_BRANCH_MISSES },
- };
- 
--void cleanup(void)
--{				/* Stub function. */
-+static void verify(struct test_case_t *tc);
-+static struct perf_event_attr pe;
-+
-+int main(int ac, char **av)
-+{
-+	int i, lc;
-+	char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)
-+			verify(&hw_event_types[i]);
-+	}
-+
-+	cleanup();
-+	tst_exit();
- }
- 
--int main(void)
-+static void setup(void)
- {
-+	/*
-+	 * According to perf_event_open's manpage, the official way of
-+	 * knowing if perf_event_open() support is enabled is checking for
-+	 * the existence of the file /proc/sys/kernel/perf_event_paranoid.
-+	 */
-+	if (access("/proc/sys/kernel/perf_event_paranoid", F_OK) == -1)
-+		tst_brkm(TCONF, NULL, "Kernel doesn't have perf_event support");
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	pe.type = PERF_TYPE_HARDWARE;
-+	pe.size = sizeof(struct perf_event_attr);
-+	pe.disabled = 1;
-+	pe.exclude_kernel = 1;
-+	pe.exclude_hv = 1;
-+}
-+
-+
-+static int perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
-+		int cpu, int group_fd, unsigned long flags)
-+{
-+	int ret;
-+
-+	ret = ltp_syscall(__NR_perf_event_open, hw_event, pid, cpu,
-+			  group_fd, flags);
-+	return ret;
-+}
- 
--	unsigned long long count1, count2;
--	int fd1, fd2, ret;
-+/* do_work() is copied form performance_counter02.c */
-+#define LOOPS	1000000000
- 
--	fd1 = ltp_syscall(__NR_perf_event_open,
--		      PERF_COUNT_INSTRUCTIONS, 0, 0, 0, -1);
--	if (fd1 < 0) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Failed to create PERF_COUNT_INSTRUCTIONS fd");
-+static void do_work(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < LOOPS; ++i)
-+		asm volatile ("" : : "g" (i));
-+}
-+
-+static void verify(struct test_case_t *tc)
-+{
-+	unsigned long long count;
-+	int fd, ret;
-+
-+	pe.config = tc->val;
-+
-+	TEST(perf_event_open(&pe, 0, -1, -1, 0));
-+	if (TEST_RETURN == -1) {
-+		tst_brkm(TFAIL | TTERRNO, cleanup,
-+			 "perf_event_open failed unexpectedly");
-+		return;
- 	}
--	fd2 = ltp_syscall(__NR_perf_event_open,
--		      PERF_COUNT_CACHE_MISSES, 0, 0, 0, -1);
--	if (fd2 < 0) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Failed to create PERF_COUNT_CACHE_MISSES fd");
-+
-+	fd = TEST_RETURN;
-+
-+	if (ioctl(fd, PERF_EVENT_IOC_RESET, 0) == -1) {
-+		tst_brkm(TFAIL | TTERRNO, cleanup,
-+			 "ioctl set PERF_EVENT_IOC_RESET failed");
- 	}
- 
--	do {
-+	if (ioctl(fd, PERF_EVENT_IOC_ENABLE, 0) == -1) {
-+		tst_brkm(TFAIL | TTERRNO, cleanup,
-+			 "ioctl set PERF_EVENT_IOC_ENABLE failed");
-+	}
- 
--		ret = read(fd1, &count1, sizeof(count1));
-+	do_work();
- 
--		if (ret == sizeof(count1)) {
-+	if (ioctl(fd, PERF_EVENT_IOC_DISABLE, 0) == -1) {
-+		tst_brkm(TFAIL | TTERRNO, cleanup,
-+			 "ioctl set PERF_EVENT_IOC_RESET failed");
-+	}
- 
--			ret = read(fd2, &count2, sizeof(count2));
-+	ret = read(fd, &count, sizeof(count));
-+	if (ret == sizeof(count)) {
-+		tst_resm(TINFO, "read event counter succeeded, "
-+			 "value: %llu", count);
-+		tst_resm(TPASS, "test PERF_TYPE_HARDWARE: %s succeeded",
-+			 tc->name);
-+	} else {
-+		tst_resm(TFAIL | TERRNO, "read event counter failed");
-+	}
- 
--			if (ret == sizeof(count2)) {
--				tst_resm(TINFO,
--					 "counter1 value: %Ld instructions",
--					 count1);
--				tst_resm(TINFO,
--					 "counter2 value: %Ld cachemisses",
--					 count2);
--				sleep(1);
--			}
-+	SAFE_CLOSE(cleanup, fd);
- 
--		}
-+}
- 
--	} while (ret == sizeof(unsigned long long));
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
- 
--	tst_exit();
-+#else
- 
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "This system doesn't have "
-+		 "required perf_event_open syscall support");
- }
-+#endif
--- 
-1.8.2.1
-
+> -mike
+>
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
