@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WLt7j-0007ET-GH
-	for ltp-list@lists.sourceforge.net; Fri, 07 Mar 2014 11:39:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WLt7i-0005ja-7m
-	for ltp-list@lists.sourceforge.net; Fri, 07 Mar 2014 11:39:31 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s27BdN8b008033
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Mar 2014 06:39:23 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s27BdMtu019923
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Mar 2014 06:39:22 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri,  7 Mar 2014 12:39:23 +0100
-Message-Id: <cover.1394190599.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 0/2] do not pick free/unused port by chance
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1WPaVb-0005lk-Kc
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 16:35:27 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WPaVZ-0007b2-Jo
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 16:35:27 +0000
+From: Mats Liljegren <mats.liljegren@enea.com>
+Date: Mon, 17 Mar 2014 16:35:18 +0000
+Message-ID: <0247700D01F14443B9209F90AD938CC524366845@sestoex05.enea.se>
+References: <531DC318.7060504@gmail.com>,<7hsiqlkawz.fsf@paris.lan>
+In-Reply-To: <7hsiqlkawz.fsf@paris.lan>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: Re: [LTP] Testing absence of ticks with nohz_full
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,52 +25,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Kevin Hilman <khilman@linaro.org>, Mats Liljegren <liljegren.mats2@gmail.com>
+Cc: Linux Test Project General Discussions <ltp-list@lists.sourceforge.net>, Frederic Weisbecker <fweisbec@gmail.com>
 
-I'm rarely seeing tests like bind01, connect01, recv01,
-recvfrom01, recvmsg01, send01, sendfile0X, sendmsg01
-and sendto01 failing. All these are picking ports with
-formula: (getpid() % 32768) + 11000, which occasionally
-collides with test harness (beah) used in automated environment,
-which is running on ports 12432/12434.
+Thanks for the script!
 
-This series removes that formula and lets kernel pick random
-free unused port instead. If test has no intention of binding
-any server on that port, but still needs some unused port number
-it can use newly added tst_get_unused_port() function.
+I was thinking about using stress as load both on the non-isolated CPUs as well as for the isolated CPUs. I intend to use "--io" and "--vm" for non-isolated part, and "--cpu" for the isolated. This should provoke the system a little bit at least.
 
-Jan Stancek (2):
-  add tst_get_unused_port()
-  do not pick free/unused port by chance
+Regards
+Mats Liljegren
+________________________________________
+From: Kevin Hilman [khilman@linaro.org]
+Sent: Thursday, March 13, 2014 11:10 PM
+To: Mats Liljegren
+Cc: Linux Test Project General Discussions; Frederic Weisbecker
+Subject: Re: [LTP] Testing absence of ticks with nohz_full
 
- include/test.h                                  |    7 ++
- lib/tst_net.c                                   |   81 +++++++++++++++++++++++
- testcases/kernel/syscalls/bind/bind01.c         |    2 +-
- testcases/kernel/syscalls/connect/connect01.c   |   17 +++--
- testcases/kernel/syscalls/recv/recv01.c         |   15 +++--
- testcases/kernel/syscalls/recvfrom/recvfrom01.c |   15 +++--
- testcases/kernel/syscalls/recvmsg/recvmsg01.c   |   12 ++-
- testcases/kernel/syscalls/send/send01.c         |   15 +++--
- testcases/kernel/syscalls/sendfile/sendfile02.c |    6 ++-
- testcases/kernel/syscalls/sendfile/sendfile04.c |    6 ++-
- testcases/kernel/syscalls/sendfile/sendfile05.c |    6 ++-
- testcases/kernel/syscalls/sendfile/sendfile06.c |    6 ++-
- testcases/kernel/syscalls/sendmsg/sendmsg01.c   |   17 +++--
- testcases/kernel/syscalls/sendto/sendto01.c     |   15 +++--
- 14 files changed, 173 insertions(+), 47 deletions(-)
- create mode 100644 lib/tst_net.c
+Mats Liljegren <liljegren.mats2@gmail.com> writes:
+
+> My company (Enea) wants to create test case(s) that verifies that you
+> can run an application without having ticks going on the CPU that the
+> application runs on. This would utilize the new nohz_full feature
+> available from kernel version 3.10.
+>
+> I cannot find any existing test case in LTP in this area, so I assume
+> I have to create the test case myself.
+
+It's not in LTP, but I have a shell script[1] does some setup and load
+generation that I use to validate nohz_full.  The setup and
+prerequisites can be a bit tricky, but some of the things it does:
+
+- disables the residual 1Hz (if my patch is applied)
+- pinning the unbound "writeback" workqueue to CPU0
+- force timer migration using hotplug
+- sets up CPUsets and tries to migrate all tasks to CPU0
+  (I think this part came from a script from you awhile ago)
+
+It then uses 'stress' to generate load on specific CPUs and uses
+trace-cmd to record the traces.
+
+I currently look at the traces manually to see if it worked, but adding
+other step to automatially look at the traces would be a good next step.
+
+Kevin
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
