@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WL9KM-00047C-RQ
-	for ltp-list@lists.sourceforge.net; Wed, 05 Mar 2014 10:45:30 +0000
-Date: Wed, 5 Mar 2014 11:45:15 +0100
-From: chrubis@suse.cz
-Message-ID: <20140305104515.GA6400@rei.Home>
-References: <20140225140017.GC14376@rei>
-	<1393339227-13527-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WPYhi-00004z-Oq
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 14:39:50 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WPYhi-00037F-3o
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 14:39:50 +0000
+Message-ID: <53270928.2020603@oracle.com>
+Date: Mon, 17 Mar 2014 18:39:36 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1393339227-13527-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V3 2/2] msgctl11: process message queues by
-	portions
+References: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1394714306-9678-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<2396644.2WVkagNouJ@vapier>
+In-Reply-To: <2396644.2WVkagNouJ@vapier>
+Subject: Re: [LTP] [PATCH 1/3] isofs.sh: use $TMPDIR for temporary directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,31 +30,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> /proc/sys/kernel/msgmni value scales with the amount of the host memory.
-> 
-> On systems with several tens gigabytes of ram this value is rather big (and
-> even may reach its limit - IPCMI (32768), defined in include/linux/ipc.h) and
-> therefore the test case fails with "Not enough free pids" error.
-> 
-> Now we process all avaliable message queues by portions (with the size based
-> on the amount of free pids).
 
-Pushed, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 14.03.2014 00:55, Mike Frysinger wrote:
+> On Thu 13 Mar 2014 16:38:24 Stanislav Kholmanskikh wrote:
+>>   #Initialize directory variables
+>> -    MNT_POINT="/tmp/isofs_$$"
+>> +    TMPDIR=${TMPDIR:-/tmp}
+>> +    MNT_POINT="$TMPDIR/isofs_$$"
+>
+> why not just use `mktemp -d` ?
+
+ok.
+
+> -mike
+>
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
