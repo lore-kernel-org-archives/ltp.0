@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WNltO-0000qY-U8
-	for ltp-list@lists.sourceforge.net; Wed, 12 Mar 2014 16:20:30 +0000
-Date: Wed, 12 Mar 2014 17:20:12 +0100
-From: chrubis@suse.cz
-Message-ID: <20140312162012.GA20551@rei.Home>
-References: <1391607438-529-1-git-send-email-alexey.kodanev@oracle.com>
-	<20140311165448.GA11407@rei> <532024B6.9080603@oracle.com>
-	<20140312104505.GA13689@rei.Home>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1WPUVk-0006Cn-0W
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 10:11:12 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WPUVg-0001Tb-LT
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 10:11:11 +0000
+From: Mats Liljegren <mats.liljegren@enea.com>
+Date: Mon, 17 Mar 2014 10:11:00 +0000
+Message-ID: <0247700D01F14443B9209F90AD938CC524365A3B@sestoex05.enea.se>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20140312104505.GA13689@rei.Home>
-Subject: Re: [LTP] [PATCH] device-drivers/rcu: add wrapper script for
- rcutorture test
+Subject: [LTP] Design question around ltp-list
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,22 +26,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> I've noticed this too a few days ago.
-> 
-> I will fix these problems and add push it into LTP git and update
-> test-writing-guidelines.
+I'd like to create a time-boxed test case, i.e. the test will run for a certain amount of time and if nothing goes wrong during this time, the test passed.
 
-I've fixed one more thing (masked out the TINFO, TCONF and TRETR out of
-the test return value as the C library does) and updated the
-test-writing-guidelines.
+This would also need to be recursive. So when starting my test, it in turn will start some test cases to be used as a system load. These loads are simple application that will run until killed. My intention was to start them using ltp-pan.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+So imagine my test case is started with ltp-pan, where a running time has been specified. My test case in turn will use ltp-pan to start an application that only exits when killed. What will happen when the first ltp-pan invocation times out? Will it automatically kill child ltp-pan instances, and they in turn kill the load applications?
+
+Or how are you supposed to do such a test case?
+
+/Mats
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
