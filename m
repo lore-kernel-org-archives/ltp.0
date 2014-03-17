@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WT9ph-0004i9-GG
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 12:54:57 +0000
-Date: Thu, 27 Mar 2014 13:54:30 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WPaJz-0004Fr-3n
+	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 16:23:27 +0000
+Date: Mon, 17 Mar 2014 17:23:06 +0100
 From: chrubis@suse.cz
-Message-ID: <20140327125430.GA3603@rei>
-References: <1394178632-14462-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1394178632-14462-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140317162305.GA2215@rei>
+References: <0247700D01F14443B9209F90AD938CC524365A3B@sestoex05.enea.se>
+	<20140317135606.GA1368@rei>
+	<0247700D01F14443B9209F90AD938CC524366738@sestoex05.enea.se>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1394178632-14462-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] munmap/munmap03.c: make EINVAL error value
- tests sufficient
+In-Reply-To: <0247700D01F14443B9209F90AD938CC524366738@sestoex05.enea.se>
+Subject: Re: [LTP] Design question around ltp-list
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> That means I get no support for errors occurring when executing the
+> load, i.e. I have to check the return value myself and give correct
+> diagnostic message. Not a real problem, just more work to do...
 
-Both pushed, thanks.
+That is mostly one waitpid() in parent, you don't have to overdo the
+error conditions checks. There is always possibility that something
+unexpected will happen. The most appropripate behavior is to fail the
+test and expect user to check what has happened.
+
+> But now I know I should avoid ltp-pan, thanks!
+
+I'm not even sure that running pan from pan would work fine. There is
+really tricky stuff with terminal controll and sessions that allows it
+to kill test leftover processes which may cause really strange behavior.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
