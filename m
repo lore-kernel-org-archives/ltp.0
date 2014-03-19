@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WPYXh-0007Ah-Rc
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 14:29:29 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WPYXg-0006Ti-2G
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 14:29:29 +0000
-Message-ID: <532706B4.4060500@oracle.com>
-Date: Mon, 17 Mar 2014 18:29:08 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WQH16-0008NR-Bk
+	for ltp-list@lists.sourceforge.net; Wed, 19 Mar 2014 13:58:48 +0000
+Date: Wed, 19 Mar 2014 14:58:26 +0100
+From: chrubis@suse.cz
+Message-ID: <20140319135826.GC26802@rei>
+References: <1395213300-518-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-References: <1394714306-9678-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1394714306-9678-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<12581797.Xz9gpSyGDL@vapier>
-In-Reply-To: <12581797.Xz9gpSyGDL@vapier>
-Subject: Re: [LTP] [PATCH 2/3] isofs.sh: be more quiet
+Content-Disposition: inline
+In-Reply-To: <1395213300-518-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] lib/test.sh: replace LTP_TST_CNT with TST_COUNT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,25 +24,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
+> The tools/apicmds require TST_COUNT to be set.
 
-On 14.03.2014 00:56, Mike Frysinger wrote:
-> On Thu 13 Mar 2014 16:38:25 Stanislav Kholmanskikh wrote:
->>   		echo "Running ls -lR $MNT_POINT Command"
->> -		ls -lR $MNT_POINT
->> +		ls -lR $MNT_POINT > /dev/null
->
-> the point of this command is to show the contents of the mount.  if you're not
-> doing that, then delete the call (and the echo above it).
+I've also added an export for TCID and TST_TOTAL so that they get
+propagated to subprocesses. The tst_get_unused_port patch is pushed too.
 
-Ok. I'll delete this call.
+(I've tested that calling tst_get_unused_port works fine now)
 
+Thanks.
 
-> -mike
->
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
