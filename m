@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WPaJz-0004Fr-3n
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 16:23:27 +0000
-Date: Mon, 17 Mar 2014 17:23:06 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WQGdO-0003UG-Iq
+	for ltp-list@lists.sourceforge.net; Wed, 19 Mar 2014 13:34:20 +0000
+Date: Wed, 19 Mar 2014 14:33:56 +0100
 From: chrubis@suse.cz
-Message-ID: <20140317162305.GA2215@rei>
-References: <0247700D01F14443B9209F90AD938CC524365A3B@sestoex05.enea.se>
-	<20140317135606.GA1368@rei>
-	<0247700D01F14443B9209F90AD938CC524366738@sestoex05.enea.se>
+Message-ID: <20140319133356.GB26802@rei>
+References: <20140318193156.GD15827@tarantula.localdomain>
+	<1529764.55jJe8A1P6@vapier>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0247700D01F14443B9209F90AD938CC524366738@sestoex05.enea.se>
-Subject: Re: [LTP] Design question around ltp-list
+In-Reply-To: <1529764.55jJe8A1P6@vapier>
+Subject: Re: [LTP] update ffsb autotools files for aarch64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,24 +25,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <mats.liljegren@enea.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> That means I get no support for errors occurring when executing the
-> load, i.e. I have to check the return value myself and give correct
-> diagnostic message. Not a real problem, just more work to do...
+> > The autotools files for ffsb -- utils/ffsb-6.0-rc2/config.guess and
+> > utils/ffsb-6.0-rc2/config.sub -- do not understand aarch64 and it fails
+> > to build:
+> 
+> we probably should have our build auto-copy the top level config.{sub,guess} 
+> files into subdirs when we unpack them sine we know those will be up to date.
 
-That is mostly one waitpid() in parent, you don't have to overdo the
-error conditions checks. There is always possibility that something
-unexpected will happen. The most appropripate behavior is to fail the
-test and expect user to check what has happened.
-
-> But now I know I should avoid ltp-pan, thanks!
-
-I'm not even sure that running pan from pan would work fine. There is
-really tricky stuff with terminal controll and sessions that allows it
-to kill test leftover processes which may cause really strange behavior.
+Hmm, can't we just symlink them?
 
 -- 
 Cyril Hrubis
