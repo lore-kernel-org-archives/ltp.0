@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1WMqcx-0004ma-VU
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 03:11:44 +0000
-Received: from mail-pb0-f43.google.com ([209.85.160.43])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WMqcx-0004bH-9Y
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 03:11:43 +0000
-Received: by mail-pb0-f43.google.com with SMTP id um1so6624306pbc.16
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 09 Mar 2014 20:11:37 -0700 (PDT)
-From: Hangbin Liu <liuhangbin@gmail.com>
-Date: Mon, 10 Mar 2014 11:11:30 +0800
-Message-Id: <1394421090-2780-1-git-send-email-liuhangbin@gmail.com>
-Subject: [LTP] [PATCHv2] containers/netns: Add missed definition for
-	check_netns_enabled.c
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WQL7Z-0003Ag-1X
+	for ltp-list@lists.sourceforge.net; Wed, 19 Mar 2014 18:21:45 +0000
+Date: Wed, 19 Mar 2014 19:21:22 +0100
+From: chrubis@suse.cz
+Message-ID: <20140319182122.GD27687@rei.Home>
+References: <530DBB2D.1090406@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <530DBB2D.1090406@oracle.com>
+Subject: Re: [LTP] network tests: help script to run commands on remote host
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,57 +21,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: Vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>
 
-CLONE_NEWNET and CLONE_NEWNS are defined in bit/sched.h, and need __USE_GNU
-defined first. Do the same as par_chld_ipv6.c and two_children_ns.c did, just
-define _GNU_SOURCE directly.
+Hi!
+> There are some network tests which need to run various commands on the 
+> remote host. So is it a good idea to add a help script which does that 
+> according to chosen network protocol: rsh or ssh?
+> 
+> If yes, we can have a script like tst_rhost_run (or tst_run_rcmd...) in 
+> the ltp/tools, or somewhere else.
+> 
+> I did something similar in the submitted tcp_fastopen test, so the 
+> script could be as follows:
+> 
+> if [ "$use_ssh" -eq 1 ]; then
+> 	ssh -n -f $user_name@$RHOST "sh -c 'nohup $rcmd &'" > /dev/null 2>&1
+> else
+> 	rsh -n -l $user_name $RHOST "sh -c 'nohup $rcmd &'" > /dev/null 2>&1
+> fi
+> 
+> if [ $? -ne 0 ]; then
+> 	tst_brkm TBROK NULL "No route to host $RHOST"
+> 	exit 2
+> fi
 
-Also remove duplicate CLONE_NEWNET definition cause we won't run netns test if
-CLONE_NEWNET and CLONE_NEWNS are not defined.
+Sounds good to me. The location for the file could be testcases/lib/.
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- testcases/kernel/containers/libclone/libclone.h         | 4 ----
- testcases/kernel/containers/netns/check_netns_enabled.c | 3 +++
- 2 files changed, 3 insertions(+), 4 deletions(-)
+One problem with the code above is that the error message can be
+misleading, there is much more that could go wrong. One that comes to my
+mind is when LTP is not installed on the remote machine.
 
-diff --git a/testcases/kernel/containers/libclone/libclone.h b/testcases/kernel/containers/libclone/libclone.h
-index 9380cec..50e00f7 100644
---- a/testcases/kernel/containers/libclone/libclone.h
-+++ b/testcases/kernel/containers/libclone/libclone.h
-@@ -73,10 +73,6 @@
- #define CLONE_NEWPID            0x20000000
- #endif
- 
--#ifndef CLONE_NEWNET
--#define CLONE_NEWNET		0x40000000
--#endif
--
- extern int create_net_namespace(char *, char *);
- 
- /*
-diff --git a/testcases/kernel/containers/netns/check_netns_enabled.c b/testcases/kernel/containers/netns/check_netns_enabled.c
-index ab8ee2f..9c1d84a 100644
---- a/testcases/kernel/containers/netns/check_netns_enabled.c
-+++ b/testcases/kernel/containers/netns/check_netns_enabled.c
-@@ -19,6 +19,9 @@
- * assume they are not enabled.  Kernels after that, check for -EINVAL
- * when trying to use CLONE_NEWNET and CLONE_NEWNS.
- ***************************************************************************/
-+
-+#define _GNU_SOURCE
-+
- #include <stdio.h>
- #include <sched.h>
- #include "config.h"
+And ideally we should use the new test.sh library. I would go for
+exporting an TST_LIB_LOADED=1 variable in the test.sh and checking in
+all sublibs that the variable exists to force the test to source the
+test.sh first.
+
 -- 
-1.8.1.4
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
