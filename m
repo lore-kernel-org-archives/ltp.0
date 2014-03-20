@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WUegv-0006jf-RV
-	for ltp-list@lists.sourceforge.net; Mon, 31 Mar 2014 16:04:05 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 27659AC16
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 31 Mar 2014 16:03:54 +0000 (UTC)
-Date: Mon, 31 Mar 2014 18:03:25 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WQfdC-0001A4-27
+	for ltp-list@lists.sourceforge.net; Thu, 20 Mar 2014 16:15:46 +0000
+Date: Thu, 20 Mar 2014 17:15:22 +0100
 From: chrubis@suse.cz
-Message-ID: <20140331160325.GB9911@rei.suse.cz>
+Message-ID: <20140320161522.GB4432@rei.Home>
+References: <1393304401-22031-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] LTP Release
+In-Reply-To: <1393304401-22031-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] mincore/mincore01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-If I'm counting right, we should start preparations for next LTP release.
+> Delete some useless comments.
+> Move the test body from main() to mincore_verify().
+> Use some SAFE_* macros.
+> Make ENOMEM error value tests sufficient.
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 
-Looking at the pending patches there are at least two patches that
-should be sorted out. The out-of-tree build and the bashism in
-testcases. I will make sure these two issues are handled soon.
-
-Are there any other patches that should be part of the next release?
+I've cleaned up one more trailing whitespace (that was in the original
+file as well) and pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
