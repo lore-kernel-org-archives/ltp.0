@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1WSohT-00051Q-AF
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 14:21:03 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WSohD-0007Ev-G7
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 14:21:03 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2QEKfeX016860
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 14:20:41 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2QEKeBS028480
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 14:20:41 GMT
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2QEKeei004215
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 14:20:40 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 26 Mar 2014 18:21:03 +0400
-Message-Id: <1395843663-8329-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] testcases/*.sh: use INT in "trap" instead of SIGINT
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ciprian.barbu@linaro.org>) id 1WQxOC-0003of-1F
+	for ltp-list@lists.sourceforge.net; Fri, 21 Mar 2014 11:13:28 +0000
+Received: from mail-ee0-f50.google.com ([74.125.83.50])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WQxOB-0004iS-0W
+	for ltp-list@lists.sourceforge.net; Fri, 21 Mar 2014 11:13:28 +0000
+Received: by mail-ee0-f50.google.com with SMTP id c13so1656571eek.37
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 21 Mar 2014 04:13:20 -0700 (PDT)
+Message-ID: <532C194C.7090307@linaro.org>
+Date: Fri, 21 Mar 2014 12:49:48 +0200
+From: Ciprian Barbu <ciprian.barbu@linaro.org>
+MIME-Version: 1.0
+References: <1394464444-23803-1-git-send-email-ciprian.barbu@linaro.org>
+In-Reply-To: <1394464444-23803-1-git-send-email-ciprian.barbu@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and
+ measurement to pass default profile to run_c_files.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,59 +28,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Ciprian Barbu <ciprian.barbu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
-Also replace "==" with "=" in rcutorture test.
+Hello,
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/kernel/device-drivers/rcu/rcu_torture.sh |    4 ++--
- .../ftrace_stress_test/ftrace_stress_test.sh       |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+On 10.03.2014 17:14, Ciprian Barbu wrote:
+> Signed-off-by: Ciprian Barbu <ciprian.barbu@linaro.org>
+>
+> Upstream-Status: Pending
+> ---
+>   testcases/realtime/func/hrtimer-prio/run_auto.sh |    4 +++-
+>   testcases/realtime/func/measurement/run_auto.sh  |    6 ++++--
+>   2 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+> index 366e746..ec3d83a 100644
+> --- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
+> +++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
+> @@ -1,5 +1,7 @@
+>   #! /bin/bash
+>
+> +profile=${1:-default}
+> +
+>   if [ ! $SCRIPTS_DIR ]; then
+>           # assume we're running standalone
+>           export SCRIPTS_DIR=../../scripts/
+> @@ -7,4 +9,4 @@ fi
+>
+>   source $SCRIPTS_DIR/setenv.sh
+>
+> -$SCRIPTS_DIR/run_c_files.sh "hrtimer-prio"
+> +$SCRIPTS_DIR/run_c_files.sh $profile "hrtimer-prio"
+> diff --git a/testcases/realtime/func/measurement/run_auto.sh b/testcases/realtime/func/measurement/run_auto.sh
+> index 3011964..439f721 100644
+> --- a/testcases/realtime/func/measurement/run_auto.sh
+> +++ b/testcases/realtime/func/measurement/run_auto.sh
+> @@ -1,5 +1,7 @@
+>   #! /bin/bash
+>
+> +profile=${1:-default}
+> +
+>   if [ ! $SCRIPTS_DIR ]; then
+>           # assume we're running standalone
+>           export SCRIPTS_DIR=../../scripts/
+> @@ -13,7 +15,7 @@ source $SCRIPTS_DIR/setenv.sh
+>   # issues right now.
+>
+>   LOG_FILE="$LOG_DIR/$LOG_FORMAT-rdtsc-latency.log"
+> -$SCRIPTS_DIR/run_c_files.sh "rdtsc-latency"
+> +$SCRIPTS_DIR/run_c_files.sh $profile "rdtsc-latency"
+>
+>   LOG_FILE="$LOG_DIR/$LOG_FORMAT-preempt_timing.log"
+> -$SCRIPTS_DIR/run_c_files.sh "preempt_timing"
+> +$SCRIPTS_DIR/run_c_files.sh $profile "preempt_timing"
+>
 
-diff --git a/testcases/kernel/device-drivers/rcu/rcu_torture.sh b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-index 0ead720..65c4fe0 100755
---- a/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-+++ b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-@@ -66,7 +66,7 @@ modprobe rcutorture > /dev/null 2>&1 || \
- 	tst_brkm TCONF "Test requires rcutorture module"
- rmmod rcutorture > /dev/null 2>&1
- 
--trap cleanup SIGINT
-+trap cleanup INT
- 
- rcu_type="rcu rcu_sync rcu_expedited rcu_bh rcu_bh_sync rcu_bh_expedited \
-           srcu srcu_sync srcu_expedited srcu_raw srcu_raw_sync sched \
-@@ -95,7 +95,7 @@ for type in $rcu_type; do
- 
- 	# check module status in dmesg
- 	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
--	if [ "$result_str" == "SUCCESS" ]; then
-+	if [ "$result_str" = "SUCCESS" ]; then
- 		tst_resm TPASS "$type: completed"
- 	else
- 		tst_resm TFAIL "$type: $result_str, see dmesg"
-diff --git a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
-index b6a44d8..6a111e9 100755
---- a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
-+++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
-@@ -160,7 +160,7 @@ test_wait()
- 	}
- }
- 
--trap clean_up_exit SIGINT
-+trap clean_up_exit INT
- 
- # Should be run by root user
- if [ `id -ru` != 0 ]; then
--- 
-1.7.1
+Sorry if I'm being insistent, has anyone got the chance to look at this 
+patch? I would like to know if it can be applied to master.
 
+Kind regards,
+Ciprian
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
