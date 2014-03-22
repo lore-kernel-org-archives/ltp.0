@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WSkzB-0000Hy-QD
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 10:23:05 +0000
-Date: Wed, 26 Mar 2014 11:22:37 +0100
-From: chrubis@suse.cz
-Message-ID: <20140326102237.GA8207@rei.suse.cz>
-References: <4506ACC2AE90484D87F9A883BA36C21C548C89@LCHQEX03.lancope.local>
-	<20140325153431.GA10754@rei>
-	<4506ACC2AE90484D87F9A883BA36C21C548D90@LCHQEX03.lancope.local>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4506ACC2AE90484D87F9A883BA36C21C548D90@LCHQEX03.lancope.local>
-Subject: Re: [LTP] Suggested patch for Debian distro testing, part 1 of 2
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gilles.chanteperdrix@xenomai.org>)
+	id 1WRRg2-0006bx-Ni
+	for ltp-list@lists.sourceforge.net; Sat, 22 Mar 2014 19:33:54 +0000
+Received: from sd-51317.dedibox.fr ([62.210.215.82])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1WRRg1-0000gM-HM
+	for ltp-list@lists.sourceforge.net; Sat, 22 Mar 2014 19:33:54 +0000
+From: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
+Date: Sat, 22 Mar 2014 20:33:27 +0100
+Message-Id: <1395516807-27706-1-git-send-email-gilles.chanteperdrix@xenomai.org>
+In-Reply-To: <20140310125058.GA10346@rei>
+References: <20140310125058.GA10346@rei>
+Subject: [LTP] [PATCH] build: fix out-of-tree build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,28 +24,180 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Joseph Beckenbach <jbeckenbach@lancope.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Thanks for the feedback, Cyril.
-> Glad the m4 correction gets in quickly.
-> 
-> > And for the testcases, I would rather see them fixed to be able to run with POSIX shell because there were people running LTP on embedded HW with BusyBox. Are the required changes more complicated than [[ vs. [?
-> 
-> I've not explored all of them.  For many the answer is definitely "yes, more complicated":  'let' and '[[' and '((' and goodness knows what else.
-> I wanted greatest coverage for a little effort invested, and didn't want that to go completely to waste.
 
-Fair enough. What about fixing these that are easy to fix and for the
-rest we change the shebang to bash and add a
-"This test contains bashism that needs to be fixed!" warning?
+Signed-off-by: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
+---
+ Makefile                                         |    2 +-
+ testcases/kernel/include/lib.mk                  |   11 +++++++----
+ testcases/kernel/lib/Makefile                    |    2 +-
+ testcases/kernel/mem/include/libmem.mk           |   11 +++++++----
+ testcases/kernel/mem/lib/Makefile                |    2 +-
+ testcases/network/rpc/basic_tests/rpc01/Makefile |    2 +-
+ utils/Makefile                                   |   14 +++++++-------
+ 7 files changed, 25 insertions(+), 19 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 71efca4..297f8e7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -176,7 +176,7 @@ Version:
+ 	if git describe >/dev/null 2>&1; then \
+ 		git describe > "$@"; \
+ 	else \
+-		cp VERSION "$@"; \
++		cp $(top_srcdir)/VERSION "$@"; \
+ 	fi
+ 
+ $(INSTALL_DIR)/Version: Version
+diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
+index 624134b..c193ca3 100644
+--- a/testcases/kernel/include/lib.mk
++++ b/testcases/kernel/include/lib.mk
+@@ -16,10 +16,13 @@
+ #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #
+ 
+-KERNEL_DIR		:= $(top_srcdir)/testcases/kernel
++KERNEL_SRCDIR		:= $(abs_top_srcdir)/testcases/kernel
++LIBKERNTEST_SRCDIR	:= $(KERNEL_SRCDIR)/lib
++
++KERNEL_DIR		:= $(abs_top_builddir)/testcases/kernel
+ LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
+ LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
+-CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_DIR)/include
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_SRCDIR)/include
+ LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
+ LDFLAGS			+= -L$(LIBKERNTEST_DIR)
+ 
+@@ -27,11 +30,11 @@ $(LIBKERNTEST_DIR):
+ 	mkdir -p "$@"
+ 
+ $(LIBKERNTEST): $(LIBKERNTEST_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" all
+ 
+ MAKE_DEPS		+= $(LIBKERNTEST)
+ 
+ trunk-clean:: | lib-clean
+ 
+ lib-clean:: $(LIBKERNTEST_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" clean
+diff --git a/testcases/kernel/lib/Makefile b/testcases/kernel/lib/Makefile
+index db094e8..c4af8df 100644
+--- a/testcases/kernel/lib/Makefile
++++ b/testcases/kernel/lib/Makefile
+@@ -22,7 +22,7 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CPPFLAGS		+= $(NUMA_CPPFLAGS) -I../include
++CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(abs_srcdir)/../include
+ INTERNAL_LIB		:= libkerntest.a
+ 
+ include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
+index fdf38a1..7ebcf05 100644
+--- a/testcases/kernel/mem/include/libmem.mk
++++ b/testcases/kernel/mem/include/libmem.mk
+@@ -16,11 +16,14 @@
+ #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ #
+ 
+-MEM_DIR			:= $(top_srcdir)/testcases/kernel/mem
++MEM_SRCDIR		:= $(top_srcdir)/testcases/kernel/mem
++LIBMEM_SRCDIR		:= $(MEM_SRCDIR)/lib
++
++MEM_DIR			:= $(top_builddir)/testcases/kernel/mem
+ LIBMEM_DIR		:= $(MEM_DIR)/lib
+ LIBMEM			:= $(LIBMEM_DIR)/libmem.a
+ FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
+-CFLAGS			+= -I$(MEM_DIR)/include
++CFLAGS			+= -I$(MEM_SRCDIR)/include
+ LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
+ LDFLAGS			+= -L$(LIBMEM_DIR)
+ 
+@@ -28,13 +31,13 @@ $(LIBMEM_DIR):
+ 	mkdir -p "$@"
+ 
+ $(LIBMEM): $(LIBMEM_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" all
+ 
+ MAKE_DEPS		+= $(LIBMEM)
+ 
+ trunk-clean:: | lib-clean
+ 
+ lib-clean:: $(LIBMEM_DIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" clean
+ 
+ include $(top_srcdir)/testcases/kernel/include/lib.mk
+diff --git a/testcases/kernel/mem/lib/Makefile b/testcases/kernel/mem/lib/Makefile
+index 6bc5863..d4624e9 100644
+--- a/testcases/kernel/mem/lib/Makefile
++++ b/testcases/kernel/mem/lib/Makefile
+@@ -20,7 +20,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CFLAGS			+= -I../include
++CPPFLAGS		+= -I$(abs_srcdir)/../include
+ INTERNAL_LIB		:= libmem.a
+ 
+ include $(top_srcdir)/testcases/kernel/include/lib.mk
+diff --git a/testcases/network/rpc/basic_tests/rpc01/Makefile b/testcases/network/rpc/basic_tests/rpc01/Makefile
+index 68ea85e..7815cbb 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/Makefile
++++ b/testcases/network/rpc/basic_tests/rpc01/Makefile
+@@ -32,7 +32,7 @@ SUBDIRS			:= datafiles
+ 
+ LIBSRCS			:= $(abs_srcdir)/librpc01.c
+ INTERNAL_LIB		:= librpc01.a
+-LDFLAGS			+= -L$(abs_srcdir)
++LDFLAGS			+= -L$(abs_builddir)
+ LDLIBS			+= -lrpc01
+ 
+ MAKE_TARGETS		:= rpc1 rpc_server
+diff --git a/utils/Makefile b/utils/Makefile
+index 58cec7c..d2d4324 100644
+--- a/utils/Makefile
++++ b/utils/Makefile
+@@ -28,18 +28,18 @@ FFSBDIR			:= ffsb-6.0-rc2
+ FILTER_OUT_DIRS		:= $(FFSBDIR)
+ FFSB			:= $(FFSBDIR)/ffsb
+ 
+-$(FFSB): $(FFSBDIR)
+-	cd $^; ./configure
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-	cp $(FFSBDIR)/ffsb ffsb
++unexport MAKEFLAGS
++
++$(FFSB): $(abs_srcdir)/$(FFSBDIR)
++	mkdir -p $(FFSBDIR)
++	cd $(FFSBDIR) && "$^/configure" && $(MAKE) all
+ 
+ trunk-all: $(FFSB)
+ 
+ trunk-clean:: | ffsb-clean
+ 
+-ffsb-clean:: $(FFSBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-	rm -rf ffsb
++ffsb-clean:: $(abs_srcdir)/$(FFSBDIR)
++	cd $(FFSBDIR); $(MAKE) clean
+ 
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
