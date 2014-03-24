@@ -2,21 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WTR5d-0001SE-R5
-	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:20:33 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WTR5a-0003Sz-QK
-	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:20:33 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2S7KFVD021445
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 15:20:15 +0800
-Message-ID: <1395991214.5017.2.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 28 Mar 2014 15:20:14 +0800
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] read/read02.c: cleanup
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WS1kV-0007wX-Uu
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:04:56 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WS1kU-00038O-Rn
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:04:55 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2OA4mAN000632
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:48 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2OA4lxR024463
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:47 GMT
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2OA4lZm028870
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:47 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 24 Mar 2014 14:04:38 +0400
+Message-Id: <1395655481-12161-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <532C4201.3030605@oracle.com>
+References: <532C4201.3030605@oracle.com>
+Subject: [LTP] [PATCH V2 1/4] testscripts/isofs.sh: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,312 +38,237 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-* Delete some useless commtents and variable.
-* Use SAFE_* macros.
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/read/read02.c | 217 +++++++++++---------------------
- 1 file changed, 74 insertions(+), 143 deletions(-)
+ testscripts/isofs.sh |  165 ++++++++++++++++++++-----------------------------
+ 1 files changed, 67 insertions(+), 98 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/read/read02.c b/testcases/kernel/syscalls/read/read02.c
-index 8681662..8aabe93 100644
---- a/testcases/kernel/syscalls/read/read02.c
-+++ b/testcases/kernel/syscalls/read/read02.c
-@@ -1,63 +1,36 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *	07/2001 Ported by Wayne Boyer
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+index e6a3b09..ec1f2fc 100755
+--- a/testscripts/isofs.sh
++++ b/testscripts/isofs.sh
+@@ -1,91 +1,64 @@
+-#!/bin/bash
 -
- /*
-- * NAME
-- * 	read02.c
-- *
-  * DESCRIPTION
-- * 	test 1:
-- *	Does read return -1 if file descriptor is not valid, check for EBADF
-+ *	test 1:
-+ *	Read with an invalid file descriptor, and expect an EBADF.
-  *
-  *	test 2:
-- *	Check if read sets EISDIR, if the fd refers to a directory
-- *
-- * 	test 3:
-- * 	Check if read sets EFAULT, if buf is -1.
-- *$
-- * ALGORITHM
-- * 	test 1:
-- * 	Read with an invalid file descriptor, and expect an EBADF
-+ *	The parameter passed to read is a directory, check if the errno is
-+ *	set to EISDIR.
-  *
-- * 	test 2:
-- * 	The parameter passed to read is a directory, check if the errno is
-- * 	set to EISDIR.
-- *
-- * 	test 3:
-- * 	Pass buf = -1 as a parmeter to read, expect an EFAULT.
-- *$
-- * USAGE:  <for command-line>
-- *  read02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- * 	None
-+ *	test 3:
-+ *	Pass buf = -1 as a parmeter to read, expect an EFAULT.
-  */
--#define _GNU_SOURCE		/* for O_DIRECTORY */
-+
-+#define _GNU_SOURCE
-+
- #include <stdio.h>
- #include <errno.h>
- #include <unistd.h>
-@@ -65,43 +38,31 @@
- #include <sys/mman.h>
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
- 
--void cleanup(void);
--void setup(void);
-+#define TEST_FILE	"test_file"
- 
- char *TCID = "read02";
- 
--char file[BUFSIZ];
--char fname[100] = "/tmp/tstfile";
 -
--int exp_enos[] = { EBADF, EISDIR, EFAULT, 0 };
--
--int badfd = -1;
--int fd2, fd3;
--char buf[BUFSIZ];
-+static int badfd = -1;
-+static int fd2, fd3;
-+static char buf[BUFSIZ];
-+static int exp_enos[] = { EBADF, EISDIR, EFAULT, 0 };
+-##############################################################
+-#
+-#  Copyright (c) International Business Machines  Corp., 2003
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
++#!/bin/sh
+ #
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
++# Copyright (c) International Business Machines  Corp., 2003
+ #
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
+ #
+-#  FILE        : isofs.sh
+-#  USAGE       : isofs.sh <optional> -n (no clean up)
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
+ #
+-#  DESCRIPTION : A script that will test isofs on Linux system.
+-#                It makes ISO9660 file system with different options and also
+-#                mounts the ISO9660 file system with different mount options.
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ #
+-#  REQUIREMENTS:
++# Written by Prakash Narayana (prakashn@us.ibm.com)
++# and Michael Reed (mreed10@us.ibm.com)
+ #
+-#  HISTORY     :
+-#      06/27/2003 Prakash Narayana (prakashn@us.ibm.com)
+-#      07/28/2005 Michael Reed (mreed10@us.ibm.com)
+-#      - Changed the directory where the filesytems were being created
+-#        from /etc to copying /etc to /tmp/for_isofs_test/etc and
+-#        creating the file systems there
+-#      - Added the -n option to not remove the directories created for
+-#        debugging purposes
+-#      - Added -d option to specify a different directory to copy to /tmp
+-#        to make the file system
++# A script that will test isofs on Linux system.
++# It makes ISO9660 file system with different options and also
++# mounts the ISO9660 file system with different mount options.
+ #
+-#  CODE COVERAGE: 40.5% - fs/isofs (Total Coverage)
+-#
+-#                 23.7% - fs/isofs/dir.c
+-#                 46.0% - fs/isofs/inode.c
+-#                 22.9% - fs/isofs/joliet.c
+-#                 50.0% - fs/isofs/namei.c
+-#                 38.5% - fs/isofs/rock.c
+-#                 10.7% - fs/isofs/util.c
+-#
+-##############################################################
  
--struct test_case_t {
-+static struct test_case_t {
- 	int *fd;
- 	void *buf;
--	int error;
-+	int exp_error;
- } TC[] = {
--	/* the file descriptor is invalid - EBADF */
--	{
--	&badfd, buf, EBADF},
--	    /* the file descriptor is a directory - EISDIR */
--	{
--	&fd2, buf, EISDIR,},
--#ifndef UCLINUX
--	    /* Skip since uClinux does not implement memory protection */
--	    /* the buffer is invalid - EFAULT */
--	{
--	&fd3, (void *)-1, EFAULT}
--#endif
-+	{&badfd, buf, EBADF},
-+	{&fd2, buf, EISDIR},
-+	{&fd3, (void *)-1, EFAULT},
- };
+ USAGE="$0"
+ NO_CLEANUP=""
  
--int TST_TOTAL = sizeof(TC) / sizeof(*TC);
--
--char *bad_addr = 0;
-+int TST_TOTAL = ARRAY_SIZE(TC);
-+static void setup(void);
-+static void cleanup(void);
-+static void read_verify(const struct test_case_t *);
- 
- int main(int ac, char **av)
- {
-@@ -109,98 +70,68 @@ int main(int ac, char **av)
- 	int lc;
- 	char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
--	/* set up the expected errnos */
- 	TEST_EXP_ENOS(exp_enos);
- 
--	/*
--	 * The following loop checks looping state if -i option given
--	 */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
- 		tst_count = 0;
--
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(read(*TC[i].fd, TC[i].buf, 1));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			TEST_ERROR_LOG(TEST_ERRNO);
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
--			}
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			read_verify(&TC[i]);
- 	}
- 	cleanup();
- 	tst_exit();
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test
-- */
--void setup(void)
-+static void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* create a temporary filename */
--	sprintf(fname, "%s.%d", fname, getpid());
--
- 	TEST_PAUSE;
- 
--	if ((fd2 = open("/tmp", O_DIRECTORY)) == -1) {
--		tst_brkm(TBROK, cleanup, "open of fd2 failed");
--	}
-+	tst_tmpdir();
- 
--	if ((fd3 = open(fname, O_RDWR | O_CREAT, 0666)) == -1) {
--		tst_brkm(TBROK, cleanup, "open of fd3 (temp file) failed");
--	}
-+	fd2 = SAFE_OPEN(cleanup, "/tmp", O_DIRECTORY);
- 
--	if (write(fd3, "A", 1) != 1) {
--		tst_brkm(TBROK, cleanup, "can't write to fd3");
--	}
--	close(fd3);
--	if ((fd3 = open(fname, O_RDWR | O_CREAT, 0666)) == -1) {
--		tst_brkm(TBROK, cleanup, "open of fd3 (temp file) failed");
-+	SAFE_FILE_PRINTF(cleanup, TEST_FILE, "A");
-+
-+	fd3 = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
-+}
-+
-+static void read_verify(const struct test_case_t *test)
+-  usage()
+-  {
+-    echo "USAGE: $USAGE <optional> -n -h -d [directory name]"
+-    exit
+-  }
++usage()
 +{
-+	TEST(read(*test->fd, test->buf, 1));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "call succeeded unexpectedly");
-+		return;
- 	}
--#if !defined(UCLINUX)
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK, cleanup, "mmap failed");
-+
-+	TEST_ERROR_LOG(TEST_ERRNO);
-+
-+	if (TEST_ERRNO == test->exp_error) {
-+		tst_resm(TPASS | TTERRNO, "expected failure - errno = %d : %s",
-+			 TEST_ERRNO, strerror(TEST_ERRNO));
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "unexpected error - %d : %s - expected %d",
-+			 TEST_ERRNO, strerror(TEST_ERRNO), test->exp_error);
- 	}
--	TC[2].buf = bad_addr;
--#endif
- }
++	echo "USAGE: $USAGE <optional> -n -h -d [directory name]"
++	exit
++}
  
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- *	       or premature exit.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
--	/*
--	 * print timing status if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
--	unlink(fname);
+ #Initialize directory variables
+-    MNT_POINT="/tmp/isofs_$$"
+-    COPY_DIR="/etc/"
+-    TEMP_DIR="/tmp/for_isofs_test"
+-    MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
+-
+-   while getopts :hnd: arg
+-      do  case $arg in
+-	  d)
+-             COPY_DIR=$OPTARG
+-    	     MAKE_FILE_SYS_DIR="/tmp/for_isofs_test"$COPY_DIR
+-	    ;;
+-	  h)
+-	    echo ""
+-            echo "n - The directories created will not be removed"
+-            echo "d - Specify a directory to copy into /tmp"
+-	    echo "h - Help options"
+-	    echo ""
+-	    usage
+-	    echo ""
+-	    ;;
+-	  n)
+-	    NO_CLEANUP="no"
+-	    ;;
+-        esac
+-    done
+-
++MNT_POINT="/tmp/isofs_$$"
++COPY_DIR="/etc/"
++TEMP_DIR="/tmp/for_isofs_test"
++MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
++
++while getopts :hnd: arg; do
++	case $arg in
++	d)
++		COPY_DIR=$OPTARG
++		MAKE_FILE_SYS_DIR="/tmp/for_isofs_test"$COPY_DIR
++		;;
++	h)
++		echo ""
++		echo "n - The directories created will not be removed"
++		echo "d - Specify a directory to copy into /tmp"
++		echo "h - Help options"
++		echo ""
++		usage
++		echo ""
++		;;
++	n)
++		NO_CLEANUP="no"
++		;;
++	esac
++done
  
-+	if (fd3 > 0)
-+		close(fd3);
-+
-+	if (fd2 > 0)
-+		close(fd2);
-+
-+	tst_rmdir();
- }
+ ##############################################################
+ #
+@@ -100,22 +73,19 @@ then
+ 	exit 1
+ fi
+ 
+-
+-      mkdir -p -m 777 $MNT_POINT
+-      mkdir -p $MAKE_FILE_SYS_DIR
+-
+-
+-	if [ -e "$COPY_DIR" ]; then
+-   		cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+-	else
+-    		echo "$COPY_DIR not found"
+-    		echo "use the -d option to copy a different directory into"
+-    		echo "/tmp to makethe ISO9660 file system with different"
+-                echo "options"
+-    		usage
+-	fi
++mkdir -p -m 777 $MNT_POINT
++mkdir -p $MAKE_FILE_SYS_DIR
+ 
+ 
++if [ -e "$COPY_DIR" ]; then
++	cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
++else
++	echo "$COPY_DIR not found"
++	echo "use the -d option to copy a different directory into"
++	echo "/tmp to makethe ISO9660 file system with different"
++	echo "options"
++	usage
++fi
+ 
+ # Make ISO9660 file system with different options.
+ # Mount the ISO9660 file system with different mount options.
+@@ -129,7 +99,7 @@ for mkisofs_opt in \
+ 	"-f -l -D -J -L -R" \
+ 	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
+ do
+-        echo "Running mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR  Command"
++	echo "Running mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR  Command"
+ 	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
+ 	if [ $? != 0 ]
+ 	then
+@@ -173,14 +143,13 @@ done
+ #
+ #######################################################
+ 
+-  if [ "$NO_CLEANUP" == "no" ]; then
+-     echo "$MAKE_FILE_SYS_DIR and $MNT_POINT were not removed"
+-     echo "These directories will have to be removed manually"
+-  else
+-    rm -rf $TEMP_DIR
+-    rm -rf $MNT_POINT
+-  fi
+-
++if [ "$NO_CLEANUP" == "no" ]; then
++	echo "$MAKE_FILE_SYS_DIR and $MNT_POINT were not removed"
++	echo "These directories will have to be removed manually"
++else
++	rm -rf $TEMP_DIR
++	rm -rf $MNT_POINT
++fi
+ 
+ echo "PASSED: $0 passed!"
+ exit 0
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
