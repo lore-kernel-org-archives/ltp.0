@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WTBD7-0006kr-8L
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 14:23:13 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WTBD5-0007ck-D7
-	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 14:23:13 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2REN5BX018176
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 14:23:05 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2REN4w8019458
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 14:23:05 GMT
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s2REN4Qq004424
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 14:23:04 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 27 Mar 2014 18:22:51 +0400
-Message-Id: <1395930175-3138-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] isofs.sh series V3
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1WS9Y9-0005vD-Hh
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 18:24:41 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WS9Y7-0002q2-N7
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 18:24:41 +0000
+Date: Mon, 24 Mar 2014 19:24:02 +0100
+From: Mats Liljegren <mats.liljegren@enea.com>
+Message-ID: <20140324192402.23951c04@mats-desktop>
+MIME-Version: 1.0
+Subject: [LTP] Question: How does the test know when time expires?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,22 +22,27 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "ltp-list@" <lists.sourceforge.net ltp-list@lists.sourceforge.net>
 
-Hi.
+My test is intended to be run for awhile, and if nothing bad happens
+during that time, the test pass.
 
-The difference from V2 is that now, according to a Mike Frysinger tip,
-we execute `losetup -d` with LC_ALL=C set.
+I've seen that duration can be set on the command line for runltp. If I
+use this, how will my test case know when it is time to finish its
+testing?
 
-Thank you.
-
+Regards
+Mats Liljegren
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
