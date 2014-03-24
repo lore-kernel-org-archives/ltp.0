@@ -2,49 +2,34 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <root@localhost.localdomain>) id 1WLVRW-0004zE-Iy
-	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 10:22:22 +0000
-Received: from fgwmail7.fujitsu.co.jp ([192.51.44.37])
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WS1kX-0004QV-HW
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:04:57 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WLVRU-0005go-Qe
-	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 10:22:22 +0000
-Received: from fgwmail5.fujitsu.co.jp (fgwmail5.fujitsu.co.jp [192.51.44.35])
-	by fgwmail7.fujitsu.co.jp (Postfix) with ESMTP id 9C8BD1793018
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:04:07 +0900 (JST)
-Received: from m3.gw.fujitsu.co.jp (unknown [10.0.50.73])
-	by fgwmail5.fujitsu.co.jp (Postfix) with ESMTP id 94F2D3EE12D
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:04:00 +0900 (JST)
-Received: from smail (m3 [127.0.0.1])
-	by outgoing.m3.gw.fujitsu.co.jp (Postfix) with ESMTP id 86DCB45DD77
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:04:00 +0900 (JST)
-Received: from s3.gw.fujitsu.co.jp (s3.gw.nic.fujitsu.com [10.0.50.93])
-	by m3.gw.fujitsu.co.jp (Postfix) with ESMTP id 709F045DD76
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:04:00 +0900 (JST)
-Received: from s3.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s3.gw.fujitsu.co.jp (Postfix) with ESMTP id 63C36E08004
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:04:00 +0900 (JST)
-Received: from s01.gw.fujitsu.co.jp (s01.gw.nic.fujitsu.com [133.161.11.16])
-	by s3.gw.fujitsu.co.jp (Postfix) with ESMTP id 13EF91DB8038
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:04:00 +0900 (JST)
-Received: from s01.gw.fujitsu.co.jp (yt-mxio2.gw.nic.fujitsu.com
-	[10.134.25.142])
-	by s01.gw.fujitsu.co.jp (Postfix) with ESMTP id DA7A63F0001
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:03:59 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.225.127])
-	by s01.gw.fujitsu.co.jp (Postfix) with ESMTP id 818A9AC3C1
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  6 Mar 2014 19:03:59 +0900 (JST)
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Thu,  6 Mar 2014 18:04:20 +0800
-Message-Id: <1394100261-12596-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH v2 1/2] madvise/madvise02.c: cleanup
+	(Exim 4.76) id 1WS1kV-0004gB-O3
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:04:57 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2OA4nQw000688
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:49 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2OA4mI9024492
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:48 GMT
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2OA4mC0028918
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:48 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 24 Mar 2014 14:04:39 +0400
+Message-Id: <1395655481-12161-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <532C4201.3030605@oracle.com>
+References: <532C4201.3030605@oracle.com>
+Subject: [LTP] [PATCH V2 2/4] testscripts/isofs.sh: use the new shell
+	interface
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -59,376 +44,186 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Move the test body from main() to (*testfunc[])().
-Use some SAFE_* macros.
-Some cleanup.
-
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/madvise/madvise02.c | 288 ++++++++++++++------------
- 1 file changed, 156 insertions(+), 132 deletions(-)
+ testscripts/isofs.sh |  105 ++++++++++++++++++++++---------------------------
+ 1 files changed, 47 insertions(+), 58 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
-index e7f4656..f6d47f6 100644
---- a/testcases/kernel/syscalls/madvise/madvise02.c
-+++ b/testcases/kernel/syscalls/madvise/madvise02.c
-@@ -13,8 +13,8 @@
-  *  GNU Library General Public License for more details.
-  *
-  *  You should have received a copy of the GNU General Public License
-- *  along with this program; if not, write to the Free Software
-- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ *  along with this program; if not, write to the Free Software Foundation,
-+ *  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-  */
+diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+index ec1f2fc..2bb2555 100755
+--- a/testscripts/isofs.sh
++++ b/testscripts/isofs.sh
+@@ -24,26 +24,34 @@
+ # mounts the ISO9660 file system with different mount options.
+ #
  
- /*
-@@ -50,176 +50,95 @@
- #include <unistd.h>
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
+-USAGE="$0"
++TCID=isofs
++TST_TOTAL=77
++. test.sh
++
+ NO_CLEANUP=""
  
--#define MM_RLIMIT_RSS 5
--
--char *TCID = "madvise02";
--int TST_TOTAL = 7;
-+#define TEST_FILE "testfile"
-+#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
- 
- static void setup(void);
- static void cleanup(void);
- static void check_and_print(int expected_errno);
- 
-+static void test_addr_einval(void);
-+static void test_advice_einval(void);
-+#if !defined(UCLINUX)
-+static void test_lock_einval(void);
-+#endif /* if !defined(UCLINUX) */
-+static void test_enomem(void);
-+static void test_ebadf(void);
-+
-+static void (*test_func[])(void) = {
-+	test_addr_einval,
-+	test_advice_einval,
-+#if !defined(UCLINUX)
-+	test_lock_einval,
-+#endif /* if !defined(UCLINUX) */
-+	test_enomem,
-+	test_ebadf,
-+};
-+
-+char *TCID = "madvise02";
-+int TST_TOTAL = ARRAY_SIZE(test_func);
-+static int exp_enos[] = { EINVAL, ENOMEM, EBADF, 0 };
-+
-+static int fd;
-+static struct stat st;
-+static int pagesize;
-+
- int main(int argc, char *argv[])
+ usage()
  {
--	int lc, fd, pagesize;
-+	int lc;
- 	int i;
--	unsigned long len;
--	char *file, *low, *high;
--	struct stat stat;
--	char *ptr_memory_allocated = NULL;
--	char *tmp_memory_allocated = NULL;
--
- 	char *msg = NULL;
--	char filename[64];
--	char *progname = NULL;
--	char *str_for_file = "abcdefghijklmnopqrstuvwxyz12345\n";
- 
- 	msg = parse_opts(argc, argv, NULL, NULL);
--	if (msg)
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
- 	setup();
- 
--	progname = *argv;
--	sprintf(filename, "%s-out.%d", progname, getpid());
-+	TEST_EXP_ENOS(exp_enos);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		fd = open(filename, O_RDWR | O_CREAT, 0664);
--		if (fd < 0)
--			tst_brkm(TBROK, cleanup, "open failed");
--#ifdef DEBUG
--		tst_resm(TINFO, "filename = %s opened successfully", filename);
--#endif
--
--		pagesize = getpagesize();
--
--		/* Writing 16 pages of random data into this file */
--		for (i = 0; i < (pagesize / 2); i++)
--			if (write(fd, str_for_file, strlen(str_for_file)) == -1)
--				tst_brkm(TBROK | TERRNO, cleanup,
--					 "write failed");
--
--		if (fstat(fd, &stat) == -1)
--			tst_brkm(TBROK, cleanup, "fstat failed");
--
--		file = mmap(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
--		if (file == MAP_FAILED)
--			tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
--#ifdef DEBUG
--		tst_resm(TINFO, "The Page size is %d", pagesize);
--#endif
--
--		/* Test Case 1 */
--		TEST(madvise(file + 100, stat.st_size, MADV_NORMAL));
--		check_and_print(EINVAL);
--
--		/* Test Case 2 */
--		TEST(madvise(file, stat.st_size, 1212));
--		check_and_print(EINVAL);
--
--#if !defined(UCLINUX)
--		/* Test Case 3 */
--		if (mlock((void *)file, stat.st_size) < 0)
--			tst_brkm(TBROK, cleanup, "mlock failed");
--
--		TEST(madvise(file, stat.st_size, MADV_DONTNEED));
--		check_and_print(EINVAL);
--
--		if (munmap(file, stat.st_size) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
--#endif /* if !defined(UCLINUX) */
--
--		/* Test Case 4 */
--
--		/* We cannot be sure, which region is mapped, which is
--		 * not, at runtime.
--		 * So, we will create two maps(of the same file),
--		 * unmap the map at higher address.
--		 * Now issue an madvise() on a region covering the
--		 * region which we unmapped.
--		 */
--
--		low = mmap(NULL, stat.st_size / 2, PROT_READ, MAP_SHARED,
--			   fd, 0);
--		if (low == MAP_FAILED)
--			tst_brkm(TBROK, cleanup, "mmap [low] failed");
--
--		high = mmap(NULL, stat.st_size / 2, PROT_READ, MAP_SHARED,
--			    fd, stat.st_size / 2);
--		if (high == MAP_FAILED)
--			tst_brkm(TBROK, cleanup, "mmap [high] failed");
--
--		/* Swap if necessary to make low < high */
--		if (low > high) {
--			char *tmp;
--			tmp = high;
--			high = low;
--			low = tmp;
--		}
--
--		len = (high - low) + pagesize;
--
--		if (munmap(high, stat.st_size / 2) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "munmap [high] failed");
--
--		TEST(madvise(low, len, MADV_NORMAL));
--		check_and_print(ENOMEM);
--
--		/* Test Case 5 */
--		/* Unmap the file map from low */
--		if (munmap(low, stat.st_size / 2) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "munmap [low] failed");
--		/* Create one memory segment using malloc */
--		ptr_memory_allocated = (char *)malloc(5 * pagesize);
--		/*
--		 * Take temporary pointer for later use, freeing up the
--		 * original one.
--		 */
--		tmp_memory_allocated = ptr_memory_allocated;
--		tmp_memory_allocated =
--		    (char *)(((unsigned long)tmp_memory_allocated +
--			      pagesize - 1) & ~(pagesize - 1));
--
--		TEST(madvise
--		     (tmp_memory_allocated, 5 * pagesize, MADV_WILLNEED));
--		if (tst_kvercmp(3, 9, 0) < 0)
--			check_and_print(EBADF);
--		/* in kernel commit 1998cc0, madvise(MADV_WILLNEED) to anon
--		 * mem doesn't return -EBADF now, as now we support swap
--		 * prefretch.
--		 */
--		else
--			tst_resm(TPASS, "madvise succeeded as expected, see "
--					"kernel commit 1998cc0 for details.");
--		free((void *)ptr_memory_allocated);
--
--		close(fd);
-+		for (i = 0; i < TST_TOTAL; i++)
-+			(*test_func[i])();
- 	}
-+
- 	cleanup();
- 	tst_exit();
+-	echo "USAGE: $USAGE <optional> -n -h -d [directory name]"
++	echo "USAGE: $0 <optional> -n -h -d [directory name]"
+ 	exit
  }
  
- static void setup(void)
- {
-+	int i;
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
- 	tst_tmpdir();
-+
-+	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0664);
-+
-+	pagesize = getpagesize();
-+
-+	/* Writing 16 pages of random data into this file */
-+	for (i = 0; i < (pagesize / 2); i++)
-+		SAFE_WRITE(cleanup, 1, fd, STR, sizeof(STR) - 1);
-+
-+	SAFE_FSTAT(cleanup, fd, &st);
- }
- 
- static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
--	tst_rmdir();
-+	if (fd && close(fd) < 0)
-+		tst_resm(TWARN | TERRNO, "close failed");
- 
-+	tst_rmdir();
- }
- 
- static void check_and_print(int expected_errno)
-@@ -235,3 +154,108 @@ static void check_and_print(int expected_errno)
- 		tst_resm(TFAIL, "madvise succeeded unexpectedly");
- 	}
- }
-+
-+static void test_addr_einval(void)
+-#Initialize directory variables
+-MNT_POINT="/tmp/isofs_$$"
++cleanup()
 +{
-+	char *file;
-+
-+	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
-+					 MAP_SHARED, fd, 0);
-+
-+	TEST(madvise(file + 100, st.st_size, MADV_NORMAL));
-+	check_and_print(EINVAL);
-+
-+	SAFE_MUNMAP(cleanup, file, st.st_size);
++	if [ "$NO_CLEANUP" = "no" ]; then
++		tst_resm TINFO "Temporary directory $PWD was not removed"
++	else
++		tst_rmdir
++	fi
 +}
 +
-+static void test_advice_einval(void)
-+{
-+	char *file;
 +
-+	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
-+					 MAP_SHARED, fd, 0);
+ COPY_DIR="/etc/"
+-TEMP_DIR="/tmp/for_isofs_test"
+-MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
+ 
+ while getopts :hnd: arg; do
+ 	case $arg in
+ 	d)
+ 		COPY_DIR=$OPTARG
+-		MAKE_FILE_SYS_DIR="/tmp/for_isofs_test"$COPY_DIR
+ 		;;
+ 	h)
+ 		echo ""
+@@ -60,32 +68,22 @@ while getopts :hnd: arg; do
+ 	esac
+ done
+ 
+-##############################################################
+-#
+-# Make sure that uid=root is running this script.
+-# Validate the command line arguments.
+-#
+-##############################################################
+-
+-if [ $UID != 0 ]
+-then
+-	echo "FAILED: Must have root access to execute this script"
+-	exit 1
++if [ ! -e "$COPY_DIR" ]; then
++	tst_brkm TCONF "$COPY_DIR not found"
+ fi
+ 
++tst_require_root
 +
-+	TEST(madvise(file, st.st_size, 1212));
-+	check_and_print(EINVAL);
++tst_tmpdir
++TST_CLEANUP=cleanup
 +
-+	SAFE_MUNMAP(cleanup, file, st.st_size);
-+}
++MNT_POINT="$PWD/mnt"
++MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
 +
-+#if !defined(UCLINUX)
-+static void test_lock_einval(void)
-+{
-+	char *file;
+ mkdir -p -m 777 $MNT_POINT
+ mkdir -p $MAKE_FILE_SYS_DIR
+ 
+-
+-if [ -e "$COPY_DIR" ]; then
+-	cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+-else
+-	echo "$COPY_DIR not found"
+-	echo "use the -d option to copy a different directory into"
+-	echo "/tmp to makethe ISO9660 file system with different"
+-	echo "options"
+-	usage
+-fi
++cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+ 
+ # Make ISO9660 file system with different options.
+ # Mount the ISO9660 file system with different mount options.
+@@ -99,14 +97,17 @@ for mkisofs_opt in \
+ 	"-f -l -D -J -L -R" \
+ 	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
+ do
+-	echo "Running mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR  Command"
++	rm -f isofs.iso
+ 	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
+-	if [ $? != 0 ]
+-	then
+-		rm -rf isofs.iso $MNT_POINT
+-		echo "FAILED: mkisofs -o isofs.iso $mkisofs_opt $MAKE_FILE_SYS_DIR failed"
+-		exit 1
++	if [ $? -eq 0 ]; then
++		tst_resm TPASS \
++			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++	else
++		tst_resm TFAIL \
++			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++		continue
+ 	fi
 +
-+	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
-+					 MAP_SHARED, fd, 0);
+ 	for mount_opt in \
+ 		"loop" \
+ 		"loop,norock" \
+@@ -120,36 +121,24 @@ do
+ 		"loop,block=512,unhide,session=2"
+ 		# "loop,sbsector=32"
+ 	do
+-		echo "Running mount -o $mount_opt isofs.iso $MNT_POINT Command"
+ 		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
+-		if [ $? != 0 ]
+-		then
+-			rm -rf isofs.iso $MNT_POINT
+-			echo "FAILED: mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT failed"
+-			exit 1
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL \
++				"mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT"
++			continue
+ 		fi
+-		echo "Running ls -lR $MNT_POINT Command"
 +
-+	if (mlock((void *)file, st.st_size) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "mlock failed");
+ 		ls -lR $MNT_POINT
+ 		exportfs -i -o no_root_squash,rw *:$MNT_POINT
+ 		exportfs -u :$MNT_POINT
 +
-+	TEST(madvise(file, st.st_size, MADV_DONTNEED));
-+	check_and_print(EINVAL);
+ 		umount $MNT_POINT
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL "umount $MNT_POINT"
++		fi
 +
-+	SAFE_MUNMAP(cleanup, file, st.st_size);
-+}
-+#endif /* if !defined(UCLINUX) */
-+
-+static void test_enomem(void)
-+{
-+	char *low;
-+	char *high;
-+	unsigned long len;
-+
-+	low = SAFE_MMAP(cleanup, 0, st.st_size / 2, PROT_READ,
-+					MAP_SHARED, fd, 0);
-+
-+	high = SAFE_MMAP(cleanup, 0, st.st_size / 2, PROT_READ,
-+					 MAP_SHARED, fd, st.st_size / 2);
-+
-+	/* Swap if necessary to make low < high */
-+	if (low > high) {
-+		char *tmp;
-+		tmp = high;
-+		high = low;
-+		low = tmp;
-+	}
-+
-+	len = (high - low) + pagesize;
-+
-+	SAFE_MUNMAP(cleanup, high, st.st_size / 2);
-+
-+	TEST(madvise(low, len, MADV_NORMAL));
-+	check_and_print(ENOMEM);
-+
-+	SAFE_MUNMAP(cleanup, low, st.st_size / 2);
-+}
-+
-+static void test_ebadf(void)
-+{
-+	char *ptr_memory_allocated = NULL;
-+	char *tmp_memory_allocated = NULL;
-+
-+	/* Create one memory segment using malloc */
-+	ptr_memory_allocated = (char *)malloc(5 * pagesize);
-+	/*
-+	 * Take temporary pointer for later use, freeing up the
-+	 * original one.
-+	 */
-+	tmp_memory_allocated = ptr_memory_allocated;
-+	tmp_memory_allocated =
-+		(char *)(((unsigned long)tmp_memory_allocated +
-+			pagesize - 1) & ~(pagesize - 1));
-+
-+	TEST(madvise(tmp_memory_allocated, 5 * pagesize, MADV_WILLNEED));
-+	if (tst_kvercmp(3, 9, 0) < 0) {
-+		check_and_print(EBADF);
-+	/* in kernel commit 1998cc0, madvise(MADV_WILLNEED) to anon
-+	 * mem doesn't return -EBADF now, as now we support swap
-+	 * prefretch.
-+	 */
-+	} else {
-+		tst_resm(TPASS, "madvise succeeded as expected, see "
-+				"kernel commit 1998cc0 for details.");
-+	}
-+
-+	free((void *)ptr_memory_allocated);
-+}
++		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
+ 	done
+-	rm -rf isofs.iso
+ done
+ 
+-#######################################################
+-#
+-# Just before exit, perform the cleanup.
+-#
+-#######################################################
+-
+-if [ "$NO_CLEANUP" == "no" ]; then
+-	echo "$MAKE_FILE_SYS_DIR and $MNT_POINT were not removed"
+-	echo "These directories will have to be removed manually"
+-else
+-	rm -rf $TEMP_DIR
+-	rm -rf $MNT_POINT
+-fi
+-
+-echo "PASSED: $0 passed!"
+-exit 0
++tst_exit
 -- 
-1.8.3.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
