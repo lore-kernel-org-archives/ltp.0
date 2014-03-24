@@ -1,33 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WUX85-00052y-4t
-	for ltp-list@lists.sourceforge.net; Mon, 31 Mar 2014 07:59:37 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WUX84-0000oB-Ad
-	for ltp-list@lists.sourceforge.net; Mon, 31 Mar 2014 07:59:37 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2V7xTDs025921
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 31 Mar 2014 07:59:30 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2V7xSOX028255
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 31 Mar 2014 07:59:29 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2V7xSaE028245
-	for <ltp-list@lists.sourceforge.net>; Mon, 31 Mar 2014 07:59:28 GMT
-Message-ID: <5339205E.30801@oracle.com>
-Date: Mon, 31 Mar 2014 11:59:26 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WS5o2-0000Zl-5o
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 14:24:50 +0000
+Date: Mon, 24 Mar 2014 15:24:25 +0100
+From: chrubis@suse.cz
+Message-ID: <20140324142425.GA6066@rei.suse.cz>
+References: <1394464444-23803-1-git-send-email-ciprian.barbu@linaro.org>
+	<532C194C.7090307@linaro.org>
 MIME-Version: 1.0
-Subject: [LTP] numa01
+Content-Disposition: inline
+In-Reply-To: <532C194C.7090307@linaro.org>
+Subject: Re: [LTP] [LNG][PATCH] Fix ltp realtime hrtimer-prio and
+ measurement to pass default profile to run_c_files.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,31 +26,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Vasily Isaenko <vasily.isaenko@oracle.com>
+To: Ciprian Barbu <ciprian.barbu@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, linaro-networking@linaro.org
 
 Hi!
+> Sorry if I'm being insistent, has anyone got the chance to look at this 
+> patch? I would like to know if it can be applied to master.
 
-numa01.sh does something like:
-  * numastat > /tmp/before
-  * starts a binary with the specified memory policy using numactl (or a 
-like):
-    numactl --interleave=all get_some_memory_with_malloc_and_write_it
-  * `sleep` for few seconds
-  * numastat > /tmp/after
-  * compares /tmp/before and /tmp/after to check that the numa policy 
-was applied the right way
+Sorry not yet. I will hopefully get to it this week.
 
-But the problem is that on a host with many NUMA nodes (8) the process 
-of updating that numastats statistics takes some time. Even 10 seconds 
-may be not enough. Therefore the test fails.
-
-Does anybody know if there is a direct or indirect way to force the 
-kernel to update the NUMA statistics?
-
-Thank you.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
