@@ -1,32 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1WO34D-0000Lo-57
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 10:40:49 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WS1kc-0004Qd-L1
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:05:02 +0000
 Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WO34B-0004aa-Hn
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 10:40:49 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WS1kY-0000c4-7L
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 10:05:00 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
 	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2DAefRR008884
+	ESMTP id s2OA4pYG020731
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 10:40:41 GMT
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:52 GMT
 Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2DAee0K023443
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2OA4obc013332
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 10:40:41 GMT
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:51 GMT
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
 	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2DAeeVG000987
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 10:40:40 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 13 Mar 2014 14:41:00 +0400
-Message-Id: <1394707260-20121-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] device-drivers/rcu: add wrapper script for
-	rcutorture test
+	s2OA4oWP024536
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Mar 2014 10:04:50 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 24 Mar 2014 14:04:41 +0400
+Message-Id: <1395655481-12161-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <532C4201.3030605@oracle.com>
+References: <532C4201.3030605@oracle.com>
+Subject: [LTP] [PATCH V2 4/4] Declare an iso9660 fs testcase based on
+	isofs.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,172 +46,393 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-One of the possible ways to test RCU is to use rcutorture kernel module.
-The test requires that kernel configured with CONFIG_RCU_TORTURE_TEST.
-It runs rcutorture module using particular options and then inspects
-dmesg output for module's test results.
-For more information, please read Linux Documentation: RCU/torture.txt
+Script isofs.sh looks like a not bad candidate for
+testing an iso9660 file system.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Therefore moved it into a separate directory and declared
+a new test case entry in runtest/fs.
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
-v2: Make use of new LTP shell library
-    Parse dmesg output with sed
+ runtest/fs                           |    2 +
+ testcases/kernel/fs/iso9660/Makefile |   26 ++++++
+ testcases/kernel/fs/iso9660/isofs.sh |  158 ++++++++++++++++++++++++++++++++++
+ testscripts/isofs.sh                 |  158 ----------------------------------
+ 4 files changed, 186 insertions(+), 158 deletions(-)
+ create mode 100644 testcases/kernel/fs/iso9660/Makefile
+ create mode 100755 testcases/kernel/fs/iso9660/isofs.sh
+ delete mode 100755 testscripts/isofs.sh
 
- runtest/kernel_misc                                |    1 +
- testcases/kernel/device-drivers/rcu/Makefile       |   22 ++++
- testcases/kernel/device-drivers/rcu/rcu_torture.sh |  105 ++++++++++++++++++++
- 3 files changed, 128 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/device-drivers/rcu/Makefile
- create mode 100755 testcases/kernel/device-drivers/rcu/rcu_torture.sh
-
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index c1826fb..8f37cc6 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -7,3 +7,4 @@ tbio tbio
- ltp_acpi ltp_acpi
- ltp_acpi_cpufreq ltp_acpi_cpufreq
- uaccess uaccess
-+rcu_torture.sh rcu_torture.sh
-diff --git a/testcases/kernel/device-drivers/rcu/Makefile b/testcases/kernel/device-drivers/rcu/Makefile
-new file mode 100644
-index 0000000..96c6b5b
---- /dev/null
-+++ b/testcases/kernel/device-drivers/rcu/Makefile
-@@ -0,0 +1,22 @@
-+# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+diff --git a/runtest/fs b/runtest/fs
+index 438c79c..33a8412 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -74,3 +74,5 @@ fs_racer fs_racer.sh -t 5
+ 
+ #Run the Quota Remount Test introduced in linux-2.6.26
+ quota_remount_test01 quota_remount_test01.sh
 +
-+top_srcdir	?= ../../../..
++isofs isofs.sh
+diff --git a/testcases/kernel/fs/iso9660/Makefile b/testcases/kernel/fs/iso9660/Makefile
+new file mode 100644
+index 0000000..459b3a4
+--- /dev/null
++++ b/testcases/kernel/fs/iso9660/Makefile
+@@ -0,0 +1,26 @@
++#
++#  Copyright (c) 2005-2014 Linux Test Project
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++#
++
++top_srcdir		?= ../../../..
++
 +include $(top_srcdir)/include/mk/testcases.mk
 +
-+INSTALL_TARGETS		:= rcu_torture.sh
++MAKE_TARGETS		:=
++INSTALL_TARGETS		:= isofs.sh
 +
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/device-drivers/rcu/rcu_torture.sh b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
 new file mode 100755
-index 0000000..fa8598e
+index 0000000..7a674e3
 --- /dev/null
-+++ b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-@@ -0,0 +1,105 @@
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -0,0 +1,158 @@
 +#!/bin/sh
++#
++# Copyright (c) International Business Machines  Corp., 2003
 +# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
 +#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
 +#
-+# This program is distributed in the hope that it would be useful,
++# This program is distributed in the hope that it will be useful,
 +# but WITHOUT ANY WARRANTY; without even the implied warranty of
 +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +# GNU General Public License for more details.
 +#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 +#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++# Written by Prakash Narayana (prakashn@us.ibm.com)
++# and Michael Reed (mreed10@us.ibm.com)
 +#
-+# One of the possible ways to test RCU is to use rcutorture kernel module.
-+# The test requiers that kernel configured with CONFIG_RCU_TORTURE_TEST.
-+# It runs rcutorture module using particular options and then inspects
-+# dmesg output for module's test results.
-+# For more information, please read Linux Documentation: RCU/torture.txt
++# A script that will test isofs on Linux system.
++# It makes ISO9660 file system with different options and also
++# mounts the ISO9660 file system with different mount options.
++#
 +
-+TCID="rcu_torture"
-+TST_TOTAL=14
-+
++TCID=isofs
++TST_TOTAL=77
 +. test.sh
 +
-+# default options
-+test_time=60
-+num_readers=10
-+num_writers=5
++NO_CLEANUP=""
++IS_MOUNTED=""
 +
-+while getopts :ht:r:w: opt; do
-+	case "$opt" in
-+	h)
-+		echo "Usage:"
-+		echo "h        help"
-+		echo "t x      time in seconds for each test-case"
-+		echo "r x      number of readers"
-+		echo "w x      number of writers"
-+		exit 0
-+	;;
-+	t) test_time=$OPTARG ;;
-+	r) num_readers=$OPTARG ;;
-+	w) num_writers=$OPTARG ;;
-+	*)
-+		tst_brkm TBROK "unknown option: $opt"
-+	;;
-+	esac
-+done
++usage()
++{
++	echo "USAGE: $0 <optional> -n -h -d [directory name]"
++	exit
++}
 +
 +cleanup()
 +{
-+	tst_resm TINFO "test interrupted, cleanup..."
-+	rmmod rcutorture > /dev/null 2>&1
-+	tst_exit
++	if [ "$NO_CLEANUP" = "no" ]; then
++		tst_resm TINFO "Temporary directory $PWD was not removed"
++	else
++		[ "$IS_MOUNTED" != "yes" ] && tst_rmdir
++	fi
 +}
++
++
++COPY_DIR="/etc/"
++
++while getopts :hnd: arg; do
++	case $arg in
++	d)
++		COPY_DIR=$OPTARG
++		;;
++	h)
++		echo ""
++		echo "n - The directories created will not be removed"
++		echo "d - Specify a directory to copy into /tmp"
++		echo "h - Help options"
++		echo ""
++		usage
++		echo ""
++		;;
++	n)
++		NO_CLEANUP="no"
++		;;
++	esac
++done
++
++if [ ! -e "$COPY_DIR" ]; then
++	tst_brkm TCONF "$COPY_DIR not found"
++fi
 +
 +tst_require_root
 +
-+# check if module is present
-+modprobe rcutorture > /dev/null 2>&1 || \
-+	tst_brkm TCONF "Test requires rcutorture module"
-+rmmod rcutorture > /dev/null 2>&1
++tst_tmpdir
++TST_CLEANUP=cleanup
 +
-+trap cleanup SIGINT
++MNT_POINT="$PWD/mnt"
++MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
 +
-+rcu_type="rcu rcu_sync rcu_expedited rcu_bh rcu_bh_sync rcu_bh_expedited \
-+          srcu srcu_sync srcu_expedited srcu_raw srcu_raw_sync sched \
-+          sched_sync sched_expedited"
++mkdir -p -m 777 $MNT_POINT
++mkdir -p $MAKE_FILE_SYS_DIR
 +
-+est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
-+tst_resm TINFO "estimate time $est_time min"
++cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
 +
-+for type in $rcu_type; do
++# Make ISO9660 file system with different options.
++# Mount the ISO9660 file system with different mount options.
 +
-+	tst_resm TINFO "$type: running $test_time sec..."
-+
-+	modprobe rcutorture nreaders=$num_readers nfakewriters=$num_writers \
-+	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
-+	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
-+	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
-+	         test_boost_duration=4 shutdown_secs=0 \
-+	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
-+	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
-+	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
-+
-+	sleep $test_time
-+
-+	rmmod rcutorture > /dev/null 2>&1 || \
-+		tst_brkm TBROK "failed to unload module"
-+
-+	# check module status in dmesg
-+	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
-+	if [ "$result_str" == "SUCCESS" ]; then
-+		tst_resm TPASS "$type: completed"
++for mkisofs_opt in \
++	" " \
++	"-J" \
++	"-hfs -D" \
++	" -R " \
++	"-R -J" \
++	"-f -l -D -J -L -R" \
++	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
++do
++	rm -f isofs.iso
++	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
++	if [ $? -eq 0 ]; then
++		tst_resm TPASS \
++			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
 +	else
-+		tst_resm TFAIL "$type: $result_str, see dmesg"
++		tst_resm TFAIL \
++			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++		continue
 +	fi
++
++	for mount_opt in \
++		"ro" \
++		"norock" \
++		"nojoliet" \
++		"block=512,unhide" \
++		"block=1024,cruft" \
++		"block=2048,nocompress" \
++		"check=strict,map=off,gid=bin,uid=bin" \
++		"check=strict,map=acorn,gid=bin,uid=bin" \
++		"check=relaxed,map=normal" \
++		"block=512,unhide,session=2"
++		# "sbsector=32"
++	do
++		loop_dev=$(losetup --show -f isofs.iso)
++		if [ $? -ne 0 ]; then
++			tst_brkm TBROK "losetup failed"
++		fi
++
++		mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL \
++				"mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT"
++			continue
++		fi
++		IS_MOUNTED="yes"
++
++		umount $MNT_POINT
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL "umount $MNT_POINT"
++		fi
++		IS_MOUNTED="no"
++
++		# Now tearing down the loopback device
++		while /bin/true; do
++			out=$(losetup -d "$loop_dev" 2>&1)
++
++			if echo "$out" | grep -q -i "No such device"; then
++				break
++			fi
++		done
++
++		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
++	done
 +done
 +
 +tst_exit
+diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+deleted file mode 100755
+index 7a674e3..0000000
+--- a/testscripts/isofs.sh
++++ /dev/null
+@@ -1,158 +0,0 @@
+-#!/bin/sh
+-#
+-# Copyright (c) International Business Machines  Corp., 2003
+-# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+-#
+-# This program is free software; you can redistribute it and/or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation; either version 2 of the License, or
+-# (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License along
+-# with this program; if not, write to the Free Software Foundation, Inc.,
+-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Written by Prakash Narayana (prakashn@us.ibm.com)
+-# and Michael Reed (mreed10@us.ibm.com)
+-#
+-# A script that will test isofs on Linux system.
+-# It makes ISO9660 file system with different options and also
+-# mounts the ISO9660 file system with different mount options.
+-#
+-
+-TCID=isofs
+-TST_TOTAL=77
+-. test.sh
+-
+-NO_CLEANUP=""
+-IS_MOUNTED=""
+-
+-usage()
+-{
+-	echo "USAGE: $0 <optional> -n -h -d [directory name]"
+-	exit
+-}
+-
+-cleanup()
+-{
+-	if [ "$NO_CLEANUP" = "no" ]; then
+-		tst_resm TINFO "Temporary directory $PWD was not removed"
+-	else
+-		[ "$IS_MOUNTED" != "yes" ] && tst_rmdir
+-	fi
+-}
+-
+-
+-COPY_DIR="/etc/"
+-
+-while getopts :hnd: arg; do
+-	case $arg in
+-	d)
+-		COPY_DIR=$OPTARG
+-		;;
+-	h)
+-		echo ""
+-		echo "n - The directories created will not be removed"
+-		echo "d - Specify a directory to copy into /tmp"
+-		echo "h - Help options"
+-		echo ""
+-		usage
+-		echo ""
+-		;;
+-	n)
+-		NO_CLEANUP="no"
+-		;;
+-	esac
+-done
+-
+-if [ ! -e "$COPY_DIR" ]; then
+-	tst_brkm TCONF "$COPY_DIR not found"
+-fi
+-
+-tst_require_root
+-
+-tst_tmpdir
+-TST_CLEANUP=cleanup
+-
+-MNT_POINT="$PWD/mnt"
+-MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
+-
+-mkdir -p -m 777 $MNT_POINT
+-mkdir -p $MAKE_FILE_SYS_DIR
+-
+-cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+-
+-# Make ISO9660 file system with different options.
+-# Mount the ISO9660 file system with different mount options.
+-
+-for mkisofs_opt in \
+-	" " \
+-	"-J" \
+-	"-hfs -D" \
+-	" -R " \
+-	"-R -J" \
+-	"-f -l -D -J -L -R" \
+-	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
+-do
+-	rm -f isofs.iso
+-	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS \
+-			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
+-	else
+-		tst_resm TFAIL \
+-			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
+-		continue
+-	fi
+-
+-	for mount_opt in \
+-		"ro" \
+-		"norock" \
+-		"nojoliet" \
+-		"block=512,unhide" \
+-		"block=1024,cruft" \
+-		"block=2048,nocompress" \
+-		"check=strict,map=off,gid=bin,uid=bin" \
+-		"check=strict,map=acorn,gid=bin,uid=bin" \
+-		"check=relaxed,map=normal" \
+-		"block=512,unhide,session=2"
+-		# "sbsector=32"
+-	do
+-		loop_dev=$(losetup --show -f isofs.iso)
+-		if [ $? -ne 0 ]; then
+-			tst_brkm TBROK "losetup failed"
+-		fi
+-
+-		mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT
+-		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL \
+-				"mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT"
+-			continue
+-		fi
+-		IS_MOUNTED="yes"
+-
+-		umount $MNT_POINT
+-		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "umount $MNT_POINT"
+-		fi
+-		IS_MOUNTED="no"
+-
+-		# Now tearing down the loopback device
+-		while /bin/true; do
+-			out=$(losetup -d "$loop_dev" 2>&1)
+-
+-			if echo "$out" | grep -q -i "No such device"; then
+-				break
+-			fi
+-		done
+-
+-		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
+-	done
+-done
+-
+-tst_exit
 -- 
 1.7.1
 
