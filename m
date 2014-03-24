@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WO1KM-0005aH-2R
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 08:49:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WO1KK-00076P-N7
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 08:49:22 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2D8X52d023982
-	for <ltp-list@lists.sourceforge.net>; Thu, 13 Mar 2014 16:33:06 +0800
-Message-ID: <1394699584.2087.5.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 13 Mar 2014 16:33:04 +0800
-In-Reply-To: <1392862246.1997.6.camel@G08JYZSD130126>
-References: <1392862246.1997.6.camel@G08JYZSD130126>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WS8PX-0000bh-C1
+	for ltp-list@lists.sourceforge.net; Mon, 24 Mar 2014 17:11:43 +0000
+Date: Mon, 24 Mar 2014 18:11:18 +0100
+From: chrubis@suse.cz
+Message-ID: <20140324171118.GA6954@rei.suse.cz>
+References: <1392731616-25514-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] lib/tst_uid_gid.c: fix checking return value
- errors about getpwuid_r/getgrgid_r
+Content-Disposition: inline
+In-Reply-To: <1392731616-25514-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] lib/tst_res.c: synchronize access to tst_res
+ functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,93 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hi,
-	Could any one help to review this patch?
-Thanks,
-Zeng
+Hi!
+> The patch adds synchronization mechanism which is required (tst_res.c
+> uses global variables e.g. T_exitval, tst_count, T_out, ...) when tst_res
+> functions are used in multi-threaded tests.
+> Note: it will only work if test is linked with pthread library, also some
+> functions include each other that is why recursive mutex is used (can be
+> locked several times by the same thread).
 
-On Thu, 2014-02-20 at 10:10 +0800, Zeng Linggang wrote:
-> When we  call getgrgid_r()  to  verify whether the corresponding gid is
-> existent, if not, getgrgid_r() will return 0 or ENOENT or ESRCH or
-> EBADF or EPERM...
-> 
-> But tst_get_unused_gid() only check return value 0, this is not complete.
-> For example, if the gid is not existent, getgrgid_r() in RHEL7 beta will
-> return ENOENT, which will cause tst_get_unused_gid failed incorrectly.
-> This is the same for getpwuid_r().
-> 
-> We should make tst_get_unused_uid/tst_get_unused_gid check all the possible
-> return value.
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  lib/tst_uid_gid.c | 31 +++++++++++++++++++++++++++----
->  1 file changed, 27 insertions(+), 4 deletions(-)
-> 
-> diff --git a/lib/tst_uid_gid.c b/lib/tst_uid_gid.c
-> index 3ba1ad6..a835c38 100644
-> --- a/lib/tst_uid_gid.c
-> +++ b/lib/tst_uid_gid.c
-> @@ -16,6 +16,7 @@
->   * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
->   */
->  
-> +#include <errno.h>
->  #include <grp.h>
->  #include <limits.h>
->  #include <pwd.h>
-> @@ -44,10 +45,21 @@ uid_t tst_get_unused_uid(void)
->  		s = getpwuid_r(uid, &pwd, buf, bufsize, &result);
->  		if (result == NULL) {
->  			free(buf);
-> -			if (s == 0)
-> +			/*
-> +			 * When the given name or gid was not found, getgrgid_r
-> +			 * may return 0 or ENOENT or ESRCH or EBADF or EPERM
-> +			 * or ...
-> +			 */
-> +			switch (s) {
-> +			case 0:
-> +			case ENOENT:
-> +			case ESRCH:
-> +			case EBADF:
-> +			case EPERM:
->  				return uid;
-> -			else
-> +			default:
->  				return -1;
-> +			}
->  		}
->  	}
->  
-> @@ -76,10 +88,21 @@ gid_t tst_get_unused_gid(void)
->  		s = getgrgid_r(gid, &grp, buf, bufsize, &result);
->  		if (result == NULL) {
->  			free(buf);
-> -			if (s == 0)
-> +			/*
-> +			 * When the given name or gid was not found, getgrgid_r
-> +			 * may return 0 or ENOENT or ESRCH or EBADF or EPERM
-> +			 * or ...
-> +			 */
-> +			switch (s) {
-> +			case 0:
-> +			case ENOENT:
-> +			case ESRCH:
-> +			case EBADF:
-> +			case EPERM:
->  				return gid;
-> -			else
-> +			default:
->  				return -1;
-> +			}
->  		}
->  	}
->  
+I've reworded the commit message a bit to make it (hopefully) more
+clear and pushed the change. Thanks.
 
+PS: Can you add a paragraph about thread safety and about the once
+    callback macro to test-writing-guidelines or should I write it?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
