@@ -1,24 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WTR7Y-0008Fu-BQ
-	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:22:32 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WTR7V-0003VL-0E
-	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:22:30 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2S7MCKp021550
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 15:22:12 +0800
-Message-ID: <1395991331.5017.4.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 28 Mar 2014 15:22:11 +0800
-In-Reply-To: <1395991214.5017.2.camel@G08JYZSD130126>
-References: <1395991214.5017.2.camel@G08JYZSD130126>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] read/read02.c: add new error number tests
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WSSI3-0003qo-3l
+	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:25:19 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WSSI1-00013X-8M
+	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:25:19 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2PEPAJL030777
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:11 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2PEPAcF017840
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:10 GMT
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s2PEPAib006253
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:10 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 25 Mar 2014 18:24:30 +0400
+Message-Id: <1395757480-27424-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V2 04/14] rpc-tirpc: do not use tst_exit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,137 +38,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Add EINVAL errnor nuber tests for read(2):
-* The file was opened with the O_DIRECT flag, and the alignment of the user
-  buffer was not multiples of the logical block size of the file system,
-  expect an EINVAL.
+Since nothing from rpc-tirpc is linked to the LTP libraries,
+we can't use tst_* functions there.
 
-* The file was opened with the O_DIRECT flag, and transfer sizes was not
-  multiples of the logical block size of the file system, expect an EINVAL.
+Use simple return instead.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/read/read02.c | 53 ++++++++++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 7 deletions(-)
+ .../rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c    |    2 +-
+ .../rpc_svc_getargs_client.c                       |    2 +-
+ .../rpc_svc_sendreply_client.c                     |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/read/read02.c b/testcases/kernel/syscalls/read/read02.c
-index 8aabe93..0e227fe 100644
---- a/testcases/kernel/syscalls/read/read02.c
-+++ b/testcases/kernel/syscalls/read/read02.c
-@@ -27,6 +27,16 @@
-  *
-  *	test 3:
-  *	Pass buf = -1 as a parmeter to read, expect an EFAULT.
-+ *
-+ *	test 4:
-+ *	The file was opened with the O_DIRECT flag, and the alignment of the
-+ *	user buffer was not multiples of the logical block size of the file
-+ *	system, expect an EINVAL.
-+ *
-+ *	test 5:
-+ *	The file was opened with the O_DIRECT flag, and transfer sizes was not
-+ *	multiples of the logical block size of the file system, expect an
-+ *	EINVAL.
-  */
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c
+index aed9fe5..9811ef2 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c
+@@ -67,5 +67,5 @@ int main(int argn, char *argc[])
+ 	//normally should be 0: test has passed or 1: test has failed
+ 	//printf("%d\n", test_status);
  
- #define _GNU_SOURCE
-@@ -41,22 +51,30 @@
- #include "safe_macros.h"
- 
- #define TEST_FILE	"test_file"
-+#define TEST_FILE4	"/root/test_file4"
- 
- char *TCID = "read02";
- 
- static int badfd = -1;
--static int fd2, fd3;
-+static int fd2, fd3, fd4;
- static char buf[BUFSIZ];
--static int exp_enos[] = { EBADF, EISDIR, EFAULT, 0 };
-+static void *outside_buf = (void *)-1;
-+static void *temp;
-+static void *addr4;
-+static void *addr5;
-+static int exp_enos[] = { EBADF, EISDIR, EFAULT, EINVAL, 0 };
- 
- static struct test_case_t {
- 	int *fd;
--	void *buf;
-+	void **buf;
-+	size_t count;
- 	int exp_error;
- } TC[] = {
--	{&badfd, buf, EBADF},
--	{&fd2, buf, EISDIR},
--	{&fd3, (void *)-1, EFAULT},
-+	{&badfd, (void **)&buf, 1, EBADF},
-+	{&fd2, (void **)&buf, 1, EISDIR},
-+	{&fd3, &outside_buf, 1, EFAULT},
-+	{&fd4, &addr4, 4096, EINVAL},
-+	{&fd4, &addr5, 1, EINVAL},
- };
- 
- int TST_TOTAL = ARRAY_SIZE(TC);
-@@ -89,6 +107,11 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
-+	if ((tst_kvercmp(2, 4, 10)) < 0)
-+		tst_brkm(TCONF, NULL, "This test needs kernel 2.4.10 or newer");
-+
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
-@@ -100,11 +123,19 @@ static void setup(void)
- 	SAFE_FILE_PRINTF(cleanup, TEST_FILE, "A");
- 
- 	fd3 = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
-+
-+	temp = SAFE_MALLOC(cleanup, 4096*10);
-+
-+	addr4 = (char *)(((long)buf & (~4095)) + 1);
-+	addr5 = (char *)((long)buf & (~4095));
-+
-+	SAFE_FILE_PRINTF(cleanup, TEST_FILE4, "A");
-+	fd4 = SAFE_OPEN(cleanup, TEST_FILE4, O_RDWR | O_DIRECT, 0777);
+-	tst_exit();		//test_status;
++	return 0;		//test_status;
  }
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c
+index aed9fe5..9811ef2 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c
+@@ -67,5 +67,5 @@ int main(int argn, char *argc[])
+ 	//normally should be 0: test has passed or 1: test has failed
+ 	//printf("%d\n", test_status);
  
- static void read_verify(const struct test_case_t *test)
- {
--	TEST(read(*test->fd, test->buf, 1));
-+	TEST(read(*test->fd, *test->buf, test->count));
+-	tst_exit();		//test_status;
++	return 0;		//test_status;
+ }
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c
+index aed9fe5..9811ef2 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c
+@@ -67,5 +67,5 @@ int main(int argn, char *argc[])
+ 	//normally should be 0: test has passed or 1: test has failed
+ 	//printf("%d\n", test_status);
  
- 	if (TEST_RETURN != -1) {
- 		tst_resm(TFAIL, "call succeeded unexpectedly");
-@@ -127,6 +158,14 @@ static void cleanup(void)
- {
- 	TEST_CLEANUP;
- 
-+	free(temp);
-+
-+	if (fd4 > 0)
-+		close(fd4);
-+
-+	if (unlink(TEST_FILE4) < 0)
-+		tst_resm(TWARN | TERRNO, "unlink(\"%s\") failed", TEST_FILE4);
-+
- 	if (fd3 > 0)
- 		close(fd3);
- 
+-	tst_exit();		//test_status;
++	return 0;		//test_status;
+ }
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
