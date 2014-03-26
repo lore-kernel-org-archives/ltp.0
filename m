@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WSon5-0001W8-PE
-	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 14:26:51 +0000
-Date: Wed, 26 Mar 2014 15:26:25 +0100
+	(envelope-from <metan@suse.de>) id 1WSrCB-0008Lm-Fa
+	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 17:00:55 +0000
+Date: Wed, 26 Mar 2014 18:00:28 +0100
 From: chrubis@suse.cz
-Message-ID: <20140326142625.GA10878@rei.suse.cz>
-References: <1395843663-8329-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20140326170027.GA11941@rei.Home>
+References: <20140326131946.GD9168@rei.suse.cz>
+	<1395851259-14416-1-git-send-email-xu.simon@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1395843663-8329-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] testcases/*.sh: use INT in "trap" instead of
-	SIGINT
+In-Reply-To: <1395851259-14416-1-git-send-email-xu.simon@oracle.com>
+Subject: Re: [LTP] [PATCH] xinetd_test.sh: restart xinetd by restart_daemon()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,15 +25,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Simon Xu <xu.simon@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Also replace "==" with "=" in rcutorture test.
+> Signed-off-by: Simon Xu <xu.simon@oracle.com>
+> ---
+>  testcases/network/xinetd/xinetd_tests.sh | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+> index dac23a8..38cd7b0 100755
+> --- a/testcases/network/xinetd/xinetd_tests.sh
+> +++ b/testcases/network/xinetd/xinetd_tests.sh
+> @@ -63,6 +63,8 @@ init()
+>      export TST_TOTAL=2
+>      export TCID="xinetd"
+>      export TST_COUNT=0
+> +    export XINETD_DAEMON='xinetd'
 
-Pushed, thanks.
+I would be for passing the xinetd directly to the restart_daemon (just
+calling restart_daemon xinetd) function unless you know that there is a
+distribution that named it differently and we will need the runtime name
+detection.
 
 -- 
 Cyril Hrubis
