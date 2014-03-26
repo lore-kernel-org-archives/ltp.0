@@ -1,47 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <root@localhost.localdomain>) id 1WNwF4-0006KL-VT
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 03:23:34 +0000
-Received: from fgwmail5.fujitsu.co.jp ([192.51.44.35])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WNwF3-0007dB-2n
-	for ltp-list@lists.sourceforge.net; Thu, 13 Mar 2014 03:23:34 +0000
-Received: from m2.gw.fujitsu.co.jp (unknown [10.0.50.72])
-	by fgwmail5.fujitsu.co.jp (Postfix) with ESMTP id 8DBD93EE125
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
-Received: from smail (m2 [127.0.0.1])
-	by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 7EEDF45DE4D
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (s2.gw.nic.fujitsu.com [10.0.50.92])
-	by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 6826145DE3E
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 5C01D1DB803A
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
-Received: from s00.gw.fujitsu.co.jp (s00.gw.nic.fujitsu.com [133.161.11.15])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 092711DB802C
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:26 +0900 (JST)
-Received: from s00.gw.fujitsu.co.jp (kw-mxio2.gw.nic.fujitsu.com
-	[10.0.237.142])
-	by s00.gw.fujitsu.co.jp (Postfix) with ESMTP id E746D4E24B
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:25 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.225.127])
-	by s00.gw.fujitsu.co.jp (Postfix) with ESMTP id A648C8A002
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Mar 2014 12:23:25 +0900 (JST)
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Thu, 13 Mar 2014 11:23:37 +0800
-Message-Id: <1394681017-5443-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH v5] mprotect/mprotect04.c: add PROT_NONE,
-	PROT_EXEC flag test
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1WSohT-00051Q-AF
+	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 14:21:03 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WSohD-0007Ev-G7
+	for ltp-list@lists.sourceforge.net; Wed, 26 Mar 2014 14:21:03 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2QEKfeX016860
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 14:20:41 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2QEKeBS028480
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 14:20:41 GMT
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2QEKeei004215
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Mar 2014 14:20:40 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 26 Mar 2014 18:21:03 +0400
+Message-Id: <1395843663-8329-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] testcases/*.sh: use INT in "trap" instead of SIGINT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -56,249 +40,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-create a new case to test PROT_NONE, PROT_EXEC flag for mprotect(2)
+Also replace "==" with "=" in rcutorture test.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/ltplite                                 |   1 +
- runtest/stress.part3                            |   1 +
- runtest/syscalls                                |   1 +
- testcases/kernel/syscalls/.gitignore            |   1 +
- testcases/kernel/syscalls/mprotect/mprotect04.c | 173 ++++++++++++++++++++++++
- 5 files changed, 177 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mprotect/mprotect04.c
+ testcases/kernel/device-drivers/rcu/rcu_torture.sh |    4 ++--
+ .../ftrace_stress_test/ftrace_stress_test.sh       |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index c6d647d..a9686a0 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -463,6 +463,7 @@ modify_ldt02 modify_ldt02
- mprotect01 mprotect01
- mprotect02 mprotect02
- mprotect03 mprotect03
-+mprotect04 mprotect04
+diff --git a/testcases/kernel/device-drivers/rcu/rcu_torture.sh b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+index 0ead720..65c4fe0 100755
+--- a/testcases/kernel/device-drivers/rcu/rcu_torture.sh
++++ b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+@@ -66,7 +66,7 @@ modprobe rcutorture > /dev/null 2>&1 || \
+ 	tst_brkm TCONF "Test requires rcutorture module"
+ rmmod rcutorture > /dev/null 2>&1
  
- mremap01 mremap01
- mremap02 mremap02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index b9b8d7a..6f521cf 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -386,6 +386,7 @@ modify_ldt02 modify_ldt02
- mprotect01 mprotect01
- mprotect02 mprotect02
- mprotect03 mprotect03
-+mprotect04 mprotect04
+-trap cleanup SIGINT
++trap cleanup INT
  
- mremap01 mremap01
- mremap02 mremap02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 13716d7..d803987 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -606,6 +606,7 @@ move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 04755
- mprotect01 mprotect01
- mprotect02 mprotect02
- mprotect03 mprotect03
-+mprotect04 mprotect04
+ rcu_type="rcu rcu_sync rcu_expedited rcu_bh rcu_bh_sync rcu_bh_expedited \
+           srcu srcu_sync srcu_expedited srcu_raw srcu_raw_sync sched \
+@@ -95,7 +95,7 @@ for type in $rcu_type; do
  
- mq_notify01 mq_notify01
- mq_open01 mq_open01
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 42b0eed..7642b11 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -550,6 +550,7 @@
- /mprotect/mprotect01
- /mprotect/mprotect02
- /mprotect/mprotect03
-+/mprotect/mprotect04
- /mq_notify/mq_notify01
- /mq_open/mq_open01
- /mq_timedreceive/mq_timedreceive01
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
-new file mode 100644
-index 0000000..72f6b74
---- /dev/null
-+++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
-@@ -0,0 +1,173 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+/*
-+ * Description:
-+ *   Verify that,
-+ *   1) mprotect() succeeds to set a region of memory with no access,
-+ *      when 'prot' is set to PROT_NONE. An attempt to access the contents
-+ *      of the region gives rise to the signal SIGSEGV.
-+ *   2) mprotect() succeeds to set a region of memory to be executed, when
-+ *      'prot' is set to PROT_EXEC.
-+ */
-+
-+#include <signal.h>
-+#include <setjmp.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include <stdlib.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+static void sighandler(int sig);
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void testfunc_protnone(void);
-+
-+static void exec_func(void);
-+static void testfunc_protexec(void);
-+
-+static void (*testfunc[])(void) = { testfunc_protnone, testfunc_protexec };
-+
-+char *TCID = "mprotect04";
-+int TST_TOTAL = ARRAY_SIZE(testfunc);
-+
-+static volatile int sigsegv_caught;
-+static sigjmp_buf env;
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)
-+			(*testfunc[i])();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void sighandler(int sig)
-+{
-+	if (sig == SIGSEGV) {
-+		sigsegv_caught = 1;
-+		siglongjmp(env, 1);
-+	} else {
-+		tst_brkm(TBROK, cleanup, "received an unexpected signal: %d",
-+				 sig);
-+	}
-+
-+	_exit(0);
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, sighandler, cleanup);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void testfunc_protnone(void)
-+{
-+	char *addr;
-+	int page_sz;
-+
-+	sigsegv_caught = 0;
-+
-+	page_sz = getpagesize();
-+
-+	addr = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
-+					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+	/* Change the protection to PROT_NONE. */
-+	TEST(mprotect(addr, page_sz, PROT_NONE));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "mprotect failed");
-+	} else {
-+		if (sigsetjmp(env, 1) == 0)
-+			addr[0] = 1;
-+
-+		if (sigsegv_caught)
-+			tst_resm(TPASS, "test PROT_NONE for mprotect success");
-+		else
-+			tst_resm(TFAIL, "test PROT_NONE for mprotect failed");
-+	}
-+
-+	SAFE_MUNMAP(cleanup, addr, page_sz);
-+}
-+
-+static void exec_func(void)
-+{
-+	return;
-+}
-+
-+static void testfunc_protexec(void)
-+{
-+	int page_sz;
-+	int (*func)(void);
-+
-+	sigsegv_caught = 0;
-+
-+	page_sz = getpagesize();
-+
-+	func = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
-+					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+	memcpy(func, exec_func, page_sz);
-+
-+	/* Change the protection to PROT_EXEC. */
-+	TEST(mprotect(func, page_sz, PROT_EXEC));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "mprotect failed");
-+	} else {
-+		if (sigsetjmp(env, 1) == 0)
-+			(*func)();
-+
-+		if (sigsegv_caught)
-+			tst_resm(TFAIL, "test PROT_EXEC for mprotect failed");
-+		else
-+			tst_resm(TPASS, "test PROT_EXEC for mprotect success");
-+	}
-+
-+	SAFE_MUNMAP(cleanup, func, page_sz);
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
+ 	# check module status in dmesg
+ 	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
+-	if [ "$result_str" == "SUCCESS" ]; then
++	if [ "$result_str" = "SUCCESS" ]; then
+ 		tst_resm TPASS "$type: completed"
+ 	else
+ 		tst_resm TFAIL "$type: $result_str, see dmesg"
+diff --git a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
+index b6a44d8..6a111e9 100755
+--- a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
++++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
+@@ -160,7 +160,7 @@ test_wait()
+ 	}
+ }
+ 
+-trap clean_up_exit SIGINT
++trap clean_up_exit INT
+ 
+ # Should be run by root user
+ if [ `id -ru` != 0 ]; then
 -- 
-1.8.3.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
