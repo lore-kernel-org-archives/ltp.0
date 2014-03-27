@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1WLZgg-0007Ht-5b
-	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 14:54:18 +0000
-Received: from mail-pb0-f53.google.com ([209.85.160.53])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WLZgc-0007Rq-NU
-	for ltp-list@lists.sourceforge.net; Thu, 06 Mar 2014 14:54:18 +0000
-Received: by mail-pb0-f53.google.com with SMTP id rp16so2684047pbb.26
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Mar 2014 06:54:08 -0800 (PST)
-From: Hangbin Liu <liuhangbin@gmail.com>
-Date: Thu,  6 Mar 2014 22:54:00 +0800
-Message-Id: <1394117640-14933-1-git-send-email-liuhangbin@gmail.com>
-Subject: [LTP] [PATCH] containers/netns: fix header file path for
-	check_netns_enabled.c
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WTAnc-0008EE-Py
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:52 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTAna-0005FX-S7
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:52 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2RDuibE020195
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:45 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDuhw1014021
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:44 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDuhLt008606
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:43 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 27 Mar 2014 17:56:29 +0400
+Message-Id: <1395928590-28408-7-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 6/7] rpc-tirpc: tirpc_rpcb_set and tirpc_rpcb_unset
+	cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,37 +44,127 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-CLONE_NEWNET and CLONE_NEWNS are defined in linux/sched.h, not sched.h
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/containers/netns/check_netns_enabled.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../tirpc_expertlevel_rpcb_set/tirpc_rpcb_set.c    |   22 ++++--------------
+ .../tirpc_rpcb_unset.c                             |   23 ++++---------------
+ 2 files changed, 10 insertions(+), 35 deletions(-)
 
-diff --git a/testcases/kernel/containers/netns/check_netns_enabled.c b/testcases/kernel/containers/netns/check_netns_enabled.c
-index ab8ee2f..7bb2324 100644
---- a/testcases/kernel/containers/netns/check_netns_enabled.c
-+++ b/testcases/kernel/containers/netns/check_netns_enabled.c
-@@ -20,7 +20,7 @@
- * when trying to use CLONE_NEWNET and CLONE_NEWNS.
- ***************************************************************************/
- #include <stdio.h>
--#include <sched.h>
-+#include <linux/sched.h>
- #include "config.h"
- #include "libclone.h"
- #include "linux_syscall_numbers.h"
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_set/tirpc_rpcb_set.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_set/tirpc_rpcb_set.c
+index 4b60586..eb42618 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_set/tirpc_rpcb_set.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_set/tirpc_rpcb_set.c
+@@ -33,35 +33,25 @@
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
+ 
+-//Standard define
+ #define PROCNUM 1
+ #define VERSNUM 1
+ 
+ int main(int argn, char *argc[])
+ {
+-	//Program parameters : argc[1] : HostName or Host IP
+-	//                                         argc[2] : Server Program Number
+-	//                                         other arguments depend on test case
++	/*
++	 * argc[1] - HostName or Host IP
++	 * argc[2] - Server Program Number
++	 */
+ 
+-	//run_mode can switch into stand alone program or program launch by shell script
+-	//1 : stand alone, debug mode, more screen information
+-	//0 : launch by shell script as test case, only one printf -> result status
+-	int run_mode = 0;
+-	int test_status = 1;	//Default test result set to FAILED
++	int test_status = 1;
+ 	int progNum = atoi(argc[2]);
+ 	SVCXPRT *transp = NULL;
+ 	struct netconfig *nconf = NULL;
+ 	struct netbuf svcaddr;
+ 
+-	//Initialization
+-	if (run_mode) {
+-		printf("Before creation\n");
+-		printf("nconf : %d\n", nconf);
+-	}
+ 
+ 	nconf = getnetconfigent("udp");
+ 	if (nconf == (struct netconfig *)NULL) {
+-		//syslog(LOG_ERR, "getnetconfigent for udp failed");
+ 		printf("err nconf\n");
+ 		exit(1);
+ 	}
+@@ -70,8 +60,6 @@ int main(int argn, char *argc[])
+ 
+ 	test_status = !rpcb_set(progNum, VERSNUM, nconf, &svcaddr);
+ 
+-	//This last printf gives the result status to the tests suite
+-	//normally should be 0: test has passed or 1: test has failed
+ 	printf("%d\n", test_status);
+ 
+ 	return test_status;
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_unset/tirpc_rpcb_unset.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_unset/tirpc_rpcb_unset.c
+index 75155cf..adb951f 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_unset/tirpc_rpcb_unset.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_unset/tirpc_rpcb_unset.c
+@@ -33,35 +33,24 @@
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
+ 
+-//Standard define
+ #define PROCNUM 1
+ #define VERSNUM 1
+ 
+ int main(int argn, char *argc[])
+ {
+-	//Program parameters : argc[1] : HostName or Host IP
+-	//                                         argc[2] : Server Program Number
+-	//                                         other arguments depend on test case
++	/*
++	 * argc[1] - HostName or Host IP
++	 * argc[2] - Server Program Number
++	 */
+ 
+-	//run_mode can switch into stand alone program or program launch by shell script
+-	//1 : stand alone, debug mode, more screen information
+-	//0 : launch by shell script as test case, only one printf -> result status
+-	int run_mode = 0;
+-	int test_status = 1;	//Default test result set to FAILED
++	int test_status = 1;
+ 	int progNum = atoi(argc[2]);
+ 	SVCXPRT *transp = NULL;
+ 	struct netconfig *nconf = NULL;
+ 	struct netbuf svcaddr;
+ 
+-	//Initialization
+-	if (run_mode) {
+-		printf("Before creation\n");
+-		printf("nconf : %d\n", nconf);
+-	}
+-
+ 	nconf = getnetconfigent("udp");
+ 	if (nconf == (struct netconfig *)NULL) {
+-		//syslog(LOG_ERR, "getnetconfigent for udp failed");
+ 		printf("err nconf\n");
+ 		exit(1);
+ 	}
+@@ -72,8 +61,6 @@ int main(int argn, char *argc[])
+ 
+ 	test_status = !rpcb_unset(progNum, VERSNUM, nconf);
+ 
+-	//This last printf gives the result status to the tests suite
+-	//normally should be 0: test has passed or 1: test has failed
+ 	printf("%d\n", test_status);
+ 
+ 	return test_status;
 -- 
-1.8.1.4
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
