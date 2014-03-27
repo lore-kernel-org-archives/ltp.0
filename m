@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WPShn-0006ug-46
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 08:15:31 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WPShk-00055S-Lp
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 08:15:31 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2H8F7tb003908
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Mar 2014 16:15:11 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 17 Mar 2014 16:13:31 +0800
-Message-Id: <1395044011-31911-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1395044011-31911-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1395044011-31911-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH 3/3] performance_counters: make performance_counters
-	run default
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1WTALg-0006jH-Bb
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:28:00 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTALe-0006gT-J0
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:28:00 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2RDRpus013580
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:27:52 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDRoeU023079
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:27:51 GMT
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s2RDRoQO018971
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:27:50 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 27 Mar 2014 17:28:18 +0400
+Message-Id: <1395926898-11327-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] doc: test-writing-guidelines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,51 +40,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Make performance_counter01 run default. This performance_counter01 case
-is to use perf_event_open() to test hardware CPU events.
+Add thread-safety paragraph
+Add example of how to use TST_DECLARE_ONCE_FN
 
-Do not let performance_counter02 run defalult. This test need to know
-an upper bound on the number of hardware counters, which varies in
-different platforms. So if knowing this value, user can execute:
-./performance_counter02 -C (upper bound) to run this test.
-
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/perfcounters    | 3 +--
- scenario_groups/default | 1 +
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ doc/test-writing-guidelines.txt |   36 +++++++++++++++++++++++++++++++++++-
+ 1 files changed, 35 insertions(+), 1 deletions(-)
 
-diff --git a/runtest/perfcounters b/runtest/perfcounters
-index 73cd1d2..65d18e1 100644
---- a/runtest/perfcounters
-+++ b/runtest/perfcounters
-@@ -1,5 +1,4 @@
- # Test some Basic Performance Counters
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 337a6a8..a7250b7 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -14,7 +14,7 @@ guide and it's not, by any means, a substitute for common sense.
  
- performance_counter01 performance_counter01
--performance_counter02 performance_counter02
--
-+#performance_counter02 performance_counter02
-diff --git a/scenario_groups/default b/scenario_groups/default
-index ff23c7c..ef597b5 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -26,3 +26,4 @@ commands
- hyperthreading
- kernel_misc
- modules
-+perfcounters
+ For all it's worth keep the testcases simple or better as simple as possible.
+ The kernel and libc are tricky beasts and the complexity imposed by their
+-interfaces is is quite high. Concentrate on the interface you want to test and
++interfaces is quite high. Concentrate on the interface you want to test and
+ follow the UNIX philosophy. It's a good idea to make the test as
+ self-contained as possible too (it should not depend on tools or libraries
+ that are not widely available).
+@@ -671,6 +671,40 @@ bellow:
+ 	}
+ -------------------------------------------------------------------------------
+ 
++2.2.12 Thread-safety in the LTP library
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++It is safe to use library 'tst_' functions in multi-threaded tests.
++Synchronization mechanism enabled only if the test is linked with pthread
++library, otherwise no-op stubs (defined in libc) are used.
++
++Also, LTP has a help "TST_DECLARE_ONCE_FN" macro to declare a function which
++must be run only once (e.g. init or cleanup function), but might be called
++by multiple threads in the same time. See example below:
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "test.h"
++
++...
++
++void do_cleanup(void)
++{
++	/* cleanup code */
++	...
++}
++TST_DECLARE_ONCE_FN(cleanup, do_cleanup);
++
++...
++
++void test01(void)
++{
++	sfd = socket(AF_INET, SOCK_STREAM, 0);
++	if (sfd == -1)
++		tst_brkm(TBROK, cleanup, "Failed to create a socket");
++}
++-------------------------------------------------------------------------------
++
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
 -- 
-1.8.2.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
