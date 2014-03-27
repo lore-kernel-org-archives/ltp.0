@@ -1,28 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WKOqU-0000J2-6J
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 09:07:34 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WKOqS-0004OV-Mi
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 09:07:34 +0000
-Date: Mon, 3 Mar 2014 04:07:14 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1393833079.1991.22.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-	<1392889813.2053.10.camel@G08JYZSD130126>
-	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-	<1393832848.1991.19.camel@G08JYZSD130126>
-	<1393833079.1991.22.camel@G08JYZSD130126>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v4 3/3] mlock/mlock02.c: add EPERM and ENOMEM
- errno tests
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WTBDB-0001JG-6I
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 14:23:17 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTBD9-00064E-V8
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 14:23:17 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2REN9D5024493
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 14:23:10 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2REN8YC020642
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 14:23:09 GMT
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2REN88S020636
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 14:23:08 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 27 Mar 2014 18:22:55 +0400
+Message-Id: <1395930175-3138-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1395930175-3138-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1395930175-3138-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V3 4/4] Declare an iso9660 fs testcase based on
+	isofs.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,217 +39,405 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
+Script isofs.sh looks like a not bad candidate for
+testing an iso9660 file system.
 
+Therefore moved it into a separate directory and declared
+a new test case entry in runtest/fs.
 
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Monday, 3 March, 2014 8:51:19 AM
-> Subject: [PATCH v4 3/3] mlock/mlock02.c: add EPERM and ENOMEM errno tests
-> 
-> Add EPERM and ENOMEM errno tests for mlock(2).
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/mlock/mlock02.c | 82
->  ++++++++++++++++++++++++++++++-
->  1 file changed, 80 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
-> b/testcases/kernel/syscalls/mlock/mlock02.c
-> index a6f99e6..b7579ac 100644
-> --- a/testcases/kernel/syscalls/mlock/mlock02.c
-> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
-> @@ -23,11 +23,20 @@
->   *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
->   *      if some of the specified address range does not correspond to
->   *      mapped pages in the address space of the process.
-> + *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
-> + *      if (Linux  2.6.9  and  later)  the caller had a non-zero
-> RLIMIT_MEMLOCK
-> + *      soft resource limit, but tried to lock more memory than the limit
-> + *      permitted.  This limit is not enforced if the process is privileged
-> + *      (CAP_IPC_LOCK).
-> + *   3. mlock() fails with -1 return value and sets errno to EPERM,
-> + *      if (Linux 2.6.9 and later) the caller was not privileged
-> (CAP_IPC_LOCK)
-> + *      and its RLIMIT_MEMLOCK soft resource limit was 0.
->   */
->  
->  #include <errno.h>
->  #include <unistd.h>
->  #include <sys/mman.h>
-> +#include <pwd.h>
->  
->  #include "test.h"
->  #include "usctest.h"
-> @@ -40,14 +49,18 @@ char *TCID = "mlock02";
->  static void setup(void);
->  static void cleanup(void);
->  static void test_enomem1(void);
-> +static void test_enomem2(void);
-> +static void test_eperm(void);
->  static void mlock_verify(const void *, const size_t, const int);
->  
->  static size_t len;
-> +static struct rlimit original;
-> +static struct passwd *ltpuser;
->  
-> -static void (*test_func[])(void) = { test_enomem1 };
-> +static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm
-> };
->  
->  int TST_TOTAL = ARRAY_SIZE(test_func);
-> -static int exp_enos[] = { ENOMEM, 0 };
-> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
->  
->  int main(int ac, char **av)
->  {
-> @@ -73,11 +86,17 @@ int main(int ac, char **av)
->  
->  static void setup(void)
->  {
-> +	tst_require_root(NULL);
-> +
->  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->  
->  	TEST_PAUSE;
->  
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-> +
->  	len = getpagesize();
-> +
-> +	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
->  }
->  
->  static void test_enomem1(void)
-> @@ -111,6 +130,65 @@ static void test_enomem1(void)
->  	mlock_verify(addr, len, ENOMEM);
->  }
->  
-> +static void test_enomem2(void)
-> +{
-> +	void *addr;
-> +	struct rlimit rl;
-> +
-> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
-> +		tst_resm(TCONF,
-> +			 "ENOMEM error value test for this condition needs "
-> +			 "kernel 2.6.9 or higher");
-> +		return;
-> +	}
-> +
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ runtest/fs                           |    2 +
+ testcases/kernel/fs/iso9660/Makefile |   26 ++++++
+ testcases/kernel/fs/iso9660/isofs.sh |  158 ++++++++++++++++++++++++++++++++++
+ testscripts/isofs.sh                 |  158 ----------------------------------
+ 4 files changed, 186 insertions(+), 158 deletions(-)
+ create mode 100644 testcases/kernel/fs/iso9660/Makefile
+ create mode 100755 testcases/kernel/fs/iso9660/isofs.sh
+ delete mode 100755 testscripts/isofs.sh
 
-Hi,
+diff --git a/runtest/fs b/runtest/fs
+index 438c79c..33a8412 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -74,3 +74,5 @@ fs_racer fs_racer.sh -t 5
+ 
+ #Run the Quota Remount Test introduced in linux-2.6.26
+ quota_remount_test01 quota_remount_test01.sh
++
++isofs isofs.sh
+diff --git a/testcases/kernel/fs/iso9660/Makefile b/testcases/kernel/fs/iso9660/Makefile
+new file mode 100644
+index 0000000..459b3a4
+--- /dev/null
++++ b/testcases/kernel/fs/iso9660/Makefile
+@@ -0,0 +1,26 @@
++#
++#  Copyright (c) 2005-2014 Linux Test Project
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++MAKE_TARGETS		:=
++INSTALL_TARGETS		:= isofs.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
+new file mode 100755
+index 0000000..294d6f0
+--- /dev/null
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -0,0 +1,158 @@
++#!/bin/sh
++#
++# Copyright (c) International Business Machines  Corp., 2003
++# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Written by Prakash Narayana (prakashn@us.ibm.com)
++# and Michael Reed (mreed10@us.ibm.com)
++#
++# A script that will test isofs on Linux system.
++# It makes ISO9660 file system with different options and also
++# mounts the ISO9660 file system with different mount options.
++#
++
++TCID=isofs
++TST_TOTAL=77
++. test.sh
++
++NO_CLEANUP=""
++IS_MOUNTED=""
++
++usage()
++{
++	echo "USAGE: $0 <optional> -n -h -d [directory name]"
++	exit
++}
++
++cleanup()
++{
++	if [ "$NO_CLEANUP" = "no" ]; then
++		tst_resm TINFO "Temporary directory $PWD was not removed"
++	else
++		[ "$IS_MOUNTED" != "yes" ] && tst_rmdir
++	fi
++}
++
++
++COPY_DIR="/etc/"
++
++while getopts :hnd: arg; do
++	case $arg in
++	d)
++		COPY_DIR=$OPTARG
++		;;
++	h)
++		echo ""
++		echo "n - The directories created will not be removed"
++		echo "d - Specify a directory to copy into /tmp"
++		echo "h - Help options"
++		echo ""
++		usage
++		echo ""
++		;;
++	n)
++		NO_CLEANUP="no"
++		;;
++	esac
++done
++
++if [ ! -e "$COPY_DIR" ]; then
++	tst_brkm TCONF "$COPY_DIR not found"
++fi
++
++tst_require_root
++
++tst_tmpdir
++TST_CLEANUP=cleanup
++
++MNT_POINT="$PWD/mnt"
++MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
++
++mkdir -p -m 777 $MNT_POINT
++mkdir -p $MAKE_FILE_SYS_DIR
++
++cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
++
++# Make ISO9660 file system with different options.
++# Mount the ISO9660 file system with different mount options.
++
++for mkisofs_opt in \
++	" " \
++	"-J" \
++	"-hfs -D" \
++	" -R " \
++	"-R -J" \
++	"-f -l -D -J -L -R" \
++	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
++do
++	rm -f isofs.iso
++	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
++	if [ $? -eq 0 ]; then
++		tst_resm TPASS \
++			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++	else
++		tst_resm TFAIL \
++			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++		continue
++	fi
++
++	for mount_opt in \
++		"ro" \
++		"norock" \
++		"nojoliet" \
++		"block=512,unhide" \
++		"block=1024,cruft" \
++		"block=2048,nocompress" \
++		"check=strict,map=off,gid=bin,uid=bin" \
++		"check=strict,map=acorn,gid=bin,uid=bin" \
++		"check=relaxed,map=normal" \
++		"block=512,unhide,session=2"
++		# "sbsector=32"
++	do
++		loop_dev=$(losetup --show -f isofs.iso)
++		if [ $? -ne 0 ]; then
++			tst_brkm TBROK "losetup failed"
++		fi
++
++		mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL \
++				"mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT"
++			continue
++		fi
++		IS_MOUNTED="yes"
++
++		umount $MNT_POINT
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL "umount $MNT_POINT"
++		fi
++		IS_MOUNTED="no"
++
++		# Now tearing down the loopback device
++		while /bin/true; do
++			out=$(LC_ALL=C losetup -d "$loop_dev" 2>&1)
++
++			if echo "$out" | grep -q -i "No such device"; then
++				break
++			fi
++		done
++
++		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
++	done
++done
++
++tst_exit
+diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+deleted file mode 100755
+index 294d6f0..0000000
+--- a/testscripts/isofs.sh
++++ /dev/null
+@@ -1,158 +0,0 @@
+-#!/bin/sh
+-#
+-# Copyright (c) International Business Machines  Corp., 2003
+-# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+-#
+-# This program is free software; you can redistribute it and/or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation; either version 2 of the License, or
+-# (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License along
+-# with this program; if not, write to the Free Software Foundation, Inc.,
+-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Written by Prakash Narayana (prakashn@us.ibm.com)
+-# and Michael Reed (mreed10@us.ibm.com)
+-#
+-# A script that will test isofs on Linux system.
+-# It makes ISO9660 file system with different options and also
+-# mounts the ISO9660 file system with different mount options.
+-#
+-
+-TCID=isofs
+-TST_TOTAL=77
+-. test.sh
+-
+-NO_CLEANUP=""
+-IS_MOUNTED=""
+-
+-usage()
+-{
+-	echo "USAGE: $0 <optional> -n -h -d [directory name]"
+-	exit
+-}
+-
+-cleanup()
+-{
+-	if [ "$NO_CLEANUP" = "no" ]; then
+-		tst_resm TINFO "Temporary directory $PWD was not removed"
+-	else
+-		[ "$IS_MOUNTED" != "yes" ] && tst_rmdir
+-	fi
+-}
+-
+-
+-COPY_DIR="/etc/"
+-
+-while getopts :hnd: arg; do
+-	case $arg in
+-	d)
+-		COPY_DIR=$OPTARG
+-		;;
+-	h)
+-		echo ""
+-		echo "n - The directories created will not be removed"
+-		echo "d - Specify a directory to copy into /tmp"
+-		echo "h - Help options"
+-		echo ""
+-		usage
+-		echo ""
+-		;;
+-	n)
+-		NO_CLEANUP="no"
+-		;;
+-	esac
+-done
+-
+-if [ ! -e "$COPY_DIR" ]; then
+-	tst_brkm TCONF "$COPY_DIR not found"
+-fi
+-
+-tst_require_root
+-
+-tst_tmpdir
+-TST_CLEANUP=cleanup
+-
+-MNT_POINT="$PWD/mnt"
+-MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
+-
+-mkdir -p -m 777 $MNT_POINT
+-mkdir -p $MAKE_FILE_SYS_DIR
+-
+-cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+-
+-# Make ISO9660 file system with different options.
+-# Mount the ISO9660 file system with different mount options.
+-
+-for mkisofs_opt in \
+-	" " \
+-	"-J" \
+-	"-hfs -D" \
+-	" -R " \
+-	"-R -J" \
+-	"-f -l -D -J -L -R" \
+-	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
+-do
+-	rm -f isofs.iso
+-	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS \
+-			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
+-	else
+-		tst_resm TFAIL \
+-			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
+-		continue
+-	fi
+-
+-	for mount_opt in \
+-		"ro" \
+-		"norock" \
+-		"nojoliet" \
+-		"block=512,unhide" \
+-		"block=1024,cruft" \
+-		"block=2048,nocompress" \
+-		"check=strict,map=off,gid=bin,uid=bin" \
+-		"check=strict,map=acorn,gid=bin,uid=bin" \
+-		"check=relaxed,map=normal" \
+-		"block=512,unhide,session=2"
+-		# "sbsector=32"
+-	do
+-		loop_dev=$(losetup --show -f isofs.iso)
+-		if [ $? -ne 0 ]; then
+-			tst_brkm TBROK "losetup failed"
+-		fi
+-
+-		mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT
+-		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL \
+-				"mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT"
+-			continue
+-		fi
+-		IS_MOUNTED="yes"
+-
+-		umount $MNT_POINT
+-		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "umount $MNT_POINT"
+-		fi
+-		IS_MOUNTED="no"
+-
+-		# Now tearing down the loopback device
+-		while /bin/true; do
+-			out=$(LC_ALL=C losetup -d "$loop_dev" 2>&1)
+-
+-			if echo "$out" | grep -q -i "No such device"; then
+-				break
+-			fi
+-		done
+-
+-		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
+-	done
+-done
+-
+-tst_exit
+-- 
+1.7.1
 
-
-
-> +	rl.rlim_max = len;
-> +	rl.rlim_cur = len;
-
-"tried to  lock  more  memory than the limit permitted."
-You currently allow as much as you try to mlock.
-
-I'd suggest:
--       rl.rlim_max = len;
--       rl.rlim_cur = len;
-+       rl.rlim_max = len - 1;
-+       rl.rlim_cur = len - 1;
-
-
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
-> +
-> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
-
-Trying to mlock PROT_NONE will give you ENOMEM no matter how big the limit is.
-I suggest PROT_READ here.
-
-> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +
-> +	mlock_verify(&addr, len, ENOMEM);
-
-This is trying to mlock memory location of "addr" variable,
-not the area that was just allocated with mmap.
-
-Notice the address passed to mlock() in this strace output:
-  mmap(NULL, 4096, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, 0, 0) = 0x7fe39bfbc000
-  setresuid(-1, 99, -1)                   = 0
-  mlock(0x7fff721089a8, 4096)             = -1 ENOMEM (Cannot allocate memory)
-
--       mlock_verify(&addr, len, ENOMEM);
-+       mlock_verify(addr, len, ENOMEM);
-
-> +
-> +	SAFE_SETEUID(cleanup, 0);
-> +
-> +	SAFE_MUNMAP(cleanup, addr, len);
-> +
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
-> +}
-> +
-> +static void test_eperm(void)
-> +{
-> +	void *addr;
-> +	struct rlimit rl;
-> +
-> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
-> +		tst_resm(TCONF,
-> +			 "EPERM error value test needs kernel 2.6.9 or higher");
-> +		return;
-> +	}
-> +
-> +	rl.rlim_max = 0;
-> +	rl.rlim_cur = 0;
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
-> +
-> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
-> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +
-> +	mlock_verify(&addr, len, EPERM);
-
-Same as in test_enomem2():
--       mlock_verify(&addr, len, EPERM);
-+       mlock_verify(addr, len, EPERM);
-
-Regards,
-Jan
-
-> +
-> +	SAFE_SETEUID(cleanup, 0);
-> +
-> +	SAFE_MUNMAP(cleanup, addr, len);
-> +
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
-> +}
-> +
->  static void mlock_verify(const void *addr, const size_t len, const int
->  error)
->  {
->  	TEST(mlock(addr, len));
-> --
-> 1.8.4.2
-> 
-> 
-> 
-> 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
