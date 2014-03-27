@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WSSI3-0003qo-3l
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:25:19 +0000
+	id 1WTAnY-0008Dr-R5
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:48 +0000
 Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WSSI1-00013X-8M
-	for ltp-list@lists.sourceforge.net; Tue, 25 Mar 2014 14:25:19 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTAnX-0005FS-QJ
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:48 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
 	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s2PEPAJL030777
+	ESMTP id s2RDufnb012855
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:11 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s2PEPAcF017840
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:42 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDufNg005514
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:10 GMT
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s2PEPAib006253
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Mar 2014 14:25:10 GMT
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:41 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDufgF005506
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:41 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 25 Mar 2014 18:24:30 +0400
-Message-Id: <1395757480-27424-5-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V2 04/14] rpc-tirpc: do not use tst_exit
+Date: Thu, 27 Mar 2014 17:56:27 +0400
+Message-Id: <1395928590-28408-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 4/7] rpc-tirpc: the "bottom level" fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,61 +45,256 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-Since nothing from rpc-tirpc is linked to the LTP libraries,
-we can't use tst_* functions there.
+The functions from the "bottom level" TI-RPC API:
+ * svc_dg_create
+ * svc_vc_create
+ * clnt_dg_create
+ * clnt_vc_create
+do not accept RPC_ANYFD parameter. This parameter is for the "expert level" API.
 
-Use simple return instead.
+These functions should be passed with a bound socket.
+
+Implemented it using bound_socket() function.
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- .../rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c    |    2 +-
- .../rpc_svc_getargs_client.c                       |    2 +-
- .../rpc_svc_sendreply_client.c                     |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ .../tirpc_bottomlevel_clnt_call.c                  |   18 ++++++++++++++--
+ .../tirpc_clnt_dg_create.c                         |   16 ++++++++++++++-
+ .../tirpc_clnt_vc_create.c                         |   18 +++++++++++++++-
+ .../tirpc_svc_dg_create.c                          |   16 ++++++++++++++-
+ .../tirpc_svc_vc_create.c                          |   21 +++++++++++++++++++-
+ 5 files changed, 81 insertions(+), 8 deletions(-)
 
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c
-index aed9fe5..9811ef2 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_freeargs/rpc_svc_freeargs.c
-@@ -67,5 +67,5 @@ int main(int argn, char *argc[])
- 	//normally should be 0: test has passed or 1: test has failed
- 	//printf("%d\n", test_status);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_call/tirpc_bottomlevel_clnt_call.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_call/tirpc_bottomlevel_clnt_call.c
+index 2498965..28d14ff 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_call/tirpc_bottomlevel_clnt_call.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_call/tirpc_bottomlevel_clnt_call.c
+@@ -32,6 +32,8 @@
+ #include <netinet/in.h>
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
++#include <unistd.h>
++#include "librpc-tirpc.h"
  
--	tst_exit();		//test_status;
-+	return 0;		//test_status;
- }
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c
-index aed9fe5..9811ef2 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_getargs/rpc_svc_getargs_client.c
-@@ -67,5 +67,5 @@ int main(int argn, char *argc[])
- 	//normally should be 0: test has passed or 1: test has failed
- 	//printf("%d\n", test_status);
+ #define PROCNUM 1
+ #define VERSNUM 1
+@@ -54,9 +56,10 @@ int main(int argn, char *argc[])
+ 	int var_snd = 10;
+ 	int var_rec = -1;
+ 	struct timeval tv;
++	int sock;
  
--	tst_exit();		//test_status;
-+	return 0;		//test_status;
- }
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c
-index aed9fe5..9811ef2 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_stdcall_svc_sendreply/rpc_svc_sendreply_client.c
-@@ -67,5 +67,5 @@ int main(int argn, char *argc[])
- 	//normally should be 0: test has passed or 1: test has failed
- 	//printf("%d\n", test_status);
+-	tv.tv_sec = 0;
+-	tv.tv_usec = 100;
++	tv.tv_sec = 1;
++	tv.tv_usec = 0;
  
--	tst_exit();		//test_status;
-+	return 0;		//test_status;
+ 	nconf = getnetconfigent("udp");
+ 	if (nconf == (struct netconfig *)NULL) {
+@@ -75,12 +78,19 @@ int main(int argn, char *argc[])
+ 		exit(1);
+ 	}
+ 
+-	client = clnt_dg_create(RPC_ANYFD, &svcaddr,
++	sock = bound_socket(AF_INET, SOCK_DGRAM);
++	if (sock < 0) {
++		perror("bound_socket() failed");
++		exit(1);
++	}
++
++	client = clnt_dg_create(sock, &svcaddr,
+ 				progNum, VERSNUM, 1024, 1024);
+ 
+ 	if (client == NULL) {
+ 		clnt_pcreateerror("ERR");
+ 		printf("5\n");
++		close(sock);
+ 		exit(1);
+ 	}
+ 
+@@ -94,5 +104,7 @@ int main(int argn, char *argc[])
+ 
+ 	clnt_destroy(client);
+ 
++	close(sock);
++
+ 	return test_status;
  }
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_dg_create/tirpc_clnt_dg_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_dg_create/tirpc_clnt_dg_create.c
+index 88a86f8..b38bc9e 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_dg_create/tirpc_clnt_dg_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_dg_create/tirpc_clnt_dg_create.c
+@@ -32,6 +32,8 @@
+ #include <netinet/in.h>
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
++#include <unistd.h>
++#include "librpc-tirpc.h"
+ 
+ #define PROCNUM 1
+ #define VERSNUM 1
+@@ -50,6 +52,7 @@ int main(int argn, char *argc[])
+ 	struct netconfig *nconf = NULL;
+ 	struct netbuf svcaddr;
+ 	char addrbuf[ADDRBUFSIZE];
++	int sock;
+ 
+ 	nconf = getnetconfigent("udp");
+ 	if (nconf == (struct netconfig *)NULL) {
+@@ -68,10 +71,21 @@ int main(int argn, char *argc[])
+ 		exit(1);
+ 	}
+ 
+-	client = clnt_dg_create(RPC_ANYFD, &svcaddr,
++	sock = bound_socket(AF_INET, SOCK_DGRAM);
++	if (sock < 0) {
++		perror("bound_socket() failed");
++		exit(1);
++	}
++
++	client = clnt_dg_create(sock, &svcaddr,
+ 				progNum, VERSNUM, 1024, 1024);
+ 	test_status = ((CLIENT *) client != NULL) ? 0 : 1;
+ 
++	if (client != NULL)
++		clnt_destroy(client);
++
++	close(sock);
++
+ 	printf("%d\n", test_status);
+ 
+ 	return test_status;
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_vc_create/tirpc_clnt_vc_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_vc_create/tirpc_clnt_vc_create.c
+index e547f1f..acbb55f 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_vc_create/tirpc_clnt_vc_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_clnt_vc_create/tirpc_clnt_vc_create.c
+@@ -32,6 +32,8 @@
+ #include <netinet/in.h>
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
++#include <unistd.h>
++#include "librpc-tirpc.h"
+ 
+ //Standard define
+ #define PROCNUM 1
+@@ -53,8 +55,9 @@ int main(int argn, char *argc[])
+ 	struct netconfig *nconf = NULL;
+ 	struct netbuf svcaddr;
+ 	char addrbuf[ADDRBUFSIZE];
++	int sock;
+ 
+-	nconf = getnetconfigent("udp");
++	nconf = getnetconfigent("tcp");
+ 	if (nconf == (struct netconfig *)NULL) {
+ 		printf("err nconf\n");
+ 		exit(1);
+@@ -69,10 +72,21 @@ int main(int argn, char *argc[])
+ 		exit(1);
+ 	}
+ 
+-	client = clnt_vc_create(RPC_ANYFD, &svcaddr,
++	sock = bound_socket(AF_INET, SOCK_DGRAM);
++	if (sock < 0) {
++		perror("bound_socket() failed");
++		exit(1);
++	}
++
++	client = clnt_vc_create(sock, &svcaddr,
+ 				progNum, VERSNUM, 1024, 1024);
+ 	test_status = ((CLIENT *) client != NULL) ? 0 : 1;
+ 
++	if (client != NULL)
++		clnt_destroy(client);
++
++	close(sock);
++
+ 	printf("%d\n", test_status);
+ 
+ 	return test_status;
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_dg_create/tirpc_svc_dg_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_dg_create/tirpc_svc_dg_create.c
+index 8f1953e..b93e4d6 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_dg_create/tirpc_svc_dg_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_dg_create/tirpc_svc_dg_create.c
+@@ -32,6 +32,8 @@
+ #include <netinet/in.h>
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
++#include <unistd.h>
++#include "librpc-tirpc.h"
+ 
+ #define PROCNUM 1
+ #define VERSNUM 1
+@@ -40,10 +42,22 @@ int main(int argn, char *argc[])
+ {
+ 	int test_status = 1;
+ 	SVCXPRT *transp = NULL;
++	int sock;
+ 
+-	transp = svc_dg_create(RPC_ANYFD, 0, 0);
++	sock = bound_socket(AF_INET, SOCK_DGRAM);
++	if (sock < 0) {
++		perror("bound_socket() failed");
++		return 1;
++	}
++
++	transp = svc_dg_create(sock, 0, 0);
+ 	test_status = ((SVCXPRT *) transp != NULL) ? 0 : 1;
+ 
++	if (transp != NULL)
++		svc_destroy(transp);
++
++	close(sock);
++
+ 	printf("%d\n", test_status);
+ 
+ 	return test_status;
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_vc_create/tirpc_svc_vc_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_vc_create/tirpc_svc_vc_create.c
+index 4245586..491ac82 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_vc_create/tirpc_svc_vc_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_bottomlevel_svc_vc_create/tirpc_svc_vc_create.c
+@@ -32,6 +32,8 @@
+ #include <netinet/in.h>
+ #include <tirpc/rpc/svc.h>
+ #include <errno.h>
++#include <unistd.h>
++#include "librpc-tirpc.h"
+ 
+ #define PROCNUM 1
+ #define VERSNUM 1
+@@ -40,10 +42,27 @@ int main(int argn, char *argc[])
+ {
+ 	int test_status = 1;
+ 	SVCXPRT *transp = NULL;
++	int sock;
+ 
+-	transp = svc_vc_create(RPC_ANYFD, 0, 0);
++	sock = bound_socket(AF_INET, SOCK_STREAM);
++	if (sock < 0) {
++		perror("bound_socket() failed");
++		return 1;
++	}
++
++	if (listen(sock, 10) < 0) {
++		perror("listen() failed");
++		return 1;
++	}
++
++	transp = svc_vc_create(sock, 0, 0);
+ 	test_status = ((SVCXPRT *) transp != NULL) ? 0 : 1;
+ 
++	if (transp != NULL)
++		svc_destroy(transp);
++
++	close(sock);
++
+ 	printf("%d\n", test_status);
+ 
+ 	return test_status;
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
