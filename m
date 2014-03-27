@@ -1,30 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WKNet-0008S4-79
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 07:51:31 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WKNer-0000Lt-O1
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 07:51:31 +0000
-Message-ID: <1393833079.1991.22.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 03 Mar 2014 15:51:19 +0800
-In-Reply-To: <1393832848.1991.19.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1615091378.3633979.1392375266510.JavaMail.zimbra@redhat.com>
-	<1392802716.2083.4.camel@G08JYZSD130126>
-	<1392802803.2083.5.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-	<1392889813.2053.10.camel@G08JYZSD130126>
-	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-	<1393832848.1991.19.camel@G08JYZSD130126>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v4 3/3] mlock/mlock02.c: add EPERM and ENOMEM errno
-	tests
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WTAnZ-0007nO-8D
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:49 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTAnV-0006fT-3k
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:49 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2RDudW0012792
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:39 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDuckT008432
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:38 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s2RDub7K012417
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:37 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 27 Mar 2014 17:56:24 +0400
+Message-Id: <1395928590-28408-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 1/7] rpc-tirpc: introduced a common library
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,161 +38,163 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Add EPERM and ENOMEM errno tests for mlock(2).
+This library will contain common functions and etc which may be used
+by some of the binaries.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/mlock/mlock02.c | 82 ++++++++++++++++++++++++++++++-
- 1 file changed, 80 insertions(+), 2 deletions(-)
+ .../network/rpc/rpc-tirpc/tests_pack/Makefile      |   16 ++++++++++++
+ .../network/rpc/rpc-tirpc/tests_pack/Makefile.inc  |   18 +++++++++++++-
+ .../network/rpc/rpc-tirpc/tests_pack/lib/Makefile  |   25 ++++++++++++++++++++
+ .../rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.c    |   17 +++++++++++++
+ .../rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.h    |   17 +++++++++++++
+ 5 files changed, 92 insertions(+), 1 deletions(-)
+ create mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/lib/Makefile
+ create mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.c
+ create mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.h
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
-index a6f99e6..b7579ac 100644
---- a/testcases/kernel/syscalls/mlock/mlock02.c
-+++ b/testcases/kernel/syscalls/mlock/mlock02.c
-@@ -23,11 +23,20 @@
-  *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
-  *      if some of the specified address range does not correspond to
-  *      mapped pages in the address space of the process.
-+ *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
-+ *      if (Linux  2.6.9  and  later)  the caller had a non-zero RLIMIT_MEMLOCK
-+ *      soft resource limit, but tried to lock more memory than the limit
-+ *      permitted.  This limit is not enforced if the process is privileged
-+ *      (CAP_IPC_LOCK).
-+ *   3. mlock() fails with -1 return value and sets errno to EPERM,
-+ *      if (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
-+ *      and its RLIMIT_MEMLOCK soft resource limit was 0.
-  */
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile
+index 6703ebb..d16e1ca 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile
+@@ -19,5 +19,21 @@
+ top_srcdir		?= ../../../../..
  
- #include <errno.h>
- #include <unistd.h>
- #include <sys/mman.h>
-+#include <pwd.h>
+ include	$(top_srcdir)/include/mk/env_pre.mk
++
++LIBDIR			:= lib
++FILTER_OUT_DIRS		:= $(LIBDIR)
++LIB			:= $(LIBDIR)/librpc-tirpc.a
++
++$(LIBDIR):
++	mkdir -p "$@"
++
++$(LIB): $(LIBDIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++
++trunk-clean:: | lib-clean
++
++lib-clean:: $(LIBDIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++
+ include ./Makefile.inc
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
+index 8513677..636f0d1 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
+@@ -16,5 +16,21 @@
+ #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ #
  
- #include "test.h"
- #include "usctest.h"
-@@ -40,14 +49,18 @@ char *TCID = "mlock02";
- static void setup(void);
- static void cleanup(void);
- static void test_enomem1(void);
-+static void test_enomem2(void);
-+static void test_eperm(void);
- static void mlock_verify(const void *, const size_t, const int);
- 
- static size_t len;
-+static struct rlimit original;
-+static struct passwd *ltpuser;
- 
--static void (*test_func[])(void) = { test_enomem1 };
-+static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm };
- 
- int TST_TOTAL = ARRAY_SIZE(test_func);
--static int exp_enos[] = { ENOMEM, 0 };
-+static int exp_enos[] = { ENOMEM, EPERM, 0 };
- 
- int main(int ac, char **av)
- {
-@@ -73,11 +86,17 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
-+	tst_require_root(NULL);
+-LDLIBS		+= $(TIRPC_LIBS) -lpthread
++LIBRELDIR	:= testcases/network/rpc/rpc-tirpc/tests_pack/lib
++LIBDIR		:= $(abs_top_builddir)/$(LIBRELDIR)
++LIBSRCDIR	:= $(abs_top_srcdir)/$(LIBRELDIR)
++LIBRPC-TIRPC	:= $(LIBDIR)/librpc-tirpc.a
 +
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++$(LIBDDIR):
++	mkdir -p "$@"
 +
- 	len = getpagesize();
++$(LIBRPC-TIRPC): $(LIBDIR)
++	$(MAKE) -C $^ -f "$(LIBSRCDIR)/Makefile" all
 +
-+	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
- }
- 
- static void test_enomem1(void)
-@@ -111,6 +130,65 @@ static void test_enomem1(void)
- 	mlock_verify(addr, len, ENOMEM);
- }
- 
-+static void test_enomem2(void)
-+{
-+	void *addr;
-+	struct rlimit rl;
++MAKE_DEPS	+= $(LIBRPC-TIRPC)
 +
-+	if ((tst_kvercmp(2, 6, 9)) < 0) {
-+		tst_resm(TCONF,
-+			 "ENOMEM error value test for this condition needs "
-+			 "kernel 2.6.9 or higher");
-+		return;
-+	}
++LDLIBS		+= $(TIRPC_LIBS) -lpthread -lrpc-tirpc
++LDFLAGS		+= -L$(LIBDIR)
 +
-+	rl.rlim_max = len;
-+	rl.rlim_cur = len;
-+	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+ CPPFLAGS	+= $(TIRPC_CPPFLAGS)
++CPPFLAGS	+= -I$(LIBSRCDIR)
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/lib/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/lib/Makefile
+new file mode 100644
+index 0000000..8afb3da
+--- /dev/null
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/lib/Makefile
+@@ -0,0 +1,25 @@
++#
++#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
 +
-+	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++top_srcdir		?= ../../../../../..
 +
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++include	$(top_srcdir)/include/mk/env_pre.mk
 +
-+	mlock_verify(&addr, len, ENOMEM);
++LIB	:= librpc-tirpc.a
 +
-+	SAFE_SETEUID(cleanup, 0);
-+
-+	SAFE_MUNMAP(cleanup, addr, len);
-+
-+	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
-+}
-+
-+static void test_eperm(void)
-+{
-+	void *addr;
-+	struct rlimit rl;
-+
-+	if ((tst_kvercmp(2, 6, 9)) < 0) {
-+		tst_resm(TCONF,
-+			 "EPERM error value test needs kernel 2.6.9 or higher");
-+		return;
-+	}
-+
-+	rl.rlim_max = 0;
-+	rl.rlim_cur = 0;
-+	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
-+
-+	addr = SAFE_MMAP(cleanup, NULL, len, PROT_NONE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+
-+	mlock_verify(&addr, len, EPERM);
-+
-+	SAFE_SETEUID(cleanup, 0);
-+
-+	SAFE_MUNMAP(cleanup, addr, len);
-+
-+	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
-+}
-+
- static void mlock_verify(const void *addr, const size_t len, const int error)
- {
- 	TEST(mlock(addr, len));
++include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.c b/testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.c
+new file mode 100644
+index 0000000..68abbd8
+--- /dev/null
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.c
+@@ -0,0 +1,17 @@
++/*
++ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.h b/testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.h
+new file mode 100644
+index 0000000..68abbd8
+--- /dev/null
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.h
+@@ -0,0 +1,17 @@
++/*
++ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
