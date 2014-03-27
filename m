@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WQJPW-0007fI-Cy
-	for ltp-list@lists.sourceforge.net; Wed, 19 Mar 2014 16:32:10 +0000
-Date: Wed, 19 Mar 2014 17:31:47 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WTAjz-0004u9-RG
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:53:07 +0000
+Date: Thu, 27 Mar 2014 14:52:39 +0100
 From: chrubis@suse.cz
-Message-ID: <20140319163147.GA27687@rei.Home>
-References: <1392894122.2053.11.camel@G08JYZSD130126>
-	<20140318133554.GA12227@rei>
-	<1395207368.3217.1.camel@G08JYZSD130126>
+Message-ID: <20140327135239.GD4234@rei>
+References: <1395926898-11327-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1395207368.3217.1.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2] modify_ldt/modify_ldt03.c: add a new test
+In-Reply-To: <1395926898-11327-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] doc: test-writing-guidelines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +24,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Add func=0 argument test for modify_ldt(2).
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> Add thread-safety paragraph
+> Add example of how to use TST_DECLARE_ONCE_FN
 
-Pushed, thanks.
+Pushed with minor changes:
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index a7250b7..9c3ea2a 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -675,12 +675,12 @@ bellow:
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+ It is safe to use library 'tst_' functions in multi-threaded tests.
+-Synchronization mechanism enabled only if the test is linked with pthread
++Synchronization mechanism is enabled only if the test is linked with pthread
+ library, otherwise no-op stubs (defined in libc) are used.
+ 
+-Also, LTP has a help "TST_DECLARE_ONCE_FN" macro to declare a function which
+-must be run only once (e.g. init or cleanup function), but might be called
+-by multiple threads in the same time. See example below:
++Also, LTP has a helper "TST_DECLARE_ONCE_FN" macro to declare a function which
++must be run only once (e.g. init or cleanup function), but might be called by
++multiple threads at the same time. See example below:
+
+
+And also updated the online version in GitHub wiki. Thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
