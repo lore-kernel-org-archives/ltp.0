@@ -1,19 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WPZyx-00073p-3u
-	for ltp-list@lists.sourceforge.net; Mon, 17 Mar 2014 16:01:43 +0000
-Date: Mon, 17 Mar 2014 17:01:22 +0100
-From: chrubis@suse.cz
-Message-ID: <20140317160122.GA1977@rei>
-References: <1392809376-13063-1-git-send-email-alexey.kodanev@oracle.com>
-	<20140313144804.GB2503@rei.suse.cz> <5326CE7C.5070603@oracle.com>
-	<20140317131803.GA3532@rei> <53271B93.6010500@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53271B93.6010500@oracle.com>
-Subject: Re: [LTP] [PATCH v5] network: tcp_fastopen: add TCP Fast Open test
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1WT01h-0005K8-Tj
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 02:26:41 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WT01h-0002xQ-1I
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 02:26:41 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2R2QYRO032324
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 02:26:35 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s2R2QXkC021754
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 02:26:34 GMT
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2R2QXTs012956
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 02:26:33 GMT
+From: Simon Xu <xu.simon@oracle.com>
+Date: Thu, 27 Mar 2014 10:26:26 +0800
+Message-Id: <1395887186-14605-1-git-send-email-xu.simon@oracle.com>
+In-Reply-To: <20140326170027.GA11941@rei.Home>
+References: <20140326170027.GA11941@rei.Home>
+Subject: [LTP] [PATCH V2] xinetd_test.sh: restart xinetd by restart_daemon()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,49 +37,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >>> This version looks good. I would be happier if the shell part was ported
-> >>> to the new test.sh but I can live with it as it is now.
-> >>>
-> >>> And this patch is blocked by the thread safety patch for the tst_res.c.
-> >>> I guess I will commit it next week, it has been on the ML long enough.
-> >>>
-> >> OK, thanks. I can do porting later along with the fix which I would like
-> >> to add to the test: there is recently added tst_get_unused_port()
-> >> function, but how can I use it in the script, should I add it to
-> >> tools/apicmds?
-> > Yes please.
-> >
-> OK, so what could be the parameters for the command?
-> The function takes family and type, as a result command could be as follows:
-> $ tst_get_unused_port ipv4 stream
-> then we need to parse strings and pass the right ones to the C function.
-> 
-> or we can set ids and explain the meaning in the help:
-> $ tst_get_unused_port 1 0
-> 
-> Which one is better?
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
+---
+ testcases/network/xinetd/xinetd_tests.sh | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-I would vote for the strings. You can easily decleare an array of
-structures with string-value paris and search in these. It's not that
-much of work and the shell code would be much easier to read.
-
+diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+index dac23a8..813a3f3 100755
+--- a/testcases/network/xinetd/xinetd_tests.sh
++++ b/testcases/network/xinetd/xinetd_tests.sh
+@@ -63,6 +63,7 @@ init()
+     export TST_TOTAL=2
+     export TCID="xinetd"
+     export TST_COUNT=0
++    . daemonlib.sh
+ 
+     # Inititalize cleanup function.
+     trap "cleanup" 0
+@@ -226,7 +227,7 @@ cleanup()
+         sleep 1s
+ 
+         # restoring original services
+-        /etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.err 2>&1
++        restart_daemon xinetd > $LTPTMP/tst_xinetd.err 2>&1
+         RC=$?
+         if [ $RC -ne 0 ]
+         then
+@@ -285,7 +286,7 @@ test01()
+     sleep 1s
+ 
+     # restart xinetd to re-start the services
+-    /etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.out 2>&1
++    restart_daemon xinetd > $LTPTMP/tst_xinetd.out 2>&1
+     RC=$?
+     if [ $RC -ne 0 ]
+     then
+@@ -352,7 +353,7 @@ test01()
+     sleep 1s
+ 
+     # restart services.
+-    /etc/init.d/xinetd restart > $LTPTMP/tst_xinetd.out 2>&1
++    restart_daemon xinetd > $LTPTMP/tst_xinetd.out 2>&1
+     RC=$?
+     if [ $RC -ne 0 ]
+     then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.1
+
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
