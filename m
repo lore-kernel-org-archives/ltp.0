@@ -1,29 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WKQye-0004Wq-6q
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 11:24:08 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WKQyb-0006f3-Qk
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 11:24:08 +0000
-Message-ID: <1393845833.1984.11.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 03 Mar 2014 19:23:53 +0800
-In-Reply-To: <1393845775.1984.10.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1795224124.5672526.1392809381205.JavaMail.zimbra@redhat.com>
-	<1392889204.2053.7.camel@G08JYZSD130126>
-	<1392889813.2053.10.camel@G08JYZSD130126>
-	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-	<1393832848.1991.19.camel@G08JYZSD130126>
-	<1393833079.1991.22.camel@G08JYZSD130126>
-	<1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
-	<1393845775.1984.10.camel@G08JYZSD130126>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH v5 2/3] mlock/mlock02.c: cleanup
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WTAnb-0007nc-Ga
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:51 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTAnZ-000283-KY
+	for ltp-list@lists.sourceforge.net; Thu, 27 Mar 2014 13:56:51 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2RDuhZL012899
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:44 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDugTP013981
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:43 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2RDugc9008557
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Mar 2014 13:56:42 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 27 Mar 2014 17:56:28 +0400
+Message-Id: <1395928590-28408-6-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1395928590-28408-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 5/7] rpc-tirpc: tirpc_svc_5 fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,261 +38,149 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-* Delete some useless commtents.
-* Use SAFE_* macros.
-* Some cleanup.
+This server binary has the following problems:
+ * uses the "bottom level" API with RPC_ANYFD parameter (it violates the API)
+ * the clients of tirpc_svc_5 use not only the UDP protocol, but TCP too. But the
+   server does not listen a TCP port.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Fixed them.
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/mlock/mlock02.c | 172 ++++++++++++++----------------
- 1 file changed, 83 insertions(+), 89 deletions(-)
+ .../rpc-tirpc/tests_pack/tirpc_svc_5/tirpc_svc_5.c |   80 ++++++++++++++++----
+ 1 files changed, 66 insertions(+), 14 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
-index edd9e45..95c499d 100644
---- a/testcases/kernel/syscalls/mlock/mlock02.c
-+++ b/testcases/kernel/syscalls/mlock/mlock02.c
-@@ -1,6 +1,6 @@
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_5/tirpc_svc_5.c b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_5/tirpc_svc_5.c
+index d75e2eb..c899d0f 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_5/tirpc_svc_5.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_5/tirpc_svc_5.c
+@@ -1,5 +1,6 @@
  /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2002
-+ *	06/2002 Written by Paul Larson
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -13,70 +13,41 @@
-  *   the GNU General Public License for more details.
-  *
-  *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   along with this program;  if not, write to the Free Software Foundation,
-+ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
- /*
-- * NAME
-- * 	mlock02.c
-- *
-- * DESCRIPTION
-- * 	Test to see the proper errors are returned by mlock
-- *$
-- * ALGORITHM
-- * 	test 1:
-- *		Call mlock with a NULL address.  ENOMEM should be returned
-- *
-- * USAGE:  <for command-line>
-- *         -c n    Run n copies concurrently
-- *         -e      Turn on errno logging
-- *         -f      Turn off functional testing
-- *         -h      Show this help screen
-- *         -i n    Execute test n times
-- *         -I x    Execute test for x seconds
-- *         -p      Pause for SIGUSR1 before starting
-- *         -P x    Pause for x seconds between iterations
-- *         -t      Turn on syscall timing
-- *
-- * HISTORY
-- *	06/2002 Written by Paul Larson
-- *
-- * RESTRICTIONS
-- * 	None
-+ * Test Description:
-+ *  Verify that,
-+ *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
-+ *      if some of the specified address range does not correspond to
-+ *      mapped pages in the address space of the process.
-  */
-+
+ * Copyright (c) Bull S.A.  2007 All Rights Reserved.
++* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+@@ -34,42 +35,93 @@
+ #include <tirpc/rpc/svc.h>
  #include <errno.h>
- #include <unistd.h>
- #include <sys/mman.h>
+ #include <netinet/in.h>
++#include <unistd.h>
++#include "librpc-tirpc.h"
+ 
+ #define VERSNUM 1
+ #define PROCSIMPLEPING	1
+ 
++struct server_def_t {
++	SVCXPRT *transp;
++	struct netconfig *nconf;
++	char netid[4];
++	int domain;
++	int type;
++	int sock;
++	SVCXPRT *(*svc_func)(const int, const u_int, const u_int);
++};
 +
- #include "test.h"
- #include "usctest.h"
--
--void setup();
--void setup1();
--void cleanup();
-+#include "safe_macros.h"
- 
- char *TCID = "mlock02";
--int TST_TOTAL = 1;
- 
--int exp_enos[] = { ENOMEM, 0 };
-+#if !defined(UCLINUX)
- 
--void *addr1;
-+static void setup(void);
-+static void cleanup(void);
-+static void test_enomem1(void);
-+static void mlock_verify(const void *, const size_t, const int);
- 
--struct test_case_t {
--	void **addr;
--	int len;
--	int error;
--	void (*setupfunc) ();
--} TC[] = {
--	/* mlock should return ENOMEM when some or all of the address
--	 * range pointed to by addr and len are not valid mapped pages
--	 * in the address space of the process
--	 */
--	{
--	&addr1, 1024, ENOMEM, setup1}
--};
-+static size_t len;
- 
--#if !defined(UCLINUX)
-+static void (*test_func[])(void) = { test_enomem1 };
++static struct server_def_t server_defs[] = {
++	{ NULL, NULL, "tcp", AF_INET, SOCK_STREAM, -1, svc_vc_create },
++	{ NULL, NULL, "udp", AF_INET, SOCK_DGRAM, -1, svc_dg_create },
++};
 +
-+int TST_TOTAL = ARRAY_SIZE(test_func);
-+static int exp_enos[] = { ENOMEM, 0 };
++static int server_instances = sizeof(server_defs) / sizeof(*server_defs);
++
+ static void exm_proc(struct svc_req *rqstp, SVCXPRT *transp);
  
- int main(int ac, char **av)
+ int main(int argn, char *argc[])
  {
-@@ -91,62 +62,85 @@ int main(int ac, char **av)
- 	TEST_EXP_ENOS(exp_enos);
+ 	int progNum = atoi(argc[1]);
+-	SVCXPRT *transp = NULL;
+-	struct netconfig *nconf;
++	int i;
++	struct server_def_t *this;
  
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
- 		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			if (TC[i].setupfunc != NULL)
--				TC[i].setupfunc();
--
--			TEST(mlock(*(TC[i].addr), TC[i].len));
--
--			if (TEST_RETURN == -1) {
--				if (TEST_ERRNO != TC[i].error)
--					tst_brkm(TFAIL | TTERRNO, cleanup,
--						 "mlock didn't fail as expected; "
--						 "expected - %d : %s",
--						 TC[i].error,
--						 strerror(TC[i].error));
--				else
--					tst_resm(TPASS | TTERRNO,
--						 "mlock failed as expected");
--			} else
--				tst_brkm(TFAIL, cleanup,
--					 "mlock succeeded unexpectedly");
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			(*test_func[i])();
+ 	svc_unreg(progNum, VERSNUM);
+ 
+-	if ((nconf = getnetconfigent("udp")) == NULL) {
+-		fprintf(stderr, "Cannot get netconfig entry for UDP\n");
+-		exit(1);
+-	}
++	for (i = 0; i < server_instances; i++) {
++		this = &(server_defs[i]);
+ 
+-	transp = svc_vc_create(RPC_ANYFD, 1024, 1024);
++		this->nconf = getnetconfigent(this->netid);
++		if (this->nconf == NULL) {
++			fprintf(stderr, "Cannot get a netconfig entry for %s",
++				this->netid);
++			goto cleanup;
++		}
+ 
+-	if (transp == NULL) {
+-		fprintf(stderr, "Cannot create service.\n");
+-		exit(1);
+-	}
++		this->sock = bound_socket(this->domain, this->type);
++		if (this->sock < 0) {
++			perror("bound_socket() failed");
++			goto cleanup;
++		}
+ 
+-	if (!svc_reg(transp, progNum, VERSNUM, exm_proc, nconf)) {
+-		fprintf(stderr, "svc_reg failed!!\n");
+-		exit(1);
++		if (this->type == SOCK_STREAM) {
++			if (listen(this->sock, 10) < 0) {
++				perror("listen() failed");
++				goto cleanup;
++			}
++		}
++
++		this->transp = this->svc_func(this->sock, 1024, 1024);
++		if (this->transp == NULL) {
++			fprintf(stderr, "Cannot create service.\n");
++			goto cleanup;
++		}
++
++		if (!svc_reg(this->transp, progNum, VERSNUM,
++				exm_proc, this->nconf)) {
++			fprintf(stderr, "svc_reg failed!!\n");
++			goto cleanup;
++		}
  	}
  
- 	cleanup();
--
- 	tst_exit();
- }
- 
--#else
--
--int main()
-+static void setup(void)
- {
--	tst_brkm(TCONF, NULL, "test is not available on uClinux");
--}
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--#endif /* if !defined(UCLINUX) */
-+	TEST_PAUSE;
 +
-+	len = getpagesize();
-+}
+ 	svc_run();
  
--void setup()
-+static void test_enomem1(void)
- {
--	TEST_PAUSE;
-+	void *addr;
-+	struct rlimit rl;
+ 	fprintf(stderr, "svc_run() returned.  ERROR has occurred.\n");
 +
-+	/*
-+	 * RLIMIT_MEMLOCK resource limit.
-+	 * In Linux kernels before 2.6.9, this limit controlled the amount
-+	 * of  memory that could be locked by a privileged process. Since
-+	 * Linux 2.6.9, no limits are placed on the amount of memory that a
-+	 * privileged process may lock, and this limit instead governs the
-+	 * amount of memory that an unprivileged process may lock. So here
-+	 * we set RLIMIT_MEMLOCK resource limit to RLIM_INFINITY when kernel
-+	 * is under 2.6.9, to make sure this ENOMEM error is indeed caused by
-+	 * that some of the specified address range does not correspond to
-+	 * mapped pages in the address space of the process.
-+	 */
-+	if ((tst_kvercmp(2, 6, 9)) < 0) {
-+		rl.rlim_cur = RLIM_INFINITY;
-+		rl.rlim_max = RLIM_INFINITY;
-+		SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
++cleanup:
+ 	svc_unreg(progNum, VERSNUM);
+ 
++	for (i = 0; i < server_instances; i++) {
++		this = &(server_defs[i]);
++
++		if (this->transp != NULL)
++			svc_destroy(this->transp);
++
++		if (this->sock >= 0)
++			close(this->sock);
 +	}
 +
-+	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+
-+	SAFE_MUNMAP(cleanup, addr, len);
-+
-+	mlock_verify(addr, len, ENOMEM);
+ 	return 1;
  }
  
--void setup1()
-+static void mlock_verify(const void *addr, const size_t len, const int error)
- {
--#ifdef __ia64__
--	TC[0].len = getpagesize() + 1;
--#else
--	addr1 = NULL;
--#endif
-+	TEST(mlock(addr, len));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "mlock succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO != error) {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "mlock didn't fail as expected; expected - %d : %s",
-+			 error, strerror(error));
-+	} else {
-+		tst_resm(TPASS | TTERRNO, "mlock failed as expected");
-+	}
- }
- 
--void cleanup()
-+static void cleanup(void)
- {
- 	TEST_CLEANUP;
-+}
- 
-+#else
-+
-+int TST_TOTAL = 1;
-+
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "test is not available on uClinux");
- }
-+
-+#endif /* if !defined(UCLINUX) */
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
