@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WKivF-0001vI-Bs
-	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 06:33:49 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WKivD-00079t-Rk
-	for ltp-list@lists.sourceforge.net; Tue, 04 Mar 2014 06:33:49 +0000
-Received: from fnstmail02.fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s246XeLU032007
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Mar 2014 14:33:40 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 4 Mar 2014 14:31:59 +0800
-Message-Id: <1393914721-5288-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1393914721-5288-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1393914721-5288-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH 2/4] mincore/mincore01.c: cleanup
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WTR7Y-0008Fu-BQ
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:22:32 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WTR7V-0003VL-0E
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:22:30 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2S7MCKp021550
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 15:22:12 +0800
+Message-ID: <1395991331.5017.4.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 28 Mar 2014 15:22:11 +0800
+In-Reply-To: <1395991214.5017.2.camel@G08JYZSD130126>
+References: <1395991214.5017.2.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] read/read02.c: add new error number tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,315 +28,137 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Delete some useless comments.
-Move the test body from main() to mincore_verify().
-Use some SAFE_* macros.
-Make ENOMEM error value tests more sufficient.
+Add EINVAL errnor nuber tests for read(2):
+* The file was opened with the O_DIRECT flag, and the alignment of the user
+  buffer was not multiples of the logical block size of the file system,
+  expect an EINVAL.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+* The file was opened with the O_DIRECT flag, and transfer sizes was not
+  multiples of the logical block size of the file system, expect an EINVAL.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/mincore/mincore01.c | 186 ++++++++++++++------------
- 1 file changed, 101 insertions(+), 85 deletions(-)
+ testcases/kernel/syscalls/read/read02.c | 53 ++++++++++++++++++++++++++++-----
+ 1 file changed, 46 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mincore/mincore01.c b/testcases/kernel/syscalls/mincore/mincore01.c
-index d3519f2..70b27a3 100644
---- a/testcases/kernel/syscalls/mincore/mincore01.c
-+++ b/testcases/kernel/syscalls/mincore/mincore01.c
-@@ -28,6 +28,10 @@
-  * test3:
-  *	Invoke mincore() when the starting address + length contained unmapped
-  *	memory. ENOMEM
-+ * test4:
-+ *      Invoke mincore() when length is greater than (TASK_SIZE - addr).ENOMEM.
-+ *      In Linux 2.6.11 and earlier, the error EINVAL  was  returned for this
-+ *      condition.
+diff --git a/testcases/kernel/syscalls/read/read02.c b/testcases/kernel/syscalls/read/read02.c
+index 8aabe93..0e227fe 100644
+--- a/testcases/kernel/syscalls/read/read02.c
++++ b/testcases/kernel/syscalls/read/read02.c
+@@ -27,6 +27,16 @@
+  *
+  *	test 3:
+  *	Pass buf = -1 as a parmeter to read, expect an EFAULT.
++ *
++ *	test 4:
++ *	The file was opened with the O_DIRECT flag, and the alignment of the
++ *	user buffer was not multiples of the logical block size of the file
++ *	system, expect an EINVAL.
++ *
++ *	test 5:
++ *	The file was opened with the O_DIRECT flag, and transfer sizes was not
++ *	multiples of the logical block size of the file system, expect an
++ *	EINVAL.
   */
  
- #include <fcntl.h>
-@@ -40,40 +44,46 @@
- #include <sys/stat.h>
- #include "test.h"
- #include "usctest.h"
-+#include "safe_macros.h"
+ #define _GNU_SOURCE
+@@ -41,22 +51,30 @@
+ #include "safe_macros.h"
  
- static int PAGESIZE;
- static rlim_t STACK_LIMIT = 10485760;
+ #define TEST_FILE	"test_file"
++#define TEST_FILE4	"/root/test_file4"
  
- static void cleanup(void);
- static void setup(void);
--static void setup1(void);
--static void setup2(void);
--static void setup3(void);
+ char *TCID = "read02";
  
- char *TCID = "mincore01";
--int TST_TOTAL = 3;
- 
--static char *global_pointer = NULL;
--static unsigned char *global_vec = NULL;
--static int global_len = 0;
--static int fd = 0;
-+static char *global_pointer;
-+static unsigned char *global_vec;
-+static int global_len;
-+
-+struct test_case_t;
-+static void setup1(struct test_case_t *tc);
-+static void setup2(struct test_case_t *tc);
-+static void setup3(struct test_case_t *tc);
-+static void setup4(struct test_case_t *tc);
+ static int badfd = -1;
+-static int fd2, fd3;
++static int fd2, fd3, fd4;
+ static char buf[BUFSIZ];
+-static int exp_enos[] = { EBADF, EISDIR, EFAULT, 0 };
++static void *outside_buf = (void *)-1;
++static void *temp;
++static void *addr4;
++static void *addr5;
++static int exp_enos[] = { EBADF, EISDIR, EFAULT, EINVAL, 0 };
  
  static struct test_case_t {
- 	char *addr;
--	int len;
-+	size_t len;
- 	unsigned char *vector;
- 	int exp_errno;
--	void (*setupfunc) (void);
-+	void (*setupfunc) (struct test_case_t *tc);
+ 	int *fd;
+-	void *buf;
++	void **buf;
++	size_t count;
+ 	int exp_error;
  } TC[] = {
- 	{NULL, 0, NULL, EINVAL, setup1},
- 	{NULL, 0, NULL, EFAULT, setup2},
- 	{NULL, 0, NULL, ENOMEM, setup3},
-+	{NULL, 0, NULL, ENOMEM, setup4}
+-	{&badfd, buf, EBADF},
+-	{&fd2, buf, EISDIR},
+-	{&fd3, (void *)-1, EFAULT},
++	{&badfd, (void **)&buf, 1, EBADF},
++	{&fd2, (void **)&buf, 1, EISDIR},
++	{&fd3, &outside_buf, 1, EFAULT},
++	{&fd4, &addr4, 4096, EINVAL},
++	{&fd4, &addr5, 1, EINVAL},
  };
  
-+static void mincore_verify(struct test_case_t *tc);
-+
-+int TST_TOTAL = ARRAY_SIZE(TC);
-+
- int main(int ac, char **av)
- {
--	int lc;
--	int i;
-+	int i, lc;
- 	char *msg;
- 
- 	msg = parse_opts(ac, av, NULL, NULL);
-@@ -85,57 +95,30 @@ int main(int ac, char **av)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			if (TC[i].setupfunc != NULL)
--				TC[i].setupfunc();
--			
--			TEST(mincore(TC[i].addr, TC[i].len, TC[i].vector));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			TEST_ERROR_LOG(TEST_ERRNO);
--
--			if (TEST_ERRNO == TC[i].exp_errno) {
--				tst_resm(TPASS, "expected failure: "
--					 "errno = %d (%s)", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error %d (%s), "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].exp_errno);
--			}
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			mincore_verify(&TC[i]);
- 	}
-+
- 	cleanup();
- 	tst_exit();
- }
- 
--static void setup1(void)
-+static void setup1(struct test_case_t *tc)
- {
--	TC[0].addr = global_pointer + 1;
--	TC[0].len = global_len;
--	TC[0].vector = global_vec;
-+	tc->addr = global_pointer + 1;
-+	tc->len = global_len;
-+	tc->vector = global_vec;
- }
- 
--void setup2(void)
-+void setup2(struct test_case_t *tc)
- {
- 	unsigned char *t;
- 	struct rlimit limit;
- 	    
--	t = mmap(NULL, global_len, PROT_READ | PROT_WRITE,
--	         MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+	t = SAFE_MMAP(cleanup, NULL, global_len, PROT_READ | PROT_WRITE,
-+		      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
- 
--	/* Create pointer to invalid address */
--	if (t == MAP_FAILED) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--		         "mmaping anonymous memory failed");
--	}
--
--	munmap(t, global_len);
-+	SAFE_MUNMAP(cleanup, t, global_len);
- 
- 	/* set stack limit so that the unmaped pointer is invalid for architectures like s390 */
- 	limit.rlim_cur = STACK_LIMIT;
-@@ -144,63 +127,94 @@ void setup2(void)
- 	if (setrlimit(RLIMIT_STACK, &limit) != 0)
- 		tst_brkm(TBROK | TERRNO, cleanup, "setrlimit failed");
- 
--	TC[1].addr = global_pointer;
--	TC[1].len = global_len;
--	TC[1].vector = t;
-+	tc->addr = global_pointer;
-+	tc->len = global_len;
-+	tc->vector = t;
- }
- 
--static void setup3(void)
-+static void setup3(struct test_case_t *tc)
- {
--	TC[2].addr = global_pointer;
--	TC[2].len = global_len * 2;
--	munmap(global_pointer + global_len, global_len);
--	TC[2].vector = global_vec;
-+	tc->addr = global_pointer;
-+	tc->len = global_len * 2;
-+	SAFE_MUNMAP(cleanup, global_pointer + global_len, global_len);
-+	tc->vector = global_vec;
-+}
-+
-+static void setup4(struct test_case_t *tc)
-+{
-+	struct rlimit as_lim;
-+
-+	if (getrlimit(RLIMIT_AS, &as_lim) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "getrlimit(RLIMIT_AS) failed");
-+	}
-+
-+	tc->addr = global_pointer;
-+	tc->len = as_lim.rlim_cur - (rlim_t)global_pointer + PAGESIZE;
-+	tc->vector = global_vec;
-+
-+	/*
-+	 * In linux 2.6.11 and earlier, EINVAL was returned for this condition.
-+	 */
-+	if (tst_kvercmp(2, 6, 11) <= 0)
-+		tc->exp_errno = EINVAL;
- }
+ int TST_TOTAL = ARRAY_SIZE(TC);
+@@ -89,6 +107,11 @@ int main(int ac, char **av)
  
  static void setup(void)
  {
- 	char *buf;
-+	int fd;
- 
--	PAGESIZE = getpagesize();
-+	PAGESIZE = sysconf(_SC_PAGESIZE);
++	if ((tst_kvercmp(2, 4, 10)) < 0)
++		tst_brkm(TCONF, NULL, "This test needs kernel 2.4.10 or newer");
 +
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	tst_tmpdir();
- 
-+	TEST_PAUSE;
++	tst_require_root(NULL);
 +
- 	/* global_pointer will point to a mmapped area of global_len bytes */
- 	global_len = PAGESIZE * 2;
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
  
--	buf = malloc(global_len);
-+	buf = SAFE_MALLOC(cleanup, global_len);
- 	memset(buf, 42, global_len);
+ 	TEST_PAUSE;
+@@ -100,11 +123,19 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF(cleanup, TEST_FILE, "A");
  
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	fd = SAFE_OPEN(cleanup, "mincore01", O_CREAT | O_RDWR,
-+		       S_IRUSR | S_IWUSR);
- 
--	/* create a temporary file */
--	fd = open("mincore01", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
--	if (fd == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Error while creating temporary file");
--	}
-+	SAFE_WRITE(cleanup, 1, fd, buf, global_len);
- 
--	/* fill the temporary file with two pages of data */
--	if (write(fd, buf, global_len) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Error while writing to temporary file");
--	}
- 	free(buf);
- 
--	/* map the file in memory */
--	global_pointer = mmap(NULL, global_len * 2,
--	                      PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED,
--	                      fd, 0);
-+	global_pointer = SAFE_MMAP(cleanup, NULL, global_len * 2,
-+				   PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
- 
--	if (global_pointer == MAP_FAILED) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Temporary file could not be mmapped");
-+	global_vec = SAFE_MALLOC(cleanup,
-+				 (global_len + PAGESIZE - 1) / PAGESIZE);
+ 	fd3 = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
 +
-+	SAFE_CLOSE(cleanup, fd);
-+}
++	temp = SAFE_MALLOC(cleanup, 4096*10);
 +
-+static void mincore_verify(struct test_case_t *tc)
-+{
-+	if (tc->setupfunc)
-+		tc->setupfunc(tc);
++	addr4 = (char *)(((long)buf & (~4095)) + 1);
++	addr5 = (char *)((long)buf & (~4095));
 +
-+	TEST(mincore(tc->addr, tc->len, tc->vector));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "succeeded unexpectedly");
-+		return;
- 	}
- 
--	/* initialize the vector buffer to collect the page info */
--	global_vec = malloc((global_len + PAGESIZE - 1) / PAGESIZE);
-+	if (TEST_ERRNO == tc->exp_errno) {
-+		tst_resm(TPASS | TTERRNO, "failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			"mincore failed unexpectedly; expected: "
-+			"%d - %s", tc->exp_errno,
-+			strerror(tc->exp_errno));
-+	}
++	SAFE_FILE_PRINTF(cleanup, TEST_FILE4, "A");
++	fd4 = SAFE_OPEN(cleanup, TEST_FILE4, O_RDWR | O_DIRECT, 0777);
  }
  
- static void cleanup(void)
-@@ -208,7 +222,9 @@ static void cleanup(void)
+ static void read_verify(const struct test_case_t *test)
+ {
+-	TEST(read(*test->fd, test->buf, 1));
++	TEST(read(*test->fd, *test->buf, test->count));
+ 
+ 	if (TEST_RETURN != -1) {
+ 		tst_resm(TFAIL, "call succeeded unexpectedly");
+@@ -127,6 +158,14 @@ static void cleanup(void)
+ {
  	TEST_CLEANUP;
  
- 	free(global_vec);
--	munmap(global_pointer, global_len);
--	close(fd);
++	free(temp);
 +
-+	if (munmap(global_pointer, global_len) == -1)
-+		tst_resm(TWARN | TERRNO, "munmap failed");
++	if (fd4 > 0)
++		close(fd4);
 +
- 	tst_rmdir();
- }
++	if (unlink(TEST_FILE4) < 0)
++		tst_resm(TWARN | TERRNO, "unlink(\"%s\") failed", TEST_FILE4);
++
+ 	if (fd3 > 0)
+ 		close(fd3);
+ 
 -- 
-1.8.2.1
+1.8.4.2
+
+
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
