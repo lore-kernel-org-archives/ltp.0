@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WPyJv-0000XU-Fy
-	for ltp-list@lists.sourceforge.net; Tue, 18 Mar 2014 18:00:59 +0000
-Date: Tue, 18 Mar 2014 19:00:37 +0100
-From: chrubis@suse.cz
-Message-ID: <20140318180036.GD13153@rei.Home>
-References: <1393223580-28029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WTR5d-0001SE-R5
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:20:33 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WTR5a-0003Sz-QK
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 07:20:33 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s2S7KFVD021445
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 15:20:15 +0800
+Message-ID: <1395991214.5017.2.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 28 Mar 2014 15:20:14 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1393223580-28029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] direct_io/dma_thread_diotest7.c: cleanup
+Subject: [LTP] [PATCH] read/read02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,550 +29,309 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Cleanup of dma_thread_diotest7.c and remove test_dma_thread_diotest7.sh.
-> 
-> If user wants to run these tests, a big block device should be specified
-> by running runltp with -z option, or export an environment variable named
-> LTP_BIG_DEV, which contains the big block device.
+* Delete some useless commtents and variable.
+* Use SAFE_* macros.
+* Some cleanup.
 
-The test was using a directory in /tmp/ instead. What was the problem
-with that?
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/read/read02.c | 217 +++++++++++---------------------
+ 1 file changed, 74 insertions(+), 143 deletions(-)
 
-> Split tests in runtest/test_dma_thread_diotest7 into separate testcases,
-> keep one entry per test in runtest/test_dma_thread_diotest7
-
-I wonder why is it called dma_thread_diotest7 if there is only
-dma_thread_diotest7 there. Maybe we can rename it to just
-dma_thread_diotest...
-
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  runtest/test_dma_thread_diotest7                   |   9 +-
->  scenario_groups/default                            |   1 +
->  .../kernel/io/direct_io/dma_thread_diotest7.c      | 354 +++++++++++----------
->  .../io/direct_io/test_dma_thread_diotest7.sh       |  42 ---
->  4 files changed, 194 insertions(+), 212 deletions(-)
->  delete mode 100755 testcases/kernel/io/direct_io/test_dma_thread_diotest7.sh
-> 
-> diff --git a/runtest/test_dma_thread_diotest7 b/runtest/test_dma_thread_diotest7
-> index cb5ea8f..5c3556e 100644
-> --- a/runtest/test_dma_thread_diotest7
-> +++ b/runtest/test_dma_thread_diotest7
-> @@ -1,2 +1,7 @@
-> -test_dma_thread_diotest7  mkdir -p /tmp/$$-work; cp -r $LTPROOT/testcases/bin/test_dma_thread_diotest7.sh $LTPROOT/testcases/bin/dma_thread_diotest7 /tmp/$$-work; (cd /tmp/$$-work; ./test_dma_thread_diotest7.sh); rm -rf /tmp/$$-work
-> -
-> +dma_thread_diotest7_1 dma_thread_diotest7 -a 512
-> +dma_thread_diotest7_2 dma_thread_diotest7 -a 1024
-> +dma_thread_diotest7_3 dma_thread_diotest7 -a 1536
-> +dma_thread_diotest7_4 dma_thread_diotest7 -a 2048
-> +dma_thread_diotest7_5 dma_thread_diotest7 -a 2560
-> +dma_thread_diotest7_6 dma_thread_diotest7 -a 3072
-> +dma_thread_diotest7_7 dma_thread_diotest7 -a 3584
-> diff --git a/scenario_groups/default b/scenario_groups/default
-> index ff23c7c..cdf9aca 100644
-> --- a/scenario_groups/default
-> +++ b/scenario_groups/default
-> @@ -26,3 +26,4 @@ commands
->  hyperthreading
->  kernel_misc
->  modules
-> +test_dma_thread_diotest7
-> diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest7.c b/testcases/kernel/io/direct_io/dma_thread_diotest7.c
-> index 0b29b89..f9e730d 100644
-> --- a/testcases/kernel/io/direct_io/dma_thread_diotest7.c
-> +++ b/testcases/kernel/io/direct_io/dma_thread_diotest7.c
-> @@ -99,38 +99,51 @@
->  #include <errno.h>
->  #include <sys/types.h>
->  #include <sys/wait.h>
-> -
-> -#define FILESIZE (12*1024*1024)
-> -#define READSIZE  (1024*1024)
-> -
-> -#define FILENAME    "_dma_thread_test_%.04d.tmp"
-> -#define FILECOUNT   100
-> -#define MIN_WORKERS 2
-> -#define MAX_WORKERS 256
-> -#define PAGE_SIZE getpagesize()
-> -
-> -#define true	1
-> -#define false	0
-> -
-> -typedef int bool;
-> -
-> -bool done = false;
-> -int workers = 2;
-> -
-> -#define PATTERN (0xfa)
-> -
-> -static void usage(void)
-> -{
-> -	fprintf(stderr,
-> -		"\nUsage: dma_thread [-h | -a <alignment> [ -w <workers>]\n"
-> -		"\nWith no arguments, generate test files and exit.\n"
-> -		"-h Display this help and exit.\n"
-> -		"-a align read buffer to offset <alignment>.\n"
-> -		"-w number of worker threads, 2 (default) to 256,\n"
-> -		"   defaults to number of cores.\n\n"
-> -		"Run first with no arguments to generate files.\n"
-> -		"Then run with -a <alignment> = 512  or 0. \n");
-> -}
-> +#include <sys/mount.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +
-> +#define FILESIZE	(12*1024*1024)
-> +#define READSIZE	(1024*1024)
-> +
-> +#define MNT_POINT	"mntpoint"
-> +#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-> +			 S_IXGRP|S_IROTH|S_IXOTH)
-> +#define FILENAME	"mntpoint/_dma_thread_test_%.04d.tmp"
-> +#define FILECOUNT	50
-
-The previous filecount was 100, why it's 50 now?
-
-> +#define MIN_WORKERS	2
-> +#define MAX_WORKERS	256
-> +#define PATTERN		(0xfa)
-> +#define PAGE_SIZE	getpagesize()
-> +
-> +char *TCID = "dma_thread_diotest7";
-> +int TST_TOTAL = 1;
-> +
-> +static void setup(void);
-> +static void dma_thread_diotest_verify(void);
-> +static void cleanup(void);
-> +static void help(void);
-> +
-> +static unsigned char *buffer;
-> +
-> +static char *align_str;
-> +static int align;
-> +static int aflag;
-> +static char *workers_str;
-> +static int workers;
-> +static int wflag;
-> +static char *device;
-> +static int mount_flag;
-> +static option_t options[] = {
-> +	{"a:", &aflag, &align_str},
-> +	{"w:", &wflag, &workers_str},
-> +	{NULL, NULL, NULL}
-> +};
-> +
-> +static volatile int done;
-> +static volatile int tst_result;
->  
->  typedef struct {
->  	pthread_t tid;
-> @@ -141,12 +154,13 @@ typedef struct {
->  	int pattern;
->  	unsigned char *buffer;
->  } worker_t;
-> +static worker_t *worker;
->  
-> -void *worker_thread(void *arg)
-> +static void *worker_thread(void *arg)
->  {
-> -	int bytes_read;
->  	int i, k;
-> -	worker_t *worker = (worker_t *) arg;
-> +	int nread;
-> +	worker_t *worker = (worker_t *)arg;
->  	int offset = worker->offset;
->  	int fd = worker->fd;
->  	unsigned char *buffer = worker->buffer;
-> @@ -156,14 +170,13 @@ void *worker_thread(void *arg)
->  	if (lseek(fd, offset, SEEK_SET) < 0) {
->  		fprintf(stderr, "Failed to lseek to %d on fd %d: %s.\n",
->  			offset, fd, strerror(errno));
-> -		exit(1);
-> +		return NULL;
-
-Hmm, that would silence the failure in case that the lseek() has failed.
-If you want fix this error propagation correctly you should return error
-code here and check it in the main loop.
-
-You can use intptr_t as retval with pthread_join and return (void*)1
-here.
-
->  	}
->  
-> -	bytes_read = read(fd, buffer, length);
-> -	if (bytes_read != length) {
-> -		fprintf(stderr, "read failed on fd %d: bytes_read %d, %s\n",
-> -			fd, bytes_read, strerror(errno));
-> -		exit(1);
-> +	nread = read(fd, buffer, length);
-> +	if (nread == -1 || nread != length) {
-> +		fprintf(stderr, "read failed in worker thread%d: %s",
-> +			worker->worker_number, strerror(errno));
-
-Here as well.
-
->  	}
->  
->  	/* Corruption check */
-> @@ -182,24 +195,25 @@ void *worker_thread(void *arg)
->  			}
->  
->  			printf("\n");
-> -			abort();
-> +			tst_result = 1;
-
-And here.
-
->  		}
->  	}
->  
->  	return 0;
-
-This should be NULL.
-
->  }
->  
-> -void *fork_thread(void *arg)
-> +static void *fork_thread(void *arg)
->  {
->  	pid_t pid;
->  
->  	while (!done) {
-> -		pid = fork();
-> +		pid = tst_fork();
->  		if (pid == 0) {
->  			exit(0);
->  		} else if (pid < 0) {
-> -			fprintf(stderr, "Failed to fork child.\n");
-> -			exit(1);
-> +			fprintf(stderr, "Failed to fork child: %s.\n",
-> +				strerror(errno));
-> +			return NULL;
-
-And here.
-
->  		}
->  		waitpid(pid, NULL, 0);
->  		usleep(100);
-> @@ -211,122 +225,42 @@ void *fork_thread(void *arg)
->  
->  int main(int argc, char *argv[])
->  {
-> -	unsigned char *buffer = NULL;
-> -	char filename[1024];
-> -	int fd;
-> -	bool dowrite = true;
-> -	pthread_t fork_tid;
-> -	int c, n, j;
-> -	worker_t *worker;
-> -	int align = 0;
-> -	int offset, rc;
-> +	int i, lc;
-> +	char *msg;
->  
->  	workers = sysconf(_SC_NPROCESSORS_ONLN);
-> +	msg = parse_opts(argc, argv, options, help);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->  
-> -	while ((c = getopt(argc, argv, "a:hw:")) != -1) {
-> -		switch (c) {
-> -		case 'a':
-> -			align = atoi(optarg);
-> -			if (align < 0 || align > PAGE_SIZE) {
-> -				printf("Bad alignment %d.\n", align);
-> -				exit(1);
-> -			}
-> -			dowrite = false;
-> -			break;
-> -
-> -		case 'h':
-> -			usage();
-> -			exit(0);
-> -			break;
-> -
-> -		case 'w':
-> -			workers = atoi(optarg);
-> -			if (workers < MIN_WORKERS || workers > MAX_WORKERS) {
-> -				fprintf(stderr, "Worker count %d not between "
-> -					"%d and %d, inclusive.\n",
-> -					workers, MIN_WORKERS, MAX_WORKERS);
-> -				usage();
-> -				exit(1);
-> -			}
-> -			dowrite = false;
-> -			break;
-> -
-> -		default:
-> -			usage();
-> -			exit(1);
-> -		}
-> -	}
-> -
-> -	if (argc > 1 && (optind < argc)) {
-> -		fprintf(stderr, "Bad command line.\n");
-> -		usage();
-> -		exit(1);
-> -	}
-> -
-> -	if (dowrite) {
-> -
-> -		buffer = malloc(FILESIZE);
-> -		if (buffer == NULL) {
-> -			fprintf(stderr, "Failed to malloc write buffer.\n");
-> -			exit(1);
-> -		}
-> +	setup();
->  
-> -		for (n = 1; n <= FILECOUNT; n++) {
-> -			sprintf(filename, FILENAME, n);
-> -			fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, 0666);
-> -			if (fd < 0) {
-> -				printf("create failed(%s): %s.\n", filename,
-> -				       strerror(errno));
-> -				exit(1);
-> -			}
-> -			memset(buffer, n, FILESIZE);
-> -			printf("Writing file %s.\n", filename);
-> -			if (write(fd, buffer, FILESIZE) != FILESIZE) {
-> -				printf("write failed (%s)\n", filename);
-> -			}
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
->  
-> -			close(fd);
-> -			fd = -1;
-> -		}
-> -
-> -		free(buffer);
-> -		buffer = NULL;
-> -
-> -		printf("done\n");
-> -		exit(0);
-> +		for (i = 0; i < TST_TOTAL; i++)
-> +			dma_thread_diotest_verify();
->  	}
->  
-> -	printf("Using %d workers.\n", workers);
-> -
-> -	worker = malloc(workers * sizeof(worker_t));
-> -	if (worker == NULL) {
-> -		fprintf(stderr, "Failed to malloc worker array.\n");
-> -		exit(1);
-> -	}
-> -
-> -	for (j = 0; j < workers; j++) {
-> -		worker[j].worker_number = j;
-> -	}
-> +	cleanup();
-> +	tst_exit();
-> +}
->  
-> -	printf("Using alignment %d.\n", align);
-> +static void dma_thread_diotest_verify(void)
-> +{
-> +	int n, j, offset, rc;
-> +	char filename[PATH_MAX];
-> +	pthread_t fork_tid;
->  
-> -	posix_memalign((void *)&buffer, PAGE_SIZE, READSIZE + align);
-> -	printf("Read buffer: %p.\n", buffer);
->  	for (n = 1; n <= FILECOUNT; n++) {
-> -
->  		sprintf(filename, FILENAME, n);
->  		for (j = 0; j < workers; j++) {
-> -			if ((worker[j].fd =
-> -			     open(filename, O_RDONLY | O_DIRECT)) < 0) {
-> -				fprintf(stderr, "Failed to open %s: %s.\n",
-> -					filename, strerror(errno));
-> -				exit(1);
-> -			}
-> -
-> +			worker[j].fd = SAFE_OPEN(cleanup, filename,
-> +						 O_RDONLY | O_DIRECT);
->  			worker[j].pattern = n;
->  		}
->  
-> -		printf("Reading file %d.\n", n);
-> +		tst_resm(TINFO, "Reading file %d.", n);
->  
->  		for (offset = 0; offset < FILESIZE; offset += READSIZE) {
->  			memset(buffer, PATTERN, READSIZE + align);
-> @@ -344,31 +278,26 @@ int main(int argc, char *argv[])
->  
->  			rc = pthread_create(&fork_tid, NULL, fork_thread, NULL);
->  			if (rc != 0) {
-> -				fprintf(stderr,
-> -					"Can't create fork thread: %s.\n",
-> -					strerror(rc));
-> -				exit(1);
-> +				tst_brkm(TBROK, cleanup, "pthread_create "
-> +					 "failed: %s", strerror(rc));
->  			}
->  
->  			for (j = 0; j < workers; j++) {
-> -				rc = pthread_create(&worker[j].tid,
-> -						    NULL,
-> +				rc = pthread_create(&worker[j].tid, NULL,
->  						    worker_thread, worker + j);
->  				if (rc != 0) {
-> -					fprintf(stderr,
-> -						"Can't create worker thread %d: %s.\n",
-> -						j, strerror(rc));
-> -					exit(1);
-> +					tst_brkm(TBROK, cleanup, "Can't create"
-> +						 "worker thread %d: %s",
-> +						 j, strerror(rc));
->  				}
->  			}
->  
->  			for (j = 0; j < workers; j++) {
->  				rc = pthread_join(worker[j].tid, NULL);
->  				if (rc != 0) {
-> -					fprintf(stderr,
-> -						"Failed to join worker thread %d: %s.\n",
-> -						j, strerror(rc));
-> -					exit(1);
-> +					tst_brkm(TBROK, cleanup, "Failed to "
-> +						 "join worker thread %d: %s.",
-> +						 j, strerror(rc));
->  				}
->  			}
->  
-> @@ -377,18 +306,107 @@ int main(int argc, char *argv[])
->  
->  			rc = pthread_join(fork_tid, NULL);
->  			if (rc != 0) {
-> -				fprintf(stderr,
-> -					"Failed to join fork thread: %s.\n",
-> -					strerror(rc));
-> -				exit(1);
-> +				tst_brkm(TBROK, cleanup,
-> +					 "Failed to join fork thread: %s.",
-> +					 strerror(rc));
->  			}
->  		}
->  
->  		/* Close the fd's for the next file. */
-> -		for (j = 0; j < workers; j++) {
-> -			close(worker[j].fd);
-> +		for (j = 0; j < workers; j++)
-> +			SAFE_CLOSE(cleanup, worker[j].fd);
-> +		if (tst_result)
-> +			break;
-> +	}
-> +
-> +	if (tst_result)
-> +		tst_resm(TINFO, "data corruption is detected");
-> +	else
-> +		tst_resm(TINFO, "data corruption is not detected");
-> +
-> +	tst_resm(TPASS, "dma_thread_diotest test completed");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	char *tmpbuffer;
-> +	char filename[PATH_MAX];
-> +	int n, fd, j;
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	tst_require_root(NULL);
-> +
-> +	device = getenv("LTP_BIG_DEV");
-> +	if (device == NULL) {
-> +		tst_brkm(TCONF, NULL,
-> +			 "you must specify a big blockdevice(>1.2G)");
-> +	} else {
-> +		tst_mkfs(NULL, device, "ext3", NULL);
-> +	}
-> +
-> +	TEST_PAUSE;
-> +
-> +	if (aflag) {
-> +		align = atoi(align_str);
-> +		if (align < 0 || align > PAGE_SIZE)
-> +			tst_brkm(TCONF, NULL, "Bad alignment %d.", align);
-> +	}
-> +	tst_resm(TINFO, "using alignment %d", align);
-> +
-> +	if (wflag) {
-> +		workers = atoi(workers_str);
-> +		if (workers < MIN_WORKERS || workers > MAX_WORKERS) {
-> +			tst_brkm(TCONF, NULL, "Worker count %d not between "
-> +				 "%d and %d, inclusive",
-> +				 workers, MIN_WORKERS, MAX_WORKERS);
->  		}
->  	}
-> +	tst_resm(TINFO, "using %d workers.", workers);
->  
-> -	return 0;
-> +	tst_tmpdir();
-> +
-> +	SAFE_MKDIR(cleanup, MNT_POINT, DIR_MODE);
-> +
-> +	worker = SAFE_MALLOC(cleanup, workers * sizeof(worker_t));
-> +
-> +	for (j = 0; j < workers; j++)
-> +		worker[j].worker_number = j;
-> +
-> +	if (mount(device, MNT_POINT, "ext3", 0, NULL) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "mount device:%s failed", device);
-> +	}
-> +	mount_flag = 1;
-> +
-> +	tmpbuffer = SAFE_MALLOC(cleanup, FILESIZE);
-> +
-> +	for (n = 1; n <= FILECOUNT; n++) {
-> +		sprintf(filename, FILENAME, n);
-
-		What about tst_fill_file(filename, n, FILESIZE, 1); ?
-
-> +		fd = SAFE_OPEN(cleanup, filename,
-> +			       O_RDWR | O_CREAT | O_TRUNC, 0666);
-> +		memset(tmpbuffer, n, FILESIZE);
-> +		SAFE_WRITE(cleanup, 1, fd, tmpbuffer, FILESIZE);
-> +		SAFE_CLOSE(cleanup, fd);
-> +	}
-> +	free(tmpbuffer);
-> +	if (posix_memalign((void *)&buffer, PAGE_SIZE, READSIZE + align) != 0)
-> +		tst_brkm(TBROK, cleanup, "call posix_memalign failed");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	free(buffer);
-> +
-> +	if (mount_flag && umount(MNT_POINT) < 0)
-> +		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-> +
-> +	free(worker);
-> +}
-> +
-> +static void help(void)
-> +{
-> +	printf("-a align read buffer to offset <alignment>.\n");
-> +	printf("-w number of worker threads, 2 (default) to 256,"
-> +	       " defaults to number of cores.\n");
->  }
-
+diff --git a/testcases/kernel/syscalls/read/read02.c b/testcases/kernel/syscalls/read/read02.c
+index 8681662..8aabe93 100644
+--- a/testcases/kernel/syscalls/read/read02.c
++++ b/testcases/kernel/syscalls/read/read02.c
+@@ -1,63 +1,36 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
++ *	07/2001 Ported by Wayne Boyer
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+-
+ /*
+- * NAME
+- * 	read02.c
+- *
+  * DESCRIPTION
+- * 	test 1:
+- *	Does read return -1 if file descriptor is not valid, check for EBADF
++ *	test 1:
++ *	Read with an invalid file descriptor, and expect an EBADF.
+  *
+  *	test 2:
+- *	Check if read sets EISDIR, if the fd refers to a directory
+- *
+- * 	test 3:
+- * 	Check if read sets EFAULT, if buf is -1.
+- *$
+- * ALGORITHM
+- * 	test 1:
+- * 	Read with an invalid file descriptor, and expect an EBADF
++ *	The parameter passed to read is a directory, check if the errno is
++ *	set to EISDIR.
+  *
+- * 	test 2:
+- * 	The parameter passed to read is a directory, check if the errno is
+- * 	set to EISDIR.
+- *
+- * 	test 3:
+- * 	Pass buf = -1 as a parmeter to read, expect an EFAULT.
+- *$
+- * USAGE:  <for command-line>
+- *  read02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS
+- * 	None
++ *	test 3:
++ *	Pass buf = -1 as a parmeter to read, expect an EFAULT.
+  */
+-#define _GNU_SOURCE		/* for O_DIRECTORY */
++
++#define _GNU_SOURCE
++
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
+@@ -65,43 +38,31 @@
+ #include <sys/mman.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "safe_macros.h"
+ 
+-void cleanup(void);
+-void setup(void);
++#define TEST_FILE	"test_file"
+ 
+ char *TCID = "read02";
+ 
+-char file[BUFSIZ];
+-char fname[100] = "/tmp/tstfile";
+-
+-int exp_enos[] = { EBADF, EISDIR, EFAULT, 0 };
+-
+-int badfd = -1;
+-int fd2, fd3;
+-char buf[BUFSIZ];
++static int badfd = -1;
++static int fd2, fd3;
++static char buf[BUFSIZ];
++static int exp_enos[] = { EBADF, EISDIR, EFAULT, 0 };
+ 
+-struct test_case_t {
++static struct test_case_t {
+ 	int *fd;
+ 	void *buf;
+-	int error;
++	int exp_error;
+ } TC[] = {
+-	/* the file descriptor is invalid - EBADF */
+-	{
+-	&badfd, buf, EBADF},
+-	    /* the file descriptor is a directory - EISDIR */
+-	{
+-	&fd2, buf, EISDIR,},
+-#ifndef UCLINUX
+-	    /* Skip since uClinux does not implement memory protection */
+-	    /* the buffer is invalid - EFAULT */
+-	{
+-	&fd3, (void *)-1, EFAULT}
+-#endif
++	{&badfd, buf, EBADF},
++	{&fd2, buf, EISDIR},
++	{&fd3, (void *)-1, EFAULT},
+ };
+ 
+-int TST_TOTAL = sizeof(TC) / sizeof(*TC);
+-
+-char *bad_addr = 0;
++int TST_TOTAL = ARRAY_SIZE(TC);
++static void setup(void);
++static void cleanup(void);
++static void read_verify(const struct test_case_t *);
+ 
+ int main(int ac, char **av)
+ {
+@@ -109,98 +70,68 @@ int main(int ac, char **av)
+ 	int lc;
+ 	char *msg;
+ 
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-	}
+ 
+ 	setup();
+ 
+-	/* set up the expected errnos */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+-	/*
+-	 * The following loop checks looping state if -i option given
+-	 */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+-
+-		/* loop through the test cases */
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			TEST(read(*TC[i].fd, TC[i].buf, 1));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			TEST_ERROR_LOG(TEST_ERRNO);
+-
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS, "expected failure - "
+-					 "errno = %d : %s", TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TFAIL, "unexpected error - %d : %s - "
+-					 "expected %d", TEST_ERRNO,
+-					 strerror(TEST_ERRNO), TC[i].error);
+-			}
+-		}
++		for (i = 0; i < TST_TOTAL; i++)
++			read_verify(&TC[i]);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+ }
+ 
+-/*
+- * setup() - performs all ONE TIME setup for this test
+- */
+-void setup(void)
++static void setup(void)
+ {
+-
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+-	/* create a temporary filename */
+-	sprintf(fname, "%s.%d", fname, getpid());
+-
+ 	TEST_PAUSE;
+ 
+-	if ((fd2 = open("/tmp", O_DIRECTORY)) == -1) {
+-		tst_brkm(TBROK, cleanup, "open of fd2 failed");
+-	}
++	tst_tmpdir();
+ 
+-	if ((fd3 = open(fname, O_RDWR | O_CREAT, 0666)) == -1) {
+-		tst_brkm(TBROK, cleanup, "open of fd3 (temp file) failed");
+-	}
++	fd2 = SAFE_OPEN(cleanup, "/tmp", O_DIRECTORY);
+ 
+-	if (write(fd3, "A", 1) != 1) {
+-		tst_brkm(TBROK, cleanup, "can't write to fd3");
+-	}
+-	close(fd3);
+-	if ((fd3 = open(fname, O_RDWR | O_CREAT, 0666)) == -1) {
+-		tst_brkm(TBROK, cleanup, "open of fd3 (temp file) failed");
++	SAFE_FILE_PRINTF(cleanup, TEST_FILE, "A");
++
++	fd3 = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
++}
++
++static void read_verify(const struct test_case_t *test)
++{
++	TEST(read(*test->fd, test->buf, 1));
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "call succeeded unexpectedly");
++		return;
+ 	}
+-#if !defined(UCLINUX)
+-	bad_addr = mmap(0, 1, PROT_NONE,
+-			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+-	if (bad_addr == MAP_FAILED) {
+-		tst_brkm(TBROK, cleanup, "mmap failed");
++
++	TEST_ERROR_LOG(TEST_ERRNO);
++
++	if (TEST_ERRNO == test->exp_error) {
++		tst_resm(TPASS | TTERRNO, "expected failure - errno = %d : %s",
++			 TEST_ERRNO, strerror(TEST_ERRNO));
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "unexpected error - %d : %s - expected %d",
++			 TEST_ERRNO, strerror(TEST_ERRNO), test->exp_error);
+ 	}
+-	TC[2].buf = bad_addr;
+-#endif
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- *	       or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing status if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-	unlink(fname);
+ 
++	if (fd3 > 0)
++		close(fd3);
++
++	if (fd2 > 0)
++		close(fd2);
++
++	tst_rmdir();
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
