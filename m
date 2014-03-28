@@ -1,26 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <monstr@monstr.eu>) id 1WKV4a-0004Jo-N4
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 15:46:32 +0000
-Received: from mail-qa0-f52.google.com ([209.85.216.52])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WKV4Z-0005RE-Cb
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 15:46:32 +0000
-Received: by mail-qa0-f52.google.com with SMTP id m5so3666233qaj.11
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 03 Mar 2014 07:46:25 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CA+G9fYv9+Fhyz=nVZQZXxLU0YMTJadfr1XVVVb9P=inEfUaDuA@mail.gmail.com>
-References: <CA+G9fYuT4TSs=3j6K9zztsTgFNVp2YG6JT-2Q_L==1P5G+SBew@mail.gmail.com>
-	<52FDE52A.4070002@linux.vnet.ibm.com>
-	<CA+G9fYv9+Fhyz=nVZQZXxLU0YMTJadfr1XVVVb9P=inEfUaDuA@mail.gmail.com>
-Date: Mon, 3 Mar 2014 16:21:11 +0100
-Message-ID: <CAHTX3dLrfW_Hbqx_-vEfcHGCh7c4n=Hs1OATfvjJ9UEaxJTCaQ@mail.gmail.com>
-From: Michal Simek <monstr@monstr.eu>
-Subject: Re: [LTP] How to get the Linux kernel coverage data on ARM arch
- when I run LTP test?
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1WTLqi-0005nn-Cu
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 01:44:48 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTLqe-0007wb-VK
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 01:44:48 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2S1icuj023380
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 01:44:39 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2S1ibCF006667
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 01:44:38 GMT
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2S1ibAS006660
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Mar 2014 01:44:37 GMT
+From: Simon Xu <xu.simon@oracle.com>
+Date: Fri, 28 Mar 2014 09:44:24 +0800
+Message-Id: <1395971064-625-1-git-send-email-xu.simon@oracle.com>
+Subject: [LTP]  [PATCH] ip_tests.sh: don't use hardcoded eth0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,134 +35,200 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2202517847648756186=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>, Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Deepak Saxena <dsaxena@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, fhrbata@redhat.com, Arnd Bergmann <arnd.bergmann@linaro.org>, Mark Brown <mark.brown@linaro.org>, Milosz Wasilewski <milosz.wasilewski@linaro.org>
-
---===============2202517847648756186==
-Content-Type: multipart/alternative; boundary=001a113a80d674aa3904f3b5562f
-
---001a113a80d674aa3904f3b5562f
-Content-Type: text/plain; charset=ISO-8859-1
-
-HI,
-
-
-2014-02-18 15:30 GMT+01:00 Naresh Kamboju <naresh.kamboju@linaro.org>:
-
-> On 14 February 2014 15:13, Peter Oberparleiter
-> <oberpar@linux.vnet.ibm.com> wrote:
-> > On 14.02.2014 10:02, Naresh Kamboju wrote:
-> >> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01# gcov
-> kernel/gcov/base.c -o
-> >>  /sys/kernel/debug/gcov/tmp/linux-linaro-3.13-2014.01/kernel/gcov/
-> >> File 'kernel/gcov/base.c'
-> >> Lines executed:43.18% of 44
-> >> Creating 'base.c.gcov'
-> >>
-> >> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01#
-> >>
-> >> The above experiment gives coverage of a single file base.c when i run
-> >> gcov manually.
-> >> Is there any way to get Linux kernel coverage of all files after
-> >> running LTP test cases ?
-> >
-> > 1. Reset coverage data: lcov -z
-> > 2. Run LTP (or any other test case)
-> > 3. Capture coverage data: lcov -c -o coverage.info
-> > 4. Generate HTML output: genhtml coverage.info -o out
-> > 5. View HTML output: <browser> out/index.html
->
-> It is working !!!
-> LTP executed on linux-linaro build on vexpress-tc2 target.
-> Please find results obtained
-> http://people.linaro.org/~naresh.kamboju/linux-linaro-coverage-by-ltp/
->
-> The plan is to run all linaro test suite and to get coverage date.
-
-
-Have you already run it? Are these test cases available?
-
-Thanks,
-Michal
-
---001a113a80d674aa3904f3b5562f
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">HI,<br><div><div class=3D"gmail_extra"><br><br><div class=
-=3D"gmail_quote">2014-02-18 15:30 GMT+01:00 Naresh Kamboju <span dir=3D"ltr=
-">&lt;<a href=3D"mailto:naresh.kamboju@linaro.org" target=3D"_blank">naresh=
-.kamboju@linaro.org</a>&gt;</span>:<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">On 14 February 2014 15:13, Peter Oberparleit=
-er<br>
-<div class=3D"">&lt;<a href=3D"mailto:oberpar@linux.vnet.ibm.com">oberpar@l=
-inux.vnet.ibm.com</a>&gt; wrote:<br>
-&gt; On 14.02.2014 10:02, Naresh Kamboju wrote:<br>
-&gt;&gt; root@linaro-developer:/tmp/linux-linaro-3.13-2014.01# gcov kernel/=
-gcov/base.c -o<br>
-&gt;&gt; =A0/sys/kernel/debug/gcov/tmp/linux-linaro-3.13-2014.01/kernel/gco=
-v/<br>
-&gt;&gt; File &#39;kernel/gcov/base.c&#39;<br>
-&gt;&gt; Lines executed:43.18% of 44<br>
-&gt;&gt; Creating &#39;base.c.gcov&#39;<br>
-&gt;&gt;<br>
-&gt;&gt; root@linaro-developer:/tmp/linux-linaro-3.13-2014.01#<br>
-&gt;&gt;<br>
-&gt;&gt; The above experiment gives coverage of a single file base.c when i=
- run<br>
-&gt;&gt; gcov manually.<br>
-&gt;&gt; Is there any way to get Linux kernel coverage of all files after<b=
-r>
-&gt;&gt; running LTP test cases ?<br>
-&gt;<br>
-&gt; 1. Reset coverage data: lcov -z<br>
-&gt; 2. Run LTP (or any other test case)<br>
-&gt; 3. Capture coverage data: lcov -c -o <a href=3D"http://coverage.info" =
-target=3D"_blank">coverage.info</a><br>
-&gt; 4. Generate HTML output: genhtml <a href=3D"http://coverage.info" targ=
-et=3D"_blank">coverage.info</a> -o out<br>
-&gt; 5. View HTML output: &lt;browser&gt; out/index.html<br>
-<br>
-</div>It is working !!!<br>
-LTP executed on linux-linaro build on vexpress-tc2 target.<br>
-Please find results obtained<br>
-<a href=3D"http://people.linaro.org/~naresh.kamboju/linux-linaro-coverage-b=
-y-ltp/" target=3D"_blank">http://people.linaro.org/~naresh.kamboju/linux-li=
-naro-coverage-by-ltp/</a><br>
-<br>
-The plan is to run all linaro test suite and to get coverage date.</blockqu=
-ote><div><br></div><div>Have you already run it? Are these test cases avail=
-able? <br></div><div><br></div><div>Thanks,<br>Michal<br></div><div><br>
-</div></div></div></div></div>
-
---001a113a80d674aa3904f3b5562f--
-
-
---===============2202517847648756186==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+The script uses hardcoded 'eth0' which used to work on most systems.
+This fix tries to find a 'working' network interface using the hostname.
+
+Signed-off-by: Simon Xu <xu.simon@oracle.com>
+---
+ testcases/network/iproute/ip_tests.sh | 50 +++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 23 deletions(-)
+
+diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
+index ed20540..4bba243 100755
+--- a/testcases/network/iproute/ip_tests.sh
++++ b/testcases/network/iproute/ip_tests.sh
+@@ -38,7 +38,7 @@ set +x
+ # Description:	- Check if command ip is available.
+ #               - Check if command ifconfig is available.
+ #               - check if command awk is available.
+-#               - alias eth0 to eth0:1 with IP 10.1.1.12
++#               - alias $INF to $INF:1 with IP 10.1.1.12
+ #
+ # Return		- zero on success
+ #               - non zero on failure. return value from commands ($RC)
+@@ -46,7 +46,7 @@ init()
+ {
+ 
+ 	export TST_TOTAL=2			# total numner of tests in this file.
+-	export TCID="ip_tests  "		# this is the init function.
++	export TCID="ip_tests"			# this is the init function.
+ 	export TST_COUNT=0			# init identifier,
+ 
+ 	if [ -z $TMP ]
+@@ -107,22 +107,26 @@ init()
+ 
+ 	tst_resm TINFO "INIT: Inititalizing tests."
+ 
+-	# Aliasing eth0 to create private network.
+-	/sbin/ifconfig eth0:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1
++	# Get network interface.
++	IP=$(dig +short $(hostname))
++	INF=$(ifconfig|grep -B1 $IP|head -1|sed 's/:.*//')
++
++	# Aliasing $INF to create private network.
++	/sbin/ifconfig $INF:1 10.1.1.12 >$LTPTMP/tst_ip.err 2>&1
+ 	RC=$?
+ 	if [ $RC -ne 0 ]
+ 	then
+-		tst_brk TBROK NULL NULL "INIT: failed aliasing eth0:1 with IP 10.1.1.12"
++		tst_brk TBROK NULL NULL "INIT: failed aliasing $INF:1 with IP 10.1.1.12"
+ 		return $RC
+ 	else
+-		/sbin/route add -host 10.1.1.12 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
++		/sbin/route add -host 10.1.1.12 dev $INF:1 >$LTPTMP/tst_ip.err 2>&1
+ 		RC=$?
+ 		if [ $RC -ne 0 ]
+ 		then
+ 			tst_brk TBROK NULL NULL "INIT: failed adding route to 10.1.1.12"
+ 			return $RC
+ 		else
+-			tst_resm TINFO "INIT: added alias: `ifconfig eth0:1`"
++			tst_resm TINFO "INIT: added alias: `ifconfig $INF:1`"
+ 		fi
+ 	fi
+ 
+@@ -148,7 +152,7 @@ init()
+ # Function:		cleanup
+ #
+ # Description	- remove temporary files and directories.
+-#               - remove alias to eth0
++#               - remove alias to $INF
+ #
+ # Return		- zero on success
+ #               - non zero on failure. return value from commands ($RC)
+@@ -157,11 +161,11 @@ cleanup()
+ 	TCID=dhcpd
+ 	TST_COUNT=0
+ 
+-	/sbin/ifconfig eth0:1 >$LTPTMP/tst_ip.err 2>&1
++	/sbin/ifconfig $INF:1 >$LTPTMP/tst_ip.err 2>&1
+ 	RC=$?
+ 	if [ $RC -eq 0 ]
+ 	then
+-		/sbin/ifconfig eth0:1 down >$LTPTMP/tst_ip.err 2>&1
++		/sbin/ifconfig $INF:1 down >$LTPTMP/tst_ip.err 2>&1
+ 	fi
+ 
+ 	rm -fr $LTPTMP
+@@ -189,11 +193,11 @@ test01()
+ 	tst_resm TINFO \
+ 	 "Test #1: ip link set DEVICE mtu MTU changes the device mtu size"
+ 
+-	tst_resm TINFO "Test #1: changing mtu size of eth0:1 device."
++	tst_resm TINFO "Test #1: changing mtu size of $INF:1 device."
+ 
+ 	MTUSZ_BAK=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" \
+ 		| awk '{print $1}'`
+-	ip link set eth0:1 mtu 300 >$LTPTMP/tst_ip.err 2>&1
++	ip link set $INF:1 mtu 300 >$LTPTMP/tst_ip.err 2>&1
+ 	if [ $RC -ne 0 ]
+ 	then
+ 		tst_res TFAIL $LTPTMP/tst_ip.err \
+@@ -204,7 +208,7 @@ test01()
+ 		if [ $MTUSZ -eq 300 ]
+ 		then
+ 			tst_resm TPASS "Test #1: changing mtu size success"
+-			ip link set eth0:1 mtu $MTUSZ_BAK \
++			ip link set $INF:1 mtu $MTUSZ_BAK \
+ 				>$LTPTMP/tst_ip.err 2>&1
+ 		else
+ 			tst_resm FAIL NULL \
+@@ -256,7 +260,7 @@ test02()
+ 		return $RC
+ 	else
+ 		tst_resm TPASS \
+-			"Test #2: Listed eth0:1 and returned correct attributes"
++			"Test #2: Listed $INF:1 and returned correct attributes"
+ 	fi
+ 	return $RC
+ }
+@@ -365,7 +369,7 @@ test04()
+ 		return $RC
+ 	else
+ 		tst_resm TINFO \
+-		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
++			"Test #4: ip neigh show - shows all neighbour entries in arp tables."
+ 
+ 		cat > $LTPTMP/tst_ip.exp <<-EOF
+ 		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
+@@ -443,14 +447,14 @@ test05()
+ 
+ 
+ 	tst_resm TINFO \
+-	 "Test #5: create an interface with inet 10.6.6.6 alias to eth0"
++	 "Test #5: create an interface with inet 10.6.6.6 alias to $INF"
+ 
+-	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
++	ifconfig $INF:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
+ 	RC=$?
+ 	if [ $RC -ne 0 ]
+ 	then
+ 		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
+-			"Test #5: unable to create interface eth0:1 inet 10.6.6.6. Reason:"
++			"Test #5: unable to create interface $INF:1 inet 10.6.6.6. Reason:"
+ 		return $RC
+ 	fi
+ 
+@@ -541,16 +545,16 @@ test06()
+ 	tst_resm TINFO \
+ 	 "Test #6: ip maddr add - adds a new multicast addr"
+ 
+-	ifconfig eth0:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
++	ifconfig $INF:1 10.6.6.6 netmask 255.255.255.0 >$LTPTMP/tst_ip.err 2>&1
+ 	RC=$?
+ 	if [ $RC -ne 0 ]
+ 	then
+ 		tst_brk TBROK $LTPTMP/tst_ip.err NULL \
+-			"Test #6: unable to create interface eth0:1 inet 10.6.6.6. Reason:"
++			"Test #6: unable to create interface $INF:1 inet 10.6.6.6. Reason:"
+ 		return $RC
+ 	fi
+ 
+-	ip maddr add 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
++	ip maddr add 66:66:00:00:00:66 dev $INF:1 >$LTPTMP/tst_ip.err 2>&1
+ 	RC=$?
+ 	if [ $RC -ne 0 ]
+ 	then
+@@ -579,7 +583,7 @@ test06()
+ 			if [ $RC -ne 0 ]
+ 			then
+ 				tst_res FAIL $LTPTMP/tst_ip.err \
+-					"Test #6: multicast addr not added to eth0:1. Details:"
++					"Test #6: multicast addr not added to $INF:1. Details:"
+ 				return $RC
+ 			fi
+ 		fi
+@@ -587,7 +591,7 @@ test06()
+ 		tst_resm TINFO \
+ 		 "Test #6: ip maddr del - deletes multicast addr."
+ 
+-		ip maddr del 66:66:00:00:00:66 dev eth0:1 >$LTPTMP/tst_ip.err 2>&1
++		ip maddr del 66:66:00:00:00:66 dev $INF:1 >$LTPTMP/tst_ip.err 2>&1
+ 		RC=$?
+ 		if [ $RC -ne 0 ]
+ 		then
+-- 
+1.9.1
+
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
---===============2202517847648756186==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2202517847648756186==--
-
