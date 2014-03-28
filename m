@@ -1,28 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WKZU0-0002Bf-QM
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 20:29:04 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WKZTz-0002ut-64
-	for ltp-list@lists.sourceforge.net; Mon, 03 Mar 2014 20:29:04 +0000
-Date: Mon, 3 Mar 2014 15:28:49 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <40197796.12723624.1393878529754.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1393845909.1984.13.camel@G08JYZSD130126>
-References: <1392372604.2085.10.camel@G08JYZSD130126>
-	<1128042688.6449127.1392894329625.JavaMail.zimbra@redhat.com>
-	<929738145.6498501.1392901385804.JavaMail.zimbra@redhat.com>
-	<1393832848.1991.19.camel@G08JYZSD130126>
-	<1393833079.1991.22.camel@G08JYZSD130126>
-	<1720660524.12179720.1393837634610.JavaMail.zimbra@redhat.com>
-	<1393845775.1984.10.camel@G08JYZSD130126>
-	<1393845909.1984.13.camel@G08JYZSD130126>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from
+	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
+	id 1WTdHh-0001O5-Hd
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 20:21:49 +0000
+Received: from smtp-out3.electric.net ([72.35.12.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTdHg-000773-GR
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 20:21:49 +0000
+Received: from 1WTdHZ-0000CE-Vw by out3b.electric.net with emc1-ok (Exim
+	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1WTdHa-0000Db-UE
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 13:21:42 -0700
+Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
+	by out3b.electric.net with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
+	id 1WTdHZ-0000CE-Vw
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 13:21:41 -0700
+From: Joseph Beckenbach <jbeckenbach@lancope.com>
+Date: Fri, 28 Mar 2014 20:23:39 +0000
+Message-ID: <4506ACC2AE90484D87F9A883BA36C21C54931E@LCHQEX03.lancope.local>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v5 3/3] mlock/mlock02.c: add EPERM and ENOMEM
- errno tests
+Subject: [LTP] Suggested patch to recvfrom / recvmsg tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,179 +36,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
+Hi, all!
 
+A tweak to improve recvfrom01.c and recvmsg01.c --
+there's a loop in the child server process which walks all available fds and attempts to read those where the relevant fd_set bit is set.
+Sadly, when there's more file descriptors available than bits in the fd_set, this loop will happily walk off the end of the fd_set, clearing bits along the way.
+This leads to intermittent segfaults and thus false positives in these two tests.
 
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Monday, 3 March, 2014 12:25:09 PM
-> Subject: [PATCH v5 3/3] mlock/mlock02.c: add EPERM and ENOMEM errno tests
-> 
-> Add EPERM and ENOMEM errno tests for mlock(2).
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Immediate fix is to force the loop not to look at bits off the end of the fd_set.
+I've no idea whether it makes sense to rewrite the server code of these two tests, as only under heavy socket / fd use would the accept() calls in the tests return a file descriptor outside the fd_set.
 
-Looks good to me.
+Thanks!
 
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
+Joseph
+Joseph Beckenbach, senior QA engineer : Automation
 
-> ---
->  testcases/kernel/syscalls/mlock/mlock02.c | 82
->  ++++++++++++++++++++++++++++++-
->  1 file changed, 80 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mlock/mlock02.c
-> b/testcases/kernel/syscalls/mlock/mlock02.c
-> index 95c499d..bfed030 100644
-> --- a/testcases/kernel/syscalls/mlock/mlock02.c
-> +++ b/testcases/kernel/syscalls/mlock/mlock02.c
-> @@ -23,11 +23,20 @@
->   *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
->   *      if some of the specified address range does not correspond to
->   *      mapped pages in the address space of the process.
-> + *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
-> + *      if (Linux  2.6.9  and  later)  the caller had a non-zero
-> RLIMIT_MEMLOCK
-> + *      soft resource limit, but tried to lock more memory than the limit
-> + *      permitted.  This limit is not enforced if the process is privileged
-> + *      (CAP_IPC_LOCK).
-> + *   3. mlock() fails with -1 return value and sets errno to EPERM,
-> + *      if (Linux 2.6.9 and later) the caller was not privileged
-> (CAP_IPC_LOCK)
-> + *      and its RLIMIT_MEMLOCK soft resource limit was 0.
->   */
->  
->  #include <errno.h>
->  #include <unistd.h>
->  #include <sys/mman.h>
-> +#include <pwd.h>
->  
->  #include "test.h"
->  #include "usctest.h"
-> @@ -40,14 +49,18 @@ char *TCID = "mlock02";
->  static void setup(void);
->  static void cleanup(void);
->  static void test_enomem1(void);
-> +static void test_enomem2(void);
-> +static void test_eperm(void);
->  static void mlock_verify(const void *, const size_t, const int);
->  
->  static size_t len;
-> +static struct rlimit original;
-> +static struct passwd *ltpuser;
->  
-> -static void (*test_func[])(void) = { test_enomem1 };
-> +static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm
-> };
->  
->  int TST_TOTAL = ARRAY_SIZE(test_func);
-> -static int exp_enos[] = { ENOMEM, 0 };
-> +static int exp_enos[] = { ENOMEM, EPERM, 0 };
->  
->  int main(int ac, char **av)
->  {
-> @@ -73,11 +86,17 @@ int main(int ac, char **av)
->  
->  static void setup(void)
->  {
-> +	tst_require_root(NULL);
-> +
->  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->  
->  	TEST_PAUSE;
->  
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-> +
->  	len = getpagesize();
-> +
-> +	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
->  }
->  
->  static void test_enomem1(void)
-> @@ -111,6 +130,65 @@ static void test_enomem1(void)
->  	mlock_verify(addr, len, ENOMEM);
->  }
->  
-> +static void test_enomem2(void)
-> +{
-> +	void *addr;
-> +	struct rlimit rl;
-> +
-> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
-> +		tst_resm(TCONF,
-> +			 "ENOMEM error value test for this condition needs "
-> +			 "kernel 2.6.9 or higher");
-> +		return;
-> +	}
-> +
-> +	rl.rlim_max = len - 1;
-> +	rl.rlim_cur = len - 1;
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
-> +
-> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
-> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +
-> +	mlock_verify(addr, len, ENOMEM);
-> +
-> +	SAFE_SETEUID(cleanup, 0);
-> +
-> +	SAFE_MUNMAP(cleanup, addr, len);
-> +
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
-> +}
-> +
-> +static void test_eperm(void)
-> +{
-> +	void *addr;
-> +	struct rlimit rl;
-> +
-> +	if ((tst_kvercmp(2, 6, 9)) < 0) {
-> +		tst_resm(TCONF,
-> +			 "EPERM error value test needs kernel 2.6.9 or higher");
-> +		return;
-> +	}
-> +
-> +	rl.rlim_max = 0;
-> +	rl.rlim_cur = 0;
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
-> +
-> +	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
-> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +
-> +	mlock_verify(addr, len, EPERM);
-> +
-> +	SAFE_SETEUID(cleanup, 0);
-> +
-> +	SAFE_MUNMAP(cleanup, addr, len);
-> +
-> +	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
-> +}
-> +
->  static void mlock_verify(const void *addr, const size_t len, const int
->  error)
->  {
->  	TEST(mlock(addr, len));
-> --
-> 1.8.4.2
-> 
-> 
-> 
-> 
+=====
+diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+index b5ab4a0..5e68d98 100644
+--- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
++++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+@@ -319,7 +319,7 @@ void do_child()
+ 			/* send something back */
+ 			(void)write(newfd, "hoser\n", 6);
+ 		}
+-		for (fd = 0; fd < nfds; ++fd)
++		for (fd = 0; fd < nfds && fd < FD_SETSIZE; ++fd)
+ 			if (fd != sfd && FD_ISSET(fd, &rfds)) {
+ 				cc = read(fd, buf, sizeof(buf));
+ 				if (cc == 0 || (cc < 0 && errno != EINTR)) {
+diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+index dd6b3d5..5492c1d 100644
+--- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
++++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+@@ -481,7 +481,7 @@ void do_child()
+ 			if (newfd >= 0)
+ 				FD_SET(newfd, &afds);
+ 		}
+-		for (fd = 0; fd < nfds; ++fd)
++		for (fd = 0; fd < nfds && fd < FD_SETSIZE; ++fd)
+ 			if (fd != sfd && fd != ufd && FD_ISSET(fd, &rfds)) {
+ 				char rbuf[1024];
+
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
