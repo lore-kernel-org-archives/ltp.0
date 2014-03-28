@@ -1,46 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <root@localhost.localdomain>) id 1WQtuI-0003Ac-LE
-	for ltp-list@lists.sourceforge.net; Fri, 21 Mar 2014 07:30:22 +0000
-Received: from fgwmail5.fujitsu.co.jp ([192.51.44.35])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WQtuC-0004KX-NJ
-	for ltp-list@lists.sourceforge.net; Fri, 21 Mar 2014 07:30:22 +0000
-Received: from m2.gw.fujitsu.co.jp (unknown [10.0.50.72])
-	by fgwmail5.fujitsu.co.jp (Postfix) with ESMTP id 29DE53EE1D9
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:30:10 +0900 (JST)
-Received: from smail (m2 [127.0.0.1])
-	by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 175D845DE4D
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:30:10 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (s2.gw.nic.fujitsu.com [10.0.50.92])
-	by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id F1E0F45DE3E
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:30:09 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id E1D8D1DB8038
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:30:09 +0900 (JST)
-Received: from s01.gw.fujitsu.co.jp (s01.gw.nic.fujitsu.com [133.161.11.16])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 934571DB802C
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:30:09 +0900 (JST)
-Received: from s01.gw.fujitsu.co.jp (yt-mxio2.gw.nic.fujitsu.com
-	[10.134.25.142])
-	by s01.gw.fujitsu.co.jp (Postfix) with ESMTP id AF8AA3F176D
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:29:40 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.225.127])
-	by s01.gw.fujitsu.co.jp (Postfix) with ESMTP id 439A98A001
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 16:29:40 +0900 (JST)
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 21 Mar 2014 15:29:52 +0800
-Message-Id: <1395386992-6472-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: [LTP] [PATCH] openat/openat02.c: add a new case to test flags
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1WTP1u-0000ui-9r
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 05:08:34 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WTP1t-0007lc-IS
+	for ltp-list@lists.sourceforge.net; Fri, 28 Mar 2014 05:08:34 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 28 Mar 2014 01:08:30 -0400
+Message-ID: <698021823.mA9edKhrul@vapier>
+In-Reply-To: <1395971064-625-1-git-send-email-xu.simon@oracle.com>
+References: <1395971064-625-1-git-send-email-xu.simon@oracle.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] ip_tests.sh: don't use hardcoded eth0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -50,590 +24,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3085175891084496556=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-create a new case to test flags for openat(2):
-O_APPEND
-O_CLOEXEC
-O_LARGEFILE
-O_NOATIME
-O_NOFOLLOW
-O_TRUNC
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- configure.ac                                      |   1 +
- m4/ltp-openat.m4                                  |  25 ++
- runtest/syscalls                                  |   1 +
- testcases/kernel/syscalls/.gitignore              |   1 +
- testcases/kernel/syscalls/openat/openat.h         |  35 +++
- testcases/kernel/syscalls/openat/openat01.c       |  13 +-
- testcases/kernel/syscalls/openat/openat02.c       | 343 ++++++++++++++++++++++
- testcases/kernel/syscalls/openat/openat02_child.c |  41 +++
- 8 files changed, 451 insertions(+), 9 deletions(-)
- create mode 100644 m4/ltp-openat.m4
- create mode 100644 testcases/kernel/syscalls/openat/openat.h
- create mode 100644 testcases/kernel/syscalls/openat/openat02.c
- create mode 100644 testcases/kernel/syscalls/openat/openat02_child.c
+--===============3085175891084496556==
+Content-Type: multipart/signed; boundary="nextPart2624932.g3yCLvkLs5";
+	micalg="pgp-sha1"; protocol="application/pgp-signature"
 
-diff --git a/configure.ac b/configure.ac
-index 44016e7..4e8f1c6 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -175,5 +175,6 @@ LTP_CHECK_FCHOWNAT
- LTP_CHECK_MKNODAT
- LTP_CHECK_FALLOCATE
- LTP_CHECK_SYSCALL_FCNTL
-+LTP_CHECK_OPENAT
- 
- AC_OUTPUT
-diff --git a/m4/ltp-openat.m4 b/m4/ltp-openat.m4
-new file mode 100644
-index 0000000..aa3b0a3
---- /dev/null
-+++ b/m4/ltp-openat.m4
-@@ -0,0 +1,25 @@
-+dnl
-+dnl Copyright (c) Linux Test Project, 2014
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program;  if not, write to the Free Software
-+dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_OPENAT
-+dnl ----------------------------
-+dnl
-+AC_DEFUN([LTP_CHECK_OPENAT],[
-+AC_CHECK_FUNCS(openat,,)
-+])
-diff --git a/runtest/syscalls b/runtest/syscalls
-index c032465..3930c1c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -709,6 +709,7 @@ open11 open11
- 
- #openat test cases
- openat01 openat01
-+openat02 openat02
- 
- mincore01 mincore01
- mincore02 mincore02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 5e9af07..da3d4bf 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -601,6 +601,7 @@
- /open/open10
- /open/open11
- /openat/openat01
-+/openat/openat02
- /pathconf/pathconf01
- /pause/pause01
- /pause/pause02
-diff --git a/testcases/kernel/syscalls/openat/openat.h b/testcases/kernel/syscalls/openat/openat.h
-new file mode 100644
-index 0000000..fce4e3f
---- /dev/null
-+++ b/testcases/kernel/syscalls/openat/openat.h
-@@ -0,0 +1,35 @@
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2007
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU Library General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ *
-+ */
-+
-+#ifndef OPENAT_H
-+#define OPENAT_H
-+
-+#include <sys/types.h>
-+#include "config.h"
-+#include "linux_syscall_numbers.h"
-+
-+#if !defined(HAVE_OPENAT)
-+int openat(int dirfd, const char *pathname, int flags, mode_t mode)
-+{
-+	return ltp_syscall(__NR_openat, dirfd, pathname, flags, mode);
-+}
-+#endif
-+
-+#endif /* OPENAT_H */
-diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
-index 2f68d2f..f03de07 100644
---- a/testcases/kernel/syscalls/openat/openat01.c
-+++ b/testcases/kernel/syscalls/openat/openat01.c
-@@ -55,11 +55,11 @@
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
-+#include "lapi/fcntl.h"
-+#include "openat.h"
- 
- #define TEST_CASES 5
--#ifndef AT_FDCWD
--#define AT_FDCWD -100
--#endif
-+
- void setup();
- void cleanup();
- void setup_every_copy();
-@@ -75,11 +75,6 @@ int fds[TEST_CASES];
- char *filenames[TEST_CASES];
- int expected_errno[TEST_CASES] = { 0, 0, ENOTDIR, EBADF, 0 };
- 
--int myopenat(int dirfd, const char *filename, int flags, int mode)
--{
--	return ltp_syscall(__NR_openat, dirfd, filename, flags, mode);
--}
--
- int main(int ac, char **av)
- {
- 	int lc;
-@@ -116,7 +111,7 @@ int main(int ac, char **av)
- 		 * Call openat
- 		 */
- 		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(myopenat
-+			TEST(openat
- 			     (fds[i], filenames[i], O_CREAT | O_WRONLY, 0600));
- 
- 			/* check return code */
-diff --git a/testcases/kernel/syscalls/openat/openat02.c b/testcases/kernel/syscalls/openat/openat02.c
-new file mode 100644
-index 0000000..bd40577
---- /dev/null
-+++ b/testcases/kernel/syscalls/openat/openat02.c
-@@ -0,0 +1,343 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+/*
-+ * Description:
-+ *   Verify that,
-+ *   1)openat() succeeds to open a file in append mode, when
-+ *     'flags' is set to O_APPEND.
-+ *   2)openat() succeeds to enable the close-on-exec flag for a
-+ *     file descriptor, when 'flags' is set to O_CLOEXEC.
-+ *   3)openat() succeeds to allow files whose sizes cannot be
-+ *     represented in an off_t but can be represented in an off64_t
-+ *     to be opened, when 'flags' is set to O_LARGEFILE.
-+ *   4)openat() succeeds to not update the file last access time
-+ *     (st_atime in the inode) when the file is read, when 'flags'
-+ *     is set to O_NOATIME.
-+ *   5)openat() succeeds to open the file failed if the file is a
-+ *     symbolic link, when 'flags' is set to O_NOFOLLOW.
-+ *   6)openat() succeeds to truncate the file to length 0 if the file
-+ *     already exists and is a regular file and the open mode allows
-+ *     writing, when 'flags' is set to O_TRUNC.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <mntent.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "lapi/fcntl.h"
-+#include "openat.h"
-+
-+#define TEST_APP "openat02_child"
-+
-+#define TEST_FILE "test_file"
-+#define SFILE "sfile"
-+#define MNT_POINT "mnt_point"
-+#define LARGE_FILE "mnt_point/large_file"
-+
-+#define STR "abcdefg"
-+
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void testfunc_append(void);
-+static void testfunc_cloexec(void);
-+static void testfunc_largefile(void);
-+static void testfunc_noatime(void);
-+static void testfunc_nofollow(void);
-+static void testfunc_trunc(void);
-+
-+static void (*testfunc[])(void) = {
-+	testfunc_append,
-+	testfunc_cloexec,
-+	testfunc_largefile,
-+	testfunc_noatime,
-+	testfunc_nofollow,
-+	testfunc_trunc,
-+};
-+
-+char *TCID = "openat02";
-+int TST_TOTAL = ARRAY_SIZE(testfunc);
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	int i;
-+	char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)
-+			(*testfunc[i])();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	TEST_PAUSE;
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	tst_tmpdir();
-+
-+	SAFE_FILE_PRINTF(cleanup, TEST_FILE, "test file");
-+
-+	SAFE_SYMLINK(cleanup, TEST_FILE, SFILE);
-+}
-+
-+void testfunc_append(void)
-+{
-+	off_t file_offset;
-+
-+	TEST(openat(AT_FDCWD, TEST_FILE, O_APPEND | O_RDWR, 0777));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "openat failed");
-+		return;
-+	}
-+
-+	SAFE_WRITE(cleanup, 1, TEST_RETURN, STR, sizeof(STR) - 1);
-+
-+	file_offset = SAFE_LSEEK(cleanup, TEST_RETURN, 0, SEEK_CUR);
-+
-+	if (file_offset > (off_t)(sizeof(STR) - 1))
-+		tst_resm(TPASS, "test O_APPEND for openat success");
-+	else
-+		tst_resm(TFAIL, "test O_APPEND for openat failed");
-+
-+	SAFE_CLOSE(cleanup, TEST_RETURN);
-+}
-+
-+void testfunc_cloexec(void)
-+{
-+	pid_t pid;
-+	int status;
-+	char buf[20];
-+
-+	if ((tst_kvercmp(2, 6, 23)) < 0) {
-+		tst_resm(TCONF, "test O_CLOEXEC flags for openat "
-+						"needs kernel 2.6.23 or higher");
-+		return;
-+	}
-+
-+	TEST(openat(AT_FDCWD, TEST_FILE, O_CLOEXEC | O_RDWR, 0777));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "openat failed");
-+		return;
-+	}
-+
-+	sprintf(buf, "%ld", TEST_RETURN);
-+
-+	pid = tst_fork();
-+
-+	if (pid < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
-+
-+	if (pid == 0) {
-+		if (execlp(TEST_APP, TEST_APP, buf, NULL))
-+			exit(2);
-+	}
-+
-+	SAFE_CLOSE(cleanup, TEST_RETURN);
-+
-+	if (wait(&status) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "wait() failed");
-+
-+	if (WIFEXITED(status)) {
-+		switch ((char)WEXITSTATUS(status)) {
-+		case -1:
-+			tst_resm(TPASS, "test O_CLOEXEC for openat success");
-+			break;
-+		case 2:
-+			tst_brkm(TBROK, cleanup, "execlp() failed");
-+		default:
-+			tst_resm(TFAIL, "test O_CLOEXEC for openat failed");
-+		}
-+	} else {
-+		tst_brkm(TBROK, cleanup,
-+				 "openat2_exec exits with unexpected error");
-+	}
-+}
-+
-+void testfunc_largefile(void)
-+{
-+	char *device;
-+	int fd;
-+	off64_t offset;
-+
-+	device = getenv("LTP_BIG_DEV");
-+	if (device == NULL) {
-+		tst_resm(TCONF, "you must specify a big blockdevice(>4G)");
-+		return;
-+	} else {
-+		tst_mkfs(NULL, device, "ext3", NULL);
-+	}
-+
-+	SAFE_MKDIR(cleanup, MNT_POINT, 755);
-+
-+	if (mount(device, MNT_POINT, "ext3", 0, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+				 "mount device:%s failed", device);
-+	}
-+
-+	fd = SAFE_OPEN(cleanup, LARGE_FILE,
-+				O_LARGEFILE | O_RDWR | O_CREAT, 0777);
-+
-+	offset = lseek64(fd, 4.1*1024*1024*1024, SEEK_SET);
-+	if (offset == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "lseek64 failed");
-+
-+	SAFE_WRITE(cleanup, 1, fd, STR, sizeof(STR) - 1);
-+
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	TEST(openat(AT_FDCWD, LARGE_FILE, O_LARGEFILE | O_RDONLY, 0777));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL, "test O_LARGEFILE for openat failed");
-+	} else {
-+		tst_resm(TPASS, "test O_LARGEFILE for openat success");
-+		SAFE_CLOSE(cleanup, TEST_RETURN);
-+	}
-+
-+	if (umount(MNT_POINT) == -1)
-+		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-+}
-+
-+void testfunc_noatime(void)
-+{
-+	struct stat file_stat, file_newstat;
-+	struct stat tmp_stat;
-+	FILE *fp = NULL;
-+	struct mntent *mnt = NULL;
-+	char buf;
-+
-+	if ((tst_kvercmp(2, 6, 8)) < 0) {
-+		tst_resm(TCONF, "test O_NOATIME flags for openat "
-+						"needs kernel 2.6.8 or higher");
-+		return;
-+	}
-+
-+	SAFE_STAT(cleanup, TEST_FILE, &file_stat);
-+
-+	fp = setmntent("/etc/mtab", "r");
-+	if (fp == NULL)
-+		tst_brkm(TBROK | TERRNO, cleanup, "setmntent() failed");
-+
-+	while ((mnt = getmntent(fp))) {
-+		SAFE_STAT(cleanup, mnt->mnt_dir, &tmp_stat);
-+
-+		if (tmp_stat.st_dev == file_stat.st_dev)
-+			break;
-+	}
-+	if (mnt == NULL)
-+		tst_brkm(TBROK, cleanup,
-+				 "getmntent() failed or no matching device");
-+
-+	endmntent(fp);
-+
-+	if (hasmntopt(mnt, "noatime") != NULL
-+		|| hasmntopt(mnt, "reltime") != NULL) {
-+		tst_resm(TCONF, "test O_NOATIME flag for openat needs "
-+						"filesystems which are mounted without "
-+						"noatime and relatime");
-+		return;
-+	}
-+
-+	sleep(2);
-+
-+	TEST(openat(AT_FDCWD, TEST_FILE, O_NOATIME | O_RDONLY, 0777));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "openat failed");
-+		return;
-+	}
-+
-+	SAFE_READ(cleanup, 1, TEST_RETURN, &buf, 1);
-+
-+	SAFE_CLOSE(cleanup, TEST_RETURN);
-+
-+	SAFE_STAT(cleanup, TEST_FILE, &file_newstat);
-+
-+	if (file_stat.st_atime == file_newstat.st_atime)
-+		tst_resm(TPASS, "test O_NOATIME for openat success");
-+	else
-+		tst_resm(TFAIL, "test O_NOATIME for openat failed");
-+}
-+
-+void testfunc_nofollow(void)
-+{
-+	TEST(openat(AT_FDCWD, SFILE, O_NOFOLLOW | O_RDONLY, 0777));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TPASS, "test O_NOFOLLOW for openat success");
-+	} else {
-+		tst_resm(TFAIL, "test O_NOFOLLOW for openat failed");
-+		SAFE_CLOSE(cleanup, TEST_RETURN);
-+	}
-+}
-+
-+void testfunc_trunc(void)
-+{
-+	struct stat file_stat;
-+
-+	TEST(openat(AT_FDCWD, TEST_FILE, O_TRUNC | O_RDWR, 0777));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "openat failed");
-+		return;
-+	}
-+
-+	SAFE_FSTAT(cleanup, TEST_RETURN, &file_stat);
-+
-+	if (file_stat.st_size == 0)
-+		tst_resm(TPASS, "test O_TRUNC for openat success");
-+	else
-+		tst_resm(TFAIL, "test O_TRUNC for openat failed");
-+
-+	SAFE_CLOSE(cleanup, TEST_RETURN);
-+}
-+
-+void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	tst_rmdir();
-+}
-diff --git a/testcases/kernel/syscalls/openat/openat02_child.c b/testcases/kernel/syscalls/openat/openat02_child.c
-new file mode 100644
-index 0000000..d2af36b
---- /dev/null
-+++ b/testcases/kernel/syscalls/openat/openat02_child.c
-@@ -0,0 +1,41 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program.
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <unistd.h>
-+
-+#define STR "abc"
-+
-+char *TCID = "openat02_child";
-+
-+int main(int argc, char **argv)
-+{
-+	int fd;
-+	int ret;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "%s <fd>\n", argv[0]);
-+		exit(1);
-+	}
-+
-+	fd = atoi(argv[1]);
-+	ret = write(fd, STR, sizeof(STR) - 1);
-+
-+	exit(ret);
-+}
--- 
-1.8.3.1
 
+--nextPart2624932.g3yCLvkLs5
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+
+On Fri 28 Mar 2014 09:44:24 Simon Xu wrote:
+> The script uses hardcoded 'eth0' which used to work on most systems.
+> This fix tries to find a 'working' network interface using the hostna=
+me.
+
+why doesn't hardcoding "lo" work ?
+=2Dmike
+--nextPart2624932.g3yCLvkLs5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAABAgAGBQJTNQPOAAoJEEFjO5/oN/WBhAcP/3nAnAS2K0eJYST+P5vFJekI
+HlJxm/Q4m6sAZ8y/giOEq5XyLLoyjVBfFLsCIZr69j6Hri8srQ2HOO0viDSD4KJ5
+q4J1FykYn2n8kiUE4GN2+DtHg/03k0tUSPFXAh8vFZS/LadWGmVNVxejW2RUevZy
+nVTrf/7DCCkyHJDknN6My6NKuuteGaIHwxiO8UntvlTMPWfL3cDtieSiVfSxhiFq
+hGnAXWovW+VfCh4pz78Sq9J2zsIHYziLOSTsYaogUKOslrhrRfM7Tj3Br+aCTNET
+Q+y/z5Yz3X8IQQxde/Kt3PlM0oD2e5UWL8WtbZtXZjx4bK7HlMToNnlf7y/R1vjD
+bx8KvhMaHcZmYJ+Ow1wekXRkRKUhgLqiPo7FUC7h7e+SIYaGVvxrm1ObRLYjDscz
+zzwaQjHBHgX9sbDqk5h5PPNK5Q1zgaeoQXHsreEgywHzUxg+zryYkIgkYdM3/CPA
+tBz9I8oitvsqi0NClfji8NQbDFHMqnufCEoIPU7xMQEVi+v/hGDx6J5d+TYUDDsA
+Mbds0pI43lRXHF2JaKFOhiCjkJb13U7mlRlS7+/JG9bX8z+pYEhEqk/vDlb0sz1x
+D23K+IXtMUwUFxAmgUNC+Y6jUB1SqjA8Z2yFr23pNaqvyhkpYlkvkCBF1n4t3Yk+
+SJfzRFqWmjaAMNQE+efo
+=aTm5
+-----END PGP SIGNATURE-----
+
+--nextPart2624932.g3yCLvkLs5--
+
+
+
+--===============3085175891084496556==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+
+--===============3085175891084496556==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3085175891084496556==--
+
+
