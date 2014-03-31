@@ -1,24 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fweisbec@gmail.com>) id 1WN1xr-0006c3-BA
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:18:03 +0000
-Received: from mail-ee0-f42.google.com ([74.125.83.42])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WN1xq-0000RQ-8w
-	for ltp-list@lists.sourceforge.net; Mon, 10 Mar 2014 15:18:03 +0000
-Received: by mail-ee0-f42.google.com with SMTP id d17so3178607eek.29
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 10 Mar 2014 08:17:56 -0700 (PDT)
-Date: Mon, 10 Mar 2014 16:17:48 +0100
-From: Frederic Weisbecker <fweisbec@gmail.com>
-Message-ID: <20140310151744.GA14639@localhost.localdomain>
-References: <531DC318.7060504@gmail.com>
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WUX85-00052y-4t
+	for ltp-list@lists.sourceforge.net; Mon, 31 Mar 2014 07:59:37 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WUX84-0000oB-Ad
+	for ltp-list@lists.sourceforge.net; Mon, 31 Mar 2014 07:59:37 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s2V7xTDs025921
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Mar 2014 07:59:30 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2V7xSOX028255
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Mar 2014 07:59:29 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s2V7xSaE028245
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Mar 2014 07:59:28 GMT
+Message-ID: <5339205E.30801@oracle.com>
+Date: Mon, 31 Mar 2014 11:59:26 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <531DC318.7060504@gmail.com>
-Subject: Re: [LTP] Testing absence of ticks with nohz_full
+Subject: [LTP] numa01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,81 +40,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <liljegren.mats2@gmail.com>
-Cc: Arnaldo Carvalho de Melo <acme@infradead.org>, Linux Test Project General Discussions <ltp-list@lists.sourceforge.net>, Kevin Hilman <khilman@linaro.org>, Namhyung Kim <namhyung@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: Vasily Isaenko <vasily.isaenko@oracle.com>
 
-On Mon, Mar 10, 2014 at 02:50:16PM +0100, Mats Liljegren wrote:
-> My company (Enea) wants to create test case(s) that verifies that
-> you can run an application without having ticks going on the CPU
-> that the application runs on. This would utilize the new nohz_full
-> feature available from kernel version 3.10.
+Hi!
 
-Ah nice!
+numa01.sh does something like:
+  * numastat > /tmp/before
+  * starts a binary with the specified memory policy using numactl (or a 
+like):
+    numactl --interleave=all get_some_memory_with_malloc_and_write_it
+  * `sleep` for few seconds
+  * numastat > /tmp/after
+  * compares /tmp/before and /tmp/after to check that the numa policy 
+was applied the right way
 
-> 
-> I cannot find any existing test case in LTP in this area, so I
-> assume I have to create the test case myself.
-> 
-> One catch is that the current nohz_full implementation actually
-> generates 1Hz. So part of the test could be to verify that we
-> actually get 1Hz rather than full tick speed. It would also be
-> possible to support the experimental patch from Kevin Hilman to
-> actually turn ticks off for real. The test code code check whether
-> the patch is applied and based on it expect 0Hz or 1Hz ticks.
-> 
-> Would LTP be a good place for such tests?
+But the problem is that on a host with many NUMA nodes (8) the process 
+of updating that numastats statistics takes some time. Even 10 seconds 
+may be not enough. Therefore the test fails.
 
-If that can be of any help, you can have a look at this:
-https://git.kernel.org/cgit/linux/kernel/git/frederic/dynticks-testing.git/
+Does anybody know if there is a direct or indirect way to force the 
+kernel to update the NUMA statistics?
 
-It's selftest that setup some isolation configuration, run a userspace loop for
-a few seconds and records various trace events like timers, workqueue, etc...
-
-So it's not automatically telling if a CPU runs full dynticks, some analysis from
-a user on the traces is required.
-
-Now it's fairly possible to write a small test that tells if the CPU noise
-is reduced to strict 1 Hz timer and nothing else. But that alone wouldn't
-provide safe guarantees because workqueues of whatever timer may happen
-anytime.
-
-In really depends on your usecase. Do you want your CPU not be disturbed in
-order to maximize its throughput? That's the HPC case. There you can cope with a few
-noise from time to time. Then such a test would be relevant.
-
-Now if you have latency requirement, which means having a tick or workqueue or
-anything disturbing you CPU would screw up everything then you're rather
-on the side of real time and then you need guarantee. For such a case
-I'd rather suggest live monitoring of trace events.
-
-So there is two possibilities:
-
-1) Show that the CPU runs in full dynticks for a given timeslice.
-
-2) Monitoring events through the whole timeslices.
-
-On both cases you want to use trace events. So I'd rather suggest you to use perf tools
-or trace-cmd.
-
-I believe that trace-cmd unfortunately uses per CPU periodic wake up on live
-recording CPUs so perhaps it's not a good candidate to test isolation. Too bad
-because kernelshark is cool for an overview.
-
-Also perf supports some script languages for post processing: python, perl, etc...
-I think trace-cmd too but rather for custom display of events.
-
-Adding a few more people in Cc.
-
-> 
-> Regards
-> Mats Liljegren
+Thank you.
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
