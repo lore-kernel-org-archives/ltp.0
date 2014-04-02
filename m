@@ -1,35 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1Wb76A-0001W0-Lh
-	for ltp-list@lists.sourceforge.net; Fri, 18 Apr 2014 11:36:50 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wb769-0003Qj-Jv
-	for ltp-list@lists.sourceforge.net; Fri, 18 Apr 2014 11:36:50 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s3IBagSQ003740
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Apr 2014 11:36:43 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3IBafwG009108
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Apr 2014 11:36:42 GMT
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3IBafH1007352
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Apr 2014 11:36:41 GMT
-Message-ID: <53510E46.4090907@oracle.com>
-Date: Fri, 18 Apr 2014 19:36:38 +0800
-From: Shuang Qiu <shuang.qiu@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WVPgG-0001qK-EY
+	for ltp-list@lists.sourceforge.net; Wed, 02 Apr 2014 18:14:32 +0000
+Date: Wed, 2 Apr 2014 20:13:52 +0200
+From: chrubis@suse.cz
+Message-ID: <20140402181351.GA30752@rei.Home>
+References: <1395825825-22165-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <534FA1A9.10902@oracle.com> <20140417125003.GA949@rei>
-In-Reply-To: <20140417125003.GA949@rei>
-Subject: [LTP] [PATCH v3] containers/netns:parameters are not correct when
- calling, crtchild() function
+Content-Disposition: inline
+In-Reply-To: <1395825825-22165-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] lib/tst_mkfs.c: fix a bug when calling
+ tst_mkfs() with extra mkfs options
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,219 +25,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The numbers of parameters for crtchild() function which called in
-two_children_ns.c and par_chld_ipv6.c is not correct.And it will make
-the child process to be a zombie process.
-And also move the definition of the function to the header file(common.h)
+Hi!
+Pushed with minor changes and documentation (I've fixed comments in
+test.h and added a paragraph into the test-writing-guidelines.txt)
 
-Signed-off-by: shuang.qiu@oracle.com
----
-  testcases/kernel/containers/libclone/libclone.h    |    2 --
-  testcases/kernel/containers/netns/common.c         |    1 +
-  testcases/kernel/containers/netns/common.h         |   23 
-++++++++++++++++++++
-  .../kernel/containers/netns/create_container.c     |    2 +-
-  testcases/kernel/containers/netns/crtchild.c       |    2 +-
-  .../kernel/containers/netns/crtchild_delchild.c    |    2 +-
-  testcases/kernel/containers/netns/par_chld_ftp.c   |    2 +-
-  testcases/kernel/containers/netns/par_chld_ipv6.c  |    5 ++---
-  testcases/kernel/containers/netns/sysfsview.c      |    2 +-
-  .../kernel/containers/netns/two_children_ns.c      |    5 ++---
-  10 files changed, 33 insertions(+), 13 deletions(-)
-  create mode 100644 testcases/kernel/containers/netns/common.h
-
-diff --git a/testcases/kernel/containers/libclone/libclone.h 
-b/testcases/kernel/containers/libclone/libclone.h
-index 9380cec..6a2d66d 100644
---- a/testcases/kernel/containers/libclone/libclone.h
-+++ b/testcases/kernel/containers/libclone/libclone.h
-@@ -77,8 +77,6 @@
-  #define CLONE_NEWNET        0x40000000
-  #endif
-
--extern int create_net_namespace(char *, char *);
--
-  /*
-   * Run fn1 in a unshared environmnent, and fn2 in the original context
-   * Fn2 may be NULL.
-diff --git a/testcases/kernel/containers/netns/common.c 
-b/testcases/kernel/containers/netns/common.c
-index 291aeb7..6862700 100644
---- a/testcases/kernel/containers/netns/common.c
-+++ b/testcases/kernel/containers/netns/common.c
-@@ -43,6 +43,7 @@
-  #include "libclone.h"
-  #include "test.h"
-  #include "config.h"
-+#include "common.h"
-
-  static int child_fn(void *c1);
-
-diff --git a/testcases/kernel/containers/netns/common.h 
-b/testcases/kernel/containers/netns/common.h
-new file mode 100644
-index 0000000..d7af403
---- /dev/null
-+++ b/testcases/kernel/containers/netns/common.h
-@@ -0,0 +1,23 @@
-+/*
-+* This program is free software; you can redistribute it and/or modify
-+* it under the terms of the GNU General Public License as published by
-+* the Free Software Foundation; either version 2 of the License, or
-+* (at your option) any later version.
-+*
-+* This program is distributed in the hope that it will be useful,
-+* but WITHOUT ANY WARRANTY; without even the implied warranty of
-+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+* the GNU General Public License for more details.
-+* You should have received a copy of the GNU General Public License
-+* along with this program; if not, write to the Free Software
-+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 
-02110-1301 USA
-+*
-+***************************************************************************/
-+#ifndef _COMMON_H_
-+#define _COMMON_H_
-+
-+int crtchild(char *s1, char *s2);
-+
-+int create_net_namespace(char *p1, char *c1);
-+
-+#endif/*_COMMON_H_*/
-diff --git a/testcases/kernel/containers/netns/create_container.c 
-b/testcases/kernel/containers/netns/create_container.c
-index 8622153..ad74e4f 100644
---- a/testcases/kernel/containers/netns/create_container.c
-+++ b/testcases/kernel/containers/netns/create_container.c
-@@ -27,7 +27,7 @@
-  * Author: Sudhir Kumar <skumar@linux.vnet.ibm.com> 26/08/2008
-  * 
-============================================================================*/
-
--#include "libclone.h"
-+#include "common.h"
-
-  const char *TCID = "create_container";
-
-diff --git a/testcases/kernel/containers/netns/crtchild.c 
-b/testcases/kernel/containers/netns/crtchild.c
-index 7b0d43a..d2769c7 100644
---- a/testcases/kernel/containers/netns/crtchild.c
-+++ b/testcases/kernel/containers/netns/crtchild.c
-@@ -26,7 +26,7 @@
-  *                      31/07/2008
-  * 
-=============================================================================*/
-
--#include "libclone.h"
-+#include "common.h"
-
-  const char *TCID = "crtchild";
-
-diff --git a/testcases/kernel/containers/netns/crtchild_delchild.c 
-b/testcases/kernel/containers/netns/crtchild_delchild.c
-index 4d37b6f..6b82997 100644
---- a/testcases/kernel/containers/netns/crtchild_delchild.c
-+++ b/testcases/kernel/containers/netns/crtchild_delchild.c
-@@ -29,7 +29,7 @@
-  *                      31/07/2008
-  * 
-=========================================================================*/
-
--#include "libclone.h"
-+#include "common.h"
-
-  const char *TCID = "crtchild_delchild";
-
-diff --git a/testcases/kernel/containers/netns/par_chld_ftp.c 
-b/testcases/kernel/containers/netns/par_chld_ftp.c
-index 4b9ac71..605be19 100644
---- a/testcases/kernel/containers/netns/par_chld_ftp.c
-+++ b/testcases/kernel/containers/netns/par_chld_ftp.c
-@@ -26,7 +26,7 @@
-  *                      31/07/2008
-  * 
-=============================================================================*/
-
--#include "libclone.h"
-+#include "common.h"
-
-  const char *TCID = "par_chld_ftp";
-
-diff --git a/testcases/kernel/containers/netns/par_chld_ipv6.c 
-b/testcases/kernel/containers/netns/par_chld_ipv6.c
-index f0d17ba..4d982bc 100644
---- a/testcases/kernel/containers/netns/par_chld_ipv6.c
-+++ b/testcases/kernel/containers/netns/par_chld_ipv6.c
-@@ -44,8 +44,7 @@
-  #include <sys/wait.h>
-  #include "test.h"
-  #include "config.h"
--
--extern int crtchild(char *);
-+#include "common.h"
-
-  char *TCID = "netns_ipv6";
-  int TST_TOTAL = 1;
-@@ -95,7 +94,7 @@ int main()
-  #else
-          tst_resm(TCONF, "System doesn't have unshare support");
-  #endif
--        return crtchild(child);
-+        return crtchild(child, NULL);
-      } else {
-
-          //parent
-diff --git a/testcases/kernel/containers/netns/sysfsview.c 
-b/testcases/kernel/containers/netns/sysfsview.c
-index b130973..f558f82 100644
---- a/testcases/kernel/containers/netns/sysfsview.c
-+++ b/testcases/kernel/containers/netns/sysfsview.c
-@@ -36,7 +36,7 @@
-  #include <stdlib.h>
-  #include <sys/types.h>
-  #include <sys/wait.h>
--#include "libclone.h"
-+#include "common.h"
-
-  const char *TCID = "sysfsview";
-
-diff --git a/testcases/kernel/containers/netns/two_children_ns.c 
-b/testcases/kernel/containers/netns/two_children_ns.c
-index 235d9c4..1abff54 100644
---- a/testcases/kernel/containers/netns/two_children_ns.c
-+++ b/testcases/kernel/containers/netns/two_children_ns.c
-@@ -46,8 +46,7 @@
-  #include "test.h"
-  #include "libclone.h"
-  #include "config.h"
--
--extern int crtchild(char *);
-+#include "common.h"
-
-  char *TCID = "netns_2children";
-  int TST_TOTAL = 1;
-@@ -109,7 +108,7 @@ int main()
-                  return ret;
-              }
-  #endif
--            return crtchild(child[i]);
-+            return crtchild(child[i], NULL);
-          } else {
-              //Parent
+Thanks.
 
 -- 
-1.7.9.5
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
