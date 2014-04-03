@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WXvwS-0000mo-HD
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 17:05:40 +0000
-Date: Wed, 9 Apr 2014 19:04:56 +0200
-From: chrubis@suse.cz
-Message-ID: <20140409170455.GA31198@rei>
-References: <1395044011-31911-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1395044011-31911-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<20140331150821.GB9824@rei.suse.cz>
-	<533A864A.4040109@cn.fujitsu.com>
-	<20140401115800.GB12474@rei.suse.cz>
-	<5344EA26.8010209@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5344EA26.8010209@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 3/3] performance_counters: make
- performance_counters run default
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WVhO2-0007Qh-93
+	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 13:08:54 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WVhO1-0005Eq-Cj
+	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 13:08:54 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s33D8lox024304
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:08:47 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s33D8kWf007805
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:08:47 GMT
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s33D8kvO007801
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:08:46 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu,  3 Apr 2014 17:08:41 +0400
+Message-Id: <1396530521-16789-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] numa01.sh: numademo fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,41 +36,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-Hi!
-> The Number Hardware Counters is 7, But according to above ./perf_event_open02 in RHEL7.0beta,  the output is 5.
-> Whether two slots in PMU has been used, or the output of papi_avail is not correct :-) .
+1) numademo does not accept a 'msize' argument. I think it was an initial
+typo mistake that numanode was invoked as
+  numanode -c msize
+instead of
+  numanode -c ${msize}k
 
-I would guess that these are used by kernel or system for something else.
+2) I think test07 should return TPASS if $x is 0 (not 1).
 
-> I tried to figure out how papi_avail gets the number of hardware counters, It seems that it just predefines some const values for
-> specific cpus, but I am not very sure, I do not have much time to read the papi_library source code.
-> 
-> And I afraid that this library does not support enough kinds of cpus. I also met some compilation errors in Fedora19 about this library.
-> 
-> So whether we can use the first method I mentioned. I think it is more reasonable, at least according to perf_even_open()'s manpage
-> and the intent of perf_event_open02 case.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/numa/numa01.sh |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Your method is better, because the testcase only cares if perf events
-are multiplexed or not which is implied by different time_enabled and
-time_running fields.
-
+diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+index 19a8f71..5812ca3 100755
+--- a/testcases/kernel/numa/numa01.sh
++++ b/testcases/kernel/numa/numa01.sh
+@@ -577,7 +577,7 @@ test07()
+         COUNTER=$[$COUNTER+1]
+     done
+ 
+-    numademo -c msize > $LTPTMP/demolog
++    numademo -c ${msize}k > $LTPTMP/demolog
+     sleep 2s        #In RHEL collection of statistics takes more time.
+ 
+     numastat > $LTPTMP/numalog
+@@ -596,7 +596,7 @@ test07()
+         fi
+         COUNTER=$[$COUNTER+1]
+     done
+-    if [ $x -eq 1 ]
++    if [ $x -eq 0 ]
+     then
+         tst_resm TPASS "NUMADEMO policies  -TEST07 PASSED !!"
+         return 0
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
