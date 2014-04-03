@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shinto.john@smartplayin.com>) id 1WXsBC-0007l3-NJ
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 13:04:38 +0000
-Received: from smtp86.iad3a.emailsrvr.com ([173.203.187.86])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WXsBB-0005EE-7o
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 13:04:38 +0000
-Date: Wed, 9 Apr 2014 18:34:31 +0530 (IST)
-From: shinto.john@smartplayin.com
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WVgKH-0000hs-FM
+	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 12:00:57 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WVgKE-00069U-U2
+	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 12:00:57 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s33C0jPb013738
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 20:00:45 +0800
+From: "gux.fnst@cn.fujitsu.com" <gux.fnst@cn.fujitsu.com>
+Date: Thu, 3 Apr 2014 12:00:44 +0000
+Message-ID: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <53453D96.3070109@linux.vnet.ibm.com>
-References: <CA+G9fYuQi1+C0Mkhc0SVLKm8E9iEEF8rZ_62qAFZZcUaD9CLQQ@mail.gmail.com>
-	<1397035115.64792188@apps.rackspace.com> 
-	<53453D96.3070109@linux.vnet.ibm.com>
-Message-ID: <1397048671.53348062@apps.rackspace.com>
-Subject: Re: [LTP] [Ltp-coverage] running LCOV/LTP on Beagle Bone Black -
-	Cannot Allocate Memory Error
+Subject: [LTP] [PATCH v2 1/2] lib/tst_path_has_mnt_flags.c: create a
+ function tst_path_has_mnt_flags()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,119 +28,150 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4831321333245306539=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Naresh Kamboju <naresh.kamboju@linaro.org>, ltp-coverage@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
---===============4831321333245306539==
-Content-Type: multipart/alternative;
-	boundary="----=_20140409183431000000_56126"
+Create a function tst_path_has_mnt_flags() for checking whether
+a path is on a system that is mounted with specified flags.
 
-------=_20140409183431000000_56126
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ include/test.h               |  9 ++++
+ lib/tst_path_has_mnt_flags.c | 99 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 108 insertions(+)
+ create mode 100644 lib/tst_path_has_mnt_flags.c
 
-=0AHi Peter,=0A =0AThis got resolved when i tried this in KERNEL/mm/Makefil=
-e=0AGCOV_PROFILE :=3D n=0A =0ASo basically some issue with KERNEL/mm/vmstat=
-.gcno... right?=0A =0ANow i am able to do a complete kernel run.=0A =0AThan=
-ks & Regards,=0AShinto=0A =0A-----Original Message-----=0AFrom: "Peter Ober=
-parleiter" <oberpar@linux.vnet.ibm.com>=0ASent: Wednesday, April 9, 2014 6:=
-01pm=0ATo: shinto.john@smartplayin.com, "Naresh Kamboju" <naresh.kamboju@li=
-naro.org>=0ACc: ltp-coverage@lists.sourceforge.net, "ltp-list" <ltp-list@li=
-sts.sourceforge.net>=0ASubject: Re: [Ltp-coverage] running LCOV/LTP on Beag=
-le Bone Black - Cannot Allocate Memory Error=0A=0A=0A=0AOn 09.04.2014 11:18=
-, shinto.john@smartplayin.com wrote:=0A> now while running "lcov -c -o cove=
-rage.info", this runs for ~5 minutes=0A> without any issues and then is stu=
-ck at this below*red *point for long=0A> time and never exits.=0A> =0A> So =
-i did ctrl-C and tried the "genhtml coverage.info -o out" and it worked.=0A=
-> =0A> I could see the LCOV report(Attached index.html) in "out" folder.=0A=
-> =0A> But looks like complete kernel folders are not there in the LCOV rep=
-ort=0A> as it was stuck at below point.=0A> =0A> Any comments?=0A> =0A> inc=
-lude/asm-generic/bitops/arch_hweight.h:source file is newer than=0A> graph =
-file '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gc'=0A> =
-/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/arch/arm/include/asm/bit=
-ops.h:source=0A> file is newer than graph file '/home/mallikarjun.bc/LTP'=
-=0A> include/linux/workqueue.h:source file is newer than graph file=0A> '/h=
-ome/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'=0A> includ=
-e/linux/nodemask.h:source file is newer than graph file=0A> '/home/mallikar=
-jun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'=0A> *include/linux/ker=
-nel.h:source file is newer than graph file=0A> '/home/mallikarjun.bc/LTP/Do=
-wnload/linux-dev/KERNEL/mm/vmstat.gcno'*=0A=0ATry running top while lcov is=
- stuck and see if there's a process using=0Aup a lot of CPU time. It might =
-be that you are affected by a gcov bug.=0A=0A-- =0APeter Oberparleiter=0ALi=
-nux on System z Development - IBM Germany=0A=0A
-------=_20140409183431000000_56126
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<font face=3D"arial" size=3D"3"><p style=3D"margin:0;padding:0;">Hi Peter,<=
-/p>=0A<p style=3D"margin:0;padding:0;">&nbsp;</p>=0A<p style=3D"margin:0;pa=
-dding:0;">This got resolved when i tried this in KERNEL/mm/Makefile</p>=0A<=
-p style=3D"margin:0;padding:0;">GCOV_PROFILE :=3D n</p>=0A<p style=3D"margi=
-n:0;padding:0;">&nbsp;</p>=0A<p style=3D"margin:0;padding:0;">So basically =
-some issue with KERNEL/mm/vmstat.gcno... right?</p>=0A<p style=3D"margin:0;=
-padding:0;">&nbsp;</p>=0A<p style=3D"margin:0;padding:0;">Now i am able to =
-do a complete kernel run.</p>=0A<p style=3D"margin:0;padding:0;">&nbsp;</p>=
-=0A<p style=3D"margin:0;padding:0;">Thanks &amp; Regards,</p>=0A<p style=3D=
-"margin:0;padding:0;">Shinto</p>=0A<p style=3D"margin:0;padding:0;">&nbsp;<=
-/p>=0A<p style=3D"margin:0;padding:0;">-----Original Message-----<br />From=
-: "Peter Oberparleiter" &lt;oberpar@linux.vnet.ibm.com&gt;<br />Sent: Wedne=
-sday, April 9, 2014 6:01pm<br />To: shinto.john@smartplayin.com, "Naresh Ka=
-mboju" &lt;naresh.kamboju@linaro.org&gt;<br />Cc: ltp-coverage@lists.source=
-forge.net, "ltp-list" &lt;ltp-list@lists.sourceforge.net&gt;<br />Subject: =
-Re: [Ltp-coverage] running LCOV/LTP on Beagle Bone Black - Cannot Allocate =
-Memory Error<br /><br /></p>=0A<div id=3D"SafeStyles1397047945">=0A<p style=
-=3D"margin:0;padding:0;">On 09.04.2014 11:18, shinto.john@smartplayin.com w=
-rote:<br />&gt; now while running "lcov -c -o coverage.info", this runs for=
- ~5 minutes<br />&gt; without any issues and then is stuck at this below*re=
-d *point for long<br />&gt; time and never exits.<br />&gt; <br />&gt; So i=
- did ctrl-C and tried the "genhtml coverage.info -o out" and it worked.<br =
-/>&gt; <br />&gt; I could see the LCOV report(Attached index.html) in "out"=
- folder.<br />&gt; <br />&gt; But looks like complete kernel folders are no=
-t there in the LCOV report<br />&gt; as it was stuck at below point.<br />&=
-gt; <br />&gt; Any comments?<br />&gt; <br />&gt; include/asm-generic/bitop=
-s/arch_hweight.h:source file is newer than<br />&gt; graph file '/home/mall=
-ikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gc'<br />&gt; /home/mall=
-ikarjun.bc/LTP/Download/linux-dev/KERNEL/arch/arm/include/asm/bitops.h:sour=
-ce<br />&gt; file is newer than graph file '/home/mallikarjun.bc/LTP'<br />=
-&gt; include/linux/workqueue.h:source file is newer than graph file<br />&g=
-t; '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'<br /=
->&gt; include/linux/nodemask.h:source file is newer than graph file<br />&g=
-t; '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'<br /=
->&gt; *include/linux/kernel.h:source file is newer than graph file<br />&gt=
-; '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'*<br /=
-><br />Try running top while lcov is stuck and see if there's a process usi=
-ng<br />up a lot of CPU time. It might be that you are affected by a gcov b=
-ug.<br /><br />-- <br />Peter Oberparleiter<br />Linux on System z Developm=
-ent - IBM Germany<br /><br /></p>=0A</div></font>
-------=_20140409183431000000_56126--
-
-
-
---===============4831321333245306539==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+diff --git a/include/test.h b/include/test.h
+index baa3ef6..39bc5a1 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -295,6 +295,15 @@ gid_t tst_get_unused_gid(void);
+ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
+ 	unsigned short family, int type);
+ 
++/* lib/tst_path_has_mnt_flags.c
++ *
++ * Check whether a path is on a filesystem that is mounted with
++ * specified flags.
++ * @path: path to file
++ * @flags: mount flags
++ */
++int tst_path_has_mnt_flags(const char *path, const char *flags[]);
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/tst_path_has_mnt_flags.c b/lib/tst_path_has_mnt_flags.c
+new file mode 100644
+index 0000000..257b8a4
+--- /dev/null
++++ b/lib/tst_path_has_mnt_flags.c
+@@ -0,0 +1,99 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include <unistd.h>
++#include <mntent.h>
++#include "test.h"
++
++/*
++ * Returns if prefix is prefix of a string and the lenght of prefix.
++ */
++int strpref(const char *str, const char *pref)
++{
++	int i;
++
++	for (i = 0; pref[i] != '\0'; i++) {
++		/* string ended too soon */
++		if (str[i] == 0)
++			return -1;
++
++		/* string is diferent */
++		if (str[i] != pref[i])
++			return -1;
++	}
++
++	/* returns lenght of prefix */
++	return i;
++}
++
++/*
++ * Check whether a path is on a filesystem that is mounted with
++ * specified flags.
++ *
++ * Returns:
++ *   -1 - an error has occurred
++ *   0 - the filesystem does not have any specified flags
++ *   1 - the filesystem has at least one flag matched
++ */
++int tst_path_has_mnt_flags(const char *path, const char *flags[])
++{
++	struct mntent *mnt;
++	int prefix_max = 0, prefix;
++	int has_flags = 0, has_opt;
++	FILE *f;
++	int i;
++
++	if (path == NULL) {
++		printf("The path is NULL.\n");
++		return -1;
++	}
++
++	if (access(path, F_OK) == -1) {
++		printf("The path %s doesn't exist.\n", path);
++		return -1;
++	}
++
++	f = setmntent("/proc/mounts", "r");
++
++	if (f == NULL) {
++		printf("Couldn't mount /proc/mounts.\n");
++		return -1;
++	}
++
++	while ((mnt = getmntent(f))) {
++		/* ignore all pseudo fs */
++		if (mnt->mnt_fsname[0] != '/')
++			continue;
++
++		prefix = strpref(path, mnt->mnt_dir);
++
++		if (prefix > prefix_max) {
++			prefix_max = prefix;
++			has_opt = 0;
++			i = 0;
++			while ((has_opt == 0) && (flags[i] != NULL)) {
++				has_opt = hasmntopt(mnt, flags[i]) != NULL;
++				i++;
++			}
++			has_flags = has_opt;
++		}
++	}
++
++	endmntent(f);
++
++	return has_flags;
++}
+-- 
+1.8.3.1
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
---===============4831321333245306539==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4831321333245306539==--
-
-
