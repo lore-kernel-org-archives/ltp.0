@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WZjV9-0007aF-Po
-	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 16:12:55 +0000
-Date: Mon, 14 Apr 2014 18:12:09 +0200
-From: chrubis@suse.cz
-Message-ID: <20140414161209.GA15595@rei.Home>
-References: <20140411183712.7ca33b6c@mats-desktop>
-	<534B5C8E.1070500@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <534B5C8E.1070500@cn.fujitsu.com>
-Subject: Re: [LTP] Problems compiling
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WVhWr-0003rr-1F
+	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 13:18:01 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WVhWn-00044q-2Y
+	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 13:18:00 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s33DHote030397
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:17:51 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s33DHnNM003950
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:17:50 GMT
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s33DHnjY007935
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:17:49 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu,  3 Apr 2014 17:17:44 +0400
+Message-Id: <1396531064-16957-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1396530521-16789-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1396530521-16789-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V2] numa01.sh: numademo fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,90 +38,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> > I recently updated my master branch of my ltp git repository, but I now
-> > have a compile error:
-> >
-> > make[6]: Entering directory `/nfs/hosts/sestonas06/homes/mlil/git/ltp/testcases/kernel/mem/lib'
-> > make[6]: ../../../../../testcases/kernel/mem/lib/Makefile: No such file or directory
-> >
-> > Anyone else having this problem?
-> 
-> Yeah, I also met this problem.
-> I guess it may be "testcases/kernel/mem/include/libmem.mk"  causing this issue.
-> 
-> I can reproduce this fail by following steps:
-> 
-> 1, cd testcases/kernel/mem/lib
->     rm libmem.a
-> 
-> 2, then back to testcases/kernel/mem/hugetlb/hugemmap
->     make
-> 
-> I got the similar error message:
-> make -C ../../../../../testcases/kernel/mem/lib -f "../../../../../testcases/kernel/mem/lib/Makefile" all
-> make[1]: Entering directory `/root/ltp-dev/testcases/kernel/mem/lib'
-> make[1]: ../../../../../testcases/kernel/mem/lib/Makefile: No such file or directory
-> make[1]: *** No rule to make target `../../../../../testcases/kernel/mem/lib/Makefile'.  Stop.
-> make[1]: Leaving directory `/root/ltp-dev/testcases/kernel/mem/lib'
-> make: *** [../../../../../testcases/kernel/mem/lib/libmem.a] Error 2
-> 
-> In testcases/kernel/mem/include/libmem.mk:
-> 
-> MEM_SRCDIR              := $(top_srcdir)/testcases/kernel/mem
-> LIBMEM_SRCDIR           := $(MEM_SRCDIR)/lib
-> 
-> MEM_DIR                 := $(top_builddir)/testcases/kernel/mem
-> LIBMEM_DIR              := $(MEM_DIR)/lib
-> LIBMEM                  := $(LIBMEM_DIR)/libmem.a
-> FILTER_OUT_DIRS         := $(LIBMEM_DIR)
-> CFLAGS                  += -I$(MEM_SRCDIR)/include
-> LDLIBS                  += $(NUMA_LIBS) -lmem -lltp
-> LDFLAGS                 += -L$(LIBMEM_DIR)
-> 
-> $(LIBMEM_DIR):
->         mkdir -p "$@"
-> 
-> $(LIBMEM): $(LIBMEM_DIR)
->         $(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" all
-> 
-> MAKE_DEPS               += $(LIBMEM)
-> 
-> See the target $(LIBMEM). Since we have executed make command using the "-C" option, we do
-> not need to specify a make file with relative path.  We can just
-> execute like that: $(MAKE) -C $^ -f  "Makefile" all in this case.
+1) numademo does not accept a 'msize' argument. I think it was an initial
+typo mistake that numanode was invoked as
+  numanode -c msize
+instead of
+  numanode -c ${msize}k
 
-Wouldn't that break out-of-tree build? Because the LIBMEM_DIR is in the
-build path and the Makefile is in the LIBMEM_SRCDIR?
+2) I think test07 should return TPASS if $x is 0 (not 1), because this test
+verifies that after execution of `numanode` the OS updates interleave_hit
+values of each of the nodes. And if a node doesn't get a minimum increase,
+then it's a failure.
 
-Does this change fix the build?
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
 
---- a/testcases/kernel/mem/include/libmem.mk
-+++ b/testcases/kernel/mem/include/libmem.mk
-@@ -16,7 +16,7 @@
- #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- #
+Just updated description 2)
+
+ testcases/kernel/numa/numa01.sh |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+index 19a8f71..5812ca3 100755
+--- a/testcases/kernel/numa/numa01.sh
++++ b/testcases/kernel/numa/numa01.sh
+@@ -577,7 +577,7 @@ test07()
+         COUNTER=$[$COUNTER+1]
+     done
  
--MEM_SRCDIR             := $(top_srcdir)/testcases/kernel/mem
-+MEM_SRCDIR             := $(abs_top_srcdir)/testcases/kernel/mem
-
-
+-    numademo -c msize > $LTPTMP/demolog
++    numademo -c ${msize}k > $LTPTMP/demolog
+     sleep 2s        #In RHEL collection of statistics takes more time.
+ 
+     numastat > $LTPTMP/numalog
+@@ -596,7 +596,7 @@ test07()
+         fi
+         COUNTER=$[$COUNTER+1]
+     done
+-    if [ $x -eq 1 ]
++    if [ $x -eq 0 ]
+     then
+         tst_resm TPASS "NUMADEMO policies  -TEST07 PASSED !!"
+         return 0
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
