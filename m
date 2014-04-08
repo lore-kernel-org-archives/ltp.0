@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WalmG-0006X2-OH
-	for ltp-list@lists.sourceforge.net; Thu, 17 Apr 2014 12:50:52 +0000
-Date: Thu, 17 Apr 2014 14:50:04 +0200
-From: chrubis@suse.cz
-Message-ID: <20140417125003.GA949@rei>
-References: <534FA1A9.10902@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WXZDT-0005Fh-P6
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 16:49:43 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WXZDS-0003MC-VU
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 16:49:43 +0000
+Message-ID: <5344288E.3090306@oracle.com>
+Date: Tue, 08 Apr 2014 20:49:18 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <534FA1A9.10902@oracle.com>
-Subject: Re: [LTP] [PATCH v2] containers/netns:parameters are not correct
- when calling, crtchild() function
+References: <533D3BC7.8010309@oracle.com>
+	<20140407013932.GU22728@two.firstfloor.org>
+	<alpine.DEB.2.10.1404071044310.9896@nuc>
+In-Reply-To: <alpine.DEB.2.10.1404071044310.9896@nuc>
+Subject: Re: [LTP] numastats updates
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,151 +30,124 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuang Qiu <shuang.qiu@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Christoph Lameter <cl@linux.com>, Andi Kleen <andi@firstfloor.org>
+Cc: vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>, linux-numa@vger.kernel.org
 
-Hi!
-> The numbers of parameters for crtchild() function which called in
-> two_children_ns.c and par_chld_ipv6.c is not correct.And it will make
-> the child process to be a zombie process.
-> And also move the definition of the function to the header file(common.h)
-> 
-> Signed-off-by: shuang.qiu@oracle.com
-> ---
->   testcases/kernel/containers/libclone/libclone.h    |    2 -
->   testcases/kernel/containers/netns/common.c         |   18 +-------
->   testcases/kernel/containers/netns/common.h         |   47 
-> ++++++++++++++++++++
->   .../kernel/containers/netns/create_container.c     |    2 +-
->   testcases/kernel/containers/netns/crtchild.c       |    2 +-
->   .../kernel/containers/netns/crtchild_delchild.c    |    2 +-
->   testcases/kernel/containers/netns/par_chld_ftp.c   |    2 +-
->   testcases/kernel/containers/netns/par_chld_ipv6.c  |    5 +--
->   testcases/kernel/containers/netns/sysfsview.c      |    2 +-
->   .../kernel/containers/netns/two_children_ns.c      |    5 +--
->   10 files changed, 57 insertions(+), 30 deletions(-)
->   create mode 100644 testcases/kernel/containers/netns/common.h
-> 
-> diff --git a/testcases/kernel/containers/libclone/libclone.h 
-> b/testcases/kernel/containers/libclone/libclone.h
-> index 9380cec..6a2d66d 100644
-> --- a/testcases/kernel/containers/libclone/libclone.h
-> +++ b/testcases/kernel/containers/libclone/libclone.h
-> @@ -77,8 +77,6 @@
->   #define CLONE_NEWNET        0x40000000
->   #endif
-> 
-> -extern int create_net_namespace(char *, char *);
-> -
->   /*
->    * Run fn1 in a unshared environmnent, and fn2 in the original context
->    * Fn2 may be NULL.
-> diff --git a/testcases/kernel/containers/netns/common.c 
-> b/testcases/kernel/containers/netns/common.c
-> index 291aeb7..67e1a2e 100644
-> --- a/testcases/kernel/containers/netns/common.c
-> +++ b/testcases/kernel/containers/netns/common.c
-> @@ -26,23 +26,7 @@
-> 
->   #define _GNU_SOURCE
-> 
-> -#include <sys/utsname.h>
-> -#include <sched.h>
-> -#include <stdio.h>
-> -#include <stdlib.h>
-> -#include <sys/syscall.h>
-> -#include <unistd.h>
-> -#include <signal.h>
-> -#include <string.h>
-> -#include <errno.h>
-> -#include <libgen.h>
-> -#include <fcntl.h>
-> -#include <inttypes.h>
-> -#include <sys/types.h>
-> -#include <sys/wait.h>
-> -#include "libclone.h"
-> -#include "test.h"
-> -#include "config.h"
 
-These should have stayed here, only headers that are needed for types
-used in the common.h header should be moved there (if I'm looking right
-theare are none in this case).
 
-> +#include "common.h"
-> 
->   static int child_fn(void *c1);
-> 
-> diff --git a/testcases/kernel/containers/netns/common.h 
-> b/testcases/kernel/containers/netns/common.h
-> new file mode 100644
-> index 0000000..c769a7f
-> --- /dev/null
-> +++ b/testcases/kernel/containers/netns/common.h
-> @@ -0,0 +1,47 @@
-> +/*
-> +* This program is free software; you can redistribute it and/or modify
-> +* it under the terms of the GNU General Public License as published by
-> +* the Free Software Foundation; either version 2 of the License, or
-> +* (at your option) any later version.
-> +*
-> +* This program is distributed in the hope that it will be useful,
-> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> +* the GNU General Public License for more details.
-> +* You should have received a copy of the GNU General Public License
-> +* along with this program; if not, write to the Free Software
-> +* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 
-> 02110-1301 USA
-> +*
-> +***************************************************************************/
-> +/*=========================================================================
-> +* This testcase creates the network namespace.
-> +* It creates veth pair veth8 & veth9. Also assigns IP addresses to the 
-> childNS.
-> +* Also it starts the sshd daemon @ port 7890
-> +*
-> +* Scripts Used: parentns.sh childns.sh
-> +*
-> +* Author:         Veerendra <veeren@linux.vnet.ibm.com>
-> +=========================================================================*/
+On 04/07/2014 07:47 PM, Christoph Lameter wrote:
+> On Mon, 7 Apr 2014, Andi Kleen wrote:
+>
+>>>    * starts a binary with the specified numa memory policy using
+>>> numactl (or a like):
+>>>      numactl --interleave=all get_some_memory_with_malloc_and_write_it
+>>>    * `sleep` for few seconds
+>>>    * numastat > /tmp/after
+>>>    * compares /tmp/before and /tmp/after to check that the numa policy
+>>> was applied the right way
+>>>
+>>> But the problem is that on a host with many NUMA nodes (8) the process
+>>> of updating that numastats statistics takes some time. Even 10 seconds
+>>> may be not enough. Therefore the test fails.
+>>>
+>>> Is there a direct or indirect way to force the kernel to update the
+>>> NUMA statistics?
+>>
+>> Not currently. It depends on how much memory you have and subsequent
+>> operations. I guess would need to add one.
+>
+> The kernel vm statistics are brought up to date with the default
+> settings every 2 seconds.
+>
+> The interval is controlled via /proc/sys/vm/stat_interval
+>
+> Check the value that you have setup there.
+>
 
-I would omit this comment, it does not add any usefull information, just
-keep the license here.
+Thank you, Andi, Christoph.
 
-> +#include <sys/utsname.h>
-> +#include <sched.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/syscall.h>
-> +#include <unistd.h>
-> +#include <signal.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <libgen.h>
-> +#include <fcntl.h>
-> +#include <inttypes.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
-> +#include "libclone.h"
-> +#include "test.h"
-> +#include "config.h"
-> +
-> +int crtchild(char *s1, char *s2);
-> +
-> +int create_net_namespace(char *p1, char *c1);
+In my setup stat_interval is 1.
 
-You shoud add include guards around the header includes and prototypes.
+Please, look at this reproducer:
+#!/bin/bash
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+sum_pages()
+{
+         local i
+
+         ret=0
+         for i in $@; do
+                 ret=$(( $ret + $i ))
+         done
+}
+
+ret=0
+
+for i in `seq 20`; do
+         sum_pages $( numastat | grep interleav | cut -d ' ' -f 2-)
+         val_before=$ret
+         numactl --interleave=all support_numa 2
+         sleep 2
+         sum_pages $( numastat | grep interleav | cut -d ' ' -f 2-)
+         val_after=$ret
+
+         echo "$i: $(( $val_after - $val_before))"
+done
+
+On a two-node system it prints:
+1: 294
+2: 294
+3: 295
+4: 294
+5: 294
+6: 295
+7: 294
+8: 294
+9: 293
+10: 293
+11: 294
+12: 295
+13: 296
+14: 293
+15: 295
+16: 294
+17: 295
+18: 294
+19: 294
+20: 294
+
+i.e. everything is ok.
+
+But on an eight-node system:
+1: 173
+2: 0
+3: 0
+4: 173
+5: 173
+6: 0
+7: 173
+8: 173
+9: 0
+10: 0
+11: 173
+12: 0
+13: 173
+14: 0
+15: 346
+16: 0
+17: 0
+18: 89
+19: 0
+20: 173
+
+So in general we can't rely on stat_interval value. Correct?
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
