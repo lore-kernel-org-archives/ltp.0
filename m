@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WXvxl-00027Q-8r
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 17:07:01 +0000
-Date: Wed, 9 Apr 2014 19:06:16 +0200
-From: chrubis@suse.cz
-Message-ID: <20140409170616.GB31198@rei>
-References: <1395402240-6619-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1395402240-6619-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<5344F4E5.2050600@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5344F4E5.2050600@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] testcases/lib/misc.sh: add tst_fs_has_free
-	function
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cl@linux.com>) id 1WXZYi-0002kt-OJ
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 17:11:40 +0000
+Received: from qmta03.emeryville.ca.mail.comcast.net ([76.96.30.32])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WXZYh-00040l-Ow
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 17:11:40 +0000
+Date: Tue, 8 Apr 2014 11:57:58 -0500 (CDT)
+From: Christoph Lameter <cl@linux.com>
+In-Reply-To: <5344288E.3090306@oracle.com>
+Message-ID: <alpine.DEB.2.10.1404081153460.12735@nuc>
+References: <533D3BC7.8010309@oracle.com>
+	<20140407013932.GU22728@two.firstfloor.org>
+	<alpine.DEB.2.10.1404071044310.9896@nuc>
+	<5344288E.3090306@oracle.com>
+Subject: Re: [LTP] numastats updates
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,22 +26,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, vasily Isaenko <vasily.isaenko@oracle.com>, Frederic Weisbecker <fweisbec@gmail.com>, linux-mm@kvack.org, Andi Kleen <andi@firstfloor.org>, linux-numa@vger.kernel.org
 
-Hi!
-> Ping :-)
+On Tue, 8 Apr 2014, Stanislav Kholmanskikh wrote:
 
-You are in the queue :). I will have a look tomorrow, but I cannot
-promise that the patch will get merged before next release which should
-happen anytime soon.
+> On a two-node system it prints:
+> 1: 294
+..
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 20: 294
+>
+> i.e. everything is ok.
+>
+> But on an eight-node system:
+> 1: 173
+> 2: 0
+> 3: 0
+> 4: 173
+> 5: 173
+
+
+> So in general we can't rely on stat_interval value. Correct?
+
+Owww... This could have something to do with the tick being disabled on
+idle without regard for pending vmstat updates. The processor goes to
+sleep and never updates the global counters. Once in awhile the processor
+wakes up to deal with the statistics.
+
+The idle logic needs to check that all differentials are folded before
+going to slee. Frederic: Can we add such a check?
+
 
 ------------------------------------------------------------------------------
 Put Bad Developers to Shame
