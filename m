@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WXZLt-0005jT-1u
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 16:58:25 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WXZLs-0003H4-9p
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 16:58:25 +0000
-Message-ID: <53442A99.6030208@oracle.com>
-Date: Tue, 08 Apr 2014 20:58:01 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WXU4T-00072V-NU
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 11:20:05 +0000
+Date: Tue, 8 Apr 2014 13:19:20 +0200
+From: chrubis@suse.cz
+Message-ID: <20140408111920.GA8556@rei>
+References: <1392862246.1997.6.camel@G08JYZSD130126>
+	<1396944482.2100.1.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <533D3BC7.8010309@oracle.com>
-	<20140407013932.GU22728@two.firstfloor.org>
-	<alpine.DEB.2.10.1404071044310.9896@nuc>
-	<5344288E.3090306@oracle.com>
-In-Reply-To: <5344288E.3090306@oracle.com>
-Subject: Re: [LTP] numastats updates
+Content-Disposition: inline
+In-Reply-To: <1396944482.2100.1.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] lib/tst_uid_gid.c: fix checking return value
+ errors about getpwuid_r/getgrgid_r
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,62 +26,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Christoph Lameter <cl@linux.com>, Andi Kleen <andi@firstfloor.org>
-Cc: vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>, linux-numa@vger.kernel.org
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
+Hi!
+Applied for now, thanks.
 
+Howvever if I remeber correctly the past discussion we do not strictly
+need system unused uid and gid in the  setregid02 and setregid03
+testcases and the failures were caused by the clash between nobody uid
+and arbitrary constatnt hardcoded into the source.
 
-On 04/08/2014 08:49 PM, Stanislav Kholmanskikh wrote:
+If I understand this correctly all need is a uid/gid different from the
+nobody user used for the testing, right?
 
->
-> On a two-node system it prints:
-> 1: 294
-> 2: 294
-> 3: 295
-> 4: 294
-> 5: 294
-> 6: 295
-> 7: 294
-> 8: 294
-> 9: 293
-> 10: 293
-> 11: 294
-> 12: 295
-> 13: 296
-> 14: 293
-> 15: 295
-> 16: 294
-> 17: 295
-> 18: 294
-> 19: 294
-> 20: 294
->
-> i.e. everything is ok.
->
-> But on an eight-node system:
-> 1: 173
-> 2: 0
-> 3: 0
-> 4: 173
-> 5: 173
-> 6: 0
-> 7: 173
-> 8: 173
-> 9: 0
-> 10: 0
-> 11: 173
-> 12: 0
-> 13: 173
-> 14: 0
-> 15: 346
-> 16: 0
-> 17: 0
-> 18: 89
-> 19: 0
-> 20: 173
->
-
-Forgot to mention. This eight-node system has 8k pages, two-node - 4k pages.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Put Bad Developers to Shame
