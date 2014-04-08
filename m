@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1WYeSE-0002Q2-Hk
-	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 16:37:26 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1WYeSC-0000fh-Ma
-	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 16:37:26 +0000
-Date: Fri, 11 Apr 2014 18:37:12 +0200
-From: Mats Liljegren <mats.liljegren@enea.com>
-Message-ID: <20140411183712.7ca33b6c@mats-desktop>
-MIME-Version: 1.0
-Subject: [LTP] Problems compiling
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cl@linux.com>) id 1WXaN7-0003oM-G1
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 18:03:45 +0000
+Received: from qmta03.emeryville.ca.mail.comcast.net ([76.96.30.32])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WXaN6-0000Xd-I6
+	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 18:03:45 +0000
+Date: Tue, 8 Apr 2014 13:03:36 -0500 (CDT)
+From: Christoph Lameter <cl@linux.com>
+In-Reply-To: <53442A99.6030208@oracle.com>
+Message-ID: <alpine.DEB.2.10.1404081302570.13065@nuc>
+References: <533D3BC7.8010309@oracle.com>
+	<20140407013932.GU22728@two.firstfloor.org>
+	<alpine.DEB.2.10.1404071044310.9896@nuc>
+	<5344288E.3090306@oracle.com> <53442A99.6030208@oracle.com>
+Subject: Re: [LTP] numastats updates
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,21 +26,19 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>, Andi Kleen <andi@firstfloor.org>, linux-numa@vger.kernel.org
 
-I recently updated my master branch of my ltp git repository, but I now
-have a compile error:
+On Tue, 8 Apr 2014, Stanislav Kholmanskikh wrote:
 
-make[6]: Entering directory `/nfs/hosts/sestonas06/homes/mlil/git/ltp/testcases/kernel/mem/lib'
-make[6]: ../../../../../testcases/kernel/mem/lib/Makefile: No such file or directory
+> Forgot to mention. This eight-node system has 8k pages, two-node - 4k pages.
 
-Anyone else having this problem?
+So they are not x86? There are some counter races on !x86.
 
-Best regards
-Mats Liljegren
 
 ------------------------------------------------------------------------------
 Put Bad Developers to Shame
