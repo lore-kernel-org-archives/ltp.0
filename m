@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WUxKw-00010F-M9
-	for ltp-list@lists.sourceforge.net; Tue, 01 Apr 2014 11:58:38 +0000
-Date: Tue, 1 Apr 2014 13:58:00 +0200
-From: chrubis@suse.cz
-Message-ID: <20140401115800.GB12474@rei.suse.cz>
-References: <1395044011-31911-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1395044011-31911-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<20140331150821.GB9824@rei.suse.cz>
-	<533A864A.4040109@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1WXrf6-0004HR-CU
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 12:31:28 +0000
+Received: from e06smtp18.uk.ibm.com ([195.75.94.114])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WXrf4-0003yq-FS
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 12:31:28 +0000
+Received: from /spool/local
+	by e06smtp18.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
+	Wed, 9 Apr 2014 13:31:20 +0100
+Message-ID: <53453D96.3070109@linux.vnet.ibm.com>
+Date: Wed, 09 Apr 2014 14:31:18 +0200
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <533A864A.4040109@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 3/3] performance_counters: make
- performance_counters run default
+References: <CA+G9fYuQi1+C0Mkhc0SVLKm8E9iEEF8rZ_62qAFZZcUaD9CLQQ@mail.gmail.com>
+	<1397035115.64792188@apps.rackspace.com>
+In-Reply-To: <1397035115.64792188@apps.rackspace.com>
+Subject: Re: [LTP] [Ltp-coverage] running LCOV/LTP on Beagle Bone Black -
+ Cannot Allocate Memory Error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,33 +34,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: shinto.john@smartplayin.com, Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, ltp-coverage@lists.sourceforge.net
 
-Hi!
-> >> Make performance_counter01 run default. This performance_counter01 case
-> >> is to use perf_event_open() to test hardware CPU events.
-> >>
-> >> Do not let performance_counter02 run defalult. This test need to know
-> >> an upper bound on the number of hardware counters, which varies in
-> >> different platforms. So if knowing this value, user can execute:
-> >> ./performance_counter02 -C (upper bound) to run this test.
-> > The test seems to default to 8. Can we just make it return TCONF if
-> > there are less than 8 hw counters? Having tests that are not executed by
-> > default is pointless.
-> Here I actually do not know how to get the number of hardware counters.
-> I had googled this issue, but do not find any method to get the number.
+On 09.04.2014 11:18, shinto.john@smartplayin.com wrote:
+> now while running "lcov -c -o coverage.info", this runs for ~5 minutes
+> without any issues and then is stuck at this below*red *point for long
+> time and never exits.
+> 
+> So i did ctrl-C and tried the "genhtml coverage.info -o out" and it worked.
+> 
+> I could see the LCOV report(Attached index.html) in "out" folder.
+> 
+> But looks like complete kernel folders are not there in the LCOV report
+> as it was stuck at below point.
+> 
+> Any comments?
+> 
+> include/asm-generic/bitops/arch_hweight.h:source file is newer than
+> graph file '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gc'
+> /home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/arch/arm/include/asm/bitops.h:source
+> file is newer than graph file '/home/mallikarjun.bc/LTP'
+> include/linux/workqueue.h:source file is newer than graph file
+> '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'
+> include/linux/nodemask.h:source file is newer than graph file
+> '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'
+> *include/linux/kernel.h:source file is newer than graph file
+> '/home/mallikarjun.bc/LTP/Download/linux-dev/KERNEL/mm/vmstat.gcno'*
 
-Hmm. I've looked at the interface and I wonder if we can do something as
-setting on the exclusive bit and create HW perf counters untill the
-perf_event_open() starts to fail, but that is just guess, the perf
-interface looks quite complicated.
+Try running top while lcov is stuck and see if there's a process using
+up a lot of CPU time. It might be that you are affected by a gcov bug.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Peter Oberparleiter
+Linux on System z Development - IBM Germany
+
 
 ------------------------------------------------------------------------------
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
