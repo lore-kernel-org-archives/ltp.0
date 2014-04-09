@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WczXQ-0005OI-PL
-	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:56:44 +0000
-Date: Wed, 23 Apr 2014 17:55:53 +0200
-From: chrubis@suse.cz
-Message-ID: <20140423155553.GB16286@rei.suse.cz>
-References: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1395757480-27424-6-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xu.simon@oracle.com>) id 1WXli5-0007dc-Ct
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 06:10:09 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WXli4-0004mr-L1
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 06:10:09 +0000
+Message-ID: <5344E42D.9050801@oracle.com>
+Date: Wed, 09 Apr 2014 14:09:49 +0800
+From: Simon Xu <xu.simon@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1395757480-27424-6-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V2 05/14] rpc-tirpc: enabled building of the test
- binaries
+References: <1395971064-625-1-git-send-email-xu.simon@oracle.com>
+	<698021823.mA9edKhrul@vapier>
+In-Reply-To: <698021823.mA9edKhrul@vapier>
+Subject: Re: [LTP] [PATCH] ip_tests.sh: don't use hardcoded eth0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,54 +28,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
 
-Hi!
-> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
-> @@ -0,0 +1,20 @@
-> +#
-> +#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
-> +#
-> +#    This program is free software; you can redistribute it and/or modify
-> +#    it under the terms of the GNU General Public License as published by
-> +#    the Free Software Foundation; either version 2 of the License, or
-> +#    (at your option) any later version.
-> +#
-> +#    This program is distributed in the hope that it will be useful,
-> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +#    GNU General Public License for more details.
-> +#
-> +#    You should have received a copy of the GNU General Public License along
-> +#    with this program; if not, write to the Free Software Foundation, Inc.,
-> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +
-> +LDLIBS		+= $(TIRPC_LIBS) -lpthread
-> +CPPFLAGS	+= $(TIRPC_CPPFLAGS)
+In my CentOS box, running "ifconfig lo:1 10.1.1.12" immediately hangs 
+the ssh connection, I have to run "systemctl restart network" in local 
+tty to make network work again.  Could you help to try the testcases in 
+ip_tests.sh on your box and report back?
 
-This should be:
+Thanks
+Simon
 
-LDLIBS       += $(TIRPC_LIBS)
-CPPFLAGS     += $(TIRPC_CPPFLAGS) -pthread
+On 2014/3/28 13:08, Mike Frysinger wrote:
+> On Fri 28 Mar 2014 09:44:24 Simon Xu wrote:
+>> The script uses hardcoded 'eth0' which used to work on most systems.
+>> This fix tries to find a 'working' network interface using the hostname.
+> why doesn't hardcoding "lo" work ?
+> -mike
 
-Because othewise preprocessor flags are not set.
-
-See for example:
-
-http://stackoverflow.com/questions/2127797/gcc-significance-of-pthread-flag-when-compiling
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
