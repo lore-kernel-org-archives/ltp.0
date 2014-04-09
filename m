@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WamMn-0007xG-3R
-	for ltp-list@lists.sourceforge.net; Thu, 17 Apr 2014 13:28:37 +0000
-Date: Thu, 17 Apr 2014 15:27:50 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WXsFq-0003sT-JF
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 13:09:26 +0000
+Date: Wed, 9 Apr 2014 15:08:42 +0200
 From: chrubis@suse.cz
-Message-ID: <20140417132750.GA6420@rei>
-References: <20140416190028.GA2093@ls3530.fritz.box>
-	<20140417093329.GA6558@rei.suse.cz>
-	<trinity-7fc052ce-4544-4fa4-afc0-9b68430ef693-1397729289569@3capp-gmx-bs62>
+Message-ID: <20140409130842.GA5712@rei>
+References: <1392862246.1997.6.camel@G08JYZSD130126>
+	<1396944482.2100.1.camel@G08JYZSD130126>
+	<20140408111920.GA8556@rei> <5344069B.8010101@oracle.com>
+	<20140408144954.GA1841@rei> <20140408155251.GA3201@rei>
+	<5344E5C8.3070306@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <trinity-7fc052ce-4544-4fa4-afc0-9b68430ef693-1397729289569@3capp-gmx-bs62>
-Subject: Re: [LTP] [PATCH] fix fanotify syscall check on compat kernel
+In-Reply-To: <5344E5C8.3070306@oracle.com>
+Subject: Re: [LTP] [PATCH] lib/tst_uid_gid.c: fix checking return value
+ errors about getpwuid_r/getgrgid_r
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,34 +29,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Helge Deller <deller@gmx.de>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > Also I've been unable to make the testcases work with -m32 on x86_64
-> > both with and without the patch and even when using glibc wrappers from
-> > sys/fallocate.h, in all cases the error is EINVAL which suggets that the
-> > parameters are passed wrongly somewhere on the way.
 > 
-> Does it work on the same kernel with -m64 ?
-> In any case, for the tests to work the kernel needs to have been compiled with the
-> kernel option CONFIG_FANOTIFY_ACCESS_PERMISSIONS set. In my initial tests this
-> option wasn't set and I got EINVAL too.
+> Thank you very-very much.
+> 
+> It's not bad that we included GET_UNUSED* in LTP. Maybe somebody someday 
+> will need it for their purposes... :)
+>
 
-And it seems to work (-m32 with your patch) on two testing machines with
-slightly older kernel. So I guess that the patch is fine and I had just
-bad luck with one particular machine.
+I'm personaly for removing any unused code because
+
+ * you may readd it later when needed because it's in the git history
+ * there is a price for mantaining each line of code we have
+ * and any unused code tend to break sooner or later
+
+So I would rather see it removed now and I promise to readd it when we
+found a purpose for it.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
