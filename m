@@ -1,32 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1WdGii-0000mB-DH
-	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 10:17:32 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WdGig-0007lG-Ru
-	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 10:17:31 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s3OAHNe3009792
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WXmHL-0000hF-Rf
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 06:46:35 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WXmHK-0005ta-4G
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 06:46:35 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s396kQ5u013872
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Apr 2014 10:17:25 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3OAHNoc025905
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Apr 2014 10:17:23 GMT
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3OAHNsN025897
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Apr 2014 10:17:23 GMT
-From: shuang.qiu@oracle.com
-Date: Thu, 24 Apr 2014 18:15:46 +0800
-Message-Id: <1398334546-5820-1-git-send-email-shuang.qiu@oracle.com>
-Subject: [LTP] [PATCH] syscalls/fstatfs:using temporary file description to
-	test the system call
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Apr 2014 06:46:27 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s396kQDA018935
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Apr 2014 06:46:26 GMT
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s396kPCB018926
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Apr 2014 06:46:25 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed,  9 Apr 2014 10:46:20 +0400
+Message-Id: <1397025980-26738-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] shm_open_23-1: modified memory protection attributes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,82 +41,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+POSIX doesn't state that if mmap() is given only PROT_WRITE, then
+that memory region will have read access too. It's an implementation
+issue of the platform.
 
-It does not make sense to use stdout as the file description to test the
-system call fstatfs().We may get unexpected result(i.e. erron38:Function
-not implemented) if redirect stdout when running ltp.
-Using ltp temporary file instead.
+On a platform which don't imply read access when only PROT_WRITE is given,
+such a situation happens:
+  1) a child process decrements the semaphore with sem_wait(sem)
+  2) then tries to dereference create_cnt via (*create_cnt)++. This
+     will result in a SIGSEGV, and the child will be terminated.
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+Therefore the semaphore will be left in a "decremented" state and this
+test case will hang.
+
+To overcome this problem we should explicitly pass PROT_READ to mmap().
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/fstatfs/fstatfs02.c |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+ .../conformance/interfaces/shm_open/23-1.c         |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs02.c b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-index cee234f..652624b 100644
---- a/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-+++ b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-@@ -47,6 +47,7 @@
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/23-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/23-1.c
+index 40d7a19..7a82f88 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/23-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/23-1.c
+@@ -105,7 +105,7 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
  
- #include <sys/vfs.h>
- #include <sys/types.h>
-+#include <sys/fcntl.h>
- #include <sys/statfs.h>
- #include <errno.h>
- #include "test.h"
-@@ -59,6 +60,8 @@ char *TCID = "fstatfs02";
- 
- int exp_enos[] = { EBADF, EFAULT, 0 };
- 
-+char fname[255];
-+int fd;
- struct statfs buf;
- 
- struct test_case_t {
-@@ -91,6 +94,10 @@ int main(int ac, char **av)
- 
- 	setup();
- 
-+#ifndef UCLINUX
-+	TC[1].fd = fd;
-+#endif
-+
- 	/* set up the expected errnos */
- 	TEST_EXP_ENOS(exp_enos);
- 
-@@ -138,6 +145,10 @@ void setup(void)
- 
- 	/* make a temporary directory and cd to it */
- 	tst_tmpdir();
-+
-+	sprintf(fname, "tfile_%d", getpid());
-+	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
- }
- 
- /*
-@@ -152,6 +163,9 @@ void cleanup(void)
- 	 */
- 	TEST_CLEANUP;
- 
-+	if (close(fd) == -1)
-+		tst_resm(TWARN | TERRNO, "close failed");
-+
- 	/* delete the test directory created in setup() */
- 	tst_rmdir();
- 
+-	create_cnt = mmap(NULL, sizeof(*create_cnt), PROT_WRITE,
++	create_cnt = mmap(NULL, sizeof(*create_cnt), PROT_WRITE | PROT_READ,
+ 			  MAP_SHARED, result_fd, 0);
+ 	if (create_cnt == MAP_FAILED) {
+ 		perror("An error occurs when calling mmap()");
 -- 
-1.7.7
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
