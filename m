@@ -1,32 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WcC4q-0006EP-KY
-	for ltp-list@lists.sourceforge.net; Mon, 21 Apr 2014 11:07:56 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WcC4p-0000di-T9
-	for ltp-list@lists.sourceforge.net; Mon, 21 Apr 2014 11:07:56 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s3LB7nxn001641
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 11:07:49 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3LB7mIW027076
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 11:07:48 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3LB7lJJ018311
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 11:07:47 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 21 Apr 2014 15:07:39 +0400
-Message-Id: <1398078461-23926-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] OpenPosix timeout fixes
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WXjTM-0003D5-Pi
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 03:46:48 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WXjTK-0003O1-PM
+	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 03:46:48 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s393kUbS002251
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Apr 2014 11:46:31 +0800
+From: "gux.fnst@cn.fujitsu.com" <gux.fnst@cn.fujitsu.com>
+Date: Wed, 9 Apr 2014 03:46:34 +0000
+Message-ID: <1397015193-18623-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v3] lib/tst_path_has_mnt_flags.c: create a function
+ tst_path_has_mnt_flags()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,33 +30,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
+Create a function tst_path_has_mnt_flags() for checking whether
+a path is on a system that is mounted with specified flags.
 
-We intentionally compile this suite without any optimizations.
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ include/test.h               |  9 +++++
+ lib/tst_path_has_mnt_flags.c | 79 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
+ create mode 100644 lib/tst_path_has_mnt_flags.c
 
-On some non-x86 platforms the test cases may execute longer that it's expected.
-
-Perhaps, the timeout values were initially set for x86 environment.
-
-Given that OpenPosix Test Suite is not a benchmark, I see no problem in increasing
-the values a bit...
-
-Thanks.
-
-
+diff --git a/include/test.h b/include/test.h
+index baa3ef6..39bc5a1 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -295,6 +295,15 @@ gid_t tst_get_unused_gid(void);
+ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
+ 	unsigned short family, int type);
+ 
++/* lib/tst_path_has_mnt_flags.c
++ *
++ * Check whether a path is on a filesystem that is mounted with
++ * specified flags.
++ * @path: path to file
++ * @flags: mount flags
++ */
++int tst_path_has_mnt_flags(const char *path, const char *flags[]);
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/tst_path_has_mnt_flags.c b/lib/tst_path_has_mnt_flags.c
+new file mode 100644
+index 0000000..abd71b0
+--- /dev/null
++++ b/lib/tst_path_has_mnt_flags.c
+@@ -0,0 +1,79 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include <unistd.h>
++#include <mntent.h>
++#include "test.h"
++
++/*
++ * Check whether a path is on a filesystem that is mounted with
++ * specified flags.
++ *
++ * Returns:
++ *   -1 - an error has occurred
++ *   0 - the filesystem does not have any specified flags
++ *   1 - the filesystem has at least one flag matched
++ */
++int tst_path_has_mnt_flags(const char *path, const char *flags[])
++{
++	struct mntent *mnt;
++	size_t prefix_max = 0, prefix_len;
++	int has_flags = 0, has_opt;
++	FILE *f;
++	int i;
++
++	if (path == NULL) {
++		printf("The path is NULL.\n");
++		return -1;
++	}
++
++	if (access(path, F_OK) == -1) {
++		printf("The path %s doesn't exist.\n", path);
++		return -1;
++	}
++
++	f = setmntent("/proc/mounts", "r");
++
++	if (f == NULL) {
++		printf("Couldn't mount /proc/mounts.\n");
++		return -1;
++	}
++
++	while ((mnt = getmntent(f))) {
++		/* ignore all pseudo fs */
++		if (mnt->mnt_fsname[0] != '/')
++			continue;
++
++		prefix_len = strlen(mnt->mnt_dir);
++
++		if (strncmp(path, mnt->mnt_dir, prefix_len) == 0
++				&& prefix_len > prefix_max) {
++			prefix_max = prefix_len;
++			has_opt = 0;
++			i = 0;
++			while ((has_opt == 0) && (flags[i] != NULL)) {
++				has_opt = hasmntopt(mnt, flags[i]) != NULL;
++				i++;
++			}
++			has_flags = has_opt;
++		}
++	}
++
++	endmntent(f);
++
++	return has_flags;
++}
+-- 
+1.8.3.1
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
