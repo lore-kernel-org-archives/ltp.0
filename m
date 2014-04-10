@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xu.simon@oracle.com>) id 1WXli5-0007dc-Ct
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 06:10:09 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1WYCqX-00028u-Uu
+	for ltp-list@lists.sourceforge.net; Thu, 10 Apr 2014 11:08:41 +0000
+Received: from e06smtp12.uk.ibm.com ([195.75.94.108])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WXli4-0004mr-L1
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 06:10:09 +0000
-Message-ID: <5344E42D.9050801@oracle.com>
-Date: Wed, 09 Apr 2014 14:09:49 +0800
-From: Simon Xu <xu.simon@oracle.com>
+	(Exim 4.76) id 1WYCqW-0006Gt-UX
+	for ltp-list@lists.sourceforge.net; Thu, 10 Apr 2014 11:08:41 +0000
+Received: from /spool/local
+	by e06smtp12.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
+	Thu, 10 Apr 2014 12:08:34 +0100
+Message-ID: <53467BAF.8030605@linux.vnet.ibm.com>
+Date: Thu, 10 Apr 2014 13:08:31 +0200
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <1395971064-625-1-git-send-email-xu.simon@oracle.com>
-	<698021823.mA9edKhrul@vapier>
-In-Reply-To: <698021823.mA9edKhrul@vapier>
-Subject: Re: [LTP] [PATCH] ip_tests.sh: don't use hardcoded eth0
+References: <CA+G9fYuQi1+C0Mkhc0SVLKm8E9iEEF8rZ_62qAFZZcUaD9CLQQ@mail.gmail.com>
+	<1397035115.64792188@apps.rackspace.com>
+	<53453D96.3070109@linux.vnet.ibm.com>
+	<1397048671.53348062@apps.rackspace.com>
+In-Reply-To: <1397048671.53348062@apps.rackspace.com>
+Subject: Re: [LTP] [Ltp-coverage] running LCOV/LTP on Beagle Bone Black -
+ Cannot Allocate Memory Error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,22 +36,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+To: shinto.john@smartplayin.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Naresh Kamboju <naresh.kamboju@linaro.org>, ltp-coverage@lists.sourceforge.net
 
-In my CentOS box, running "ifconfig lo:1 10.1.1.12" immediately hangs 
-the ssh connection, I have to run "systemctl restart network" in local 
-tty to make network work again.  Could you help to try the testcases in 
-ip_tests.sh on your box and report back?
+On 09.04.2014 15:04, shinto.john@smartplayin.com wrote:
+> This got resolved when i tried this in KERNEL/mm/Makefile
+> 
+> GCOV_PROFILE := n
+> 
+> So basically some issue with KERNEL/mm/vmstat.gcno... right?
 
-Thanks
-Simon
+If you don't need the coverage data for mm/* then this looks like a
+feasible workaround.
 
-On 2014/3/28 13:08, Mike Frysinger wrote:
-> On Fri 28 Mar 2014 09:44:24 Simon Xu wrote:
->> The script uses hardcoded 'eth0' which used to work on most systems.
->> This fix tries to find a 'working' network interface using the hostname.
-> why doesn't hardcoding "lo" work ?
-> -mike
+> Now i am able to do a complete kernel run.
+
+-- 
+Peter Oberparleiter
+Linux on System z Development - IBM Germany
 
 
 ------------------------------------------------------------------------------
