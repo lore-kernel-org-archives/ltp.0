@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WcWD2-0007VP-If
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 08:37:44 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WcWCz-0005X4-MN
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 08:37:44 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s3M8bVHd012863
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Apr 2014 04:37:31 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s3M8bUJt000843
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Apr 2014 04:37:31 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 22 Apr 2014 10:37:19 +0200
-Message-Id: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 1/2] readahead02: fix signed/unsigned comparison
-	warnings
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WYYgA-00054m-FL
+	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 10:27:26 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WYYg8-0000x5-SU
+	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 10:27:26 +0000
+Message-ID: <5347C312.80509@cn.fujitsu.com>
+Date: Fri, 11 Apr 2014 18:25:22 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1397122484-29192-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<592669147.2947135.1397129256250.JavaMail.zimbra@redhat.com>
+In-Reply-To: <592669147.2947135.1397129256250.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v2] pipeio/pipeio.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,97 +25,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/readahead/readahead02.c |   22 +++++++++++---------
- 1 files changed, 12 insertions(+), 10 deletions(-)
+Hi,
+On 04/10/2014 07:27 PM, Jan Stancek wrote:
+>
+>> +static int Nchildcomplete;
+> I'd suggest sig_atomic_t here.
 
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 66158f0..8940821 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -120,7 +120,7 @@ static void drop_caches(void)
- 	}
- }
- 
--static long parse_entry(const char *fname, const char *entry)
-+static unsigned long parse_entry(const char *fname, const char *entry)
- {
- 	FILE *f;
- 	long value = -1;
-@@ -140,17 +140,17 @@ static long parse_entry(const char *fname, const char *entry)
- 	return value;
- }
- 
--static long get_bytes_read(void)
-+static unsigned long get_bytes_read(void)
- {
- 	char fname[128];
--	char entry[] = "read_bytes: %ld";
-+	char entry[] = "read_bytes: %lu";
- 	sprintf(fname, "/proc/%u/io", getpid());
- 	return parse_entry(fname, entry);
- }
- 
--static long get_cached_size(void)
-+static unsigned long get_cached_size(void)
- {
--	char entry[] = "Cached: %ld";
-+	char entry[] = "Cached: %lu";
- 	return parse_entry(meminfo_fname, entry);
- }
- 
-@@ -158,7 +158,7 @@ static void create_testfile(void)
- {
- 	FILE *f;
- 	char *tmp;
--	int i;
-+	size_t i;
- 
- 	tst_resm(TINFO, "creating test file of size: %ld", testfile_size);
- 	tmp = SAFE_MALLOC(cleanup, pagesize);
-@@ -197,9 +197,11 @@ static void create_testfile(void)
-  * @cached: returns cached kB from /proc/meminfo
-  */
- static void read_testfile(int do_readahead, const char *fname, size_t fsize,
--			  long *read_bytes, long *usec, long *cached)
-+			  unsigned long *read_bytes, long *usec,
-+			  unsigned long *cached)
- {
--	int fd, i;
-+	int fd;
-+	size_t i;
- 	long read_bytes_start;
- 	unsigned char *p, tmp;
- 	unsigned long time_start_usec, time_end_usec;
-@@ -261,9 +263,9 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
- 
- static void test_readahead(void)
- {
--	long read_bytes, read_bytes_ra;
-+	unsigned long read_bytes, read_bytes_ra;
- 	long usec, usec_ra;
--	long cached_max, cached_low, cached, cached_ra;
-+	unsigned long cached_max, cached_low, cached, cached_ra;
- 	char proc_io_fname[128];
- 	sprintf(proc_io_fname, "/proc/%u/io", getpid());
- 
--- 
-1.7.1
+Yes, it should be.
+>
+>> +
+>> +static int error;
+>> +static int count;
+>> +static int num_writers = 1;	/* number of writers */
+>> +static int num_writes = 1;	/* number of writes per child */
+>> +static int loop;		/* loop indefinitely */
+>> +static int exit_error = 1;	/* exit on error #, zero means no exit */
+>> +static int size = 327;		/* default size */
+>> +static int unpipe;		/* un-named pipe if non-zero */
+>> +static int verbose;		/* verbose mode if set */
+>> +static int quiet;		/* quiet mode if set */
+>> +static int num_rpt;		/* ping number, how often to print message */
+>> +static int chld_wait;	/* max time to wait between writes, 1 == no wait */
+>> +static int parent_wait;	/* max time to wait between reads, 1 == no wait */
+>> +static int ndelay = O_NDELAY;	/* additional flag to open */
+>> +static char *writebuf;
+>> +static char *readbuf;
+>> +static char pname[PATH_MAX];	/* contains the name of the unamed pipe */
+>> +static char *blk_type = NON_BLOCKING_IO; /* blocking i/o or not */
+>> +static char *pipe_type;		/* type of pipe under test */
+>> +static int fds[2];		/* un-named pipe fds */
+>> +static int read_fd;
+>> +static int write_fd;
+>> +static int empty_read;
+>> +static int format = HEX;
+>> +static int format_size = -1;
+>> +static int iotype;		/* sync io */
+>> +static int sem_id;
+>> +static struct sembuf sem_op;
+> Some of these variables could be local: "fds" only in setup(),
+> "sem_op" could be local in do_child() and do_parent().
+>
+> I'd suggest to also split this list of global variables, so it's clear
+> which are modified as part of setup and which change value
+> also throughout the run.
+OK, it's reasonable, thanks.
+
+Regards,
+Xiaoguang Wang
+>
+> Split of code into functions looked OK to me.
+>
+> Regards,
+> Jan
+> .
+>
 
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
