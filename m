@@ -1,26 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WXjTM-0003D5-Pi
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 03:46:48 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WYWKw-0004Nh-0o
+	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 07:57:22 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WXjTK-0003O1-PM
-	for ltp-list@lists.sourceforge.net; Wed, 09 Apr 2014 03:46:48 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WYWKu-0004Df-6Z
+	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 07:57:21 +0000
 Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s393kUbS002251
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Apr 2014 11:46:31 +0800
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3B7sCxg012127
+	for <ltp-list@lists.sourceforge.net>; Fri, 11 Apr 2014 15:54:13 +0800
 From: "gux.fnst@cn.fujitsu.com" <gux.fnst@cn.fujitsu.com>
-Date: Wed, 9 Apr 2014 03:46:34 +0000
-Message-ID: <1397015193-18623-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Date: Fri, 11 Apr 2014 07:54:13 +0000
+Message-ID: <1397202849-5956-1-git-send-email-gux.fnst@cn.fujitsu.com>
 References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
 In-Reply-To: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
 Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] lib/tst_path_has_mnt_flags.c: create a function
- tst_path_has_mnt_flags()
+Subject: [LTP] [PATCH v4 1/2] lib/tst_path_has_mnt_flags.c: create a
+ function tst_path_has_mnt_flags()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,15 +41,15 @@ a path is on a system that is mounted with specified flags.
 Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
  include/test.h               |  9 +++++
- lib/tst_path_has_mnt_flags.c | 79 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 88 insertions(+)
+ lib/tst_path_has_mnt_flags.c | 81 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 90 insertions(+)
  create mode 100644 lib/tst_path_has_mnt_flags.c
 
 diff --git a/include/test.h b/include/test.h
-index baa3ef6..39bc5a1 100644
+index f5c602b..a4bee73 100644
 --- a/include/test.h
 +++ b/include/test.h
-@@ -295,6 +295,15 @@ gid_t tst_get_unused_gid(void);
+@@ -288,6 +288,15 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
  unsigned short tst_get_unused_port(void (cleanup_fn)(void),
  	unsigned short family, int type);
  
@@ -67,10 +67,10 @@ index baa3ef6..39bc5a1 100644
  #elif  TST_USE_NEWER64_SYSCALL
 diff --git a/lib/tst_path_has_mnt_flags.c b/lib/tst_path_has_mnt_flags.c
 new file mode 100644
-index 0000000..abd71b0
+index 0000000..92c7494
 --- /dev/null
 +++ b/lib/tst_path_has_mnt_flags.c
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,81 @@
 +/*
 + * Copyright (c) 2014 Fujitsu Ltd.
 + * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
@@ -90,6 +90,8 @@ index 0000000..abd71b0
 +
 +#include <unistd.h>
 +#include <mntent.h>
++#include <stdio.h>
++#include <string.h>
 +#include "test.h"
 +
 +/*
@@ -99,13 +101,13 @@ index 0000000..abd71b0
 + * Returns:
 + *   -1 - an error has occurred
 + *   0 - the filesystem does not have any specified flags
-+ *   1 - the filesystem has at least one flag matched
++ *   1..n - number of flags matched
 + */
 +int tst_path_has_mnt_flags(const char *path, const char *flags[])
 +{
 +	struct mntent *mnt;
 +	size_t prefix_max = 0, prefix_len;
-+	int has_flags = 0, has_opt;
++	int flags_matched = 0;
 +	FILE *f;
 +	int i;
 +
@@ -136,19 +138,19 @@ index 0000000..abd71b0
 +		if (strncmp(path, mnt->mnt_dir, prefix_len) == 0
 +				&& prefix_len > prefix_max) {
 +			prefix_max = prefix_len;
-+			has_opt = 0;
++			flags_matched = 0;
 +			i = 0;
-+			while ((has_opt == 0) && (flags[i] != NULL)) {
-+				has_opt = hasmntopt(mnt, flags[i]) != NULL;
++			while (flags[i] != NULL) {
++				if (hasmntopt(mnt, flags[i]) != NULL)
++					flags_matched++;
 +				i++;
 +			}
-+			has_flags = has_opt;
 +		}
 +	}
 +
 +	endmntent(f);
 +
-+	return has_flags;
++	return flags_matched;
 +}
 -- 
 1.8.3.1
