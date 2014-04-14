@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WapdM-0004L9-CH
-	for ltp-list@lists.sourceforge.net; Thu, 17 Apr 2014 16:57:56 +0000
-Date: Thu, 17 Apr 2014 18:57:06 +0200
-From: chrubis@suse.cz
-Message-ID: <20140417165706.GA2833@rei>
-References: <20140416190028.GA2093@ls3530.fritz.box>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WZY3P-0005HC-TG
+	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 03:59:31 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WZY3N-00048g-RG
+	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 03:59:31 +0000
+Message-ID: <534B5C8E.1070500@cn.fujitsu.com>
+Date: Mon, 14 Apr 2014 11:57:02 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20140416190028.GA2093@ls3530.fritz.box>
-Subject: Re: [LTP] [PATCH] fix fanotify syscall check on compat kernel
+References: <20140411183712.7ca33b6c@mats-desktop>
+In-Reply-To: <20140411183712.7ca33b6c@mats-desktop>
+Subject: Re: [LTP] Problems compiling
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,28 +27,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Helge Deller <deller@gmx.de>
+To: Mats Liljegren <mats.liljegren@enea.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> The fanotify[0-5] testcases use the myfanotify_mark() wrapper for the
-> fanotify_mark() syscall. But the #define does not take into account, that
-> the mask field is actually of type _u64 where we need to split the hi
-> and low word in the syscall on a 32bit arch.
-> 
-> The attached patch converts the #define to a inline function where
-> the compiler will help to convert the given values to the correct types
-> (e.g. unsigned long).
-> 
-> Bug found and tested on the parisc/hppa (32bit userspace with 64bit
-> kernel) arch.
+Hi,
 
-I've pushed slightly modified version of this patch. Please check that
-it works fine for you.
+On 04/12/2014 12:37 AM, Mats Liljegren wrote:
+> I recently updated my master branch of my ltp git repository, but I now
+> have a compile error:
+>
+> make[6]: Entering directory `/nfs/hosts/sestonas06/homes/mlil/git/ltp/testcases/kernel/mem/lib'
+> make[6]: ../../../../../testcases/kernel/mem/lib/Makefile: No such file or directory
+>
+> Anyone else having this problem?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Yeah, I also met this problem.
+I guess it may be "testcases/kernel/mem/include/libmem.mk"  causing this issue.
+
+I can reproduce this fail by following steps:
+
+1, cd testcases/kernel/mem/lib
+    rm libmem.a
+
+2, then back to testcases/kernel/mem/hugetlb/hugemmap
+    make
+
+I got the similar error message:
+make -C ../../../../../testcases/kernel/mem/lib -f "../../../../../testcases/kernel/mem/lib/Makefile" all
+make[1]: Entering directory `/root/ltp-dev/testcases/kernel/mem/lib'
+make[1]: ../../../../../testcases/kernel/mem/lib/Makefile: No such file or directory
+make[1]: *** No rule to make target `../../../../../testcases/kernel/mem/lib/Makefile'.  Stop.
+make[1]: Leaving directory `/root/ltp-dev/testcases/kernel/mem/lib'
+make: *** [../../../../../testcases/kernel/mem/lib/libmem.a] Error 2
+
+In testcases/kernel/mem/include/libmem.mk:
+
+MEM_SRCDIR              := $(top_srcdir)/testcases/kernel/mem
+LIBMEM_SRCDIR           := $(MEM_SRCDIR)/lib
+
+MEM_DIR                 := $(top_builddir)/testcases/kernel/mem
+LIBMEM_DIR              := $(MEM_DIR)/lib
+LIBMEM                  := $(LIBMEM_DIR)/libmem.a
+FILTER_OUT_DIRS         := $(LIBMEM_DIR)
+CFLAGS                  += -I$(MEM_SRCDIR)/include
+LDLIBS                  += $(NUMA_LIBS) -lmem -lltp
+LDFLAGS                 += -L$(LIBMEM_DIR)
+
+$(LIBMEM_DIR):
+        mkdir -p "$@"
+
+$(LIBMEM): $(LIBMEM_DIR)
+        $(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" all
+
+MAKE_DEPS               += $(LIBMEM)
+
+See the target $(LIBMEM). Since we have executed make command using the "-C" option, we do
+not need to specify a make file with relative path.  We can just
+execute like that: $(MAKE) -C $^ -f  "Makefile" all in this case.
+
+Here the true reason is that when we change directory to $(LIBMEM_DIR), $(LIBMEM_SRCDIR)/Makefile
+is not a valid path.
+
+Regards,
+Xiaoguang Wang
+
+
+
+>
+> Best regards
+> Mats Liljegren
+>
+> ------------------------------------------------------------------------------
+> Put Bad Developers to Shame
+> Dominate Development with Jenkins Continuous Integration
+> Continuously Automate Build, Test & Deployment 
+> Start a new project now. Try Jenkins in the cloud.
+> http://p.sf.net/sfu/13600_Cloudbees
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
