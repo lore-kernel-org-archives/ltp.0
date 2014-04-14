@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WaV3E-0008Qz-9s
-	for ltp-list@lists.sourceforge.net; Wed, 16 Apr 2014 18:59:16 +0000
-Date: Wed, 16 Apr 2014 20:58:27 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WZfXM-0000vU-Ry
+	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 11:58:56 +0000
+Date: Mon, 14 Apr 2014 13:58:10 +0200
 From: chrubis@suse.cz
-Message-ID: <20140416185827.GA4437@rei>
-References: <20140416185143.GB4308@rei>
- <534ED26A.6040508@gmx.de>
+Message-ID: <20140414115810.GB25624@rei.suse.cz>
+References: <20140410165203.GA28293@rei>
+ <5346F29E.7020402@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <534ED26A.6040508@gmx.de>
-Subject: Re: [LTP] LTP release
+In-Reply-To: <5346F29E.7020402@oracle.com>
+Subject: Re: [LTP] LTP Release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,16 +25,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Helge Deller <deller@gmx.de>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > With the last three patches for fallocate testcases the latest git head
-> 
-> I do have a patch for fanotify to fix it on 32bit with 64bit kernel. 
-> Give me a second to send it.
+> The warning was added 11 years ago and even at that time it was quite 
+> old... so gcc-2.95.3 (embedded systems?) doesn't have it.
 
-No rush, I will have a look tomorrow morning ;).
+Strange, it fails with gcc-3.3.3 on SLES for me. Anyway it's a matter of
+simple configure check which I will write :).
 
 -- 
 Cyril Hrubis
