@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cl@linux.com>) id 1WXaN7-0003oM-G1
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 18:03:45 +0000
-Received: from qmta03.emeryville.ca.mail.comcast.net ([76.96.30.32])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WXaN6-0000Xd-I6
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 18:03:45 +0000
-Date: Tue, 8 Apr 2014 13:03:36 -0500 (CDT)
-From: Christoph Lameter <cl@linux.com>
-In-Reply-To: <53442A99.6030208@oracle.com>
-Message-ID: <alpine.DEB.2.10.1404081302570.13065@nuc>
-References: <533D3BC7.8010309@oracle.com>
-	<20140407013932.GU22728@two.firstfloor.org>
-	<alpine.DEB.2.10.1404071044310.9896@nuc>
-	<5344288E.3090306@oracle.com> <53442A99.6030208@oracle.com>
-Subject: Re: [LTP] numastats updates
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WZkKo-0003BR-50
+	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 17:06:18 +0000
+Date: Mon, 14 Apr 2014 19:05:32 +0200
+From: chrubis@suse.cz
+Message-ID: <20140414170532.GB11169@rei>
+References: <20140411183712.7ca33b6c@mats-desktop>
+	<534B5C8E.1070500@cn.fujitsu.com> <20140414161209.GA15595@rei.Home>
+	<0247700D01F14443B9209F90AD938CC524515766@sestoex05.enea.se>
+	<20140414165152.GA11169@rei> <20140414185950.4945a644@mats-desktop>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20140414185950.4945a644@mats-desktop>
+Subject: Re: [LTP] Problems compiling
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +24,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>, Andi Kleen <andi@firstfloor.org>, linux-numa@vger.kernel.org
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Tue, 8 Apr 2014, Stanislav Kholmanskikh wrote:
+Hi!
+> Please ignore that second patch, it was the wrong one. It is from middle
+> of my work with my test case so you will have no success applying it.
+> Sorry for the spam...
 
-> Forgot to mention. This eight-node system has 8k pages, two-node - 4k pages.
+Ack.
 
-So they are not x86? There are some counter races on !x86.
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
