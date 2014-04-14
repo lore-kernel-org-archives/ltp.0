@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wa36I-00023V-O5
-	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 13:08:34 +0000
-Date: Tue, 15 Apr 2014 15:07:48 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WZhR9-0008FT-JW
+	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 14:00:39 +0000
+Date: Mon, 14 Apr 2014 15:59:52 +0200
 From: chrubis@suse.cz
-Message-ID: <20140415130748.GA27548@rei>
-References: <1397565762-11015-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20140414135952.GA25967@rei.suse.cz>
+References: <20140410165203.GA28293@rei> <5346F29E.7020402@oracle.com>
+	<20140414115810.GB25624@rei.suse.cz> <534BE117.3070008@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1397565762-11015-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] doc: test-writing-guidelines: fixed the C test
- example
+In-Reply-To: <534BE117.3070008@oracle.com>
+Subject: Re: [LTP] LTP Release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,11 +25,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-Acked. This can go in immediatelly.
+> >> The warning was added 11 years ago and even at that time it was quite
+> >> old... so gcc-2.95.3 (embedded systems?) doesn't have it.
+> > Strange, it fails with gcc-3.3.3 on SLES for me. Anyway it's a matter of
+> > simple configure check which I will write :).
+> I did it in the following patch: 
+> http://sourceforge.net/p/ltp/mailman/message/32213977
+
+Faster than me :)
 
 -- 
 Cyril Hrubis
