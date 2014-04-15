@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WcZJw-00065l-Uu
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 11:57:04 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WcZJt-0005wW-Dd
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 11:57:04 +0000
-Date: Tue, 22 Apr 2014 07:56:55 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <29506955.7719026.1398167815215.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1398078461-23926-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1398078461-23926-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wa1Gj-00063Q-CO
+	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 11:11:13 +0000
+Date: Tue, 15 Apr 2014 13:10:26 +0200
+From: chrubis@suse.cz
+Message-ID: <20140415111025.GA13702@rei>
+References: <20140414174105.GA26543@rei>
+	<1397550675-25420-1-git-send-email-mats.liljegren@enea.com>
+	<1397550675-25420-2-git-send-email-mats.liljegren@enea.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] OpenPosix timeout fixes
+Content-Disposition: inline
+In-Reply-To: <1397550675-25420-2-git-send-email-mats.liljegren@enea.com>
+Subject: Re: [LTP] [PATCH] utils/Makefile: Move ffsb configure to
+	configure.ac
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,60 +27,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net, Fathi Boudra <fathi.boudra@linaro.org>
 
+Hi!
+> The configure call was done from make file without appropriate parameters,
+> which breaks cross-compiling. Include ffsb into configure.ac so that it is
+> included in the main configure call.
+> 
+> This fix is based on a patch by Fathi Boudra <fathi.boudra@linaro.org> for an
+> earlier version of LTP.
 
+Tested with out-of-tree build and pushed.
 
-
-
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
-> Sent: Monday, 21 April, 2014 1:07:39 PM
-> Subject: [LTP] OpenPosix timeout fixes
-> 
-> Hi!
-> 
-> We intentionally compile this suite without any optimizations.
-> 
-> On some non-x86 platforms the test cases may execute longer that it's
-> expected.
-> 
-> Perhaps, the timeout values were initially set for x86 environment.
-> 
-> Given that OpenPosix Test Suite is not a benchmark, I see no problem in
-> increasing
-> the values a bit...
-
-Me neither, ACK.
-
-Regards,
-Jan
-
-> 
-> Thanks.
-> 
-> 
-> ------------------------------------------------------------------------------
-> Start Your Social Network Today - Download eXo Platform
-> Build your Enterprise Intranet with eXo Platform Software
-> Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-> Get Started Now And Turn Your Intranet Into A Collaboration Platform
-> http://p.sf.net/sfu/ExoPlatform
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
