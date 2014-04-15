@@ -2,20 +2,31 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Wf4Hw-0006L0-EU
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:25:20 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wf4Hu-0004PA-UB
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:25:20 +0000
-Date: Tue, 29 Apr 2014 05:25:11 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <360124567.11750981.1398763511239.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
-References: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped
-	after	kernel 2.6.25
+	(envelope-from <shuang.qiu@oracle.com>) id 1WZzHO-0001Yy-3g
+	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 09:03:46 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WZzHN-00023Z-66
+	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 09:03:46 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s3F93cdB000414
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Apr 2014 09:03:39 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s3F93bA8013574
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Apr 2014 09:03:38 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3F93bjm024791
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Apr 2014 09:03:37 GMT
+From: shuang.qiu@oracle.com
+Date: Tue, 15 Apr 2014 17:02:15 +0800
+Message-Id: <1397552535-6822-1-git-send-email-shuang.qiu@oracle.com>
+Subject: [LTP] [PATCH] containers/netns:parameters are not correct when
+	calling crtchild() function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,74 +36,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang qiu <shuang.qiu@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAic2h1YW5nIHFpdSIgPHNo
-dWFuZy5xaXVAb3JhY2xlLmNvbT4KPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cj4gU2VudDogVHVlc2RheSwgMjkgQXByaWwsIDIwMTQgMTA6NDQ6MjYgQU0KPiBTdWJqZWN0OiBb
-TFRQXSBbUEFUQ0hdIHN5c2NhbGxzL2Nsb25lMDg6IFNraXAgdGVzdF9jbG9uZV9zdG9wcGVkIGFm
-dGVyCWtlcm5lbCAyLjYuMjUKPiAKPiBGcm9tOiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNs
-ZS5jb20+Cj4gCj4gQWNjb3JkaW5nIHRvIENMT05FIG1hbnVhbCBwYWdlICJGcm9tIExpbnV4IDIu
-Ni4yNSB0aGlzIGZsYWcgaXMKPiBkZXByZWNhdGVkLllvdSBwcm9iYWJseSBuZXZlciB3YW50ZWQg
-dG8gdXNlIGl0LCB5b3UgY2VydGFpbmx5IHNob3VsZG7igJl0Cj4gYmUgdXNpbmcgaXQsICBhbmQg
-IHNvb24gIGl0ICB3aWxsICBnbyBhd2F5Iixza2lwIHRlc3RfY2xvbmVfc3RvcHBlZAo+IGFmdGVy
-IGtlcm5lbCAyLjYuMjUuCgpIaSwKCiJUaGlzIGZsYWcgd2FzIGRlcHJlY2F0ZWQgZnJvbSBMaW51
-eCAyLjYuMjUgb253YXJkLCBhbmQgd2FzIHJlbW92ZWQgYWx0b2dldGhlciBpbiBMaW51eCAyLjYu
-MzguIgoKQXMgSSB1bmRlcnN0YW5kLCBtYXJraW5nIGl0IGFzIGRlcHJlY2F0ZWQgZGlkbid0IHBy
-ZXZlbnQgYW55b25lIGZyb20gdXNpbmcgaXQuClNvLCBzaG91bGRuJ3QgdGhlIHRlc3Qgc3RpbGwg
-YmUgdmFsaWQgdXAgdG8gMi42LjM4LCB3aGVuIGl0IHdhcyBmaW5hbGx5IHJlbW92ZWQ/Cgo+IAo+
-IFNpZ25lZC1vZmYtYnk6IFNodWFuZyBRaXUgPHNodWFuZy5xaXVAb3JhY2xlLmNvbT4KPiAtLS0K
-PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMgfCAgICA5ICsrKysr
-KysrKwo+ICAxIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkK
-PiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4
-LmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUvY2xvbmUwOC5jCj4gaW5kZXgg
-MTRlYmY2MC4uNjEwOTg2ZCAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2Nsb25lL2Nsb25lMDguYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUv
-Y2xvbmUwOC5jCj4gQEAgLTg0LDE1ICs4NCwyNCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiph
-dikKPiAgewo+ICAJY2hhciAqbXNnOwo+ICAJaW50IGksIGxjOwo+ICsJaW50IGNsb25lX3N0b3Bw
-ZWQgPSAwOwo+ICAKPiAgCW1zZyA9IHBhcnNlX29wdHMoYWMsIGF2LCBOVUxMLCBOVUxMKTsKPiAg
-CWlmIChtc2cgIT0gTlVMTCkKPiAgCQl0c3RfYnJrbShUQlJPSywgTlVMTCwgIk9QVElPTiBQQVJT
-SU5HIEVSUk9SIC0gJXMiLCBtc2cpOwo+ICAKPiAgCXNldHVwKCk7Cj4gKwo+ICsjaWZkZWYgQ0xP
-TkVfU1RPUFBFRAo+ICsJaWYgKHRzdF9rdmVyY21wKDIsIDYsIDI1KSA+IDApCj4gKwkJY2xvbmVf
-c3RvcHBlZCA9MTsKPiArI2VuZGlmCj4gKwo+ICAJZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhs
-Yyk7IGxjKyspIHsKPiAgCQl0c3RfY291bnQgPSAwOwo+ICAJCWZvciAoaSA9IDA7IGkgPCBUU1Rf
-VE9UQUw7IGkrKykgewo+ICsJCQlpZiAoY2xvbmVfc3RvcHBlZCA9PSAxICYmIGkgPT0zKQo+ICsJ
-CQkJY29udGludWU7CgpJJ2Qgc3VnZ2VzdCB0byBwdXQgdGhlIGNoZWNrIGRpcmVjdGx5IHRvIHRl
-c3RfY2xvbmVfc3RvcHBlZCgpCmFuZCB5b3UgY2FuIGF2b2lkIHVzaW5nIGNoZWNrcyB0aGF0IGRl
-cGVuZCBvbiBvcmRlciBvZiB0ZXN0Y2FzZXM6CgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Ns
-b25lL2Nsb25lMDguYwppbmRleCAxNGViZjYwLi45NTE4MzgyIDEwMDY0NAotLS0gYS90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYworKysgYi90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYwpAQCAtMjM4LDYgKzIzOCwxMSBAQCBzdGF0aWMgdm9p
-ZCB0ZXN0X2Nsb25lX3N0b3BwZWQoaW50IHQpCiAgICAgICAgaW50IGZsYWc7CiAgICAgICAgcGlk
-X3QgY2hpbGQ7CiAKKyAgICAgICBpZiAodHN0X2t2ZXJjbXAoMiwgNiwgMzgpID49IDApIHsKKyAg
-ICAgICAgICAgICAgIHRzdF9yZXNtKFRJTkZPLCAiQ0xPTkVfU1RPUFBFRCBza2lwcGVkIGZvciBr
-ZXJuZWxzID49IDIuNi4zOCIpOworICAgICAgICAgICAgICAgcmV0dXJuOworICAgICAgIH0KKwog
-ICAgICAgIHN0b3BwZWRfZmxhZyA9IDA7CiAgICAgICAgY2hpbGQgPSBjbG9uZV9jaGlsZCgmdGVz
-dF9jYXNlc1t0XSwgMSk7CgpSZWdhcmRzLApKYW4KCj4gIAkJCXRzdF9yZXNtKFRJTkZPLCAicnVu
-bmluZyAlcyIsIHRlc3RfY2FzZXNbaV0ubmFtZSk7Cj4gIAkJCXRlc3RfY2FzZXNbaV0udGVzdGZ1
-bmMoaSk7Cj4gIAkJfQo+IC0tCj4gMS43LjcKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-PiAiQWNjZWxlcmF0ZSBEZXYgQ3ljbGVzIHdpdGggQXV0b21hdGVkIENyb3NzLUJyb3dzZXIgVGVz
-dGluZyAtIEZvciBGUkVFCj4gSW5zdGFudGx5IHJ1biB5b3VyIFNlbGVuaXVtIHRlc3RzIGFjcm9z
-cyAzMDArIGJyb3dzZXIvT1MgY29tYm9zLiAgR2V0Cj4gdW5wYXJhbGxlbGVkIHNjYWxhYmlsaXR5
-IGZyb20gdGhlIGJlc3QgU2VsZW5pdW0gdGVzdGluZyBwbGF0Zm9ybSBhdmFpbGFibGUuCj4gU2lt
-cGxlIHRvIHVzZS4gTm90aGluZyB0byBpbnN0YWxsLiBHZXQgc3RhcnRlZCBub3cgZm9yIGZyZWUu
-Igo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvU2F1Y2VMYWJzCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiJBY2Nl
-bGVyYXRlIERldiBDeWNsZXMgd2l0aCBBdXRvbWF0ZWQgQ3Jvc3MtQnJvd3NlciBUZXN0aW5nIC0g
-Rm9yIEZSRUUKSW5zdGFudGx5IHJ1biB5b3VyIFNlbGVuaXVtIHRlc3RzIGFjcm9zcyAzMDArIGJy
-b3dzZXIvT1MgY29tYm9zLiAgR2V0IAp1bnBhcmFsbGVsZWQgc2NhbGFiaWxpdHkgZnJvbSB0aGUg
-YmVzdCBTZWxlbml1bSB0ZXN0aW5nIHBsYXRmb3JtIGF2YWlsYWJsZS4KU2ltcGxlIHRvIHVzZS4g
-Tm90aGluZyB0byBpbnN0YWxsLiBHZXQgc3RhcnRlZCBub3cgZm9yIGZyZWUuIgpodHRwOi8vcC5z
-Zi5uZXQvc2Z1L1NhdWNlTGFicwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
-aXN0Cg==
+From: Shuang Qiu <shuang.qiu@oracle.com>
+
+The numbers of parameters for crtchild() function which called in
+two_children_ns.c and par_chld_ipv6.c is not correct.And it will make
+the child process to be a zombie process.
+
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ testcases/kernel/containers/netns/par_chld_ipv6.c  |    4 ++--
+ .../kernel/containers/netns/two_children_ns.c      |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/containers/netns/par_chld_ipv6.c b/testcases/kernel/containers/netns/par_chld_ipv6.c
+index f0d17ba..68c671f 100644
+--- a/testcases/kernel/containers/netns/par_chld_ipv6.c
++++ b/testcases/kernel/containers/netns/par_chld_ipv6.c
+@@ -45,7 +45,7 @@
+ #include "test.h"
+ #include "config.h"
+ 
+-extern int crtchild(char *);
++extern int crtchild(char *, char *);
+ 
+ char *TCID = "netns_ipv6";
+ int TST_TOTAL = 1;
+@@ -95,7 +95,7 @@ int main()
+ #else
+ 		tst_resm(TCONF, "System doesn't have unshare support");
+ #endif
+-		return crtchild(child);
++		return crtchild(child, NULL);
+ 	} else {
+ 
+ 		//parent
+diff --git a/testcases/kernel/containers/netns/two_children_ns.c b/testcases/kernel/containers/netns/two_children_ns.c
+index 235d9c4..4d7808c 100644
+--- a/testcases/kernel/containers/netns/two_children_ns.c
++++ b/testcases/kernel/containers/netns/two_children_ns.c
+@@ -47,7 +47,7 @@
+ #include "libclone.h"
+ #include "config.h"
+ 
+-extern int crtchild(char *);
++extern int crtchild(char *, char *);
+ 
+ char *TCID = "netns_2children";
+ int TST_TOTAL = 1;
+@@ -109,7 +109,7 @@ int main()
+ 				return ret;
+ 			}
+ #endif
+-			return crtchild(child[i]);
++			return crtchild(child[i], NULL);
+ 		} else {
+ 			//Parent
+ 
+-- 
+1.7.7
+
+
+------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
