@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1Wa2Zf-0001mN-5d
-	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 12:34:51 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1WZymO-00085k-7a
+	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 08:31:44 +0000
 Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1Wa2Zc-0002Cp-Nc
-	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 12:34:51 +0000
-Date: Tue, 15 Apr 2014 14:34:36 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WZymL-0005b7-Sj
+	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 08:31:44 +0000
 From: Mats Liljegren <mats.liljegren@enea.com>
-Message-ID: <20140415143436.4eca5fed@mats-desktop>
-In-Reply-To: <534D1A17.7050005@cn.fujitsu.com>
-References: <20140415124717.516e6851@mats-desktop>
-	<534D1A17.7050005@cn.fujitsu.com>
+Date: Tue, 15 Apr 2014 10:31:14 +0200
+Message-ID: <1397550675-25420-1-git-send-email-mats.liljegren@enea.com>
+In-Reply-To: <20140414174105.GA26543@rei>
+References: <20140414174105.GA26543@rei>
 MIME-Version: 1.0
-Subject: Re: [LTP] fs_ext4 fails
+Subject: [LTP] [PATCH] utils/Makefile: Move ffsb configure to configure.ac
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,33 +27,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Fathi Boudra <fathi.boudra@linaro.org>
 
-On Tue, 15 Apr 2014 19:37:59 +0800
-Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com> wrote:
 
-> Hi,
-> 
-> On 04/15/2014 06:47 PM, Mats Liljegren wrote:
-> > I'm just wondering whether fs_ext4 is known to fail. I ran the
-> > following command line:
-> >
-> > ./runltp -f fs_ext4 -z /dev/sda2
-> 
-> I run these tests in Fedora19 and do not have these errors.
-> Here /dev/sda2 is big enough? I used a 5GB block device.
-> 
-> Regards,
-> Xiaoguang Wang
-> 
+I have now tried moving configure call from utils/Makefile to configure.ac, and
+it compiles both natively as well as a cross-compile. I also managed to start
+the fs_ext4 test case. Not sure whether this tells anything about ffsb since
+I'm not sure what it is, but it looked like it was related to ext4.
 
-Ok, then maybe there is something wrong with my setup then...
-
-Thanks!
-
-Regards
-Mats
+/Mats
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
