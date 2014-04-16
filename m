@@ -2,18 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WcZhe-0004DK-El
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 12:21:36 +0000
-Date: Tue, 22 Apr 2014 14:20:41 +0200
+	(envelope-from <metan@suse.de>) id 1WaV3E-0008Qz-9s
+	for ltp-list@lists.sourceforge.net; Wed, 16 Apr 2014 18:59:16 +0000
+Date: Wed, 16 Apr 2014 20:58:27 +0200
 From: chrubis@suse.cz
-Message-ID: <20140422122041.GB3951@rei>
-References: <534FA1A9.10902@oracle.com> <20140417125003.GA949@rei>
-	<53510E46.4090907@oracle.com>
+Message-ID: <20140416185827.GA4437@rei>
+References: <20140416185143.GB4308@rei>
+ <534ED26A.6040508@gmx.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <53510E46.4090907@oracle.com>
-Subject: Re: [LTP] [PATCH v3] containers/netns:parameters are not correct
- when calling, crtchild() function
+In-Reply-To: <534ED26A.6040508@gmx.de>
+Subject: Re: [LTP] LTP release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,40 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuang Qiu <shuang.qiu@oracle.com>
+To: Helge Deller <deller@gmx.de>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> The numbers of parameters for crtchild() function which called in
-> two_children_ns.c and par_chld_ipv6.c is not correct.And it will make
-> the child process to be a zombie process.
-> And also move the definition of the function to the header file(common.h)
+> > With the last three patches for fallocate testcases the latest git head
+> 
+> I do have a patch for fanotify to fix it on 32bit with 64bit kernel. 
+> Give me a second to send it.
 
-
-> +#ifndef _COMMON_H_
-> +#define _COMMON_H_
-
-Identifiers starting with double underscore or with underscore and
-capital letter are reserved for glibc implementation. We should use
-something as COMMON_H or COMMON_H__ to be sure not to collide. But this
-is very minor.
-
-
-Apart from this the patch has been corrupted, most likely line wrapped
-by your mail client. Have a look at:
-
-https://www.kernel.org/doc/Documentation/email-clients.txt
+No rush, I will have a look tomorrow morning ;).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
