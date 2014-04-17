@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WVNtC-0004jg-GL
-	for ltp-list@lists.sourceforge.net; Wed, 02 Apr 2014 16:19:46 +0000
-Date: Wed, 2 Apr 2014 18:19:04 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Waii1-0001eB-79
+	for ltp-list@lists.sourceforge.net; Thu, 17 Apr 2014 09:34:17 +0000
+Date: Thu, 17 Apr 2014 11:33:29 +0200
 From: chrubis@suse.cz
-Message-ID: <20140402161904.GA30505@rei.Home>
-References: <1395730866-28862-1-git-send-email-alexey.kodanev@oracle.com>
-	<20140402145301.GA16032@rei.Home> <533C2D8A.4080502@oracle.com>
+Message-ID: <20140417093329.GA6558@rei.suse.cz>
+References: <20140416190028.GA2093@ls3530.fritz.box>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <533C2D8A.4080502@oracle.com>
-Subject: Re: [LTP] [PATCH v2] lib/test_net.sh: add network help script
+In-Reply-To: <20140416190028.GA2093@ls3530.fritz.box>
+Subject: Re: [LTP] [PATCH] fix fanotify syscall check on compat kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +24,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Helge Deller <deller@gmx.de>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
 Hi!
-> >> +[ -z "$TST_LIB_LOADED" ] && . test.sh
-> >> +
-> >> +# Run command on remote host.
-> >> +# Options:
-> >> +# -b run in background
-> >> +# -s safe option, if something goes wrong, will exit with TBROK
-> >> +# -c specify command to run
-> >> +
-> >> +tst_rhost_run()
-> >> +{
-> >> +	# this is needed to run tools/apicmds on remote host
-> >> +	local pre_cmd="TCID=$TCID TST_COUNT=1 TST_TOTAL=1"
-> > Hmm, if I get it right, this is here in order to make possible to run
-> > the tst_get_unused_port apicmd command.
-> >
-> > I don't like that much that we have to set the TST_COUNT and TST_TOTAL
-> > too. Maybe we should relax the rules in ltpapicmd.c, given that
-> > TST_TOTAL is not used for anything in the lib/ directory and the
-> > tst_count is used only used only in the tst_print().
-> Yes, you are right, I did so because of apicmds.
-> What about if we remove the check completely?  We won't use tst_res*, 
-> tst_brk*... in new tests.
+>  #ifndef	__FANOTIFY_H__
+>  #define	__FANOTIFY_H__
+>  
+> +#include <sys/types.h>
+> +#include <endian.h>
+> +#include "config.h"
+> +#include "linux_syscall_numbers.h"
+> +
+>  /* fanotify(7) wrappers */
+>  
+>  #define	myfanotify_init(flags, event_f_flags) \
+>  	syscall(__NR_fanotify_init, flags, event_f_flags)
+>  
+> -#define	myfanotify_mark(fd, flags, mask, dfd, pathname)	\
+> -	syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname)
+> +long myfanotify_mark(int fd, unsigned int flags, unsigned long long mask, int dfd, const char *pathname)
+> +{
+> +#if __WORDSIZE == 64
+> +	return ltp_syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname);
+> +#else
+> +	return ltp_syscall(__NR_fanotify_mark, fd, flags,
+> +			 __LONG_LONG_PAIR((unsigned long) (mask >> 32),
+> +					  (unsigned long) mask),
+> +			 dfd, (unsigned long) pathname);
+> +#endif
+> +}
 
-For now I've added an exception for the tst_get_unused_port the same way
-we do it for tst_kvercmp. See latest git commit.
+I think that the x32 ABI should be handled here as well (as in the
+fallocate.h). Mike can you confirm?
+
+Also I've been unable to make the testcases work with -m32 on x86_64
+both with and without the patch and even when using glibc wrappers from
+sys/fallocate.h, in all cases the error is EINVAL which suggets that the
+parameters are passed wrongly somewhere on the way.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
