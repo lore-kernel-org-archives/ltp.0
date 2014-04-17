@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WcWpY-0005O2-Tr
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 09:17:32 +0000
-Date: Tue, 22 Apr 2014 11:16:40 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WapdM-0004L9-CH
+	for ltp-list@lists.sourceforge.net; Thu, 17 Apr 2014 16:57:56 +0000
+Date: Thu, 17 Apr 2014 18:57:06 +0200
 From: chrubis@suse.cz
-Message-ID: <20140422091639.GA2269@rei>
-References: <53552199.6040004@oracle.com>
+Message-ID: <20140417165706.GA2833@rei>
+References: <20140416190028.GA2093@ls3530.fritz.box>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <53552199.6040004@oracle.com>
-Subject: Re: [LTP] OpenPosix mmap_11-4 fails
+In-Reply-To: <20140416190028.GA2093@ls3530.fritz.box>
+Subject: Re: [LTP] [PATCH] fix fanotify syscall check on compat kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,70 +24,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: Vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>
+To: Helge Deller <deller@gmx.de>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I observe that mmap_11-4 fails in my x86 environment with:
+> The fanotify[0-5] testcases use the myfanotify_mark() wrapper for the
+> fanotify_mark() syscall. But the #define does not take into account, that
+> the mask field is actually of type _u64 where we need to split the hi
+> and low word in the syscall on a 32bit arch.
 > 
-> Test FAILED: Modification of the partial page at the end of an object is 
-> written out
-
-I've seen some failures lately too but haven't had time to look into
-these yet.
-
-> I did some googling and found that you rose this problem in 2012:
-> http://linux-kernel.2935.n7.nabble.com/Partialy-mapped-page-stays-in-page-cache-after-unmap-td379857.html
+> The attached patch converts the #define to a inline function where
+> the compiler will help to convert the given values to the correct types
+> (e.g. unsigned long).
 > 
-> I'm interested what you meant in your patch for the mmap's manual page 
-> by "In some cases, this could be fixed by calling msync(2) before the 
-> unmap takes place;"
-> 
-> What are these "some cases"?
+> Bug found and tested on the parisc/hppa (32bit userspace with 64bit
+> kernel) arch.
 
-That depends on whether is the mmaped file backed up by a disk based
-filesystem or not.
-
-Mapped pages are stored in a cache, so if you modify content of a page
-that is beyond the mapping but inside the last page the data stays there
-till they are written back to the disk and reloaded into the cache
-(which can be forced by the msync()). For memory backed filesystems
-(tmpfs etc) msync() is no-op because there is no permanent storage to
-write the data to, so the rest of partial page is never cleared.
-
-> I took your test program from the man thread and executed it on KVM and 
-> on an Sun Ultra 45.
-> 
-> Here are the results:
-> 
-> 1. Debian 7 + KVM + 3.2.0-4-amd64
->   * without msync() it fails
->   * with msync() it fails
-> 
-> 2. Debian 7 + Ultra + 3.2.0-4-sparc64-smp
->   * without msync() it fails
->   * with msync() it passes (!!!)
-> 
-> So it looks like msync() on x86 doesn't help us. The question here if 
-> it's a linux+x86 bug or not...
-
-Is the /tmp/ filesystem the same?
-
-> Could you check your test program and mmap_11-4 in your environment?
-
-Added to my TODO but I'm not sure if I can get to this till the end of
-the week.
+I've pushed slightly modified version of this patch. Please check that
+it works fine for you.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their
+applications. Written by three acclaimed leaders in the field,
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
