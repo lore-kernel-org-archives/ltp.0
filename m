@@ -1,37 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WejEQ-0004mu-Sw
-	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 10:56:18 +0000
+	id 1WcC4s-0006En-57
+	for ltp-list@lists.sourceforge.net; Mon, 21 Apr 2014 11:07:58 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WejEQ-0004fn-4V
-	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 10:56:18 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	(Exim 4.76) id 1WcC4q-0003hx-DM
+	for ltp-list@lists.sourceforge.net; Mon, 21 Apr 2014 11:07:58 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
 	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s3SAuBTV016643
+	ESMTP id s3LB7oZi030121
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 10:56:12 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3SAuAeL026714
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 11:07:50 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3LB7nCA027104
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 10:56:11 GMT
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s3SAuAVI026708
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 10:56:10 GMT
-Message-ID: <535E33C8.3070401@oracle.com>
-Date: Mon, 28 Apr 2014 14:56:08 +0400
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 11:07:49 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s3LB7n8Z008130
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 11:07:49 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-References: <1398674834-1643-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1398674834-1643-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1398674834-1643-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] kernel/mem/lib/mem.c: do the necessary
- cleanup work
+Date: Mon, 21 Apr 2014 15:07:40 +0400
+Message-Id: <1398078461-23926-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1398078461-23926-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1398078461-23926-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 1/2] pitest-2, pitest-3: increased the timeout
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,56 +38,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
+On some platforms do_work_dummy() (if compiled without any optimizations,
+and it's by default) executes longer than the specified timeout of 100 ms.
 
-On 04/28/2014 12:47 PM, Xiaoguang Wang wrote:
-> Oom01 case will modify "/proc/sys/vm/overcommit_memory" to have tests. In most systems,
-> the overcommit_memory's default value is 0. When running oom01, if KSM configuration
-> is not enabled, "tst_brkm(TCONF, NULL, ...)" will be called, in this case, we will forget
-> to execute the restore operation defined in cleanup, and this will impact other test cases
-> in LTP, for example, fork14 in RHEL5 will succeed unexpectedly.
->
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->   testcases/kernel/mem/lib/mem.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index f145a2a..69a9014 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -146,7 +146,7 @@ void testoom(int mempolicy, int lite)
->   	oom(MLOCK, lite);
->
->   	if (access(PATH_KSM, F_OK) == -1)
-> -		tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
-> +		tst_brkm(TCONF, cleanup, "KSM configuration is not enabled");
+Therefore there is a very small chance that TL may lock the mutex during
+sleep() in the main thread, and most of the time the tests will fail with:
+../../../functional/threads/pi_test/pitest-2.c: 222: FAIL: Thread TB1: lock returned 0 Success, slept 0.000008
 
-In the current situation the OOM test cases will exit with TCONF if no 
-KSM is setup on the system.
+To overcome this I increased the timeout value for TBs. It doesn't break the logic.
 
-But is KSM the absolute requirement for the test cases?
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../functional/threads/pi_test/pitest-2.c          |    4 ++--
+ .../functional/threads/pi_test/pitest-3.c          |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-And could we execute the KSM part of testoom() only if KSM is enabled?
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
+index ee810eb..dda51c3 100644
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
++++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
+@@ -67,8 +67,8 @@ struct thread_param {
+ } tp[] = {
+ 	{
+ 	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 100, 2, SCHED_FIFO, "TP1", 0, 0, 0, 0}, {
+-	2, 0, 100, 5, SCHED_FIFO, "TP2", 0, 0, 0, 0}, {
++	1, 0, 500, 2, SCHED_FIFO, "TP1", 0, 0, 0, 0}, {
++	2, 0, 500, 5, SCHED_FIFO, "TP2", 0, 0, 0, 0}, {
+ 	3, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+ 	4, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+ 	5, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
+index e0438d6..5e925a5 100644
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
++++ b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
+@@ -68,8 +68,8 @@ struct thread_param {
+ } tp[] = {
+ 	{
+ 	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 100, 2, SCHED_FIFO, "TP1", 0, 0, 0, 0}, {
+-	1, 0, 100, 5, SCHED_FIFO, "TP2", 0, 0, 0, 0}, {
++	1, 0, 500, 2, SCHED_FIFO, "TP1", 0, 0, 0, 0}, {
++	1, 0, 500, 5, SCHED_FIFO, "TP2", 0, 0, 0, 0}, {
+ 	2, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+ 	3, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+ 	4, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-- 
+1.7.1
 
-Thanks.
-
->
->   	tst_resm(TINFO, "start OOM testing for KSM pages.");
->   	oom(KSM, lite);
->
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
-unparalleled scalability from the best Selenium testing platform available.
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
