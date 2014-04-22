@@ -2,23 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WdVV8-0008SQ-Ts
-	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 02:04:30 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	(envelope-from <jstancek@redhat.com>) id 1WcWD5-0003cu-1S
+	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 08:37:47 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WdVV7-0004We-O2
-	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 02:04:30 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3P24KW7032491
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Apr 2014 10:04:20 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Fri, 25 Apr 2014 10:02:08 +0800
-Message-ID: <1398391328-13711-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1398391328-13711-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1398391328-13711-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v3 2/2] tools/apicmd: add tst_fs_has_free
+	id 1WcWD1-0003JP-9K
+	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 08:37:46 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s3M8bZcN032024
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Apr 2014 04:37:35 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s3M8bUJu000843
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Apr 2014 04:37:34 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 22 Apr 2014 10:37:20 +0200
+Message-Id: <b98288e83160e3c44783a9a37078910a4b724f1a.1398155754.git.jstancek@redhat.com>
+In-Reply-To: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
+References: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,105 +33,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- tools/apicmds/.gitignore  |  1 +
- tools/apicmds/Makefile    |  2 +-
- tools/apicmds/ltpapicmd.c | 31 +++++++++++++++++++++++++++++++
- 3 files changed, 33 insertions(+), 1 deletion(-)
+Max readahead size has been limited since commit:
+  commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
+  Author: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+  Date:   Thu Apr 3 14:48:23 2014 -0700
+    mm/readahead.c: fix readahead failure for memoryless NUMA nodes
+                    and limit readahead pages
 
-diff --git a/tools/apicmds/.gitignore b/tools/apicmds/.gitignore
-index 0c1a896..0ac3e43 100644
---- a/tools/apicmds/.gitignore
-+++ b/tools/apicmds/.gitignore
-@@ -9,3 +9,4 @@ tst_ncpus
- tst_ncpus_max
- tst_res
- tst_resm
-+tst_fs_has_free
-diff --git a/tools/apicmds/Makefile b/tools/apicmds/Makefile
-index 9ecf570..aa3eefe 100644
---- a/tools/apicmds/Makefile
-+++ b/tools/apicmds/Makefile
-@@ -27,7 +27,7 @@ include $(top_srcdir)/include/mk/testcases.mk
- CPPFLAGS		+= -D_GNU_SOURCE
+Update testcase to read ahead in 2M chunks, this change is
+compatible with older kernels.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/readahead/readahead02.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 8940821..5b1524e 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -213,8 +213,13 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
+ 		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
  
- MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp kvercmp2 \
--				res resm ncpus ncpus_max get_unused_port)
-+				res resm ncpus ncpus_max get_unused_port fs_has_free)
+ 	if (do_readahead) {
+-		TEST(ltp_syscall(__NR_readahead, fd, (off64_t) 0,
+-			(size_t) fsize));
++		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
++		for (i = 0; i < fsize; i += 2*1024*1024) {
++			TEST(ltp_syscall(__NR_readahead, fd,
++				(off64_t) i, 2*1024*1024));
++			if (TEST_RETURN != 0)
++				break;
++		}
+ 		check_ret(0);
+ 		*cached = get_cached_size();
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
-diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
-index c8099c5..5f9c582 100644
---- a/tools/apicmds/ltpapicmd.c
-+++ b/tools/apicmds/ltpapicmd.c
-@@ -73,6 +73,7 @@
- #include <stdio.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <stdint.h>
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-@@ -324,6 +325,33 @@ err:
- 	exit(1);
- }
- 
-+int apicmd_fs_has_free(int argc, char *argv[])
-+{
-+	int ret = 2;
-+
-+	if (argc != 3) {
-+		fprintf(stderr, "Usage: tst_fs_has_free path required_kib\n"
-+			"path: the pathname of any file within the mounted "
-+			"filesystem\n required_kib: the required free space"
-+			"(count in KB)\n");
-+		goto fs_has_free_err;
-+	}
-+
-+	char *endptr;
-+	uint64_t required_kib = strtoull(argv[1], &endptr, 0);
-+
-+	if (*argv[1] == '\0' || *endptr != '\0') {
-+		fprintf(stderr, "%s is not a valid numeric string\n", argv[1]);
-+		goto fs_has_free_err;
-+	}
-+
-+	ret = tst_fs_has_free(NULL, argv[0], required_kib, TST_KB);
-+	ret = 1 ^ ret;
-+
-+fs_has_free_err:
-+	exit(ret);
-+}
-+
- /*
-  * Function:    main - entry point of this program
-  *
-@@ -359,6 +387,7 @@ int main(int argc, char *argv[])
- 	if (TCID == NULL || tst_total == NULL || tst_cntstr == NULL) {
- 		if (!strcmp(cmd_name, "tst_kvercmp") &&
- 		    !strcmp(cmd_name, "tst_kvercmp2") &&
-+		    !strcmp(cmd_name, "tst_fs_has_free") &&
- 		    !strcmp(cmd_name, "tst_get_unused_port")) {
- 			fprintf(stderr,
- 				"\nSet variables TCID, TST_TOTAL, and TST_COUNT before each test:\n"
-@@ -409,6 +438,8 @@ int main(int argc, char *argv[])
- 		printf("%li\n", tst_ncpus_max());
- 	} else if (strcmp(cmd_name, "tst_get_unused_port") == 0) {
- 		printf("%u\n", apicmd_get_unused_port(argc, argv));
-+	} else if (strcmp(cmd_name, "tst_fs_has_free") == 0) {
-+		apicmd_fs_has_free(argc, argv);
- 	}
- 
- 	exit(0);
 -- 
-1.8.2.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
