@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1We0mf-0002Eh-Ez
-	for ltp-list@lists.sourceforge.net; Sat, 26 Apr 2014 11:28:41 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1We0md-0005XZ-Ti
-	for ltp-list@lists.sourceforge.net; Sat, 26 Apr 2014 11:28:41 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3QBSVDg011912
-	for <ltp-list@lists.sourceforge.net>; Sat, 26 Apr 2014 19:28:31 +0800
-Message-ID: <535B9829.3080601@cn.fujitsu.com>
-Date: Sat, 26 Apr 2014 19:27:37 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1Wcah4-0002Ry-Ej
+	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 13:25:02 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1Wcah0-0002VI-C9
+	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 13:25:01 +0000
+Date: Tue, 22 Apr 2014 15:24:40 +0200
+From: Mats Liljegren <mats.liljegren@enea.com>
+Message-ID: <20140422152440.0dce3888@mats-desktop>
+In-Reply-To: <1397669278-848-1-git-send-email-mats.liljegren@enea.com>
+References: <20140416091527.40612b3c@mats-desktop>
+	<1397669278-848-1-git-send-email-mats.liljegren@enea.com>
 MIME-Version: 1.0
-References: <1398423247-17525-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1398423247-17525-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3] pipeio/pipeio.c: cleanup and add it to run
-	default
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH] Make SAFE_* calls more informative when failing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,45 +28,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 04/25/2014 06:54 PM, Xiaoguang Wang wrote:
-> Delete some useless comments and fix some.
-> 
-> Use SAFE_* macros.
-> 
-> Make a re-arrangement on original code: let parent process
-> work in do_parent(), child process work in do_child(), and
-> arguments parse and initialization work in setup().
-> 
-> Delete several useless or pointless options:
->   Option C: this option is not supported and has no effect to this test.
-> 
->   Option B: if this option is specified, the parent process will always
-> return 0, which won't reflect the correct test results. I think it does
-> not make much sense and remove it.
-> 
->   Option d: this option is used to specify a directory, where named pipe
-> is created, other than the current directory. Since tst_tmpdir() will
-> create a temporary directory, so I think "-d" option can be removed.
-> 
-> printf() is not async-signal-safe, so use write(2) in signal handler directly.
-> 
-> Some cleanup.
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  scenario_groups/default              |   1 +
->  testcases/kernel/ipc/pipeio/pipeio.c | 963 ++++++++++++++++-------------------
->  2 files changed, 441 insertions(+), 523 deletions(-)
+On Wed, 16 Apr 2014 19:27:57 +0200
+Mats Liljegren <mats.liljegren@enea.com> wrote:
 
+> 
+> When debugging failing test cases I often missed what parameters were
+> used in those SAFE_* calls. This patch is meant to fix this.
+> 
+> The output has been "standardized" into the following format:
+> <file>:<line>: <func>(<params>) <error message>
+> 
+> E.g.:
+> test.c:130: chdir(mydir) failed
+> 
+> This will then be followed by the usual errno stuff if applicable.
+> 
+> The code compiles, but I haven't figured out a good way of testing
+> it. The changes are pretty simple however.
+> 
+> Regards
+> Mats Liljegren
 
-Applied, thank you.
+I guess the lack of response on this patch was due to stabilization, but
+now that we have a release I'd like to remind about this one...
 
-
-Wanlong Gao
-
+Regards
+Mats Liljegren
 
 ------------------------------------------------------------------------------
 Start Your Social Network Today - Download eXo Platform
