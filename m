@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1Wcah4-0002Ry-Ej
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 13:25:02 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1Wcah0-0002VI-C9
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 13:25:01 +0000
-Date: Tue, 22 Apr 2014 15:24:40 +0200
-From: Mats Liljegren <mats.liljegren@enea.com>
-Message-ID: <20140422152440.0dce3888@mats-desktop>
-In-Reply-To: <1397669278-848-1-git-send-email-mats.liljegren@enea.com>
-References: <20140416091527.40612b3c@mats-desktop>
-	<1397669278-848-1-git-send-email-mats.liljegren@enea.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WcytO-0002bh-DK
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:15:22 +0000
+Date: Wed, 23 Apr 2014 17:14:26 +0200
+From: chrubis@suse.cz
+Message-ID: <20140423151426.GA15663@rei.suse.cz>
+References: <5357D79C.40706@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Make SAFE_* calls more informative when failing
+Content-Disposition: inline
+In-Reply-To: <5357D79C.40706@oracle.com>
+Subject: Re: [LTP] posix_fallocate
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +24,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Wed, 16 Apr 2014 19:27:57 +0200
-Mats Liljegren <mats.liljegren@enea.com> wrote:
+Hi!
+> I would like to add "posix_fallocate" test based on what we already have 
+> in syscalls/fallocate, because the behavior of "posix_fallocate" is 
+> close to what is doing fallocate by default, so most test scenarios will 
+> be the same. What is the correct way to do it, place it in 
+> open_posix_testsuite as new ones or add it to fallocate tests?
 
-> 
-> When debugging failing test cases I often missed what parameters were
-> used in those SAFE_* calls. This patch is meant to fix this.
-> 
-> The output has been "standardized" into the following format:
-> <file>:<line>: <func>(<params>) <error message>
-> 
-> E.g.:
-> test.c:130: chdir(mydir) failed
-> 
-> This will then be followed by the usual errno stuff if applicable.
-> 
-> The code compiles, but I haven't figured out a good way of testing
-> it. The changes are pretty simple however.
-> 
-> Regards
-> Mats Liljegren
+That is hard to tell.
 
-I guess the lack of response on this patch was due to stabilization, but
-now that we have a release I'd like to remind about this one...
+If you care for posix_fallocate strictly POSIX conformace add it to
+open_posix_testsuite and write the tests accordingly to the POSIX
+specification.
 
-Regards
-Mats Liljegren
+If you care about API coverage add it to the syscalls testcases and
+share as much code with the fallocate testcases as possible.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Start Your Social Network Today - Download eXo Platform
