@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WfTQ9-0007Cr-C8
-	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 12:15:29 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 24352AAF1
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 30 Apr 2014 12:15:21 +0000 (UTC)
-Date: Wed, 30 Apr 2014 14:14:33 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wcy79-0000Dz-Dc
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 14:25:31 +0000
+Date: Wed, 23 Apr 2014 16:24:40 +0200
 From: chrubis@suse.cz
-Message-ID: <20140430121433.GA21327@rei>
+Message-ID: <20140423142439.GA9893@rei.suse.cz>
+References: <1398230687-4561-1-git-send-email-shuang.qiu@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] Unifying syscalls tests for EFAULT
+In-Reply-To: <1398230687-4561-1-git-send-email-shuang.qiu@oracle.com>
+Subject: Re: [LTP] [PATCH v3] containers/netns:parameters are not correct
+ when calling, crtchild() function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,59 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: shuang.qiu@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-We have quite a lot of testcases that passes wrong pointer to syscalls
-to check that they return EFAULT and several ad-hoc ways to do this.
-I've looked at the code we have and at the kernel implementation in
-order to fix this mess.
+> The numbers of parameters for crtchild() function which called in
+> two_children_ns.c and par_chld_ipv6.c is not correct.And it will make
+> the child process to be a zombie process.
+> And also move the definition of the function to the header file(common.h)
 
-There are several ways that testcases use to generate bad addres:
-
-* (void*)-1
-* get_high_address()
-* mmap(..., PROT_NONE, ...)
-
-
-I've looked how is the checking implemented in kernel and it boils down
-to various get_user/put_user variants of strncpy build on the top of the
-__get_user and __put_user functions.
-
-On x86 these functions do coarse check for overflow which should be
-triggered by the (void*)-1 parameter, then if the pointer is smaller
-than maximal possible userspace address and then proceeds with the
-memory access. If memory access creates a page fault the page fault
-handler executes fixup code which returns the EFAULT and if I understand
-this correctly this is the case for both get_high_address() and
-mmap(..., PROT_NONE, ...).
-
-Then there are other architectures that does things a little bit
-differently and I'm not even sure how because most of the functions are
-written in assembler.
-
-Now there are a few things I wonder about:
-
-* Is there an machine that has userspace memory mapped on (void*)-1 ?
-
-  because that would make quite a lot of our testcases to fail
-
-* Is there a machine that has userspace address mapped on NULL ?
-
-  I would consider this pretty evil thing to do, due to fact that
-  most of the libraries returns NULL on failure and dereferencing
-  these should really cause SegFault or EFAULT.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
-unparalleled scalability from the best Selenium testing platform available.
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
