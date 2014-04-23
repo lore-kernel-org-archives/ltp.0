@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1Wf5dS-0005qk-Io
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 10:51:38 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wf5dR-0007ZQ-Mu
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 10:51:38 +0000
-Message-ID: <535F8425.5060609@oracle.com>
-Date: Tue, 29 Apr 2014 18:51:17 +0800
-From: Shuang Qiu <shuang.qiu@oracle.com>
+	(envelope-from <metan@suse.de>) id 1Wd0Th-0000Zo-4d
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 16:56:57 +0000
+Date: Wed, 23 Apr 2014 18:56:04 +0200
+From: chrubis@suse.cz
+Message-ID: <20140423165604.GE16286@rei.suse.cz>
+References: <1397211402-12361-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
-	<535F6B2C.10008@cn.fujitsu.com>
-In-Reply-To: <535F6B2C.10008@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped after
- kernel 2.6.25
+Content-Disposition: inline
+In-Reply-To: <1397211402-12361-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 1/2] lib/tst_fs_has_free.c: add
+ tst_fs_has_free() to determine filesystem's free space
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,52 +22,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gMDQvMjkvMjAxNCAwNTowNCBQTSwgWGlhb2d1YW5nIFdhbmcgd3JvdGU6Cj4gSGksCj4KPiBP
-biAwNC8yOS8yMDE0IDA0OjQ0IFBNLCBzaHVhbmcucWl1QG9yYWNsZS5jb20gd3JvdGU6Cj4+IEZy
-b206IFNodWFuZyBRaXUgPHNodWFuZy5xaXVAb3JhY2xlLmNvbT4KPj4KPj4gQWNjb3JkaW5nIHRv
-IENMT05FIG1hbnVhbCBwYWdlICJGcm9tIExpbnV4IDIuNi4yNSB0aGlzIGZsYWcgaXMKPj4gZGVw
-cmVjYXRlZC5Zb3UgcHJvYmFibHkgbmV2ZXIgd2FudGVkIHRvIHVzZSBpdCwgeW91IGNlcnRhaW5s
-eSBzaG91bGRu4oCZdAo+PiBiZSB1c2luZyBpdCwgIGFuZCAgc29vbiAgaXQgIHdpbGwgIGdvIGF3
-YXkiLHNraXAgdGVzdF9jbG9uZV9zdG9wcGVkCj4+IGFmdGVyIGtlcm5lbCAyLjYuMjUuCj4+Cj4+
-IFNpZ25lZC1vZmYtYnk6IFNodWFuZyBRaXUgPHNodWFuZy5xaXVAb3JhY2xlLmNvbT4KPj4gLS0t
-Cj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMgfCAgICA5ICsr
-KysrKysrKwo+PiAgIDEgZmlsZXMgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9u
-cygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9j
-bG9uZTA4LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYwo+PiBp
-bmRleCAxNGViZjYwLi42MTA5ODZkIDEwMDY0NAo+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL2Nsb25lL2Nsb25lMDguYwo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2Nsb25lL2Nsb25lMDguYwo+PiBAQCAtODQsMTUgKzg0LDI0IEBAIGludCBtYWluKGludCBhYywg
-Y2hhciAqKmF2KQo+PiAgIHsKPj4gICAJY2hhciAqbXNnOwo+PiAgIAlpbnQgaSwgbGM7Cj4+ICsJ
-aW50IGNsb25lX3N0b3BwZWQgPSAwOwo+PiAgIAo+PiAgIAltc2cgPSBwYXJzZV9vcHRzKGFjLCBh
-diwgTlVMTCwgTlVMTCk7Cj4+ICAgCWlmIChtc2cgIT0gTlVMTCkKPj4gICAJCXRzdF9icmttKFRC
-Uk9LLCBOVUxMLCAiT1BUSU9OIFBBUlNJTkcgRVJST1IgLSAlcyIsIG1zZyk7Cj4+ICAgCj4+ICAg
-CXNldHVwKCk7Cj4+ICsKPj4gKyNpZmRlZiBDTE9ORV9TVE9QUEVECj4+ICsJaWYgKHRzdF9rdmVy
-Y21wKDIsIDYsIDI1KSA+IDApCj4+ICsJCWNsb25lX3N0b3BwZWQgPTE7Cj4+ICsjZW5kaWYKPj4g
-KwkJCj4+ICAgCWZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyBsYysrKSB7Cj4+ICAgCQl0
-c3RfY291bnQgPSAwOwo+PiAgIAkJZm9yIChpID0gMDsgaSA8IFRTVF9UT1RBTDsgaSsrKSB7Cj4+
-ICsJCQlpZiAoY2xvbmVfc3RvcHBlZCA9PSAxICYmIGkgPT0zKQo+PiArCQkJCWNvbnRpbnVlOwo+
-PiAgIAkJCXRzdF9yZXNtKFRJTkZPLCAicnVubmluZyAlcyIsIHRlc3RfY2FzZXNbaV0ubmFtZSk7
-Cj4+ICAgCQkJdGVzdF9jYXNlc1tpXS50ZXN0ZnVuYyhpKTsKPj4gICAJCX0KPiBJIHRoaW5rIHlv
-dSBzaG91bGQgZG8gdGhlIGtlcm5lbCB2ZXJzaW9uIGNvbXBhcmlzb24gaW4gdGVzdF9jbG9uZV9z
-dG9wcGVkKCksIGFuZCBpZgo+IGtlcm5lbCBpcyBhZnRlciAyLjYuMjUsIHlvdSBtYXkgcHJpbnQg
-YSBUQ09ORiB3aXRoIHRzdF9yZXNtKCkgYW5kIHJldHVybi4KPgo+IEhlcmUgeW91IHVzZSAiaSA9
-PSAzIiwgYnV0IGlmIG90aGVyIGVsZW1lbnRzIGFyZSBhZGRlZCBpbiBzdHJ1Y3QgdGVzdF9jYXNl
-IGFycnksCj4gdGhlIGluZGV4IGZvciB0ZXN0X2Nsb25lX3N0b3BwZWQgbWF5IGNoYW5nZS4KWWVz
-LHRoYXQgaXMgYSBiZXR0ZXIgZml4LHdpbGwgdXBkYXRlLgoKVGhhbmtzClNodWFuZwo+Cj4gUmVn
-YXJkcywKPiBYaWFvZ3VhbmcgV2FuZwo+CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoiQWNjZWxl
-cmF0ZSBEZXYgQ3ljbGVzIHdpdGggQXV0b21hdGVkIENyb3NzLUJyb3dzZXIgVGVzdGluZyAtIEZv
-ciBGUkVFCkluc3RhbnRseSBydW4geW91ciBTZWxlbml1bSB0ZXN0cyBhY3Jvc3MgMzAwKyBicm93
-c2VyL09TIGNvbWJvcy4gIEdldCAKdW5wYXJhbGxlbGVkIHNjYWxhYmlsaXR5IGZyb20gdGhlIGJl
-c3QgU2VsZW5pdW0gdGVzdGluZyBwbGF0Zm9ybSBhdmFpbGFibGUuClNpbXBsZSB0byB1c2UuIE5v
-dGhpbmcgdG8gaW5zdGFsbC4gR2V0IHN0YXJ0ZWQgbm93IGZvciBmcmVlLiIKaHR0cDovL3Auc2Yu
-bmV0L3NmdS9TYXVjZUxhYnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAo=
+Hi!
+> -int tst_cwd_has_free(int required_kib)
+> -{
+> -	struct statfs sf;
+> -	statfs(".", &sf);
+> -
+> -	/* check that we have enough blocks to create swap file */
+> -	return ((float)sf.f_bfree) / (1024 / sf.f_bsize) >=
+> -	    required_kib ? 1 : 0;
+> -}
+> diff --git a/lib/tst_fs_has_free.c b/lib/tst_fs_has_free.c
+> new file mode 100644
+> index 0000000..16169ba
+> --- /dev/null
+> +++ b/lib/tst_fs_has_free.c
+> @@ -0,0 +1,40 @@
+> +/*
+> + * Copyright (c) 2014 Fujitsu Ltd.
+> + * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +
+> +/*
+> + * DESCRIPTION
+> + * 	Check if the mounted file system has enough free space,
+> + * 	if it is, tst_fs_has_free() returns 1, otherwise 0.
+> + */
+> +
+> +#include <stdint.h>	/* for uint64_t */
+                           ^
+			   This comment falls into the
+			   "Commenting the obvious" category.
+			   Please remove it.
+
+> +#include <sys/vfs.h>
+> +#include "test.h"
+> +
+> +int tst_fs_has_free(void (*cleanup)(void), const char *path,
+> +	uint64_t required_kib)
+> +{
+> +	struct statfs sf;
+> +
+> +	if (statfs(path, &sf)) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "tst_fs_has_free: failed to statfs(%s)", path);
+> +	}
+> +
+> +	return ((uint64_t)sf.f_bfree * sf.f_bsize / 1024) >=
+> +		required_kib ? 1 : 0;
+
+This line is too long, maybe this would be more readable as regular if.
+
+
+The rest looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
