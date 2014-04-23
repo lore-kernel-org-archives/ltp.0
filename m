@@ -1,16 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wcwtt-0004Xb-RA
-	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 13:07:45 +0000
-Date: Wed, 23 Apr 2014 15:06:53 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WczLp-0004QJ-O8
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:44:45 +0000
+Date: Wed, 23 Apr 2014 17:43:53 +0200
 From: chrubis@suse.cz
-Message-ID: <20140423130653.GA24742@rei>
+Message-ID: <20140423154353.GA16286@rei.suse.cz>
+References: <1397208419-27737-1-git-send-email-alexey.kodanev@oracle.com>
+	<3992309.8rLpXb3keE@vapier> <20140418094328.GA11147@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for APRIL
- 2014
+In-Reply-To: <20140418094328.GA11147@rei>
+Subject: Re: [LTP] [PATCH] configure: add configure check for GCC
+ -Wold-style-definition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,58 +26,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Good news everyone,
+Hi!
+> > On Fri 11 Apr 2014 13:26:59 Alexey Kodanev wrote:
+> > > +backup_cflags="$CFLAGS"
+> > > +CFLAGS="-Wold-style-definition"
+> > 
+> > this isn't really safe.  the CFLAGS might have critical settings in there that 
+> > impact linking.  why not just append ?
+> 
+> We can also change the AC_LINK_IFELSE() to AC_COMPILE_IFELSE().
+> 
+> Given this is not critical (the worst case is that old style warnings
+> are not enabled) this could wait after the release.
 
-The Linux Test Project test suite stable release for *April 2014* has
-been released.
-
-Since the last release 210 patches by 27 authors were merged.
-
-Notable changes are:
-
-* Continued effort to cleanup old testcases
-  (about 30 testcases were cleaned up/rewritten)
-
-* 20 new syscall testcases
-  15 existing testcases increased in coverage
-  (pselect, mprotect, mknodat, fchonwat, linkat, fanotify, inotify, fcntl, ...)
-
-* new tcp_fastopen, rcutorture and acpi_cpufreq testcases
-
-* out-of-tree build as well as cross compilation were fixed
-
-* bashism in runltp and few scripts was fixed
-  (should work fine on Debian with dash now)
-
-* ext4 features tests were fixed and added to default run
-
-* few testcases were fixed not to incorrectly fail on Btrfs
-
-* and many more smaller fixes
-
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-OS and can be downloaded at:
-
-http://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20140422/
-
-The project pages as well as GIT repository are hosted on GitHub for
-quite some time now:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our
-developer documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to
-ltp-list@lists.sf.net
+The freeze has been lifted up, feel free to push fix if you want :)
 
 -- 
 Cyril Hrubis
