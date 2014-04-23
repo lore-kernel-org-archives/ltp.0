@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WXXME-0001Qf-45
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 14:50:38 +0000
-Date: Tue, 8 Apr 2014 16:49:54 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WczmE-0006FW-74
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 16:12:02 +0000
+Date: Wed, 23 Apr 2014 18:11:11 +0200
 From: chrubis@suse.cz
-Message-ID: <20140408144954.GA1841@rei>
-References: <1392862246.1997.6.camel@G08JYZSD130126>
-	<1396944482.2100.1.camel@G08JYZSD130126>
-	<20140408111920.GA8556@rei> <5344069B.8010101@oracle.com>
+Message-ID: <20140423161110.GC16286@rei.suse.cz>
+References: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1395757480-27424-9-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5344069B.8010101@oracle.com>
-Subject: Re: [LTP] [PATCH] lib/tst_uid_gid.c: fix checking return value
- errors about getpwuid_r/getgrgid_r
+In-Reply-To: <1395757480-27424-9-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V2 08/14] rpc-tirpc: implemented a wrapper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,55 +26,119 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> > Applied for now, thanks.
-> >
-> > Howvever if I remeber correctly the past discussion we do not strictly
-> > need system unused uid and gid in the  setregid02 and setregid03
-> > testcases and the failures were caused by the clash between nobody uid
-> > and arbitrary constatnt hardcoded into the source.
-> 
-> setregid03 doesn't use GET_UNUSED_GID(). That time we talked about 
-> setregid02 and setresuid03.
+> +RHOST=${RHOST:-`hostname`}
 
-Right, git grep GET_UNUSED shows these two.
+So the test defaults to local machine if RHOST is not set, but still
+needs rsh installed to run the testcases.
 
-> > If I understand this correctly all need is a uid/gid different from the
-> > nobody user used for the testing, right?
-> >
-> Yes.
-> 
-> And, actually, bin.gr_gid is equivalent to inval_user for purposes of 
-> setregid02 testing.
-> 
-> Therefore, theoretically, we can cut off:
->          &inval_user, &neg_one, EINVAL, &nobody, &nobody,
->                      "After setregid(invalid group, -1),"}, {
->          &neg_one, &inval_user, EINVAL, &nobody, &nobody,
->                      "After setregid(-1, invalid group),"},};
-> 
-> from there.
+Can we do it without the need for rsh in this case?
 
-Hmm, as far as I can see the the error for bin.gr_gid is EPERM, while
-invalid user test expect EINVAL, so something must be different.
+> +SERVER=""
+> +CLIENT=""
+> +CLIENT_EXTRA_OPTS=""
+> +CLEANER=""
+> +PROGNUMNOSVC=536875000
 
-And it looks like you can really get EINVAL in the setregid() in
-kernel/sys.c. And that it depends on namespace mappings. See
-kernel/user_namespace.c make_kgid() that calls map_id_down(), although I
-haven't yet figured out exact conditions yet.
+What is this magic constant?
+
+> +SERVERTIMEOUT=1
+> +
+> +cleanup()
+> +{
+> +	if [ ! -z "$SERVER" ]; then
+
+if [ -n "$SERVER" ] ?
+
+> +		rsh -n "$RHOST" "killall -9 $SERVER"
+> +		rsh -n "$RHOST" "$CLEANER $PROGNUMNOSVC"
+> +	fi
+> +}
+> +
+> +usage()
+> +{
+> +	echo "USAGE: $0 [-s sprog] -c clprog [ -e extra ]"
+> +	echo ""
+> +	echo "sprog   - server program binary"
+> +	echo "clprog  - client program binary"
+> +	echo "extra   - extra client options"
+> +	echo ""
+> +	echo "This scripts connects to the RHOST host by rsh and starts"
+> +	echo "sprog there. After that it executes clprog passing it the"
+> +	echo "RHOST value."
+> +	echo "After the test completes, this script kills sprog on RHOST"
+> +	echo "and performs a cleaning operation."
+> +	echo ""
+> +	echo "If RHOST is not set, the local host is used."
+> +
+> +	exit 1
+> +}
+> +
+> +while getopts s:c:e:h arg; do
+> +	case $arg in
+> +		s) SERVER="$LTPROOT/testcases/bin/$OPTARG" ;;
+> +		c) CLIENT="$OPTARG" ;;
+> +		e) CLIENT_EXTRA_OPTS="$OPTARG" ;;
+> +		h) usage ;;
+> +	esac
+> +done
+> +
+> +if [ ! -z "$SERVER" ]; then
+> +	if `echo "$SERVER" | grep -e '^tirpc'`; then
+> +		CLEANER="$LTPROOT/testcases/bin/tirpc_cleaner"
+> +	else
+> +		CLEANER="$LTPROOT/testcases/bin/rpc_cleaner"
+> +	fi
+> +fi
+
+This is a bit hacky, but I cannot think of easy solution.
+
+We can pass the cleaner to this wrapper which would be cleaner solution
+but would require changing all the runtest records.
+
+> +if [ -z "$CLIENT" ]; then
+> +	echo "client program not set"
+> +	echo ""
+> +	usage
+> +fi
+> +
+> +TCID="$CLIENT"
+> +TST_TOTAL=1
+> +TST_COUNT=1
+> +. test.sh
+> +TST_CLEANUP=cleanup
+> +
+> +if [ ! -z "$SERVER" ]; then
+> +	rsh -n "$RHOST" "$SERVER $PROGNUMNOSVC" &
+> +	sleep "$SERVERTIMEOUT"
+
+This is not really timeout, but rather startup sleep.
+
+> +fi
+> +
+> +"$CLIENT" "$RHOST" "$PROGNUMNOSVC" $CLIENT_EXTRA_OPTS
+> +ret=$?
+> +
+> +if [ "$ret" -eq 0 ]; then
+> +	tst_resm TPASS "Test passed"
+> +else
+> +	tst_resm TFAIL "Test failed"
+> +fi
+> +
+> +tst_exit
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
