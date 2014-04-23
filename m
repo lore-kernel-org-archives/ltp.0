@@ -1,21 +1,40 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WfSxk-0008K6-RL
-	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 11:46:08 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WfSxh-00067t-H8
-	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 11:46:08 +0000
-Date: Wed, 30 Apr 2014 07:45:59 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2047274155.12547340.1398858359123.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1398840825-9252-1-git-send-email-shuang.qiu@oracle.com>
-References: <1398840825-9252-1-git-send-email-shuang.qiu@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <qutherond@adeneo-embedded.com>) id 1WczBb-00045c-U2
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:34:11 +0000
+Received: from smtp.adetelgroup.com ([94.247.26.71] helo=hbg-pa71.hmc-pa.adm)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WczBZ-0001KK-Mr
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:34:11 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by hbg-pa71.hmc-pa.adm (Postfix) with ESMTP id 8108C4384D
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Apr 2014 17:24:42 +0200 (CEST)
+Received: from hbg-pa71.hmc-pa.adm ([127.0.0.1])
+	by localhost (hbg-pa71.hmc-pa.adm [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id jEOZ5KvZCYD0 for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by hbg-pa71.hmc-pa.adm (Postfix) with ESMTP id 538B6438F7
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
+Received: from hbg-pa71.hmc-pa.adm ([127.0.0.1])
+	by localhost (hbg-pa71.hmc-pa.adm [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 1oKgGv1ZQ-8f for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
+Received: from hbg-pa73.hmc-pa.adm (unknown [10.210.21.2])
+	by hbg-pa71.hmc-pa.adm (Postfix) with ESMTP id 33BED4384D
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
+Date: Wed, 23 Apr 2014 17:24:31 +0200 (CEST)
+From: THEROND Quentin <qutherond@adeneo-embedded.com>
+Message-ID: <522788825.306663.1398266671270.JavaMail.zimbra@adeneo-embedded.com>
+In-Reply-To: <1271937164.305548.1398266180588.JavaMail.zimbra@adeneo-embedded.com>
+References: <1271937164.305548.1398266180588.JavaMail.zimbra@adeneo-embedded.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped from
- kernel	2.6.38
+Subject: [LTP] ltp-ddt issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,80 +44,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1316949681635605167=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang qiu <shuang.qiu@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+--===============1316949681635605167==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_306662_1073453496.1398266671269"
+
+------=_Part_306662_1073453496.1398266671269
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+hello, 
 
 
 
 
+I working on ltp-ddt and i have a problem. If i launch <<./runltp -f ddt/usb_stress_io>> on BEAGLEBONE the test PASS but if i launch a same command on BEAGLEBOARD the test FAIL. LTP-DDT return: 
 
------ Original Message -----
-> From: "shuang qiu" <shuang.qiu@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 30 April, 2014 8:53:45 AM
-> Subject: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped from kernel	2.6.38
-> 
-> From: Shuang Qiu <shuang.qiu@oracle.com>
-> 
-> According to CLONE manual page "This flag was deprecated from Linux
-> 2.6.25 onward, and was removed altogether in Linux 2.6.38." skip
-> test_clone_stopped test from kernel 2.6.38.
-> 
-> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
 
-Pushed with small changes to commit message and whitespace fix for
-closing bracket.
+sh: 1: source: not found 
+sh: 1: do_cmd: not found 
+sh: 1: check_config_options: not found 
+sh: 1: do_cmd: not found 
 
-Thanks,
-Jan
 
-> ---
->  testcases/kernel/syscalls/clone/clone08.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/clone/clone08.c
-> b/testcases/kernel/syscalls/clone/clone08.c
-> index 14ebf60..6857ab1 100644
-> --- a/testcases/kernel/syscalls/clone/clone08.c
-> +++ b/testcases/kernel/syscalls/clone/clone08.c
-> @@ -238,6 +238,11 @@ static void test_clone_stopped(int t)
->  	int flag;
->  	pid_t child;
->  
-> +	if (tst_kvercmp(2, 6, 38) >= 0) {
-> +		tst_resm(TINFO, "CLONE_STOPPED skipped for kernels >= 2.6.38");
-> +		return;
-> +		}
-> +
->  	stopped_flag = 0;
->  	child = clone_child(&test_cases[t], 1);
->  
-> --
-> 1.7.7
-> 
-> 
-> ------------------------------------------------------------------------------
-> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-> Instantly run your Selenium tests across 300+ browser/OS combos.  Get
-> unparalleled scalability from the best Selenium testing platform available.
-> Simple to use. Nothing to install. Get started now for free."
-> http://p.sf.net/sfu/SauceLabs
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+
+Can you help me? 
+
+
+
+Thank you, 
+
+
+
+THEROND Quentin 
+
+
+------=_Part_306662_1073453496.1398266671269
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><div style=3D"font-family: times new roman, new york, times, se=
+rif; font-size: 12pt; color: #000000"><div><span style=3D"font-family: 'Tim=
+es New Roman', serif; font-size: 12pt; background-color: rgb(253, 253, 253)=
+;">hello,</span></div><div style=3D"color:#000;font-weight:normal;font-styl=
+e:normal;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-s=
+ize:12pt;"><div style=3D"font-family: times new roman, new york, times, ser=
+if; font-size: 12pt; color: #000000"><div style=3D"font-family: 'Times New =
+Roman'; font-size: 13px; background-color: #fdfdfd;"><p style=3D"margin: 0p=
+x; font-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;</p><p st=
+yle=3D"margin: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;=
+">I working on ltp-ddt and i have a problem. If i launch &lt;&lt;./runltp -=
+f ddt/usb_stress_io&gt;&gt; on BEAGLEBONE the test PASS but if i launch a s=
+ame command on BEAGLEBOARD the test FAIL. LTP-DDT return:</p><p style=3D"ma=
+rgin: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;"><br>sh:=
+ 1: source: not found<br>sh: 1: do_cmd: not found<br>sh: 1: check_config_op=
+tions: not found<br>sh: 1: do_cmd: not found</p><p style=3D"margin: 0px; fo=
+nt-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;</p><p style=
+=3D"margin: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;">C=
+an you help me?</p><p style=3D"margin: 0px; font-size: 12pt; font-family: '=
+Times New Roman', serif;">&nbsp;</p><p style=3D"margin: 0px; font-size: 12p=
+t; font-family: 'Times New Roman', serif;">Thank you,</p><p style=3D"margin=
+: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;</p><=
+p style=3D"margin: 0px; font-size: 12pt; font-family: 'Times New Roman', se=
+rif;">THEROND Quentin</p></div></div></div><div><br></div></div></body></ht=
+ml>
+------=_Part_306662_1073453496.1398266671269--
+
+
+--===============1316949681635605167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
-unparalleled scalability from the best Selenium testing platform available.
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
+--===============1316949681635605167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1316949681635605167==--
+
