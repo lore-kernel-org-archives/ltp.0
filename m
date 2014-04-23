@@ -1,24 +1,16 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WekKv-0002ml-0R
-	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 12:07:05 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WekKt-00047s-Di
-	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 12:07:04 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3SC6q5U013596
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 20:06:52 +0800
-Message-ID: <535E43E1.5010504@cn.fujitsu.com>
-Date: Mon, 28 Apr 2014 20:04:49 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1Wcwtt-0004Xb-RA
+	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 13:07:45 +0000
+Date: Wed, 23 Apr 2014 15:06:53 +0200
+From: chrubis@suse.cz
+Message-ID: <20140423130653.GA24742@rei>
 MIME-Version: 1.0
-References: <5354EF1D.2000206@cn.fujitsu.com>
-In-Reply-To: <5354EF1D.2000206@cn.fujitsu.com>
-Subject: Re: [LTP] compiling problems about mk/generic_leaf_target.inc
+Content-Disposition: inline
+Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for APRIL
+ 2014
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,52 +23,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
-Hi,
-   
-    Any comments, thanks?
+Good news everyone,
 
-Regards,
-Xiaoguang Wang
+The Linux Test Project test suite stable release for *April 2014* has
+been released.
 
-On 04/21/2014 06:12 PM, Xiaoguang Wang wrote:
-> Hi,
->
-> When we made modifications to source files in lib/, for example lib/tst_mkfs.c, then back to
-> testcases/kernel/syscalls/access and execute  command make. This will not make the access[0-5]
-> to be re-compiled with the newly generated libltp.a, we need to touch access[0-5].c or remove access[0-5]
-> files first, then make. I think this will make no sense.  Users may expect just a make command to
-> ensure  a new access[0-5] is generated with new libltp.a.
->
-> This is because  the rules "target : normal-prerequisites | order-only-prerequisites" in generic_leaf_target.inc.
-> $(MAKE_TARGETS): | $(MAKE_DEPS)
->
-> Whether we should modify this to "$(MAKE_TARGETS): $(MAKE_DEPS)"? Thanks.
->
->
-> Regards,
-> Xiaoguang Wang
->
-> ------------------------------------------------------------------------------
-> Start Your Social Network Today - Download eXo Platform
-> Build your Enterprise Intranet with eXo Platform Software
-> Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-> Get Started Now And Turn Your Intranet Into A Collaboration Platform
-> http://p.sf.net/sfu/ExoPlatform
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+Since the last release 210 patches by 27 authors were merged.
 
+Notable changes are:
+
+* Continued effort to cleanup old testcases
+  (about 30 testcases were cleaned up/rewritten)
+
+* 20 new syscall testcases
+  15 existing testcases increased in coverage
+  (pselect, mprotect, mknodat, fchonwat, linkat, fanotify, inotify, fcntl, ...)
+
+* new tcp_fastopen, rcutorture and acpi_cpufreq testcases
+
+* out-of-tree build as well as cross compilation were fixed
+
+* bashism in runltp and few scripts was fixed
+  (should work fine on Debian with dash now)
+
+* ext4 features tests were fixed and added to default run
+
+* few testcases were fixed not to incorrectly fail on Btrfs
+
+* and many more smaller fixes
+
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+OS and can be downloaded at:
+
+http://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20140422/
+
+The project pages as well as GIT repository are hosted on GitHub for
+quite some time now:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our
+developer documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to
+ltp-list@lists.sf.net
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
-unparalleled scalability from the best Selenium testing platform available.
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
