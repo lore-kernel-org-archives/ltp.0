@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WenUu-0001Ev-Cr
-	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 15:29:36 +0000
-Date: Mon, 28 Apr 2014 17:28:41 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WdKIp-00070j-KA
+	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 14:07:03 +0000
+Date: Thu, 24 Apr 2014 16:06:11 +0200
 From: chrubis@suse.cz
-Message-ID: <20140428152841.GA6054@rei>
-References: <5357D79C.40706@oracle.com> <20140423151426.GA15663@rei.suse.cz>
-	<535E3447.6020003@oracle.com> <20140428133250.GA4956@rei>
-	<535E72CC.9070109@oracle.com>
+Message-ID: <20140424140611.GA27708@rei.suse.cz>
+References: <1398336249.2318.3.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <535E72CC.9070109@oracle.com>
-Subject: Re: [LTP] posix_fallocate
+In-Reply-To: <1398336249.2318.3.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH 1/3] safe_macros: Add SAFE_GETRESUID and
+ SAFE_GETRESGID
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,50 +25,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >> OK, I will add it to syscalls. What I would want is to make a wrapper,
-> >> then substitute all calls of fallocate with it. And decision which
-> >> function to call decided inside wrapper using command line option. So
-> >> they would be called this way:
-> >>
-> >> ...
-> >> fallocate01 fallocate01
-> >> fallocate02 fallocate02
-> >> fallocate03 fallocate03
-> >>
-> >> posix_fallocate01 fallocate01 -x
-> >> posix_fallocate02 fallocate02 -x
-> >> posix_fallocate03 fallocate03 -x
-> >> ...
-> > Or you can recompile the the binaries with -DUSE_POSIX_FALLOCATE and use
-> > #ifdefs to choose which do you call.
-> >
-> > Looking at the testcases you will probable need to ifdef a few test
-> > assertions (these where mode is not 0) too.
-> 
-> Just in one place in fallocate01, where it tests "FALLOC_FL_KEEP_SIZE" 
-> mode. Still it would probably be better to have a  wrapper at least for 
-> posix_fallocate, e.g. to preserve the way the code checks for errors, 
-> because it returns error number and doesn't set "errno".
+> +int safe_getresuid(const char *file, const int lineno, void (*cleanup_fn)(void),
+> +		   uid_t *ruid, uid_t *euid, uid_t *suid)
+> +{
+> +	int rval;
+> +
+> +	rval = getresuid(ruid, euid, suid);
+> +	if (rval == -1) {
+> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> +			 "%s:%d: getresuid(%u, %u, %u) failed",
+> +			 file, lineno, (unsigned) *ruid, (unsigned) *euid,
+> +			 (unsigned) *suid);
 
-Ah, missed that in the manual page.
-
-Creating wrapper that sets errno and returns -1 in case of
-posix_fallocate() sounds reasonably.
+Hmm, will there be any usable information ruid, euid and suid when
+getresuid failed? My guess is that the values would be filled with
+garbage. You should print the pointers passed to the call with %p
+instead.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
-unparalleled scalability from the best Selenium testing platform available.
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
