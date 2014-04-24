@@ -1,13 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Message-ID: <53327AAD.2030402@oracle.com>
-Date: Wed, 26 Mar 2014 10:58:53 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WdH8w-0001ul-Um
+	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 10:44:39 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WdH8v-0001cK-BM
+	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 10:44:38 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3OAiTQC032439
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Apr 2014 18:44:29 +0800
+Message-ID: <1398336249.2318.3.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 24 Apr 2014 18:44:09 +0800
 MIME-Version: 1.0
-References: <5331A238.3020003@oracle.com>
-	<4BA9BC50-10B8-425F-973D-19CC6439F9AA@gmail.com>
-In-Reply-To: <4BA9BC50-10B8-425F-973D-19CC6439F9AA@gmail.com>
-Subject: Re: [LTP] [Libtirpc-devel] svc_vc_create/clnt_vc_create and
-	RPC_ANYFD
+Subject: [LTP] [PATCH 1/3] safe_macros: Add SAFE_GETRESUID and SAFE_GETRESGID
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -17,78 +26,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chuck Lever <chucklever@gmail.com>
-Cc: vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>, libtirpc List <libtirpc-devel@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-
-
-On 03/25/2014 07:56 PM, Chuck Lever wrote:
->
-> On Mar 25, 2014, at 8:35 AM, Stanislav Kholmanskikh <stanislav.kholmanski=
-kh@oracle.com> wrote:
->
->> Hi!
->>
->> Sorry, but yet another question regarding rpc-tirpc-full-test-suite.
->>
->> Some binaries from this suite pass RPC_ANYFD to svc_vc_create() or
->> clnt_vc_create().
->>
->> Like this one -
->> https://github.com/linux-test-project/ltp/blob/master/testcases/network/=
-rpc/rpc-tirpc-full-test-suite/tests_pack/tirpc_svc_5/tirpc_svc_5.c
->> :
->>
->> transp =3D svc_vc_create(RPC_ANYFD, 1024, 1024);
->>
->> And, of course, the tests using this fail.
->>
->> I dig into the libtirpc sources and didn't found anything that could
->> state that we may pass RPC_ANYFD to these functions.
->>
->>  From svc_vc_create() comments:
->> "The filedescriptor passed in is expected to refer to a bound, but
->> not yet connected socket."
->>
->> and from clnt_vc_create():
->> "fd should be an open socket"
->>
->> So invoking svc_vc_create(RPC_ANYFD,...) or clnt_vc_create(RPC_ANYFD,
->> ...) is incorrect. Right?
->
-> I don=92t see anything in
->
->    http://docs.oracle.com/cd/E19504-01/802-5885/802-5885.pdf
->
-> that contradicts that.
->
-> AFAICT RPC_ANYFD is OK for the so-called =93expert level=94 API, which me=
-ans clnt_tli_create(3t) and svc_tli_create(3t).
->
-> It is also OK for the legacy APIs svctcp_create() and clnttcp_create() to=
- take RPC_ANYSOCK.
->
-
-Thank you.
-
-
-> --
-> Chuck Lever
-> chucklever@gmail.com
->
->
->
-
----------------------------------------------------------------------------=
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+ include/safe_macros.h | 10 ++++++++++
+ lib/safe_macros.c     | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index 25846f4..e9fc485 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -126,6 +126,16 @@ int	safe_setuid(const char *file, const int lineno,
+ #define SAFE_SETUID(cleanup_fn, uid) \
+ 	safe_setuid(__FILE__, __LINE__, cleanup_fn, (uid))
+ 
++int	safe_getresuid(const char *file, const int lineno,
++	    void (*cleanup_fn)(void), uid_t *ruid, uid_t *euid, uid_t *suid);
++#define SAFE_GETRESUID(cleanup_fn, ruid, euid, suid) \
++	safe_getresuid(__FILE__, __LINE__, cleanup_fn, (ruid), (euid), (suid))
++
++int	safe_getresgid(const char *file, const int lineno,
++	    void (*cleanup_fn)(void), gid_t *rgid, gid_t *egid, gid_t *sgid);
++#define SAFE_GETRESGID(cleanup_fn, rgid, egid, sgid) \
++	safe_getresgid(__FILE__, __LINE__, cleanup_fn, (rgid), (egid), (sgid))
++
+ int	safe_unlink(const char *file, const int lineno,
+ 	    void (*cleanup_fn)(void), const char *pathname);
+ #define SAFE_UNLINK(cleanup_fn, pathname) \
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 0d805e9..b4fe02f 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -310,6 +310,38 @@ int safe_setuid(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 	return rval;
+ }
+ 
++int safe_getresuid(const char *file, const int lineno, void (*cleanup_fn)(void),
++		   uid_t *ruid, uid_t *euid, uid_t *suid)
++{
++	int rval;
++
++	rval = getresuid(ruid, euid, suid);
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: getresuid(%u, %u, %u) failed",
++			 file, lineno, (unsigned) *ruid, (unsigned) *euid,
++			 (unsigned) *suid);
++	}
++
++	return rval;
++}
++
++int safe_getresgid(const char *file, const int lineno, void (*cleanup_fn)(void),
++		   gid_t *rgid, gid_t *egid, gid_t *sgid)
++{
++	int rval;
++
++	rval = getresgid(rgid, egid, sgid);
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: getresgid(%u, %u, %u) failed",
++			 file, lineno, (unsigned) *rgid, (unsigned) *egid,
++			 (unsigned) *sgid);
++	}
++
++	return rval;
++}
++
+ int safe_unlink(const char *file, const int lineno, void (*cleanup_fn) (void),
+                 const char *pathname)
+ {
+-- 
+1.8.4.2
+
+
+
+
+------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
