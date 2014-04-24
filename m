@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Wderq-0007fM-6N
-	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 12:04:34 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wderp-0006ga-AH
-	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 12:04:34 +0000
-Message-ID: <535A4F41.5060607@oracle.com>
-Date: Fri, 25 Apr 2014 16:04:17 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WdFcP-0002TR-A3
+	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 09:06:57 +0000
+Date: Thu, 24 Apr 2014 11:06:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20140424090605.GB19162@rei.Home>
+References: <0247700D01F14443B9209F90AD938CC524366845@sestoex05.enea.se>
+	<1397663294-60210-1-git-send-email-mats.liljegren@enea.com>
+	<1397663294-60210-2-git-send-email-mats.liljegren@enea.com>
+	<20140422154711.GG3951@rei> <20140424105218.5cd2b5bf@mats-desktop>
 MIME-Version: 1.0
-References: <1395971064-625-1-git-send-email-xu.simon@oracle.com>
-	<698021823.mA9edKhrul@vapier>
-In-Reply-To: <698021823.mA9edKhrul@vapier>
-Subject: Re: [LTP] [PATCH] ip_tests.sh: don't use hardcoded eth0
+Content-Disposition: inline
+In-Reply-To: <20140424105218.5cd2b5bf@mats-desktop>
+Subject: Re: [LTP] [RFC][PATCH] partrt_nohz_full: Introducing a new test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,30 +27,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net, "x >> \"XU.SIMON\"" <xu.simon@oracle.com>
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net, Kevin Hilman <khilman@linaro.org>, Frederic Weisbecker <fweisbec@gmail.com>
 
 Hi!
+> > > +/*
+> > > + * Wait for a command with given pid to finish, and assert that
+> > > the command
+> > > + * returned success (0).
+> > > + */
+> > > +static void
+> > > +pid_wait(pid_t pid)
+> > > +{
+> > > +	int status;
+> > > +	char prefix[64];
+> > > +
+> > > +	snprintf(prefix, sizeof (prefix), "Pid %lu", (unsigned
+> > > long) pid); +
+> > > +	if (wait(&status) == -1)
+> > > +		err("%s: wait() failed: %s", prefix,
+> > > strerror(errno));
+> > 
+> > Use SAFE_WAIT() instead.
+> > 
+> 
+> I couldn't find that function in include directory. Did I search in the
+> wrong place?
 
-On 03/28/2014 09:08 AM, Mike Frysinger wrote:
-> On Fri 28 Mar 2014 09:44:24 Simon Xu wrote:
->> The script uses hardcoded 'eth0' which used to work on most systems.
->> This fix tries to find a 'working' network interface using the hostname.
->
-> why doesn't hardcoding "lo" work ?
-> -mike
+Ah, you are right, that one is missing, sorry.
 
-I think we can't use the loopback interface because test06 fails if 
-invoked with lo:
+I will add it.
 
-[root@kholmanskikh stas]# /sbin/ifconfig lo:1 1.2.3.4 netmask 
-255.255.255.0 up
-[root@kholmanskikh stas]# /sbin/ip maddr add 66:66:00:00:00:66 dev lo:1
-ioctl: Invalid argument
+> > > +	const char *str,
+> > > +	const char *err_prefix,
+> > > +	int base
+> > > +	)
+> > > +{
+> > > +	char *endptr;
+> > > +	unsigned long val;
+> > > +	val = strtoull(str, &endptr, base);
+> > > +	if (endptr == str)
+> > > +		err("%s: %s: Expected unsigned decimal value",
+> > > err_prefix, str);
+> > > +	if (*endptr != '\0')
+> > > +		err("%s: %s: Garbage character '%c' found after
+> > > decimal value",
+> > > +			err_prefix, str, *endptr);
+> > > +
+> > > +	return val;
+> > > +}
+> > 
+> > Use SAFE_STRTOUL() instead.
+> 
+> That would loose a lot of information useful for figuring out what the
+> error is. For example, when called for translating command line options
+> to integers, using SAFE_STRTOUL() will only say that "this string is
+> not an integer" without giving any hint that we are talking about a
+> command line option, and which option that is being parsed.
 
-[root@kholmanskikh stas]# /sbin/ifconfig eth0:1 3.4.5.6 netmask 
-255.255.255.0 up
-[root@kholmanskikh stas]# /sbin/ip maddr add 66:66:00:00:00:66 dev eth0:1
-[root@kholmanskikh stas]#
+Well it depends on the fact if the additional work is worth of the
+clarity.
+
+Looked at the code it may be in this case. But at least remove the base
+argument and just pass 10 to strtoull() instead. Keep things simple :)
+
+> > > +	pid_t pid;
+> > > +	int status;
+> > > +
+> > > +	if (!__sync_bool_compare_and_swap(&cleanup_entered, 0, 1,
+> > > +						cleanup_entered)) {
+> > > +		info("Cleanup: Already cleaning, exiting");
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	info("Cleanup: Terminating children");
+> > > +
+> > > +	time_is_up = 1;
+> > > +
+> > > +	do {
+> > > +		pid = wait(&status);
+> > > +		if (pid != -1) {
+> > > +			char cmd[64];
+> > > +			snprintf(cmd, sizeof (cmd), "Pid %lu",
+> > > +				 (unsigned long) pid);
+> > > +			assert_exit_status(cmd, status);
+> > 
+> >                         I do not understand why you pass "Pid %lu"
+> > 			string instead of the pid. It's more messy
+> > 			this way.
+> 
+> This is because assert_exit_status() sometimes checks result of
+> executed commands, and in those cases this function gets a command line
+> rather than PID.
+
+I've greped the source code for assert_exit_status and it's called from
+pid_wait() and cleanup() in both cases the first argument is result of:
+
+snprintf(buf, sizeof(buf), "Pid %lu", pid)
+
+Do I miss something?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Start Your Social Network Today - Download eXo Platform
