@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1WZymb-00086e-Df
-	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 08:31:57 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1WZyma-0005bN-0k
-	for ltp-list@lists.sourceforge.net; Tue, 15 Apr 2014 08:31:57 +0000
-From: Mats Liljegren <mats.liljegren@enea.com>
-Date: Tue, 15 Apr 2014 10:31:15 +0200
-Message-ID: <1397550675-25420-2-git-send-email-mats.liljegren@enea.com>
-In-Reply-To: <1397550675-25420-1-git-send-email-mats.liljegren@enea.com>
-References: <20140414174105.GA26543@rei>
-	<1397550675-25420-1-git-send-email-mats.liljegren@enea.com>
+	(envelope-from
+	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
+	id 1Wdgeu-0000un-G5
+	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 13:59:20 +0000
+Received: from smtp-out3.electric.net ([72.35.12.187])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Wdget-0002in-Ju
+	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 13:59:20 +0000
+Received: from 1Wdgem-0002T8-U5 by out3c.electric.net with emc1-ok (Exim
+	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1Wdgen-0002VX-Ta
+	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 06:59:13 -0700
+Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
+	by out3c.electric.net with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
+	id 1Wdgem-0002T8-U5
+	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 06:59:12 -0700
+From: Joseph Beckenbach <jbeckenbach@lancope.com>
+Date: Fri, 25 Apr 2014 13:59:03 +0000
+Message-ID: <4506ACC2AE90484D87F9A883BA36C21C1C306C01@LCHQEX03.lancope.local>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] utils/Makefile: Move ffsb configure to configure.ac
+Subject: Re: [LTP] [PATCH] ip_tests.sh: don't use hardcoded eth0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,59 +36,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Fathi Boudra <fathi.boudra@linaro.org>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-The configure call was done from make file without appropriate parameters,
-which breaks cross-compiling. Include ffsb into configure.ac so that it is
-included in the main configure call.
+Hi, Simon!
 
-This fix is based on a patch by Fathi Boudra <fathi.boudra@linaro.org> for an
-earlier version of LTP.
+> Could anyone help to review this?
 
-CC: Fathi Boudra <fathi.boudra@linaro.org>
-Signed-off-by: Mats Liljegren <mats.liljegren@enea.com>
----
- configure.ac   |    2 ++
- utils/Makefile |    2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+At least one of the existing network scripts does this, not sure which one.
+It annoyed my lab-mates when it started sending on an interface I didn't want it to send on.
 
-diff --git a/configure.ac b/configure.ac
-index 4ea5868..9f397e7 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -142,6 +142,8 @@ else
-     AC_SUBST([WITH_REALTIME_TESTSUITE],["no"])
- fi
- 
-+AC_CONFIG_SUBDIRS([utils/ffsb-6.0-rc2])
-+
- # END testsuites knobs
- LTP_CHECK_FORTIFY_SOURCE
- LTP_CHECK_CC_WARN_OLDSTYLE
-diff --git a/utils/Makefile b/utils/Makefile
-index 923bb2d..1508b35 100644
---- a/utils/Makefile
-+++ b/utils/Makefile
-@@ -30,7 +30,7 @@ FFSB			:= $(FFSBDIR)/ffsb
- 
- $(FFSB): $(abs_srcdir)/$(FFSBDIR)
- 	mkdir -p $(FFSBDIR)
--	cd $(FFSBDIR) && "$^/configure" && $(MAKE) top_srcdir="$^" all
-+	cd $(FFSBDIR) && $(MAKE) top_srcdir="$^" all
- 
- ffsb: $(FFSB)
- 	cp $(FFSB) ffsb
--- 
-1.7.10.4
+I'd like to see documented in the top-level INSTALL that the hostname needs to corresponds to the network-interface intended for test traffic.
+(That would go with the rest of the network-test preparation instructions.)
+And also that other tests which hard-code eth0 or any other interface also do this check.
+Maybe an environment variable can specify preference, then fall back to hostname check like you propose in your patch?
 
+Joseph
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
