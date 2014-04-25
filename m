@@ -1,34 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WVhWr-0003rr-1F
-	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 13:18:01 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WVhWn-00044q-2Y
-	for ltp-list@lists.sourceforge.net; Thu, 03 Apr 2014 13:18:00 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s33DHote030397
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:17:51 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s33DHnNM003950
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:17:50 GMT
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s33DHnjY007935
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Apr 2014 13:17:49 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu,  3 Apr 2014 17:17:44 +0400
-Message-Id: <1396531064-16957-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1396530521-16789-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1396530521-16789-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V2] numa01.sh: numademo fixes
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Wdddg-0001DC-DR
+	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 10:45:52 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wddde-0001I2-SW
+	for ltp-list@lists.sourceforge.net; Fri, 25 Apr 2014 10:45:52 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3PAjcRW003646
+	for <ltp-list@lists.sourceforge.net>; Fri, 25 Apr 2014 18:45:39 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Fri, 25 Apr 2014 18:43:31 +0800
+Message-ID: <1398422611-12706-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] lib/tst_sig.c: output signal name when got unexpected
+	signal
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,59 +27,186 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-1) numademo does not accept a 'msize' argument. I think it was an initial
-typo mistake that numanode was invoked as
-  numanode -c msize
-instead of
-  numanode -c ${msize}k
+When testcase is killed by unexpected signal, usually it just prints
+signal's value.
+	fcntl30     1  TBROK  :  unexpected signal 2 received (pid = 6714).
+	fcntl30     2  TBROK  :  Remaining cases broken
 
-2) I think test07 should return TPASS if $x is 0 (not 1), because this test
-verifies that after execution of `numanode` the OS updates interleave_hit
-values of each of the nodes. And if a node doesn't get a minimum increase,
-then it's a failure.
+Here we also print signal's name to output more informative message.
+	fcntl30     1  TBROK  :  unexpected signal SIGINT(2) received (pid = 9872).
+	fcntl30     2  TBROK  :  Remaining cases broken
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
+ lib/errnos.h  |  2 +-
+ lib/signame.h | 92 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_res.c |  3 ++
+ lib/tst_sig.c |  4 ++-
+ 4 files changed, 99 insertions(+), 2 deletions(-)
+ create mode 100644 lib/signame.h
 
-Just updated description 2)
-
- testcases/kernel/numa/numa01.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index 19a8f71..5812ca3 100755
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -577,7 +577,7 @@ test07()
-         COUNTER=$[$COUNTER+1]
-     done
+diff --git a/lib/errnos.h b/lib/errnos.h
+index 8e80e07..bb42233 100644
+--- a/lib/errnos.h
++++ b/lib/errnos.h
+@@ -27,7 +27,7 @@
  
--    numademo -c msize > $LTPTMP/demolog
-+    numademo -c ${msize}k > $LTPTMP/demolog
-     sleep 2s        #In RHEL collection of statistics takes more time.
+ static const char *strerrnodef(int err)
+ {
+-	struct pair errno_pairs[] = {
++	static struct pair errno_pairs[] = {
+ 		{.name = "SUCCESS", .val = 0},
+ 		/* asm-generic/errno-base.h */
+ 		PAIR(EPERM)
+diff --git a/lib/signame.h b/lib/signame.h
+new file mode 100644
+index 0000000..77eabc1
+--- /dev/null
++++ b/lib/signame.h
+@@ -0,0 +1,92 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++const char *strsignaldef(int sig)
++{
++	static const struct pair signal_pairs[] = {
++		PAIR(SIGHUP)
++		PAIR(SIGINT)
++		PAIR(SIGQUIT)
++		PAIR(SIGILL)
++	#ifdef SIGTRAP
++		PAIR(SIGTRAP)
++	#endif
++		/* SIGIOT same as SIGABRT, skipped */
++		PAIR(SIGABRT)
++	#ifdef SIGEMT
++		PAIR(SIGEMT)
++	#endif
++	#ifdef SIGBUS
++		PAIR(SIGBUS)
++	#endif
++		PAIR(SIGFPE)
++		PAIR(SIGKILL)
++		PAIR(SIGUSR1)
++		PAIR(SIGSEGV)
++		PAIR(SIGUSR2)
++		PAIR(SIGPIPE)
++		PAIR(SIGALRM)
++		PAIR(SIGTERM)
++	#ifdef SIGSTKFLT
++		PAIR(SIGSTKFLT)
++	#endif
++		/* SIGCLD same as SIGCHLD, skipped */
++		PAIR(SIGCHLD)
++		PAIR(SIGCONT)
++		PAIR(SIGSTOP)
++		PAIR(SIGTSTP)
++		PAIR(SIGTTIN)
++		PAIR(SIGTTOU)
++	#ifdef SIGURG
++		PAIR(SIGURG)
++	#endif
++	#ifdef SIGXCPU
++		PAIR(SIGXCPU)
++	#endif
++	#ifdef SIGXFSZ
++		PAIR(SIGXFSZ)
++	#endif
++	#ifdef SIGVTALRM
++		PAIR(SIGVTALRM)
++	#endif
++	#ifdef SIGPROF
++		PAIR(SIGPROF)
++	#endif
++	#ifdef SIGWINCH
++		PAIR(SIGWINCH)
++	#endif
++	#if defined(SIGIO) || defined(SIGPOLL)
++		/* SIGPOLL same as SIGIO, skipped */
++		PAIR(SIGIO)
++	#endif
++	#ifdef SIGINFO
++		PAIR(SIGINFO)
++	#endif
++	#ifdef SIGLOST
++		PAIR(SIGLOST)
++	#endif
++	#ifdef SIGPWR
++		PAIR(SIGPWR)
++	#endif
++	#if defined(SIGUNUSED) || defined(SIGSYS)
++		/* SIGUNUSED same as SIGSYS, skipped */
++		PAIR(SIGSYS)
++	#endif
++	};
++
++	PAIR_LOOKUP(signal_pairs, sig);
++};
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index 8faa5a9..f19e5ab 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -220,6 +220,9 @@ const char *strttype(int ttype)
+  */
+ #include "errnos.h"
  
-     numastat > $LTPTMP/numalog
-@@ -596,7 +596,7 @@ test07()
-         fi
-         COUNTER=$[$COUNTER+1]
-     done
--    if [ $x -eq 1 ]
-+    if [ $x -eq 0 ]
-     then
-         tst_resm TPASS "NUMADEMO policies  -TEST07 PASSED !!"
-         return 0
++/* Include table of signals and strsignaldef() function*/
++#include "signame.h"
++
+ /*
+  * tst_res() - Main result reporting function.  Handle test information
+  *             appropriately depending on output display mode.  Call
+diff --git a/lib/tst_sig.c b/lib/tst_sig.c
+index 2ffe610..58ab4b3 100644
+--- a/lib/tst_sig.c
++++ b/lib/tst_sig.c
+@@ -235,6 +235,7 @@ void tst_sig(int fork_flag, void (*handler) (), void (*cleanup) ())
+ 	}			/* endfor */
+ }
+ 
++const char *strsignaldef(int sig);
+ /****************************************************************************
+  * def_handler() : default signal handler that is invoked when
+  *      an unexpected signal is caught.
+@@ -246,7 +247,8 @@ static void def_handler(int sig)
+ 	 * Break remaining test cases, do any cleanup, then exit
+ 	 */
+ 	tst_brkm(TBROK, T_cleanup,
+-		 "unexpected signal %d received (pid = %d).", sig, getpid());
++		 "unexpected signal %s(%d) received (pid = %d).",
++		 strsignaldef(sig), sig, getpid());
+ }
+ 
+ /*
 -- 
-1.7.1
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
