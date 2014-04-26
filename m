@@ -1,29 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1WYCqX-00028u-Uu
-	for ltp-list@lists.sourceforge.net; Thu, 10 Apr 2014 11:08:41 +0000
-Received: from e06smtp12.uk.ibm.com ([195.75.94.108])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WYCqW-0006Gt-UX
-	for ltp-list@lists.sourceforge.net; Thu, 10 Apr 2014 11:08:41 +0000
-Received: from /spool/local
-	by e06smtp12.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
-	Thu, 10 Apr 2014 12:08:34 +0100
-Message-ID: <53467BAF.8030605@linux.vnet.ibm.com>
-Date: Thu, 10 Apr 2014 13:08:31 +0200
-From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1We0mf-0002Eh-Ez
+	for ltp-list@lists.sourceforge.net; Sat, 26 Apr 2014 11:28:41 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1We0md-0005XZ-Ti
+	for ltp-list@lists.sourceforge.net; Sat, 26 Apr 2014 11:28:41 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3QBSVDg011912
+	for <ltp-list@lists.sourceforge.net>; Sat, 26 Apr 2014 19:28:31 +0800
+Message-ID: <535B9829.3080601@cn.fujitsu.com>
+Date: Sat, 26 Apr 2014 19:27:37 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <CA+G9fYuQi1+C0Mkhc0SVLKm8E9iEEF8rZ_62qAFZZcUaD9CLQQ@mail.gmail.com>
-	<1397035115.64792188@apps.rackspace.com>
-	<53453D96.3070109@linux.vnet.ibm.com>
-	<1397048671.53348062@apps.rackspace.com>
-In-Reply-To: <1397048671.53348062@apps.rackspace.com>
-Subject: Re: [LTP] [Ltp-coverage] running LCOV/LTP on Beagle Bone Black -
- Cannot Allocate Memory Error
+References: <1398423247-17525-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1398423247-17525-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3] pipeio/pipeio.c: cleanup and add it to run
+	default
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,32 +33,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shinto.john@smartplayin.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Naresh Kamboju <naresh.kamboju@linaro.org>, ltp-coverage@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 09.04.2014 15:04, shinto.john@smartplayin.com wrote:
-> This got resolved when i tried this in KERNEL/mm/Makefile
+On 04/25/2014 06:54 PM, Xiaoguang Wang wrote:
+> Delete some useless comments and fix some.
 > 
-> GCOV_PROFILE := n
+> Use SAFE_* macros.
 > 
-> So basically some issue with KERNEL/mm/vmstat.gcno... right?
+> Make a re-arrangement on original code: let parent process
+> work in do_parent(), child process work in do_child(), and
+> arguments parse and initialization work in setup().
+> 
+> Delete several useless or pointless options:
+>   Option C: this option is not supported and has no effect to this test.
+> 
+>   Option B: if this option is specified, the parent process will always
+> return 0, which won't reflect the correct test results. I think it does
+> not make much sense and remove it.
+> 
+>   Option d: this option is used to specify a directory, where named pipe
+> is created, other than the current directory. Since tst_tmpdir() will
+> create a temporary directory, so I think "-d" option can be removed.
+> 
+> printf() is not async-signal-safe, so use write(2) in signal handler directly.
+> 
+> Some cleanup.
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  scenario_groups/default              |   1 +
+>  testcases/kernel/ipc/pipeio/pipeio.c | 963 ++++++++++++++++-------------------
+>  2 files changed, 441 insertions(+), 523 deletions(-)
 
-If you don't need the coverage data for mm/* then this looks like a
-feasible workaround.
 
-> Now i am able to do a complete kernel run.
+Applied, thank you.
 
--- 
-Peter Oberparleiter
-Linux on System z Development - IBM Germany
+
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
