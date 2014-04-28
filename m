@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WcBFU-0008MO-Kw
-	for ltp-list@lists.sourceforge.net; Mon, 21 Apr 2014 10:14:52 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WcBFT-0004R2-3P
-	for ltp-list@lists.sourceforge.net; Mon, 21 Apr 2014 10:14:52 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3LAEht7028862
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Apr 2014 18:14:43 +0800
-Message-ID: <5354EF1D.2000206@cn.fujitsu.com>
-Date: Mon, 21 Apr 2014 18:12:45 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WeioJ-0003wc-T6
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 10:29:19 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WeioI-0004Yv-VC
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 10:29:19 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s3SATA8j011070
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 10:29:11 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3SATAlP027019
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 10:29:10 GMT
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3SAT9er027010
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 10:29:09 GMT
+Message-ID: <535E2D73.3000103@oracle.com>
+Date: Mon, 28 Apr 2014 14:29:07 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] compiling problems about mk/generic_leaf_target.inc
+References: <1398674834-1643-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1398674834-1643-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/2] kernel/mem/lib/mem.c: fix compilation warnings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,31 +42,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
 
-When we made modifications to source files in lib/, for example lib/tst_mkfs.c, then back to
-testcases/kernel/syscalls/access and execute  command make. This will not make the access[0-5]
-to be re-compiled with the newly generated libltp.a, we need to touch access[0-5].c or remove access[0-5]
-files first, then make. I think this will make no sense.  Users may expect just a make command to
-ensure  a new access[0-5] is generated with new libltp.a.
+On 04/28/2014 12:47 PM, Xiaoguang Wang wrote:
+> Functions declared in testcases/kernel/mem/include/_private.h is not
+> implemented and used, so delete it.
+>
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 
-This is because  the rules "target : normal-prerequisites | order-only-prerequisites" in generic_leaf_target.inc.
-$(MAKE_TARGETS): | $(MAKE_DEPS)
+Acked-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Whether we should modify this to "$(MAKE_TARGETS): $(MAKE_DEPS)"? Thanks.
-
-
-Regards,
-Xiaoguang Wang
+> ---
+>   testcases/kernel/mem/include/_private.h | 22 ----------------------
+>   testcases/kernel/mem/include/mem.h      |  2 +-
+>   testcases/kernel/mem/lib/mem.c          | 25 +++++++++++++++----------
+>   3 files changed, 16 insertions(+), 33 deletions(-)
+>   delete mode 100644 testcases/kernel/mem/include/_private.h
+>
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
