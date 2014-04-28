@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WY7nO-0004sk-Le
-	for ltp-list@lists.sourceforge.net; Thu, 10 Apr 2014 05:45:06 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WY7nM-0005G1-Rt
-	for ltp-list@lists.sourceforge.net; Thu, 10 Apr 2014 05:45:06 +0000
-Message-ID: <53462FC7.1020701@oracle.com>
-Date: Thu, 10 Apr 2014 09:44:39 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	(envelope-from <metan@suse.de>) id 1WenUu-0001Ev-Cr
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 15:29:36 +0000
+Date: Mon, 28 Apr 2014 17:28:41 +0200
+From: chrubis@suse.cz
+Message-ID: <20140428152841.GA6054@rei>
+References: <5357D79C.40706@oracle.com> <20140423151426.GA15663@rei.suse.cz>
+	<535E3447.6020003@oracle.com> <20140428133250.GA4956@rei>
+	<535E72CC.9070109@oracle.com>
 MIME-Version: 1.0
-References: <533D3BC7.8010309@oracle.com>
-	<20140407013932.GU22728@two.firstfloor.org>
-	<alpine.DEB.2.10.1404071044310.9896@nuc>
-	<5344288E.3090306@oracle.com> <53442A99.6030208@oracle.com>
-	<alpine.DEB.2.10.1404081302570.13065@nuc>
-In-Reply-To: <alpine.DEB.2.10.1404081302570.13065@nuc>
-Subject: Re: [LTP] numastats updates
+Content-Disposition: inline
+In-Reply-To: <535E72CC.9070109@oracle.com>
+Subject: Re: [LTP] posix_fallocate
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,33 +26,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Christoph Lameter <cl@linux.com>
-Cc: vasily Isaenko <vasily.isaenko@oracle.com>, ltp-list <ltp-list@lists.sourceforge.net>, Andi Kleen <andi@firstfloor.org>, linux-numa@vger.kernel.org
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
+Hi!
+> >> OK, I will add it to syscalls. What I would want is to make a wrapper,
+> >> then substitute all calls of fallocate with it. And decision which
+> >> function to call decided inside wrapper using command line option. So
+> >> they would be called this way:
+> >>
+> >> ...
+> >> fallocate01 fallocate01
+> >> fallocate02 fallocate02
+> >> fallocate03 fallocate03
+> >>
+> >> posix_fallocate01 fallocate01 -x
+> >> posix_fallocate02 fallocate02 -x
+> >> posix_fallocate03 fallocate03 -x
+> >> ...
+> > Or you can recompile the the binaries with -DUSE_POSIX_FALLOCATE and use
+> > #ifdefs to choose which do you call.
+> >
+> > Looking at the testcases you will probable need to ifdef a few test
+> > assertions (these where mode is not 0) too.
+> 
+> Just in one place in fallocate01, where it tests "FALLOC_FL_KEEP_SIZE" 
+> mode. Still it would probably be better to have a  wrapper at least for 
+> posix_fallocate, e.g. to preserve the way the code checks for errors, 
+> because it returns error number and doesn't set "errno".
 
+Ah, missed that in the manual page.
 
-On 04/08/2014 10:03 PM, Christoph Lameter wrote:
-> On Tue, 8 Apr 2014, Stanislav Kholmanskikh wrote:
->
->> Forgot to mention. This eight-node system has 8k pages, two-node - 4k pages.
->
-> So they are not x86? There are some counter races on !x86.
+Creating wrapper that sets errno and returns -1 in case of
+posix_fallocate() sounds reasonably.
 
-Yes. This is Linux on SPARC.
-
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-numa" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
