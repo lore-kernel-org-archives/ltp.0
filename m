@@ -1,40 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <qutherond@adeneo-embedded.com>) id 1WczBb-00045c-U2
-	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:34:11 +0000
-Received: from smtp.adetelgroup.com ([94.247.26.71] helo=hbg-pa71.hmc-pa.adm)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WczBZ-0001KK-Mr
-	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 15:34:11 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by hbg-pa71.hmc-pa.adm (Postfix) with ESMTP id 8108C4384D
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Apr 2014 17:24:42 +0200 (CEST)
-Received: from hbg-pa71.hmc-pa.adm ([127.0.0.1])
-	by localhost (hbg-pa71.hmc-pa.adm [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id jEOZ5KvZCYD0 for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by hbg-pa71.hmc-pa.adm (Postfix) with ESMTP id 538B6438F7
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
-Received: from hbg-pa71.hmc-pa.adm ([127.0.0.1])
-	by localhost (hbg-pa71.hmc-pa.adm [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 1oKgGv1ZQ-8f for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
-Received: from hbg-pa73.hmc-pa.adm (unknown [10.210.21.2])
-	by hbg-pa71.hmc-pa.adm (Postfix) with ESMTP id 33BED4384D
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 23 Apr 2014 17:24:34 +0200 (CEST)
-Date: Wed, 23 Apr 2014 17:24:31 +0200 (CEST)
-From: THEROND Quentin <qutherond@adeneo-embedded.com>
-Message-ID: <522788825.306663.1398266671270.JavaMail.zimbra@adeneo-embedded.com>
-In-Reply-To: <1271937164.305548.1398266180588.JavaMail.zimbra@adeneo-embedded.com>
-References: <1271937164.305548.1398266180588.JavaMail.zimbra@adeneo-embedded.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1Wen9M-00024G-SK
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 15:07:20 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1Wen9J-0007d3-TB
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 15:07:20 +0000
+From: Mats Liljegren <mats.liljegren@enea.com>
+Date: Mon, 28 Apr 2014 17:06:58 +0200
+Message-ID: <1398697619-27372-1-git-send-email-mats.liljegren@enea.com>
+In-Reply-To: <1397663294-60210-1-git-send-email-mats.liljegren@enea.com>
+References: <1397663294-60210-1-git-send-email-mats.liljegren@enea.com>
 MIME-Version: 1.0
-Subject: [LTP] ltp-ddt issue
+Subject: [LTP] [PATCH v2] partrt_nohz_full: Introducing a new test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,98 +24,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1316949681635605167=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Frederic Weisbecker <fweisbec@gmail.com>, Kevin Hilman <khilman@linaro.org>
 
---===============1316949681635605167==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_306662_1073453496.1398266671269"
+Changes from version 1:
+- Style fixes proposed by checkpatch.pl script
+- Have rt-tools as a git sub-module instead of requiring it to be cloned
+  manually, builds can still be done without checking out rt-tools but
+  you can't run partrt_nohz_full test successfully then
+- Check if cpuset supported by kernel, TCONF error if not
+- Check if rt-tools has been checked out before build, TCONF error if not
+- Simplified determined_nohz_mask()
+- Use parse_opts() instead of getopt_long() when parsing command line options
+- Moved partrt in SUBDIRS so that it is alphabetically correct in
+  testcases/kernel/Makefile
+- launch_child will now handle moving child thread to the right CPUSET partition
+  and CPU, which also eliminates the need for synchronization between parent
+  and child
+- Children will no longer be able to cause any tst_* calls
+- Removed shell_silent(), above changes made it obsolete
+- Removed base parameter to str_to_ulong(), will always be 0 now
+- setup_children() is now called from main() rather than test() function.
+- Macros defining file names
+- Use C code for moving children to the right place instead of external
+  scripts. Using script invocation from RT partition using NFS mounted file
+  system will most likely invoke ticks which can make the test case fail
+- Added standard test loop in case reptitions are requested
+- Removed atomic operation for cleanup recursion detection, since it is only
+  trying to protect recursive invocations from itself
+- Using timerfd to wait for timeout instead of busy-waiting
+- Removed pid_popen(), pid_wait() and shell_int()
+- assert_exit_status() now also checks if status is -1, i.e. command failed
+- Moved _GNU_SOURCE macro from Makefile to C file
+- Removed -Werror from Makefile
+- Removed err(), fail(), pass() and info() macros
+- Replaced usage of READ and WRITE macros with STDIN_FILENO and STDOUT_FILENO,
+  READ and WRITE macros removed
+- Removed some unnecessary comments
+- setup() is renamed to setup_children()
+- Informational message are made mandatory, verbose only affects output from
+  sub-commands, partrt in particular
+- Test case name is now partrt_nohz_full
 
-------=_Part_306662_1073453496.1398266671269
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+partrt_nohz_full is a test case which checks whether nohz_full mode can achieve
+0Hz ticks (if relevant extra patches has been applied) or 1Hz ticks (mainline
+kernel).
 
-hello, 
+Appropriate kernel configurations and kernel boot parameters needed are
+documented in testcases/kernel/partrt/README.
 
+Mats Liljegren (1):
+  partrt_nohz_full: Introducing a new test case
 
+ .gitmodules                                        |    3 +
+ README.kernel_config                               |    6 +
+ runtest/partrt_nohz_full                           |    1 +
+ testcases/kernel/Makefile                          |    1 +
+ testcases/kernel/partrt/Makefile                   |   17 +
+ testcases/kernel/partrt/README                     |   61 +++
+ testcases/kernel/partrt/nohz_full/.gitignore       |    1 +
+ testcases/kernel/partrt/nohz_full/Makefile         |   23 +
+ .../partrt/nohz_full/test_partrt_nohz_full.c       |  551 ++++++++++++++++++++
+ utils/.gitignore                                   |    3 +
+ utils/Makefile                                     |    7 +
+ utils/rt-tools                                     |    1 +
+ 12 files changed, 675 insertions(+)
+ create mode 100644 runtest/partrt_nohz_full
+ create mode 100644 testcases/kernel/partrt/Makefile
+ create mode 100644 testcases/kernel/partrt/README
+ create mode 100644 testcases/kernel/partrt/nohz_full/.gitignore
+ create mode 100644 testcases/kernel/partrt/nohz_full/Makefile
+ create mode 100644 testcases/kernel/partrt/nohz_full/test_partrt_nohz_full.c
+ create mode 160000 utils/rt-tools
 
+-- 
+1.7.10.4
 
-I working on ltp-ddt and i have a problem. If i launch <<./runltp -f ddt/usb_stress_io>> on BEAGLEBONE the test PASS but if i launch a same command on BEAGLEBOARD the test FAIL. LTP-DDT return: 
-
-
-sh: 1: source: not found 
-sh: 1: do_cmd: not found 
-sh: 1: check_config_options: not found 
-sh: 1: do_cmd: not found 
-
-
-
-Can you help me? 
-
-
-
-Thank you, 
-
-
-
-THEROND Quentin 
-
-
-------=_Part_306662_1073453496.1398266671269
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-<html><body><div style=3D"font-family: times new roman, new york, times, se=
-rif; font-size: 12pt; color: #000000"><div><span style=3D"font-family: 'Tim=
-es New Roman', serif; font-size: 12pt; background-color: rgb(253, 253, 253)=
-;">hello,</span></div><div style=3D"color:#000;font-weight:normal;font-styl=
-e:normal;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-s=
-ize:12pt;"><div style=3D"font-family: times new roman, new york, times, ser=
-if; font-size: 12pt; color: #000000"><div style=3D"font-family: 'Times New =
-Roman'; font-size: 13px; background-color: #fdfdfd;"><p style=3D"margin: 0p=
-x; font-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;</p><p st=
-yle=3D"margin: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;=
-">I working on ltp-ddt and i have a problem. If i launch &lt;&lt;./runltp -=
-f ddt/usb_stress_io&gt;&gt; on BEAGLEBONE the test PASS but if i launch a s=
-ame command on BEAGLEBOARD the test FAIL. LTP-DDT return:</p><p style=3D"ma=
-rgin: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;"><br>sh:=
- 1: source: not found<br>sh: 1: do_cmd: not found<br>sh: 1: check_config_op=
-tions: not found<br>sh: 1: do_cmd: not found</p><p style=3D"margin: 0px; fo=
-nt-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;</p><p style=
-=3D"margin: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;">C=
-an you help me?</p><p style=3D"margin: 0px; font-size: 12pt; font-family: '=
-Times New Roman', serif;">&nbsp;</p><p style=3D"margin: 0px; font-size: 12p=
-t; font-family: 'Times New Roman', serif;">Thank you,</p><p style=3D"margin=
-: 0px; font-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;</p><=
-p style=3D"margin: 0px; font-size: 12pt; font-family: 'Times New Roman', se=
-rif;">THEROND Quentin</p></div></div></div><div><br></div></div></body></ht=
-ml>
-------=_Part_306662_1073453496.1398266671269--
-
-
---===============1316949681635605167==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
---===============1316949681635605167==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1316949681635605167==--
-
