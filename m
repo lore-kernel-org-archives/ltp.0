@@ -1,35 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WfRkC-0005CT-Au
-	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 10:28:04 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WfRk8-0001GO-Tq
-	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 10:28:04 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s3UARsh1010683
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1WenVK-00056C-OI
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 15:30:02 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WenVI-00074X-Sy
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 15:30:02 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s3SFTqFd025986
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 30 Apr 2014 10:27:54 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s3UARrbi001939
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 15:29:53 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3SFTpW8011069
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 30 Apr 2014 10:27:53 GMT
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s3UARr0V001910
-	for <ltp-list@lists.sourceforge.net>; Wed, 30 Apr 2014 10:27:53 GMT
-Message-ID: <5360D024.4000408@oracle.com>
-Date: Wed, 30 Apr 2014 14:27:48 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-References: <1398850017-10751-1-git-send-email-shuang.qiu@oracle.com>
-In-Reply-To: <1398850017-10751-1-git-send-email-shuang.qiu@oracle.com>
-Subject: Re: [LTP] [PATCH 1/2] syscalls/fstatfs: Cleanup
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 15:29:51 GMT
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3SFTpkw022266
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Apr 2014 15:29:51 GMT
+From: shuang.qiu@oracle.com
+Date: Mon, 28 Apr 2014 23:29:39 +0800
+Message-Id: <1398698979-6938-1-git-send-email-shuang.qiu@oracle.com>
+Subject: [LTP] [PATCH] device-drivers/rtc: Use /dev/rtc0 as device node for
+	rtc test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,47 +36,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang.qiu@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-On 04/30/2014 01:26 PM, shuang.qiu@oracle.com wrote:
-> From: Shuang Qiu <shuang.qiu@oracle.com>
->
-> * Delete some useless comments
->
-> * Make variables and functions static
->
-> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+The old rtc device node /dev/rtc is not much supported on some
+of the distributes,i.e. RHEL5 or OL5.Use the newer one /dev/rtc0 instead.
 
-Reviewed-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ runtest/kernel_misc |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-And I would personally add these small changes (can be done at pushing 
-time):
+diff --git a/runtest/kernel_misc b/runtest/kernel_misc
+index 01b0acb..1a294b6 100644
+--- a/runtest/kernel_misc
++++ b/runtest/kernel_misc
+@@ -1,6 +1,6 @@
+ kmsg01 kmsg01
+ fw_load fw_load
+-rtc01 rtc01
++rtc01 rtc01 -d /dev/rtc0
+ block_dev block_dev
+ tpci tpci
+ tbio tbio
+-- 
+1.7.9.5
 
-diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs02.c 
-b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-index b243af3..99dc51b 100644
---- a/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-+++ b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-@@ -67,14 +67,12 @@ int main(int ac, char **av)
-
-         setup();
-
--       /* set up the expected errnos */
-         TEST_EXP_ENOS(exp_enos);
-
-         for (lc = 0; TEST_LOOPING(lc); lc++) {
-
-                 tst_count = 0;
-
--               /* loop through the test cases */
-                 for (i = 0; i < TST_TOTAL; i++) {
-
-                         TEST(fstatfs(TC[i].fd, TC[i].sbuf));
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
