@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WZktE-0004gC-Vq
-	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 17:41:53 +0000
-Date: Mon, 14 Apr 2014 19:41:05 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wep3J-0005Zq-3Y
+	for ltp-list@lists.sourceforge.net; Mon, 28 Apr 2014 17:09:13 +0000
+Date: Mon, 28 Apr 2014 19:08:17 +0200
 From: chrubis@suse.cz
-Message-ID: <20140414174105.GA26543@rei>
-References: <20140414192212.3c97cc76@mats-desktop>
+Message-ID: <20140428170817.GA6594@rei>
+References: <1398698979-6938-1-git-send-email-shuang.qiu@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140414192212.3c97cc76@mats-desktop>
-Subject: Re: [LTP] Problems with cross-compiling
+In-Reply-To: <1398698979-6938-1-git-send-email-shuang.qiu@oracle.com>
+Subject: Re: [LTP] [PATCH] device-drivers/rtc: Use /dev/rtc0 as device node
+ for rtc test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,49 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <mats.liljegren@enea.com>
+To: shuang.qiu@oracle.com
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I've been using Yocto, which does cross-compiling. It has support for
-> compiling LTP, but I've noticed it has a couple of patches. I found
-> that one patch was needed for actually compile LTP, which applies to
-> the file utils/Makefile.
-> 
-> The patch is for an older version of LTP, but I re-implemented it for
-> the new version. Looking at the following rule:
-> 
-> $(FFSB): $(abs_srcdir)/$(FFSBDIR)
->         mkdir -p $(FFSBDIR)
->         cd $(FFSBDIR) && "$^/configure" && $(MAKE) top_srcdir="$^" all
-> 
-> This calls configure without parameters, which is most likely wrong for
-> a cross-compile environment. It is this configure that fails. By simple
-> removing it, everything works within Yocto.
-> 
-> Is there any reason for keeping this configure here? Or should I make
-> a patch for removing it?
+> The old rtc device node /dev/rtc is not much supported on some
+> of the distributes,i.e. RHEL5 or OL5.Use the newer one /dev/rtc0 instead.
 
-The ffsb configure should be called from the top-level configure the
-same way it's done for the realtime directory.
+And is the /dev/rtc0 available on older distributions?
 
-Does following work for cross-compilation?
-
-1. Remove the configure from the Makefile
-2. Add AC_CONFIG_SUBDIRS([utils/ffsb-6.0-rc2]) into the configure.ac
-3. Regenerate top level configure by make autotools
-4. ./configure && make
+If not we should change the test to try both /dev/rtc and /dev/rtc0
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
