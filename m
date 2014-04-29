@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WczmE-0006FW-74
-	for ltp-list@lists.sourceforge.net; Wed, 23 Apr 2014 16:12:02 +0000
-Date: Wed, 23 Apr 2014 18:11:11 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WfAch-0005xw-U7
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 16:11:11 +0000
+Date: Tue, 29 Apr 2014 18:10:16 +0200
 From: chrubis@suse.cz
-Message-ID: <20140423161110.GC16286@rei.suse.cz>
-References: <1395757480-27424-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1395757480-27424-9-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20140429161016.GF12523@rei>
+References: <1395991214.5017.2.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1395757480-27424-9-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V2 08/14] rpc-tirpc: implemented a wrapper
+In-Reply-To: <1395991214.5017.2.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] read/read02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,120 +24,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> +RHOST=${RHOST:-`hostname`}
+> -#ifndef UCLINUX
+> -	    /* Skip since uClinux does not implement memory protection */
+> -	    /* the buffer is invalid - EFAULT */
+> -	{
+> -	&fd3, (void *)-1, EFAULT}
+> -#endif
+> +	{&badfd, buf, EBADF},
+> +	{&fd2, buf, EISDIR},
+> +	{&fd3, (void *)-1, EFAULT},
+>  };
 
-So the test defaults to local machine if RHOST is not set, but still
-needs rsh installed to run the testcases.
+Removing the ifdefs breaks the testcases on uClinux, please keep them
+there.
 
-Can we do it without the need for rsh in this case?
-
-> +SERVER=""
-> +CLIENT=""
-> +CLIENT_EXTRA_OPTS=""
-> +CLEANER=""
-> +PROGNUMNOSVC=536875000
-
-What is this magic constant?
-
-> +SERVERTIMEOUT=1
+> -#if !defined(UCLINUX)
+> -	bad_addr = mmap(0, 1, PROT_NONE,
+> -			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+> -	if (bad_addr == MAP_FAILED) {
+> -		tst_brkm(TBROK, cleanup, "mmap failed");
 > +
-> +cleanup()
-> +{
-> +	if [ ! -z "$SERVER" ]; then
+> +	TEST_ERROR_LOG(TEST_ERRNO);
+> +
+> +	if (TEST_ERRNO == test->exp_error) {
+> +		tst_resm(TPASS | TTERRNO, "expected failure - errno = %d : %s",
+> +			 TEST_ERRNO, strerror(TEST_ERRNO));
+> +	} else {
+> +		tst_resm(TFAIL | TTERRNO,
+> +			 "unexpected error - %d : %s - expected %d",
+> +			 TEST_ERRNO, strerror(TEST_ERRNO), test->exp_error);
+>  	}
+> -	TC[2].buf = bad_addr;
+> -#endif
 
-if [ -n "$SERVER" ] ?
+And removing the mmap() possibly breaks the testcases on platforms where
+there is something mapped on address (void*)-1. Looking at the git log,
+this may be case for some 64 bit machines (at least this is what the
+patch from 2002 says).
 
-> +		rsh -n "$RHOST" "killall -9 $SERVER"
-> +		rsh -n "$RHOST" "$CLEANER $PROGNUMNOSVC"
-> +	fi
-> +}
-> +
-> +usage()
-> +{
-> +	echo "USAGE: $0 [-s sprog] -c clprog [ -e extra ]"
-> +	echo ""
-> +	echo "sprog   - server program binary"
-> +	echo "clprog  - client program binary"
-> +	echo "extra   - extra client options"
-> +	echo ""
-> +	echo "This scripts connects to the RHOST host by rsh and starts"
-> +	echo "sprog there. After that it executes clprog passing it the"
-> +	echo "RHOST value."
-> +	echo "After the test completes, this script kills sprog on RHOST"
-> +	echo "and performs a cleaning operation."
-> +	echo ""
-> +	echo "If RHOST is not set, the local host is used."
-> +
-> +	exit 1
-> +}
-> +
-> +while getopts s:c:e:h arg; do
-> +	case $arg in
-> +		s) SERVER="$LTPROOT/testcases/bin/$OPTARG" ;;
-> +		c) CLIENT="$OPTARG" ;;
-> +		e) CLIENT_EXTRA_OPTS="$OPTARG" ;;
-> +		h) usage ;;
-> +	esac
-> +done
-> +
-> +if [ ! -z "$SERVER" ]; then
-> +	if `echo "$SERVER" | grep -e '^tirpc'`; then
-> +		CLEANER="$LTPROOT/testcases/bin/tirpc_cleaner"
-> +	else
-> +		CLEANER="$LTPROOT/testcases/bin/rpc_cleaner"
-> +	fi
-> +fi
+Given that we have quite a lot of testcases that passes addresses that
+are expected to generate EFAULT to various syscalls we should unify the
+way these are generated.
 
-This is a bit hacky, but I cannot think of easy solution.
-
-We can pass the cleaner to this wrapper which would be cleaner solution
-but would require changing all the runtest records.
-
-> +if [ -z "$CLIENT" ]; then
-> +	echo "client program not set"
-> +	echo ""
-> +	usage
-> +fi
-> +
-> +TCID="$CLIENT"
-> +TST_TOTAL=1
-> +TST_COUNT=1
-> +. test.sh
-> +TST_CLEANUP=cleanup
-> +
-> +if [ ! -z "$SERVER" ]; then
-> +	rsh -n "$RHOST" "$SERVER $PROGNUMNOSVC" &
-> +	sleep "$SERVERTIMEOUT"
-
-This is not really timeout, but rather startup sleep.
-
-> +fi
-> +
-> +"$CLIENT" "$RHOST" "$PROGNUMNOSVC" $CLIENT_EXTRA_OPTS
-> +ret=$?
-> +
-> +if [ "$ret" -eq 0 ]; then
-> +	tst_resm TPASS "Test passed"
-> +else
-> +	tst_resm TFAIL "Test failed"
-> +fi
-> +
-> +tst_exit
+I would go for creating tst_bad_addr() function that would replace all
+the adhoc (and posibly wrong) definitions. I will look into that asap.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
