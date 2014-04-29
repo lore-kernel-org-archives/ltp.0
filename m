@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <naresh.kamboju@linaro.org>) id 1WW1rT-0007Cu-8S
-	for ltp-list@lists.sourceforge.net; Fri, 04 Apr 2014 11:00:39 +0000
-Received: from mail-yk0-f178.google.com ([209.85.160.178])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WW1rR-0004CR-J4
-	for ltp-list@lists.sourceforge.net; Fri, 04 Apr 2014 11:00:39 +0000
-Received: by mail-yk0-f178.google.com with SMTP id 79so2719729ykr.37
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 04 Apr 2014 04:00:32 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Wf409-0006BN-H5
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:06:57 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wf408-0003cH-6F
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:06:57 +0000
+Message-ID: <535F6B2C.10008@cn.fujitsu.com>
+Date: Tue, 29 Apr 2014 17:04:44 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHTX3dLrfW_Hbqx_-vEfcHGCh7c4n=Hs1OATfvjJ9UEaxJTCaQ@mail.gmail.com>
-References: <CA+G9fYuT4TSs=3j6K9zztsTgFNVp2YG6JT-2Q_L==1P5G+SBew@mail.gmail.com>
-	<52FDE52A.4070002@linux.vnet.ibm.com>
-	<CA+G9fYv9+Fhyz=nVZQZXxLU0YMTJadfr1XVVVb9P=inEfUaDuA@mail.gmail.com>
-	<CAHTX3dLrfW_Hbqx_-vEfcHGCh7c4n=Hs1OATfvjJ9UEaxJTCaQ@mail.gmail.com>
-Date: Fri, 4 Apr 2014 16:30:31 +0530
-Message-ID: <CA+G9fYtFOPf6MYBKiOyHwSwZx5bHZWt3=Hzwsjrh5pvSarT+fw@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [LTP] How to get the Linux kernel coverage data on ARM arch
- when I run LTP test?
+References: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
+In-Reply-To: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
+Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped after
+ kernel 2.6.25
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,64 +25,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Michal Simek <monstr@monstr.eu>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>, Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Deepak Saxena <dsaxena@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, fhrbata@redhat.com, Arnd Bergmann <arnd.bergmann@linaro.org>, Mark Brown <mark.brown@linaro.org>, Milosz Wasilewski <milosz.wasilewski@linaro.org>
+To: shuang.qiu@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
-On 3 March 2014 20:51, Michal Simek <monstr@monstr.eu> wrote:
-> HI,
->
->
-> 2014-02-18 15:30 GMT+01:00 Naresh Kamboju <naresh.kamboju@linaro.org>:
->
->> On 14 February 2014 15:13, Peter Oberparleiter
->> <oberpar@linux.vnet.ibm.com> wrote:
->> > On 14.02.2014 10:02, Naresh Kamboju wrote:
->> >> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01# gcov
->> >> kernel/gcov/base.c -o
->> >>  /sys/kernel/debug/gcov/tmp/linux-linaro-3.13-2014.01/kernel/gcov/
->> >> File 'kernel/gcov/base.c'
->> >> Lines executed:43.18% of 44
->> >> Creating 'base.c.gcov'
->> >>
->> >> root@linaro-developer:/tmp/linux-linaro-3.13-2014.01#
->> >>
->> >> The above experiment gives coverage of a single file base.c when i run
->> >> gcov manually.
->> >> Is there any way to get Linux kernel coverage of all files after
->> >> running LTP test cases ?
->> >
->> > 1. Reset coverage data: lcov -z
->> > 2. Run LTP (or any other test case)
->> > 3. Capture coverage data: lcov -c -o coverage.info
->> > 4. Generate HTML output: genhtml coverage.info -o out
->> > 5. View HTML output: <browser> out/index.html
->>
->> It is working !!!
->> LTP executed on linux-linaro build on vexpress-tc2 target.
->> Please find results obtained
->> http://people.linaro.org/~naresh.kamboju/linux-linaro-coverage-by-ltp/
->>
->> The plan is to run all linaro test suite and to get coverage date.
->
->
-> Have you already run it? Are these test cases available?
-
-
-I have tested LTP on vexpress-tc2. I did not try all test suites.
-We ( In Linaro) Linaro Test Suites is a package that contains test
-suites that can be run in LAVA.
-http://releases.linaro.org/14.03/components/platform/linaro-test-suites
-
->
-> Thanks,
-> Michal
->
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksCgpPbiAwNC8yOS8yMDE0IDA0OjQ0IFBNLCBzaHVhbmcucWl1QG9yYWNsZS5jb20gd3JvdGU6
+Cj4gRnJvbTogU2h1YW5nIFFpdSA8c2h1YW5nLnFpdUBvcmFjbGUuY29tPgo+Cj4gQWNjb3JkaW5n
+IHRvIENMT05FIG1hbnVhbCBwYWdlICJGcm9tIExpbnV4IDIuNi4yNSB0aGlzIGZsYWcgaXMKPiBk
+ZXByZWNhdGVkLllvdSBwcm9iYWJseSBuZXZlciB3YW50ZWQgdG8gdXNlIGl0LCB5b3UgY2VydGFp
+bmx5IHNob3VsZG7igJl0Cj4gYmUgdXNpbmcgaXQsICBhbmQgIHNvb24gIGl0ICB3aWxsICBnbyBh
+d2F5Iixza2lwIHRlc3RfY2xvbmVfc3RvcHBlZAo+IGFmdGVyIGtlcm5lbCAyLjYuMjUuCj4KPiBT
+aWduZWQtb2ZmLWJ5OiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNsZS5jb20+Cj4gLS0tCj4g
+IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUvY2xvbmUwOC5jIHwgICAgOSArKysrKysr
+KysKPiAgMSBmaWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCj4K
+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYwo+IGluZGV4IDE0ZWJm
+NjAuLjYxMDk4NmQgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9u
+ZS9jbG9uZTA4LmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25l
+MDguYwo+IEBAIC04NCwxNSArODQsMjQgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4g
+IHsKPiAgCWNoYXIgKm1zZzsKPiAgCWludCBpLCBsYzsKPiArCWludCBjbG9uZV9zdG9wcGVkID0g
+MDsKPiAgCj4gIAltc2cgPSBwYXJzZV9vcHRzKGFjLCBhdiwgTlVMTCwgTlVMTCk7Cj4gIAlpZiAo
+bXNnICE9IE5VTEwpCj4gIAkJdHN0X2Jya20oVEJST0ssIE5VTEwsICJPUFRJT04gUEFSU0lORyBF
+UlJPUiAtICVzIiwgbXNnKTsKPiAgCj4gIAlzZXR1cCgpOwo+ICsKPiArI2lmZGVmIENMT05FX1NU
+T1BQRUQKPiArCWlmICh0c3Rfa3ZlcmNtcCgyLCA2LCAyNSkgPiAwKQo+ICsJCWNsb25lX3N0b3Bw
+ZWQgPTE7Cj4gKyNlbmRpZgo+ICsJCQo+ICAJZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhsYyk7
+IGxjKyspIHsKPiAgCQl0c3RfY291bnQgPSAwOwo+ICAJCWZvciAoaSA9IDA7IGkgPCBUU1RfVE9U
+QUw7IGkrKykgewo+ICsJCQlpZiAoY2xvbmVfc3RvcHBlZCA9PSAxICYmIGkgPT0zKQo+ICsJCQkJ
+Y29udGludWU7Cj4gIAkJCXRzdF9yZXNtKFRJTkZPLCAicnVubmluZyAlcyIsIHRlc3RfY2FzZXNb
+aV0ubmFtZSk7Cj4gIAkJCXRlc3RfY2FzZXNbaV0udGVzdGZ1bmMoaSk7Cj4gIAkJfQpJIHRoaW5r
+IHlvdSBzaG91bGQgZG8gdGhlIGtlcm5lbCB2ZXJzaW9uIGNvbXBhcmlzb24gaW4gdGVzdF9jbG9u
+ZV9zdG9wcGVkKCksIGFuZCBpZgprZXJuZWwgaXMgYWZ0ZXIgMi42LjI1LCB5b3UgbWF5IHByaW50
+IGEgVENPTkYgd2l0aCB0c3RfcmVzbSgpIGFuZCByZXR1cm4uCgpIZXJlIHlvdSB1c2UgImkgPT0g
+MyIsIGJ1dCBpZiBvdGhlciBlbGVtZW50cyBhcmUgYWRkZWQgaW4gc3RydWN0IHRlc3RfY2FzZSBh
+cnJ5LAp0aGUgaW5kZXggZm9yIHRlc3RfY2xvbmVfc3RvcHBlZCBtYXkgY2hhbmdlLgoKUmVnYXJk
+cywKWGlhb2d1YW5nIFdhbmcKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIkFjY2VsZXJhdGUgRGV2
+IEN5Y2xlcyB3aXRoIEF1dG9tYXRlZCBDcm9zcy1Ccm93c2VyIFRlc3RpbmcgLSBGb3IgRlJFRQpJ
+bnN0YW50bHkgcnVuIHlvdXIgU2VsZW5pdW0gdGVzdHMgYWNyb3NzIDMwMCsgYnJvd3Nlci9PUyBj
+b21ib3MuICBHZXQgCnVucGFyYWxsZWxlZCBzY2FsYWJpbGl0eSBmcm9tIHRoZSBiZXN0IFNlbGVu
+aXVtIHRlc3RpbmcgcGxhdGZvcm0gYXZhaWxhYmxlLgpTaW1wbGUgdG8gdXNlLiBOb3RoaW5nIHRv
+IGluc3RhbGwuIEdldCBzdGFydGVkIG5vdyBmb3IgZnJlZS4iCmh0dHA6Ly9wLnNmLm5ldC9zZnUv
+U2F1Y2VMYWJzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Ckx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
+cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
