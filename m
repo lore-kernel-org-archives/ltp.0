@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WXQDT-0001Wp-TM
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 07:13:07 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WXQDS-0007qT-NZ
-	for ltp-list@lists.sourceforge.net; Tue, 08 Apr 2014 07:13:07 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s387D0A2016383
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Apr 2014 07:13:00 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s387CxVZ007337
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Apr 2014 07:13:00 GMT
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s387CxJe022952
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Apr 2014 07:12:59 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue,  8 Apr 2014 11:12:54 +0400
-Message-Id: <1396941174-25187-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <5343A0AC.6010803@oracle.com>
-References: <5343A0AC.6010803@oracle.com>
-Subject: [LTP] [PATCH] rpc01: moved the library into a separate directory
+	(envelope-from <jstancek@redhat.com>) id 1Wf4Hw-0006L0-EU
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:25:20 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wf4Hu-0004PA-UB
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:25:20 +0000
+Date: Tue, 29 Apr 2014 05:25:11 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <360124567.11750981.1398763511239.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
+References: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped
+	after	kernel 2.6.25
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,303 +25,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: shuang qiu <shuang.qiu@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Cyril Hrubis noticed that including both
-  * lib.mk and
-  * generic_trunk_target.mk
-in one Makefile results in a situation when MAKE_TARGETS are installed twice,
-into /testcases/bin and /lib.
-
-Therefore we are moving the library into a separate directory.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/network/rpc/basic_tests/rpc01/Makefile   |   22 +++++++--
- .../network/rpc/basic_tests/rpc01/lib/Makefile     |   25 ++++++++++
- .../network/rpc/basic_tests/rpc01/lib/librpc01.c   |   49 ++++++++++++++++++++
- .../network/rpc/basic_tests/rpc01/lib/librpc01.h   |   34 ++++++++++++++
- testcases/network/rpc/basic_tests/rpc01/librpc01.c |   49 --------------------
- testcases/network/rpc/basic_tests/rpc01/librpc01.h |   34 --------------
- 6 files changed, 125 insertions(+), 88 deletions(-)
- create mode 100644 testcases/network/rpc/basic_tests/rpc01/lib/Makefile
- create mode 100644 testcases/network/rpc/basic_tests/rpc01/lib/librpc01.c
- create mode 100644 testcases/network/rpc/basic_tests/rpc01/lib/librpc01.h
- delete mode 100644 testcases/network/rpc/basic_tests/rpc01/librpc01.c
- delete mode 100644 testcases/network/rpc/basic_tests/rpc01/librpc01.h
-
-diff --git a/testcases/network/rpc/basic_tests/rpc01/Makefile b/testcases/network/rpc/basic_tests/rpc01/Makefile
-index 7815cbb..af945bc 100644
---- a/testcases/network/rpc/basic_tests/rpc01/Makefile
-+++ b/testcases/network/rpc/basic_tests/rpc01/Makefile
-@@ -30,13 +30,25 @@ CPPFLAGS		+= -Wno-error
- INSTALL_TARGETS		:= rpc01
- SUBDIRS			:= datafiles
- 
--LIBSRCS			:= $(abs_srcdir)/librpc01.c
--INTERNAL_LIB		:= librpc01.a
--LDFLAGS			+= -L$(abs_builddir)
-+CPPFLAGS		+= -I$(abs_srcdir)/lib
-+LDFLAGS			+= -L$(abs_builddir)/lib
- LDLIBS			+= -lrpc01
- 
-+LIBDIR			:= lib
-+LIB			:= $(LIBDIR)/librpc01.a
-+
-+$(LIBDIR):
-+	mkdir -p "$@"
-+
-+$(LIB): $(LIBDIR)
-+	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-+
-+trunk-clean:: | lib-clean
-+
-+lib-clean:: $(LIBDIR)
-+	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-+
- MAKE_TARGETS		:= rpc1 rpc_server
--$(MAKE_TARGETS): $(INTERNAL_LIB)
-+MAKE_DEPS		:= $(LIB)
- 
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
--include $(top_srcdir)/include/mk/lib.mk
-diff --git a/testcases/network/rpc/basic_tests/rpc01/lib/Makefile b/testcases/network/rpc/basic_tests/rpc01/lib/Makefile
-new file mode 100644
-index 0000000..387b5dc
---- /dev/null
-+++ b/testcases/network/rpc/basic_tests/rpc01/lib/Makefile
-@@ -0,0 +1,25 @@
-+#
-+#    Copyright (c) 2014 Linux Test Project.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+
-+top_srcdir		?= ../../../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INTERNAL_LIB		:= librpc01.a
-+
-+include $(top_srcdir)/include/mk/lib.mk
-diff --git a/testcases/network/rpc/basic_tests/rpc01/lib/librpc01.c b/testcases/network/rpc/basic_tests/rpc01/lib/librpc01.c
-new file mode 100644
-index 0000000..d2810d8
---- /dev/null
-+++ b/testcases/network/rpc/basic_tests/rpc01/lib/librpc01.c
-@@ -0,0 +1,49 @@
-+/*
-+ * Copyright (c) 2013 Linux Test Project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include <rpc/xdr.h>
-+#include "librpc01.h"
-+
-+bool_t xdr_receive_data(XDR *xdrs, struct data **buffer)
-+{
-+	struct data *bp;
-+	int i, rc;
-+	char *p;
-+
-+	bp = *buffer = (struct data *)malloc(sizeof(struct data));
-+	rc = xdr_long(xdrs, &(bp->address));
-+	rc = rc && xdr_long(xdrs, &bp->request_id);
-+	rc = rc && xdr_long(xdrs, &bp->data_length);
-+	p = (*buffer)->data = malloc(bp->data_length);
-+	for (i = 0; rc && i < bp->data_length; p++, i++)
-+		rc = xdr_char(xdrs, p);
-+	return rc;
-+}
-+
-+bool_t xdr_send_data(XDR *xdrs, struct data *buffer)
-+{
-+	int i, rc;
-+	char *p;
-+
-+	rc = xdr_long(xdrs, &buffer->address);
-+	rc = rc && xdr_long(xdrs, &buffer->request_id);
-+	rc = rc && xdr_long(xdrs, &buffer->data_length);
-+	for (i = 0, p = buffer->data; rc && i < buffer->data_length; i++, p++)
-+		rc = xdr_char(xdrs, p);
-+	return rc;
-+}
-diff --git a/testcases/network/rpc/basic_tests/rpc01/lib/librpc01.h b/testcases/network/rpc/basic_tests/rpc01/lib/librpc01.h
-new file mode 100644
-index 0000000..0fa7969
---- /dev/null
-+++ b/testcases/network/rpc/basic_tests/rpc01/lib/librpc01.h
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (c) 2013 Linux Test Project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#ifndef __LIBRPC_H__
-+#define __LIBRPC_H__
-+
-+#include <rpc/xdr.h>
-+
-+struct data {
-+	long address;
-+	long request_id;
-+	long data_length;
-+	char *data;
-+};
-+
-+bool_t xdr_receive_data(XDR *xdrs, struct data **buffer);
-+bool_t xdr_send_data(XDR *xdrs, struct data *buffer);
-+
-+#endif /* __LIBRPC_H__ */
-diff --git a/testcases/network/rpc/basic_tests/rpc01/librpc01.c b/testcases/network/rpc/basic_tests/rpc01/librpc01.c
-deleted file mode 100644
-index d2810d8..0000000
---- a/testcases/network/rpc/basic_tests/rpc01/librpc01.c
-+++ /dev/null
-@@ -1,49 +0,0 @@
--/*
-- * Copyright (c) 2013 Linux Test Project.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-- */
--
--#include <rpc/xdr.h>
--#include "librpc01.h"
--
--bool_t xdr_receive_data(XDR *xdrs, struct data **buffer)
--{
--	struct data *bp;
--	int i, rc;
--	char *p;
--
--	bp = *buffer = (struct data *)malloc(sizeof(struct data));
--	rc = xdr_long(xdrs, &(bp->address));
--	rc = rc && xdr_long(xdrs, &bp->request_id);
--	rc = rc && xdr_long(xdrs, &bp->data_length);
--	p = (*buffer)->data = malloc(bp->data_length);
--	for (i = 0; rc && i < bp->data_length; p++, i++)
--		rc = xdr_char(xdrs, p);
--	return rc;
--}
--
--bool_t xdr_send_data(XDR *xdrs, struct data *buffer)
--{
--	int i, rc;
--	char *p;
--
--	rc = xdr_long(xdrs, &buffer->address);
--	rc = rc && xdr_long(xdrs, &buffer->request_id);
--	rc = rc && xdr_long(xdrs, &buffer->data_length);
--	for (i = 0, p = buffer->data; rc && i < buffer->data_length; i++, p++)
--		rc = xdr_char(xdrs, p);
--	return rc;
--}
-diff --git a/testcases/network/rpc/basic_tests/rpc01/librpc01.h b/testcases/network/rpc/basic_tests/rpc01/librpc01.h
-deleted file mode 100644
-index 0fa7969..0000000
---- a/testcases/network/rpc/basic_tests/rpc01/librpc01.h
-+++ /dev/null
-@@ -1,34 +0,0 @@
--/*
-- * Copyright (c) 2013 Linux Test Project.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-- */
--
--#ifndef __LIBRPC_H__
--#define __LIBRPC_H__
--
--#include <rpc/xdr.h>
--
--struct data {
--	long address;
--	long request_id;
--	long data_length;
--	char *data;
--};
--
--bool_t xdr_receive_data(XDR *xdrs, struct data **buffer);
--bool_t xdr_send_data(XDR *xdrs, struct data *buffer);
--
--#endif /* __LIBRPC_H__ */
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAic2h1YW5nIHFpdSIgPHNo
+dWFuZy5xaXVAb3JhY2xlLmNvbT4KPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cj4gU2VudDogVHVlc2RheSwgMjkgQXByaWwsIDIwMTQgMTA6NDQ6MjYgQU0KPiBTdWJqZWN0OiBb
+TFRQXSBbUEFUQ0hdIHN5c2NhbGxzL2Nsb25lMDg6IFNraXAgdGVzdF9jbG9uZV9zdG9wcGVkIGFm
+dGVyCWtlcm5lbCAyLjYuMjUKPiAKPiBGcm9tOiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNs
+ZS5jb20+Cj4gCj4gQWNjb3JkaW5nIHRvIENMT05FIG1hbnVhbCBwYWdlICJGcm9tIExpbnV4IDIu
+Ni4yNSB0aGlzIGZsYWcgaXMKPiBkZXByZWNhdGVkLllvdSBwcm9iYWJseSBuZXZlciB3YW50ZWQg
+dG8gdXNlIGl0LCB5b3UgY2VydGFpbmx5IHNob3VsZG7igJl0Cj4gYmUgdXNpbmcgaXQsICBhbmQg
+IHNvb24gIGl0ICB3aWxsICBnbyBhd2F5Iixza2lwIHRlc3RfY2xvbmVfc3RvcHBlZAo+IGFmdGVy
+IGtlcm5lbCAyLjYuMjUuCgpIaSwKCiJUaGlzIGZsYWcgd2FzIGRlcHJlY2F0ZWQgZnJvbSBMaW51
+eCAyLjYuMjUgb253YXJkLCBhbmQgd2FzIHJlbW92ZWQgYWx0b2dldGhlciBpbiBMaW51eCAyLjYu
+MzguIgoKQXMgSSB1bmRlcnN0YW5kLCBtYXJraW5nIGl0IGFzIGRlcHJlY2F0ZWQgZGlkbid0IHBy
+ZXZlbnQgYW55b25lIGZyb20gdXNpbmcgaXQuClNvLCBzaG91bGRuJ3QgdGhlIHRlc3Qgc3RpbGwg
+YmUgdmFsaWQgdXAgdG8gMi42LjM4LCB3aGVuIGl0IHdhcyBmaW5hbGx5IHJlbW92ZWQ/Cgo+IAo+
+IFNpZ25lZC1vZmYtYnk6IFNodWFuZyBRaXUgPHNodWFuZy5xaXVAb3JhY2xlLmNvbT4KPiAtLS0K
+PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMgfCAgICA5ICsrKysr
+KysrKwo+ICAxIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkK
+PiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4
+LmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUvY2xvbmUwOC5jCj4gaW5kZXgg
+MTRlYmY2MC4uNjEwOTg2ZCAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2Nsb25lL2Nsb25lMDguYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUv
+Y2xvbmUwOC5jCj4gQEAgLTg0LDE1ICs4NCwyNCBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIgKiph
+dikKPiAgewo+ICAJY2hhciAqbXNnOwo+ICAJaW50IGksIGxjOwo+ICsJaW50IGNsb25lX3N0b3Bw
+ZWQgPSAwOwo+ICAKPiAgCW1zZyA9IHBhcnNlX29wdHMoYWMsIGF2LCBOVUxMLCBOVUxMKTsKPiAg
+CWlmIChtc2cgIT0gTlVMTCkKPiAgCQl0c3RfYnJrbShUQlJPSywgTlVMTCwgIk9QVElPTiBQQVJT
+SU5HIEVSUk9SIC0gJXMiLCBtc2cpOwo+ICAKPiAgCXNldHVwKCk7Cj4gKwo+ICsjaWZkZWYgQ0xP
+TkVfU1RPUFBFRAo+ICsJaWYgKHRzdF9rdmVyY21wKDIsIDYsIDI1KSA+IDApCj4gKwkJY2xvbmVf
+c3RvcHBlZCA9MTsKPiArI2VuZGlmCj4gKwo+ICAJZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhs
+Yyk7IGxjKyspIHsKPiAgCQl0c3RfY291bnQgPSAwOwo+ICAJCWZvciAoaSA9IDA7IGkgPCBUU1Rf
+VE9UQUw7IGkrKykgewo+ICsJCQlpZiAoY2xvbmVfc3RvcHBlZCA9PSAxICYmIGkgPT0zKQo+ICsJ
+CQkJY29udGludWU7CgpJJ2Qgc3VnZ2VzdCB0byBwdXQgdGhlIGNoZWNrIGRpcmVjdGx5IHRvIHRl
+c3RfY2xvbmVfc3RvcHBlZCgpCmFuZCB5b3UgY2FuIGF2b2lkIHVzaW5nIGNoZWNrcyB0aGF0IGRl
+cGVuZCBvbiBvcmRlciBvZiB0ZXN0Y2FzZXM6CgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Ns
+b25lL2Nsb25lMDguYwppbmRleCAxNGViZjYwLi45NTE4MzgyIDEwMDY0NAotLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYworKysgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYwpAQCAtMjM4LDYgKzIzOCwxMSBAQCBzdGF0aWMgdm9p
+ZCB0ZXN0X2Nsb25lX3N0b3BwZWQoaW50IHQpCiAgICAgICAgaW50IGZsYWc7CiAgICAgICAgcGlk
+X3QgY2hpbGQ7CiAKKyAgICAgICBpZiAodHN0X2t2ZXJjbXAoMiwgNiwgMzgpID49IDApIHsKKyAg
+ICAgICAgICAgICAgIHRzdF9yZXNtKFRJTkZPLCAiQ0xPTkVfU1RPUFBFRCBza2lwcGVkIGZvciBr
+ZXJuZWxzID49IDIuNi4zOCIpOworICAgICAgICAgICAgICAgcmV0dXJuOworICAgICAgIH0KKwog
+ICAgICAgIHN0b3BwZWRfZmxhZyA9IDA7CiAgICAgICAgY2hpbGQgPSBjbG9uZV9jaGlsZCgmdGVz
+dF9jYXNlc1t0XSwgMSk7CgpSZWdhcmRzLApKYW4KCj4gIAkJCXRzdF9yZXNtKFRJTkZPLCAicnVu
+bmluZyAlcyIsIHRlc3RfY2FzZXNbaV0ubmFtZSk7Cj4gIAkJCXRlc3RfY2FzZXNbaV0udGVzdGZ1
+bmMoaSk7Cj4gIAkJfQo+IC0tCj4gMS43LjcKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+PiAiQWNjZWxlcmF0ZSBEZXYgQ3ljbGVzIHdpdGggQXV0b21hdGVkIENyb3NzLUJyb3dzZXIgVGVz
+dGluZyAtIEZvciBGUkVFCj4gSW5zdGFudGx5IHJ1biB5b3VyIFNlbGVuaXVtIHRlc3RzIGFjcm9z
+cyAzMDArIGJyb3dzZXIvT1MgY29tYm9zLiAgR2V0Cj4gdW5wYXJhbGxlbGVkIHNjYWxhYmlsaXR5
+IGZyb20gdGhlIGJlc3QgU2VsZW5pdW0gdGVzdGluZyBwbGF0Zm9ybSBhdmFpbGFibGUuCj4gU2lt
+cGxlIHRvIHVzZS4gTm90aGluZyB0byBpbnN0YWxsLiBHZXQgc3RhcnRlZCBub3cgZm9yIGZyZWUu
+Igo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvU2F1Y2VMYWJzCj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiJBY2Nl
+bGVyYXRlIERldiBDeWNsZXMgd2l0aCBBdXRvbWF0ZWQgQ3Jvc3MtQnJvd3NlciBUZXN0aW5nIC0g
+Rm9yIEZSRUUKSW5zdGFudGx5IHJ1biB5b3VyIFNlbGVuaXVtIHRlc3RzIGFjcm9zcyAzMDArIGJy
+b3dzZXIvT1MgY29tYm9zLiAgR2V0IAp1bnBhcmFsbGVsZWQgc2NhbGFiaWxpdHkgZnJvbSB0aGUg
+YmVzdCBTZWxlbml1bSB0ZXN0aW5nIHBsYXRmb3JtIGF2YWlsYWJsZS4KU2ltcGxlIHRvIHVzZS4g
+Tm90aGluZyB0byBpbnN0YWxsLiBHZXQgc3RhcnRlZCBub3cgZm9yIGZyZWUuIgpodHRwOi8vcC5z
+Zi5uZXQvc2Z1L1NhdWNlTGFicwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cg==
