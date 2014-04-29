@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WdHAO-0004oD-1j
-	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 10:46:08 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WdHAM-0001fr-C8
-	for ltp-list@lists.sourceforge.net; Thu, 24 Apr 2014 10:46:08 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3OAjvMX032525
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Apr 2014 18:45:59 +0800
-Message-ID: <1398336339.2318.5.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 24 Apr 2014 18:45:39 +0800
-In-Reply-To: <1398336249.2318.3.camel@G08JYZSD130126>
-References: <1398336249.2318.3.camel@G08JYZSD130126>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wf9yl-0005ya-GO
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 15:29:55 +0000
+Date: Tue, 29 Apr 2014 17:29:00 +0200
+From: chrubis@suse.cz
+Message-ID: <20140429152859.GD12523@rei>
+References: <1395930175-3138-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1395930175-3138-4-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/3] setegid/setegid02.c: add EPERM errno test
+Content-Disposition: inline
+In-Reply-To: <1395930175-3138-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V3 3/4] testscripts/isofs.sh: removed some
+ "unnecessary" steps
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,185 +26,157 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Add EPERM errno test for setegid(2).
+Hi!
+> I suppose that neither `ls -lR` nor `exportfs` has any direct
+> relationship to this test. Therefore I removed them to make the test
+> more silent.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- runtest/ltplite                               |  1 +
- runtest/stress.part3                          |  1 +
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/.gitignore          |  1 +
- testcases/kernel/syscalls/setegid/setegid02.c | 99 +++++++++++++++++++++++++++
- 5 files changed, 103 insertions(+)
- create mode 100644 testcases/kernel/syscalls/setegid/setegid02.c
+Giving it a second though it may. Because if you just mount and unmout
+the device the kernel code coverage is likely much smaller.
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index ebe171e..597304d 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -733,6 +733,7 @@ setgid02 setgid02
- setgid03 setgid03
- 
- setegid01 setegid01
-+setegid02 setegid02
- 
- setgroups01 setgroups01
- setgroups02 setgroups02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index b21e44b..c52755e 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -637,6 +637,7 @@ setgid02 setgid02
- setgid03 setgid03
- 
- setegid01 setegid01
-+setegid02 setegid02
- 
- setgroups01 setgroups01
- setgroups02 setgroups02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fb3e59f..75ff60b 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -974,6 +974,7 @@ setgid03 setgid03
- setgid03_16 setgid03_16
- 
- setegid01 setegid01
-+setegid02 setegid02
- 
- sgetmask01 sgetmask01
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5c7bac..4a7cbc7 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -756,6 +756,7 @@
- /setdomainname/setdomainname02
- /setdomainname/setdomainname03
- /setegid/setegid01
-+/setegid/setegid02
- /setfsgid/setfsgid01
- /setfsgid/setfsgid01_16
- /setfsgid/setfsgid02
-diff --git a/testcases/kernel/syscalls/setegid/setegid02.c b/testcases/kernel/syscalls/setegid/setegid02.c
-new file mode 100644
-index 0000000..08a287f
---- /dev/null
-+++ b/testcases/kernel/syscalls/setegid/setegid02.c
-@@ -0,0 +1,99 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+/*
-+ * DESCRIPTION
-+ *	The calling process is not privileged and euid is not appropriate,
-+ *	EPERM should return.
-+ */
-+
-+#include <errno.h>
-+#include <pwd.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+
-+char *TCID = "setegid02";
-+int TST_TOTAL = 1;
-+
-+static int exp_enos[] = { EPERM, 0 };
-+static void setup(void);
-+static void setegid_verify(void);
-+static void cleanup(void);
-+
-+static struct passwd *ltpuser;
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	char *msg;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		setegid_verify();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-+
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+
-+	TEST_EXP_ENOS(exp_enos);
-+}
-+
-+static void setegid_verify(void)
-+{
-+	TEST(setegid(ltpuser->pw_gid));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "setegid(%d) succeeded unexpectedly",
-+			 ltpuser->pw_gid);
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == EPERM) {
-+		tst_resm(TPASS | TTERRNO, "setegid failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "setegid failed unexpectedly; expected: %d - %s",
-+			 EPERM, strerror(EPERM));
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (seteuid(0) < 0)
-+		tst_resm(TWARN | TERRNO, "seteuid failed");
-+
-+	TEST_CLEANUP;
-+}
+What about we list all files on the device and redirect the output to
+/dev/null and check for the ls exit value?
+
+We may even run a find that cats all files into /dev/null or similar so
+we stress the filesystem code a bit.
+
+> But destroying of a loop device is an asynchronous operation
+> (see a1ecac3b0656a68259927c234e505804d33a7b83) and so on we
+> need to be sure that the device is destroyed before creating a new one.
+> 
+> To accomplish this I changed the test to use `losetup -f` and
+> `losetup -d` explicitly.
+> 
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  testscripts/isofs.sh |   52 +++++++++++++++++++++++++++++++------------------
+>  1 files changed, 33 insertions(+), 19 deletions(-)
+> 
+> diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+> index 2bb2555..294d6f0 100755
+> --- a/testscripts/isofs.sh
+> +++ b/testscripts/isofs.sh
+> @@ -1,6 +1,7 @@
+>  #!/bin/sh
+>  #
+>  # Copyright (c) International Business Machines  Corp., 2003
+> +# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+>  #
+>  # This program is free software; you can redistribute it and/or modify
+>  # it under the terms of the GNU General Public License as published by
+> @@ -29,6 +30,7 @@ TST_TOTAL=77
+>  . test.sh
+>  
+>  NO_CLEANUP=""
+> +IS_MOUNTED=""
+>  
+>  usage()
+>  {
+> @@ -41,7 +43,7 @@ cleanup()
+>  	if [ "$NO_CLEANUP" = "no" ]; then
+>  		tst_resm TINFO "Temporary directory $PWD was not removed"
+>  	else
+> -		tst_rmdir
+> +		[ "$IS_MOUNTED" != "yes" ] && tst_rmdir
+>  	fi
+>  }
+>  
+> @@ -98,7 +100,7 @@ for mkisofs_opt in \
+>  	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
+>  do
+>  	rm -f isofs.iso
+> -	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
+> +	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
+>  	if [ $? -eq 0 ]; then
+>  		tst_resm TPASS \
+>  			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
+> @@ -109,33 +111,45 @@ do
+>  	fi
+>  
+>  	for mount_opt in \
+> -		"loop" \
+> -		"loop,norock" \
+> -		"loop,nojoliet" \
+> -		"loop,block=512,unhide" \
+> -		"loop,block=1024,cruft" \
+> -		"loop,block=2048,nocompress" \
+> -		"loop,check=strict,map=off,gid=bin,uid=bin" \
+> -		"loop,check=strict,map=acorn,gid=bin,uid=bin" \
+> -		"loop,check=relaxed,map=normal" \
+> -		"loop,block=512,unhide,session=2"
+> -		# "loop,sbsector=32"
+> +		"ro" \
+> +		"norock" \
+> +		"nojoliet" \
+> +		"block=512,unhide" \
+> +		"block=1024,cruft" \
+> +		"block=2048,nocompress" \
+> +		"check=strict,map=off,gid=bin,uid=bin" \
+> +		"check=strict,map=acorn,gid=bin,uid=bin" \
+> +		"check=relaxed,map=normal" \
+> +		"block=512,unhide,session=2"
+> +		# "sbsector=32"
+>  	do
+> -		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
+> +		loop_dev=$(losetup --show -f isofs.iso)
+> +		if [ $? -ne 0 ]; then
+> +			tst_brkm TBROK "losetup failed"
+> +		fi
+> +
+> +		mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT
+>  		if [ $? -ne 0 ]; then
+>  			tst_resm TFAIL \
+> -				"mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT"
+> +				"mount -t iso9660 -o $mount_opt "$loop_dev" $MNT_POINT"
+>  			continue
+>  		fi
+> -
+> -		ls -lR $MNT_POINT
+> -		exportfs -i -o no_root_squash,rw *:$MNT_POINT
+> -		exportfs -u :$MNT_POINT
+> +		IS_MOUNTED="yes"
+>  
+>  		umount $MNT_POINT
+>  		if [ $? -ne 0 ]; then
+>  			tst_resm TFAIL "umount $MNT_POINT"
+>  		fi
+> +		IS_MOUNTED="no"
+
+Looking at this part of code, is there chance that we get to cleanup
+with IS_MOUNTED set to yes?
+
+> +
+> +		# Now tearing down the loopback device
+> +		while /bin/true; do
+
+Why the absolute path to true?
+
+And perhaps we should limit the number of tries to some arbitrary limit
+here 1000 or so.
+
+> +			out=$(LC_ALL=C losetup -d "$loop_dev" 2>&1)
+> +
+> +			if echo "$out" | grep -q -i "No such device"; then
+> +				break
+> +			fi
+> +		done
+>  
+>  		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
+>  	done
+
 -- 
-1.8.4.2
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
