@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WYYY9-0006lI-6g
-	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 10:19:09 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WYYXy-0005sx-EZ
-	for ltp-list@lists.sourceforge.net; Fri, 11 Apr 2014 10:19:09 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s3BAIaQ8022681
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Apr 2014 18:18:37 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Fri, 11 Apr 2014 18:16:41 +0800
-Message-ID: <1397211402-12361-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Wf2Vm-0006W4-BN
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 07:31:30 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Wf2Vl-0008Rg-Cg
+	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 07:31:30 +0000
+Message-ID: <535F553A.2070900@oracle.com>
+Date: Tue, 29 Apr 2014 11:31:06 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 1/2] lib/tst_fs_has_free.c: add tst_fs_has_free()
-	to determine filesystem's free space
+References: <1398687969-16853-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1398687969-16853-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] kernel/mem/lib/mem.c: make tests continue to
+ run even though KSM is not enabled
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,184 +29,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
 
-The existing lib/tst_cwd_has_free.c only determines the filesystem, which
-the current directory is in. And I think tst_cwd_has_free() is not entirely
-correct. See this code in tst_cwd_has_free():
-	return ((float)sf.f_bfree) / (1024 / sf.f_bsize) >=
-		 required_kib ? 1 : 0;
-if sf.f_bsize is greater than 1024, this code is wrong.
+Hi!
 
-I choose to remove tst_cwd_has_free.c and add lib/tst_fs_has_free.c.
-The prototype is below:
-	int tst_fs_has_free(void (*cleanup)(void), const char *path,
-			    int required_kib)
-User can specify the path to determine the corresponding filesystem.
+On 04/28/2014 04:26 PM, Xiaoguang Wang wrote:
+> When kernel KSM configuration is not enabled, we make testcases continue to run
+> instead of returning TCONF, e.g. oom01. And if KSM configuration is not enabled, in
+> the original code, "tst_brkm(TCONF, NULL, ...)" will be called, in this case, we
+> will forget to execute the restore operations defined in cleanup, which will forget
+> to restore the /proc/sys/vm/overcommit_memory to 0, and this will impact other test
+> cases in LTP, for example, fork14 in RHEL5 will succeed unexpectedly.
+>
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>   testcases/kernel/mem/lib/mem.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 188a5ef..b975c62 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -146,11 +146,13 @@ void testoom(int mempolicy, int lite)
+>   	tst_resm(TINFO, "start OOM testing for mlocked pages.");
+>   	oom(MLOCK, lite);
+>
+> -	if (access(PATH_KSM, F_OK) == -1)
+> -		tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+> -
+> -	tst_resm(TINFO, "start OOM testing for KSM pages.");
+> -	oom(KSM, lite);
+> +	if (access(PATH_KSM, F_OK) == -1) {
+> +		tst_resm(TINFO, "KSM configuration is not enabled, "
+> +			 "skip OOM test for KSM pags");
+> +	} else {
+> +		tst_resm(TINFO, "start OOM testing for KSM pages.");
+> +		oom(KSM, lite);
+> +	}
+>   }
+>
+>   /* KSM */
+>
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- include/test.h                                | 10 +++++--
- lib/tst_cwd_has_free.c                        | 22 ---------------
- lib/tst_fs_has_free.c                         | 40 +++++++++++++++++++++++++++
- testcases/kernel/syscalls/swapoff/swapoff01.c |  2 +-
- testcases/kernel/syscalls/swapoff/swapoff02.c |  2 +-
- testcases/kernel/syscalls/swapon/libswapon.c  |  2 +-
- 6 files changed, 51 insertions(+), 27 deletions(-)
- delete mode 100644 lib/tst_cwd_has_free.c
- create mode 100644 lib/tst_fs_has_free.c
+Took kernel 3.14.0, compiled without CONFIG_KSM set and booted with 
+'numa=fake=4' (I have a 4-core Intel desktop). All oom0* tests passed.
 
-diff --git a/include/test.h b/include/test.h
-index f5c602b..1a55449 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -39,6 +39,7 @@
- #include <unistd.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <stdint.h>
- 
- #include "compiler.h"
- 
-@@ -204,8 +205,13 @@ struct tst_kern_exv {
- 
- int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
- 
--/* lib/tst_cwd_has_free.c */
--int tst_cwd_has_free(int required_kib);
-+/* lib/tst_fs_has_free.c
-+ *
-+ * @path: path is the pathname of any file within the mounted file system
-+ * @required_kib: the required free space(count in KB)
-+ */
-+int tst_fs_has_free(void (*cleanup)(void), const char *path,
-+	uint64_t required_kib);
- 
- int tst_is_virt(int virt_type);
- 
-diff --git a/lib/tst_cwd_has_free.c b/lib/tst_cwd_has_free.c
-deleted file mode 100644
-index e44c31f..0000000
---- a/lib/tst_cwd_has_free.c
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/*
-- *    AUTHOR
-- *    	Ricky Ng-Adam <rngadam@yahoo.com>, 2005-01-01
-- *
-- *    DESCRIPTION
-- * 	Check if there is enough blocks to fill number of KiB specified
-- * 	If current directory has enough blocks, return 1
-- * 	If current directory has NOT enough blocks, return 0
-- *
-- *
-- */
--#include <sys/vfs.h>
--
--int tst_cwd_has_free(int required_kib)
--{
--	struct statfs sf;
--	statfs(".", &sf);
--
--	/* check that we have enough blocks to create swap file */
--	return ((float)sf.f_bfree) / (1024 / sf.f_bsize) >=
--	    required_kib ? 1 : 0;
--}
-diff --git a/lib/tst_fs_has_free.c b/lib/tst_fs_has_free.c
-new file mode 100644
-index 0000000..16169ba
---- /dev/null
-+++ b/lib/tst_fs_has_free.c
-@@ -0,0 +1,40 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ * 	Check if the mounted file system has enough free space,
-+ * 	if it is, tst_fs_has_free() returns 1, otherwise 0.
-+ */
-+
-+#include <stdint.h>	/* for uint64_t */
-+#include <sys/vfs.h>
-+#include "test.h"
-+
-+int tst_fs_has_free(void (*cleanup)(void), const char *path,
-+	uint64_t required_kib)
-+{
-+	struct statfs sf;
-+
-+	if (statfs(path, &sf)) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "tst_fs_has_free: failed to statfs(%s)", path);
-+	}
-+
-+	return ((uint64_t)sf.f_bfree * sf.f_bsize / 1024) >=
-+		required_kib ? 1 : 0;
-+}
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
-index b4d19de..8d1c435 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-@@ -99,7 +99,7 @@ static void setup(void)
- 	break;
- 	}
- 
--	if (!tst_cwd_has_free(65536)) {
-+	if (!tst_fs_has_free(NULL, ".", 65536)) {
- 		tst_brkm(TBROK, cleanup,
- 			 "Insufficient disk space to create swap file");
- 	}
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
-index 978dc01..fb1f6f8 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff02.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
-@@ -157,7 +157,7 @@ static void setup(void)
- 	break;
- 	}
- 
--	if (!tst_cwd_has_free(1)) {
-+	if (!tst_fs_has_free(NULL, ".", 1)) {
- 		tst_brkm(TBROK, cleanup,
- 			 "Insufficient disk space to create swap file");
- 	}
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
-index 8eca7dc..ffb23a8 100644
---- a/testcases/kernel/syscalls/swapon/libswapon.c
-+++ b/testcases/kernel/syscalls/swapon/libswapon.c
-@@ -27,7 +27,7 @@
-  */
- void make_swapfile(void (cleanup)(void), const char *swapfile)
- {
--	if (!tst_cwd_has_free(sysconf(_SC_PAGESIZE)*10)) {
-+	if (!tst_fs_has_free(NULL, ".", sysconf(_SC_PAGESIZE)*10)) {
- 		tst_brkm(TBROK, cleanup,
- 			"Insufficient disk space to create swap file");
- 	}
--- 
-1.8.2.1
-
+Acked-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
 ------------------------------------------------------------------------------
-Put Bad Developers to Shame
-Dominate Development with Jenkins Continuous Integration
-Continuously Automate Build, Test & Deployment 
-Start a new project now. Try Jenkins in the cloud.
-http://p.sf.net/sfu/13600_Cloudbees
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
