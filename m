@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WZdxn-0006ap-BB
-	for ltp-list@lists.sourceforge.net; Mon, 14 Apr 2014 10:18:07 +0000
-Date: Mon, 14 Apr 2014 12:17:21 +0200
-From: chrubis@suse.cz
-Message-ID: <20140414101720.GB24840@rei.suse.cz>
-References: <20140410180326.093f2749@mats-desktop> <20140410163245.GA28166@rei>
-	<20140411105953.02bcf46e@mats-desktop>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WfSxk-0008K6-RL
+	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 11:46:08 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WfSxh-00067t-H8
+	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 11:46:08 +0000
+Date: Wed, 30 Apr 2014 07:45:59 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2047274155.12547340.1398858359123.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1398840825-9252-1-git-send-email-shuang.qiu@oracle.com>
+References: <1398840825-9252-1-git-send-email-shuang.qiu@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20140411105953.02bcf46e@mats-desktop>
-Subject: Re: [LTP] ltplite test case crashes
+Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped from
+ kernel	2.6.38
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +28,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <mats.liljegren@enea.com>
+To: shuang qiu <shuang.qiu@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> This is most likely the case, since all files, including root file
-> system, are in RAM. ;-)
+
+
+
+
+----- Original Message -----
+> From: "shuang qiu" <shuang.qiu@oracle.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Wednesday, 30 April, 2014 8:53:45 AM
+> Subject: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped from kernel	2.6.38
 > 
-> I tried to use "-d <path>" and also used same <path> as current working
-> directory in order to force file creations there, but I got the same
-> error. Is "-d" the option to use to solve problems like this? Or are
-> there other techniques?
+> From: Shuang Qiu <shuang.qiu@oracle.com>
+> 
+> According to CLONE manual page "This flag was deprecated from Linux
+> 2.6.25 onward, and was removed altogether in Linux 2.6.38." skip
+> test_clone_stopped test from kernel 2.6.38.
+> 
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
 
-I've looked at the source code and the TMPDIR is not passed to growfiles
-in the runtest file nor is TMPDIR utilized in the growfiles sources so
-as far as I can see it seems defaults to current directory which should
-be /opt/ltp/....
+Pushed with small changes to commit message and whitespace fix for
+closing bracket.
 
-I would call this a bug.
+Thanks,
+Jan
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  testcases/kernel/syscalls/clone/clone08.c |    5 +++++
+>  1 files changed, 5 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/clone/clone08.c
+> b/testcases/kernel/syscalls/clone/clone08.c
+> index 14ebf60..6857ab1 100644
+> --- a/testcases/kernel/syscalls/clone/clone08.c
+> +++ b/testcases/kernel/syscalls/clone/clone08.c
+> @@ -238,6 +238,11 @@ static void test_clone_stopped(int t)
+>  	int flag;
+>  	pid_t child;
+>  
+> +	if (tst_kvercmp(2, 6, 38) >= 0) {
+> +		tst_resm(TINFO, "CLONE_STOPPED skipped for kernels >= 2.6.38");
+> +		return;
+> +		}
+> +
+>  	stopped_flag = 0;
+>  	child = clone_child(&test_cases[t], 1);
+>  
+> --
+> 1.7.7
+> 
+> 
+> ------------------------------------------------------------------------------
+> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+> Instantly run your Selenium tests across 300+ browser/OS combos.  Get
+> unparalleled scalability from the best Selenium testing platform available.
+> Simple to use. Nothing to install. Get started now for free."
+> http://p.sf.net/sfu/SauceLabs
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
