@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Wf409-0006BN-H5
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:06:57 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wf408-0003cH-6F
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 09:06:57 +0000
-Message-ID: <535F6B2C.10008@cn.fujitsu.com>
-Date: Tue, 29 Apr 2014 17:04:44 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
-In-Reply-To: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
-Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped after
- kernel 2.6.25
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1WfOP6-0007ga-Tv
+	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 06:54:04 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WfOP6-0003Ss-52
+	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 06:54:04 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s3U6rv9k021253
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 30 Apr 2014 06:53:58 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3U6ruMh029240
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 30 Apr 2014 06:53:57 GMT
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s3U6ru4J026771
+	for <ltp-list@lists.sourceforge.net>; Wed, 30 Apr 2014 06:53:56 GMT
+From: shuang.qiu@oracle.com
+Date: Wed, 30 Apr 2014 14:53:45 +0800
+Message-Id: <1398840825-9252-1-git-send-email-shuang.qiu@oracle.com>
+Subject: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped from kernel
+	2.6.38
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,48 +36,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang.qiu@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGksCgpPbiAwNC8yOS8yMDE0IDA0OjQ0IFBNLCBzaHVhbmcucWl1QG9yYWNsZS5jb20gd3JvdGU6
-Cj4gRnJvbTogU2h1YW5nIFFpdSA8c2h1YW5nLnFpdUBvcmFjbGUuY29tPgo+Cj4gQWNjb3JkaW5n
-IHRvIENMT05FIG1hbnVhbCBwYWdlICJGcm9tIExpbnV4IDIuNi4yNSB0aGlzIGZsYWcgaXMKPiBk
-ZXByZWNhdGVkLllvdSBwcm9iYWJseSBuZXZlciB3YW50ZWQgdG8gdXNlIGl0LCB5b3UgY2VydGFp
-bmx5IHNob3VsZG7igJl0Cj4gYmUgdXNpbmcgaXQsICBhbmQgIHNvb24gIGl0ICB3aWxsICBnbyBh
-d2F5Iixza2lwIHRlc3RfY2xvbmVfc3RvcHBlZAo+IGFmdGVyIGtlcm5lbCAyLjYuMjUuCj4KPiBT
-aWduZWQtb2ZmLWJ5OiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNsZS5jb20+Cj4gLS0tCj4g
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUvY2xvbmUwOC5jIHwgICAgOSArKysrKysr
-KysKPiAgMSBmaWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCj4K
-PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMg
-Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYwo+IGluZGV4IDE0ZWJm
-NjAuLjYxMDk4NmQgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9u
-ZS9jbG9uZTA4LmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25l
-MDguYwo+IEBAIC04NCwxNSArODQsMjQgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4g
-IHsKPiAgCWNoYXIgKm1zZzsKPiAgCWludCBpLCBsYzsKPiArCWludCBjbG9uZV9zdG9wcGVkID0g
-MDsKPiAgCj4gIAltc2cgPSBwYXJzZV9vcHRzKGFjLCBhdiwgTlVMTCwgTlVMTCk7Cj4gIAlpZiAo
-bXNnICE9IE5VTEwpCj4gIAkJdHN0X2Jya20oVEJST0ssIE5VTEwsICJPUFRJT04gUEFSU0lORyBF
-UlJPUiAtICVzIiwgbXNnKTsKPiAgCj4gIAlzZXR1cCgpOwo+ICsKPiArI2lmZGVmIENMT05FX1NU
-T1BQRUQKPiArCWlmICh0c3Rfa3ZlcmNtcCgyLCA2LCAyNSkgPiAwKQo+ICsJCWNsb25lX3N0b3Bw
-ZWQgPTE7Cj4gKyNlbmRpZgo+ICsJCQo+ICAJZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhsYyk7
-IGxjKyspIHsKPiAgCQl0c3RfY291bnQgPSAwOwo+ICAJCWZvciAoaSA9IDA7IGkgPCBUU1RfVE9U
-QUw7IGkrKykgewo+ICsJCQlpZiAoY2xvbmVfc3RvcHBlZCA9PSAxICYmIGkgPT0zKQo+ICsJCQkJ
-Y29udGludWU7Cj4gIAkJCXRzdF9yZXNtKFRJTkZPLCAicnVubmluZyAlcyIsIHRlc3RfY2FzZXNb
-aV0ubmFtZSk7Cj4gIAkJCXRlc3RfY2FzZXNbaV0udGVzdGZ1bmMoaSk7Cj4gIAkJfQpJIHRoaW5r
-IHlvdSBzaG91bGQgZG8gdGhlIGtlcm5lbCB2ZXJzaW9uIGNvbXBhcmlzb24gaW4gdGVzdF9jbG9u
-ZV9zdG9wcGVkKCksIGFuZCBpZgprZXJuZWwgaXMgYWZ0ZXIgMi42LjI1LCB5b3UgbWF5IHByaW50
-IGEgVENPTkYgd2l0aCB0c3RfcmVzbSgpIGFuZCByZXR1cm4uCgpIZXJlIHlvdSB1c2UgImkgPT0g
-MyIsIGJ1dCBpZiBvdGhlciBlbGVtZW50cyBhcmUgYWRkZWQgaW4gc3RydWN0IHRlc3RfY2FzZSBh
-cnJ5LAp0aGUgaW5kZXggZm9yIHRlc3RfY2xvbmVfc3RvcHBlZCBtYXkgY2hhbmdlLgoKUmVnYXJk
-cywKWGlhb2d1YW5nIFdhbmcKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIkFjY2VsZXJhdGUgRGV2
-IEN5Y2xlcyB3aXRoIEF1dG9tYXRlZCBDcm9zcy1Ccm93c2VyIFRlc3RpbmcgLSBGb3IgRlJFRQpJ
-bnN0YW50bHkgcnVuIHlvdXIgU2VsZW5pdW0gdGVzdHMgYWNyb3NzIDMwMCsgYnJvd3Nlci9PUyBj
-b21ib3MuICBHZXQgCnVucGFyYWxsZWxlZCBzY2FsYWJpbGl0eSBmcm9tIHRoZSBiZXN0IFNlbGVu
-aXVtIHRlc3RpbmcgcGxhdGZvcm0gYXZhaWxhYmxlLgpTaW1wbGUgdG8gdXNlLiBOb3RoaW5nIHRv
-IGluc3RhbGwuIEdldCBzdGFydGVkIG5vdyBmb3IgZnJlZS4iCmh0dHA6Ly9wLnNmLm5ldC9zZnUv
-U2F1Y2VMYWJzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Ckx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+From: Shuang Qiu <shuang.qiu@oracle.com>
+
+According to CLONE manual page "This flag was deprecated from Linux
+2.6.25 onward, and was removed altogether in Linux 2.6.38." skip
+test_clone_stopped test from kernel 2.6.38.
+
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ testcases/kernel/syscalls/clone/clone08.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
+index 14ebf60..6857ab1 100644
+--- a/testcases/kernel/syscalls/clone/clone08.c
++++ b/testcases/kernel/syscalls/clone/clone08.c
+@@ -238,6 +238,11 @@ static void test_clone_stopped(int t)
+ 	int flag;
+ 	pid_t child;
+ 
++	if (tst_kvercmp(2, 6, 38) >= 0) {
++		tst_resm(TINFO, "CLONE_STOPPED skipped for kernels >= 2.6.38");
++		return;
++		}
++
+ 	stopped_flag = 0;
+ 	child = clone_child(&test_cases[t], 1);
+ 
+-- 
+1.7.7
+
+
+------------------------------------------------------------------------------
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
