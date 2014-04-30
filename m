@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WcZKx-0006ex-CD
-	for ltp-list@lists.sourceforge.net; Tue, 22 Apr 2014 11:58:07 +0000
-Date: Tue, 22 Apr 2014 13:57:14 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WfWi0-0003OO-LR
+	for ltp-list@lists.sourceforge.net; Wed, 30 Apr 2014 15:46:08 +0000
+Date: Wed, 30 Apr 2014 17:45:12 +0200
 From: chrubis@suse.cz
-Message-ID: <20140422115713.GA3537@rei>
-References: <20140416190028.GA2093@ls3530.fritz.box>
-	<20140417165706.GA2833@rei> <5350E02B.7080104@gmx.de>
-	<20140418082553.GA3389@ls3530.fritz.box>
+Message-ID: <20140430154512.GC21327@rei>
+References: <5358EBCC.4070509@oracle.com>
+	<1398842111-29115-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140418082553.GA3389@ls3530.fritz.box>
-Subject: Re: [LTP] [PATCH] fix fanotify syscall check on compat kernel
+In-Reply-To: <1398842111-29115-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V3 08/14] rpc-tirpc: implemented a wrapper
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Helge Deller <deller@gmx.de>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Attached patch helps to find the reason when the fanotify03 testcase
-> fails. For the test to work correctly, the kernel option
-> CONFIG_FANOTIFY_ACCESS_PERMISSIONS needs to be enabled.
+> Implemented a single wrapper script which can be used
+> to execute _most_ of the rpc-tirpc test binaries.
 
-Pushed with minor change, thanks.
+Looks good to me, acked.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
