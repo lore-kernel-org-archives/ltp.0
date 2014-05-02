@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Wk64y-0002jM-OG
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 06:20:44 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wk64w-0003Ap-PN
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 06:20:43 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s4D6KadC025121
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 06:20:37 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s4D6KZEU028048
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 06:20:36 GMT
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4D6KZYI005462
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 06:20:35 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 13 May 2014 10:20:22 +0400
-Message-Id: <1399962023-23105-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140512125913.GA4741@rei>
-References: <20140512125913.GA4741@rei>
-Subject: [LTP] [PATCH 1/2] sendmsg,
-	recvmsg: moved MSG_CMSG_COMPAT definition to a header
+	(envelope-from <ccnandi@yahoo.com>) id 1WgMOs-0003DZ-W9
+	for ltp-list@lists.sourceforge.net; Fri, 02 May 2014 22:57:51 +0000
+Received: from nm49.bullet.mail.bf1.yahoo.com ([216.109.114.65])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WgMOr-0005Sq-Ti
+	for ltp-list@lists.sourceforge.net; Fri, 02 May 2014 22:57:50 +0000
+References: <1399071397.9456.YahooMailNeo@web141601.mail.bf1.yahoo.com>
+Message-ID: <1399071464.2771.YahooMailNeo@web141601.mail.bf1.yahoo.com>
+Date: Fri, 2 May 2014 15:57:44 -0700 (PDT)
+From: C Nandi <ccnandi@yahoo.com>
+In-Reply-To: <1399071397.9456.YahooMailNeo@web141601.mail.bf1.yahoo.com>
+MIME-Version: 1.0
+Subject: [LTP] Fw: Typo
+Reply-To: C Nandi <ccnandi@yahoo.com>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,170 +25,127 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6974960161826948890=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-sendmsg01.c and recvmsg01.c both define MSG_CMSG_COMPAT in a
-similar way. Moved this definition to a new header file to reduce
-code duplication.
+--===============6974960161826948890==
+Content-Type: multipart/alternative;
+	boundary="1633104601-188127112-1399071464=:2771"
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/syscalls/recvmsg/Makefile    |    2 +
- testcases/kernel/syscalls/recvmsg/recvmsg01.c |   15 +---------
- testcases/kernel/syscalls/sendmsg/Makefile    |    2 +
- testcases/kernel/syscalls/sendmsg/sendmsg01.c |   15 +---------
- testcases/kernel/syscalls/utils/msg_common.h  |   38 +++++++++++++++++++++++++
- 5 files changed, 44 insertions(+), 28 deletions(-)
- create mode 100644 testcases/kernel/syscalls/utils/msg_common.h
+--1633104601-188127112-1399071464=:2771
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/testcases/kernel/syscalls/recvmsg/Makefile b/testcases/kernel/syscalls/recvmsg/Makefile
-index bd617d8..e69c726 100644
---- a/testcases/kernel/syscalls/recvmsg/Makefile
-+++ b/testcases/kernel/syscalls/recvmsg/Makefile
-@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+CPPFLAGS		+= -I$(abs_srcdir)/../utils
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-index bc84a23..93c9190 100644
---- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-+++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-@@ -40,20 +40,6 @@
-  *
-  */
- 
--/* The #ifndef code below is for 2.5 64-bit kernels, where     */
--/* the MSG_CMSG_COMPAT flag must be 0 in order for the syscall */
--/* and this test to function correctly.                        */
--#ifndef MSG_CMSG_COMPAT
--
--#if defined (__powerpc64__) || defined (__mips64) || defined (__x86_64__) || defined (__sparc64__)
--#define MSG_CMSG_COMPAT 0x80000000
--#else
--#define MSG_CMSG_COMPAT 0
--#endif
--
--#endif
--/***************************************************/
--
- #include <stdio.h>
- #include <unistd.h>
- #include <string.h>
-@@ -71,6 +57,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "msg_common.h"
- 
- char *TCID = "recvmsg01";
- int testno;
-diff --git a/testcases/kernel/syscalls/sendmsg/Makefile b/testcases/kernel/syscalls/sendmsg/Makefile
-index bd617d8..e69c726 100644
---- a/testcases/kernel/syscalls/sendmsg/Makefile
-+++ b/testcases/kernel/syscalls/sendmsg/Makefile
-@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+CPPFLAGS		+= -I$(abs_srcdir)/../utils
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
-index 58d3364..1795a5e 100644
---- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
-+++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
-@@ -30,20 +30,6 @@
-  *	05/2003 Modified by Manoj Iyer - Make setup function set up lo device.
-  */
- 
--/*
-- * The #ifndef code below is for 2.5 64-bit kernels, where
-- * the MSG_CMSG_COMPAT flag must be 0 in order for the syscall
-- * and this test to function correctly.
-- */
--#ifndef MSG_CMSG_COMPAT
--#if defined(__powerpc64__) || defined(__mips64) || defined(__x86_64__) || \
--     defined(__sparc64__) || defined(__ia64__) || defined(__s390x__)
--#define MSG_CMSG_COMPAT 0x80000000
--#else
--#define MSG_CMSG_COMPAT 0
--#endif
--#endif /* MSG_CMSG_COMPAT */
--
- #include <stdio.h>
- #include <unistd.h>
- #include <errno.h>
-@@ -63,6 +49,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "msg_common.h"
- 
- char *TCID = "sendmsg01";
- int testno;
-diff --git a/testcases/kernel/syscalls/utils/msg_common.h b/testcases/kernel/syscalls/utils/msg_common.h
-new file mode 100644
-index 0000000..0471291
---- /dev/null
-+++ b/testcases/kernel/syscalls/utils/msg_common.h
-@@ -0,0 +1,38 @@
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ */
-+
-+#ifndef LTP_MSG_COMMON
-+#define LTP_MSG_COMMON
-+
-+/* The #ifndef code below is for 2.5 64-bit kernels, where     */
-+/* the MSG_CMSG_COMPAT flag must be 0 in order for the syscall */
-+/* and this test to function correctly.                        */
-+#ifndef MSG_CMSG_COMPAT
-+
-+#if defined(__powerpc64__) || defined(__mips64) || defined(__x86_64__) || \
-+	defined(__sparc64__) || defined(__ia64__) || defined(__s390x__)
-+#define MSG_CMSG_COMPAT 0x80000000
-+#else
-+#define MSG_CMSG_COMPAT 0
-+#endif
-+
-+#endif
-+
-+
-+#endif /* LTP_MSG_COMMON */
--- 
-1.7.1
+Hi,=0A=0ACorrection is required for the "netdefs.h" file.=0A=0A=0A=0A=0Adif=
+f --git a/testcases/network/tcp_cmds/include/netdefs.h b/testcases/network/=
+tcp_cmds/include/netdefs.h=0Aindex 067f20a..c6647e9 100644=0A--- a/testcase=
+s/network/tcp_cmds/include/netdefs.h=0A+++=0A b/testcases/network/tcp_cmds/=
+include/netdefs.h=0A@@ -37,7 +37,7 @@ typedef struct sockaddr_in6=A0=A0 sai=
+_t;=0A=A0#define AFI=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 AF_INET6=0A=A0#define IERP=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 ICMP6_ECHO_REPLY=0A=A0#define IERQ=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 ICMP6_ECHO_REQUEST=0A-#define ICMP_PROTO=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 "ipv6-imcp"=0A+#define ICMP_PROTO=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 "ipv6-icmp"=0A=A0#define=0A PFI=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 PF_INET6=0A=0A=A0#else=0A@@ -52,7 +=
+52,7 @@ typedef struct sockaddr_in=A0=A0=A0 sai_t;=0A=A0#define AFI=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 AF_INET=0A=A0#define IE=
+RP=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ICMP_ECHOREPLY=0A=
+=A0#define IERQ=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ICMP_=
+ECHO=0A-#define ICMP_PROTO=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "imcp"=0A+#d=
+efine=0A ICMP_PROTO=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "icmp"=0A=A0#define=
+ PFI=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 PF_INET=0A=0A=
+=A0#endif=0A=0A=0A=A0=0AThanks and Regards, =0ACHANDRASHEKHAR NANDI
+--1633104601-188127112-1399071464=:2771
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+<html><body><div style=3D"color:#000; background-color:#fff; font-family:Co=
+urier New, courier, monaco, monospace, sans-serif;font-size:10pt">Hi,<div s=
+tyle=3D"font-family: Courier New, courier, monaco, monospace, sans-serif; f=
+ont-size: 10pt;"><div style=3D"font-family: HelveticaNeue, Helvetica Neue, =
+Helvetica, Arial, Lucida Grande, sans-serif; font-size: 12pt;"><div class=
+=3D"y_msg_container"><div id=3D"yiv3450087424"><div><div style=3D"color:#00=
+0;background-color:#fff;font-family:Courier New, courier, monaco, monospace=
+, sans-serif;font-size:10pt;"><div style=3D"" class=3D"yiv3450087424"><br><=
+/div>Correction is required for the "netdefs.h" file.<br><br><br><span styl=
+e=3D"" class=3D"yiv3450087424"></span><div style=3D"color:rgb(0, 0, 0);font=
+-size:13.3333px;font-family:Courier New, courier, monaco, monospace, sans-s=
+erif;background-color:transparent;font-style:normal;" class=3D"yiv345008742=
+4"><span style=3D"" class=3D"yiv3450087424"><br></span></div><div style=3D"=
+color:rgb(0, 0,
+ 0);font-size:13.3333px;font-family:Courier New, courier, monaco, monospace=
+, sans-serif;background-color:transparent;font-style:normal;" class=3D"yiv3=
+450087424"><span style=3D"" class=3D"yiv3450087424">diff --git a/testcases/=
+network/tcp_cmds/include/netdefs.h b/testcases/network/tcp_cmds/include/net=
+defs.h<br style=3D"" class=3D"yiv3450087424">index 067f20a..c6647e9 100644<=
+br style=3D"" class=3D"yiv3450087424">--- a/testcases/network/tcp_cmds/incl=
+ude/netdefs.h<br style=3D"" class=3D"yiv3450087424">+++=0A b/testcases/netw=
+ork/tcp_cmds/include/netdefs.h<br style=3D"" class=3D"yiv3450087424">@@ -37=
+,7 +37,7 @@ typedef struct sockaddr_in6&nbsp;&nbsp; sai_t;<br style=3D"" cl=
+ass=3D"yiv3450087424">&nbsp;#define AFI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp; AF_INET6<br style=3D"" class=3D"yiv3450087424">&nbsp;#define IERP&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp; ICMP6_ECHO_REPLY<br style=3D"" class=3D"yiv3450=
+087424">&nbsp;#define IERQ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ICMP6_ECHO_REQU=
+EST<br style=3D"" class=3D"yiv3450087424">-#define ICMP_PROTO&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "ipv6-imcp"<br s=
+tyle=3D"" class=3D"yiv3450087424">+#define ICMP_PROTO&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "ipv6-icmp"<br style=3D"=
+"
+ class=3D"yiv3450087424">&nbsp;#define=0A PFI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; PF_INET6<br style=3D"" class=3D"yiv3450087424"><br style=3D"" cla=
+ss=3D"yiv3450087424">&nbsp;#else<br style=3D"" class=3D"yiv3450087424">@@ -=
+52,7 +52,7 @@ typedef struct sockaddr_in&nbsp;&nbsp;&nbsp; sai_t;<br style=
+=3D"" class=3D"yiv3450087424">&nbsp;#define AFI&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp; AF_INET<br style=3D"" class=3D"yiv3450087424">&nbsp;#define IER=
+P&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ICMP_ECHOREPLY<br style=3D"" class=3D"yi=
+v3450087424">&nbsp;#define IERQ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ICMP_ECHO<=
+br style=3D"" class=3D"yiv3450087424">-#define ICMP_PROTO&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ "imcp"<br style=3D"" class=3D"yiv3450087424">+#define=0A ICMP_PROTO&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "icmp"<br=
+ style=3D"" class=3D"yiv3450087424">&nbsp;#define PFI&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp; PF_INET<br style=3D"" class=3D"yiv3450087424"><br style=
+=3D"" class=3D"yiv3450087424">&nbsp;#endif<br style=3D"" class=3D"yiv345008=
+7424"><br style=3D"" class=3D"yiv3450087424"></span></div><div style=3D"" c=
+lass=3D"yiv3450087424">&nbsp;</div><div style=3D"" class=3D"yiv3450087424">=
+Thanks and Regards,=0A<br style=3D"" class=3D"yiv3450087424">CHANDRASHEKHAR=
+ NANDI</div></div></div></div><br><br></div> </div> </div>  </div></body></=
+html>
+--1633104601-188127112-1399071464=:2771--
+
+
+--===============6974960161826948890==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
+--===============6974960161826948890==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6974960161826948890==--
+
