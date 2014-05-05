@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WieWx-0008Tw-8n
-	for ltp-list@lists.sourceforge.net; Fri, 09 May 2014 06:43:39 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WieWv-0003st-Ni
-	for ltp-list@lists.sourceforge.net; Fri, 09 May 2014 06:43:39 +0000
-Date: Fri, 9 May 2014 02:43:30 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1138074762.2685108.1399617810196.JavaMail.zimbra@redhat.com>
-In-Reply-To: <536C6B8D.9070804@linux.vnet.ibm.com>
-References: <536C6B8D.9070804@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <qutherond@adeneo-embedded.com>) id 1WhFTe-0005gk-Ix
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 09:46:26 +0000
+Received: from smtp.adetelgroup.com ([94.247.26.71] helo=hbg-pa71.hmc-pa.adm)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WhFTd-0002pq-2V
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 09:46:26 +0000
+Date: Mon, 5 May 2014 11:45:53 +0200 (CEST)
+From: THEROND Quentin <qutherond@adeneo-embedded.com>
+Message-ID: <852818318.382603.1399283153598.JavaMail.zimbra@adeneo-embedded.com>
+In-Reply-To: <CADqC_Hph=yA3oPhNCzY9_JJtFzN0YA6dpGgetmb6rQzaWrKQzQ@mail.gmail.com>
+References: <CADqC_Hph=yA3oPhNCzY9_JJtFzN0YA6dpGgetmb6rQzaWrKQzQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] readahead02: change the test pass to 2M
+Subject: Re: [LTP] LTP for Android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,81 +24,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3133610152016366223=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: madanvs@linux.vnet.ibm.com
+To: Asha Gowda <ashagow@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
+--===============3133610152016366223==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_382602_2105241470.1399283153597"
 
+------=_Part_382602_2105241470.1399283153597
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
+I am interesting too. 
 
+Thank you 
 
 ----- Original Message -----
-> From: "Madan" <madanvs@linux.vnet.ibm.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Friday, 9 May, 2014 7:45:49 AM
-> Subject: [LTP]  readahead02: change the test pass to 2M
-> 
-> Max readahead size has been limited since commit:
->    commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
->    Author: Raghavendra K T<raghavendra.kt@linux.vnet.ibm.com>
->    Date:   Thu Apr 3 14:48:23 2014 -0700
->      mm/readahead.c: fix readahead failure for memoryless NUMA nodes
->                      and limit readahead pages
-> 
-> Updating the change in the readahead behaviour of max 2M cache.
-> http://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/commit/?id=c7252018cef0da5db35cd03aa7b6c44ab597a0b7
-> 
-> Signed-off-by:Hoisaleshwara Madan V S <hoisalvs@in.ibm.com>
 
-I posted a similar patch:
-  http://article.gmane.org/gmane.linux.ltp/20466
-which keeps sizes, but makes multiple readahead calls.
+From: "Asha Gowda" <ashagow@gmail.com> 
+To: ltp-list@lists.sourceforge.net 
+Sent: Friday, 2 May, 2014 1:32:39 PM 
+Subject: [LTP] LTP for Android 
 
-Regards,
-Jan
+Hi , 
+As of now I am using LTP for linux, but I would like to use it for Android too. 
+Can you please let me know from where can I get the source code and other details to build it. 
 
-> 
-> Patch :
-> 
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c
-> b/testcases/kernel/syscalls/readahe
-> index 66158f0..dc6a191 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -306,13 +306,14 @@ static void test_readahead(void)
->          tst_resm(TINFO, "cache can hold at least: %ld kB", cached_max);
->          tst_resm(TINFO, "read_testfile(0) used cache: %ld kB", cached);
->          tst_resm(TINFO, "read_testfile(1) used cache: %ld kB", cached_ra);
-> -
-> -       if (cached_max * 1024 >= testfile_size) {
-> +
-> +        /* readahead will cache max of 2 M */
-> +       if (cached_max * 1024 >= 2 * 1024) {
->                  /*
->                   * if cache can hold ~testfile_size then cache increase
->                   * for readahead should be at least testfile_size/2
->                   */
-> -               if (cached_ra * 1024 > testfile_size / 2)
-> +               if (cached_ra * 1024 > 2 * 1024)
->                          tst_resm(TPASS, "using cache as expected");
->                  else
->                          tst_resm(TWARN, "using less cache than expected");
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-> &#149; 3 signs your SCM is hindering your productivity
-> &#149; Requirements for releasing software faster
-> &#149; Expert tips and advice for migrating your SCM now
-> http://p.sf.net/sfu/perforce
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+Thanks, 
+Asha 
+
+------------------------------------------------------------------------------ 
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out: 
+&#149; 3 signs your SCM is hindering your productivity 
+&#149; Requirements for releasing software faster 
+&#149; Expert tips and advice for migrating your SCM now 
+http://p.sf.net/sfu/perforce 
+_______________________________________________ 
+Ltp-list mailing list 
+Ltp-list@lists.sourceforge.net 
+https://lists.sourceforge.net/lists/listinfo/ltp-list 
+
+
+------=_Part_382602_2105241470.1399283153597
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html><body><div style="font-family: times new roman, new york, times, serif; font-size: 12pt; color: #000000">I am interesting too.<br><br>Thank you<br><br><hr id="zwchr"><div style="color:#000;font-weight:normal;font-style:normal;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-size:12pt;"><b>From: </b>"Asha Gowda" &lt;ashagow@gmail.com&gt;<br><b>To: </b>ltp-list@lists.sourceforge.net<br><b>Sent: </b>Friday, 2 May, 2014 1:32:39 PM<br><b>Subject: </b>[LTP] LTP for Android<br><br><div dir="ltr">Hi ,<div>As of now I am using LTP for linux, but I would like to use it for Android too.</div><div>Can you please let me know from where can I get the source code and other details to build it.</div><div><br>
+</div><div>Thanks,</div><div>Asha</div></div>
+<br>------------------------------------------------------------------------------<br>Is your legacy SCM system holding you back? Join Perforce May 7 to find out:<br>&amp;#149; 3 signs your SCM is hindering your productivity<br>&amp;#149; Requirements for releasing software faster<br>&amp;#149; Expert tips and advice for migrating your SCM now<br>http://p.sf.net/sfu/perforce<br>_______________________________________________<br>Ltp-list mailing list<br>Ltp-list@lists.sourceforge.net<br>https://lists.sourceforge.net/lists/listinfo/ltp-list<br></div><br/></div></body></html>
+------=_Part_382602_2105241470.1399283153597--
+
+
+--===============3133610152016366223==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
@@ -106,7 +89,16 @@ Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
 &#149; Requirements for releasing software faster
 &#149; Expert tips and advice for migrating your SCM now
 http://p.sf.net/sfu/perforce
+--===============3133610152016366223==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3133610152016366223==--
+
