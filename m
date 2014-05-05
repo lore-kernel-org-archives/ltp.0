@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WmMUG-0003Rf-0y
-	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 12:16:12 +0000
-Date: Mon, 19 May 2014 14:15:53 +0200
-From: chrubis@suse.cz
-Message-ID: <20140519121553.GA4334@rei>
-References: <1397731818-26430-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1397731818-26430-2-git-send-email-gux.fnst@cn.fujitsu.com>
-	<20140515121430.GC23965@rei.Home> <53756E7A.6070009@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1WhCBE-0007Ns-HB
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 06:15:12 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WhCBD-0003WO-Gn
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 06:15:12 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s456F1q2026610
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 May 2014 14:15:01 +0800
+Message-ID: <53672C1A.7080103@cn.fujitsu.com>
+Date: Mon, 5 May 2014 14:13:46 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53756E7A.6070009@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] rmdir/rmdir02.c: add ELOOP,
- EROFS and EBUSY error value tests
+References: <1398687969-16853-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1398687969-16853-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] kernel/mem/lib/mem.c: make tests continue to
+ run even though KSM is not enabled
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,31 +33,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "gux.fnst" <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > I've removed the EUID changes for all because these has no effect on the
-> > test behavior (at least I haven't figured out why they are needed).
+On 04/28/2014 08:26 PM, Xiaoguang Wang wrote:
+> When kernel KSM configuration is not enabled, we make testcases continue to run
+> instead of returning TCONF, e.g. oom01. And if KSM configuration is not enabled, in
+> the original code, "tst_brkm(TCONF, NULL, ...)" will be called, in this case, we
+> will forget to execute the restore operations defined in cleanup, which will forget
+> to restore the /proc/sys/vm/overcommit_memory to 0, and this will impact other test
+> cases in LTP, for example, fork14 in RHEL5 will succeed unexpectedly.
 > 
-> I tested with the UEID is aimed to prove the system call can be executed 
-> right with a normal user account, to provide a more overall testcase.
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/mem/lib/mem.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 
-I've looked at the testcase again, and it seems to me that there would
-be no difference on the results of these testcases (IMHO they would
-still hit the same check in the rmdir() syscall in kernel both under
-privileged and unprivileged user). Did I miss somethink?
+Applied, thank you.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Wanlong Gao
+
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
