@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WmPjR-0002Vy-Hp
-	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 15:44:05 +0000
-Date: Mon, 19 May 2014 17:43:54 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WhIPa-0007on-A2
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 12:54:26 +0000
+Date: Mon, 5 May 2014 14:53:27 +0200
 From: chrubis@suse.cz
-Message-ID: <20140519154353.GA29937@rei>
-References: <1400057694.2768.8.camel@G08JYZSD130126>
+Message-ID: <20140505125327.GB9470@rei>
+References: <5b2c7cc.14f0c.145b06999bd.Coremail.eeslook@163.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1400057694.2768.8.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] readdir/readdir21.c: Add EBADF and EFAULT errno
- testes
+In-Reply-To: <5b2c7cc.14f0c.145b06999bd.Coremail.eeslook@163.com>
+Subject: Re: [LTP] [PATCH] Fix an error command format for sar in
+	ltpstress.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,10 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: look <eeslook@163.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
+> Hi All and chrubis,
+> 
+> 
+>     I got an error for the lastest version 20140115 of ltp project.
+>     The sar command never support zero as an number of iterations, this may have been wrongly merged.
+> I send attch path file for fix this error.
+> 
+> 
+>     Details messages:
+> @@ -254,7 +254,7 @@ ${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/stress.part3 > ${TMP}/stress.par
+> -  sar -o $datafile $interval 0 &
+> +  sar -o $datafile $interval > /dev/null &
+
 Pushed, thanks.
 
 -- 
@@ -36,11 +49,11 @@ Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
