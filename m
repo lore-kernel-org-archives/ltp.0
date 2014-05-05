@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WhGny-0004BU-W3
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 11:11:31 +0000
-Date: Mon, 5 May 2014 13:10:32 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WhFe4-0000NM-9Y
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 09:57:12 +0000
+Date: Mon, 5 May 2014 11:56:14 +0200
 From: chrubis@suse.cz
-Message-ID: <20140505111032.GB1544@rei>
-References: <1398419188-17193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<53676144.20306@oracle.com>
+Message-ID: <20140505095614.GA2039@rei>
+References: <CADqC_Hph=yA3oPhNCzY9_JJtFzN0YA6dpGgetmb6rQzaWrKQzQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <53676144.20306@oracle.com>
-Subject: Re: [LTP] [PATCH] sigaction 9-1, 10-1,
- 11-1: use SIGKILL instead of SIGHUP
+In-Reply-To: <CADqC_Hph=yA3oPhNCzY9_JJtFzN0YA6dpGgetmb6rQzaWrKQzQ@mail.gmail.com>
+Subject: Re: [LTP] LTP for Android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +24,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Asha Gowda <ashagow@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > There are test environments, where the SIGHUP signal may be either
-> > added to the signal mask or ignored. One example of such environments
-> > is Autotest, which sets the SIGHUP signal to SIG_IGN for its jobs.
-> >
-> > Therefore the above test cases hang in that environment because their
-> > parent processes send SIGHUP to terminate the child (and the child ignores it).
-> >
-> > I think it will not be a problem to use SIGKILL here instead of SIGHUP, because
-> > SIGKILL can not be caught, blocked, or ignored.
-> > And it does the job - stopping the child - very well :)
-> >
-> > Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> 
-> Could anybody look at this patch, please?
+> Hi ,
+> As of now I am using LTP for linux, but I would like to use it for Android
+> too.
+> Can you please let me know from where can I get the source code and other
+> details to build it.
 
-Looks OK to me, acked.
+While there were several attempts to port LTP to Android and even some
+patches merged upstream I don't think that the effort was finished.
+
+I think that Pete Delaney and others at MIPS got it running with some
+patches (search for Android in this mailing list archive) but I'm pretty
+sure that only small part of it was merged upstream.
 
 -- 
 Cyril Hrubis
