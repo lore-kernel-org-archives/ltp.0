@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WlGhT-0001B5-UA
-	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 11:53:19 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WlGhS-0004oD-GK
-	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 11:53:19 +0000
-Date: Fri, 16 May 2014 07:53:10 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <669312722.6827924.1400241190444.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1400211517-30970-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1400211517-30970-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1400211517-30970-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WhGny-0004BU-W3
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 11:11:31 +0000
+Date: Mon, 5 May 2014 13:10:32 +0200
+From: chrubis@suse.cz
+Message-ID: <20140505111032.GB1544@rei>
+References: <1398419188-17193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<53676144.20306@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2 2/2] setpgid/setpgid01.c: add pid = 0 and pgid
- = 0	test
+Content-Disposition: inline
+In-Reply-To: <53676144.20306@oracle.com>
+Subject: Re: [LTP] [PATCH] sigaction 9-1, 10-1,
+ 11-1: use SIGKILL instead of SIGHUP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,140 +26,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-
-
------ Original Message -----
-> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Friday, 16 May, 2014 5:38:37 AM
-> Subject: [LTP] [PATCH v2 2/2] setpgid/setpgid01.c: add pid = 0 and pgid = 0	test
+Hi!
+> > There are test environments, where the SIGHUP signal may be either
+> > added to the signal mask or ignored. One example of such environments
+> > is Autotest, which sets the SIGHUP signal to SIG_IGN for its jobs.
+> >
+> > Therefore the above test cases hang in that environment because their
+> > parent processes send SIGHUP to terminate the child (and the child ignores it).
+> >
+> > I think it will not be a problem to use SIGKILL here instead of SIGHUP, because
+> > SIGKILL can not be caught, blocked, or ignored.
+> > And it does the job - stopping the child - very well :)
+> >
+> > Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 > 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/setpgid/setpgid01.c | 47
->  +++++++++++++++++++++++++--
->  1 file changed, 45 insertions(+), 2 deletions(-)
+> Could anybody look at this patch, please?
 
-Hi,
+Looks OK to me, acked.
 
-series look good to me.
-I have only one small nit, see comment inline.
-
-Regards,
-Jan
-
-> 
-> diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c
-> b/testcases/kernel/syscalls/setpgid/setpgid01.c
-> index 700e573..23f0508 100644
-> --- a/testcases/kernel/syscalls/setpgid/setpgid01.c
-> +++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
-> @@ -36,12 +36,14 @@
->   * Description:
->   * Verify that:
->   *   1. Basic functionality test for setpgid(2).
-> + *   2. Check functioning of setpgid(2) with pid = 0 and pgid = 0.
->   */
->  
->  #include <errno.h>
->  #include <string.h>
->  #include <signal.h>
->  #include <stdlib.h>
-> +#include <sys/wait.h>
->  #include "test.h"
->  #include "usctest.h"
->  
-> @@ -51,7 +53,8 @@ static void cleanup(void);
->  char *TCID = "setpgid01";
->  
->  static void setpgid_test1(void);
-> -static void (*testfunc[])(void) = { setpgid_test1};
-> +static void setpgid_test2(void);
-> +static void (*testfunc[])(void) = { setpgid_test1, setpgid_test2};
->  int TST_TOTAL = ARRAY_SIZE(testfunc);
->  
->  int main(int ac, char **av)
-> @@ -91,9 +94,49 @@ static void setpgid_test1(void)
->  	}
->  }
->  
-> +static int wait4child(pid_t child)
-> +{
-> +	int status;
-> +
-> +	if (waitpid(child, &status, 0) == -1)
-> +		tst_resm(TBROK|TERRNO, "waitpid");
-> +	if (WIFEXITED(status))
-> +		return WEXITSTATUS(status);
-> +	else
-> +		return status;
-> +}
-> +
-> +static void setpgid_test2(void)
-> +{
-> +	int ret;
-> +	pid_t pgid, pid;
-> +
-> +	pid = FORK_OR_VFORK();
-> +	if (pid == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork()");
-> +
-> +	if (pid != 0) {
-> +		ret = wait4child(pid);
-> +	} else {
-> +		pid = getpid();
-> +		TEST(setpgid(0, 0));
-> +		pgid = getpgrp();
-> +		if (TEST_RETURN == -1 || pgid != pid)
-
-^^ I'd suggest to add printf here with TEST_ERRNO. In unlikely
-case it fails, it would good to know why.
-
-> +			exit(1);
-> +		else
-> +			exit(0);
-> +	}
-> +
-> +	if (ret == 0)
-> +		tst_resm(TPASS, "test setpgid(0, 0) success");
-> +	else
-> +		tst_resm(TFAIL, "test setpgid(0, 0) fail");
-> +}
-> +
-> +
->  static void setup(void)
->  {
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
->  
->  	TEST_PAUSE;
->  }
-> --
-> 1.8.2.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-> Instantly run your Selenium tests across 300+ browser/OS combos.
-> Get unparalleled scalability from the best Selenium testing platform
-> available
-> Simple to use. Nothing to install. Get started now for free."
-> http://p.sf.net/sfu/SauceLabs
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
