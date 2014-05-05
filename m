@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WmQRn-0005oM-TU
-	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 16:29:55 +0000
-Date: Mon, 19 May 2014 18:29:44 +0200
-From: chrubis@suse.cz
-Message-ID: <20140519162944.GB29937@rei>
-References: <1397561602-18935-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1397561602-18935-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1WhCAu-0002PW-5O
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 06:14:52 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WhCAs-0005Mp-KG
+	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 06:14:52 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s456Eesa026597
+	for <ltp-list@lists.sourceforge.net>; Mon, 5 May 2014 14:14:40 +0800
+Message-ID: <53672C05.9020301@cn.fujitsu.com>
+Date: Mon, 5 May 2014 14:13:25 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1397561602-18935-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/rename/rename11.c: add ELOOP,
- EMLINK and EROFS error value tests
+References: <1398674834-1643-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1398674834-1643-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/2] kernel/mem/lib/mem.c: fix compilation warnings
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +35,29 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Note: int rename(const char *old, const char *new);
-> For EMLINK error value test: the file named by old is a directory and the
-> link count of the parent directory of new would exceed {LINK_MAX}.
+On 04/28/2014 04:47 PM, Xiaoguang Wang wrote:
+> Functions declared in testcases/kernel/mem/include/_private.h is not
+> implemented and used, so delete it.
 > 
-> This test will work on ext2 and ext3 filesystem. But there is some difference in some
-> linux distributions.
-> 
-> For example, in fedora19 and RHEL7.0Beta, the kernel configs for ext2/ext3/ext4 filesystems
-> list below:
-> # CONFIG_EXT2_FS is not set
-> # CONFIG_EXT3_FS is not set
-> CONFIG_EXT4_FS=m
-> CONFIG_EXT4_USE_FOR_EXT23=y
-> CONFIG_EXT4_FS_POSIX_ACL=y
-> CONFIG_EXT4_FS_SECURITY=y
-> 
-> If kernel has the above config, ext2 or ext3 is disabled. Then when we mount ext2 or
-> ext3 filesystem, the ext4 filesystem driver code will be used for ext2 or ext3 file
-> system mounts. This allows users to reduce their compiled kernel size by using one
-> file system driver for ext2, ext3, and ext4 file systems. That means though we mount
-> a block device with ext2 filesystem in it, the kernel will possibely use ext4 driver
-> code instead.
-> 
-> So for this EMLINK error value test, we have test in ext4 directly. But the max
-> subdirectories(per directory) in ext4 is unlimited default(When the link count exceeds
-> 65,000, it is reset to 1 and no longer increases.).
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/mem/include/_private.h | 22 ----------------------
+>  testcases/kernel/mem/include/mem.h      |  2 +-
+>  testcases/kernel/mem/lib/mem.c          | 25 +++++++++++++++----------
+>  3 files changed, 16 insertions(+), 33 deletions(-)
+>  delete mode 100644 testcases/kernel/mem/include/_private.h
 
-Is this expected behavior? Because if the ref counting resets to 1 the
-fs will break when somebody tries to delete the file. Or is just the
-number reported to userspace wrong?
+Applied, thank you.
 
-> But EMLINK error value test need the directory have a valid LINK_MAX,
-> so for ext4, we use mkfs to clear "dir_index" filesystem feature, then
-> ext4 has a LINK_MAX:65000: mkfs.ext4 -O ^dir_index device
+Wanlong Gao
 
-So this is the same problem as with XFS.
-
-I still think that correct solution to this problem is to write a
-function that detects if there is a limit on number of links given a
-filesystem path. Then we can simply skip the EMLINK test if the number
-of links is unlimited.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
