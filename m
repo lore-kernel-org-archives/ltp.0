@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WiKIE-0003NP-89
-	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 09:07:06 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WiKIC-0003d4-KO
-	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 09:07:05 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s4896vqN028299
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 09:06:58 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4896vWV019153
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 09:06:57 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4896vlU019139
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 09:06:57 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu,  8 May 2014 13:06:44 +0400
-Message-Id: <1399540004-14742-5-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1399540004-14742-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1399540004-14742-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 4/4] rt_sigaction*, rt_sigprocmask01,
-	rt_sigsuspend01: SPARC support
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ccnandi@yahoo.com>) id 1WhofY-00035K-Ca
+	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 23:21:04 +0000
+Received: from nm41.bullet.mail.ne1.yahoo.com ([98.138.120.48])
+	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WhofV-0003uo-T3
+	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 23:21:04 +0000
+Message-ID: <1399418275.53978.YahooMailNeo@web141606.mail.bf1.yahoo.com>
+Date: Tue, 6 May 2014 16:17:55 -0700 (PDT)
+From: C Nandi <ccnandi@yahoo.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="-225646846-1447681308-1399418275=:53978"
+Subject: [LTP] Reg: sendfile01_server
+Reply-To: C Nandi <ccnandi@yahoo.com>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,377 +25,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Added SPARC support for tests:
- * rt_sigaction01, rt_sigaction02, rt_sigaction03
- * rt_sigprocmask01
- * rt_sigsuspend01
+---225646846-1447681308-1399418275=:53978
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Author: Jose E. Marchesi <jose.marchesi@oracle.com>
-Co-author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+From "testcases/network/tcp_cmds/sendfile/sendfile01"=0A=A0=A0=A0 53=A0=A0=
+=A0=A0=A0 CLIENT=3D"testsf_c${EXEC_SUFFIX}"=0A=A0=A0=A0 54=A0=A0=A0=A0=A0 S=
+ERVER=3D"testsf_s${EXEC_SUFFIX}"=0A=0ASERVER can be "testsf_s" or "testfs_s=
+6"=0A=0ABut, in testcases/network/tcp_cmds/sendfile/sendfile01_server, =0A=
+=0A=A0=A0=A0=A0 1=A0 #!/bin/sh=0A=A0=A0=A0=A0 2=A0 #set -x=0A=A0=A0=A0=A0 3=
+=A0 cd $3=0A=A0=A0=A0=A0 4=A0 exec 1< /dev/null=A0=A0=A0=A0=A0=A0 # open de=
+scriptor 1=0A=A0=A0=A0=A0 5=A0 exec 2< /dev/null=A0=A0=A0=A0=A0=A0 # open d=
+escriptor 1=0A=A0=A0=A0=A0 6=A0 nohup ./testsf_s $1 $2 &=0A=0A=0ASERVER wil=
+l always execute as "testfs_s"=0A=0AI guess, below changes would be good.=
+=0A=0Adiff --git a/testcases/network/tcp_cmds/sendfile/sendfile01_server b/=
+testcases/network/tcp_cmds/sendfile/sendfile01_server=0Aindex 2383ce4..9933=
+db4 100755=0A--- a/testcases/network/tcp_cmds/sendfile/sendfile01_server=0A=
++++ b/testcases/network/tcp_cmds/sendfile/sendfile01_server=0A@@ -3,4 +3,4 =
+@@=0A=A0cd $3=0A=A0exec 1< /dev/null=A0=A0=A0=A0=A0=A0 # open descriptor 1=
+=0A=A0exec 2< /dev/null=A0=A0=A0=A0=A0=A0 # open descriptor 1=0A-nohup ./te=
+stsf_s $1 $2 &=0A+nohup ./$4 $1 $2 &=0A=0A=0A=0A=0AIf you feel this is corr=
+ect, please find the patch attached with this e-mail.=0A=0A=0A=A0=0AThanks =
+and Regards, =0ACHANDRASHEKHAR NANDI
+---225646846-1447681308-1399418275=:53978
+Content-Type: application/octet-stream;
+	name="0001-sendfile01_server-Correction-to-run-both-testsf_s-an.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0001-sendfile01_server-Correction-to-run-both-testsf_s-an.patch"
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/ltp_signal.h                               |   39 +++++++++++++++++++-
- .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |   32 ++++++++++++++---
- .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |   13 ++++++-
- .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |   28 ++++++++++++++
- .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |   24 +++++++++++-
- .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |   24 ++++++++++--
- 6 files changed, 147 insertions(+), 13 deletions(-)
+RnJvbSA0NzBhM2I2ODBhOTc2NGI4MmE5YmE1MzQ1YjYwNGYwMmQxZWFhMjc3
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBDaGFuZHJhc2hla2hh
+ciBOYW5kaSA8Q2hhbmRyYXNoZWtoYXIuTmFuZGlAbXBoYXNpcy5jb20+CkRh
+dGU6IFR1ZSwgNiBNYXkgMjAxNCAxNzoxMTowNyAtMDYwMApTdWJqZWN0OiBb
+UEFUQ0hdIHNlbmRmaWxlMDFfc2VydmVyOiBDb3JyZWN0aW9uIHRvIHJ1biBi
+b3RoICd0ZXN0c2ZfcycgYW5kCiAndGVzdHNmX3M2JyBUaGFua3MgdG8gIlJv
+YmVydHMsIExlZSIgZm9yIHBvaW50aW5nIHRoaXMgb3V0CgpTaWduZWQtb2Zm
+LWJ5OiBDaGFuZHJhc2hla2hhciBOYW5kaSA8Q2hhbmRyYXNoZWtoYXIuTmFu
+ZGlAbXBoYXNpcy5jb20+Ci0tLQogdGVzdGNhc2VzL25ldHdvcmsvdGNwX2Nt
+ZHMvc2VuZGZpbGUvc2VuZGZpbGUwMV9zZXJ2ZXIgfCAgICAyICstCiAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRp
+ZmYgLS1naXQgYS90ZXN0Y2FzZXMvbmV0d29yay90Y3BfY21kcy9zZW5kZmls
+ZS9zZW5kZmlsZTAxX3NlcnZlciBiL3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9j
+bWRzL3NlbmRmaWxlL3NlbmRmaWxlMDFfc2VydmVyCmluZGV4IDIzODNjZTQu
+Ljk5MzNkYjQgMTAwNzU1Ci0tLSBhL3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9j
+bWRzL3NlbmRmaWxlL3NlbmRmaWxlMDFfc2VydmVyCisrKyBiL3Rlc3RjYXNl
+cy9uZXR3b3JrL3RjcF9jbWRzL3NlbmRmaWxlL3NlbmRmaWxlMDFfc2VydmVy
+CkBAIC0zLDQgKzMsNCBAQAogY2QgJDMKIGV4ZWMgMTwgL2Rldi9udWxsICAg
+ICAgICMgb3BlbiBkZXNjcmlwdG9yIDEKIGV4ZWMgMjwgL2Rldi9udWxsICAg
+ICAgICMgb3BlbiBkZXNjcmlwdG9yIDEKLW5vaHVwIC4vdGVzdHNmX3MgJDEg
+JDIgJgorbm9odXAgLi8kNCAkMSAkMiAmCi0tIAoxLjcuMTAuNAoK
 
-diff --git a/include/ltp_signal.h b/include/ltp_signal.h
-index e6fb2e0..c050894 100644
---- a/include/ltp_signal.h
-+++ b/include/ltp_signal.h
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2009 Cisco Systems, Inc.  All Rights Reserved.
-  * Copyright (c) 2009 FUJITSU LIMITED.  All Rights Reserved.
-+ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of version 2 of the GNU General Public License as
-@@ -77,6 +78,42 @@
- #define HAVE_SA_RESTORER
- #define SA_RESTORER	0x04000000
- 
-+#endif /* __x86_64__ */
-+
-+#ifdef __sparc__
-+#if defined __arch64__ || defined __sparcv9
-+
-+/*
-+ * From glibc/sysdeps/unix/sysv/linux/sparc/sparc64/sigaction.c
-+ */
-+
-+static void __rt_sigreturn_stub(void)
-+{
-+	__asm__ ("mov %0, %%g1\n\t"
-+		"ta  0x6d\n\t"
-+		: /* no outputs */
-+		: "i" (__NR_rt_sigreturn));
-+}
-+
-+#else /* sparc32 */
-+
-+/*
-+ * From glibc/sysdeps/unix/sysv/linux/sparc/sparc32/sigaction.c
-+ */
-+
-+static void __sigreturn_stub(void)
-+{
-+	__asm__ ("mov %0, %%g1\n\t"
-+		"ta  0x10\n\t"
-+		: /* no outputs */
-+		: "i" (__NR_sigreturn));
-+}
-+
-+#endif
-+#endif /* __sparc__ */
-+
-+#if defined __x86_64__ || defined __sparc__
-+
- struct kernel_sigaction {
- 	__sighandler_t k_sa_handler;
- 	unsigned long sa_flags;
-@@ -118,7 +155,7 @@ static inline int sig_initial(int sig)
- 
- }
- 
--#endif /* __x86_64__ */
-+#endif /* __x86_64__ || __sparc__*/
- 
- #endif /* LTP_RT_SIG_TEST */
- 
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-index 8f18394..2f8020e 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-@@ -1,5 +1,6 @@
- /******************************************************************************/
- /* Copyright (c) Crackerjack Project., 2007                                   */
-+/* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.      */
- /*                                                                            */
- /* This program is free software;  you can redistribute it and/or modify      */
- /* it under the terms of the GNU General Public License as published by       */
-@@ -127,21 +128,42 @@ void handler(int sig)
- 
- int set_handler(int sig, int sig_to_mask, int mask_flags)
- {
--#ifdef __x86_64__
-+#ifdef __sparc__
-+	struct sigaction sa;
-+	struct kernel_sigaction kact, koact;
-+# ifdef __arch64__
-+	unsigned long stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+# else
-+	unsigned long stub = ((unsigned long) &__sigreturn_stub) - 8;
-+# endif
-+
-+	sigemptyset(&sa.sa_mask);
-+	sigaddset(&sa.sa_mask, sig);
-+
-+	kact.k_sa_handler = (void *) handler;
-+	kact.sa_flags = 0;
-+	kact.sa_restorer = NULL;
-+	memcpy(&kact.sa_mask, &sa.sa_mask, sizeof(sigset_t));
-+
-+	return ltp_syscall(__NR_rt_sigaction, sig, &kact,
-+			&koact, stub, SIGSETSIZE);
-+#else
-+
-+# ifdef __x86_64__
- 	struct kernel_sigaction sa, oldaction;
- 	mask_flags |= SA_RESTORER;
- 	sa.sa_restorer = restore_rt;
- 	sa.k_sa_handler = (void *)handler;
--#else
-+# else
- 	struct sigaction sa, oldaction;
- 	sa.sa_handler = (void *)handler;
--#endif
-+# endif
- 	sa.sa_flags = mask_flags;
- 	sigemptyset(&sa.sa_mask);
- 	sigaddset(&sa.sa_mask, sig);
- 
- 	return ltp_syscall(__NR_rt_sigaction, sig, &sa, &oldaction, SIGSETSIZE);
--
-+#endif
- }
- 
- int main(int ac, char **av)
-@@ -164,7 +186,7 @@ int main(int ac, char **av)
- 
- 			for (signal = SIGRTMIN; signal <= (SIGRTMAX); signal++) {	//signal for 34 to 65
- 
--#ifdef __x86_64__
-+#if defined __x86_64__ || defined __sparc__
- 				sig_initial(signal);
- #endif
- 
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-index 61137df..c272344 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-@@ -1,5 +1,6 @@
- /******************************************************************************/
- /* Copyright (c) Crackerjack Project., 2007                                   */
-+/* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.      */
- /*                                                                            */
- /* This program is free software;  you can redistribute it and/or modify      */
- /* it under the terms of the GNU General Public License as published by       */
-@@ -46,6 +47,7 @@
- #include <sys/syscall.h>
- #include <string.h>
- 
-+#define LTP_RT_SIG_TEST
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
-@@ -151,10 +153,19 @@ int main(int ac, char **av)
- 					 * EFAULT:                                                      *
- 					 * An invalid act or oact value was specified                   *
- 					 */
--
-+#ifdef __sparc__
-+# ifdef __arch64__
-+					unsigned long stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+# else
-+					unsigned long stub = ((unsigned long) &__sigreturn_stub) - 8;
-+# endif
-+					TEST(ltp_syscall(__NR_rt_sigaction, signal,
-+							INVAL_STRUCT, NULL, stub, SIGSETSIZE));
-+#else
- 					TEST(ltp_syscall
- 					     (__NR_rt_sigaction, signal,
- 					      INVAL_STRUCT, NULL, SIGSETSIZE));
-+#endif
- 					if ((TEST_RETURN == -1)
- 					    && (TEST_ERRNO ==
- 						test_cases[0].exp_errno)) {
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-index 12c3b84..9a65d63 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-@@ -1,5 +1,6 @@
- /******************************************************************************/
- /* Copyright (c) Crackerjack Project., 2007                                   */
-+/* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.      */
- /*                                                                            */
- /* This program is free software;  you can redistribute it and/or modify      */
- /* it under the terms of the GNU General Public License as published by       */
-@@ -46,6 +47,7 @@
- #include <sys/syscall.h>
- #include <string.h>
- 
-+#define LTP_RT_SIG_TEST
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
-@@ -133,6 +135,31 @@ void handler(int sig)
- 
- int set_handler(int sig, int sig_to_mask, int mask_flags)
- {
-+#ifdef __sparc__
-+	struct sigaction sa;
-+	struct kernel_sigaction kact, koact;
-+# ifdef __arch64__
-+	unsigned long stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+# else
-+	unsigned long stub = ((unsigned long) &__sigreturn_stub) - 8;
-+# endif
-+
-+	sigemptyset(&sa.sa_mask);
-+	sigaddset(&sa.sa_mask, sig_to_mask);
-+
-+	kact.k_sa_handler = (void *) handler;
-+	kact.sa_flags = 0;
-+	kact.sa_restorer = NULL;
-+	memcpy(&kact.sa_mask, &sa.sa_mask, sizeof(sigset_t));
-+
-+	TEST(ltp_syscall(__NR_rt_sigaction,
-+			sig, &kact, &koact, stub, INVAL_SIGSETSIZE));
-+	if (TEST_RETURN == 0)
-+		return 0;
-+	else
-+		return TEST_RETURN;
-+
-+#else
- 	struct sigaction sa, oldaction;
- 
- 	sa.sa_sigaction = (void *)handler;
-@@ -154,6 +181,7 @@ int set_handler(int sig, int sig_to_mask, int mask_flags)
- 	} else {
- 		return TEST_RETURN;
- 	}
-+#endif
- }
- 
- int main(int ac, char **av)
-diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-index 1dbed72..582098c 100644
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-@@ -1,5 +1,6 @@
- /******************************************************************************/
- /* Copyright (c) Crackerjack Project., 2007                                   */
-+/* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.      */
- /*                                                                            */
- /* This program is free software;  you can redistribute it and/or modify      */
- /* it under the terms of the GNU General Public License as published by       */
-@@ -130,17 +131,30 @@ void sig_handler(int sig)
- 
- int main(int ac, char **av)
- {
--#if __x86_64
-+#ifdef __sparc__
-+	struct kernel_sigaction kact, koact;
-+# ifdef __arch64__
-+	unsigned long stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+# else
-+	unsigned long stub = ((unsigned long) &__sigreturn_stub) - 8;
-+# endif
-+	sig_initial(TEST_SIG);
-+	kact.sa_flags = 0;
-+	kact.k_sa_handler = (void *) sig_handler;
-+	kact.sa_restorer = NULL;
-+#else
-+# ifdef __x86_64__
- 	struct kernel_sigaction act, oact;
- 	sig_initial(TEST_SIG);
- 	act.sa_flags |= SA_RESTORER;
- 	act.sa_restorer = restore_rt;
- 	act.k_sa_handler = sig_handler;
--#else
-+# else
- 	struct sigaction act, oact;
- 	memset(&act, 0, sizeof(act));
- 	memset(&oact, 0, sizeof(oact));
- 	act.sa_handler = sig_handler;
-+# endif
- #endif
- 	sigset_t set, oset;
- 	int lc;
-@@ -166,8 +180,14 @@ int main(int ac, char **av)
- 			}
- 
- 			/* call rt_sigaction() */
-+#ifdef __sparc__
-+			TEST(ltp_syscall(__NR_rt_sigaction, TEST_SIG,
-+					&kact, &koact, stub,
-+					SIGSETSIZE));
-+#else
- 			TEST(ltp_syscall(__NR_rt_sigaction, TEST_SIG, &act,
- 				&oact, SIGSETSIZE));
-+#endif
- 			if (TEST_RETURN < 0) {
- 				tst_brkm(TFAIL | TTERRNO, cleanup,
- 					 "rt_sigaction call failed");
-diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-index d14cdf8..4b73940 100644
---- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-+++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-@@ -1,5 +1,6 @@
- /********************************************************************************/
- /* Copyright (c) Crackerjack Project., 2007				   	*/
-+/* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.        */
- /*									    	*/
- /* This program is free software;  you can redistribute it and/or modify      	*/
- /* it under the terms of the GNU General Public License as published by       	*/
-@@ -128,7 +129,22 @@ int main(int ac, char **av)
- 		if (sigemptyset(&set) < 0) {
- 			tst_brkm(TFAIL | TERRNO, cleanup, "sigemptyset failed");
- 		}
--#ifdef __x86_64__
-+#ifdef __sparc__
-+		struct kernel_sigaction act, oact;
-+# ifdef __arch64__
-+		unsigned long stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+# else
-+		unsigned long stub = ((unsigned long) &__sigreturn_stub) - 8;
-+# endif
-+		sig_initial(SIGALRM);
-+		act.k_sa_handler = (void *)sig_handler;
-+		act.sa_flags = 0;
-+		act.sa_restorer = NULL;
-+
-+		TEST(ltp_syscall(__NR_rt_sigaction, SIGALRM, &act, &oact,
-+				stub, SIGSETSIZE));
-+#else
-+# ifdef __x86_64__
- 		struct kernel_sigaction act, oact;
- 		sig_initial(SIGALRM);
- 		memset(&act, 0, sizeof(act));
-@@ -136,15 +152,15 @@ int main(int ac, char **av)
- 		act.sa_flags |= SA_RESTORER;
- 		act.sa_restorer = restore_rt;
- 		act.k_sa_handler = sig_handler;
--#else
-+# else
- 		struct sigaction act, oact;
- 		memset(&act, 0, sizeof(act));
- 		memset(&oact, 0, sizeof(oact));
- 		act.sa_handler = sig_handler;
--#endif
--
-+# endif
- 		TEST(ltp_syscall(__NR_rt_sigaction, SIGALRM, &act, &oact,
- 			     SIGSETSIZE));
-+#endif
- 		if (TEST_RETURN == -1) {
- 			tst_brkm(TFAIL | TTERRNO, cleanup,
- 				 "rt_sigaction failed");
--- 
-1.7.1
-
+---225646846-1447681308-1399418275=:53978
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
@@ -417,7 +91,16 @@ Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
 &#149; Requirements for releasing software faster
 &#149; Expert tips and advice for migrating your SCM now
 http://p.sf.net/sfu/perforce
+---225646846-1447681308-1399418275=:53978
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+---225646846-1447681308-1399418275=:53978--
+
