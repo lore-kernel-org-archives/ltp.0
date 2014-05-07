@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WpaJv-0008Je-62
-	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 09:38:51 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WpaJt-0002br-52
-	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 09:38:51 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4S9cg41024124
-	for <ltp-list@lists.sourceforge.net>; Wed, 28 May 2014 17:38:42 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 28 May 2014 17:36:14 +0800
-Message-ID: <1401269774-7030-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wi5Gj-0003jG-Bq
+	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 17:04:33 +0000
+Date: Wed, 7 May 2014 19:03:34 +0200
+From: chrubis@suse.cz
+Message-ID: <20140507170334.GB1916@rei>
+References: <1398391328-13711-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1398391328-13711-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] testcases/kernel/include/lib.mk: fix invalid
-	libkerntest.a path
+Content-Disposition: inline
+In-Reply-To: <1398391328-13711-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 2/2] tools/apicmd: add tst_fs_has_free
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,37 +25,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-In testcases/kernel/include/lib.mk, '$(KERNEL_DIR)/libkerntest.a' is not a
-valid path, the correct path is '$(LIBKERNTEST_DIR)/libkerntest.a'.
+Hi!
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  tools/apicmds/.gitignore  |  1 +
+>  tools/apicmds/Makefile    |  2 +-
+>  tools/apicmds/ltpapicmd.c | 31 +++++++++++++++++++++++++++++++
+>  3 files changed, 33 insertions(+), 1 deletion(-)
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/include/lib.mk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've modified the code a bit to support kB, MB and GB suffixes and
+pushed, thanks.
 
-diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
-index c193ca3..f79a1c0 100644
---- a/testcases/kernel/include/lib.mk
-+++ b/testcases/kernel/include/lib.mk
-@@ -21,7 +21,7 @@ LIBKERNTEST_SRCDIR	:= $(KERNEL_SRCDIR)/lib
- 
- KERNEL_DIR		:= $(abs_top_builddir)/testcases/kernel
- LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
--LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
-+LIBKERNTEST		:= $(LIBKERNTEST_DIR)/libkerntest.a
- CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_SRCDIR)/include
- LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
- LDFLAGS			+= -L$(LIBKERNTEST_DIR)
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Time is money. Stop wasting it! Get your web API in 5 minutes.
-www.restlet.com/download
-http://p.sf.net/sfu/restlet
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
