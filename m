@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WmmP7-00081C-DQ
-	for ltp-list@lists.sourceforge.net; Tue, 20 May 2014 15:56:37 +0000
-Date: Tue, 20 May 2014 17:56:25 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wi0xK-0005Uw-ET
+	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 12:28:14 +0000
+Date: Wed, 7 May 2014 14:27:14 +0200
 From: chrubis@suse.cz
-Message-ID: <20140520155625.GB30538@rei.suse.cz>
-References: <1398159613.2772.7.camel@G08JYZSD130126>
-	<1398159660.2772.8.camel@G08JYZSD130126>
-	<64087164.7823458.1398172479616.JavaMail.zimbra@redhat.com>
-	<1398225094.3850.1.camel@G08JYZSD130126>
-	<1398225176.3850.3.camel@G08JYZSD130126>
+Message-ID: <20140507122714.GB20240@rei>
+References: <1389353374.2061.9.camel@G08JYZSD130126>
+	<1389409991.2061.14.camel@G08JYZSD130126>
+	<20140224193305.GC31562@rei>
+	<1393309618.1952.52.camel@G08JYZSD130126>
+	<5368A32E.7070805@oracle.com> <20140506144740.GA7908@rei.Home>
+	<1399450341.2397.16.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1398225176.3850.3.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2 2/2] sbrk/sbrk02.c: add ENOMEM errno test
+In-Reply-To: <1399450341.2397.16.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH 2/2] linkat/linkat02.c: fix xfs with EMLINK issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,28 +33,48 @@ To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> +#if !defined(UCLINUX)
+>  static void setup(void);
+>  static void cleanup(void);
+> @@ -127,8 +128,15 @@ int main(int ac, char **av)
+>  
+>  static void linkat_verify(const struct test_struct *desc)
+>  {
+> -	if (desc->setupfunc != NULL)
+> -		desc->setupfunc();
+> +	if (desc->setupfunc != NULL) {
+> +		if (desc->setupfunc == setup_emlink && emlink_flag == 1) {
+> +			tst_resm(TCONF, "We can't reach the max links for %s",
+> +				 fstype);
+> +			return;
+> +		} else {
+> +			desc->setupfunc();
+> +		}
+> +	}
+>  
+>  	TEST(ltp_syscall(__NR_linkat, AT_FDCWD, desc->oldfname,
+>  			 AT_FDCWD, desc->newfname, desc->flags));
+> @@ -204,8 +212,10 @@ static void setup(void)
+>  					 fstype, link_max);
+>  				break;
+>  			default:
+> -				tst_brkm(TBROK | TTERRNO, cleanup,
+> -					 "Unexpected error: ");
+> +				emlink_flag = 1;
+> +				tst_resm(TINFO | TTERRNO,
+> +					 "for %s we can't reach the max links",
 
-If none of the sbrk tests runs on uClinux the UCLINUX ifdefs should be
-removed and the whole directory should be skipped on build and install.
-(by adding into UCLINUX FILTER_OUT_DIRS in
-testacses/kernel/syscalls/Makefile)
-
-Otherwise the test looks fine.
-
-Jan can you please tune the increments, remove the ifdefs and push into
-git?
+What errno do we get here instead of the EMLINK?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
