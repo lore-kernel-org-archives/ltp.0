@@ -1,19 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Whj9R-0005Ly-Ck
-	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 17:27:33 +0000
-Date: Tue, 6 May 2014 19:26:34 +0200
-From: chrubis@suse.cz
-Message-ID: <20140506172634.GA10697@rei>
-References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1397202849-5956-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1397202849-5956-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v4 1/2] lib/tst_path_has_mnt_flags.c: create a
- function tst_path_has_mnt_flags()
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Wi1iD-0007ec-83
+	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 13:16:41 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Wi1iB-0008GT-G9
+	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 13:16:41 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s47DGWXJ016087
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 May 2014 13:16:33 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s47DGVXd008477
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 May 2014 13:16:32 GMT
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s47DGUCq028481
+	for <ltp-list@lists.sourceforge.net>; Wed, 7 May 2014 13:16:30 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed,  7 May 2014 17:16:59 +0400
+Message-Id: <1399468619-27317-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] device-drivers/acpi/ltp_acpi_cpufreq: fix checking
+	for write permission
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,131 +36,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "gux.fnst@cn.fujitsu.com" <gux.fnst@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> +/* lib/tst_path_has_mnt_flags.c
-> + *
-> + * Check whether a path is on a filesystem that is mounted with
-> + * specified flags.
-> + * @path: path to file
-> + * @flags: mount flags
+If access(some_file, W_OK) is executed by root it will return success even
+if the file has read-only permission. Use 'open' to test sysfs file for write
+permission.
 
-You should describe that flags is NULL terminated array here.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-And add a note about the return value (which is number of flags matched).
-
-> + */
-> +int tst_path_has_mnt_flags(const char *path, const char *flags[]);
-
-Looking at the function interface, we may add the clenanup callback
-parameter and do tst_brkm(TBROK, ) instead of the return -1. What do you
-think?
-
->  #ifdef TST_USE_COMPAT16_SYSCALL
->  #define TCID_BIT_SUFFIX "_16"
->  #elif  TST_USE_NEWER64_SYSCALL
-> diff --git a/lib/tst_path_has_mnt_flags.c b/lib/tst_path_has_mnt_flags.c
-> new file mode 100644
-> index 0000000..92c7494
-> --- /dev/null
-> +++ b/lib/tst_path_has_mnt_flags.c
-> @@ -0,0 +1,81 @@
-> +/*
-> + * Copyright (c) 2014 Fujitsu Ltd.
-> + * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +#include <unistd.h>
-> +#include <mntent.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include "test.h"
-> +
-> +/*
-> + * Check whether a path is on a filesystem that is mounted with
-> + * specified flags.
-> + *
-> + * Returns:
-> + *   -1 - an error has occurred
-> + *   0 - the filesystem does not have any specified flags
-> + *   1..n - number of flags matched
-> + */
-
-I would omit this comment, it's more important to have this description
-in the header file (which is where people look) than here.
-
-> +int tst_path_has_mnt_flags(const char *path, const char *flags[])
-> +{
-> +	struct mntent *mnt;
-> +	size_t prefix_max = 0, prefix_len;
-> +	int flags_matched = 0;
-> +	FILE *f;
-> +	int i;
-> +
-> +	if (path == NULL) {
-> +		printf("The path is NULL.\n");
-> +		return -1;
-> +	}
-> +
-> +	if (access(path, F_OK) == -1) {
-> +		printf("The path %s doesn't exist.\n", path);
-> +		return -1;
-> +	}
-> +
-> +	f = setmntent("/proc/mounts", "r");
-> +
-> +	if (f == NULL) {
-> +		printf("Couldn't mount /proc/mounts.\n");
-                                 ^
-				 open
-> +		return -1;
-> +	}
-> +
-> +	while ((mnt = getmntent(f))) {
-> +		/* ignore all pseudo fs */
-> +		if (mnt->mnt_fsname[0] != '/')
-> +			continue;
-> +
-> +		prefix_len = strlen(mnt->mnt_dir);
-> +
-> +		if (strncmp(path, mnt->mnt_dir, prefix_len) == 0
-> +				&& prefix_len > prefix_max) {
-> +			prefix_max = prefix_len;
-> +			flags_matched = 0;
-> +			i = 0;
-> +			while (flags[i] != NULL) {
-> +				if (hasmntopt(mnt, flags[i]) != NULL)
-> +					flags_matched++;
-> +				i++;
-> +			}
-> +		}
-> +	}
-> +
-> +	endmntent(f);
-> +
-> +	return flags_matched;
-> +}
-
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+index 175bf4c..f1d3d5a 100644
+--- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+@@ -31,6 +31,9 @@
+ #include <sched.h>
+ #include <sys/time.h>
+ #include <pthread.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
+ 
+ #include "test.h"
+ #include "usctest.h"
+@@ -69,12 +72,15 @@ static void cleanup(void)
+ 
+ static void setup(void)
+ {
++	int fd;
+ 	tst_require_root(NULL);
+ 
+-	if (access(boost, R_OK | W_OK)) {
++	fd = open(boost, O_RDWR);
++	if (fd == -1) {
+ 		tst_brkm(TCONF, NULL,
+ 			"acpi-cpufreq not loaded or overclock not supported");
+ 	}
++	close(fd);
+ 
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
