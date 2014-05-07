@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WkRbt-0001vz-VO
-	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 05:20:10 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WkRbs-0004LT-9S
-	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 05:20:09 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4E5IvtB017246
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 May 2014 13:18:57 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 14 May 2014 13:16:39 +0800
-Message-ID: <1400044599-22342-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wi1Ro-0006sP-WA
+	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 12:59:45 +0000
+Date: Wed, 7 May 2014 14:58:45 +0200
+From: chrubis@suse.cz
+Message-ID: <20140507125845.GC20240@rei>
+References: <1396350731.10607.12.camel@G08JYZSD130126>
+	<20140505163249.GD11256@rei>
+	<1399373430.3177.55.camel@G08JYZSD130126>
+	<20140506110048.GC6403@rei.Home>
+	<1399427555.2397.8.camel@G08JYZSD130126>
+	<20140507090930.GA18644@rei>
+	<1399459901.2397.18.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] doc: test-writing-guidelines
+Content-Disposition: inline
+In-Reply-To: <1399459901.2397.18.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v2 2/2] readdir/readdir21.c: add new error number
+	testes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,51 +31,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Add paragraph to describe two new tst_ interfaces: tst_strsig and tst_strerrno.
+Hi!
+> Add ENOENT and ENOTDIR error number testes for readdir(2)
+> 
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- doc/test-writing-guidelines.txt | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Both pushed, thanks.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index bf129a3..7cdaf2f 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -435,6 +435,21 @@ Exits the tests, note that this function has no parameters, the PASSES/FAILS
- reported by the 'tst_resm()' interfaces were stored and are used for the exit
- value.
- 
-+[source,c]
-+-------------------------------------------------------------------------------
-+const char *tst_strsig(int sig);
-+-------------------------------------------------------------------------------
-+
-+Return the given signal number's corresponding string.
-+
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+const char *tst_strerrno(int err);
-+-------------------------------------------------------------------------------
-+
-+Return the given errno number's corresponding string.
-+
- 
- 2.2.3 Test temporary directory
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PS: I've added SAFE_RMDIR() to lib and make use of in the testcase.
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
