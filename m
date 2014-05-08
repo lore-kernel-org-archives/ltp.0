@@ -1,35 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
 	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Wn3ho-0002nx-Cx
-	for ltp-list@lists.sourceforge.net; Wed, 21 May 2014 10:25:04 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	id 1WiKIA-0003Mz-W9
+	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 09:07:03 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wn3hm-0005mI-IY
-	for ltp-list@lists.sourceforge.net; Wed, 21 May 2014 10:25:04 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s4LAOuuV022161
+	(Exim 4.76) id 1WiKIA-00059a-1J
+	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 09:07:02 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s4896tCr005886
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 May 2014 10:24:56 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s4LAOtK4025666
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 May 2014 10:24:56 GMT
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4LAOta9006369
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 May 2014 10:24:55 GMT
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 09:06:56 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s4896tL1019009
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 09:06:55 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s4896t9D003089
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 09:06:55 GMT
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 21 May 2014 14:24:46 +0400
-Message-Id: <1400667887-5188-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140520144246.GA30023@rei.suse.cz>
-References: <20140520144246.GA30023@rei.suse.cz>
-Subject: [LTP] [PATCH 2/3] rt_sigaction, rt_sigprocmask01,
-	rt_sigsuspend: use rt_sigaction wrapper
+Date: Thu,  8 May 2014 13:06:42 +0400
+Message-Id: <1399540004-14742-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1399540004-14742-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1399540004-14742-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 2/4] linux syscall numbers: removed unimplemented
+	syscalls for sparc64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,291 +46,245 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-These testcases use many pieces of duplicated code to test
-syscall(__NR_rt_sigaction). Thus it's not beautiful to add support
-for other architectures there.
-
-To overcome this I implemented a wrapper for the rt_sigaction syscall,
-and made the test cases use it.
-
-And struct kernel_sigaction is not specific only for x86_64.
+In accordance with arch/sparc/include/uapi/asm/unistd.h syscalls
+with names containing '32' are not defined for sparc64.
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
+ testcases/kernel/include/linux_syscall_numbers.h |   57 ----------------------
+ testcases/kernel/include/sparc64.in              |   19 -------
+ 2 files changed, 0 insertions(+), 76 deletions(-)
 
-ltp_rt_sigaction is tightly couples with stuff in ltp_signal.h,
-therefore I put it there.
-
-
- include/ltp_signal.h                               |   70 ++++++++++++++++++--
- .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |   15 +----
- .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |    8 +--
- .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |    4 +-
- .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |   13 +---
- .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |   13 +----
- 6 files changed, 74 insertions(+), 49 deletions(-)
-
-diff --git a/include/ltp_signal.h b/include/ltp_signal.h
-index e6fb2e0..31bb0b0 100644
---- a/include/ltp_signal.h
-+++ b/include/ltp_signal.h
-@@ -55,6 +55,15 @@
- 
- #ifdef LTP_RT_SIG_TEST
- 
-+#define INVAL_SA_PTR ((void *)-1)
-+
-+struct kernel_sigaction {
-+	__sighandler_t k_sa_handler;
-+	unsigned long sa_flags;
-+	void (*sa_restorer) (void);
-+	sigset_t sa_mask;
-+};
-+
- #ifdef __x86_64__
- 
- /*
-@@ -77,13 +86,6 @@
- #define HAVE_SA_RESTORER
- #define SA_RESTORER	0x04000000
- 
--struct kernel_sigaction {
--	__sighandler_t k_sa_handler;
--	unsigned long sa_flags;
--	void (*sa_restorer) (void);
--	sigset_t sa_mask;
--};
--
- void (*restore_rt)(void);
- 
- static void handler_h(int signal)
-@@ -120,6 +122,60 @@ static inline int sig_initial(int sig)
- 
- #endif /* __x86_64__ */
- 
-+/* This is a wrapper for __NR_rt_sigaction syscall.
-+ * act/oact values of INVAL_SA_PTR is used to pass
-+ * an invalid pointer to syscall(__NR_rt_sigaction)
-+ *
-+ * Based on glibc/sysdeps/unix/sysv/linux/{...}/sigaction.c
-+ */
-+
-+static int ltp_rt_sigaction(int signum, const struct sigaction *act,
-+			struct sigaction *oact, size_t sigsetsize)
-+{
-+	int ret;
-+	struct kernel_sigaction kact, koact;
-+	struct kernel_sigaction *kact_p = NULL;
-+	struct kernel_sigaction *koact_p = NULL;
-+
-+	if (act == INVAL_SA_PTR) {
-+		kact_p = INVAL_SA_PTR;
-+	} else if (act) {
-+		kact.k_sa_handler = act->sa_handler;
-+		memcpy(&kact.sa_mask, &act->sa_mask, sizeof(sigset_t));
-+		kact.sa_flags = act->sa_flags;
-+		kact.sa_restorer = NULL;
-+
-+		kact_p = &kact;
-+	}
-+
-+	if (oact == INVAL_SA_PTR)
-+		koact_p = INVAL_SA_PTR;
-+	else if (oact)
-+		koact_p = &koact;
-+
-+#ifdef __x86_64__
-+	sig_initial(signum);
-+	kact.sa_flags |= SA_RESTORER;
-+	kact.sa_restorer = restore_rt;
-+#endif
-+
-+	ret = ltp_syscall(__NR_rt_sigaction, signum,
-+			kact_p, koact_p,
-+			sigsetsize);
-+
-+	if (ret >= 0) {
-+		if (oact && (oact != INVAL_SA_PTR)) {
-+			oact->sa_handler = koact.k_sa_handler;
-+			memcpy(&oact->sa_mask, &koact.sa_mask,
-+				sizeof(sigset_t));
-+			oact->sa_flags = koact.sa_flags;
-+			oact->sa_restorer = koact.sa_restorer;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
- #endif /* LTP_RT_SIG_TEST */
- 
- #endif
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-index 5ca3ba4..ac05c64 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-@@ -73,20 +73,14 @@ static void handler(int sig)
- 
- static int set_handler(int sig, int sig_to_mask, int mask_flags)
- {
--#ifdef __x86_64__
--	struct kernel_sigaction sa, oldaction;
--	mask_flags |= SA_RESTORER;
--	sa.sa_restorer = restore_rt;
--	sa.k_sa_handler = (void *)handler;
--#else
- 	struct sigaction sa, oldaction;
-+
- 	sa.sa_handler = (void *)handler;
--#endif
- 	sa.sa_flags = mask_flags;
- 	sigemptyset(&sa.sa_mask);
- 	sigaddset(&sa.sa_mask, sig);
- 
--	return ltp_syscall(__NR_rt_sigaction, sig, &sa, &oldaction, SIGSETSIZE);
-+	return ltp_rt_sigaction(sig, &sa, &oldaction, SIGSETSIZE);
- }
- 
- int main(int ac, char **av)
-@@ -109,11 +103,6 @@ int main(int ac, char **av)
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
- 			for (signal = SIGRTMIN; signal <= SIGRTMAX; signal++) {
--
--#ifdef __x86_64__
--				sig_initial(signal);
--#endif
--
- 				for (flag = 0;
- 				     flag <
- 				     (sizeof(test_flags) /
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-index 5822a79..1b2d22a 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-@@ -32,13 +32,12 @@
- #include <sys/syscall.h>
- #include <string.h>
- 
-+#define LTP_RT_SIG_TEST
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
- #include "ltp_signal.h"
- 
--#define INVAL_STRUCT -1
--
- char *TCID = "rt_sigaction02";
- static int testno;
- int TST_TOTAL = 1;
-@@ -100,9 +99,8 @@ int main(int ac, char **av)
- 					 * An invalid act or oact value was specified                   *
- 					 */
- 
--					TEST(ltp_syscall
--					     (__NR_rt_sigaction, signal,
--					      INVAL_STRUCT, NULL, SIGSETSIZE));
-+					TEST(ltp_rt_sigaction(signal,
-+						INVAL_SA_PTR, NULL, SIGSETSIZE));
- 					if ((TEST_RETURN == -1)
- 					    && (TEST_ERRNO ==
- 						test_cases[0].exp_errno)) {
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-index 8920138..f974567 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-@@ -32,6 +32,7 @@
- #include <sys/syscall.h>
- #include <string.h>
- 
-+#define LTP_RT_SIG_TEST
- #include "test.h"
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
-@@ -92,8 +93,7 @@ static int set_handler(int sig, int sig_to_mask, int mask_flags)
- 	 * sigsetsize was not equivalent to the size of a sigset_t type *
- 	 */
- 
--	return ltp_syscall(__NR_rt_sigaction, sig, &sa, &oldaction,
--			INVAL_SIGSETSIZE);
-+	return ltp_rt_sigaction(sig, &sa, &oldaction, INVAL_SIGSETSIZE);
- }
- 
- int main(int ac, char **av)
-diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-index f13edbf..2b131c2 100644
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-@@ -76,18 +76,11 @@ void sig_handler(int sig)
- 
- int main(int ac, char **av)
- {
--#if __x86_64
--	struct kernel_sigaction act, oact;
--	sig_initial(TEST_SIG);
--	act.sa_flags |= SA_RESTORER;
--	act.sa_restorer = restore_rt;
--	act.k_sa_handler = sig_handler;
--#else
- 	struct sigaction act, oact;
- 	memset(&act, 0, sizeof(act));
- 	memset(&oact, 0, sizeof(oact));
- 	act.sa_handler = sig_handler;
--#endif
-+
- 	sigset_t set, oset;
- 	int lc;
- 	char *msg;
-@@ -111,8 +104,8 @@ int main(int ac, char **av)
- 					 "sigaddset call failed");
- 
- 			/* call rt_sigaction() */
--			TEST(ltp_syscall(__NR_rt_sigaction, TEST_SIG, &act,
--				&oact, SIGSETSIZE));
-+			TEST(ltp_rt_sigaction(TEST_SIG, &act, &oact,
-+						SIGSETSIZE));
- 			if (TEST_RETURN < 0)
- 				tst_brkm(TFAIL | TTERRNO, cleanup,
- 					 "rt_sigaction call failed");
-diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-index 6ee41d0..5c77648 100644
---- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-+++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-@@ -70,23 +70,12 @@ int main(int ac, char **av)
- 
- 		if (sigemptyset(&set) < 0)
- 			tst_brkm(TFAIL | TERRNO, cleanup, "sigemptyset failed");
--#ifdef __x86_64__
--		struct kernel_sigaction act, oact;
--		sig_initial(SIGALRM);
--		memset(&act, 0, sizeof(act));
--		memset(&oact, 0, sizeof(oact));
--		act.sa_flags |= SA_RESTORER;
--		act.sa_restorer = restore_rt;
--		act.k_sa_handler = sig_handler;
--#else
- 		struct sigaction act, oact;
- 		memset(&act, 0, sizeof(act));
- 		memset(&oact, 0, sizeof(oact));
- 		act.sa_handler = sig_handler;
--#endif
- 
--		TEST(ltp_syscall(__NR_rt_sigaction, SIGALRM, &act, &oact,
--			     SIGSETSIZE));
-+		TEST(ltp_rt_sigaction(SIGALRM, &act, &oact, SIGSETSIZE));
- 		if (TEST_RETURN == -1)
- 			tst_brkm(TFAIL | TTERRNO, cleanup,
- 				 "rt_sigaction failed");
+diff --git a/testcases/kernel/include/linux_syscall_numbers.h b/testcases/kernel/include/linux_syscall_numbers.h
+index a43f7ca..60caaf1 100644
+--- a/testcases/kernel/include/linux_syscall_numbers.h
++++ b/testcases/kernel/include/linux_syscall_numbers.h
+@@ -8974,21 +8974,12 @@
+ # ifndef __NR_utime
+ #  define __NR_utime 30
+ # endif
+-# ifndef __NR_lchown32
+-#  define __NR_lchown32 31
+-# endif
+-# ifndef __NR_fchown32
+-#  define __NR_fchown32 32
+-# endif
+ # ifndef __NR_access
+ #  define __NR_access 33
+ # endif
+ # ifndef __NR_nice
+ #  define __NR_nice 34
+ # endif
+-# ifndef __NR_chown32
+-#  define __NR_chown32 35
+-# endif
+ # ifndef __NR_sync
+ #  define __NR_sync 36
+ # endif
+@@ -9013,9 +9004,6 @@
+ # ifndef __NR_times
+ #  define __NR_times 43
+ # endif
+-# ifndef __NR_getuid32
+-#  define __NR_getuid32 44
+-# endif
+ # ifndef __NR_umount2
+ #  define __NR_umount2 45
+ # endif
+@@ -9037,9 +9025,6 @@
+ # ifndef __NR_acct
+ #  define __NR_acct 51
+ # endif
+-# ifndef __NR_getgid32
+-#  define __NR_getgid32 53
+-# endif
+ # ifndef __NR_memory_ordering
+ #  define __NR_memory_ordering 52
+ # endif
+@@ -9088,18 +9073,9 @@
+ # ifndef __NR_pwrite64
+ #  define __NR_pwrite64 68
+ # endif
+-# ifndef __NR_geteuid32
+-#  define __NR_geteuid32 69
+-# endif
+-# ifndef __NR_getegid32
+-#  define __NR_getegid32 70
+-# endif
+ # ifndef __NR_mmap
+ #  define __NR_mmap 71
+ # endif
+-# ifndef __NR_setreuid32
+-#  define __NR_setreuid32 72
+-# endif
+ # ifndef __NR_munmap
+ #  define __NR_munmap 73
+ # endif
+@@ -9127,9 +9103,6 @@
+ # ifndef __NR_getpgrp
+ #  define __NR_getpgrp 81
+ # endif
+-# ifndef __NR_setgroups32
+-#  define __NR_setgroups32 82
+-# endif
+ # ifndef __NR_setitimer
+ #  define __NR_setitimer 83
+ # endif
+@@ -9142,30 +9115,18 @@
+ # ifndef __NR_getitimer
+ #  define __NR_getitimer 86
+ # endif
+-# ifndef __NR_setuid32
+-#  define __NR_setuid32 87
+-# endif
+ # ifndef __NR_sethostname
+ #  define __NR_sethostname 88
+ # endif
+-# ifndef __NR_setgid32
+-#  define __NR_setgid32 89
+-# endif
+ # ifndef __NR_dup2
+ #  define __NR_dup2 90
+ # endif
+-# ifndef __NR_setfsuid32
+-#  define __NR_setfsuid32 91
+-# endif
+ # ifndef __NR_fcntl
+ #  define __NR_fcntl 92
+ # endif
+ # ifndef __NR_select
+ #  define __NR_select 93
+ # endif
+-# ifndef __NR_setfsgid32
+-#  define __NR_setfsgid32 94
+-# endif
+ # ifndef __NR_fsync
+ #  define __NR_fsync 95
+ # endif
+@@ -9205,21 +9166,6 @@
+ # ifndef __NR_rt_sigsuspend
+ #  define __NR_rt_sigsuspend 107
+ # endif
+-# ifndef __NR_setresuid32
+-#  define __NR_setresuid32 108
+-# endif
+-# ifndef __NR_getresuid32
+-#  define __NR_getresuid32 109
+-# endif
+-# ifndef __NR_setresgid32
+-#  define __NR_setresgid32 110
+-# endif
+-# ifndef __NR_getresgid32
+-#  define __NR_getresgid32 111
+-# endif
+-# ifndef __NR_setregid32
+-#  define __NR_setregid32 112
+-# endif
+ # ifndef __NR_setresuid
+ #  define __NR_setresuid 108
+ # endif
+@@ -9238,9 +9184,6 @@
+ # ifndef __NR_sendmsg
+ #  define __NR_sendmsg 114
+ # endif
+-# ifndef __NR_getgroups32
+-#  define __NR_getgroups32 115
+-# endif
+ # ifndef __NR_gettimeofday
+ #  define __NR_gettimeofday 116
+ # endif
+diff --git a/testcases/kernel/include/sparc64.in b/testcases/kernel/include/sparc64.in
+index 697378f..e79ba95 100644
+--- a/testcases/kernel/include/sparc64.in
++++ b/testcases/kernel/include/sparc64.in
+@@ -29,11 +29,8 @@ alarm 27
+ sigaltstack 28
+ pause 29
+ utime 30
+-lchown32 31
+-fchown32 32
+ access 33
+ nice 34
+-chown32 35
+ sync 36
+ kill 37
+ stat 38
+@@ -42,7 +39,6 @@ lstat 40
+ dup 41
+ pipe 42
+ times 43
+-getuid32 44
+ umount2 45
+ setgid 46
+ getgid 47
+@@ -50,7 +46,6 @@ signal 48
+ geteuid 49
+ getegid 50
+ acct 51
+-getgid32 53
+ memory_ordering 52
+ ioctl 54
+ reboot 55
+@@ -67,10 +62,7 @@ msync 65
+ vfork 66
+ pread64 67
+ pwrite64 68
+-geteuid32 69
+-getegid32 70
+ mmap 71
+-setreuid32 72
+ munmap 73
+ mprotect 74
+ madvise 75
+@@ -80,19 +72,14 @@ mincore 78
+ getgroups 79
+ setgroups 80
+ getpgrp 81
+-setgroups32 82
+ setitimer 83
+ ftruncate64 84
+ swapon 85
+ getitimer 86
+-setuid32 87
+ sethostname 88
+-setgid32 89
+ dup2 90
+-setfsuid32 91
+ fcntl 92
+ select 93
+-setfsgid32 94
+ fsync 95
+ setpriority 96
+ socket 97
+@@ -106,18 +93,12 @@ rt_sigpending 104
+ rt_sigtimedwait 105
+ rt_sigqueueinfo 106
+ rt_sigsuspend 107
+-setresuid32 108
+-getresuid32 109
+-setresgid32 110
+-getresgid32 111
+-setregid32 112
+ setresuid 108
+ getresuid 109
+ setresgid 110
+ getresgid 111
+ recvmsg 113
+ sendmsg 114
+-getgroups32 115
+ gettimeofday 116
+ getrusage 117
+ getsockopt 118
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
