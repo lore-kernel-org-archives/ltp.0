@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WjpzS-0003qi-FK
-	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 13:09:58 +0000
-Date: Mon, 12 May 2014 15:08:56 +0200
-From: chrubis@suse.cz
-Message-ID: <20140512130856.GB4741@rei>
-References: <1399540004-14742-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1399540004-14742-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WieFY-0000Im-30
+	for ltp-list@lists.sourceforge.net; Fri, 09 May 2014 06:25:40 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WieFS-0004ZR-8w
+	for ltp-list@lists.sourceforge.net; Fri, 09 May 2014 06:25:40 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s496PQ3Y005556
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 May 2014 14:25:26 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Fri, 9 May 2014 14:23:11 +0800
+Message-ID: <1399616591-32662-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1399540004-14742-5-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 4/4] rt_sigaction*, rt_sigprocmask01,
- rt_sigsuspend01: SPARC support
+Subject: [LTP] [PATCH v2] lib/tst_sig.c: output signal name when got
+	unexpected signal
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,135 +30,257 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Added SPARC support for tests:
->  * rt_sigaction01, rt_sigaction02, rt_sigaction03
->  * rt_sigprocmask01
->  * rt_sigsuspend01
-> 
-> Author: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Co-author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  include/ltp_signal.h                               |   39 +++++++++++++++++++-
->  .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |   32 ++++++++++++++---
->  .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |   13 ++++++-
->  .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |   28 ++++++++++++++
->  .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |   24 +++++++++++-
->  .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |   24 ++++++++++--
->  6 files changed, 147 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/ltp_signal.h b/include/ltp_signal.h
-> index e6fb2e0..c050894 100644
-> --- a/include/ltp_signal.h
-> +++ b/include/ltp_signal.h
-> @@ -1,6 +1,7 @@
->  /*
->   * Copyright (c) 2009 Cisco Systems, Inc.  All Rights Reserved.
->   * Copyright (c) 2009 FUJITSU LIMITED.  All Rights Reserved.
-> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->   *
->   * This program is free software; you can redistribute it and/or modify it
->   * under the terms of version 2 of the GNU General Public License as
-> @@ -77,6 +78,42 @@
->  #define HAVE_SA_RESTORER
->  #define SA_RESTORER	0x04000000
->  
-> +#endif /* __x86_64__ */
-> +
-> +#ifdef __sparc__
-> +#if defined __arch64__ || defined __sparcv9
-> +
-> +/*
-> + * From glibc/sysdeps/unix/sysv/linux/sparc/sparc64/sigaction.c
-> + */
-> +
-> +static void __rt_sigreturn_stub(void)
-> +{
-> +	__asm__ ("mov %0, %%g1\n\t"
-> +		"ta  0x6d\n\t"
-> +		: /* no outputs */
-> +		: "i" (__NR_rt_sigreturn));
-> +}
-> +
-> +#else /* sparc32 */
-> +
-> +/*
-> + * From glibc/sysdeps/unix/sysv/linux/sparc/sparc32/sigaction.c
-> + */
-> +
-> +static void __sigreturn_stub(void)
-> +{
-> +	__asm__ ("mov %0, %%g1\n\t"
-> +		"ta  0x10\n\t"
-> +		: /* no outputs */
-> +		: "i" (__NR_sigreturn));
-> +}
-> +
-> +#endif
-> +#endif /* __sparc__ */
+When testcase is killed by unexpected signal, usually it just prints
+signal's value.
+	fcntl30     1  TBROK  :  unexpected signal 2 received (pid = 6714).
+	fcntl30     2  TBROK  :  Remaining cases broken
 
-Do you care to elaborate what are these used for? I can see that you
-pass and addres to them to the sparc variant of the rt_sigaction
-syscalls below however a line or two about why we do this in the commit
-message wouldn't hurt.
+Here we also print signal's name to output more informative message.
+	fcntl30     1  TBROK  :  unexpected signal SIGINT(2) received (pid = 9872).
+	fcntl30     2  TBROK  :  Remaining cases broken
 
-> +#if defined __x86_64__ || defined __sparc__
-> +
->  struct kernel_sigaction {
->  	__sighandler_t k_sa_handler;
->  	unsigned long sa_flags;
-> @@ -118,7 +155,7 @@ static inline int sig_initial(int sig)
->  
->  }
->  
-> -#endif /* __x86_64__ */
-> +#endif /* __x86_64__ || __sparc__*/
->  
->  #endif /* LTP_RT_SIG_TEST */
->  
-> diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-> index 8f18394..2f8020e 100644
-> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-> @@ -1,5 +1,6 @@
->  /******************************************************************************/
->  /* Copyright (c) Crackerjack Project., 2007                                   */
-> +/* Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.      */
->  /*                                                                            */
->  /* This program is free software;  you can redistribute it and/or modify      */
->  /* it under the terms of the GNU General Public License as published by       */
-> @@ -127,21 +128,42 @@ void handler(int sig)
->  
->  int set_handler(int sig, int sig_to_mask, int mask_flags)
->  {
-> -#ifdef __x86_64__
-> +#ifdef __sparc__
-> +	struct sigaction sa;
-> +	struct kernel_sigaction kact, koact;
-> +# ifdef __arch64__
-> +	unsigned long stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-> +# else
-> +	unsigned long stub = ((unsigned long) &__sigreturn_stub) - 8;
-> +# endif
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ include/test.h |   7 ++++
+ lib/errnos.h   |   4 +--
+ lib/signame.h  | 111 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_res.c  |  20 +++++++++--
+ lib/tst_sig.c  |   3 +-
+ 5 files changed, 139 insertions(+), 6 deletions(-)
+ create mode 100644 lib/signame.h
 
-These ifdefs are repeated in the lines below over and over, can we put
-them in a common header instead?
-
+diff --git a/include/test.h b/include/test.h
+index e32481c..169fdfd 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -302,6 +302,13 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
+ 	unsigned short family, int type);
+ 
++/* lib/tst_res.c
++ * tst_strsig converts signal's value to corresponding string.
++ * tst_strerrno converts errno to corresponding string.
++ */
++const char *tst_strsig(int sig);
++const char *tst_strerrno(int err);
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/errnos.h b/lib/errnos.h
+index 8e80e07..c1ea17e 100644
+--- a/lib/errnos.h
++++ b/lib/errnos.h
+@@ -25,9 +25,9 @@
+  * Mountain View, CA  94043, or:
+  */
+ 
+-static const char *strerrnodef(int err)
++const char *tst_strerrno(int err)
+ {
+-	struct pair errno_pairs[] = {
++	static struct pair errno_pairs[] = {
+ 		{.name = "SUCCESS", .val = 0},
+ 		/* asm-generic/errno-base.h */
+ 		PAIR(EPERM)
+diff --git a/lib/signame.h b/lib/signame.h
+new file mode 100644
+index 0000000..99250bf
+--- /dev/null
++++ b/lib/signame.h
+@@ -0,0 +1,111 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++const char *tst_strsig(int sig)
++{
++	static const struct pair signal_pairs[] = {
++		STRPAIR(SIGHUP, "SIGHUP")
++		STRPAIR(SIGINT, "SIGINT")
++		STRPAIR(SIGQUIT, "SIGQUIT")
++		STRPAIR(SIGILL, "SIGILL")
++	#ifdef SIGTRAP
++		STRPAIR(SIGTRAP, "SIGTRAP")
++	#endif
++
++	#ifdef SIGIOT
++		/* SIGIOT same as SIGABRT */
++		STRPAIR(SIGABRT, "SIGIOT/SIGABRT")
++	#else
++		STRPAIR(SIGABRT, "SIGABRT")
++	#endif
++
++	#ifdef SIGEMT
++		STRPAIR(SIGEMT, "SIGEMT")
++	#endif
++	#ifdef SIGBUS
++		STRPAIR(SIGBUS, "SIGBUS")
++	#endif
++		STRPAIR(SIGFPE, "SIGFPE")
++		STRPAIR(SIGKILL, "SIGKILL")
++		STRPAIR(SIGUSR1, "SIGUSR1")
++		STRPAIR(SIGSEGV, "SIGSEGV")
++		STRPAIR(SIGUSR2, "SIGUSR2")
++		STRPAIR(SIGPIPE, "SIGPIPE")
++		STRPAIR(SIGALRM, "SIGALRM")
++		STRPAIR(SIGTERM, "SIGTERM")
++	#ifdef SIGSTKFLT
++		STRPAIR(SIGSTKFLT, "SIGSTKFLT")
++	#endif
++
++	#ifdef SIGCLD
++		/* SIGCLD same as SIGCHLD */
++		STRPAIR(SIGCHLD, "SIGCHLD/SIGCLD")
++	#else
++		STRPAIR(SIGCHLD, "SIGCHLD")
++	#endif
++		STRPAIR(SIGCONT, "SIGCONT")
++		STRPAIR(SIGSTOP, "SIGSTOP")
++		STRPAIR(SIGTSTP, "SIGTSTP")
++		STRPAIR(SIGTTIN, "SIGTTIN")
++		STRPAIR(SIGTTOU, "SIGTTOU")
++	#ifdef SIGURG
++		STRPAIR(SIGURG, "SIGURG")
++	#endif
++	#ifdef SIGXCPU
++		STRPAIR(SIGXCPU, "SIGXCPU")
++	#endif
++	#ifdef SIGXFSZ
++		STRPAIR(SIGXFSZ, "SIGXFSZ")
++	#endif
++	#ifdef SIGVTALRM
++		STRPAIR(SIGVTALRM, "SIGVTALRM")
++	#endif
++	#ifdef SIGPROF
++		STRPAIR(SIGPROF, "SIGPROF")
++	#endif
++	#ifdef SIGWINCH
++		STRPAIR(SIGWINCH, "SIGWINCH")
++	#endif
++
++	#if defined(SIGIO) && defined(SIGPOLL)
++		/* SIGPOLL same as SIGIO */
++		STRPAIR(SIGIO, "SIGIO/SIGPOLL")
++	#elif defined(SIGIO)
++		STRPAIR(SIGIO, "SIGIO")
++	#elif defined(SIGPOLL)
++		STRPAIR(SIGPOLL, "SIGPOLL")
++	#endif
++
++	#ifdef SIGINFO
++		STRPAIR(SIGINFO, "SIGINFO")
++	#endif
++	#ifdef SIGLOST
++		STRPAIR(SIGLOST, "SIGLOST")
++	#endif
++	#ifdef SIGPWR
++		STRPAIR(SIGPWR, "SIGPWR")
++	#endif
++	#if defined(SIGSYS)
++		STRPAIR(SIGSYS, "SIGSYS")
++	#endif
++	#if defined(SIGUNUSED)
++		STRPAIR(SIGUNUSED, "SIGUNUSED")
++	#endif
++	};
++
++	STRPAIR_LOOKUP(signal_pairs, sig);
++};
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index 8faa5a9..7fc7ad8 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -197,6 +197,17 @@ struct pair {
+ 	return pair_arr[idx].name;                            \
+ } while (0)
+ 
++#define STRPAIR(key, value)  {.val = (key), .name = (value)},
++#define STRPAIR_LOOKUP(strpair_arr, key) do {                     \
++	int i;                                                    \
++	for (i = 0; (size_t) i < ARRAY_SIZE(strpair_arr); i++) {  \
++		if (key == strpair_arr[i].val)                    \
++			return strpair_arr[i].name;               \
++	}                                                         \
++	return "???";                                             \
++} while (0)
++
++
+ /*
+  * strttype() - convert a type result to the human readable string
+  */
+@@ -216,10 +227,13 @@ const char *strttype(int ttype)
+ }
+ 
+ /*
+- * Include table of errnos and strerrnodef() function.
++ * Include table of errnos and tst_strerrno() function.
+  */
+ #include "errnos.h"
+ 
++/* Include table of signals and tst_strsig() function*/
++#include "signame.h"
++
+ /*
+  * tst_res() - Main result reporting function.  Handle test information
+  *             appropriately depending on output display mode.  Call
+@@ -459,7 +473,7 @@ static void tst_print(const char *tcid, int tnum, int ttype, const char *tmesg)
+ 
+ 	if (ttype & TERRNO) {
+ 		size += snprintf(message + size, sizeof(message) - size,
+-				 ": errno=%s(%i): %s", strerrnodef(err),
++				 ": errno=%s(%i): %s", tst_strerrno(err),
+ 				 err, strerror(err));
+ 	}
+ 
+@@ -471,7 +485,7 @@ static void tst_print(const char *tcid, int tnum, int ttype, const char *tmesg)
+ 	if (ttype & TTERRNO) {
+ 		size += snprintf(message + size, sizeof(message) - size,
+ 				 ": TEST_ERRNO=%s(%i): %s",
+-				 strerrnodef(TEST_ERRNO), (int)TEST_ERRNO,
++				 tst_strerrno(TEST_ERRNO), (int)TEST_ERRNO,
+ 				 strerror(TEST_ERRNO));
+ 	}
+ 
+diff --git a/lib/tst_sig.c b/lib/tst_sig.c
+index 2ffe610..95310f0 100644
+--- a/lib/tst_sig.c
++++ b/lib/tst_sig.c
+@@ -246,7 +246,8 @@ static void def_handler(int sig)
+ 	 * Break remaining test cases, do any cleanup, then exit
+ 	 */
+ 	tst_brkm(TBROK, T_cleanup,
+-		 "unexpected signal %d received (pid = %d).", sig, getpid());
++		 "unexpected signal %s(%d) received (pid = %d).",
++		 tst_strsig(sig), sig, getpid());
+ }
+ 
+ /*
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
+&#149; 3 signs your SCM is hindering your productivity
+&#149; Requirements for releasing software faster
+&#149; Expert tips and advice for migrating your SCM now
+http://p.sf.net/sfu/perforce
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
