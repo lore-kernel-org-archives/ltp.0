@@ -1,32 +1,40 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Wi1iD-0007ec-83
-	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 13:16:41 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wi1iB-0008GT-G9
-	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 13:16:41 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s47DGWXJ016087
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 May 2014 13:16:33 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s47DGVXd008477
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 May 2014 13:16:32 GMT
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s47DGUCq028481
-	for <ltp-list@lists.sourceforge.net>; Wed, 7 May 2014 13:16:30 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  7 May 2014 17:16:59 +0400
-Message-Id: <1399468619-27317-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] device-drivers/acpi/ltp_acpi_cpufreq: fix checking
-	for write permission
+	(envelope-from <madanvs@linux.vnet.ibm.com>) id 1WiddC-0006l9-S1
+	for ltp-list@lists.sourceforge.net; Fri, 09 May 2014 05:46:02 +0000
+Received: from e28smtp01.in.ibm.com ([122.248.162.1])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WiddB-0002JI-A4
+	for ltp-list@lists.sourceforge.net; Fri, 09 May 2014 05:46:02 +0000
+Received: from /spool/local
+	by e28smtp01.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <madanvs@linux.vnet.ibm.com>; 
+	Fri, 9 May 2014 11:15:53 +0530
+Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
+	by d28dlp02.in.ibm.com (Postfix) with ESMTP id E1B96394004E
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  9 May 2014 11:15:50 +0530 (IST)
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	s495jwKN59310236
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 May 2014 11:15:58 +0530
+Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	s495jn28008016
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 May 2014 11:15:49 +0530
+Received: from openstack.linuxxx (openstack.in.ibm.com [9.193.66.112])
+	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	s495jnjr008000
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 May 2014 11:15:49 +0530
+Message-ID: <536C6B8D.9070804@linux.vnet.ibm.com>
+Date: Fri, 09 May 2014 11:15:49 +0530
+From: Madan <madanvs@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Subject: [LTP]  readahead02: change the test pass to 2M
+Reply-To: madanvs@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,55 +44,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-If access(some_file, W_OK) is executed by root it will return success even
-if the file has read-only permission. Use 'open' to test sysfs file for write
-permission.
+Max readahead size has been limited since commit:
+   commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
+   Author: Raghavendra K T<raghavendra.kt@linux.vnet.ibm.com>
+   Date:   Thu Apr 3 14:48:23 2014 -0700
+     mm/readahead.c: fix readahead failure for memoryless NUMA nodes
+                     and limit readahead pages
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+Updating the change in the readahead behaviour of max 2M cache.
+http://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/commit/?id=c7252018cef0da5db35cd03aa7b6c44ab597a0b7
 
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-index 175bf4c..f1d3d5a 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-@@ -31,6 +31,9 @@
- #include <sched.h>
- #include <sys/time.h>
- #include <pthread.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
- 
- #include "test.h"
- #include "usctest.h"
-@@ -69,12 +72,15 @@ static void cleanup(void)
- 
- static void setup(void)
- {
-+	int fd;
- 	tst_require_root(NULL);
- 
--	if (access(boost, R_OK | W_OK)) {
-+	fd = open(boost, O_RDWR);
-+	if (fd == -1) {
- 		tst_brkm(TCONF, NULL,
- 			"acpi-cpufreq not loaded or overclock not supported");
- 	}
-+	close(fd);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--- 
-1.7.1
+Signed-off-by:Hoisaleshwara Madan V S <hoisalvs@in.ibm.com>
+
+Patch :
+
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahe
+index 66158f0..dc6a191 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -306,13 +306,14 @@ static void test_readahead(void)
+         tst_resm(TINFO, "cache can hold at least: %ld kB", cached_max);
+         tst_resm(TINFO, "read_testfile(0) used cache: %ld kB", cached);
+         tst_resm(TINFO, "read_testfile(1) used cache: %ld kB", cached_ra);
+-
+-       if (cached_max * 1024 >= testfile_size) {
++
++        /* readahead will cache max of 2 M */
++       if (cached_max * 1024 >= 2 * 1024) {
+                 /*
+                  * if cache can hold ~testfile_size then cache increase
+                  * for readahead should be at least testfile_size/2
+                  */
+-               if (cached_ra * 1024 > testfile_size / 2)
++               if (cached_ra * 1024 > 2 * 1024)
+                         tst_resm(TPASS, "using cache as expected");
+                 else
+                         tst_resm(TWARN, "using less cache than expected");
+
 
 
 ------------------------------------------------------------------------------
