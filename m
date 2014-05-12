@@ -1,36 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WhFhX-0006ON-Pb
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 10:00:47 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WhFhW-0002Oi-U8
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 10:00:47 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s45A0e5s032614
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 May 2014 10:00:41 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s45A0dYL027506
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 May 2014 10:00:39 GMT
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s45A0dQ8027501
-	for <ltp-list@lists.sourceforge.net>; Mon, 5 May 2014 10:00:39 GMT
-Message-ID: <53676144.20306@oracle.com>
-Date: Mon, 05 May 2014 14:00:36 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WjsFw-0003jX-1h
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 15:35:08 +0000
+Date: Mon, 12 May 2014 17:34:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20140512153405.GA6837@rei>
+References: <1399906092-28901-1-git-send-email-mats.liljegren@enea.com>
+	<1399906092-28901-2-git-send-email-mats.liljegren@enea.com>
+	<20140512150329.GG4741@rei> <20140512171433.0ce9f681@mats-desktop>
 MIME-Version: 1.0
-References: <1398419188-17193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1398419188-17193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] sigaction 9-1, 10-1,
- 11-1: use SIGKILL instead of SIGHUP
+Content-Disposition: inline
+In-Reply-To: <20140512171433.0ce9f681@mats-desktop>
+Subject: Re: [LTP] [PATCH 1/2] SAFE_POPEN: Added function to safe_stdio.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,35 +26,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
+> > I've added missing return stream; here and pushed both patches,
+> > thanks.
+> 
+> Whoa, did I really miss that? Wondering how my test could have
+> run... Must have used the wrong version of the code when testing or
+> something.
 
-On 04/25/2014 01:46 PM, Stanislav Kholmanskikh wrote:
-> There are test environments, where the SIGHUP signal may be either
-> added to the signal mask or ignored. One example of such environments
-> is Autotest, which sets the SIGHUP signal to SIG_IGN for its jobs.
->
-> Therefore the above test cases hang in that environment because their
-> parent processes send SIGHUP to terminate the child (and the child ignores it).
->
-> I think it will not be a problem to use SIGKILL here instead of SIGHUP, because
-> SIGKILL can not be caught, blocked, or ignored.
-> And it does the job - stopping the child - very well :)
->
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+I've seen cases where such code was running fine because the register
+used to return function value was the same that was allocated for the
+temporary variable...
 
-Could anybody look at this patch, please?
+> But thanks for the merge!
+> 
+> Now you know why I really liked forcing people into using
+> -Werror ;-) Could it be a good idea to actually use -Werror by default,
+> and having a "production" flag for those who don't want it? Just to
+> ensure that lazy people are those being best looked after...
 
-Thanks.
+I would be for reversing the logic, i.e. adding developer flag that
+enables -Werror. Unfortunatelly LTP has tons of legacy code that
+produces megatons of warnings and fixing all of these would be a big
+effort.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
