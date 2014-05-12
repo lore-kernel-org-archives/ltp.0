@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WkCHV-00005o-R3
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 12:58:05 +0000
-Date: Tue, 13 May 2014 14:57:04 +0200
-From: chrubis@suse.cz
-Message-ID: <20140513125703.GB20155@rei>
-References: <1399980872-27547-1-git-send-email-alexey.kodanev@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mats.liljegren@enea.com>) id 1WjrWr-0002Aj-Lh
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 14:48:33 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1WjrWp-0001cr-Tz
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 14:48:33 +0000
+From: Mats Liljegren <mats.liljegren@enea.com>
+Date: Mon, 12 May 2014 16:48:10 +0200
+Message-ID: <1399906092-28901-1-git-send-email-mats.liljegren@enea.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1399980872-27547-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2 2/2] docs: add a paragraph about access() to
- Common Problems section
+Subject: [LTP] [PATCH 0/2] safe_stdio: Added SAFE_POPEN() + new error
+	message format
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,37 +26,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  doc/test-writing-guidelines.txt |    8 ++++++++
->  1 files changed, 8 insertions(+), 0 deletions(-)
-> 
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index 91edbf0..b228c80 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -883,6 +883,14 @@ settings which may clear some of the bits. If your test depends on specific
->  file permissions you need to 'chmod()' the file afterwards or use SAFE_TOUCH()
->  that does the 'chmod()' for you.
->  
-> +3.2 access()
-> +~~~~~~~~~~~
-> +
-> +If access(some_file, W_OK) is executed by root it will return success even
-> +if the file doesn't have write permission bits set (the same for R_OK for
-> +privileged user). As a workaround you can use 'open()' to check sysfs file's
-> +read/write permission bits. It might not work for other filesystems, but you
-> +have stat, lstat and fstat functions.
+These patches are in preparation of v3 of partrt_nohz_full patch.
 
-Pushed with minor changes to ltp git and ltp wiki, thanks.
+Mats Liljegren (2):
+  SAFE_POPEN: Added function to safe_stdio.h
+  safe_stdio: Error messages in new format
+
+ include/safe_stdio.h |    5 +++++
+ lib/safe_stdio.c     |   32 +++++++++++++++++++++++++++++---
+ 2 files changed, 34 insertions(+), 3 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
