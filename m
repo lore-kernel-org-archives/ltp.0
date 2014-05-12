@@ -1,20 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WpZcP-0000tT-RV
-	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 08:53:53 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WpZcO-0000aT-EY
-	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 08:53:53 +0000
-Date: Wed, 28 May 2014 04:53:41 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <502409743.12448093.1401267221861.JavaMail.zimbra@redhat.com>
-In-Reply-To: <46CD92664333704E8A06E512A60A9E9F2AD435E199@SGPMBX02.APAC.bosch.com>
-References: <46CD92664333704E8A06E512A60A9E9F2AD435E199@SGPMBX02.APAC.bosch.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] mknodat01 fails at chown
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WjpSL-0006kw-J5
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 12:35:45 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WjpSK-0005KR-Cj
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 12:35:45 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s4CCZbhX010217
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 12:35:38 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s4CCZbeE005148
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 12:35:37 GMT
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s4CCZam8018249
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 12:35:36 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 12 May 2014 16:35:25 +0400
+Message-Id: <1399898127-15934-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1399898127-15934-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1399898127-15934-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH V4 2/4] testscripts/isofs.sh: use the new shell
+	interface
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,55 +39,192 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Diwakar Sharma (RBEI/ECF3)" <Diwakar.Sharma@in.bosch.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiRGl3YWthciBTaGFybWEg
-KFJCRUkvRUNGMykiIDxEaXdha2FyLlNoYXJtYUBpbi5ib3NjaC5jb20+Cj4gVG86IGx0cC1saXN0
-QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IFNlbnQ6IFdlZG5lc2RheSwgMjggTWF5LCAyMDE0IDY6
-NTc6MjQgQU0KPiBTdWJqZWN0OiBbTFRQXSBta25vZGF0MDEgZmFpbHMgYXQgY2hvd24KPiAKPiBI
-aSwKPiBJIGFtIHJ1bm5pbmcgdGhlIGx0cCBzdWl0ZSBvbiBhIHRhcmdldCB3aXRoIGtlcm5lbCAz
-LjguMTMuMjMgLCBhbmQgbWtub2RhdDAxCgpIaSwKCldoYXQgdmVyc2lvbiBvZiBMVFAgc3VpdGUg
-YXJlIHlvdSBydW5uaW5nPyBJJ20gYXNzdW1pbmcgaXQncyBhbiBvbGRlciByZWxlYXNlCnNpbmNl
-IGNvbW1hbmQgd2hlcmUgeW91IGhpdCB0aGUgcHJvYmxlbSBoYXMgYmVlbiByZW1vdmVkIGluIE1h
-cmNoOgogIGh0dHBzOi8vZ2l0aHViLmNvbS9saW51eC10ZXN0LXByb2plY3QvbHRwL2NvbW1pdC83
-NTI1ZTYyZWE0MjI1MzE2MTBkNWNiNGNlODE1ZTI2Y2MzZjZmN2VkCgo+IHRlc3QgaXMgZmFpbGlu
-ZyB3aXRoIGJlbG93IGVycm9yLiBUaGUgcHJvYmxlbSBhcmUgdGhlIG51bWVyaWMgdWlkL2dpZC4K
-PiBCZWZvcmUgcnVubmluZyB0ZXN0cyB0aGUgdWlkL2dpZCBhcmUgc2hvd24gYXMg4oCYcm9vdOKA
-mQo+IG9yYWNsZS12aXJ0dWFsYm94Oi9vcHQvbHRwL3Rlc3RjYXNlcy9iaW4jIGxzIC1sdHIgbWtu
-b2RhdCoKPiAtcnd4cnd4ci14IDEgcm9vdCByb290IDg3MTg3IE1heSAyNiAwODoxMCBta25vZGF0
-MDEKPgo+IEFmdGVyIHJ1bm5pbmcgdGhlIHN1aXRlOgo+IG9yYWNsZS12aXJ0dWFsYm94Oi9vcHQv
-bHRwL3Rlc3RjYXNlcy9iaW4jIGxzIC1sdHIgbWtub2RhdCoKPiAtcnd4cnd4ci14IDEgNDI5NDk2
-NzIgNDI5NDk2NzIgODcxODcgTWF5IDI2IDA4OjEwIG1rbm9kYXQwMQo+IG9yYWNsZS12aXJ0dWFs
-Ym94Oi9vcHQvbHRwL3Rlc3RjYXNlcy9iaW4jIGNob3duIHJvb3QgbWtub2RhdDAxCj4gTkZTOiB2
-NCBzZXJ2ZXIgeHh4Lnh4eC54Lnh4IGRvZXMgbm90IHN1cHBvcnQgYWNjZXB0IHJhdyB1aWQvZ2lk
-cy4gUmVlbmFibGluZwo+IHRoZSBpZG1hcHBlcgo+IGNob3duOiBta25vZGF0MDE6IEludmFsaWQg
-YXJndW1lbnQKPgo+IFNvIGJ5IHRoZSB0aW1lIG1rbm9kYXQwMSBleGVjdXRlcyAsIHRoZSB1aWQv
-Z2lkIGFyZSBhbHJlYWR5IGNoYW5nZWQgdG8KPiBudW1lcmljIGFuZCBoZW5jZSBjaG93biBmYWls
-cy4KPiBOb3QgZ2V0dGluZyB3aHkgaXQgaXMgZ2V0dGluZyBjaGFuZ2VkLCBwcm9iYWJseSBzb21l
-IG90aGVyIHRlc3QgY29kZSBpcyBkb2luZwo+IHNvbWV0aGluZz8KPiBBbnkgc3VnZ2VzdGlvbi9z
-b2x1dGlvbj8KCkFyZSB5b3UgcnVubmluZyBhbGwgdGVzdHMgb3Igb25seSBhIHN1YnNldCAoZS5n
-LiBvbmx5IHN5c2NhbGxzKT8KSSByZS1yYW4gc3lzY2FsbHMgdGVzdCBsb2NhbGx5IHdpdGggbGF0
-ZXN0IExUUCBhbmQgZGlkbid0IG5vdGljZQphbnkgb3duZXIgY2hhbmdlLgoKQXNzdW1pbmcgc29t
-ZSBvdGhlciB0ZXN0IGlzIHRoZSBjYXVzZSwgeW91IGNvdWxkOgoKMS4pIHNldHVwIGF1ZGl0IHJ1
-bGUgdG8gd2F0Y2ggZm9yIGFueSBhdHRyaWJ1dGUgY2hhbmdlcyB0byB0aGF0IGZpbGUKCiAgYXVk
-aXRjdGwgLXcgL29wdC9sdHAvdGVzdGNhc2VzL2Jpbi9ta25vZGF0MDEgLWsgbHRwa2V5MSAtcCBh
-CiAgKHJ1biBsdHApCiAgYXVzZWFyY2ggLWsgbHRwa2V5MQoKMi4pIHRyeSB0byBuYXJyb3cgaXQg
-ZG93biBieSBydW5uaW5nIG9ubHkgc3Vic2V0IG9mIHRlc3RzIHlvdSBydW4gbm93CgpSZWdhcmRz
-LApKYW4KCj4gVGhhbmtzIGFuZCBSZWdhcmRzCj4gRGl3YWthciBTaGFybWEKPiAKPiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KPiBUaW1lIGlzIG1vbmV5LiBTdG9wIHdhc3RpbmcgaXQhIEdldCB5b3Vy
-IHdlYiBBUEkgaW4gNSBtaW51dGVzLgo+IHd3dy5yZXN0bGV0LmNvbS9kb3dubG9hZAo+IGh0dHA6
-Ly9wLnNmLm5ldC9zZnUvcmVzdGxldAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
-dGluZm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaW1lIGlzIG1vbmV5LiBT
-dG9wIHdhc3RpbmcgaXQhIEdldCB5b3VyIHdlYiBBUEkgaW4gNSBtaW51dGVzLgp3d3cucmVzdGxl
-dC5jb20vZG93bmxvYWQKaHR0cDovL3Auc2YubmV0L3NmdS9yZXN0bGV0Cl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApM
-dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testscripts/isofs.sh |  105 ++++++++++++++++++++++---------------------------
+ 1 files changed, 47 insertions(+), 58 deletions(-)
+
+diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
+index ec1f2fc..1335327 100755
+--- a/testscripts/isofs.sh
++++ b/testscripts/isofs.sh
+@@ -24,26 +24,34 @@
+ # mounts the ISO9660 file system with different mount options.
+ #
+ 
+-USAGE="$0"
++TCID=isofs
++TST_TOTAL=77
++. test.sh
++
+ NO_CLEANUP=""
+ 
+ usage()
+ {
+-	echo "USAGE: $USAGE <optional> -n -h -d [directory name]"
++	echo "USAGE: $0 <optional> -n -h -d [directory name]"
+ 	exit
+ }
+ 
+-#Initialize directory variables
+-MNT_POINT="/tmp/isofs_$$"
++cleanup()
++{
++	if [ "$NO_CLEANUP" = "no" ]; then
++		tst_resm TINFO "Temporary directory $PWD was not removed"
++	else
++		tst_rmdir
++	fi
++}
++
++
+ COPY_DIR="/etc/"
+-TEMP_DIR="/tmp/for_isofs_test"
+-MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
+ 
+ while getopts :hnd: arg; do
+ 	case $arg in
+ 	d)
+ 		COPY_DIR=$OPTARG
+-		MAKE_FILE_SYS_DIR="/tmp/for_isofs_test"$COPY_DIR
+ 		;;
+ 	h)
+ 		echo ""
+@@ -60,32 +68,22 @@ while getopts :hnd: arg; do
+ 	esac
+ done
+ 
+-##############################################################
+-#
+-# Make sure that uid=root is running this script.
+-# Validate the command line arguments.
+-#
+-##############################################################
+-
+-if [ $UID != 0 ]
+-then
+-	echo "FAILED: Must have root access to execute this script"
+-	exit 1
++if [ ! -e "$COPY_DIR" ]; then
++	tst_brkm TCONF "$COPY_DIR not found"
+ fi
+ 
++tst_require_root
++
++tst_tmpdir
++TST_CLEANUP=cleanup
++
++MNT_POINT="$PWD/mnt"
++MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
++
+ mkdir -p -m 777 $MNT_POINT
+ mkdir -p $MAKE_FILE_SYS_DIR
+ 
+-
+-if [ -e "$COPY_DIR" ]; then
+-	cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+-else
+-	echo "$COPY_DIR not found"
+-	echo "use the -d option to copy a different directory into"
+-	echo "/tmp to makethe ISO9660 file system with different"
+-	echo "options"
+-	usage
+-fi
++cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
+ 
+ # Make ISO9660 file system with different options.
+ # Mount the ISO9660 file system with different mount options.
+@@ -99,14 +97,17 @@ for mkisofs_opt in \
+ 	"-f -l -D -J -L -R" \
+ 	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
+ do
+-	echo "Running mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR  Command"
++	rm -f isofs.iso
+ 	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR
+-	if [ $? != 0 ]
+-	then
+-		rm -rf isofs.iso $MNT_POINT
+-		echo "FAILED: mkisofs -o isofs.iso $mkisofs_opt $MAKE_FILE_SYS_DIR failed"
+-		exit 1
++	if [ $? -eq 0 ]; then
++		tst_resm TPASS \
++			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++	else
++		tst_resm TFAIL \
++			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
++		continue
+ 	fi
++
+ 	for mount_opt in \
+ 		"loop" \
+ 		"loop,norock" \
+@@ -120,36 +121,24 @@ do
+ 		"loop,block=512,unhide,session=2"
+ 		# "loop,sbsector=32"
+ 	do
+-		echo "Running mount -o $mount_opt isofs.iso $MNT_POINT Command"
+ 		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
+-		if [ $? != 0 ]
+-		then
+-			rm -rf isofs.iso $MNT_POINT
+-			echo "FAILED: mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT failed"
+-			exit 1
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL \
++				"mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT"
++			continue
+ 		fi
+-		echo "Running ls -lR $MNT_POINT Command"
++
+ 		ls -lR $MNT_POINT
+ 		exportfs -i -o no_root_squash,rw *:$MNT_POINT
+ 		exportfs -u :$MNT_POINT
++
+ 		umount $MNT_POINT
++		if [ $? -ne 0 ]; then
++			tst_brkm TFAIL "umount $MNT_POINT"
++		fi
++
++		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
+ 	done
+-	rm -rf isofs.iso
+ done
+ 
+-#######################################################
+-#
+-# Just before exit, perform the cleanup.
+-#
+-#######################################################
+-
+-if [ "$NO_CLEANUP" == "no" ]; then
+-	echo "$MAKE_FILE_SYS_DIR and $MNT_POINT were not removed"
+-	echo "These directories will have to be removed manually"
+-else
+-	rm -rf $TEMP_DIR
+-	rm -rf $MNT_POINT
+-fi
+-
+-echo "PASSED: $0 passed!"
+-exit 0
++tst_exit
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
