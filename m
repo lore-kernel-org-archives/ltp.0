@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <Diwakar.Sharma@in.bosch.com>) id 1WhFTN-0001KT-Jm
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 09:46:09 +0000
-Received: from imta22.fe.bosch.de ([139.15.243.26])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WhFTL-0001q6-69
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 09:46:09 +0000
-Received: from smtp6-v.fe.bosch.de (imta23.fe.bosch.de [139.15.243.227])
-	by imta22.fe.bosch.de (Postfix) with ESMTP id 04CE084024D
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  5 May 2014 11:27:06 +0200 (CEST)
-Received: from vsmta13.fe.internet.bosch.com (unknown [10.4.98.53])
-	by imta23.fe.bosch.de (Postfix) with ESMTP id 37B1515801AC
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  5 May 2014 11:26:59 +0200 (CEST)
-Received: from localhost (vsgw2.fe.internet.bosch.com [10.4.98.13])
-	by vsmta13.fe.internet.bosch.com (Postfix) with SMTP id 148F9600670
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  5 May 2014 11:26:59 +0200 (CEST)
-From: "Diwakar Sharma (RBEI/ECF3)" <Diwakar.Sharma@in.bosch.com>
-Date: Mon, 5 May 2014 14:52:35 +0800
-Message-ID: <46CD92664333704E8A06E512A60A9E9F2AD2C0B12F@SGPMBX02.APAC.bosch.com>
-Content-Language: en-US
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WjjTD-00058j-UA
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 06:12:15 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WjjTC-0001IH-RI
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 06:12:15 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4C6CA0g011945
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 14:12:10 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Mon, 12 May 2014 14:09:47 +0800
+Message-ID: <1399874987-24926-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1399874987-24926-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1399874987-24926-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] - Kernel - tunable max_map_count test failure -
- 20140115-46-g2368cd4
+Subject: [LTP] [PATCH 2/2] setpgid/setpgid01.c: add pid = 0 and pgid = 0 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,41 +31,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi,
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/setpgid/setpgid01.c | 31 ++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-I was getting the max_map_count test failed. It looked to me failing at filter_map function. The platform I'm working on is an i686 architecture running on Virtualbox.
-I added below additional macro condition and it's passing now. I want to understand if not including i686/386 was intentional originally for some reason? Also vdso part I added additionaly.
-
-#elif defined(__i686__) || defined(__i386__)
-static int filter_map(char *line)
-{
-        char buf[BUFSIZ];
-        int ret;
-
-        ret = sscanf(line, "%*p-%*p %*4s %*p %*2d:%*2d %*d %s", buf);
-        if (ret != 1)
-                return 0;
-
-        return ((strcmp(buf, "[vdso]") == 0) | (strcmp(buf, "[vsyscall]") == 0));
-}
-
-
-On another similar architecture (but the actual h/w board), the same code gives messages like "4096 map entries in total, but expected 4096 entries" and reported FAIL, implying map_count and max_maps is same ( Contrary to map_count==max_maps+1 ). How do we analyze this scenario? Does this mean it is not exceeding by one for sysctl setting? How to verify that.
-
-
-Thanks and Regards
-Diwakar Sharma
-
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c b/testcases/kernel/syscalls/setpgid/setpgid01.c
+index d35f201..ed20f63 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid01.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
+@@ -36,6 +36,7 @@
+  * Description:
+  * Verify that:
+  *   1. Basic functionality test for setpgid(2).
++ *   2. Check proper functioning of setpgid(2) with pid = 0 and pgid = 0.
+  */
+ 
+ #include <errno.h>
+@@ -52,7 +53,8 @@ static void cleanup(void);
+ char *TCID = "setpgid01";
+ 
+ static void setpgid_test1(void);
+-static void (*testfunc[])(void) = { setpgid_test1};
++static void setpgid_test2(void);
++static void (*testfunc[])(void) = { setpgid_test1, setpgid_test2 };
+ int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ int main(int ac, char **av)
+@@ -128,6 +130,33 @@ static void setpgid_test1(void)
+ 		tst_resm(TFAIL, "test setpgid(%d, %d) fail", pid, pgid);
+ }
+ 
++static void setpgid_test2(void)
++{
++	int ret;
++	pid_t pgid, pid;
++
++	pid = FORK_OR_VFORK();
++	if (pid == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "fork()");
++
++	if (pid != 0) {
++		ret = wait4child(pid);
++	} else {
++		pid = getpid();
++		TEST(setpgid(0, 0));
++		pgid = getpgrp();
++		if (TEST_RETURN == -1 || pid != pgid)
++			exit(1);
++		else
++			exit(0);
++	}
++
++	if (ret == 0)
++		tst_resm(TPASS, "test setpgid(0, 0) success");
++	else
++		tst_resm(TFAIL, "test setpgid(0, 0) fail");
++}
++
+ static void setup(void)
+ {
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+-- 
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
