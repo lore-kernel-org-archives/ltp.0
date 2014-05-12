@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Wl91C-0008DU-LG
-	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 03:41:10 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wl91A-0005zF-QZ
-	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 03:41:10 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4G3exkr017345
-	for <ltp-list@lists.sourceforge.net>; Fri, 16 May 2014 11:40:59 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Fri, 16 May 2014 11:38:36 +0800
-Message-ID: <1400211517-30970-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1WjqHn-0006k0-JE
+	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 13:28:55 +0000
+Date: Mon, 12 May 2014 15:27:54 +0200
+From: chrubis@suse.cz
+Message-ID: <20140512132754.GC4741@rei>
+References: <1399874087-15967-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 1/2] setpgid/setpgid01.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <1399874087-15967-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] lib/tst_mkfs.c: fix -f option for mkfs.btrfs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,259 +24,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Delete some useless comments.
+Hi!
+> In the earlier version of btrfs-progs, mkfs.btrfs doesn't
+> support -f option. So it should be judged in advance before
+> the command is called.
 
-Do some code re-arrangement and remove the 'if (pgid == pid)' check,
-which is useless.
+What system is this? What version of btrfs-progs?
+(ideally these details should be included in the commit message)
 
-Some cleanup.
+> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+> ---
+>  lib/tst_mkfs.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+> index 7357cd9..92b4b54 100644
+> --- a/lib/tst_mkfs.c
+> +++ b/lib/tst_mkfs.c
+> @@ -35,11 +35,19 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+>  	 * superblock on the device, which is the case here as we
+>  	 * reuse one device for all tests.
+>  	 */
+> -	if (!strcmp(fs_type, "xfs") || !strcmp(fs_type, "btrfs")) {
+> +	if (!strcmp(fs_type, "xfs")) {
+>  		tst_resm(TINFO, "Appending '-f' flag to mkfs.%s", fs_type);
+>  		argv[pos++] = "-f";
+>  	}
+>  
+> +	if (!strcmp(fs_type, "btrfs")) {
+> +		if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/setpgid/setpgid01.c | 187 +++++---------------------
- 1 file changed, 30 insertions(+), 157 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c b/testcases/kernel/syscalls/setpgid/setpgid01.c
-index 57e71fc..700e573 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid01.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
-@@ -31,201 +31,74 @@
-  *
-  */
- /* $Id: setpgid01.c,v 1.7 2009/11/02 13:57:18 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: setpgid01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for setpgid(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) setpgid(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the setpgid(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	setpgid(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
-+
-+/*
-+ * Description:
-+ * Verify that:
-+ *   1. Basic functionality test for setpgid(2).
-+ */
- 
- #include <errno.h>
- #include <string.h>
- #include <signal.h>
- #include <stdlib.h>
--#include <sys/wait.h>
- #include "test.h"
- #include "usctest.h"
- 
--void setup();
--void cleanup();
-+static void setup(void);
-+static void cleanup(void);
- 
- char *TCID = "setpgid01";
--int TST_TOTAL = 1;
--
--int exp_enos[] = { 0, 0 };
- 
--int pgid, pid;
-+static void setpgid_test1(void);
-+static void (*testfunc[])(void) = { setpgid_test1};
-+int TST_TOTAL = ARRAY_SIZE(testfunc);
- 
- int main(int ac, char **av)
- {
--	int lc;
-+	int i, lc;
- 	char *msg;
- 
--    /***************************************************************
--     * parse standard options
--     ***************************************************************/
- 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
--    /***************************************************************
--     * perform global setup for test
--     ***************************************************************/
- 	setup();
- 
--	/* set the expected errnos... */
--	TEST_EXP_ENOS(exp_enos);
--
--    /***************************************************************
--     * check looping state if -c option given
--     ***************************************************************/
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
- 		tst_count = 0;
- 
--		/*
--		 * Call setpgid(2)
--		 */
--		TEST(setpgid(pid, pgid));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			TEST_ERROR_LOG(TEST_ERRNO);
--			tst_resm(TFAIL, "setpgid(%d, %d) Failed, errno=%d : %s",
--				 pid, pgid, TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--	    /***************************************************************
--	     * only perform functional verification if flag set (-f not given)
--	     ***************************************************************/
--			if (STD_FUNCTIONAL_TEST) {
--				/* No Verification test, yet... */
--				tst_resm(TPASS, "setpgid(%d, %d) returned %ld",
--					 pid, pgid, TEST_RETURN);
--			}
--		}
-+		for (i = 0; i < TST_TOTAL; i++)
-+			(*testfunc[i])();
- 	}
- 
--    /***************************************************************
--     * cleanup and exit
--     ***************************************************************/
- 	cleanup();
- 	tst_exit();
--
- }
- 
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
-+static void setpgid_test1(void)
- {
--	int status;
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/*
--	 * Make sure current process is NOT a session or pgrp leader
--	 */
-+	pid_t pgid, pid;
- 
- 	pgid = getpgrp();
- 	pid = getpid();
- 
--	if (pgid == pid) {
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup,
--				 "fork() in setup() failed - errno %d", errno);
--		}
--
--		if (pid != 0) {	/* parent - sits and waits */
--			wait(&status);
--			exit(WEXITSTATUS(status));
--		} else {	/* child - continues with test */
--			pid = getpid();
--		}
-+	TEST(setpgid(pid, pgid));
-+	if (TEST_RETURN == -1 || getpgrp() != pgid) {
-+		tst_resm(TFAIL | TTERRNO, "test setpgid(%d, %d) fail",
-+			 pid, pgid);
-+	} else {
-+		tst_resm(TPASS, "test setpgid(%d, %d) success", pid, pgid);
- 	}
- }
- 
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
-+static void setup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
--	TEST_CLEANUP;
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
- }
+The system() and grep is a bit of a hack but I cannot find a better way
+how to do this.
+
+> +			tst_resm(TINFO, "Appending '-f' flag to mkfs.%s",
+> +				fs_type);
+> +			argv[pos++] = "-f";
+> +		}
+> +	}
+> +
+>  	if (fs_opts) {
+>  		for (i = 0; fs_opts[i]; i++) {
+>  			argv[pos++] = fs_opts[i];
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
