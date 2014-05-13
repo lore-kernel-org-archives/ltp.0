@@ -1,22 +1,41 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WqD1f-0005xZ-5e
-	for ltp-list@lists.sourceforge.net; Fri, 30 May 2014 02:58:35 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WqD1c-0006Nl-6C
-	for ltp-list@lists.sourceforge.net; Fri, 30 May 2014 02:58:35 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4U2wOCJ013012
-	for <ltp-list@lists.sourceforge.net>; Fri, 30 May 2014 10:58:24 +0800
-Message-ID: <1401418614.3225.15.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 30 May 2014 10:56:54 +0800
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <madanvs@linux.vnet.ibm.com>) id 1Wk8IH-0002L0-6e
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 08:42:37 +0000
+Received: from e28smtp09.in.ibm.com ([122.248.162.9])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Wk8IF-00019Y-N1
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 08:42:37 +0000
+Received: from /spool/local
+	by e28smtp09.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <madanvs@linux.vnet.ibm.com>; 
+	Tue, 13 May 2014 14:12:26 +0530
+Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
+	by d28dlp02.in.ibm.com (Postfix) with ESMTP id 25FDA394004C
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 May 2014 14:12:24 +0530 (IST)
+Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
+	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	s4D8gWPs43385076
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 14:12:32 +0530
+Received: from d28av02.in.ibm.com (localhost [127.0.0.1])
+	by d28av02.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	s4D8gNwa003974
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 14:12:23 +0530
+Message-ID: <5371DAEE.5030402@linux.vnet.ibm.com>
+Date: Tue, 13 May 2014 14:12:22 +0530
+From: Madan <madanvs@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] statvfs/statvfs01.c: cleanup
+References: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
+	<b98288e83160e3c44783a9a37078910a4b724f1a.1398155754.git.jstancek@redhat.com>
+	<5371AB38.3030803@linux.vnet.ibm.com>
+	<1283427253.4147048.1399964143232.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1283427253.4147048.1399964143232.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
+Reply-To: madanvs@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,142 +48,96 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-* Delete some useless commtents.
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/statvfs/statvfs01.c | 49 +++++++--------------------
- 1 file changed, 12 insertions(+), 37 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/statvfs/statvfs01.c b/testcases/kernel/syscalls/statvfs/statvfs01.c
-index 306ca00..0ea882a 100644
---- a/testcases/kernel/syscalls/statvfs/statvfs01.c
-+++ b/testcases/kernel/syscalls/statvfs/statvfs01.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2005.  All Rights Reserved.
-+ *    AUTHOR: Prashant P Yendigeri <prashant.yendigeri@wipro.com>
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of version 2 of the GNU General Public License as
-@@ -14,25 +15,12 @@
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  *
-  */
--/**********************************************************
-- *
-- *    TEST IDENTIFIER   : statvfs01
-- *
-- *    EXECUTED BY       : root / superuser
-- *
-- *    TEST TITLE        : Basic tests for statvfs(2)
-- *
-- *    TEST CASE TOTAL   : 1
-- *
-- *    AUTHOR            : Prashant P Yendigeri
-- *                        <prashant.yendigeri@wipro.com>
-- *
-+/*
-  *    DESCRIPTION
-  *      This is a Phase I test for the statvfs(2) system call.
-  *      It is intended to provide a limited exposure of the system call.
-  *	This call behaves similar to statfs.
-- *
-- **********************************************************/
-+ */
- 
- #include <stdio.h>
- #include <unistd.h>
-@@ -43,15 +31,15 @@
- #include "test.h"
- #include "usctest.h"
- 
--#define TEST_PATH "/"		/* Should be a mounted FS */
-+#define TEST_PATH "/"
- 
--void setup();
--void cleanup();
-+static void setup(void);
-+static void cleanup(void);
- 
- char *TCID = "statvfs01";
- int TST_TOTAL = 1;
- 
--int exp_enos[] = { 0 };		/* must be a 0 terminated list */
-+int exp_enos[] = { 0 };
- 
- int main(int ac, char **av)
- {
-@@ -64,7 +52,6 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -73,11 +60,12 @@ int main(int ac, char **av)
- 
- 		TEST(statvfs(TEST_PATH, &buf));
- 
--		if (TEST_RETURN == -1)
-+		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL | TERRNO, "statvfs(%s, ...) failed",
- 				 TEST_PATH);
--		else
-+		} else {
- 			tst_resm(TPASS, "statvfs(%s, ...) passed", TEST_PATH);
-+		}
- 
- 	}
- 
-@@ -96,30 +84,17 @@ int main(int ac, char **av)
- 	tst_resm(TINFO, "file system max filename length = %lu", buf.f_namemax);
- 
- 	cleanup();
--
- 	tst_exit();
- }
- 
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
-+static void setup(void)
- {
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- }
- 
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *              completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	TEST_CLEANUP;
- }
--- 
-1.8.4.2
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
+On Tuesday 13 May 2014 12:25 PM, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> From: "Madan" <madanvs@linux.vnet.ibm.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Sent: Tuesday, 13 May, 2014 7:18:48 AM
+>> Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
+>>
+>>
+>> On Tuesday 22 April 2014 02:07 PM, Jan Stancek wrote:
+>>> Max readahead size has been limited since commit:
+>>>     commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
+>>>     Author: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+>>>     Date:   Thu Apr 3 14:48:23 2014 -0700
+>>>       mm/readahead.c: fix readahead failure for memoryless NUMA nodes
+>>>                       and limit readahead pages
+>>>
+>>> Update testcase to read ahead in 2M chunks, this change is
+>>> compatible with older kernels.
+>>>
+>>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>>> ---
+>>>    testcases/kernel/syscalls/readahead/readahead02.c |    9 +++++++--
+>>>    1 files changed, 7 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c
+>>> b/testcases/kernel/syscalls/readahead/readahead02.c
+>>> index 8940821..5b1524e 100644
+>>> --- a/testcases/kernel/syscalls/readahead/readahead02.c
+>>> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
+>>> @@ -213,8 +213,13 @@ static void read_testfile(int do_readahead, const char
+>>> *fname, size_t fsize,
+>>>    		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
+>>>
+>>>    	if (do_readahead) {
+>>> -		TEST(ltp_syscall(__NR_readahead, fd, (off64_t) 0,
+>>> -			(size_t) fsize));
+>>> +		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
+>>> +		for (i = 0; i < fsize; i += 2*1024*1024) {
+>>> +			TEST(ltp_syscall(__NR_readahead, fd,
+>>> +				(off64_t) i, 2*1024*1024));
+>>> +			if (TEST_RETURN != 0)
+>>> +				break;
+>>> +		}
+>>>    		check_ret(0);
+>>>    		*cached = get_cached_size();
+>>>
+>> IMHO, This patch is not complete please also change the test pass
+>> criteria what i have sent the patch for.
+> Can you explain why?
+>
+> If test "reads ahead" (in 2M chunks) the same amount of data,
+> why should pass criteria change?
+>
+> Regards,
+> Jan
+>
+>>
+>> ------------------------------------------------------------------------------
+>> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+>> Instantly run your Selenium tests across 300+ browser/OS combos.
+>> Get unparalleled scalability from the best Selenium testing platform
+>> available
+>> Simple to use. Nothing to install. Get started now for free."
+>> http://p.sf.net/sfu/SauceLabs
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+In my understanding, readahead can make a cache of upto 2M of cache 
+pages in memory(i.e 512 and 32 pages in  x86 ,PPC64 respectively) ,, But 
+earlier in this testcase we are looking for the cache value of half the 
+size of the  read file. In my opinion cached_ra can hold max of 2M and 
+not half the size of the reading file. well correct me if am wrong !!
+
+Regards,
+Madan
 
 
 ------------------------------------------------------------------------------
-Time is money. Stop wasting it! Get your web API in 5 minutes.
-www.restlet.com/download
-http://p.sf.net/sfu/restlet
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
