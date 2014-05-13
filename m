@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WhgLE-00014B-Gk
-	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 14:27:32 +0000
-Date: Tue, 6 May 2014 16:26:32 +0200
-From: chrubis@suse.cz
-Message-ID: <20140506142632.GB8814@rei>
-References: <4506ACC2AE90484D87F9A883BA36C21C54931E@LCHQEX03.lancope.local>
-	<20140430142009.GB21327@rei>
-	<4506ACC2AE90484D87F9A883BA36C21C1C30735E@LCHQEX03.lancope.local>
+	(envelope-from <jstancek@redhat.com>) id 1Wk6cy-0003ST-LO
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 06:55:52 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wk6cx-0006Ig-B0
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 06:55:52 +0000
+Date: Tue, 13 May 2014 02:55:43 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1283427253.4147048.1399964143232.JavaMail.zimbra@redhat.com>
+In-Reply-To: <5371AB38.3030803@linux.vnet.ibm.com>
+References: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
+	<b98288e83160e3c44783a9a37078910a4b724f1a.1398155754.git.jstancek@redhat.com>
+	<5371AB38.3030803@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4506ACC2AE90484D87F9A883BA36C21C1C30735E@LCHQEX03.lancope.local>
-Subject: Re: [LTP] Suggested patch to recvfrom / recvmsg tests
+Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,73 +29,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Joseph Beckenbach <jbeckenbach@lancope.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: madanvs@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > What arch is this?
-> 
-> Irrelevant, I think, but x86_64.
 
-Sorry the question was not specific enough I should have asked for
-distribution and architecture. But the paragraph below explains why you
-system is different.
 
-> > On my system both getfdsetsize() and FD_SETSIZE are set to 1024?
-> 
-> The test uses getdtablesize(), which pulls the OPEN_MAX kernel parameter.
-> In our kernel, we have OPEN_MAX set to more than FD_SETSIZE.
-> 
-> I first found this problem when this parameter had a typo, adding an order of magnitude to OPEN_MAX.
-> Without the added clause in the loop to restrict it, the test would usually core from zero-bit bombardment into related memory. 
-> Correcting the parameter typo unfortunately did not alter the test binary's behavior.
-> 
-> Arguably, this might be a bug with /usr/include/x86_64-linux-gnu/bits/typesizes.h and /usr/include/linux/posix_types.h
-> which hard-code __FD_SETSIZE to 1024 instead of checking the OPEN_MAX kernel paramenter.
-> (My knee-jerk reaction is to file this alongside "select() is broken".  :-)
-
-Well, select() is decades old interface and fd_set was designed as fixed
-size buffer back then, I would say that it's broken by design, because
-if you open more filedescriptors than was __FD_SETSIZE by the time of
-the program compilation it will break anyway. Happily we have poll() and
-epoll() for programs that need to use more than 1024 file descriptors.
-
-> An alternative patch might be to replace the getdtablesize() call by getfdsetsize().
-> This would rely on accept() never returning a value greater than FD_SETSIZE.
-
-That will not happen in this case, see below.
-
-> I see no indication in accept, select, or poll manpages whether this is the case;
-> I suspect it is so, otherwise select/poll cannot detect activity on some range of returned fd.
-
-Well filedescriptors are allocated from lowest available number, so
-everything works fine unless you keep open more than 1022 file
-descriptors (first three are allocated for stdin, stdout and stderr).
-
-> This would require inspecting the accept() code, though, and adding a test on accept() to verify that accept() cannot return a fd greater than FD_SETSIZE.
-> Maybe accept() in a near-infinite loop to exhaust all fd's ...?
-> (Beyond my available time right now.)
+----- Original Message -----
+> From: "Madan" <madanvs@linux.vnet.ibm.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 13 May, 2014 7:18:48 AM
+> Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
 > 
 > 
-> > What about we set nfds to sfd + 1 and for each child we accept we set nfds to max(nfds, newfd+1)?
+> On Tuesday 22 April 2014 02:07 PM, Jan Stancek wrote:
+> > Max readahead size has been limited since commit:
+> >    commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
+> >    Author: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+> >    Date:   Thu Apr 3 14:48:23 2014 -0700
+> >      mm/readahead.c: fix readahead failure for memoryless NUMA nodes
+> >                      and limit readahead pages
+> >
+> > Update testcase to read ahead in 2M chunks, this change is
+> > compatible with older kernels.
+> >
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >   testcases/kernel/syscalls/readahead/readahead02.c |    9 +++++++--
+> >   1 files changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/readahead/readahead02.c
+> > b/testcases/kernel/syscalls/readahead/readahead02.c
+> > index 8940821..5b1524e 100644
+> > --- a/testcases/kernel/syscalls/readahead/readahead02.c
+> > +++ b/testcases/kernel/syscalls/readahead/readahead02.c
+> > @@ -213,8 +213,13 @@ static void read_testfile(int do_readahead, const char
+> > *fname, size_t fsize,
+> >   		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
+> >
+> >   	if (do_readahead) {
+> > -		TEST(ltp_syscall(__NR_readahead, fd, (off64_t) 0,
+> > -			(size_t) fsize));
+> > +		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
+> > +		for (i = 0; i < fsize; i += 2*1024*1024) {
+> > +			TEST(ltp_syscall(__NR_readahead, fd,
+> > +				(off64_t) i, 2*1024*1024));
+> > +			if (TEST_RETURN != 0)
+> > +				break;
+> > +		}
+> >   		check_ret(0);
+> >   		*cached = get_cached_size();
+> >
 > 
-> When accept() returns the highest-select()-detectable fd, this will clear the high-bit just off the end of the fdset, would it not?
-> It'll hit far less often, but still be out-of-bounds, sadly ....
+> IMHO, This patch is not complete please also change the test pass
+> criteria what i have sent the patch for.
 
-Looking at the code, the newly opened filedescriptor is closed right
-away. I've tried to add printf() to the code and indeed it's always se
-to 4, so the maximum would end up as 5.
+Can you explain why?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+If test "reads ahead" (in 2M chunks) the same amount of data,
+why should pass criteria change?
+
+Regards,
+Jan
+
+> 
+> 
+> ------------------------------------------------------------------------------
+> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+> Instantly run your Selenium tests across 300+ browser/OS combos.
+> Get unparalleled scalability from the best Selenium testing platform
+> available
+> Simple to use. Nothing to install. Get started now for free."
+> http://p.sf.net/sfu/SauceLabs
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
