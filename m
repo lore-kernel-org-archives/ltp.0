@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WjrmJ-0001hb-50
-	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 15:04:31 +0000
-Date: Mon, 12 May 2014 17:03:29 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WkBZJ-0005j9-7q
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 12:12:25 +0000
+Date: Tue, 13 May 2014 14:11:23 +0200
 From: chrubis@suse.cz
-Message-ID: <20140512150329.GG4741@rei>
-References: <1399906092-28901-1-git-send-email-mats.liljegren@enea.com>
-	<1399906092-28901-2-git-send-email-mats.liljegren@enea.com>
+Message-ID: <20140513121123.GD12144@rei>
+References: <53720837.8010805@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1399906092-28901-2-git-send-email-mats.liljegren@enea.com>
-Subject: Re: [LTP] [PATCH 1/2] SAFE_POPEN: Added function to safe_stdio.h
+In-Reply-To: <53720837.8010805@cn.fujitsu.com>
+Subject: Re: [LTP] How to get detailed system information between running
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +25,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <mats.liljegren@enea.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi!
-> +FILE *safe_popen(const char *file, const int lineno, void (cleanup_fn)(void),
-> +		 const char *command, const char *type)
-> +{
-> +	FILE *stream;
-> +	const int saved_errno = errno;
-> +
-> +	errno = 0;
-> +	stream = popen(command, type);
-> +
-> +	if (stream == NULL) {
-> +		if (errno != 0) {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				 "%s:%d: popen(%s,%s) failed",
-> +				 file, lineno, command, type);
-> +		} else {
-> +			tst_brkm(TBROK, cleanup_fn,
-> +				 "%s:%d: popen(%s,%s) failed: Out of memory",
-> +				 file, lineno, command, type);
-> +		}
-> +	}
-> +
-> +	errno = saved_errno;
+Hi,
+> Recently I met some fails in RHEL7.0Beta by running "./runltp", the fails are below:
+>    ------------------------------------------
+>            hugemmap01 FAIL 2
+>            hugemmap03 FAIL 2
+>            hugemmap04 FAIL 2
+>  ------------------------------------------
+> After some investigation, I found that it is "echo 128 > /proc/sys/vm/nr_hugepages" causing
+> these fails. By catting /proc/buddyinfo  or catting /proc/pagetypeinfo, I found that the system
+> has too many memory fragments and was not able to allocate 128 hugepages. So I also want
+> to know which test cases results in these too many memory fragments.
+> 
+> It seems that LTP does not provide a method to get the system's status information between these
+> tests. I think we may add patches to support providing a shell script to ltp-pan, which will be called before
+> and after every test case, to record some system status information. In this shell script, you can collect
+> system information you has interests in, then save these information to files. Then we can analysis these
+> files to know which case causing the big system status changes.
+> 
+> Anybody has some better ideas, thanks.
 
-I've added missing return stream; here and pushed both patches, thanks.
+That sounds more like a job for MMTests[1]. The upside of MMTests is
+that all the scripts for collection system information are allready
+written along with exporters to html and comparsion tools. The downside
+is that there is not much of documentation and LTP support is untested.
 
-> +}
+[1] https://github.com/gormanm/mmtests
 
 -- 
 Cyril Hrubis
