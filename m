@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ccnandi@yahoo.com>) id 1WhofY-00035K-Ca
-	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 23:21:04 +0000
-Received: from nm41.bullet.mail.ne1.yahoo.com ([98.138.120.48])
-	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1WhofV-0003uo-T3
-	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 23:21:04 +0000
-Message-ID: <1399418275.53978.YahooMailNeo@web141606.mail.bf1.yahoo.com>
-Date: Tue, 6 May 2014 16:17:55 -0700 (PDT)
-From: C Nandi <ccnandi@yahoo.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="-225646846-1447681308-1399418275=:53978"
-Subject: [LTP] Reg: sendfile01_server
-Reply-To: C Nandi <ccnandi@yahoo.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Wk64y-0002jM-OG
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 06:20:44 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Wk64w-0003Ap-PN
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 06:20:43 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s4D6KadC025121
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 06:20:37 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s4D6KZEU028048
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 06:20:36 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s4D6KZYI005462
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 06:20:35 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 13 May 2014 10:20:22 +0400
+Message-Id: <1399962023-23105-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20140512125913.GA4741@rei>
+References: <20140512125913.GA4741@rei>
+Subject: [LTP] [PATCH 1/2] sendmsg,
+	recvmsg: moved MSG_CMSG_COMPAT definition to a header
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,82 +39,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
----225646846-1447681308-1399418275=:53978
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-From "testcases/network/tcp_cmds/sendfile/sendfile01"=0A=A0=A0=A0 53=A0=A0=
-=A0=A0=A0 CLIENT=3D"testsf_c${EXEC_SUFFIX}"=0A=A0=A0=A0 54=A0=A0=A0=A0=A0 S=
-ERVER=3D"testsf_s${EXEC_SUFFIX}"=0A=0ASERVER can be "testsf_s" or "testfs_s=
-6"=0A=0ABut, in testcases/network/tcp_cmds/sendfile/sendfile01_server, =0A=
-=0A=A0=A0=A0=A0 1=A0 #!/bin/sh=0A=A0=A0=A0=A0 2=A0 #set -x=0A=A0=A0=A0=A0 3=
-=A0 cd $3=0A=A0=A0=A0=A0 4=A0 exec 1< /dev/null=A0=A0=A0=A0=A0=A0 # open de=
-scriptor 1=0A=A0=A0=A0=A0 5=A0 exec 2< /dev/null=A0=A0=A0=A0=A0=A0 # open d=
-escriptor 1=0A=A0=A0=A0=A0 6=A0 nohup ./testsf_s $1 $2 &=0A=0A=0ASERVER wil=
-l always execute as "testfs_s"=0A=0AI guess, below changes would be good.=
-=0A=0Adiff --git a/testcases/network/tcp_cmds/sendfile/sendfile01_server b/=
-testcases/network/tcp_cmds/sendfile/sendfile01_server=0Aindex 2383ce4..9933=
-db4 100755=0A--- a/testcases/network/tcp_cmds/sendfile/sendfile01_server=0A=
-+++ b/testcases/network/tcp_cmds/sendfile/sendfile01_server=0A@@ -3,4 +3,4 =
-@@=0A=A0cd $3=0A=A0exec 1< /dev/null=A0=A0=A0=A0=A0=A0 # open descriptor 1=
-=0A=A0exec 2< /dev/null=A0=A0=A0=A0=A0=A0 # open descriptor 1=0A-nohup ./te=
-stsf_s $1 $2 &=0A+nohup ./$4 $1 $2 &=0A=0A=0A=0A=0AIf you feel this is corr=
-ect, please find the patch attached with this e-mail.=0A=0A=0A=A0=0AThanks =
-and Regards, =0ACHANDRASHEKHAR NANDI
----225646846-1447681308-1399418275=:53978
-Content-Type: application/octet-stream;
-	name="0001-sendfile01_server-Correction-to-run-both-testsf_s-an.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="0001-sendfile01_server-Correction-to-run-both-testsf_s-an.patch"
-
-RnJvbSA0NzBhM2I2ODBhOTc2NGI4MmE5YmE1MzQ1YjYwNGYwMmQxZWFhMjc3
-IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBDaGFuZHJhc2hla2hh
-ciBOYW5kaSA8Q2hhbmRyYXNoZWtoYXIuTmFuZGlAbXBoYXNpcy5jb20+CkRh
-dGU6IFR1ZSwgNiBNYXkgMjAxNCAxNzoxMTowNyAtMDYwMApTdWJqZWN0OiBb
-UEFUQ0hdIHNlbmRmaWxlMDFfc2VydmVyOiBDb3JyZWN0aW9uIHRvIHJ1biBi
-b3RoICd0ZXN0c2ZfcycgYW5kCiAndGVzdHNmX3M2JyBUaGFua3MgdG8gIlJv
-YmVydHMsIExlZSIgZm9yIHBvaW50aW5nIHRoaXMgb3V0CgpTaWduZWQtb2Zm
-LWJ5OiBDaGFuZHJhc2hla2hhciBOYW5kaSA8Q2hhbmRyYXNoZWtoYXIuTmFu
-ZGlAbXBoYXNpcy5jb20+Ci0tLQogdGVzdGNhc2VzL25ldHdvcmsvdGNwX2Nt
-ZHMvc2VuZGZpbGUvc2VuZGZpbGUwMV9zZXJ2ZXIgfCAgICAyICstCiAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRp
-ZmYgLS1naXQgYS90ZXN0Y2FzZXMvbmV0d29yay90Y3BfY21kcy9zZW5kZmls
-ZS9zZW5kZmlsZTAxX3NlcnZlciBiL3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9j
-bWRzL3NlbmRmaWxlL3NlbmRmaWxlMDFfc2VydmVyCmluZGV4IDIzODNjZTQu
-Ljk5MzNkYjQgMTAwNzU1Ci0tLSBhL3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9j
-bWRzL3NlbmRmaWxlL3NlbmRmaWxlMDFfc2VydmVyCisrKyBiL3Rlc3RjYXNl
-cy9uZXR3b3JrL3RjcF9jbWRzL3NlbmRmaWxlL3NlbmRmaWxlMDFfc2VydmVy
-CkBAIC0zLDQgKzMsNCBAQAogY2QgJDMKIGV4ZWMgMTwgL2Rldi9udWxsICAg
-ICAgICMgb3BlbiBkZXNjcmlwdG9yIDEKIGV4ZWMgMjwgL2Rldi9udWxsICAg
-ICAgICMgb3BlbiBkZXNjcmlwdG9yIDEKLW5vaHVwIC4vdGVzdHNmX3MgJDEg
-JDIgJgorbm9odXAgLi8kNCAkMSAkMiAmCi0tIAoxLjcuMTAuNAoK
-
----225646846-1447681308-1399418275=:53978
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
+
+sendmsg01.c and recvmsg01.c both define MSG_CMSG_COMPAT in a
+similar way. Moved this definition to a new header file to reduce
+code duplication.
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/recvmsg/Makefile    |    2 +
+ testcases/kernel/syscalls/recvmsg/recvmsg01.c |   15 +---------
+ testcases/kernel/syscalls/sendmsg/Makefile    |    2 +
+ testcases/kernel/syscalls/sendmsg/sendmsg01.c |   15 +---------
+ testcases/kernel/syscalls/utils/msg_common.h  |   38 +++++++++++++++++++++++++
+ 5 files changed, 44 insertions(+), 28 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/utils/msg_common.h
+
+diff --git a/testcases/kernel/syscalls/recvmsg/Makefile b/testcases/kernel/syscalls/recvmsg/Makefile
+index bd617d8..e69c726 100644
+--- a/testcases/kernel/syscalls/recvmsg/Makefile
++++ b/testcases/kernel/syscalls/recvmsg/Makefile
+@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++CPPFLAGS		+= -I$(abs_srcdir)/../utils
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+index bc84a23..93c9190 100644
+--- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
++++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+@@ -40,20 +40,6 @@
+  *
+  */
+ 
+-/* The #ifndef code below is for 2.5 64-bit kernels, where     */
+-/* the MSG_CMSG_COMPAT flag must be 0 in order for the syscall */
+-/* and this test to function correctly.                        */
+-#ifndef MSG_CMSG_COMPAT
+-
+-#if defined (__powerpc64__) || defined (__mips64) || defined (__x86_64__) || defined (__sparc64__)
+-#define MSG_CMSG_COMPAT 0x80000000
+-#else
+-#define MSG_CMSG_COMPAT 0
+-#endif
+-
+-#endif
+-/***************************************************/
+-
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <string.h>
+@@ -71,6 +57,7 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "msg_common.h"
+ 
+ char *TCID = "recvmsg01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/sendmsg/Makefile b/testcases/kernel/syscalls/sendmsg/Makefile
+index bd617d8..e69c726 100644
+--- a/testcases/kernel/syscalls/sendmsg/Makefile
++++ b/testcases/kernel/syscalls/sendmsg/Makefile
+@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++CPPFLAGS		+= -I$(abs_srcdir)/../utils
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+index 58d3364..1795a5e 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+@@ -30,20 +30,6 @@
+  *	05/2003 Modified by Manoj Iyer - Make setup function set up lo device.
+  */
+ 
+-/*
+- * The #ifndef code below is for 2.5 64-bit kernels, where
+- * the MSG_CMSG_COMPAT flag must be 0 in order for the syscall
+- * and this test to function correctly.
+- */
+-#ifndef MSG_CMSG_COMPAT
+-#if defined(__powerpc64__) || defined(__mips64) || defined(__x86_64__) || \
+-     defined(__sparc64__) || defined(__ia64__) || defined(__s390x__)
+-#define MSG_CMSG_COMPAT 0x80000000
+-#else
+-#define MSG_CMSG_COMPAT 0
+-#endif
+-#endif /* MSG_CMSG_COMPAT */
+-
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <errno.h>
+@@ -63,6 +49,7 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "msg_common.h"
+ 
+ char *TCID = "sendmsg01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/utils/msg_common.h b/testcases/kernel/syscalls/utils/msg_common.h
+new file mode 100644
+index 0000000..0471291
+--- /dev/null
++++ b/testcases/kernel/syscalls/utils/msg_common.h
+@@ -0,0 +1,38 @@
++/*
++ * Copyright (c) International Business Machines  Corp., 2001
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ */
++
++#ifndef LTP_MSG_COMMON
++#define LTP_MSG_COMMON
++
++/* The #ifndef code below is for 2.5 64-bit kernels, where     */
++/* the MSG_CMSG_COMPAT flag must be 0 in order for the syscall */
++/* and this test to function correctly.                        */
++#ifndef MSG_CMSG_COMPAT
++
++#if defined(__powerpc64__) || defined(__mips64) || defined(__x86_64__) || \
++	defined(__sparc64__) || defined(__ia64__) || defined(__s390x__)
++#define MSG_CMSG_COMPAT 0x80000000
++#else
++#define MSG_CMSG_COMPAT 0
++#endif
++
++#endif
++
++
++#endif /* LTP_MSG_COMMON */
+-- 
+1.7.1
+
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
----225646846-1447681308-1399418275=:53978
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
----225646846-1447681308-1399418275=:53978--
-
