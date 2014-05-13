@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WpFLE-00061V-A8
-	for ltp-list@lists.sourceforge.net; Tue, 27 May 2014 11:14:48 +0000
-Date: Tue, 27 May 2014 13:14:31 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WkCHV-00005o-R3
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 12:58:05 +0000
+Date: Tue, 13 May 2014 14:57:04 +0200
 From: chrubis@suse.cz
-Message-ID: <20140527111431.GA12189@rei.Home>
-References: <1397800512.2119.5.camel@G08JYZSD130126>
-	<20140526152009.GA7298@rei.Home>
-	<1401174751.23078.7.camel@G08JYZSD130126>
+Message-ID: <20140513125703.GB20155@rei>
+References: <1399980872-27547-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1401174751.23078.7.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] controllers/cpuacct: add cpuacct tests to default
- and somecleanup
+In-Reply-To: <1399980872-27547-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v2 2/2] docs: add a paragraph about access() to
+ Common Problems section
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,31 +25,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> > > +. cmdlib.sh
-> > 
-> > What is the cmdlib.sh needed here for?
-> > 
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  doc/test-writing-guidelines.txt |    8 ++++++++
+>  1 files changed, 8 insertions(+), 0 deletions(-)
 > 
-> In run_cpuacct_test.sh I have used tst_require_root and exists. These
-> function are defined in cmdlib.sh.
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index 91edbf0..b228c80 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -883,6 +883,14 @@ settings which may clear some of the bits. If your test depends on specific
+>  file permissions you need to 'chmod()' the file afterwards or use SAFE_TOUCH()
+>  that does the 'chmod()' for you.
+>  
+> +3.2 access()
+> +~~~~~~~~~~~
+> +
+> +If access(some_file, W_OK) is executed by root it will return success even
+> +if the file doesn't have write permission bits set (the same for R_OK for
+> +privileged user). As a workaround you can use 'open()' to check sysfs file's
+> +read/write permission bits. It might not work for other filesystems, but you
+> +have stat, lstat and fstat functions.
 
-Right, but this line added to cpuacct_setup.sh and as far as I can tell,
-there is nothing from cmdlib.sh used there.
+Pushed with minor changes to ltp git and ltp wiki, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-The best possible search technologies are now affordable for all companies.
-Download your FREE open source Enterprise Search Engine today!
-Our experts will assist you in its installation for $59/mo, no commitment.
-Test it for FREE on our Cloud platform anytime!
-http://pubads.g.doubleclick.net/gampad/clk?id=145328191&iu=/4140/ostg.clktrk
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
