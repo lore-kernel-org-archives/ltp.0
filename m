@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1WkDQz-0006jA-Pk
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 14:11:57 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1WkDQx-00045i-9n
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 14:11:57 +0000
-From: Mats Liljegren <mats.liljegren@enea.com>
-Date: Tue, 13 May 2014 16:11:08 +0200
-Message-ID: <1399990269-3383-1-git-send-email-mats.liljegren@enea.com>
-In-Reply-To: <1398697619-27372-1-git-send-email-mats.liljegren@enea.com>
-References: <1398697619-27372-1-git-send-email-mats.liljegren@enea.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Wk8sm-0006bO-00
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 09:20:20 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wk8sk-0000pM-DJ
+	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 09:20:19 +0000
+Date: Tue, 13 May 2014 05:20:10 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <551551997.4285276.1399972810599.JavaMail.zimbra@redhat.com>
+In-Reply-To: <5371DAEE.5030402@linux.vnet.ibm.com>
+References: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
+	<b98288e83160e3c44783a9a37078910a4b724f1a.1398155754.git.jstancek@redhat.com>
+	<5371AB38.3030803@linux.vnet.ibm.com>
+	<1283427253.4147048.1399964143232.JavaMail.zimbra@redhat.com>
+	<5371DAEE.5030402@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] partrt_nohz_full: Introducing a new test case
+Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,99 +31,171 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Frederic Weisbecker <fweisbec@gmail.com>, Kevin Hilman <khilman@linaro.org>
+To: madanvs@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-Changes from version 2:
-- Added "git submodule init" to README
-- Scrapped "verbose" command line parameter entirely, it wasn't implemented
-  anyway
-- asprintf() replaced with fprintf() in launch_child()
-- Introduced cleanup function parameter to assert_exit_status() and shell(),
-  making cleanup_entered variable in cleanup() obsolete
-- Documented 32 CPU limitation in README. The test code itself has been updated
-  to handle all configured CPUs, but the partrt tool does not.
-- Simplified tool_available() by using tst_get_path()
-- Removed unnecessary exit() and return statements
-- Removed rand() to a simple "++" operation as work generator in the RT
-  partition. Seemed like rand() could cause ticks for some reason.
-- Use SAFE_POPEN() instead of popen().
-- Use a 2 second sleep before counting ticks, as a primitive way of emptying
-  deferred work in the kernel.
 
-Changes from version 1:
-- Style fixes proposed by checkpatch.pl script
-- Have rt-tools as a git sub-module instead of requiring it to be cloned
-  manually, builds can still be done without checking out rt-tools but
-  you can't run partrt_nohz_full test successfully then
-- Check if cpuset supported by kernel, TCONF error if not
-- Check if rt-tools has been checked out before build, TCONF error if not
-- Simplified determined_nohz_mask()
-- Use parse_opts() instead of getopt_long() when parsing command line options
-- Moved partrt in SUBDIRS so that it is alphabetically correct in
-  testcases/kernel/Makefile
-- launch_child will now handle moving child thread to the right CPUSET partition
-  and CPU, which also eliminates the need for synchronization between parent
-  and child
-- Children will no longer be able to cause any tst_* calls
-- Removed shell_silent(), above changes made it obsolete
-- Removed base parameter to str_to_ulong(), will always be 0 now
-- setup_children() is now called from main() rather than test() function.
-- Macros defining file names
-- Use C code for moving children to the right place instead of external
-  scripts. Using script invocation from RT partition using NFS mounted file
-  system will most likely invoke ticks which can make the test case fail
-- Added standard test loop in case reptitions are requested
-- Removed atomic operation for cleanup recursion detection, since it is only
-  trying to protect recursive invocations from itself
-- Using timerfd to wait for timeout instead of busy-waiting
-- Removed pid_popen(), pid_wait() and shell_int()
-- assert_exit_status() now also checks if status is -1, i.e. command failed
-- Moved _GNU_SOURCE macro from Makefile to C file
-- Removed -Werror from Makefile
-- Removed err(), fail(), pass() and info() macros
-- Replaced usage of READ and WRITE macros with STDIN_FILENO and STDOUT_FILENO,
-  READ and WRITE macros removed
-- Removed some unnecessary comments
-- setup() is renamed to setup_children()
-- Informational message are made mandatory, verbose only affects output from
-  sub-commands, partrt in particular
-- Test case name is now partrt_nohz_full
 
-partrt_nohz_full is a test case which checks whether nohz_full mode can achieve
-0Hz ticks (if relevant extra patches has been applied) or 1Hz ticks (mainline
-kernel).
+----- Original Message -----
+> From: "Madan" <madanvs@linux.vnet.ibm.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 13 May, 2014 10:42:22 AM
+> Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
+> 
+> 
+> On Tuesday 13 May 2014 12:25 PM, Jan Stancek wrote:
+> >
+> > ----- Original Message -----
+> >> From: "Madan" <madanvs@linux.vnet.ibm.com>
+> >> To: ltp-list@lists.sourceforge.net
+> >> Sent: Tuesday, 13 May, 2014 7:18:48 AM
+> >> Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
+> >>
+> >>
+> >> On Tuesday 22 April 2014 02:07 PM, Jan Stancek wrote:
+> >>> Max readahead size has been limited since commit:
+> >>>     commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
+> >>>     Author: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+> >>>     Date:   Thu Apr 3 14:48:23 2014 -0700
+> >>>       mm/readahead.c: fix readahead failure for memoryless NUMA nodes
+> >>>                       and limit readahead pages
+> >>>
+> >>> Update testcase to read ahead in 2M chunks, this change is
+> >>> compatible with older kernels.
+> >>>
+> >>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> >>> ---
+> >>>    testcases/kernel/syscalls/readahead/readahead02.c |    9 +++++++--
+> >>>    1 files changed, 7 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c
+> >>> b/testcases/kernel/syscalls/readahead/readahead02.c
+> >>> index 8940821..5b1524e 100644
+> >>> --- a/testcases/kernel/syscalls/readahead/readahead02.c
+> >>> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
+> >>> @@ -213,8 +213,13 @@ static void read_testfile(int do_readahead, const
+> >>> char
+> >>> *fname, size_t fsize,
+> >>>    		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
+> >>>
+> >>>    	if (do_readahead) {
+> >>> -		TEST(ltp_syscall(__NR_readahead, fd, (off64_t) 0,
+> >>> -			(size_t) fsize));
+> >>> +		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
+> >>> +		for (i = 0; i < fsize; i += 2*1024*1024) {
+> >>> +			TEST(ltp_syscall(__NR_readahead, fd,
+> >>> +				(off64_t) i, 2*1024*1024));
+> >>> +			if (TEST_RETURN != 0)
+> >>> +				break;
+> >>> +		}
+> >>>    		check_ret(0);
+> >>>    		*cached = get_cached_size();
+> >>>
+> >> IMHO, This patch is not complete please also change the test pass
+> >> criteria what i have sent the patch for.
+> > Can you explain why?
+> >
+> > If test "reads ahead" (in 2M chunks) the same amount of data,
+> > why should pass criteria change?
+> >
+> > Regards,
+> > Jan
+> >
+> >>
+> >> ------------------------------------------------------------------------------
+> >> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+> >> Instantly run your Selenium tests across 300+ browser/OS combos.
+> >> Get unparalleled scalability from the best Selenium testing platform
+> >> available
+> >> Simple to use. Nothing to install. Get started now for free."
+> >> http://p.sf.net/sfu/SauceLabs
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >>
+> In my understanding, readahead can make a cache of upto 2M of cache
+> pages in memory(i.e 512 and 32 pages in  x86 ,PPC64 respectively) ,, But
 
-Appropriate kernel configurations and kernel boot parameters needed are
-documented in testcases/kernel/partrt/README.
+Agreed, single readahead() call can contribute up to 2M to cache.
+Proposed patch however makes multiple calls.
 
-Mats Liljegren (1):
-  partrt_nohz_full: Introducing a new test case
+> earlier in this testcase we are looking for the cache value of half the
+> size of the  read file. In my opinion cached_ra can hold max of 2M and
+> not half the size of the reading file. well correct me if am wrong !!
 
- .gitmodules                                        |    3 +
- README.kernel_config                               |    6 +
- runtest/partrt_nohz_full                           |    1 +
- testcases/kernel/Makefile                          |    1 +
- testcases/kernel/partrt/Makefile                   |   17 +
- testcases/kernel/partrt/README                     |   66 +++
- testcases/kernel/partrt/nohz_full/.gitignore       |    1 +
- testcases/kernel/partrt/nohz_full/Makefile         |   23 +
- .../partrt/nohz_full/test_partrt_nohz_full.c       |  593 ++++++++++++++++++++
- utils/.gitignore                                   |    3 +
- utils/Makefile                                     |    7 +
- utils/rt-tools                                     |    1 +
- 12 files changed, 722 insertions(+)
- create mode 100644 runtest/partrt_nohz_full
- create mode 100644 testcases/kernel/partrt/Makefile
- create mode 100644 testcases/kernel/partrt/README
- create mode 100644 testcases/kernel/partrt/nohz_full/.gitignore
- create mode 100644 testcases/kernel/partrt/nohz_full/Makefile
- create mode 100644 testcases/kernel/partrt/nohz_full/test_partrt_nohz_full.c
- create mode 160000 utils/rt-tools
+Consider following, each readahead() call here contributes ~2M to cache.
+cached_ra represents difference in cached memory after all these calls complete.
 
--- 
-1.7.10.4
+        if (do_readahead) {
+                /* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
+                for (i = 0; i < fsize; i += 2*1024*1024) {
+                        TEST(ltp_syscall(__NR_readahead, fd,
+                                (off64_t) i, 2*1024*1024));
+                        if (TEST_RETURN != 0)
+                                break;
++                       printf("i: %d, cached: %ld\n", i, get_cached_size());
+                }
+                check_ret(0);
+                *cached = get_cached_size();
 
+# ./readahead02 
+readahead02    0  TINFO  :  creating test file of size: 67108864
+readahead02    0  TINFO  :  read_testfile(0)
+readahead02    0  TINFO  :  read_testfile(1)
+i: 0, cached: 33260
+i: 2097152, cached: 35244
+i: 4194304, cached: 37352
+i: 6291456, cached: 39336
+i: 8388608, cached: 41444
+i: 10485760, cached: 43428
+i: 12582912, cached: 45536
+i: 14680064, cached: 47520
+i: 16777216, cached: 49628
+i: 18874368, cached: 51612
+i: 20971520, cached: 53720
+i: 23068672, cached: 55704
+i: 25165824, cached: 57812
+i: 27262976, cached: 59796
+i: 29360128, cached: 61904
+i: 31457280, cached: 63888
+i: 33554432, cached: 65996
+i: 35651584, cached: 67980
+i: 37748736, cached: 70088
+i: 39845888, cached: 72072
+i: 41943040, cached: 74180
+i: 44040192, cached: 76164
+i: 46137344, cached: 78272
+i: 48234496, cached: 80256
+i: 50331648, cached: 82364
+i: 52428800, cached: 84348
+i: 54525952, cached: 86456
+i: 56623104, cached: 88440
+i: 58720256, cached: 90548
+i: 60817408, cached: 92532
+i: 62914560, cached: 94640
+i: 65011712, cached: 96748
+readahead02    1  TPASS  :  expected ret success - returned value = 0
+readahead02    2  TPASS  :  offset is still at 0 as expected
+readahead02    0  TINFO  :  read_testfile(0) took: 1308297 usec
+readahead02    0  TINFO  :  read_testfile(1) took: 687932 usec
+readahead02    0  TINFO  :  read_testfile(0) read: 67108864 bytes
+readahead02    0  TINFO  :  read_testfile(1) read: 0 bytes
+readahead02    3  TPASS  :  readahead saved some I/O
+readahead02    0  TINFO  :  cache can hold at least: 72044 kB
+readahead02    0  TINFO  :  read_testfile(0) used cache: 65552 kB
+readahead02    0  TINFO  :  read_testfile(1) used cache: 65596 kB -----> cached_ra
+readahead02    4  TPASS  :  using cache as expected
+
+Regards,
+Jan
+
+> 
+> Regards,
+> Madan
+> 
+> 
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
