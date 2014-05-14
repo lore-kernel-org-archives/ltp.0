@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WjqHn-0006k0-JE
-	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 13:28:55 +0000
-Date: Mon, 12 May 2014 15:27:54 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WkZ2T-0002rY-E7
+	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 13:16:05 +0000
+Date: Wed, 14 May 2014 15:15:51 +0200
 From: chrubis@suse.cz
-Message-ID: <20140512132754.GC4741@rei>
-References: <1399874087-15967-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <20140514131551.GA21158@rei>
+References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1399542652-5795-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1399874087-15967-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] lib/tst_mkfs.c: fix -f option for mkfs.btrfs
+In-Reply-To: <1399542652-5795-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v5 1/2] lib/tst_path_has_mnt_flags.c: create a
+ function tst_path_has_mnt_flags()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,48 +30,19 @@ To: Xing Gu <gux.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> In the earlier version of btrfs-progs, mkfs.btrfs doesn't
-> support -f option. So it should be judged in advance before
-> the command is called.
+> +	while ((mnt = getmntent(f))) {
+> +		/* ignore all pseudo fs */
+> +		if (mnt->mnt_fsname[0] != '/')
+> +			continue;
 
-What system is this? What version of btrfs-progs?
-(ideally these details should be included in the commit message)
+I've removed this if () because otherwise this code will ignore
+tmpfs (which is common for /tmp) and nfs mounts (that starts with ip
+address).
 
-> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
-> ---
->  lib/tst_mkfs.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-> index 7357cd9..92b4b54 100644
-> --- a/lib/tst_mkfs.c
-> +++ b/lib/tst_mkfs.c
-> @@ -35,11 +35,19 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
->  	 * superblock on the device, which is the case here as we
->  	 * reuse one device for all tests.
->  	 */
-> -	if (!strcmp(fs_type, "xfs") || !strcmp(fs_type, "btrfs")) {
-> +	if (!strcmp(fs_type, "xfs")) {
->  		tst_resm(TINFO, "Appending '-f' flag to mkfs.%s", fs_type);
->  		argv[pos++] = "-f";
->  	}
->  
-> +	if (!strcmp(fs_type, "btrfs")) {
-> +		if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
+Frankly I have no idea why I added this check to the code in the first
+place (and I will fix the similar code in open posix testsuite too).
 
-
-The system() and grep is a bit of a hack but I cannot find a better way
-how to do this.
-
-> +			tst_resm(TINFO, "Appending '-f' flag to mkfs.%s",
-> +				fs_type);
-> +			argv[pos++] = "-f";
-> +		}
-> +	}
-> +
->  	if (fs_opts) {
->  		for (i = 0; fs_opts[i]; i++) {
->  			argv[pos++] = fs_opts[i];
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
