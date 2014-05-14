@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1Wk3Xi-00060q-3T
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 03:38:14 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wk3Xf-00074c-TG
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 03:38:13 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4D3bnsi004552
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 11:37:50 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Tue, 13 May 2014 11:37:16 +0800
-Message-ID: <1399952236-22565-1-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1399874087-15967-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1399874087-15967-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WkZLO-0003ye-2J
+	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 13:35:38 +0000
+Date: Wed, 14 May 2014 15:35:28 +0200
+From: chrubis@suse.cz
+Message-ID: <20140514133528.GB21158@rei>
+References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1399542652-5795-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<20140514131551.GA21158@rei>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] lib/tst_mkfs.c: fix -f option for mkfs.btrfs
+Content-Disposition: inline
+In-Reply-To: <20140514131551.GA21158@rei>
+Subject: Re: [LTP] [PATCH v5 1/2] lib/tst_path_has_mnt_flags.c: create a
+ function tst_path_has_mnt_flags()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,46 +27,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-In the earlier version of btrfs-progs, e.g. btrfs-progs in
-RHEL6.5GA whose version is v0.20-rc1, mkfs.btrfs doesn't
-support -f option. So it should be judged in advance before
-the command is called.
+Hi!
+> I've removed this if () because otherwise this code will ignore
+> tmpfs (which is common for /tmp) and nfs mounts (that starts with ip
+> address).
+> 
+> Frankly I have no idea why I added this check to the code in the first
+> place (and I will fix the similar code in open posix testsuite too).
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- lib/tst_mkfs.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+And I've remebered, that because there are two records for root fs / in
+/proc/mounts and the one that starts with /dev/xyz device has correct
+mount flags.
 
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 7357cd9..92b4b54 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -35,11 +35,19 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
- 	 * superblock on the device, which is the case here as we
- 	 * reuse one device for all tests.
- 	 */
--	if (!strcmp(fs_type, "xfs") || !strcmp(fs_type, "btrfs")) {
-+	if (!strcmp(fs_type, "xfs")) {
- 		tst_resm(TINFO, "Appending '-f' flag to mkfs.%s", fs_type);
- 		argv[pos++] = "-f";
- 	}
- 
-+	if (!strcmp(fs_type, "btrfs")) {
-+		if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
-+			tst_resm(TINFO, "Appending '-f' flag to mkfs.%s",
-+				fs_type);
-+			argv[pos++] = "-f";
-+		}
-+	}
-+
- 	if (fs_opts) {
- 		for (i = 0; fs_opts[i]; i++) {
- 			argv[pos++] = fs_opts[i];
+I will change the code to ignore only records with 'rootfs' mnt_fsname.
+
 -- 
-1.9.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
