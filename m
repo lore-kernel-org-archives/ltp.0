@@ -1,32 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Wk99M-0003jN-6z
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 09:37:28 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wk99L-0001Pd-EG
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 09:37:28 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s4D9bK0V007279
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 09:37:21 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4D9bKpg013839
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 09:37:20 GMT
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4D9bKn8016510
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 May 2014 09:37:20 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 13 May 2014 13:37:48 +0400
-Message-Id: <1399973868-26408-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/2] docs: add a paragraph about access() to Common
-	Problems section
+	(envelope-from <metan@suse.de>) id 1Wkamd-0000kw-8j
+	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 15:07:51 +0000
+Date: Wed, 14 May 2014 17:07:42 +0200
+From: chrubis@suse.cz
+Message-ID: <20140514150741.GA6175@rei>
+References: <1394352758.2346.2.camel@G08JYZSD130126>
+	<1394352845.2346.4.camel@G08JYZSD130126>
+	<20140311154349.GF10778@rei>
+	<1394716096.2087.10.camel@G08JYZSD130126>
+	<1394716306.2087.14.camel@G08JYZSD130126>
+	<20140401161414.GA13696@rei.suse.cz>
+	<1396589471.2098.6.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1396589471.2098.6.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v2] open/open12.c: add new tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,39 +27,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- doc/test-writing-guidelines.txt |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+Hi!
+Pushed with following changes, thanks.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 91edbf0..aaf6b4a 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -883,6 +883,13 @@ settings which may clear some of the bits. If your test depends on specific
- file permissions you need to 'chmod()' the file afterwards or use SAFE_TOUCH()
- that does the 'chmod()' for you.
+diff --git a/testcases/kernel/syscalls/open/open12.c b/testcases/kernel/syscalls/open/open12.c
+index 8b78b83..5b7576b 100644
+--- a/testcases/kernel/syscalls/open/open12.c
++++ b/testcases/kernel/syscalls/open/open12.c
+@@ -86,7 +86,7 @@ static void setup(void)
  
-+3.2 access()
-+~~~~~~~~~~~
-+
-+If access(some_file, W_OK) is executed by root it will return success even
-+if the file has read-only permission. As a workaround you can use 'open()' to
-+test sysfs file for write permission. It might not work for other filesystems,
-+but you have stat, lstat and fstat functions.
+ static void test_append(void)
+ {
+-	off_t len;
++	off_t len1, len2;
  
- 4. Test Contribution Checklist
- ------------------------------
+ 	TEST(open(TEST_FILE, O_RDWR | O_APPEND, 0777));
+ 
+@@ -95,11 +95,12 @@ static void test_append(void)
+ 		return;
+ 	}
+ 
++	len1 = SAFE_LSEEK(cleanup, TEST_RETURN, 0, SEEK_CUR);
+ 	SAFE_WRITE(cleanup, 1, TEST_RETURN, TEST_FILE, sizeof(TEST_FILE));
+-	len = SAFE_LSEEK(cleanup, TEST_RETURN, 0, SEEK_CUR);
++	len2 = SAFE_LSEEK(cleanup, TEST_RETURN, 0, SEEK_CUR);
+ 	SAFE_CLOSE(cleanup, TEST_RETURN);
+ 
+-	if (len > (off_t)sizeof(TEST_FILE))
++	if (len2 > len1)
+ 		tst_resm(TPASS, "test O_APPEND for open success");
+ 	else
+ 		tst_resm(TFAIL, "test O_APPEND for open failed");
+
+This makes the test better on -i N (because the len would be greater
+than the initial lenght after the first append write no matter what).
+
+
+@@ -118,10 +119,10 @@ static void test_noatime(void)
+ 		return;
+ 	}
+ 
+-	if (tst_path_has_mnt_flags(TEST_FILE, flags)) {
++	if (tst_path_has_mnt_flags(cleanup, NULL, flags)) {
+ 		tst_resm(TCONF,
+ 			 "test O_NOATIME flag for open needs filesystems which "
+-			 "are mounted without noatime and relatime");
++			 "is mounted without noatime and relatime");
+ 		return;
+ 	}
+
+This fixes the tst_path_has_mnt_flags() usage. The path to this function
+must be full path (not just filename). I've changed the library to use
+tst_tmpdir path if NULL is passed as a path (which simplifies the
+usage).
+
+@@ -173,7 +174,7 @@ static void test_cloexec(void)
+ 
+ 	if (pid == 0) {
+ 		if (execlp("open12_cloexec", "open12_cloexec", buf, NULL))
+-			exit(1);
++			exit(2);
+ 	}
+ 
+ 	SAFE_CLOSE(cleanup, TEST_RETURN);
+@@ -183,13 +184,14 @@ static void test_cloexec(void)
+ 
+ 	if (WIFEXITED(status)) {
+ 		switch ((int8_t)WEXITSTATUS(status)) {
+-		case -1:
++		case 0:
+ 			tst_resm(TPASS, "test O_CLOEXEC for open success");
+-			break;
++		break;
+ 		case 1:
+-			tst_brkm(TBROK, cleanup, "execlp() failed");
+-		default:
+ 			tst_resm(TFAIL, "test O_CLOEXEC for open failed");
++		break;
++		default:
++			tst_brkm(TBROK, cleanup, "execlp() failed");
+ 		}
+ 	} else {
+ 		tst_brkm(TBROK, cleanup,
+diff --git a/testcases/kernel/syscalls/open/open12_cloexec.c b/testcases/kernel/syscalls/open/open12_cloexec.c
+index 5b55a05..a6dabd5 100644
+--- a/testcases/kernel/syscalls/open/open12_cloexec.c
++++ b/testcases/kernel/syscalls/open/open12_cloexec.c
+@@ -26,12 +26,12 @@ int main(int argc, char **argv)
+ 	int fd;
+ 
+ 	if (argc != 2) {
+-		fprintf(stderr, "Only two arguments: %s <fd>", argv[0]);
++		fprintf(stderr, "Only two arguments: %s <fd>\n", argv[0]);
+ 		exit(1);
+ 	}
+ 
+ 	fd = atoi(argv[1]);
+ 	ret = write(fd, argv[1], strlen(argv[1]));
+ 
+-	exit(ret);
++	return ret != -1;
+ }
+
+This fixes the return values, because as it was return value 1 was
+assigned to both failed execlp() and failed testcase (write() succeded
+and returned size of the written data which was 1).
+
+Now execlp failure maps to 2, testcase failure to 1 and success to 0 (in
+accordance with shell 0 == succes).
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
