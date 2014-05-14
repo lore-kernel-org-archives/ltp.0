@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WkbdV-0006vZ-Do
-	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 16:02:29 +0000
-Date: Wed, 14 May 2014 18:02:19 +0200
-From: chrubis@suse.cz
-Message-ID: <20140514160219.GA16987@rei>
-References: <1389409991.2061.14.camel@G08JYZSD130126>
-	<20140224193305.GC31562@rei>
-	<1393309618.1952.52.camel@G08JYZSD130126>
-	<5368A32E.7070805@oracle.com> <20140506144740.GA7908@rei.Home>
-	<1399450341.2397.16.camel@G08JYZSD130126>
-	<20140507122714.GB20240@rei>
-	<1399517273.2102.8.camel@G08JYZSD130126>
-	<20140513114628.GB12144@rei>
-	<1400048364.2768.1.camel@G08JYZSD130126>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WkRbt-0001vz-VO
+	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 05:20:10 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WkRbs-0004LT-9S
+	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 05:20:09 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4E5IvtB017246
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 May 2014 13:18:57 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 14 May 2014 13:16:39 +0800
+Message-ID: <1400044599-22342-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1400048364.2768.1.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2] linkat/linkat02.c: fix xfs with EMLINK issue
+Subject: [LTP] [PATCH] doc: test-writing-guidelines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,16 +29,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-I've changed the code to store the fs_type into an variable in setup()
-rather than calling the function on each iteration and pushed, thanks.
+Add paragraph to describe two new tst_ interfaces: tst_strsig and tst_strerrno.
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ doc/test-writing-guidelines.txt | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index bf129a3..7cdaf2f 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -435,6 +435,21 @@ Exits the tests, note that this function has no parameters, the PASSES/FAILS
+ reported by the 'tst_resm()' interfaces were stored and are used for the exit
+ value.
+ 
++[source,c]
++-------------------------------------------------------------------------------
++const char *tst_strsig(int sig);
++-------------------------------------------------------------------------------
++
++Return the given signal number's corresponding string.
++
++
++[source,c]
++-------------------------------------------------------------------------------
++const char *tst_strerrno(int err);
++-------------------------------------------------------------------------------
++
++Return the given errno number's corresponding string.
++
+ 
+ 2.2.3 Test temporary directory
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
