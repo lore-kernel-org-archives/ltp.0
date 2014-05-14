@@ -2,16 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WkwNV-0007lE-QA
-	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 14:11:21 +0000
-Date: Thu, 15 May 2014 16:11:09 +0200
+	(envelope-from <metan@suse.de>) id 1WkZWP-0004i3-P0
+	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 13:47:01 +0000
+Date: Wed, 14 May 2014 15:46:52 +0200
 From: chrubis@suse.cz
-Message-ID: <20140515141109.GA5844@rei.Home>
-References: <1400136477.2768.16.camel@G08JYZSD130126>
+Message-ID: <20140514134651.GC21158@rei>
+References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1399542652-5795-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<20140514131551.GA21158@rei> <20140514133528.GB21158@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1400136477.2768.16.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] setresuid/setresuid04.c: Add new test
+In-Reply-To: <20140514133528.GB21158@rei>
+Subject: Re: [LTP] [PATCH v5 1/2] lib/tst_path_has_mnt_flags.c: create a
+ function tst_path_has_mnt_flags()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,11 +27,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Pushed, thanks.
+> > I've removed this if () because otherwise this code will ignore
+> > tmpfs (which is common for /tmp) and nfs mounts (that starts with ip
+> > address).
+> > 
+> > Frankly I have no idea why I added this check to the code in the first
+> > place (and I will fix the similar code in open posix testsuite too).
+> 
+> And I've remebered, that because there are two records for root fs / in
+> /proc/mounts and the one that starts with /dev/xyz device has correct
+> mount flags.
+> 
+> I will change the code to ignore only records with 'rootfs' mnt_fsname.
+
+I've tested and pushed the fix.
 
 -- 
 Cyril Hrubis
