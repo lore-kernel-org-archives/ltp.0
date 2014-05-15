@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wjrfo-0007DQ-Ah
-	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 14:57:48 +0000
-Date: Mon, 12 May 2014 16:56:46 +0200
-From: chrubis@suse.cz
-Message-ID: <20140512145646.GF4741@rei>
-References: <1399616591-32662-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WkrvA-0002Vn-F4
+	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 09:25:48 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wkrv8-0005vc-FN
+	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 09:25:48 +0000
+Message-ID: <53748770.8090806@cn.fujitsu.com>
+Date: Thu, 15 May 2014 17:22:56 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1399616591-32662-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] lib/tst_sig.c: output signal name when got
- unexpected signal
+References: <1400059055-22877-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<948116490.5076233.1400060143816.JavaMail.zimbra@redhat.com>
+In-Reply-To: <948116490.5076233.1400060143816.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH RFC] change MAKE_TARGETS's dependency to normal
+ prerequisites and order-only prerequisites
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,80 +29,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> When testcase is killed by unexpected signal, usually it just prints
-> signal's value.
-> 	fcntl30     1  TBROK  :  unexpected signal 2 received (pid = 6714).
-> 	fcntl30     2  TBROK  :  Remaining cases broken
-> 
-> Here we also print signal's name to output more informative message.
-> 	fcntl30     1  TBROK  :  unexpected signal SIGINT(2) received (pid = 9872).
-> 	fcntl30     2  TBROK  :  Remaining cases broken
+Hi,
 
-Please add a note about the two new tst_ functions here as well,
-something as:
+On 05/14/2014 05:35 PM, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Sent: Wednesday, 14 May, 2014 11:17:35 AM
+>> Subject: [LTP] [PATCH RFC] change MAKE_TARGETS's dependency to normal	prerequisites and order-only prerequisites
+>>
+>> See the below issue:
+>>   When we made modifications to source files in lib/, for example
+>>   lib/tst_mkfs.c, then
+>>   back to testcases/kernel/syscalls/access and execute 'make'. This will not
+>>   make the
+>>   access[0-5] to be re-linked with the newly generated libltp.a, we need to
+>>   touch
+>>   access[0-5].c or remove access[0-5] files first, then make. This will make
+>>   no sense.
+>>   Users may expect just a make command to ensure a new access[0-5] generated
+>>   with the
+>>   new libltp.a.
+>>
+>> This is because in 'include/mk/generic_leaf_target.inc', MAKE_TARGETS's
+>> dependency is
+>> order-only prerequisites, not normal prerequisites, so we change lib's
+>> dependency type
+>> to normal prerequisites, not order-only prerequisites.
+>>
+>> The original MAKE_DEPS is replaced by MAKE_NORMAL_DEPS or
+>> MAKE_ORDER_ONLY_DEPS.
+>>
+>> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+>> ---
+>>  include/mk/generic_leaf_target.inc                      | 2 +-
+>>  include/mk/generic_trunk_target.inc                     | 2 +-
+>>  include/mk/testcases.mk                                 | 3 ++-
+>>  testcases/kernel/Makefile                               | 2 +-
+>>  testcases/kernel/containers/Makefile                    | 2 +-
+>>  testcases/kernel/containers/Makefile.inc                | 2 +-
+>>  testcases/kernel/controllers/Makefile                   | 2 +-
+>>  testcases/kernel/controllers/Makefile.inc               | 2 +-
+>>  testcases/kernel/controllers/cpuset/Makefile            | 2 +-
+>>  testcases/kernel/controllers/cpuset/Makefile.inc        | 2 +-
+>>  testcases/kernel/include/lib.mk                         | 2 +-
+>>  testcases/kernel/mem/hugetlb/Makefile                   | 2 +-
+>>  testcases/kernel/mem/hugetlb/Makefile.inc               | 2 +-
+>>  testcases/kernel/mem/include/libmem.mk                  | 2 +-
+>>  testcases/kernel/power_management/Makefile              | 2 +-
+>>  testcases/kernel/syscalls/ipc/Makefile                  | 2 +-
+>>  testcases/kernel/syscalls/ipc/Makefile.inc              | 2 +-
+>>  testcases/kernel/syscalls/ipc/msgctl/Makefile           | 2 +-
+>>  testcases/kernel/syscalls/kill/Makefile                 | 2 +-
+>>  testcases/kernel/syscalls/mremap/Makefile               | 2 +-
+>>  testcases/network/rpc/basic_tests/rpc01/Makefile        | 2 +-
+>>  testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc | 2 +-
+>>  testcases/network/tcp_cmds/Makefile.inc                 | 4 ++--
+>>  23 files changed, 25 insertions(+), 24 deletions(-)
+>>
+> <snip>
+>> diff --git a/testcases/kernel/include/lib.mk
+>> b/testcases/kernel/include/lib.mk
+>> index c193ca3..c0b9189 100644
+>> --- a/testcases/kernel/include/lib.mk
+>> +++ b/testcases/kernel/include/lib.mk
+>> @@ -32,7 +32,7 @@ $(LIBKERNTEST_DIR):
+>>  $(LIBKERNTEST): $(LIBKERNTEST_DIR)
+>>  	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" all
+>>  
+>> -MAKE_DEPS		+= $(LIBKERNTEST)
+>> +MAKE_ORDER_ONLY_DEPS	+= $(LIBKERNTEST)
+> Hi,
+>
+> Why is libkerntest.a order only dependency here?
+> If we go this way, shouldn't we do it for all libraries?
 
-This also adds two new tst_ functions to convert errno or signal to its
-name.
+Agree, thanks.
+I will send a new version later :-)
 
-const char *tst_strsig(int sig) returns signal name given signal number
+Regards,
+Xiaoguang Wang
+>
+> Regards,
+> Jan
+> .
+>
 
-const char *tst_strerrno(int err) returns errno name given errno number
-
-> +const char *tst_strsig(int sig)
-> +{
-> +	static const struct pair signal_pairs[] = {
-> +		STRPAIR(SIGHUP, "SIGHUP")
-> +		STRPAIR(SIGINT, "SIGINT")
-> +		STRPAIR(SIGQUIT, "SIGQUIT")
-> +		STRPAIR(SIGILL, "SIGILL")
-> +	#ifdef SIGTRAP
-> +		STRPAIR(SIGTRAP, "SIGTRAP")
-> +	#endif
-> +
-> +	#ifdef SIGIOT
-> +		/* SIGIOT same as SIGABRT */
-> +		STRPAIR(SIGABRT, "SIGIOT/SIGABRT")
-> +	#else
-> +		STRPAIR(SIGABRT, "SIGABRT")
-> +	#endif
-> +
-> +	#ifdef SIGEMT
-> +		STRPAIR(SIGEMT, "SIGEMT")
-> +	#endif
-> +	#ifdef SIGBUS
-> +		STRPAIR(SIGBUS, "SIGBUS")
-> +	#endif
-> +		STRPAIR(SIGFPE, "SIGFPE")
-> +		STRPAIR(SIGKILL, "SIGKILL")
-> +		STRPAIR(SIGUSR1, "SIGUSR1")
-> +		STRPAIR(SIGSEGV, "SIGSEGV")
-> +		STRPAIR(SIGUSR2, "SIGUSR2")
-> +		STRPAIR(SIGPIPE, "SIGPIPE")
-> +		STRPAIR(SIGALRM, "SIGALRM")
-> +		STRPAIR(SIGTERM, "SIGTERM")
-
-Ah, I wasn't clear enough, I guess, sorry.
-
-What I had in mind was to use STRPAIR() in cases that the string is different
-from the symbolic name and use PAIR() in the rest of the cases.
-
-I.e. use STRPAIR(SIGABRT, "SIGIOT/SIGABRT") but PAIR(SIGEMT).
-
-> +#define STRPAIR(key, value)  {.val = (key), .name = (value)},
-
-This would be:
-
-#define STRPAIR(key, value) [key] = {.name = value, .val = key}
-
-Then you can mix PAIR() with STRPAIR() and use PARI_LOOKUP().
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
