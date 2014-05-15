@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wi2LS-00019Q-1g
-	for ltp-list@lists.sourceforge.net; Wed, 07 May 2014 13:57:14 +0000
-Date: Wed, 7 May 2014 15:56:15 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WkuWC-0002fX-Aj
+	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 12:12:12 +0000
+Date: Thu, 15 May 2014 14:12:00 +0200
 From: chrubis@suse.cz
-Message-ID: <20140507135615.GA21868@rei>
-References: <1398391328-13711-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140515121200.GB23965@rei.Home>
+References: <1397731818-26430-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1398391328-13711-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 1/2] lib/tst_fs_has_free.c: add
- tst_fs_has_free() to determine filesystem's free space
+In-Reply-To: <1397731818-26430-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/2] rmdir/rmdir02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,70 +24,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "gux.fnst@cn.fujitsu.com" <gux.fnst@cn.fujitsu.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> The existing lib/tst_cwd_has_free.c only determines the filesystem, which
-> the current directory is in. And I think tst_cwd_has_free() is not entirely
-> correct. See this code in tst_cwd_has_free():
-> 	return ((float)sf.f_bfree) / (1024 / sf.f_bsize) >=
-> 		 required_kib ? 1 : 0;
-> if sf.f_bsize is greater than 1024, this code is wrong.
-> 
-> I choose to remove tst_cwd_has_free.c and add lib/tst_fs_has_free.c.
-> The prototype is below:
-> 	int tst_fs_has_free(void (*cleanup)(void), const char *path,
-> 		unsigned int size, unsigned int mult);
-> 
-> User can specify the path to determine the corresponding filesystem.
+> +	memset(longpathname, 'a', PATH_MAX + 2);
 
-Pushed with a small fixes, thanks.
+I've changed this to:
 
-> +enum {
-> +	TST_KB = 1024,
-> +	TST_MB = 1048576,
-> +	TST_GB = 1073741824,
-> +};
+memset(longpathname, 'a', PATH_MAX + 1);
 
-I've added TST_BYTES = 1 here so that we don't have to divide the 10 *
-pagesize in the last case.
+So that longpathname is zero terminated sting.
 
-> diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> index b4d19de..96b52ae 100644
-> --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> @@ -99,7 +99,7 @@ static void setup(void)
->  	break;
->  	}
+> -	/* resume original working directory */
+> -	chdir(cwd);
+> +	SAFE_TOUCH(cleanup, TESTFILE2, FILE_MODE, NULL);
 >  
-> -	if (!tst_cwd_has_free(65536)) {
-> +	if (!tst_fs_has_free(NULL, ".", 64, TST_KB)) {
->  		tst_brkm(TBROK, cleanup,
->  			 "Insufficient disk space to create swap file");
->  	}
+> -	return (strlen(longpath) >= PATH_MAX) ? 0 : -1;
+> +#if !defined(UCLINUX)
+> +	test_cases[4].dir = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
+> +		MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+> +#endif
 
+And changed the MAP_PRIVATE_EXCEPT_UCLINUX to just MAP_PRIVATE, because
+it's in #if !defined(UCLINUX) block anyway.
 
-And changes this to:
-
-	if (!tst_fs_has_free(NULL, ".", 64, TST_MB)) {
-
-Because as far as I can tell, the test creates 64 megabytes files.
-
-
-PS: We should document the function in Test Writing Guidelines. Will you
-    send a patch or should I write it?
+And pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
