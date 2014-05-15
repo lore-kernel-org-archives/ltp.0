@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WmMmU-0001dA-Et
-	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 12:35:02 +0000
-Date: Mon, 19 May 2014 14:34:50 +0200
+	(envelope-from <metan@suse.de>) id 1Wkv8D-0002GP-7P
+	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 12:51:29 +0000
+Date: Thu, 15 May 2014 14:51:14 +0200
 From: chrubis@suse.cz
-Message-ID: <20140519123450.GA4331@rei>
-References: <1400147025-17705-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140515125114.GB28445@rei.Home>
+References: <1398850017-10751-1-git-send-email-shuang.qiu@oracle.com>
+	<5360D024.4000408@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1400147025-17705-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH RFC v2] change MAKE_TARGETS's dependency to normal
- prerequisites and order-only prerequisites
+In-Reply-To: <5360D024.4000408@oracle.com>
+Subject: Re: [LTP] [PATCH 1/2] syscalls/fstatfs: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,23 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> -MAKE_DEPS	:= $(LIBLTP) $(LSN_H)
-> +MAKE_ORDER_ONLY_DEPS	:= $(LSN_H)
-> +MAKE_NORMAL_DEPS	:= $(LIBLTP)
+> > From: Shuang Qiu <shuang.qiu@oracle.com>
+> >
+> > * Delete some useless comments
+> >
+> > * Make variables and functions static
+> >
+> > Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+> 
+> Reviewed-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Looking at this, the LSN_H is linux_syscall_numbers.h header, shouldn't
-we recompile a testcases if this header changes as well?
+Acked by me as well.
 
-Can't we just change the MAKE_DEPS to normal dependencies and be done
-with it?
+We should remove the #ifdef __linux__ as well, we do not promise that
+these tests will run on anything but linux.
 
-Anyway we should check twice that this would not break recepies with
-automatic list of prerequisities $^ which does not include order only
-ones.
+(you should have just pushed this with you Reviewed-by allready :)
+ can you please do that now?)
 
 -- 
 Cyril Hrubis
