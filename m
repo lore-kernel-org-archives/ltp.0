@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WiL0G-0005QN-ES
-	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 09:52:36 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WiL0F-0005WO-Gg
-	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 09:52:36 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s489qQ8M018295
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 17:52:27 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Thu, 8 May 2014 17:50:51 +0800
-Message-ID: <1399542652-5795-1-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1396526450-22885-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WlGhT-0001B5-UA
+	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 11:53:19 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WlGhS-0004oD-GK
+	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 11:53:19 +0000
+Date: Fri, 16 May 2014 07:53:10 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <669312722.6827924.1400241190444.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1400211517-30970-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1400211517-30970-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1400211517-30970-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 1/2] lib/tst_path_has_mnt_flags.c: create a
-	function tst_path_has_mnt_flags()
+Subject: Re: [LTP] [PATCH v2 2/2] setpgid/setpgid01.c: add pid = 0 and pgid
+ = 0	test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,130 +29,140 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: "gux.fnst@cn.fujitsu.com" <gux.fnst@cn.fujitsu.com>
 
-Create a function tst_path_has_mnt_flags() for checking whether
-a path is on a system that is mounted with specified flags.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- include/test.h               | 12 ++++++++
- lib/tst_path_has_mnt_flags.c | 71 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 83 insertions(+)
- create mode 100644 lib/tst_path_has_mnt_flags.c
+----- Original Message -----
+> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Friday, 16 May, 2014 5:38:37 AM
+> Subject: [LTP] [PATCH v2 2/2] setpgid/setpgid01.c: add pid = 0 and pgid = 0	test
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/setpgid/setpgid01.c | 47
+>  +++++++++++++++++++++++++--
+>  1 file changed, 45 insertions(+), 2 deletions(-)
 
-diff --git a/include/test.h b/include/test.h
-index e32481c..be46674 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -302,6 +302,18 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
- unsigned short tst_get_unused_port(void (cleanup_fn)(void),
- 	unsigned short family, int type);
- 
-+/* lib/tst_path_has_mnt_flags.c
-+ *
-+ * Check whether a path is on a filesystem that is mounted with
-+ * specified flags
-+ * @path: path to file
-+ * @flags: NULL or NULL terminated array of mount flags
-+ *
-+ * Return: 0..n - number of flags matched
-+ */
-+int tst_path_has_mnt_flags(void (cleanup_fn)(void),
-+		const char *path, const char *flags[]);
-+
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/lib/tst_path_has_mnt_flags.c b/lib/tst_path_has_mnt_flags.c
-new file mode 100644
-index 0000000..031e225
---- /dev/null
-+++ b/lib/tst_path_has_mnt_flags.c
-@@ -0,0 +1,71 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Xing Gu <gux.fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+#include <unistd.h>
-+#include <mntent.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include "test.h"
-+
-+/*
-+ * Check whether a path is on a filesystem that is mounted with
-+ * specified flags.
-+ */
-+int tst_path_has_mnt_flags(void (cleanup_fn)(void),
-+		const char *path, const char *flags[])
-+{
-+	struct mntent *mnt;
-+	size_t prefix_max = 0, prefix_len;
-+	int flags_matched = 0;
-+	FILE *f;
-+	int i;
-+
-+	if (access(path, F_OK) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			"tst_path_has_mnt_flags: path %s doesn't exist", path);
-+	}
-+
-+	f = setmntent("/proc/mounts", "r");
-+	if (f == NULL) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			"tst_path_has_mnt_flags: failed to open /proc/mounts");
-+	}
-+
-+	while ((mnt = getmntent(f))) {
-+		/* ignore all pseudo fs */
-+		if (mnt->mnt_fsname[0] != '/')
-+			continue;
-+
-+		prefix_len = strlen(mnt->mnt_dir);
-+
-+		if (strncmp(path, mnt->mnt_dir, prefix_len) == 0
-+				&& prefix_len > prefix_max) {
-+			prefix_max = prefix_len;
-+			flags_matched = 0;
-+			i = 0;
-+			while (flags[i] != NULL) {
-+				if (hasmntopt(mnt, flags[i]) != NULL)
-+					flags_matched++;
-+				i++;
-+			}
-+		}
-+	}
-+
-+	endmntent(f);
-+
-+	return flags_matched;
-+}
--- 
-1.9.0
+Hi,
 
+series look good to me.
+I have only one small nit, see comment inline.
+
+Regards,
+Jan
+
+> 
+> diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c
+> b/testcases/kernel/syscalls/setpgid/setpgid01.c
+> index 700e573..23f0508 100644
+> --- a/testcases/kernel/syscalls/setpgid/setpgid01.c
+> +++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
+> @@ -36,12 +36,14 @@
+>   * Description:
+>   * Verify that:
+>   *   1. Basic functionality test for setpgid(2).
+> + *   2. Check functioning of setpgid(2) with pid = 0 and pgid = 0.
+>   */
+>  
+>  #include <errno.h>
+>  #include <string.h>
+>  #include <signal.h>
+>  #include <stdlib.h>
+> +#include <sys/wait.h>
+>  #include "test.h"
+>  #include "usctest.h"
+>  
+> @@ -51,7 +53,8 @@ static void cleanup(void);
+>  char *TCID = "setpgid01";
+>  
+>  static void setpgid_test1(void);
+> -static void (*testfunc[])(void) = { setpgid_test1};
+> +static void setpgid_test2(void);
+> +static void (*testfunc[])(void) = { setpgid_test1, setpgid_test2};
+>  int TST_TOTAL = ARRAY_SIZE(testfunc);
+>  
+>  int main(int ac, char **av)
+> @@ -91,9 +94,49 @@ static void setpgid_test1(void)
+>  	}
+>  }
+>  
+> +static int wait4child(pid_t child)
+> +{
+> +	int status;
+> +
+> +	if (waitpid(child, &status, 0) == -1)
+> +		tst_resm(TBROK|TERRNO, "waitpid");
+> +	if (WIFEXITED(status))
+> +		return WEXITSTATUS(status);
+> +	else
+> +		return status;
+> +}
+> +
+> +static void setpgid_test2(void)
+> +{
+> +	int ret;
+> +	pid_t pgid, pid;
+> +
+> +	pid = FORK_OR_VFORK();
+> +	if (pid == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork()");
+> +
+> +	if (pid != 0) {
+> +		ret = wait4child(pid);
+> +	} else {
+> +		pid = getpid();
+> +		TEST(setpgid(0, 0));
+> +		pgid = getpgrp();
+> +		if (TEST_RETURN == -1 || pgid != pid)
+
+^^ I'd suggest to add printf here with TEST_ERRNO. In unlikely
+case it fails, it would good to know why.
+
+> +			exit(1);
+> +		else
+> +			exit(0);
+> +	}
+> +
+> +	if (ret == 0)
+> +		tst_resm(TPASS, "test setpgid(0, 0) success");
+> +	else
+> +		tst_resm(TFAIL, "test setpgid(0, 0) fail");
+> +}
+> +
+> +
+>  static void setup(void)
+>  {
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+>  
+>  	TEST_PAUSE;
+>  }
+> --
+> 1.8.2.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+> Instantly run your Selenium tests across 300+ browser/OS combos.
+> Get unparalleled scalability from the best Selenium testing platform
+> available
+> Simple to use. Nothing to install. Get started now for free."
+> http://p.sf.net/sfu/SauceLabs
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
