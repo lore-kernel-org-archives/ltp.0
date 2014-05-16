@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WhIPa-0007on-A2
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 12:54:26 +0000
-Date: Mon, 5 May 2014 14:53:27 +0200
-From: chrubis@suse.cz
-Message-ID: <20140505125327.GB9470@rei>
-References: <5b2c7cc.14f0c.145b06999bd.Coremail.eeslook@163.com>
+	(envelope-from <jstancek@redhat.com>) id 1WlBt0-0001WM-OQ
+	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 06:44:54 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WlBsz-0003Rf-F9
+	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 06:44:54 +0000
+Date: Fri, 16 May 2014 02:44:42 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <46592848.6574553.1400222682233.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53757A75.7000101@cn.fujitsu.com>
+References: <1399874987-24926-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<27774731.5088145.1400061957755.JavaMail.zimbra@redhat.com>
+	<53757A75.7000101@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5b2c7cc.14f0c.145b06999bd.Coremail.eeslook@163.com>
-Subject: Re: [LTP] [PATCH] Fix an error command format for sar in
-	ltpstress.sh
+Subject: Re: [LTP] [PATCH 1/2] setpgid/setpgid01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +29,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: look <eeslook@163.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Hi All and chrubis,
-> 
-> 
->     I got an error for the lastest version 20140115 of ltp project.
->     The sar command never support zero as an number of iterations, this may have been wrongly merged.
-> I send attch path file for fix this error.
-> 
-> 
->     Details messages:
-> @@ -254,7 +254,7 @@ ${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/stress.part3 > ${TMP}/stress.par
-> -  sar -o $datafile $interval 0 &
-> +  sar -o $datafile $interval > /dev/null &
 
-Pushed, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+
+----- Original Message -----
+> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 16 May, 2014 4:39:49 AM
+> Subject: Re: [LTP] [PATCH 1/2] setpgid/setpgid01.c: cleanup
+> 
+
+> >>  
+> > Hi,
+> >
+> >> +	/*
+> >> +	 * Make sure current process is NOT a session or pgrp leader
+> >> +	 */
+> >>  	if (pgid == pid) {
+> > What if we dropped the condition above and always make a child?
+> > If we do that, then setpgid_test1() and setpgid_test2() are almost the
+> > same,
+> > with the difference of arguments you pass to setpgid(), so there's a chance
+> > to re-use some code.
+> >
+> > Thinking about it a bit more, is there any reason we need a child process?
+> 
+> For pid = 0 & pgid = 0 test, I think we should have tests in child process,
+> because in this case, according to setpgid()'s manpge, this will set
+> child process's PGID to its PID, we should verify this.
+
+"If pgid is zero, then the PGID of the process specified by pid is made the
+same as its process ID."
+
+I see. So, for "setpgid(0, 0);" it makes a difference and it
+actually changes PGID to a different value. I'll have a look at v2
+later today.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
