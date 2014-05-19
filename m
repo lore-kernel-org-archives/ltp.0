@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wku81-0001ru-2k
-	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 11:47:13 +0000
-Date: Thu, 15 May 2014 13:47:01 +0200
-From: chrubis@suse.cz
-Message-ID: <20140515114701.GA23965@rei.Home>
-References: <fd155c8dfbfcbe2e906879f0bd5e4fbe7fb16c9b.1398155754.git.jstancek@redhat.com>
-	<b98288e83160e3c44783a9a37078910a4b724f1a.1398155754.git.jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WmMU5-0003Qs-B2
+	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 12:16:01 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WmMU4-0002Gr-2d
+	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 12:16:01 +0000
+Date: Mon, 19 May 2014 08:15:45 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2020736027.7623534.1400501745312.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53796394.8030906@cn.fujitsu.com>
+References: <1400463915-15572-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1400463915-15572-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<53796394.8030906@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b98288e83160e3c44783a9a37078910a4b724f1a.1398155754.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] readahead02: read in 2M chunks
+Subject: Re: [LTP] [PATCH v3 2/2] setpgid/setpgid01.c: add pid = 0 and pgid
+ = 0 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,48 +30,139 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Max readahead size has been limited since commit:
->   commit 6d2be915e589b58cb11418cbe1f22ff90732b6ac
->   Author: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
->   Date:   Thu Apr 3 14:48:23 2014 -0700
->     mm/readahead.c: fix readahead failure for memoryless NUMA nodes
->                     and limit readahead pages
-> 
-> Update testcase to read ahead in 2M chunks, this change is
-> compatible with older kernels.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/readahead/readahead02.c |    9 +++++++--
->  1 files changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-> index 8940821..5b1524e 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -213,8 +213,13 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
->  		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
->  
->  	if (do_readahead) {
-> -		TEST(ltp_syscall(__NR_readahead, fd, (off64_t) 0,
-> -			(size_t) fsize));
-> +		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
-> +		for (i = 0; i < fsize; i += 2*1024*1024) {
-> +			TEST(ltp_syscall(__NR_readahead, fd,
-> +				(off64_t) i, 2*1024*1024));
-> +			if (TEST_RETURN != 0)
-> +				break;
-> +		}
 
-These two patches looks good to me.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+
+----- Original Message -----
+> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "LTP" <ltp-list@lists.sourceforge.net>
+> Sent: Monday, 19 May, 2014 3:51:16 AM
+> Subject: Re: [PATCH v3 2/2] setpgid/setpgid01.c: add pid = 0 and pgid = 0 test
+> 
+> Hi Jan,
+> 
+>     Thanks for your reviewing.
+>     I have added the possible error message output in this patch v3.
+
+Hi,
+
+looks good to me.
+
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+
+>    Would you like to commit it, thanks.
+
+Let's give it a day or two in case someone else wants to comment as well.
+
+Regards,
+Jan
+
+> 
+> Regards,
+> Xiaoguang Wang
+> 
+> On 05/19/2014 09:45 AM, Xiaoguang Wang wrote:
+> > Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> > ---
+> >  testcases/kernel/syscalls/setpgid/setpgid01.c | 54
+> >  ++++++++++++++++++++++++++-
+> >  1 file changed, 52 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c
+> > b/testcases/kernel/syscalls/setpgid/setpgid01.c
+> > index 700e573..00e895b 100644
+> > --- a/testcases/kernel/syscalls/setpgid/setpgid01.c
+> > +++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
+> > @@ -36,12 +36,14 @@
+> >   * Description:
+> >   * Verify that:
+> >   *   1. Basic functionality test for setpgid(2).
+> > + *   2. Check functioning of setpgid(2) with pid = 0 and pgid = 0.
+> >   */
+> >  
+> >  #include <errno.h>
+> >  #include <string.h>
+> >  #include <signal.h>
+> >  #include <stdlib.h>
+> > +#include <sys/wait.h>
+> >  #include "test.h"
+> >  #include "usctest.h"
+> >  
+> > @@ -51,7 +53,8 @@ static void cleanup(void);
+> >  char *TCID = "setpgid01";
+> >  
+> >  static void setpgid_test1(void);
+> > -static void (*testfunc[])(void) = { setpgid_test1};
+> > +static void setpgid_test2(void);
+> > +static void (*testfunc[])(void) = { setpgid_test1, setpgid_test2};
+> >  int TST_TOTAL = ARRAY_SIZE(testfunc);
+> >  
+> >  int main(int ac, char **av)
+> > @@ -91,9 +94,56 @@ static void setpgid_test1(void)
+> >  	}
+> >  }
+> >  
+> > +static int wait4child(pid_t child)
+> > +{
+> > +	int status;
+> > +
+> > +	if (waitpid(child, &status, 0) == -1)
+> > +		tst_resm(TBROK|TERRNO, "waitpid");
+> > +	if (WIFEXITED(status))
+> > +		return WEXITSTATUS(status);
+> > +	else
+> > +		return status;
+> > +}
+> > +
+> > +static void setpgid_test2(void)
+> > +{
+> > +	int ret;
+> > +	pid_t pgid, pid;
+> > +
+> > +	pid = FORK_OR_VFORK();
+> > +	if (pid == -1)
+> > +		tst_brkm(TBROK | TERRNO, cleanup, "fork()");
+> > +
+> > +	if (pid != 0) {
+> > +		ret = wait4child(pid);
+> > +	} else {
+> > +		pid = getpid();
+> > +		TEST(setpgid(0, 0));
+> > +		pgid = getpgrp();
+> > +		if (TEST_RETURN == -1) {
+> > +			fprintf(stderr, "setpgid(0, 0) fails in "
+> > +				"child process: %s\n", strerror(TEST_ERRNO));
+> > +			exit(1);
+> > +		} else if (pgid != pid) {
+> > +			fprintf(stderr, "setpgid(0, 0) fails to make PGID"
+> > +				"equal to PID\n");
+> > +			exit(1);
+> > +		} else {
+> > +			exit(0);
+> > +		}
+> > +	}
+> > +
+> > +	if (ret == 0)
+> > +		tst_resm(TPASS, "test setpgid(0, 0) success");
+> > +	else
+> > +		tst_resm(TFAIL, "test setpgid(0, 0) fail");
+> > +}
+> > +
+> > +
+> >  static void setup(void)
+> >  {
+> > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> > +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> >  
+> >  	TEST_PAUSE;
+> >  }
+> 
+> 
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
