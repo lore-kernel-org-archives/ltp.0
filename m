@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ashagow@gmail.com>) id 1WpzC9-0005Pr-3M
-	for ltp-list@lists.sourceforge.net; Thu, 29 May 2014 12:12:29 +0000
-Received: from mail-we0-f177.google.com ([74.125.82.177])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WpzC7-0002CW-C3
-	for ltp-list@lists.sourceforge.net; Thu, 29 May 2014 12:12:29 +0000
-Received: by mail-we0-f177.google.com with SMTP id x48so283613wes.8
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 29 May 2014 05:12:21 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WmCsL-0001WC-Nj
+	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 02:00:25 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WmCsJ-00068S-34
+	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 02:00:25 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4J1lbFo011796
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 May 2014 09:47:38 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Mon, 19 May 2014 09:45:14 +0800
+Message-ID: <1400463915-15572-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Thu, 29 May 2014 17:42:20 +0530
-Message-ID: <CADqC_HoU+5qBqER44UzD-0mX=x-H8QP0zsTB3WMcH8kptLqHBg@mail.gmail.com>
-From: Asha Gowda <ashagow@gmail.com>
-Subject: [LTP] ltp for android
+Subject: [LTP] [PATCH v3 1/2] setpgid/setpgid01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,103 +26,270 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1282211285044602916=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============1282211285044602916==
-Content-Type: multipart/alternative; boundary=f46d043be03845a83204fa88d763
+Delete some useless comments.
 
---f46d043be03845a83204fa88d763
-Content-Type: text/plain; charset=UTF-8
+Do some code re-arrangement and remove the 'if (pgid == pid)' check,
+which is useless.
 
-Hi ,
-I am able to cross compile for android but not able to execute it on
-android platform.
-I if execute any of the binaries i am getting " no such file or directory"
-I checked that the issue with dynamic linker :
+Some cleanup.
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/setpgid/setpgid01.c | 187 +++++---------------------
+ 1 file changed, 30 insertions(+), 157 deletions(-)
 
-readelf --program
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c b/testcases/kernel/syscalls/setpgid/setpgid01.c
+index 57e71fc..700e573 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid01.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
+@@ -31,201 +31,74 @@
+  *
+  */
+ /* $Id: setpgid01.c,v 1.7 2009/11/02 13:57:18 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: setpgid01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for setpgid(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) setpgid(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the setpgid(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	setpgid(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
++
++/*
++ * Description:
++ * Verify that:
++ *   1. Basic functionality test for setpgid(2).
++ */
+ 
+ #include <errno.h>
+ #include <string.h>
+ #include <signal.h>
+ #include <stdlib.h>
+-#include <sys/wait.h>
+ #include "test.h"
+ #include "usctest.h"
+ 
+-void setup();
+-void cleanup();
++static void setup(void);
++static void cleanup(void);
+ 
+ char *TCID = "setpgid01";
+-int TST_TOTAL = 1;
+-
+-int exp_enos[] = { 0, 0 };
+ 
+-int pgid, pid;
++static void setpgid_test1(void);
++static void (*testfunc[])(void) = { setpgid_test1};
++int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ int main(int ac, char **av)
+ {
+-	int lc;
++	int i, lc;
+ 	char *msg;
+ 
+-    /***************************************************************
+-     * parse standard options
+-     ***************************************************************/
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-    /***************************************************************
+-     * perform global setup for test
+-     ***************************************************************/
+ 	setup();
+ 
+-	/* set the expected errnos... */
+-	TEST_EXP_ENOS(exp_enos);
+-
+-    /***************************************************************
+-     * check looping state if -c option given
+-     ***************************************************************/
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+ 		tst_count = 0;
+ 
+-		/*
+-		 * Call setpgid(2)
+-		 */
+-		TEST(setpgid(pid, pgid));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			TEST_ERROR_LOG(TEST_ERRNO);
+-			tst_resm(TFAIL, "setpgid(%d, %d) Failed, errno=%d : %s",
+-				 pid, pgid, TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-	    /***************************************************************
+-	     * only perform functional verification if flag set (-f not given)
+-	     ***************************************************************/
+-			if (STD_FUNCTIONAL_TEST) {
+-				/* No Verification test, yet... */
+-				tst_resm(TPASS, "setpgid(%d, %d) returned %ld",
+-					 pid, pgid, TEST_RETURN);
+-			}
+-		}
++		for (i = 0; i < TST_TOTAL; i++)
++			(*testfunc[i])();
+ 	}
+ 
+-    /***************************************************************
+-     * cleanup and exit
+-     ***************************************************************/
+ 	cleanup();
+ 	tst_exit();
+-
+ }
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
++static void setpgid_test1(void)
+ {
+-	int status;
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	/*
+-	 * Make sure current process is NOT a session or pgrp leader
+-	 */
++	pid_t pgid, pid;
+ 
+ 	pgid = getpgrp();
+ 	pid = getpid();
+ 
+-	if (pgid == pid) {
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "fork() in setup() failed - errno %d", errno);
+-		}
+-
+-		if (pid != 0) {	/* parent - sits and waits */
+-			wait(&status);
+-			exit(WEXITSTATUS(status));
+-		} else {	/* child - continues with test */
+-			pid = getpid();
+-		}
++	TEST(setpgid(pid, pgid));
++	if (TEST_RETURN == -1 || getpgrp() != pgid) {
++		tst_resm(TFAIL | TTERRNO, "test setpgid(%d, %d) fail",
++			 pid, pgid);
++	} else {
++		tst_resm(TPASS, "test setpgid(%d, %d) success", pid, pgid);
+ 	}
+ }
+ 
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
++static void setup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+-	TEST_CLEANUP;
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
+ }
+-- 
+1.8.2.1
 
-Elf file type is EXEC (Executable file)
-Entry point 0x87e8
-There are 8 program headers, starting at offset 52
-
-Program Headers:
-  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  EXIDX          0x000a7c 0x00008a7c 0x00008a7c 0x00048 0x00048 R   0x4
-  PHDR           0x000034 0x00008034 0x00008034 0x00100 0x00100 R E 0x4
-  INTERP         0x000134 0x00008134 0x00008134 0x00013 0x00013 R   0x1
-      [Requesting program interpreter: /lib/ld-linux.so.3]
-  LOAD           0x000000 0x00008000 0x00008000 0x00ac8 0x00ac8 R E 0x8000
-  LOAD           0x000ac8 0x00010ac8 0x00010ac8 0x00148 0x00158 RW  0x8000
-  DYNAMIC        0x000ad4 0x00010ad4 0x00010ad4 0x000f0 0x000f0 RW  0x4
-  NOTE           0x000148 0x00008148 0x00008148 0x00020 0x00020 R   0x4
-  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
-
-Its taking default linker file as /lib/ld-linux, it should be
-/system/bin/linker for android i guess.
-Can someone suggest me hoe to change this.
-
-Thanks,
-
---f46d043be03845a83204fa88d763
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div>Hi ,</div><div>I am able to cross compile for android=
- but not able to execute it on android platform.</div><div>I if execute any=
- of the binaries i am getting &quot; no such file or directory&quot;</div>
-<div>I checked that the issue with dynamic linker :</div><div><br></div><di=
-v><br></div><div>readelf --program</div><div><br></div><div>Elf file type i=
-s EXEC (Executable file)</div><div>Entry point 0x87e8</div><div>There are 8=
- program headers, starting at offset 52</div>
-<div><br></div><div>Program Headers:</div><div>=C2=A0 Type =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Offset =C2=A0 VirtAddr =C2=A0 PhysAddr =C2=A0 FileSiz =
-MemSiz =C2=A0Flg Align</div><div>=C2=A0 EXIDX =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00x000a7c 0x00008a7c 0x00008a7c 0x00048 0x00048 R =C2=A0 0x4</div><div=
->=C2=A0 PHDR =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000034 0x00008034 0x00008=
-034 0x00100 0x00100 R E 0x4</div>
-<div>=C2=A0 INTERP =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000134 0x00008134 0x000081=
-34 0x00013 0x00013 R =C2=A0 0x1</div><div>=C2=A0 =C2=A0 =C2=A0 [Requesting =
-program interpreter: /lib/ld-linux.so.3]</div><div>=C2=A0 LOAD =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 0x000000 0x00008000 0x00008000 0x00ac8 0x00ac8 R E=
- 0x8000</div>
-<div>=C2=A0 LOAD =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000ac8 0x00010ac8 0x0=
-0010ac8 0x00148 0x00158 RW =C2=A00x8000</div><div>=C2=A0 DYNAMIC =C2=A0 =C2=
-=A0 =C2=A0 =C2=A00x000ad4 0x00010ad4 0x00010ad4 0x000f0 0x000f0 RW =C2=A00x=
-4</div><div>=C2=A0 NOTE =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000148 0x00008=
-148 0x00008148 0x00020 0x00020 R =C2=A0 0x4</div>
-<div>=C2=A0 GNU_STACK =C2=A0 =C2=A0 =C2=A00x000000 0x00000000 0x00000000 0x=
-00000 0x00000 RW =C2=A00x10</div><div><br></div><div>Its taking default lin=
-ker file as /lib/ld-linux, it should be /system/bin/linker for android i gu=
-ess.</div><div>Can someone suggest me hoe to change this.</div>
-<div><br></div><div>Thanks,</div></div>
-
---f46d043be03845a83204fa88d763--
-
-
---===============1282211285044602916==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Time is money. Stop wasting it! Get your web API in 5 minutes.
-www.restlet.com/download
-http://p.sf.net/sfu/restlet
---===============1282211285044602916==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1282211285044602916==--
-
