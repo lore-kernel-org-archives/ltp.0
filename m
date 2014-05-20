@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WksEv-0004uF-Ch
-	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 09:46:13 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WksEs-0006ba-O6
-	for ltp-list@lists.sourceforge.net; Thu, 15 May 2014 09:46:13 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4F9k3n0004285
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 May 2014 17:46:03 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 15 May 2014 17:43:45 +0800
-Message-ID: <1400147025-17705-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1Wmj6F-0002TS-3q
+	for ltp-list@lists.sourceforge.net; Tue, 20 May 2014 12:24:55 +0000
+Date: Tue, 20 May 2014 14:24:42 +0200
+From: chrubis@suse.cz
+Message-ID: <20140520122442.GB28216@rei.suse.cz>
+References: <1397561602-18935-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1397561602-18935-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<20140519162944.GB29937@rei> <537B4259.2010200@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH RFC v2] change MAKE_TARGETS's dependency to normal
-	prerequisites and order-only prerequisites
+Content-Disposition: inline
+In-Reply-To: <537B4259.2010200@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2] syscalls/rename/rename11.c: add ELOOP,
+ EMLINK and EROFS error value tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,385 +27,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-See the below issue:
-  When we made modifications to source files in lib/, for example lib/tst_mkfs.c, then
-  back to testcases/kernel/syscalls/access and execute 'make'. This will not make the
-  access[0-5] to be re-linked with the newly generated libltp.a, we need to touch
-  access[0-5].c or remove access[0-5] files first, then make. This will make no sense.
-  Users may expect just a make command to ensure a new access[0-5] generated with the
-  new libltp.a.
+Hi!
+> Yeah, it's expected behavior for ext4.
+> Please this this url: https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Storage_Administration_Guide/installconfig-fs.html
+> 
+> Note: here the discussion is for directory.
+> 
+> I checked the ext4 kernel source code in RHEL7.0RC:
+> 
+> static void ext4_inc_count(handle_t *handle, struct inode *inode)
+> {
+>          inc_nlink(inode);
+>          if (is_dx(inode) && inode->i_nlink > 1) {
+>                  if (inode->i_nlink >= EXT4_LINK_MAX || inode->i_nlink == 2) {
+>                          set_nlink(inode, 1);
+>                          EXT4_SET_RO_COMPAT_FEATURE(inode->i_sb,
+>                                                EXT4_FEATURE_RO_COMPAT_DIR_NLINK);
+>                  }
+>          }
+> }
+> 
+> Here EXT4_LINK_MAX is 65000. From the above code, we can
+> see that if "is_dx(inode)" returns true and i_nlink count is greater than 65000.
+> i_nlink will be reset to 1. Then if you stat parent directory, you will see its link_count is 1.
+> 
+> When we try to rmdir a directory, I also checked the ext4 kernel source code.
+> If a directory had nlink == 1, then the ext4 will still let it be 1.
+> 
+> You can observe this by following steps:
+> [root@localhost ~]# mkdir ext4_test/
+> [root@localhost ~]# cd ext4_test/; for((i=0; i <=65000;i++)) do mkdir $i; done;
+> [root@localhost ext4_test]# stat .
+>   File: '.'
+>   Size: 1392640         Blocks: 2728       IO Block: 4096   directory
+> Device: 801h/2049d      Inode: 3678747     Links: 1
+> Access: (0755/drwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+> Access: 2014-05-20 19:36:24.541944536 +0800
+> Modify: 2014-05-20 19:35:59.724942953 +0800
+> Change: 2014-05-20 19:35:59.724942953 +0800
+>  Birth: -
+> 
+> Now the links is 1.
+> If you delete some directory, the links will still be 1.
+> 
+> So if we want to have a 65000 limit, we should  "mkfs.ext4 -O ^dir_index device", thanks.
 
-This is because in 'include/mk/generic_leaf_target.inc', MAKE_TARGETS's dependency is
-order-only prerequisites, not normal prerequisites, so we change lib's dependency type
-to normal prerequisites, not order-only prerequisites.
+Ok, thanks for the detailed explanation.
 
-The original MAKE_DEPS is replaced by MAKE_NORMAL_DEPS or MAKE_ORDER_ONLY_DEPS.
+> >> But EMLINK error value test need the directory have a valid LINK_MAX,
+> >> so for ext4, we use mkfs to clear "dir_index" filesystem feature, then
+> >> ext4 has a LINK_MAX:65000: mkfs.ext4 -O ^dir_index device
+> > So this is the same problem as with XFS.
+> >
+> > I still think that correct solution to this problem is to write a
+> > function that detects if there is a limit on number of links given a
+> > filesystem path. Then we can simply skip the EMLINK test if the number
+> > of links is unlimited.
+> 
+> Agree, thanks.
+> For xfs, the number of links is unlimited.
+> For ext2/3, the number of links is 32000.
+> For ext4, it depends some options.
+> 
+> So for xfs, I will skip EMLINK test for it.
+> For other files ystems, I will try to create as many as files, until the EMLINK Is hit.
+> if EMLINK is not hit, there must be some other errors, such as ENOSPC, for this
+> case,  the EMLINK test should also be skipped.
 
-And fix some small bugs:
-  In testcases/kernel/include/lib.mk, '$(KERNEL_DIR)/libkerntest.a' is not a
-valid path, the correct path is '$(KERNEL_DIR)/lib/libkerntest.a'.
+What about we create tst_get_max_links(const char *path) library
+function that would either return the actual limit or -1 if unlimited?
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- include/mk/generic_leaf_target.inc                      |  2 +-
- include/mk/generic_trunk_target.inc                     |  2 +-
- include/mk/testcases.mk                                 |  3 ++-
- testcases/kernel/Makefile                               |  2 +-
- testcases/kernel/containers/Makefile                    |  2 +-
- testcases/kernel/containers/Makefile.inc                |  2 +-
- testcases/kernel/controllers/Makefile                   |  2 +-
- testcases/kernel/controllers/Makefile.inc               | 15 ++++++++-------
- testcases/kernel/controllers/cpuset/Makefile            |  2 +-
- testcases/kernel/controllers/cpuset/Makefile.inc        |  2 +-
- testcases/kernel/include/lib.mk                         |  4 ++--
- testcases/kernel/mem/hugetlb/Makefile                   |  2 +-
- testcases/kernel/mem/hugetlb/Makefile.inc               |  2 +-
- testcases/kernel/mem/include/libmem.mk                  |  2 +-
- testcases/kernel/power_management/Makefile              |  2 +-
- testcases/kernel/syscalls/ipc/Makefile                  |  2 +-
- testcases/kernel/syscalls/ipc/Makefile.inc              |  2 +-
- testcases/kernel/syscalls/ipc/msgctl/Makefile           |  2 +-
- testcases/kernel/syscalls/kill/Makefile                 |  2 +-
- testcases/kernel/syscalls/mremap/Makefile               |  2 +-
- testcases/network/rpc/basic_tests/rpc01/Makefile        |  2 +-
- testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc |  2 +-
- testcases/network/tcp_cmds/Makefile.inc                 |  4 ++--
- 23 files changed, 33 insertions(+), 31 deletions(-)
+Because this would be needed in more than one testcase, at least in the
+link() and linkat() ones.
 
-diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
-index a88586f..71c8a07 100644
---- a/include/mk/generic_leaf_target.inc
-+++ b/include/mk/generic_leaf_target.inc
-@@ -92,7 +92,7 @@
- 
- .PHONY: all clean install
- 
--$(MAKE_TARGETS): | $(MAKE_DEPS)
-+$(MAKE_TARGETS): $(MAKE_NORMAL_DEPS) | $(MAKE_ORDER_ONLY_DEPS)
- 
- all: $(MAKE_TARGETS)
- 
-diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
-index c49e3c6..994e7c0 100644
---- a/include/mk/generic_trunk_target.inc
-+++ b/include/mk/generic_trunk_target.inc
-@@ -57,7 +57,7 @@ $(eval $(get_make_dirs))
- $(SUBDIRS): %:
- 	mkdir -m 00755 -p "$@"
- 
--$(MAKE_TARGETS): | $(MAKE_DEPS)
-+$(MAKE_TARGETS): $(MAKE_NORMAL_DEPS) | $(MAKE_ORDER_ONLY_DEPS)
- 
- trunk-all: $(MAKE_TARGETS)
- 
-diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
-index ea26d4f..6ab587b 100644
---- a/include/mk/testcases.mk
-+++ b/include/mk/testcases.mk
-@@ -42,7 +42,8 @@ $(LIBLTP): $(LIBLTP_DIR)
- $(LSN_H): $(abs_top_builddir)/$(TKI_DIR)
- 	$(MAKE) -C "$^" -f "$(abs_top_srcdir)/$(TKI_DIR)/Makefile" all
- 
--MAKE_DEPS	:= $(LIBLTP) $(LSN_H)
-+MAKE_ORDER_ONLY_DEPS	:= $(LSN_H)
-+MAKE_NORMAL_DEPS	:= $(LIBLTP)
- 
- # For linux_syscall_numbers.h
- CPPFLAGS	+= -I$(abs_top_builddir)/$(TKI_DIR)
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 50a12fa..0460827 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -60,7 +60,7 @@ endif
- 
- endif
- 
--MAKE_DEPS		:= include/linux_syscall_numbers.h
-+MAKE_NORMAL_DEPS	:= include/linux_syscall_numbers.h
- 
- include:
- 	mkdir -p "$@"
-diff --git a/testcases/kernel/containers/Makefile b/testcases/kernel/containers/Makefile
-index 6620ed9..eafbfd1 100644
---- a/testcases/kernel/containers/Makefile
-+++ b/testcases/kernel/containers/Makefile
-@@ -38,7 +38,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$(LIBDIR)/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/containers/Makefile.inc b/testcases/kernel/containers/Makefile.inc
-index 0750f50..ae90a1a 100644
---- a/testcases/kernel/containers/Makefile.inc
-+++ b/testcases/kernel/containers/Makefile.inc
-@@ -40,6 +40,6 @@ $(LIBS): $(LIBDIR)
- 
- INSTALL_TARGETS		?= *.sh
- 
--MAKE_DEPS		:= $(LIBS)
-+MAKE_NORMAL_DEPS	:= $(LIBS)
- 
- # vim: syntax=make
-diff --git a/testcases/kernel/controllers/Makefile b/testcases/kernel/controllers/Makefile
-index 80e5e9e..9d38531 100644
---- a/testcases/kernel/controllers/Makefile
-+++ b/testcases/kernel/controllers/Makefile
-@@ -35,7 +35,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/controllers/Makefile.inc b/testcases/kernel/controllers/Makefile.inc
-index b106283..6790035 100644
---- a/testcases/kernel/controllers/Makefile.inc
-+++ b/testcases/kernel/controllers/Makefile.inc
-@@ -22,20 +22,21 @@
- 
- # DO NOT USE THIS FILE FOR controllers / libcontrollers!!!
- 
--LIBDIR			:= libcontrollers
-+LIBCONTROLLER_SRCDIR	:= $(abs_top_srcdir)/testcases/kernel/controllers/libcontrollers
-+LIBDIR			:= $(abs_top_builddir)/testcases/kernel/controllers/libcontrollers
- LIB			:= $(LIBDIR)/libcontrollers.a
- 
--../$(LIBDIR):
-+$(LIBDIR):
- 	mkdir -p "$@"
- 
--$(LIB): ../$(LIBDIR)
--	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-+$(LIB): $(LIBDIR)
-+	$(MAKE) -C $^ -f $(LIBCONTROLLER_SRCDIR)/Makefile all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
--CPPFLAGS		+= -I$(abs_srcdir)/../$(LIBDIR)
-+CPPFLAGS		+= -I$(LIBCONTROLLER_SRCDIR)
- 
--LDFLAGS			+= -L$(abs_builddir)/../$(LIBDIR)
-+LDFLAGS			+= -L$(LIBDIR)
- 
- INSTALL_TARGETS		?= *.sh
- 
-diff --git a/testcases/kernel/controllers/cpuset/Makefile b/testcases/kernel/controllers/cpuset/Makefile
-index d988d0c..c265118 100644
---- a/testcases/kernel/controllers/cpuset/Makefile
-+++ b/testcases/kernel/controllers/cpuset/Makefile
-@@ -35,7 +35,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/controllers/cpuset/Makefile.inc b/testcases/kernel/controllers/cpuset/Makefile.inc
-index 9e002f4..332b2bf 100644
---- a/testcases/kernel/controllers/cpuset/Makefile.inc
-+++ b/testcases/kernel/controllers/cpuset/Makefile.inc
-@@ -37,7 +37,7 @@ $(LIBCONTROLLERS): $(LIBCONTROLLERS_DIR)
- $(LIBCPUSET): $(LIBCPUSET_DIR) | $(LIBCONTROLLERS)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIBCONTROLLERS) $(LIBCPUSET)
-+MAKE_NORMAL_DEPS	:= $(LIBCONTROLLERS) $(LIBCPUSET)
- 
- LDFLAGS			+= -L$(abs_builddir)/$(LIBCPUSET_DIR) -L$(abs_builddir)/$(LIBCONTROLLERS_DIR)
- 
-diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
-index c193ca3..7a1c85b 100644
---- a/testcases/kernel/include/lib.mk
-+++ b/testcases/kernel/include/lib.mk
-@@ -21,7 +21,7 @@ LIBKERNTEST_SRCDIR	:= $(KERNEL_SRCDIR)/lib
- 
- KERNEL_DIR		:= $(abs_top_builddir)/testcases/kernel
- LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
--LIBKERNTEST		:= $(KERNEL_DIR)/libkerntest.a
-+LIBKERNTEST		:= $(LIBKERNTEST_DIR)/libkerntest.a
- CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_SRCDIR)/include
- LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
- LDFLAGS			+= -L$(LIBKERNTEST_DIR)
-@@ -32,7 +32,7 @@ $(LIBKERNTEST_DIR):
- $(LIBKERNTEST): $(LIBKERNTEST_DIR)
- 	$(MAKE) -C $^ -f "$(LIBKERNTEST_SRCDIR)/Makefile" all
- 
--MAKE_DEPS		+= $(LIBKERNTEST)
-+MAKE_NORMAL_DEPS	+= $(LIBKERNTEST)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/mem/hugetlb/Makefile b/testcases/kernel/mem/hugetlb/Makefile
-index 1e8f8f8..0fbc0dd 100644
---- a/testcases/kernel/mem/hugetlb/Makefile
-+++ b/testcases/kernel/mem/hugetlb/Makefile
-@@ -30,7 +30,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/mem/hugetlb/Makefile.inc b/testcases/kernel/mem/hugetlb/Makefile.inc
-index cc0ada6..6b7983f 100644
---- a/testcases/kernel/mem/hugetlb/Makefile.inc
-+++ b/testcases/kernel/mem/hugetlb/Makefile.inc
-@@ -32,7 +32,7 @@ $(LIBIPC): $(LIBIPCDIR)
- CPPFLAGS		+= -I$(abs_srcdir)/$(LIBIPCDIR)
- LDFLAGS			+= -L$(abs_builddir)/$(LIBIPCDIR)
- LDLIBS			+= -lipc_hugetlb
--MAKE_DEPS		+= $(LIBIPC)
-+MAKE_NORMAL_DEPS	+= $(LIBIPC)
- 
- include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
- # vim: syntax=make
-diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
-index 4503e78..8b84b6c 100644
---- a/testcases/kernel/mem/include/libmem.mk
-+++ b/testcases/kernel/mem/include/libmem.mk
-@@ -33,7 +33,7 @@ $(LIBMEM_DIR):
- $(LIBMEM): $(LIBMEM_DIR)
- 	$(MAKE) -C $^ -f "$(LIBMEM_SRCDIR)/Makefile" all
- 
--MAKE_DEPS		+= $(LIBMEM)
-+MAKE_NORMAL_DEPS	+= $(LIBMEM)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/power_management/Makefile b/testcases/kernel/power_management/Makefile
-index 24f75f8..f3289d2 100644
---- a/testcases/kernel/power_management/Makefile
-+++ b/testcases/kernel/power_management/Makefile
-@@ -26,6 +26,6 @@ vpath %.c $(srcdir):$(top_srcdir)/lib
- 
- INSTALL_TARGETS		:= lib/*.py *.py *.sh
- 
--MAKE_DEPS		+= $(APICMDS_DIR)/tst_kvercmp
-+MAKE_NORMAL_DEPS	+= $(APICMDS_DIR)/tst_kvercmp
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/Makefile b/testcases/kernel/syscalls/ipc/Makefile
-index 42492db..4a5ce2d 100644
---- a/testcases/kernel/syscalls/ipc/Makefile
-+++ b/testcases/kernel/syscalls/ipc/Makefile
-@@ -30,7 +30,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS		:= $(LIB)
- 
- trunk-clean:: | lib-clean
- 
-diff --git a/testcases/kernel/syscalls/ipc/Makefile.inc b/testcases/kernel/syscalls/ipc/Makefile.inc
-index c7890a9..ed8a086 100644
---- a/testcases/kernel/syscalls/ipc/Makefile.inc
-+++ b/testcases/kernel/syscalls/ipc/Makefile.inc
-@@ -33,7 +33,7 @@ $(LIBDIR):
- $(LIBIPC): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIBIPC)
-+MAKE_NORMAL_DEPS	:= $(LIBIPC)
- 
- CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
- 
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/Makefile b/testcases/kernel/syscalls/ipc/msgctl/Makefile
-index 4472eeb..d38cbe8 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/Makefile
-+++ b/testcases/kernel/syscalls/ipc/msgctl/Makefile
-@@ -23,7 +23,7 @@ include $(top_srcdir)/include/mk/testcases.mk
- LIBMSGCTL               := $(LIBDIR)/libmsgctl.a
- LDLIBS                  += -lmsgctl
- 
--MAKE_DEPS               := $(LIBMSGCTL)
-+MAKE_NORMAL_DEPS	:= $(LIBMSGCTL)
- 
- include $(abs_srcdir)/../Makefile.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/kill/Makefile b/testcases/kernel/syscalls/kill/Makefile
-index 23dabfc..f413fe6 100644
---- a/testcases/kernel/syscalls/kill/Makefile
-+++ b/testcases/kernel/syscalls/kill/Makefile
-@@ -32,7 +32,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- CPPFLAGS                += -I$(abs_srcdir)/$(LIBDIR)
- 
-diff --git a/testcases/kernel/syscalls/mremap/Makefile b/testcases/kernel/syscalls/mremap/Makefile
-index 102e473..f20c4c5 100644
---- a/testcases/kernel/syscalls/mremap/Makefile
-+++ b/testcases/kernel/syscalls/mremap/Makefile
-@@ -32,7 +32,7 @@ $(LIBDIR):
- $(LIB): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
- 
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- CPPFLAGS                += -I$(abs_srcdir)/$(LIBDIR)
- 
-diff --git a/testcases/network/rpc/basic_tests/rpc01/Makefile b/testcases/network/rpc/basic_tests/rpc01/Makefile
-index b07e14e..4687675 100644
---- a/testcases/network/rpc/basic_tests/rpc01/Makefile
-+++ b/testcases/network/rpc/basic_tests/rpc01/Makefile
-@@ -46,6 +46,6 @@ lib-clean:: $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
- 
- MAKE_TARGETS		:= rpc1 rpc_server
--MAKE_DEPS		:= $(LIB)
-+MAKE_NORMAL_DEPS	:= $(LIB)
- 
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
-index ff6b2e0..7db45d4 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/Makefile.inc
-@@ -27,7 +27,7 @@ $(LIBDDIR):
- $(LIBRPC-TIRPC): $(LIBDIR)
- 	$(MAKE) -C $^ -f "$(LIBSRCDIR)/Makefile" all
- 
--MAKE_DEPS	+= $(LIBRPC-TIRPC)
-+MAKE_NORMAL_DEPS	+= $(LIBRPC-TIRPC)
- 
- LDFLAGS		+= -L$(LIBDIR)
- LDLIBS		+= $(TIRPC_LIBS) -lrpc-tirpc
-diff --git a/testcases/network/tcp_cmds/Makefile.inc b/testcases/network/tcp_cmds/Makefile.inc
-index 8ef8717..8c10599 100644
---- a/testcases/network/tcp_cmds/Makefile.inc
-+++ b/testcases/network/tcp_cmds/Makefile.inc
-@@ -22,9 +22,9 @@
- 
- GENERATE_FILE_DIR	:= ../..
- 
--MAKE_DEPS		:= $(GENERATE_FILE_DIR)/datafiles/bin.sm
-+MAKE_ORDER_ONLY_DEPS	:= $(GENERATE_FILE_DIR)/datafiles/bin.sm
- 
--$(MAKE_DEPS):
-+$(MAKE_ORDER_ONLY_DEPS):
- 	$(MAKE) -C $(GENERATE_FILE_DIR) \
- 	    -f "$(abs_srcdir)/$(GENERATE_FILE_DIR)/Makefile" generate
- 
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
