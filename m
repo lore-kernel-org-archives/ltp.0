@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Whgff-0006HM-RK
-	for ltp-list@lists.sourceforge.net; Tue, 06 May 2014 14:48:39 +0000
-Date: Tue, 6 May 2014 16:47:40 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WmjjY-0007WG-K7
+	for ltp-list@lists.sourceforge.net; Tue, 20 May 2014 13:05:32 +0000
+Date: Tue, 20 May 2014 15:05:15 +0200
 From: chrubis@suse.cz
-Message-ID: <20140506144740.GA7908@rei.Home>
-References: <1389353374.2061.9.camel@G08JYZSD130126>
-	<1389409991.2061.14.camel@G08JYZSD130126>
-	<20140224193305.GC31562@rei>
-	<1393309618.1952.52.camel@G08JYZSD130126>
-	<5368A32E.7070805@oracle.com>
+Message-ID: <20140520130515.GC28216@rei.suse.cz>
+References: <1400147025-17705-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<20140519123450.GA4331@rei> <537B4607.3030207@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5368A32E.7070805@oracle.com>
-Subject: Re: [LTP] [PATCH v3] linkat/linkat02.c: add new error number tests
+In-Reply-To: <537B4607.3030207@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH RFC v2] change MAKE_TARGETS's dependency to normal
+ prerequisites and order-only prerequisites
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,60 +26,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuang Qiu <shuang.qiu@oracle.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > +
-> > +	SAFE_TOUCH(cleanup, TEST_EMLINK, 0666, NULL);
-> > +
-> > +	while (1) {
-> > +		sprintf(lname, "%s%ld", BASENAME, ++link_max);
-> > +		TEST(link(TEST_EMLINK, lname));
-> > +		if (TEST_RETURN == -1) {
-> > +			switch (TEST_ERRNO) {
-> > +			case EMLINK:
-> > +				tst_resm(TINFO, "for %s the max links is %ld",
-> > +					 fstype, link_max);
-> > +				break;
-> > +			default:
-> > +				tst_brkm(TBROK | TTERRNO, cleanup,
-> > +					 "Unexpected error: ");
-> > +				break;
-> > +			}
-> > +			break;
-> > +		}
-> > +	}
-> > +}
-> >
-> Should it give a limit max number here when test EMLINK to handler the 
-> filesystems which unlimited link count.
-> AFAIK,it use 2^31 - 1 with xfs:
-> /*
->   * The 32 bit link count in the inode theoretically maxes out at UINT_MAX.
->   * Since the pathconf interface is signed, we use 2^31 - 1 instead.
->   * The old inode format had a 16 bit link count, so its maximum is 
-> USHRT_MAX.
->   */
-> #define XFS_MAXLINK             ((1U << 31) - 1U)
-> #define XFS_MAXLINK_1           65535U
+> Here I met some issues. Could you please give me some hint and  currently I
+> do not know how to fix it.
 > 
-> We are not able to reach such limitation.
+> When I applied the v2 Patch and according to your comments,
+> make "MAKE_NORMAL_DEPS        := $(LIBLTP) $(LSN_H)" in include/mk/testcases.mk.
+> 
+> For this rule "$(MAKE_TARGETS): $(MAKE_NORMAL_DEPS) | $(MAKE_ORDER_ONLY_DEPS)" in
+> include/mk/generic_leaf_target.inc.
+> 
+> The implicit rule in Makefile will also make  "MAKE_NORMAL_DEPS" in the compile command.
+> 
+> For example:
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/home/lege/extern_stroage/test/ltp-dev/testcases/kernel/include -I../../../../include -I../../../../include   -L../../../../lib  access05.c /home/lege/extern_stroage/test/ltp-dev/lib/libltp.a /home/lege/extern_stroage/test/ltp-dev/testcases/kernel/include/linux_syscall_numbers.h   -lltp -o access05
+> 
+> But before this patch,
+> the command will be:
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/home/lege/extern_stroage/test/ltp-dev/testcases/kernel/include -I../../../../include -I../../../../include   -L../../../../lib  access05.c   -lltp -o access05
+> 
+> How can I remove these "MAKE_NORMAL_DEPS" from the command. I googled this issue, but
+> do not find any useful, thanks.
 
-If xfs has no limit or not reachable limit on number of links we should
-skip the setup for EMLINK and return TCONF in the EMLINK test if xfs
-filesystem is used.
+Well that is the problem with implicit rule that pulls in all the dependencies.
+
+The problem is that Make is confused because we don't go the *.c + *.h
+-> *.o -> binary route but take shortcut *.c -> binary instead.
+
+If you look at the list of implicit rules (make --print-data-base) there is:
+
+LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+
+%: %.c
+        $(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+
+So the final command used to link the testcase is:
+
+$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+If you get choose to use the .c -> .o rule instead it uses:
+
+%.o: %.c:
+        $(COMPILE.c) $(OUTPUT_OPTION) $<
+
+Note the $< instead of $^. In this case only first dependency is passed to the
+compiler.
+
+
+One solution would be to override the build-in rule with our own:
+
+% %.c:
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LOADLIBES) $(LDLIBS) -o $@
+
+However there may be places that will break by this change.
+
+Or we may do a big step forward and stop using the implicit rules complety and
+write our own rules (which is what quite a lot of projects does). We can even
+utilize the gcc -MM and generate all testcase dependencies automatically...
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
