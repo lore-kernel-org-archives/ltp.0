@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WkW4y-0007Ou-4B
-	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 10:06:28 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WkW4w-0002ik-FH
-	for ltp-list@lists.sourceforge.net; Wed, 14 May 2014 10:06:28 +0000
-Date: Wed, 14 May 2014 06:05:57 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <27774731.5088145.1400061957755.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1399874987-24926-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1399874987-24926-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WnPXo-0003fq-Lz
+	for ltp-list@lists.sourceforge.net; Thu, 22 May 2014 09:44:12 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WnPXl-0000Hc-NH
+	for ltp-list@lists.sourceforge.net; Thu, 22 May 2014 09:44:12 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4M9heo0019965
+	for <ltp-list@lists.sourceforge.net>; Thu, 22 May 2014 17:43:40 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Thu, 22 May 2014 17:41:06 +0800
+Message-ID: <1400751666-30218-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] setpgid/setpgid01.c: cleanup
+Subject: [LTP] [PATCH] lib/tst_fs_link_count.c: add two new test interfaces
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,149 +29,189 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+If you want to get the maximum number of hard links to one file in
+specified filesystem, using the below interface. if there is no such
+limits, return -1
+    int tst_fs_get_max_hardlinks(const char *filesystem);
 
+If you want to get the maximum subdirectories per directory in
+specified filesystem, using the below interface. if there is no such
+limits, return -1.
+    int tst_fs_max_subdirs_per_dir(const char *filesystem);
 
------ Original Message -----
-> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 12 May, 2014 8:09:46 AM
-> Subject: [LTP] [PATCH 1/2] setpgid/setpgid01.c: cleanup
-> 
-> Delete some useless comments.
-> Do some code re-arrangement.
-> Some cleanup.
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/setpgid/setpgid01.c | 204
->  +++++++-------------------
->  1 file changed, 57 insertions(+), 147 deletions(-)
-> 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ configure.ac             |  1 +
+ include/test.h           | 15 ++++++++++
+ lib/tst_fs_link_count.c  | 71 ++++++++++++++++++++++++++++++++++++++++++++++++
+ m4/ltp-ext-filesystem.m4 | 38 ++++++++++++++++++++++++++
+ 4 files changed, 125 insertions(+)
+ create mode 100644 lib/tst_fs_link_count.c
+ create mode 100644 m4/ltp-ext-filesystem.m4
 
-> -	/*
-> -	 * Make sure current process is NOT a session or pgrp leader
-> -	 */
-> +static void setpgid_test1(void)
-> +{
-> +	int ret;
-> +	pid_t pgid, pid;
->  
->  	pgid = getpgrp();
->  	pid = getpid();
->  
+diff --git a/configure.ac b/configure.ac
+index 8698c47..5a5d7b5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -182,5 +182,6 @@ LTP_CHECK_FALLOCATE
+ LTP_CHECK_SYSCALL_FCNTL
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
+ LTP_CHECK_TIRPC
++LTP_CHECK_EXT_FILESYSTEM
+ 
+ AC_OUTPUT
+diff --git a/include/test.h b/include/test.h
+index 43fdc8b..6077a4f 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -321,6 +321,21 @@ const char *tst_strerrno(int err);
+ int tst_path_has_mnt_flags(void (cleanup_fn)(void),
+ 		const char *path, const char *flags[]);
+ 
++/*
++ * lib/tst_fs_link_count.c
++ * Return the maximum number of hard links to one file in specified filesystem.
++ * If the filesystem does not have such limits or currently we do not have
++ * knowledge about the filesystem, return -1.
++ */
++int tst_fs_get_max_hardlinks(const char *filesystem);
++
++/* lib/tst_fs_link_count.c
++ * Return the maximum subdirectories per directory in specified filesystem.
++ * If the filesystem does not have such limits or currently we do not have
++ * knowledge about the filesystem, return -1.
++ */
++int tst_fs_max_subdirs_per_dir(const char *filesystem);
++
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/lib/tst_fs_link_count.c b/lib/tst_fs_link_count.c
+new file mode 100644
+index 0000000..16722e0
+--- /dev/null
++++ b/lib/tst_fs_link_count.c
+@@ -0,0 +1,71 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include "test.h"
++
++int tst_fs_get_max_hardlinks(const char *filesystem)
++{
++	if (strcmp(filesystem, "ext2") == 0 ||
++	    strcmp(filesystem, "ext3") == 0) {
++#if defined(HAVE_EXT4_USE_FOR_EXT23)
++		tst_resm(TINFO, "kernel config option CONFIG_EXT4_USE_FOR_EXT23"
++			 " is enabled, so ext4 file system driver will be used "
++			 "for %s file system mounts", filesystem);
++		return 65000;
++#else
++		return 32000;
++#endif
++	} else if (strcmp(filesystem, "ext4") == 0) {
++		return 65000;
++	} else if (strcmp(filesystem, "xfs") == 0) {
++		return -1;
++	} else if (strcmp(filesystem, "btrfs") == 0) {
++		return 65535;
++	} else {
++		tst_resm(TINFO, "Currently we do not have knowledge about "
++			 "filesystem %s, or it is not a valid filesystem "
++			 "name", filesystem);
++		return -1;
++	}
++}
++
++int tst_fs_max_subdirs_per_dir(const char *filesystem)
++{
++	if (strcmp(filesystem, "ext2") == 0 ||
++	    strcmp(filesystem, "ext3") == 0) {
++#if defined(HAVE_EXT4_USE_FOR_EXT23)
++		tst_resm(TINFO, "kernel config option CONFIG_EXT4_USE_FOR_EXT23"
++			 " is enabled, so ext4 file system driver will be used "
++			 "for %s file system mounts", filesystem);
++		return -1;
++#else
++		return 32000;
++#endif
++	} else if (strcmp(filesystem, "ext4") == 0) {
++		return -1;
++	} else if (strcmp(filesystem, "xfs") == 0) {
++		return -1;
++	} else if (strcmp(filesystem, "btrfs") == 0) {
++		return -1;
++	} else {
++		tst_resm(TINFO, "for filesystem:%s, currently there is no "
++			 "exact information about the max subdirectories per"
++			 " directory or this is not a valid filesystem name",
++			 filesystem);
++		return -1;
++	}
++}
+diff --git a/m4/ltp-ext-filesystem.m4 b/m4/ltp-ext-filesystem.m4
+new file mode 100644
+index 0000000..bbc0a54
+--- /dev/null
++++ b/m4/ltp-ext-filesystem.m4
+@@ -0,0 +1,38 @@
++dnl
++dnl Copyright (c) 2014 Fujitsu Ltd.
++dnl Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program;  if not, write to the Free Software
++dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++dnl
++
++dnl
++dnl LTP_CHECK_EXT_FILESYSTEM
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_EXT_FILESYSTEM],[dnl
++	AC_MSG_CHECKING([check kernel config option CONFIG_EXT4_USE_FOR_EXT23])
++
++	has_ext4_use_for_ext23=no
++	if grep "CONFIG_EXT4_USE_FOR_EXT23=y" /boot/config-$(uname -r); then
++		has_ext4_use_for_ext23=yes
++	fi
++
++	if test "$has_ext4_use_for_ext23" = "yes"; then
++		AC_DEFINE(HAVE_EXT4_USE_FOR_EXT23,1,[Define to 1 if kernel config option CONFIG_EXT4_USE_FOR_EXT23 is defined])
++		AC_MSG_RESULT(yes)
++	else
++		AC_MSG_RESULT(no)
++	fi
++])
+-- 
+1.8.2.1
 
-Hi,
-
-> +	/*
-> +	 * Make sure current process is NOT a session or pgrp leader
-> +	 */
->  	if (pgid == pid) {
-
-What if we dropped the condition above and always make a child?
-If we do that, then setpgid_test1() and setpgid_test2() are almost the same,
-with the difference of arguments you pass to setpgid(), so there's a chance
-to re-use some code.
-
-Thinking about it a bit more, is there any reason we need a child process?
-
-If it is pgrp leader, we create a child, which inherits parent's PGID and then
-calls setpgid(0, pgid_of_parent)
-If it's not a pgrp leader, we call setpgid(pid, current_pgid).
-
-We always seem to call setpgid with same pgid as current PGID. Can that
-fail in any scenario? Does it matter if it's a pgrp leader or not?
-
-$ cat a.c
-int main()
-{
-	printf("%d %d\n", getpid(), getpgrp());
-	printf("%d\n", setpgid(getpid(), getpgrp()));
-	return 0;
-}
-
-$ ./a.out 
-22721 22721
-0
-
-Am I missing something?
-
-Regards,
-Jan
-
->  		if ((pid = FORK_OR_VFORK()) == -1) {
-> -			tst_brkm(TBROK, cleanup,
-> -				 "fork() in setup() failed - errno %d", errno);
-> +			tst_brkm(TBROK | TERRNO, cleanup, "fork()");
->  		}
->  
-> -		if (pid != 0) {	/* parent - sits and waits */
-> -			wait(&status);
-> -			exit(WEXITSTATUS(status));
-> -		} else {	/* child - continues with test */
-> +		if (pid != 0) {
-> +			ret = wait4child(pid);
-> +		} else {
->  			pid = getpid();
-> +			TEST(setpgid(pid, pgid));
-> +			if (TEST_RETURN == -1 || getpgrp() != pgid)
-> +				exit(1);
-> +			else
-> +				exit(0);
->  		}
-> +	} else {
-> +		TEST(setpgid(pid, pgid));
-> +		if (TEST_RETURN == -1 || getpgrp() != pgid)
-> +			ret = 1;
-> +		else
-> +			ret = 0;
->  	}
-> +
-> +	if (ret == 0)
-> +		tst_resm(TPASS, "test setpgid(%d, %d) success", pid, pgid);
-> +	else
-> +		tst_resm(TFAIL, "test setpgid(%d, %d) fail", pid, pgid);
->  }
->  
-> -/***************************************************************
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *		completion or premature exit.
-> - ***************************************************************/
-> -void cleanup(void)
-> +static void setup(void)
->  {
-> -	/*
-> -	 * print timing stats if that option was specified.
-> -	 * print errno log if that option was specified.
-> -	 */
-> -	TEST_CLEANUP;
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
->  
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
->  }
-> --
-> 1.8.2.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-> Instantly run your Selenium tests across 300+ browser/OS combos.
-> Get unparalleled scalability from the best Selenium testing platform
-> available
-> Simple to use. Nothing to install. Get started now for free."
-> http://p.sf.net/sfu/SauceLabs
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 "Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
