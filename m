@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1Wf5g2-00020k-Si
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 10:54:18 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wf5g1-00048U-3P
-	for ltp-list@lists.sourceforge.net; Tue, 29 Apr 2014 10:54:18 +0000
-Message-ID: <535F84CD.2050003@oracle.com>
-Date: Tue, 29 Apr 2014 18:54:05 +0800
-From: Shuang Qiu <shuang.qiu@oracle.com>
+	(envelope-from <metan@suse.de>) id 1WpKRS-0001hj-Na
+	for ltp-list@lists.sourceforge.net; Tue, 27 May 2014 16:41:34 +0000
+Date: Tue, 27 May 2014 18:41:18 +0200
+From: chrubis@suse.cz
+Message-ID: <20140527164118.GA514@rei>
+References: <1395991214.5017.2.camel@G08JYZSD130126>
+	<1395991331.5017.4.camel@G08JYZSD130126>
+	<20140429163137.GG12523@rei>
+	<1399262735.3177.14.camel@G08JYZSD130126>
+	<20140505115303.GA9027@rei>
+	<1399362493.3177.40.camel@G08JYZSD130126>
+	<1399362721.3177.44.camel@G08JYZSD130126>
+	<20140526134450.GG4713@rei.Home>
+	<1401171983.23078.0.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <1398761066-3840-1-git-send-email-shuang.qiu@oracle.com>
-	<360124567.11750981.1398763511239.JavaMail.zimbra@redhat.com>
-In-Reply-To: <360124567.11750981.1398763511239.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/clone08: Skip test_clone_stopped after
- kernel 2.6.25
+Content-Disposition: inline
+In-Reply-To: <1401171983.23078.0.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] read/read02.c: fix skipping all testes on tmpfs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,80 +29,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-T24gMDQvMjkvMjAxNCAwNToyNSBQTSwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4KPgo+Cj4gLS0tLS0g
-T3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAic2h1YW5nIHFpdSIgPHNodWFuZy5xaXVA
-b3JhY2xlLmNvbT4KPj4gVG86IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+PiBTZW50
-OiBUdWVzZGF5LCAyOSBBcHJpbCwgMjAxNCAxMDo0NDoyNiBBTQo+PiBTdWJqZWN0OiBbTFRQXSBb
-UEFUQ0hdIHN5c2NhbGxzL2Nsb25lMDg6IFNraXAgdGVzdF9jbG9uZV9zdG9wcGVkIGFmdGVyCWtl
-cm5lbCAyLjYuMjUKPj4KPj4gRnJvbTogU2h1YW5nIFFpdSA8c2h1YW5nLnFpdUBvcmFjbGUuY29t
-Pgo+Pgo+PiBBY2NvcmRpbmcgdG8gQ0xPTkUgbWFudWFsIHBhZ2UgIkZyb20gTGludXggMi42LjI1
-IHRoaXMgZmxhZyBpcwo+PiBkZXByZWNhdGVkLllvdSBwcm9iYWJseSBuZXZlciB3YW50ZWQgdG8g
-dXNlIGl0LCB5b3UgY2VydGFpbmx5IHNob3VsZG7igJl0Cj4+IGJlIHVzaW5nIGl0LCAgYW5kICBz
-b29uICBpdCAgd2lsbCAgZ28gYXdheSIsc2tpcCB0ZXN0X2Nsb25lX3N0b3BwZWQKPj4gYWZ0ZXIg
-a2VybmVsIDIuNi4yNS4KPiBIaSwKPgo+ICJUaGlzIGZsYWcgd2FzIGRlcHJlY2F0ZWQgZnJvbSBM
-aW51eCAyLjYuMjUgb253YXJkLCBhbmQgd2FzIHJlbW92ZWQgYWx0b2dldGhlciBpbiBMaW51eCAy
-LjYuMzguIgo+Cj4gQXMgSSB1bmRlcnN0YW5kLCBtYXJraW5nIGl0IGFzIGRlcHJlY2F0ZWQgZGlk
-bid0IHByZXZlbnQgYW55b25lIGZyb20gdXNpbmcgaXQuCj4gU28sIHNob3VsZG4ndCB0aGUgdGVz
-dCBzdGlsbCBiZSB2YWxpZCB1cCB0byAyLjYuMzgsIHdoZW4gaXQgd2FzIGZpbmFsbHkgcmVtb3Zl
-ZD8KU29ycnksSSBkaWQgbm90IGZpbmQgInJlbW92ZWQgYWx0b2dldGhlciBpbiBMaW51eCAyLjYu
-MzgiIGluIG15IGxvd2VyIAp2ZXJzaW9uIG9mIG1hbnVhbCBwYWdlLgpJIGFncmVlIGFuZCB3aWxs
-IHVwZGF0ZS4KPgo+PiBTaWduZWQtb2ZmLWJ5OiBTaHVhbmcgUWl1IDxzaHVhbmcucWl1QG9yYWNs
-ZS5jb20+Cj4+IC0tLQo+PiAgIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUvY2xvbmUw
-OC5jIHwgICAgOSArKysrKysrKysKPj4gICAxIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygr
-KSwgMCBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvY2xvbmUvY2xvbmUwOC5jCj4+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9u
-ZS9jbG9uZTA4LmMKPj4gaW5kZXggMTRlYmY2MC4uNjEwOTg2ZCAxMDA2NDQKPj4gLS0tIGEvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMKPj4gKysrIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMKPj4gQEAgLTg0LDE1ICs4NCwyNCBAQCBp
-bnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKPj4gICB7Cj4+ICAgCWNoYXIgKm1zZzsKPj4gICAJ
-aW50IGksIGxjOwo+PiArCWludCBjbG9uZV9zdG9wcGVkID0gMDsKPj4gICAKPj4gICAJbXNnID0g
-cGFyc2Vfb3B0cyhhYywgYXYsIE5VTEwsIE5VTEwpOwo+PiAgIAlpZiAobXNnICE9IE5VTEwpCj4+
-ICAgCQl0c3RfYnJrbShUQlJPSywgTlVMTCwgIk9QVElPTiBQQVJTSU5HIEVSUk9SIC0gJXMiLCBt
-c2cpOwo+PiAgIAo+PiAgIAlzZXR1cCgpOwo+PiArCj4+ICsjaWZkZWYgQ0xPTkVfU1RPUFBFRAo+
-PiArCWlmICh0c3Rfa3ZlcmNtcCgyLCA2LCAyNSkgPiAwKQo+PiArCQljbG9uZV9zdG9wcGVkID0x
-Owo+PiArI2VuZGlmCj4+ICsKPj4gICAJZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhsYyk7IGxj
-KyspIHsKPj4gICAJCXRzdF9jb3VudCA9IDA7Cj4+ICAgCQlmb3IgKGkgPSAwOyBpIDwgVFNUX1RP
-VEFMOyBpKyspIHsKPj4gKwkJCWlmIChjbG9uZV9zdG9wcGVkID09IDEgJiYgaSA9PTMpCj4+ICsJ
-CQkJY29udGludWU7Cj4gSSdkIHN1Z2dlc3QgdG8gcHV0IHRoZSBjaGVjayBkaXJlY3RseSB0byB0
-ZXN0X2Nsb25lX3N0b3BwZWQoKQo+IGFuZCB5b3UgY2FuIGF2b2lkIHVzaW5nIGNoZWNrcyB0aGF0
-IGRlcGVuZCBvbiBvcmRlciBvZiB0ZXN0Y2FzZXM6Cj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL2Nsb25lL2Nsb25lMDguYwo+IGluZGV4IDE0ZWJmNjAuLjk1MTgzODIgMTAwNjQ0Cj4gLS0t
-IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTA4LmMKPiArKysgYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMDguYwo+IEBAIC0yMzgsNiArMjM4LDEx
-IEBAIHN0YXRpYyB2b2lkIHRlc3RfY2xvbmVfc3RvcHBlZChpbnQgdCkKPiAgICAgICAgICBpbnQg
-ZmxhZzsKPiAgICAgICAgICBwaWRfdCBjaGlsZDsKPiAgIAo+ICsgICAgICAgaWYgKHRzdF9rdmVy
-Y21wKDIsIDYsIDM4KSA+PSAwKSB7Cj4gKyAgICAgICAgICAgICAgIHRzdF9yZXNtKFRJTkZPLCAi
-Q0xPTkVfU1RPUFBFRCBza2lwcGVkIGZvciBrZXJuZWxzID49IDIuNi4zOCIpOwo+ICsgICAgICAg
-ICAgICAgICByZXR1cm47Cj4gKyAgICAgICB9Cj4gKwo+ICAgICAgICAgIHN0b3BwZWRfZmxhZyA9
-IDA7Cj4gICAgICAgICAgY2hpbGQgPSBjbG9uZV9jaGlsZCgmdGVzdF9jYXNlc1t0XSwgMSk7Clll
-cyxpdCBsb29rcyBiZXR0ZXIsdGhhbmtzIGZvciBoZWxwLgoKVGhhbmtzClNodWFuZwo+Cj4gUmVn
-YXJkcywKPiBKYW4KPgo+PiAgIAkJCXRzdF9yZXNtKFRJTkZPLCAicnVubmluZyAlcyIsIHRlc3Rf
-Y2FzZXNbaV0ubmFtZSk7Cj4+ICAgCQkJdGVzdF9jYXNlc1tpXS50ZXN0ZnVuYyhpKTsKPj4gICAJ
-CX0KPj4gLS0KPj4gMS43LjcKPj4KPj4KPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+ICJBY2Nl
-bGVyYXRlIERldiBDeWNsZXMgd2l0aCBBdXRvbWF0ZWQgQ3Jvc3MtQnJvd3NlciBUZXN0aW5nIC0g
-Rm9yIEZSRUUKPj4gSW5zdGFudGx5IHJ1biB5b3VyIFNlbGVuaXVtIHRlc3RzIGFjcm9zcyAzMDAr
-IGJyb3dzZXIvT1MgY29tYm9zLiAgR2V0Cj4+IHVucGFyYWxsZWxlZCBzY2FsYWJpbGl0eSBmcm9t
-IHRoZSBiZXN0IFNlbGVuaXVtIHRlc3RpbmcgcGxhdGZvcm0gYXZhaWxhYmxlLgo+PiBTaW1wbGUg
-dG8gdXNlLiBOb3RoaW5nIHRvIGluc3RhbGwuIEdldCBzdGFydGVkIG5vdyBmb3IgZnJlZS4iCj4+
-IGh0dHA6Ly9wLnNmLm5ldC9zZnUvU2F1Y2VMYWJzCj4+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+PiBMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPj4KCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiJB
-Y2NlbGVyYXRlIERldiBDeWNsZXMgd2l0aCBBdXRvbWF0ZWQgQ3Jvc3MtQnJvd3NlciBUZXN0aW5n
-IC0gRm9yIEZSRUUKSW5zdGFudGx5IHJ1biB5b3VyIFNlbGVuaXVtIHRlc3RzIGFjcm9zcyAzMDAr
-IGJyb3dzZXIvT1MgY29tYm9zLiAgR2V0IAp1bnBhcmFsbGVsZWQgc2NhbGFiaWxpdHkgZnJvbSB0
-aGUgYmVzdCBTZWxlbml1bSB0ZXN0aW5nIHBsYXRmb3JtIGF2YWlsYWJsZS4KU2ltcGxlIHRvIHVz
-ZS4gTm90aGluZyB0byBpbnN0YWxsLiBHZXQgc3RhcnRlZCBub3cgZm9yIGZyZWUuIgpodHRwOi8v
-cC5zZi5uZXQvc2Z1L1NhdWNlTGFicwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+Hi!
+> We only skip the O_DIRECT testes when on tmpfs.
+
+Pushed with minor changes, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+The best possible search technologies are now affordable for all companies.
+Download your FREE open source Enterprise Search Engine today!
+Our experts will assist you in its installation for $59/mo, no commitment.
+Test it for FREE on our Cloud platform anytime!
+http://pubads.g.doubleclick.net/gampad/clk?id=145328191&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
