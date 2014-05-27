@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1WlBt0-0001WM-OQ
-	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 06:44:54 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WlBsz-0003Rf-F9
-	for ltp-list@lists.sourceforge.net; Fri, 16 May 2014 06:44:54 +0000
-Date: Fri, 16 May 2014 02:44:42 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <46592848.6574553.1400222682233.JavaMail.zimbra@redhat.com>
-In-Reply-To: <53757A75.7000101@cn.fujitsu.com>
-References: <1399874987-24926-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<27774731.5088145.1400061957755.JavaMail.zimbra@redhat.com>
-	<53757A75.7000101@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WpFLE-00061V-A8
+	for ltp-list@lists.sourceforge.net; Tue, 27 May 2014 11:14:48 +0000
+Date: Tue, 27 May 2014 13:14:31 +0200
+From: chrubis@suse.cz
+Message-ID: <20140527111431.GA12189@rei.Home>
+References: <1397800512.2119.5.camel@G08JYZSD130126>
+	<20140526152009.GA7298@rei.Home>
+	<1401174751.23078.7.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] setpgid/setpgid01.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <1401174751.23078.7.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] controllers/cpuacct: add cpuacct tests to default
+ and somecleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,56 +27,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-
-
-
-
------ Original Message -----
-> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 16 May, 2014 4:39:49 AM
-> Subject: Re: [LTP] [PATCH 1/2] setpgid/setpgid01.c: cleanup
+Hi!
+> > > +. cmdlib.sh
+> > 
+> > What is the cmdlib.sh needed here for?
+> > 
 > 
+> In run_cpuacct_test.sh I have used tst_require_root and exists. These
+> function are defined in cmdlib.sh.
 
-> >>  
-> > Hi,
-> >
-> >> +	/*
-> >> +	 * Make sure current process is NOT a session or pgrp leader
-> >> +	 */
-> >>  	if (pgid == pid) {
-> > What if we dropped the condition above and always make a child?
-> > If we do that, then setpgid_test1() and setpgid_test2() are almost the
-> > same,
-> > with the difference of arguments you pass to setpgid(), so there's a chance
-> > to re-use some code.
-> >
-> > Thinking about it a bit more, is there any reason we need a child process?
-> 
-> For pid = 0 & pgid = 0 test, I think we should have tests in child process,
-> because in this case, according to setpgid()'s manpge, this will set
-> child process's PGID to its PID, we should verify this.
+Right, but this line added to cpuacct_setup.sh and as far as I can tell,
+there is nothing from cmdlib.sh used there.
 
-"If pgid is zero, then the PGID of the process specified by pid is made the
-same as its process ID."
-
-I see. So, for "setpgid(0, 0);" it makes a difference and it
-actually changes PGID to a different value. I'll have a look at v2
-later today.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+The best possible search technologies are now affordable for all companies.
+Download your FREE open source Enterprise Search Engine today!
+Our experts will assist you in its installation for $59/mo, no commitment.
+Test it for FREE on our Cloud platform anytime!
+http://pubads.g.doubleclick.net/gampad/clk?id=145328191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
