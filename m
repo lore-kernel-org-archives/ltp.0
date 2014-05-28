@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WkBZJ-0005j9-7q
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 12:12:25 +0000
-Date: Tue, 13 May 2014 14:11:23 +0200
-From: chrubis@suse.cz
-Message-ID: <20140513121123.GD12144@rei>
-References: <53720837.8010805@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53720837.8010805@cn.fujitsu.com>
-Subject: Re: [LTP] How to get detailed system information between running
-	tests
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1WpSj9-00069s-QW
+	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 01:32:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WpSj8-0003rU-Hl
+	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 01:32:23 +0000
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 28 May 2014 09:32:09 +0800
+Message-Id: <1401240729-15260-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH] hugemmap/hugemmap03.c: fix the ppc64 FAILED situation
+	procedure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,49 +22,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: liwan@redhat.com, Li Wang <wangli.ahau@gmail.com>
 
-Hi,
-> Recently I met some fails in RHEL7.0Beta by running "./runltp", the fails are below:
->    ------------------------------------------
->            hugemmap01 FAIL 2
->            hugemmap03 FAIL 2
->            hugemmap04 FAIL 2
->  ------------------------------------------
-> After some investigation, I found that it is "echo 128 > /proc/sys/vm/nr_hugepages" causing
-> these fails. By catting /proc/buddyinfo  or catting /proc/pagetypeinfo, I found that the system
-> has too many memory fragments and was not able to allocate 128 hugepages. So I also want
-> to know which test cases results in these too many memory fragments.
-> 
-> It seems that LTP does not provide a method to get the system's status information between these
-> tests. I think we may add patches to support providing a shell script to ltp-pan, which will be called before
-> and after every test case, to record some system status information. In this shell script, you can collect
-> system information you has interests in, then save these information to files. Then we can analysis these
-> files to know which case causing the big system status changes.
-> 
-> Anybody has some better ideas, thanks.
+From: Li Wang <wangli.ahau@gmail.com>
 
-That sounds more like a job for MMTests[1]. The upside of MMTests is
-that all the scripts for collection system information are allready
-written along with exporters to html and comparsion tools. The downside
-is that there is not much of documentation and LTP support is untested.
+	When testing on ppc64 arch, `./hugemmap03 -s 64` failed message as:
+	  hugemmap03    1  TFAIL  :  mmap into high region failed unexpectedly - expect errno=ENOMEM, got: errno=EINVAL(22): Invalid
 
-[1] https://github.com/gormanm/mmtests
+	But it is not the system issue,  MMAP(2) Programmer's Manual define the mmap() error return value like:
+	  EINVAL We don't like addr, length, or offset (e.g., they are too large, or not aligned on a page boundary).
+	  ENOMEM No memory is available, or the process's maximum number of mappings would have been exceeded.
+	So, we should consider the EINVAL return situation on ppc64.
 
+Signed-off-by: Li Wang <wangli.ahau@gmail.com>
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+index 0287ec9..3c1ccdd 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+@@ -100,7 +100,7 @@ int main(int ac, char **av)
+ 
+ 		tst_count = 0;
+ 
+-		/* Attempt to mmap into highmem addr, should get ENOMEM */
++		/* Attempt to mmap into highmem addr, should get ENOMEM or EINVAL (on arch ppc64) */
+ 		addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
+ 			    MAP_SHARED | MAP_FIXED, fildes, 0);
+ 		if (addr != MAP_FAILED) {
+@@ -108,13 +108,13 @@ int main(int ac, char **av)
+ 				 "succeeded unexpectedly");
+ 			goto fail;
+ 		}
+-		if (errno != ENOMEM)
+-			tst_resm(TFAIL | TERRNO, "mmap into high region "
+-				 "failed unexpectedly - expect "
+-				 "errno=ENOMEM, got");
+-		else
++		if (errno == ENOMEM || errno == EINVAL)
+ 			tst_resm(TPASS | TERRNO, "mmap into high region "
+ 				 "failed as expected");
++		else
++			tst_resm(TFAIL | TERRNO, "mmap into high region "
++				 "failed unexpectedly - expect "
++				 "errno=ENOMEM or EINVAL, got");
+ fail:
+ 		close(fildes);
+ 	}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.1.2
+
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Time is money. Stop wasting it! Get your web API in 5 minutes.
+www.restlet.com/download
+http://p.sf.net/sfu/restlet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
