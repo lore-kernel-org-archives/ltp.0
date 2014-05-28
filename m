@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WkEtv-00034k-Er
-	for ltp-list@lists.sourceforge.net; Tue, 13 May 2014 15:45:55 +0000
-Date: Tue, 13 May 2014 17:44:53 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wpg7M-0000hc-3Q
+	for ltp-list@lists.sourceforge.net; Wed, 28 May 2014 15:50:16 +0000
+Date: Wed, 28 May 2014 17:49:45 +0200
 From: chrubis@suse.cz
-Message-ID: <20140513154453.GC21042@rei>
-References: <1396615481-13156-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20140528154945.GB16345@rei>
+References: <1401269774-7030-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1396615481-13156-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v3 1/2] network: vxlan: add new test
+In-Reply-To: <1401269774-7030-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] testcases/kernel/include/lib.mk: fix invalid
+ libkerntest.a path
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,33 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +ip_local=${IPV4_NETWORK}.${LHOST_IPV4_HOST}
-> +ip_vxlan_local="192.168.124.1"
-> +mac_vxlan_local="3A:1C:C0:A8:7C:01"
-> +
-> +ip_remote=${IPV4_NETWORK}.${RHOST_IPV4_HOST}
-> +ip_vxlan_remote="192.168.124.2"
-> +mac_vxlan_remote="3A:1C:C0:A8:7C:02"
+> In testcases/kernel/include/lib.mk, '$(KERNEL_DIR)/libkerntest.a' is not a
+> valid path, the correct path is '$(LIBKERNTEST_DIR)/libkerntest.a'.
 
-Where are these mac addresses from? Are they random?
-(3A:1C:C0 doesn't seem to be assigned to any vendor...)
-
-The patches looks good.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Time is money. Stop wasting it! Get your web API in 5 minutes.
+www.restlet.com/download
+http://p.sf.net/sfu/restlet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
