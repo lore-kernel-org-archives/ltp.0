@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WovD7-00089e-3x
-	for ltp-list@lists.sourceforge.net; Mon, 26 May 2014 13:45:05 +0000
-Date: Mon, 26 May 2014 15:44:50 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wpzba-00036k-CA
+	for ltp-list@lists.sourceforge.net; Thu, 29 May 2014 12:38:46 +0000
+Date: Thu, 29 May 2014 14:38:29 +0200
 From: chrubis@suse.cz
-Message-ID: <20140526134450.GG4713@rei.Home>
-References: <1395991214.5017.2.camel@G08JYZSD130126>
-	<1395991331.5017.4.camel@G08JYZSD130126>
-	<20140429163137.GG12523@rei>
-	<1399262735.3177.14.camel@G08JYZSD130126>
-	<20140505115303.GA9027@rei>
-	<1399362493.3177.40.camel@G08JYZSD130126>
-	<1399362721.3177.44.camel@G08JYZSD130126>
+Message-ID: <20140529123829.GB11334@rei.Home>
+References: <1399548014.2102.21.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1399362721.3177.44.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2 3/3] read/read02.c: add new error number tests
+In-Reply-To: <1399548014.2102.21.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] setpriority/setpriority01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,27 +28,24 @@ To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> +	if (tst_fs_type(cleanup, ".") == TST_TMPFS_MAGIC) {
-> +		tst_brkm(TCONF, cleanup,
-> +			 "Test not supported on tmpfs filesystem");
-> +	}
-> +
+> * Delete some useless commtents.
+> * Move the test body from main() to setpriority_verify().
+> * Expand tests([-20,19]).
+> * Add tst_require_root for lowering priorities testes.
+> * Some cleanup.
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 
-Giving it second though, we should skip only the O_DIRECT testcases,
-right?
-
-Can we create fix that in follow up patch?
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-The best possible search technologies are now affordable for all companies.
-Download your FREE open source Enterprise Search Engine today!
-Our experts will assist you in its installation for $59/mo, no commitment.
-Test it for FREE on our Cloud platform anytime!
-http://pubads.g.doubleclick.net/gampad/clk?id=145328191&iu=/4140/ostg.clktrk
+Time is money. Stop wasting it! Get your web API in 5 minutes.
+www.restlet.com/download
+http://p.sf.net/sfu/restlet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
