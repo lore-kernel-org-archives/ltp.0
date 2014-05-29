@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WiH8W-0001pQ-Bk
-	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 05:44:52 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WiH8U-0006tj-SK
-	for ltp-list@lists.sourceforge.net; Thu, 08 May 2014 05:44:52 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s485ic3N032464
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 May 2014 13:44:39 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 8 May 2014 13:42:23 +0800
-Message-ID: <1399527743-20552-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ashagow@gmail.com>) id 1WpzC9-0005Pr-3M
+	for ltp-list@lists.sourceforge.net; Thu, 29 May 2014 12:12:29 +0000
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WpzC7-0002CW-C3
+	for ltp-list@lists.sourceforge.net; Thu, 29 May 2014 12:12:29 +0000
+Received: by mail-we0-f177.google.com with SMTP id x48so283613wes.8
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 29 May 2014 05:12:21 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] doc: test-writing-guidelines
+Date: Thu, 29 May 2014 17:42:20 +0530
+Message-ID: <CADqC_HoU+5qBqER44UzD-0mX=x-H8QP0zsTB3WMcH8kptLqHBg@mail.gmail.com>
+From: Asha Gowda <ashagow@gmail.com>
+Subject: [LTP] ltp for android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,90 +25,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1282211285044602916=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Add 'verifying filesystem free space' paragraph.
+--===============1282211285044602916==
+Content-Type: multipart/alternative; boundary=f46d043be03845a83204fa88d763
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- doc/test-writing-guidelines.txt | 50 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+--f46d043be03845a83204fa88d763
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 91edbf0..0239b19 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -723,6 +723,56 @@ options passed to mkfs.
- The extra options 'fs_opts' should either be 'NULL' if there are none or a
- 'NULL' terminated array of strings such as '{"-b", "1024", NULL}'.
- 
-+2.2.14 Verifying a filesystem's free space
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+Some tests have size requirements for the filesystem's free space. If these
-+requirements are not satisfied, some tests are not appropriate to run.
-+Especially you run runltp with "-z" option to specify a big block device,
-+different tests have different requirements for the free space of this
-+block device, e.g. you specify a 500MB block device, testA needs 400MB free
-+space and testB needs 600MB, then testA will surely fail. The tst_fs_has_free()
-+below can be used to verify whether filesystem has enough free space, return 1
-+if satisfied and 0 if not.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+#include "test.h"
-+
-+int tst_fs_has_free(void (*cleanup)(void), const char *path,
-+		    unsigned int size, unsigned int mult);
-+-------------------------------------------------------------------------------
-+
-+This function takes 4 arguments:
-+    @path is the pathname of any file within filesystem you want to verify
-+its free space.
-+    @mult should be TST_BYTES, TST_KB, TST_MB or TST_GB.
-+    the required free space is calculated by @size * @mult, e.g.
-+tst_fs_has_free(cleanup, "/tmp/testfile", 64, TST_MB) will return 1 if the
-+filesystem, which "/tmp/testfile" is in, has 64MB free space at least, and
-+return 1 if not.
-+
-+There is also a similar shell interface:
-+[source,sh]
-+-------------------------------------------------------------------------------
-+#!/bin/bash
-+
-+...
-+
-+# whether current directory has 32KB free space at least.
-+if ! tst_fs_has_free . 32; then
-+	tst_brkm TCONF "Not enough free space"
-+fi
-+
-+...
-+-------------------------------------------------------------------------------
-+
-+The tst_fs_has_free shell interface return 0 if the specified free space
-+is satisfied, 1 if not, and 2 for error. And the second argument support
-+suffixes KB, MB and GB, so 32KB or 64MB is also valid. If not specifying
-+a suffix, the default unit is 1 KB.
-+
-+
- 2.3 Writing a testcase in shell
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--- 
-1.8.2.1
+Hi ,
+I am able to cross compile for android but not able to execute it on
+android platform.
+I if execute any of the binaries i am getting " no such file or directory"
+I checked that the issue with dynamic linker :
 
+
+readelf --program
+
+Elf file type is EXEC (Executable file)
+Entry point 0x87e8
+There are 8 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  EXIDX          0x000a7c 0x00008a7c 0x00008a7c 0x00048 0x00048 R   0x4
+  PHDR           0x000034 0x00008034 0x00008034 0x00100 0x00100 R E 0x4
+  INTERP         0x000134 0x00008134 0x00008134 0x00013 0x00013 R   0x1
+      [Requesting program interpreter: /lib/ld-linux.so.3]
+  LOAD           0x000000 0x00008000 0x00008000 0x00ac8 0x00ac8 R E 0x8000
+  LOAD           0x000ac8 0x00010ac8 0x00010ac8 0x00148 0x00158 RW  0x8000
+  DYNAMIC        0x000ad4 0x00010ad4 0x00010ad4 0x000f0 0x000f0 RW  0x4
+  NOTE           0x000148 0x00008148 0x00008148 0x00020 0x00020 R   0x4
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
+
+Its taking default linker file as /lib/ld-linux, it should be
+/system/bin/linker for android i guess.
+Can someone suggest me hoe to change this.
+
+Thanks,
+
+--f46d043be03845a83204fa88d763
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi ,</div><div>I am able to cross compile for android=
+ but not able to execute it on android platform.</div><div>I if execute any=
+ of the binaries i am getting &quot; no such file or directory&quot;</div>
+<div>I checked that the issue with dynamic linker :</div><div><br></div><di=
+v><br></div><div>readelf --program</div><div><br></div><div>Elf file type i=
+s EXEC (Executable file)</div><div>Entry point 0x87e8</div><div>There are 8=
+ program headers, starting at offset 52</div>
+<div><br></div><div>Program Headers:</div><div>=C2=A0 Type =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 Offset =C2=A0 VirtAddr =C2=A0 PhysAddr =C2=A0 FileSiz =
+MemSiz =C2=A0Flg Align</div><div>=C2=A0 EXIDX =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A00x000a7c 0x00008a7c 0x00008a7c 0x00048 0x00048 R =C2=A0 0x4</div><div=
+>=C2=A0 PHDR =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000034 0x00008034 0x00008=
+034 0x00100 0x00100 R E 0x4</div>
+<div>=C2=A0 INTERP =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000134 0x00008134 0x000081=
+34 0x00013 0x00013 R =C2=A0 0x1</div><div>=C2=A0 =C2=A0 =C2=A0 [Requesting =
+program interpreter: /lib/ld-linux.so.3]</div><div>=C2=A0 LOAD =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 0x000000 0x00008000 0x00008000 0x00ac8 0x00ac8 R E=
+ 0x8000</div>
+<div>=C2=A0 LOAD =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000ac8 0x00010ac8 0x0=
+0010ac8 0x00148 0x00158 RW =C2=A00x8000</div><div>=C2=A0 DYNAMIC =C2=A0 =C2=
+=A0 =C2=A0 =C2=A00x000ad4 0x00010ad4 0x00010ad4 0x000f0 0x000f0 RW =C2=A00x=
+4</div><div>=C2=A0 NOTE =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x000148 0x00008=
+148 0x00008148 0x00020 0x00020 R =C2=A0 0x4</div>
+<div>=C2=A0 GNU_STACK =C2=A0 =C2=A0 =C2=A00x000000 0x00000000 0x00000000 0x=
+00000 0x00000 RW =C2=A00x10</div><div><br></div><div>Its taking default lin=
+ker file as /lib/ld-linux, it should be /system/bin/linker for android i gu=
+ess.</div><div>Can someone suggest me hoe to change this.</div>
+<div><br></div><div>Thanks,</div></div>
+
+--f46d043be03845a83204fa88d763--
+
+
+--===============1282211285044602916==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+Time is money. Stop wasting it! Get your web API in 5 minutes.
+www.restlet.com/download
+http://p.sf.net/sfu/restlet
+--===============1282211285044602916==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1282211285044602916==--
+
