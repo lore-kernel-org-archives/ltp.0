@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WhLfZ-0004Jb-KW
-	for ltp-list@lists.sourceforge.net; Mon, 05 May 2014 16:23:09 +0000
-Date: Mon, 5 May 2014 18:22:08 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WpzKz-0003te-6b
+	for ltp-list@lists.sourceforge.net; Thu, 29 May 2014 12:21:37 +0000
+Date: Thu, 29 May 2014 14:21:20 +0200
 From: chrubis@suse.cz
-Message-ID: <20140505162208.GB11256@rei>
-References: <1396261585-3628-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <20140529122120.GA11334@rei.Home>
+References: <1398697619-27372-1-git-send-email-mats.liljegren@enea.com>
+	<1399990269-3383-1-git-send-email-mats.liljegren@enea.com>
+	<20140528184534.56c465fc@mats-desktop>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1396261585-3628-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] readlink/readlink03.c: cleanup
+In-Reply-To: <20140528184534.56c465fc@mats-desktop>
+Subject: Re: [LTP] [PATCH v3] partrt_nohz_full: Introducing a new test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,32 +26,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net, Kevin Hilman <khilman@linaro.org>, Frederic Weisbecker <fweisbec@gmail.com>
 
 Hi!
-> +
-> +	memset(longpathname, 'a', PATH_MAX + 2);
+> Ping?
 
-I've changed this to:
-	memset(longpathname, 'a', PATH_MAX + 1);
-
-To make sure that the string is null terminated.
-
-And removed the setupfunc unused from the test_case_t and pushed.
-
-Thanks.
+Sorry it takes that long, you are in the queue, I should get to the
+patch either today, the worstcase should be on Monday.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+Time is money. Stop wasting it! Get your web API in 5 minutes.
+www.restlet.com/download
+http://p.sf.net/sfu/restlet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
