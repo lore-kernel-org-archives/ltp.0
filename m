@@ -1,35 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WjpSN-0003mt-L5
-	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 12:35:47 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WjpSM-0001YM-9v
-	for ltp-list@lists.sourceforge.net; Mon, 12 May 2014 12:35:47 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s4CCZdVA010246
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 12:35:40 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4CCZdFB005288
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 12:35:39 GMT
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s4CCZcYB018358
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 May 2014 12:35:38 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 12 May 2014 16:35:27 +0400
-Message-Id: <1399898127-15934-5-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1399898127-15934-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1399898127-15934-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH V4 4/4] Declare an iso9660 fs testcase based on
-	isofs.sh
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WqHmr-0005hC-Fk
+	for ltp-list@lists.sourceforge.net; Fri, 30 May 2014 08:03:37 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WqHmo-00029h-7u
+	for ltp-list@lists.sourceforge.net; Fri, 30 May 2014 08:03:37 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4U83KeI032447
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 May 2014 16:03:20 +0800
+Message-ID: <53883B1A.5070200@cn.fujitsu.com>
+Date: Fri, 30 May 2014 16:02:34 +0800
+From: "gux.fnst" <gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1401098198-1109-1-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1401098198-1109-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] splice/splice03.c: add EBADF,
+ EINVAL and ESPIPE error value tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,385 +29,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Script isofs.sh looks like a not bad candidate for
-testing an iso9660 file system.
-
-Therefore moved it into a separate directory and declared
-a new test case entry in runtest/fs.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- runtest/fs                           |    2 +
- testcases/kernel/fs/iso9660/Makefile |   26 ++++++
- testcases/kernel/fs/iso9660/isofs.sh |  145 ++++++++++++++++++++++++++++++++++
- testscripts/isofs.sh                 |  145 ----------------------------------
- 4 files changed, 173 insertions(+), 145 deletions(-)
- create mode 100644 testcases/kernel/fs/iso9660/Makefile
- create mode 100755 testcases/kernel/fs/iso9660/isofs.sh
- delete mode 100755 testscripts/isofs.sh
-
-diff --git a/runtest/fs b/runtest/fs
-index 438c79c..33a8412 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -74,3 +74,5 @@ fs_racer fs_racer.sh -t 5
- 
- #Run the Quota Remount Test introduced in linux-2.6.26
- quota_remount_test01 quota_remount_test01.sh
-+
-+isofs isofs.sh
-diff --git a/testcases/kernel/fs/iso9660/Makefile b/testcases/kernel/fs/iso9660/Makefile
-new file mode 100644
-index 0000000..459b3a4
---- /dev/null
-+++ b/testcases/kernel/fs/iso9660/Makefile
-@@ -0,0 +1,26 @@
-+#
-+#  Copyright (c) 2005-2014 Linux Test Project
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+MAKE_TARGETS		:=
-+INSTALL_TARGETS		:= isofs.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-new file mode 100755
-index 0000000..e4f3093
---- /dev/null
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -0,0 +1,145 @@
-+#!/bin/sh
-+#
-+# Copyright (c) International Business Machines  Corp., 2003
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License along
-+# with this program; if not, write to the Free Software Foundation, Inc.,
-+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Written by Prakash Narayana (prakashn@us.ibm.com)
-+# and Michael Reed (mreed10@us.ibm.com)
-+#
-+# A script that will test isofs on Linux system.
-+# It makes ISO9660 file system with different options and also
-+# mounts the ISO9660 file system with different mount options.
-+#
-+
-+TCID=isofs
-+TST_TOTAL=77
-+. test.sh
-+
-+NO_CLEANUP=""
-+
-+usage()
-+{
-+	echo "USAGE: $0 <optional> -n -h -d [directory name]"
-+	exit
-+}
-+
-+cleanup()
-+{
-+	if [ "$NO_CLEANUP" = "no" ]; then
-+		tst_resm TINFO "Temporary directory $PWD was not removed"
-+	else
-+		tst_rmdir
-+	fi
-+}
-+
-+
-+COPY_DIR="/etc/"
-+
-+while getopts :hnd: arg; do
-+	case $arg in
-+	d)
-+		COPY_DIR=$OPTARG
-+		;;
-+	h)
-+		echo ""
-+		echo "n - The directories created will not be removed"
-+		echo "d - Specify a directory to copy into /tmp"
-+		echo "h - Help options"
-+		echo ""
-+		usage
-+		echo ""
-+		;;
-+	n)
-+		NO_CLEANUP="no"
-+		;;
-+	esac
-+done
-+
-+if [ ! -e "$COPY_DIR" ]; then
-+	tst_brkm TCONF "$COPY_DIR not found"
-+fi
-+
-+tst_require_root
-+
-+tst_tmpdir
-+TST_CLEANUP=cleanup
-+
-+MNT_POINT="$PWD/mnt"
-+MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
-+
-+mkdir -p -m 777 $MNT_POINT
-+mkdir -p $MAKE_FILE_SYS_DIR
-+
-+cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
-+
-+# Make ISO9660 file system with different options.
-+# Mount the ISO9660 file system with different mount options.
-+
-+for mkisofs_opt in \
-+	" " \
-+	"-J" \
-+	"-hfs -D" \
-+	" -R " \
-+	"-R -J" \
-+	"-f -l -D -J -L -R" \
-+	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
-+do
-+	rm -f isofs.iso
-+	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
-+	if [ $? -eq 0 ]; then
-+		tst_resm TPASS \
-+			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
-+	else
-+		tst_resm TFAIL \
-+			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
-+		continue
-+	fi
-+
-+	for mount_opt in \
-+		"loop" \
-+		"loop,norock" \
-+		"loop,nojoliet" \
-+		"loop,block=512,unhide" \
-+		"loop,block=1024,cruft" \
-+		"loop,block=2048,nocompress" \
-+		"loop,check=strict,map=off,gid=bin,uid=bin" \
-+		"loop,check=strict,map=acorn,gid=bin,uid=bin" \
-+		"loop,check=relaxed,map=normal" \
-+		"loop,block=512,unhide,session=2"
-+		# "loop,sbsector=32"
-+	do
-+		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
-+		if [ $? -ne 0 ]; then
-+			tst_resm TFAIL \
-+				"mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT"
-+			continue
-+		fi
-+
-+		ls -lR $MNT_POINT > /dev/null
-+		if [ $? -ne 0 ]; then
-+			tst_resm TFAIL "ls -lR $MNT_POINT"
-+		fi
-+
-+		umount $MNT_POINT
-+		if [ $? -ne 0 ]; then
-+			tst_brkm TFAIL "umount $MNT_POINT"
-+		fi
-+
-+		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
-+	done
-+done
-+
-+tst_exit
-diff --git a/testscripts/isofs.sh b/testscripts/isofs.sh
-deleted file mode 100755
-index e4f3093..0000000
---- a/testscripts/isofs.sh
-+++ /dev/null
-@@ -1,145 +0,0 @@
--#!/bin/sh
--#
--# Copyright (c) International Business Machines  Corp., 2003
--#
--# This program is free software; you can redistribute it and/or modify
--# it under the terms of the GNU General Public License as published by
--# the Free Software Foundation; either version 2 of the License, or
--# (at your option) any later version.
--#
--# This program is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License along
--# with this program; if not, write to the Free Software Foundation, Inc.,
--# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
--# Written by Prakash Narayana (prakashn@us.ibm.com)
--# and Michael Reed (mreed10@us.ibm.com)
--#
--# A script that will test isofs on Linux system.
--# It makes ISO9660 file system with different options and also
--# mounts the ISO9660 file system with different mount options.
--#
--
--TCID=isofs
--TST_TOTAL=77
--. test.sh
--
--NO_CLEANUP=""
--
--usage()
--{
--	echo "USAGE: $0 <optional> -n -h -d [directory name]"
--	exit
--}
--
--cleanup()
--{
--	if [ "$NO_CLEANUP" = "no" ]; then
--		tst_resm TINFO "Temporary directory $PWD was not removed"
--	else
--		tst_rmdir
--	fi
--}
--
--
--COPY_DIR="/etc/"
--
--while getopts :hnd: arg; do
--	case $arg in
--	d)
--		COPY_DIR=$OPTARG
--		;;
--	h)
--		echo ""
--		echo "n - The directories created will not be removed"
--		echo "d - Specify a directory to copy into /tmp"
--		echo "h - Help options"
--		echo ""
--		usage
--		echo ""
--		;;
--	n)
--		NO_CLEANUP="no"
--		;;
--	esac
--done
--
--if [ ! -e "$COPY_DIR" ]; then
--	tst_brkm TCONF "$COPY_DIR not found"
--fi
--
--tst_require_root
--
--tst_tmpdir
--TST_CLEANUP=cleanup
--
--MNT_POINT="$PWD/mnt"
--MAKE_FILE_SYS_DIR="$PWD/tmp/$COPY_DIR"
--
--mkdir -p -m 777 $MNT_POINT
--mkdir -p $MAKE_FILE_SYS_DIR
--
--cp -rf $COPY_DIR* $MAKE_FILE_SYS_DIR
--
--# Make ISO9660 file system with different options.
--# Mount the ISO9660 file system with different mount options.
--
--for mkisofs_opt in \
--	" " \
--	"-J" \
--	"-hfs -D" \
--	" -R " \
--	"-R -J" \
--	"-f -l -D -J -L -R" \
--	"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -L -R"
--do
--	rm -f isofs.iso
--	mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR 2> /dev/null
--	if [ $? -eq 0 ]; then
--		tst_resm TPASS \
--			"mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
--	else
--		tst_resm TFAIL \
--			tst_resm TFAIL "mkisofs -o isofs.iso -quiet $mkisofs_opt $MAKE_FILE_SYS_DIR"
--		continue
--	fi
--
--	for mount_opt in \
--		"loop" \
--		"loop,norock" \
--		"loop,nojoliet" \
--		"loop,block=512,unhide" \
--		"loop,block=1024,cruft" \
--		"loop,block=2048,nocompress" \
--		"loop,check=strict,map=off,gid=bin,uid=bin" \
--		"loop,check=strict,map=acorn,gid=bin,uid=bin" \
--		"loop,check=relaxed,map=normal" \
--		"loop,block=512,unhide,session=2"
--		# "loop,sbsector=32"
--	do
--		mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT
--		if [ $? -ne 0 ]; then
--			tst_resm TFAIL \
--				"mount -t iso9660 -o $mount_opt isofs.iso $MNT_POINT"
--			continue
--		fi
--
--		ls -lR $MNT_POINT > /dev/null
--		if [ $? -ne 0 ]; then
--			tst_resm TFAIL "ls -lR $MNT_POINT"
--		fi
--
--		umount $MNT_POINT
--		if [ $? -ne 0 ]; then
--			tst_brkm TFAIL "umount $MNT_POINT"
--		fi
--
--		tst_resm TPASS "mount/umount with \"$mount_opt\" options"
--	done
--done
--
--tst_exit
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+UGxlYXNlIGlnbm9yZSB0aGlzIHBhdGNoLgpJIHdpbGwgc2VuZCBhIFYyIHZlcnNpb24gd2hlcmUg
+IiNkZWZpbmUgX0dOVV9TT1VSQ0UiIGlzIGFkZGVkLCB0aGFua3MuCgpSZWdhcmRzLApYaW5nIEd1
+CgrT2iAwNS8yNi8yMDE0IDA1OjU2IFBNLCBYaW5nIEd1INC0tcA6Cj4gU2lnbmVkLW9mZi1ieTog
+WGluZyBHdSA8Z3V4LmZuc3RAY24uZnVqaXRzdS5jb20+Cj4gLS0tCj4gICBjb25maWd1cmUuYWMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPiAgIG00L2x0cC1zcGxpY2Uu
+bTQgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjUgKysrKwo+ICAgcnVudGVzdC9zeXNj
+YWxscyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCj4gICB0ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzLy5naXRpZ25vcmUgICAgICAgIHwgICAxICsKPiAgIHRlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc3BsaWNlL3NwbGljZS5oICAgfCAgMzYgKysrKysrCj4gICB0ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2UwMS5jIHwgICA5ICstCj4gICB0ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2UwMi5jIHwgIDExICstCj4gICB0ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2UwMy5jIHwgMTc4ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysKPiAgIDggZmlsZXMgY2hhbmdlZCwgMjQ1IGluc2VydGlvbnMoKyksIDE3IGRl
+bGV0aW9ucygtKQo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IG00L2x0cC1zcGxpY2UubTQKPiAgIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2Uu
+aAo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNl
+L3NwbGljZTAzLmMKPiAKPiBkaWZmIC0tZ2l0IGEvY29uZmlndXJlLmFjIGIvY29uZmlndXJlLmFj
+Cj4gaW5kZXggODY5OGM0Ny4uOTY2MTFjZiAxMDA2NDQKPiAtLS0gYS9jb25maWd1cmUuYWMKPiAr
+KysgYi9jb25maWd1cmUuYWMKPiBAQCAtMTgyLDUgKzE4Miw2IEBAIExUUF9DSEVDS19GQUxMT0NB
+VEUKPiAgIExUUF9DSEVDS19TWVNDQUxMX0ZDTlRMCj4gICBMVFBfQ0hFQ0tfU1lTQ0FMTF9QRVJG
+X0VWRU5UX09QRU4KPiAgIExUUF9DSEVDS19USVJQQwo+ICtMVFBfQ0hFQ0tfU1BMSUNFCj4gICAK
+PiAgIEFDX09VVFBVVAo+IGRpZmYgLS1naXQgYS9tNC9sdHAtc3BsaWNlLm00IGIvbTQvbHRwLXNw
+bGljZS5tNAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMC4uMGRkYWFlMAo+
+IC0tLSAvZGV2L251bGwKPiArKysgYi9tNC9sdHAtc3BsaWNlLm00Cj4gQEAgLTAsMCArMSwyNSBA
+QAo+ICtkbmwKPiArZG5sIENvcHlyaWdodCAoYykgTGludXggVGVzdCBQcm9qZWN0LCAyMDE0Cj4g
+K2RubAo+ICtkbmwgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlz
+dHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cj4gK2RubCBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhl
+IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo+ICtkbmwgdGhlIEZy
+ZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwg
+b3IKPiArZG5sIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCj4gK2RubAo+ICtk
+bmwgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBi
+ZSB1c2VmdWwsCj4gK2RubCBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4g
+dGhlIGltcGxpZWQgd2FycmFudHkgb2YKPiArZG5sIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNT
+IEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQo+ICtkbmwgdGhlIEdOVSBHZW5lcmFsIFB1
+YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCj4gK2RubAo+ICtkbmwgWW91IHNob3VsZCBo
+YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKPiAr
+ZG5sIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBT
+b2Z0d2FyZQo+ICtkbmwgRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0
+aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQQo+ICtkbmwKPiArCj4gK2RubAo+ICtk
+bmwgTFRQX0NIRUNLX1NQTElDRQo+ICtkbmwgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
+ICtkbmwKPiArQUNfREVGVU4oW0xUUF9DSEVDS19TUExJQ0VdLFsKPiArQUNfQ0hFQ0tfRlVOQ1Mo
+c3BsaWNlLCwpCj4gK10pCj4gZGlmZiAtLWdpdCBhL3J1bnRlc3Qvc3lzY2FsbHMgYi9ydW50ZXN0
+L3N5c2NhbGxzCj4gaW5kZXggYWU2ZDI5Ny4uZWE2NzEzNyAxMDA2NDQKPiAtLS0gYS9ydW50ZXN0
+L3N5c2NhbGxzCj4gKysrIGIvcnVudGVzdC9zeXNjYWxscwo+IEBAIC0xMTUxLDYgKzExNTEsNyBA
+QCBzb2NraW9jdGwwMSBzb2NraW9jdGwwMQo+ICAgI3NwbGljZSB0ZXN0Cj4gICBzcGxpY2UwMSBz
+cGxpY2UwMQo+ICAgc3BsaWNlMDIgc2VxIDEgMTAwMDAwMDAgfCBzcGxpY2UwMiBzcGxpY2UwMi10
+ZW1wCj4gK3NwbGljZTAzIHNwbGljZTAzCj4gICAKPiAgIHRlZTAxIHRlZTAxCj4gICAKPiBkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy8uZ2l0aWdub3JlIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy8uZ2l0aWdub3JlCj4gaW5kZXggODI1NTQ5Zi4uZjg0NjBlOCAxMDA2
+NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRpZ25vcmUKPiArKysgYi90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzLy5naXRpZ25vcmUKPiBAQCAtOTAxLDYgKzkwMSw3IEBA
+Cj4gICAvc29ja2lvY3RsL3NvY2tpb2N0bDAxCj4gICAvc3BsaWNlL3NwbGljZTAxCj4gICAvc3Bs
+aWNlL3NwbGljZTAyCj4gKy9zcGxpY2Uvc3BsaWNlMDMKPiAgIC9zc2V0bWFzay9zc2V0bWFzazAx
+Cj4gICAvc3RhdC9zdGF0MDEKPiAgIC9zdGF0L3N0YXQwMV82NAo+IGRpZmYgLS1naXQgYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2UuaCBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc3BsaWNlL3NwbGljZS5oCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAw
+MDAwMDAwLi40ZTI0M2ZkCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc3BsaWNlL3NwbGljZS5oCj4gQEAgLTAsMCArMSwzNiBAQAo+ICsvKgo+ICsgKiBD
+b3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDA3
+Cj4gKyAqIENvcHlyaWdodCAoYykgMjAxNCBGdWppdHN1IEx0ZC4KPiArICoKPiArICogVGhpcyBw
+cm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3Ig
+bW9kaWZ5Cj4gKyAqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGlj
+IExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cj4gKyAqIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRp
+b247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCj4gKyAqIChhdCB5b3VyIG9w
+dGlvbikgYW55IGxhdGVyIHZlcnNpb24uCj4gKyAqCj4gKyAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0
+cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo+ICsgKiBidXQgV0lU
+SE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo+
+ICsgKiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0Uu
+ICBTZWUgdGhlCj4gKyAqIEdOVSBMaWJyYXJ5IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1v
+cmUgZGV0YWlscy4KPiArICoKPiArICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBv
+ZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKPiArICogYWxvbmcgd2l0aCB0aGlzIHBy
+b2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUKPiArICogRm91bmRhdGlv
+biwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlIC0gU3VpdGUgMzMwLCBCb3N0b24sIE1BIDAyMTExLTEz
+MDcsIFVTQS4KPiArICoKPiArICovCj4gKwo+ICsjaWZuZGVmIFNQTElDRV9ICj4gKyNkZWZpbmUg
+U1BMSUNFX0gKPiArCj4gKyNpbmNsdWRlICJjb25maWcuaCIKPiArI2luY2x1ZGUgImxpbnV4X3N5
+c2NhbGxfbnVtYmVycy5oIgo+ICsKPiArI2lmICFkZWZpbmVkKEhBVkVfU1BMSUNFKQo+ICtzc2l6
+ZV90IHNwbGljZShpbnQgZmRfaW4sIGxvZmZfdCAqb2ZmX2luLCBpbnQgZmRfb3V0LAo+ICsJbG9m
+Zl90ICpvZmZfb3V0LCBzaXplX3QgbGVuLCB1bnNpZ25lZCBpbnQgZmxhZ3MpCj4gK3sKPiArCXJl
+dHVybiBsdHBfc3lzY2FsbChfX05SX3NwbGljZSwgZmRfaW4sIG9mZl9pbiwKPiArCQlmZF9vdXQs
+IG9mZl9vdXQsIGxlbiwgZmxhZ3MpOwo+ICt9Cj4gKyNlbmRpZgo+ICsKPiArI2VuZGlmIC8qIFNQ
+TElDRV9IICovCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGltZSBpcyBtb25leS4gU3RvcCB3YXN0
+aW5nIGl0ISBHZXQgeW91ciB3ZWIgQVBJIGluIDUgbWludXRlcy4Kd3d3LnJlc3RsZXQuY29tL2Rv
+d25sb2FkCmh0dHA6Ly9wLnNmLm5ldC9zZnUvcmVzdGxldApfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RA
+bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
+L2xpc3RpbmZvL2x0cC1saXN0Cg==
