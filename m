@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WmClx-0008Co-Ga
-	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 01:53:49 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WqD1f-0005xZ-5e
+	for ltp-list@lists.sourceforge.net; Fri, 30 May 2014 02:58:35 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WmClv-0006fJ-Lc
-	for ltp-list@lists.sourceforge.net; Mon, 19 May 2014 01:53:49 +0000
-Message-ID: <53796394.8030906@cn.fujitsu.com>
-Date: Mon, 19 May 2014 09:51:16 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	id 1WqD1c-0006Nl-6C
+	for ltp-list@lists.sourceforge.net; Fri, 30 May 2014 02:58:35 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s4U2wOCJ013012
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 May 2014 10:58:24 +0800
+Message-ID: <1401418614.3225.15.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 30 May 2014 10:56:54 +0800
 MIME-Version: 1.0
-References: <1400463915-15572-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1400463915-15572-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1400463915-15572-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 2/2] setpgid/setpgid01.c: add pid = 0 and pgid
- = 0 test
+Subject: [LTP] [PATCH 1/2] statvfs/statvfs01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,119 +29,142 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi Jan,
+* Delete some useless commtents.
 
-    Thanks for your reviewing.
-    I have added the possible error message output in this patch v3.
-   Would you like to commit it, thanks.
+* Some cleanup.
 
-Regards,
-Xiaoguang Wang
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/statvfs/statvfs01.c | 49 +++++++--------------------
+ 1 file changed, 12 insertions(+), 37 deletions(-)
 
-On 05/19/2014 09:45 AM, Xiaoguang Wang wrote:
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/setpgid/setpgid01.c | 54 ++++++++++++++++++++++++++-
->  1 file changed, 52 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setpgid/setpgid01.c b/testcases/kernel/syscalls/setpgid/setpgid01.c
-> index 700e573..00e895b 100644
-> --- a/testcases/kernel/syscalls/setpgid/setpgid01.c
-> +++ b/testcases/kernel/syscalls/setpgid/setpgid01.c
-> @@ -36,12 +36,14 @@
->   * Description:
->   * Verify that:
->   *   1. Basic functionality test for setpgid(2).
-> + *   2. Check functioning of setpgid(2) with pid = 0 and pgid = 0.
->   */
->  
->  #include <errno.h>
->  #include <string.h>
->  #include <signal.h>
->  #include <stdlib.h>
-> +#include <sys/wait.h>
->  #include "test.h"
->  #include "usctest.h"
->  
-> @@ -51,7 +53,8 @@ static void cleanup(void);
->  char *TCID = "setpgid01";
->  
->  static void setpgid_test1(void);
-> -static void (*testfunc[])(void) = { setpgid_test1};
-> +static void setpgid_test2(void);
-> +static void (*testfunc[])(void) = { setpgid_test1, setpgid_test2};
->  int TST_TOTAL = ARRAY_SIZE(testfunc);
->  
->  int main(int ac, char **av)
-> @@ -91,9 +94,56 @@ static void setpgid_test1(void)
->  	}
->  }
->  
-> +static int wait4child(pid_t child)
-> +{
-> +	int status;
-> +
-> +	if (waitpid(child, &status, 0) == -1)
-> +		tst_resm(TBROK|TERRNO, "waitpid");
-> +	if (WIFEXITED(status))
-> +		return WEXITSTATUS(status);
-> +	else
-> +		return status;
-> +}
-> +
-> +static void setpgid_test2(void)
-> +{
-> +	int ret;
-> +	pid_t pgid, pid;
-> +
-> +	pid = FORK_OR_VFORK();
-> +	if (pid == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork()");
-> +
-> +	if (pid != 0) {
-> +		ret = wait4child(pid);
-> +	} else {
-> +		pid = getpid();
-> +		TEST(setpgid(0, 0));
-> +		pgid = getpgrp();
-> +		if (TEST_RETURN == -1) {
-> +			fprintf(stderr, "setpgid(0, 0) fails in "
-> +				"child process: %s\n", strerror(TEST_ERRNO));
-> +			exit(1);
-> +		} else if (pgid != pid) {
-> +			fprintf(stderr, "setpgid(0, 0) fails to make PGID"
-> +				"equal to PID\n");
-> +			exit(1);
-> +		} else {
-> +			exit(0);
-> +		}
-> +	}
-> +
-> +	if (ret == 0)
-> +		tst_resm(TPASS, "test setpgid(0, 0) success");
-> +	else
-> +		tst_resm(TFAIL, "test setpgid(0, 0) fail");
-> +}
-> +
-> +
->  static void setup(void)
->  {
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
->  
->  	TEST_PAUSE;
->  }
+diff --git a/testcases/kernel/syscalls/statvfs/statvfs01.c b/testcases/kernel/syscalls/statvfs/statvfs01.c
+index 306ca00..0ea882a 100644
+--- a/testcases/kernel/syscalls/statvfs/statvfs01.c
++++ b/testcases/kernel/syscalls/statvfs/statvfs01.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2005.  All Rights Reserved.
++ *    AUTHOR: Prashant P Yendigeri <prashant.yendigeri@wipro.com>
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of version 2 of the GNU General Public License as
+@@ -14,25 +15,12 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  *
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER   : statvfs01
+- *
+- *    EXECUTED BY       : root / superuser
+- *
+- *    TEST TITLE        : Basic tests for statvfs(2)
+- *
+- *    TEST CASE TOTAL   : 1
+- *
+- *    AUTHOR            : Prashant P Yendigeri
+- *                        <prashant.yendigeri@wipro.com>
+- *
++/*
+  *    DESCRIPTION
+  *      This is a Phase I test for the statvfs(2) system call.
+  *      It is intended to provide a limited exposure of the system call.
+  *	This call behaves similar to statfs.
+- *
+- **********************************************************/
++ */
+ 
+ #include <stdio.h>
+ #include <unistd.h>
+@@ -43,15 +31,15 @@
+ #include "test.h"
+ #include "usctest.h"
+ 
+-#define TEST_PATH "/"		/* Should be a mounted FS */
++#define TEST_PATH "/"
+ 
+-void setup();
+-void cleanup();
++static void setup(void);
++static void cleanup(void);
+ 
+ char *TCID = "statvfs01";
+ int TST_TOTAL = 1;
+ 
+-int exp_enos[] = { 0 };		/* must be a 0 terminated list */
++int exp_enos[] = { 0 };
+ 
+ int main(int ac, char **av)
+ {
+@@ -64,7 +52,6 @@ int main(int ac, char **av)
+ 
+ 	setup();
+ 
+-	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -73,11 +60,12 @@ int main(int ac, char **av)
+ 
+ 		TEST(statvfs(TEST_PATH, &buf));
+ 
+-		if (TEST_RETURN == -1)
++		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL | TERRNO, "statvfs(%s, ...) failed",
+ 				 TEST_PATH);
+-		else
++		} else {
+ 			tst_resm(TPASS, "statvfs(%s, ...) passed", TEST_PATH);
++		}
+ 
+ 	}
+ 
+@@ -96,30 +84,17 @@ int main(int ac, char **av)
+ 	tst_resm(TINFO, "file system max filename length = %lu", buf.f_namemax);
+ 
+ 	cleanup();
+-
+ 	tst_exit();
+ }
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
++static void setup(void)
+ {
+-
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
+ }
+ 
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *              completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+ }
+-- 
+1.8.4.2
+
+
 
 
 ------------------------------------------------------------------------------
-"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
-Instantly run your Selenium tests across 300+ browser/OS combos.
-Get unparalleled scalability from the best Selenium testing platform available
-Simple to use. Nothing to install. Get started now for free."
-http://p.sf.net/sfu/SauceLabs
+Time is money. Stop wasting it! Get your web API in 5 minutes.
+www.restlet.com/download
+http://p.sf.net/sfu/restlet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
