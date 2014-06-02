@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Wv1Nj-00011Z-Fn
-	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 09:33:15 +0000
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WrKRf-0004sd-K2
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jun 2014 05:06:03 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wv1Nf-00064l-RR
-	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 09:33:15 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WrKRd-0006YD-Cr
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jun 2014 05:06:03 +0000
 Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5C9X4Qu018410
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Jun 2014 17:33:04 +0800
-Message-ID: <1402565565.2332.6.camel@G08JYZSD130126>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5255oFl016931
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Jun 2014 13:05:50 +0800
+Message-ID: <1401685455.2838.8.camel@G08JYZSD130126>
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 12 Jun 2014 17:32:45 +0800
-In-Reply-To: <1402565516.2332.5.camel@G08JYZSD130126>
-References: <1402565516.2332.5.camel@G08JYZSD130126>
+Date: Mon, 2 Jun 2014 13:04:15 +0800
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2] utime/utime06.c: add EPERM and EROFS errno testes
+Subject: [LTP] [PATCH] can: add can tests to default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,179 +31,238 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Add EPERM and EROFS errno testes for utime(2).
+* Add can testes to scenario_groups/default
+
+* Makefile cleanup:
+  - Intall the files into the expect points
+
+* run_ltp-can_tests.sh cleanup:
+  - Use TCID, TST_TOTAL and TST_COUNT
+  - Use tst_require_root and tst_resm
+  - Add cleanup function
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/utime/utime06.c | 84 +++++++++++++++++++++++++++----
- 1 file changed, 73 insertions(+), 11 deletions(-)
+ runtest/can                                        |  2 +-
+ scenario_groups/default                            |  1 +
+ testcases/network/.gitignore                       |  2 +
+ testcases/network/can/filter-tests/Makefile        | 39 +++++----
+ .../network/can/filter-tests/run_ltp-can_tests.sh  | 99 ++++++++++++++++------
+ 5 files changed, 101 insertions(+), 42 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/utime/utime06.c b/testcases/kernel/syscalls/utime/utime06.c
-index 2dd68d8..1406bd0 100644
---- a/testcases/kernel/syscalls/utime/utime06.c
-+++ b/testcases/kernel/syscalls/utime/utime06.c
-@@ -26,6 +26,13 @@
-  *	 - The user ID of the process is not "root".
-  * 2. Verify that the system call utime() fails to set the modification
-  *    and access times of a file if the specified file doesn't exist.
-+ * 3. Verify that the system call utime() fails to set the modification
-+ *    and access times of a file to the current time, under the following
-+ *    constraints,
-+ *	 - The times argument is not null.
-+ *	 - The user ID of the process is not "root".
-+ * 4. Verify that the system call utime() fails to set the modification
-+ *    and access times of a file that resides on a read-only file system.
-  */
+diff --git a/runtest/can b/runtest/can
+index 0928bc1..2fa4424 100644
+--- a/runtest/can
++++ b/runtest/can
+@@ -1 +1 @@
+-CONTROLLER_AREA_NETWORK_01 ( cd $LTPROOT/testcases/network/can/filter-tests/; make && ./run_ltp-can_tests.sh )
++CONTROLLER_AREA_NETWORK_01 run_ltp-can_tests.sh
+diff --git a/scenario_groups/default b/scenario_groups/default
+index bf7ab79..4e8ce44 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -28,3 +28,4 @@ kernel_misc
+ modules
+ fs_ext4
+ pipes
++can
+diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
+index e5fbb88..16469dc 100644
+--- a/testcases/network/.gitignore
++++ b/testcases/network/.gitignore
+@@ -1,3 +1,5 @@
++/can/filter-tests/tst-filter
++/can/filter-tests/tst-rcv-own-msgs
+ /datafiles/
+ /lib6/asapi_01
+ /lib6/asapi_02
+diff --git a/testcases/network/can/filter-tests/Makefile b/testcases/network/can/filter-tests/Makefile
+index c88f704..c03e8a3 100644
+--- a/testcases/network/can/filter-tests/Makefile
++++ b/testcases/network/can/filter-tests/Makefile
+@@ -1,24 +1,33 @@
+ #
++#    Copyright (c) 2014 Fujitsu Ltd.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++
++#
+ #  $Id: Makefile,v 1.1 2009/03/02 15:33:55 subrata_modak Exp $
+ #
+ #  Send feedback to <socketcan-users@lists.berlios.de>
  
- #include <errno.h>
-@@ -40,30 +47,50 @@
- #include <wait.h>
- #include <sys/stat.h>
- #include <sys/types.h>
-+#include <sys/mount.h>
- 
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
- 
- #define TEMP_FILE	"tmp_file"
-+#define MNT_POINT	"mntpoint"
- 
- char *TCID = "utime06";
--static int exp_enos[] = { EACCES, ENOENT, 0 };
+-CFLAGS    = -O2 -Wall -Wno-parentheses \
+-	-fno-strict-aliasing \
+-	-DETH_P_CAN=0x000C \
+-	-DPF_CAN=29 \
+-	-DAF_CAN=PF_CAN
 -
-+static int exp_enos[] = { EACCES, ENOENT, EPERM, EROFS, 0 };
- static struct passwd *ltpuser;
-+static const struct utimbuf times;
-+static char *fstype = "ext2";
-+static char *device;
-+static int mount_flag;
-+
-+static void setup_nobody(void);
-+static void cleanup_nobody(void);
-+
-+static option_t options[] = {
-+	{"T:", NULL, &fstype},
-+	{"D:", NULL, &device},
-+	{NULL, NULL, NULL}
-+};
+-PROGRAMS =      tst-filter tst-rcv-own-msgs
+-
+-all: $(PROGRAMS)
++top_srcdir		?= ../../../..
  
- struct test_case_t {
- 	char *pathname;
- 	int exp_errno;
-+	const struct utimbuf *times;
-+	void (*setup_func)(void);
-+	void (*cleanup_func)(void);
- } Test_cases[] = {
--	{TEMP_FILE, EACCES},
--	{"", ENOENT},
-+	{TEMP_FILE, EACCES, NULL, setup_nobody, cleanup_nobody},
-+	{"", ENOENT, NULL, NULL, NULL},
-+	{TEMP_FILE, EPERM, &times, setup_nobody, cleanup_nobody},
-+	{MNT_POINT, EROFS, NULL, NULL, NULL},
- };
+-install:
+-	cp -f $(PROGRAMS) /usr/local/bin
++include $(top_srcdir)/include/mk/testcases.mk
  
- int TST_TOTAL = ARRAY_SIZE(Test_cases);
- static void setup(void);
- static void utime_verify(const struct test_case_t *);
- static void cleanup(void);
-+static void help(void);
+-clean:
+-	rm -f $(PROGRAMS)
++CPPFLAGS		+= -Wno-parentheses -DETH_P_CAN=0x000C -DPF_CAN=29 \
++                           -DAF_CAN=PF_CAN
  
- int main(int ac, char **av)
- {
-@@ -71,10 +98,16 @@ int main(int ac, char **av)
- 	const char *msg;
- 	int i;
+-distclean:
+-	rm -f $(PROGRAMS) *~
++INSTALL_TARGETS		:= run_ltp-can_tests.sh
  
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/can/filter-tests/run_ltp-can_tests.sh b/testcases/network/can/filter-tests/run_ltp-can_tests.sh
+index b955ec6..4885f3d 100644
+--- a/testcases/network/can/filter-tests/run_ltp-can_tests.sh
++++ b/testcases/network/can/filter-tests/run_ltp-can_tests.sh
+@@ -14,44 +14,91 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
  
-+	if (!device) {
-+		tst_brkm(TBROK, NULL,
-+			 "you must specify the device used for mounting with "
-+			 "-D option");
-+	}
-+
- 	setup();
+-if [ $(id -ru) -ne 0 ]; then
+-     echo You need to be root to execute these tests
+-     exit 1
+-fi
++export TCID="run_ltp-can_tests"
++export TST_TOTAL=2
++export TST_COUNT=1
  
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
-@@ -101,14 +134,26 @@ static void setup(void)
+-# load needed CAN networklayer modules
+-modprobe -f can
+-modprobe -f can_raw
++. cmdlib.sh
  
- 	TEST_EXP_ENOS(exp_enos);
- 
--	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-+	tst_mkfs(NULL, device, fstype, NULL);
-+	SAFE_MKDIR(cleanup, MNT_POINT, 0644);
-+	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
- 
--	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
- }
- 
- static void utime_verify(const struct test_case_t *test)
- {
--	TEST(utime(test->pathname, NULL));
-+	if (test->setup_func != NULL)
-+		test->setup_func();
-+
-+	TEST(utime(test->pathname, test->times));
-+
-+	if (test->cleanup_func != NULL)
-+		test->cleanup_func();
- 
- 	if (TEST_RETURN != -1) {
- 		tst_resm(TFAIL, "utime succeeded unexpectedly");
-@@ -124,12 +169,29 @@ static void utime_verify(const struct test_case_t *test)
- 	}
- }
- 
--static void cleanup(void)
-+static void setup_nobody(void)
+-# ensure the vcan driver to perform the ECHO on driver level
+-modprobe -r vcan
+-modprobe -f vcan echo=1
++setup()
 +{
-+	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++	tst_require_root
+ 
+-VCAN=vcan0
++	if [ ! -d "/lib/modules/`uname -r`/kernel/net/can" ]; then
++		tst_resm TCONF "Not find CAN modules"
++		exit
++	fi
++	if [ -e "/lib/modules/`uname -r`/kernel/net/can/can.ko" ] &&\
++	   [ -e "/lib/modules/`uname -r`/kernel/net/can/can-raw.ko" ]; then
++		# load needed CAN networklayer modules
++		modprobe -f can
++		modprobe -f can_raw
++	else
++		tst_resm TCONF "Not find can can_raw modules"
++		exit
++	fi
+ 
+-# create virtual CAN device
+-ip link add dev $VCAN type vcan || exit 1
+-ifconfig $VCAN up
++	if [ -e "/lib/modules/`uname -r`/kernel/drivers/net/can/" ]; then
++		# ensure the vcan driver to perform the ECHO on driver level
++		modprobe -r vcan
++		modprobe -f vcan echo=1
++	else
++		tst_resm TCONF "Not find vcan modules"
++		exit
++	fi
+ 
+-# check precondition for CAN frame flow test
+-HAS_ECHO=`ip link show $VCAN | grep -c ECHO`
++	VCAN=vcan0
+ 
+-if [ $HAS_ECHO -ne 1 ]
+-then
+-    exit 1
+-fi
++	# create virtual CAN device
++	ip link add dev $VCAN type vcan || exit 1
++	ifconfig $VCAN up
++
++	# check precondition for CAN frame flow test
++	HAS_ECHO=`ip link show $VCAN | grep -c ECHO`
++
++	if [ $HAS_ECHO -ne 1 ]; then
++		exit 1
++	fi
++
++	RET=0
 +}
 +
-+static void cleanup_nobody(void)
- {
--	if (seteuid(0) != 0)
--		tst_resm(TWARN | TERRNO, "seteuid failed");
-+	SAFE_SETEUID(cleanup, 0);
-+}
- 
-+static void cleanup(void)
++cleanup()
 +{
- 	TEST_CLEANUP;
- 
-+	if (mount_flag && umount(MNT_POINT) < 0)
-+		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-+
- 	tst_rmdir();
- }
-+
-+static void help(void)
-+{
-+	printf("-T type   : specifies the type of filesystem to be mounted. "
-+	       "Default ext2.\n");
-+	printf("-D device : device used for mounting.\n");
++	ifconfig $VCAN down
++	ip link del dev $VCAN
++	modprobe -r vcan
++	modprobe -r can_raw
++	modprobe -r can
 +}
++
++setup
+ 
+ # test of CAN filters on af_can.c
+-./tst-filter $VCAN || exit 1
++./tst-filter $VCAN
++ret=$?
++if [ $ret -ne 0 ]; then
++	RET=1
++	tst_resm TFAIL "Test tst-filter FAIL with exit num: $ret"
++else
++	tst_resm TPASS "Test tst-filter PASS"
++fi
+ 
+ # test of CAN frame flow down to the netdevice and up again
+-./tst-rcv-own-msgs $VCAN || exit 1
+-
+-exit 0
++./tst-rcv-own-msgs $VCAN
++ret=$?
++if [ $ret -ne 0 ]; then
++	RET=1
++	tst_resm TFAIL "Test tst-rcv-own-msgs FAIL with exit num: $ret"
++else
++	tst_resm TPASS "Test tst-rcv-own-msgs PASS"
++fi
+ 
++cleanup
+ 
++exit $RET
 -- 
-1.9.3
+1.8.3.1
 
 
 
 
 ------------------------------------------------------------------------------
-HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
-Find What Matters Most in Your Big Data with HPCC Systems
-Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
-Leverages Graph Analysis for Fast Processing & Easy Data Exploration
-http://p.sf.net/sfu/hpccsystems
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their 
+applications. Written by three acclaimed leaders in the field, 
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
