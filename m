@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wrmbs-0007oB-0j
-	for ltp-list@lists.sourceforge.net; Tue, 03 Jun 2014 11:10:28 +0000
-Date: Tue, 3 Jun 2014 13:10:08 +0200
+	(envelope-from <metan@suse.de>) id 1WrVsK-0004cG-Qb
+	for ltp-list@lists.sourceforge.net; Mon, 02 Jun 2014 17:18:20 +0000
+Date: Mon, 2 Jun 2014 19:17:56 +0200
 From: chrubis@suse.cz
-Message-ID: <20140603111008.GB13502@rei.Home>
-References: <CA+icZUWoiUudQ8yZ0SKOTQUh2brwoCJNL0-FHZdfaKfAR2t_CQ@mail.gmail.com>
-	<20140603103729.GA13502@rei.Home>
-	<CA+icZUVjTjsuNsnM7usCEe8ORzdme3D9awfNGUvOzPW4q5F7Sg@mail.gmail.com>
+Message-ID: <20140602171756.GA23446@rei>
+References: <1398697619-27372-1-git-send-email-mats.liljegren@enea.com>
+	<1399990269-3383-1-git-send-email-mats.liljegren@enea.com>
+	<1399990269-3383-2-git-send-email-mats.liljegren@enea.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CA+icZUVjTjsuNsnM7usCEe8ORzdme3D9awfNGUvOzPW4q5F7Sg@mail.gmail.com>
-Subject: Re: [LTP] Testcases especially to test pipes
+In-Reply-To: <1399990269-3383-2-git-send-email-mats.liljegren@enea.com>
+Subject: Re: [LTP] [PATCH v3] partrt_nohz_full: Introducing a new test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,36 +26,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net, Kevin Hilman <khilman@linaro.org>, Frederic Weisbecker <fweisbec@gmail.com>
 
 Hi!
-> > The obvious answer would be testcases/syscalls/pipe/ and
-> > testcases/syscall/{splice,vmsplice,tee} (make sure to use latest git for
-> > these because I've just commited fixes for them).
-> >
-> > There may be other relevant testcases but sorting them out would require
-> > going over the testcases and figuring out what exactly they test.
-> >
-> 
-> Do I need the latest Linux header files?
+> This test case is intended to test the nohz_full kernel feature. See file
+> testcases/kernel/partrt/README for more information.
 
-Did anything break?
+This version looks good to me. My last concern is about the names of the
+partrt tools.
 
-(The code should not use the linux headers but rather the glibc
-counterparts)
+> --- a/utils/Makefile
+> +++ b/utils/Makefile
+> @@ -24,6 +24,10 @@ include $(top_srcdir)/include/mk/env_pre.mk
+>  
+>  MAKE_TARGETS         += ffsb
+>  
+> +ifneq ($(wildcard rt-tools),)
+> +MAKE_TARGETS         += partrt list2mask count_ticks
+> +endif
+> +
+>  FFSBDIR			:= ffsb-6.0-rc2
+>  FILTER_OUT_DIRS		:= $(FFSBDIR)
+>  FFSB			:= $(FFSBDIR)/ffsb
+> @@ -35,6 +39,9 @@ $(FFSB): $(abs_srcdir)/$(FFSBDIR)
+>  ffsb: $(FFSB)
+>  	cp $(FFSB) ffsb
+>  
+> +partrt list2mask count_ticks:
+> +	cp rt-tools/install/bin/$@ $@
 
-> P.S.: Output installed linux-headers packages on Ubuntu/precise AMD64.
-> 
-> # dpkg -l | grep linux-headers
-> ii  linux-headers-3.2.0-64                              3.2.0-64.96
->                                      Header files related to Linux
-> kernel version 3.2.0
-> ii  linux-headers-3.2.0-64-generic                      3.2.0-64.96
->                                      Linux kernel headers for version
-> 3.2.0 on 64 bit x86 SMP
-> ii  linux-headers-generic                               3.2.0.64.76
->                                      Generic Linux kernel headers
+As it is now, upon the installation LTP copies all executables into one
+directory and we are trying to avoid collisions by adding sufixes or
+prefixes to the binaries.
+
+Can we add a rt to all the binaries (list2maskrt, count_ticksrt) or
+something similar while we install them?
 
 -- 
 Cyril Hrubis
