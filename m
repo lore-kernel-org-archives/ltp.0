@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WuxpH-0008FV-6I
-	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 05:45:27 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WuxpF-0006Gf-91
-	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 05:45:27 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5C5jEKd002293
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Jun 2014 13:45:14 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 12 Jun 2014 13:42:34 +0800
-Message-ID: <1402551754-19942-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wrm6H-0001am-BK
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jun 2014 10:37:49 +0000
+Date: Tue, 3 Jun 2014 12:37:29 +0200
+From: chrubis@suse.cz
+Message-ID: <20140603103729.GA13502@rei.Home>
+References: <CA+icZUWoiUudQ8yZ0SKOTQUh2brwoCJNL0-FHZdfaKfAR2t_CQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fs/ext4-new-features: fix wrong test point when
-	running ext4-persist-prealloc
+Content-Disposition: inline
+In-Reply-To: <CA+icZUWoiUudQ8yZ0SKOTQUh2brwoCJNL0-FHZdfaKfAR2t_CQ@mail.gmail.com>
+Subject: Re: [LTP] Testcases especially to test pipes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,49 +24,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-ext4-persist-prealloc test will call test cases under 'testcases/kernel/syscalls
-/fallocate' to have persist prealloc test for ext4 filesystem. But currently
-fallocate[0-3] cases will have tests in a different filesystem, which the directory
-created by tst_tmpdir() is in. This is wrong, fix it.
+Hi!
+> while digging into a lockdep problem with OverlayFS [1] the question
+> came up on how to test pipes on Linux.
+> Is there a testsuite/testcases for pipes like to test IPC-syscalls only?
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- .../ext4-persist-prealloc/ext4_persist_prealloc_test.sh                | 3 +++
- 1 file changed, 3 insertions(+)
+The obvious answer would be testcases/syscalls/pipe/ and
+testcases/syscall/{splice,vmsplice,tee} (make sure to use latest git for
+these because I've just commited fixes for them).
 
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-index 20b66f8..063a701 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-@@ -46,6 +46,8 @@ ext4_test_persist_prealloc()
- 
- 	ret=1
- 
-+	temp_tmpdir=$TMPDIR
-+	export TMPDIR=mnt_point
- 	for ((i = 1; i <= 3; i++))
- 	{
- 		if ! command -v fallocate0${i} > /dev/null 2>&1; then
-@@ -63,6 +65,7 @@ ext4_test_persist_prealloc()
- 			return
- 		fi
- 	}
-+	TMPDIR=$temp_tmpdir
- 
- 	umount mnt_point
- 	if [ $? -ne 0 ]; then
+There may be other relevant testcases but sorting them out would require
+going over the testcases and figuring out what exactly they test.
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
-Find What Matters Most in Your Big Data with HPCC Systems
-Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
-Leverages Graph Analysis for Fast Processing & Easy Data Exploration
-http://p.sf.net/sfu/hpccsystems
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their 
+applications. Written by three acclaimed leaders in the field, 
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
