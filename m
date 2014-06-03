@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WsDVD-0003fL-My
-	for ltp-list@lists.sourceforge.net; Wed, 04 Jun 2014 15:53:23 +0000
-Date: Wed, 4 Jun 2014 17:53:01 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wrmbs-0007oB-0j
+	for ltp-list@lists.sourceforge.net; Tue, 03 Jun 2014 11:10:28 +0000
+Date: Tue, 3 Jun 2014 13:10:08 +0200
 From: chrubis@suse.cz
-Message-ID: <20140604155301.GB7913@rei>
-References: <20140520144246.GA30023@rei.suse.cz>
-	<1400667887-5188-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20140603111008.GB13502@rei.Home>
+References: <CA+icZUWoiUudQ8yZ0SKOTQUh2brwoCJNL0-FHZdfaKfAR2t_CQ@mail.gmail.com>
+	<20140603103729.GA13502@rei.Home>
+	<CA+icZUVjTjsuNsnM7usCEe8ORzdme3D9awfNGUvOzPW4q5F7Sg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1400667887-5188-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 2/3] rt_sigaction, rt_sigprocmask01,
- rt_sigsuspend: use rt_sigaction wrapper
+In-Reply-To: <CA+icZUVjTjsuNsnM7usCEe8ORzdme3D9awfNGUvOzPW4q5F7Sg@mail.gmail.com>
+Subject: Re: [LTP] Testcases especially to test pipes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +26,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> diff --git a/include/ltp_signal.h b/include/ltp_signal.h
-> index e6fb2e0..31bb0b0 100644
-> --- a/include/ltp_signal.h
-> +++ b/include/ltp_signal.h
-> @@ -55,6 +55,15 @@
->  
->  #ifdef LTP_RT_SIG_TEST
+> > The obvious answer would be testcases/syscalls/pipe/ and
+> > testcases/syscall/{splice,vmsplice,tee} (make sure to use latest git for
+> > these because I've just commited fixes for them).
+> >
+> > There may be other relevant testcases but sorting them out would require
+> > going over the testcases and figuring out what exactly they test.
+> >
+> 
+> Do I need the latest Linux header files?
 
-I know that the code was there allready. However can we split the header
-into two and include the second one when needed in tests instead of
-defining LTP_RT_SIG_TEST macro?
+Did anything break?
+
+(The code should not use the linux headers but rather the glibc
+counterparts)
+
+> P.S.: Output installed linux-headers packages on Ubuntu/precise AMD64.
+> 
+> # dpkg -l | grep linux-headers
+> ii  linux-headers-3.2.0-64                              3.2.0-64.96
+>                                      Header files related to Linux
+> kernel version 3.2.0
+> ii  linux-headers-3.2.0-64-generic                      3.2.0-64.96
+>                                      Linux kernel headers for version
+> 3.2.0 on 64 bit x86 SMP
+> ii  linux-headers-generic                               3.2.0.64.76
+>                                      Generic Linux kernel headers
 
 -- 
 Cyril Hrubis
