@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wz3Xd-0003gZ-HY
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 12:40:09 +0000
-Date: Mon, 23 Jun 2014 14:39:53 +0200
-From: chrubis@suse.cz
-Message-ID: <20140623123953.GB6050@rei.Home>
-References: <1403449437-25028-1-git-send-email-njoly@pasteur.fr>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WuB0V-0001c6-UD
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jun 2014 01:37:47 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WuB0U-00086v-9w
+	for ltp-list@lists.sourceforge.net; Tue, 10 Jun 2014 01:37:47 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5A1bc8L023265
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Jun 2014 09:37:39 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 10 Jun 2014 09:34:56 +0800
+Message-ID: <1402364096-28008-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1403449437-25028-1-git-send-email-njoly@pasteur.fr>
-Subject: Re: [LTP] [PATCH] Consistently use tst_require_root() for root user
- check in syscalls.
+Subject: [LTP] [PATCH] dma_thread_diotest: add it to run default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,15 +29,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nicolas Joly <njoly@pasteur.fr>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-Nice cleanup :) Pushed, thanks.
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ scenario_groups/default | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/scenario_groups/default b/scenario_groups/default
+index bf7ab79..2ad3a08 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -28,3 +28,4 @@ kernel_misc
+ modules
+ fs_ext4
+ pipes
++dma_thread_diotest
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
