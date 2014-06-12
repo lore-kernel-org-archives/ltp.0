@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wzm61-000125-KD
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jun 2014 12:14:37 +0000
-Date: Wed, 25 Jun 2014 14:14:20 +0200
-From: chrubis@suse.cz
-Message-ID: <20140625121420.GA8523@rei.Home>
-References: <1403690435-18626-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WuxpH-0008FV-6I
+	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 05:45:27 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WuxpF-0006Gf-91
+	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 05:45:27 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5C5jEKd002293
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Jun 2014 13:45:14 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Thu, 12 Jun 2014 13:42:34 +0800
+Message-ID: <1402551754-19942-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1403690435-18626-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [RFC PATCH] tst_get_unused_pid and
- system_specific_process_info
+Subject: [LTP] [PATCH] fs/ext4-new-features: fix wrong test point when
+	running ext4-persist-prealloc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,43 +30,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> 1. We remove get_max_pids(), because it's used only in one place (get_free_pids())
->    and can be subsituted with
->    SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &pid);
-> 
-> 2. We rename get_free_pids() to tst_get_free_pids() for consistency. And changing a bit its
->    declaration to use SAFE_FILE_SCANF().
-> 
-> 3. system_specific_process_info.h is used only in one place - msgctl11.
->    I think it's not a problem if I move its content to test.h. For consistency.
-> 
-> 4. And add tst_get_unused_pid() to system_specific_process_info.c. To not
->    create a new source file. And this funcion looks logically coupled with tst_get_free_pids().
-> 
-> I'm going to present pp. 1-3 in one patch, and p. 4 - in a separate patch.
-> 
-> What do you think about the general idea?
+ext4-persist-prealloc test will call test cases under 'testcases/kernel/syscalls
+/fallocate' to have persist prealloc test for ext4 filesystem. But currently
+fallocate[0-3] cases will have tests in a different filesystem, which the directory
+created by tst_tmpdir() is in. This is wrong, fix it.
 
-Sounds good to me.
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ .../ext4-persist-prealloc/ext4_persist_prealloc_test.sh                | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Perhaps we should also rename the system_specific_process_info.c to
-something shorter and more to the point. Maybe just process_info.c or
-pidutils.c or something similar.
-
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+index 20b66f8..063a701 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+@@ -46,6 +46,8 @@ ext4_test_persist_prealloc()
+ 
+ 	ret=1
+ 
++	temp_tmpdir=$TMPDIR
++	export TMPDIR=mnt_point
+ 	for ((i = 1; i <= 3; i++))
+ 	{
+ 		if ! command -v fallocate0${i} > /dev/null 2>&1; then
+@@ -63,6 +65,7 @@ ext4_test_persist_prealloc()
+ 			return
+ 		fi
+ 	}
++	TMPDIR=$temp_tmpdir
+ 
+ 	umount mnt_point
+ 	if [ $? -ne 0 ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
