@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Wxt7p-0001MB-FO
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jun 2014 07:20:41 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Wv1Nj-00011Z-Fn
+	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 09:33:15 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wxt7n-00006Q-9d
-	for ltp-list@lists.sourceforge.net; Fri, 20 Jun 2014 07:20:41 +0000
+	id 1Wv1Nf-00064l-RR
+	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 09:33:15 +0000
 Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5K7KVMk003197
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Jun 2014 15:20:31 +0800
-Message-ID: <1403248796.26126.0.camel@G08JYZSD130126>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5C9X4Qu018410
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Jun 2014 17:33:04 +0800
+Message-ID: <1402565565.2332.6.camel@G08JYZSD130126>
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 20 Jun 2014 15:19:56 +0800
+Date: Thu, 12 Jun 2014 17:32:45 +0800
+In-Reply-To: <1402565516.2332.5.camel@G08JYZSD130126>
+References: <1402565516.2332.5.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] wait/wait02: cleanup
+Subject: [LTP] [PATCH 2/2] utime/utime06.c: add EPERM and EROFS errno testes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,237 +33,167 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list <ltp-list@lists.sourceforge.net>
 
-* Delete some useless commtents and variable.
-
-* Some cleanup.
+Add EPERM and EROFS errno testes for utime(2).
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/wait/wait02.c | 166 ++++++--------------------------
- 1 file changed, 32 insertions(+), 134 deletions(-)
+ testcases/kernel/syscalls/utime/utime06.c | 84 +++++++++++++++++++++++++++----
+ 1 file changed, 73 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/wait/wait02.c b/testcases/kernel/syscalls/wait/wait02.c
-index a95213d..ef3bf71 100644
---- a/testcases/kernel/syscalls/wait/wait02.c
-+++ b/testcases/kernel/syscalls/wait/wait02.c
-@@ -1,5 +1,7 @@
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ *    AUTHOR		: William Roske
-+ *    CO-PILOT		: Dave Fenner
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of version 2 of the GNU General Public License as
-@@ -30,84 +32,6 @@
-  * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-  *
+diff --git a/testcases/kernel/syscalls/utime/utime06.c b/testcases/kernel/syscalls/utime/utime06.c
+index 2dd68d8..1406bd0 100644
+--- a/testcases/kernel/syscalls/utime/utime06.c
++++ b/testcases/kernel/syscalls/utime/utime06.c
+@@ -26,6 +26,13 @@
+  *	 - The user ID of the process is not "root".
+  * 2. Verify that the system call utime() fails to set the modification
+  *    and access times of a file if the specified file doesn't exist.
++ * 3. Verify that the system call utime() fails to set the modification
++ *    and access times of a file to the current time, under the following
++ *    constraints,
++ *	 - The times argument is not null.
++ *	 - The user ID of the process is not "root".
++ * 4. Verify that the system call utime() fails to set the modification
++ *    and access times of a file that resides on a read-only file system.
   */
--/* $Id: wait02.c,v 1.7 2009/10/26 14:55:48 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: wait02
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for wait(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- *	1.) wait(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- *	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *
-- *    DURATION
-- *	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- *	Uses SIGUSR1 to pause before test if option set.
-- *	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- *	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- *	None
-- *
-- *    INTERCASE DEPENDENCIES
-- *	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the wait(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	wait(2).
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
  
  #include <errno.h>
- #include <string.h>
-@@ -118,94 +42,68 @@
+@@ -40,30 +47,50 @@
+ #include <wait.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
++#include <sys/mount.h>
+ 
  #include "test.h"
  #include "usctest.h"
+ #include "safe_macros.h"
  
--void setup();
--void cleanup();
-+static void setup(void);
-+static void cleanup(void);
+ #define TEMP_FILE	"tmp_file"
++#define MNT_POINT	"mntpoint"
  
- char *TCID = "wait02";
- int TST_TOTAL = 1;
- 
--int exp_enos[] = { 0, 0 };
-+static int exp_enos[] = { 0, 0 };
+ char *TCID = "utime06";
+-static int exp_enos[] = { EACCES, ENOENT, 0 };
+-
++static int exp_enos[] = { EACCES, ENOENT, EPERM, EROFS, 0 };
+ static struct passwd *ltpuser;
++static const struct utimbuf times;
++static char *fstype = "ext2";
++static char *device;
++static int mount_flag;
 +
-+static int fork_pid, ret_code;
++static void setup_nobody(void);
++static void cleanup_nobody(void);
++
++static option_t options[] = {
++	{"T:", NULL, &fstype},
++	{"D:", NULL, &device},
++	{NULL, NULL, NULL}
++};
  
--int fork_pid, ret_code;
--void trapper();
-+static void wait_verify(void);
+ struct test_case_t {
+ 	char *pathname;
+ 	int exp_errno;
++	const struct utimbuf *times;
++	void (*setup_func)(void);
++	void (*cleanup_func)(void);
+ } Test_cases[] = {
+-	{TEMP_FILE, EACCES},
+-	{"", ENOENT},
++	{TEMP_FILE, EACCES, NULL, setup_nobody, cleanup_nobody},
++	{"", ENOENT, NULL, NULL, NULL},
++	{TEMP_FILE, EPERM, &times, setup_nobody, cleanup_nobody},
++	{MNT_POINT, EROFS, NULL, NULL, NULL},
+ };
+ 
+ int TST_TOTAL = ARRAY_SIZE(Test_cases);
+ static void setup(void);
+ static void utime_verify(const struct test_case_t *);
+ static void cleanup(void);
++static void help(void);
  
  int main(int ac, char **av)
  {
- 	int lc;
+@@ -71,10 +98,16 @@ int main(int ac, char **av)
  	const char *msg;
+ 	int i;
  
--    /***************************************************************
--     * parse standard options
--     ***************************************************************/
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
+-	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(ac, av, options, help);
+ 	if (msg != NULL)
  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
  
--    /***************************************************************
--     * perform global setup for test
--     ***************************************************************/
++	if (!device) {
++		tst_brkm(TBROK, NULL,
++			 "you must specify the device used for mounting with "
++			 "-D option");
++	}
++
  	setup();
  
--	/* set the expected errnos... */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -101,14 +134,26 @@ static void setup(void)
+ 
  	TEST_EXP_ENOS(exp_enos);
  
--    /***************************************************************
--     * check looping state if -c option given
--     ***************************************************************/
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
- 		tst_count = 0;
--
--		/* create a child to wait for */
--		if ((fork_pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup,
--				 "fork() Failure. errno=%d : %s", errno,
--				 strerror(errno));
--		} else if (fork_pid == 0) {
--			/* Child, sleep a second then exit */
--			sleep(1);
--			exit(1);
--		}
--
--		/* Parent, wait for child to die */
--		TEST(wait(&ret_code));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			TEST_ERROR_LOG(TEST_ERRNO);
--			tst_resm(TFAIL, "wait(1) Failed, errno=%d : %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_resm(TPASS, "wait(&ret_code) returned %ld",
--				 TEST_RETURN);
--		}
-+		wait_verify();
- 	}
+-	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++	tst_mkfs(NULL, device, fstype, NULL);
++	SAFE_MKDIR(cleanup, MNT_POINT, 0644);
++	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "mount device:%s failed", device);
++	}
++	mount_flag = 1;
  
- 	cleanup();
- 	tst_exit();
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
  }
  
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
-+static void setup(void)
+ static void utime_verify(const struct test_case_t *test)
  {
--
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST(utime(test->pathname, NULL));
++	if (test->setup_func != NULL)
++		test->setup_func();
++
++	TEST(utime(test->pathname, test->times));
++
++	if (test->cleanup_func != NULL)
++		test->cleanup_func();
  
- 	TEST_PAUSE;
+ 	if (TEST_RETURN != -1) {
+ 		tst_resm(TFAIL, "utime succeeded unexpectedly");
+@@ -124,12 +169,29 @@ static void utime_verify(const struct test_case_t *test)
+ 	}
+ }
+ 
+-static void cleanup(void)
++static void setup_nobody(void)
++{
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
 +}
 +
-+static void wait_verify(void)
-+{
-+	fork_pid = FORK_OR_VFORK();
-+	if (fork_pid == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork() Failure");
-+	} else if (fork_pid == 0) {
-+		sleep(1);
-+		exit(1);
-+	}
-+
-+	TEST(wait(&ret_code));
- 
-+	if (TEST_RETURN == -1) {
-+		TEST_ERROR_LOG(TEST_ERRNO);
-+		tst_resm(TFAIL | TTERRNO, "wait(1) Failed");
-+	} else {
-+		tst_resm(TPASS, "wait(&ret_code) returned %ld", TEST_RETURN);
-+	}
- }
- 
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
-+static void cleanup(void)
++static void cleanup_nobody(void)
  {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
+-	if (seteuid(0) != 0)
+-		tst_resm(TWARN | TERRNO, "seteuid failed");
++	SAFE_SETEUID(cleanup, 0);
++}
+ 
++static void cleanup(void)
++{
  	TEST_CLEANUP;
--
+ 
++	if (mount_flag && umount(MNT_POINT) < 0)
++		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
++
+ 	tst_rmdir();
  }
++
++static void help(void)
++{
++	printf("-T type   : specifies the type of filesystem to be mounted. "
++	       "Default ext2.\n");
++	printf("-D device : device used for mounting.\n");
++}
 -- 
 1.9.3
 
