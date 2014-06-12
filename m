@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <AJOY.JOSEPH@lnttechservices.com>) id 1Wz4H8-0000SV-3W
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 13:27:10 +0000
-Received: from mailout2.ltindia.com ([203.199.60.171])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Wv1NL-0000E1-I4
+	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 09:32:51 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wz4H4-0006mN-3T
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 13:27:10 +0000
-From: Ajoymon Joseph <AJOY.JOSEPH@LNTTECHSERVICES.COM>
-Date: Mon, 23 Jun 2014 13:26:55 +0000
-Message-ID: <7CF842D49929104A9E5360C8FA9370998CF23D@POCITMSEXMB03.LntUniverse.com>
-References: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
-	<1368345307.28778797.1403523788999.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1368345307.28778797.1403523788999.JavaMail.zimbra@redhat.com>
-Content-Language: en-US
+	id 1Wv1NJ-0004ff-Gu
+	for ltp-list@lists.sourceforge.net; Thu, 12 Jun 2014 09:32:51 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5C9WGTV018321
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Jun 2014 17:32:16 +0800
+Message-ID: <1402565516.2332.5.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 12 Jun 2014 17:31:56 +0800
 MIME-Version: 1.0
-Subject: Re: [LTP] fstatfs02 issue on mips64
+Subject: [LTP] [PATCH 1/2] utime/utime06.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,144 +26,404 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-SGkgamFuLA0KDQpBcyB5b3UgbWVudGlvbmVkIEkgY2hlY2tlZCB0aGUgc3RyYWNlIG91dHB1dC4g
-SSB3YXMgbm90IGtub3dpbmcgaG93IHRvIGFuYWx5emUgaXQuIHNvIEkgY29tcGFyZWQgc3RyYWNl
-IGluIGEgbm9ybWFsIHBjIGFuZCBteSB0ZXN0IG1hY2hpbmUuIEkgc2F3IGEgc3RyYW5nZSB0aGlu
-Zy4NCg0KcnRfc2lnYWN0aW9uKFNJR1BXUiwgezB4NDAzYjMwLCBbXSwgU0FfUkVTVE9SRVJ8U0Ff
-UkVTVEFSVCwgMHgzOGU3YTMyOWEwfSwge1NJR19ERkwsIFtdLCAwfSwgOCkgPSAwDQpydF9zaWdh
-Y3Rpb24oU0lHU1lTLCB7MHg0MDNiMzAsIFtdLCBTQV9SRVNUT1JFUnxTQV9SRVNUQVJULCAweDM4
-ZTdhMzI5YTB9LCB7U0lHX0RGTCwgW10sIDB9LCA4KSA9IDANCnJ0X3NpZ2FjdGlvbihTSUdSVF8x
-NiwgezB4NDAzYjMwLCBbXSwgU0FfUkVTVE9SRVJ8U0FfUkVTVEFSVCwgMHgzOGU3YTMyOWEwfSwg
-e1NJR19ERkwsIFtdLCAwfSwgOCkgPSAwDQpnZXRwaWQoKSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgPSAxNjE2MQ0KbWtkaXIoIi90bXAvZnN0WkpCNUF0IiwgMDcwMCkgICAgICAgICAg
-ID0gMA0KZ2V0Z2lkKCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID0gMA0KY2hvd24o
-Ii90bXAvZnN0WkpCNUF0IiwgNDI5NDk2NzI5NSwgMCkgID0gMA0KY2htb2QoIi90bXAvZnN0WkpC
-NUF0IiwgMDc3NykgICAgICAgICAgID0gMA0KY2hkaXIoIi90bXAvZnN0WkpCNUF0IikgICAgICAg
-ICAgICAgICAgID0gMA0KZnN0YXRmcyg0Mjk0OTY3Mjk1LCAweDYwOGVjMCkgICAgICAgICAgID0g
-LTEgRUJBREYgKEJhZCBmaWxlIGRlc2NyaXB0b3IpDQpmc3RhdCgxLCB7c3RfbW9kZT1TX0lGQ0hS
-fDA2MjAsIHN0X3JkZXY9bWFrZWRldigxMzYsIDQpLCAuLi59KSA9IDANCm1tYXAoTlVMTCwgNDA5
-NiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsIC0xLCAw
-KSA9IDB4N2YxMjQ4NGYzMDAwDQp3cml0ZSgxLCAiZnN0YXRmczAyICAgIDEgIFRQQVNTICA6ICBl
-eHBlY3QiLi4uLCA3N2ZzdGF0ZnMwMiAgICAxICBUUEFTUyAgOiAgZXhwZWN0ZWQgZmFpbHVyZSAt
-IGVycm5vID0gOSA6IEJhZCBmaWxlIGRlc2NyaXB0b3INCikgPSA3Nw0KZnN0YXRmcygxLCAweGZm
-ZmZmZmZmZmZmZmZmZmYpICAgICAgICAgID0gLTEgRUZBVUxUIChCYWQgYWRkcmVzcykNCndyaXRl
-KDEsICJmc3RhdGZzMDIgICAgMiAgVFBBU1MgIDogIGV4cGVjdCIuLi4sIDcwZnN0YXRmczAyICAg
-IDIgIFRQQVNTICA6ICBleHBlY3RlZCBmYWlsdXJlIC0gZXJybm8gPSAxNCA6IEJhZCBhZGRyZXNz
-DQopID0gNzANCnN0YXQoIi90bXAvZnN0WkpCNUF0Iiwge3N0X21vZGU9U19JRkRJUnwwNzc3LCBz
-dF9zaXplPTQwOTYsIC4uLn0pID0gMA0Kc3RhdCgiLyIsIHtzdF9tb2RlPVNfSUZESVJ8MDc1NSwg
-c3Rfc2l6ZT00MDk2LCAuLi59KSA9IDANCmNoZGlyKCIvdG1wIikgICAgICAgICAgICAgICAgICAg
-ICAgICAgICA9IDANCmxzdGF0KCIvdG1wL2ZzdFpKQjVBdCIsIHtzdF9tb2RlPVNfSUZESVJ8MDc3
-Nywgc3Rfc2l6ZT00MDk2LCAuLi59KSA9IDANCm9wZW4oIi90bXAvZnN0WkpCNUF0IiwgT19SRE9O
-TFl8T19OT05CTE9DS3xPX0RJUkVDVE9SWXxPX0NMT0VYRUMpID0gMw0KZmNudGwoMywgRl9HRVRG
-RCkgICAgICAgICAgICAgICAgICAgICAgID0gMHgxIChmbGFncyBGRF9DTE9FWEVDKQ0KZ2V0ZGVu
-dHMoMywgLyogMiBlbnRyaWVzICovLCAzMjc2OCkgICAgID0gNDgNCmdldGRlbnRzKDMsIC8qIDAg
-ZW50cmllcyAqLywgMzI3NjgpICAgICA9IDANCmNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICA9IDANCmxzdGF0KCIvdG1wL2ZzdFpKQjVBdCIsIHtzdF9tb2RlPVNfSUZESVJ8
-MDc3Nywgc3Rfc2l6ZT00MDk2LCAuLi59KSA9IDANCnVubGluaygiL3RtcC9mc3RaSkI1QXQiKSAg
-ICAgICAgICAgICAgICA9IC0xIEVJU0RJUiAoSXMgYSBkaXJlY3RvcnkpDQpybWRpcigiL3RtcC9m
-c3RaSkI1QXQiKSAgICAgICAgICAgICAgICAgPSAwDQpleGl0X2dyb3VwKDApICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgPSA/DQpbcm9vdEBsb2NhbGhvc3QgZnN0YXRmc10jDQoNCg0KTm93IHRo
-ZSBvdXRwdXQgb2YgdGVzdCBzeXN0ZW0NCg0KcnRfc2lnYWN0aW9uKFNJR1JUXzc1LCB7MHgxMDAw
-MDAwMDAwMDAwMDEyLCBbUlRfMzggUlRfMzkgUlRfNDAgUlRfNDEgUlRfNDMgUlRfNDUgUlRfNDYg
-UlRfNDggUlRfNTMgUlRfNTYgUlRfNTcgUlRfNTggUlRfNjIgUlRfNjMgUlRfNjUgUlRfNjcgUlRf
-NjkgUlRfNzFdLCBTQV9JTlRFUlJVUFR8MHg0ZGQwfSwge1NJR19ERkwsIFtdLCAwfSwgMTYpID0g
-MA0KcnRfc2lnYWN0aW9uKFNJR1JUXzc2LCB7MHgxMDAwMDAwMDAwMDAwMDEyLCBbUlRfMzggUlRf
-MzkgUlRfNDAgUlRfNDEgUlRfNDMgUlRfNDUgUlRfNDYgUlRfNDggUlRfNTMgUlRfNTYgUlRfNTcg
-UlRfNTggUlRfNjIgUlRfNjMgUlRfNjUgUlRfNjcgUlRfNjkgUlRfNzFdLCBTQV9JTlRFUlJVUFR8
-MHg0ZGQwfSwge1NJR19ERkwsIFtdLCAwfSwgMTYpID0gMA0KcnRfc2lnYWN0aW9uKFNJR1JUXzc3
-LCB7MHgxMDAwMDAwMDAwMDAwMDEyLCBbUlRfMzggUlRfMzkgUlRfNDAgUlRfNDEgUlRfNDMgUlRf
-NDUgUlRfNDYgUlRfNDggUlRfNTMgUlRfNTYgUlRfNTcgUlRfNTggUlRfNjIgUlRfNjMgUlRfNjUg
-UlRfNjcgUlRfNjkgUlRfNzFdLCBTQV9JTlRFUlJVUFR8MHg0ZGQwfSwge1NJR19ERkwsIFtdLCAw
-fSwgMTYpID0gMA0KcnRfc2lnYWN0aW9uKFNJR1JUXzc4LCB7MHgxMDAwMDAwMDAwMDAwMDEyLCBb
-UlRfMzggUlRfMzkgUlRfNDAgUlRfNDEgUlRfNDMgUlRfNDUgUlRfNDYgUlRfNDggUlRfNTMgUlRf
-NTYgUlRfNTcgUlRfNTggUlRfNjIgUlRfNjMgUlRfNjUgUlRfNjcgUlRfNjkgUlRfNzFdLCBTQV9J
-TlRFUlJVUFR8MHg0ZGQwfSwge1NJR19ERkwsIFtdLCAwfSwgMTYpID0gMA0KcnRfc2lnYWN0aW9u
-KFNJR1JUXzc5LCB7MHgxMDAwMDAwMDAwMDAwMDEyLCBbUlRfMzggUlRfMzkgUlRfNDAgUlRfNDEg
-UlRfNDMgUlRfNDUgUlRfNDYgUlRfNDggUlRfNTMgUlRfNTYgUlRfNTcgUlRfNTggUlRfNjIgUlRf
-NjMgUlRfNjUgUlRfNjcgUlRfNjkgUlRfNzFdLCBTQV9JTlRFUlJVUFR8MHg0ZGQwfSwge1NJR19E
-RkwsIFtdLCAwfSwgMTYpID0gMA0KZ2V0dGltZW9mZGF5KHsxNDAzNTI2MDE3LCA3NzIxNX0sIE5V
-TEwpID0gMA0KZ2V0cGlkKCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID0gMTExMTcN
-Cm1rZGlyKCIvdG1wL2ZzdHdScDg5ZyIsIDA3MDApICAgICAgICAgICA9IDANCmdldGdpZCgpICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDUwMQ0KY2hvd24oIi90bXAvZnN0d1JwODln
-IiwgLTEsIDUwMSkgICAgICAgID0gMA0KY2htb2QoIi90bXAvZnN0d1JwODlnIiwgMDc3NykgICAg
-ICAgICAgID0gMA0KY2hkaXIoIi90bXAvZnN0d1JwODlnIikgICAgICAgICAgICAgICAgID0gMA0K
-ZnN0YXQoMSwge3N0X21vZGU9U19JRkNIUnwwNjIwLCBzdF9yZGV2PW1ha2VkZXYoMTM2LCAwKSwg
-Li4ufSkgPSAwDQptbWFwKE5VTEwsIDY1NTM2LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BS
-SVZBVEV8TUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHg1NTYzYTU5MDAwDQp3cml0ZSgxLCAiZnN0
-YXRmczAyICAgIDEgIFRGQUlMICA6ICBjYWxsIHMiLi4uLCA2OGZzdGF0ZnMwMiAgICAxICBURkFJ
-TCAgOiAgY2FsbCBzdWNjZWVkZWQgdW5leHBlY3RlZGx5IDM2Njc0MzMxMzAwOA0KKSA9IDY4DQp3
-cml0ZSgxLCAiZnN0YXRmczAyICAgIDIgIFRGQUlMICA6ICBjYWxsIHMiLi4uLCA1N2ZzdGF0ZnMw
-MiAgICAyICBURkFJTCAgOiAgY2FsbCBzdWNjZWVkZWQgdW5leHBlY3RlZGx5IDENCikgPSA1Nw0K
-c3RhdCgiL3RtcC9mc3R3UnA4OWciLCB7c3RfbW9kZT1TX0lGRElSfDA3NzcsIHN0X3NpemU9NDAs
-IC4uLn0pID0gMA0Kc3RhdCgiLyIsIHtzdF9tb2RlPVNfSUZESVJ8MDc1NSwgc3Rfc2l6ZT0xMDI0
-LCAuLi59KSA9IDANCmNoZGlyKCIvdG1wIikgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAN
-CmxzdGF0KCIvdG1wL2ZzdHdScDg5ZyIsIHtzdF9tb2RlPVNfSUZESVJ8MDc3Nywgc3Rfc2l6ZT00
-MCwgLi4ufSkgPSAwDQpvcGVuKCIvdG1wL2ZzdHdScDg5ZyIsIE9fUkRPTkxZfE9fTk9OQkxPQ0t8
-T19MQVJHRUZJTEV8T19ESVJFQ1RPUll8T19DTE9FWEVDKSA9IDMNCmZjbnRsKDMsIEZfR0VURkQp
-ICAgICAgICAgICAgICAgICAgICAgICA9IDB4MSAoZmxhZ3MgRkRfQ0xPRVhFQykNCmdldGRlbnRz
-KDMsIC8qIDIgZW50cmllcyAqLywgMzI3NjgpICAgICA9IDQ4DQpnZXRkZW50cygzLCAvKiAwIGVu
-dHJpZXMgKi8sIDMyNzY4KSAgICAgPSAwDQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgPSAwDQpsc3RhdCgiL3RtcC9mc3R3UnA4OWciLCB7c3RfbW9kZT1TX0lGRElSfDA3
-NzcsIHN0X3NpemU9NDAsIC4uLn0pID0gMA0KdW5saW5rKCIvdG1wL2ZzdHdScDg5ZyIpICAgICAg
-ICAgICAgICAgID0gLTEgRUlTRElSIChJcyBhIGRpcmVjdG9yeSkNCnJtZGlyKCIvdG1wL2ZzdHdS
-cDg5ZyIpICAgICAgICAgICAgICAgICA9IDANCmV4aXRfZ3JvdXAoMSkgICAgICAgICAgICAgICAg
-ICAgICAgICAgICA9ID8NCg0KSSBhbSBub3Qgc2VlaW5nIGZzdGF0ZnMgY2FsbCBpdHNlbGYgd2hl
-biBjb21wYXJpbmcgdGhlIHN5c3RlbSBjYWxsLiBJIGhvcGUgdGhpcyBpcyB0aGUgcmVhc29uPw0K
-QWxzbyBmc3RhdGZzMDIgd2FzIHdvcmtpbmcgZmluZS4gT25seSBmc3RhdGZzMDJfNjQgd2FzIGhh
-dmluZyB0aGUgaXNzdWUuIEkgc2F3IGluIC4uL3V0aWxzL25ld2VyXzY0Lm1rIG1ha2VmaWxlLiBJ
-dCB3aWxsIGJlIGdvb2QgaWYgeW91IHRlbGwgbGl0dGxlIG1vcmUgYWJvdXQgdGhlIDY0IGhlcmUu
-DQoNCkkgYW0gd29ya2luZyBvbiAyLjYuMzIuNDYga2VybmVsLg0KDQpSZWdhcmRzDQpBam95DQoN
-Cg0KDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEphbiBTdGFuY2VrIFtt
-YWlsdG86anN0YW5jZWtAcmVkaGF0LmNvbV0NClNlbnQ6IE1vbmRheSwgSnVuZSAyMywgMjAxNCA1
-OjEzIFBNDQpUbzogQWpveW1vbiBKb3NlcGgNCkNjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQNClN1YmplY3Q6IFJlOiBbTFRQXSBmc3RhdGZzMDIgaXNzdWUgb24gbWlwczY0DQoNCg0K
-DQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tDQo+IEZyb206ICJBam95bW9uIEpvc2VwaCIg
-PEFKT1kuSk9TRVBIQExOVFRFQ0hTRVJWSUNFUy5DT00+DQo+IFRvOiBsdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQNCj4gU2VudDogRnJpZGF5LCAyMCBKdW5lLCAyMDE0IDM6NDE6MDYgUE0N
-Cj4gU3ViamVjdDogW0xUUF0gZnN0YXRmczAyIGlzc3VlIG9uIG1pcHM2NA0KPg0KPg0KPg0KPiBI
-aSwNCj4NCj4gSSBhbSB0ZXN0aW5nIG1pcHM2NCB3aXRoIExUUC4gVGhlIHByb2JsZW0gaXMgd2l0
-aCBmc3RhdGZzMDIuYyBmaWxlLiBUaGUgdGVzdA0KPiBjYXNlIHdhcyBmYWlsaW5nIGluIG15IHBh
-cnRpY3VsYXIgYXJjaC4gRm9yIGRlYnVnZ2luZyBwdXJwb3NlIEkgd3JpdGUgdGhlDQo+IHNhbWUg
-Y29kZSBhbmQgZXhlY3V0ZWQuDQo+DQo+IHJldCA9IGZzdGF0ZnMoIC0xLCZidWYgKTsNCj4NCj4g
-cHJpbnRmKCJSZXRydW4gdmFsdWUgPSVkLCBlcnJvcm51bWJlciAlZCBFQkFERiBpcyAlZCAlcyBG
-RCAlZCBwb2ludGVyICVwDQo+IFxuIixyZXQsZXJybm8sIEVCQURGLHN0cmVycm9yKGVycm5vKSwt
-MSwmYnVmKTsNCj4NCj4gaXQgd2FzIGdpdmluZyBhIG91dHB1dCBsaWtlDQo+DQo+IFJldHJ1biB2
-YWx1ZSA9LSAxICwgZXJyb3JudW1iZXIgOSBFQkFERiBpcyA5IEJhZCBmaWxlIGRlc2NyaXB0b3Ig
-RkQgLTENCj4gcG9pbnRlciAweDEyMDAxMTEzMA0KPg0KPiBCdXQgd2hlbiBJIGV4ZWN1dGVkIExU
-UCB0ZXN0Y2FzZSB3aXRoIHNvbWUgZGVidWcgcHJpbnQgYWRkZWQNCj4NCj4gVEVTVChmc3RhdGZz
-KFRDW2ldLmZkLCAoVENbaV0pLnNidWYpKTsNCj4NCj4gaWYgKFRFU1RfUkVUVVJOICE9IC0xKSB7
-DQo+DQo+IHRzdF9yZXNtKFRGQUlMLCAiY2FsbCBzdWNjZWVkZWQgdW5leHBlY3RlZGx5IHJldHVy
-biAlZCAlcyBGRCAlZCwgcG9pbnRlciBzYnVmDQo+ICVwICIsVEVTVF9SRVRVUk4sc3RyZXJyb3Io
-ZXJybm8pLFRDW2ldLmZkLCBUQ1tpXS5zYnVmKTsNCj4NCj4gSSBnb3QgYSBwcmludCBsaWtlIHRo
-aXMNCj4NCj4gZnN0YXRmczAyIDEgVEZBSUwgOiBjYWxsIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHkg
-cmV0dXJuIDE2OTA3MjkwNzIgU3VjY2VzcyBGRA0KPiAtMSwgcG9pbnRlciBzYnVmIDB4MTIwMDFi
-YTMwDQo+DQo+IEkgZmVlbCBsaWtlIGJvdGggYXJlIGRvaW5nIHRoZSBzYW1lIGpvYuKApiBCdXQg
-d2hlbiBJIGFtIHJ1bm5pbmcgaXQgaW4gTFRQDQo+IGVudmlyb25tZW50IEkgYW0gZ2V0dGluZyBh
-IHJldHVybiBhcyAxNjkwNzI5MDcyLiBJIHdhcyBub3QgYWJsZSB0byBmaW5kIGFueQ0KPiBwcm9i
-bGVtIGluIFRFU1QgbWFjcm8uIENhbiBhbnlvbmUgcGxlYXNlIGhlbHAgbWUgb3V0IGluIGRlYnVn
-Z2luZyB0aGlzLg0KDQpXaGF0IGtlcm5lbC9MVFAgcmVsZWFzZSBhcmUgeW91IHVzaW5nPw0KDQpZ
-b3UgY2FuIHRyeSBydW5uaW5nIGdvb2QgYW5kIGJhZCBjYXNlIHZpYSBzdHJhY2UuIElmIHBhcmFt
-ZXRlcnMgd2lsbCBiZQ0KY29ycmVjdCBhbmQgeW91IHN0aWxsIGdldCBzdHJhbmdlIG51bWJlcnMg
-aW4gc3RyYWNlIG91dHB1dCwgaXQncyBsaWtlbHkgYSBrZXJuZWwgYnVnLg0KDQpSZWdhcmRzLA0K
-SmFuDQpMJlQgVGVjaG5vbG9neSBTZXJ2aWNlcyBMdGQNCg0Kd3d3LkxudFRlY2hzZXJ2aWNlcy5j
-b208aHR0cDovL3d3dy5sbnR0ZWNoc2VydmljZXMuY29tLz4NCg0KVGhpcyBFbWFpbCBtYXkgY29u
-dGFpbiBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBmb3IgdGhlIGludGVu
-ZGVkIHJlY2lwaWVudCAocykuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQs
-IHBsZWFzZSBkbyBub3QgdXNlIG9yIGRpc3NlbWluYXRlIHRoZSBpbmZvcm1hdGlvbiwgbm90aWZ5
-IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBpdCBmcm9tIHlvdXIgc3lzdGVtLg0KLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkhQQ0MgU3lzdGVtcyBPcGVuIFNvdXJjZSBCaWcgRGF0YSBQbGF0Zm9ybSBmcm9t
-IExleGlzTmV4aXMgUmlzayBTb2x1dGlvbnMKRmluZCBXaGF0IE1hdHRlcnMgTW9zdCBpbiBZb3Vy
-IEJpZyBEYXRhIHdpdGggSFBDQyBTeXN0ZW1zCk9wZW4gU291cmNlLiBGYXN0LiBTY2FsYWJsZS4g
-U2ltcGxlLiBJZGVhbCBmb3IgRGlydHkgRGF0YS4KTGV2ZXJhZ2VzIEdyYXBoIEFuYWx5c2lzIGZv
-ciBGYXN0IFByb2Nlc3NpbmcgJiBFYXN5IERhdGEgRXhwbG9yYXRpb24KaHR0cDovL3Auc2YubmV0
-L3NmdS9ocGNjc3lzdGVtcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-Cg==
+* Delete some useless comments.
+
+* Delete some useless variable value.
+
+* Test without fork().
+
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/utime/utime06.c | 290 ++++++------------------------
+ 1 file changed, 53 insertions(+), 237 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/utime/utime06.c b/testcases/kernel/syscalls/utime/utime06.c
+index a1a9230..2dd68d8 100644
+--- a/testcases/kernel/syscalls/utime/utime06.c
++++ b/testcases/kernel/syscalls/utime/utime06.c
+@@ -1,78 +1,31 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
++ *	07/2001 John George
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program;  if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+ /*
+- * Test Name: utime06
+- *
+  * Test Description:
+  * 1. Verify that the system call utime() fails to set the modification
+  *    and access times of a file to the current time, under the following
+  *    constraints,
+  *	 - The times argument is null.
+  *	 - The user ID of the process is not "root".
+- *	 - The file is not owned by the user ID of the process.
+- *	 - The user ID of the process does not have write access to the
+- *	   file.
+  * 2. Verify that the system call utime() fails to set the modification
+  *    and access times of a file if the specified file doesn't exist.
+- *
+- * Expected Result:
+- * 1. utime should fail with -1 return value and sets errno EACCES.
+- * 2. utime should fail with -1 return value and sets errno ENOENT.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *	if errno set == expected errno
+- *		Issue sys call fails with expected return value and errno.
+- *	Otherwise,
+- *		Issue sys call fails with unexpected errno.
+- *   Otherwise,
+- *	Issue sys call returns unexpected value.
+- *
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory(s)/file(s) created.
+- *
+- * Usage:  <for command-line>
+- *  utime06 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+- *	where,  -c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
+- *
+- * Restrictions:
+- *  This test must be executed by root.
+- *   nobody and bin must be valid users.
+  */
+ 
+ #include <errno.h>
+@@ -90,230 +43,93 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "safe_macros.h"
+ 
+-#define LTPUSER1        "nobody"
+-#define LTPUSER2        "bin"
+ #define TEMP_FILE	"tmp_file"
+-#define FILE_MODE	S_IRUSR | S_IRGRP | S_IROTH
+ 
+ char *TCID = "utime06";
+-int TST_TOTAL = 2;
+-time_t curr_time;		/* current time in seconds */
+-time_t tloc;			/* argument var. for time() */
+-int exp_enos[] = { EACCES, ENOENT, 0 };
++static int exp_enos[] = { EACCES, ENOENT, 0 };
+ 
+-struct passwd *ltpuser;		/* password struct for ltpusers */
+-uid_t user_uid;			/* user id of ltpuser */
+-gid_t group_gid;		/* group id of ltpuser */
+-int status;
++static struct passwd *ltpuser;
+ 
+-int setup1();			/* setup function to test error EACCES */
+-int no_setup();
+-
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
++struct test_case_t {
+ 	char *pathname;
+-	char *desc;
+ 	int exp_errno;
+-	int (*setupfunc) ();
+ } Test_cases[] = {
+-	{
+-	TEMP_FILE, "Permission denied to modify file time", EACCES, setup1},
+-	{
+-	"", "Specified file doesn't exist", ENOENT, no_setup}, {
+-	NULL, NULL, 0, NULL}
++	{TEMP_FILE, EACCES},
++	{"", ENOENT},
+ };
+ 
+-void setup();			/* Main setup function of test */
+-void cleanup();			/* cleanup function for the test */
++int TST_TOTAL = ARRAY_SIZE(Test_cases);
++static void setup(void);
++static void utime_verify(const struct test_case_t *);
++static void cleanup(void);
+ 
+ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	const char *msg;
+-	char *file_name;	/* testfile name */
+-	char *test_desc;	/* test specific error message */
+-	int ind;		/* counter to test different test conditions */
+-	int pid;
++	int i;
+ 
+ 	msg = parse_opts(ac, av, NULL, NULL);
+-	if (msg != NULL) {
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-	}
+-
+ 	setup();
+ 
+-	/* set the expected errnos... */
+-	TEST_EXP_ENOS(exp_enos);
+-
+-	pid = FORK_OR_VFORK();
+-
+-	if (pid == -1) {
+-		tst_brkm(TBROK, cleanup, "fork() failed");
+-	} else if (pid == 0) {
+-		if ((ltpuser = getpwnam(LTPUSER1)) == NULL) {
+-			tst_brkm(TBROK, cleanup, "%s not found in /etc/passwd",
+-				 LTPUSER1);
+-		}
+-
+-		/* get uid of user */
+-		user_uid = ltpuser->pw_uid;
+-
+-		seteuid(user_uid);
+-
+-		for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-			tst_count = 0;
+-
+-			for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-				file_name = Test_cases[ind].pathname;
+-				test_desc = Test_cases[ind].desc;
+-
+-				/*
+-				 * Call utime(2) to test different test
+-				 * conditions. Verify that it fails with -1
+-				 * return value and sets appropriate errno.
+-				 */
+-				TEST(utime(file_name, NULL));
+-
+-				/* Check return code from utime(2) */
+-				if (TEST_RETURN == -1) {
+-					TEST_ERROR_LOG(TEST_ERRNO);
+-					if (TEST_ERRNO ==
+-					    Test_cases[ind].exp_errno) {
+-						tst_resm(TPASS, "utime() "
+-							 "fails, %s, errno:%d",
+-							 test_desc, TEST_ERRNO);
+-					} else {
+-						tst_resm(TFAIL, "utime(2) "
+-							 "fails, %s, errno:%d, "
+-							 "expected errno:%d",
+-							 test_desc, TEST_ERRNO,
+-							 Test_cases
+-							 [ind].exp_errno);
+-					}
+-				} else {
+-					tst_resm(TFAIL,
+-						 "utime(2) returned %ld, "
+-						 "expected -1, errno:%d",
+-						 TEST_RETURN,
+-						 Test_cases[ind].exp_errno);
+-				}
+-			}
+-
+-			tst_count++;	/* incr TEST_LOOP counter */
+-
+-		}
+-	} else {
+-		waitpid(pid, &status, 0);
+-		_exit(0);	/*
+-				 * Exit here and let the child clean up.
+-				 * This allows the errno information set
+-				 * by the TEST_ERROR_LOG macro and the
+-				 * PASS/FAIL status to be preserved for
+-				 * use during cleanup.
+-				 */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		for (i = 0; i < TST_TOTAL; i++)
++			utime_verify(&Test_cases[i]);
+ 	}
+ 
+ 	cleanup();
+ 	tst_exit();
+-
+ }
+ 
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *  Create a temporary directory and change directory to it.
+- *  Invoke individual test setup functions according to the order
+- *  set in test struct. definition.
+- */
+-void setup(void)
++static void setup(void)
+ {
+-	int ind;
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	/* Check that the test process id is non-super/root  */
+-	if (geteuid() != 0) {
+-		tst_brkm(TBROK, NULL, "Must be root for this test!");
+-		tst_exit();
+-	}
++	tst_require_root(NULL);
+ 
+ 	TEST_PAUSE;
+ 
+ 	tst_tmpdir();
+ 
+-	/* call individual setup functions */
+-	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-		Test_cases[ind].setupfunc();
+-	}
+-}
++	SAFE_TOUCH(cleanup, TEMP_FILE, 0644, NULL);
+ 
+-/*
+- * int
+- * no_setup() - Some test conditions for utime(2) do not any setup.
+- *              Hence, this function just returns 0.
+- */
+-int no_setup(void)
+-{
+-	return 0;
+-}
++	TEST_EXP_ENOS(exp_enos);
+ 
+-/*
+- * int
+- * setup1() - setup function for a test condition for which utime(2)
+- *		returns -1 and sets errno to EACCES.
+- *  Create a testfile under temporary directory and change the ownership of
+- *  testfile to "bin".
+- */
+-int setup1(void)
+-{
+-	int fildes;		/* file handle for temp file */
++	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+ 
+-	/* Creat a temporary file under above directory */
+-	if ((fildes = creat(TEMP_FILE, FILE_MODE)) == -1) {
+-		tst_brkm(TBROK, cleanup, "creat(%s, %#o) Failed, errno=%d :%s",
+-			 TEMP_FILE, FILE_MODE, errno, strerror(errno));
+-	}
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++}
+ 
+-	/* Close the temporary file created */
+-	if (close(fildes) < 0) {
+-		tst_brkm(TBROK, cleanup, "close(%s) Failed, errno=%d : %s:",
+-			 TEMP_FILE, errno, strerror(errno));
+-	}
++static void utime_verify(const struct test_case_t *test)
++{
++	TEST(utime(test->pathname, NULL));
+ 
+-	if ((ltpuser = getpwnam(LTPUSER2)) == NULL) {
+-		tst_brkm(TBROK, cleanup, "%s not found in /etc/passwd",
+-			 LTPUSER2);
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "utime succeeded unexpectedly");
++		return;
+ 	}
+ 
+-	/* get uid/gid of user accordingly */
+-	user_uid = ltpuser->pw_uid;
+-	group_gid = ltpuser->pw_gid;
+-
+-	if (chown(TEMP_FILE, user_uid, group_gid) < 0) {
+-		tst_brkm(TBROK, cleanup, "chown() of %s failed, error %d",
+-			 TEMP_FILE, errno);
++	if (TEST_ERRNO == test->exp_errno) {
++		tst_resm(TPASS | TTERRNO, "utime failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "utime failed unexpectedly; expected: %d - %s",
++			 test->exp_errno, strerror(test->exp_errno));
+ 	}
+-
+-	return 0;
+ }
+ 
+-/*
+- * void
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- *  Remove the test directory and testfile created in the setup.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	seteuid(0);
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
++	if (seteuid(0) != 0)
++		tst_resm(TWARN | TERRNO, "seteuid failed");
++
+ 	TEST_CLEANUP;
+ 
+ 	tst_rmdir();
+-
+ }
+-- 
+1.9.3
+
+
+
+
+------------------------------------------------------------------------------
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
