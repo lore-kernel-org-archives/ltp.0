@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Wz2eb-0008CX-TO
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 11:43:17 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1WvPlz-000803-Un
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 11:35:55 +0000
 Received: from mx3-phx2.redhat.com ([209.132.183.24])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wz2ea-0002jY-33
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 11:43:17 +0000
-Date: Mon, 23 Jun 2014 07:43:09 -0400 (EDT)
+	id 1WvPly-0007hX-PQ
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 11:35:55 +0000
+Date: Fri, 13 Jun 2014 07:35:48 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1368345307.28778797.1403523788999.JavaMail.zimbra@redhat.com>
-In-Reply-To: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
-References: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
+Message-ID: <271331452.23946492.1402659348156.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1401979029-12315-1-git-send-email-jjaburek@redhat.com>
+References: <1249145583.18329328.1401964511429.JavaMail.zimbra@redhat.com>
+	<1401979029-12315-1-git-send-email-jjaburek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] fstatfs02 issue on mips64
+Subject: Re: [LTP] [PATCH v2] syslog: rsyslog doesn't create empty log files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,46 +25,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ajoymon Joseph <AJOY.JOSEPH@LNTTECHSERVICES.COM>
+To: Jiri Jaburek <jjaburek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkFqb3ltb24gSm9zZXBoIiA8
-QUpPWS5KT1NFUEhATE5UVEVDSFNFUlZJQ0VTLkNPTT4KPiBUbzogbHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cj4gU2VudDogRnJpZGF5LCAyMCBKdW5lLCAyMDE0IDM6NDE6MDYgUE0KPiBT
-dWJqZWN0OiBbTFRQXSBmc3RhdGZzMDIgaXNzdWUgb24gbWlwczY0Cj4gCj4gCj4gCj4gSGksCj4g
-Cj4gSSBhbSB0ZXN0aW5nIG1pcHM2NCB3aXRoIExUUC4gVGhlIHByb2JsZW0gaXMgd2l0aCBmc3Rh
-dGZzMDIuYyBmaWxlLiBUaGUgdGVzdAo+IGNhc2Ugd2FzIGZhaWxpbmcgaW4gbXkgcGFydGljdWxh
-ciBhcmNoLiBGb3IgZGVidWdnaW5nIHB1cnBvc2UgSSB3cml0ZSB0aGUKPiBzYW1lIGNvZGUgYW5k
-IGV4ZWN1dGVkLgo+IAo+IHJldCA9IGZzdGF0ZnMoIC0xLCZidWYgKTsKPiAKPiBwcmludGYoIlJl
-dHJ1biB2YWx1ZSA9JWQsIGVycm9ybnVtYmVyICVkIEVCQURGIGlzICVkICVzIEZEICVkIHBvaW50
-ZXIgJXAKPiBcbiIscmV0LGVycm5vLCBFQkFERixzdHJlcnJvcihlcnJubyksLTEsJmJ1Zik7Cj4g
-Cj4gaXQgd2FzIGdpdmluZyBhIG91dHB1dCBsaWtlCj4gCj4gUmV0cnVuIHZhbHVlID0tIDEgLCBl
-cnJvcm51bWJlciA5IEVCQURGIGlzIDkgQmFkIGZpbGUgZGVzY3JpcHRvciBGRCAtMQo+IHBvaW50
-ZXIgMHgxMjAwMTExMzAKPiAKPiBCdXQgd2hlbiBJIGV4ZWN1dGVkIExUUCB0ZXN0Y2FzZSB3aXRo
-IHNvbWUgZGVidWcgcHJpbnQgYWRkZWQKPiAKPiBURVNUKGZzdGF0ZnMoVENbaV0uZmQsIChUQ1tp
-XSkuc2J1ZikpOwo+IAo+IGlmIChURVNUX1JFVFVSTiAhPSAtMSkgewo+IAo+IHRzdF9yZXNtKFRG
-QUlMLCAiY2FsbCBzdWNjZWVkZWQgdW5leHBlY3RlZGx5IHJldHVybiAlZCAlcyBGRCAlZCwgcG9p
-bnRlciBzYnVmCj4gJXAgIixURVNUX1JFVFVSTixzdHJlcnJvcihlcnJubyksVENbaV0uZmQsIFRD
-W2ldLnNidWYpOwo+IAo+IEkgZ290IGEgcHJpbnQgbGlrZSB0aGlzCj4gCj4gZnN0YXRmczAyIDEg
-VEZBSUwgOiBjYWxsIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHkgcmV0dXJuIDE2OTA3MjkwNzIgU3Vj
-Y2VzcyBGRAo+IC0xLCBwb2ludGVyIHNidWYgMHgxMjAwMWJhMzAKPiAKPiBJIGZlZWwgbGlrZSBi
-b3RoIGFyZSBkb2luZyB0aGUgc2FtZSBqb2LigKYgQnV0IHdoZW4gSSBhbSBydW5uaW5nIGl0IGlu
-IExUUAo+IGVudmlyb25tZW50IEkgYW0gZ2V0dGluZyBhIHJldHVybiBhcyAxNjkwNzI5MDcyLiBJ
-IHdhcyBub3QgYWJsZSB0byBmaW5kIGFueQo+IHByb2JsZW0gaW4gVEVTVCBtYWNyby4gQ2FuIGFu
-eW9uZSBwbGVhc2UgaGVscCBtZSBvdXQgaW4gZGVidWdnaW5nIHRoaXMuCgpXaGF0IGtlcm5lbC9M
-VFAgcmVsZWFzZSBhcmUgeW91IHVzaW5nPwoKWW91IGNhbiB0cnkgcnVubmluZyBnb29kIGFuZCBi
-YWQgY2FzZSB2aWEgc3RyYWNlLiBJZiBwYXJhbWV0ZXJzIHdpbGwgYmUKY29ycmVjdCBhbmQgeW91
-IHN0aWxsIGdldCBzdHJhbmdlIG51bWJlcnMgaW4gc3RyYWNlIG91dHB1dCwgaXQncyBsaWtlbHkg
-YSBrZXJuZWwgYnVnLgoKUmVnYXJkcywKSmFuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSFBDQyBT
-eXN0ZW1zIE9wZW4gU291cmNlIEJpZyBEYXRhIFBsYXRmb3JtIGZyb20gTGV4aXNOZXhpcyBSaXNr
-IFNvbHV0aW9ucwpGaW5kIFdoYXQgTWF0dGVycyBNb3N0IGluIFlvdXIgQmlnIERhdGEgd2l0aCBI
-UENDIFN5c3RlbXMKT3BlbiBTb3VyY2UuIEZhc3QuIFNjYWxhYmxlLiBTaW1wbGUuIElkZWFsIGZv
-ciBEaXJ0eSBEYXRhLgpMZXZlcmFnZXMgR3JhcGggQW5hbHlzaXMgZm9yIEZhc3QgUHJvY2Vzc2lu
-ZyAmIEVhc3kgRGF0YSBFeHBsb3JhdGlvbgpodHRwOi8vcC5zZi5uZXQvc2Z1L2hwY2NzeXN0ZW1z
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0
-IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+
+
+----- Original Message -----
+> From: "Jiri Jaburek" <jjaburek@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 5 June, 2014 4:37:09 PM
+> Subject: [LTP] [PATCH v2] syslog: rsyslog doesn't create empty log files
+> 
+> From: Jan Stancek <jstancek@redhat.com>
+> 
+> Newer versions of rsyslog don't create empty log files during startup -
+> the files are created upon first logged entry instead.
+> (since rsyslog git commit de77494415ae8c169949d13ed0df0af3b1949b54)
+> 
+> Don't check if log file gets created after service start,
+> only make sure it exists after test generates a new log entry.
+> 
+> Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+Thanks Jiri, looks good to me, pushed.
+
+Regards,
+Jan
+
+------------------------------------------------------------------------------
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
