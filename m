@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WwnEM-0007ko-AC
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 06:50:54 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WvGlS-0000jt-8l
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 01:58:46 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WwnEK-0006er-EX
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 06:50:54 +0000
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WvGlR-0006db-2H
+	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 01:58:46 +0000
 Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5H6oiHV025051
-	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 14:50:44 +0800
-Message-ID: <1402987815.3433.8.camel@G08JYZSD130126>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5D1wbDq019552
+	for <ltp-list@lists.sourceforge.net>; Fri, 13 Jun 2014 09:58:37 +0800
+Message-ID: <1402624697.2098.8.camel@G08JYZSD130126>
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 17 Jun 2014 14:50:15 +0800
+Date: Fri, 13 Jun 2014 09:58:17 +0800
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] runtest/mm: fix mmap10 with -c option
+Subject: [LTP] [PATCH 1/3] syscalls: fix returning TCONF without device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,25 +31,132 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list <ltp-list@lists.sourceforge.net>
 
-We have removed -c option: commit 1dbf0b4a70c0ef7c849a0b3cd42da2c3874f9432
+The cases are:
+1. mknod07
+2. lchown03
+3. mkdir03
+4. linkat02
+5. mknodat02
+6. fchown04
+7. mkdirat02
+8. link08
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- runtest/mm | 1 -
- 1 file changed, 1 deletion(-)
+ testcases/kernel/syscalls/fchown/fchown04.c   | 2 +-
+ testcases/kernel/syscalls/lchown/lchown03.c   | 2 +-
+ testcases/kernel/syscalls/link/link08.c       | 2 +-
+ testcases/kernel/syscalls/linkat/linkat02.c   | 2 +-
+ testcases/kernel/syscalls/mkdir/mkdir03.c     | 2 +-
+ testcases/kernel/syscalls/mkdirat/mkdirat02.c | 2 +-
+ testcases/kernel/syscalls/mknod/mknod07.c     | 2 +-
+ testcases/kernel/syscalls/mknodat/mknodat02.c | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/runtest/mm b/runtest/mm
-index 28151b5..131bc3d 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -59,7 +59,6 @@ mmap10_1 mmap10 -a
- mmap10_2 mmap10 -s
- mmap10_3 mmap10 -a -s
- mmap10_4 mmap10 -a -s -i 60
--mmap10_5 mmap10 -a -s -c 200
+diff --git a/testcases/kernel/syscalls/fchown/fchown04.c b/testcases/kernel/syscalls/fchown/fchown04.c
+index 68f6611..2a8b8c6 100644
+--- a/testcases/kernel/syscalls/fchown/fchown04.c
++++ b/testcases/kernel/syscalls/fchown/fchown04.c
+@@ -91,7 +91,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
  
- ksm01 ksm01
- ksm01_1 ksm01 -u 128
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL,
++		tst_brkm(TCONF, NULL,
+ 			 "you must specify the device used for mounting with "
+ 			 "-D option");
+ 	}
+diff --git a/testcases/kernel/syscalls/lchown/lchown03.c b/testcases/kernel/syscalls/lchown/lchown03.c
+index ea8f38a..391afb4 100644
+--- a/testcases/kernel/syscalls/lchown/lchown03.c
++++ b/testcases/kernel/syscalls/lchown/lchown03.c
+@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL,
++		tst_brkm(TCONF, NULL,
+ 			 "you must specify the device used for mounting with "
+ 			 "-D option");
+ 	}
+diff --git a/testcases/kernel/syscalls/link/link08.c b/testcases/kernel/syscalls/link/link08.c
+index aed5479..48274b4 100644
+--- a/testcases/kernel/syscalls/link/link08.c
++++ b/testcases/kernel/syscalls/link/link08.c
+@@ -99,7 +99,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL,
++		tst_brkm(TCONF, NULL,
+ 			 "you must specify the device used for mounting with "
+ 			 "-D option");
+ 	}
+diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
+index b899fa6..984ede6 100644
+--- a/testcases/kernel/syscalls/linkat/linkat02.c
++++ b/testcases/kernel/syscalls/linkat/linkat02.c
+@@ -109,7 +109,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL,
++		tst_brkm(TCONF, NULL,
+ 			 "you must specify the device used for mounting with "
+ 			 "-D option");
+ 	}
+diff --git a/testcases/kernel/syscalls/mkdir/mkdir03.c b/testcases/kernel/syscalls/mkdir/mkdir03.c
+index b037ad3..e897c2e 100644
+--- a/testcases/kernel/syscalls/mkdir/mkdir03.c
++++ b/testcases/kernel/syscalls/mkdir/mkdir03.c
+@@ -96,7 +96,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL,
++		tst_brkm(TCONF, NULL,
+ 			 "you must specify the device used for mounting with "
+ 			 "-D option");
+ 	}
+diff --git a/testcases/kernel/syscalls/mkdirat/mkdirat02.c b/testcases/kernel/syscalls/mkdirat/mkdirat02.c
+index 827ad54..27de4e9 100644
+--- a/testcases/kernel/syscalls/mkdirat/mkdirat02.c
++++ b/testcases/kernel/syscalls/mkdirat/mkdirat02.c
+@@ -83,7 +83,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL,
++		tst_brkm(TCONF, NULL,
+ 			 "you must specify the device used for mounting with "
+ 			 "-D option");
+ 	}
+diff --git a/testcases/kernel/syscalls/mknod/mknod07.c b/testcases/kernel/syscalls/mknod/mknod07.c
+index 5311cfc..df9f8d7 100644
+--- a/testcases/kernel/syscalls/mknod/mknod07.c
++++ b/testcases/kernel/syscalls/mknod/mknod07.c
+@@ -106,7 +106,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL, "you must specify the device "
++		tst_brkm(TCONF, NULL, "you must specify the device "
+ 			 "used for mounting with -D option");
+ 	}
+ 
+diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
+index 3de049b..eec5b98 100644
+--- a/testcases/kernel/syscalls/mknodat/mknodat02.c
++++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
+@@ -103,7 +103,7 @@ int main(int ac, char **av)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+ 	if (!device) {
+-		tst_brkm(TBROK, NULL, "you must specify the device "
++		tst_brkm(TCONF, NULL, "you must specify the device "
+ 			 "used for mounting with -D option");
+ 	}
+ 
 -- 
 1.9.3
 
