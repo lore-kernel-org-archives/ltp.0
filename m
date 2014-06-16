@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WwpE9-00047L-8q
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 08:58:49 +0000
-Date: Tue, 17 Jun 2014 10:58:35 +0200
-From: chrubis@suse.cz
-Message-ID: <20140617085835.GA29213@rei.Home>
-References: <1402987815.3433.8.camel@G08JYZSD130126>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WwW2O-0000K8-KV
+	for ltp-list@lists.sourceforge.net; Mon, 16 Jun 2014 12:29:24 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WwW2M-0007cC-T6
+	for ltp-list@lists.sourceforge.net; Mon, 16 Jun 2014 12:29:24 +0000
+Message-ID: <539EE30D.3070003@oracle.com>
+Date: Mon, 16 Jun 2014 16:29:01 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1402987815.3433.8.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH] runtest/mm: fix mmap10 with -c option
+References: <1395930175-3138-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1395930175-3138-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<3170652.sUSmuoD47v@vapier>
+In-Reply-To: <3170652.sUSmuoD47v@vapier>
+Subject: Re: [LTP] [PATCH V3 1/4] testscripts/isofs.sh: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,17 +30,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
 Hi!
-> We have removed -c option: commit 1dbf0b4a70c0ef7c849a0b3cd42da2c3874f9432
 
-Ah, I've missed this one. Thanks for the fix, applied.
+On 06/16/2014 10:22 AM, Mike Frysinger wrote:
+> On Thu 27 Mar 2014 18:22:52 Stanislav Kholmanskikh wrote:
+>> +MNT_POINT="/tmp/isofs_$$"
+>> +COPY_DIR="/etc/"
+>> +TEMP_DIR="/tmp/for_isofs_test"
+>> +MAKE_FILE_SYS_DIR=$TEMP_DIR$COPY_DIR
+>
+> not really a new issue, but scripts really should never hardcode paths in
+> /tmp/ or to that dir at all.  this is what `mktemp -d` is for.
+>
+>> +if [ "$NO_CLEANUP" == "no" ]; then
+>
+> it is "=" in POSIX, not "=="
+> -mike
+>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you for review.
+
+But both issues are fixed in the next patch in the sequence - "[PATCH V3 
+2/4] testscripts/isofs.sh: use the new shell interface".
+
+
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
