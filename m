@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WvHdL-00016A-7k
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 02:54:27 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WvHdJ-0007gm-9B
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 02:54:27 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5D2sHlU022963
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Jun 2014 10:54:17 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 13 Jun 2014 10:53:17 +0800
-Message-ID: <1402627999-11535-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WwW42-0003Xe-Rd
+	for ltp-list@lists.sourceforge.net; Mon, 16 Jun 2014 12:31:06 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WwW41-0002CX-1c
+	for ltp-list@lists.sourceforge.net; Mon, 16 Jun 2014 12:31:06 +0000
+Message-ID: <539EE378.3000600@oracle.com>
+Date: Mon, 16 Jun 2014 16:30:48 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/3] lib: Add SAFE_CHOWN()
+References: <1395930175-3138-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1395930175-3138-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<7096320.jvPuKC4bBK@vapier>
+In-Reply-To: <7096320.jvPuKC4bBK@vapier>
+Subject: Re: [LTP] [PATCH V3 3/4] testscripts/isofs.sh: removed some
+ "unnecessary" steps
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +31,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- include/safe_macros.h |  5 +++++
- lib/safe_macros.c     | 15 +++++++++++++++
- 2 files changed, 20 insertions(+)
 
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index ea1e976..f521347 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -231,6 +231,11 @@ int safe_fchmod(const char *file, const int lineno, void (cleanup_fn)(void),
- #define SAFE_FCHMOD(cleanup_fn, fd, mode) \
- 	safe_fchmod(__FILE__, __LINE__, (cleanup_fn), (fd), (mode))
- 
-+int safe_chown(const char *file, const int lineno, void (cleanup_fn)(void),
-+			const char *path, uid_t owner, gid_t group);
-+#define SAFE_CHOWN(cleanup_fn, path, owner, group) \
-+	safe_chown(__FILE__, __LINE__, (cleanup_fn), (path), (owner), (group))
-+
- int safe_fchown(const char *file, const int lineno, void (cleanup_fn)(void),
-                 int fd, uid_t owner, gid_t group);
- #define SAFE_FCHOWN(cleanup_fn, fd, owner, group) \
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 13cc08e..a07cffa 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -662,6 +662,21 @@ int safe_fchmod(const char *file, const int lineno,
- 	return rval;
- }
- 
-+int safe_chown(const char *file, const int lineno, void (cleanup_fn)(void),
-+			const char *path, uid_t owner, gid_t group)
-+{
-+	int rval;
-+
-+	rval = chown(path, owner, group);
-+
-+	if (rval == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			"%s:%d: chown(%s,%d,%d) failed",
-+			file, lineno, path, owner, group);
-+	}
-+
-+	return rval;
-+}
- 
- int safe_fchown(const char *file, const int lineno, void (cleanup_fn)(void),
-                 int fd, uid_t owner, gid_t group)
--- 
-1.9.3
 
+On 06/16/2014 10:23 AM, Mike Frysinger wrote:
+> On Thu 27 Mar 2014 18:22:54 Stanislav Kholmanskikh wrote:
+>> +		while /bin/true; do
+>
+> do not hard code paths to tools.  if you want a dummy loop, do:
+> 	while :; do
+> 		...
+> -mike
+>
+Thank you.
+
+I think I would change this at the commit time rather than to send the 
+entire set again.
+
+Ok?
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
