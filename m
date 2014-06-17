@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wz4cO-0005Ia-Ug
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 13:49:08 +0000
-Date: Mon, 23 Jun 2014 15:48:53 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WwpE9-00047L-8q
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 08:58:49 +0000
+Date: Tue, 17 Jun 2014 10:58:35 +0200
 From: chrubis@suse.cz
-Message-ID: <20140623134852.GC6050@rei.Home>
-References: <1403513949-24653-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140617085835.GA29213@rei.Home>
+References: <1402987815.3433.8.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1403513949-24653-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] pan/ltp-pan.c: fix compilation warnings
+In-Reply-To: <1402987815.3433.8.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] runtest/mm: fix mmap10 with -c option
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,33 +24,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
->  	static long cmdno = 0;
->  	int errpipe[2];		/* way to communicate to parent that the tag  */
->  	char errbuf[1024];	/* didn't actually start */
-> +	int ret;
->  
->  	/* Try to open the file that will be stdout for the test */
->  	if (test_out_dir) {
-> @@ -1026,7 +1025,8 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
->  		char *termtype;
->  		struct tms notime = { 0, 0, 0, 0 };
->  
-> -		read(errpipe[0], errbuf, errlen);
-> +		ret = read(errpipe[0], errbuf, errlen);
-> +		(void)ret;
+> We have removed -c option: commit 1dbf0b4a70c0ef7c849a0b3cd42da2c3874f9432
 
-I don't like that we do this just to silence compiler warning.
-
-Can't we issue an error message in case that the read() failed instead?
-
-i.e.
-
-	if (read(errpipe[0], errbuf, errlen))
-		fprintf(stderr, "Failed to read errbuf\n");
+Ah, I've missed this one. Thanks for the fix, applied.
 
 -- 
 Cyril Hrubis
