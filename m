@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Wzk0Y-00083u-C7
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jun 2014 10:00:50 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wzk0W-00042S-IK
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jun 2014 10:00:50 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s5PA0gdr029886
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Jun 2014 10:00:42 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5PA0flC017071
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Jun 2014 10:00:42 GMT
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5PA0fka003655
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Jun 2014 10:00:41 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 25 Jun 2014 14:00:35 +0400
-Message-Id: <1403690435-18626-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [RFC PATCH] tst_get_unused_pid and
-	system_specific_process_info
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wwq4H-0000KO-Qo
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 09:52:41 +0000
+Date: Tue, 17 Jun 2014 11:52:29 +0200
+From: chrubis@suse.cz
+Message-ID: <20140617095229.GB29213@rei.Home>
+References: <1402060015.2086.2.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1402060015.2086.2.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] add new errno testes for timerfd_*
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,222 +21,243 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
+> diff --git a/include/lapi/timerfd.h b/include/lapi/timerfd.h
+> new file mode 100644
+> index 0000000..ba02003
+> --- /dev/null
+> +++ b/include/lapi/timerfd.h
+> @@ -0,0 +1,49 @@
+> +/*
+> + * Copyright (c) International Business Machines  Corp., 2007
+> + * Copyright (c) 2014 Fujitsu Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +
+> +#ifndef TIMERFD_H
+> +#define TIMERFD_H
+> +
+> +#include <time.h>
+> +#include "config.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +#if !defined(HAVE_TIMERFD_CREATE)
+> +int timerfd_create(int clockid, int flags)
+> +{
+> +	return ltp_syscall(__NR_timerfd_create, clockid, flags);
+> +}
+> +#endif
+> +
+> +#if !defined(HAVE_TIMERFD_GETTIME)
+> +int timerfd_settime(int fd, int flags, const struct itimerspec *new_value,
+> +		    struct itimerspec *old_value)
+> +{
+> +	return ltp_syscall(__NR_timerfd_settime, fd, flags, new_value,
+> +			   old_value);
+> +}
+> +#endif
+> +
+> +#if !defined(HAVE_TIMERFD_SETTIME)
+> +int timerfd_gettime(int fd, struct itimerspec *curr_value)
+> +{
+> +
+> +	return ltp_syscall(__NR_timerfd_gettime, fd, curr_value);
+> +}
+> +#endif
+> +
+> +#endif /* TIMERFD_H */
 
-1. We remove get_max_pids(), because it's used only in one place (get_free_pids())
-   and can be subsituted with
-   SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &pid);
+This header is fine but I cannot find accompanying configure check for
+timerfd functions, forget to add it to the commit?
 
-2. We rename get_free_pids() to tst_get_free_pids() for consistency. And changing a bit its
-   declaration to use SAFE_FILE_SCANF().
+> diff --git a/testcases/kernel/syscalls/timerfd/timerfd_create01.c b/testcases/kernel/syscalls/timerfd/timerfd_create01.c
+> new file mode 100644
+> index 0000000..4793928
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/timerfd/timerfd_create01.c
+> @@ -0,0 +1,106 @@
+> +/*
+> + * Copyright (c) 2014 Fujitsu Ltd.
+> + * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +/*
+> + * DESCRIPTION
+> + *  Verify that,
+> + *   1. The clockid argument is neither CLOCK_MONOTONIC nor CLOCK_REALTIME,
+> + *	EINVAL would return.
+> + *   2. flags is invalid, EINVAL would return.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "lapi/timerfd.h"
 
-3. system_specific_process_info.h is used only in one place - msgctl11.
-   I think it's not a problem if I move its content to test.h. For consistency.
+You should include the sys/timerfd.h either here or in the
+lapi/timerfd.h because otherwise the system function definitions, if
+present, are not used. And the same applies to the rest of the
+testcases.
 
-4. And add tst_get_unused_pid() to system_specific_process_info.c. To not
-   create a new source file. And this funcion looks logically coupled with tst_get_free_pids().
+Note that this needs the configure check in-place so that we use either
+the system definitions or the LTP syscall wrappers.
 
-I'm going to present pp. 1-3 in one patch, and p. 4 - in a separate patch.
+> diff --git a/testcases/kernel/syscalls/timerfd/timerfd_gettime01.c b/testcases/kernel/syscalls/timerfd/timerfd_gettime01.c
+> new file mode 100644
+> index 0000000..2442b79
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/timerfd/timerfd_gettime01.c
+> @@ -0,0 +1,131 @@
+> +/*
+> + * Copyright (c) 2014 Fujitsu Ltd.
+> + * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +/*
+> + * DESCRIPTION
+> + *  Verify that,
+> + *   1. fd is not a valid file descriptor, EBADF would return.
+> + *   2. curr_value is not valid a pointer, EFAULT would return.
+> + *   3. fd is not a valid timerfd file descriptor, EINVAL would return.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "safe_macros.h"
+> +#include "lapi/timerfd.h"
+> +
+> +char *TCID = "timerfd_gettime01";
+> +
+> +static int bad_clockfd = -1;
+> +static int clockfd;
+> +static int fd;
+> +
+> +static struct test_case_t {
+> +	int *fd;
+> +	struct itimerspec *curr_value;
+> +	int exp_errno;
+> +} test_cases[] = {
+> +	{&bad_clockfd, NULL, EBADF},
+> +	{&clockfd, (struct itimerspec *)-1, EFAULT},
+> +	{&fd, NULL, EINVAL},
+> +};
+> +
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +static void setup(void);
+> +static void timerfd_gettime_verify(const struct test_case_t *);
+> +static void cleanup(void);
+> +static int exp_enos[] = { EBADF, EFAULT, EINVAL, 0 };
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	const char *msg;
+> +	int i;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +		for (i = 0; i < TST_TOTAL; i++)
+> +			timerfd_gettime_verify(&test_cases[i]);
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if ((tst_kvercmp(2, 6, 25)) < 0)
+> +		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.25 or newer");
+> +
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	TEST_EXP_ENOS(exp_enos);
+> +
+> +	tst_tmpdir();
+> +
+> +	clockfd = ltp_syscall(__NR_timerfd_create, CLOCK_REALTIME, 0);
 
-What do you think about the general idea?
+You should use the timerfd_create() here instead (and the same for the
+rest of the code, you should not use the raw syscall once you are sure
+that either there are system defintions or LTP wrappers in place).
 
-Thanks.
+> +	if (clockfd == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "timerfd_create() fail");
+> +
+> +	fd = SAFE_OPEN(cleanup, "test_timerfd", O_RDWR | O_CREAT, 0644);
+                                   ^
+				   I would set it to just "test_file"
+				   because the newly created file is not
+				   timer at all and this may be slightly
+				   misleading.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/system_specific_process_info.h          |   29 -------------
- include/test.h                                  |   15 +++++++
- lib/system_specific_process_info.c              |   49 ++++++----------------
- testcases/kernel/syscalls/ipc/msgctl/msgctl11.c |    3 +-
- 4 files changed, 30 insertions(+), 66 deletions(-)
- delete mode 100644 include/system_specific_process_info.h
-
-diff --git a/include/system_specific_process_info.h b/include/system_specific_process_info.h
-deleted file mode 100644
-index ba8cc9d..0000000
---- a/include/system_specific_process_info.h
-+++ /dev/null
-@@ -1,29 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2009
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--#ifndef _SYS_SPECIFIC_PROCESS_INFO_H_
--#define _SYS_SPECIFIC_PROCESS_INFO_H_
--
--/* Returns max pid count obtained from reading /proc/sys/kernel/pid_max */
--int get_max_pids(void);
--
--/* Returns number of free pids */
--int get_free_pids(void);
--
--#endif
-diff --git a/include/test.h b/include/test.h
-index 97ce0f0..bf6deed 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -390,6 +390,21 @@ int tst_fs_fill_hardlinks(void (*cleanup) (void), const char *dir);
-  */
- int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir);
- 
-+/*
-+ * lib/system_specific_process_info.c
-+ *
-+ * Get a pid value not used by the OS
-+ */
-+pid_t tst_get_unused_pid(void (*cleanup_fn) (void));
-+
-+/*
-+ * lib/system_specific_process_info.c
-+ *
-+ * Return a number of free pids by substracting the number
-+ * of pid currently used ('ps -eT') from max_pids
-+ */
-+pid_t tst_get_free_pids(void (*cleanup_fn) (void));
-+
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/lib/system_specific_process_info.c b/lib/system_specific_process_info.c
-index bc47d49..105d806 100644
---- a/lib/system_specific_process_info.c
-+++ b/lib/system_specific_process_info.c
-@@ -1,6 +1,7 @@
- /*
-  *
-  *   Copyright (c) International Business Machines  Corp., 2009
-+ *   Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -17,50 +18,28 @@
-  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
--/*
-- *   DESCRIPTION
-- *	get_max_pids(): Return the maximum number of pids for this system by
-- *			reading /proc/sys/kernel/pid_max
-- *
-- *	get_free_pids(): Return number of free pids by subtracting the number
-- *			 of pids currently used ('ps -eT') from max_pids
-- */
--
- #include <fcntl.h>
- #include <limits.h>
- #include <sys/types.h>
- #include "test.h"
-+#include "safe_file_ops.h"
- 
--#define BUFSIZE 512
-+#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
- 
--int get_max_pids(void)
-+pid_t tst_get_unused_pid(void (*cleanup_fn) (void))
- {
--#ifdef __linux__
-+	pid_t pid;
- 
--	FILE *f;
--	char buf[BUFSIZE];
-+	SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &pid);
- 
--	f = fopen("/proc/sys/kernel/pid_max", "r");
--	if (!f) {
--		tst_resm(TBROK, "Could not open /proc/sys/kernel/pid_max");
--		return -1;
--	}
--	if (!fgets(buf, BUFSIZE, f)) {
--		fclose(f);
--		tst_resm(TBROK, "Could not read /proc/sys/kernel/pid_max");
--		return -1;
--	}
--	fclose(f);
--	return atoi(buf);
--#else
--	return SHRT_MAX;
--#endif
-+	return pid;
- }
- 
--int get_free_pids(void)
-+pid_t tst_get_free_pids(void (*cleanup_fn) (void))
- {
- 	FILE *f;
--	int rc, used_pids, max_pids;
-+	int rc;
-+	pid_t used_pids, max_pids;
- 
- 	f = popen("ps -eT | wc -l", "r");
- 	if (!f) {
-@@ -76,10 +55,10 @@ int get_free_pids(void)
- 		return -1;
- 	}
- 
--	max_pids = get_max_pids();
--
--	if (max_pids < 0)
--		return -1;
-+	SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
- 
-+	/* max_pids contains the maximum PID + 1,
-+	 * used_pids contains used PIDs + 1,
-+	 * so this additional '1' is eliminated by substraction*/
- 	return max_pids - used_pids;
- }
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-index 75d8bde..cffabf5 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
-@@ -40,7 +40,6 @@
- #include "usctest.h"
- #include "ipcmsg.h"
- #include "../lib/libmsgctl.h"
--#include "system_specific_process_info.h"
- 
- char *TCID = "msgctl11";
- int TST_TOTAL = 1;
-@@ -475,7 +474,7 @@ void setup(void)
- 
- 	tst_resm(TINFO, "Found %d available message queues", MSGMNI);
- 
--	free_pids = get_free_pids();
-+	free_pids = tst_get_free_pids(cleanup);
- 	if (free_pids < 0) {
- 		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
- 	} else if (!free_pids) {
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
