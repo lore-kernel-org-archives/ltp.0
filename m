@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WstsR-0000sU-8v
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jun 2014 13:08:11 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WstsL-0003pN-2Q
-	for ltp-list@lists.sourceforge.net; Fri, 06 Jun 2014 13:08:11 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s56D7vO2032531
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Jun 2014 21:07:57 +0800
-Message-ID: <1402060015.2086.2.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 6 Jun 2014 21:06:55 +0800
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] add new errno testes for timerfd_*
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1WwuR0-0005tI-7A
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 14:32:26 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WwuQw-0004Yi-Tc
+	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 14:32:26 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s5HEWGxs020385
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 14:32:17 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s5HEWF7V006284
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 14:32:16 GMT
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s5HEWFN5010294
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 14:32:15 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 17 Jun 2014 18:32:08 +0400
+Message-Id: <1403015528-19248-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20140519143938.GA5382@rei>
+References: <20140519143938.GA5382@rei>
+Subject: [LTP] [PATCH V3] syscalls: implemented a test for
+	sched_setaffinity() error values
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,305 +39,306 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-* Add EINVAL errno testes for timerfd_create(2)
-  - The clockid argument is neither CLOCK_MONOTONIC nor CLOCK_REALTIME,
-    EINVAL would return.
-  - flags is invalid, EINVAL would return.
+This test verifies sched_setaffinity(2) for all error conditions
+to occur correctly.
 
-* Add EBADF, EFAULT and EINVAL errno testes for timerfd_gettime(2)
-  - fd is not a valid file descriptor, EBADF would return.
-  - curr_value is not valid a pointer, EFAULT would return.
-  - fd is not a valid timerfd file descriptor, EINVAL would return.
-
-* Add EBADF, EFAULT and EINVAL errno testes for timerfd_settime(2)
-  - fd is not a valid file descriptor, EBADF would return.
-  - old_value is not valid a pointer, EFAULT would return.
-  - fd is not a valid timerfd file descriptor, EINVAL would return.
-  - flags is invalid, EINVAL would return.
-
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- include/lapi/timerfd.h                             |  49 ++++++++
- runtest/syscalls                                   |   3 +
- testcases/kernel/syscalls/.gitignore               |   3 +
- .../kernel/syscalls/timerfd/timerfd_create01.c     | 106 ++++++++++++++++
- .../kernel/syscalls/timerfd/timerfd_gettime01.c    | 131 ++++++++++++++++++++
- .../kernel/syscalls/timerfd/timerfd_settime01.c    | 136 +++++++++++++++++++++
- 6 files changed, 428 insertions(+)
- create mode 100644 include/lapi/timerfd.h
- create mode 100644 testcases/kernel/syscalls/timerfd/timerfd_create01.c
- create mode 100644 testcases/kernel/syscalls/timerfd/timerfd_gettime01.c
- create mode 100644 testcases/kernel/syscalls/timerfd/timerfd_settime01.c
+Thank you, Cyril, for review.
 
-diff --git a/include/lapi/timerfd.h b/include/lapi/timerfd.h
-new file mode 100644
-index 0000000..ba02003
---- /dev/null
-+++ b/include/lapi/timerfd.h
-@@ -0,0 +1,49 @@
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2007
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+#ifndef TIMERFD_H
-+#define TIMERFD_H
-+
-+#include <time.h>
-+#include "config.h"
-+#include "linux_syscall_numbers.h"
-+
-+#if !defined(HAVE_TIMERFD_CREATE)
-+int timerfd_create(int clockid, int flags)
-+{
-+	return ltp_syscall(__NR_timerfd_create, clockid, flags);
-+}
-+#endif
-+
-+#if !defined(HAVE_TIMERFD_GETTIME)
-+int timerfd_settime(int fd, int flags, const struct itimerspec *new_value,
-+		    struct itimerspec *old_value)
-+{
-+	return ltp_syscall(__NR_timerfd_settime, fd, flags, new_value,
-+			   old_value);
-+}
-+#endif
-+
-+#if !defined(HAVE_TIMERFD_SETTIME)
-+int timerfd_gettime(int fd, struct itimerspec *curr_value)
-+{
-+
-+	return ltp_syscall(__NR_timerfd_gettime, fd, curr_value);
-+}
-+#endif
-+
-+#endif /* TIMERFD_H */
+This patch accomodates changes mentioned by you:
+ * the privileged_pid child uses pause() instead of sigtimedwait()
+ * setup() and cleanup() are moved out of the testcase iterations
+ * it use nobody user uid instead uid+1
+ * for the ESRCH  test case '/proc/sys/kernel/pid_max + 1' is used
+
+
+ runtest/syscalls                                   |    1 +
+ testcases/kernel/syscalls/.gitignore               |    1 +
+ .../kernel/syscalls/sched_setaffinity/Makefile     |   23 +++
+ .../syscalls/sched_setaffinity/sched_setaffinity.h |   60 +++++++
+ .../sched_setaffinity/sched_setaffinity01.c        |  178 ++++++++++++++++++++
+ 5 files changed, 263 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/sched_setaffinity/Makefile
+ create mode 100644 testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+ create mode 100644 testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 3db5f2a..abda223 100644
+index c132a69..b647d46 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1252,6 +1252,9 @@ times03 times03
- timerfd01 timerfd01
- timerfd02 timerfd02
- timerfd03 timerfd03
-+timerfd_create01 timerfd_create01
-+timerfd_gettime01 timerfd_gettime01
-+timerfd_settime01 timerfd_settime01
+@@ -898,6 +898,7 @@ sched_setscheduler02 sched_setscheduler02
  
- timer_getoverrun01 timer_getoverrun01
- timer_gettime01 timer_gettime01
+ sched_yield01 sched_yield01
+ 
++sched_setaffinity01 sched_setaffinity01
+ sched_getaffinity01 sched_getaffinity01
+ 
+ select01 select01
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index e1ee18b..22aed94 100644
+index 256cad0..f245550 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -964,6 +964,9 @@
- /timerfd/timerfd01
- /timerfd/timerfd02
- /timerfd/timerfd03
-+/timerfd/timerfd_create01
-+/timerfd/timerfd_gettime01
-+/timerfd/timerfd_settime01
- /times/times01
- /times/times03
- /tkill/tkill01
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd_create01.c b/testcases/kernel/syscalls/timerfd/timerfd_create01.c
+@@ -722,6 +722,7 @@
+ /sched_rr_get_interval/sched_rr_get_interval01
+ /sched_rr_get_interval/sched_rr_get_interval02
+ /sched_rr_get_interval/sched_rr_get_interval03
++/sched_setaffinity/sched_setaffinity01
+ /sched_setparam/sched_setparam01
+ /sched_setparam/sched_setparam02
+ /sched_setparam/sched_setparam03
+diff --git a/testcases/kernel/syscalls/sched_setaffinity/Makefile b/testcases/kernel/syscalls/sched_setaffinity/Makefile
 new file mode 100644
-index 0000000..4793928
+index 0000000..2d825f1
 --- /dev/null
-+++ b/testcases/kernel/syscalls/timerfd/timerfd_create01.c
-@@ -0,0 +1,106 @@
++++ b/testcases/kernel/syscalls/sched_setaffinity/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+new file mode 100644
+index 0000000..8083894
+--- /dev/null
++++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+@@ -0,0 +1,60 @@
 +/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
 + *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
 + *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
 + *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 + */
++
 +/*
-+ * DESCRIPTION
-+ *  Verify that,
-+ *   1. The clockid argument is neither CLOCK_MONOTONIC nor CLOCK_REALTIME,
-+ *	EINVAL would return.
-+ *   2. flags is invalid, EINVAL would return.
++ * Some old libcs (like glibc < 2.7) do not provide interfaces for
++ * dynamically sized cpu sets, but provide only static cpu_set_t type
++ * with no more than CPU_SETSIZE cpus in it.
++ *
++ * This file is a wrapper of the dynamic interfaces using the static ones.
++ *
++ * If the number of cpus available on the system is greater than
++ * CPU_SETSIZE, this interface will not work. Update libc in this case :)
 + */
 +
 +#define _GNU_SOURCE
++#include <sched.h>
 +
-+#include <errno.h>
++#ifndef LTP_SCHED_SETAFFINITY_H
++#define LTP_SCHED_SETAFFINITY_H
 +
-+#include "test.h"
-+#include "usctest.h"
-+#include "lapi/timerfd.h"
-+
-+char *TCID = "timerfd_create01";
-+
-+static struct test_case_t {
-+	int clockid;
-+	int flags;
-+	int exp_errno;
-+} test_cases[] = {
-+	{-1, 0, EINVAL},
-+	{0, -1, EINVAL},
-+};
-+
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static void setup(void);
-+static void timerfd_create_verify(const struct test_case_t *);
-+static void cleanup(void);
-+static int exp_enos[] = { EINVAL, 0 };
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	const char *msg;
-+	int i;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++)
-+			timerfd_create_verify(&test_cases[i]);
-+	}
-+
-+	cleanup();
-+	tst_exit();
++#ifndef CPU_ALLOC
++#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
++if (ncpus > CPU_SETSIZE) { \
++	tst_brkm(TCONF, cleanup, \
++		"Your libc does not support masks with %ld cpus", ncpus); \
 +}
++#endif
 +
-+static void setup(void)
-+{
-+	if ((tst_kvercmp(2, 6, 25)) < 0)
-+		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.25 or newer");
++#ifndef CPU_FREE
++#define CPU_FREE(ptr) free(ptr);
++#endif
 +
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++#ifndef CPU_ALLOC_SIZE
++#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t);
++#endif
 +
-+	TEST_PAUSE;
++#ifndef CPU_ZERO_S
++#define CPU_ZERO_S(size, mask) CPU_ZERO(mask);
++#endif
 +
-+	TEST_EXP_ENOS(exp_enos);
-+}
++#ifndef CPU_SET_S
++#define CPU_SET_S(cpu, size, mask) CPU_SET(cpu, mask);
++#endif
 +
-+static void timerfd_create_verify(const struct test_case_t *test)
-+{
-+	TEST(timerfd_create(test->clockid, test->flags));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "timerfd_create() succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == test->exp_errno) {
-+		tst_resm(TPASS | TTERRNO,
-+			 "timerfd_create() failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "timerfd_create() failed unexpectedly; expected: "
-+			 "%d - %s", test->exp_errno, strerror(test->exp_errno));
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd_gettime01.c b/testcases/kernel/syscalls/timerfd/timerfd_gettime01.c
++#endif /* LTP_SCHED_SETAFFINITY_H */
+diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
 new file mode 100644
-index 0000000..2442b79
+index 0000000..125e158
 --- /dev/null
-+++ b/testcases/kernel/syscalls/timerfd/timerfd_gettime01.c
-@@ -0,0 +1,131 @@
++++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+@@ -0,0 +1,178 @@
 +/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
 + *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
 + *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
 + *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 + */
++
 +/*
-+ * DESCRIPTION
-+ *  Verify that,
-+ *   1. fd is not a valid file descriptor, EBADF would return.
-+ *   2. curr_value is not valid a pointer, EFAULT would return.
-+ *   3. fd is not a valid timerfd file descriptor, EINVAL would return.
++ * This test verifies sched_setaffinity(2) for all error conditions
++ * to occur correctly.
++ *
++ * sched_setaffinity() returns -1 and sets the error code to:
++ *
++ * 1) EFAULT, if the supplied memory address is invalid
++ * 2) EINVAL, if the mask doesn't contain at least one
++ *    permitted cpu
++ * 3) ESRCH, if the process whose id is pid could not
++ *    be found
++ * 4) EPERM, if the calling process doesn't have appropriate
++ *    privileges
 + */
 +
 +#define _GNU_SOURCE
-+
 +#include <errno.h>
++#include <pwd.h>
++#include <sched.h>
++#include <signal.h>
++#include <unistd.h>
 +#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+
++#include <sys/wait.h>
 +#include "test.h"
 +#include "usctest.h"
 +#include "safe_macros.h"
-+#include "lapi/timerfd.h"
++#include "sched_setaffinity.h"
 +
-+char *TCID = "timerfd_gettime01";
++char *TCID = "sched_setaffinity01";
 +
-+static int bad_clockfd = -1;
-+static int clockfd;
-+static int fd;
++#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
++
++static cpu_set_t *mask, *emask;
++static cpu_set_t *fmask = (void *)-1;
++static size_t mask_size, emask_size;
++static pid_t self_pid, privileged_pid, free_pid;
++static uid_t uid;
++static const char nobody_uid[] = "nobody";
++static struct passwd *ltpuser;
++static long ncpus;
 +
 +static struct test_case_t {
-+	int *fd;
-+	struct itimerspec *curr_value;
++	pid_t *pid;
++	size_t *mask_size;
++	cpu_set_t **mask;
 +	int exp_errno;
 +} test_cases[] = {
-+	{&bad_clockfd, NULL, EBADF},
-+	{&clockfd, (struct itimerspec *)-1, EFAULT},
-+	{&fd, NULL, EINVAL},
++	{&self_pid, &mask_size, &fmask, EFAULT},
++	{&self_pid, &emask_size, &emask, EINVAL},
++	{&free_pid, &mask_size, &mask, ESRCH},
++	{&privileged_pid, &mask_size, &mask, EPERM},
 +};
 +
 +int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static void setup(void);
-+static void timerfd_gettime_verify(const struct test_case_t *);
-+static void cleanup(void);
-+static int exp_enos[] = { EBADF, EFAULT, EINVAL, 0 };
++
++static void cleanup(void)
++{
++	if (mask != NULL) {
++		CPU_FREE(mask);
++		mask = NULL;
++	}
++
++	if (emask != NULL) {
++		CPU_FREE(emask);
++		emask = NULL;
++	}
++
++	SAFE_SETEUID(NULL, uid);
++
++	if (privileged_pid != 0) {
++		kill(privileged_pid, SIGKILL);
++		waitpid(privileged_pid, NULL, 0);
++		privileged_pid = 0;
++	}
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++	uid = geteuid();
++	ncpus = tst_ncpus_max();
++
++	/* Current mask */
++	mask = CPU_ALLOC(ncpus);
++	if (mask == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
++			ncpus);
++	mask_size = CPU_ALLOC_SIZE(ncpus);
++	if (sched_getaffinity(0, mask_size, mask) < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "sched_getaffinity() failed");
++
++	/* Mask with one more cpu than available on the system */
++	emask = CPU_ALLOC(ncpus + 1);
++	if (emask == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
++			ncpus + 1);
++	emask_size = CPU_ALLOC_SIZE(ncpus + 1);
++	CPU_ZERO_S(emask_size, emask);
++	CPU_SET_S(ncpus, emask_size, emask);
++
++	privileged_pid = fork();
++	if (privileged_pid == 0) {
++		pause();
++
++		exit(0);
++	} else if (privileged_pid < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
++	}
++
++	/* Dropping the root privileges */
++	ltpuser = getpwnam(nobody_uid);
++	if (ltpuser == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup,
++			"getpwnam failed for user id %s", nobody_uid);
++
++	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++
++	/* this pid is not used by the OS */
++	SAFE_FILE_SCANF(cleanup, PID_MAX_PATH, "%d", &free_pid);
++	free_pid++;
++}
 +
 +int main(int argc, char *argv[])
 +{
-+	int lc;
 +	const char *msg;
++	int lc;
 +	int i;
 +
 +	msg = parse_opts(argc, argv, NULL, NULL);
@@ -335,219 +349,40 @@ index 0000000..2442b79
 +
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++)
-+			timerfd_gettime_verify(&test_cases[i]);
++		for (i = 0; i < TST_TOTAL; i++) {
++			TEST(sched_setaffinity(*(test_cases[i].pid),
++						*(test_cases[i].mask_size),
++						*(test_cases[i].mask)));
++
++			if (TEST_RETURN != -1)
++				tst_resm(TFAIL,
++					"sched_setaffinity() unexpectedly succeded");
++
++			if (TEST_ERRNO == test_cases[i].exp_errno) {
++				tst_resm(TPASS, "expected failure with '%s'",
++					strerror(test_cases[i].exp_errno));
++			} else {
++				tst_resm(TFAIL,
++					"call returned '%s', expected - '%s'",
++					strerror(TEST_ERRNO),
++					strerror(test_cases[i].exp_errno));
++			}
++		}
 +	}
 +
 +	cleanup();
 +	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	if ((tst_kvercmp(2, 6, 25)) < 0)
-+		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.25 or newer");
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	tst_tmpdir();
-+
-+	clockfd = ltp_syscall(__NR_timerfd_create, CLOCK_REALTIME, 0);
-+	if (clockfd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "timerfd_create() fail");
-+
-+	fd = SAFE_OPEN(cleanup, "test_timerfd", O_RDWR | O_CREAT, 0644);
-+}
-+
-+static void timerfd_gettime_verify(const struct test_case_t *test)
-+{
-+	TEST(ltp_syscall(__NR_timerfd_gettime, *test->fd, test->curr_value));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "timerfd_gettime() succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == test->exp_errno) {
-+		tst_resm(TPASS | TTERRNO,
-+			 "timerfd_gettime() failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "timerfd_gettime() failed unexpectedly; expected: "
-+			 "%d - %s", test->exp_errno, strerror(test->exp_errno));
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	if (clockfd > 0)
-+		close(clockfd);
-+
-+	if (fd > 0)
-+		close(fd);
-+
-+	tst_rmdir();
-+}
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd_settime01.c b/testcases/kernel/syscalls/timerfd/timerfd_settime01.c
-new file mode 100644
-index 0000000..6cb0cb7
---- /dev/null
-+++ b/testcases/kernel/syscalls/timerfd/timerfd_settime01.c
-@@ -0,0 +1,136 @@
-+/*
-+ * Copyright (c) 2014 Fujitsu Ltd.
-+ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+/*
-+ * DESCRIPTION
-+ *  Verify that,
-+ *   1. fd is not a valid file descriptor, EBADF would return.
-+ *   2. old_value is not valid a pointer, EFAULT would return.
-+ *   3. fd is not a valid timerfd file descriptor, EINVAL would return.
-+ *   4. flags is invalid, EINVAL would return.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
-+#include "lapi/timerfd.h"
-+
-+char *TCID = "timerfd_settime01";
-+
-+static int bad_clockfd = -1;
-+static int clockfd;
-+static int fd;
-+
-+static struct test_case_t {
-+	int *fd;
-+	int flags;
-+	struct itimerspec *old_value;
-+	int exp_errno;
-+} test_cases[] = {
-+	{&bad_clockfd, 0, NULL, EBADF},
-+	{&clockfd, 0, (struct itimerspec *)-1, EFAULT},
-+	{&fd, 0, NULL, EINVAL},
-+	{&clockfd, -1, NULL, EINVAL},
-+};
-+
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+static void setup(void);
-+static void timerfd_settime_verify(const struct test_case_t *);
-+static void cleanup(void);
-+static int exp_enos[] = { EBADF, EFAULT, EINVAL, 0 };
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+	const char *msg;
-+	int i;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++)
-+			timerfd_settime_verify(&test_cases[i]);
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	if ((tst_kvercmp(2, 6, 25)) < 0)
-+		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.25 or newer");
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	TEST_EXP_ENOS(exp_enos);
-+
-+	tst_tmpdir();
-+
-+	clockfd = ltp_syscall(__NR_timerfd_create, CLOCK_REALTIME, 0);
-+	if (clockfd == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "timerfd_create() fail");
-+
-+	fd = SAFE_OPEN(cleanup, "test_timerfd", O_RDWR | O_CREAT, 0644);
-+}
-+
-+static void timerfd_settime_verify(const struct test_case_t *test)
-+{
-+	struct itimerspec new_value;
-+	TEST(timerfd_settime(*test->fd, test->flags, &new_value,
-+			     test->old_value));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "timerfd_settime() succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == test->exp_errno) {
-+		tst_resm(TPASS | TTERRNO,
-+			 "timerfd_settime() failed as expected");
-+	} else {
-+		tst_resm(TFAIL | TTERRNO,
-+			 "timerfd_settime() failed unexpectedly; expected: "
-+			 "%d - %s", test->exp_errno, strerror(test->exp_errno));
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	if (clockfd > 0)
-+		close(clockfd);
-+
-+	if (fd > 0)
-+		close(fd);
-+
-+	tst_rmdir();
 +}
 -- 
-1.8.4.2
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their 
-applications. Written by three acclaimed leaders in the field, 
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
