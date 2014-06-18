@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1X1X6i-0002e9-Iy
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 08:38:36 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Wx9Rb-0006zh-5u
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jun 2014 06:34:03 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X1X6g-0001DP-Qd
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 08:38:36 +0000
-Date: Mon, 30 Jun 2014 04:38:26 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <982989271.447892.1404117506779.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1404116297.3148.7.camel@G08JYZSD130126>
-References: <1404116297.3148.7.camel@G08JYZSD130126>
+	id 1Wx9RZ-0006CP-Pd
+	for ltp-list@lists.sourceforge.net; Wed, 18 Jun 2014 06:34:03 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5I6Xn3o031734
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Jun 2014 14:33:49 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 18 Jun 2014 14:31:03 +0800
+Message-ID: <1403073063-26575-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] waitid/waitid02.c: Add new ECHILD errno test
+Subject: [LTP] [PATCH] doc: test-writing-guidelines
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,100 +29,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
+Add paragraph to describe two new tst_ interfaces: tst_fs_fill_hardlinks() and
+tst_fs_fill_subdirs().
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ doc/test-writing-guidelines.txt | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Monday, 30 June, 2014 10:18:17 AM
-> Subject: [LTP] [PATCH] waitid/waitid02.c: Add new ECHILD errno test
-> 
-> * Add new ECHILD errno test for waitid(2)
-> 	idtype and id (waitid()) is not a child of the calling process.
-> 
-> * Cleanup: remove an useless tst_exit()
-> 
-> * Add tst_count = 0
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 0a2ac8f..8513f46 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -773,6 +773,45 @@ The required free space is calculated by 'size * mult', e.g.
+ filesystem, which '"/tmp/testfile"' is in, has 64MB free space at least, and 0
+ if not.
+ 
++2.2.15 Getting maximal count of links to a regular file or directory
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Some tests need to know the maximal count of links to a regular file or
++directory, such as rename(2) or linkat(2)'s EMLINK error value test.
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "test.h"
++
++int tst_fs_fill_hardlinks(void (*cleanup) (void), const char *dir);
++------------------------------------------------------------------------------
++
++Try to get maximal count of hard links to a regular file inside the @dir.
++Note: This number depends on the filesystem @dir is on. This function uses
++link(2) to create hard links to a single file until it gets EMLINK or creates
++65535 links. If limit is hit maximal number of hardlinks is returned and the
++@dir is filled with hardlinks in format "testfile%i" where i belongs to
++[0, limit) interval. If no limit is hit (succed to create 65535 without error)
++or if link() failed with ENOSPC or EDQUOT, zero is returned and previously
++created files are removed.
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "test.h"
++
++int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir);
++------------------------------------------------------------------------------
++
++Try to get maximum number of subdirectories in directory. Note: This number
++depends on the filesystem @dir is on. This function uses mkdir(2) to create
++directories in @dir until it gets EMLINK or creates 65535 directories.
++If limit is hit the maximal number of subdirectories is returned and the
++@dir is filled with subdirectories in format "testdir%i" where i belongs to
++[0, limit - 2) interval (because each newly created dir has two links
++allready the '.' and link from parent dir). If no limit is hit or mkdir()
++failed with ENOSPC or EDQUOT, zero is returned previously created directories
++are removed.
++
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-- 
+1.8.2.1
 
-Hi,
-
-looks good to me. I'm assuming the reason for setup/cleanup
-is that you wanted some unrelated child to be present.
-
-Regards,
-Jan
-
-> ---
->  testcases/kernel/syscalls/waitid/waitid02.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/waitid/waitid02.c
-> b/testcases/kernel/syscalls/waitid/waitid02.c
-> index 3806655..6259fa3 100644
-> --- a/testcases/kernel/syscalls/waitid/waitid02.c
-> +++ b/testcases/kernel/syscalls/waitid/waitid02.c
-> @@ -130,6 +130,16 @@ struct testcase_t tdat[] = {
->  		.setup = setup6,
->  		.cleanup = cleanup6
->  	},
-> +	{
-> +		.msg = "P_PID, WEXITED not a child of the calling process",
-> +		.idtype = P_PID,
-> +		.id = 1,
-> +		.options = WEXITED,
-> +		.exp_ret = -1,
-> +		.exp_errno = ECHILD,
-> +		.setup = setup2,
-> +		.cleanup = cleanup2
-> +	},
->  
->  };
->  
-> @@ -281,13 +291,12 @@ int main(int ac, char **av)
->  	const char *msg;
->  
->  	msg = parse_opts(ac, av, NULL, NULL);
-> -	if (msg != NULL) {
-> +	if (msg != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> -		tst_exit();
-> -	}
->  
->  	setup();
->  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> +		tst_count = 0;
->  		for (testno = 0; testno < TST_TOTAL; testno++)
->  			test_waitid(&tdat[testno]);
->  	}
-> --
-> 1.9.3
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Open source business process management suite built on Java and Eclipse
-> Turn processes into business applications with Bonita BPM Community Edition
-> Quickly connect people, data, and systems into organized workflows
-> Winner of BOSSIE, CODIE, OW2 and Gartner awards
-> http://p.sf.net/sfu/Bonitasoft
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
