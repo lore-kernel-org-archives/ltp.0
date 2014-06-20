@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1WvHdN-00016b-Oi
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 02:54:29 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Wxt8U-0001OX-HI
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jun 2014 07:21:22 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WvHdL-0007gm-Rj
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 02:54:29 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wxt8T-0006EW-1P
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jun 2014 07:21:22 +0000
 Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5D2sLUO022978
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Jun 2014 10:54:21 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 13 Jun 2014 10:53:19 +0800
-Message-ID: <1402627999-11535-3-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1402627999-11535-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1402627999-11535-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5K7LDgv003240
+	for <ltp-list@lists.sourceforge.net>; Fri, 20 Jun 2014 15:21:13 +0800
+Message-ID: <1403248838.26126.1.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 20 Jun 2014 15:20:38 +0800
+In-Reply-To: <1403248796.26126.0.camel@G08JYZSD130126>
+References: <1403248796.26126.0.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/3] utimes/utimes01.c: add EPERM and EROFS error
-	value tests
+Subject: [LTP] [PATCH 2/2] wait/wait01.c: Add ECHILD test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,159 +31,163 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Add ECHILD test for wait(2)
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                            |  2 +-
- testcases/kernel/syscalls/utimes/utimes01.c | 59 ++++++++++++++++++++++++++++-
- 2 files changed, 58 insertions(+), 3 deletions(-)
+ runtest/ltplite                         |  1 +
+ runtest/stress.part3                    |  1 +
+ runtest/syscalls                        |  1 +
+ testcases/kernel/syscalls/.gitignore    |  1 +
+ testcases/kernel/syscalls/wait/wait01.c | 85 +++++++++++++++++++++++++++++++++
+ 5 files changed, 89 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/wait/wait01.c
 
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 939ea35..37e3119 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -979,6 +979,7 @@ vfork02 vfork02
+ vhangup01 vhangup01
+ vhangup02 vhangup02
+ 
++wait01 wait01
+ wait02 wait02
+ 
+ wait401 wait401
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 2b05363..254f77d 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -857,6 +857,7 @@ vfork02 vfork02
+ vhangup01 vhangup01
+ vhangup02 vhangup02
+ 
++wait01 wait01
+ wait02 wait02
+ 
+ wait401 wait401
 diff --git a/runtest/syscalls b/runtest/syscalls
-index c132a69..8514942 100644
+index adefa49..fd22b3c 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1310,7 +1310,7 @@ utime04 utime04
- utime05 utime05
- utime06 utime06
+@@ -1325,6 +1325,7 @@ vhangup02 vhangup02
+ #vmsplice test cases
+ vmsplice01 vmsplice01
  
--utimes01 utimes01
-+utimes01 utimes01 -D $LTP_DEV -T $LTP_DEV_FS_TYPE
++wait01 wait01
+ wait02 wait02
  
- # Introduced from Kernel 2.6.22 onwards
- utimensat01 utimensat_tests.sh
-diff --git a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kernel/syscalls/utimes/utimes01.c
-index 25d6bfa..7f9dffb 100644
---- a/testcases/kernel/syscalls/utimes/utimes01.c
-+++ b/testcases/kernel/syscalls/utimes/utimes01.c
-@@ -27,6 +27,11 @@
-  *      does not exist.
-  *   3) utimes() returns -1 and sets errno to EFAULT if filename
-  *      is NULL.
-+ *   4) utimes() returns -1 and sets errno to EPERM if times is
-+ *      not NULL, the caller's effective UID does not match the
-+ *      owner of the file, and the caller is not privileged.
-+ *   5) utimes() returns -1 and sets errno to EROFS if path resides
-+ *      on a read-only file system.
-  */
- 
- #include <sys/types.h>
-@@ -40,20 +45,34 @@
- #include <errno.h>
- #include <stdio.h>
- #include <pwd.h>
-+#include <sys/mount.h>
- 
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
- #include "linux_syscall_numbers.h"
- 
-+#define MNTPOINT "mntpoint"
- #define TESTFILE1 "testfile1"
- #define TESTFILE2 "testfile2"
-+#define TESTFILE3 "mntpoint/testfile"
- #define FILE_MODE (S_IRWXU | S_IRGRP | S_IXGRP | \
- 					S_IROTH | S_IXOTH)
-+#define DIR_MODE (S_IRWXU | S_IRWXG | S_IRWXO)
- 
- #define LTPUSER1 "nobody"
- #define LTPUSER2 "bin"
- 
-+static char *fstype = "ext2";
-+static char *device;
-+static int mount_flag;
+ wait401 wait401
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 252e3c8..7fbe226 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1005,6 +1005,7 @@
+ /vhangup/vhangup01
+ /vhangup/vhangup02
+ /vmsplice/vmsplice01
++/wait/wait01
+ /wait/wait02
+ /wait4/wait401
+ /wait4/wait402
+diff --git a/testcases/kernel/syscalls/wait/wait01.c b/testcases/kernel/syscalls/wait/wait01.c
+new file mode 100644
+index 0000000..69d91ae
+--- /dev/null
++++ b/testcases/kernel/syscalls/wait/wait01.c
+@@ -0,0 +1,85 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++/*
++ * Test Description:
++ *  Verify that,
++ *	The calling process does not have any unwaited-for children,
++ *	ECHILD would return.
++ */
 +
-+static option_t options[] = {
-+	{"T:", NULL, &fstype},
-+	{"D:", NULL, &device},
-+	{NULL, NULL, NULL}
-+};
++#include <errno.h>
++#include <sys/types.h>
++#include <sys/wait.h>
 +
- static struct timeval a_tv[2] = { {0, 0}, {1000, 0} };
- static struct timeval m_tv[2] = { {1000, 0}, {0, 0} };
- static struct timeval tv[2] = { {1000, 0}, {2000, 0} };
-@@ -68,25 +87,34 @@ static struct test_case_t {
- 	{ TESTFILE2, NULL, EACCES },
- 	{ "notexistfile", tv, ENOENT },
- 	{ NULL, tv, EFAULT },
-+	{ TESTFILE2, tv, EPERM },
-+	{ TESTFILE3, tv, EROFS },
- };
- 
- static void setup(void);
- static void cleanup(void);
- static void utimes_verify(const struct test_case_t *);
-+static void help(void);
- 
- char *TCID = "utimes01";
- int TST_TOTAL = ARRAY_SIZE(test_cases);
--static int exp_enos[] = { EACCES, ENOENT, EFAULT, 0 };
-+static int exp_enos[] = { EACCES, ENOENT, EFAULT,
-+							EPERM, EROFS, 0 };
- 
- int main(int ac, char **av)
- {
- 	int i, lc;
- 	const char *msg;
- 
--	msg = parse_opts(ac, av, NULL, NULL);
-+	msg = parse_opts(ac, av, options, help);
- 	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
- 
-+	if (!device) {
-+		tst_brkm(TCONF, NULL, "you must specify the device "
-+			"used for mounting with -D option");
-+	}
++#include "test.h"
++#include "usctest.h"
 +
- 	setup();
- 
- 	TEST_EXP_ENOS(exp_enos);
-@@ -124,6 +152,23 @@ void setup(void)
- 	SAFE_CHOWN(cleanup, TESTFILE2, ltpuser->pw_uid,
- 		ltpuser->pw_gid);
- 
-+	tst_mkfs(NULL, device, fstype, NULL);
-+	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
-+	if (mount(device, MNTPOINT, fstype, 0, NULL) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			"mount device:%s failed", device);
-+	}
-+	SAFE_TOUCH(cleanup, TESTFILE3, FILE_MODE, NULL);
-+	ltpuser = SAFE_GETPWNAM(cleanup, LTPUSER1);
-+	SAFE_CHOWN(cleanup, TESTFILE3, ltpuser->pw_uid,
-+		ltpuser->pw_gid);
-+	if (mount(device, MNTPOINT, fstype,
-+			MS_REMOUNT | MS_RDONLY, NULL) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			"mount device:%s failed", device);
-+	}
-+	mount_flag = 1;
++char *TCID = "wait01";
++int TST_TOTAL = 1;
++static void setup(void);
++static void wait_verify(void);
++static void cleanup(void);
 +
- 	ltpuser = SAFE_GETPWNAM(cleanup, LTPUSER1);
- 	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
- }
-@@ -163,7 +208,17 @@ void cleanup(void)
- 	if (seteuid(0) == -1)
- 		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
- 
-+	if (mount_flag && umount(MNTPOINT) == -1)
-+		tst_resm(TWARN | TERRNO, "umount %s failed", MNTPOINT);
-+
- 	TEST_CLEANUP;
- 
- 	tst_rmdir();
- }
-+
-+static void help(void)
++int main(int argc, char **argv)
 +{
-+	printf("-T type   : specifies the type of filesystem to be mounted. "
-+		"Default ext2.\n");
-+	printf("-D device : device used for mounting.\n");
++	int lc;
++	const char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		wait_verify();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++}
++
++static void wait_verify(void)
++{
++	TEST(wait(NULL));
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL | TTERRNO, "wait failed unexpectedly");
++		return;
++	}
++
++	if (TEST_ERRNO == ECHILD) {
++		tst_resm(TPASS | TTERRNO, "wait failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "wait failed unexpectedly; expected: %d - %s",
++			 ECHILD, strerror(ECHILD));
++	}
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
 +}
 -- 
 1.9.3
+
+
 
 
 ------------------------------------------------------------------------------
