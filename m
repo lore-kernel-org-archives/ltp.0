@@ -1,35 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1WwpNb-0001xa-71
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 09:08:35 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WwpNY-0005RF-IU
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 09:08:35 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s5H98PFQ012220
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 09:08:26 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5H98OTt022986
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 09:08:25 GMT
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5H98Op6000423
-	for <ltp-list@lists.sourceforge.net>; Tue, 17 Jun 2014 09:08:24 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 17 Jun 2014 13:08:16 +0400
-Message-Id: <1402996098-12697-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140520144246.GA30023@rei.suse.cz>
-References: <20140520144246.GA30023@rei.suse.cz>
-Subject: [LTP] [PATCH V2 1/3] rt_sigaction, rt_sigprocmask,
-	rt_sigsuspend: cleanup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <AJOY.JOSEPH@lnttechservices.com>) id 1Wxz4C-0007EZ-96
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jun 2014 13:41:20 +0000
+Received: from mailout1.ltindia.com ([203.199.60.132])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wxz48-0008A6-BA
+	for ltp-list@lists.sourceforge.net; Fri, 20 Jun 2014 13:41:20 +0000
+From: Ajoymon Joseph <AJOY.JOSEPH@LNTTECHSERVICES.COM>
+Date: Fri, 20 Jun 2014 13:41:06 +0000
+Message-ID: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: [LTP] fstatfs02 issue on mips64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,1082 +23,215 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4554491583108726804=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
-No changes since V1.
+--===============4554491583108726804==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_7CF842D49929104A9E5360C8FA9370998CF0D0POCITMSEXMB03LntU_"
+
+--_000_7CF842D49929104A9E5360C8FA9370998CF0D0POCITMSEXMB03LntU_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+            I am testing mips64 with LTP.  The problem is with fstatfs02.c =
+file. The test case was failing in my particular arch. For debugging purpos=
+e I write the same code and executed.
+
+ret =3D fstatfs( -1,&buf );
+printf("Retrun value =3D%d, errornumber %d EBADF is %d  %s FD %d pointer %p=
+  \n",ret,errno, EBADF,strerror(errno),-1,&buf);
+
+it was giving a output like
+
+Retrun value =3D-1, errornumber 9 EBADF is 9  Bad file descriptor FD -1 poi=
+nter 0x120011130
+
+But when I executed LTP testcase with some debug print added
+
+TEST(fstatfs(TC[i].fd, (TC[i]).sbuf));
+if (TEST_RETURN !=3D -1) {
+        tst_resm(TFAIL, "call succeeded unexpectedly return %d %s FD %d, po=
+inter sbuf %p ",TEST_RETURN,strerror(errno),TC[i].fd, TC[i].sbuf);
+
+I got a print like this
+
+fstatfs02    1  TFAIL  :  call succeeded unexpectedly return 1690729072 Suc=
+cess FD -1, pointer sbuf 0x12001ba30
 
 
- .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |   88 +++-----------
- .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |   85 +++-----------
- .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |  105 ++++-------------
- .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |  112 +++++-------------
- .../syscalls/rt_sigprocmask/rt_sigprocmask02.c     |   89 +++------------
- .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |  125 +++++--------------
- 6 files changed, 132 insertions(+), 472 deletions(-)
+I feel like both are doing the same job... But when I am running it in LTP =
+environment I am getting a return as 1690729072. I was not able to find any=
+ problem in TEST macro. Can anyone please help me out in debugging this.
 
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-index fda733c..fb698f8 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-@@ -12,36 +12,22 @@
- /* the GNU General Public License for more details.                           */
- /*                                                                            */
- /* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
-+/* along with this program;  if not, write to the Free Software Foundation,   */
-+/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
- /*                                                                            */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- /******************************************************************************/
--/*                                                                            */
--/* File:        rt_sigaction01.c                                              */
--/*                                                                            */
- /* Description: This tests the rt_sigaction() syscall                         */
- /*		rt_sigaction alters an action taken by a process on receipt   */
- /* 		of a particular signal. The action is specified by the        */
- /*		sigaction structure. The previous action on the signal is     */
- /*		saved in oact.sigsetsize should indicate the size of a        */
- /*		sigset_t type.                       			      */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* rt_sigaction01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                        */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   rt_sigaction01                                             */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-@@ -57,75 +43,35 @@
- #include "ltp_signal.h"
- 
- char *TCID = "rt_sigaction01";
--int testno;
-+static int testno;
- int TST_TOTAL = 1;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
--
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup(void)
-+static void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
- 
--int test_flags[] =
-+static int test_flags[] =
-     { SA_RESETHAND | SA_SIGINFO, SA_RESETHAND, SA_RESETHAND | SA_SIGINFO,
- SA_RESETHAND | SA_SIGINFO, SA_NOMASK };
- char *test_flags_list[] =
-     { "SA_RESETHAND|SA_SIGINFO", "SA_RESETHAND", "SA_RESETHAND|SA_SIGINFO",
- "SA_RESETHAND|SA_SIGINFO", "SA_NOMASK" };
- 
--void handler(int sig)
-+static void handler(int sig)
- {
- 	tst_resm(TINFO, "Signal Handler Called with signal number %d\n", sig);
- 	return;
- }
- 
--int set_handler(int sig, int sig_to_mask, int mask_flags)
-+static int set_handler(int sig, int sig_to_mask, int mask_flags)
- {
- #ifdef __x86_64__
- 	struct kernel_sigaction sa, oldaction;
-@@ -141,18 +87,18 @@ int set_handler(int sig, int sig_to_mask, int mask_flags)
- 	sigaddset(&sa.sa_mask, sig);
- 
- 	return ltp_syscall(__NR_rt_sigaction, sig, &sa, &oldaction, SIGSETSIZE);
--
- }
- 
- int main(int ac, char **av)
- {
--	int signal, flag;
-+	unsigned int flag;
-+	int signal;
- 	int lc;
- 	const char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -162,7 +108,7 @@ int main(int ac, char **av)
- 
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
--			for (signal = SIGRTMIN; signal <= (SIGRTMAX); signal++) {	//signal for 34 to 65
-+			for (signal = SIGRTMIN; signal <= SIGRTMAX; signal++) {
- 
- #ifdef __x86_64__
- 				sig_initial(signal);
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-index bf0605c..8cf0f14 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-@@ -12,32 +12,18 @@
- /* the GNU General Public License for more details.                           */
- /*                                                                            */
- /* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
-+/* along with this program;  if not, write to the Free Software Foundation,   */
-+/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
- /*                                                                            */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- /******************************************************************************/
--/*                                                                            */
--/* File:        rt_sigaction02.c                                              */
--/*                                                                            */
- /* Description: This tests the rt_sigaction() syscall                         */
- /*		rt_sigaction Expected EFAULT error check                      */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* rt_sigaction02 [-c n] [-e][-i n] [-I x] [-p x] [-t]                        */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   rt_sigaction02                                             */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-@@ -54,70 +40,31 @@
- #define INVAL_STRUCT -1
- 
- char *TCID = "rt_sigaction02";
--int testno;
-+static int testno;
- int TST_TOTAL = 1;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
- void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
- 
- 	tst_exit();
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
- void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
- 
--int test_flags[] =
-+static int test_flags[] =
-     { SA_RESETHAND | SA_SIGINFO, SA_RESETHAND, SA_RESETHAND | SA_SIGINFO,
- SA_RESETHAND | SA_SIGINFO, SA_NOMASK };
- char *test_flags_list[] =
-     { "SA_RESETHAND|SA_SIGINFO", "SA_RESETHAND", "SA_RESETHAND|SA_SIGINFO",
- "SA_RESETHAND|SA_SIGINFO", "SA_NOMASK" };
- 
--struct test_case_t {
-+static struct test_case_t {
- 	int exp_errno;
- 	char *errdesc;
- } test_cases[] = {
-@@ -127,23 +74,24 @@ struct test_case_t {
- 
- int main(int ac, char **av)
- {
--	int signal, flag;
-+	unsigned int flag;
-+	int signal;
- 	int lc;
- 	const char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--		tst_exit();
--	}
- 
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
- 		tst_count = 0;
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
-+			for (signal = SIGRTMIN; signal <= SIGRTMAX; signal++) {
-+				tst_resm(TINFO, "Signal %d", signal);
- 
--			for (signal = SIGRTMIN; signal <= (SIGRTMAX); signal++) {	//signal for 34 to 65
--				for (flag = 0; flag < 5; flag++) {
-+				for (flag = 0; flag < (sizeof(test_flags) / sizeof(test_flags[0])); flag++) {
- 
- 					/*                                                              *
- 					 * long sys_rt_sigaction (int sig, const struct sigaction *act, *
-@@ -178,7 +126,6 @@ int main(int ac, char **av)
- 							 test_flags_list[flag]);
- 					}
- 				}
--				printf("\n");
- 			}
- 
- 		}
-diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-index 4111da9..9ae8d0e 100644
---- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-+++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c
-@@ -12,32 +12,18 @@
- /* the GNU General Public License for more details.                           */
- /*                                                                            */
- /* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
-+/* along with this program;  if not, write to the Free Software Foundation,   */
-+/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
- /*                                                                            */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- /******************************************************************************/
--/*                                                                            */
--/* File:        rt_sigaction03.c                                              */
--/*                                                                            */
- /* Description: This tests the rt_sigaction() syscall                         */
- /*		rt_sigaction Expected EINVAL error check                      */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* rt_sigaction03 [-c n] [-e][-i n] [-I x] [-p x] [-t]                        */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   rt_sigaction03                                             */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-@@ -54,70 +40,29 @@
- #define INVAL_SIGSETSIZE -1
- 
- char *TCID = "rt_sigaction03";
--int testno;
-+static int testno;
- int TST_TOTAL = 1;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
--
--	tst_exit();
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup(void)
-+static void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
- 
--int test_flags[] =
-+static int test_flags[] =
-     { SA_RESETHAND | SA_SIGINFO, SA_RESETHAND, SA_RESETHAND | SA_SIGINFO,
- SA_RESETHAND | SA_SIGINFO, SA_NOMASK };
- char *test_flags_list[] =
-     { "SA_RESETHAND|SA_SIGINFO", "SA_RESETHAND", "SA_RESETHAND|SA_SIGINFO",
- "SA_RESETHAND|SA_SIGINFO", "SA_NOMASK" };
- 
--struct test_case_t {
-+static struct test_case_t {
- 	int exp_errno;
- 	char *errdesc;
- } test_cases[] = {
-@@ -125,13 +70,13 @@ struct test_case_t {
- 	EINVAL, "EINVAL"}
- };
- 
--void handler(int sig)
-+static void handler(int sig)
- {
- 	tst_resm(TINFO, "Signal Handler Called with signal number %d\n", sig);
- 	return;
- }
- 
--int set_handler(int sig, int sig_to_mask, int mask_flags)
-+static int set_handler(int sig, int sig_to_mask, int mask_flags)
- {
- 	struct sigaction sa, oldaction;
- 
-@@ -147,25 +92,20 @@ int set_handler(int sig, int sig_to_mask, int mask_flags)
- 	 * sigsetsize was not equivalent to the size of a sigset_t type *
- 	 */
- 
--	TEST(ltp_syscall
--	     (__NR_rt_sigaction, sig, &sa, &oldaction, INVAL_SIGSETSIZE));
--	if (TEST_RETURN == 0) {
--		return 0;
--	} else {
--		return TEST_RETURN;
--	}
-+	return ltp_syscall(__NR_rt_sigaction, sig, &sa, &oldaction,
-+			INVAL_SIGSETSIZE);
- }
- 
- int main(int ac, char **av)
- {
--	int signal, flag;
-+	unsigned int flag;
-+	int signal;
- 	int lc;
- 	const char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--		tst_exit();
--	}
- 
- 	setup();
- 
-@@ -173,8 +113,10 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
--			for (signal = SIGRTMIN; signal <= (SIGRTMAX); signal++) {	//signal for 34 to 65
--				for (flag = 0; flag < 5; flag++) {
-+			for (signal = SIGRTMIN; signal <= (SIGRTMAX); signal++) {
-+				tst_resm(TINFO, "Signal %d", signal);
-+
-+				for (flag = 0; flag < (sizeof(test_flags) / sizeof(test_flags[0])); flag++) {
- 					TEST(set_handler
- 					     (signal, 0, test_flags[flag]));
- 					if ((TEST_RETURN == -1)
-@@ -200,7 +142,6 @@ int main(int ac, char **av)
- 							 test_flags_list[flag]);
- 					}
- 				}
--				printf("\n");
- 			}
- 
- 		}
-diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-index 2d13212..bdfa6dd 100644
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-@@ -12,14 +12,14 @@
- /* the GNU General Public License for more details.                           */
- /*                                                                            */
- /* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 59 Temple Place, Suite TEST_SIG0, Boston, MA 02111-1307 USA    */
-+/* along with this program;  if not, write to the Free Software Foundation,   */
-+/* Inc., 59 Temple Place, Suite TEST_SIG0, Boston, MA 02111-1307 USA          */
- /*                                                                            */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak <maknayak@in.ibm.com>                       */
- /******************************************************************************/
-+
- /******************************************************************************/
--/*                                                                            */
--/* File:        rt_sigprocmask01.c                                              */
--/*                                                                            */
- /* Description: This tests the rt_sigprocmask() syscall                       */
- /*		rt_sigprocmask changes the list of currently blocked signals. */
- /*		The set value stores the signal mask of the pending signals.  */
-@@ -37,22 +37,8 @@
- /*		SIG_SETMASK						      */
- /*		    The set of blocked signals is set to the set argument.    */
- /*		    sigsetsize should indicate the size of a sigset_t type.   */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* rt_sigprocmask01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                      */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   rt_sigprocmask01                                              */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak <maknayak@in.ibm.com>                       */
- /******************************************************************************/
-+
- #include <stdio.h>
- #include <signal.h>
- #include <errno.h>
-@@ -64,65 +50,25 @@
- #include "ltp_signal.h"
- 
- char *TCID = "rt_sigprocmask01";
--int testno;
-+static int testno;
- int TST_TOTAL = 8;
- 
-+static int sig_count;
-+
- #define TEST_SIG SIGRTMIN+1
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
--
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup(void)
-+static void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
- 
--int sig_count = 0;
--
- void sig_handler(int sig)
- {
- 	sig_count++;
-@@ -146,9 +92,9 @@ int main(int ac, char **av)
- 	int lc;
- 	const char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -156,35 +102,34 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
--			if (sigemptyset(&set) < 0) {
-+			if (sigemptyset(&set) < 0)
- 				tst_brkm(TFAIL | TERRNO, cleanup,
- 					 "sigemptyset call failed");
--			}
--			if (sigaddset(&set, TEST_SIG) < 0) {
-+
-+			if (sigaddset(&set, TEST_SIG) < 0)
- 				tst_brkm(TFAIL | TERRNO, cleanup,
- 					 "sigaddset call failed");
--			}
- 
- 			/* call rt_sigaction() */
- 			TEST(ltp_syscall(__NR_rt_sigaction, TEST_SIG, &act,
- 				&oact, SIGSETSIZE));
--			if (TEST_RETURN < 0) {
-+			if (TEST_RETURN < 0)
- 				tst_brkm(TFAIL | TTERRNO, cleanup,
- 					 "rt_sigaction call failed");
--			}
-+
- 			/* call rt_sigprocmask() to block signal#TEST_SIG */
- 			TEST(ltp_syscall(__NR_rt_sigprocmask, SIG_BLOCK, &set,
- 				     &oset, SIGSETSIZE));
--			if (TEST_RETURN == -1) {
-+			if (TEST_RETURN == -1)
- 				tst_brkm(TFAIL | TTERRNO, cleanup,
- 					 "rt_sigprocmask call failed");
--			}
-+
- 			/* Make sure that the masked process is indeed
- 			 * masked. */
--			if (kill(getpid(), TEST_SIG) < 0) {
-+			if (kill(getpid(), TEST_SIG) < 0)
- 				tst_brkm(TFAIL | TERRNO, cleanup,
- 					 "call to kill() failed");
--			}
-+
- 			if (sig_count) {
- 				tst_brkm(TFAIL | TERRNO, cleanup,
- 					 "rt_sigprocmask() failed to change "
-@@ -193,26 +138,26 @@ int main(int ac, char **av)
- 				/* call rt_sigpending() */
- 				TEST(ltp_syscall(__NR_rt_sigpending, &oset,
- 					     SIGSETSIZE));
--				if (TEST_RETURN == -1) {
-+				if (TEST_RETURN == -1)
- 					tst_brkm(TFAIL | TTERRNO, cleanup,
- 						 "rt_sigpending call failed");
--				}
-+
- 				TEST(sigismember(&oset, TEST_SIG));
--				if (TEST_RETURN == 0) {
-+				if (TEST_RETURN == 0)
- 					tst_brkm(TFAIL | TTERRNO,
- 						 cleanup,
- 						 "sigismember call failed");
--				}
-+
- 				/* call rt_sigprocmask() to unblock
- 				 * signal#TEST_SIG */
- 				TEST(ltp_syscall(__NR_rt_sigprocmask,
- 					     SIG_UNBLOCK, &set, &oset,
- 					     SIGSETSIZE));
--				if (TEST_RETURN == -1) {
-+				if (TEST_RETURN == -1)
- 					tst_brkm(TFAIL | TTERRNO,
- 						 cleanup,
- 						 "rt_sigprocmask call failed");
--				}
-+
- 				if (sig_count) {
- 					tst_resm(TPASS,
- 						 "rt_sigprocmask "
-@@ -224,7 +169,6 @@ int main(int ac, char **av)
- 						 "rt_sigprocmask "
- 						 "functionality failed");
- 				}
--
- 			}
- 
- 		}
-diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-index d1d5a9d..ef8f954 100644
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-@@ -12,14 +12,14 @@
- /* the GNU General Public License for more details.                           */
- /*                                                                            */
- /* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
-+/* along with this program;  if not, write to the Free Software Foundation,   */
-+/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
- /*                                                                            */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- /******************************************************************************/
--/*                                                                            */
--/* File:        rt_sigprocmask02.c                                              */
--/*                                                                            */
- /* Description: This tests the rt_sigprocmask() syscall                       */
- /*		rt_sigprocmask changes the list of currently blocked signals. */
- /*		The set value stores the signal mask of the pending signals.  */
-@@ -49,23 +49,8 @@
- /* 			    invalid. 					      */
- /* 			-EFAULT						      */
- /* 			    An invalid set, act, or oact was specified.       */
--/*                                                                            */
--/*									      */
--/* Usage:  <for command-line>                                                 */
--/* rt_sigprocmask02 [-c n] [-e][-i n] [-I x] [-p x] [-t]                      */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   rt_sigprocmask02                                              */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
-+
- #include <stdio.h>
- #include <signal.h>
- #include <errno.h>
-@@ -78,61 +63,21 @@
- char *TCID = "rt_sigprocmask02";
- int TST_TOTAL = 2;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
--
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup(void)
-+static void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
- 
--sigset_t set;
-+static sigset_t set;
- 
--struct test_case_t {
-+static struct test_case_t {
- 	sigset_t *ss;
- 	int sssize;
- 	int exp_errno;
-@@ -150,21 +95,18 @@ int main(int ac, char **av)
- 	sigset_t s;
- 	const char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--		tst_exit();
--	}
- 
- 	setup();
- 
- 	tst_count = 0;
- 
- 	TEST(sigfillset(&s));
--	if (TEST_RETURN == -1) {
--		tst_resm(TFAIL | TTERRNO, "Call to sigfillset() failed.");
--		cleanup();
--		tst_exit();
--	}
-+	if (TEST_RETURN == -1)
-+		tst_brkm(TFAIL | TTERRNO, cleanup,
-+			"Call to sigfillset() failed.");
- 
- 	for (i = 0; i < test_count; i++) {
- 		TEST(ltp_syscall(__NR_rt_sigprocmask, SIG_BLOCK,
-@@ -183,5 +125,4 @@ int main(int ac, char **av)
- 
- 	cleanup();
- 	tst_exit();
--
- }
-diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-index b27e9c6..f0fc96f 100644
---- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-+++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-@@ -1,42 +1,27 @@
--/********************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007				   	*/
--/*									    	*/
--/* This program is free software;  you can redistribute it and/or modify      	*/
--/* it under the terms of the GNU General Public License as published by       	*/
--/* the Free Software Foundation; either version 2 of the License, or	  	*/
--/* (at your option) any later version.						*/
--/*									    	*/
--/* This program is distributed in the hope that it will be useful,	    	*/
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of	    	*/
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See		  	*/
--/* the GNU General Public License for more details.			   	*/
--/*									    	*/
--/* You should have received a copy of the GNU General Public License	  	*/
--/* along with this program;  if not, write to the Free Software	       	*/
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    	*/
--/*									    	*/
--/******************************************************************************	*/
--/******************************************************************************	*/
--/*									    	*/
--/* File:	rt_sigsuspend01.c					   	*/
--/*									    	*/
--/* Description: This tests the rt_sigsuspend() syscall.		      	*/
--/*									       	*/
--/* Usage:  <for command-line>						 	*/
--/* rt_sigsuspend01 [-c n] [-e][-i n] [-I x] [-p x] [-t]		     	*/
--/*      where,  -c n : Run n copies concurrently.			     	*/
--/*	      -e   : Turn on errno logging.				 	*/
--/*	      -i n : Execute test n times.				  	*/
--/*	      -I x : Execute test for x seconds.			    	*/
--/*	      -P x : Pause for x seconds between iterations.			*/
--/*	      -t   : Turn on syscall timing.					*/
--/*									    	*/
--/* Total Tests: 2							     	*/
--/*									    	*/
--/* Test Name:   rt_sigsuspend01					     	*/
--/* History:     Porting from Crackerjack to LTP is done by		    	*/
--/*	      Manas Kumar Nayak maknayak@in.ibm.com>				*/
--/********************************************************************************/
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software Foundation,   */
-+/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
-+/*                                                                            */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+
-+/******************************************************************************/
-+/* Description: This tests the rt_sigsuspend() syscall.                       */
-+/******************************************************************************/
- 
- #include <stdio.h>
- #include <signal.h>
-@@ -49,75 +34,33 @@
- #include "ltp_signal.h"
- 
- char *TCID = "rt_sigsuspend01";
--int testno;
- int TST_TOTAL = 1;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*									    */
--/* Function:    cleanup						       */
--/*									    */
--/* Description: Performs all one time clean up for this test on successful    */
--/*	      completion,  premature exit or  failure. Closes all temporary */
--/*	      files, removes all temporary directories exits the test with  */
--/*	      appropriate return code by calling tst_exit() function.       */
--/*									    */
--/* Input:       None.							 */
--/*									    */
--/* Output:      None.							 */
--/*									    */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*	      On success - Exits calling tst_exit(). With '0' return code.  */
--/*									    */
--/******************************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--
- 	TEST_CLEANUP;
- 	tst_rmdir();
--
- }
- 
--/* Local  Functions */
--/******************************************************************************/
--/*									    */
--/* Function:    setup							 */
--/*									    */
--/* Description: Performs all one time setup for this test. This function is   */
--/*	      typically used to capture signals, create temporary dirs      */
--/*	      and temporary files that may be used in the course of this    */
--/*	      test.							 */
--/*									    */
--/* Input:       None.							 */
--/*									    */
--/* Output:      None.							 */
--/*									    */
--/* Return:      On failure - Exits by calling cleanup().		      */
--/*	      On success - returns 0.				       */
--/*									    */
--/******************************************************************************/
--void setup(void)
-+static void setup(void)
- {
--	/* Capture signals if any */
--	/* Create temporary directories */
- 	TEST_PAUSE;
- 	tst_tmpdir();
- }
- 
--void sig_handler(int sig)
-+static void sig_handler(int sig)
- {
- }
- 
- int main(int ac, char **av)
- {
--
- 	sigset_t set, set1, set2;
- 	int lc;
- 	const char *msg;
- 
--	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
-@@ -125,9 +68,8 @@ int main(int ac, char **av)
- 
- 		tst_count = 0;
- 
--		if (sigemptyset(&set) < 0) {
-+		if (sigemptyset(&set) < 0)
- 			tst_brkm(TFAIL | TERRNO, cleanup, "sigemptyset failed");
--		}
- #ifdef __x86_64__
- 		struct kernel_sigaction act, oact;
- 		sig_initial(SIGALRM);
-@@ -145,16 +87,15 @@ int main(int ac, char **av)
- 
- 		TEST(ltp_syscall(__NR_rt_sigaction, SIGALRM, &act, &oact,
- 			     SIGSETSIZE));
--		if (TEST_RETURN == -1) {
-+		if (TEST_RETURN == -1)
- 			tst_brkm(TFAIL | TTERRNO, cleanup,
- 				 "rt_sigaction failed");
--		}
-+
- 		TEST(ltp_syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, 0,
- 			     &set1, SIGSETSIZE));
--		if (TEST_RETURN == -1) {
-+		if (TEST_RETURN == -1)
- 			tst_brkm(TFAIL | TTERRNO, cleanup,
- 				 "rt_sigprocmask failed");
--		}
- 
- 		TEST(alarm(5));
- 		int result;
--- 
-1.7.1
 
+thanks and regards
+Ajoy
+
+
+L&T Technology Services Ltd
+
+www.LntTechservices.com<http://www.lnttechservices.com/>
+
+This Email may contain confidential or privileged information for the inten=
+ded recipient (s). If you are not the intended recipient, please do not use=
+ or disseminate the information, notify the sender and delete it from your =
+system.
+
+--_000_7CF842D49929104A9E5360C8FA9370998CF0D0POCITMSEXMB03LntU_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 12 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Trebuchet MS";
+	panose-1:2 11 6 3 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Trebuchet MS","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">Hi,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am testing mips64 with LTP. &nbsp;The pr=
+oblem is with fstatfs02.c file. The test case was failing in my particular =
+arch. For debugging purpose I write the same
+ code and executed.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">ret =3D fstatfs( -1,&amp;buf );<o:=
+p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">printf(&quot;Retrun value =3D%d, e=
+rrornumber %d EBADF is %d&nbsp; %s FD %d pointer %p&nbsp; \n&quot;,ret,errn=
+o, EBADF,strerror(errno),-1,&amp;buf);<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">it was giving a output like<o:p></=
+o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">Retrun value =3D-<span style=3D"co=
+lor:red">1</span>, errornumber 9 EBADF is 9&nbsp; Bad file descriptor FD -1=
+ pointer 0x120011130&nbsp;
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">But when I executed LTP testcase w=
+ith some debug print added<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">TEST(fstatfs(TC[i].fd, (TC[i]).sbu=
+f));<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">if (TEST_RETURN !=3D -1) {<o:p></o=
+:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp; tst_resm(TFAIL, &quot;call succeeded unexpectedly return %d %s FD =
+%d, pointer sbuf %p &quot;,TEST_RETURN,strerror(errno),TC[i].fd, TC[i].sbuf=
+);<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">I got a print like this<o:p></o:p>=
+</span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;">fstatfs02&nbsp;&nbsp;&nbsp; 1&nbsp=
+; TFAIL&nbsp; :&nbsp; call succeeded unexpectedly return
+<span style=3D"color:red">1690729072</span> Success FD -1, pointer sbuf 0x1=
+2001ba30<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Tr=
+ebuchet MS&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I feel like both are doing the same job&#8230; But w=
+hen I am running it in LTP environment I am getting a return as
+<span style=3D"font-size:10.0pt;font-family:&quot;Trebuchet MS&quot;,&quot;=
+sans-serif&quot;;color:red">
+1690729072. I was not able to find any problem in TEST macro. </span><span =
+style=3D"font-size:10.0pt;font-family:&quot;Trebuchet MS&quot;,&quot;sans-s=
+erif&quot;">Can anyone please help me out in debugging this.
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">thanks and regards<o:p></o:p></p>
+<p class=3D"MsoNormal">Ajoy<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<p><strong>L&amp;T Technology Services Ltd</strong></p>
+<p><a href=3D"http://www.lnttechservices.com/" target=3D"_blank">www.LntTec=
+hservices.com</a></p>
+<p>This Email may contain confidential or privileged information for the in=
+tended recipient (s). If you are not the intended recipient, please do not =
+use or disseminate the information, notify the sender and delete it from yo=
+ur system.</p>
+</body>
+</html>
+
+--_000_7CF842D49929104A9E5360C8FA9370998CF0D0POCITMSEXMB03LntU_--
+
+
+--===============4554491583108726804==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
@@ -1122,7 +239,16 @@ Find What Matters Most in Your Big Data with HPCC Systems
 Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
 Leverages Graph Analysis for Fast Processing & Easy Data Exploration
 http://p.sf.net/sfu/hpccsystems
+--===============4554491583108726804==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4554491583108726804==--
+
