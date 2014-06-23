@@ -1,32 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1X1Z8Y-0007JE-Pe
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 10:48:38 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X1Z8X-0006Qi-0K
-	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 10:48:38 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s5UAmU7J001668
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:31 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5UAmU89024838
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:30 GMT
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5UAmUsI024834
-	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:30 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 30 Jun 2014 14:48:21 +0400
-Message-Id: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] tst_get_unused_pid()
+	(envelope-from <jstancek@redhat.com>) id 1Wz2eb-0008CX-TO
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 11:43:17 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wz2ea-0002jY-33
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 11:43:17 +0000
+Date: Mon, 23 Jun 2014 07:43:09 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1368345307.28778797.1403523788999.JavaMail.zimbra@redhat.com>
+In-Reply-To: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
+References: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] fstatfs02 issue on mips64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,28 +24,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Ajoymon Joseph <AJOY.JOSEPH@LNTTECHSERVICES.COM>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-
-This series introduces tst_get_unused_pid() and makes the testcases
-use it.
-
-Thanks.
-
-
-------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIkFqb3ltb24gSm9zZXBoIiA8
+QUpPWS5KT1NFUEhATE5UVEVDSFNFUlZJQ0VTLkNPTT4KPiBUbzogbHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cj4gU2VudDogRnJpZGF5LCAyMCBKdW5lLCAyMDE0IDM6NDE6MDYgUE0KPiBT
+dWJqZWN0OiBbTFRQXSBmc3RhdGZzMDIgaXNzdWUgb24gbWlwczY0Cj4gCj4gCj4gCj4gSGksCj4g
+Cj4gSSBhbSB0ZXN0aW5nIG1pcHM2NCB3aXRoIExUUC4gVGhlIHByb2JsZW0gaXMgd2l0aCBmc3Rh
+dGZzMDIuYyBmaWxlLiBUaGUgdGVzdAo+IGNhc2Ugd2FzIGZhaWxpbmcgaW4gbXkgcGFydGljdWxh
+ciBhcmNoLiBGb3IgZGVidWdnaW5nIHB1cnBvc2UgSSB3cml0ZSB0aGUKPiBzYW1lIGNvZGUgYW5k
+IGV4ZWN1dGVkLgo+IAo+IHJldCA9IGZzdGF0ZnMoIC0xLCZidWYgKTsKPiAKPiBwcmludGYoIlJl
+dHJ1biB2YWx1ZSA9JWQsIGVycm9ybnVtYmVyICVkIEVCQURGIGlzICVkICVzIEZEICVkIHBvaW50
+ZXIgJXAKPiBcbiIscmV0LGVycm5vLCBFQkFERixzdHJlcnJvcihlcnJubyksLTEsJmJ1Zik7Cj4g
+Cj4gaXQgd2FzIGdpdmluZyBhIG91dHB1dCBsaWtlCj4gCj4gUmV0cnVuIHZhbHVlID0tIDEgLCBl
+cnJvcm51bWJlciA5IEVCQURGIGlzIDkgQmFkIGZpbGUgZGVzY3JpcHRvciBGRCAtMQo+IHBvaW50
+ZXIgMHgxMjAwMTExMzAKPiAKPiBCdXQgd2hlbiBJIGV4ZWN1dGVkIExUUCB0ZXN0Y2FzZSB3aXRo
+IHNvbWUgZGVidWcgcHJpbnQgYWRkZWQKPiAKPiBURVNUKGZzdGF0ZnMoVENbaV0uZmQsIChUQ1tp
+XSkuc2J1ZikpOwo+IAo+IGlmIChURVNUX1JFVFVSTiAhPSAtMSkgewo+IAo+IHRzdF9yZXNtKFRG
+QUlMLCAiY2FsbCBzdWNjZWVkZWQgdW5leHBlY3RlZGx5IHJldHVybiAlZCAlcyBGRCAlZCwgcG9p
+bnRlciBzYnVmCj4gJXAgIixURVNUX1JFVFVSTixzdHJlcnJvcihlcnJubyksVENbaV0uZmQsIFRD
+W2ldLnNidWYpOwo+IAo+IEkgZ290IGEgcHJpbnQgbGlrZSB0aGlzCj4gCj4gZnN0YXRmczAyIDEg
+VEZBSUwgOiBjYWxsIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHkgcmV0dXJuIDE2OTA3MjkwNzIgU3Vj
+Y2VzcyBGRAo+IC0xLCBwb2ludGVyIHNidWYgMHgxMjAwMWJhMzAKPiAKPiBJIGZlZWwgbGlrZSBi
+b3RoIGFyZSBkb2luZyB0aGUgc2FtZSBqb2LigKYgQnV0IHdoZW4gSSBhbSBydW5uaW5nIGl0IGlu
+IExUUAo+IGVudmlyb25tZW50IEkgYW0gZ2V0dGluZyBhIHJldHVybiBhcyAxNjkwNzI5MDcyLiBJ
+IHdhcyBub3QgYWJsZSB0byBmaW5kIGFueQo+IHByb2JsZW0gaW4gVEVTVCBtYWNyby4gQ2FuIGFu
+eW9uZSBwbGVhc2UgaGVscCBtZSBvdXQgaW4gZGVidWdnaW5nIHRoaXMuCgpXaGF0IGtlcm5lbC9M
+VFAgcmVsZWFzZSBhcmUgeW91IHVzaW5nPwoKWW91IGNhbiB0cnkgcnVubmluZyBnb29kIGFuZCBi
+YWQgY2FzZSB2aWEgc3RyYWNlLiBJZiBwYXJhbWV0ZXJzIHdpbGwgYmUKY29ycmVjdCBhbmQgeW91
+IHN0aWxsIGdldCBzdHJhbmdlIG51bWJlcnMgaW4gc3RyYWNlIG91dHB1dCwgaXQncyBsaWtlbHkg
+YSBrZXJuZWwgYnVnLgoKUmVnYXJkcywKSmFuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSFBDQyBT
+eXN0ZW1zIE9wZW4gU291cmNlIEJpZyBEYXRhIFBsYXRmb3JtIGZyb20gTGV4aXNOZXhpcyBSaXNr
+IFNvbHV0aW9ucwpGaW5kIFdoYXQgTWF0dGVycyBNb3N0IGluIFlvdXIgQmlnIERhdGEgd2l0aCBI
+UENDIFN5c3RlbXMKT3BlbiBTb3VyY2UuIEZhc3QuIFNjYWxhYmxlLiBTaW1wbGUuIElkZWFsIGZv
+ciBEaXJ0eSBEYXRhLgpMZXZlcmFnZXMgR3JhcGggQW5hbHlzaXMgZm9yIEZhc3QgUHJvY2Vzc2lu
+ZyAmIEVhc3kgRGF0YSBFeHBsb3JhdGlvbgpodHRwOi8vcC5zZi5uZXQvc2Z1L2hwY2NzeXN0ZW1z
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0
+IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
