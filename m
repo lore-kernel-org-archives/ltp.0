@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WzKwJ-0003Ba-0K
-	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 07:14:47 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Wyu9X-00069V-VH
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 02:38:39 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WzKwH-0002ck-UY
-	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 07:14:46 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5O7EaX3031932
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Jun 2014 15:14:37 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 24 Jun 2014 15:11:38 +0800
-Message-ID: <1403593899-17040-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wyu9V-00020C-EX
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 02:38:39 +0000
+Message-ID: <1403491065.2219.6.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 23 Jun 2014 10:37:45 +0800
+In-Reply-To: <1403490467.2219.5.camel@G08JYZSD130126>
+References: <1403248796.26126.0.camel@G08JYZSD130126>
+	<462849312.27746159.1403256946743.JavaMail.zimbra@redhat.com>
+	<1403490467.2219.5.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 1/2] pan/ltp-pan.c: fix compilation warnings
+Subject: [LTP] [PATCH v2 1/2] wait/wait02: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,55 +29,254 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Delete the useless 'char *av[2], bigarg[82];' definition.
+* Delete some useless commtents and variable.
 
-Fix the 'ignoring return value of read(2)' compilation warnings.
+* Some cleanup.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- pan/ltp-pan.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ testcases/kernel/syscalls/wait/wait02.c | 171 +++++++-------------------------
+ 1 file changed, 34 insertions(+), 137 deletions(-)
 
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-index 6a1a797..9324f47 100644
---- a/pan/ltp-pan.c
-+++ b/pan/ltp-pan.c
-@@ -453,13 +453,6 @@ int main(int argc, char **argv)
- 	 * this is an "active file cleanliness" thing
- 	 */
- 	{
--		char *av[2], bigarg[82];
--
--		memset(bigarg, '.', 81);
--		bigarg[81] = '\0';
--		av[0] = bigarg;
--		av[1] = NULL;
--
- 		for (c = 0; c < keep_active; c++) {
- 			if (zoo_mark_cmdline(zoofile, c, panname, "")) {
- 				fprintf(stderr, "pan(%s): %s\n", panname,
-@@ -1026,7 +1019,8 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
- 		char *termtype;
- 		struct tms notime = { 0, 0, 0, 0 };
+diff --git a/testcases/kernel/syscalls/wait/wait02.c b/testcases/kernel/syscalls/wait/wait02.c
+index a95213d..0cbcd48 100644
+--- a/testcases/kernel/syscalls/wait/wait02.c
++++ b/testcases/kernel/syscalls/wait/wait02.c
+@@ -1,5 +1,7 @@
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ *    AUTHOR		: William Roske
++ *    CO-PILOT		: Dave Fenner
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of version 2 of the GNU General Public License as
+@@ -30,84 +32,6 @@
+  * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+  *
+  */
+-/* $Id: wait02.c,v 1.7 2009/10/26 14:55:48 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: wait02
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for wait(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- *	1.) wait(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- *	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *
+- *    DURATION
+- *	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- *	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- *	None
+- *
+- *    INTERCASE DEPENDENCIES
+- *	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the wait(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	wait(2).
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
  
--		read(errpipe[0], errbuf, errlen);
-+		if (read(errpipe[0], errbuf, errlen) < 0)
-+			fprintf(stderr, "Failed to read from errpipe[0]\n");
- 		close(errpipe[0]);
- 		errbuf[errlen] = '\0';
- 		/* fprintf(stderr, "%s", errbuf); */
+ #include <errno.h>
+ #include <string.h>
+@@ -118,94 +42,67 @@
+ #include "test.h"
+ #include "usctest.h"
+ 
+-void setup();
+-void cleanup();
++static void setup(void);
++static void cleanup(void);
+ 
+ char *TCID = "wait02";
+ int TST_TOTAL = 1;
+ 
+-int exp_enos[] = { 0, 0 };
+-
+-int fork_pid, ret_code;
+-void trapper();
++static void wait_verify(void);
+ 
+ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	const char *msg;
+ 
+-    /***************************************************************
+-     * parse standard options
+-     ***************************************************************/
+-	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
++	msg = parse_opts(ac, av, NULL, NULL);
++	if (msg != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 
+-    /***************************************************************
+-     * perform global setup for test
+-     ***************************************************************/
+ 	setup();
+ 
+-	/* set the expected errnos... */
+-	TEST_EXP_ENOS(exp_enos);
+-
+-    /***************************************************************
+-     * check looping state if -c option given
+-     ***************************************************************/
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+ 		tst_count = 0;
+-
+-		/* create a child to wait for */
+-		if ((fork_pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "fork() Failure. errno=%d : %s", errno,
+-				 strerror(errno));
+-		} else if (fork_pid == 0) {
+-			/* Child, sleep a second then exit */
+-			sleep(1);
+-			exit(1);
+-		}
+-
+-		/* Parent, wait for child to die */
+-		TEST(wait(&ret_code));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			TEST_ERROR_LOG(TEST_ERRNO);
+-			tst_resm(TFAIL, "wait(1) Failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS, "wait(&ret_code) returned %ld",
+-				 TEST_RETURN);
+-		}
++		wait_verify();
+ 	}
+ 
+ 	cleanup();
+ 	tst_exit();
+ }
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
++static void setup(void)
+ {
+-
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
++}
+ 
++static void wait_verify(void)
++{
++	int fork_pid, status, exit_child = 1;
++
++	fork_pid = FORK_OR_VFORK();
++	if (fork_pid == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup, "fork() Failure");
++	} else if (fork_pid == 0) {
++		sleep(1);
++		exit(exit_child);
++	}
++
++	TEST(wait(&status));
++
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TTERRNO, "wait(1) Failed");
++	} else if (WIFEXITED(status) && WEXITSTATUS(status) == 1) {
++		tst_resm(TPASS, "wait(&status) returned %ld", TEST_RETURN);
++	} else {
++		tst_resm(TFAIL,
++			 "wait(1) Failed, exit_child - 0x%x, status - 0x%x",
++			 exit_child, status);
++	}
+ }
+ 
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	TEST_CLEANUP;
+-
+ }
 -- 
-1.8.2.1
+1.9.3
+
+
 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
