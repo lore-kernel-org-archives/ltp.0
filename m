@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WvGjv-0007oq-0i
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 01:57:11 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WvGjs-00063R-P7
-	for ltp-list@lists.sourceforge.net; Fri, 13 Jun 2014 01:57:10 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5D1v0E1019416
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Jun 2014 09:57:01 +0800
-Message-ID: <1402624600.2098.7.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 13 Jun 2014 09:56:40 +0800
-In-Reply-To: <1402565565.2332.6.camel@G08JYZSD130126>
-References: <1402565516.2332.5.camel@G08JYZSD130126>
-	<1402565565.2332.6.camel@G08JYZSD130126>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wz6Ur-0007VM-EA
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 15:49:29 +0000
+Date: Mon, 23 Jun 2014 17:49:12 +0200
+From: chrubis@suse.cz
+Message-ID: <20140623154912.GC982@rei.suse.cz>
+References: <1401286323-7364-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] utime/utime06.c: add EPERM and EROFS errno
- testes
+Content-Disposition: inline
+In-Reply-To: <1401286323-7364-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH RFC] testscripts/network: uniform network
+	parameters
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,177 +25,187 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Please ignore these two patches. I will send some new's.
-Sorry for that.
+Hi!
+> diff --git a/testscripts/network.sh b/testscripts/network.sh
+> new file mode 100755
+> index 0000000..0b89c8e
+> --- /dev/null
+> +++ b/testscripts/network.sh
+> @@ -0,0 +1,53 @@
+> +#!/bin/sh
+> +
+> +# Network Test Parameters
+> +#
+> +# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
+> +
+> +export RHOST=
+> +export PASSWD=
+> +
+> +# ---***************************************************---
+> +
+> +LTP_RSH=
+> +
+> +# Set names for test interfaces
+> +LHOST_INTERFACE=
+> +RHOST_INTERFACE=
+> +
+> +# Set first three octets of the network address
+> +IPV4_NETWORK=
+> +# Set local host last octet
+> +LHOST_IPV4_HOST=
+> +# Set remote host last octet
+> +RHOST_IPV4_HOST=
+> +# Set the reverse of IPV4_NETWORK
+> +IPV4_NETWORK_REVERSE=
+> +# Set firt three octets of the network address
+> +IPV6_NETWORK=
+> +# Set local host last octet
+> +LHOST_IPV6_HOST=
+> +# Set remote host last octet
+> +RHOST_IPV6_HOST=
+> +
+> +export HTTP_DOWNLOAD_DIR=
+> +export FTP_DOWNLOAD_DIR=
+> +export FTP_UPLOAD_DIR=
+> +export FTP_UPLOAD_URLDIR=
+> +
+> +# Set default parameters
+> +export LTP_RSH=${LTP_RSH:-"rsh -n"}
+> +export LHOST_INTERFACE=${LHOST_INTERFACE:-"eth0"}
+> +export RHOST_INTERFACE=${RHOST_INTERFACE:-"eth0"}
+> +export IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+> +export IPV6_NETWORK=${IPV6_NETWORK:-"fd00:1:1:1"}
+> +export LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
+> +export RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
+> +export LHOST_IPV6_HOST=${LHOST_IPV6_HOST:-":2"}
+> +export RHOST_IPV6_HOST=${RHOST_IPV6_HOST:-":1"}
+> +export IPV4_NETWORK_REVERSE=${IPV4_NETWORK_REVERSE:-"0.0.10"}
+> +
+> +export TMPDIR=/tmp/netpan-$$
+> +mkdir -p $TMPDIR
+> +CMDFILE=${TMPDIR}/network.tests
+> +VERBOSE="no"
 
-Best regards,
-Zeng
-On Thu, 2014-06-12 at 17:32 +0800, Zeng Linggang wrote:
-> Add EPERM and EROFS errno testes for utime(2).
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/utime/utime06.c | 84 +++++++++++++++++++++++++++----
->  1 file changed, 73 insertions(+), 11 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/utime/utime06.c b/testcases/kernel/syscalls/utime/utime06.c
-> index 2dd68d8..1406bd0 100644
-> --- a/testcases/kernel/syscalls/utime/utime06.c
-> +++ b/testcases/kernel/syscalls/utime/utime06.c
-> @@ -26,6 +26,13 @@
->   *	 - The user ID of the process is not "root".
->   * 2. Verify that the system call utime() fails to set the modification
->   *    and access times of a file if the specified file doesn't exist.
-> + * 3. Verify that the system call utime() fails to set the modification
-> + *    and access times of a file to the current time, under the following
-> + *    constraints,
-> + *	 - The times argument is not null.
-> + *	 - The user ID of the process is not "root".
-> + * 4. Verify that the system call utime() fails to set the modification
-> + *    and access times of a file that resides on a read-only file system.
->   */
+A bit more documentation how to setup these would not harm. Do we have a
+document that describes this?
+
+> diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
+> index b40af72..7536d3f 100755
+> --- a/testscripts/networkstress.sh
+> +++ b/testscripts/networkstress.sh
+> @@ -12,32 +12,10 @@ if [ $? -eq 0 ]; then
+>   export LTPROOT=${PWD}
+>  fi
 >  
->  #include <errno.h>
-> @@ -40,30 +47,50 @@
->  #include <wait.h>
->  #include <sys/stat.h>
->  #include <sys/types.h>
-> +#include <sys/mount.h>
->  
->  #include "test.h"
->  #include "usctest.h"
->  #include "safe_macros.h"
->  
->  #define TEMP_FILE	"tmp_file"
-> +#define MNT_POINT	"mntpoint"
->  
->  char *TCID = "utime06";
-> -static int exp_enos[] = { EACCES, ENOENT, 0 };
+> -export TMPDIR=/tmp/netst-$$
+> -mkdir $TMPDIR
+> -VERBOSE="no"
+> -INTERFACE="eth0"
 > -
-> +static int exp_enos[] = { EACCES, ENOENT, EPERM, EROFS, 0 };
->  static struct passwd *ltpuser;
-> +static const struct utimbuf times;
-> +static char *fstype = "ext2";
-> +static char *device;
-> +static int mount_flag;
+> -#===========================================================================
+> -# Network parameters
+> -export RHOST=
+> -export RHOST_HWADDRS=
+> -export HTTP_DOWNLOAD_DIR=
+> -export FTP_DOWNLOAD_DIR=
+> -export FTP_UPLOAD_DIR=
+> -export FTP_UPLOAD_URLDIR=
+> -
+> -# Set firt three octets of the network address, by default 10.0.0
+> -export IPV4_NETWORK=
+> -# Set local host last octet, by default 2
+> -export LHOST_IPV4_HOST=
+> -# Set remote host last octet, by default 1
+> -export RHOST_IPV4_HOST=
+> -# Set the reverse of IPV4_NETWORK, by default 0.0.10
+> -export IPV4_NETWORK_REVERSE=
+> +. $LTPROOT/testscripts/network.sh $0
+>  
+>  #===========================================================================
+>  # Default Test Settings
+> -# export LTP_RSH=rsh
+>  # export NS_DURATION=3600	# 1 hour
+>  # export NS_TIMES=10000
+>  # export CONNECTION_TOTAL=4000
+> @@ -102,8 +80,6 @@ if [ -z ${TEST_CASE} ]; then
+>  	usage
+>  fi
+>  
+> -export LHOST_HWADDRS=`ifconfig | grep ${INTERFACE} | grep HWaddr |awk '{print $5}'`
+> -
+>  if [ -z ${RHOST} ]; then
+>  	## Just a silly check
+>  	echo "Error: pay attention to configure"
+> @@ -111,6 +87,11 @@ if [ -z ${RHOST} ]; then
+>  	exit 1
+>  fi
+>  
+> +export LHOST_HWADDRS=$(/sbin/ifconfig | grep $LHOST_INTERFACE |\
+> +	grep HWaddr | awk '{print $5}')
+> +export RHOST_HWADDRS=$($LTP_RSH $RHOST /sbin/ifconfig |\
+> +	grep $RHOST_INTERFACE | grep HWaddr | awk '{print $5}')
 > +
-> +static void setup_nobody(void);
-> +static void cleanup_nobody(void);
-> +
-> +static option_t options[] = {
-> +	{"T:", NULL, &fstype},
-> +	{"D:", NULL, &device},
-> +	{NULL, NULL, NULL}
-> +};
->  
->  struct test_case_t {
->  	char *pathname;
->  	int exp_errno;
-> +	const struct utimbuf *times;
-> +	void (*setup_func)(void);
-> +	void (*cleanup_func)(void);
->  } Test_cases[] = {
-> -	{TEMP_FILE, EACCES},
-> -	{"", ENOENT},
-> +	{TEMP_FILE, EACCES, NULL, setup_nobody, cleanup_nobody},
-> +	{"", ENOENT, NULL, NULL, NULL},
-> +	{TEMP_FILE, EPERM, &times, setup_nobody, cleanup_nobody},
-> +	{MNT_POINT, EROFS, NULL, NULL, NULL},
->  };
->  
->  int TST_TOTAL = ARRAY_SIZE(Test_cases);
->  static void setup(void);
->  static void utime_verify(const struct test_case_t *);
->  static void cleanup(void);
-> +static void help(void);
->  
->  int main(int ac, char **av)
->  {
-> @@ -71,10 +98,16 @@ int main(int ac, char **av)
->  	const char *msg;
->  	int i;
->  
-> -	msg = parse_opts(ac, av, NULL, NULL);
-> +	msg = parse_opts(ac, av, options, help);
->  	if (msg != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->  
-> +	if (!device) {
-> +		tst_brkm(TBROK, NULL,
-> +			 "you must specify the device used for mounting with "
-> +			 "-D option");
-> +	}
-> +
->  	setup();
->  
->  	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> @@ -101,14 +134,26 @@ static void setup(void)
->  
->  	TEST_EXP_ENOS(exp_enos);
->  
-> -	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-> +	tst_mkfs(NULL, device, fstype, NULL);
-> +	SAFE_MKDIR(cleanup, MNT_POINT, 0644);
-> +	if (mount(device, MNT_POINT, fstype, MS_RDONLY, NULL) < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "mount device:%s failed", device);
-> +	}
-> +	mount_flag = 1;
->  
-> -	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
->  }
->  
->  static void utime_verify(const struct test_case_t *test)
->  {
-> -	TEST(utime(test->pathname, NULL));
-> +	if (test->setup_func != NULL)
-> +		test->setup_func();
-> +
-> +	TEST(utime(test->pathname, test->times));
-> +
-> +	if (test->cleanup_func != NULL)
-> +		test->cleanup_func();
->  
->  	if (TEST_RETURN != -1) {
->  		tst_resm(TFAIL, "utime succeeded unexpectedly");
-> @@ -124,12 +169,29 @@ static void utime_verify(const struct test_case_t *test)
->  	}
->  }
->  
-> -static void cleanup(void)
-> +static void setup_nobody(void)
-> +{
-> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +}
-> +
-> +static void cleanup_nobody(void)
->  {
-> -	if (seteuid(0) != 0)
-> -		tst_resm(TWARN | TERRNO, "seteuid failed");
-> +	SAFE_SETEUID(cleanup, 0);
-> +}
->  
-> +static void cleanup(void)
-> +{
->  	TEST_CLEANUP;
->  
-> +	if (mount_flag && umount(MNT_POINT) < 0)
-> +		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-> +
->  	tst_rmdir();
->  }
-> +
-> +static void help(void)
-> +{
-> +	printf("-T type   : specifies the type of filesystem to be mounted. "
-> +	       "Default ext2.\n");
-> +	printf("-D device : device used for mounting.\n");
-> +}
 
+Calling ifconfig by full path is broken, Gentoo (and possible others)
+has ifconfig in /bin/ (and you are allowed to call it as user to query
+device configuration).
 
+Moreover we may want to create a script to query interface IP and HWaddr
+(and possibly others we may need) because ifconfig is deprecated and
+some distros does not install it by default. If we move it to a library
+we may write a code to use either ifconfig of ip depending on what is
+available.
+
+>  cat ${LTPROOT}/runtest/${TEST_CASE} > $TMPDIR/network_stress.tests
+>  
+>  cd $TMPDIR
+> @@ -119,9 +100,8 @@ export PATH="${PATH}:${LTPROOT}/testcases/bin"
+>  
+>  if [ ${VERBOSE} = "yes" ]; then
+>  	echo "Network parameters:"
+> -	echo " - ${INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
+> -	echo " - Remote IP address: ${RHOST}"
+> -	echo " - Remote MAC address: ${RHOST_HWADDRS}"
+> +	echo " - ${LHOST_INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
+> +	echo " - ${RHOST_INTERFACE} remote interface (MAC address: ${RHOST_HWADDRS})"
+>  
+>  	cat $TMPDIR/network_stress.tests
+>  	${LTPROOT}/ver_linux
+> diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
+> index b136749..507b7e3 100755
+> --- a/testscripts/networktests.sh
+> +++ b/testscripts/networktests.sh
+> @@ -1,11 +1,6 @@
+>  #!/bin/sh
+>  # This will run all the network tests, with the status logged in /tmp/netpan.log
+>  
+> -# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
+> -export RHOST=
+> -export PASSWD=
+> -# ---***************************************************---
+> -
+>  cd `dirname $0`
+>  export LTPROOT=${PWD}
+>  echo $LTPROOT | grep testscripts > /dev/null 2>&1
+> @@ -14,10 +9,7 @@ if [ $? -eq 0 ]; then
+>   export LTPROOT=${PWD}
+>  fi
+>  
+> -export TMPDIR=/tmp/netpan-$$
+> -mkdir -p $TMPDIR
+> -CMDFILE=${TMPDIR}/network.tests
+> -VERBOSE="no"
+> +. $LTPROOT/testscripts/network.sh $0
+>  
+>  # For bitwise operation to determine which testsets run
+>  CMD_IPV6=1		# 0x0001
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
