@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WwrId-00041B-PZ
-	for ltp-list@lists.sourceforge.net; Tue, 17 Jun 2014 11:11:35 +0000
-Date: Tue, 17 Jun 2014 13:11:21 +0200
-From: chrubis@suse.cz
-Message-ID: <20140617111120.GA31854@rei>
-References: <1402624697.2098.8.camel@G08JYZSD130126>
-	<1183733259.23953127.1402660578711.JavaMail.zimbra@redhat.com>
-	<1402972112.2294.26.camel@G08JYZSD130126>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WyuAX-0005wo-Vc
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 02:39:42 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WyuAV-00037q-Kk
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 02:39:41 +0000
+Message-ID: <1403491122.2219.7.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 23 Jun 2014 10:38:42 +0800
+In-Reply-To: <1403490467.2219.5.camel@G08JYZSD130126>
+References: <1403248796.26126.0.camel@G08JYZSD130126>
+	<462849312.27746159.1403256946743.JavaMail.zimbra@redhat.com>
+	<1403490467.2219.5.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1402972112.2294.26.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH 1/3] syscalls: fix returning TCONF without device
+Subject: [LTP] [PATCH v2 2/2] wait/wait01.c: Add ECHILD test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,34 +29,165 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > I like TBROK here, because if you forget the required parameter,
-> > testcase will end with non-zero exit code, which should be
-> > easily visible for any test harness, while with TCONF the
-> > problem can go unnoticed (with retcode == 0).
+Add ECHILD test for wait(2)
 
-Yes, I think that this should be TCONF rather than TBROK because the
-conditions for the test weren't met.
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ runtest/ltplite                         |  1 +
+ runtest/stress.part3                    |  1 +
+ runtest/syscalls                        |  1 +
+ testcases/kernel/syscalls/.gitignore    |  1 +
+ testcases/kernel/syscalls/wait/wait01.c | 85 +++++++++++++++++++++++++++++++++
+ 5 files changed, 89 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/wait/wait01.c
 
-However I understand your concerns as well and this is a one of the
-reasons I was thinking of changing the library to propagate the TCONF to
-the test exit value as well.
-
-Ideally we should fix the GitHub issue #11 which would change the code
-so that we don't have to do the check in the first place.
-(https://github.com/linux-test-project/ltp/issues/11)
-
-I was thinking of adding a function that would either get the LTP_DEV
-env variable or create a loop0 device if LTP_DEV is not set and will
-format it with LTP_DEV_FS_TYPE or a default passed value and it's
-counter part that does the cleanup.
-
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 939ea35..37e3119 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -979,6 +979,7 @@ vfork02 vfork02
+ vhangup01 vhangup01
+ vhangup02 vhangup02
+ 
++wait01 wait01
+ wait02 wait02
+ 
+ wait401 wait401
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 2b05363..254f77d 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -857,6 +857,7 @@ vfork02 vfork02
+ vhangup01 vhangup01
+ vhangup02 vhangup02
+ 
++wait01 wait01
+ wait02 wait02
+ 
+ wait401 wait401
+diff --git a/runtest/syscalls b/runtest/syscalls
+index adefa49..fd22b3c 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1325,6 +1325,7 @@ vhangup02 vhangup02
+ #vmsplice test cases
+ vmsplice01 vmsplice01
+ 
++wait01 wait01
+ wait02 wait02
+ 
+ wait401 wait401
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 252e3c8..7fbe226 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1005,6 +1005,7 @@
+ /vhangup/vhangup01
+ /vhangup/vhangup02
+ /vmsplice/vmsplice01
++/wait/wait01
+ /wait/wait02
+ /wait4/wait401
+ /wait4/wait402
+diff --git a/testcases/kernel/syscalls/wait/wait01.c b/testcases/kernel/syscalls/wait/wait01.c
+new file mode 100644
+index 0000000..69d91ae
+--- /dev/null
++++ b/testcases/kernel/syscalls/wait/wait01.c
+@@ -0,0 +1,85 @@
++/*
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++/*
++ * Test Description:
++ *  Verify that,
++ *	The calling process does not have any unwaited-for children,
++ *	ECHILD would return.
++ */
++
++#include <errno.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "wait01";
++int TST_TOTAL = 1;
++static void setup(void);
++static void wait_verify(void);
++static void cleanup(void);
++
++int main(int argc, char **argv)
++{
++	int lc;
++	const char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		wait_verify();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++}
++
++static void wait_verify(void)
++{
++	TEST(wait(NULL));
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL | TTERRNO, "wait failed unexpectedly");
++		return;
++	}
++
++	if (TEST_ERRNO == ECHILD) {
++		tst_resm(TPASS | TTERRNO, "wait failed as expected");
++	} else {
++		tst_resm(TFAIL | TTERRNO,
++			 "wait failed unexpectedly; expected: %d - %s",
++			 ECHILD, strerror(ECHILD));
++	}
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
+
+
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
