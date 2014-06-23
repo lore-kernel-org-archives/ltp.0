@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WzpMW-0000EA-T1
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jun 2014 15:43:52 +0000
-Date: Wed, 25 Jun 2014 17:43:36 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Wz6xJ-0000aX-Rh
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 16:18:53 +0000
+Date: Mon, 23 Jun 2014 18:18:36 +0200
 From: chrubis@suse.cz
-Message-ID: <20140625154335.GB5552@rei>
-References: <1401685455.2838.8.camel@G08JYZSD130126>
-	<20140612131041.GB20221@rei>
-	<1403179709.11671.0.camel@G08JYZSD130126>
+Message-ID: <20140623161836.GA1381@rei.suse.cz>
+References: <1402551754-19942-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<20140617130327.GB29117@rei> <53A0F944.40009@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1403179709.11671.0.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH v2 3/3] can: change the entry
+In-Reply-To: <53A0F944.40009@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] fs/ext4-new-features: fix wrong test point when
+ running ext4-persist-prealloc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,52 +26,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> * Change the entry:
-> 	can_filter can_run_tests.sh can_filter
-> 	can_rcv_own_msgs can_run_tests.sh can_rcv_own_msgs
+> >>  	ret=1
+> >>  
+> >> +	temp_tmpdir=$TMPDIR
+> >> +	export TMPDIR=mnt_point
+> >>  	for ((i = 1; i <= 3; i++))
+> >>  	{
+> >>  		if ! command -v fallocate0${i} > /dev/null 2>&1; then
+> >> @@ -63,6 +65,7 @@ ext4_test_persist_prealloc()
+> >>  			return
+> >>  		fi
+> >>  	}
+> >> +	TMPDIR=$temp_tmpdir
+> > 
+> > 
+> > Can't we just do:
+> > 
+> > TMPDIR=mnt_point; fallocate0${i}
+> > 
+> > instead?
 > 
-> * Add can_filter and can_rcv_own_msgs to network/.gitignore
-> 
-> * Make the test's name more saner:
-> 	tst-filter.c --> can_filter.c
-> 	tst-rcv-own-msgs.c --> can_rcv_own_msgs.c
-> 	run_ltp-can_tests.sh --> can_run_tests.sh
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  runtest/can                                        |   3 +-
->  testcases/network/.gitignore                       |   2 +
->  testcases/network/can/filter-tests/can_filter.c    | 263 +++++++++++++++++++++
->  .../network/can/filter-tests/can_rcv_own_msgs.c    | 255 ++++++++++++++++++++
->  .../network/can/filter-tests/can_run_tests.sh      | 102 ++++++++
->  .../network/can/filter-tests/run_ltp-can_tests.sh  | 102 --------
->  testcases/network/can/filter-tests/tst-filter.c    | 263 ---------------------
->  .../network/can/filter-tests/tst-rcv-own-msgs.c    | 255 --------------------
->  8 files changed, 624 insertions(+), 621 deletions(-)
->  create mode 100644 testcases/network/can/filter-tests/can_filter.c
->  create mode 100644 testcases/network/can/filter-tests/can_rcv_own_msgs.c
->  create mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
->  delete mode 100644 testcases/network/can/filter-tests/run_ltp-can_tests.sh
->  delete mode 100644 testcases/network/can/filter-tests/tst-filter.c
->  delete mode 100644 testcases/network/can/filter-tests/tst-rcv-own-msgs.c
+> Yeah, we can do it, but this will make TMPDIR still be "mnt_point" after the fallocate tests.
 
-This looks good but I'm missing a Makefile in testcases/network/can so
-that the tests are compiled and installed by default.
+That is the point of it. As it is you are saving and restoring the
+TMPDIR before and after the loop so redefining it only for the part that
+matters looks cleaner to me or did I overlooked something?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
+Find What Matters Most in Your Big Data with HPCC Systems
+Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
+Leverages Graph Analysis for Fast Processing & Easy Data Exploration
+http://p.sf.net/sfu/hpccsystems
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
