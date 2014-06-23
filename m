@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1WuikT-0005aY-HW
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jun 2014 13:39:29 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WuikS-0008VZ-9L
-	for ltp-list@lists.sourceforge.net; Wed, 11 Jun 2014 13:39:28 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s5BDdLZm022841
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 11 Jun 2014 13:39:22 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5BDdKGl016548
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 11 Jun 2014 13:39:21 GMT
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s5BDdKxG015238
-	for <ltp-list@lists.sourceforge.net>; Wed, 11 Jun 2014 13:39:20 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 11 Jun 2014 17:39:50 +0400
-Message-Id: <1402493990-3761-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] network/nfsstat01: umount only if it was mounted
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Wz5X2-0001Zs-Gv
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 14:47:40 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wz5X0-0001mt-GR
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 14:47:40 +0000
+Date: Mon, 23 Jun 2014 10:47:30 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <877922758.28898460.1403534850216.JavaMail.zimbra@redhat.com>
+In-Reply-To: <7CF842D49929104A9E5360C8FA9370998CF23D@POCITMSEXMB03.LntUniverse.com>
+References: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
+	<1368345307.28778797.1403523788999.JavaMail.zimbra@redhat.com>
+	<7CF842D49929104A9E5360C8FA9370998CF23D@POCITMSEXMB03.LntUniverse.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] fstatfs02 issue on mips64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,55 +26,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Ajoymon Joseph <AJOY.JOSEPH@lnttechservices.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The test will mount (bind) export directory when nfs's version is 4,
-so add the check before 'umount' in cleanup function.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/nfs/nfsstat01/nfsstat01 |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
-index 229e2c3..4a34d93 100755
---- a/testcases/network/nfs/nfsstat01/nfsstat01
-+++ b/testcases/network/nfs/nfsstat01/nfsstat01
-@@ -215,12 +215,15 @@ $trace_logic
- 
-    echo "Unmounting EXPORTDIR"
-    /usr/sbin/exportfs -u $HOST:$EXPORTDIR
--   umount $EXPORTDIR
--   sleep 3
--   rm -rf $EXPORTDIR
-+
-    if [ "x$NFS_TYPE" = "xnfs4" ]; then
-+       umount $EXPORTDIR
-+       sleep 3
-        rm -rf /export$EXPORTDIR
-    fi
-+
-+   rm -rf $EXPORTDIR
-+
- }
- 
- #=============================================================================
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
-Find What Matters Most in Your Big Data with HPCC Systems
-Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
-Leverages Graph Analysis for Fast Processing & Easy Data Exploration
-http://p.sf.net/sfu/hpccsystems
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+IEZyb206ICJBam95bW9uIEpvc2VwaCIg
+PEFKT1kuSk9TRVBIQGxudHRlY2hzZXJ2aWNlcy5jb20+Cj4gVG86ICJKYW4gU3RhbmNlayIgPGpz
+dGFuY2VrQHJlZGhhdC5jb20+Cj4gQ2M6IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+
+IFNlbnQ6IE1vbmRheSwgMjMgSnVuZSwgMjAxNCAzOjI2OjU1IFBNCj4gU3ViamVjdDogUkU6IFtM
+VFBdIGZzdGF0ZnMwMiBpc3N1ZSBvbiBtaXBzNjQKPgo+IEkgYW0gbm90IHNlZWluZyBmc3RhdGZz
+IGNhbGwgaXRzZWxmIHdoZW4gY29tcGFyaW5nIHRoZSBzeXN0ZW0gY2FsbC4gSSBob3BlCj4gdGhp
+cyBpcyB0aGUgcmVhc29uPwo+IEFsc28gZnN0YXRmczAyIHdhcyB3b3JraW5nIGZpbmUuIE9ubHkg
+ZnN0YXRmczAyXzY0IHdhcyBoYXZpbmcgdGhlIGlzc3VlLgo+IEkgc2F3IGluIC4uL3V0aWxzL25l
+d2VyXzY0Lm1rIG1ha2VmaWxlLiBJdCB3aWxsIGJlIGdvb2QgaWYgeW91IHRlbGwgbGl0dGxlCj4g
+bW9yZSBhYm91dCB0aGUgNjQgaGVyZS4KCkl0IGNvbXBpbGVzIHRoZSB0ZXN0Y2FzZSB3aXRoIC1E
+X0ZJTEVfT0ZGU0VUX0JJVFM9NjQsIHdoaWNoIHNob3VsZCBoYXZlIGVmZmVjdApvbmx5IG9uIDMy
+IGJpdCBzeXN0ZW1zLiBbMV0KCjEuIENhbiB5b3UgdmVyaWZ5LCB0aGF0IHlvdSBjYW4gcmVwcm9k
+dWNlIHRoaXMgaXNzdWUgd2l0aCBmb2xsb3dpbmcgcHJvZ3JhbSwKaWYgeW91IGFkZCBjb21waWxl
+ciBmbGFnICItRF9GSUxFX09GRlNFVF9CSVRTPTY0Ij8KRm9yIGV4YW1wbGU6IGdjYyBmc3RhdGZz
+LmMgLURfRklMRV9PRkZTRVRfQklUUz02NAoKJCBjYXQgZnN0YXRmcy5jIAojaW5jbHVkZSA8c3lz
+L3Zmcy5oPgojaW5jbHVkZSA8c3lzL3R5cGVzLmg+CiNpbmNsdWRlIDxzeXMvc3RhdGZzLmg+CiNp
+bmNsdWRlIDxzdGRpby5oPgoKaW50IG1haW4oKQp7Cglmc3RhdGZzKC0xLCBOVUxMKTsKCXJldHVy
+biAwOwp9CgoyLiBZb3UgbWVudGlvbmVkIG1pcHM2NCwgaXMgYm90aCBrZXJuZWwgYW5kIHVzZXJz
+cGFjZSA2NGJpdD8KICAgT25jZSB5b3UgY29tcGlsZSBmb3IgeW91ciB0ZXN0IHN5c3RlbSwgY2Fu
+IHlvdSBydW4gImZpbGUiIG9uIHRoZSBiaW5hcnk/CiAgICQgZmlsZSAuL2Eub3V0CgozLiBJZiB5
+b3UgcnVuIHRoZSBiaW5hcnkgdmlhIHN0cmFjZSBvbiB0ZXN0IHN5c3RlbSwgZG9lcyBpdCBzaG93
+IGNhbGxzIHRvIGZzdGF0ZnMoKT8KNC4gSWYgeW91IGNhbiByZXByb2R1Y2UgaXQgd2l0aCBzaW1w
+bGUgcHJvZ3JhbSBhYm92ZSwgY2FuIHlvdSBjb21waWxlIGl0IHN0YXRpY2FsbHksCiAgIGZvciBl
+eGFtcGxlOiAkIGdjYyBmc3RhdGZzLmMgLURfRklMRV9PRkZTRVRfQklUUz02NCAtc3RhdGljCiAg
+IGFuZCBoYXZlIGEgbG9vayBhdCBkaXNhc3NlbWJseSBvZiBzdGF0ZnMgZnVuY3Rpb24/CiAgICQg
+b2JqZHVtcCAtZCAuL2Eub3V0IHwgbGVzcwogICBZb3Ugd2lsbCBuZWVkIHRvIHVzZSBvYmpkdW1w
+IGZyb20geW91ciB0b29sY2hhaW4uCgo1LiBXaGF0IGxpYmMvdWNsaWJjIGxpYnJhcnkgYXJlIHlv
+dSB1c2luZyBvbiB0ZXN0IHN5c3RlbT8KClJlZ2FyZHMsCkphbgoKWzFdIGh0dHA6Ly93d3cuZ251
+Lm9yZy9zb2Z0d2FyZS9saWJjL21hbnVhbC9odG1sX25vZGUvRmVhdHVyZS1UZXN0LU1hY3Jvcy5o
+dG1sI0ZlYXR1cmUtVGVzdC1NYWNyb3MKCj4gCj4gSSBhbSB3b3JraW5nIG9uIDIuNi4zMi40NiBr
+ZXJuZWwuCj4gCj4gUmVnYXJkcwo+IEFqb3kKPiAKPiAKPiAKPiAKPiAKPiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQo+IEZyb206IEphbiBTdGFuY2VrIFttYWlsdG86anN0YW5jZWtAcmVkaGF0
+LmNvbV0KPiBTZW50OiBNb25kYXksIEp1bmUgMjMsIDIwMTQgNToxMyBQTQo+IFRvOiBBam95bW9u
+IEpvc2VwaAo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBTdWJqZWN0OiBS
+ZTogW0xUUF0gZnN0YXRmczAyIGlzc3VlIG9uIG1pcHM2NAo+IAo+IAo+IAo+IC0tLS0tIE9yaWdp
+bmFsIE1lc3NhZ2UgLS0tLS0KPiA+IEZyb206ICJBam95bW9uIEpvc2VwaCIgPEFKT1kuSk9TRVBI
+QExOVFRFQ0hTRVJWSUNFUy5DT00+Cj4gPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cj4gPiBTZW50OiBGcmlkYXksIDIwIEp1bmUsIDIwMTQgMzo0MTowNiBQTQo+ID4gU3ViamVj
+dDogW0xUUF0gZnN0YXRmczAyIGlzc3VlIG9uIG1pcHM2NAo+ID4KPiA+Cj4gPgo+ID4gSGksCj4g
+Pgo+ID4gSSBhbSB0ZXN0aW5nIG1pcHM2NCB3aXRoIExUUC4gVGhlIHByb2JsZW0gaXMgd2l0aCBm
+c3RhdGZzMDIuYyBmaWxlLiBUaGUKPiA+IHRlc3QKPiA+IGNhc2Ugd2FzIGZhaWxpbmcgaW4gbXkg
+cGFydGljdWxhciBhcmNoLiBGb3IgZGVidWdnaW5nIHB1cnBvc2UgSSB3cml0ZSB0aGUKPiA+IHNh
+bWUgY29kZSBhbmQgZXhlY3V0ZWQuCj4gPgo+ID4gcmV0ID0gZnN0YXRmcyggLTEsJmJ1ZiApOwo+
+ID4KPiA+IHByaW50ZigiUmV0cnVuIHZhbHVlID0lZCwgZXJyb3JudW1iZXIgJWQgRUJBREYgaXMg
+JWQgJXMgRkQgJWQgcG9pbnRlciAlcAo+ID4gXG4iLHJldCxlcnJubywgRUJBREYsc3RyZXJyb3Io
+ZXJybm8pLC0xLCZidWYpOwo+ID4KPiA+IGl0IHdhcyBnaXZpbmcgYSBvdXRwdXQgbGlrZQo+ID4K
+PiA+IFJldHJ1biB2YWx1ZSA9LSAxICwgZXJyb3JudW1iZXIgOSBFQkFERiBpcyA5IEJhZCBmaWxl
+IGRlc2NyaXB0b3IgRkQgLTEKPiA+IHBvaW50ZXIgMHgxMjAwMTExMzAKPiA+Cj4gPiBCdXQgd2hl
+biBJIGV4ZWN1dGVkIExUUCB0ZXN0Y2FzZSB3aXRoIHNvbWUgZGVidWcgcHJpbnQgYWRkZWQKPiA+
+Cj4gPiBURVNUKGZzdGF0ZnMoVENbaV0uZmQsIChUQ1tpXSkuc2J1ZikpOwo+ID4KPiA+IGlmIChU
+RVNUX1JFVFVSTiAhPSAtMSkgewo+ID4KPiA+IHRzdF9yZXNtKFRGQUlMLCAiY2FsbCBzdWNjZWVk
+ZWQgdW5leHBlY3RlZGx5IHJldHVybiAlZCAlcyBGRCAlZCwgcG9pbnRlcgo+ID4gc2J1Zgo+ID4g
+JXAgIixURVNUX1JFVFVSTixzdHJlcnJvcihlcnJubyksVENbaV0uZmQsIFRDW2ldLnNidWYpOwo+
+ID4KPiA+IEkgZ290IGEgcHJpbnQgbGlrZSB0aGlzCj4gPgo+ID4gZnN0YXRmczAyIDEgVEZBSUwg
+OiBjYWxsIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHkgcmV0dXJuIDE2OTA3MjkwNzIgU3VjY2Vzcwo+
+ID4gRkQKPiA+IC0xLCBwb2ludGVyIHNidWYgMHgxMjAwMWJhMzAKPiA+Cj4gPiBJIGZlZWwgbGlr
+ZSBib3RoIGFyZSBkb2luZyB0aGUgc2FtZSBqb2LigKYgQnV0IHdoZW4gSSBhbSBydW5uaW5nIGl0
+IGluIExUUAo+ID4gZW52aXJvbm1lbnQgSSBhbSBnZXR0aW5nIGEgcmV0dXJuIGFzIDE2OTA3Mjkw
+NzIuIEkgd2FzIG5vdCBhYmxlIHRvIGZpbmQgYW55Cj4gPiBwcm9ibGVtIGluIFRFU1QgbWFjcm8u
+IENhbiBhbnlvbmUgcGxlYXNlIGhlbHAgbWUgb3V0IGluIGRlYnVnZ2luZyB0aGlzLgo+IAo+IFdo
+YXQga2VybmVsL0xUUCByZWxlYXNlIGFyZSB5b3UgdXNpbmc/Cj4gCj4gWW91IGNhbiB0cnkgcnVu
+bmluZyBnb29kIGFuZCBiYWQgY2FzZSB2aWEgc3RyYWNlLiBJZiBwYXJhbWV0ZXJzIHdpbGwgYmUK
+PiBjb3JyZWN0IGFuZCB5b3Ugc3RpbGwgZ2V0IHN0cmFuZ2UgbnVtYmVycyBpbiBzdHJhY2Ugb3V0
+cHV0LCBpdCdzIGxpa2VseSBhCj4ga2VybmVsIGJ1Zy4KPiAKPiBSZWdhcmRzLAo+IEphbgo+IEwm
+VCBUZWNobm9sb2d5IFNlcnZpY2VzIEx0ZAo+IAo+IHd3dy5MbnRUZWNoc2VydmljZXMuY29tPGh0
+dHA6Ly93d3cubG50dGVjaHNlcnZpY2VzLmNvbS8+Cj4gCj4gVGhpcyBFbWFpbCBtYXkgY29udGFp
+biBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBmb3IgdGhlCj4gaW50ZW5k
+ZWQgcmVjaXBpZW50IChzKS4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwg
+cGxlYXNlIGRvIG5vdAo+IHVzZSBvciBkaXNzZW1pbmF0ZSB0aGUgaW5mb3JtYXRpb24sIG5vdGlm
+eSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgaXQgZnJvbQo+IHlvdXIgc3lzdGVtLgo+IAoKLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCkhQQ0MgU3lzdGVtcyBPcGVuIFNvdXJjZSBCaWcgRGF0YSBQbGF0Zm9y
+bSBmcm9tIExleGlzTmV4aXMgUmlzayBTb2x1dGlvbnMKRmluZCBXaGF0IE1hdHRlcnMgTW9zdCBp
+biBZb3VyIEJpZyBEYXRhIHdpdGggSFBDQyBTeXN0ZW1zCk9wZW4gU291cmNlLiBGYXN0LiBTY2Fs
+YWJsZS4gU2ltcGxlLiBJZGVhbCBmb3IgRGlydHkgRGF0YS4KTGV2ZXJhZ2VzIEdyYXBoIEFuYWx5
+c2lzIGZvciBGYXN0IFByb2Nlc3NpbmcgJiBFYXN5IERhdGEgRXhwbG9yYXRpb24KaHR0cDovL3Au
+c2YubmV0L3NmdS9ocGNjc3lzdGVtcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
