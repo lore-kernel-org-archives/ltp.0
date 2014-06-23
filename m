@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WuMz6-0005P6-0x
-	for ltp-list@lists.sourceforge.net; Tue, 10 Jun 2014 14:25:08 +0000
-Date: Tue, 10 Jun 2014 16:24:58 +0200
-From: chrubis@suse.cz
-Message-ID: <20140610142457.GA18940@rei.Home>
-References: <1402040858-5701-1-git-send-email-shuang.qiu@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Wz08k-0007fG-QD
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 09:02:14 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Wz08i-0005nx-Cy
+	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 09:02:14 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5N923xG030120
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Jun 2014 17:02:04 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Mon, 23 Jun 2014 16:59:09 +0800
+Message-ID: <1403513949-24653-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1403513949-24653-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <1403513949-24653-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1402040858-5701-1-git-send-email-shuang.qiu@oracle.com>
-Subject: Re: [LTP] [PATCH] syscalls/fstatfs02: Using temporary file
- description to test the syscall
+Subject: [LTP] [PATCH 2/2] pan/ltp-pan.c: add statistics about not fully
+	tested testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,73 +32,206 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang.qiu@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> It is not expected to use stdout as the file description to test the
-> system call fstatfs().Using ltp temporary file instead.
-> 
-> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
-> ---
->  testcases/kernel/syscalls/fstatfs/fstatfs02.c |   10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs02.c b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-> index f851c97..9e00a67 100644
-> --- a/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-> +++ b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
-> @@ -27,6 +27,7 @@
->  #include <errno.h>
->  #include "test.h"
->  #include "usctest.h"
-> +#include "safe_macros.h"
->  
->  static void setup(void);
->  static void cleanup(void);
-> @@ -48,6 +49,7 @@ static struct test_case_t {
->  #ifndef UCLINUX
->  	    /* Skip since uClinux does not implement memory protection */
->  	    /* EFAULT - address for buf is invalid */
-> +	    /* Using the init "1" as fd is not actually expected,will assign a tmp file later */
->  	{
->  	1, (void *)-1, EFAULT}
->  #endif
-> @@ -107,11 +109,19 @@ static void setup(void)
->  	TEST_PAUSE;
->  
->  	tst_tmpdir();
-> +#ifndef UCLINUX
-> +	TC[1].fd = SAFE_OPEN(cleanup, "tempfile", O_RDWR | O_CREAT, 0700);
-> +#endif
->  }
->  
->  static void cleanup(void)
->  {
->  	TEST_CLEANUP;
->  
-> +#ifndef UCLINUX
-> +	if (TC[1].fd > 0 && close(TC[1].fd))
+Currently numbers of testcases in LTP will return TCONF when they are not
+appropriate to run. But when users execute './runltp' to run the default
+test suite towards an linux distribution or upstream kernel, if testcases
+return TCONF, ultimately they will print TPASS to users, then users will
+not know the real LTP test coverage.
 
-             ^
-	     This does not work as expected because the fd is
-	     initialized to 1. If we get here after the open() has
-	     failed it will close stdout at this point.
+Here we change this behaviour and show users testcases which return TCONF,
+meaning that these testcases are not fully tested.
 
-	     You should change the initial value in the test strucure to
-	     -1 (you don't have to add the comment in this case too).
+Here is a sample:
+1. Before this patch, The output will be:
+Test Start Time: Mon Jun 23 16:06:07 2014
+-----------------------------------------
+Testcase                       Result     Exit Value
+--------                       ------     ----------
+access01                       PASS       0
+access02                       PASS       0
+access03                       PASS       0
+getxattr01                     PASS       0
+getxattr02                     PASS       0
+access04                       PASS       0
+access05                       PASS       0
+access06                       PASS       0
 
-> +		tst_resm(TWARN | TERRNO, "Failed to close fd");
-> +#endif
-> +
->  	tst_rmdir();
->  }
+-----------------------------------------------
+Total Tests: 8
+Total Failures: 0
+Kernel Version: 3.16.0-rc1+
+Machine Architecture: x86_64
+Hostname: localhost.localdomain
 
-The rest is Ok.
+2. After this patch, the output will be:
+Test Start Time: Mon Jun 23 16:17:50 2014
+-----------------------------------------
+Testcase                       Result          Exit Value
+--------                       ------          ----------
+access01                       PASS                 0
+access02                       PASS                 0
+access03                       PASS                 0
+getxattr01                     Not Fully Tested     32
+getxattr02                     Not Fully Tested     32
+access04                       PASS                 0
+access05                       PASS                 0
+access06                       PASS                 0
 
+-----------------------------------------------
+Total Tests: 8
+Total Test Not Fully Tested: 2
+Total Failures: 0
+Kernel Version: 3.16.0-rc1+
+Machine Architecture: x86_64
+Hostname: localhost.localdomain
+
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ lib/tst_res.c |  2 +-
+ pan/ltp-pan.c | 46 +++++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 36 insertions(+), 12 deletions(-)
+
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index c179e31..31186e0 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -563,7 +563,7 @@ void tst_exit(void)
+ 	tst_flush();
+ 
+ 	/* Mask out TRETR, TINFO, and TCONF results from the exit status. */
+-	exit(T_exitval & ~(TRETR | TINFO | TCONF));
++	exit(T_exitval & ~(TRETR | TINFO));
+ }
+ 
+ pid_t tst_fork(void)
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index c36a9ee..679822a 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -68,6 +68,17 @@
+ #include "splitstr.h"
+ #include "zoolib.h"
+ 
++/* Use low 6 bits to encode test result type */
++#define TTYPE_MASK 0x3f
++#define TPASS	0	/* Test passed flag */
++#define TFAIL	1	/* Test failed flag */
++#define TBROK	2	/* Test broken flag */
++#define TWARN	4	/* Test warning flag */
++#define TRETR	8	/* Test retire flag */
++#define TINFO	16	/* Test information flag */
++#define TCONF	32	/* Test not appropriate for configuration flag */
++#define TTYPE_RESULT(ttype)	((ttype) & TTYPE_MASK)
++
+ /* One entry in the command line collection.  */
+ struct coll_entry {
+ 	char *name;		/* tag name */
+@@ -104,7 +115,7 @@ static void pids_running(struct tag_pgrp *running, int keep_active);
+ static int check_pids(struct tag_pgrp *running, int *num_active,
+ 		      int keep_active, FILE * logfile, FILE * failcmdfile,
+ 		      struct orphan_pgrp *orphans, int fmt_print,
+-		      int *failcnt, int quiet_mode);
++		      int *failcnt, int *not_fully_run_cases, int quiet_mode);
+ static void propagate_signal(struct tag_pgrp *running, int keep_active,
+ 			     struct orphan_pgrp *orphans);
+ static void dump_coll(struct collection *coll);
+@@ -160,6 +171,8 @@ int main(int argc, char **argv)
+ 	int keep_active = 1;
+ 	int num_active = 0;
+ 	int failcnt = 0;	/* count of total testcases that failed. */
++	/* count of total testcases that are not fully run*/
++	int not_fully_run_cases = 0;
+ 	int err, i;
+ 	int starts = -1;
+ 	int timed = 0;
+@@ -332,9 +345,9 @@ int main(int argc, char **argv)
+ 			fprintf(logfile, "Test Start Time: %s\n", s);
+ 			fprintf(logfile,
+ 				"-----------------------------------------\n");
+-			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
++			fprintf(logfile, "%-30.20s %-15.15s %-10.10s\n",
+ 				"Testcase", "Result", "Exit Value");
+-			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
++			fprintf(logfile, "%-30.20s %-15.15s %-10.10s\n",
+ 				"--------", "------", "------------");
+ 		}
+ 		fflush(logfile);
+@@ -568,7 +581,7 @@ int main(int argc, char **argv)
+ 
+ 		err = check_pids(running, &num_active, keep_active, logfile,
+ 				 failcmdfile, orphans, fmt_print, &failcnt,
+-				 quiet_mode);
++				 &not_fully_run_cases, quiet_mode);
+ 		if (Debug & Drunning) {
+ 			pids_running(running, keep_active);
+ 			orphans_running(orphans);
+@@ -628,6 +641,8 @@ int main(int argc, char **argv)
+ 		fprintf(logfile,
+ 			"\n-----------------------------------------------\n");
+ 		fprintf(logfile, "Total Tests: %d\n", coll->cnt);
++		fprintf(logfile, "Total Test Not Fully Tested: %d\n",
++			not_fully_run_cases);
+ 		fprintf(logfile, "Total Failures: %d\n", failcnt);
+ 		fprintf(logfile, "Kernel Version: %s\n", unamebuf.release);
+ 		fprintf(logfile, "Machine Architecture: %s\n",
+@@ -679,7 +694,8 @@ propagate_signal(struct tag_pgrp *running, int keep_active,
+ static int
+ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 	   FILE * logfile, FILE * failcmdfile, struct orphan_pgrp *orphans,
+-	   int fmt_print, int *failcnt, int quiet_mode)
++	   int fmt_print, int *failcnt, int *not_fully_run_cases,
++	   int quiet_mode)
+ {
+ 	int w;
+ 	pid_t cpid;
+@@ -688,6 +704,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 	int i;
+ 	time_t t;
+ 	char *status;
++	char *result_str;
+ 	int signaled = 0;
+ 	struct tms tms1, tms2;
+ 	clock_t tck;
+@@ -735,7 +752,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 					"child %d exited with status %d\n",
+ 					cpid, w);
+ 			--*num_active;
+-			if (w != 0)
++			if (w != 0 && w != TCONF)
+ 				ret++;
+ 		} else if (WIFSTOPPED(stat_loc)) {	/* should never happen */
+ 			w = WSTOPSIG(stat_loc);
+@@ -782,13 +799,20 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 							(int)(tms2.tms_cstime -
+ 							      tms1.tms_cstime));
+ 					else {
+-						if (w != 0)
+-							++ * failcnt;
++						if (strcmp(status, "exited") == 0 && TTYPE_RESULT(w) == TCONF) {
++							++*not_fully_run_cases;
++							result_str = "Not Fully Tested";
++						} else if (w != 0) {
++							++*failcnt;
++							result_str = "FAIL";
++						} else {
++							result_str = "PASS";
++						}
++
+ 						fprintf(logfile,
+-							"%-30.30s %-10.10s %-5d\n",
++							"%-30.30s %-20.20s %-5d\n",
+ 							running[i].cmd->name,
+-							((w !=
+-							  0) ? "FAIL" : "PASS"),
++							result_str,
+ 							w);
+ 					}
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
