@@ -1,27 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ashagow@gmail.com>) id 1Wqmb7-0005fP-58
-	for ltp-list@lists.sourceforge.net; Sat, 31 May 2014 16:57:33 +0000
-Received: from mail-pb0-f52.google.com ([209.85.160.52])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Wqmb4-0002m9-8C
-	for ltp-list@lists.sourceforge.net; Sat, 31 May 2014 16:57:31 +0000
-Received: by mail-pb0-f52.google.com with SMTP id rr13so2796064pbb.11
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 31 May 2014 09:57:24 -0700 (PDT)
-Received: from [10.65.231.180] ([42.104.63.64])
-	by mx.google.com with ESMTPSA id
-	ao4sm12108373pbc.51.2014.05.31.09.57.16
-	for <ltp-list@lists.sourceforge.net>
-	(version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
-	Sat, 31 May 2014 09:57:23 -0700 (PDT)
-Date: Sat, 31 May 2014 22:26:54 +0530
-Message-ID: <pvmfjye7mtuxgxw0dnb1kt4x.1401555414467@email.android.com>
-From: "." <ashagow@gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WzRJe-0002Za-J7
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 14:03:18 +0000
+Date: Tue, 24 Jun 2014 16:03:02 +0200
+From: chrubis@suse.cz
+Message-ID: <20140624140301.GA9158@rei>
+References: <1398079016-9193-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1402989991-19613-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1402989991-19613-2-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] Fwd: ltp for android
+Content-Disposition: inline
+In-Reply-To: <1402989991-19613-2-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 2/2] renameat/renameat01.c: add ELOOP,
+ EROFS and EMLINK error value tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,28 +27,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                                |  2 +-
+>  testcases/kernel/syscalls/renameat/renameat01.c | 88 ++++++++++++++++++++++++-
+>  2 files changed, 87 insertions(+), 3 deletions(-)
 
+I've converted the code to use the tst_acquire_device() and pushed, thanks.
 
--------- Original Message --------
-Subject: ltp for android
-From: "." <ashagow@gmail.com>
-To: chru...@suse.cz
-CC: 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Hi
-Please help me in porting Linux ltp to android.
-I tried to cross compile but able to cross compile. But not able to execute the test cases.. getting no such file or directory. I tried to check linker issue shared library issue.. by default its taking from /lib but its should take from... linker.. Can you please guide me or please let me know the concerned person.
-
-Thanks
-Asha 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their 
-applications. Written by three acclaimed leaders in the field, 
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
