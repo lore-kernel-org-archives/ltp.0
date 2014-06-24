@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1WzmA7-0001LG-0h
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jun 2014 12:18:51 +0000
-Date: Wed, 25 Jun 2014 14:18:34 +0200
-From: chrubis@suse.cz
-Message-ID: <20140625121825.GB8523@rei.Home>
-References: <1403690435-18626-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20140625121420.GA8523@rei.Home> <53AABDA5.9010107@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WzKwJ-0003Ba-0K
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 07:14:47 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WzKwH-0002ck-UY
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 07:14:46 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5O7EaX3031932
+	for <ltp-list@lists.sourceforge.net>; Tue, 24 Jun 2014 15:14:37 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 24 Jun 2014 15:11:38 +0800
+Message-ID: <1403593899-17040-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53AABDA5.9010107@oracle.com>
-Subject: Re: [LTP] [RFC PATCH] tst_get_unused_pid and
- system_specific_process_info
+Subject: [LTP] [PATCH v2 1/2] pan/ltp-pan.c: fix compilation warnings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,40 +29,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> 1. We remove get_max_pids(), because it's used only in one place (get_free_pids())
-> >>     and can be subsituted with
-> >>     SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &pid);
-> >>
-> >> 2. We rename get_free_pids() to tst_get_free_pids() for consistency. And changing a bit its
-> >>     declaration to use SAFE_FILE_SCANF().
-> >>
-> >> 3. system_specific_process_info.h is used only in one place - msgctl11.
-> >>     I think it's not a problem if I move its content to test.h. For consistency.
-> >>
-> >> 4. And add tst_get_unused_pid() to system_specific_process_info.c. To not
-> >>     create a new source file. And this funcion looks logically coupled with tst_get_free_pids().
-> >>
-> >> I'm going to present pp. 1-3 in one patch, and p. 4 - in a separate patch.
-> >>
-> >> What do you think about the general idea?
-> >
-> > Sounds good to me.
-> >
-> > Perhaps we should also rename the system_specific_process_info.c to
-> > something shorter and more to the point. Maybe just process_info.c or
-> > pidutils.c or something similar.
-> >
-> Maybe tst_pid.c ? :)
+Delete the useless 'char *av[2], bigarg[82];' definition.
 
-Sounds good.
+Fix the 'ignoring return value of read(2)' compilation warnings.
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ pan/ltp-pan.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index 6a1a797..9324f47 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -453,13 +453,6 @@ int main(int argc, char **argv)
+ 	 * this is an "active file cleanliness" thing
+ 	 */
+ 	{
+-		char *av[2], bigarg[82];
+-
+-		memset(bigarg, '.', 81);
+-		bigarg[81] = '\0';
+-		av[0] = bigarg;
+-		av[1] = NULL;
+-
+ 		for (c = 0; c < keep_active; c++) {
+ 			if (zoo_mark_cmdline(zoofile, c, panname, "")) {
+ 				fprintf(stderr, "pan(%s): %s\n", panname,
+@@ -1026,7 +1019,8 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
+ 		char *termtype;
+ 		struct tms notime = { 0, 0, 0, 0 };
+ 
+-		read(errpipe[0], errbuf, errlen);
++		if (read(errpipe[0], errbuf, errlen) < 0)
++			fprintf(stderr, "Failed to read from errpipe[0]\n");
+ 		close(errpipe[0]);
+ 		errbuf[errlen] = '\0';
+ 		/* fprintf(stderr, "%s", errbuf); */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 Open source business process management suite built on Java and Eclipse
