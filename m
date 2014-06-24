@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Wzott-0007DK-Q8
-	for ltp-list@lists.sourceforge.net; Wed, 25 Jun 2014 15:14:17 +0000
-Date: Wed, 25 Jun 2014 17:14:01 +0200
-From: chrubis@suse.cz
-Message-ID: <20140625151400.GA9191@rei.Home>
-References: <1403522017-8189-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WzLjv-0006Gn-6B
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 08:06:03 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WzLju-0004LS-4p
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 08:06:03 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5O85sZq003010
+	for <ltp-list@lists.sourceforge.net>; Tue, 24 Jun 2014 16:05:54 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 24 Jun 2014 16:03:02 +0800
+Message-ID: <1403596982-21645-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1403522017-8189-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] vmsplice/vmsplice02.c: add EBADF and EINVAL error
- value tests
+Subject: [LTP] [PATCH v2] fs/ext4-new-features: fix wrong test point when
+	running ext4-persist-prealloc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,69 +30,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +static struct test_case_t {
-> +	int *fd;
-> +	const struct iovec *iov;
-> +	unsigned long nr_segs;
-> +	int exp_errno;
-> +} test_cases[] = {
-> +	{ &notvalidfd, &ivc, VMSPLICE_LEN, EBADF },
-> +	{ &filefd, &ivc, VMSPLICE_LEN, EBADF },
-                          ^
-			  I've changed these two to 1 because it
-			  should denote the size of the array containing
-			  the iovec structures which, for single iovec
-			  is 1
-> +	{ &pipes[1], &ivc, IOV_MAX + 1, EINVAL },
-> +};
+ext4-persist-prealloc test will call test cases under 'testcases/kernel/syscalls
+/fallocate' to have persist prealloc test for ext4 filesystem. But currently
+fallocate[0-3] cases will have tests in a different filesystem, which the directory
+created by tst_tmpdir() is in. This is wrong, fix it.
 
-...
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ .../ext4-persist-prealloc/ext4_persist_prealloc_test.sh              | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> +static void setup(void)
-> +{
-> +	int i;
-> +
-> +	if ((tst_kvercmp(2, 6, 17)) < 0) {
-> +		tst_brkm(TCONF, cleanup, "This test can only run on "
-> +			"kernels that are 2.6.17 or higher");
-> +	}
-> +
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
-> +		tst_brkm(TCONF, cleanup, "Cannot do splice() "
-> +			"on a file located on an NFS filesystem");
-> +	}
-> +
-> +	for (i = 0; i < TEST_BLOCK_SIZE; i++)
-> +		buffer[i] = i & 0xff;
-
-        And I've removed this initialization which is not needed for
-	anything (the buffer is not used at all).
-
-> +	filefd = SAFE_OPEN(cleanup, TESTFILE,
-> +				O_WRONLY | O_CREAT, 0644);
-> +
-> +	SAFE_PIPE(cleanup, pipes);
-> +
-> +	ivc.iov_base = buffer;
-> +	ivc.iov_len = TEST_BLOCK_SIZE;
-> +}
-> +
-
-And pushed, thanks.
-
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+index 20b66f8..d577bb5 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+@@ -46,6 +46,7 @@ ext4_test_persist_prealloc()
+ 
+ 	ret=1
+ 
++	temp_tmpdir=$TMPDIR
+ 	for ((i = 1; i <= 3; i++))
+ 	{
+ 		if ! command -v fallocate0${i} > /dev/null 2>&1; then
+@@ -56,13 +57,15 @@ ext4_test_persist_prealloc()
+ 			return
+ 		fi
+ 
+-		fallocate0${i} | grep -q "CONF"
++		TMPDIR=mnt_point; fallocate0${i} | grep -q "CONF"
+ 		if [ $? -ne $ret ]; then
+ 			tst_resm TFAIL "fallocate's return value is not expected"
+ 			umount mnt_point
++			TMPDIR=$temp_tmpdir
+ 			return
+ 		fi
+ 	}
++	TMPDIR=$temp_tmpdir
+ 
+ 	umount mnt_point
+ 	if [ $? -ne 0 ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 Open source business process management suite built on Java and Eclipse
