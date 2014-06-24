@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Wz5X2-0001Zs-Gv
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 14:47:40 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Wz5X0-0001mt-GR
-	for ltp-list@lists.sourceforge.net; Mon, 23 Jun 2014 14:47:40 +0000
-Date: Mon, 23 Jun 2014 10:47:30 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <877922758.28898460.1403534850216.JavaMail.zimbra@redhat.com>
-In-Reply-To: <7CF842D49929104A9E5360C8FA9370998CF23D@POCITMSEXMB03.LntUniverse.com>
-References: <7CF842D49929104A9E5360C8FA9370998CF0D0@POCITMSEXMB03.LntUniverse.com>
-	<1368345307.28778797.1403523788999.JavaMail.zimbra@redhat.com>
-	<7CF842D49929104A9E5360C8FA9370998CF23D@POCITMSEXMB03.LntUniverse.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1WzRJb-0003D4-97
+	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 14:03:15 +0000
+Date: Tue, 24 Jun 2014 16:02:58 +0200
+From: chrubis@suse.cz
+Message-ID: <20140624140258.GA9159@rei>
+References: <1398079016-9193-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1402989991-19613-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] fstatfs02 issue on mips64
+Content-Disposition: inline
+In-Reply-To: <1402989991-19613-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 1/2] renameat/renameat01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +22,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ajoymon Joseph <AJOY.JOSEPH@lnttechservices.com>
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-CgoKLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+IEZyb206ICJBam95bW9uIEpvc2VwaCIg
-PEFKT1kuSk9TRVBIQGxudHRlY2hzZXJ2aWNlcy5jb20+Cj4gVG86ICJKYW4gU3RhbmNlayIgPGpz
-dGFuY2VrQHJlZGhhdC5jb20+Cj4gQ2M6IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+
-IFNlbnQ6IE1vbmRheSwgMjMgSnVuZSwgMjAxNCAzOjI2OjU1IFBNCj4gU3ViamVjdDogUkU6IFtM
-VFBdIGZzdGF0ZnMwMiBpc3N1ZSBvbiBtaXBzNjQKPgo+IEkgYW0gbm90IHNlZWluZyBmc3RhdGZz
-IGNhbGwgaXRzZWxmIHdoZW4gY29tcGFyaW5nIHRoZSBzeXN0ZW0gY2FsbC4gSSBob3BlCj4gdGhp
-cyBpcyB0aGUgcmVhc29uPwo+IEFsc28gZnN0YXRmczAyIHdhcyB3b3JraW5nIGZpbmUuIE9ubHkg
-ZnN0YXRmczAyXzY0IHdhcyBoYXZpbmcgdGhlIGlzc3VlLgo+IEkgc2F3IGluIC4uL3V0aWxzL25l
-d2VyXzY0Lm1rIG1ha2VmaWxlLiBJdCB3aWxsIGJlIGdvb2QgaWYgeW91IHRlbGwgbGl0dGxlCj4g
-bW9yZSBhYm91dCB0aGUgNjQgaGVyZS4KCkl0IGNvbXBpbGVzIHRoZSB0ZXN0Y2FzZSB3aXRoIC1E
-X0ZJTEVfT0ZGU0VUX0JJVFM9NjQsIHdoaWNoIHNob3VsZCBoYXZlIGVmZmVjdApvbmx5IG9uIDMy
-IGJpdCBzeXN0ZW1zLiBbMV0KCjEuIENhbiB5b3UgdmVyaWZ5LCB0aGF0IHlvdSBjYW4gcmVwcm9k
-dWNlIHRoaXMgaXNzdWUgd2l0aCBmb2xsb3dpbmcgcHJvZ3JhbSwKaWYgeW91IGFkZCBjb21waWxl
-ciBmbGFnICItRF9GSUxFX09GRlNFVF9CSVRTPTY0Ij8KRm9yIGV4YW1wbGU6IGdjYyBmc3RhdGZz
-LmMgLURfRklMRV9PRkZTRVRfQklUUz02NAoKJCBjYXQgZnN0YXRmcy5jIAojaW5jbHVkZSA8c3lz
-L3Zmcy5oPgojaW5jbHVkZSA8c3lzL3R5cGVzLmg+CiNpbmNsdWRlIDxzeXMvc3RhdGZzLmg+CiNp
-bmNsdWRlIDxzdGRpby5oPgoKaW50IG1haW4oKQp7Cglmc3RhdGZzKC0xLCBOVUxMKTsKCXJldHVy
-biAwOwp9CgoyLiBZb3UgbWVudGlvbmVkIG1pcHM2NCwgaXMgYm90aCBrZXJuZWwgYW5kIHVzZXJz
-cGFjZSA2NGJpdD8KICAgT25jZSB5b3UgY29tcGlsZSBmb3IgeW91ciB0ZXN0IHN5c3RlbSwgY2Fu
-IHlvdSBydW4gImZpbGUiIG9uIHRoZSBiaW5hcnk/CiAgICQgZmlsZSAuL2Eub3V0CgozLiBJZiB5
-b3UgcnVuIHRoZSBiaW5hcnkgdmlhIHN0cmFjZSBvbiB0ZXN0IHN5c3RlbSwgZG9lcyBpdCBzaG93
-IGNhbGxzIHRvIGZzdGF0ZnMoKT8KNC4gSWYgeW91IGNhbiByZXByb2R1Y2UgaXQgd2l0aCBzaW1w
-bGUgcHJvZ3JhbSBhYm92ZSwgY2FuIHlvdSBjb21waWxlIGl0IHN0YXRpY2FsbHksCiAgIGZvciBl
-eGFtcGxlOiAkIGdjYyBmc3RhdGZzLmMgLURfRklMRV9PRkZTRVRfQklUUz02NCAtc3RhdGljCiAg
-IGFuZCBoYXZlIGEgbG9vayBhdCBkaXNhc3NlbWJseSBvZiBzdGF0ZnMgZnVuY3Rpb24/CiAgICQg
-b2JqZHVtcCAtZCAuL2Eub3V0IHwgbGVzcwogICBZb3Ugd2lsbCBuZWVkIHRvIHVzZSBvYmpkdW1w
-IGZyb20geW91ciB0b29sY2hhaW4uCgo1LiBXaGF0IGxpYmMvdWNsaWJjIGxpYnJhcnkgYXJlIHlv
-dSB1c2luZyBvbiB0ZXN0IHN5c3RlbT8KClJlZ2FyZHMsCkphbgoKWzFdIGh0dHA6Ly93d3cuZ251
-Lm9yZy9zb2Z0d2FyZS9saWJjL21hbnVhbC9odG1sX25vZGUvRmVhdHVyZS1UZXN0LU1hY3Jvcy5o
-dG1sI0ZlYXR1cmUtVGVzdC1NYWNyb3MKCj4gCj4gSSBhbSB3b3JraW5nIG9uIDIuNi4zMi40NiBr
-ZXJuZWwuCj4gCj4gUmVnYXJkcwo+IEFqb3kKPiAKPiAKPiAKPiAKPiAKPiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQo+IEZyb206IEphbiBTdGFuY2VrIFttYWlsdG86anN0YW5jZWtAcmVkaGF0
-LmNvbV0KPiBTZW50OiBNb25kYXksIEp1bmUgMjMsIDIwMTQgNToxMyBQTQo+IFRvOiBBam95bW9u
-IEpvc2VwaAo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBTdWJqZWN0OiBS
-ZTogW0xUUF0gZnN0YXRmczAyIGlzc3VlIG9uIG1pcHM2NAo+IAo+IAo+IAo+IC0tLS0tIE9yaWdp
-bmFsIE1lc3NhZ2UgLS0tLS0KPiA+IEZyb206ICJBam95bW9uIEpvc2VwaCIgPEFKT1kuSk9TRVBI
-QExOVFRFQ0hTRVJWSUNFUy5DT00+Cj4gPiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cj4gPiBTZW50OiBGcmlkYXksIDIwIEp1bmUsIDIwMTQgMzo0MTowNiBQTQo+ID4gU3ViamVj
-dDogW0xUUF0gZnN0YXRmczAyIGlzc3VlIG9uIG1pcHM2NAo+ID4KPiA+Cj4gPgo+ID4gSGksCj4g
-Pgo+ID4gSSBhbSB0ZXN0aW5nIG1pcHM2NCB3aXRoIExUUC4gVGhlIHByb2JsZW0gaXMgd2l0aCBm
-c3RhdGZzMDIuYyBmaWxlLiBUaGUKPiA+IHRlc3QKPiA+IGNhc2Ugd2FzIGZhaWxpbmcgaW4gbXkg
-cGFydGljdWxhciBhcmNoLiBGb3IgZGVidWdnaW5nIHB1cnBvc2UgSSB3cml0ZSB0aGUKPiA+IHNh
-bWUgY29kZSBhbmQgZXhlY3V0ZWQuCj4gPgo+ID4gcmV0ID0gZnN0YXRmcyggLTEsJmJ1ZiApOwo+
-ID4KPiA+IHByaW50ZigiUmV0cnVuIHZhbHVlID0lZCwgZXJyb3JudW1iZXIgJWQgRUJBREYgaXMg
-JWQgJXMgRkQgJWQgcG9pbnRlciAlcAo+ID4gXG4iLHJldCxlcnJubywgRUJBREYsc3RyZXJyb3Io
-ZXJybm8pLC0xLCZidWYpOwo+ID4KPiA+IGl0IHdhcyBnaXZpbmcgYSBvdXRwdXQgbGlrZQo+ID4K
-PiA+IFJldHJ1biB2YWx1ZSA9LSAxICwgZXJyb3JudW1iZXIgOSBFQkFERiBpcyA5IEJhZCBmaWxl
-IGRlc2NyaXB0b3IgRkQgLTEKPiA+IHBvaW50ZXIgMHgxMjAwMTExMzAKPiA+Cj4gPiBCdXQgd2hl
-biBJIGV4ZWN1dGVkIExUUCB0ZXN0Y2FzZSB3aXRoIHNvbWUgZGVidWcgcHJpbnQgYWRkZWQKPiA+
-Cj4gPiBURVNUKGZzdGF0ZnMoVENbaV0uZmQsIChUQ1tpXSkuc2J1ZikpOwo+ID4KPiA+IGlmIChU
-RVNUX1JFVFVSTiAhPSAtMSkgewo+ID4KPiA+IHRzdF9yZXNtKFRGQUlMLCAiY2FsbCBzdWNjZWVk
-ZWQgdW5leHBlY3RlZGx5IHJldHVybiAlZCAlcyBGRCAlZCwgcG9pbnRlcgo+ID4gc2J1Zgo+ID4g
-JXAgIixURVNUX1JFVFVSTixzdHJlcnJvcihlcnJubyksVENbaV0uZmQsIFRDW2ldLnNidWYpOwo+
-ID4KPiA+IEkgZ290IGEgcHJpbnQgbGlrZSB0aGlzCj4gPgo+ID4gZnN0YXRmczAyIDEgVEZBSUwg
-OiBjYWxsIHN1Y2NlZWRlZCB1bmV4cGVjdGVkbHkgcmV0dXJuIDE2OTA3MjkwNzIgU3VjY2Vzcwo+
-ID4gRkQKPiA+IC0xLCBwb2ludGVyIHNidWYgMHgxMjAwMWJhMzAKPiA+Cj4gPiBJIGZlZWwgbGlr
-ZSBib3RoIGFyZSBkb2luZyB0aGUgc2FtZSBqb2LigKYgQnV0IHdoZW4gSSBhbSBydW5uaW5nIGl0
-IGluIExUUAo+ID4gZW52aXJvbm1lbnQgSSBhbSBnZXR0aW5nIGEgcmV0dXJuIGFzIDE2OTA3Mjkw
-NzIuIEkgd2FzIG5vdCBhYmxlIHRvIGZpbmQgYW55Cj4gPiBwcm9ibGVtIGluIFRFU1QgbWFjcm8u
-IENhbiBhbnlvbmUgcGxlYXNlIGhlbHAgbWUgb3V0IGluIGRlYnVnZ2luZyB0aGlzLgo+IAo+IFdo
-YXQga2VybmVsL0xUUCByZWxlYXNlIGFyZSB5b3UgdXNpbmc/Cj4gCj4gWW91IGNhbiB0cnkgcnVu
-bmluZyBnb29kIGFuZCBiYWQgY2FzZSB2aWEgc3RyYWNlLiBJZiBwYXJhbWV0ZXJzIHdpbGwgYmUK
-PiBjb3JyZWN0IGFuZCB5b3Ugc3RpbGwgZ2V0IHN0cmFuZ2UgbnVtYmVycyBpbiBzdHJhY2Ugb3V0
-cHV0LCBpdCdzIGxpa2VseSBhCj4ga2VybmVsIGJ1Zy4KPiAKPiBSZWdhcmRzLAo+IEphbgo+IEwm
-VCBUZWNobm9sb2d5IFNlcnZpY2VzIEx0ZAo+IAo+IHd3dy5MbnRUZWNoc2VydmljZXMuY29tPGh0
-dHA6Ly93d3cubG50dGVjaHNlcnZpY2VzLmNvbS8+Cj4gCj4gVGhpcyBFbWFpbCBtYXkgY29udGFp
-biBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBmb3IgdGhlCj4gaW50ZW5k
-ZWQgcmVjaXBpZW50IChzKS4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwg
-cGxlYXNlIGRvIG5vdAo+IHVzZSBvciBkaXNzZW1pbmF0ZSB0aGUgaW5mb3JtYXRpb24sIG5vdGlm
-eSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgaXQgZnJvbQo+IHlvdXIgc3lzdGVtLgo+IAoKLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tCkhQQ0MgU3lzdGVtcyBPcGVuIFNvdXJjZSBCaWcgRGF0YSBQbGF0Zm9y
-bSBmcm9tIExleGlzTmV4aXMgUmlzayBTb2x1dGlvbnMKRmluZCBXaGF0IE1hdHRlcnMgTW9zdCBp
-biBZb3VyIEJpZyBEYXRhIHdpdGggSFBDQyBTeXN0ZW1zCk9wZW4gU291cmNlLiBGYXN0LiBTY2Fs
-YWJsZS4gU2ltcGxlLiBJZGVhbCBmb3IgRGlydHkgRGF0YS4KTGV2ZXJhZ2VzIEdyYXBoIEFuYWx5
-c2lzIGZvciBGYXN0IFByb2Nlc3NpbmcgJiBFYXN5IERhdGEgRXhwbG9yYXRpb24KaHR0cDovL3Au
-c2YubmV0L3NmdS9ocGNjc3lzdGVtcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+Hi!
+> Add renameat.h to encapsulate renameat syscall.
+> Delete some useless comments.
+> Use some SAFE_* macros.
+> Move the test body from main() to renameat_verify().
+
+Pushed with folling changes, thanks.
+(because it's important to check not only the errno but the return value
+ as well)
+
+ /*
+  * Copyright (c) International Business Machines  Corp., 2006
++ *  Author: Yi Yang <yyangcdl@cn.ibm.com>
+  *
+  * This program is free software;  you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -150,6 +151,16 @@ static void renameat_verify(const struct test_case_t *tc)
+ 	TEST(renameat(*(tc->oldfdptr), tc->oldpath,
+ 			*(tc->newfdptr), tc->newpath));
+ 
++	if (tc->exp_errno && TEST_RETURN != -1) {
++		tst_resm(TFAIL, "renameat() succeeded unexpectedly");
++		return;
++	}
++
++	if (tc->exp_errno == 0 && TEST_RETURN != 0) {
++		tst_resm(TFAIL | TTERRNO, "renameat() failed unexpectedly");
++		return;
++	}
++
+ 	if (TEST_ERRNO == tc->exp_errno) {
+ 		tst_resm(TPASS | TTERRNO,
+ 		"renameat() returned the expected value");
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
