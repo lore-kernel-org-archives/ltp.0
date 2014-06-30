@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <njoly@lanfeust.sis.pasteur.fr>) id 1WyjJp-0008IM-BD
-	for ltp-list@lists.sourceforge.net; Sun, 22 Jun 2014 15:04:33 +0000
-Received: from mail-interne2.pasteur.fr ([157.99.64.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WyjJl-0000y4-4u
-	for ltp-list@lists.sourceforge.net; Sun, 22 Jun 2014 15:04:33 +0000
-From: Nicolas Joly <njoly@pasteur.fr>
-Date: Sun, 22 Jun 2014 17:03:57 +0200
-Message-Id: <1403449437-25028-1-git-send-email-njoly@pasteur.fr>
-Subject: [LTP] [PATCH] Consistently use tst_require_root() for root user
-	check in syscalls.
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1X1Z8c-0007K8-UR
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 10:48:42 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X1Z8a-0006Ql-TQ
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 10:48:42 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s5UAmYkt001721
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:35 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s5UAmXN5023883
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:34 GMT
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s5UAmXmR023866
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:33 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 30 Jun 2014 14:48:24 +0400
+Message-Id: <1404125304-28650-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 3/3] syscalls: use tst_get_unused_pid()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,1697 +43,891 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+Modified the testcases to use the tst_get_unused_pid() interface.
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/adjtimex/adjtimex02.c                   | 6 +-----
- testcases/kernel/syscalls/chmod/chmod05.c                         | 6 +-----
- testcases/kernel/syscalls/fchmod/fchmod02.c                       | 8 ++------
- testcases/kernel/syscalls/fchmod/fchmod04.c                       | 4 +---
- testcases/kernel/syscalls/fchmod/fchmod05.c                       | 8 ++------
- testcases/kernel/syscalls/getresgid/getresgid02.c                 | 7 ++-----
- testcases/kernel/syscalls/getresgid/getresgid03.c                 | 7 ++-----
- testcases/kernel/syscalls/getresuid/getresuid02.c                 | 7 ++-----
- testcases/kernel/syscalls/getresuid/getresuid03.c                 | 7 ++-----
- testcases/kernel/syscalls/ioperm/ioperm01.c                       | 6 +-----
- testcases/kernel/syscalls/ioperm/ioperm02.c                       | 6 +-----
- testcases/kernel/syscalls/iopl/iopl01.c                           | 6 +-----
- testcases/kernel/syscalls/iopl/iopl02.c                           | 6 +-----
- testcases/kernel/syscalls/ipc/msgctl/msgctl04.c                   | 5 ++---
- testcases/kernel/syscalls/ipc/msgget/msgget04.c                   | 4 +---
- testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c                   | 5 ++---
- testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c                   | 4 +---
- testcases/kernel/syscalls/ipc/semctl/semctl02.c                   | 4 +---
- testcases/kernel/syscalls/ipc/semget/semget02.c                   | 5 ++---
- testcases/kernel/syscalls/ipc/shmctl/shmctl02.c                   | 5 ++---
- testcases/kernel/syscalls/ipc/shmget/shmget04.c                   | 4 +---
- testcases/kernel/syscalls/mkdir/mkdir02.c                         | 5 +----
- testcases/kernel/syscalls/mkdir/mkdir04.c                         | 5 +----
- testcases/kernel/syscalls/mkdir/mkdir05.c                         | 6 ++----
- testcases/kernel/syscalls/mknod/mknod02.c                         | 8 ++------
- testcases/kernel/syscalls/mknod/mknod03.c                         | 7 +------
- testcases/kernel/syscalls/mknod/mknod04.c                         | 7 +------
- testcases/kernel/syscalls/mknod/mknod05.c                         | 7 +------
- testcases/kernel/syscalls/mknod/mknod06.c                         | 8 ++------
- testcases/kernel/syscalls/mknod/mknod08.c                         | 7 +------
- testcases/kernel/syscalls/mknod/mknod09.c                         | 8 ++------
- testcases/kernel/syscalls/mlockall/mlockall01.c                   | 7 +------
- testcases/kernel/syscalls/move_pages/move_pages11.c               | 7 ++-----
- testcases/kernel/syscalls/munlock/munlock01.c                     | 6 +-----
- testcases/kernel/syscalls/munlockall/munlockall01.c               | 5 +----
- testcases/kernel/syscalls/munlockall/munlockall02.c               | 5 +----
- testcases/kernel/syscalls/nice/nice04.c                           | 4 +---
- testcases/kernel/syscalls/open/open05.c                           | 4 +---
- testcases/kernel/syscalls/open/open08.c                           | 5 ++---
- testcases/kernel/syscalls/reboot/reboot01.c                       | 6 +-----
- testcases/kernel/syscalls/reboot/reboot02.c                       | 6 +-----
- testcases/kernel/syscalls/rename/rename09.c                       | 5 +----
- testcases/kernel/syscalls/rename/rename12.c                       | 5 +----
- testcases/kernel/syscalls/rmdir/rmdir03.c                         | 5 +----
- .../kernel/syscalls/sched_setscheduler/sched_setscheduler02.c     | 5 +----
- testcases/kernel/syscalls/setdomainname/setdomainname01.c         | 6 +-----
- testcases/kernel/syscalls/setdomainname/setdomainname02.c         | 6 +-----
- testcases/kernel/syscalls/setdomainname/setdomainname03.c         | 4 +---
- testcases/kernel/syscalls/setgroups/setgroups03.c                 | 5 +----
- testcases/kernel/syscalls/setgroups/setgroups04.c                 | 6 +-----
- testcases/kernel/syscalls/sethostname/sethostname01.c             | 7 ++-----
- testcases/kernel/syscalls/sethostname/sethostname02.c             | 7 ++-----
- testcases/kernel/syscalls/sethostname/sethostname03.c             | 7 ++-----
- testcases/kernel/syscalls/setpriority/setpriority02.c             | 7 +++----
- testcases/kernel/syscalls/setpriority/setpriority05.c             | 5 ++---
- testcases/kernel/syscalls/setresgid/setresgid01.c                 | 7 ++-----
- testcases/kernel/syscalls/setresgid/setresgid02.c                 | 7 ++-----
- testcases/kernel/syscalls/setresgid/setresgid03.c                 | 7 ++-----
- testcases/kernel/syscalls/setresuid/setresuid01.c                 | 7 +------
- testcases/kernel/syscalls/setresuid/setresuid02.c                 | 7 +------
- testcases/kernel/syscalls/setresuid/setresuid03.c                 | 7 +------
- testcases/kernel/syscalls/setrlimit/setrlimit02.c                 | 4 +---
- testcases/kernel/syscalls/setrlimit/setrlimit03.c                 | 5 +----
- testcases/kernel/syscalls/settimeofday/settimeofday01.c           | 7 +------
- testcases/kernel/syscalls/settimeofday/settimeofday02.c           | 7 +------
- testcases/kernel/syscalls/stat/stat01.c                           | 4 ++--
- testcases/kernel/syscalls/stat/stat02.c                           | 5 ++---
- testcases/kernel/syscalls/stat/stat03.c                           | 5 ++---
- testcases/kernel/syscalls/stime/stime01.c                         | 6 +-----
- testcases/kernel/syscalls/stime/stime02.c                         | 4 +---
- testcases/kernel/syscalls/symlink/symlink03.c                     | 5 ++---
- testcases/kernel/syscalls/syslog/syslog11.c                       | 7 +------
- testcases/kernel/syscalls/syslog/syslog12.c                       | 7 +------
- testcases/kernel/syscalls/utime/utime01.c                         | 8 ++------
- testcases/kernel/syscalls/utime/utime02.c                         | 5 ++---
- testcases/kernel/syscalls/utime/utime03.c                         | 8 ++------
- testcases/kernel/syscalls/utime/utime04.c                         | 8 ++------
- testcases/kernel/syscalls/utime/utime05.c                         | 5 ++---
- testcases/kernel/syscalls/utime/utime06.c                         | 8 ++------
- 79 files changed, 114 insertions(+), 359 deletions(-)
+ testcases/kernel/syscalls/capget/capget02.c        |    4 +-
+ testcases/kernel/syscalls/cma/process_vm01.c       |   11 +----
+ .../syscalls/get_robust_list/get_robust_list01.c   |    7 ++-
+ testcases/kernel/syscalls/getpgid/getpgid02.c      |   13 +----
+ testcases/kernel/syscalls/getsid/getsid02.c        |    6 +-
+ testcases/kernel/syscalls/kill/kill04.c            |   56 ++------------------
+ .../syscalls/migrate_pages/migrate_pages01.c       |   13 +----
+ .../kernel/syscalls/move_pages/move_pages07.c      |   15 +-----
+ testcases/kernel/syscalls/ptrace/ptrace03.c        |   17 ++++---
+ .../sched_getaffinity/sched_getaffinity01.c        |   27 ++--------
+ .../syscalls/sched_getparam/sched_getparam03.c     |   15 ++++--
+ .../sched_getscheduler/sched_getscheduler02.c      |    7 ++-
+ .../sched_rr_get_interval03.c                      |   18 ++++---
+ .../syscalls/sched_setparam/sched_setparam04.c     |   19 ++++---
+ .../sched_setscheduler/sched_setscheduler01.c      |   18 ++++---
+ testcases/kernel/syscalls/setpgid/setpgid02.c      |   21 ++++---
+ .../kernel/syscalls/setpriority/setpriority04.c    |   25 ++-------
+ testcases/kernel/syscalls/tkill/tkill02.c          |   20 +++++---
+ 18 files changed, 108 insertions(+), 204 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-index 0c5b69f..d686e39 100644
---- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-+++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-@@ -203,14 +203,10 @@ int main(int ac, char **av)
+diff --git a/testcases/kernel/syscalls/capget/capget02.c b/testcases/kernel/syscalls/capget/capget02.c
+index 946e824..0580541 100644
+--- a/testcases/kernel/syscalls/capget/capget02.c
++++ b/testcases/kernel/syscalls/capget/capget02.c
+@@ -88,8 +88,6 @@
+ /*   version, then you may want to try switching to it. -Robbie W.        */
+ /**************************************************************************/
+ 
+-#define INVALID_PID 999999
+-
+ static void setup();
+ static void cleanup();
+ static void test_setup(int);
+@@ -203,7 +201,7 @@ void test_setup(int i)
+ 		break;
+ 	case 4:
+ 		header.version = _LINUX_CAPABILITY_VERSION;
+-		header.pid = INVALID_PID;
++		header.pid = tst_get_unused_pid(cleanup);
+ 		break;
+ 	}
+ }
+diff --git a/testcases/kernel/syscalls/cma/process_vm01.c b/testcases/kernel/syscalls/cma/process_vm01.c
+index 6ff744c..7e4684f 100644
+--- a/testcases/kernel/syscalls/cma/process_vm01.c
++++ b/testcases/kernel/syscalls/cma/process_vm01.c
+@@ -312,11 +312,8 @@ static void cma_test_iov_invalid(void)
+ 
+ static void cma_test_invalid_pid(void)
+ {
+-	const char pid_max[] = "/proc/sys/kernel/pid_max";
+ 	pid_t invalid_pid = -1;
+ 	struct process_vm_params *params;
+-	FILE *fp;
+-	char buff[512];
+ 
+ 	params = cma_alloc_sane_params();
+ 	tst_resm(TINFO, "test_invalid_pid");
+@@ -326,13 +323,7 @@ static void cma_test_invalid_pid(void)
+ 	cma_check_errno(ESRCH);
+ 	cma_free_params(params);
+ 
+-	fp = fopen(pid_max, "r");
+-	if (fp == NULL)
+-		tst_brkm(TBROK, cleanup, "Could not open %s", pid_max);
+-	if (!fgets(buff, sizeof(buff), fp))
+-		tst_brkm(TBROK, cleanup, "Could not read %s", pid_max);
+-	fclose(fp);
+-	invalid_pid = atol(buff) + 1;
++	invalid_pid = tst_get_unused_pid(cleanup);
+ 
+ 	params = cma_alloc_sane_params();
+ 	params->pid = invalid_pid;
+diff --git a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+index e91a506..5781441 100644
+--- a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
++++ b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+@@ -68,7 +68,7 @@ struct robust_list_head {
+ };
+ 
+ int exp_enos[] = { ESRCH, EPERM, EFAULT, 0 };
+-static unsigned int pid_max;
++static pid_t unused_pid;
+ 
+ void setup(void);
+ void cleanup(void);
+@@ -135,7 +135,7 @@ int main(int argc, char **argv)
+ 		 * find the task specified by the pid argument.
+ 		 */
+ 
+-		TEST(ltp_syscall(__NR_get_robust_list, pid_max,
++		TEST(ltp_syscall(__NR_get_robust_list, unused_pid,
+ 				      (struct robust_list_head *)&head,
+ 				      &len_ptr));
+ 
+@@ -191,7 +191,8 @@ void setup(void)
+ 	tst_require_root(NULL);
+ 
+ 	TEST_EXP_ENOS(exp_enos);
+-	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/pid_max", "%u", &pid_max);
++
++	unused_pid = tst_get_unused_pid(cleanup);
+ 
+ 	TEST_PAUSE;
+ }
+diff --git a/testcases/kernel/syscalls/getpgid/getpgid02.c b/testcases/kernel/syscalls/getpgid/getpgid02.c
+index 4bcec58..7b5e530 100644
+--- a/testcases/kernel/syscalls/getpgid/getpgid02.c
++++ b/testcases/kernel/syscalls/getpgid/getpgid02.c
+@@ -135,18 +135,7 @@ void setup(void)
+ 
+ 	pgid_0 = BADPID;
+ 
+-	/*
+-	 * Find a pid that isn't currently being used.  Start
+-	 * at 'our pid - 1' and go backwards until we find one.
+-	 * In this way, we can be reasonably sure that the pid
+-	 * we find won't be reused for a while as new pids are
+-	 * allocated counting up to PID_MAX.
+-	 */
+-	for (pgid_1 = getpid() - 1; --pgid_1 > 0;) {
+-		if (kill(pgid_1, 0) < 0 && errno == ESRCH) {
+-			break;
+-		}
+-	}
++	pgid_1 = tst_get_unused_pid(cleanup);
+ }
+ 
+ /*
+diff --git a/testcases/kernel/syscalls/getsid/getsid02.c b/testcases/kernel/syscalls/getsid/getsid02.c
+index 58e2feb..3582d63 100644
+--- a/testcases/kernel/syscalls/getsid/getsid02.c
++++ b/testcases/kernel/syscalls/getsid/getsid02.c
+@@ -28,7 +28,7 @@
+ char *TCID = "getsid02";
+ int TST_TOTAL = 1;
+ 
+-static unsigned long pid_max;
++static pid_t unused_pid;
+ 
+ static void cleanup(void);
+ static void setup(void);
+@@ -48,7 +48,7 @@ int main(int ac, char **av)
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		TEST(getsid(pid_max + 1));
++		TEST(getsid(unused_pid));
+ 
+ 		if (TEST_RETURN == 0) {
+ 			tst_resm(TFAIL, "call succeed when failure expected");
+@@ -74,7 +74,7 @@ int main(int ac, char **av)
+ 
+ void setup(void)
+ {
+-	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/pid_max", "%lu", &pid_max);
++	unused_pid = tst_get_unused_pid(cleanup);
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+diff --git a/testcases/kernel/syscalls/kill/kill04.c b/testcases/kernel/syscalls/kill/kill04.c
+index 5f36dd4..8723f67 100644
+--- a/testcases/kernel/syscalls/kill/kill04.c
++++ b/testcases/kernel/syscalls/kill/kill04.c
+@@ -77,15 +77,11 @@ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	const char *msg;
+-	pid_t pid, fake_pid;
+-	int exno, status, fake_status, nsig;
++	pid_t fake_pid;
+ 
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+ 	}
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child, "");
+-#endif
+ 
+ 	setup();		/* global setup */
+ 
+@@ -96,41 +92,9 @@ int main(int ac, char **av)
+ 
+ 		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+-		status = 1;
+-		exno = 1;
+-		pid = FORK_OR_VFORK();
+-		if (pid < 0) {
+-			tst_brkm(TBROK, cleanup, "Fork failed");
+-		} else if (pid == 0) {
+-#ifdef UCLINUX
+-			if (self_exec(av[0], "") < 0) {
+-				tst_brkm(TBROK, cleanup,
+-					 "self_exec of child failed");
+-			}
+-#else
+-			do_child();
+-#endif
+-		} else {
+-			fake_pid = FORK_OR_VFORK();
+-			if (fake_pid < 0) {
+-				tst_brkm(TBROK, cleanup, "Second fork failed");
+-			} else if (fake_pid == 0) {
+-#ifdef UCLINUX
+-				if (self_exec(av[0], "") < 0) {
+-					tst_brkm(TBROK, cleanup,
+-						 "second self_exec "
+-						 "of child failed");
+-				}
+-#else
+-				do_child();
+-#endif
+-			}
+-			kill(fake_pid, TEST_SIG);
+-			waitpid(fake_pid, &fake_status, 0);
+-			TEST(kill(fake_pid, TEST_SIG));
+-			kill(pid, TEST_SIG);
+-			waitpid(pid, &status, 0);
+-		}
++
++		fake_pid = tst_get_unused_pid(cleanup);
++		TEST(kill(fake_pid, TEST_SIG));
+ 
+ 		if (TEST_RETURN != -1) {
+ 			tst_brkm(TFAIL, cleanup, "%s failed - errno = %d : %s "
+@@ -143,7 +107,6 @@ int main(int ac, char **av)
+ 		 * Check to see if the errno was set to the expected
+ 		 * value of 3 : ESRCH
+ 		 */
+-		nsig = WTERMSIG(status);
+ 		TEST_ERROR_LOG(TEST_ERRNO);
+ 		if (TEST_ERRNO == ESRCH) {
+ 			tst_resm(TPASS, "errno set to %d : %s, as "
+@@ -161,17 +124,6 @@ int main(int ac, char **av)
+ }
+ 
+ /*
+- * do_child()
+- */
+-void do_child(void)
+-{
+-	int exno = 1;
+-
+-	pause();
+-	exit(exno);
+-}
+-
+-/*
+  * setup() - performs all ONE TIME setup for this test
+  */
+ void setup(void)
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+index 6796e0c..e736770 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+@@ -75,9 +75,6 @@ static void test_sane_nodes(void)
+ 
+ static void test_invalid_pid(void)
+ {
+-	const char pid_max[] = "/proc/sys/kernel/pid_max";
+-	FILE *fp;
+-	char buff[512];
+ 	pid_t invalid_pid = -1;
+ 
+ 	tst_resm(TINFO, "test_invalid_pid -1");
+@@ -86,14 +83,8 @@ static void test_invalid_pid(void)
+ 	check_ret(-1);
+ 	check_errno(ESRCH);
+ 
+-	tst_resm(TINFO, "test_invalid_pid pid_max+1");
+-	fp = fopen(pid_max, "r");
+-	if (fp == NULL)
+-		tst_brkm(TBROK, cleanup, "Could not open %s", pid_max);
+-	if (!fgets(buff, sizeof(buff), fp))
+-		tst_brkm(TBROK, cleanup, "Could not read %s", pid_max);
+-	fclose(fp);
+-	invalid_pid = atol(buff) + 1;
++	tst_resm(TINFO, "test_invalid_pid unused pid");
++	invalid_pid = tst_get_unused_pid(cleanup);
+ 	TEST(ltp_syscall(__NR_migrate_pages, invalid_pid, sane_max_node,
+ 		     sane_old_nodes, sane_new_nodes));
+ 	check_ret(-1);
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages07.c b/testcases/kernel/syscalls/move_pages/move_pages07.c
+index 3108b44..1c7f17d 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages07.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
+@@ -95,7 +95,7 @@ int main(int argc, char **argv)
+ 		void *pages[TEST_PAGES] = { 0 };
+ 		int nodes[TEST_PAGES];
+ 		int status[TEST_PAGES];
+-		int ipid;
++		pid_t ipid;
+ 
+ 		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+@@ -107,15 +107,7 @@ int main(int argc, char **argv)
+ 		for (i = 0; i < TEST_PAGES; i++)
+ 			nodes[i] = to_node;
+ 
+-		ipid = fork();
+-		if (ipid == -1) {
+-			tst_resm(TBROK | TERRNO, "fork failed");
+-			goto err_free_pages;
+-		}
+-		if (ipid == 0)
+-			exit(0);
+-
+-		wait(NULL);
++		ipid = tst_get_unused_pid(cleanup);
+ 
+ 		ret = numa_move_pages(ipid, TEST_PAGES, pages, nodes,
+ 				      status, MPOL_MF_MOVE);
+@@ -125,9 +117,6 @@ int main(int argc, char **argv)
+ 		else
+ 			tst_resm(TFAIL|TERRNO, "move pages did not fail "
+ 				 "with ESRCH ret: %d", ret);
+-
+-err_free_pages:
+-		free_pages(pages, TEST_PAGES);
+ 	}
+ #else
+ 	tst_resm(TCONF, "move_pages support not found.");
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace03.c b/testcases/kernel/syscalls/ptrace/ptrace03.c
+index 741e195..17274cb 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace03.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace03.c
+@@ -93,8 +93,6 @@
+ #include "test.h"
+ #include "usctest.h"
+ 
+-#define INVALID_PID 999999
+-
+ static void setup(void);
+ static void cleanup(void);
+ 
+@@ -102,15 +100,19 @@ static int exp_enos[] = { EPERM, ESRCH, 0 };
+ 
+ char *TCID = "ptrace03";
+ 
++static pid_t init_pid = 1;
++static pid_t unused_pid;
++static pid_t zero_pid;
++
+ struct test_case_t {
+ 	enum __ptrace_request request;
+-	pid_t pid;
++	pid_t *pid;
+ 	int exp_errno;
+ } test_cases[] = {
+ 	{
+-	PTRACE_ATTACH, 1, EPERM}, {
+-	PTRACE_ATTACH, INVALID_PID, ESRCH}, {
+-PTRACE_TRACEME, 0, EPERM},};
++	PTRACE_ATTACH, &init_pid, EPERM}, {
++	PTRACE_ATTACH, &unused_pid, ESRCH}, {
++	PTRACE_TRACEME, &zero_pid, EPERM},};
+ 
+ int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+ 
+@@ -165,7 +167,7 @@ int main(int ac, char **av)
+ 				}
+ 
+ 				TEST(ptrace(test_cases[i].request,
+-					    test_cases[i].pid, NULL, NULL));
++					    *(test_cases[i].pid), NULL, NULL));
+ 				if ((TEST_RETURN == -1) && (TEST_ERRNO ==
+ 							    test_cases
+ 							    [i].exp_errno)) {
+@@ -205,6 +207,7 @@ int main(int ac, char **av)
  /* setup() - performs all ONE TIME setup for this test */
  void setup(void)
  {
-+	tst_require_root(NULL);
++	unused_pid = tst_get_unused_pid(cleanup);
  
- 	tim_save.modes = 0;
+ 	/* capture signals
+ 	   tst_sig(FORK, DEF_HANDLER, cleanup); */
+diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+index 606c8f3..51853f1 100644
+--- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
++++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+@@ -96,7 +96,7 @@ static void do_test(void)
+ 	int i;
+ 	cpu_set_t *mask;
+ 	int nrcpus = 1024;
+-	pid_t pid;
++	pid_t unused_pid;
+ 	unsigned len;
  
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
+ #if __GLIBC_PREREQ(2, 7)
+@@ -155,28 +155,9 @@ realloc:
+ 	/* negative tests */
+ 	QUICK_TEST(sched_getaffinity(0, len, (cpu_set_t *) - 1));
+ 	QUICK_TEST(sched_getaffinity(0, 0, mask));
+-	/*
+-	 * pid_t -> int -- the actual kernel limit is lower
+-	 * though, but this is a negative test, not a positive
+-	 * one.
+-	 *
+-	 * Push comes to shove, if the user doesn't have the
+-	 * ability to kill(3) processes (errno = EPERM), then
+-	 * set the pid to the highest possible represented
+-	 * value and cross your fingers in the hope that
+-	 * a) Linux somehow hasn't started allocating PIDs
+-	 * this high and b) the PID = INT_MAX isn't in fact
+-	 * running.
+-	 */
+-	for (pid = 2; pid < INT_MAX; pid++) {
+-		if (kill(pid, 0) == -1) {
+-			if (errno == ESRCH)
+-				break;
+-			else if (errno == EPERM)
+-				pid = INT_MAX - 1;
+-		}
 -	}
--
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* set the expected errnos... */
-diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
-index 3293ee6..495d330 100644
---- a/testcases/kernel/syscalls/chmod/chmod05.c
-+++ b/testcases/kernel/syscalls/chmod/chmod05.c
-@@ -178,11 +178,7 @@ void setup(void)
- 	struct passwd *nobody_u;
- 	struct group *bin_group;
- 
--//wjh Improper comment! This makes sure we _are_ "root" not "nobody"
--	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
-+	tst_require_root(NULL);
- 
- 	TEST_PAUSE;
- 
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod02.c b/testcases/kernel/syscalls/fchmod/fchmod02.c
-index 0af95c9..11d45d3 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod02.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod02.c
-@@ -167,16 +167,12 @@ void setup(void)
- 	gid_t group1_gid;	/* user and process group id's */
- 	uid_t user1_uid;
- 
-+	tst_require_root(NULL);
+-	QUICK_TEST(sched_getaffinity(pid, len, mask));
 +
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
++	unused_pid = tst_get_unused_pid(cleanup);
++	QUICK_TEST(sched_getaffinity(unused_pid, len, mask));
+ 	CPU_FREE(mask);
+ }
  
- 	TEST_PAUSE;
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+index c58d6eb..c1c9e3b 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+@@ -88,17 +88,21 @@ char *TCID = "sched_getparam03";
+ static int exp_enos[] = { EINVAL, ESRCH, 0 };	/* 0 terminated list of *
+ 						 * expected errnos */
  
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	tst_tmpdir();
++static pid_t unused_pid;
++static pid_t zero_pid;
++static pid_t inval_pid = -1;
++
+ static struct test_case_t {
+ 	char *desc;
+-	pid_t pid;
++	pid_t *pid;
+ 	struct sched_param *p;
+ 	int exp_errno;
+ 	char err_desc[10];
+ } test_cases[] = {
+ 	{
+-	"test with non-existing pid", LARGE_PID, &param, ESRCH, "ESRCH"}, {
+-	"test invalid pid value", -1, &param, EINVAL, "EINVAL"}, {
+-"test with invalid address for p", 0, NULL, EINVAL, "EINVAL"},};
++	"test with non-existing pid", &unused_pid, &param, ESRCH, "ESRCH"}, {
++	"test invalid pid value", &inval_pid, &param, EINVAL, "EINVAL"}, {
++	"test with invalid address for p", &zero_pid, NULL, EINVAL, "EINVAL"},};
  
- 	/* Get the uid of guest user - ltpuser1 */
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod04.c b/testcases/kernel/syscalls/fchmod/fchmod04.c
-index a69cf37..b3b311f 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod04.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod04.c
-@@ -152,13 +152,11 @@ int main(int ac, char **av)
+ int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+ 
+@@ -123,7 +127,7 @@ int main(int ac, char **av)
+ 			 * conditions. verify that it fails with -1 return
+ 			 * value and sets appropriate errno.
+ 			 */
+-			TEST(sched_getparam(test_cases[ind].pid,
++			TEST(sched_getparam(*(test_cases[ind].pid),
+ 					    test_cases[ind].p));
+ 
+ 			if ((TEST_RETURN == -1) &&
+@@ -151,6 +155,7 @@ int main(int ac, char **av)
   */
  void setup(void)
  {
-+	tst_require_root(NULL);
++	unused_pid = tst_get_unused_pid(cleanup);
  
  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
  
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (seteuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "seteuid failed to "
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
-index 1897c81..cdce1a2 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod05.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
-@@ -170,13 +170,9 @@ void setup(void)
- 	struct passwd *nobody_u;
- 	struct group *bin_group;
+diff --git a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
+index 45e8e29..6f490be 100644
+--- a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
++++ b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
+@@ -46,13 +46,13 @@
+ #include "test.h"
+ #include "usctest.h"
  
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check that the test process id is not super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
-diff --git a/testcases/kernel/syscalls/getresgid/getresgid02.c b/testcases/kernel/syscalls/getresgid/getresgid02.c
-index c3c69cf..2088ec7 100644
---- a/testcases/kernel/syscalls/getresgid/getresgid02.c
-+++ b/testcases/kernel/syscalls/getresgid/getresgid02.c
-@@ -147,15 +147,12 @@ void setup(void)
- {
- 	struct passwd *user_id;	/* passwd struct for test user */
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, cleanup, "Must be super/root for this test!");
--	}
+-#define INVALID_PID	999999
 -
- 	/* Real user-id of the calling process */
- 	pr_gid = getgid();
+ char *TCID = "sched_getscheduler02";
+ int TST_TOTAL = 1;
  
-diff --git a/testcases/kernel/syscalls/getresgid/getresgid03.c b/testcases/kernel/syscalls/getresgid/getresgid03.c
-index c96e227..ab5733d 100644
---- a/testcases/kernel/syscalls/getresgid/getresgid03.c
-+++ b/testcases/kernel/syscalls/getresgid/getresgid03.c
-@@ -151,15 +151,12 @@ void setup(void)
- {
- 	struct passwd *user_id;	/* passwd struct for test user */
+ int exp_enos[] = { ESRCH, 0 };
  
-+	tst_require_root(NULL);
++static pid_t unused_pid;
 +
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ void setup(void);
+ void cleanup(void);
  
- 	TEST_PAUSE;
+@@ -73,7 +73,7 @@ int main(int ac, char **av)
+ 		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
  
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, cleanup, "Must be super/root for this test!");
--	}
--
- 	/* Real user-id of the calling process */
- 	pr_gid = getgid();
+-		TEST(sched_getscheduler(INVALID_PID));
++		TEST(sched_getscheduler(unused_pid));
  
-diff --git a/testcases/kernel/syscalls/getresuid/getresuid02.c b/testcases/kernel/syscalls/getresuid/getresuid02.c
-index 01b7ec3..4bea0ff 100644
---- a/testcases/kernel/syscalls/getresuid/getresuid02.c
-+++ b/testcases/kernel/syscalls/getresuid/getresuid02.c
-@@ -144,15 +144,12 @@ void setup(void)
- {
- 	struct passwd *user_id;	/* passwd struct for test user */
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, cleanup, "Must be super/root for this test!");
--	}
--
- 	/* Real user-id of the calling process */
- 	pr_uid = getuid();
- 
-diff --git a/testcases/kernel/syscalls/getresuid/getresuid03.c b/testcases/kernel/syscalls/getresuid/getresuid03.c
-index b5aab6d..95ae7e8 100644
---- a/testcases/kernel/syscalls/getresuid/getresuid03.c
-+++ b/testcases/kernel/syscalls/getresuid/getresuid03.c
-@@ -146,15 +146,12 @@ void setup(void)
- {
- 	struct passwd *user_id;	/* passwd struct for test user */
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, cleanup, "Must be super/root for this test!");
--	}
--
- 	/* Real user-id of the calling process */
- 	pr_uid = getuid();
- 
-diff --git a/testcases/kernel/syscalls/ioperm/ioperm01.c b/testcases/kernel/syscalls/ioperm/ioperm01.c
-index 176e0f0..016155f 100644
---- a/testcases/kernel/syscalls/ioperm/ioperm01.c
-+++ b/testcases/kernel/syscalls/ioperm/ioperm01.c
-@@ -127,14 +127,10 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test */
+ 		if (TEST_RETURN != -1) {
+ 			tst_resm(TFAIL, "sched_getscheduler(2) passed "
+@@ -99,6 +99,7 @@ int main(int ac, char **av)
+  */
  void setup(void)
  {
-+	tst_require_root(NULL);
++	unused_pid = tst_get_unused_pid(cleanup);
  
  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
  
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
+index 632240a..f0613f5 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
+@@ -75,8 +75,6 @@
+ #include "test.h"
+ #include "usctest.h"
+ 
+-#define PID_DONT_EXISTS 999999
 -
+ static void setup();
+ static void cleanup();
+ 
+@@ -84,18 +82,22 @@ char *TCID = "sched_rr_get_interval03";
+ struct timespec tp;
+ static int exp_enos[] = { EINVAL, ESRCH, EFAULT, 0 };
+ 
++static pid_t unused_pid;
++static pid_t inval_pid = -1;
++static pid_t zero_pid;
++
+ struct test_cases_t {
+-	pid_t pid;
++	pid_t *pid;
+ 	struct timespec *tp;
+ 	int exp_errno;
+ } test_cases[] = {
+ 	{
+-	-1, &tp, EINVAL}, {
+-	PID_DONT_EXISTS, &tp, ESRCH},
++	&inval_pid, &tp, EINVAL}, {
++	&unused_pid, &tp, ESRCH},
+ #ifndef UCLINUX
+ 	    /* Skip since uClinux does not implement memory protection */
+ 	{
+-	0, (struct timespec *)-1, EFAULT}
++	&zero_pid, (struct timespec *)-1, EFAULT}
+ #endif
+ };
+ 
+@@ -120,7 +122,7 @@ int main(int ac, char **av)
+ 			/*
+ 			 * Call sched_rr_get_interval(2)
+ 			 */
+-			TEST(sched_rr_get_interval(test_cases[i].pid,
++			TEST(sched_rr_get_interval(*(test_cases[i].pid),
+ 						   test_cases[i].tp));
+ 
+ 			if ((TEST_RETURN == -1) &&
+@@ -161,6 +163,8 @@ void setup(void)
+ 	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1) {
+ 		tst_brkm(TBROK, cleanup, "sched_setscheduler() failed");
+ 	}
++
++	unused_pid = tst_get_unused_pid(cleanup);
+ }
+ 
+ /*
+diff --git a/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c b/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
+index fc88ed1..16651f6 100644
+--- a/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
++++ b/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
+@@ -80,8 +80,6 @@
+ #include <sched.h>
+ #include <pwd.h>
+ 
+-#define LARGE_PID 999999
+-
+ static void cleanup(void);
+ static void setup(void);
+ 
+@@ -93,18 +91,22 @@ char *TCID = "sched_setparam04";
+ static int exp_enos[] = { EINVAL, ESRCH, 0 };	/* 0 terminated list of *
+ 						 * expected errnos */
+ 
++static pid_t unused_pid;
++static pid_t inval_pid = -1;
++static pid_t zero_pid;
++
+ static struct test_case_t {
+ 	char *desc;
+-	pid_t pid;
++	pid_t *pid;
+ 	struct sched_param *p;
+ 	int exp_errno;
+ 	char err_desc[10];
+ } test_cases[] = {
+ 	{
+-	"test with non-existing pid", LARGE_PID, &param, ESRCH, "ESRCH"}, {
+-	"test invalid pid value", -1, &param, EINVAL, "EINVAL"}, {
+-	"test with invalid address for p", 0, NULL, EINVAL, "EINVAL"}, {
+-	"test with invalid p.sched_priority", 0, &param1, EINVAL,
++	"test with non-existing pid", &unused_pid, &param, ESRCH, "ESRCH"}, {
++	"test invalid pid value", &inval_pid, &param, EINVAL, "EINVAL"}, {
++	"test with invalid address for p", &zero_pid, NULL, EINVAL, "EINVAL"}, {
++	"test with invalid p.sched_priority", &zero_pid, &param1, EINVAL,
+ 		    "EINVAL"}
+ };
+ 
+@@ -129,7 +131,7 @@ int main(int ac, char **av)
+ 			/*
+ 			 * call the system call with the TEST() macro
+ 			 */
+-			TEST(sched_setparam(test_cases[ind].pid,
++			TEST(sched_setparam(*(test_cases[ind].pid),
+ 					    test_cases[ind].p));
+ 
+ 			if ((TEST_RETURN == -1) &&
+@@ -157,6 +159,7 @@ int main(int ac, char **av)
+  */
+ void setup(void)
+ {
++	unused_pid = tst_get_unused_pid(cleanup);
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c
+index c840ce4..a3816d1 100644
+--- a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c
++++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c
+@@ -59,7 +59,6 @@
+ #include "usctest.h"
+ 
+ #define SCHED_INVALID	99
+-#define INVALID_PID	999999
+ 
+ char *TCID = "sched_setscheduler01";
+ 
+@@ -70,27 +69,31 @@ int exp_enos[] = { ESRCH, EINVAL, EFAULT, 0 };
+ void setup(void);
+ void cleanup(void);
+ 
++static pid_t unused_pid;
++static pid_t init_pid = 1;
++static pid_t zero_pid;
++
+ struct test_case_t {
+-	pid_t pid;
++	pid_t *pid;
+ 	int policy;
+ 	struct sched_param *p;
+ 	int error;
+ } TC[] = {
+ 	/* The pid is invalid - ESRCH */
+ 	{
+-	INVALID_PID, SCHED_OTHER, &param, ESRCH},
++	&unused_pid, SCHED_OTHER, &param, ESRCH},
+ 	    /* The policy is invalid - EINVAL */
+ 	{
+-	1, SCHED_INVALID, &param, EINVAL},
++	&init_pid, SCHED_INVALID, &param, EINVAL},
+ #ifndef UCLINUX
+ 	    /* Skip since uClinux does not implement memory protection */
+ 	    /* The param address is invalid - EFAULT */
+ 	{
+-	1, SCHED_OTHER, (struct sched_param *)-1, EFAULT},
++	&init_pid, SCHED_OTHER, (struct sched_param *)-1, EFAULT},
+ #endif
+ 	    /* The priority value in param invalid - EINVAL */
+ 	{
+-	0, SCHED_OTHER, &param1, EINVAL}
++	&zero_pid, SCHED_OTHER, &param1, EINVAL}
+ };
+ 
+ int TST_TOTAL = sizeof(TC) / sizeof(*TC);
+@@ -118,7 +121,7 @@ int main(int ac, char **av)
+ 		/* loop through the test cases */
+ 		for (i = 0; i < TST_TOTAL; i++) {
+ 
+-			TEST(sched_setscheduler(TC[i].pid, TC[i].policy,
++			TEST(sched_setscheduler(*(TC[i].pid), TC[i].policy,
+ 						TC[i].p));
+ 
+ 			if (TEST_RETURN != -1) {
+@@ -150,6 +153,7 @@ int main(int ac, char **av)
+  */
+ void setup(void)
+ {
++	unused_pid = tst_get_unused_pid(cleanup);
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
+index 404c798..40180a2 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid02.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
+@@ -55,16 +55,17 @@
+ #include "test.h"
+ #include "usctest.h"
+ 
+-void setup();
+-void cleanup();
++static void setup();
++static void cleanup();
+ 
+ char *TCID = "setpgid02";
+ int TST_TOTAL = 3;
+ 
+-pid_t pgid, pid;
+-pid_t bad_pid = -1;
+-pid_t zero_pid = 0;
+-pid_t inval_pid = 99999;
++static pid_t pgid, pid;
++static pid_t bad_pid = -1;
++static pid_t zero_pid;
++static pid_t unused_pid;
++static pid_t inval_pid = 99999;
+ 
+ int exp_enos[] = { EINVAL, ESRCH, EPERM, 0 };
+ 
+@@ -78,7 +79,7 @@ struct test_case_t {
+ 	&pid, &bad_pid, EINVAL},
+ 	    /* pid doesn't match any process - ESRCH */
+ 	{
+-	&bad_pid, &pgid, ESRCH},
++	&unused_pid, &pgid, ESRCH},
+ 	    /* pgid doesn't exist - EPERM */
+ 	{
+ 	&zero_pid, &inval_pid, EPERM}
+@@ -135,7 +136,7 @@ int main(int ac, char **av)
+ /*
+  * setup - performs all ONE TIME setup for this test
+  */
+-void setup(void)
++static void setup(void)
+ {
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+@@ -144,13 +145,15 @@ void setup(void)
+ 
+ 	pgid = getpgrp();
+ 	pid = getpid();
++
++	unused_pid = tst_get_unused_pid(cleanup);
+ }
+ 
+ /*
+  * cleanup - Performs all ONE TIME cleanup for this test at completion or
+  * 	     premature exit
+  */
+-void cleanup(void)
++static void cleanup(void)
+ {
  	/*
- 	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
- 	 * from kernel 2.6.8 to permit 16-bits ioperm
-diff --git a/testcases/kernel/syscalls/ioperm/ioperm02.c b/testcases/kernel/syscalls/ioperm/ioperm02.c
-index eeb4983..f4fb22d 100644
---- a/testcases/kernel/syscalls/ioperm/ioperm02.c
-+++ b/testcases/kernel/syscalls/ioperm/ioperm02.c
-@@ -194,14 +194,10 @@ void cleanup1(void)
- /* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
-+	tst_require_root(NULL);
+ 	 * print timing status if that option was specified
+diff --git a/testcases/kernel/syscalls/setpriority/setpriority04.c b/testcases/kernel/syscalls/setpriority/setpriority04.c
+index 34175ec..b3ec9ff 100644
+--- a/testcases/kernel/syscalls/setpriority/setpriority04.c
++++ b/testcases/kernel/syscalls/setpriority/setpriority04.c
+@@ -66,31 +66,12 @@ int TST_TOTAL = 1;
  
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ int exp_enos[] = { ESRCH, 0 };
  
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
+-/* Get the max number of message queues allowed on system */
+-static long get_pid_max(void)
+-{
+-	FILE *fp;
+-	char buff[512];
 -
- 	/* Check if "nobody" user id exists */
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_brkm(TBROK, NULL, "\"nobody\" user id doesn't exist");
-diff --git a/testcases/kernel/syscalls/iopl/iopl01.c b/testcases/kernel/syscalls/iopl/iopl01.c
-index a146efa..f86f3be 100644
---- a/testcases/kernel/syscalls/iopl/iopl01.c
-+++ b/testcases/kernel/syscalls/iopl/iopl01.c
-@@ -125,14 +125,10 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
+-	/* Get the max number of message queues allowed on system */
+-	fp = fopen("/proc/sys/kernel/pid_max", "r");
+-	if (fp == NULL)
+-		tst_brkm(TBROK, cleanup,
+-			 "Could not open /proc/sys/kernel/pid_max");
+-	if (!fgets(buff, sizeof(buff), fp))
+-		tst_brkm(TBROK, cleanup,
+-			 "Could not read /proc/sys/kernel/pid_max");
+-	fclose(fp);
 -
- 	TEST_PAUSE;
- 
- }
-diff --git a/testcases/kernel/syscalls/iopl/iopl02.c b/testcases/kernel/syscalls/iopl/iopl02.c
-index 5d9a4d0..42a9774 100644
---- a/testcases/kernel/syscalls/iopl/iopl02.c
-+++ b/testcases/kernel/syscalls/iopl/iopl02.c
-@@ -190,14 +190,10 @@ void cleanup1(void)
- /* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
+-	return atol(buff);
+-}
 -
- 	/* Check if "nobody" user id exists */
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_brkm(TBROK, NULL, "\"nobody\" user id doesn't exist");
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
-index 13aa167..bcf2aa4 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
-@@ -155,6 +155,8 @@ void setup(void)
+ int main(int ac, char **av)
  {
- 	key_t msgkey2;
+ 	int lc;
+ 	const char *msg;
+ 	int new_val = 2;
+-	int pid_max = get_pid_max();
++	pid_t unused_pid;
  
-+	tst_require_root(NULL);
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+@@ -98,6 +79,8 @@ int main(int ac, char **av)
+ 
+ 	setup();		/* global setup */
+ 
++	unused_pid = tst_get_unused_pid(cleanup);
 +
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 	/* The following loop checks looping state if -i option given */
  
- 	/* Set up the expected error numbers for -e option */
-@@ -163,9 +165,6 @@ void setup(void)
- 	TEST_PAUSE;
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+@@ -110,7 +93,7 @@ int main(int ac, char **av)
+ 		 */
  
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1)
- 		tst_resm(TINFO, "setuid(%d) failed", ltpuser->pw_uid);
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-index 019fd7a..05643a4 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-@@ -130,6 +130,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
+ 		/* call the system call with the TEST() macro */
+-		TEST(setpriority(PRIO_PROCESS, pid_max + 1, new_val));
++		TEST(setpriority(PRIO_PROCESS, unused_pid, new_val));
  
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 		if (TEST_RETURN == 0) {
+ 			tst_resm(TFAIL, "call failed to produce expected error "
+diff --git a/testcases/kernel/syscalls/tkill/tkill02.c b/testcases/kernel/syscalls/tkill/tkill02.c
+index 7082881..a5d98cc 100644
+--- a/testcases/kernel/syscalls/tkill/tkill02.c
++++ b/testcases/kernel/syscalls/tkill/tkill02.c
+@@ -52,6 +52,10 @@
+ char *TCID = "tkill02";
+ int testno;
  
-@@ -139,9 +140,6 @@ void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-index 3e5a38b..2bd5f5f 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-@@ -149,6 +149,8 @@ void setup(void)
- {
- 	key_t msgkey2;
- 
-+	tst_require_root(NULL);
++static pid_t inval_tid = -1;
++static pid_t unused_tid;
 +
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Set up the expected error numbers for -e option */
-@@ -157,9 +159,6 @@ void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-index e714290..5b5a81f 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-@@ -135,6 +135,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-@@ -144,9 +145,6 @@ void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl02.c b/testcases/kernel/syscalls/ipc/semctl/semctl02.c
-index dacda62..5df31bc 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl02.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl02.c
-@@ -119,6 +119,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-@@ -128,9 +129,6 @@ void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/ipc/semget/semget02.c b/testcases/kernel/syscalls/ipc/semget/semget02.c
-index 4f7284d..9b78729 100644
---- a/testcases/kernel/syscalls/ipc/semget/semget02.c
-+++ b/testcases/kernel/syscalls/ipc/semget/semget02.c
-@@ -127,10 +127,9 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
 +
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (seteuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setreuid failed to "
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-index b59a0cb..5f4b92a 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-@@ -164,10 +164,9 @@ void setup(void)
- {
- 	key_t shmkey2;
- 
-+	tst_require_root(NULL);
+ /* Extern Global Functions */
+ /******************************************************************************/
+ /*									    */
+@@ -101,15 +105,17 @@ void setup(void)
+ 	/* Create temporary directories */
+ 	TEST_PAUSE;
+ 	tst_tmpdir();
 +
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget04.c b/testcases/kernel/syscalls/ipc/shmget/shmget04.c
-index 2ec1c30..29ba773 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget04.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget04.c
-@@ -114,6 +114,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-@@ -123,9 +124,6 @@ void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir02.c b/testcases/kernel/syscalls/mkdir/mkdir02.c
-index 43814ad..4dae30e 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir02.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir02.c
-@@ -312,10 +312,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* must run as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, cleanup, "Must run this as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir04.c b/testcases/kernel/syscalls/mkdir/mkdir04.c
-index a6eb167..b1739d6 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir04.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir04.c
-@@ -219,10 +219,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* must run as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must run this as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir05.c b/testcases/kernel/syscalls/mkdir/mkdir05.c
-index b76dcad..5dd432e 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir05.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir05.c
-@@ -121,10 +121,8 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
-+	tst_require_root(NULL);
-+
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/mknod/mknod02.c b/testcases/kernel/syscalls/mknod/mknod02.c
-index 9b93fba..107b139 100644
---- a/testcases/kernel/syscalls/mknod/mknod02.c
-+++ b/testcases/kernel/syscalls/mknod/mknod02.c
-@@ -201,15 +201,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
-+
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mknod/mknod03.c b/testcases/kernel/syscalls/mknod/mknod03.c
-index 1e80f33..a1fe1cd 100644
---- a/testcases/kernel/syscalls/mknod/mknod03.c
-+++ b/testcases/kernel/syscalls/mknod/mknod03.c
-@@ -201,16 +201,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mknod/mknod04.c b/testcases/kernel/syscalls/mknod/mknod04.c
-index 023c8ba..7ac2932 100644
---- a/testcases/kernel/syscalls/mknod/mknod04.c
-+++ b/testcases/kernel/syscalls/mknod/mknod04.c
-@@ -202,16 +202,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mknod/mknod05.c b/testcases/kernel/syscalls/mknod/mknod05.c
-index b23bb67..4b6a509 100644
---- a/testcases/kernel/syscalls/mknod/mknod05.c
-+++ b/testcases/kernel/syscalls/mknod/mknod05.c
-@@ -199,16 +199,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mknod/mknod06.c b/testcases/kernel/syscalls/mknod/mknod06.c
-index 3e99a5f..a272ee5 100644
---- a/testcases/kernel/syscalls/mknod/mknod06.c
-+++ b/testcases/kernel/syscalls/mknod/mknod06.c
-@@ -220,15 +220,11 @@ void setup(void)
- {
- 	int ind;
- 
-+	tst_require_root(NULL);
-+
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mknod/mknod08.c b/testcases/kernel/syscalls/mknod/mknod08.c
-index 1fc6631..05999bd 100644
---- a/testcases/kernel/syscalls/mknod/mknod08.c
-+++ b/testcases/kernel/syscalls/mknod/mknod08.c
-@@ -198,16 +198,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mknod/mknod09.c b/testcases/kernel/syscalls/mknod/mknod09.c
-index 18f3275..6ab6770 100644
---- a/testcases/kernel/syscalls/mknod/mknod09.c
-+++ b/testcases/kernel/syscalls/mknod/mknod09.c
-@@ -139,15 +139,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
-+
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
--
- 	TEST_PAUSE;
- 
- 	/* Make a temp dir and cd to it */
-diff --git a/testcases/kernel/syscalls/mlockall/mlockall01.c b/testcases/kernel/syscalls/mlockall/mlockall01.c
-index 42ab67d..f80348b 100644
---- a/testcases/kernel/syscalls/mlockall/mlockall01.c
-+++ b/testcases/kernel/syscalls/mlockall/mlockall01.c
-@@ -151,16 +151,11 @@ int main(void)
- 
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	/* set the expected errnos... */
--
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	TEST_PAUSE;
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
-index 8a74487..732e092 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages11.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
-@@ -207,15 +207,12 @@ void setup(void)
- {
- 	struct passwd *ltpuser;
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	check_config(TEST_NODES);
- 
--	if (geteuid() != 0) {
--		tst_resm(TBROK, "test must be run as root");
--		tst_exit();
--	}
--
- 	if ((ltpuser = getpwnam("nobody")) == NULL) {
- 		tst_resm(TBROK, "'nobody' user not present");
- 		tst_exit();
-diff --git a/testcases/kernel/syscalls/munlock/munlock01.c b/testcases/kernel/syscalls/munlock/munlock01.c
-index bf95e6c..c2ef1fc 100644
---- a/testcases/kernel/syscalls/munlock/munlock01.c
-+++ b/testcases/kernel/syscalls/munlock/munlock01.c
-@@ -155,14 +155,10 @@ void setup1(int i)
- /* setup() - performs all ONE TIME setup for this test. */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
-diff --git a/testcases/kernel/syscalls/munlockall/munlockall01.c b/testcases/kernel/syscalls/munlockall/munlockall01.c
-index 6a2d17b..91db50a 100644
---- a/testcases/kernel/syscalls/munlockall/munlockall01.c
-+++ b/testcases/kernel/syscalls/munlockall/munlockall01.c
-@@ -124,16 +124,13 @@ int main(void)
- /* setup() - performs all ONE TIME setup for this test. */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/*set the expected errnos */
- 	TEST_EXP_ENOS(exp_enos);
- 
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be tested as root");
--	}
--
- 	TEST_PAUSE;
++	unused_tid = tst_get_unused_pid(cleanup);
  }
  
-diff --git a/testcases/kernel/syscalls/munlockall/munlockall02.c b/testcases/kernel/syscalls/munlockall/munlockall02.c
-index 3dcd1e1..0f29253 100644
---- a/testcases/kernel/syscalls/munlockall/munlockall02.c
-+++ b/testcases/kernel/syscalls/munlockall/munlockall02.c
-@@ -125,6 +125,7 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test. */
- void setup(void)
- {
-+	tst_require_root(NULL);
+ struct test_case_t {
+-	int tid;
++	int *tid;
+ 	int exp_errno;
+ } test_cases[] = {
+ 	{
+-	-1, EINVAL}, {
+-	99999, ESRCH}
++	&inval_tid, EINVAL}, {
++	&unused_tid, ESRCH}
+ };
  
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+@@ -122,22 +128,22 @@ int main(int ac, char **av)
  
-@@ -132,10 +133,6 @@ void setup(void)
- 	TEST_EXP_ENOS(exp_enos);
+ 	for (i = 0; i < TST_TOTAL; i++) {
  
- 	/* switch to nobody user */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_brkm(TBROK, NULL, "\"nobody\"user not present");
+-		TEST(ltp_syscall(__NR_tkill, test_cases[i].tid, SIGUSR1));
++		TEST(ltp_syscall(__NR_tkill, *(test_cases[i].tid), SIGUSR1));
+ 
+ 		if (TEST_RETURN == -1) {
+ 			if (TEST_ERRNO == test_cases[i].exp_errno) {
+ 				tst_resm(TPASS | TTERRNO,
+ 					 "tkill(%d, SIGUSR1) failed as expected",
+-					 test_cases[i].tid);
++					 *(test_cases[i].tid));
+ 			} else {
+ 				tst_brkm(TFAIL | TTERRNO, cleanup,
+ 					 "tkill(%d, SIGUSR1) failed unexpectedly",
+-					 test_cases[i].tid);
++					 *(test_cases[i].tid));
+ 			}
+ 		} else {
+ 			tst_brkm(TFAIL, cleanup,
+ 				 "tkill(%d) succeeded unexpectedly",
+-				 test_cases[i].tid);
++				 *(test_cases[i].tid));
+ 		}
  	}
-diff --git a/testcases/kernel/syscalls/nice/nice04.c b/testcases/kernel/syscalls/nice/nice04.c
-index f82d7d8..927921d 100644
---- a/testcases/kernel/syscalls/nice/nice04.c
-+++ b/testcases/kernel/syscalls/nice/nice04.c
-@@ -143,13 +143,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/open/open05.c b/testcases/kernel/syscalls/open/open05.c
-index 92164f8..03761a9 100644
---- a/testcases/kernel/syscalls/open/open05.c
-+++ b/testcases/kernel/syscalls/open/open05.c
-@@ -123,9 +123,7 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
--	/* test must be run as root */
--	if (geteuid() != 0)
--		tst_brkm(TBROK, NULL, "Must run test as root");
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/open/open08.c b/testcases/kernel/syscalls/open/open08.c
-index ef147f1..7ebf971 100644
---- a/testcases/kernel/syscalls/open/open08.c
-+++ b/testcases/kernel/syscalls/open/open08.c
-@@ -141,6 +141,8 @@ static void setup(void)
- {
- 	int fildes;
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	umask(0);
-@@ -148,9 +150,6 @@ static void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0)
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setgid(ltpuser->pw_gid) == -1) {
- 		tst_brkm(TBROK | TERRNO, NULL, "setgid(%d) failed",
-diff --git a/testcases/kernel/syscalls/reboot/reboot01.c b/testcases/kernel/syscalls/reboot/reboot01.c
-index a6ec0b5..a661918 100644
---- a/testcases/kernel/syscalls/reboot/reboot01.c
-+++ b/testcases/kernel/syscalls/reboot/reboot01.c
-@@ -127,14 +127,10 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	TEST_PAUSE;
- 
- }
-diff --git a/testcases/kernel/syscalls/reboot/reboot02.c b/testcases/kernel/syscalls/reboot/reboot02.c
-index 66db369..1625936 100644
---- a/testcases/kernel/syscalls/reboot/reboot02.c
-+++ b/testcases/kernel/syscalls/reboot/reboot02.c
-@@ -184,17 +184,13 @@ int setup_test(void)
- /* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	TEST_PAUSE;
- 
- }
-diff --git a/testcases/kernel/syscalls/rename/rename09.c b/testcases/kernel/syscalls/rename/rename09.c
-index d02a8c6..ef5d8e3 100644
---- a/testcases/kernel/syscalls/rename/rename09.c
-+++ b/testcases/kernel/syscalls/rename/rename09.c
-@@ -246,10 +246,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* must run as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must run test as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/rename/rename12.c b/testcases/kernel/syscalls/rename/rename12.c
-index ed823ae..d9a8529 100644
---- a/testcases/kernel/syscalls/rename/rename12.c
-+++ b/testcases/kernel/syscalls/rename/rename12.c
-@@ -186,10 +186,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* must run as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must run this as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/rmdir/rmdir03.c b/testcases/kernel/syscalls/rmdir/rmdir03.c
-index f341a36..3023c40 100644
---- a/testcases/kernel/syscalls/rmdir/rmdir03.c
-+++ b/testcases/kernel/syscalls/rmdir/rmdir03.c
-@@ -321,10 +321,7 @@ void dochild2(void)
-  */
- void setup(void)
- {
--	/* test must be run as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "test must be run as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c
-index 0faa008..f3fb93f 100644
---- a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c
-+++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c
-@@ -143,10 +143,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* must run test as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must run test as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname01.c b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-index 3f50bdd..a58ab87 100644
---- a/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-+++ b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-@@ -124,14 +124,10 @@ int main(int ac, char **av)
- /* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	/* Save current domain name */
- 	if ((getdomainname(old_domain_name, sizeof(old_domain_name))) < 0) {
- 		tst_brkm(TBROK, NULL, "getdomainname() failed while"
-diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname02.c b/testcases/kernel/syscalls/setdomainname/setdomainname02.c
-index 4be27ed..fa9caf4 100644
---- a/testcases/kernel/syscalls/setdomainname/setdomainname02.c
-+++ b/testcases/kernel/syscalls/setdomainname/setdomainname02.c
-@@ -160,16 +160,12 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_EXP_ENOS(exp_enos);
- 
--	/* Check whether we are root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	/* Save current domainname */
- 	if ((getdomainname(old_domain_name, MAX_NAME_LEN)) < 0) {
- 		tst_brkm(TBROK, NULL, "getdomainname() failed while"
-diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname03.c b/testcases/kernel/syscalls/setdomainname/setdomainname03.c
-index 5c352d1..e93435c 100644
---- a/testcases/kernel/syscalls/setdomainname/setdomainname03.c
-+++ b/testcases/kernel/syscalls/setdomainname/setdomainname03.c
-@@ -145,6 +145,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	/* Capture unexpected signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-@@ -153,9 +154,6 @@ void setup(void)
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_brkm(TBROK, NULL, "\"nobody\" user not present");
- 	}
-diff --git a/testcases/kernel/syscalls/setgroups/setgroups03.c b/testcases/kernel/syscalls/setgroups/setgroups03.c
-index 1a2977d..402b145 100644
---- a/testcases/kernel/syscalls/setgroups/setgroups03.c
-+++ b/testcases/kernel/syscalls/setgroups/setgroups03.c
-@@ -182,10 +182,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/setgroups/setgroups04.c b/testcases/kernel/syscalls/setgroups/setgroups04.c
-index 885b07b..ac23e50 100644
---- a/testcases/kernel/syscalls/setgroups/setgroups04.c
-+++ b/testcases/kernel/syscalls/setgroups/setgroups04.c
-@@ -155,11 +155,7 @@ int main(void)
-  */
- void setup(void)
- {
--
--	/* check root user */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/sethostname/sethostname01.c b/testcases/kernel/syscalls/sethostname/sethostname01.c
-index 74af634..c766252 100644
---- a/testcases/kernel/syscalls/sethostname/sethostname01.c
-+++ b/testcases/kernel/syscalls/sethostname/sethostname01.c
-@@ -129,12 +129,9 @@ void setup(void)
- {
- 	int ret;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Test should be executed as root user */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Store the existing hostname to retain it before exiting */
- 	if ((ret = gethostname(hname, sizeof(hname))) < 0) {
-diff --git a/testcases/kernel/syscalls/sethostname/sethostname02.c b/testcases/kernel/syscalls/sethostname/sethostname02.c
-index 553e7e2..d8b3a95 100644
---- a/testcases/kernel/syscalls/sethostname/sethostname02.c
-+++ b/testcases/kernel/syscalls/sethostname/sethostname02.c
-@@ -167,16 +167,13 @@ void setup(void)
- {
- 	int ret;
- 
-+	tst_require_root(NULL);
-+
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	/* capture the signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Test should be executed as root user */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	/* Keep the host name before starting the test */
- 	if ((ret = gethostname(hname, sizeof(hname))) < 0) {
- 		tst_brkm(TBROK, NULL, "gethostname() failed while"
-diff --git a/testcases/kernel/syscalls/sethostname/sethostname03.c b/testcases/kernel/syscalls/sethostname/sethostname03.c
-index f681d8d..f85770f 100644
---- a/testcases/kernel/syscalls/sethostname/sethostname03.c
-+++ b/testcases/kernel/syscalls/sethostname/sethostname03.c
-@@ -136,16 +136,13 @@ void setup(void)
- {
- 	int ret;
- 
-+	tst_require_root(NULL);
-+
- 	/* set up expected errnos */
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Test should be executed as root user */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
--
- 	/* Switch to nobody user for correct error code collection */
- 	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
- 		tst_brkm(TBROK, NULL, "Required user \"nobody\" not"
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority02.c b/testcases/kernel/syscalls/setpriority/setpriority02.c
-index a76d05b..696ed23 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority02.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority02.c
-@@ -126,10 +126,9 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
-+	tst_require_root(NULL);
-+
-+	/* Switch to nobody user for correct error code collection */
- 	ltpuser = getpwnam(nobody_uid);
- 	if (seteuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setreuid failed to "
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority05.c b/testcases/kernel/syscalls/setpriority/setpriority05.c
-index 7ecde1a..3122dc8 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority05.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority05.c
-@@ -126,10 +126,9 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
-+
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid01.c b/testcases/kernel/syscalls/setresgid/setresgid01.c
-index 31ce0f8..f9c62a0 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid01.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid01.c
-@@ -186,12 +186,9 @@ void setup(void)
- {
- 	struct passwd *passwd_p;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	if ((passwd_p = getpwnam("root")) == NULL) {
- 		tst_brkm(TBROK, NULL, "getpwnam() failed for root");
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid02.c b/testcases/kernel/syscalls/setresgid/setresgid02.c
-index c62d7b0..754fca1 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid02.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid02.c
-@@ -193,12 +193,9 @@ void setup(void)
- {
- 	struct passwd *passwd_p;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	if ((passwd_p = getpwnam("root")) == NULL) {
- 		tst_brkm(TBROK, NULL, "getpwnam() failed for root");
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid03.c b/testcases/kernel/syscalls/setresgid/setresgid03.c
-index 902f16b..32d7995 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid03.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid03.c
-@@ -192,12 +192,9 @@ void setup(void)
- {
- 	struct passwd *passwd_p;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	if ((passwd_p = getpwnam("root")) == NULL) {
- 		tst_brkm(TBROK, NULL, "getpwnam() failed for root");
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid01.c b/testcases/kernel/syscalls/setresuid/setresuid01.c
-index c21b1bf..bdd77c9 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid01.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid01.c
-@@ -169,15 +169,10 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
--
- 	if (getpwnam("nobody") == NULL) {
- 		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
- 		tst_exit();
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid02.c b/testcases/kernel/syscalls/setresuid/setresuid02.c
-index 4e211b1..dcf91a9 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid02.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid02.c
-@@ -183,6 +183,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-@@ -196,12 +197,6 @@ void setup(void)
- 		tst_exit();
- 	}
- 
--	/* Check that the test process id is root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
--
- 	nobody = *(getpwnam("nobody"));
- 	nobody_pw_uid = nobody.pw_uid;
- 
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid03.c b/testcases/kernel/syscalls/setresuid/setresuid03.c
-index af3ebb4..c31c124 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid03.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid03.c
-@@ -194,6 +194,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-@@ -207,12 +208,6 @@ void setup(void)
- 		tst_exit();
- 	}
- 
--	/* Check that the test process id is root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
--
- 	root = *(getpwnam("root"));
- 	root_pw_uid = root.pw_uid;
- 
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit02.c b/testcases/kernel/syscalls/setrlimit/setrlimit02.c
-index e48e54a..6f6f6e8 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit02.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit02.c
-@@ -132,15 +132,13 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit03.c b/testcases/kernel/syscalls/setrlimit/setrlimit03.c
-index 0fd8991..665a95f 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit03.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit03.c
-@@ -110,10 +110,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--	/* must run test as root */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "must run test as root");
--	}
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
-diff --git a/testcases/kernel/syscalls/settimeofday/settimeofday01.c b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-index 1975c5d..6b86bc9 100644
---- a/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-+++ b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-@@ -160,15 +160,10 @@ int main(void)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
--
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
-diff --git a/testcases/kernel/syscalls/settimeofday/settimeofday02.c b/testcases/kernel/syscalls/settimeofday/settimeofday02.c
-index 7337557..f5dc5c7 100644
---- a/testcases/kernel/syscalls/settimeofday/settimeofday02.c
-+++ b/testcases/kernel/syscalls/settimeofday/settimeofday02.c
-@@ -148,15 +148,10 @@ int main(void)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	/* Check that the test process id is root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
--
- 	/* Switch to nobody user for correct error code collection */
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
-diff --git a/testcases/kernel/syscalls/stat/stat01.c b/testcases/kernel/syscalls/stat/stat01.c
-index bac26e1..f0be527 100644
---- a/testcases/kernel/syscalls/stat/stat01.c
-+++ b/testcases/kernel/syscalls/stat/stat01.c
-@@ -137,11 +137,11 @@ void setup(void)
- 	int wbytes;
- 	int write_len = 0;
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0)
--		tst_brkm(TBROK, NULL, "Test must be run as root");
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/stat/stat02.c b/testcases/kernel/syscalls/stat/stat02.c
-index 9ef08ec..f596746 100644
---- a/testcases/kernel/syscalls/stat/stat02.c
-+++ b/testcases/kernel/syscalls/stat/stat02.c
-@@ -168,12 +168,11 @@ void setup(void)
- 	int wbytes;		/* no. of bytes written to file */
- 	int write_len = 0;
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/stat/stat03.c b/testcases/kernel/syscalls/stat/stat03.c
-index 623b538..83f9370 100644
---- a/testcases/kernel/syscalls/stat/stat03.c
-+++ b/testcases/kernel/syscalls/stat/stat03.c
-@@ -227,13 +227,12 @@ void setup(void)
- {
- 	int ind;
- 
-+	tst_require_root(NULL);
-+
- 	/* Capture unexpected signals */
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/stime/stime01.c b/testcases/kernel/syscalls/stime/stime01.c
-index 62b509a..53ac2d2 100644
---- a/testcases/kernel/syscalls/stime/stime01.c
-+++ b/testcases/kernel/syscalls/stime/stime01.c
-@@ -189,11 +189,7 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
--
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "you must be root to execute this test!");
--	}
-+	tst_require_root(NULL);
- 
- 	TEST_PAUSE;
- 
-diff --git a/testcases/kernel/syscalls/stime/stime02.c b/testcases/kernel/syscalls/stime/stime02.c
-index eeeeeb4..b4ceb4c 100644
---- a/testcases/kernel/syscalls/stime/stime02.c
-+++ b/testcases/kernel/syscalls/stime/stime02.c
-@@ -146,13 +146,11 @@ int main(int ac, char **av)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/symlink/symlink03.c b/testcases/kernel/syscalls/symlink/symlink03.c
-index a33d836..f55cbaf 100644
---- a/testcases/kernel/syscalls/symlink/symlink03.c
-+++ b/testcases/kernel/syscalls/symlink/symlink03.c
-@@ -233,6 +233,8 @@ void setup(void)
- {
- 	int ind;
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	/* Pause if that option was specified
-@@ -243,9 +245,6 @@ void setup(void)
- 	TEST_PAUSE;
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1)
- 		tst_resm(TINFO | TERRNO, "setuid(%d) failed", ltpuser->pw_uid);
-diff --git a/testcases/kernel/syscalls/syslog/syslog11.c b/testcases/kernel/syscalls/syslog/syslog11.c
-index c85b988..1f803a1 100644
---- a/testcases/kernel/syscalls/syslog/syslog11.c
-+++ b/testcases/kernel/syscalls/syslog/syslog11.c
-@@ -191,18 +191,13 @@ void cleanup1(void)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
--
- 	/* Check for nobody_uid user id */
- 	if ((ltpuser = getpwnam("nobody")) == NULL) {
- 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
--
- 	}
- 
- 	/* Pause if that option was specified
-diff --git a/testcases/kernel/syscalls/syslog/syslog12.c b/testcases/kernel/syscalls/syslog/syslog12.c
-index d4f6255..4721dd9 100644
---- a/testcases/kernel/syscalls/syslog/syslog12.c
-+++ b/testcases/kernel/syscalls/syslog/syslog12.c
-@@ -215,18 +215,13 @@ void cleanup1(void)
-  */
- void setup(void)
- {
-+	tst_require_root(NULL);
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	/* Check whether we are root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--	}
--
- 	/* Check for nobody_uid user id */
- 	if ((ltpuser = getpwnam("nobody")) == NULL) {
- 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
--
- 	}
- 
- 	/* set the expected errnos... */
-diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
-index 0e74d3b..3128965 100644
---- a/testcases/kernel/syscalls/utime/utime01.c
-+++ b/testcases/kernel/syscalls/utime/utime01.c
-@@ -201,13 +201,9 @@ void setup(void)
- {
- 	int fildes;		/* file handle for temp file */
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
-diff --git a/testcases/kernel/syscalls/utime/utime02.c b/testcases/kernel/syscalls/utime/utime02.c
-index dcf50c2..cbd30da 100644
---- a/testcases/kernel/syscalls/utime/utime02.c
-+++ b/testcases/kernel/syscalls/utime/utime02.c
-@@ -207,12 +207,11 @@ void setup(void)
- {
- 	int fildes;		/* file handle for temp file */
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
-index 279a959..858f6ca 100644
---- a/testcases/kernel/syscalls/utime/utime03.c
-+++ b/testcases/kernel/syscalls/utime/utime03.c
-@@ -252,13 +252,9 @@ void setup(void)
- 	int fildes;		/* file handle for temp file */
- 	char *tmpd = NULL;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check that the test process id is not super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	/* Pause if that option was specified
- 	 * TEST_PAUSE contains the code to fork the test with the -i option.
-diff --git a/testcases/kernel/syscalls/utime/utime04.c b/testcases/kernel/syscalls/utime/utime04.c
-index b18f09a..73077e4 100644
---- a/testcases/kernel/syscalls/utime/utime04.c
-+++ b/testcases/kernel/syscalls/utime/utime04.c
-@@ -172,13 +172,9 @@ void setup(void)
- {
- 	int fildes;		/* file handle for temp file */
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check that the test process id is super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be super/root for this test!");
--		tst_exit();
--	}
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
-diff --git a/testcases/kernel/syscalls/utime/utime05.c b/testcases/kernel/syscalls/utime/utime05.c
-index f858100..636d8a7 100644
---- a/testcases/kernel/syscalls/utime/utime05.c
-+++ b/testcases/kernel/syscalls/utime/utime05.c
-@@ -177,12 +177,11 @@ void setup(void)
- {
- 	int fildes;		/* file handle for temp file */
- 
-+	tst_require_root(NULL);
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	/* Switch to nobody user for correct error code collection */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Test must be run as root");
--	}
- 	ltpuser = getpwnam(nobody_uid);
- 	if (setuid(ltpuser->pw_uid) == -1) {
- 		tst_resm(TINFO, "setuid failed to "
-diff --git a/testcases/kernel/syscalls/utime/utime06.c b/testcases/kernel/syscalls/utime/utime06.c
-index a1a9230..8407945 100644
---- a/testcases/kernel/syscalls/utime/utime06.c
-+++ b/testcases/kernel/syscalls/utime/utime06.c
-@@ -231,13 +231,9 @@ void setup(void)
- {
- 	int ind;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	tst_require_root(NULL);
- 
--	/* Check that the test process id is non-super/root  */
--	if (geteuid() != 0) {
--		tst_brkm(TBROK, NULL, "Must be root for this test!");
--		tst_exit();
--	}
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	TEST_PAUSE;
- 
+ 	cleanup();
 -- 
-1.9.0
+1.7.1
 
 
 ------------------------------------------------------------------------------
-HPCC Systems Open Source Big Data Platform from LexisNexis Risk Solutions
-Find What Matters Most in Your Big Data with HPCC Systems
-Open Source. Fast. Scalable. Simple. Ideal for Dirty Data.
-Leverages Graph Analysis for Fast Processing & Easy Data Exploration
-http://p.sf.net/sfu/hpccsystems
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
