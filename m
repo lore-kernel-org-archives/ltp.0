@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1WrKRf-0004sd-K2
-	for ltp-list@lists.sourceforge.net; Mon, 02 Jun 2014 05:06:03 +0000
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X1W8j-0001jT-NV
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 07:36:37 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WrKRd-0006YD-Cr
-	for ltp-list@lists.sourceforge.net; Mon, 02 Jun 2014 05:06:03 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X1W8h-0007cX-Hu
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 07:36:37 +0000
 Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5255oFl016931
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Jun 2014 13:05:50 +0800
-Message-ID: <1401685455.2838.8.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 2 Jun 2014 13:04:15 +0800
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5U7aQ3n031680
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 15:36:26 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Mon, 30 Jun 2014 15:33:23 +0800
+Message-ID: <1404113603-19192-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] can: add can tests to default
+Subject: [LTP] [PATCH] syscalls: fix testcases which take TCONF as TFAIL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,240 +29,204 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-* Add can testes to scenario_groups/default
+This issue was introduced by commit: 6f6878f4e1406d79cae53564777c5e1245d2a124
+In this commit, we took TCONF as a special state, to let user know the real
+LTP test coverage.
 
-* Makefile cleanup:
-  - Intall the files into the expect points
+But setreuid04.c, setreuid05.c, setreuid07.c and setfsuid04.c do real test
+work in child process, if child process returns TCONF, parent process will
+get a non-zero return value, which will print TFAIL directly, so fix this.
 
-* run_ltp-can_tests.sh cleanup:
-  - Use TCID, TST_TOTAL and TST_COUNT
-  - Use tst_require_root and tst_resm
-  - Add cleanup function
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 ---
- runtest/can                                        |  2 +-
- scenario_groups/default                            |  1 +
- testcases/network/.gitignore                       |  2 +
- testcases/network/can/filter-tests/Makefile        | 39 +++++----
- .../network/can/filter-tests/run_ltp-can_tests.sh  | 99 ++++++++++++++++------
- 5 files changed, 101 insertions(+), 42 deletions(-)
+ testcases/kernel/syscalls/setfsuid/setfsuid04.c | 23 ++++++++++++++++-----
+ testcases/kernel/syscalls/setreuid/setreuid04.c | 27 ++++++++++++++++++-------
+ testcases/kernel/syscalls/setreuid/setreuid05.c | 24 ++++++++++++++++------
+ testcases/kernel/syscalls/setreuid/setreuid07.c | 21 ++++++++++++++++---
+ 4 files changed, 74 insertions(+), 21 deletions(-)
 
-diff --git a/runtest/can b/runtest/can
-index 0928bc1..2fa4424 100644
---- a/runtest/can
-+++ b/runtest/can
-@@ -1 +1 @@
--CONTROLLER_AREA_NETWORK_01 ( cd $LTPROOT/testcases/network/can/filter-tests/; make && ./run_ltp-can_tests.sh )
-+CONTROLLER_AREA_NETWORK_01 run_ltp-can_tests.sh
-diff --git a/scenario_groups/default b/scenario_groups/default
-index bf7ab79..4e8ce44 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -28,3 +28,4 @@ kernel_misc
- modules
- fs_ext4
- pipes
-+can
-diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
-index e5fbb88..16469dc 100644
---- a/testcases/network/.gitignore
-+++ b/testcases/network/.gitignore
-@@ -1,3 +1,5 @@
-+/can/filter-tests/tst-filter
-+/can/filter-tests/tst-rcv-own-msgs
- /datafiles/
- /lib6/asapi_01
- /lib6/asapi_02
-diff --git a/testcases/network/can/filter-tests/Makefile b/testcases/network/can/filter-tests/Makefile
-index c88f704..c03e8a3 100644
---- a/testcases/network/can/filter-tests/Makefile
-+++ b/testcases/network/can/filter-tests/Makefile
-@@ -1,24 +1,33 @@
- #
-+#    Copyright (c) 2014 Fujitsu Ltd.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
+index 6818987..c774582 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
+@@ -58,7 +58,7 @@ int main(int ac, char **av)
+ {
+ 	pid_t pid;
+ 	const char *msg;
+-	int status;
++	int status, ret;
+ 
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+@@ -74,10 +74,23 @@ int main(int ac, char **av)
+ 
+ 	if (waitpid(pid, &status, 0) == -1)
+ 		tst_resm(TBROK | TERRNO, "waitpid failed");
+-	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
+-		tst_resm(TFAIL, "child process terminated abnormally");
+-	else
+-		tst_resm(TPASS, "Test passed");
 +
-+#
- #  $Id: Makefile,v 1.1 2009/03/02 15:33:55 subrata_modak Exp $
- #
- #  Send feedback to <socketcan-users@lists.berlios.de>
++	if (WIFEXITED(status)) {
++		ret = WEXITSTATUS(status);
++		if (ret == TCONF) {
++			tst_brkm(TCONF, cleanup, "child process return "
++				 "TCONF");
++		} else if (ret == TPASS) {
++			tst_resm(TPASS, "test succeeded within"
++				 "child process");
++		} else {
++			tst_resm(TFAIL, "test failed within"
++				 "child process");
++		}
++	} else {
++		tst_brkm(TBROK, cleanup, "child process terminated "
++				 "abnormally. status: %d", status);
++	}
  
--CFLAGS    = -O2 -Wall -Wno-parentheses \
--	-fno-strict-aliasing \
--	-DETH_P_CAN=0x000C \
--	-DPF_CAN=29 \
--	-DAF_CAN=PF_CAN
--
--PROGRAMS =      tst-filter tst-rcv-own-msgs
--
--all: $(PROGRAMS)
-+top_srcdir		?= ../../../..
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/syscalls/setreuid/setreuid04.c b/testcases/kernel/syscalls/setreuid/setreuid04.c
+index f1d2ab0..82f4511 100644
+--- a/testcases/kernel/syscalls/setreuid/setreuid04.c
++++ b/testcases/kernel/syscalls/setreuid/setreuid04.c
+@@ -67,7 +67,7 @@ static void uid_verify(struct passwd *, struct passwd *, char *);
  
--install:
--	cp -f $(PROGRAMS) /usr/local/bin
-+include $(top_srcdir)/include/mk/testcases.mk
+ int main(int ac, char **av)
+ {
+-	int lc;
++	int lc, ret;
+ 	const char *msg;
  
--clean:
--	rm -f $(PROGRAMS)
-+CPPFLAGS		+= -Wno-parentheses -DETH_P_CAN=0x000C -DPF_CAN=29 \
-+                           -DAF_CAN=PF_CAN
- 
--distclean:
--	rm -f $(PROGRAMS) *~
-+INSTALL_TARGETS		:= run_ltp-can_tests.sh
- 
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/can/filter-tests/run_ltp-can_tests.sh b/testcases/network/can/filter-tests/run_ltp-can_tests.sh
-index b955ec6..4885f3d 100644
---- a/testcases/network/can/filter-tests/run_ltp-can_tests.sh
-+++ b/testcases/network/can/filter-tests/run_ltp-can_tests.sh
-@@ -14,44 +14,91 @@
- ## for more details.                                                          ##
- ##                                                                            ##
- ## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
- ##                                                                            ##
- ################################################################################
- 
--if [ $(id -ru) -ne 0 ]; then
--     echo You need to be root to execute these tests
--     exit 1
--fi
-+export TCID="run_ltp-can_tests"
-+export TST_TOTAL=2
-+export TST_COUNT=1
- 
--# load needed CAN networklayer modules
--modprobe -f can
--modprobe -f can_raw
-+. cmdlib.sh
- 
--# ensure the vcan driver to perform the ECHO on driver level
--modprobe -r vcan
--modprobe -f vcan echo=1
-+setup()
-+{
-+	tst_require_root
- 
--VCAN=vcan0
-+	if [ ! -d "/lib/modules/`uname -r`/kernel/net/can" ]; then
-+		tst_resm TCONF "Not find CAN modules"
-+		exit
-+	fi
-+	if [ -e "/lib/modules/`uname -r`/kernel/net/can/can.ko" ] &&\
-+	   [ -e "/lib/modules/`uname -r`/kernel/net/can/can-raw.ko" ]; then
-+		# load needed CAN networklayer modules
-+		modprobe -f can
-+		modprobe -f can_raw
-+	else
-+		tst_resm TCONF "Not find can can_raw modules"
-+		exit
-+	fi
- 
--# create virtual CAN device
--ip link add dev $VCAN type vcan || exit 1
--ifconfig $VCAN up
-+	if [ -e "/lib/modules/`uname -r`/kernel/drivers/net/can/" ]; then
-+		# ensure the vcan driver to perform the ECHO on driver level
-+		modprobe -r vcan
-+		modprobe -f vcan echo=1
-+	else
-+		tst_resm TCONF "Not find vcan modules"
-+		exit
-+	fi
- 
--# check precondition for CAN frame flow test
--HAS_ECHO=`ip link show $VCAN | grep -c ECHO`
-+	VCAN=vcan0
- 
--if [ $HAS_ECHO -ne 1 ]
--then
--    exit 1
--fi
-+	# create virtual CAN device
-+	ip link add dev $VCAN type vcan || exit 1
-+	ifconfig $VCAN up
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+@@ -110,14 +110,27 @@ int main(int ac, char **av)
+ 					   test_data[i].test_msg);
+ 			}
+ 			exit(flag);
+-		} else {	/* parent */
+-			waitpid(pid, &status, 0);
+-			if (WEXITSTATUS(status) != 0) {
+-				tst_resm(TFAIL, "test failed within "
+-					 "child process.");
+-			}
++		}
 +
-+	# check precondition for CAN frame flow test
-+	HAS_ECHO=`ip link show $VCAN | grep -c ECHO`
++		waitpid(pid, &status, 0);
++		if (WIFEXITED(status)) {
++			ret = WEXITSTATUS(status);
++			if (ret == TCONF) {
++				tst_brkm(TCONF, cleanup, "child process return "
++					 "TCONF");
++			} else if (ret == TPASS) {
++				tst_resm(TPASS, "test succeeded within"
++					 "child process");
++			} else {
++				tst_resm(TFAIL, "test failed within"
++					 "child process");
++				}
++		} else {
++			tst_brkm(TBROK, cleanup, "child process terminated "
++				 "abnormally. status: %d", status);
+ 		}
+ 	}
 +
-+	if [ $HAS_ECHO -ne 1 ]; then
-+		exit 1
-+	fi
+ 	cleanup();
+ 	tst_exit();
+ }
+diff --git a/testcases/kernel/syscalls/setreuid/setreuid05.c b/testcases/kernel/syscalls/setreuid/setreuid05.c
+index 42fcbb9..e9f13dd 100644
+--- a/testcases/kernel/syscalls/setreuid/setreuid05.c
++++ b/testcases/kernel/syscalls/setreuid/setreuid05.c
+@@ -88,7 +88,7 @@ static void uid_verify(struct passwd *, struct passwd *, char *);
+ 
+ int main(int argc, char **argv)
+ {
+-	int lc;
++	int lc, ret;
+ 	const char *msg;
+ 
+ 	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
+@@ -153,12 +153,24 @@ int main(int argc, char **argv)
+ 					   test_data[i].test_msg);
+ 			}
+ 			exit(flag);
+-		} else {	/* parent */
+-			waitpid(pid, &status, 0);
+-			if (WEXITSTATUS(status) != 0) {
+-				tst_resm(TFAIL, "test failed within "
+-					 "child process.");
++		}
 +
-+	RET=0
-+}
++		waitpid(pid, &status, 0);
++		if (WIFEXITED(status)) {
++			ret = WEXITSTATUS(status);
++			if (ret == TCONF) {
++				tst_brkm(TCONF, cleanup, "child process return"
++					 " TCONF");
++			} else if (ret == TPASS) {
++				tst_resm(TPASS, "test succeeded within"
++					 "child process");
++			} else {
++				tst_resm(TFAIL, "test failed within"
++					 "child process");
+ 			}
++		} else {
++			tst_brkm(TBROK, cleanup, "child process terminated "
++				 "abnormally. status: %d", status);
+ 		}
+ 	}
+ 	cleanup();
+diff --git a/testcases/kernel/syscalls/setreuid/setreuid07.c b/testcases/kernel/syscalls/setreuid/setreuid07.c
+index b6714f9..fc595a6 100644
+--- a/testcases/kernel/syscalls/setreuid/setreuid07.c
++++ b/testcases/kernel/syscalls/setreuid/setreuid07.c
+@@ -55,7 +55,7 @@ int main(int ac, char **av)
+ {
+ 	pid_t pid;
+ 	const char *msg;
+-	int status;
++	int status, ret;
+ 
+ 	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+ 		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+@@ -71,8 +71,23 @@ int main(int ac, char **av)
+ 
+ 	if (waitpid(pid, &status, 0) == -1)
+ 		tst_resm(TBROK | TERRNO, "waitpid failed");
+-	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
+-		tst_resm(TFAIL, "child process terminated abnormally");
 +
-+cleanup()
-+{
-+	ifconfig $VCAN down
-+	ip link del dev $VCAN
-+	modprobe -r vcan
-+	modprobe -r can_raw
-+	modprobe -r can
-+}
-+
-+setup
++	if (WIFEXITED(status)) {
++		ret = WEXITSTATUS(status);
++		if (ret == TCONF) {
++			tst_brkm(TCONF, cleanup, "child process return"
++				 " TCONF");
++		} else if (ret == TPASS) {
++			tst_resm(TPASS, "test succeeded within"
++				 "child process");
++		} else {
++			tst_resm(TFAIL, "test failed within"
++				 "child process");
++		}
++	} else {
++		tst_brkm(TBROK, cleanup, "child process terminated "
++			 "abnormally. status: %d", status);
++	}
  
- # test of CAN filters on af_can.c
--./tst-filter $VCAN || exit 1
-+./tst-filter $VCAN
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	RET=1
-+	tst_resm TFAIL "Test tst-filter FAIL with exit num: $ret"
-+else
-+	tst_resm TPASS "Test tst-filter PASS"
-+fi
- 
- # test of CAN frame flow down to the netdevice and up again
--./tst-rcv-own-msgs $VCAN || exit 1
--
--exit 0
-+./tst-rcv-own-msgs $VCAN
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	RET=1
-+	tst_resm TFAIL "Test tst-rcv-own-msgs FAIL with exit num: $ret"
-+else
-+	tst_resm TPASS "Test tst-rcv-own-msgs PASS"
-+fi
- 
-+cleanup
- 
-+exit $RET
+ 	cleanup();
+ 	tst_exit();
 -- 
-1.8.3.1
-
-
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their 
-applications. Written by three acclaimed leaders in the field, 
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
