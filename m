@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1WzLjv-0006Gn-6B
-	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 08:06:03 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WzLju-0004LS-4p
-	for ltp-list@lists.sourceforge.net; Tue, 24 Jun 2014 08:06:03 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s5O85sZq003010
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Jun 2014 16:05:54 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 24 Jun 2014 16:03:02 +0800
-Message-ID: <1403596982-21645-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] fs/ext4-new-features: fix wrong test point when
-	running ext4-persist-prealloc
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1X1Z8Y-0007JE-Pe
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 10:48:38 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X1Z8X-0006Qi-0K
+	for ltp-list@lists.sourceforge.net; Mon, 30 Jun 2014 10:48:38 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s5UAmU7J001668
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:31 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s5UAmU89024838
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:30 GMT
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s5UAmUsI024834
+	for <ltp-list@lists.sourceforge.net>; Mon, 30 Jun 2014 10:48:30 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 30 Jun 2014 14:48:21 +0400
+Message-Id: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] tst_get_unused_pid()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,52 +36,19 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-ext4-persist-prealloc test will call test cases under 'testcases/kernel/syscalls
-/fallocate' to have persist prealloc test for ext4 filesystem. But currently
-fallocate[0-3] cases will have tests in a different filesystem, which the directory
-created by tst_tmpdir() is in. This is wrong, fix it.
+Hi!
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- .../ext4-persist-prealloc/ext4_persist_prealloc_test.sh              | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+This series introduces tst_get_unused_pid() and makes the testcases
+use it.
 
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-index 20b66f8..d577bb5 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-@@ -46,6 +46,7 @@ ext4_test_persist_prealloc()
- 
- 	ret=1
- 
-+	temp_tmpdir=$TMPDIR
- 	for ((i = 1; i <= 3; i++))
- 	{
- 		if ! command -v fallocate0${i} > /dev/null 2>&1; then
-@@ -56,13 +57,15 @@ ext4_test_persist_prealloc()
- 			return
- 		fi
- 
--		fallocate0${i} | grep -q "CONF"
-+		TMPDIR=mnt_point; fallocate0${i} | grep -q "CONF"
- 		if [ $? -ne $ret ]; then
- 			tst_resm TFAIL "fallocate's return value is not expected"
- 			umount mnt_point
-+			TMPDIR=$temp_tmpdir
- 			return
- 		fi
- 	}
-+	TMPDIR=$temp_tmpdir
- 
- 	umount mnt_point
- 	if [ $? -ne 0 ]; then
--- 
-1.8.2.1
+Thanks.
 
 
 ------------------------------------------------------------------------------
