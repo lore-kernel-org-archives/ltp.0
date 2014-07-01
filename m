@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1X99WQ-000832-FZ
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:04:38 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X99WO-0000Dc-Ug
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:04:38 +0000
-Date: Mon, 21 Jul 2014 05:04:27 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <38788431.12648558.1405933467675.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1405419229-4222-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X1xqe-0006rA-2F
+	for ltp-list@lists.sourceforge.net; Tue, 01 Jul 2014 13:11:48 +0000
+Date: Tue, 1 Jul 2014 15:11:27 +0200
+From: chrubis@suse.cz
+Message-ID: <20140701131127.GB23601@rei.scz.novell.com>
+References: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1404125304-28650-4-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for
- getcwd(2)
+Content-Disposition: inline
+In-Reply-To: <1404125304-28650-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 3/3] syscalls: use tst_get_unused_pid()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,185 +25,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Artem Savkov <asavkov@redhat.com>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+Hi!
+> --- a/testcases/kernel/syscalls/move_pages/move_pages07.c
+> +++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
+> @@ -95,7 +95,7 @@ int main(int argc, char **argv)
+>  		void *pages[TEST_PAGES] = { 0 };
+>  		int nodes[TEST_PAGES];
+>  		int status[TEST_PAGES];
+> -		int ipid;
+> +		pid_t ipid;
+>  
+>  		/* reset tst_count in case we are looping */
+>  		tst_count = 0;
+> @@ -107,15 +107,7 @@ int main(int argc, char **argv)
+>  		for (i = 0; i < TEST_PAGES; i++)
+>  			nodes[i] = to_node;
+>  
+> -		ipid = fork();
+> -		if (ipid == -1) {
+> -			tst_resm(TBROK | TERRNO, "fork failed");
+> -			goto err_free_pages;
+> -		}
+> -		if (ipid == 0)
+> -			exit(0);
+> -
+> -		wait(NULL);
+> +		ipid = tst_get_unused_pid(cleanup);
+>  
+>  		ret = numa_move_pages(ipid, TEST_PAGES, pages, nodes,
+>  				      status, MPOL_MF_MOVE);
+> @@ -125,9 +117,6 @@ int main(int argc, char **argv)
+>  		else
+>  			tst_resm(TFAIL|TERRNO, "move pages did not fail "
+>  				 "with ESRCH ret: %d", ret);
+> -
+> -err_free_pages:
+> -		free_pages(pages, TEST_PAGES);
+
+The free_pages() should stay here because the codepath gets here
+eventually even if the goto does not happen.
+
+>  	}
+>  #else
+>  	tst_resm(TCONF, "move_pages support not found.");
+
+...
+
+> diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
+> index 404c798..40180a2 100644
+> --- a/testcases/kernel/syscalls/setpgid/setpgid02.c
+> +++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
+> @@ -55,16 +55,17 @@
+>  #include "test.h"
+>  #include "usctest.h"
+>  
+> -void setup();
+> -void cleanup();
+> +static void setup();
+> +static void cleanup();
+
+Add void to the parameters since you are touching it.
+
+>  char *TCID = "setpgid02";
+>  int TST_TOTAL = 3;
+>  
+> -pid_t pgid, pid;
+> -pid_t bad_pid = -1;
+> -pid_t zero_pid = 0;
+> -pid_t inval_pid = 99999;
+> +static pid_t pgid, pid;
+> +static pid_t bad_pid = -1;
+> +static pid_t zero_pid;
+> +static pid_t unused_pid;
+> +static pid_t inval_pid = 99999;
 
 
+The rest of the patchset looks good to me, acked (with these two issues
+above fixed).
 
-
------ Original Message -----
-> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 15 July, 2014 12:13:49 PM
-> Subject: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for getcwd(2)
-> 
-> Note: this test has already been in xfstests generic/028 test case,
-> I just port it to LTP.
-> 
-> Kernel commit '232d2d60aa5469bb097f55728f65146bd49c1d25' introduced a race
-> condition that causes getcwd(2) to return "/" instead of correct path.
->     232d2d6 dcache: Translating dentry into pathname without
->             taking rename_lock
-> 
-> And these two kernel commits have fixed this bug:
->   ede4cebce16f5643c61aedd6d88d9070a1d23a68
->      prepend_path() needs to reinitialize dentry/vfsmount/mnt on restarts
->   f6500801522c61782d4990fa1ad96154cb397cd4
->      f650080 __dentry_path() fixes
-> 
-> This test is to check whether this bug exists in the running kernel,
-> or whether this bug has been fixed.
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-
-Hi,
-
-looks good to me.
-
-> I have run this test case in RHEL7.0GA, Fedora19, v3.11-7758-g232d2d6 and 3.16.0-rc4+.
-> RHEL7.0GA has this kernel bug, so this test case fails.
-
-I can confirm this, with note that I've seen it happen only on systems with 2+ CPUs.
-
-> + *
-> + */
-> +
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +
-> +#include "usctest.h"
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +
-> +#define TIMEOUT	5
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +static void do_child(void);
-> +static void sigproc(int sig);
-> +static volatile sig_atomic_t end;
-> +static char init_cwd[PATH_MAX];
-> +
-> +char *TCID = "getcwd04";
-> +int TST_TOTAL = 1;
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int status;
-> +	const char *msg;
-> +	char cur_cwd[PATH_MAX];
-> +	pid_t child;
-> +
-> +	msg = parse_opts(ac, av, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	child = tst_fork();
-> +	if (child < 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
-> +
-> +	if (child == 0)
-> +		do_child();
-> +
-> +	 while (1) {
-> +		SAFE_GETCWD(cleanup, cur_cwd, PATH_MAX);
-> +		if (strncmp(init_cwd, cur_cwd, PATH_MAX)) {
-> +			tst_resm(TFAIL, "initial current work directory is "
-> +				 "%s, now is %s. Bug is reproduced!",
-> +				 init_cwd, cur_cwd);
-> +			break;
-> +		}
-> +
-> +		if (end) {
-> +			tst_resm(TPASS, "Bug is not reproduced!");
-> +			break;
-> +		}
-> +	}
-> +
-> +	SAFE_KILL(cleanup, child, SIGKILL);
-> +	SAFE_WAITPID(cleanup, child, &status, 0);
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	if (signal(SIGALRM, sigproc) == SIG_ERR)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "signal(SIGALRM) failed");
-> +
-> +	alarm(TIMEOUT);
-> +
-> +	SAFE_MKDIR(cleanup, "testdir", 0755);
-> +	SAFE_CHDIR(cleanup, "testdir");
-
-Is this extra dir needed? tst_tmpdir will already make one.
-
-Regards,
-Jan
-
-> +
-> +	SAFE_GETCWD(cleanup, init_cwd, PATH_MAX);
-> +}
-> +
-> +static void sigproc(int sig)
-> +{
-> +	end = sig;
-> +}
-> +
-> +static void do_child(void)
-> +{
-> +	unsigned int i = 0;
-> +	char c_name[PATH_MAX] = "testfile", n_name[PATH_MAX];
-> +
-> +	SAFE_TOUCH(NULL, c_name, 0644, NULL);
-> +
-> +	while (1) {
-> +		snprintf(n_name, PATH_MAX, "testfile%u", i++);
-> +		SAFE_RENAME(NULL, c_name, n_name);
-> +		strncpy(c_name, n_name, PATH_MAX);
-> +	}
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	tst_rmdir();
-> +}
-> --
-> 1.8.2.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Want fast and easy access to all the code in your enterprise? Index and
-> search up to 200,000 lines of code with a free copy of Black Duck
-> Code Sight - the same software that powers the world's largest code
-> search on Ohloh, the Black Duck Open Hub! Try it now.
-> http://p.sf.net/sfu/bds
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
