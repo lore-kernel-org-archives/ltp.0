@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1X47on-0003rf-54
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 12:14:49 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X47ol-0005ue-Am
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 12:14:49 +0000
-Date: Mon, 7 Jul 2014 08:14:39 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1152474476.5259307.1404735279247.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20140704031641.GA20446@localhost.localdomain>
-References: <20140704031641.GA20446@localhost.localdomain>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X1x4U-0004CX-NW
+	for ltp-list@lists.sourceforge.net; Tue, 01 Jul 2014 12:22:02 +0000
+Date: Tue, 1 Jul 2014 14:21:41 +0200
+From: chrubis@suse.cz
+Message-ID: <20140701122120.GA23601@rei.scz.novell.com>
+References: <1404122135-8089-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at
- 2G
+Content-Disposition: inline
+In-Reply-To: <1404122135-8089-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [[RFC PATCH]] lib/tst_res.c: make tst_brkm() output more
+ informative message
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,369 +25,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Han Pingtian <hanpt@linux.vnet.ibm.com>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Han Pingtian" <hanpt@linux.vnet.ibm.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Friday, 4 July, 2014 5:16:41 AM
-> Subject: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at 2G
+Hi!
+> If testcase calls tst_brkm(...) to terminate test, usually we need
+> to serch the message outputted by tst_brkm() to locate it in test
+> program, it is inefficient, especially we have same messages, so here
+> we choose to make tst_brkm more informative.
 > 
-> Hi,
+> E.g.:
+> We execute getxattr01 before this patch:
+> [root@localhost getxattr]# ./getxattr01
+> getxattr01    1  TCONF  :  No xattr support in fs or mount without user_xattr option
+> getxattr01    2  TCONF  :  Remaining cases not appropriate for configuration
 > 
-> Please review this patch. Thanks.
+> After this patch:
+> [root@localhost getxattr]# ./getxattr01
+> getxattr01    1  TCONF  :  getxattr01.c:158: No xattr support in fs or mount without user_xattr option
+> getxattr01    2  TCONF  :  Remaining cases not appropriate for configuration
 
-Hi,
+Looks useful to me. I wonder if we should limit the change to just
+tst_brkm() or if we should add it to tst_resm() too.
 
-> 
-> There is a bug on 64bit sendfile() with large file, please see
-> https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
-> for details.
-> 
-> This sendfile09.c was copied from sendfile02.c and using plain
-> file as the out_file. The file size is 4G (4294967296 bytes).
-
-Missing Signed-off-by: line(s)
-
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 > ---
->  testcases/kernel/syscalls/sendfile/sendfile09.c | 245
->  ++++++++++++++++++++++++
->  1 file changed, 245 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/sendfile/sendfile09.c
+>  include/test.h            | 9 +++++++--
+>  lib/tst_res.c             | 9 ++++++---
+>  tools/apicmds/ltpapicmd.c | 2 +-
+>  3 files changed, 14 insertions(+), 6 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/sendfile/sendfile09.c
-> b/testcases/kernel/syscalls/sendfile/sendfile09.c
-> new file mode 100644
-> index 0000000..d88a72f
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sendfile/sendfile09.c
-> @@ -0,0 +1,245 @@
-> +/*
-> + *
-> + *   Copyright (c) International Business Machines  Corp., 2001
-> + *
-> + *   This program is free software;  you can redistribute it and/or modify
-> + *   it under the terms of the GNU General Public License as published by
-> + *   the Free Software Foundation; either version 2 of the License, or
-> + *   (at your option) any later version.
-> + *
-> + *   This program is distributed in the hope that it will be useful,
-> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + *   the GNU General Public License for more details.
-> + *
-> + *   You should have received a copy of the GNU General Public License
-> + *   along with this program;  if not, write to the Free Software
-> + *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> 02110-1301 USA
-> + */
+> diff --git a/include/test.h b/include/test.h
+> index a4a23e3..9024493 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -126,8 +126,13 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
+>  	__attribute__ ((format (printf, 4, 5)));
+>  void tst_brk(int ttype, const char *fname, void (*func)(void), const char *arg_fmt, ...)
+>  	__attribute__ ((format (printf, 4, 5)));
+> -void tst_brkm(int ttype, void (*func)(void), const char *arg_fmt, ...)
+> -	__attribute__ ((format (printf, 3, 4))) LTP_ATTRIBUTE_NORETURN;
+> +void tst_brkm_d(const char *file, const int lineno, int ttype,
+> +		void (*func)(void), const char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
+> +#define tst_brkm(ttype, func, arg_fmt, ...) \
+> +	tst_brkm_d(__FILE__, __LINE__, (ttype), (func),\
+> +		   (arg_fmt), ##__VA_ARGS__)
 > +
-> +/*
-> + * NAME
-> + *	sendfile09.c
-> + *
-> + * DESCRIPTION
-> + *	Testcase copied from sendfile02.c to test the basic functionality of the
-> sendfile(2) system call on large file.
+>  void tst_require_root(void (*func)(void));
+>  int  tst_environ(void);
+>  void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
+> diff --git a/lib/tst_res.c b/lib/tst_res.c
+> index 31186e0..015ca52 100644
+> --- a/lib/tst_res.c
+> +++ b/lib/tst_res.c
+> @@ -721,10 +721,12 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
+>  }
+>  
+>  /*
+> - * tst_brkm() - Interface to tst_brk(), with no filename.
+> + * tst_brkm_d() - Interface to tst_brk(), with no filename.
+>   */
+> -void tst_brkm(int ttype, void (*func) (void), const char *arg_fmt, ...)
+> +void tst_brkm_d(const char *file, const int lineno, int ttype,
+> +	void (*func)(void), const char *arg_fmt, ...)
+>  {
+> +	int len;
+>  	char tmesg[USERMESG];
+>  
+>  #if DEBUG
+> @@ -733,7 +735,8 @@ void tst_brkm(int ttype, void (*func) (void), const char *arg_fmt, ...)
+>  	fflush(stdout);
+>  #endif
+>  
+> -	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
+> +	len = sprintf(tmesg, "%s:%d: ", file, lineno);
+> +	EXPAND_VAR_ARGS(tmesg + len, arg_fmt, USERMESG);
+>  
+>  	tst_brk(ttype, NULL, func, "%s", tmesg);
+>  	/* Shouldn't be reach, but fixes build time warnings about noreturn. */
+> diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
+> index 220edae..ae25244 100644
+> --- a/tools/apicmds/ltpapicmd.c
+> +++ b/tools/apicmds/ltpapicmd.c
+> @@ -173,7 +173,7 @@ void apicmd_brkm(int argc, char *argv[])
+>  	}
+>  	trestype = ident_ttype((argv++)[0]);
+>  	argv++;
+> -	tst_brkm(trestype, NULL, "%s", *argv);
+> +	tst_brk(trestype, NULL, NULL, "%s", *argv);
+>  }
+>  
+>  void apicmd_resm(int argc, char *argv[])
 
-^^ this line is too long. You can also reference relevant commit ids,
-which introduce/fix the problem.
 
-> + *
-> + * ALGORITHM
-> + *	1. call sendfile(2) with offset = 0
-> + *	2. call sendfile(2) with offset in the middle of the file
-> + *
-> + * USAGE:  <for command-line>
-> + *  sendfile09 [-c n] [-i n] [-I x] [-P x] [-t]
-> + *     where,
-> + *             -i n : Execute test n times.
-> + *             -I x : Execute test for x seconds.
-> + *             -P x : Pause for x seconds between iterations.
-> + *             -t   : Turn on syscall timing.
-> + *
-> + *
-> + * RESTRICTIONS
-> + *	Only supports 64bit systems and kernel 2.6.33 or above
-> + */
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <sys/stat.h>
-> +#include <sys/sendfile.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
+I don't like the fact that this changes tst_brkm() to a macro, but I
+don't have a better idea.
 
-Is wait.h/waitpid() needed? (see below)
+From a technical point, maybe I would just use tst_brkm_ instead of
+tst_brkm_d, otherwise it looks correct.
 
-> +#include <unistd.h>
-> +#include <inttypes.h>
-> +
-> +#include "usctest.h"
-> +#include "test.h"
-> +
-> +#ifndef OFF_T
-> +#define OFF_T off_t
-> +#endif /* Not def: OFF_T */
-> +
-> +TCID_DEFINE(sendfile09);
-> +int TST_TOTAL = 4;
+Have you recompiled LTP with this change? Does everything work as
+expected?
 
-Please use ARRAY_SIZE macro.
-
-> +
-> +char in_file[100];
-> +char out_file[100];
-> +int out_fd;
-> +
-> +void cleanup(void);
-> +void setup(void);
-
-Please make all above static.
-
-> +
-> +struct test_case_t {
-> +	char *desc;
-> +	int offset;
-
-Shouldn't this be OFF_T?
-
-> +	int64_t exp_retval;
-> +	int64_t exp_updated_offset;
-> +} testcases[] = {
-> +	{
-> +	"Test sendfile(2) with offset = 0", 0, 4294967296, 4294967296}, {
-> +	"Test sendfile(2) with offset in the middle of file", 2, 4294967294,
-> 4294967296}, {
-> +	"Test sendfile(2) with offset in the middle of file", 4, 4294967292,
-> 4294967296}, {
-> +	"Test sendfile(2) with offset in the middle of file", 6, 4294967290,
-> 4294967296}
-
-These lines are long.
-Is it necessary to repeat the test 4 times? Would it be enough to do it twice
-as suggested in comments above (once with offset 0 and once with offset beyond 2G)?
-
-+ *	1. call sendfile(2) with offset = 0
-+ *	2. call sendfile(2) with offset in the middle of the file
-
-> +};
-> +
-> +#ifdef UCLINUX
-> +static char *argv0;
-> +#endif
-> +
-> +void do_sendfile(OFF_T offset, int i)
-> +{
-> +	int in_fd;
-> +	struct stat sb;
-> +	int wait_status;
-> +	int wait_stat;
-
-Is wait_status and wait_stat needed? (see below)
-
-> +	off_t before_pos, after_pos;
-> +
-> +	if ((out_fd = open(out_file, O_WRONLY)) < 0) {
-> +		tst_brkm(TBROK, cleanup, "open failed: %d", errno);
-> +	}
-
-braces {} are not necessary for single statement blocks
-You can use kernel's scripts/checkpatch.pl to list all instances.
-
-> +
-> +	if ((in_fd = open(in_file, O_RDONLY)) < 0) {
-> +		tst_brkm(TBROK, cleanup, "open failed: %d", errno);
-> +	}
-> +
-> +	if (stat(in_file, &sb) < 0) {
-> +		tst_brkm(TBROK, cleanup, "stat failed: %d", errno);
-> +	}
-> +
-> +	if ((before_pos = lseek(in_fd, 0, SEEK_CUR)) < 0) {
-> +		tst_brkm(TBROK, cleanup,
-> +			 "lseek before invoking sendfile failed: %d", errno);
-> +	}
-> +
-> +	TEST(sendfile(out_fd, in_fd, &offset, sb.st_size - offset));
-> +
-> +	if (TEST_RETURN == -1) {
-> +		tst_brkm(TBROK, cleanup, "sendfile(2) failed: %s",
-> +			strerror(TEST_RETURN));
-
-Did you mean stderror(TEST_ERRNO)?
-
-You can use "TBROK | TERRNO" or "TBROK | TTERRNO" instead, that
-applies for all tst_* calls above and below.
-
-> +	}
-> +
-> +	if ((after_pos = lseek(in_fd, 0, SEEK_CUR)) < 0) {
-> +		tst_brkm(TBROK, cleanup,
-> +			 "lseek after invoking sendfile failed: %d", errno);
-> +	}
-> +
-> +	if (TEST_RETURN != testcases[i].exp_retval) {
-> +		tst_resm(TFAIL, "sendfile(2) failed to return "
-> +			 "expected value, expected: %" PRId64 ", "
-> +			 "got: %" PRId64, testcases[i].exp_retval,
-> +			 TEST_RETURN);
-> +	} else if (offset != testcases[i].exp_updated_offset) {
-> +		tst_resm(TFAIL, "sendfile(2) failed to update "
-> +			 "OFFSET parameter to expected value, "
-> +			 "expected: %" PRId64 ", got: %" PRId64,
-> +			 testcases[i].exp_updated_offset,
-> +			 (int64_t) offset);
-> +	} else if (before_pos != after_pos) {
-> +		tst_resm(TFAIL, "sendfile(2) updated the file position "
-> +			 " of in_fd unexpectedly, expected file position: %"
-> +			 PRId64 ", " " actual file position %" PRId64,
-> +			 (int64_t) before_pos, (int64_t) after_pos);
-> +	} else {
-> +		tst_resm(TPASS, "functionality of sendfile() is "
-> +			 "correct");
-> +		wait_status = waitpid(-1, &wait_stat, 0);
-
-What is this waiting for?
-
-> +	}
-> +
-> +	close(in_fd);
-> +	close(out_fd);
-> +}
-> +
-> +/*
-> + * setup() - performs all ONE TIME setup for this test.
-> + */
-> +void setup(void)
-> +{
-> +	int fd;
-> +	int i;
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	/* make a temporary directory and cd to it */
-
-you can remove this comment
-
-> +	tst_tmpdir();
-> +	sprintf(in_file, "in.%d", getpid());
-
-in and out files will be in unique temp directory,
-adding pid to file names seems unnecessary.
-
-> +	if ((fd = creat(in_file, 00700)) < 0) {
-> +		tst_brkm(TBROK, cleanup, "creat failed in setup, errno: %d",
-> +			 errno);
-> +	}
-> +
-> +	/* create a 4G file */
-> +	for (i = 1; i <= (4 * 1024); i++) {
-> +		if (lseek(fd, (1024 * 1024 - 1), SEEK_CUR) < 0) {
-> +			tst_brkm(TBROK, cleanup, "lseek failed, errno: %d", errno);
-> +		}
-> +
-> +		if (write(fd, "C", 1) < 0) {
-> +			tst_brkm(TBROK, cleanup, "write failed, errno: %d", errno);
-> +		}
-> +	}
-> +
-> +	close(fd);
-> +	sprintf(out_file, "out.%d", getpid());
-> +	if ((fd = creat(out_file, 00700)) < 0) {
-> +		tst_brkm(TBROK, cleanup, "creat failed in setup, errno: %d",
-> +			 errno);
-> +	}
-> +	close(fd);
-> +}
-> +
-> +/*
-> + * cleanup() - performs all ONE TIME cleanup for this test at
-> + *	       completion or premature exit.
-> + */
-> +void cleanup(void)
-> +{
-> +	/*
-> +	 * print timing stats if that option was specified.
-> +	 * print errno log if that option was specified.
-> +	 */
-> +	TEST_CLEANUP;
-> +
-> +	close(out_fd);
-> +	/* delete the test directory created in setup() */
-> +	tst_rmdir();
-> +
-> +}
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int i;
-> +	int lc;
-> +	const char *msg;		/* parse_opts() return message */
-> +
-> +#if __WORDSIZE == 32
-> +	tst_brkm(TCONF, NULL, "This test is only for 64bit");
-> +#endif
-> +
-> +	if (tst_kvercmp(2, 6, 33) < 0) {
-> +		tst_resm(TINFO, "sendfile(2) on large file skipped for kernels < 2.6.33");
-> +		return;
-
-return with no value
-
-> +	}
-> +
-> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +	}
-> +#ifdef UCLINUX
-> +	argv0 = av[0];
-> +#endif
-
-UCLINUX ifdefs blocks don't appear to be needed any longer.
-
-Regards,
-Jan
-
-> +
-> +	setup();
-> +
-> +	/*
-> +	 * The following loop checks looping state if -c option given
-> +	 */
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		for (i = 0; i < TST_TOTAL; ++i) {
-> +			do_sendfile(testcases[i].offset, i);
-> +		}
-> +	}
-> +	cleanup();
-> +
-> +	tst_exit();
-> +}
-> --
-> 1.9.3
-> 
-> 
-> ------------------------------------------------------------------------------
-> Open source business process management suite built on Java and Eclipse
-> Turn processes into business applications with Bonita BPM Community Edition
-> Quickly connect people, data, and systems into organized workflows
-> Winner of BOSSIE, CODIE, OW2 and Gartner awards
-> http://p.sf.net/sfu/Bonitasoft
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Open source business process management suite built on Java and Eclipse
