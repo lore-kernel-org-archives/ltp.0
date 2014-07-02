@@ -1,35 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1X2bOA-0003aj-J6
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 07:25:02 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X2bO7-0005bU-PG
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 07:25:01 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s637OrMd023030
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 07:24:54 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s637OqRG008365
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 07:24:53 GMT
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s637OqoM028850
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 07:24:52 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu,  3 Jul 2014 11:24:42 +0400
-Message-Id: <1404372282-21896-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140702132544.GA4424@rei.scz.novell.com>
-References: <20140702132544.GA4424@rei.scz.novell.com>
-Subject: [LTP] [PATCH] test-writing-guidelines.txt: added info about
-	tst_get_unused_pid()
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X2K2B-0006Zu-Nk
+	for ltp-list@lists.sourceforge.net; Wed, 02 Jul 2014 12:53:11 +0000
+Date: Wed, 2 Jul 2014 14:52:48 +0200
+From: chrubis@suse.cz
+Message-ID: <20140702125248.GB3714@rei.scz.novell.com>
+References: <1404294010-18698-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1404294010-18698-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1404294010-18698-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 2/3] lib/tst_res.c: introduce function
+ tst_record_childstatus()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,47 +23,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- doc/test-writing-guidelines.txt |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+Hi!
+> diff --git a/lib/tst_res.c b/lib/tst_res.c
+> index 079fc42..24fb4d9 100644
+> --- a/lib/tst_res.c
+> +++ b/lib/tst_res.c
+> @@ -101,6 +101,9 @@
+>  #include <stdarg.h>
+>  #include <string.h>
+>  #include <unistd.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +
+>  #include "test.h"
+>  #include "usctest.h"
+>  #include "ltp_priv.h"
+> @@ -228,6 +231,40 @@ void tst_reset_exitval(void)
+>  {
+>  	T_exitval = 0;
+>  }
+> +
+> +int tst_record_childstatus(int status, int *sig)
+> +{
+> +	int ret = 0, ttype_result, s = 0;
+> +
+> +	if (WIFEXITED(status)) {
+> +		ret = WEXITSTATUS(status);
+> +		ttype_result = TTYPE_RESULT(ret);
+> +		T_exitval |= ttype_result;
+> +		s = 0;
+> +		ret = CHILD_EXIT_NORMALLY;
+> +	} else if (WIFSIGNALED(status)) {
+> +		s = WTERMSIG(status);
+> +		tst_resm(TINFO, "child process is killed by signal: %s(%d)",
+> +			 tst_strsig(s), s);
+> +		ret = CHILD_EXIT_SIGNALED;
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index af31d38..ea88126 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -871,6 +871,21 @@ newly created dir has two links allready the '.' and the link from parent
- dir). If no limit is hit or 'mkdir(2)' failed with 'ENOSPC' or 'EDQUOT', zero
- is returned previously created directories are removed.
- 
-+2.2.17 Getting an unused PID number
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+Some tests require a PID value, which is not used by the OS or any process
-+within it. For example, kill(2) should set errno to ESRCH if it's passed such a PID.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+#include "test.h"
-+
-+pid_t tst_get_unused_pid(void (*cleanup)(void));
-+-------------------------------------------------------------------------------
-+
-+Return a PID value not used by the OS or any process within it.
-+
- 2.3 Writing a testcase in shell
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
+I would not bother with the return value and just do tst_brkm() with
+TBROK in the rest of the cases. Because child killed by a signal is a
+very special case and testcases that needs to assert it can do the
+wait() and WIFSIGNALED() themselves.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Open source business process management suite built on Java and Eclipse
