@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X6Cgg-00065Z-4b
-	for ltp-list@lists.sourceforge.net; Sun, 13 Jul 2014 05:51:02 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X2Xla-0001kY-Ei
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:32:58 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X6Cge-0007l0-9u
-	for ltp-list@lists.sourceforge.net; Sun, 13 Jul 2014 05:51:02 +0000
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X2XlZ-0002JE-1X
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:32:58 +0000
 Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6D5oM1g014707
-	for <ltp-list@lists.sourceforge.net>; Sun, 13 Jul 2014 13:50:23 +0800
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s633WmEO018979
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 11:32:48 +0800
+Message-ID: <53B4CE30.9050407@cn.fujitsu.com>
+Date: Thu, 3 Jul 2014 11:29:52 +0800
 From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Sun, 13 Jul 2014 13:49:50 +0800
-Message-ID: <1405230591-19166-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 1/2] lib/tst_res.c: introduce
-	tst_record_childstatus()
+References: <1404356716-20493-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1404356716-20493-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] doc/man3/tst_res.3: fix the wrong description
+	about TPASS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,99 +32,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP <ltp-list@lists.sourceforge.net>
 
-In case we need do real test work in child porcess, it is OK for child process
-to use tst_resm(), tst_brkm() or tst_exit(). Parent process can use
-tst_record_childstatus() to make child process's test results propagated to parent
-process correctly.
+Hi, 
 
-Meanwhile we reset T_exitval to 0 for child process in tst_fork(), which will
-make child process can record test results with tst_resm() or tst_brkm() correctly.
+Indeed TPASS dose not have effect on the test program's exit status, that it is defined 0.
+Sorry for the noise, please ignore this patch.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- include/test.h | 10 ++++++++++
- lib/tst_res.c  | 29 ++++++++++++++++++++++++++++-
- 2 files changed, 38 insertions(+), 1 deletion(-)
+Regards,
+Xiaoguang Wang
 
-diff --git a/include/test.h b/include/test.h
-index 011866d..3672a8c 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -135,9 +135,19 @@ void tst_flush(void);
- 
- /*
-  * tst_flush() + fork
-+ * NOTE: tst_fork() will reset T_exitval to 0 for child process.
-  */
- pid_t tst_fork(void);
- 
-+/* lib/tst_res.c */
-+/*
-+ * In case we need do real test work in child porcess, it is OK for
-+ * child process to use tst_resm(), tst_brkm() or tst_exit(). Parent
-+ * process can use tst_record_childstatus() to make child process's
-+ * test results propagated to parent process correctly.
-+ */
-+void tst_record_childstatus(void (*cleanup)(void), pid_t child);
-+
- extern int tst_count;
- 
- /* lib/tst_sig.c */
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 31186e0..35eefa3 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -101,6 +101,9 @@
- #include <stdarg.h>
- #include <string.h>
- #include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
- #include "test.h"
- #include "usctest.h"
- #include "ltp_priv.h"
-@@ -568,8 +571,32 @@ void tst_exit(void)
- 
- pid_t tst_fork(void)
- {
-+	pid_t child;
-+
- 	tst_flush();
--	return fork();
-+
-+	child = fork();
-+	if (child == 0)
-+		T_exitval = 0;
-+
-+	return child;
-+}
-+
-+void tst_record_childstatus(void (*cleanup)(void), pid_t child)
-+{
-+	int status, ttype_result;
-+
-+	if (waitpid(child, &status, 0) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "waitpid(%d) failed", child);
-+
-+	if (WIFEXITED(status)) {
-+		ttype_result = WEXITSTATUS(status);
-+		ttype_result = TTYPE_RESULT(ttype_result);
-+		T_exitval |= ttype_result;
-+	} else {
-+		tst_brkm(TBROK, cleanup, "child process(%d) killed by "
-+			 "unexpected signal", child);
-+	}
- }
- 
- pid_t tst_vfork(void)
--- 
-1.8.2.1
+On 07/03/2014 11:05 AM, Xiaoguang Wang wrote:
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  doc/man3/tst_res.3 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/doc/man3/tst_res.3 b/doc/man3/tst_res.3
+> index 0754daf..3fc8e79 100644
+> --- a/doc/man3/tst_res.3
+> +++ b/doc/man3/tst_res.3
+> @@ -233,7 +233,7 @@ TCONF
+>  0040	/* ..1. .... */
+>  .RE
+>  .P
+> -NOTE: \fBTPASS, TRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
+> +NOTE: \fBTRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
+>  on the test program exit status.
+>  .P
+>  \fBtst_environ()\fR is used to ensure that results reported by this library
+> 
 
 
 ------------------------------------------------------------------------------
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
