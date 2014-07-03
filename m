@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1X9Ro6-0003fM-6C
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 04:36:06 +0000
-Received: from mail-pa0-f46.google.com ([209.85.220.46])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1X9Ro4-0000VO-8I
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 04:36:06 +0000
-Received: by mail-pa0-f46.google.com with SMTP id lj1so11118613pab.5
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 Jul 2014 21:35:58 -0700 (PDT)
-Message-ID: <53CDE4C7.9040007@casparzhang.com>
-Date: Tue, 22 Jul 2014 12:12:55 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X2XNv-00010r-OS
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:08:31 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X2XNt-0001gE-VP
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:08:31 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6338I4S017091
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 11:08:18 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Thu, 3 Jul 2014 11:05:16 +0800
+Message-ID: <1404356716-20493-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <CAE1O6mhHy9uLNsgAVhg0+h+vyECTmRVTPULhF1fpjUHxjc3B4w@mail.gmail.com>
-In-Reply-To: <CAE1O6mhHy9uLNsgAVhg0+h+vyECTmRVTPULhF1fpjUHxjc3B4w@mail.gmail.com>
-Subject: Re: [LTP] fix hugemmap03 fails on s390x error
+Subject: [LTP] [PATCH] doc/man3/tst_res.3: fix the wrong description about
+	TPASS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,72 +30,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <wangli.ahau@gmail.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 07/22/2014 11:24 AM, Li Wang wrote:
-> Hi all,
->
-> LTP failed with mmap into high region on s390x:
->
-> hugemmap03    0  TINFO  :  set nr_hugepages to 64
-> hugemmap03    1  TFAIL  :  mmap into high region succeeded unexpectedly
-> hugemmap03    0  TINFO  :  set nr_hugepages to 0
-> hugemmap03    0  TWARN  :  tst_rmdir: rmobj(/tmp/hugOr8owE) failed:
-> remove(/tmp/hugOr8owE) failed; errno=16: Device or resource busy
->
->
-> According to the test case, the failing code is:
->
-> 103                 /* Attempt to mmap into highmem addr, should get ENOMEM */
-> 104                 addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
-> 105                             MAP_SHARED | MAP_FIXED, fildes, 0);
-> 106                 if (addr != MAP_FAILED) {
-> 107                         tst_resm(TFAIL, "mmap into high region "
-> 108                                  "succeeded unexpectedly");
-> 109                         goto fail;
-> 110                 }
->
-> with HIGH_ADDR defined as:
->
-> #define HIGH_ADDR       (void *)(0x1000000000000)
->
-> This is an 2^48 address... which is likely the maximum for amd64.  On
-> s390x, the address space is up to 2^53. So the mmap() in the test case
-> succeeds which is not expected.
->
->
-> ---------------------------------------------
->
-> after increase the HIGH_ADDR value, test PASS.
->
-> [root@ibm-z10-38 hugemmap]# cat hugemmap03.c |grep HIGH
-> #define HIGH_ADDR (void *)(0x100000000000000)      <----increase the value
-> addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
->
->
-> [root@ibm-z10-38 hugemmap]# ./hugemmap03 -s 1024
-> hugemmap03    0  TINFO  :  set nr_hugepages to 1024
-> hugemmap03    1  TPASS  :  mmap into high region failed as expected:
-> errno=ENOMEM(12): Cannot allocate memory
-> hugemmap03    0  TINFO  :  set nr_hugepages to 0
->
->
->
->
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ doc/man3/tst_res.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Looks good to me. Could you please make a patch for it?
-
-Thanks,
-Caspar
-
+diff --git a/doc/man3/tst_res.3 b/doc/man3/tst_res.3
+index 0754daf..3fc8e79 100644
+--- a/doc/man3/tst_res.3
++++ b/doc/man3/tst_res.3
+@@ -233,7 +233,7 @@ TCONF
+ 0040	/* ..1. .... */
+ .RE
+ .P
+-NOTE: \fBTPASS, TRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
++NOTE: \fBTRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
+ on the test program exit status.
+ .P
+ \fBtst_environ()\fR is used to ensure that results reported by this library
+-- 
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
