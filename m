@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X9ctu-0008RO-E9
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 16:26:50 +0000
-Date: Tue, 22 Jul 2014 18:26:09 +0200
+	(envelope-from <metan@suse.de>) id 1X2eso-0003Dt-CI
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 11:08:54 +0000
+Date: Thu, 3 Jul 2014 13:08:32 +0200
 From: chrubis@suse.cz
-Message-ID: <20140722162609.GA9450@rei>
-References: <dc2462c674d71068608438bec6cb162481571eec.1406044787.git.jstancek@redhat.com>
+Message-ID: <20140703110832.GA2534@rei.scz.novell.com>
+References: <53B4D46A.6010201@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <dc2462c674d71068608438bec6cb162481571eec.1406044787.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] mmap15: raise high address to 2^53
+In-Reply-To: <53B4D46A.6010201@cn.fujitsu.com>
+Subject: Re: [LTP] [RFC] remove TRETR flag
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,44 +24,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, wangli.ahau@gmail.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Address space on s390x can go atm. as high as 2^53,
-> so raise high address used here to this level.
-> 
-> Signed-off-by: Li Wang <wangli.ahau@gmail.com>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/mmap/mmap15.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
-> index 321d405..49dbba4 100644
-> --- a/testcases/kernel/syscalls/mmap/mmap15.c
-> +++ b/testcases/kernel/syscalls/mmap/mmap15.c
-> @@ -41,7 +41,7 @@
->  char *TCID = "mmap15";
->  int TST_TOTAL = 1;
->  
-> -#define HIGH_ADDR	(void *)(0x1000000000000)
-> +#define HIGH_ADDR	(void *)(1L << 53)
->  
->  static long map_sz;
+> Flag TRETR is introduced to indicate test case is no longer valid and has been "retired".
+> I grep "TRETR" in LTP and do not find any test cases use this flag. According to my understanding,
+> if the test case is no longer valid, we can just remove it form LTP. So I'd like to remove this flag.
 
-Looks good to me, acked.
+Agreed. Just send a patch that removes all TRETR instaces from LTP.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
