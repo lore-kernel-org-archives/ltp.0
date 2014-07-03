@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X6gNX-0001EX-AO
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 13:33:15 +0000
-Date: Mon, 14 Jul 2014 15:32:45 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X2f1S-00032s-NV
+	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 11:17:50 +0000
+Date: Thu, 3 Jul 2014 13:17:28 +0200
 From: chrubis@suse.cz
-Message-ID: <20140714133245.GA25946@rei.suse.cz>
-References: <34c197c03d5d2d3296bd1e770e70922f72c770f5.1405337663.git.jstancek@redhat.com>
+Message-ID: <20140703111728.GB2534@rei.scz.novell.com>
+References: <1404356716-20493-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<53B4CE30.9050407@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <34c197c03d5d2d3296bd1e770e70922f72c770f5.1405337663.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] fs-bench: rename test*.sh scripts to
- fs-bench-test*.sh
+In-Reply-To: <53B4CE30.9050407@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] doc/man3/tst_res.3: fix the wrong description
+ about TPASS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +26,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Awais_Belal@mentor.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Install name of these scripts is in conflict with testcases/lib/test.sh.
-> In problem Awais reported, he ended up with test.sh from fs-bench in
-> install directory, instead of shell script library he was expecting:
->   install -m 00775 "/root/ltp/testcases/lib/test.sh" "/opt/ltp/testcases/bin/test.sh"
->   ...
->   install -m 00775 "/root/ltp/testcases/kernel/fs/fs-bench/test.sh" "/opt/ltp/testcases/bin/test.sh"
-> 
-> Reported-by: Awais Belal <Awais_Belal@mentor.com>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> > ---
+> >  doc/man3/tst_res.3 | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/doc/man3/tst_res.3 b/doc/man3/tst_res.3
+> > index 0754daf..3fc8e79 100644
+> > --- a/doc/man3/tst_res.3
+> > +++ b/doc/man3/tst_res.3
+> > @@ -233,7 +233,7 @@ TCONF
+> >  0040	/* ..1. .... */
+> >  .RE
+> >  .P
+> > -NOTE: \fBTPASS, TRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
+> > +NOTE: \fBTRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
+> >  on the test program exit status.
 
-Looks obvious to me, acked.
+Hmm, but looking at the TCONF this is no longer true.
 
-Also we really should add some collision detection to the install phase
-to avoid failures like this one.
+Maybe it's time we get rid of the tst_* man pages since all the
+important documentation is now in test-writing-guidelines.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck&#174;
-Code Sight&#153; - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
