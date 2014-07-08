@@ -2,21 +2,48 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XC5np-00065k-JS
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 11:42:45 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XC5nm-0007DQ-2x
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 11:42:45 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6TBgXZp009991
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jul 2014 19:42:33 +0800
-Message-ID: <1406634124.3928.1.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 29 Jul 2014 19:42:04 +0800
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1X4Wbx-0003ZD-Gv
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jul 2014 14:43:13 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X4Wbv-0004Ar-73
+	for ltp-list@lists.sourceforge.net; Tue, 08 Jul 2014 14:43:13 +0000
+Received: from /spool/local
+	by e9.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Tue, 8 Jul 2014 10:43:05 -0400
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com
+	[9.57.198.23])
+	by d01dlp01.pok.ibm.com (Postfix) with ESMTP id 8B27138C803D
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  8 Jul 2014 10:43:03 -0400 (EDT)
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by b01cxnp22033.gho.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	s68Eh3sb63766580
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jul 2014 14:43:03 GMT
+Received: from d01av03.pok.ibm.com (localhost [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	s68Eh3KQ008344
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jul 2014 10:43:03 -0400
+Received: from localhost.localdomain ([9.125.24.45])
+	by d01av03.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	s68Egxa2008123
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Jul 2014 10:43:01 -0400
+Date: Tue, 8 Jul 2014 22:42:54 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20140708144254.GB3111@localhost.localdomain>
+References: <20140704031641.GA20446@localhost.localdomain>
+	<1152474476.5259307.1404735279247.JavaMail.zimbra@redhat.com>
+	<20140708072308.GA3111@localhost.localdomain>
+	<1472278017.5756231.1404815787899.JavaMail.zimbra@redhat.com>
+	<1015853559.5800703.1404820547657.JavaMail.zimbra@redhat.com>
+	<2026740901.5816308.1404822634671.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] network ftp: some cleanup
+Content-Disposition: inline
+In-Reply-To: <2026740901.5816308.1404822634671.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [RFC PATCH] regression test for 64bit
+	sendfile	capped	at	2G
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,887 +56,313 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-* Move do_setup and do_cleanup into ftp_setup.
+On Tue, Jul 08, 2014 at 08:30:34AM -0400, Jan Stancek wrote:
+> I think the problem addressed in commit 5d73320a96fcc was using sendfile on large files,
+> and not making large (count > 2GB) sendfile() calls.
+> 
+> Taking this into account, I can see the difference with/without commit 5d73320a96fcc.
+> Second case here fails on unpatched kernel with:
+> 
+> sendfile(3, 4, [3221225472], 1073741824) = -1 EOVERFLOW (Value too large for defined data type)
+> 
+> 
+Great! I have combined these patches, please have a look. Many Thanks!
 
-* Delete ftp02_s1 and add do_test function for it.
 
-* Delete ftp_set_passwd and ftp_setup_vsftp_conf, since they are not be used.
+From 1bd0231a240629b42dc83e151badb4f0a18b9d22 Mon Sep 17 00:00:00 2001
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Thu, 3 Jul 2014 15:29:35 +0800
+Subject: [PATCH] regression test for 64bit sendfile capped at 2G
 
-* Use test.sh instead of net_cmdlib.sh
+There is a bug on 64bit sendfile() with large file, please see
+https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
+for details.
 
-* Define local exists function instead of which in cmdlib.sh
+This sendfile09.c was copied from sendfile02.c and using plain
+file as the out_file. The file size is 4G (4294967296 bytes).
 
-* Abandon trap and use tst_exit.
+The count cannot be large than 2G, but the offset can. So the second
+case tests with 3G offset and 1G count. Many thanks to Jan Stancek's
+help.
 
-* Make the test like:
-	(set TCID TST_TOTAL ...)
-	setup
-	do_test
-	check_result
-	tst_exit
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
 ---
- testcases/network/tcp_cmds/ftp/ftp02               | 100 +++++++-----
- testcases/network/tcp_cmds/ftp/ftp02_s1            |  71 ---------
- testcases/network/tcp_cmds/ftp/ftp03               | 177 ++++++++-------------
- testcases/network/tcp_cmds/ftp/ftp04               | 109 ++++++-------
- testcases/network/tcp_cmds/ftp/ftp05               | 149 ++++++++---------
- testcases/network/tcp_cmds/ftp/ftp_set_passwd      |  28 ----
- testcases/network/tcp_cmds/ftp/ftp_setup           |  82 ++++++++++
- .../network/tcp_cmds/ftp/ftp_setup_vsftp_conf      |   5 -
- 8 files changed, 320 insertions(+), 401 deletions(-)
- delete mode 100755 testcases/network/tcp_cmds/ftp/ftp02_s1
- delete mode 100755 testcases/network/tcp_cmds/ftp/ftp_set_passwd
- create mode 100644 testcases/network/tcp_cmds/ftp/ftp_setup
- delete mode 100755 testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf
+ runtest/syscalls                                |   2 +
+ testcases/kernel/syscalls/.gitignore            |   2 +
+ testcases/kernel/syscalls/sendfile/sendfile09.c | 226 ++++++++++++++++++++++++
+ 3 files changed, 230 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/sendfile/sendfile09.c
 
-diff --git a/testcases/network/tcp_cmds/ftp/ftp02 b/testcases/network/tcp_cmds/ftp/ftp02
-index 6d6e021..a86319f 100755
---- a/testcases/network/tcp_cmds/ftp/ftp02
-+++ b/testcases/network/tcp_cmds/ftp/ftp02
-@@ -28,59 +28,73 @@
- #  NOTE:
- #       This version is intended for EAL certification, it will need modification
- #       to conform with LTP standards in the offical LTP tree.
-+#
-+# DESCRIPTION:
-+#	Create Test User
-+#	Make sure test user cannont log in with invalid password
-+#	Cleanup Test User from system
-+#	Exit with exit code of script called upon
-+#
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 66d6a65..fbed9cb 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -937,6 +937,8 @@ sendfile07 sendfile07
+ sendfile07_64 sendfile07_64
+ sendfile08 sendfile08
+ sendfile08_64 sendfile08_64
++sendfile09 sendfile09
++sendfile09_64 sendfile09_64
  
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup()
-+setup()
- {
-+	exists expect ftp useradd userdel
-+	export TEST_USER="ftpuser2"
-+	CONNECTION_FAILED="Connection failed; test FAILED"
-+	EXPECTED="Login failed as expected; test PASSED"
-+	UNEXPECTED="Login succeeded unexpectedly; test FAILED"
-+}
  
--    export RHOST="localhost"
--    export TEST_USER="ftpuser2"
--    export TEST_USER_PASSWD="eal"
--    export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
--    export TEST_USER_HOMEDIR="/home/$TEST_USER"
--
--    # erase user if he may exist, so we can have a clean env
--    TCtmp="/home/$TEST_USER"
--
--    tst_setup
-+do_test()
-+{
-+	set PASSWD "invaild_password?!!"
- 
--    exists expect ftp ftp02_s1 useradd userdel
-+	set timeout 90
- 
--    userdel $TEST_USER
--    sleep 1
-+	expect -c "
-+		#ftp to host
-+		spawn ftp $RHOST
-+		sleep 1
-+		# Check if connection succeeded.
-+		expect {
-+			\"Name\" {}
-+			timeout {send_user \"\n$CONNECTION_FAILED\n\";exit 1}
-+		}
- 
--    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
--        end_testcase "Could not add test user $TEST_USER to system $RHOST."
--    fi
-+		send \"$RUSER\r\"
-+		sleep 1
-+		expect -re \"Password:\"
-+		send \"$PASSWD\r\"
-+		sleep 1
- 
--    trap do_cleanup EXIT
-+		expect {
-+			# 530 - Login failed
-+			\"530\" {send_user \"$EXPECTED\n\";exit 0}
-+			# 230 - Login successful
-+			\"230\" {send_user \"$UNEXPECTED\n\"; exit 1}
-+		}
- 
-+		expect \"ftp>\"
-+		send \"exit\r\"
-+	"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
-+TCID="$0"
-+TST_TOTAL=1
- 
--do_cleanup()
--{
--    userdel $TEST_USER
--    tst_cleanup
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  MAIN
--#
--# DESCRIPTION: Create Test User
--#              Call upon script to make sure test user cannont log in with invalid password
--#	       Cleanup Test User from system
--#              Exit with exit code of script called upon
--#-----------------------------------------------------------------------
--. net_cmdlib.sh
-+. test.sh
-+. ftp_setup
- 
--read_opts $*
-+setup
- do_setup
--ftp02_s1 || end_testcase "Testcase failed."
--end_testcase
-+TST_CLEANUP=do_cleanup
-+
-+do_test
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ftp/ftp02_s1 b/testcases/network/tcp_cmds/ftp/ftp02_s1
-deleted file mode 100755
-index 18b08da..0000000
---- a/testcases/network/tcp_cmds/ftp/ftp02_s1
-+++ /dev/null
-@@ -1,71 +0,0 @@
--#! /usr/bin/expect -f
--#*********************************************************************
--#   Copyright (c) International Business Machines  Corp., 2003, 2005
--#
--#   This program is free software;  you can redistribute it and/or modify
--#   it under the terms of the GNU General Public License as published by
--#   the Free Software Foundation; either version 2 of the License, or
--#   (at your option) any later version.
--#
--#   This program is distributed in the hope that it will be useful,
--#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#   the GNU General Public License for more details.
--#
--#   You should have received a copy of the GNU General Public License
--#   along with this program;  if not, write to the Free Software
--#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#
--#
--#  FILE   : ftp
--#
--#  PURPOSE: Test to see if ftp rejects a user with an invalid password
--#
--#  SETUP: The program `/usr/bin/expect' MUST be installed.
--#
--#  HISTORY:
--# 	03/04/03 Jerone Young (jeroney@us.ibm.com)
--#       09/21/05 Kris Wilson (krisw@us.ibm.com) Check for connection failure.
--#                (If WS system, no vsftpd; connection will fail.)
--
--set RHOST $env(RHOST)
--set TEST_USER $env(TEST_USER)
--set TEST_USER_PASSWD $env(TEST_USER_PASSWD)
--set TEST_USER_HOMEDIR $env(TEST_USER_HOMEDIR)
--
--#RUSER
--set RUSER $TEST_USER
--
--#set PASSWD to be an invalid Password
--set PASSWD "invaild_password?!!"
--
--set timeout 90
--
--#ftp to host
--spawn ftp $RHOST
--sleep 1
--# Check if connection succeeded.
--expect {
--    "Name" {}
--    timeout {send_user "\nConnection failed; test FAILED\n";exit 1}
--}
--
--send "$RUSER\r"
--sleep 1
--expect -re "Password:"
--send "$PASSWD\r"
--sleep 1
--
--expect {
--    # 530 - Login failed
--    "530" {send_user "Login failed as expected; test PASSED\n"}
--    # 230 - Login successful
--    "230" {send_user "Login succeeded unexpectedly; test FAILED\n"; exit 1}
--}
--
--expect "ftp>"
--send "exit\r"
--
--send_user "\nTest Successful\n\n"
--exit 0
-diff --git a/testcases/network/tcp_cmds/ftp/ftp03 b/testcases/network/tcp_cmds/ftp/ftp03
-index a99a1a0..13e5273 100755
---- a/testcases/network/tcp_cmds/ftp/ftp03
-+++ b/testcases/network/tcp_cmds/ftp/ftp03
-@@ -31,130 +31,77 @@
- #	This version is intended for EAL certification, it will need modification
- #	to conform with LTP standards in the offical LTP tree.
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup()
-+setup()
- {
--
--    RHOST="localhost"
--    TEST_USER="ftpuser1"
--    TCtmp=/home/$TEST_USER
--    TEST_USER_PASSWD="eal"
--    TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
--    TEST_USER_HOMEDIR="/home/$TEST_USER"
--    VSFTP_CONF=
--
--    tst_setup
--
--    exists ftp useradd userdel vftpd
--
--    for vsftp_conf in /etc/vsftpd /etc; do
--
--        if [ -r "$vsftp_confdir/vsftp.conf" ]; then
--            VSFTP_CONF="$vsftp_confdir/vsftp.conf"
--            break
--        fi
--
--    done
--    if [ ! -r "$VSFTP_CONF" ] ; then
--        end_testcase "vsftpd.conf not found."
--    fi
--    LOCAL_ENABLE=$(awk -F= '/^local_enable=/ {print $2}' "$VSFTP_CONF")
--
--    [ "$LOCAL_ENABLE" != "YES" ] && LOCAL_ENABLE="NO"
--
--    userdel $TEST_USER
--    sleep 1
--
--    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
--        end_testcase "Could not add test user $TEST_USER on system $RHOST."
--    fi
--
--    trap do_cleanup QUIT
--
--    # create users home diretory (SLES 8 does not do this, even when specified
--    # in adduser)
--    USER_UID=$(id -u $TEST_USER)
--    USER_GID=$(id -g $TEST_USER)
--    mkdir -p "$TEST_USER_HOMEDIR"
--    chown -R $USER_UID:$USER_GID $TEST_USER_HOMEDIR
--
-+	exists ftp useradd userdel vsftpd
-+	export TEST_USER="ftpuser3"
-+	FAIL_530="==> TEST : FAIL (ftp rejected login attempt)"
-+	PASS_230="==> TEST : PASS (ftp allowed login attempt)"
-+	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
-+	PASS_500="==> TEST : PASS (ftp rejected login attempt)"
-+	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
--
--do_cleanup()
-+do_test()
- {
--    userdel $TEST_USER
--    tst_cleanup
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_test
--#
--# DESCRIPTION: The test user will ftp in and create a directory in his home directory on the remote host.
--#              The directory is then checked on the remote hosts to see if it is owned
--#	       by the test user.
--#-----------------------------------------------------------------------
--
--do_test(){
--    tst_resm TINFO "TEST: Ftp into a remote host as a local user (other than root), LOCAL_ENABLE=$LOCAL_ENABLE"
-+	echo "TEST: Ftp into a remote host as a local user (other than root),"
-+	echo "LOCAL_ENABLE=$LOCAL_ENABLE"
- 
--    if [ "$LOCAL_ENABLE" = "YES" ]; then
-+	if [ "$LOCAL_ENABLE" = "YES" ]; then
- 	expect -c "
--            spawn ftp $RHOST
--            sleep 1
--            expect -re \": \"
--            send \"$TEST_USER\r\"
--            expect -re \"Password:\"
--            send \"$TEST_USER_PASSWD\r\"
--            expect {
--                # 530 - Login failed
--                \"530\" {send_user \"==> TEST \#$TEST : FAIL (ftp rejected login attempt)\n\";exit 1}
--                # 230 - Login successful
--                \"230\" {send_user \"==> TEST \#$TEST : PASS (ftp allowed login attempt)\n\";exit 0}
--            }
--            expect \"ftp> \"
--            send \"quit\r\"
-+		spawn ftp $RHOST
-+		sleep 1
-+		expect -re \": \"
-+		send \"$TEST_USER\r\"
-+		expect -re \"Password:\"
-+		send \"$TEST_USER_PASSWD\r\"
-+		expect {
-+			# 530 - Login failed
-+			\"530\" {send_user \"$FAIL_530\n\";exit 1}
-+			# 230 - Login successful
-+			\"230\" {send_user \"$PASS_230\n\";exit 0}
-+		}
-+		expect \"ftp> \"
-+		send \"quit\r\"
- 	"
--    else
--        expect -c "
--            spawn ftp $RHOST
--            sleep 1
--            expect -re \": \"
--            send \"$TEST_USER\r\"
--            expect -re \"Password:\"
--            send \"$TEST_USER_PASSWD\r\"
--            expect {
--                # 230 - Login successful
--                \"230\" {send_user \"==> TEST \#$TEST : FAIL (ftp allowed login attempt)\n\";exit 1}
--                # 500 - Login failed
--                \"500\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
--                # 530 - Login failed
--                \"530\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
--            }
--            expect \"ftp> \"
--            send \"quit\r\"
--        "
--    fi
--
--    if [ $? != 0 ]; then
--        end_testcase "Testcase failed"
--    fi
-+	else
-+	expect -c "
-+		spawn ftp $RHOST
-+		sleep 1
-+		expect -re \": \"
-+		send \"$TEST_USER\r\"
-+		expect -re \"Password:\"
-+		send \"$TEST_USER_PASSWD\r\"
-+		expect {
-+			# 230 - Login successful
-+			\"230\" {send_user \"$FAIL_230\n\";exit 1}
-+			# 500 - Login failed
-+			\"500\" {send_user \"$PASS_500\n\";exit 0}
-+			# 530 - Login failed
-+			\"530\" {send_user \"$PASS_530\n\";exit 0}
-+		}
-+		expect \"ftp> \"
-+		send \"quit\r\"
-+	"
-+	fi
- }
- 
--#----------------------------------------------------------------------
--# FUNCTION: MAIN
--# PURPOSE:  To invoke the functions to perform the tasks described in
--#           the prologue.
--#----------------------------------------------------------------------
--. net_cmdlib.sh
-+TCID="$0"
-+TST_TOTAL=1
- 
--read_opts $*
-+. test.sh
-+. ftp_setup
-+
-+setup
- do_setup
-+TST_CLEANUP=do_cleanup
-+
- do_test
--end_testcase
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ftp/ftp04 b/testcases/network/tcp_cmds/ftp/ftp04
-index 8329eb0..c13614d 100755
---- a/testcases/network/tcp_cmds/ftp/ftp04
-+++ b/testcases/network/tcp_cmds/ftp/ftp04
-@@ -28,77 +28,66 @@
- #   03/04/03 Jerone Young (jeroney@us.ibm.com)
- #   09/21/05 Kris Wilson (krisw@us.ibm.com) Check if vsftpd is on system.
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup()
-+setup()
- {
-+	exists awk expect ftp vsftpd
- 
--    tvar=${MACHTYPE%-*}
--    tvar=${tvar#*-}
--
--    RHOST=localhost
--    TEST_USER=root
--
--    tst_setup
-+	TEST_USER=root
- 
--    if [ -n "$PASSWD" ]; then
--        TEST_USER_PASSWORD=$PASSWD
--    else
--        end_testcase "You must set your password via the PASSWD variable."
--        exit 1
--    fi
-+	tvar=${MACHTYPE%-*}
-+	tvar=${tvar#*-}
- 
--    exists awk expect ftp vsftpd
--
--    if [ $tvar = "redhat" -o $tvar = "redhat-linux" ]; then
--        echo "Verifying test user $TEST_USER is in /etc/vsftpd.ftpusers database..."
--        FTPUSERS=$(awk "/$TEST_USER/" /etc/vsftpd.ftpusers)
--    else
--        echo "Verifying test user $TEST_USER is in /etc/ftpusers database..."
--        FTPUSERS=$(awk "/$TEST_USER/" /etc/ftpusers)
--    fi
--    if [ -z "$FTPUSERS" ] ; then
--        end_testcase "Test user $TEST_USER not found in /etc/ftpusers unable to run TEST, exiting 0 ..."
--    fi
-+	if [ $tvar = "redhat" -o $tvar = "redhat-linux" ]; then
-+		ftpusers="/etc/vsftpd/ftpusers"
-+	else
-+		ftpusers="/etc/ftpusers"
-+	fi
-+	echo "Verifying test user $TEST_USER is in ${ftpusers} database..."
-+	FTPUSERS=$(awk "/$TEST_USER/" ${ftpusers})
-+	if [ -z "$FTPUSERS" ] ; then
-+		tst_brkm TBROK "$TEST_USER not found in $ftpusers exiting 0 ..."
-+	fi
- 
-+	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
-+	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_test
--#-----------------------------------------------------------------------
- do_test()
- {
--
--    tst_resm TINFO "Ftp should reject $TEST_USER from loging in successfully"
--    expect -c "
--        spawn ftp $RHOST
--        sleep 1
--        expect -re \": \"
--        send \"$TEST_USER\r\"
--        expect -re \"Password:\"
--        send \"$TEST_USER_PASSWD\r\"
--        expect {
--            # 230 - Login successful
--            \"230\" {send_user \"==> TEST \#$TEST : FAIL (ftp allowed login attempt)\n\";exit 1}
--            # 530 - Login failed
--            \"530\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
--        }
--        expect \"ftp> \"
--        send \"quit\r\"
--    "
--
--    [ $? -eq 0 ] || end_testcase "Testcase failed."
--
-+	echo "Ftp should reject $TEST_USER from loging in successfully"
-+	expect -c "
-+		spawn ftp $RHOST
-+		sleep 1
-+		expect -re \": \"
-+		send \"$TEST_USER\r\"
-+		expect -re \"Password:\"
-+		send \"$TEST_USER_PASSWD\r\"
-+		expect {
-+			# 230 - Login successful
-+			\"230\" {send_user \"$FAIL_230\n\";exit 1}
-+			# 530 - Login failed
-+			\"530\" {send_user \"$PASS_530\n\";exit 0}
-+		}
-+		expect \"ftp> \"
-+		send \"quit\r\"
-+	"
- }
- 
--#----------------------------------------------------------------------
--# FUNCTION: MAIN
--#----------------------------------------------------------------------
--. net_cmdlib.sh
-+TCID="$0"
-+TST_TOTAL=1
-+
-+. test.sh
-+. ftp_setup
- 
--read_opts $*
-+setup
- do_setup
-+
- do_test
--end_testcase
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ftp/ftp05 b/testcases/network/tcp_cmds/ftp/ftp05
-index 4f91334..746c87a 100755
---- a/testcases/network/tcp_cmds/ftp/ftp05
-+++ b/testcases/network/tcp_cmds/ftp/ftp05
-@@ -30,96 +30,87 @@
- #  NOTE:
- #	This version is intended for EAL certification, it will need modification
- #	to conform with LTP standards in the offical LTP tree.
-+#
-+# DESCRIPTION:
-+#	The anonymous user will ftp in and create a directory in his/her
-+#	home directory on the remote host.
-+#
- 
--do_setup()
-+setup()
- {
--    RHOST="localhost"
--    TEST_USER="anonymous"
--    TEST_USER_PASSWD="noone@nowhere.com"
--    VSFTP_CONF=
--
--    tst_setup
--
--    exists expect ftp vsftpd
--
--    for vsftp_conf in /etc/vsftpd /etc; do
--
--        if [ -r "$vsftp_confdir/vsftp.conf" ]; then
--            VSFTP_CONF="$vsftp_confdir/vsftp.conf"
--            break
--        fi
--
--    done
--    if [ ! -r "$VSFTP_CONF" ] ; then
--        end_testcase "vsftpd.conf not found."
--    fi
--    ANONYMOUS_ENABLE=$(awk -F= '/^anonymous_enable=/ {print $2}' "$VSFTP_CONF")
--    if [ "$ANONYMOUS_ENABLE" != "NO" ]; then
--        ANONYMOUS_ENABLE="YES"
--    fi
-+	exists expect ftp vsftpd
-+	TEST_USER="anonymous"
-+	FAIL_530="==> TEST : FAIL (ftp rejected login attempt)"
-+	PASS_230="==> TEST : PASS (ftp allowed login attempt)"
-+	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
-+	PASS_500="==> TEST : PASS (ftp rejected login attempt)"
-+	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION   : do_test
--#
--# DESCRIPTION: The anonymous user will ftp in and create a directory in his/her
--#              home directory on the remote host.
--#-----------------------------------------------------------------------
--
- do_test()
- {
--    tst_resm TINFO "Ftp into a remote host as anonymous user; ANONYMOUS_ENABLE=$ANONYMOUS_ENABLE"
-+	echo "Ftp into a remote host as anonymous user;"
-+	echo "ANONYMOUS_ENABLE=$ANONYMOUS_ENABLE"
- 
--    if [ "$ANONYMOUS_ENABLE" = "YES" ]; then
--        expect -c "
--            spawn ftp $RHOST
--            sleep 1
--            expect -re \": \"
--            send \"$TEST_USER\r\"
--            expect -re \"Password:\"
--            send \"$TEST_USER_PASSWD\r\"
--            expect {
--                # 530 - Login failed
--                \"530\" {send_user \"==> TEST \#$TEST : FAIL (ftp rejected login attempt)\n\";exit 1}
--                # 230 - Login successful
--                \"230\" {send_user \"==> TEST \#$TEST : PASS (ftp allowed login attempt)\n\";exit 0}
--            }
--            expect \"ftp> \"
--            send \"quit\r\"
-+	if [ "$ANONYMOUS_ENABLE" = "YES" ]; then
-+	expect -c "
-+		spawn ftp $RHOST
-+		sleep 1
-+		expect -re \": \"
-+		send \"$TEST_USER\r\"
-+		expect -re \"Password:\"
-+		send \"$TEST_USER_PASSWD\r\"
-+		expect {
-+			# 530 - Login failed
-+			\"530\" {send_user \"$FAIL_530\n\";exit 1}
-+			# 230 - Login successful
-+			\"230\" {send_user \"$PASS_230\n\";exit 0}
-+		}
-+		expect \"ftp> \"
-+		send \"quit\r\"
- 	"
--    else
--        expect -c "
--            spawn ftp $RHOST
--            sleep 1
--            expect -re \": \"
--            send \"$TEST_USER\r\"
--            expect -re \"Password:\"
--            send \"$TEST_USER_PASSWD\r\"
--            expect {
--                # 230 - Login successful
--                \"230\" {send_user \"==> TEST \#$TEST : FAIL (ftp allowed login attempt)\n\";exit 1}
--                # 500 - Login failed
--                \"500\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
--                # 530 - Login failed
--                \"530\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
--            }
--            expect \"ftp> \"
--            send \"quit\r\"
--        "
--    fi
--
--    [ $? -eq 0 ] || end_testcase "Testcase failed."
-+	else
-+	expect -c "
-+		spawn ftp $RHOST
-+		sleep 1
-+		expect -re \": \"
-+		send \"$TEST_USER\r\"
-+		expect -re \"Password:\"
-+		send \"$TEST_USER_PASSWD\r\"
-+		expect {
-+			# 230 - Login successful
-+			\"230\" {send_user \"$FAIL_230\n\";exit 1}
-+			# 500 - Login failed
-+			\"500\" {send_user \"$PASS_500\n\";exit 0}
-+			# 530 - Login failed
-+			\"530\" {send_user \"$PASS_530\n\";exit 0}
-+		}
-+		expect \"ftp> \"
-+		send \"quit\r\"
-+	"
-+	fi
- 
-+	if [ $? -ne 0 ]; then
-+		 tst_exit TBROK "Testcase failed."
-+	fi
- }
- 
--#----------------------------------------------------------------------
--# FUNCTION: MAIN
--# PURPOSE:  To invoke the functions to perform the tasks described in
--#           the prologue.
--#----------------------------------------------------------------------
--. net_cmdlib.sh
-+TCID="$0"
-+TST_TOTAL=1
- 
--read_opts $*
-+. test.sh
-+. ftp_setup
-+
-+setup
- do_setup
-+#TEST_USER_PASSWD="noone@nowhere.com"
-+
- do_test
--end_testcase
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ftp/ftp_set_passwd b/testcases/network/tcp_cmds/ftp/ftp_set_passwd
-deleted file mode 100755
-index 7c275c9..0000000
---- a/testcases/network/tcp_cmds/ftp/ftp_set_passwd
-+++ /dev/null
-@@ -1,28 +0,0 @@
--#!/usr/bin/expect
--#
--# Set Password for a specific new user
--# This script should be run as 'root'
--#
--# Example:
--#		./set_passwd USER PASSWD
--#
--
--if { [llength $argv] < 2} {
--    exit 1
--}
--
--set USER [lindex $argv 0]
--set PASSWD [lindex $argv 1]
--
--set timeout 30
--
--spawn passwd $USER
--expect "Enter new password: "
--sleep 1
--exp_send "$PASSWD\r"
--expect "Re-type new password: "
--sleep 1
--exp_send "$PASSWD\r"
--expect success
--
--exit 0
-diff --git a/testcases/network/tcp_cmds/ftp/ftp_setup b/testcases/network/tcp_cmds/ftp/ftp_setup
+ sendmsg01 sendmsg01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 975c150..b9d49cf 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -750,6 +750,8 @@
+ /sendfile/sendfile07_64
+ /sendfile/sendfile08
+ /sendfile/sendfile08_64
++/sendfile/sendfile09
++/sendfile/sendfile09_64
+ /sendmsg/sendmsg01
+ /sendmsg/sendmsg02
+ /sendto/sendto01
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile09.c b/testcases/kernel/syscalls/sendfile/sendfile09.c
 new file mode 100644
-index 0000000..7100736
+index 0000000..2fac1f6
 --- /dev/null
-+++ b/testcases/network/tcp_cmds/ftp/ftp_setup
-@@ -0,0 +1,82 @@
-+#!/bin/sh
-+###############################################################################
-+## Copyright (c) International Business Machines  Corp., 2003                ##
-+##                                                                           ##
-+## This program is free software;  you can redistribute it and/or modify     ##
-+## it under the terms of the GNU General Public License as published by      ##
-+## the Free Software Foundation; either version 2 of the License, or         ##
-+## (at your option) any later version.                                       ##
-+##                                                                           ##
-+## This program is distributed in the hope that it will be useful,           ##
-+## but WITHOUT ANY WARRANTY;  without even the implied warranty of           ##
-+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                 ##
-+## the GNU General Public License for more details.                          ##
-+##                                                                           ##
-+## You should have received a copy of the GNU General Public License         ##
-+## along with this program;  if not, write to the Free Software Foundation,  ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA          ##
-+##                                                                           ##
-+###############################################################################
++++ b/testcases/kernel/syscalls/sendfile/sendfile09.c
+@@ -0,0 +1,226 @@
++/*
++ *
++ *   Copyright (c) International Business Machines  Corp., 2014
++ *
++ *   This program is free software;  you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *   the GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program;  if not, write to the Free Software
++ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
 +
-+exists()
++/*
++ * NAME
++ *	sendfile09.c
++ *
++ * DESCRIPTION
++ *	Testcase copied from sendfile02.c to test the basic functionality of
++ *	the sendfile(2) system call on large file. There is a kernel bug which
++ *	introduced by commit 8f9c0119d7ba and fixed by commit 5d73320a96fcc.
++ *
++ * ALGORITHM
++ *	1. call sendfile(2) with offset = 0
++ *	2. call sendfile(2) with offset in the middle of the file
++ *
++ * USAGE:  <for command-line>
++ *  sendfile09 [-c n] [-i n] [-I x] [-P x] [-t]
++ *     where,
++ *             -i n : Execute test n times.
++ *             -I x : Execute test for x seconds.
++ *             -P x : Pause for x seconds between iterations.
++ *             -t   : Turn on syscall timing.
++ *
++ *
++ * RESTRICTIONS
++ *	Only supports 64bit systems and kernel 2.6.33 or above
++ */
++#include <stdio.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <sys/stat.h>
++#include <sys/sendfile.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <inttypes.h>
++
++#include "usctest.h"
++#include "test.h"
++#include "safe_macros.h"
++
++#ifndef OFF_T
++#define OFF_T off_t
++#endif /* Not def: OFF_T */
++
++TCID_DEFINE(sendfile09);
++
++static char *in_file = "in";
++static char *out_file = "out";
++static int fd;
++static int in_fd;
++static int out_fd;
++
++static void cleanup(void);
++static void setup(void);
++
++#define ONE_GB (INT64_C(1) << 30)
++
++static struct test_case_t {
++	char *desc;
++	OFF_T offset;
++	int64_t count;
++	int64_t exp_retval;
++	int64_t exp_updated_offset;
++} testcases[] = {
++	{ "Test sendfile(2) with offset = 0",
++	    0, ONE_GB, ONE_GB, ONE_GB},
++	{ "Test sendfile(2) with offset in the middle of file",
++	    3*ONE_GB, ONE_GB, ONE_GB, 4*ONE_GB}
++};
++
++int TST_TOTAL = ARRAY_SIZE(testcases);
++
++void do_sendfile(struct test_case_t *t)
 +{
-+	for cmd in $*; do
-+		if ! command -v $cmd > /dev/null 2>&1; then
-+			tst_brkm TBROK "$cmd: command not found"
-+		fi
-+	done
++	off_t before_pos, after_pos;
++
++	out_fd = SAFE_OPEN(cleanup, out_file, O_WRONLY);
++
++	in_fd = SAFE_OPEN(cleanup, in_file, O_RDONLY);
++
++	before_pos = SAFE_LSEEK(cleanup, in_fd, 0, SEEK_CUR);
++
++	TEST(sendfile(out_fd, in_fd, &t->offset, t->count));
++
++	if (TEST_RETURN == -1)
++		tst_brkm(TBROK | TTERRNO, cleanup, "sendfile(2) failed");
++
++	after_pos = SAFE_LSEEK(cleanup, in_fd, 0, SEEK_CUR);
++
++	if (TEST_RETURN != t->exp_retval) {
++		tst_resm(TFAIL, "sendfile(2) failed to return "
++			 "expected value, expected: %" PRId64 ", "
++			 "got: %ld", t->exp_retval,
++			 TEST_RETURN);
++	} else if (t->offset != t->exp_updated_offset) {
++		tst_resm(TFAIL, "sendfile(2) failed to update "
++			 "OFFSET parameter to expected value, "
++			 "expected: %" PRId64 ", got: %" PRId64,
++			 t->exp_updated_offset,
++			 (int64_t) t->offset);
++	} else if (before_pos != after_pos) {
++		tst_resm(TFAIL, "sendfile(2) updated the file position "
++			 " of in_fd unexpectedly, expected file position: %"
++			 PRId64 ", " " actual file position %" PRId64,
++			 (int64_t) before_pos, (int64_t) after_pos);
++	} else {
++		tst_resm(TPASS, "functionality of sendfile() is "
++			 "correct");
++	}
++
++	close(in_fd);
++	close(out_fd);
 +}
 +
-+do_setup()
++/*
++ * setup() - performs all ONE TIME setup for this test.
++ */
++void setup(void)
 +{
++	int i;
 +
-+	export RHOST="localhost"
-+	export TEST_USER_PASSWD="eal"
-+	export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-+	export TEST_USER_HOMEDIR="/home/$TEST_USER"
++	tst_sig(FORK, DEF_HANDLER, cleanup);
 +
-+	for vsftp_confdir in /etc/vsftpd /etc; do
-+		if [ -r "$vsftp_confdir/vsftpd.conf" ]; then
-+			VSFTP_CONF="$vsftp_confdir/vsftpd.conf"
-+			break
-+		fi
-+	done
-+	if [ ! -r "$VSFTP_CONF" ] ; then
-+		tst_brkm TBROK "vsftpd.conf not found."
-+	fi
++	TEST_PAUSE;
 +
-+	LOCAL_ENABLE=$(awk -F= '/^local_enable=/ {print $2}' "$VSFTP_CONF")
-+	if [ "$LOCAL_ENABLE" != "YES" ]; then
-+		LOCAL_ENABLE="NO"
-+	fi
++	/* make a temporary directory and cd to it */
++	tst_tmpdir();
 +
-+	ANONYMOUS_ENABLE=$(awk -F= '/^anonymous_enable=/ {print $2}' "$VSFTP_CONF")
-+	if [ "$ANONYMOUS_ENABLE" != "NO" ]; then
-+		ANONYMOUS_ENABLE="YES"
-+	fi
++	if (!tst_fs_has_free(NULL, ".", 8, TST_GB))
++		tst_brkm(TCONF, cleanup, "sendfile(2) on large file"
++			" needs 8G free space.");
 +
-+	if [ $TEST_USER = "root" -o $TEST_USER = "anonymous" ]; then
-+		return
-+	fi
++	fd = SAFE_CREAT(cleanup, in_file, 00700);
 +
-+	userdel -r $TEST_USER
-+	sleep 1
++	/* create a 4G file */
++	for (i = 1; i <= (4 * 1024); i++) {
++		SAFE_LSEEK(cleanup, fd, 1024 * 1024 - 1, SEEK_CUR);
 +
-+	if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-+		tst_brkm TBROK "Could not add test user $TEST_USER to system $RHOST."
-+	fi
++		SAFE_WRITE(cleanup, 1, fd, "C", 1);
++	}
 +
-+	# create users home diretory (SLES 8 does not do this, even when specified
-+	# in adduser)
-+	USER_UID=$(id -u $TEST_USER)
-+	USER_GID=$(id -g $TEST_USER)
-+	mkdir -p "$TEST_USER_HOMEDIR"
-+	chown -R $USER_UID:$USER_GID $TEST_USER_HOMEDIR
++	close(fd);
++
++	fd = SAFE_CREAT(cleanup, out_file, 00700);
++
++	close(fd);
 +}
 +
-+do_cleanup()
++/*
++ * cleanup() - performs all ONE TIME cleanup for this test at
++ *	       completion or premature exit.
++ */
++void cleanup(void)
 +{
-+	if [ $TEST_USER != "root" -a $TEST_USER != "anonymous" ]; then
-+		userdel -r $TEST_USER
-+	fi
++	/*
++	 * print timing stats if that option was specified.
++	 * print errno log if that option was specified.
++	 */
++	TEST_CLEANUP;
++
++	if (fd > 0)
++		close(fd);
++
++	if (in_fd > 0)
++		close(in_fd);
++
++	if (out_fd > 0)
++		close(out_fd);
++
++	/* delete the test directory created in setup() */
++	tst_rmdir();
++
 +}
-diff --git a/testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf b/testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf
-deleted file mode 100755
-index 7e496f6..0000000
---- a/testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf
-+++ /dev/null
-@@ -1,5 +0,0 @@
--#!/bin/sh
--
--grep -v "local_enable" /etc/vsftpd.conf > /tmp/vsftpd.conf
--mv -f /tmp/vsftpd.conf /etc/vsftpd.conf
--echo "local_enable=YES" >> /etc/vsftpd.conf
++
++int main(int ac, char **av)
++{
++	int i;
++	int lc;
++	const char *msg;		/* parse_opts() return message */
++
++#if __WORDSIZE == 32
++	tst_brkm(TCONF, NULL, "This test is only for 64bit");
++#endif
++
++	if (tst_kvercmp(2, 6, 33) < 0) {
++		tst_resm(TINFO, "sendfile(2) on large file "
++			"skipped for kernels < 2.6.33");
++		return 0;
++	}
++
++	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	/*
++	 * The following loop checks looping state if -c option given
++	 */
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; ++i)
++			do_sendfile(&testcases[i]);
++	}
++
++	cleanup();
++
++	tst_exit();
++}
 -- 
 1.9.3
 
 
-
-
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
