@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1X6wcr-0005uP-6y
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 06:54:09 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X6wcp-0005Up-K3
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 06:54:09 +0000
-Message-ID: <53C4D003.6020209@oracle.com>
-Date: Tue, 15 Jul 2014 10:53:55 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X42UI-00032q-41
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 06:33:18 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X42UF-0000Nu-EY
+	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 06:33:18 +0000
+Message-ID: <53BB90C6.9020101@cn.fujitsu.com>
+Date: Tue, 8 Jul 2014 14:33:42 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <53A12D27.8030205@oracle.com>
-	<1404286258-2053-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<708407934.9715608.1405343247089.JavaMail.zimbra@redhat.com>
-In-Reply-To: <708407934.9715608.1405343247089.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH V4] syscalls: implemented a test for
- sched_setaffinity() error values
+References: <20140704031641.GA20446@localhost.localdomain>
+In-Reply-To: <20140704031641.GA20446@localhost.localdomain>
+Subject: Re: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at
+ 2G
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,404 +28,299 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: hanpt@linux.vnet.ibm.com
+Cc: LTP <ltp-list@lists.sourceforge.net>
+
+Hi,
+
+On 07/04/2014 11:16 AM, Han Pingtian wrote:
+> Hi,
+> 
+> Please review this patch. Thanks.
+> 
+> There is a bug on 64bit sendfile() with large file, please see
+> https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
+> for details.
+
+I'd like to ask an irrelevant question about that where can we get such bug report or similar issues
+about syscalls from a stable place(url), or how did you found this issue, thanks.
+
+Give that currently there are 1039 test cases about syscalls in LTP(cat runtest/syscalls | grep -v "^#" | sed -e '/^$/d' | wc -l),
+we can tell that syscalls is a very big test suite in LTP, so I'd like to add all similar regression test about
+syscalls to LTP, which will expand ltp's test coverage, thanks. 
+
+Regards,
+Xiaoguang Wang
 
 
+> 
+> This sendfile09.c was copied from sendfile02.c and using plain
+> file as the out_file. The file size is 4G (4294967296 bytes).
+> ---
+>  testcases/kernel/syscalls/sendfile/sendfile09.c | 245 ++++++++++++++++++++++++
+>  1 file changed, 245 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/sendfile/sendfile09.c
+> 
+> diff --git a/testcases/kernel/syscalls/sendfile/sendfile09.c b/testcases/kernel/syscalls/sendfile/sendfile09.c
+> new file mode 100644
+> index 0000000..d88a72f
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/sendfile/sendfile09.c
+> @@ -0,0 +1,245 @@
+> +/*
+> + *
+> + *   Copyright (c) International Business Machines  Corp., 2001
+> + *
+> + *   This program is free software;  you can redistribute it and/or modify
+> + *   it under the terms of the GNU General Public License as published by
+> + *   the Free Software Foundation; either version 2 of the License, or
+> + *   (at your option) any later version.
+> + *
+> + *   This program is distributed in the hope that it will be useful,
+> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + *   the GNU General Public License for more details.
+> + *
+> + *   You should have received a copy of the GNU General Public License
+> + *   along with this program;  if not, write to the Free Software
+> + *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + */
+> +
+> +/*
+> + * NAME
+> + *	sendfile09.c
+> + *
+> + * DESCRIPTION
+> + *	Testcase copied from sendfile02.c to test the basic functionality of the sendfile(2) system call on large file.
+> + *
+> + * ALGORITHM
+> + *	1. call sendfile(2) with offset = 0
+> + *	2. call sendfile(2) with offset in the middle of the file
+> + *
+> + * USAGE:  <for command-line>
+> + *  sendfile09 [-c n] [-i n] [-I x] [-P x] [-t]
+> + *     where,
+> + *             -i n : Execute test n times.
+> + *             -I x : Execute test for x seconds.
+> + *             -P x : Pause for x seconds between iterations.
+> + *             -t   : Turn on syscall timing.
+> + *
+> + *
+> + * RESTRICTIONS
+> + *	Only supports 64bit systems and kernel 2.6.33 or above
+> + */
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <sys/stat.h>
+> +#include <sys/sendfile.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include <unistd.h>
+> +#include <inttypes.h>
+> +
+> +#include "usctest.h"
+> +#include "test.h"
+> +
+> +#ifndef OFF_T
+> +#define OFF_T off_t
+> +#endif /* Not def: OFF_T */
+> +
+> +TCID_DEFINE(sendfile09);
+> +int TST_TOTAL = 4;
+> +
+> +char in_file[100];
+> +char out_file[100];
+> +int out_fd;
+> +
+> +void cleanup(void);
+> +void setup(void);
+> +
+> +struct test_case_t {
+> +	char *desc;
+> +	int offset;
+> +	int64_t exp_retval;
+> +	int64_t exp_updated_offset;
+> +} testcases[] = {
+> +	{
+> +	"Test sendfile(2) with offset = 0", 0, 4294967296, 4294967296}, {
+> +	"Test sendfile(2) with offset in the middle of file", 2, 4294967294, 4294967296}, {
+> +	"Test sendfile(2) with offset in the middle of file", 4, 4294967292, 4294967296}, {
+> +	"Test sendfile(2) with offset in the middle of file", 6, 4294967290, 4294967296}
+> +};
+> +
+> +#ifdef UCLINUX
+> +static char *argv0;
+> +#endif
+> +
+> +void do_sendfile(OFF_T offset, int i)
+> +{
+> +	int in_fd;
+> +	struct stat sb;
+> +	int wait_status;
+> +	int wait_stat;
+> +	off_t before_pos, after_pos;
+> +
+> +	if ((out_fd = open(out_file, O_WRONLY)) < 0) {
+> +		tst_brkm(TBROK, cleanup, "open failed: %d", errno);
+> +	}
+> +
+> +	if ((in_fd = open(in_file, O_RDONLY)) < 0) {
+> +		tst_brkm(TBROK, cleanup, "open failed: %d", errno);
+> +	}
+> +
+> +	if (stat(in_file, &sb) < 0) {
+> +		tst_brkm(TBROK, cleanup, "stat failed: %d", errno);
+> +	}
+> +
+> +	if ((before_pos = lseek(in_fd, 0, SEEK_CUR)) < 0) {
+> +		tst_brkm(TBROK, cleanup,
+> +			 "lseek before invoking sendfile failed: %d", errno);
+> +	}
+> +
+> +	TEST(sendfile(out_fd, in_fd, &offset, sb.st_size - offset));
+> +
+> +	if (TEST_RETURN == -1) {
+> +		tst_brkm(TBROK, cleanup, "sendfile(2) failed: %s",
+> +			strerror(TEST_RETURN));
+> +	}
+> +
+> +	if ((after_pos = lseek(in_fd, 0, SEEK_CUR)) < 0) {
+> +		tst_brkm(TBROK, cleanup,
+> +			 "lseek after invoking sendfile failed: %d", errno);
+> +	}
+> +
+> +	if (TEST_RETURN != testcases[i].exp_retval) {
+> +		tst_resm(TFAIL, "sendfile(2) failed to return "
+> +			 "expected value, expected: %" PRId64 ", "
+> +			 "got: %" PRId64, testcases[i].exp_retval,
+> +			 TEST_RETURN);
+> +	} else if (offset != testcases[i].exp_updated_offset) {
+> +		tst_resm(TFAIL, "sendfile(2) failed to update "
+> +			 "OFFSET parameter to expected value, "
+> +			 "expected: %" PRId64 ", got: %" PRId64,
+> +			 testcases[i].exp_updated_offset,
+> +			 (int64_t) offset);
+> +	} else if (before_pos != after_pos) {
+> +		tst_resm(TFAIL, "sendfile(2) updated the file position "
+> +			 " of in_fd unexpectedly, expected file position: %"
+> +			 PRId64 ", " " actual file position %" PRId64,
+> +			 (int64_t) before_pos, (int64_t) after_pos);
+> +	} else {
+> +		tst_resm(TPASS, "functionality of sendfile() is "
+> +			 "correct");
+> +		wait_status = waitpid(-1, &wait_stat, 0);
+> +	}
+> +
+> +	close(in_fd);
+> +	close(out_fd);
+> +}
+> +
+> +/*
+> + * setup() - performs all ONE TIME setup for this test.
+> + */
+> +void setup(void)
+> +{
+> +	int fd;
+> +	int i;
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	/* make a temporary directory and cd to it */
+> +	tst_tmpdir();
+> +	sprintf(in_file, "in.%d", getpid());
+> +	if ((fd = creat(in_file, 00700)) < 0) {
+> +		tst_brkm(TBROK, cleanup, "creat failed in setup, errno: %d",
+> +			 errno);
+> +	}
+> +
+> +	/* create a 4G file */
+> +	for (i = 1; i <= (4 * 1024); i++) {
+> +		if (lseek(fd, (1024 * 1024 - 1), SEEK_CUR) < 0) {
+> +			tst_brkm(TBROK, cleanup, "lseek failed, errno: %d", errno);
+> +		}
+> +
+> +		if (write(fd, "C", 1) < 0) {
+> +			tst_brkm(TBROK, cleanup, "write failed, errno: %d", errno);
+> +		}
+> +	}
+> +
+> +	close(fd);
+> +	sprintf(out_file, "out.%d", getpid());
+> +	if ((fd = creat(out_file, 00700)) < 0) {
+> +		tst_brkm(TBROK, cleanup, "creat failed in setup, errno: %d",
+> +			 errno);
+> +	}
+> +	close(fd);
+> +}
+> +
+> +/*
+> + * cleanup() - performs all ONE TIME cleanup for this test at
+> + *	       completion or premature exit.
+> + */
+> +void cleanup(void)
+> +{
+> +	/*
+> +	 * print timing stats if that option was specified.
+> +	 * print errno log if that option was specified.
+> +	 */
+> +	TEST_CLEANUP;
+> +
+> +	close(out_fd);
+> +	/* delete the test directory created in setup() */
+> +	tst_rmdir();
+> +
+> +}
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int i;
+> +	int lc;
+> +	const char *msg;		/* parse_opts() return message */
+> +
+> +#if __WORDSIZE == 32
+> +	tst_brkm(TCONF, NULL, "This test is only for 64bit");
+> +#endif
+> +
+> +	if (tst_kvercmp(2, 6, 33) < 0) {
+> +		tst_resm(TINFO, "sendfile(2) on large file skipped for kernels < 2.6.33");
+> +		return;
+> +	}
+> +
+> +	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +	}
+> +#ifdef UCLINUX
+> +	argv0 = av[0];
+> +#endif
+> +
+> +	setup();
+> +
+> +	/*
+> +	 * The following loop checks looping state if -c option given
+> +	 */
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; ++i) {
+> +			do_sendfile(testcases[i].offset, i);
+> +		}
+> +	}
+> +	cleanup();
+> +
+> +	tst_exit();
+> +}
+> 
 
-On 07/14/2014 05:07 PM, Jan Stancek wrote:
->
->
->
->
-> ----- Original Message -----
->> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
->> To: ltp-list@lists.sourceforge.net
->> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
->> Sent: Wednesday, 2 July, 2014 9:30:58 AM
->> Subject: [LTP] [PATCH V4] syscalls: implemented a test for	sched_setaffinity() error values
->>
->> This test verifies sched_setaffinity(2) for all error conditions
->> to occur correctly.
->>
->> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
->
-> Looks good to me, just a small nit: have a look at checkpatch output.
-
-Thank you, Jan.
-
-Do you mean this:
-ERROR: Macros with multiple statements should be enclosed in a do - 
-while loop
-#208: FILE: 
-testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h:37:
-+#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
-+if (ncpus > CPU_SETSIZE) { \
-+	tst_brkm(TCONF, cleanup, \
-+		"Your libc does not support masks with %ld cpus", ncpus); \
-+}
-
-?
-
-If so, I think I can't do it, because I need to assign CPU_ALLOC() to a 
-variable....
-
-Or what did you mean? :)
-
->
-> Reviewed-by: Jan Stancek <jstancek@redhat.com>
->
-> Regards,
-> Jan
->
->> ---
->> Changes since V3:
->>   * use tst_fork() instead of fork() for privileged_pid
->>   * use tst_get_unused_pid() for free_pid
->>
->>   runtest/syscalls                                   |    1 +
->>   testcases/kernel/syscalls/.gitignore               |    1 +
->>   .../kernel/syscalls/sched_setaffinity/Makefile     |   23 +++
->>   .../syscalls/sched_setaffinity/sched_setaffinity.h |   60 +++++++
->>   .../sched_setaffinity/sched_setaffinity01.c        |  177
->>   ++++++++++++++++++++
->>   5 files changed, 262 insertions(+), 0 deletions(-)
->>   create mode 100644 testcases/kernel/syscalls/sched_setaffinity/Makefile
->>   create mode 100644
->>   testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->>   create mode 100644
->>   testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->>
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index 66d6a65..52556bc 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -895,6 +895,7 @@ sched_setscheduler02 sched_setscheduler02
->>
->>   sched_yield01 sched_yield01
->>
->> +sched_setaffinity01 sched_setaffinity01
->>   sched_getaffinity01 sched_getaffinity01
->>
->>   select01 select01
->> diff --git a/testcases/kernel/syscalls/.gitignore
->> b/testcases/kernel/syscalls/.gitignore
->> index 975c150..0c31582 100644
->> --- a/testcases/kernel/syscalls/.gitignore
->> +++ b/testcases/kernel/syscalls/.gitignore
->> @@ -724,6 +724,7 @@
->>   /sched_rr_get_interval/sched_rr_get_interval01
->>   /sched_rr_get_interval/sched_rr_get_interval02
->>   /sched_rr_get_interval/sched_rr_get_interval03
->> +/sched_setaffinity/sched_setaffinity01
->>   /sched_setparam/sched_setparam01
->>   /sched_setparam/sched_setparam02
->>   /sched_setparam/sched_setparam03
->> diff --git a/testcases/kernel/syscalls/sched_setaffinity/Makefile
->> b/testcases/kernel/syscalls/sched_setaffinity/Makefile
->> new file mode 100644
->> index 0000000..2d825f1
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/sched_setaffinity/Makefile
->> @@ -0,0 +1,23 @@
->> +#
->> +#  Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->> +#
->> +#  This program is free software;  you can redistribute it and/or modify
->> +#  it under the terms of the GNU General Public License as published by
->> +#  the Free Software Foundation; either version 2 of the License, or
->> +#  (at your option) any later version.
->> +#
->> +#  This program is distributed in the hope that it will be useful,
->> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> +#  the GNU General Public License for more details.
->> +#
->> +#  You should have received a copy of the GNU General Public License
->> +#  along with this program;  if not, write to the Free Software
->> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
->> USA
->> +#
->> +
->> +top_srcdir		?= ../../../..
->> +
->> +include $(top_srcdir)/include/mk/testcases.mk
->> +
->> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
->> diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->> new file mode 100644
->> index 0000000..8083894
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->> @@ -0,0 +1,60 @@
->> +/*
->> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->> + *
->> + * This program is free software; you can redistribute it and/or
->> + * modify it under the terms of the GNU General Public License as
->> + * published by the Free Software Foundation; either version 2 of
->> + * the License, or (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it would be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program; if not, write the Free Software Foundation,
->> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
->> + */
->> +
->> +/*
->> + * Some old libcs (like glibc < 2.7) do not provide interfaces for
->> + * dynamically sized cpu sets, but provide only static cpu_set_t type
->> + * with no more than CPU_SETSIZE cpus in it.
->> + *
->> + * This file is a wrapper of the dynamic interfaces using the static ones.
->> + *
->> + * If the number of cpus available on the system is greater than
->> + * CPU_SETSIZE, this interface will not work. Update libc in this case :)
->> + */
->> +
->> +#define _GNU_SOURCE
->> +#include <sched.h>
->> +
->> +#ifndef LTP_SCHED_SETAFFINITY_H
->> +#define LTP_SCHED_SETAFFINITY_H
->> +
->> +#ifndef CPU_ALLOC
->> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
->> +if (ncpus > CPU_SETSIZE) { \
->> +	tst_brkm(TCONF, cleanup, \
->> +		"Your libc does not support masks with %ld cpus", ncpus); \
->> +}
->> +#endif
->> +
->> +#ifndef CPU_FREE
->> +#define CPU_FREE(ptr) free(ptr);
->> +#endif
->> +
->> +#ifndef CPU_ALLOC_SIZE
->> +#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t);
->> +#endif
->> +
->> +#ifndef CPU_ZERO_S
->> +#define CPU_ZERO_S(size, mask) CPU_ZERO(mask);
->> +#endif
->> +
->> +#ifndef CPU_SET_S
->> +#define CPU_SET_S(cpu, size, mask) CPU_SET(cpu, mask);
->> +#endif
->> +
->> +#endif /* LTP_SCHED_SETAFFINITY_H */
->> diff --git
->> a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->> new file mode 100644
->> index 0000000..d1b2abe
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->> @@ -0,0 +1,177 @@
->> +/*
->> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->> + *
->> + * This program is free software; you can redistribute it and/or
->> + * modify it under the terms of the GNU General Public License as
->> + * published by the Free Software Foundation; either version 2 of
->> + * the License, or (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it would be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program; if not, write the Free Software Foundation,
->> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
->> + */
->> +
->> +/*
->> + * This test verifies sched_setaffinity(2) for all error conditions
->> + * to occur correctly.
->> + *
->> + * sched_setaffinity() returns -1 and sets the error code to:
->> + *
->> + * 1) EFAULT, if the supplied memory address is invalid
->> + * 2) EINVAL, if the mask doesn't contain at least one
->> + *    permitted cpu
->> + * 3) ESRCH, if the process whose id is pid could not
->> + *    be found
->> + * 4) EPERM, if the calling process doesn't have appropriate
->> + *    privileges
->> + */
->> +
->> +#define _GNU_SOURCE
->> +#include <errno.h>
->> +#include <pwd.h>
->> +#include <sched.h>
->> +#include <signal.h>
->> +#include <unistd.h>
->> +#include <sys/types.h>
->> +#include <sys/wait.h>
->> +#include "test.h"
->> +#include "usctest.h"
->> +#include "safe_macros.h"
->> +#include "sched_setaffinity.h"
->> +
->> +char *TCID = "sched_setaffinity01";
->> +
->> +#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
->> +
->> +static cpu_set_t *mask, *emask;
->> +static cpu_set_t *fmask = (void *)-1;
->> +static size_t mask_size, emask_size;
->> +static pid_t self_pid, privileged_pid, free_pid;
->> +static uid_t uid;
->> +static const char nobody_uid[] = "nobody";
->> +static struct passwd *ltpuser;
->> +static long ncpus;
->> +
->> +static struct test_case_t {
->> +	pid_t *pid;
->> +	size_t *mask_size;
->> +	cpu_set_t **mask;
->> +	int exp_errno;
->> +} test_cases[] = {
->> +	{&self_pid, &mask_size, &fmask, EFAULT},
->> +	{&self_pid, &emask_size, &emask, EINVAL},
->> +	{&free_pid, &mask_size, &mask, ESRCH},
->> +	{&privileged_pid, &mask_size, &mask, EPERM},
->> +};
->> +
->> +int TST_TOTAL = ARRAY_SIZE(test_cases);
->> +
->> +static void cleanup(void)
->> +{
->> +	if (mask != NULL) {
->> +		CPU_FREE(mask);
->> +		mask = NULL;
->> +	}
->> +
->> +	if (emask != NULL) {
->> +		CPU_FREE(emask);
->> +		emask = NULL;
->> +	}
->> +
->> +	SAFE_SETEUID(NULL, uid);
->> +
->> +	if (privileged_pid != 0) {
->> +		kill(privileged_pid, SIGKILL);
->> +		waitpid(privileged_pid, NULL, 0);
->> +		privileged_pid = 0;
->> +	}
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	tst_require_root(NULL);
->> +	uid = geteuid();
->> +	ncpus = tst_ncpus_max();
->> +
->> +	/* Current mask */
->> +	mask = CPU_ALLOC(ncpus);
->> +	if (mask == NULL)
->> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
->> +			ncpus);
->> +	mask_size = CPU_ALLOC_SIZE(ncpus);
->> +	if (sched_getaffinity(0, mask_size, mask) < 0)
->> +		tst_brkm(TBROK | TERRNO, cleanup, "sched_getaffinity() failed");
->> +
->> +	/* Mask with one more cpu than available on the system */
->> +	emask = CPU_ALLOC(ncpus + 1);
->> +	if (emask == NULL)
->> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
->> +			ncpus + 1);
->> +	emask_size = CPU_ALLOC_SIZE(ncpus + 1);
->> +	CPU_ZERO_S(emask_size, emask);
->> +	CPU_SET_S(ncpus, emask_size, emask);
->> +
->> +	privileged_pid = tst_fork();
->> +	if (privileged_pid == 0) {
->> +		pause();
->> +
->> +		exit(0);
->> +	} else if (privileged_pid < 0) {
->> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
->> +	}
->> +
->> +	/* Dropping the root privileges */
->> +	ltpuser = getpwnam(nobody_uid);
->> +	if (ltpuser == NULL)
->> +		tst_brkm(TBROK | TERRNO, cleanup,
->> +			"getpwnam failed for user id %s", nobody_uid);
->> +
->> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
->> +
->> +	/* this pid is not used by the OS */
->> +	free_pid = tst_get_unused_pid(cleanup);
->> +}
->> +
->> +int main(int argc, char *argv[])
->> +{
->> +	const char *msg;
->> +	int lc;
->> +	int i;
->> +
->> +	msg = parse_opts(argc, argv, NULL, NULL);
->> +	if (msg != NULL)
->> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->> +
->> +	setup();
->> +
->> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> +		tst_count = 0;
->> +		for (i = 0; i < TST_TOTAL; i++) {
->> +			TEST(sched_setaffinity(*(test_cases[i].pid),
->> +						*(test_cases[i].mask_size),
->> +						*(test_cases[i].mask)));
->> +
->> +			if (TEST_RETURN != -1)
->> +				tst_resm(TFAIL,
->> +					"sched_setaffinity() unexpectedly succeded");
->> +
->> +			if (TEST_ERRNO == test_cases[i].exp_errno) {
->> +				tst_resm(TPASS, "expected failure with '%s'",
->> +					strerror(test_cases[i].exp_errno));
->> +			} else {
->> +				tst_resm(TFAIL,
->> +					"call returned '%s', expected - '%s'",
->> +					strerror(TEST_ERRNO),
->> +					strerror(test_cases[i].exp_errno));
->> +			}
->> +		}
->> +	}
->> +
->> +	cleanup();
->> +	tst_exit();
->> +}
->> --
->> 1.7.1
->>
->>
->> ------------------------------------------------------------------------------
->> Open source business process management suite built on Java and Eclipse
->> Turn processes into business applications with Bonita BPM Community Edition
->> Quickly connect people, data, and systems into organized workflows
->> Winner of BOSSIE, CODIE, OW2 and Gartner awards
->> http://p.sf.net/sfu/Bonitasoft
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Open source business process management suite built on Java and Eclipse
+Turn processes into business applications with Bonita BPM Community Edition
+Quickly connect people, data, and systems into organized workflows
+Winner of BOSSIE, CODIE, OW2 and Gartner awards
+http://p.sf.net/sfu/Bonitasoft
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
