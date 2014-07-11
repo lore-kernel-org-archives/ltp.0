@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X2H4x-0000ls-QV
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jul 2014 09:43:51 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X2H4v-00085L-D6
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jul 2014 09:43:51 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s629hf78012554
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jul 2014 17:43:41 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 2 Jul 2014 17:40:10 +0800
-Message-ID: <1404294010-18698-3-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1404294010-18698-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1404294010-18698-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Awais_Belal@mentor.com>) id 1X5ZVm-00043G-4q
+	for ltp-list@lists.sourceforge.net; Fri, 11 Jul 2014 12:01:10 +0000
+Received: from relay1.mentorg.com ([192.94.38.131])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X5ZVk-0001yK-QF
+	for ltp-list@lists.sourceforge.net; Fri, 11 Jul 2014 12:01:10 +0000
+Received: from svr-orw-fem-01.mgc.mentorg.com ([147.34.98.93])
+	by relay1.mentorg.com with esmtp 
+	id 1X5ZVe-0004NK-8A from Awais_Belal@mentor.com 
+	for ltp-list@lists.sourceforge.net; Fri, 11 Jul 2014 05:01:02 -0700
+From: "Belal, Awais" <Awais_Belal@mentor.com>
+Date: Fri, 11 Jul 2014 12:00:36 +0000
+Message-ID: <2021B186DC632746BD5A3CE32F12BD28E9EBFBC9@EU-MBX-03.mgc.mentorg.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 3/3] syscalls: fix testcases which take TCONF as
-	TFAIL
+Subject: [LTP] Shell Scripting - Basics
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,373 +27,138 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7919489518699047891=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-This issue was introduced by commit: 6f6878f4e1406d79cae53564777c5e1245d2a124
-In this commit, we took TCONF as a special state, to let user know the real
-LTP test coverage.
+--===============7919489518699047891==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_2021B186DC632746BD5A3CE32F12BD28E9EBFBC9EUMBX03mgcmento_"
 
-But setreuid04.c, setreuid05.c, setreuid07.c and setfsuid04.c do real test
-work in child process, if 16-bit version of setreuid or setfsuid is not supported
-on some platforms, child process will return a TCONF(see syscalls/utils/compat_16.h),
-then parent process will get a non-zero return value and take it as TFAIL directly, fix this.
+--_000_2021B186DC632746BD5A3CE32F12BD28E9EBFBC9EUMBX03mgcmento_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/setfsuid/setfsuid04.c | 30 +++++++++++++------------
- testcases/kernel/syscalls/setreuid/setreuid04.c | 25 ++++++++++-----------
- testcases/kernel/syscalls/setreuid/setreuid05.c | 25 ++++++++++-----------
- testcases/kernel/syscalls/setreuid/setreuid07.c | 28 +++++++++++++----------
- 4 files changed, 56 insertions(+), 52 deletions(-)
+Hi Guys,
 
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-index 6818987..518fa0b 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-@@ -74,10 +74,12 @@ int main(int ac, char **av)
- 
- 	if (waitpid(pid, &status, 0) == -1)
- 		tst_resm(TBROK | TERRNO, "waitpid failed");
--	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
--		tst_resm(TFAIL, "child process terminated abnormally");
--	else
--		tst_resm(TPASS, "Test passed");
-+
-+	if (tst_record_childstatus(status, NULL) !=
-+	    CHILD_EXIT_NORMALLY) {
-+		tst_brkm(TBROK, cleanup, "child process have abnormal"
-+			 "status: %d", status);
-+	}
- 
- 	cleanup();
- 	tst_exit();
-@@ -90,7 +92,7 @@ static void do_master_child(void)
- 
- 	if (SETFSUID(NULL, ltpuser->pw_uid) == -1) {
- 		perror("setfsuid failed");
--		exit(1);
-+		exit(TFAIL);
- 	}
- 
- 	/* Test 1: Check the process with new uid cannot open the file
-@@ -101,14 +103,14 @@ static void do_master_child(void)
- 	if (TEST_RETURN != -1) {
- 		close(TEST_RETURN);
- 		printf("open succeeded unexpectedly\n");
--		exit(1);
-+		exit(TFAIL);
- 	}
- 
- 	if (TEST_ERRNO == EACCES) {
- 		printf("open failed with EACCESS as expected\n");
- 	} else {
- 		printf("open returned unexpected errno - %d\n", TEST_ERRNO);
--		exit(1);
-+		exit(TFAIL);
- 	}
- 
- 	/* Test 2: Check a son process cannot open the file
-@@ -117,7 +119,7 @@ static void do_master_child(void)
- 	pid = FORK_OR_VFORK();
- 	if (pid < 0) {
- 		perror("Fork failed");
--		exit(1);
-+		exit(TFAIL);
- 	}
- 
- 	if (pid == 0) {
-@@ -127,7 +129,7 @@ static void do_master_child(void)
- 		if (TEST_RETURN != -1) {
- 			close(TEST_RETURN);
- 			printf("open succeeded unexpectedly\n");
--			exit(1);
-+			exit(TFAIL);
- 		}
- 
- 		if (TEST_ERRNO == EACCES) {
-@@ -135,13 +137,13 @@ static void do_master_child(void)
- 		} else {
- 			printf("open returned unexpected errno - %d\n",
- 			       TEST_ERRNO);
--			exit(1);
-+			exit(TFAIL);
- 		}
- 	} else {
- 		/* Wait for son completion */
- 		if (waitpid(pid, &status, 0) == -1) {
- 			perror("waitpid failed");
--			exit(1);
-+			exit(TFAIL);
- 		}
- 
- 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-@@ -154,19 +156,19 @@ static void do_master_child(void)
- 	tst_count++;
- 	if (SETFSUID(NULL, 0) == -1) {
- 		perror("setfsuid failed");
--		exit(1);
-+		exit(TFAIL);
- 	}
- 
- 	TEST(open(testfile, O_RDWR));
- 
- 	if (TEST_RETURN == -1) {
- 		perror("open failed unexpectedly");
--		exit(1);
-+		exit(TFAIL);
- 	} else {
- 		printf("open call succeeded\n");
- 		close(TEST_RETURN);
- 	}
--	exit(0);
-+	exit(TPASS);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid04.c b/testcases/kernel/syscalls/setreuid/setreuid04.c
-index f1d2ab0..502533d 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid04.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid04.c
-@@ -36,8 +36,6 @@ TCID_DEFINE(setreuid04);
- 
- static uid_t neg_one = -1;
- 
--/* flag to tell parent if child passed or failed. */
--static int flag;
- 
- static struct passwd nobody, root;
- 
-@@ -75,8 +73,6 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--	flag = 0;
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		int i, pid, status;
- 
-@@ -86,6 +82,8 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK, cleanup, "fork failed");
- 		} else if (pid == 0) {	/* child */
- 
-+			tst_reset_exitval();
-+
- 			for (i = 0; i < TST_TOTAL; i++) {
- 
- 				/* Set the real or effective user id */
-@@ -102,22 +100,24 @@ int main(int ac, char **av)
- 						 "did not return as expected.",
- 						 *test_data[i].real_uid,
- 						 *test_data[i].eff_uid);
--					flag = -1;
- 				}
- 
- 				uid_verify(test_data[i].exp_real_usr,
- 					   test_data[i].exp_eff_usr,
- 					   test_data[i].test_msg);
- 			}
--			exit(flag);
--		} else {	/* parent */
--			waitpid(pid, &status, 0);
--			if (WEXITSTATUS(status) != 0) {
--				tst_resm(TFAIL, "test failed within "
--					 "child process.");
--			}
-+
-+			tst_exit();
-+		}
-+
-+		waitpid(pid, &status, 0);
-+		if (tst_record_childstatus(status, NULL) !=
-+		    CHILD_EXIT_NORMALLY) {
-+			tst_brkm(TBROK, cleanup, "child process have abnormal"
-+				 "status: %d", status);
- 		}
- 	}
-+
- 	cleanup();
- 	tst_exit();
- }
-@@ -153,6 +153,5 @@ static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
- 			 when, getuid(), geteuid());
- 		tst_resm(TINFO, "Expected: real uid = %d; effective uid = %d",
- 			 ru->pw_uid, eu->pw_uid);
--		flag = -1;
- 	}
- }
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid05.c b/testcases/kernel/syscalls/setreuid/setreuid05.c
-index 42fcbb9..78f082a 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid05.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid05.c
-@@ -34,9 +34,6 @@
- 
- TCID_DEFINE(setreuid05);
- 
--/* flag to tell parent if child passed or failed. */
--int flag = 0;
--
- static int fail = -1;
- static int pass;
- static uid_t neg_one = -1;
-@@ -106,6 +103,9 @@ int main(int argc, char **argv)
- 		if ((pid = FORK_OR_VFORK()) == -1) {
- 			tst_brkm(TBROK, cleanup, "fork failed");
- 		} else if (pid == 0) {	/* child */
-+
-+			tst_reset_exitval();
-+
- 			for (i = 0; i < TST_TOTAL; i++) {
- 				/* Set the real or effective user id */
- 				TEST(SETREUID(cleanup, *test_data[i].real_uid,
-@@ -122,7 +122,6 @@ int main(int argc, char **argv)
- 								 [i].real_uid,
- 								 *test_data
- 								 [i].eff_uid);
--							flag = -1;
- 							continue;
- 						}
- 						tst_resm(TPASS,
-@@ -142,7 +141,6 @@ int main(int argc, char **argv)
- 						 "did not return as expected.",
- 						 *test_data[i].real_uid,
- 						 *test_data[i].eff_uid);
--					flag = -1;
- 				}
- 
- 				if (TEST_RETURN == -1) {
-@@ -152,13 +150,15 @@ int main(int argc, char **argv)
- 					   test_data[i].exp_eff_usr,
- 					   test_data[i].test_msg);
- 			}
--			exit(flag);
--		} else {	/* parent */
--			waitpid(pid, &status, 0);
--			if (WEXITSTATUS(status) != 0) {
--				tst_resm(TFAIL, "test failed within "
--					 "child process.");
--			}
-+
-+			tst_exit();
-+		}
-+
-+		waitpid(pid, &status, 0);
-+		if (tst_record_childstatus(status, NULL) !=
-+		    CHILD_EXIT_NORMALLY) {
-+			tst_brkm(TBROK, cleanup, "child process have abnormal"
-+				 "status: %d", status);
- 		}
- 	}
- 	cleanup();
-@@ -207,6 +207,5 @@ static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
- 			 when, getuid(), geteuid());
- 		tst_resm(TINFO, "Expected: real uid = %d; effective uid = %d",
- 			 ru->pw_uid, eu->pw_uid);
--		flag = -1;
- 	}
- }
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid07.c b/testcases/kernel/syscalls/setreuid/setreuid07.c
-index b6714f9..6b4f16f 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid07.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid07.c
-@@ -71,8 +71,12 @@ int main(int ac, char **av)
- 
- 	if (waitpid(pid, &status, 0) == -1)
- 		tst_resm(TBROK | TERRNO, "waitpid failed");
--	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
--		tst_resm(TFAIL, "child process terminated abnormally");
-+
-+	if (tst_record_childstatus(status, NULL) !=
-+	    CHILD_EXIT_NORMALLY) {
-+		tst_brkm(TBROK, cleanup, "child process have abnormal"
-+			 "status: %d", status);
-+	}
- 
- 	cleanup();
- 	tst_exit();
-@@ -91,7 +95,7 @@ static void do_master_child(void)
- 
- 		if (SETREUID(NULL, 0, ltpuser->pw_uid) == -1) {
- 			perror("setreuid failed");
--			exit(1);
-+			exit(TFAIL);
- 		}
- 
- 		/* Test 1: Check the process with new uid cannot open the file
-@@ -102,14 +106,14 @@ static void do_master_child(void)
- 		if (TEST_RETURN != -1) {
- 			printf("open succeeded unexpectedly\n");
- 			close(tst_fd);
--			exit(1);
-+			exit(TFAIL);
- 		}
- 
- 		if (TEST_ERRNO == EACCES) {
- 			printf("open failed with EACCES as expected\n");
- 		} else {
- 			perror("open failed unexpectedly");
--			exit(1);
-+			exit(TFAIL);
- 		}
- 
- 		/* Test 2: Check a son process cannot open the file
-@@ -128,23 +132,23 @@ static void do_master_child(void)
- 			if (TEST_RETURN != -1) {
- 				printf("call succeeded unexpectedly\n");
- 				close(tst_fd2);
--				exit(1);
-+				exit(TFAIL);
- 			}
- 
- 			TEST_ERROR_LOG(TEST_ERRNO);
- 
- 			if (TEST_ERRNO == EACCES) {
- 				printf("open failed with EACCES as expected\n");
--				exit(0);
-+				exit(TPASS);
- 			} else {
- 				printf("open failed unexpectedly\n");
--				exit(1);
-+				exit(TFAIL);
- 			}
- 		} else {
- 			/* Wait for son completion */
- 			if (waitpid(pid, &status, 0) == -1) {
- 				perror("waitpid failed");
--				exit(1);
-+				exit(TFAIL);
- 			}
- 			if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
- 				exit(WEXITSTATUS(status));
-@@ -156,20 +160,20 @@ static void do_master_child(void)
- 		tst_count++;
- 		if (SETREUID(NULL, 0, 0) == -1) {
- 			perror("setreuid failed");
--			exit(1);
-+			exit(TFAIL);
- 		}
- 
- 		TEST(tst_fd = open(testfile, O_RDWR));
- 
- 		if (TEST_RETURN == -1) {
- 			perror("open failed unexpectedly");
--			exit(1);
-+			exit(TFAIL);
- 		} else {
- 			printf("open call succeeded\n");
- 			close(tst_fd);
- 		}
- 	}
--	exit(0);
-+	exit(TPASS);
- }
- 
- static void setup(void)
--- 
-1.8.2.1
+I have just started looking into LTP and how test automation can be achieve=
+d using the platform. While going through the very basics I am stuck on she=
+ll script writing for LTP. I was following https://github.com/linux-test-pr=
+oject/ltp/wiki/Test-Writing-Guidelines#231-basic-shell-test-structure and t=
+he very first thing that I got hit by was:
 
+Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
+export TCID=3D<test name>
+export TST_TOTAL=3D<Total Number of Tests >
+export TST_COUNT=3D<Test case number>
+
+so I exported the variables in the above mentioned shell script (is the cur=
+rent wiki wrong???), the test passed as it should and I thought I was done =
+and I understand, but then when I tried to make the test fail by doing the =
+following:
+
+
+true
+ret=3D$?
+
+replaced with
+
+false
+ret=3D$?
+
+the test still reports success :(
+
+tst_exit says:
+"Exits the tests, note that this function has no parameters, the PASSES/FAI=
+LS reported by the tst_resm() interfaces were stored and are used for the e=
+xit value."
+
+If I explicitly write an 'exit 1' at the end of the testcase, it fails but =
+I believe that shouldn't be the case (using an explicit return shouldn't be=
+ needed if tst_exit is being used)... What am I missing? (a brain perhaps..=
+. :S)
+
+BR,
+Awais
+
+--_000_2021B186DC632746BD5A3CE32F12BD28E9EBFBC9EUMBX03mgcmento_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html dir=3D"ltr">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<style id=3D"owaParaStyle" type=3D"text/css">P {margin-top:0;margin-bottom:=
+0;}</style>
+</head>
+<body ocsi=3D"0" fpstyle=3D"1">
+<div style=3D"direction: ltr;font-family: Tahoma;color: #000000;font-size: =
+10pt;">Hi Guys,<br>
+<br>
+I have just started looking into LTP and how test automation can be achieve=
+d using the platform. While going through the very basics I am stuck on she=
+ll script writing for LTP. I was following
+<a href=3D"https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guid=
+elines#231-basic-shell-test-structure" target=3D"_blank">
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#231-=
+basic-shell-test-structure</a> and the very first thing that I got hit by w=
+as:<br>
+<br>
+<b><i>Set variables TCID, TST_TOTAL, and TST_COUNT before each test:<br>
+export TCID=3D&lt;test name&gt;<br>
+export TST_TOTAL=3D&lt;Total Number of Tests &gt;<br>
+export TST_COUNT=3D&lt;Test case number&gt;<br>
+</i></b><br>
+so I exported the variables in the above mentioned shell script (is the cur=
+rent wiki wrong???), the test passed as it should and I thought I was done =
+and I understand, but then when I tried to make the test fail by doing the =
+following:<br>
+<br>
+<pre><span class=3D"nb">true</span>=0A=
+<span class=3D"nv">ret</span><span class=3D"o">=3D</span><span class=3D"nv"=
+>$?</span></pre>
+replaced with<br>
+<pre><span class=3D"nb">false</span>=0A=
+<span class=3D"nv">ret</span><span class=3D"o">=3D</span><span class=3D"nv"=
+>$?</span></pre>
+<br>
+the test still reports success :(<br>
+<br>
+tst_exit says:<br>
+&quot;Exits the tests, note that this function has no parameters, the PASSE=
+S/FAILS reported by the
+<em>tst_resm()</em> interfaces were stored and are used for the exit value.=
+&quot;<br>
+<div><br>
+If I explicitly write an 'exit 1' at the end of the testcase, it fails but =
+I believe that shouldn't be the case (using an explicit return shouldn't be=
+ needed if tst_exit is being used)... What am I missing? (a brain perhaps..=
+. :S)<br>
+<br>
+<div style=3D"font-family:Tahoma; font-size:13px"><font face=3D"Tahoma"></f=
+ont>
+<div style=3D"font-size:13px">
+<div><font face=3D"Tahoma" size=3D"2"><span lang=3D"en-US">
+<div style=3D"margin:0">BR,</div>
+<div style=3D"margin:0"><i>Awais</i></div>
+</span></font></div>
+</div>
+<font face=3D"Tahoma"></font></div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_2021B186DC632746BD5A3CE32F12BD28E9EBFBC9EUMBX03mgcmento_--
+
+
+--===============7919489518699047891==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Open source business process management suite built on Java and Eclipse
@@ -403,7 +166,16 @@ Turn processes into business applications with Bonita BPM Community Edition
 Quickly connect people, data, and systems into organized workflows
 Winner of BOSSIE, CODIE, OW2 and Gartner awards
 http://p.sf.net/sfu/Bonitasoft
+--===============7919489518699047891==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7919489518699047891==--
+
