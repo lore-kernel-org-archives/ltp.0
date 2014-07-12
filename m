@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XCox9-0001Ah-12
-	for ltp-list@lists.sourceforge.net; Thu, 31 Jul 2014 11:55:23 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XCox6-0006qc-G5
-	for ltp-list@lists.sourceforge.net; Thu, 31 Jul 2014 11:55:22 +0000
-Message-ID: <53DA2E9A.5030902@oracle.com>
-Date: Thu, 31 Jul 2014 15:55:06 +0400
-From: Alexey <alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1X5qTp-0000yv-5r
+	for ltp-list@lists.sourceforge.net; Sat, 12 Jul 2014 06:08:17 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X5qTl-0004T5-HT
+	for ltp-list@lists.sourceforge.net; Sat, 12 Jul 2014 06:08:17 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6C684Rs010497
+	for <ltp-list@lists.sourceforge.net>; Sat, 12 Jul 2014 14:08:04 +0800
+Message-ID: <1405145200.3386.4.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Sat, 12 Jul 2014 14:06:40 +0800
+In-Reply-To: <1405145148.3386.3.camel@G08JYZSD130126>
+References: <1405145148.3386.3.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <1406634124.3928.1.camel@G08JYZSD130126>
-In-Reply-To: <1406634124.3928.1.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH 1/2] network ftp: some cleanup
+Subject: [LTP] [PATCH 2/2] security/p9auth: Add p9auth tests to default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,906 +31,742 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi Zeng!
-On 07/29/2014 03:42 PM, Zeng Linggang wrote:
-> * Move do_setup and do_cleanup into ftp_setup.
->
-> * Delete ftp02_s1 and add do_test function for it.
->
-> * Delete ftp_set_passwd and ftp_setup_vsftp_conf, since they are not be used.
->
-> * Use test.sh instead of net_cmdlib.sh
->
-> * Define local exists function instead of which in cmdlib.sh
->
-> * Abandon trap and use tst_exit.
->
-> * Make the test like:
-> 	(set TCID TST_TOTAL ...)
-> 	setup
-> 	do_test
-> 	check_result
-> 	tst_exit
->
-> * Some cleanup.
->
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->   testcases/network/tcp_cmds/ftp/ftp02               | 100 +++++++-----
->   testcases/network/tcp_cmds/ftp/ftp02_s1            |  71 ---------
->   testcases/network/tcp_cmds/ftp/ftp03               | 177 ++++++++-------------
->   testcases/network/tcp_cmds/ftp/ftp04               | 109 ++++++-------
->   testcases/network/tcp_cmds/ftp/ftp05               | 149 ++++++++---------
->   testcases/network/tcp_cmds/ftp/ftp_set_passwd      |  28 ----
->   testcases/network/tcp_cmds/ftp/ftp_setup           |  82 ++++++++++
->   .../network/tcp_cmds/ftp/ftp_setup_vsftp_conf      |   5 -
->   8 files changed, 320 insertions(+), 401 deletions(-)
->   delete mode 100755 testcases/network/tcp_cmds/ftp/ftp02_s1
->   delete mode 100755 testcases/network/tcp_cmds/ftp/ftp_set_passwd
->   create mode 100644 testcases/network/tcp_cmds/ftp/ftp_setup
->   delete mode 100755 testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf
->
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp02 b/testcases/network/tcp_cmds/ftp/ftp02
-> index 6d6e021..a86319f 100755
-> --- a/testcases/network/tcp_cmds/ftp/ftp02
-> +++ b/testcases/network/tcp_cmds/ftp/ftp02
-> @@ -28,59 +28,73 @@
->   #  NOTE:
->   #       This version is intended for EAL certification, it will need modification
->   #       to conform with LTP standards in the offical LTP tree.
-> +#
-> +# DESCRIPTION:
-> +#	Create Test User
-> +#	Make sure test user cannont log in with invalid password
-> +#	Cleanup Test User from system
-> +#	Exit with exit code of script called upon
-> +#
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_setup
-> -#-----------------------------------------------------------------------
-> -
-> -do_setup()
-> +setup()
->   {
-> +	exists expect ftp useradd userdel
-We don't need "exists()" anymore, use tst_check_cmd() from test.sh instead.
+* Keep the entry like:
+	p9auth_test1 p9auth_run_test.sh p9auth_test1
+	p9auth_test2 p9auth_run_test.sh p9auth_test2
+	p9auth_test3 p9auth_run_test.sh p9auth_test3
 
-> +	export TEST_USER="ftpuser2"
-> +	CONNECTION_FAILED="Connection failed; test FAILED"
-> +	EXPECTED="Login failed as expected; test PASSED"
-> +	UNEXPECTED="Login succeeded unexpectedly; test FAILED"
-> +}
->   
-> -    export RHOST="localhost"
-> -    export TEST_USER="ftpuser2"
-> -    export TEST_USER_PASSWD="eal"
-> -    export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-> -    export TEST_USER_HOMEDIR="/home/$TEST_USER"
-> -
-> -    # erase user if he may exist, so we can have a clean env
-> -    TCtmp="/home/$TEST_USER"
-> -
-> -    tst_setup
-> +do_test()
-> +{
-> +	set PASSWD "invaild_password?!!"
->   
-> -    exists expect ftp ftp02_s1 useradd userdel
-> +	set timeout 90
->   
-> -    userdel $TEST_USER
-> -    sleep 1
-> +	expect -c "
-> +		#ftp to host
-> +		spawn ftp $RHOST
-> +		sleep 1
-> +		# Check if connection succeeded.
-> +		expect {
-> +			\"Name\" {}
-> +			timeout {send_user \"\n$CONNECTION_FAILED\n\";exit 1}
-> +		}
->   
-> -    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-> -        end_testcase "Could not add test user $TEST_USER to system $RHOST."
-> -    fi
-> +		send \"$RUSER\r\"
-> +		sleep 1
-> +		expect -re \"Password:\"
-> +		send \"$PASSWD\r\"
-> +		sleep 1
->   
-> -    trap do_cleanup EXIT
-> +		expect {
-> +			# 530 - Login failed
-> +			\"530\" {send_user \"$EXPECTED\n\";exit 0}
-> +			# 230 - Login successful
-> +			\"230\" {send_user \"$UNEXPECTED\n\"; exit 1}
-> +		}
->   
-> +		expect \"ftp>\"
-> +		send \"exit\r\"
-> +	"
->   }
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_cleanup
-> -#-----------------------------------------------------------------------
-> +TCID="$0"
-> +TST_TOTAL=1
->   
-> -do_cleanup()
-> -{
-> -    userdel $TEST_USER
-> -    tst_cleanup
-> -}
-> -
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  MAIN
-> -#
-> -# DESCRIPTION: Create Test User
-> -#              Call upon script to make sure test user cannont log in with invalid password
-> -#	       Cleanup Test User from system
-> -#              Exit with exit code of script called upon
-> -#-----------------------------------------------------------------------
-> -. net_cmdlib.sh
-> +. test.sh
-> +. ftp_setup
->   
-> -read_opts $*
-> +setup
->   do_setup
-> -ftp02_s1 || end_testcase "Testcase failed."
-> -end_testcase
-> +TST_CLEANUP=do_cleanup
-> +
-> +do_test
-> +ret=$?
-> +if [ $ret -ne 0 ]; then
-> +	tst_resm TFAIL "Test $TCID FAIL"
-> +else
-> +	tst_resm TPASS "Test $TCID PASS"
-> +fi
-> +
-> +tst_exit
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp02_s1 b/testcases/network/tcp_cmds/ftp/ftp02_s1
-> deleted file mode 100755
-> index 18b08da..0000000
-> --- a/testcases/network/tcp_cmds/ftp/ftp02_s1
-> +++ /dev/null
-> @@ -1,71 +0,0 @@
-> -#! /usr/bin/expect -f
-> -#*********************************************************************
-> -#   Copyright (c) International Business Machines  Corp., 2003, 2005
-> -#
-> -#   This program is free software;  you can redistribute it and/or modify
-> -#   it under the terms of the GNU General Public License as published by
-> -#   the Free Software Foundation; either version 2 of the License, or
-> -#   (at your option) any later version.
-> -#
-> -#   This program is distributed in the hope that it will be useful,
-> -#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> -#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> -#   the GNU General Public License for more details.
-> -#
-> -#   You should have received a copy of the GNU General Public License
-> -#   along with this program;  if not, write to the Free Software
-> -#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> -#
-> -#
-> -#
-> -#  FILE   : ftp
-> -#
-> -#  PURPOSE: Test to see if ftp rejects a user with an invalid password
-> -#
-> -#  SETUP: The program `/usr/bin/expect' MUST be installed.
-> -#
-> -#  HISTORY:
-> -# 	03/04/03 Jerone Young (jeroney@us.ibm.com)
-> -#       09/21/05 Kris Wilson (krisw@us.ibm.com) Check for connection failure.
-> -#                (If WS system, no vsftpd; connection will fail.)
-> -
-> -set RHOST $env(RHOST)
-> -set TEST_USER $env(TEST_USER)
-> -set TEST_USER_PASSWD $env(TEST_USER_PASSWD)
-> -set TEST_USER_HOMEDIR $env(TEST_USER_HOMEDIR)
-> -
-> -#RUSER
-> -set RUSER $TEST_USER
-> -
-> -#set PASSWD to be an invalid Password
-> -set PASSWD "invaild_password?!!"
-> -
-> -set timeout 90
-> -
-> -#ftp to host
-> -spawn ftp $RHOST
-> -sleep 1
-> -# Check if connection succeeded.
-> -expect {
-> -    "Name" {}
-> -    timeout {send_user "\nConnection failed; test FAILED\n";exit 1}
-> -}
-> -
-> -send "$RUSER\r"
-> -sleep 1
-> -expect -re "Password:"
-> -send "$PASSWD\r"
-> -sleep 1
-> -
-> -expect {
-> -    # 530 - Login failed
-> -    "530" {send_user "Login failed as expected; test PASSED\n"}
-> -    # 230 - Login successful
-> -    "230" {send_user "Login succeeded unexpectedly; test FAILED\n"; exit 1}
-> -}
-> -
-> -expect "ftp>"
-> -send "exit\r"
-> -
-> -send_user "\nTest Successful\n\n"
-> -exit 0
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp03 b/testcases/network/tcp_cmds/ftp/ftp03
-> index a99a1a0..13e5273 100755
-> --- a/testcases/network/tcp_cmds/ftp/ftp03
-> +++ b/testcases/network/tcp_cmds/ftp/ftp03
-> @@ -31,130 +31,77 @@
->   #	This version is intended for EAL certification, it will need modification
->   #	to conform with LTP standards in the offical LTP tree.
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_setup
-> -#-----------------------------------------------------------------------
-> -
-> -do_setup()
-> +setup()
->   {
-> -
-> -    RHOST="localhost"
-> -    TEST_USER="ftpuser1"
-> -    TCtmp=/home/$TEST_USER
-> -    TEST_USER_PASSWD="eal"
-> -    TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-> -    TEST_USER_HOMEDIR="/home/$TEST_USER"
-> -    VSFTP_CONF=
-> -
-> -    tst_setup
-> -
-> -    exists ftp useradd userdel vftpd
-> -
-> -    for vsftp_conf in /etc/vsftpd /etc; do
-> -
-> -        if [ -r "$vsftp_confdir/vsftp.conf" ]; then
-> -            VSFTP_CONF="$vsftp_confdir/vsftp.conf"
-> -            break
-> -        fi
-> -
-> -    done
-> -    if [ ! -r "$VSFTP_CONF" ] ; then
-> -        end_testcase "vsftpd.conf not found."
-> -    fi
-> -    LOCAL_ENABLE=$(awk -F= '/^local_enable=/ {print $2}' "$VSFTP_CONF")
-> -
-> -    [ "$LOCAL_ENABLE" != "YES" ] && LOCAL_ENABLE="NO"
-> -
-> -    userdel $TEST_USER
-> -    sleep 1
-> -
-> -    if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-> -        end_testcase "Could not add test user $TEST_USER on system $RHOST."
-> -    fi
-> -
-> -    trap do_cleanup QUIT
-> -
-> -    # create users home diretory (SLES 8 does not do this, even when specified
-> -    # in adduser)
-> -    USER_UID=$(id -u $TEST_USER)
-> -    USER_GID=$(id -g $TEST_USER)
-> -    mkdir -p "$TEST_USER_HOMEDIR"
-> -    chown -R $USER_UID:$USER_GID $TEST_USER_HOMEDIR
-> -
-> +	exists ftp useradd userdel vsftpd
-> +	export TEST_USER="ftpuser3"
-> +	FAIL_530="==> TEST : FAIL (ftp rejected login attempt)"
-> +	PASS_230="==> TEST : PASS (ftp allowed login attempt)"
-> +	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
-> +	PASS_500="==> TEST : PASS (ftp rejected login attempt)"
-> +	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
->   }
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_cleanup
-> -#-----------------------------------------------------------------------
-> -
-> -do_cleanup()
-> +do_test()
->   {
-> -    userdel $TEST_USER
-> -    tst_cleanup
-> -}
-> -
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_test
-> -#
-> -# DESCRIPTION: The test user will ftp in and create a directory in his home directory on the remote host.
-> -#              The directory is then checked on the remote hosts to see if it is owned
-> -#	       by the test user.
-> -#-----------------------------------------------------------------------
-> -
-> -do_test(){
-> -    tst_resm TINFO "TEST: Ftp into a remote host as a local user (other than root), LOCAL_ENABLE=$LOCAL_ENABLE"
-> +	echo "TEST: Ftp into a remote host as a local user (other than root),"
-> +	echo "LOCAL_ENABLE=$LOCAL_ENABLE"
->   
-> -    if [ "$LOCAL_ENABLE" = "YES" ]; then
-> +	if [ "$LOCAL_ENABLE" = "YES" ]; then
->   	expect -c "
-> -            spawn ftp $RHOST
-> -            sleep 1
-> -            expect -re \": \"
-> -            send \"$TEST_USER\r\"
-> -            expect -re \"Password:\"
-> -            send \"$TEST_USER_PASSWD\r\"
-> -            expect {
-> -                # 530 - Login failed
-> -                \"530\" {send_user \"==> TEST \#$TEST : FAIL (ftp rejected login attempt)\n\";exit 1}
-> -                # 230 - Login successful
-> -                \"230\" {send_user \"==> TEST \#$TEST : PASS (ftp allowed login attempt)\n\";exit 0}
-> -            }
-> -            expect \"ftp> \"
-> -            send \"quit\r\"
-> +		spawn ftp $RHOST
-> +		sleep 1
-> +		expect -re \": \"
-> +		send \"$TEST_USER\r\"
-> +		expect -re \"Password:\"
-> +		send \"$TEST_USER_PASSWD\r\"
-> +		expect {
-> +			# 530 - Login failed
-> +			\"530\" {send_user \"$FAIL_530\n\";exit 1}
-> +			# 230 - Login successful
-> +			\"230\" {send_user \"$PASS_230\n\";exit 0}
-> +		}
-> +		expect \"ftp> \"
-> +		send \"quit\r\"
->   	"
-> -    else
-> -        expect -c "
-> -            spawn ftp $RHOST
-> -            sleep 1
-> -            expect -re \": \"
-> -            send \"$TEST_USER\r\"
-> -            expect -re \"Password:\"
-> -            send \"$TEST_USER_PASSWD\r\"
-> -            expect {
-> -                # 230 - Login successful
-> -                \"230\" {send_user \"==> TEST \#$TEST : FAIL (ftp allowed login attempt)\n\";exit 1}
-> -                # 500 - Login failed
-> -                \"500\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
-> -                # 530 - Login failed
-> -                \"530\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
-> -            }
-> -            expect \"ftp> \"
-> -            send \"quit\r\"
-> -        "
-> -    fi
-> -
-> -    if [ $? != 0 ]; then
-> -        end_testcase "Testcase failed"
-> -    fi
-> +	else
-> +	expect -c "
-> +		spawn ftp $RHOST
-> +		sleep 1
-> +		expect -re \": \"
-> +		send \"$TEST_USER\r\"
-> +		expect -re \"Password:\"
-> +		send \"$TEST_USER_PASSWD\r\"
-> +		expect {
-> +			# 230 - Login successful
-> +			\"230\" {send_user \"$FAIL_230\n\";exit 1}
-> +			# 500 - Login failed
-> +			\"500\" {send_user \"$PASS_500\n\";exit 0}
-> +			# 530 - Login failed
-> +			\"530\" {send_user \"$PASS_530\n\";exit 0}
-> +		}
-> +		expect \"ftp> \"
-> +		send \"quit\r\"
-> +	"
-> +	fi
->   }
->   
-> -#----------------------------------------------------------------------
-> -# FUNCTION: MAIN
-> -# PURPOSE:  To invoke the functions to perform the tasks described in
-> -#           the prologue.
-> -#----------------------------------------------------------------------
-> -. net_cmdlib.sh
-> +TCID="$0"
-> +TST_TOTAL=1
->   
-> -read_opts $*
-> +. test.sh
-> +. ftp_setup
-> +
-> +setup
->   do_setup
-> +TST_CLEANUP=do_cleanup
-> +
->   do_test
-> -end_testcase
-> +ret=$?
-> +if [ $ret -ne 0 ]; then
+* Add p9auth tests to default
 
-I would use "$?" inside if, don't need "ret" variable here and in other 
-places as well.
+* Make p9auth testes name more saner:
+	checkp9auth.sh  -->  p9auth_check.sh
+	p9priv.sh       -->  p9auth_priv.sh
+	p9unpriv.sh     -->  p9auth_unpriv.sh
+	runp9auth.sh    -->  p9auth_run_test.sh
+	unhex.c         -->  p9auth_unhex.c
 
-> +	tst_resm TFAIL "Test $TCID FAIL"
-> +else
-> +	tst_resm TPASS "Test $TCID PASS"
-> +fi
-> +
-> +tst_exit
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp04 b/testcases/network/tcp_cmds/ftp/ftp04
-> index 8329eb0..c13614d 100755
-> --- a/testcases/network/tcp_cmds/ftp/ftp04
-> +++ b/testcases/network/tcp_cmds/ftp/ftp04
-> @@ -28,77 +28,66 @@
->   #   03/04/03 Jerone Young (jeroney@us.ibm.com)
->   #   09/21/05 Kris Wilson (krisw@us.ibm.com) Check if vsftpd is on system.
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_setup
-> -#-----------------------------------------------------------------------
-> -
-> -do_setup()
-> +setup()
->   {
-> +	exists awk expect ftp vsftpd
->   
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ runtest/p9auth                                     |  4 +-
+ scenario_groups/default                            |  1 +
+ testcases/kernel/security/p9auth/.gitignore        |  2 +-
+ testcases/kernel/security/p9auth/checkp9auth.sh    | 54 -------------
+ testcases/kernel/security/p9auth/p9auth_check.sh   | 54 +++++++++++++
+ testcases/kernel/security/p9auth/p9auth_priv.sh    | 90 ++++++++++++++++++++++
+ .../kernel/security/p9auth/p9auth_run_test.sh      | 62 +++++++++++++++
+ testcases/kernel/security/p9auth/p9auth_unhex.c    | 50 ++++++++++++
+ testcases/kernel/security/p9auth/p9auth_unpriv.sh  | 44 +++++++++++
+ testcases/kernel/security/p9auth/p9priv.sh         | 90 ----------------------
+ testcases/kernel/security/p9auth/p9unpriv.sh       | 44 -----------
+ testcases/kernel/security/p9auth/runp9auth.sh      | 62 ---------------
+ testcases/kernel/security/p9auth/unhex.c           | 50 ------------
+ 13 files changed, 305 insertions(+), 302 deletions(-)
+ delete mode 100755 testcases/kernel/security/p9auth/checkp9auth.sh
+ create mode 100755 testcases/kernel/security/p9auth/p9auth_check.sh
+ create mode 100755 testcases/kernel/security/p9auth/p9auth_priv.sh
+ create mode 100755 testcases/kernel/security/p9auth/p9auth_run_test.sh
+ create mode 100644 testcases/kernel/security/p9auth/p9auth_unhex.c
+ create mode 100755 testcases/kernel/security/p9auth/p9auth_unpriv.sh
+ delete mode 100755 testcases/kernel/security/p9auth/p9priv.sh
+ delete mode 100755 testcases/kernel/security/p9auth/p9unpriv.sh
+ delete mode 100755 testcases/kernel/security/p9auth/runp9auth.sh
+ delete mode 100644 testcases/kernel/security/p9auth/unhex.c
 
-Use tst_check_cmd()
+diff --git a/runtest/p9auth b/runtest/p9auth
+index 17b1550..d0f6aa6 100644
+--- a/runtest/p9auth
++++ b/runtest/p9auth
+@@ -1,2 +1,4 @@
+ #DESCRIPTION:p9auth /dev/caphash module
+-p9auth		runp9auth.sh
++p9auth_test1 p9auth_run_test.sh p9auth_test1
++p9auth_test2 p9auth_run_test.sh p9auth_test2
++p9auth_test3 p9auth_run_test.sh p9auth_test3
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 71b3646..2fdc9ee 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -30,3 +30,4 @@ fs_ext4
+ pipes
+ dma_thread_diotest
+ cpuacct
++p9auth
+diff --git a/testcases/kernel/security/p9auth/.gitignore b/testcases/kernel/security/p9auth/.gitignore
+index a6ce058..56b0277 100644
+--- a/testcases/kernel/security/p9auth/.gitignore
++++ b/testcases/kernel/security/p9auth/.gitignore
+@@ -1 +1 @@
+-/unhex
++/p9auth_unhex
+diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/testcases/kernel/security/p9auth/checkp9auth.sh
+deleted file mode 100755
+index 0eafd15..0000000
+--- a/testcases/kernel/security/p9auth/checkp9auth.sh
++++ /dev/null
+@@ -1,54 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2009                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software Foundation,   ##
+-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+-##                                                                            ##
+-################################################################################
+-
+-p9auth_check()
+-{
+-	# check for openssl
+-	if [ -e "/tmp/ab" ]; then
+-		rm -f /tmp/ab
+-	fi
+-	echo "ab" > /tmp/ab
+-	openssl sha1 -hmac "ab" /tmp/ab > /dev/null
+-	ret=$?
+-	if [ $ret -ne 0 ]; then
+-		tst_brkm TCONF "openssl not installed, skipping p9auth tests."
+-	fi
+-
+-	majfile=/sys/module/p9auth/parameters/cap_major
+-	minfile=/sys/module/p9auth/parameters/cap_minor
+-	if [ ! -f "$majfile" ]; then
+-		tst_brkm TCONF "p9auth not detected.  Skipping p9auth tests."
+-	fi
+-
+-	if [ ! -c "/dev/caphash" ]; then
+-		rm -f /dev/caphash
+-		maj=`cat $majfile`
+-		mknod /dev/caphash c $maj 0
+-	fi
+-
+-	if [ ! -c "/dev/capuse" ]; then
+-		rm -f /dev/capuse
+-		mknod /dev/capuse c $maj 1
+-	fi
+-	chmod ugo+w /dev/capuse
+-
+-	tst_resm TINFO "p9auth ready for testing"
+-}
+diff --git a/testcases/kernel/security/p9auth/p9auth_check.sh b/testcases/kernel/security/p9auth/p9auth_check.sh
+new file mode 100755
+index 0000000..0eafd15
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9auth_check.sh
+@@ -0,0 +1,54 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++################################################################################
++
++p9auth_check()
++{
++	# check for openssl
++	if [ -e "/tmp/ab" ]; then
++		rm -f /tmp/ab
++	fi
++	echo "ab" > /tmp/ab
++	openssl sha1 -hmac "ab" /tmp/ab > /dev/null
++	ret=$?
++	if [ $ret -ne 0 ]; then
++		tst_brkm TCONF "openssl not installed, skipping p9auth tests."
++	fi
++
++	majfile=/sys/module/p9auth/parameters/cap_major
++	minfile=/sys/module/p9auth/parameters/cap_minor
++	if [ ! -f "$majfile" ]; then
++		tst_brkm TCONF "p9auth not detected.  Skipping p9auth tests."
++	fi
++
++	if [ ! -c "/dev/caphash" ]; then
++		rm -f /dev/caphash
++		maj=`cat $majfile`
++		mknod /dev/caphash c $maj 0
++	fi
++
++	if [ ! -c "/dev/capuse" ]; then
++		rm -f /dev/capuse
++		mknod /dev/capuse c $maj 1
++	fi
++	chmod ugo+w /dev/capuse
++
++	tst_resm TINFO "p9auth ready for testing"
++}
+diff --git a/testcases/kernel/security/p9auth/p9auth_priv.sh b/testcases/kernel/security/p9auth/p9auth_priv.sh
+new file mode 100755
+index 0000000..42a9ea9
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9auth_priv.sh
+@@ -0,0 +1,90 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++################################################################################
++
++p9auth_init()
++{
++	if [ -d "$LTPTMP" ]; then
++		rm -rf $LTPTMP
++	fi
++	mkdir -p $LTPTMP/d
++	chmod 755 $LTPTMP
++	chown -R ltp $LTPTMP/d
++}
++
++p9auth_setup()
++{
++	randstr=$RANDOM
++	if [ $p9auth_test = "p9auth_test2" ]; then
++		txt="$ltpuid@0"
++	elif [ $p9auth_test = "p9auth_test3" ]; then
++		txt="0@0"
++	fi
++	echo -n "$txt" > $LTPTMP/txtfile
++	openssl sha1 -hmac "$randstr" $LTPTMP/txtfile | awk '{ print $2 }' \
++		> $LTPTMP/hex
++	p9auth_unhex < $LTPTMP/hex > /dev/caphash
++	# give the child its token
++	echo -n "$txt@$randstr" > $LTPTMP/d/txtfile
++	chown ltp $LTPTMP/d/txtfile
++}
++
++p9auth_run()
++{
++	su ltp p9auth_unpriv.sh &
++	while [ ! -f $LTPTMP/d/childready ]; do :; done
++	touch $LTPTMP/childgo
++	until [ -f $LTPTMP/d/childfail -o -f $LTPTMP/d/childpass ]; do :; done
++}
++
++p9auth_test1()
++{
++	p9auth_init
++	p9auth_run
++	if [ -f $LTPTMP/d/childpass ]; then
++		tst_resm TFAIL "child could setuid with bad hash"
++	else
++		tst_resm TPASS "child couldn't setuid with bad hash"
++	fi
++}
++
++p9auth_test2()
++{
++	p9auth_init
++	p9auth_setup
++	p9auth_run
++	if [ -f $LTPTMP/d/childfail ]; then
++		tst_resm TFAIL "child couldn't setuid with good hash"
++	else
++		tst_resm TPASS "child could setuid with good hash"
++	fi
++}
++
++p9auth_test3()
++{
++	p9auth_init
++	p9auth_setup
++	p9auth_run
++	if [ -f $LTPTMP/d/childpass ]; then
++		tst_resm TFAIL "child could setuid from wrong source uid"
++	else
++		tst_resm TPASS "child couldn't setuid from wrong source uid"
++	fi
++}
+diff --git a/testcases/kernel/security/p9auth/p9auth_run_test.sh b/testcases/kernel/security/p9auth/p9auth_run_test.sh
+new file mode 100755
+index 0000000..bf220a5
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9auth_run_test.sh
+@@ -0,0 +1,62 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2008                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++################################################################################
++
++export TMPDIR=${TMPDIR:-/tmp}
++export LTPTMP=${TMPDIR}/p9auth_ltp
++
++TCID="$1"
++TST_TOTAL=1
++
++. test.sh
++. p9auth_check.sh
++. p9auth_priv.sh
++
++setup()
++{
++	tst_require_root
++
++	p9auth_check
++
++	if ! ltpuid=$(id -u ltp); then
++		useradd ltp
++		useradd_flag=1
++	else
++		useradd_flag=0
++	fi
++
++	p9auth_test="$TCID"
++}
++
++cleanup()
++{
++	rm -rf /tmp/ab
++	rm -rf $LTPTMP
++	if [ $useradd_flag -ne 0 ]; then
++		userdel -r ltp
++	fi
++}
++
++setup
++TST_CLEANUP=cleanup
++
++$p9auth_test
++
++tst_exit
+diff --git a/testcases/kernel/security/p9auth/p9auth_unhex.c b/testcases/kernel/security/p9auth/p9auth_unhex.c
+new file mode 100644
+index 0000000..f3f7660
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9auth_unhex.c
+@@ -0,0 +1,50 @@
++/******************************************************************************/
++/*                                                                            */
++/* Copyright (c) International Business Machines  Corp., 2008                 */
++/*                                                                            */
++/* This program is free software;  you can redistribute it and/or modify      */
++/* it under the terms of the GNU General Public License as published by       */
++/* the Free Software Foundation; either version 2 of the License, or          */
++/* (at your option) any later version.                                        */
++/*                                                                            */
++/* This program is distributed in the hope that it will be useful,            */
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
++/* the GNU General Public License for more details.                           */
++/*                                                                            */
++/* You should have received a copy of the GNU General Public License          */
++/* along with this program;  if not, write to the Free Software Foundation,   */
++/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
++/*                                                                            */
++/******************************************************************************/
++
++/*
++ * File: p9auth_unhex.c
++ * Author: Serge Hallyn
++ * Purpose: Read a 40 char hex value from stdin, output 20 char byte
++ * value on stdout.
++ */
++
++#include <stdio.h>
++#include <unistd.h>
++
++int main(void)
++{
++	char in[41], out[20];
++	unsigned int v;
++	int i, ret;
++
++	ret = read(STDIN_FILENO, in, 40);
++	if (ret != 40)
++		return 1;
++	in[40] = '\0';
++	for (i = 0; i < 20; i++) {
++		sscanf(&in[2 * i], "%02x", &v);
++		out[i] = v;
++	}
++	ret = write(STDOUT_FILENO, out, 20);
++	if (ret != 20)
++		return 1;
++
++	return 0;
++}
+diff --git a/testcases/kernel/security/p9auth/p9auth_unpriv.sh b/testcases/kernel/security/p9auth/p9auth_unpriv.sh
+new file mode 100755
+index 0000000..a24edac
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9auth_unpriv.sh
+@@ -0,0 +1,44 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++################################################################################
++
++tst_resm TINFO "ltptmp is $LTPTMP"
++
++myuid=`id -u`
++if [ "$myuid" -eq 0 ]; then
++	tst_brkm TBROK "Unprivileged child was started as root!"
++fi
++
++touch $LTPTMP/d/childready
++
++while [ 1 ]; do
++	if [ -f $LTPTMP/childexit ]; then
++		exit 0
++	fi
++	if [ -f $LTPTMP/childgo ]; then
++		echo -n `cat $LTPTMP/d/txtfile` > /dev/capuse
++		if [ `id -u` -eq 0 ]; then
++			touch $LTPTMP/d/childpass
++		else
++			touch $LTPTMP/d/childfail
++		fi
++		exit 0
++	fi
++done
+diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/kernel/security/p9auth/p9priv.sh
+deleted file mode 100755
+index 0355b66..0000000
+--- a/testcases/kernel/security/p9auth/p9priv.sh
++++ /dev/null
+@@ -1,90 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2009                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software Foundation,   ##
+-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+-##                                                                            ##
+-################################################################################
+-
+-p9auth_init()
+-{
+-	if [ -d "$LTPTMP" ]; then
+-		rm -rf $LTPTMP
+-	fi
+-	mkdir -p $LTPTMP/d
+-	chmod 755 $LTPTMP
+-	chown -R ltp $LTPTMP/d
+-}
+-
+-p9auth_setup()
+-{
+-	randstr=$RANDOM
+-	if [ $p9auth_test = "p9auth_test2" ]; then
+-		txt="$ltpuid@0"
+-	elif [ $p9auth_test = "p9auth_test3" ]; then
+-		txt="0@0"
+-	fi
+-	echo -n "$txt" > $LTPTMP/txtfile
+-	openssl sha1 -hmac "$randstr" $LTPTMP/txtfile | awk '{ print $2 }' \
+-		> $LTPTMP/hex
+-	unhex < $LTPTMP/hex > /dev/caphash
+-	# give the child its token
+-	echo -n "$txt@$randstr" > $LTPTMP/d/txtfile
+-	chown ltp $LTPTMP/d/txtfile
+-}
+-
+-p9auth_run()
+-{
+-	su ltp p9unpriv.sh &
+-	while [ ! -f $LTPTMP/d/childready ]; do :; done
+-	touch $LTPTMP/childgo
+-	until [ -f $LTPTMP/d/childfail -o -f $LTPTMP/d/childpass ]; do :; done
+-}
+-
+-p9auth_test1()
+-{
+-	p9auth_init
+-	p9auth_run
+-	if [ -f $LTPTMP/d/childpass ]; then
+-		tst_resm TFAIL "child could setuid with bad hash"
+-	else
+-		tst_resm TPASS "child couldn't setuid with bad hash"
+-	fi
+-}
+-
+-p9auth_test2()
+-{
+-	p9auth_init
+-	p9auth_setup
+-	p9auth_run
+-	if [ -f $LTPTMP/d/childfail ]; then
+-		tst_resm TFAIL "child couldn't setuid with good hash"
+-	else
+-		tst_resm TPASS "child could setuid with good hash"
+-	fi
+-}
+-
+-p9auth_test3()
+-{
+-	p9auth_init
+-	p9auth_setup
+-	p9auth_run
+-	if [ -f $LTPTMP/d/childpass ]; then
+-		tst_resm TFAIL "child could setuid from wrong source uid"
+-	else
+-		tst_resm TPASS "child couldn't setuid from wrong source uid"
+-	fi
+-}
+diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/testcases/kernel/security/p9auth/p9unpriv.sh
+deleted file mode 100755
+index a24edac..0000000
+--- a/testcases/kernel/security/p9auth/p9unpriv.sh
++++ /dev/null
+@@ -1,44 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2009                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software Foundation,   ##
+-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+-##                                                                            ##
+-################################################################################
+-
+-tst_resm TINFO "ltptmp is $LTPTMP"
+-
+-myuid=`id -u`
+-if [ "$myuid" -eq 0 ]; then
+-	tst_brkm TBROK "Unprivileged child was started as root!"
+-fi
+-
+-touch $LTPTMP/d/childready
+-
+-while [ 1 ]; do
+-	if [ -f $LTPTMP/childexit ]; then
+-		exit 0
+-	fi
+-	if [ -f $LTPTMP/childgo ]; then
+-		echo -n `cat $LTPTMP/d/txtfile` > /dev/capuse
+-		if [ `id -u` -eq 0 ]; then
+-			touch $LTPTMP/d/childpass
+-		else
+-			touch $LTPTMP/d/childfail
+-		fi
+-		exit 0
+-	fi
+-done
+diff --git a/testcases/kernel/security/p9auth/runp9auth.sh b/testcases/kernel/security/p9auth/runp9auth.sh
+deleted file mode 100755
+index 1196860..0000000
+--- a/testcases/kernel/security/p9auth/runp9auth.sh
++++ /dev/null
+@@ -1,62 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2008                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software Foundation,   ##
+-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+-##                                                                            ##
+-################################################################################
+-
+-export TMPDIR=${TMPDIR:-/tmp}
+-export LTPTMP=${TMPDIR}/p9auth_ltp
+-
+-TCID="$1"
+-TST_TOTAL=1
+-
+-. test.sh
+-. checkp9auth.sh
+-. p9priv.sh
+-
+-setup()
+-{
+-	tst_require_root
+-
+-	p9auth_check
+-
+-	if ! ltpuid=$(id -u ltp); then
+-		useradd ltp
+-		useradd_flag=1
+-	else
+-		useradd_flag=0
+-	fi
+-
+-	p9auth_test="$TCID"
+-}
+-
+-cleanup()
+-{
+-	rm -rf /tmp/ab
+-	rm -rf $LTPTMP
+-	if [ $useradd_flag -ne 0 ]; then
+-		userdel -r ltp
+-	fi
+-}
+-
+-setup
+-TST_CLEANUP=cleanup
+-
+-$p9auth_test
+-
+-tst_exit
+diff --git a/testcases/kernel/security/p9auth/unhex.c b/testcases/kernel/security/p9auth/unhex.c
+deleted file mode 100644
+index f5bcded..0000000
+--- a/testcases/kernel/security/p9auth/unhex.c
++++ /dev/null
+@@ -1,50 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/* Copyright (c) International Business Machines  Corp., 2008                 */
+-/*                                                                            */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or          */
+-/* (at your option) any later version.                                        */
+-/*                                                                            */
+-/* This program is distributed in the hope that it will be useful,            */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+-/* the GNU General Public License for more details.                           */
+-/*                                                                            */
+-/* You should have received a copy of the GNU General Public License          */
+-/* along with this program;  if not, write to the Free Software Foundation,   */
+-/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-/*
+- * File: unhex.c
+- * Author: Serge Hallyn
+- * Purpose: Read a 40 char hex value from stdin, output 20 char byte
+- * value on stdout.
+- */
+-
+-#include <stdio.h>
+-#include <unistd.h>
+-
+-int main(void)
+-{
+-	char in[41], out[20];
+-	unsigned int v;
+-	int i, ret;
+-
+-	ret = read(STDIN_FILENO, in, 40);
+-	if (ret != 40)
+-		return 1;
+-	in[40] = '\0';
+-	for (i = 0; i < 20; i++) {
+-		sscanf(&in[2 * i], "%02x", &v);
+-		out[i] = v;
+-	}
+-	ret = write(STDOUT_FILENO, out, 20);
+-	if (ret != 20)
+-		return 1;
+-
+-	return 0;
+-}
+-- 
+1.9.3
 
-> -    tvar=${MACHTYPE%-*}
-> -    tvar=${tvar#*-}
-> -
-> -    RHOST=localhost
-> -    TEST_USER=root
-> -
-> -    tst_setup
-> +	TEST_USER=root
->   
-> -    if [ -n "$PASSWD" ]; then
-> -        TEST_USER_PASSWORD=$PASSWD
-> -    else
-> -        end_testcase "You must set your password via the PASSWD variable."
-> -        exit 1
-> -    fi
-> +	tvar=${MACHTYPE%-*}
-> +	tvar=${tvar#*-}
->   
-> -    exists awk expect ftp vsftpd
-> -
-> -    if [ $tvar = "redhat" -o $tvar = "redhat-linux" ]; then
-> -        echo "Verifying test user $TEST_USER is in /etc/vsftpd.ftpusers database..."
-> -        FTPUSERS=$(awk "/$TEST_USER/" /etc/vsftpd.ftpusers)
-> -    else
-> -        echo "Verifying test user $TEST_USER is in /etc/ftpusers database..."
-> -        FTPUSERS=$(awk "/$TEST_USER/" /etc/ftpusers)
-> -    fi
-> -    if [ -z "$FTPUSERS" ] ; then
-> -        end_testcase "Test user $TEST_USER not found in /etc/ftpusers unable to run TEST, exiting 0 ..."
-> -    fi
-> +	if [ $tvar = "redhat" -o $tvar = "redhat-linux" ]; then
-> +		ftpusers="/etc/vsftpd/ftpusers"
-> +	else
-> +		ftpusers="/etc/ftpusers"
-> +	fi
-> +	echo "Verifying test user $TEST_USER is in ${ftpusers} database..."
-> +	FTPUSERS=$(awk "/$TEST_USER/" ${ftpusers})
-> +	if [ -z "$FTPUSERS" ] ; then
-> +		tst_brkm TBROK "$TEST_USER not found in $ftpusers exiting 0 ..."
-> +	fi
->   
-> +	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
-> +	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
->   }
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION:  do_test
-> -#-----------------------------------------------------------------------
->   do_test()
->   {
-> -
-> -    tst_resm TINFO "Ftp should reject $TEST_USER from loging in successfully"
-> -    expect -c "
-> -        spawn ftp $RHOST
-> -        sleep 1
-> -        expect -re \": \"
-> -        send \"$TEST_USER\r\"
-> -        expect -re \"Password:\"
-> -        send \"$TEST_USER_PASSWD\r\"
-> -        expect {
-> -            # 230 - Login successful
-> -            \"230\" {send_user \"==> TEST \#$TEST : FAIL (ftp allowed login attempt)\n\";exit 1}
-> -            # 530 - Login failed
-> -            \"530\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
-> -        }
-> -        expect \"ftp> \"
-> -        send \"quit\r\"
-> -    "
-> -
-> -    [ $? -eq 0 ] || end_testcase "Testcase failed."
-> -
-> +	echo "Ftp should reject $TEST_USER from loging in successfully"
-> +	expect -c "
-> +		spawn ftp $RHOST
-> +		sleep 1
-> +		expect -re \": \"
-> +		send \"$TEST_USER\r\"
-> +		expect -re \"Password:\"
-> +		send \"$TEST_USER_PASSWD\r\"
-> +		expect {
-> +			# 230 - Login successful
-> +			\"230\" {send_user \"$FAIL_230\n\";exit 1}
-> +			# 530 - Login failed
-> +			\"530\" {send_user \"$PASS_530\n\";exit 0}
-> +		}
-> +		expect \"ftp> \"
-> +		send \"quit\r\"
-> +	"
->   }
->   
-> -#----------------------------------------------------------------------
-> -# FUNCTION: MAIN
-> -#----------------------------------------------------------------------
-> -. net_cmdlib.sh
-> +TCID="$0"
-> +TST_TOTAL=1
-> +
-> +. test.sh
-> +. ftp_setup
->   
-> -read_opts $*
-> +setup
->   do_setup
-> +
->   do_test
-> -end_testcase
-> +ret=$?
-> +if [ $ret -ne 0 ]; then
-> +	tst_resm TFAIL "Test $TCID FAIL"
-> +else
-> +	tst_resm TPASS "Test $TCID PASS"
-> +fi
-> +
-> +tst_exit
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp05 b/testcases/network/tcp_cmds/ftp/ftp05
-> index 4f91334..746c87a 100755
-> --- a/testcases/network/tcp_cmds/ftp/ftp05
-> +++ b/testcases/network/tcp_cmds/ftp/ftp05
-> @@ -30,96 +30,87 @@
->   #  NOTE:
->   #	This version is intended for EAL certification, it will need modification
->   #	to conform with LTP standards in the offical LTP tree.
-> +#
-> +# DESCRIPTION:
-> +#	The anonymous user will ftp in and create a directory in his/her
-> +#	home directory on the remote host.
-> +#
->   
-> -do_setup()
-> +setup()
->   {
-> -    RHOST="localhost"
-> -    TEST_USER="anonymous"
-> -    TEST_USER_PASSWD="noone@nowhere.com"
-> -    VSFTP_CONF=
-> -
-> -    tst_setup
-> -
-> -    exists expect ftp vsftpd
-> -
-> -    for vsftp_conf in /etc/vsftpd /etc; do
-> -
-> -        if [ -r "$vsftp_confdir/vsftp.conf" ]; then
-> -            VSFTP_CONF="$vsftp_confdir/vsftp.conf"
-> -            break
-> -        fi
-> -
-> -    done
-> -    if [ ! -r "$VSFTP_CONF" ] ; then
-> -        end_testcase "vsftpd.conf not found."
-> -    fi
-> -    ANONYMOUS_ENABLE=$(awk -F= '/^anonymous_enable=/ {print $2}' "$VSFTP_CONF")
-> -    if [ "$ANONYMOUS_ENABLE" != "NO" ]; then
-> -        ANONYMOUS_ENABLE="YES"
-> -    fi
-> +	exists expect ftp vsftpd
-> +	TEST_USER="anonymous"
-> +	FAIL_530="==> TEST : FAIL (ftp rejected login attempt)"
-> +	PASS_230="==> TEST : PASS (ftp allowed login attempt)"
-> +	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
-> +	PASS_500="==> TEST : PASS (ftp rejected login attempt)"
-> +	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
->   }
->   
-> -#-----------------------------------------------------------------------
-> -# FUNCTION   : do_test
-> -#
-> -# DESCRIPTION: The anonymous user will ftp in and create a directory in his/her
-> -#              home directory on the remote host.
-> -#-----------------------------------------------------------------------
-> -
->   do_test()
->   {
-> -    tst_resm TINFO "Ftp into a remote host as anonymous user; ANONYMOUS_ENABLE=$ANONYMOUS_ENABLE"
-> +	echo "Ftp into a remote host as anonymous user;"
-> +	echo "ANONYMOUS_ENABLE=$ANONYMOUS_ENABLE"
->   
-> -    if [ "$ANONYMOUS_ENABLE" = "YES" ]; then
-> -        expect -c "
-> -            spawn ftp $RHOST
-> -            sleep 1
-> -            expect -re \": \"
-> -            send \"$TEST_USER\r\"
-> -            expect -re \"Password:\"
-> -            send \"$TEST_USER_PASSWD\r\"
-> -            expect {
-> -                # 530 - Login failed
-> -                \"530\" {send_user \"==> TEST \#$TEST : FAIL (ftp rejected login attempt)\n\";exit 1}
-> -                # 230 - Login successful
-> -                \"230\" {send_user \"==> TEST \#$TEST : PASS (ftp allowed login attempt)\n\";exit 0}
-> -            }
-> -            expect \"ftp> \"
-> -            send \"quit\r\"
-> +	if [ "$ANONYMOUS_ENABLE" = "YES" ]; then
-> +	expect -c "
-> +		spawn ftp $RHOST
-> +		sleep 1
-> +		expect -re \": \"
-> +		send \"$TEST_USER\r\"
-> +		expect -re \"Password:\"
-> +		send \"$TEST_USER_PASSWD\r\"
-> +		expect {
-> +			# 530 - Login failed
-> +			\"530\" {send_user \"$FAIL_530\n\";exit 1}
-> +			# 230 - Login successful
-> +			\"230\" {send_user \"$PASS_230\n\";exit 0}
-> +		}
-> +		expect \"ftp> \"
-> +		send \"quit\r\"
->   	"
-> -    else
-> -        expect -c "
-> -            spawn ftp $RHOST
-> -            sleep 1
-> -            expect -re \": \"
-> -            send \"$TEST_USER\r\"
-> -            expect -re \"Password:\"
-> -            send \"$TEST_USER_PASSWD\r\"
-> -            expect {
-> -                # 230 - Login successful
-> -                \"230\" {send_user \"==> TEST \#$TEST : FAIL (ftp allowed login attempt)\n\";exit 1}
-> -                # 500 - Login failed
-> -                \"500\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
-> -                # 530 - Login failed
-> -                \"530\" {send_user \"==> TEST \#$TEST : PASS (ftp rejected login attempt)\n\";exit 0}
-> -            }
-> -            expect \"ftp> \"
-> -            send \"quit\r\"
-> -        "
-> -    fi
-> -
-> -    [ $? -eq 0 ] || end_testcase "Testcase failed."
-> +	else
-> +	expect -c "
-> +		spawn ftp $RHOST
-> +		sleep 1
-> +		expect -re \": \"
-> +		send \"$TEST_USER\r\"
-> +		expect -re \"Password:\"
-> +		send \"$TEST_USER_PASSWD\r\"
-> +		expect {
-> +			# 230 - Login successful
-> +			\"230\" {send_user \"$FAIL_230\n\";exit 1}
-> +			# 500 - Login failed
-> +			\"500\" {send_user \"$PASS_500\n\";exit 0}
-> +			# 530 - Login failed
-> +			\"530\" {send_user \"$PASS_530\n\";exit 0}
-> +		}
-> +		expect \"ftp> \"
-> +		send \"quit\r\"
-> +	"
-> +	fi
->   
-> +	if [ $? -ne 0 ]; then
-> +		tst_exit TBROK "Testcase failed."
 
-There is tst_brkm library function for that purpose, it includes tst_exit.
-
-> +	fi
->   }
->   
-> -#----------------------------------------------------------------------
-> -# FUNCTION: MAIN
-> -# PURPOSE:  To invoke the functions to perform the tasks described in
-> -#           the prologue.
-> -#----------------------------------------------------------------------
-> -. net_cmdlib.sh
-> +TCID="$0"
-> +TST_TOTAL=1
->   
-> -read_opts $*
-> +. test.sh
-> +. ftp_setup
-> +
-> +setup
->   do_setup
-> +#TEST_USER_PASSWD="noone@nowhere.com"
-> +
->   do_test
-> -end_testcase
-> +ret=$?
-> +if [ $ret -ne 0 ]; then
-> +	tst_resm TFAIL "Test $TCID FAIL"
-> +else
-> +	tst_resm TPASS "Test $TCID PASS"
-> +fi
-> +
-> +tst_exit
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp_set_passwd b/testcases/network/tcp_cmds/ftp/ftp_set_passwd
-> deleted file mode 100755
-> index 7c275c9..0000000
-> --- a/testcases/network/tcp_cmds/ftp/ftp_set_passwd
-> +++ /dev/null
-> @@ -1,28 +0,0 @@
-> -#!/usr/bin/expect
-> -#
-> -# Set Password for a specific new user
-> -# This script should be run as 'root'
-> -#
-> -# Example:
-> -#		./set_passwd USER PASSWD
-> -#
-> -
-> -if { [llength $argv] < 2} {
-> -    exit 1
-> -}
-> -
-> -set USER [lindex $argv 0]
-> -set PASSWD [lindex $argv 1]
-> -
-> -set timeout 30
-> -
-> -spawn passwd $USER
-> -expect "Enter new password: "
-> -sleep 1
-> -exp_send "$PASSWD\r"
-> -expect "Re-type new password: "
-> -sleep 1
-> -exp_send "$PASSWD\r"
-> -expect success
-> -
-> -exit 0
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp_setup b/testcases/network/tcp_cmds/ftp/ftp_setup
-> new file mode 100644
-> index 0000000..7100736
-> --- /dev/null
-> +++ b/testcases/network/tcp_cmds/ftp/ftp_setup
-> @@ -0,0 +1,82 @@
-> +#!/bin/sh
-> +###############################################################################
-> +## Copyright (c) International Business Machines  Corp., 2003                ##
-> +##                                                                           ##
-> +## This program is free software;  you can redistribute it and/or modify     ##
-> +## it under the terms of the GNU General Public License as published by      ##
-> +## the Free Software Foundation; either version 2 of the License, or         ##
-> +## (at your option) any later version.                                       ##
-> +##                                                                           ##
-> +## This program is distributed in the hope that it will be useful,           ##
-> +## but WITHOUT ANY WARRANTY;  without even the implied warranty of           ##
-> +## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                 ##
-> +## the GNU General Public License for more details.                          ##
-> +##                                                                           ##
-> +## You should have received a copy of the GNU General Public License         ##
-> +## along with this program;  if not, write to the Free Software Foundation,  ##
-> +## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA          ##
-> +##                                                                           ##
-> +###############################################################################
-> +
-> +exists()
-> +{
-> +	for cmd in $*; do
-> +		if ! command -v $cmd > /dev/null 2>&1; then
-> +			tst_brkm TBROK "$cmd: command not found"
-> +		fi
-> +	done
-> +}
-
-tst_check_cmd() replaces it.
-
-> +
-> +do_setup()
-> +{
-> +
-> +	export RHOST="localhost"
-> +	export TEST_USER_PASSWD="eal"
-> +	export TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
-> +	export TEST_USER_HOMEDIR="/home/$TEST_USER"
-> +
-> +	for vsftp_confdir in /etc/vsftpd /etc; do
-> +		if [ -r "$vsftp_confdir/vsftpd.conf" ]; then
-> +			VSFTP_CONF="$vsftp_confdir/vsftpd.conf"
-> +			break
-> +		fi
-> +	done
-> +	if [ ! -r "$VSFTP_CONF" ] ; then
-> +		tst_brkm TBROK "vsftpd.conf not found."
-> +	fi
-> +
-> +	LOCAL_ENABLE=$(awk -F= '/^local_enable=/ {print $2}' "$VSFTP_CONF")
-> +	if [ "$LOCAL_ENABLE" != "YES" ]; then
-> +		LOCAL_ENABLE="NO"
-> +	fi
-> +
-> +	ANONYMOUS_ENABLE=$(awk -F= '/^anonymous_enable=/ {print $2}' "$VSFTP_CONF")
-> +	if [ "$ANONYMOUS_ENABLE" != "NO" ]; then
-> +		ANONYMOUS_ENABLE="YES"
-> +	fi
-> +
-> +	if [ $TEST_USER = "root" -o $TEST_USER = "anonymous" ]; then
-> +		return
-> +	fi
-> +
-> +	userdel -r $TEST_USER
-> +	sleep 1
-> +
-> +	if ! useradd -m -p $TEST_USER_ENCRYPTED_PASSWD $TEST_USER; then
-> +		tst_brkm TBROK "Could not add test user $TEST_USER to system $RHOST."
-> +	fi
-> +
-> +	# create users home diretory (SLES 8 does not do this, even when specified
-> +	# in adduser)
-> +	USER_UID=$(id -u $TEST_USER)
-> +	USER_GID=$(id -g $TEST_USER)
-> +	mkdir -p "$TEST_USER_HOMEDIR"
-> +	chown -R $USER_UID:$USER_GID $TEST_USER_HOMEDIR
-> +}
-> +
-> +do_cleanup()
-> +{
-> +	if [ $TEST_USER != "root" -a $TEST_USER != "anonymous" ]; then
-> +		userdel -r $TEST_USER
-> +	fi
-> +}
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf b/testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf
-> deleted file mode 100755
-> index 7e496f6..0000000
-> --- a/testcases/network/tcp_cmds/ftp/ftp_setup_vsftp_conf
-> +++ /dev/null
-> @@ -1,5 +0,0 @@
-> -#!/bin/sh
-> -
-> -grep -v "local_enable" /etc/vsftpd.conf > /tmp/vsftpd.conf
-> -mv -f /tmp/vsftpd.conf /etc/vsftpd.conf
-> -echo "local_enable=YES" >> /etc/vsftpd.conf
-
-Also, the same comments apply to the 2nd ssh patch.
-
-Thanks,
-Alexey
 
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
