@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1X5cAU-0004c6-Pk
-	for ltp-list@lists.sourceforge.net; Fri, 11 Jul 2014 14:51:22 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X5cAS-0001X7-Si
-	for ltp-list@lists.sourceforge.net; Fri, 11 Jul 2014 14:51:22 +0000
-Date: Fri, 11 Jul 2014 10:51:13 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <360014330.8577649.1405090273068.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2021B186DC632746BD5A3CE32F12BD28E9EBFBC9@EU-MBX-03.mgc.mentorg.com>
-References: <2021B186DC632746BD5A3CE32F12BD28E9EBFBC9@EU-MBX-03.mgc.mentorg.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X6ga7-0000Nh-1B
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 13:46:15 +0000
+Date: Mon, 14 Jul 2014 15:45:46 +0200
+From: chrubis@suse.cz
+Message-ID: <20140714134546.GC25946@rei.suse.cz>
+References: <20140710161355.GA14288@ls3530.dhcp.wdf.sap.corp>
+	<1886124008.9567128.1405336855355.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Shell Scripting - Basics
+Content-Disposition: inline
+In-Reply-To: <1886124008.9567128.1405336855355.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] fix fanotify syscall (again)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,125 +25,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Awais Belal <Awais_Belal@mentor.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> just trying to understand why it's not working now. Shouldn't __LONG_LONG_PAIR
+> take care of endian issues?
 
+I've talked about this on linux-api mailing list and been told that
+it's not only about endianity but also about packing of the arguments[0].
 
+I've also been hinted that there are scripts that can generate correct
+code to call syscalls with 64 bit arguments from syscall descriptions in
+klibc[1] and that it's resonably easy to reuse these but haven't yet had
+time to look into that.
 
+[0] http://marc.info/?l=linux-api&m=140016971909948&w=2
+[1] http://git.kernel.org/cgit/libs/klibc/klibc.git/
 
------ Original Message -----
-> From: "Awais Belal" <Awais_Belal@mentor.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Friday, 11 July, 2014 2:00:36 PM
-> Subject: [LTP] Shell Scripting - Basics
-> 
-> Hi Guys,
-> 
-> I have just started looking into LTP and how test automation can be achieved
-> using the platform. While going through the very basics I am stuck on shell
-> script writing for LTP. I was following
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#231-basic-shell-test-structure
-> and the very first thing that I got hit by was:
-> 
-> Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
-> export TCID=<test name>
-> export TST_TOTAL=<Total Number of Tests >
-> export TST_COUNT=<Test case number>
-
-Hi,
-
-This output suggests that instead of tst_resm from test.sh,
-it ran tst_resm from tools/apicmd.
-
-and somehow this condition from ltpapicmd.c was true:
-if (!strcmp(cmd_name, "tst_kvercmp") &&
-    !strcmp(cmd_name, "tst_kvercmp2") &&
-    !strcmp(cmd_name, "tst_get_unused_port")) {
-
-That's the only place where I can see this message. I'm assuming you
-are using latest git LTP.
-
-Can you send your whole script and command how you run it?
-What shell are you using? (ls -la /bin/sh)
-
-If I try the example from 2.3.1 with 'false', it fails as expected:
-
-$ cd /usr/src/ltp/testcases/lib
-
-$ cat foo.sh
-#!/bin/sh
-#
-# This is a basic test for true shell buildin
-#
-
-TCID=true01
-TST_TOTAL=1
-. test.sh
-
-false
-ret=$?
-
-if [ $ret -eq 0 ]; then
-        tst_resm TPASS "true returned 0"
-else
-        tst_resm TFAIL "true rturned $ret"
-fi
-
-tst_exit
-
-$ PATH=.:$PATH sh ./foo.sh
-true01 1 TFAIL : true rturned 1
-
-$ echo $?
-1
-
-Regards,
-Jan
-
-> 
-> so I exported the variables in the above mentioned shell script (is the
-> current wiki wrong???), the test passed as it should and I thought I was
-> done and I understand, but then when I tried to make the test fail by doing
-> the following:
-> 
-> true ret = $?
-> replaced with
-> false ret = $?
-> 
-> the test still reports success :(
-> 
-> tst_exit says:
-> "Exits the tests, note that this function has no parameters, the PASSES/FAILS
-> reported by the tst_resm() interfaces were stored and are used for the exit
-> value."
-> 
-> If I explicitly write an 'exit 1' at the end of the testcase, it fails but I
-> believe that shouldn't be the case (using an explicit return shouldn't be
-> needed if tst_exit is being used)... What am I missing? (a brain perhaps...
-> :S)
-> 
-> BR,
-> Awais
-> 
-> ------------------------------------------------------------------------------
-> Open source business process management suite built on Java and Eclipse
-> Turn processes into business applications with Bonita BPM Community Edition
-> Quickly connect people, data, and systems into organized workflows
-> Winner of BOSSIE, CODIE, OW2 and Gartner awards
-> http://p.sf.net/sfu/Bonitasoft
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck&#174;
+Code Sight&#153; - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
