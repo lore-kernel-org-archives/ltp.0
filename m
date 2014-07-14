@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XAb0d-0000zq-UQ
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 08:37:47 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XAb0X-0002mA-MI
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 08:37:47 +0000
-Message-ID: <53D2170D.40201@cn.fujitsu.com>
-Date: Fri, 25 Jul 2014 16:36:29 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <Awais_Belal@mentor.com>) id 1X6bc4-0002aX-Qb
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 08:27:56 +0000
+Received: from relay1.mentorg.com ([192.94.38.131])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X6bc3-0002yA-GY
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 08:27:56 +0000
+From: "Belal, Awais" <Awais_Belal@mentor.com>
+Date: Mon, 14 Jul 2014 08:27:11 +0000
+Message-ID: <2021B186DC632746BD5A3CE32F12BD28E9EC0F1A@EU-MBX-03.mgc.mentorg.com>
+References: <2021B186DC632746BD5A3CE32F12BD28E9EBFBC9@EU-MBX-03.mgc.mentorg.com>
+	<360014330.8577649.1405090273068.JavaMail.zimbra@redhat.com>
+	<2021B186DC632746BD5A3CE32F12BD28E9EC0EE0@EU-MBX-03.mgc.mentorg.com>,
+	<1009226398.9458190.1405324789944.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1009226398.9458190.1405324789944.JavaMail.zimbra@redhat.com>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <428ab3048d90dc9d998143aea2b2a624b43d5220.1406276230.git.jstancek@redhat.com>
-In-Reply-To: <428ab3048d90dc9d998143aea2b2a624b43d5220.1406276230.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] sched_setaffinity01: use ltp_syscall
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] Shell Scripting - Basics
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,70 +32,200 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Hi Jan,
+
+You've nailed it I think. I replaced the files and it worked.
+
+Thanks a lot!
+
+BR,
+Awais
+
+________________________________________
+From: Jan Stancek [jstancek@redhat.com]
+Sent: Monday, July 14, 2014 12:59 PM
+To: Belal, Awais
 Cc: ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] Shell Scripting - Basics
 
-On 07/25/2014 04:18 PM, Jan Stancek wrote:
-> Using glibc wrapper on kernel with smaller CONFIG_NR_CPUS (for example
-> 255) leads to segmentation fault in glibc, because it triggers check,
-> which is verifying that there are no bits set beyond size of kernel cpu
-> mask:
-> 
-> int
-> __sched_setaffinity_new (pid_t pid, size_t cpusetsize, const cpu_set_t *cpuset)
->   ...
->   /* We now know the size of the kernel cpumask_t.  Make sure the user
->      does not request to set a bit beyond that.  */
->   for (size_t cnt = __kernel_cpumask_size; cnt < cpusetsize; ++cnt)
->     if (((char *) cpuset)[cnt] != '\0') --> CRASH HERE
-> 
-> Call this syscall directly with ltp_syscall().
-> 
-> Reported-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+----- Original Message -----
+> From: "Awais Belal" <Awais_Belal@mentor.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Monday, 14 July, 2014 9:41:20 AM
+> Subject: RE: [LTP] Shell Scripting - Basics
+>
+> Hi Jan,
+>
+> Thanks for taking the time out to bear my newbie-ness...
+>
+> I am running this on an mx6q platform.
+>
+> root@mx6q:~# ls -la /bin/sh
+> lrwxrwxrwx 1 root root 20 Jul 10 2014 /bin/sh -> /etc/alternatives/sh
+>
+> Then PATH setting is as follows:
+>
+> root@mx6q:~#
+> root@mx6q:~# cd /opt/ltp/
+> IDcheck.sh bin/ results/ runltplite.sh testcases/
+> Version runalltests.sh runtest/ testscripts/
+> abcd output/ runltp scenario_groups/ ver_linux
+> root@mx6q:~# cd /opt/ltp/
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp# echo $PATH
+> /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp# export PATH=$PATH:/opt/ltp/testcases/bin/
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp# echo $PATH
+> /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/ltp/testcases/bin/
+>
+> /opt/ltp/testcases/bin/ is where I have test.sh present. Now the testcase:
+>
+> root@mx6q:/opt/ltp/testcases/bin# cat foo.sh
+> #!/bin/sh
+> #
+> # This is a basic test for true shell buildin
+> #
+>
+> TCID=true01
+> TST_TOTAL=1
+> . test.sh
+>
+> false
+> ret=$?
+>
+> if [ $ret -eq 0 ]; then
+> tst_resm TPASS "true returned 0"
+> else
+> tst_resm TFAIL "true rturned $ret"
+> fi
+>
+> tst_exit
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin# ./foo.sh
+> ## Start Test
+> Thu Jan 1 00:10:59 UTC 1970
+> 659
+>
+> ## Create files
+> /opt/ltp/testcases/bin/test.sh: line 14: /home/root/fs-bench/cr: No such file
+> or directory
+>
+> real 0m0.004s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## tar all
+> tar: invalid option -- 'B'
+> BusyBox v1.21.1 (2014-07-10 15:06:02 PKT) multi-call binary.
+>
+> Usage: tar -[cxtzJjhmvO] [-X FILE] [-T FILE] [-f TARFILE] [-C DIR] [FILE]...
+>
+>
+> ## Change owner
+> chown: ./00: No such file or directory
+>
+> real 0m0.010s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## random access
+> /opt/ltp/testcases/bin/test.sh: line 26: /home/root/fs-bench/ra: No such file
+> or directory
+>
+> real 0m0.002s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## Change mode
+> chmod: ./00: No such file or directory
+>
+> real 0m0.009s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## Random delete and create
+> /opt/ltp/testcases/bin/test.sh: line 34: /home/root/fs-bench/radc: No such
+> file or directory
+>
+> real 0m0.002s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## Change mode again
+> chmod: ./00: No such file or directory
+>
+> real 0m0.008s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## Remove all files and directories
+>
+> real 0m0.007s
+> user 0m0.000s
+> sys 0m0.000s
+>
+> ## Finish test
+> 659
+> Thu Jan 1 00:10:59 UTC 1970
+> TOTAL(seconds): 0
+>
+> Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
+> export TCID=<test name>
+> export TST_TOTAL=<Total Number of Tests >
+> export TST_COUNT=<Test case number>
+>
+> ./foo.sh: line 17: 520 Aborted tst_resm TFAIL "true rturned $ret"
+>
+> Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
+> export TCID=<test name>
+> export TST_TOTAL=<Total Number of Tests >
+> export TST_COUNT=<Test case number>
+>
+> ./foo.sh: line 19: 521 Aborted tst_exit
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin# echo $?
+> 134
+> root@mx6q:/opt/ltp/testcases/bin#
+>
+> LTP versioning:
+> LTP Version: 20140115
+>
+> I'll be trying this out on a simple desktop now, just to confirm, in the
+> meantime please point out anything you see is out of place...
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Hi,
 
+the test.sh seems to be clashing with "testcases/kernel/fs/fs-bench/test.sh"
+during install part. (looks like bug in LTP)
+The one I'd expect to be there is "testcases/lib/test.sh".
 
-> ---
->  .../sched_setaffinity/sched_setaffinity01.c        |   11 ++++++++---
->  1 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> index 0ac4478..33a90b8 100644
-> --- a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> @@ -42,6 +42,7 @@
->  #include "usctest.h"
->  #include "safe_macros.h"
->  #include "sched_setaffinity.h"
-> +#include "linux_syscall_numbers.h"
->  
->  char *TCID = "sched_setaffinity01";
->  
-> @@ -151,9 +152,13 @@ int main(int argc, char *argv[])
->  	for (lc = 0; TEST_LOOPING(lc); lc++) {
->  		tst_count = 0;
->  		for (i = 0; i < TST_TOTAL; i++) {
-> -			TEST(sched_setaffinity(*(test_cases[i].pid),
-> -						*(test_cases[i].mask_size),
-> -						*(test_cases[i].mask)));
-> +			/* Avoid calling glibc wrapper function, as it may
-> +			 * try to read/validate data in cpu mask. This test
-> +			 * is passing invalid pointer on purpose. */
-> +			TEST(ltp_syscall(__NR_sched_setaffinity,
-> +				*(test_cases[i].pid),
-> +				*(test_cases[i].mask_size),
-> +				*(test_cases[i].mask)));
->  
->  			if (TEST_RETURN != -1)
->  				tst_resm(TFAIL,
-> 
+Can you copy $LTP/testcases/lib/test.sh to /opt/ltp/testcases/bin
+and re-run your foo.sh script?
+(You'll need to overwrite existing test.sh in /opt/ltp/testcases/bin)
+
+Regards,
+Jan
+
+>
+> BR,
+> Awais
+>
 
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
+search up to 200,000 lines of code with a free copy of Black Duck&#174;
+Code Sight&#153; - the same software that powers the world's largest code
 search on Ohloh, the Black Duck Open Hub! Try it now.
 http://p.sf.net/sfu/bds
 _______________________________________________
