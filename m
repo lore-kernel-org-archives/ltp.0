@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X43cN-0007By-Ae
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 07:45:43 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X43cL-0004Z5-A8
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 07:45:43 +0000
-Message-ID: <53BBA1BD.2050902@cn.fujitsu.com>
-Date: Tue, 8 Jul 2014 15:46:05 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1X6bB0-0006oT-DC
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 07:59:58 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X6bAy-0004HG-Nz
+	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 07:59:58 +0000
+Date: Mon, 14 Jul 2014 03:59:49 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1009226398.9458190.1405324789944.JavaMail.zimbra@redhat.com>
+In-Reply-To: <2021B186DC632746BD5A3CE32F12BD28E9EC0EE0@EU-MBX-03.mgc.mentorg.com>
+References: <2021B186DC632746BD5A3CE32F12BD28E9EBFBC9@EU-MBX-03.mgc.mentorg.com>
+	<360014330.8577649.1405090273068.JavaMail.zimbra@redhat.com>
+	<2021B186DC632746BD5A3CE32F12BD28E9EC0EE0@EU-MBX-03.mgc.mentorg.com>
 MIME-Version: 1.0
-References: <20140704031641.GA20446@localhost.localdomain>
-	<53BB90C6.9020101@cn.fujitsu.com>
-	<20140707065140.GA4421@localhost.localdomain>
-In-Reply-To: <20140707065140.GA4421@localhost.localdomain>
-Subject: Re: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at
- 2G
+Subject: Re: [LTP] Shell Scripting - Basics
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,74 +29,191 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hanpt@linux.vnet.ibm.com
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Awais Belal <Awais_Belal@mentor.com>
+Cc: ltp-list@lists.sourceforge.net
+
+
+
+
+
+----- Original Message -----
+> From: "Awais Belal" <Awais_Belal@mentor.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Monday, 14 July, 2014 9:41:20 AM
+> Subject: RE: [LTP] Shell Scripting - Basics
+> 
+> Hi Jan,
+> 
+> Thanks for taking the time out to bear my newbie-ness...
+> 
+> I am running this on an mx6q platform.
+> 
+> root@mx6q:~# ls -la /bin/sh
+> lrwxrwxrwx 1 root root 20 Jul 10 2014 /bin/sh -> /etc/alternatives/sh
+> 
+> Then PATH setting is as follows:
+> 
+> root@mx6q:~#
+> root@mx6q:~# cd /opt/ltp/
+> IDcheck.sh bin/ results/ runltplite.sh testcases/
+> Version runalltests.sh runtest/ testscripts/
+> abcd output/ runltp scenario_groups/ ver_linux
+> root@mx6q:~# cd /opt/ltp/
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp# echo $PATH
+> /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp# export PATH=$PATH:/opt/ltp/testcases/bin/
+> root@mx6q:/opt/ltp#
+> root@mx6q:/opt/ltp# echo $PATH
+> /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/ltp/testcases/bin/
+> 
+> /opt/ltp/testcases/bin/ is where I have test.sh present. Now the testcase:
+> 
+> root@mx6q:/opt/ltp/testcases/bin# cat foo.sh
+> #!/bin/sh
+> #
+> # This is a basic test for true shell buildin
+> #
+> 
+> TCID=true01
+> TST_TOTAL=1
+> . test.sh
+> 
+> false
+> ret=$?
+> 
+> if [ $ret -eq 0 ]; then
+> tst_resm TPASS "true returned 0"
+> else
+> tst_resm TFAIL "true rturned $ret"
+> fi
+> 
+> tst_exit
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin# ./foo.sh
+> ## Start Test
+> Thu Jan 1 00:10:59 UTC 1970
+> 659
+> 
+> ## Create files
+> /opt/ltp/testcases/bin/test.sh: line 14: /home/root/fs-bench/cr: No such file
+> or directory
+> 
+> real 0m0.004s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## tar all
+> tar: invalid option -- 'B'
+> BusyBox v1.21.1 (2014-07-10 15:06:02 PKT) multi-call binary.
+> 
+> Usage: tar -[cxtzJjhmvO] [-X FILE] [-T FILE] [-f TARFILE] [-C DIR] [FILE]...
+> 
+> 
+> ## Change owner
+> chown: ./00: No such file or directory
+> 
+> real 0m0.010s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## random access
+> /opt/ltp/testcases/bin/test.sh: line 26: /home/root/fs-bench/ra: No such file
+> or directory
+> 
+> real 0m0.002s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## Change mode
+> chmod: ./00: No such file or directory
+> 
+> real 0m0.009s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## Random delete and create
+> /opt/ltp/testcases/bin/test.sh: line 34: /home/root/fs-bench/radc: No such
+> file or directory
+> 
+> real 0m0.002s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## Change mode again
+> chmod: ./00: No such file or directory
+> 
+> real 0m0.008s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## Remove all files and directories
+> 
+> real 0m0.007s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> ## Finish test
+> 659
+> Thu Jan 1 00:10:59 UTC 1970
+> TOTAL(seconds): 0
+> 
+> Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
+> export TCID=<test name>
+> export TST_TOTAL=<Total Number of Tests >
+> export TST_COUNT=<Test case number>
+> 
+> ./foo.sh: line 17: 520 Aborted tst_resm TFAIL "true rturned $ret"
+> 
+> Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
+> export TCID=<test name>
+> export TST_TOTAL=<Total Number of Tests >
+> export TST_COUNT=<Test case number>
+> 
+> ./foo.sh: line 19: 521 Aborted tst_exit
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin#
+> root@mx6q:/opt/ltp/testcases/bin# echo $?
+> 134
+> root@mx6q:/opt/ltp/testcases/bin#
+> 
+> LTP versioning:
+> LTP Version: 20140115
+> 
+> I'll be trying this out on a simple desktop now, just to confirm, in the
+> meantime please point out anything you see is out of place...
 
 Hi,
 
-On 07/07/2014 02:51 PM, Han Pingtian wrote:
-> On Tue, Jul 08, 2014 at 02:33:42PM +0800, Xiaoguang Wang wrote:
->> Hi,
->>
->> On 07/04/2014 11:16 AM, Han Pingtian wrote:
->>> Hi,
->>>
->>> Please review this patch. Thanks.
->>>
->>> There is a bug on 64bit sendfile() with large file, please see
->>> https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
->>> for details.
->>
->> I'd like to ask an irrelevant question about that where can we get such bug report or similar issues
->> about syscalls from a stable place(url), or how did you found this issue, thanks.
->>
->> Give that currently there are 1039 test cases about syscalls in LTP(cat runtest/syscalls | grep -v "^#" | sed -e '/^$/d' | wc -l),
->> we can tell that syscalls is a very big test suite in LTP, so I'd like to add all similar regression test about
->> syscalls to LTP, which will expand ltp's test coverage, thanks. 
->>
->> Regards,
->> Xiaoguang Wang
->>
-> Thanks for your reply. I knew this problem just by accidental. It wasn't
-> found by me, but someone else. We are asked why we couldn't find it at
-> first time though we had run ltp to test the syscalls. So I think it
-> would be better to include a regession test for it to ltp. I think we
-> can find out all those regressions by mointoring bug report web site and
-> kernel's mailing list and something like these.
+the test.sh seems to be clashing with "testcases/kernel/fs/fs-bench/test.sh"
+during install part. (looks like bug in LTP)
+The one I'd expect to be there is "testcases/lib/test.sh".
 
-Yeah, kernel mail list would be the best place to find such issues, but usually
-it needs more time to figure them out :)
-
-As for you patch, I don't know whether you have read the test-writing-guidelines.txt first, if not,
-please see https://github.com/linux-test-project/ltp/blob/master/doc/test-writing-guidelines.txt.
-For example, there are already many safe_* in ltp, you can use them, which will simplify your error checking, thanks.
+Can you copy $LTP/testcases/lib/test.sh to /opt/ltp/testcases/bin
+and re-run your foo.sh script?
+(You'll need to overwrite existing test.sh in /opt/ltp/testcases/bin)
 
 Regards,
-Xiaoguang Wang 
-
-
+Jan
 
 > 
-> 
-> ------------------------------------------------------------------------------
-> Open source business process management suite built on Java and Eclipse
-> Turn processes into business applications with Bonita BPM Community Edition
-> Quickly connect people, data, and systems into organized workflows
-> Winner of BOSSIE, CODIE, OW2 and Gartner awards
-> http://p.sf.net/sfu/Bonitasoft
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> BR,
+> Awais
 > 
 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck&#174;
+Code Sight&#153; - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
