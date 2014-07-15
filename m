@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X9Fq4-0002IK-BL
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 15:49:20 +0000
-Date: Mon, 21 Jul 2014 17:48:38 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X73f7-0007z7-3S
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 14:24:57 +0000
+Date: Tue, 15 Jul 2014 16:24:26 +0200
 From: chrubis@suse.cz
-Message-ID: <20140721154838.GA30527@rei>
-References: <4506ACC2AE90484D87F9A883BA36C21C2ADF0458@LCHQEX03.lancope.local>
+Message-ID: <20140715142426.GB28667@rei>
+References: <1405230591-19166-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4506ACC2AE90484D87F9A883BA36C21C2ADF0458@LCHQEX03.lancope.local>
-Subject: Re: [LTP] Apparent trouble with HEAD of LTP
+In-Reply-To: <1405230591-19166-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 1/2] lib/tst_res.c: introduce
+ tst_record_childstatus()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,23 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Joseph Beckenbach <jbeckenbach@lancope.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Ah, then autotools must be my issue.
-> I've got "autotools-dev-20120608.1" package installed, per dpkg-query on those boxes.
-> Must be something stuck in our local package-repo mirroring process;  maybe it's manual-only.
+> In case we need do real test work in child porcess, it is OK for child process
+> to use tst_resm(), tst_brkm() or tst_exit(). Parent process can use
+> tst_record_childstatus() to make child process's test results propagated to parent
+> process correctly.
 > 
-> If we can figure out which version of autotools is fine, I suggest we document that in INSTALL
-> alongside putting the patch back in.
+> Meanwhile we reset T_exitval to 0 for child process in tst_fork(), which will
+> make child process can record test results with tst_resm() or tst_brkm() correctly.
 
-LTP must be backward compatible so I've readded the -I m4 back.
+Looks technically correct to me. The only caveat is that you have to
+decide to use either tst_* interface in child or plain exit() and do not
+to mix them.
 
-So currently we have both -I m4 and AC_CONFIG_MACRO_DIR() which works
-fine with both older and newer autotools and also fixes autoreconf on
-newer autotools. So only thing that may get documented is that
-autoreconf needs newer autoconf.
+Also as the code si now we don't have to reset the T_exitval because
+what we do now is or the flags form child to add them to the paren't
+flags (which will be set anyway if the child has started with nonzero
+flags).
 
 -- 
 Cyril Hrubis
