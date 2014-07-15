@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XC6aC-0003Xw-GT
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 12:32:44 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XC6a9-0000Pa-Vj
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 12:32:44 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s6TCWYFd023917
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jul 2014 08:32:34 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s6TCWXxb024802
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jul 2014 08:32:33 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 29 Jul 2014 14:32:25 +0200
-Message-Id: <3f8381b9a1e1fc43c1bc47d416045e1e6fe3ae69.1406637055.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2 1/2] mem/oom: check for multiple outcomes if
-	overcommit_memory is 0 or 1
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1X6wcr-0005uP-6y
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 06:54:09 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X6wcp-0005Up-K3
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 06:54:09 +0000
+Message-ID: <53C4D003.6020209@oracle.com>
+Date: Tue, 15 Jul 2014 10:53:55 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+References: <53A12D27.8030205@oracle.com>
+	<1404286258-2053-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<708407934.9715608.1405343247089.JavaMail.zimbra@redhat.com>
+In-Reply-To: <708407934.9715608.1405343247089.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH V4] syscalls: implemented a test for
+ sched_setaffinity() error values
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,335 +28,407 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-There is no guarantee that mmap() will fail before OOM tries to kill the
-process if overcommit is set to 0 or 1. So allow such tests to
-PASS if child is killed with SIGKILL.
 
-This patch adds 2 parameters to oom()/testoom() functions:
-  retcode       - expected child return code
-  allow_sigkill - flag which specifies if child killed by SIGKILL
-                  is also PASS result
 
-Child process will return 0 if all allocations succeeded,
-otherwise it returns last errno.
+On 07/14/2014 05:07 PM, Jan Stancek wrote:
+>
+>
+>
+>
+> ----- Original Message -----
+>> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
+>> Sent: Wednesday, 2 July, 2014 9:30:58 AM
+>> Subject: [LTP] [PATCH V4] syscalls: implemented a test for	sched_setaffinity() error values
+>>
+>> This test verifies sched_setaffinity(2) for all error conditions
+>> to occur correctly.
+>>
+>> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>
+> Looks good to me, just a small nit: have a look at checkpatch output.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/mem/include/mem.h |    4 +-
- testcases/kernel/mem/lib/mem.c     |   78 +++++++++++++++++++++++------------
- testcases/kernel/mem/oom/oom01.c   |    9 +++-
- testcases/kernel/mem/oom/oom02.c   |    6 +-
- testcases/kernel/mem/oom/oom03.c   |   10 ++--
- testcases/kernel/mem/oom/oom04.c   |    4 +-
- testcases/kernel/mem/oom/oom05.c   |    8 ++--
- 7 files changed, 73 insertions(+), 46 deletions(-)
+Thank you, Jan.
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 746164c..8fa2094 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -39,8 +39,8 @@ static inline void clean_node(unsigned long *array)
- #define KSM			4
- 
- long overcommit;
--void oom(int testcase, int lite);
--void testoom(int mempolicy, int lite);
-+void oom(int testcase, int lite, int retcode, int allow_sigkill);
-+void testoom(int mempolicy, int lite, int retcode, int allow_sigkill);
- 
- /* KSM */
- 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index c7910db..61b1ee6 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -31,19 +31,17 @@ static int alloc_mem(long int length, int testcase)
- 	void *s;
- 
- 	tst_resm(TINFO, "allocating %ld bytes.", length);
-+
- 	s = mmap(NULL, length, PROT_READ | PROT_WRITE,
- 		 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
--	if (s == MAP_FAILED) {
--		if (testcase == OVERCOMMIT && errno == ENOMEM)
--			return 1;
--		else
--			tst_brkm(TBROK | TERRNO, cleanup, "mmap");
--	}
-+	if (s == MAP_FAILED)
-+		return errno;
-+
- 	if (testcase == MLOCK && mlock(s, length) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "mlock");
-+		return errno;
- #ifdef HAVE_MADV_MERGEABLE
- 	if (testcase == KSM && madvise(s, length, MADV_MERGEABLE) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "madvise");
-+		return errno;
- #endif
- 	memset(s, '\a', length);
- 
-@@ -52,15 +50,34 @@ static int alloc_mem(long int length, int testcase)
- 
- static void test_alloc(int testcase, int lite)
- {
--	if (lite)
--		alloc_mem(TESTMEM + MB, testcase);
--	else
--		while (1)
--			if (alloc_mem(LENGTH, testcase))
--				return;
-+	int ret;
-+
-+	if (lite) {
-+		ret = alloc_mem(TESTMEM + MB, testcase);
-+	} else {
-+		ret = 0;
-+		while (!ret)
-+			ret = alloc_mem(LENGTH, testcase);
-+	}
-+	exit(ret);
- }
- 
--void oom(int testcase, int lite)
-+/*
-+ * oom - allocates memory according to specified testcase and checks
-+ *       desired outcome (e.g. child killed, operation failed with ENOMEM)
-+ * @testcase: selects how child allocates memory
-+ *            valid choices are: OVERCOMMIT, NORMAL, MLOCK and KSM
-+ * @lite: if non-zero, child makes only single TESTMEM+MB allocation
-+ *        if zero, child keeps allocating memory until it gets killed
-+ *        or some operation fails
-+ * @retcode: expected return code of child process
-+ *           if matches child ret code, this function reports PASS,
-+ *           otherwise it reports FAIL
-+ * @allow_sigkill: if zero and child is killed, this function reports FAIL
-+ *                 if non-zero, then if child is killed by SIGKILL
-+ *                 it is considered as PASS
-+ */
-+void oom(int testcase, int lite, int retcode, int allow_sigkill)
- {
- 	pid_t pid;
- 	int status;
-@@ -70,7 +87,6 @@ void oom(int testcase, int lite)
- 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
- 	case 0:
- 		test_alloc(testcase, lite);
--		exit(0);
- 	default:
- 		break;
- 	}
-@@ -79,14 +95,22 @@ void oom(int testcase, int lite)
- 	if (waitpid(-1, &status, 0) == -1)
- 		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
- 
--	if (testcase == OVERCOMMIT) {
--		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
--				 status);
-+	if (WIFSIGNALED(status)) {
-+		if (allow_sigkill && WTERMSIG(status) == SIGKILL) {
-+			tst_resm(TPASS, "victim signalled: (%d) %s",
-+				SIGKILL,
-+				tst_strsig(SIGKILL));
-+		} else {
-+			tst_resm(TFAIL, "victim signalled: (%d) %s",
-+				WTERMSIG(status),
-+				tst_strsig(WTERMSIG(status)));
-+		}
-+	} else	if (WIFEXITED(status) && WEXITSTATUS(status) == retcode) {
-+		tst_resm(TPASS, "victim retcode: (%d) %s",
-+				retcode, strerror(retcode));
- 	} else {
--		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
--			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
--				 status);
-+		tst_resm(TFAIL, "victim unexpectedly ended with retcode: %d, "
-+				"expected: %d", WEXITSTATUS(status), retcode);
- 	}
- }
- 
-@@ -135,22 +159,22 @@ static void set_global_mempolicy(int mempolicy)
- #endif
- }
- 
--void testoom(int mempolicy, int lite)
-+void testoom(int mempolicy, int lite, int retcode, int allow_sigkill)
- {
- 	set_global_mempolicy(mempolicy);
- 
- 	tst_resm(TINFO, "start normal OOM testing.");
--	oom(NORMAL, lite);
-+	oom(NORMAL, lite, retcode, allow_sigkill);
- 
- 	tst_resm(TINFO, "start OOM testing for mlocked pages.");
--	oom(MLOCK, lite);
-+	oom(MLOCK, lite, retcode, allow_sigkill);
- 
- 	if (access(PATH_KSM, F_OK) == -1) {
- 		tst_resm(TINFO, "KSM configuration is not enabled, "
- 			 "skip OOM test for KSM pags");
- 	} else {
- 		tst_resm(TINFO, "start OOM testing for KSM pages.");
--		oom(KSM, lite);
-+		oom(KSM, lite, retcode, allow_sigkill);
- 	}
- }
- 
-diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
-index 076427c..4f57a9a 100644
---- a/testcases/kernel/mem/oom/oom01.c
-+++ b/testcases/kernel/mem/oom/oom01.c
-@@ -60,14 +60,17 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
-+		/* we expect mmap to fail before OOM is hit */
- 		set_sys_tune("overcommit_memory", 2, 1);
--		oom(OVERCOMMIT, 0);
-+		oom(OVERCOMMIT, 0, ENOMEM, 0);
- 
-+		/* with overcommit_memory set to 0 or 1 there's no
-+		 * guarantee that mmap fails before OOM */
- 		set_sys_tune("overcommit_memory", 0, 1);
--		oom(OVERCOMMIT, 0);
-+		oom(OVERCOMMIT, 0, ENOMEM, 1);
- 
- 		set_sys_tune("overcommit_memory", 1, 1);
--		testoom(0, 0);
-+		testoom(0, 0, ENOMEM, 1);
- 	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-index 3f17400..7a726c8 100644
---- a/testcases/kernel/mem/oom/oom02.c
-+++ b/testcases/kernel/mem/oom/oom02.c
-@@ -65,13 +65,13 @@ int main(int argc, char *argv[])
- 		tst_count = 0;
- 
- 		tst_resm(TINFO, "OOM on MPOL_BIND mempolicy...");
--		testoom(MPOL_BIND, 0);
-+		testoom(MPOL_BIND, 0, ENOMEM, 1);
- 
- 		tst_resm(TINFO, "OOM on MPOL_INTERLEAVE mempolicy...");
--		testoom(MPOL_INTERLEAVE, 0);
-+		testoom(MPOL_INTERLEAVE, 0, ENOMEM, 1);
- 
- 		tst_resm(TINFO, "OOM on MPOL_PREFERRED mempolicy...");
--		testoom(MPOL_PREFERRED, 0);
-+		testoom(MPOL_PREFERRED, 0, ENOMEM, 1);
- 	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index dcb493c..dfc2a64 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
- 				 "%d", getpid());
- 		SAFE_FILE_PRINTF(cleanup, MEMCG_LIMIT, "%ld", TESTMEM);
- 
--		testoom(0, 0);
-+		testoom(0, 0, ENOMEM, 1);
- 
- 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
- 			if (errno == ENOENT)
-@@ -77,15 +77,15 @@ int main(int argc, char *argv[])
- 		} else {
- 			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT,
- 					 "%ld", TESTMEM);
--			testoom(0, 1);
-+			testoom(0, 1, ENOMEM, 1);
- 		}
- 
- 		/* OOM for MEMCG with mempolicy */
- 		if (is_numa(cleanup)) {
- 			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
--			testoom(MPOL_BIND, 0);
--			testoom(MPOL_INTERLEAVE, 0);
--			testoom(MPOL_PREFERRED, 0);
-+			testoom(MPOL_BIND, 0, ENOMEM, 1);
-+			testoom(MPOL_INTERLEAVE, 0, ENOMEM, 1);
-+			testoom(MPOL_PREFERRED, 0, ENOMEM, 1);
- 		}
- 	}
- 	cleanup();
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index 40360c3..c0f1f92 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
- 		tst_count = 0;
- 
- 		tst_resm(TINFO, "OOM on CPUSET...");
--		testoom(0, 0);
-+		testoom(0, 0, ENOMEM, 1);
- 
- 		if (is_numa(cleanup)) {
- 			/*
-@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
- 			write_cpuset_files(CPATH_NEW,
- 					   "memory_migrate", "1");
- 			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
--			testoom(0, 0);
-+			testoom(0, 0, ENOMEM, 1);
- 		}
- 	}
- 	cleanup();
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-index 7ca53ad..e12c2dd 100644
---- a/testcases/kernel/mem/oom/oom05.c
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
- 		tst_count = 0;
- 
- 		tst_resm(TINFO, "OOM on CPUSET & MEMCG...");
--		testoom(0, 0);
-+		testoom(0, 0, ENOMEM, 1);
- 
- 		/*
- 		 * Under NUMA system, the migration of cpuset's memory
-@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
- 			write_cpuset_files(CPATH_NEW, "memory_migrate", "1");
- 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
- 					"cpuset.memory_migrate=1");
--			testoom(0, 0);
-+			testoom(0, 0, ENOMEM, 1);
- 		}
- 
- 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-@@ -93,12 +93,12 @@ int main(int argc, char *argv[])
- 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
- 					"special memswap limitation:");
- 			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "%ld", TESTMEM);
--			testoom(0, 0);
-+			testoom(0, 0, ENOMEM, 1);
- 
- 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
- 					"disabled memswap limitation:");
- 			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "-1");
--			testoom(0, 0);
-+			testoom(0, 0, ENOMEM, 1);
- 		}
- 	}
- 
--- 
-1.7.1
+Do you mean this:
+ERROR: Macros with multiple statements should be enclosed in a do - 
+while loop
+#208: FILE: 
+testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h:37:
++#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
++if (ncpus > CPU_SETSIZE) { \
++	tst_brkm(TCONF, cleanup, \
++		"Your libc does not support masks with %ld cpus", ncpus); \
++}
 
+?
+
+If so, I think I can't do it, because I need to assign CPU_ALLOC() to a 
+variable....
+
+Or what did you mean? :)
+
+>
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
+>
+> Regards,
+> Jan
+>
+>> ---
+>> Changes since V3:
+>>   * use tst_fork() instead of fork() for privileged_pid
+>>   * use tst_get_unused_pid() for free_pid
+>>
+>>   runtest/syscalls                                   |    1 +
+>>   testcases/kernel/syscalls/.gitignore               |    1 +
+>>   .../kernel/syscalls/sched_setaffinity/Makefile     |   23 +++
+>>   .../syscalls/sched_setaffinity/sched_setaffinity.h |   60 +++++++
+>>   .../sched_setaffinity/sched_setaffinity01.c        |  177
+>>   ++++++++++++++++++++
+>>   5 files changed, 262 insertions(+), 0 deletions(-)
+>>   create mode 100644 testcases/kernel/syscalls/sched_setaffinity/Makefile
+>>   create mode 100644
+>>   testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+>>   create mode 100644
+>>   testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 66d6a65..52556bc 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -895,6 +895,7 @@ sched_setscheduler02 sched_setscheduler02
+>>
+>>   sched_yield01 sched_yield01
+>>
+>> +sched_setaffinity01 sched_setaffinity01
+>>   sched_getaffinity01 sched_getaffinity01
+>>
+>>   select01 select01
+>> diff --git a/testcases/kernel/syscalls/.gitignore
+>> b/testcases/kernel/syscalls/.gitignore
+>> index 975c150..0c31582 100644
+>> --- a/testcases/kernel/syscalls/.gitignore
+>> +++ b/testcases/kernel/syscalls/.gitignore
+>> @@ -724,6 +724,7 @@
+>>   /sched_rr_get_interval/sched_rr_get_interval01
+>>   /sched_rr_get_interval/sched_rr_get_interval02
+>>   /sched_rr_get_interval/sched_rr_get_interval03
+>> +/sched_setaffinity/sched_setaffinity01
+>>   /sched_setparam/sched_setparam01
+>>   /sched_setparam/sched_setparam02
+>>   /sched_setparam/sched_setparam03
+>> diff --git a/testcases/kernel/syscalls/sched_setaffinity/Makefile
+>> b/testcases/kernel/syscalls/sched_setaffinity/Makefile
+>> new file mode 100644
+>> index 0000000..2d825f1
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/sched_setaffinity/Makefile
+>> @@ -0,0 +1,23 @@
+>> +#
+>> +#  Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+>> +#
+>> +#  This program is free software;  you can redistribute it and/or modify
+>> +#  it under the terms of the GNU General Public License as published by
+>> +#  the Free Software Foundation; either version 2 of the License, or
+>> +#  (at your option) any later version.
+>> +#
+>> +#  This program is distributed in the hope that it will be useful,
+>> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> +#  the GNU General Public License for more details.
+>> +#
+>> +#  You should have received a copy of the GNU General Public License
+>> +#  along with this program;  if not, write to the Free Software
+>> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
+>> USA
+>> +#
+>> +
+>> +top_srcdir		?= ../../../..
+>> +
+>> +include $(top_srcdir)/include/mk/testcases.mk
+>> +
+>> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>> diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+>> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+>> new file mode 100644
+>> index 0000000..8083894
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
+>> @@ -0,0 +1,60 @@
+>> +/*
+>> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+>> + *
+>> + * This program is free software; you can redistribute it and/or
+>> + * modify it under the terms of the GNU General Public License as
+>> + * published by the Free Software Foundation; either version 2 of
+>> + * the License, or (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it would be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, write the Free Software Foundation,
+>> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+>> + */
+>> +
+>> +/*
+>> + * Some old libcs (like glibc < 2.7) do not provide interfaces for
+>> + * dynamically sized cpu sets, but provide only static cpu_set_t type
+>> + * with no more than CPU_SETSIZE cpus in it.
+>> + *
+>> + * This file is a wrapper of the dynamic interfaces using the static ones.
+>> + *
+>> + * If the number of cpus available on the system is greater than
+>> + * CPU_SETSIZE, this interface will not work. Update libc in this case :)
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <sched.h>
+>> +
+>> +#ifndef LTP_SCHED_SETAFFINITY_H
+>> +#define LTP_SCHED_SETAFFINITY_H
+>> +
+>> +#ifndef CPU_ALLOC
+>> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
+>> +if (ncpus > CPU_SETSIZE) { \
+>> +	tst_brkm(TCONF, cleanup, \
+>> +		"Your libc does not support masks with %ld cpus", ncpus); \
+>> +}
+>> +#endif
+>> +
+>> +#ifndef CPU_FREE
+>> +#define CPU_FREE(ptr) free(ptr);
+>> +#endif
+>> +
+>> +#ifndef CPU_ALLOC_SIZE
+>> +#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t);
+>> +#endif
+>> +
+>> +#ifndef CPU_ZERO_S
+>> +#define CPU_ZERO_S(size, mask) CPU_ZERO(mask);
+>> +#endif
+>> +
+>> +#ifndef CPU_SET_S
+>> +#define CPU_SET_S(cpu, size, mask) CPU_SET(cpu, mask);
+>> +#endif
+>> +
+>> +#endif /* LTP_SCHED_SETAFFINITY_H */
+>> diff --git
+>> a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+>> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+>> new file mode 100644
+>> index 0000000..d1b2abe
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+>> @@ -0,0 +1,177 @@
+>> +/*
+>> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+>> + *
+>> + * This program is free software; you can redistribute it and/or
+>> + * modify it under the terms of the GNU General Public License as
+>> + * published by the Free Software Foundation; either version 2 of
+>> + * the License, or (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it would be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, write the Free Software Foundation,
+>> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+>> + */
+>> +
+>> +/*
+>> + * This test verifies sched_setaffinity(2) for all error conditions
+>> + * to occur correctly.
+>> + *
+>> + * sched_setaffinity() returns -1 and sets the error code to:
+>> + *
+>> + * 1) EFAULT, if the supplied memory address is invalid
+>> + * 2) EINVAL, if the mask doesn't contain at least one
+>> + *    permitted cpu
+>> + * 3) ESRCH, if the process whose id is pid could not
+>> + *    be found
+>> + * 4) EPERM, if the calling process doesn't have appropriate
+>> + *    privileges
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <errno.h>
+>> +#include <pwd.h>
+>> +#include <sched.h>
+>> +#include <signal.h>
+>> +#include <unistd.h>
+>> +#include <sys/types.h>
+>> +#include <sys/wait.h>
+>> +#include "test.h"
+>> +#include "usctest.h"
+>> +#include "safe_macros.h"
+>> +#include "sched_setaffinity.h"
+>> +
+>> +char *TCID = "sched_setaffinity01";
+>> +
+>> +#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
+>> +
+>> +static cpu_set_t *mask, *emask;
+>> +static cpu_set_t *fmask = (void *)-1;
+>> +static size_t mask_size, emask_size;
+>> +static pid_t self_pid, privileged_pid, free_pid;
+>> +static uid_t uid;
+>> +static const char nobody_uid[] = "nobody";
+>> +static struct passwd *ltpuser;
+>> +static long ncpus;
+>> +
+>> +static struct test_case_t {
+>> +	pid_t *pid;
+>> +	size_t *mask_size;
+>> +	cpu_set_t **mask;
+>> +	int exp_errno;
+>> +} test_cases[] = {
+>> +	{&self_pid, &mask_size, &fmask, EFAULT},
+>> +	{&self_pid, &emask_size, &emask, EINVAL},
+>> +	{&free_pid, &mask_size, &mask, ESRCH},
+>> +	{&privileged_pid, &mask_size, &mask, EPERM},
+>> +};
+>> +
+>> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (mask != NULL) {
+>> +		CPU_FREE(mask);
+>> +		mask = NULL;
+>> +	}
+>> +
+>> +	if (emask != NULL) {
+>> +		CPU_FREE(emask);
+>> +		emask = NULL;
+>> +	}
+>> +
+>> +	SAFE_SETEUID(NULL, uid);
+>> +
+>> +	if (privileged_pid != 0) {
+>> +		kill(privileged_pid, SIGKILL);
+>> +		waitpid(privileged_pid, NULL, 0);
+>> +		privileged_pid = 0;
+>> +	}
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	tst_require_root(NULL);
+>> +	uid = geteuid();
+>> +	ncpus = tst_ncpus_max();
+>> +
+>> +	/* Current mask */
+>> +	mask = CPU_ALLOC(ncpus);
+>> +	if (mask == NULL)
+>> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
+>> +			ncpus);
+>> +	mask_size = CPU_ALLOC_SIZE(ncpus);
+>> +	if (sched_getaffinity(0, mask_size, mask) < 0)
+>> +		tst_brkm(TBROK | TERRNO, cleanup, "sched_getaffinity() failed");
+>> +
+>> +	/* Mask with one more cpu than available on the system */
+>> +	emask = CPU_ALLOC(ncpus + 1);
+>> +	if (emask == NULL)
+>> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
+>> +			ncpus + 1);
+>> +	emask_size = CPU_ALLOC_SIZE(ncpus + 1);
+>> +	CPU_ZERO_S(emask_size, emask);
+>> +	CPU_SET_S(ncpus, emask_size, emask);
+>> +
+>> +	privileged_pid = tst_fork();
+>> +	if (privileged_pid == 0) {
+>> +		pause();
+>> +
+>> +		exit(0);
+>> +	} else if (privileged_pid < 0) {
+>> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
+>> +	}
+>> +
+>> +	/* Dropping the root privileges */
+>> +	ltpuser = getpwnam(nobody_uid);
+>> +	if (ltpuser == NULL)
+>> +		tst_brkm(TBROK | TERRNO, cleanup,
+>> +			"getpwnam failed for user id %s", nobody_uid);
+>> +
+>> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+>> +
+>> +	/* this pid is not used by the OS */
+>> +	free_pid = tst_get_unused_pid(cleanup);
+>> +}
+>> +
+>> +int main(int argc, char *argv[])
+>> +{
+>> +	const char *msg;
+>> +	int lc;
+>> +	int i;
+>> +
+>> +	msg = parse_opts(argc, argv, NULL, NULL);
+>> +	if (msg != NULL)
+>> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+>> +
+>> +	setup();
+>> +
+>> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> +		tst_count = 0;
+>> +		for (i = 0; i < TST_TOTAL; i++) {
+>> +			TEST(sched_setaffinity(*(test_cases[i].pid),
+>> +						*(test_cases[i].mask_size),
+>> +						*(test_cases[i].mask)));
+>> +
+>> +			if (TEST_RETURN != -1)
+>> +				tst_resm(TFAIL,
+>> +					"sched_setaffinity() unexpectedly succeded");
+>> +
+>> +			if (TEST_ERRNO == test_cases[i].exp_errno) {
+>> +				tst_resm(TPASS, "expected failure with '%s'",
+>> +					strerror(test_cases[i].exp_errno));
+>> +			} else {
+>> +				tst_resm(TFAIL,
+>> +					"call returned '%s', expected - '%s'",
+>> +					strerror(TEST_ERRNO),
+>> +					strerror(test_cases[i].exp_errno));
+>> +			}
+>> +		}
+>> +	}
+>> +
+>> +	cleanup();
+>> +	tst_exit();
+>> +}
+>> --
+>> 1.7.1
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Open source business process management suite built on Java and Eclipse
+>> Turn processes into business applications with Bonita BPM Community Edition
+>> Quickly connect people, data, and systems into organized workflows
+>> Winner of BOSSIE, CODIE, OW2 and Gartner awards
+>> http://p.sf.net/sfu/Bonitasoft
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
