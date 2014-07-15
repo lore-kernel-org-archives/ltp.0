@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X2KY8-0007zV-JJ
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jul 2014 13:26:12 +0000
-Date: Wed, 2 Jul 2014 15:25:44 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X6zhN-0000EC-07
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 10:11:01 +0000
+Date: Tue, 15 Jul 2014 12:10:31 +0200
 From: chrubis@suse.cz
-Message-ID: <20140702132544.GA4424@rei.scz.novell.com>
-References: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1404125304-28650-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20140701131127.GB23601@rei.scz.novell.com>
-	<53B3B223.4080305@oracle.com>
+Message-ID: <20140715101030.GB27102@rei>
+References: <20140704031641.GA20446@localhost.localdomain>
+	<53BB90C6.9020101@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <53B3B223.4080305@oracle.com>
-Subject: Re: [LTP] [PATCH 3/3] syscalls: use tst_get_unused_pid()
+In-Reply-To: <53BB90C6.9020101@cn.fujitsu.com>
+Subject: Re: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at
+	2G
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,25 +26,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Thank you. Pushed with the issues fixed.
+> > Please review this patch. Thanks.
+> > 
+> > There is a bug on 64bit sendfile() with large file, please see
+> > https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
+> > for details.
+> 
+> I'd like to ask an irrelevant question about that where can we get such bug report or similar issues
+> about syscalls from a stable place(url), or how did you found this issue, thanks.
 
-Will you also send a patch that adds documentation for the newly
-introduced function to test writing guidelines?
+This is IMHO most problematic part of producing LTP testcases. There is
+no single place to pickup kernel regression/bug reports and produce
+testcases for them. This is partly caused by the nature of how the
+community works and partly because nobody cared about this (this happens
+to change slowly now).
+
+> Give that currently there are 1039 test cases about syscalls in LTP(cat runtest/syscalls | grep -v "^#" | sed -e '/^$/d' | wc -l),
+> we can tell that syscalls is a very big test suite in LTP, so I'd like to add all similar regression test about
+> syscalls to LTP, which will expand ltp's test coverage, thanks.
+
+And we don't have 100% coverage either, there are numerous
+syscalls/ioctls/... that are not even documented properly.
+
+But at least new syscalls along with documentation and example source
+code are starting to appear on linux-api mailing list.
+
+See also:
+
+https://www.kernel.org/doc/man-pages/maintaining.html
+
+which lists various sources where to get information about kernel/libc
+interfaces.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
