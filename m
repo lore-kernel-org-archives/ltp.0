@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XC2PZ-00068E-RI
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 08:05:29 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XC2PY-0001pG-HS
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 08:05:29 +0000
-Date: Tue, 29 Jul 2014 04:05:18 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <886732917.16243940.1406621118617.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1406586824-1692-1-git-send-email-gary.robertson@linaro.org>
-References: <1406586824-1692-1-git-send-email-gary.robertson@linaro.org>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X6zsH-0006iD-8h
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 10:22:17 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X6zsF-00071Y-7s
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 10:22:17 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6FAM7qc022363
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Jul 2014 18:22:07 +0800
+Message-ID: <53C500B3.2080902@cn.fujitsu.com>
+Date: Tue, 15 Jul 2014 18:21:39 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Allow mutex initialization without PI configured
+References: <1405419229-4222-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for
+	getcwd(2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,126 +33,254 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Gary S. Robertson" <gary.robertson@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, mike holmes <mike.holmes@linaro.org>
+To: LTP <ltp-list@lists.sourceforge.net>
 
+Hi,
 
+I have run this test case in RHEL7.0GA, Fedora19, v3.11-7758-g232d2d6 and 3.16.0-rc4+.
 
------ Original Message -----
-> From: "Gary S. Robertson" <gary.robertson@linaro.org>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "mike holmes" <mike.holmes@linaro.org>
-> Sent: Tuesday, 29 July, 2014 12:33:44 AM
-> Subject: [LTP] [PATCH] Allow mutex initialization without PI configured
-> 
-> From: "Gary S. Robertson" <gary.robertson@linaro.org>
-> 
-> LTP seems primarily intended to be built and run on the same machine,
-> and thus uses autotools / autoconf to determine the features of the host
-> machine's environment prior to compilation.  However, when distributing
-> precompiled binaries, or when building in a cross-compilation environment,
-> it is better not to disable features based on the compile-time environment.
-
-Isn't the build going to fail then if you miss those features?
-
-> This patch removes compile-time dependencies on priority-inheriting mutexes
-
-Seems to me, the problem is:
-
--#if HAVE_DECL_PTHREAD_PRIO_INHERIT
-+#if HAS_PRIORITY_INHERIT
-
-I'm not against removing that check entirely. I'm not sure anyone is using
-distro so old it's missing it. We also don't check for it in openposix testsuite.
-
-> and allows the code to attempt initialization of PI mutexes even
-> if the runtime environment lacks that feature... in which case
-> the associated test(s) should fail.
-> 
-> Without this patch, init_pi_mutex() may be compiled as an empty function,
-> allowing subsequent operations to be attempted on an un-inititalized mutex.
-> Likewise, testpi-3 may fail to initialize a mutex before starting pthreads
-> which attempt to use the mutex.
-
-Then it shouldn't run at all and end with TCONF.
-
-> 
-> Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
-> ---
->  testcases/realtime/lib/librttest.c            |    2 --
->  testcases/realtime/stress/pi-tests/testpi-3.c |    2 --
->  2 files changed, 4 deletions(-)
-> 
-> diff --git a/testcases/realtime/lib/librttest.c
-> b/testcases/realtime/lib/librttest.c
-> index 0dd6019..9f37d08 100644
-> --- a/testcases/realtime/lib/librttest.c
-> +++ b/testcases/realtime/lib/librttest.c
-> @@ -586,7 +586,6 @@ void *busy_work_us(int us)
->  
->  void init_pi_mutex(pthread_mutex_t * m)
->  {
-> -#if HAVE_DECL_PTHREAD_PRIO_INHERIT
->  	pthread_mutexattr_t attr;
->  	int ret;
->  	int protocol;
-> @@ -609,7 +608,6 @@ void init_pi_mutex(pthread_mutex_t * m)
->  	if ((ret = pthread_mutex_init(m, &attr)) != 0) {
->  		printf("Failed to init mutex: %d (%s)\n", ret, strerror(ret));
->  	}
-> -#endif1G
-
-         ^^ There's extra "1G" here
+RHEL7.0GA has this kernel bug, so this test case fails.
+v3.11-7758-g232d2d6 has this bug, so this test case fails.
+Fedora19 does not contain this bug, so this test case succeeds.
+3.16.0-rc4+ has this bug fixed, so this test case also succeeds.
 
 Regards,
-Jan
+Xiaoguang Wang
 
->  
->  	/* FIXME: does any of this need to be destroyed ? */
->  }
-> diff --git a/testcases/realtime/stress/pi-tests/testpi-3.c
-> b/testcases/realtime/stress/pi-tests/testpi-3.c
-> index 30f38f6..807c9cc 100644
-> --- a/testcases/realtime/stress/pi-tests/testpi-3.c
-> +++ b/testcases/realtime/stress/pi-tests/testpi-3.c
-> @@ -365,7 +365,6 @@ int main(int argc, char *argv[])
->  
->  	printf("Start %s\n", argv[0]);
->  
-> -#if HAVE_DECL_PTHREAD_PRIO_INHERIT
->  	if (!nopi) {
->  		pthread_mutexattr_t mutexattr;
->  		int protocol;
-> @@ -386,7 +385,6 @@ int main(int argc, char *argv[])
->  			printf("Failed to init mutex: %d\n", retc);
->  		}
->  	}
-> -#endif
->  
->  	startThread(&arg1);
->  	startThread(&arg2);
-> --
-> 1.7.9.5
+On 07/15/2014 06:13 PM, Xiaoguang Wang wrote:
+> Note: this test has already been in xfstests generic/028 test case,
+> I just port it to LTP.
 > 
+> Kernel commit '232d2d60aa5469bb097f55728f65146bd49c1d25' introduced a race
+> condition that causes getcwd(2) to return "/" instead of correct path.
+>     232d2d6 dcache: Translating dentry into pathname without
+>             taking rename_lock
 > 
-> ------------------------------------------------------------------------------
-> Infragistics Professional
-> Build stunning WinForms apps today!
-> Reboot your WinForms applications with our WinForms controls.
-> Build a bridge from your legacy apps to the future.
-> http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> And these two kernel commits have fixed this bug:
+>   ede4cebce16f5643c61aedd6d88d9070a1d23a68
+>      prepend_path() needs to reinitialize dentry/vfsmount/mnt on restarts
+>   f6500801522c61782d4990fa1ad96154cb397cd4
+>      f650080 __dentry_path() fixes
 > 
+> This test is to check whether this bug exists in the running kernel,
+> or whether this bug has been fixed.
+> 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  runtest/ltplite                             |   1 +
+>  runtest/stress.part3                        |   1 +
+>  runtest/syscalls                            |   1 +
+>  testcases/kernel/syscalls/.gitignore        |   1 +
+>  testcases/kernel/syscalls/getcwd/getcwd04.c | 143 ++++++++++++++++++++++++++++
+>  5 files changed, 147 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/getcwd/getcwd04.c
+> 
+> diff --git a/runtest/ltplite b/runtest/ltplite
+> index 50653a9..1457908 100644
+> --- a/runtest/ltplite
+> +++ b/runtest/ltplite
+> @@ -275,6 +275,7 @@ getcontext01 getcontext01
+>  getcwd01 getcwd01
+>  getcwd02 getcwd02
+>  getcwd03 getcwd03
+> +getcwd04 getcwd04
+>  
+>  getdents01 getdents01
+>  getdents02 getdents02
+> diff --git a/runtest/stress.part3 b/runtest/stress.part3
+> index 39ce807..368c640 100644
+> --- a/runtest/stress.part3
+> +++ b/runtest/stress.part3
+> @@ -214,6 +214,7 @@ getcontext01 getcontext01
+>  getcwd01 getcwd01
+>  getcwd02 getcwd02
+>  getcwd03 getcwd03
+> +getcwd04 getcwd04
+>  
+>  getdents01 getdents01
+>  getdents02 getdents02
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index fbed9cb..13218e3 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -329,6 +329,7 @@ getcpu01 getcpu01
+>  getcwd01 getcwd01
+>  getcwd02 getcwd02
+>  getcwd03 getcwd03
+> +getcwd04 getcwd04
+>  
+>  getdents01 getdents01
+>  getdents02 getdents02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index b9d49cf..fd3282b 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -273,6 +273,7 @@
+>  /getcwd/getcwd01
+>  /getcwd/getcwd02
+>  /getcwd/getcwd03
+> +/getcwd/getcwd04
+>  /getdents/getdents01
+>  /getdents/getdents01_64
+>  /getdents/getdents02
+> diff --git a/testcases/kernel/syscalls/getcwd/getcwd04.c b/testcases/kernel/syscalls/getcwd/getcwd04.c
+> new file mode 100644
+> index 0000000..a0285cb
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/getcwd/getcwd04.c
+> @@ -0,0 +1,143 @@
+> +/*
+> + *   Copyright (c) 2014 Fujitsu Ltd.
+> + *   Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> + *
+> + *   This program is free software;  you can redistribute it and/or modify
+> + *   it under the terms of the GNU General Public License as published by
+> + *   the Free Software Foundation; either version 2 of the License, or
+> + *   (at your option) any later version.
+> + *
+> + *   This program is distributed in the hope that it will be useful,
+> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + *   the GNU General Public License for more details.
+> + */
+> +
+> +/*
+> + * Note: this test has already been in xfstests generic/028 test case,
+> + * I just port it to LTP.
+> + *
+> + * Kernel commit '232d2d60aa5469bb097f55728f65146bd49c1d25' introduced a race
+> + * condition that causes getcwd(2) to return "/" instead of correct path.
+> + *     232d2d6 dcache: Translating dentry into pathname without
+> + *             taking rename_lock
+> + *
+> + * And these two kernel commits fixed the bug:
+> + *   ede4cebce16f5643c61aedd6d88d9070a1d23a68
+> + *	prepend_path() needs to reinitialize dentry/vfsmount/mnt on restarts
+> + *   f6500801522c61782d4990fa1ad96154cb397cd4
+> + *	f650080 __dentry_path() fixes
+> + *
+> + * This test is to check whether this bug exists in the running kernel,
+> + * or whether this bug has been fixed.
+> + *
+> + */
+> +
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +
+> +#include "usctest.h"
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +
+> +#define TIMEOUT	5
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +static void do_child(void);
+> +static void sigproc(int sig);
+> +static volatile sig_atomic_t end;
+> +static char init_cwd[PATH_MAX];
+> +
+> +char *TCID = "getcwd04";
+> +int TST_TOTAL = 1;
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int status;
+> +	const char *msg;
+> +	char cur_cwd[PATH_MAX];
+> +	pid_t child;
+> +
+> +	msg = parse_opts(ac, av, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	child = tst_fork();
+> +	if (child < 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+> +
+> +	if (child == 0)
+> +		do_child();
+> +
+> +	 while (1) {
+> +		SAFE_GETCWD(cleanup, cur_cwd, PATH_MAX);
+> +		if (strncmp(init_cwd, cur_cwd, PATH_MAX)) {
+> +			tst_resm(TFAIL, "initial current work directory is "
+> +				 "%s, now is %s. Bug is reproduced!",
+> +				 init_cwd, cur_cwd);
+> +			break;
+> +		}
+> +
+> +		if (end) {
+> +			tst_resm(TPASS, "Bug is not reproduced!");
+> +			break;
+> +		}
+> +	}
+> +
+> +	SAFE_KILL(cleanup, child, SIGKILL);
+> +	SAFE_WAITPID(cleanup, child, &status, 0);
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
+> +
+> +	if (signal(SIGALRM, sigproc) == SIG_ERR)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "signal(SIGALRM) failed");
+> +
+> +	alarm(TIMEOUT);
+> +
+> +	SAFE_MKDIR(cleanup, "testdir", 0755);
+> +	SAFE_CHDIR(cleanup, "testdir");
+> +
+> +	SAFE_GETCWD(cleanup, init_cwd, PATH_MAX);
+> +}
+> +
+> +static void sigproc(int sig)
+> +{
+> +	end = sig;
+> +}
+> +
+> +static void do_child(void)
+> +{
+> +	unsigned int i = 0;
+> +	char c_name[PATH_MAX] = "testfile", n_name[PATH_MAX];
+> +
+> +	SAFE_TOUCH(NULL, c_name, 0644, NULL);
+> +
+> +	while (1) {
+> +		snprintf(n_name, PATH_MAX, "testfile%u", i++);
+> +		SAFE_RENAME(NULL, c_name, n_name);
+> +		strncpy(c_name, n_name, PATH_MAX);
+> +	}
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +
+> +	tst_rmdir();
+> +}
+> 
+
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
