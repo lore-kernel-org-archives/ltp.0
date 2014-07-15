@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1X9A65-0001Lm-3K
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:41:29 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X9A63-0001Tw-Gx
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:41:29 +0000
-Message-ID: <53CCE003.6090505@cn.fujitsu.com>
-Date: Mon, 21 Jul 2014 17:40:19 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X6zOL-0007hN-85
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 09:51:21 +0000
+Date: Tue, 15 Jul 2014 11:50:51 +0200
+From: chrubis@suse.cz
+Message-ID: <20140715095051.GA26664@rei>
+References: <1403596982-21645-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1405419229-4222-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<38788431.12648558.1405933467675.JavaMail.zimbra@redhat.com>
-	<53CCD8DB.7030703@cn.fujitsu.com>
-	<1654492351.12657216.1405935186511.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1654492351.12657216.1405935186511.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for
-	getcwd(2)
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1403596982-21645-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] fs/ext4-new-features: fix wrong test point
+ when running ext4-persist-prealloc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,105 +25,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: Artem Savkov <asavkov@redhat.com>, ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 07/21/2014 05:33 PM, Jan Stancek wrote:
+Hi!
+> ext4-persist-prealloc test will call test cases under 'testcases/kernel/syscalls
+> /fallocate' to have persist prealloc test for ext4 filesystem. But currently
+> fallocate[0-3] cases will have tests in a different filesystem, which the directory
+> created by tst_tmpdir() is in. This is wrong, fix it.
 > 
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> ---
+>  .../ext4-persist-prealloc/ext4_persist_prealloc_test.sh              | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> ----- Original Message -----
->> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
->> To: "Jan Stancek" <jstancek@redhat.com>, "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
->> Cc: ltp-list@lists.sourceforge.net, "Artem Savkov" <asavkov@redhat.com>
->> Sent: Monday, 21 July, 2014 11:09:47 AM
->> Subject: Re: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for getcwd(2)
->>
->> On 07/21/2014 05:04 PM, Jan Stancek wrote:
->>>
->>>
->>> ----- Original Message -----
->>>>> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
->>>>> To: ltp-list@lists.sourceforge.net
->>>>> Sent: Tuesday, 15 July, 2014 12:13:49 PM
->>>>> Subject: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for
->>>>> getcwd(2)
->>>>>
->>>>> Note: this test has already been in xfstests generic/028 test case,
->>>>> I just port it to LTP.
->>>>>
->>>>> Kernel commit '232d2d60aa5469bb097f55728f65146bd49c1d25' introduced a
->>>>> race
->>>>> condition that causes getcwd(2) to return "/" instead of correct path.
->>>>>     232d2d6 dcache: Translating dentry into pathname without
->>>>>             taking rename_lock
->>>>>
->>>>> And these two kernel commits have fixed this bug:
->>>>>   ede4cebce16f5643c61aedd6d88d9070a1d23a68
->>>>>      prepend_path() needs to reinitialize dentry/vfsmount/mnt on
->>>>>      restarts
->>>>>   f6500801522c61782d4990fa1ad96154cb397cd4
->>>>>      f650080 __dentry_path() fixes
->>>>>
->>>>> This test is to check whether this bug exists in the running kernel,
->>>>> or whether this bug has been fixed.
->>>>>
->>>>> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
->>> Hi,
->>>
->>> looks good to me.
->>>
->>>>> I have run this test case in RHEL7.0GA, Fedora19, v3.11-7758-g232d2d6
->>>>> and 3.16.0-rc4+.
->>>>> RHEL7.0GA has this kernel bug, so this test case fails.
->>> I can confirm this, with note that I've seen it happen only on systems with
->>> 2+ CPUs.
->>
->> If this note is truth, we should judge the nr_cpus in this case to make sure
->> it always
->> gives the right result.
-> 
-> My observation is that it's at least easier to reproduce on 2+ CPUs:
-> 
-> # time taskset -c 0 ./getcwd04 
-> getcwd04    1  TPASS  :  Bug is not reproduced!
-> 
-> real	0m5.002s
-> user	0m0.506s
-> sys	0m4.494s
-> 
-> # time taskset -c 0,1 ./getcwd04 
-> getcwd04    1  TFAIL  :  initial current work directory is /tmp/getg6foNN/testdir, now is /. Bug is reproduced!
-> 
-> real	0m0.002s
-> user	0m0.000s
-> sys	0m0.002s
-> 
-> 
-> I'm not sure what you are suggesting we do, other than to make note somewhere.
-> 
-> It's a test for race condition, so if it tried its best to reproduce and
-> ended with "Bug is not reproduced!", that looks like right result to me.
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> index 20b66f8..d577bb5 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> @@ -46,6 +46,7 @@ ext4_test_persist_prealloc()
+>  
+>  	ret=1
+>  
+> +	temp_tmpdir=$TMPDIR
+>  	for ((i = 1; i <= 3; i++))
+>  	{
+>  		if ! command -v fallocate0${i} > /dev/null 2>&1; then
+> @@ -56,13 +57,15 @@ ext4_test_persist_prealloc()
+>  			return
+>  		fi
+>  
+> -		fallocate0${i} | grep -q "CONF"
+> +		TMPDIR=mnt_point; fallocate0${i} | grep -q "CONF"
+>  		if [ $? -ne $ret ]; then
+>  			tst_resm TFAIL "fallocate's return value is not expected"
+>  			umount mnt_point
+> +			TMPDIR=$temp_tmpdir
+>  			return
+>  		fi
+>  	}
+> +	TMPDIR=$temp_tmpdir
 
-I mean if we can't reproduce the bug on the system with less-than-2-cpus,
-we may need to give a note? Since this not means the kernel doesn't have
-this bug but not reproduced on this specific hardware, right?
+I've moved the TMPDIR restoration closer to the fallocate call so it's
+now:
 
-Thanks,
-Wanlong Gao
++               temp_tmpdir=$TMPDIR
++               TMPDIR=mnt_point; fallocate0${i} | grep -q "CONF"
++               TMPDIR=$temp_tmpdir
 
-> 
-> Regards,
-> Jan
-> 
->>
->> Thanks,
->> Wanlong Gao
->>  
->>
->>
-> .
-> 
 
+And pushed, thanks.
+
+PS: Sorry for the delay.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
