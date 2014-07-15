@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XBK2j-0003gG-E6
-	for ltp-list@lists.sourceforge.net; Sun, 27 Jul 2014 08:42:57 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XBK2i-00025m-73
-	for ltp-list@lists.sourceforge.net; Sun, 27 Jul 2014 08:42:57 +0000
-Message-ID: <53D4BB5B.5030701@cn.fujitsu.com>
-Date: Sun, 27 Jul 2014 16:42:03 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X73tC-0000Np-S6
+	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 14:39:30 +0000
+Date: Tue, 15 Jul 2014 16:39:02 +0200
+From: chrubis@suse.cz
+Message-ID: <20140715143901.GA8247@rei>
+References: <1401685455.2838.8.camel@G08JYZSD130126>
+	<20140612131041.GB20221@rei>
+	<1403179593.7741.2.camel@G08JYZSD130126>
+	<20140625153950.GA5552@rei>
+	<1403866408.2119.28.camel@G08JYZSD130126>
 MIME-Version: 1.0
-References: <1405419229-4222-1-git-send-email-wangxg.fnst@cn.fujitsu.com>	<1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<38788431.12648558.1405933467675.JavaMail.zimbra@redhat.com>
-	<53CCD8DB.7030703@cn.fujitsu.com> <53CCDBFA.4060209@cn.fujitsu.com>
-In-Reply-To: <53CCDBFA.4060209@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for
-	getcwd(2)
+Content-Disposition: inline
+In-Reply-To: <1403866408.2119.28.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v3 1/3] Add autoconf test for CAN.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,81 +28,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, Savkov <asavkov@redhat.com>, Artem@edo.cn.fujitsu.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi,
+Hi!
+> +int main(void)
+> +{
+> +	printf("The linux/can.h was missing upon compilation.\n");
+> +	return 0;
+> +}
 
-On 07/21/2014 05:23 PM, Xiaoguang Wang wrote:
-> Hi Jan, Wanlong,
-> 
-> On 07/21/2014 05:09 PM, Wanlong Gao wrote:
->> On 07/21/2014 05:04 PM, Jan Stancek wrote:
->>>
->>> looks good to me.
->>>
->>>>> I have run this test case in RHEL7.0GA, Fedora19, v3.11-7758-g232d2d6 and 3.16.0-rc4+.
->>>>> RHEL7.0GA has this kernel bug, so this test case fails.
->>> I can confirm this, with note that I've seen it happen only on systems with 2+ CPUs.
->>
->> If this note is truth, we should judge the nr_cpus in this case to make sure it always
->> gives the right result.
-> 
-> Thanks Jan for pointing this.
-> I'll have a look at these three related kernel patches again. If needed, I'll sent a 
-> v2 version including the judgment about number of cpus, thanks!
+Ideally this should return non-zero value so that we can return TCONF
+from the test script in this case (since we changed the test library
+to propagate TCONF into return value).
 
-I'm not that familiar with kernel VFS layer code and spent time to look into the code, sorry for the delay.
+The rest of looks ok.
 
-Now I think it is impossible to reproduce this bug in only one cpu machine, below is the possible reason,
-please check it(The kernel source code I used is RHEL7.0GA).
-First let me explain why this bug is triggered. Look at the getcwd(2)'s implementation,
-
-SYSCALL_DEFINE2(getcwd, ...)
-----prepend_path(...)
-
-In prepend_path(), it will use a kernel sequence lock named rename_lock to check whether the corresponding
-operation in prepend_path() is valid. If it's valid, everything is OK. But if it's not(for example, some
-other kernel code flow call a write_seqlock() on the rename_lock), then prepend_path() need to restart the entire 
-operation, but kernel commit 232d2d6 patch forgot to reinitialize dentry/vfsmount/mnt, in this time, the dentry
-is already the root dentry, so gewcwd(2) will return a "/", bug is triggered.
-
-But when we only have one cpu, when we are in  prepend_path(),  If I understand
-right, I think there is no operation in prepend_path() that will cause the current kernel code flow to sleep or give up
-the cpu voluntarily and kernel is preempt disabled, only when the getcwd(2) operation completes, can a
-process switch happen when returning to user space, that says we can ensure there is no other kernel code flow
-have a chance to  operate rename_lock in kernel when a getcwd(2) is in progress.
-
-So I'll send a V2 patch including the judgment about number of cpus. If system only has one cpu, it will
-print a TCONF, thanks!
-
-
-Regards,
-Xiaoguang Wang
-> 
-> Regards,
-> Xiaoguang Wang
->>
->> Thanks,
->> Wanlong Gao
->>  
->>
->> .
->>
-> 
-> 
-> ------------------------------------------------------------------------------
-> Want fast and easy access to all the code in your enterprise? Index and
-> search up to 200,000 lines of code with a free copy of Black Duck
-> Code Sight - the same software that powers the world's largest code
-> search on Ohloh, the Black Duck Open Hub! Try it now.
-> http://p.sf.net/sfu/bds
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
