@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X2H4u-0007GI-Lj
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jul 2014 09:43:48 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X2H4t-0006rX-Dt
-	for ltp-list@lists.sourceforge.net; Wed, 02 Jul 2014 09:43:48 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s629hbNY012544
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Jul 2014 17:43:37 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 2 Jul 2014 17:40:09 +0800
-Message-ID: <1404294010-18698-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1404294010-18698-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1404294010-18698-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	(envelope-from
+	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
+	id 1X7qX8-00020e-Ek
+	for ltp-list@lists.sourceforge.net; Thu, 17 Jul 2014 18:35:58 +0000
+Received: from smtp-out3.electric.net ([72.35.12.183])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X7qX6-0001i3-DU
+	for ltp-list@lists.sourceforge.net; Thu, 17 Jul 2014 18:35:58 +0000
+Received: from 1X7pRe-0006wg-UZ by out3b.electric.net with emc1-ok (Exim
+	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1X7pRf-0006yZ-TV
+	for ltp-list@lists.sourceforge.net; Thu, 17 Jul 2014 10:26:15 -0700
+Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
+	by out3b.electric.net with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
+	id 1X7pRe-0006wg-UZ
+	for ltp-list@lists.sourceforge.net; Thu, 17 Jul 2014 10:26:14 -0700
+From: Joseph Beckenbach <jbeckenbach@lancope.com>
+Date: Thu, 17 Jul 2014 17:26:11 +0000
+Message-ID: <4506ACC2AE90484D87F9A883BA36C21C2ADEFFAA@LCHQEX03.lancope.local>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/3] lib/tst_res.c: introduce function
-	tst_record_childstatus()
+Subject: [LTP] Apparent trouble with HEAD of LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,110 +36,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-If we do real test work in child process and use tst_resm(), tst_brkm()
-or tst_exit() interfaces in child process, we should use tst_record_childstatus()
-to record the test results returned by child process correctly.
+Greetings, Cyril, all!
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- include/test.h          |  1 +
- include/tst_res_flags.h |  5 +++++
- lib/tst_res.c           | 37 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 43 insertions(+)
+I just pulled down LTP source (source-forge link to ltp-master.zip) and unpacked to start some testing.
+However, I cannot get past ./configure ... since crafting ./configure failed to expand LTP_CHECK_FORTIFY_SOURCE (and all the LTP_CHECK_*)
+which appear in m4/ltp-*.m4 files.  Compilations fail because this then provokes lots of '@foo@' expansions to not occur in include/mk/config.mk and include/mk/features.mk.
 
-diff --git a/include/test.h b/include/test.h
-index 3d8bb7c..df66763 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -119,6 +119,7 @@ extern int Forker_npids;
- /* lib/tst_res.c */
- const char *strttype(int ttype);
- void tst_reset_exitval(void);
-+int tst_record_childstatus(int status, int *sig);
- void tst_res(int ttype, const char *fname, const char *arg_fmt, ...)
- 	__attribute__ ((format (printf, 3, 4)));
- void tst_resm(int ttype, const char *arg_fmt, ...)
-diff --git a/include/tst_res_flags.h b/include/tst_res_flags.h
-index 5c5ab4c..03a3285 100644
---- a/include/tst_res_flags.h
-+++ b/include/tst_res_flags.h
-@@ -27,4 +27,9 @@
- #define TRERRNO	0x300	/* Capture errno information from TEST_RETURN to
- 			   output; useful for pthread-like APIs :). */
- 
-+#define CHILD_EXIT_NORMALLY	0
-+#define CHILD_EXIT_SIGNALED	1
-+#define CHILD_STOPPED		2
-+#define CHILD_RESUMED		4
-+
- #endif /* TST_RES_FLAGS_H */
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 079fc42..24fb4d9 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -101,6 +101,9 @@
- #include <stdarg.h>
- #include <string.h>
- #include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
- #include "test.h"
- #include "usctest.h"
- #include "ltp_priv.h"
-@@ -228,6 +231,40 @@ void tst_reset_exitval(void)
- {
- 	T_exitval = 0;
- }
-+
-+int tst_record_childstatus(int status, int *sig)
-+{
-+	int ret = 0, ttype_result, s = 0;
-+
-+	if (WIFEXITED(status)) {
-+		ret = WEXITSTATUS(status);
-+		ttype_result = TTYPE_RESULT(ret);
-+		T_exitval |= ttype_result;
-+		s = 0;
-+		ret = CHILD_EXIT_NORMALLY;
-+	} else if (WIFSIGNALED(status)) {
-+		s = WTERMSIG(status);
-+		tst_resm(TINFO, "child process is killed by signal: %s(%d)",
-+			 tst_strsig(s), s);
-+		ret = CHILD_EXIT_SIGNALED;
-+	} else if (WIFSTOPPED(status)) {
-+		s = WSTOPSIG(status);
-+		tst_resm(TINFO, "child process is stopped by signal:%s(%d)",
-+			 tst_strsig(s), s);
-+		ret = CHILD_STOPPED;
-+	} else if (WIFCONTINUED(status)) {
-+		s = SIGCONT;
-+		tst_resm(TINFO, "child process is resumed by signal:%s(%d)",
-+			 tst_strsig(s), s);
-+		ret = CHILD_RESUMED;
-+	}
-+
-+	if (sig)
-+		*sig = s;
-+
-+	return ret;
-+}
-+
- /*
-  * tst_res() - Main result reporting function.  Handle test information
-  *             appropriately depending on output display mode.  Call
--- 
-1.8.2.1
+The most recent commit was "configure.ac: Add AC_CONFIG_MACRO_DIR" which I think is causing my trouble.
+
+This is on (several instances of) a Debian 7.6 system.  All tools cited in ./INSTALL are present and at least as recent as called out in that documentation.
+Googling provides a year-old thread on autoconf / autoconfigure.ac mentioning AC_CONFIG_MACRO_DIR [0]
+which suggests libtool needs to figure in somehow -- and libtool package / executable libtoolize are *not* present on this system.
+Given it appears this project's configuration sequence runs through ./aclocal.m4,
+recent autoconf documentation [1] suggests to me that this macro does not justify dropping "-I m4"
+(given we have no top-level Makefile.am involved).
+
+And indeed, manually backing out just the include/mk/automake.mk one-line change done by commit "edbae29d774e30967bee74463ad505ff9a81f87d" unblocks me.
+
+Am I missing something?  Is the documentation missing something?  Is the `make autotools` step missing something?
+Color me "confused but able to progress".
+Thanks!
+
+Joseph
+Joseph Beckenbach, senior QA engineer : Automation
+
+[0] https://bbs.archlinux.org/viewtopic.php?pid=1258673 
+
+[1] https://www.gnu.org/software/autoconf/manual/autoconf-2.65/html_node/Input.html
 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
