@@ -1,31 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XBkfz-0005ev-De
-	for ltp-list@lists.sourceforge.net; Mon, 28 Jul 2014 13:09:15 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from
+	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
+	id 1X8ALr-0003tU-CL
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 15:45:39 +0000
+Received: from smtp-out3.electric.net ([72.35.12.186])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XBkfx-0004Df-CK
-	for ltp-list@lists.sourceforge.net; Mon, 28 Jul 2014 13:09:15 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s6SD97ev018501
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 13:09:07 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s6SD96Lx000905
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 13:09:06 GMT
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s6SD96N7000891
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 13:09:06 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 28 Jul 2014 17:10:21 +0400
-Message-Id: <1406553022-3436-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 1/2] network: uniform network parameters
+	(Exim 4.76) id 1X8ALp-0002Fr-F6
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 15:45:39 +0000
+Received: from 1X8ALj-0005Qo-TQ by out3a.electric.net with emc1-ok (Exim
+	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1X8ALj-0005V5-Uo
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 08:45:31 -0700
+Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
+	by out3a.electric.net with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
+	id 1X8ALj-0005Qo-TQ
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 08:45:31 -0700
+From: Joseph Beckenbach <jbeckenbach@lancope.com>
+Date: Fri, 18 Jul 2014 15:45:29 +0000
+Message-ID: <4506ACC2AE90484D87F9A883BA36C21C2ADF018E@LCHQEX03.lancope.local>
+Content-Language: en-US
+Content-Type: multipart/mixed;
+	boundary="_002_4506ACC2AE90484D87F9A883BA36C21C2ADF018ELCHQEX03lancope_"
+MIME-Version: 1.0
+Subject: [LTP] More LTP findings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,293 +35,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Move networktests.sh and networkstress.sh parameters to network.sh.
-Both network scripts have the same settings (e.g. RHOST), and
-some of the stress test parameters can be used by other net-tests,
-such as LHOST_INTERFACE and RHOST_INTERFACE variables.
-Also, add network features group to networkstress.sh.
+--_002_4506ACC2AE90484D87F9A883BA36C21C2ADF018ELCHQEX03lancope_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- runtest/network_stress.features |    9 +++++
- runtest/network_stress.tcp      |    2 -
- runtest/network_stress.udp      |    4 --
- send_patch.sh                   |    4 ++
- testcases/lib/test_net.sh       |   11 +++++++
- testscripts/network.sh          |   63 +++++++++++++++++++++++++++++++++++++++
- testscripts/networkstress.sh    |   35 ++++------------------
- testscripts/networktests.sh     |   10 +-----
- 8 files changed, 94 insertions(+), 44 deletions(-)
- create mode 100644 runtest/network_stress.features
- create mode 100755 send_patch.sh
- create mode 100755 testscripts/network.sh
+Hi, all!
 
-diff --git a/runtest/network_stress.features b/runtest/network_stress.features
-new file mode 100644
-index 0000000..14fa2d9
---- /dev/null
-+++ b/runtest/network_stress.features
-@@ -0,0 +1,9 @@
-+#
-+# Stress tests for various network features
-+#
+I'm also finding a fair number of tests (hung runs of run_cpuctl_test.sh I'=
+m looking at you) blindly use hard-coded path $LTPROOT/output/.
+Its existence is not fully enforced by runltp, though it tries half-hearted=
+ly.
+
+Suggested first-hack fix:  install the directory inside runltp's setup().
+Provided in attached DIFF as well, since (sadly) something in my company's =
+email infrastructure mangles whitespace.
+
+=3D=3D=3D=3D 8< =3D=3D=3D=3D 8< =3D=3D=3D=3D
+--- runltp.orig	2014-07-18 14:56:08.918779305 +0000
++++ runltp	2014-07-18 15:16:34.352791208 +0000
+@@ -96,6 +96,9 @@
+         echo "INFO:  Follow directions in INSTALL!"
+         exit 1
+     }
 +
-+tcp_fastopen tcp_fastopen_run.sh
-+
-+vxlan01 vxlan01.sh
-+vxlan02 vxlan02.sh
-+vxlan03 vxlan03.sh
-diff --git a/runtest/network_stress.tcp b/runtest/network_stress.tcp
-index 9795d2a..7206b3a 100644
---- a/runtest/network_stress.tcp
-+++ b/runtest/network_stress.tcp
-@@ -331,5 +331,3 @@ tcp6-multi-diffnic11 tcp6-multi-diffnic11
- tcp6-multi-diffnic12 tcp6-multi-diffnic12
- tcp6-multi-diffnic13 tcp6-multi-diffnic13
- tcp6-multi-diffnic14 tcp6-multi-diffnic14
--
--tcp_fastopen tcp_fastopen_run.sh
-diff --git a/runtest/network_stress.udp b/runtest/network_stress.udp
-index 2f62c14..bfe9d85 100644
---- a/runtest/network_stress.udp
-+++ b/runtest/network_stress.udp
-@@ -65,7 +65,3 @@ udp6-multi-diffnic04 udp6-multi-diffnic04
- udp6-multi-diffnic05 udp6-multi-diffnic05
- udp6-multi-diffnic06 udp6-multi-diffnic06
- udp6-multi-diffnic07 udp6-multi-diffnic07
--
--vxlan01 vxlan01.sh
--vxlan02 vxlan02.sh
--vxlan03 vxlan03.sh
-diff --git a/send_patch.sh b/send_patch.sh
-new file mode 100755
-index 0000000..d2fae29
---- /dev/null
-+++ b/send_patch.sh
-@@ -0,0 +1,4 @@
-+#!/bin/sh
-+echo "Send patch..."
-+git send-email --identity=ltp --annotate --smtp-debug --cover-letter --signoff ./../patchs/*
-+echo "Done"
-\ No newline at end of file
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 51b3e38..81cfbb7 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -75,3 +75,14 @@ tst_rhost_run()
- 
- 	return $ret
++    # TODO refactor out tests hard-coding this path
++    install -m 0755 -d "$LTPROOT/output"
  }
-+
-+tst_lhost_hwaddr()
-+{
-+	echo $(ip link show $LHOST_INTERFACE | awk 'NR==2 { print $2 }')
-+}
-+
-+tst_rhost_hwaddr()
-+{
-+	echo $(tst_rhost_run -s -c "ip link show $RHOST_INTERFACE | \
-+		awk 'NR==2 { print $2 }'")
-+}
-diff --git a/testscripts/network.sh b/testscripts/network.sh
-new file mode 100755
-index 0000000..79c43ad
---- /dev/null
-+++ b/testscripts/network.sh
-@@ -0,0 +1,63 @@
-+#!/bin/sh
-+
-+# Network Test Parameters
-+#
-+# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
-+
-+export RHOST=
-+export PASSWD=
-+
-+# ---***************************************************---
-+# More information about network parameters can be found
-+# in the following document: testcases/network/stress/README
-+
-+LTP_RSH=
-+
-+# Set names for test interfaces
-+LHOST_INTERFACE=
-+RHOST_INTERFACE=
-+
-+# Set first three octets of the network address
-+IPV4_NETWORK=
-+# Set local host last octet
-+LHOST_IPV4_HOST=
-+# Set remote host last octet
-+RHOST_IPV4_HOST=
-+# Set the reverse of IPV4_NETWORK
-+IPV4_NETWORK_REVERSE=
-+# Set first three octets of the network address
-+IPV6_NETWORK=
-+# Set local host last octet
-+LHOST_IPV6_HOST=
-+# Set remote host last octet
-+RHOST_IPV6_HOST=
-+
-+export HTTP_DOWNLOAD_DIR=
-+export FTP_DOWNLOAD_DIR=
-+export FTP_UPLOAD_DIR=
-+export FTP_UPLOAD_URLDIR=
-+
-+# Set default parameters
-+export LTP_RSH=${LTP_RSH:-"rsh -n"}
-+export LHOST_INTERFACE=${LHOST_INTERFACE:-"eth0"}
-+export RHOST_INTERFACE=${RHOST_INTERFACE:-"eth0"}
-+export IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
-+export IPV6_NETWORK=${IPV6_NETWORK:-"fd00:1:1:1"}
-+export LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
-+export RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
-+export LHOST_IPV6_HOST=${LHOST_IPV6_HOST:-":2"}
-+export RHOST_IPV6_HOST=${RHOST_IPV6_HOST:-":1"}
-+export IPV4_NETWORK_REVERSE=${IPV4_NETWORK_REVERSE:-"0.0.10"}
-+
-+TST_TOTAL=1
-+TCID="network_settings"
-+
-+. test_net.sh
-+
-+export LHOST_HWADDRS=$(tst_lhost_hwaddr)
-+export RHOST_HWADDRS=$(tst_rhost_hwaddr)
-+
-+export TMPDIR=/tmp/netpan-$$
-+mkdir -p $TMPDIR
-+CMDFILE=${TMPDIR}/network.tests
-+VERBOSE="no"
-diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
-index b40af72..47f365d 100755
---- a/testscripts/networkstress.sh
-+++ b/testscripts/networkstress.sh
-@@ -12,32 +12,10 @@ if [ $? -eq 0 ]; then
-  export LTPROOT=${PWD}
- fi
- 
--export TMPDIR=/tmp/netst-$$
--mkdir $TMPDIR
--VERBOSE="no"
--INTERFACE="eth0"
--
--#===========================================================================
--# Network parameters
--export RHOST=
--export RHOST_HWADDRS=
--export HTTP_DOWNLOAD_DIR=
--export FTP_DOWNLOAD_DIR=
--export FTP_UPLOAD_DIR=
--export FTP_UPLOAD_URLDIR=
--
--# Set firt three octets of the network address, by default 10.0.0
--export IPV4_NETWORK=
--# Set local host last octet, by default 2
--export LHOST_IPV4_HOST=
--# Set remote host last octet, by default 1
--export RHOST_IPV4_HOST=
--# Set the reverse of IPV4_NETWORK, by default 0.0.10
--export IPV4_NETWORK_REVERSE=
-+. $LTPROOT/testscripts/network.sh $0
- 
- #===========================================================================
- # Default Test Settings
--# export LTP_RSH=rsh
- # export NS_DURATION=3600	# 1 hour
- # export NS_TIMES=10000
- # export CONNECTION_TOTAL=4000
-@@ -67,6 +45,7 @@ usage () {
-     echo " -R|r: Stress test for routing table"
-     echo " -B|b: Stress Broken IP packets"
-     echo " -M|m: Multicast stress tests"
-+    echo " -F|f: Stress test for network features"
-     echo " -S|s: Run selected tests"
-     echo " -W|w: Run whole network stress tests"
-     echo " -D|d: Test duration (default ${NS_DURATION} sec)"
-@@ -77,7 +56,7 @@ usage () {
-     exit 1
- }
- 
--while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
-+while getopts AaEeTtIiUuRrMmFfSsWwBbVvN:n:D:d: OPTION
- do
-     case $OPTION in
- 	A|a) TEST_CASE="network_stress.appl";;
-@@ -88,6 +67,7 @@ do
- 	U|u) TEST_CASE="network_stress.udp";;
- 	R|r) TEST_CASE="network_stress.route";;
- 	M|m) TEST_CASE="network_stress.multicast";;
-+	F|f) TEST_CASE="network_stress.features";;
- 	S|s) TEST_CASE="network_stress.selected";;
- 	W|w) TEST_CASE="network_stress.whole";;
- 	V|v) VERBOSE="yes";;
-@@ -102,8 +82,6 @@ if [ -z ${TEST_CASE} ]; then
- 	usage
- fi
- 
--export LHOST_HWADDRS=`ifconfig | grep ${INTERFACE} | grep HWaddr |awk '{print $5}'`
--
- if [ -z ${RHOST} ]; then
- 	## Just a silly check
- 	echo "Error: pay attention to configure"
-@@ -119,9 +97,8 @@ export PATH="${PATH}:${LTPROOT}/testcases/bin"
- 
- if [ ${VERBOSE} = "yes" ]; then
- 	echo "Network parameters:"
--	echo " - ${INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
--	echo " - Remote IP address: ${RHOST}"
--	echo " - Remote MAC address: ${RHOST_HWADDRS}"
-+	echo " - ${LHOST_INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
-+	echo " - ${RHOST_INTERFACE} remote interface (MAC address: ${RHOST_HWADDRS})"
- 
- 	cat $TMPDIR/network_stress.tests
- 	${LTPROOT}/ver_linux
-diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
-index b136749..507b7e3 100755
---- a/testscripts/networktests.sh
-+++ b/testscripts/networktests.sh
-@@ -1,11 +1,6 @@
- #!/bin/sh
- # This will run all the network tests, with the status logged in /tmp/netpan.log
- 
--# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
--export RHOST=
--export PASSWD=
--# ---***************************************************---
--
- cd `dirname $0`
- export LTPROOT=${PWD}
- echo $LTPROOT | grep testscripts > /dev/null 2>&1
-@@ -14,10 +9,7 @@ if [ $? -eq 0 ]; then
-  export LTPROOT=${PWD}
- fi
- 
--export TMPDIR=/tmp/netpan-$$
--mkdir -p $TMPDIR
--CMDFILE=${TMPDIR}/network.tests
--VERBOSE="no"
-+. $LTPROOT/testscripts/network.sh $0
- 
- # For bitwise operation to determine which testsets run
- CMD_IPV6=1		# 0x0001
--- 
-1.7.1
+ =3D=3D=3D=3D >8 =3D=3D=3D=3D >8 =3D=3D=3D=3D
 
+Longer-term refactoring might be to clean up runltp's handling of relative =
+paths in options, and to replace these hard-coded paths by a guarded enviro=
+nment variable in some sourced shell-file.
+
+Thanks!
+
+Joseph
+Joseph Beckenbach, senior QA engineer : Automation
+x97166
+M 678-602-3192
+
+
+--_002_4506ACC2AE90484D87F9A883BA36C21C2ADF018ELCHQEX03lancope_
+Content-Type: application/octet-stream; name="DIFF"
+Content-Description: DIFF
+Content-Disposition: attachment; filename="DIFF"; size=313;
+	creation-date="Fri, 18 Jul 2014 15:24:09 GMT";
+	modification-date="Fri, 18 Jul 2014 15:17:38 GMT"
+Content-Transfer-Encoding: base64
+
+LS0tIHJ1bmx0cC5vcmlnCTIwMTQtMDctMTggMTQ6NTY6MDguOTE4Nzc5MzA1ICswMDAwCisrKyBy
+dW5sdHAJMjAxNC0wNy0xOCAxNToxNjozNC4zNTI3OTEyMDggKzAwMDAKQEAgLTk2LDYgKzk2LDkg
+QEAKICAgICAgICAgZWNobyAiSU5GTzogIEZvbGxvdyBkaXJlY3Rpb25zIGluIElOU1RBTEwhIgog
+ICAgICAgICBleGl0IDEKICAgICB9CisKKyAgICAjIFRPRE8gcmVmYWN0b3Igb3V0IHRlc3RzIGhh
+cmQtY29kaW5nIHRoaXMgcGF0aAorICAgIGluc3RhbGwgLW0gMDc1NSAtZCAiJExUUFJPT1Qvb3V0
+cHV0IgogfQogCiB2ZXJzaW9uX29mX2x0cCgpCg==
+
+--_002_4506ACC2AE90484D87F9A883BA36C21C2ADF018ELCHQEX03lancope_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
+--_002_4506ACC2AE90484D87F9A883BA36C21C2ADF018ELCHQEX03lancope_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--_002_4506ACC2AE90484D87F9A883BA36C21C2ADF018ELCHQEX03lancope_--
+
