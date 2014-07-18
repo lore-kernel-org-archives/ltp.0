@@ -1,23 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1X99cX-0007IQ-8H
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:10:57 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X99cV-00088l-US
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:10:57 +0000
-Message-ID: <53CCD8DB.7030703@cn.fujitsu.com>
-Date: Mon, 21 Jul 2014 17:09:47 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from
+	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
+	id 1X8FoW-0005JV-V0
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 21:35:36 +0000
+Received: from smtp-out3.electric.net ([72.35.12.183])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X8FoV-0006VB-MR
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 21:35:36 +0000
+Received: from 1X8FoP-0006TB-TU by out3b.electric.net with emc1-ok (Exim
+	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1X8FoP-0006VQ-Uh
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 14:35:29 -0700
+Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
+	by out3b.electric.net with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
+	id 1X8FoP-0006TB-TU
+	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 14:35:29 -0700
+From: Joseph Beckenbach <jbeckenbach@lancope.com>
+Date: Fri, 18 Jul 2014 21:35:27 +0000
+Message-ID: <4506ACC2AE90484D87F9A883BA36C21C2ADF02C2@LCHQEX03.lancope.local>
+Content-Language: en-US
 MIME-Version: 1.0
-References: <1405419229-4222-1-git-send-email-wangxg.fnst@cn.fujitsu.com>	<1405419229-4222-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<38788431.12648558.1405933467675.JavaMail.zimbra@redhat.com>
-In-Reply-To: <38788431.12648558.1405933467675.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for
-	getcwd(2)
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: [LTP] More observations on HEAD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,50 +36,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, Artem Savkov <asavkov@redhat.com>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On 07/21/2014 05:04 PM, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
->> > From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
->> > To: ltp-list@lists.sourceforge.net
->> > Sent: Tuesday, 15 July, 2014 12:13:49 PM
->> > Subject: [LTP] [PATCH 2/2] syscalls/getcwd04.c: regression test for getcwd(2)
->> > 
->> > Note: this test has already been in xfstests generic/028 test case,
->> > I just port it to LTP.
->> > 
->> > Kernel commit '232d2d60aa5469bb097f55728f65146bd49c1d25' introduced a race
->> > condition that causes getcwd(2) to return "/" instead of correct path.
->> >     232d2d6 dcache: Translating dentry into pathname without
->> >             taking rename_lock
->> > 
->> > And these two kernel commits have fixed this bug:
->> >   ede4cebce16f5643c61aedd6d88d9070a1d23a68
->> >      prepend_path() needs to reinitialize dentry/vfsmount/mnt on restarts
->> >   f6500801522c61782d4990fa1ad96154cb397cd4
->> >      f650080 __dentry_path() fixes
->> > 
->> > This test is to check whether this bug exists in the running kernel,
->> > or whether this bug has been fixed.
->> > 
->> > Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> Hi,
-> 
-> looks good to me.
-> 
->> > I have run this test case in RHEL7.0GA, Fedora19, v3.11-7758-g232d2d6 and 3.16.0-rc4+.
->> > RHEL7.0GA has this kernel bug, so this test case fails.
-> I can confirm this, with note that I've seen it happen only on systems with 2+ CPUs.
+Hi, all!
 
-If this note is truth, we should judge the nr_cpus in this case to make sure it always
-gives the right result.
+Feel free to ignore this -- it's an experience report of a cluster of runs I've just done against 3.12.24 kernels.
 
-Thanks,
-Wanlong Gao
- 
+The default test set runs move_pages* twice.
+
+setfsuid04_16 and setregid{02,04,05,07}_16 TFAIL rather than TCONF on no-16-bit-syscalls systems.
+
+run_cgroup_test_fj.sh hangs on heavy-load systems with $LTPROOT/output/ not present.
+
+Some test under container_test.sh (sourcing childns.sh) attempts to create veth pairs without verifying veth functionality supported.
+Other tests under container_test.sh fail to source files (childns.sh cannot source cmdlib.sh;  child_1.sh and childipv6.sh cannot source initialize.sh).
+
+Many tests under cgroup_regression_test.sh blindly log to hard-coded $LTPROOT/output/ directory without making sure it's there.
+Also, subtest #7 "fails to mount hugetlb" because it seemingly did not first check whether the functionality was enabled.
+
+Under cgroup_fj also seems to have some tests which do latency tests and other tests, outputting "TINFO" and "FAIL" and "PASS" not in standard format.
+I will see if I can bisect it down and work out which tests those are.
+
+dma_thread_diotest invocations all claim to be "dma_thread_diotest07" in the runltp outputfile.
+
+Thanks!
+
+Joseph
+Joseph Beckenbach, senior QA engineer : Automation
+x97166
+M 678-602-3192
 
 
 ------------------------------------------------------------------------------
