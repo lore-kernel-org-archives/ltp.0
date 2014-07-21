@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1X6xYY-0002kA-Ql
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 07:53:46 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X6xYW-00038o-Kh
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 07:53:46 +0000
-Message-ID: <53C4DDFD.2090003@oracle.com>
-Date: Tue, 15 Jul 2014 11:53:33 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X99Sm-0007qK-Jj
+	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:00:52 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X99Sk-00005s-1o
+	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:00:52 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6L90fGk020945
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Jul 2014 17:00:41 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Mon, 21 Jul 2014 17:00:03 +0800
+Message-ID: <1405933204-12601-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <53A12D27.8030205@oracle.com>
-	<1404286258-2053-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<708407934.9715608.1405343247089.JavaMail.zimbra@redhat.com>
-	<53C4D003.6020209@oracle.com>
-	<2039620646.10066364.1405407937155.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2039620646.10066364.1405407937155.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH V4] syscalls: implemented a test for
- sched_setaffinity() error values
+Subject: [LTP] [PATCH v2 1/2] remove meaningless TRETR flag
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,433 +29,320 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+Flag TRETR was introduced to indicate test case was no longer valid and had
+been "retired". But if you grep "TRETR" in LTP, you will not find any test
+case using this flag. And if test case is no longer valid, we can just remove
+it form LTP, so remove this flag.
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ doc/man3/tst_res.3           | 20 +++++++-------------
+ include/tst_res_flags.h      |  1 -
+ lib/tst_res.c                | 25 +++++++++++--------------
+ testcases/lib/test.sh        |  6 ++----
+ tools/apicmds/ltpapicmd.c    | 20 +++++++++-----------
+ tools/genhtml.pl             |  7 -------
+ tools/html_report_header.txt |  1 -
+ 7 files changed, 29 insertions(+), 51 deletions(-)
 
-On 07/15/2014 11:05 AM, Jan Stancek wrote:
->
->
->
->
-> ----- Original Message -----
->> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net, "vasily isaenko" <vasily.isaenko@oracle.com>
->> Sent: Tuesday, 15 July, 2014 8:53:55 AM
->> Subject: Re: [LTP] [PATCH V4] syscalls: implemented a test for sched_setaffinity() error values
->>
->>
->>
->> On 07/14/2014 05:07 PM, Jan Stancek wrote:
->>>
->>>
->>>
->>>
->>> ----- Original Message -----
->>>> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
->>>> To: ltp-list@lists.sourceforge.net
->>>> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
->>>> Sent: Wednesday, 2 July, 2014 9:30:58 AM
->>>> Subject: [LTP] [PATCH V4] syscalls: implemented a test for
->>>> 	sched_setaffinity() error values
->>>>
->>>> This test verifies sched_setaffinity(2) for all error conditions
->>>> to occur correctly.
->>>>
->>>> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
->>>
->>> Looks good to me, just a small nit: have a look at checkpatch output.
->>
->> Thank you, Jan.
->>
->> Do you mean this:
->> ERROR: Macros with multiple statements should be enclosed in a do -
->> while loop
->> #208: FILE:
->> testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h:37:
->> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
->> +if (ncpus > CPU_SETSIZE) { \
->> +	tst_brkm(TCONF, cleanup, \
->> +		"Your libc does not support masks with %ld cpus", ncpus); \
->> +}
->>
->> ?
->>
->> If so, I think I can't do it, because I need to assign CPU_ALLOC() to a
->> variable....
->
-> I see.
->
->>
->> Or what did you mean? :)
->
-> I thought that at least those "trailing semicolon" warnings and removing
-> FSF address could be easily fixed.
->
+diff --git a/doc/man3/tst_res.3 b/doc/man3/tst_res.3
+index 0754daf..c112ee3 100644
+--- a/doc/man3/tst_res.3
++++ b/doc/man3/tst_res.3
+@@ -104,7 +104,7 @@ The details are described below under the appropriate functions.
+ .RS 5
+ .TP 10
+ .I ttype
+-test result type; one of \fBTPASS, TFAIL, TBROK, TCONF, TRETR, TWARN\fR, or
++test result type; one of \fBTPASS, TFAIL, TBROK, TCONF, TWARN\fR, or
+ \fBTINFO\fR (explained below).
+ .TP 10
+ .I fname
+@@ -151,9 +151,6 @@ temporary file could not be opened).
+ The test case was not appropriate for the current hardware or software
+ configuration (e.g. MLS was not enabled).
+ .TP 10
+-.B TRETR
+-The test case was no longer valid and has been "retired."
+-.TP 10
+ .B TWARN
+ The testing procedure caused undesirable side effects that did not affect
+ test results (e.g. a temporary file could not be removed after all test
+@@ -184,10 +181,10 @@ this, a \fBtst_range\fR value > 1 is not valid for these types.
+ \fBtst_brk()\fR and \fBtst_brkm()\fR are used to report results for all test
+ cases remaining in the test, and then call a cleanup function.  The only
+ result types that are valid for these functions are: \fBTFAIL, TBROK,
+-TCONF\fR, and \fBTRETR\fR.  When called with a \fIttype\fR of \fBTFAIL\fR or
++and TCONF\fR.  When called with a \fIttype\fR of \fBTFAIL\fR or
+ \fBTBROK\fR, one result of the specified \fIttype\fR will be printed,
+ followed by results of type \fBTBROK\fR for the remaining test cases.  When
+-called with a \fIttype\fR of \fBTCONF\fR or \fBTRETR\fR, the specified
++called with a \fIttype\fR of \fBTCONF\fR, the specified
+ \fIttype\fR will be printed for all remaining test cases.  If \fIfunc\fR is
+ not NULL, \fBtst_brk()\fR and \fBtst_brkm()\fR will call \fIfunc\fR after all
+ results have been printed.  If the call to \fIfunc\fR returns,
+@@ -223,17 +220,14 @@ TBROK
+ TWARN
+ 0004	/* .... .1.. */
+ .TP 10
+-TRETR
+-0010	/* .... 1... */
+-.TP 10
+ TINFO
+-0020	/* ...1 .... */
++0010	/* .... 1... */
+ .TP 10
+ TCONF
+-0040	/* ..1. .... */
++0020	/* ...1 .... */
+ .RE
+ .P
+-NOTE: \fBTPASS, TRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
++NOTE: \fBTPASS and TINFO\fR do not have an effect
+ on the test program exit status.
+ .P
+ \fBtst_environ()\fR is used to ensure that results reported by this library
+@@ -320,7 +314,7 @@ If an invalid test type is specified.
+ If \fBtst_count\fR is negative.
+ .P
+ If one of the \fBtst_brk[m]()\fR routines is called with a test type
+-other than \fBTFAIL, TBROK, TCONF\fR, or \fBTRETR\fR.
++other than \fBTFAIL, TBROK, TCONF\fR.
+ .P
+ If there are any problems opening/reading/writing the contents of \fIfname\fR.
+ .RE
+diff --git a/include/tst_res_flags.h b/include/tst_res_flags.h
+index 5c5ab4c..1f3d06d 100644
+--- a/include/tst_res_flags.h
++++ b/include/tst_res_flags.h
+@@ -17,7 +17,6 @@
+ #define TFAIL	1	/* Test failed flag */
+ #define TBROK	2	/* Test broken flag */
+ #define TWARN	4	/* Test warning flag */
+-#define TRETR	8	/* Test retire flag */
+ #define TINFO	16	/* Test information flag */
+ #define TCONF	32	/* Test not appropriate for configuration flag */
+ #define TTYPE_RESULT(ttype)	((ttype) & TTYPE_MASK)
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index 31186e0..0383c98 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -207,7 +207,6 @@ const char *strttype(int ttype)
+ 		PAIR(TPASS)
+ 		PAIR(TFAIL)
+ 		PAIR(TBROK)
+-		PAIR(TRETR)
+ 		PAIR(TCONF)
+ 		PAIR(TWARN)
+ 		PAIR(TINFO)
+@@ -562,8 +561,8 @@ void tst_exit(void)
+ 	/* Call tst_flush() flush any output in the buffer. */
+ 	tst_flush();
+ 
+-	/* Mask out TRETR, TINFO, and TCONF results from the exit status. */
+-	exit(T_exitval & ~(TRETR | TINFO));
++	/* Mask out TINFO result from the exit status. */
++	exit(T_exitval & ~TINFO);
+ }
+ 
+ pid_t tst_fork(void)
+@@ -622,7 +621,7 @@ void tst_brk(int ttype, const char *fname, void (*func) (void), const char *arg_
+ 	 * Only FAIL, BROK, CONF, and RETR are supported by tst_brk().
+ 	 */
+ 	if (ttype_result != TFAIL && ttype_result != TBROK &&
+-	    ttype_result != TCONF && ttype_result != TRETR) {
++	    ttype_result != TCONF) {
+ 		sprintf(Warn_mesg, "%s: Invalid Type: %d. Using TBROK",
+ 			__func__, ttype_result);
+ 		tst_print(TCID, 0, TWARN, Warn_mesg);
+@@ -636,8 +635,6 @@ void tst_brk(int ttype, const char *fname, void (*func) (void), const char *arg_
+ 			tst_res(ttype, NULL,
+ 				"Remaining cases not appropriate for "
+ 				"configuration");
+-		else if (ttype_result == TRETR)
+-			tst_res(ttype, NULL, "Remaining cases retired");
+ 		else if (ttype_result == TBROK)
+ 			tst_res(TBROK, NULL, "Remaining cases broken");
+ 	}
+@@ -828,13 +825,13 @@ int main(void)
+ 	       %2i : call tst_res(TFAIL, ...)\n\
+ 	       %2i : call tst_res(TBROK, ...)\n\
+ 	       %2i : call tst_res(TWARN, ...)\n\
+-	       %2i : call tst_res(TRETR, ...)\n\
+ 	       %2i : call tst_res(TINFO, ...)\n\
+-	       %2i : call tst_res(TCONF, ...)\n\n", TPASS, TFAIL, TBROK, TWARN, TRETR, TINFO, TCONF);
++	       %2i : call tst_res(TCONF, ...)\n\n", TPASS, TFAIL, TBROK,
++	       TWARN, TINFO, TCONF);
+ 
+ 	while (1) {
+-		printf("Enter ttype (-5,-4,-3,-2,-1,%i,%i,%i,%i,%i,%i,%i): ",
+-		       TPASS, TFAIL, TBROK, TWARN, TRETR, TINFO, TCONF);
++		printf("Enter ttype(-5, -4, -3, -2, -1, %i, %i, %i, %i, %i, %i)"
++		       " : ", TPASS, TFAIL, TBROK, TWARN, TINFO, TCONF);
+ 		scanf("%d%c", &ttype, &chr);
+ 
+ 		switch (ttype) {
+@@ -848,8 +845,8 @@ int main(void)
+ 
+ 		case -3:
+ 			printf
+-			    ("Enter the current type (%i=FAIL, %i=BROK, %i=RETR, %i=CONF): ",
+-			     TFAIL, TBROK, TRETR, TCONF);
++			    ("Enter the current type (%i=FAIL, %i=BROK, "
++			     "%i=CONF): ", TFAIL, TBROK, TCONF);
+ 			scanf("%d%c", &ttype, &chr);
+ 			printf("Enter file name (<cr> for none): ");
+ 			gets(fname);
+@@ -862,8 +859,8 @@ int main(void)
+ 
+ 		case -4:
+ 			printf
+-			    ("Enter the current type (%i,%i,%i,%i,%i,%i,%i): ",
+-			     TPASS, TFAIL, TBROK, TWARN, TRETR, TINFO, TCONF);
++			    ("Enter the current type (%i,%i,%i,%i,%i,%i): ",
++			     TPASS, TFAIL, TBROK, TWARN, TINFO, TCONF);
+ 			scanf("%d%c", &ttype, &chr);
+ 		default:
+ 			printf("Enter file name (<cr> for none): ");
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index b6eb5e8..e26c132 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -33,7 +33,6 @@ tst_flag2mask()
+ 	TFAIL) return 1;;
+ 	TBROK) return 2;;
+ 	TWARN) return 4;;
+-	TRETR) return 8;;
+ 	TINFO) return 16;;
+ 	TCONF) return 32;;
+ 	*) tst_brkm TBROK "Invalid resm type '$1'";;
+@@ -60,7 +59,6 @@ tst_brkm()
+ 	TFAIL) ;;
+ 	TBROK) ;;
+ 	TCONF) ;;
+-	TRETR) ;;
+ 	*) tst_brkm TBROK "Invalid tst_brkm type '$1'";;
+ 	esac
+ 
+@@ -81,8 +79,8 @@ tst_exit()
+ 		$TST_CLEANUP
+ 	fi
+ 
+-	# Mask out TRETR, TINFO and TCONF
+-	exit $((LTP_RET_VAL & ~(8 | 16)))
++	# Mask out TINFO
++	exit $((LTP_RET_VAL & ~16))
+ }
+ 
+ tst_tmpdir()
+diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
+index 220edae..c7bffa1 100644
+--- a/tools/apicmds/ltpapicmd.c
++++ b/tools/apicmds/ltpapicmd.c
+@@ -93,7 +93,7 @@ static char *tst_cntstr;	/* sets the value of tst_count with this value */
+  *              the string that is entered by the user to an integer value that
+  *              is understood by the API's.
+  *
+- * Return:      test type TPASS, TFAIL, TBROK, TCONF, TRETR, TWARN, or TINFO
++ * Return:      test type TPASS, TFAIL, TBROK, TCONF, TWARN, or TINFO
+  *              on success
+  *              -1 on failure
+  */
+@@ -108,8 +108,6 @@ int ident_ttype(char *tstype)
+ 		return TPASS;
+ 	else if (strcmp(tstype, "TCONF") == 0)
+ 		return TCONF;
+-	else if (strcmp(tstype, "TRETR") == 0)
+-		return TRETR;
+ 	else if (strcmp(tstype, "TWARN") == 0)
+ 		return TWARN;
+ 	else if (strcmp(tstype, "TINFO") == 0)
+@@ -125,8 +123,8 @@ void apicmd_brk(int argc, char *argv[])
+ 
+ 	if (argc < 5) {
+ 		fprintf(stderr, "Usage: %s TTYPE FNAME FUNC STRING\n"
+-			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK, TCONF, "
+-			"and TRETR.\n"
++			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK "
++			"and TCONF.\n"
+ 			"\tFNAME  - Print contents of this file after the message\n"
+ 			"\tFUNC   - Cleanup function (ignored), but MUST be provided\n"
+ 			"\tSTRING - Message explaining the test result\n",
+@@ -146,8 +144,8 @@ void apicmd_res(int argc, char *argv[])
+ 
+ 	if (argc < 4) {
+ 		fprintf(stderr, "Usage: %s TTYPE FNAME STRING\n"
+-			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK, TCONF, "
+-			"and  TRETR.\n"
++			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK "
++			"and  TCONF.\n"
+ 			"\tFNAME  - Print contents of this file after the message\n"
+ 			"\tSTRING - Message explaining the test result\n",
+ 			cmd_name);
+@@ -164,8 +162,8 @@ void apicmd_brkm(int argc, char *argv[])
+ 
+ 	if (argc < 4) {
+ 		fprintf(stderr, "Usage: %s TTYPE FUNC STRING\n"
+-			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK, TCONF, "
+-			"and TRETR.\n"
++			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK "
++			"and TCONF.\n"
+ 			"\tFUNC   - Cleanup function (ignored), but MUST be provided\n"
+ 			"\tSTRING - Message explaining the test result\n",
+ 			cmd_name);
+@@ -182,8 +180,8 @@ void apicmd_resm(int argc, char *argv[])
+ 
+ 	if (argc < 3) {
+ 		fprintf(stderr, "Usage: %s TTYPE STRING\n"
+-			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK, TCONF, "
+-			"and TRETR.\n"
++			"\tTTYPE  - Test Result Type; one of TFAIL, TBROK"
++			"and TCONF.\n"
+ 			"\tSTRING - Message explaining the test result\n",
+ 			cmd_name);
+ 		exit(1);
+diff --git a/tools/genhtml.pl b/tools/genhtml.pl
+index 50c66f7..7e9bdd4 100644
+--- a/tools/genhtml.pl
++++ b/tools/genhtml.pl
+@@ -197,12 +197,6 @@ foreach my $file (@ARGV) {
+ 				    $warn_test_counter++;
+ 				    $warn_test_counter_flag=1;
+ 				}
+-			    } elsif ($line =~ /\ TRETR\ / ) {
+-				$detected_retr = 1;
+-				if ( $retr_test_counter_flag == 0 ) {
+-				    $retr_test_counter++;
+-				    $retr_test_counter_flag=1;
+-				}
+ 			    } elsif ($line =~ /\ TCONF\ / ) {
+ 				$detected_conf = 1;
+ 				if ( $conf_test_counter_flag == 0 ) {
+@@ -244,7 +238,6 @@ print "<tr><td><strong>Total Test TPASS:</strong></td><td><strong> $test_passed
+ print "<tr><td><strong>Total Test TFAIL:</strong></td><td><strong> $failed_test_counter </strong></td></tr>\n";
+ print "<tr><td><strong>Total Test TBROK</strong></td><td><strong> $brok_test_counter </strong></td></tr>\n";
+ print "<tr><td><strong>Total Test TWARN</strong></td><td><strong> $warn_test_counter </strong></td></tr>\n";
+-print "<tr><td><strong>Total Test TRETR</strong></td><td><strong> $retr_test_counter </strong></td></tr>\n";
+ print "<tr><td><strong>Total Test TCONF</strong></td><td><strong> $conf_test_counter </strong></td></tr>\n";
+ print "<tr><td><strong>Kernel Version</strong></td><td><strong> $ENV{KERNEL_VERSION}  </strong></td></tr>\n";
+ print "<tr><td><strong>Machine Architecture</strong></td><td><strong> $ENV{MACHINE_ARCH} </strong></td></tr>\n";
+diff --git a/tools/html_report_header.txt b/tools/html_report_header.txt
+index 98176ba..b3da2c5 100644
+--- a/tools/html_report_header.txt
++++ b/tools/html_report_header.txt
+@@ -25,7 +25,6 @@
+ <li><b>TFAIL -</b> Indicates that the test case had an unexpected result and failed.</li>
+ <li><b>TBROK -</b> Indicates that the remaining test cases are broken and will not execute correctly, because some precondition not met, such as a resource not being available.</li>
+ <li><b>TCONF -</b> Indicates that the test case was not written to run on the current harware or software configuration such as machine type, or, kernel version.</li>
+-<li><b>TRETR -</b> Indicates that the test cases has been retired and should not be executed any longer.</li>
+ <li><b>TWARN -</b> Indicates that the test case experienced an unexpected or undesirable event that should not affect the test itself such as being unable to cleanup resources after the test finished.</li>
+ <li><b>TINFO -</b> Specifies useful information about the status of the test that does not affect the result and does not indicate a problem.</li>
+ <hr>
+-- 
+1.8.2.1
 
-Ahh, I had an outdated version of checkpatch.pl and overlooked that.
-
-Everything except 'do - while' fixed and pushed.
-
-Thank you, Jan.
-
-> Regards,
-> Jan
->
->>
->>>
->>> Reviewed-by: Jan Stancek <jstancek@redhat.com>
->>>
->>> Regards,
->>> Jan
->>>
->>>> ---
->>>> Changes since V3:
->>>>    * use tst_fork() instead of fork() for privileged_pid
->>>>    * use tst_get_unused_pid() for free_pid
->>>>
->>>>    runtest/syscalls                                   |    1 +
->>>>    testcases/kernel/syscalls/.gitignore               |    1 +
->>>>    .../kernel/syscalls/sched_setaffinity/Makefile     |   23 +++
->>>>    .../syscalls/sched_setaffinity/sched_setaffinity.h |   60 +++++++
->>>>    .../sched_setaffinity/sched_setaffinity01.c        |  177
->>>>    ++++++++++++++++++++
->>>>    5 files changed, 262 insertions(+), 0 deletions(-)
->>>>    create mode 100644 testcases/kernel/syscalls/sched_setaffinity/Makefile
->>>>    create mode 100644
->>>>    testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->>>>    create mode 100644
->>>>    testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->>>>
->>>> diff --git a/runtest/syscalls b/runtest/syscalls
->>>> index 66d6a65..52556bc 100644
->>>> --- a/runtest/syscalls
->>>> +++ b/runtest/syscalls
->>>> @@ -895,6 +895,7 @@ sched_setscheduler02 sched_setscheduler02
->>>>
->>>>    sched_yield01 sched_yield01
->>>>
->>>> +sched_setaffinity01 sched_setaffinity01
->>>>    sched_getaffinity01 sched_getaffinity01
->>>>
->>>>    select01 select01
->>>> diff --git a/testcases/kernel/syscalls/.gitignore
->>>> b/testcases/kernel/syscalls/.gitignore
->>>> index 975c150..0c31582 100644
->>>> --- a/testcases/kernel/syscalls/.gitignore
->>>> +++ b/testcases/kernel/syscalls/.gitignore
->>>> @@ -724,6 +724,7 @@
->>>>    /sched_rr_get_interval/sched_rr_get_interval01
->>>>    /sched_rr_get_interval/sched_rr_get_interval02
->>>>    /sched_rr_get_interval/sched_rr_get_interval03
->>>> +/sched_setaffinity/sched_setaffinity01
->>>>    /sched_setparam/sched_setparam01
->>>>    /sched_setparam/sched_setparam02
->>>>    /sched_setparam/sched_setparam03
->>>> diff --git a/testcases/kernel/syscalls/sched_setaffinity/Makefile
->>>> b/testcases/kernel/syscalls/sched_setaffinity/Makefile
->>>> new file mode 100644
->>>> index 0000000..2d825f1
->>>> --- /dev/null
->>>> +++ b/testcases/kernel/syscalls/sched_setaffinity/Makefile
->>>> @@ -0,0 +1,23 @@
->>>> +#
->>>> +#  Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->>>> +#
->>>> +#  This program is free software;  you can redistribute it and/or modify
->>>> +#  it under the terms of the GNU General Public License as published by
->>>> +#  the Free Software Foundation; either version 2 of the License, or
->>>> +#  (at your option) any later version.
->>>> +#
->>>> +#  This program is distributed in the hope that it will be useful,
->>>> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
->>>> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->>>> +#  the GNU General Public License for more details.
->>>> +#
->>>> +#  You should have received a copy of the GNU General Public License
->>>> +#  along with this program;  if not, write to the Free Software
->>>> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
->>>> USA
->>>> +#
->>>> +
->>>> +top_srcdir		?= ../../../..
->>>> +
->>>> +include $(top_srcdir)/include/mk/testcases.mk
->>>> +
->>>> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
->>>> diff --git
->>>> a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->>>> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->>>> new file mode 100644
->>>> index 0000000..8083894
->>>> --- /dev/null
->>>> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
->>>> @@ -0,0 +1,60 @@
->>>> +/*
->>>> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->>>> + *
->>>> + * This program is free software; you can redistribute it and/or
->>>> + * modify it under the terms of the GNU General Public License as
->>>> + * published by the Free Software Foundation; either version 2 of
->>>> + * the License, or (at your option) any later version.
->>>> + *
->>>> + * This program is distributed in the hope that it would be useful,
->>>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->>>> + * GNU General Public License for more details.
->>>> + *
->>>> + * You should have received a copy of the GNU General Public License
->>>> + * along with this program; if not, write the Free Software Foundation,
->>>> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
->>>> + */
->>>> +
->>>> +/*
->>>> + * Some old libcs (like glibc < 2.7) do not provide interfaces for
->>>> + * dynamically sized cpu sets, but provide only static cpu_set_t type
->>>> + * with no more than CPU_SETSIZE cpus in it.
->>>> + *
->>>> + * This file is a wrapper of the dynamic interfaces using the static
->>>> ones.
->>>> + *
->>>> + * If the number of cpus available on the system is greater than
->>>> + * CPU_SETSIZE, this interface will not work. Update libc in this case :)
->>>> + */
->>>> +
->>>> +#define _GNU_SOURCE
->>>> +#include <sched.h>
->>>> +
->>>> +#ifndef LTP_SCHED_SETAFFINITY_H
->>>> +#define LTP_SCHED_SETAFFINITY_H
->>>> +
->>>> +#ifndef CPU_ALLOC
->>>> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
->>>> +if (ncpus > CPU_SETSIZE) { \
->>>> +	tst_brkm(TCONF, cleanup, \
->>>> +		"Your libc does not support masks with %ld cpus", ncpus); \
->>>> +}
->>>> +#endif
->>>> +
->>>> +#ifndef CPU_FREE
->>>> +#define CPU_FREE(ptr) free(ptr);
->>>> +#endif
->>>> +
->>>> +#ifndef CPU_ALLOC_SIZE
->>>> +#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t);
->>>> +#endif
->>>> +
->>>> +#ifndef CPU_ZERO_S
->>>> +#define CPU_ZERO_S(size, mask) CPU_ZERO(mask);
->>>> +#endif
->>>> +
->>>> +#ifndef CPU_SET_S
->>>> +#define CPU_SET_S(cpu, size, mask) CPU_SET(cpu, mask);
->>>> +#endif
->>>> +
->>>> +#endif /* LTP_SCHED_SETAFFINITY_H */
->>>> diff --git
->>>> a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->>>> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->>>> new file mode 100644
->>>> index 0000000..d1b2abe
->>>> --- /dev/null
->>>> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
->>>> @@ -0,0 +1,177 @@
->>>> +/*
->>>> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
->>>> + *
->>>> + * This program is free software; you can redistribute it and/or
->>>> + * modify it under the terms of the GNU General Public License as
->>>> + * published by the Free Software Foundation; either version 2 of
->>>> + * the License, or (at your option) any later version.
->>>> + *
->>>> + * This program is distributed in the hope that it would be useful,
->>>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->>>> + * GNU General Public License for more details.
->>>> + *
->>>> + * You should have received a copy of the GNU General Public License
->>>> + * along with this program; if not, write the Free Software Foundation,
->>>> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
->>>> + */
->>>> +
->>>> +/*
->>>> + * This test verifies sched_setaffinity(2) for all error conditions
->>>> + * to occur correctly.
->>>> + *
->>>> + * sched_setaffinity() returns -1 and sets the error code to:
->>>> + *
->>>> + * 1) EFAULT, if the supplied memory address is invalid
->>>> + * 2) EINVAL, if the mask doesn't contain at least one
->>>> + *    permitted cpu
->>>> + * 3) ESRCH, if the process whose id is pid could not
->>>> + *    be found
->>>> + * 4) EPERM, if the calling process doesn't have appropriate
->>>> + *    privileges
->>>> + */
->>>> +
->>>> +#define _GNU_SOURCE
->>>> +#include <errno.h>
->>>> +#include <pwd.h>
->>>> +#include <sched.h>
->>>> +#include <signal.h>
->>>> +#include <unistd.h>
->>>> +#include <sys/types.h>
->>>> +#include <sys/wait.h>
->>>> +#include "test.h"
->>>> +#include "usctest.h"
->>>> +#include "safe_macros.h"
->>>> +#include "sched_setaffinity.h"
->>>> +
->>>> +char *TCID = "sched_setaffinity01";
->>>> +
->>>> +#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
->>>> +
->>>> +static cpu_set_t *mask, *emask;
->>>> +static cpu_set_t *fmask = (void *)-1;
->>>> +static size_t mask_size, emask_size;
->>>> +static pid_t self_pid, privileged_pid, free_pid;
->>>> +static uid_t uid;
->>>> +static const char nobody_uid[] = "nobody";
->>>> +static struct passwd *ltpuser;
->>>> +static long ncpus;
->>>> +
->>>> +static struct test_case_t {
->>>> +	pid_t *pid;
->>>> +	size_t *mask_size;
->>>> +	cpu_set_t **mask;
->>>> +	int exp_errno;
->>>> +} test_cases[] = {
->>>> +	{&self_pid, &mask_size, &fmask, EFAULT},
->>>> +	{&self_pid, &emask_size, &emask, EINVAL},
->>>> +	{&free_pid, &mask_size, &mask, ESRCH},
->>>> +	{&privileged_pid, &mask_size, &mask, EPERM},
->>>> +};
->>>> +
->>>> +int TST_TOTAL = ARRAY_SIZE(test_cases);
->>>> +
->>>> +static void cleanup(void)
->>>> +{
->>>> +	if (mask != NULL) {
->>>> +		CPU_FREE(mask);
->>>> +		mask = NULL;
->>>> +	}
->>>> +
->>>> +	if (emask != NULL) {
->>>> +		CPU_FREE(emask);
->>>> +		emask = NULL;
->>>> +	}
->>>> +
->>>> +	SAFE_SETEUID(NULL, uid);
->>>> +
->>>> +	if (privileged_pid != 0) {
->>>> +		kill(privileged_pid, SIGKILL);
->>>> +		waitpid(privileged_pid, NULL, 0);
->>>> +		privileged_pid = 0;
->>>> +	}
->>>> +}
->>>> +
->>>> +static void setup(void)
->>>> +{
->>>> +	tst_require_root(NULL);
->>>> +	uid = geteuid();
->>>> +	ncpus = tst_ncpus_max();
->>>> +
->>>> +	/* Current mask */
->>>> +	mask = CPU_ALLOC(ncpus);
->>>> +	if (mask == NULL)
->>>> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
->>>> +			ncpus);
->>>> +	mask_size = CPU_ALLOC_SIZE(ncpus);
->>>> +	if (sched_getaffinity(0, mask_size, mask) < 0)
->>>> +		tst_brkm(TBROK | TERRNO, cleanup, "sched_getaffinity() failed");
->>>> +
->>>> +	/* Mask with one more cpu than available on the system */
->>>> +	emask = CPU_ALLOC(ncpus + 1);
->>>> +	if (emask == NULL)
->>>> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
->>>> +			ncpus + 1);
->>>> +	emask_size = CPU_ALLOC_SIZE(ncpus + 1);
->>>> +	CPU_ZERO_S(emask_size, emask);
->>>> +	CPU_SET_S(ncpus, emask_size, emask);
->>>> +
->>>> +	privileged_pid = tst_fork();
->>>> +	if (privileged_pid == 0) {
->>>> +		pause();
->>>> +
->>>> +		exit(0);
->>>> +	} else if (privileged_pid < 0) {
->>>> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
->>>> +	}
->>>> +
->>>> +	/* Dropping the root privileges */
->>>> +	ltpuser = getpwnam(nobody_uid);
->>>> +	if (ltpuser == NULL)
->>>> +		tst_brkm(TBROK | TERRNO, cleanup,
->>>> +			"getpwnam failed for user id %s", nobody_uid);
->>>> +
->>>> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
->>>> +
->>>> +	/* this pid is not used by the OS */
->>>> +	free_pid = tst_get_unused_pid(cleanup);
->>>> +}
->>>> +
->>>> +int main(int argc, char *argv[])
->>>> +{
->>>> +	const char *msg;
->>>> +	int lc;
->>>> +	int i;
->>>> +
->>>> +	msg = parse_opts(argc, argv, NULL, NULL);
->>>> +	if (msg != NULL)
->>>> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
->>>> +
->>>> +	setup();
->>>> +
->>>> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
->>>> +		tst_count = 0;
->>>> +		for (i = 0; i < TST_TOTAL; i++) {
->>>> +			TEST(sched_setaffinity(*(test_cases[i].pid),
->>>> +						*(test_cases[i].mask_size),
->>>> +						*(test_cases[i].mask)));
->>>> +
->>>> +			if (TEST_RETURN != -1)
->>>> +				tst_resm(TFAIL,
->>>> +					"sched_setaffinity() unexpectedly succeded");
->>>> +
->>>> +			if (TEST_ERRNO == test_cases[i].exp_errno) {
->>>> +				tst_resm(TPASS, "expected failure with '%s'",
->>>> +					strerror(test_cases[i].exp_errno));
->>>> +			} else {
->>>> +				tst_resm(TFAIL,
->>>> +					"call returned '%s', expected - '%s'",
->>>> +					strerror(TEST_ERRNO),
->>>> +					strerror(test_cases[i].exp_errno));
->>>> +			}
->>>> +		}
->>>> +	}
->>>> +
->>>> +	cleanup();
->>>> +	tst_exit();
->>>> +}
->>>> --
->>>> 1.7.1
->>>>
->>>>
->>>> ------------------------------------------------------------------------------
->>>> Open source business process management suite built on Java and Eclipse
->>>> Turn processes into business applications with Bonita BPM Community
->>>> Edition
->>>> Quickly connect people, data, and systems into organized workflows
->>>> Winner of BOSSIE, CODIE, OW2 and Gartner awards
->>>> http://p.sf.net/sfu/Bonitasoft
->>>> _______________________________________________
->>>> Ltp-list mailing list
->>>> Ltp-list@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>>>
->>
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
