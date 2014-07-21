@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XC4hW-0002b5-Ou
-	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 10:32:10 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 9C3F8AB07
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Jul 2014 10:32:03 +0000 (UTC)
-Date: Tue, 29 Jul 2014 12:31:25 +0200
+	(envelope-from <metan@suse.de>) id 1X97nW-0000aO-HJ
+	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 07:14:10 +0000
+Date: Mon, 21 Jul 2014 09:13:28 +0200
 From: chrubis@suse.cz
-Message-ID: <20140729103125.GA24424@rei>
+Message-ID: <20140721071328.GA5025@rei.suse.cz>
+References: <4506ACC2AE90484D87F9A883BA36C21C2ADF0001@LCHQEX03.lancope.local>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] LTP Release
+In-Reply-To: <4506ACC2AE90484D87F9A883BA36C21C2ADF0001@LCHQEX03.lancope.local>
+Subject: Re: [LTP] Apparent trouble with HEAD of LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +24,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Joseph Beckenbach <jbeckenbach@lancope.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-If I'm counting right we should do a release anytime soon.
+Hi!
+> Merely adding libtool (2.4.2) onto the system still leaves me with the munged ./configure script.
+> 
+> To correct this issue I did:
+> 
+> 1:  added back '-I m4' to include/mk/automake.mk
+> 
+> 2:  `make distclean ; rm -f configure`
+> 
+> 3:  restarted my work at the `make autotools` step
+> 
+> I see no odd output or bad warnings from compilations.
+> `make install` is also clean, and invoking `/path/to/runltp -h` gives help output as expected.
 
-Before we do a release freeze and round of testing what patches should
-go in?
 
-I personally would like to finish conversion to the tst_acquire_device()
-interface (6 tests). Anything else?
+You are not the only one with this problem, I will fix this ASAP.
+
+With the last commit I've added AC_CONFIG_MACRO_DIR(m4) which should add
+the path to m4 directory instead of the -I m4 (which works for me
+apparently because I have recent enough autotools). According to the GNU
+mailing list the macro was not working until recently, see:
+
+http://lists.gnu.org/archive/html/autoconf/2013-08/msg00013.html
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
