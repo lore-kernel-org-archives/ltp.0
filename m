@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1XAZAs-0006YH-4U
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 06:40:14 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XAZAq-000657-7C
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 06:40:14 +0000
-Message-ID: <53D1FBB3.1030601@oracle.com>
-Date: Fri, 25 Jul 2014 10:39:47 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1X9cdY-0007pW-Su
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 16:09:56 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X9cdX-0005wZ-Eb
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 16:09:56 +0000
+Date: Tue, 22 Jul 2014 12:09:47 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <640822169.13701915.1406045387116.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53CDE4C7.9040007@casparzhang.com>
+References: <CAE1O6mhHy9uLNsgAVhg0+h+vyECTmRVTPULhF1fpjUHxjc3B4w@mail.gmail.com>
+	<53CDE4C7.9040007@casparzhang.com>
 MIME-Version: 1.0
-References: <53D1ED3D.2070907@cn.fujitsu.com>
-In-Reply-To: <53D1ED3D.2070907@cn.fujitsu.com>
-Subject: Re: [LTP] Segmentation fault when running sched_setaffinity01 in
- RHEL5.10GA
+Subject: Re: [LTP] fix hugemmap03 fails on s390x error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,125 +28,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>, LTP <ltp-list@lists.sourceforge.net>
+To: Li Wang <wangli.ahau@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
 
-On 07/25/2014 09:38 AM, Xiaoguang Wang wrote:
-> Hi,
->
-> When we run sched_setaffinity01 in RHEL5.10GA, it occurs a segmentation fault.
-> Below is the possible reason.
 
-Hi!
 
-I though I'd checked this test case on OL5 before submission. Let me 
-check it again.
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Li Wang" <wangli.ahau@gmail.com>, ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 22 July, 2014 6:12:55 AM
+> Subject: Re: [LTP] fix hugemmap03 fails on s390x error
+> 
+> On 07/22/2014 11:24 AM, Li Wang wrote:
+> > Hi all,
+> >
+> > LTP failed with mmap into high region on s390x:
+> >
+> > hugemmap03    0  TINFO  :  set nr_hugepages to 64
+> > hugemmap03    1  TFAIL  :  mmap into high region succeeded unexpectedly
+> > hugemmap03    0  TINFO  :  set nr_hugepages to 0
+> > hugemmap03    0  TWARN  :  tst_rmdir: rmobj(/tmp/hugOr8owE) failed:
+> > remove(/tmp/hugOr8owE) failed; errno=16: Device or resource busy
+> >
+> >
+> > According to the test case, the failing code is:
+> >
+> > 103                 /* Attempt to mmap into highmem addr, should get ENOMEM
+> > */
+> > 104                 addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
+> > 105                             MAP_SHARED | MAP_FIXED, fildes, 0);
+> > 106                 if (addr != MAP_FAILED) {
+> > 107                         tst_resm(TFAIL, "mmap into high region "
+> > 108                                  "succeeded unexpectedly");
+> > 109                         goto fail;
+> > 110                 }
+> >
+> > with HIGH_ADDR defined as:
+> >
+> > #define HIGH_ADDR       (void *)(0x1000000000000)
+> >
+> > This is an 2^48 address... which is likely the maximum for amd64.  On
+> > s390x, the address space is up to 2^53. So the mmap() in the test case
+> > succeeds which is not expected.
+> >
+> >
+> > ---------------------------------------------
+> >
+> > after increase the HIGH_ADDR value, test PASS.
+> >
+> > [root@ibm-z10-38 hugemmap]# cat hugemmap03.c |grep HIGH
+> > #define HIGH_ADDR (void *)(0x100000000000000)      <----increase the value
+> > addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
 
->
-> Hi Jan, would you please help to confirm this problem. I'm afraid RHEL5.10GA is an old
-> distribution, which many people may not use it now, thanks!
->
->
-> Glibc provides a encapsulation for the raw kernel sched_setaffinity(2) system call,
-> the corresponding code is below(The version of glibc I used is glibc-2.5-20061008T1257-RHEL5.11Beta):
-> I delete some code just for simple.
->
-> #######################################################################################
->
-> /* Size definition for CPU sets.  */
-> # define __CPU_SETSIZE  1024
-> # define __NCPUBITS     (8 * sizeof (__cpu_mask))
->
-> /* Type for array elements in 'cpu_set'.  */
-> typedef unsigned long int __cpu_mask;
->
-> /* Basic access functions.  */
-> # define __CPUELT(cpu)  ((cpu) / __NCPUBITS)
->
-> /* Data structure to describe CPU mask.  */
-> typedef struct
-> {
->    __cpu_mask __bits[__CPU_SETSIZE / __NCPUBITS];
-> } cpu_set_t;
->
->
-> int __sched_setaffinity_new (pid_t pid, size_t cpusetsize, const cpu_set_t *cpuset)
-> {
->    if (__builtin_expect (__kernel_cpumask_size == 0, 0))
->      {
->        int res;
->
->        while (res = INTERNAL_SYSCALL (sched_getaffinity, err, 3, getpid (),
->                                       psize, p),
->               INTERNAL_SYSCALL_ERROR_P (res, err)
->               && INTERNAL_SYSCALL_ERRNO (res, err) == EINVAL)
->       	....
->
->        __kernel_cpumask_size = res;
->      }
->
->    /* We now know the size of the kernel cpumask_t.  Make sure the user
->       does not request to set a bit beyond that.  */
->    for (size_t cnt = __kernel_cpumask_size; cnt < cpusetsize; ++cnt)
->      if (((char *) cpuset)[cnt] != '\0')
->        {
->          /* Found a nonzero byte.  This means the user request cannot be
->             fulfilled.  */
->          __set_errno (EINVAL);
->          return -1;
->        }
->
->    return INLINE_SYSCALL (sched_setaffinity, 3, pid, cpusetsize, cpuset);
-> }
-> #######################################################################################
->
-> Glibc in RHEL5.10GA does not provide CPU_ALLOC_SIZE marco, so in ltp testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h,
-> we define one.
-> #######################################################################################
-> #ifndef CPU_ALLOC_SIZE
-> #define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t)
-> #endif
-> #######################################################################################
->
-> Then CPU_ALLOC_SIZE would always return 128 in RHEL5.10GA, that is when we test EFAULT for sched_setaffinity(2),
-> the passed cpusetsize is 128. But look at __sched_setaffinity_new() above, it first call
-> raw sched_getaffinity(2) to get  the size of the kernel cpumask_t, In RHEL5.10GA,
-> this value depends on CONFIG_NR_CPUS, if CONFIG_NR_CPUS is 255, the raw sched_getaffinity(2) will return 32.
-> In this case, __kernel_cpumask_size would be 32, cpusetsize is 128. Give that we're testing
-> EFAULT, cpuset is a invalid pointer, if cnt > 32, it will generate segmentation fault in glibc code,
-> so this case exits abnormally
->
-> As why this test case can run normally in RHEL6.5GA or RHEL7.0GA, it's because
-> sched_getaffinity(2) in old kernel(RHEL5.10GA) return sizeof(cpumask_t), which totally depends on CONFIG_NR_CPUS.
-> In newer kernel, sched_getaffinity(2) returns the smaller one between min_t(size_t, len, cpumask_size()),
-> here len is the value passed to sched_getaffinity as cpusetsize, cpumask_size() is the max allowed length.
-> so we can ensure __kernel_cpumask_size will never smaller cpusetsize, so the segmentation fault won't occur.
->
-> So I also think CPU_ALLOC and CPU_ALLOC_SIZE is wrong in testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h. We should
-> refer to the implementation in glibc. or we define CPU_ALLOC_SIZE using raw sched_getaffinity as a workaround in older kernel . See below code:
-> #########################################################################################
->
->          int ret;
->          cpu_set_t cst;
->
->          memset(&cst, 0, sizeof(cst));
->
->          ret = syscall(__NR_sched_getaffinity, getpid(),
->                        sizeof(cpu_set_t), &cst);
->          if (ret < 0) {
->                  fprintf(stderr, "sched_getaffinity failed: %s\n",
->                          strerror(errno));
->                  return 1;
->          } else {
->                  printf("length of bit mask the kernel uses to represent the CPU"
->                         ": %d\n", ret);
->          }
-> #########################################################################################
->
-> Regards,
-> Xiaoguang Wang
->
+I tested this on s390x, and can confirm that raising it to 2^53 or higher
+gives -ENOMEM.
+I posted a small patch and added your Sob.
+
+Regards,
+Jan
+
+> >
+> >
+> > [root@ibm-z10-38 hugemmap]# ./hugemmap03 -s 1024
+> > hugemmap03    0  TINFO  :  set nr_hugepages to 1024
+> > hugemmap03    1  TPASS  :  mmap into high region failed as expected:
+> > errno=ENOMEM(12): Cannot allocate memory
+> > hugemmap03    0  TINFO  :  set nr_hugepages to 0
+> >
+> >
+> >
+> >
+> 
+> Looks good to me. Could you please make a patch for it?
+> 
+> Thanks,
+> Caspar
+> 
+> 
+> 
 > ------------------------------------------------------------------------------
 > Want fast and easy access to all the code in your enterprise? Index and
 > search up to 200,000 lines of code with a free copy of Black Duck
@@ -158,7 +118,7 @@ check it again.
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+> 
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
