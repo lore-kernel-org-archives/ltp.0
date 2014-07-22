@@ -1,41 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1X2tzc-0002e9-F0
-	for ltp-list@lists.sourceforge.net; Fri, 04 Jul 2014 03:16:56 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X2tza-0005YQ-O5
-	for ltp-list@lists.sourceforge.net; Fri, 04 Jul 2014 03:16:56 +0000
-Received: from /spool/local
-	by e9.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Thu, 3 Jul 2014 23:16:49 -0400
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com
-	[9.57.198.24])
-	by d01dlp02.pok.ibm.com (Postfix) with ESMTP id 5FD536E802B
+	(envelope-from <caspar@casparzhang.com>) id 1X9Ro6-0003fM-6C
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 04:36:06 +0000
+Received: from mail-pa0-f46.google.com ([209.85.220.46])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1X9Ro4-0000VO-8I
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 04:36:06 +0000
+Received: by mail-pa0-f46.google.com with SMTP id lj1so11118613pab.5
 	for <ltp-list@lists.sourceforge.net>;
-	Thu,  3 Jul 2014 23:16:38 -0400 (EDT)
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by b01cxnp22034.gho.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	s643GlDq10027298
-	for <ltp-list@lists.sourceforge.net>; Fri, 4 Jul 2014 03:16:47 GMT
-Received: from d01av01.pok.ibm.com (localhost [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	s643Gl1D009757
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 23:16:47 -0400
-Received: from localhost.localdomain ([9.125.31.211])
-	by d01av01.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	s643GjOJ009710
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 23:16:46 -0400
-Date: Fri, 4 Jul 2014 11:16:41 +0800
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20140704031641.GA20446@localhost.localdomain>
+	Mon, 21 Jul 2014 21:35:58 -0700 (PDT)
+Message-ID: <53CDE4C7.9040007@casparzhang.com>
+Date: Tue, 22 Jul 2014 12:12:55 +0800
+From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at 2G
+References: <CAE1O6mhHy9uLNsgAVhg0+h+vyECTmRVTPULhF1fpjUHxjc3B4w@mail.gmail.com>
+In-Reply-To: <CAE1O6mhHy9uLNsgAVhg0+h+vyECTmRVTPULhF1fpjUHxjc3B4w@mail.gmail.com>
+Subject: Re: [LTP] fix hugemmap03 fails on s390x error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -48,284 +30,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Li Wang <wangli.ahau@gmail.com>, ltp-list@lists.sourceforge.net
 
-Hi,
+On 07/22/2014 11:24 AM, Li Wang wrote:
+> Hi all,
+>
+> LTP failed with mmap into high region on s390x:
+>
+> hugemmap03    0  TINFO  :  set nr_hugepages to 64
+> hugemmap03    1  TFAIL  :  mmap into high region succeeded unexpectedly
+> hugemmap03    0  TINFO  :  set nr_hugepages to 0
+> hugemmap03    0  TWARN  :  tst_rmdir: rmobj(/tmp/hugOr8owE) failed:
+> remove(/tmp/hugOr8owE) failed; errno=16: Device or resource busy
+>
+>
+> According to the test case, the failing code is:
+>
+> 103                 /* Attempt to mmap into highmem addr, should get ENOMEM */
+> 104                 addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
+> 105                             MAP_SHARED | MAP_FIXED, fildes, 0);
+> 106                 if (addr != MAP_FAILED) {
+> 107                         tst_resm(TFAIL, "mmap into high region "
+> 108                                  "succeeded unexpectedly");
+> 109                         goto fail;
+> 110                 }
+>
+> with HIGH_ADDR defined as:
+>
+> #define HIGH_ADDR       (void *)(0x1000000000000)
+>
+> This is an 2^48 address... which is likely the maximum for amd64.  On
+> s390x, the address space is up to 2^53. So the mmap() in the test case
+> succeeds which is not expected.
+>
+>
+> ---------------------------------------------
+>
+> after increase the HIGH_ADDR value, test PASS.
+>
+> [root@ibm-z10-38 hugemmap]# cat hugemmap03.c |grep HIGH
+> #define HIGH_ADDR (void *)(0x100000000000000)      <----increase the value
+> addr = mmap(HIGH_ADDR, map_sz, PROT_READ,
+>
+>
+> [root@ibm-z10-38 hugemmap]# ./hugemmap03 -s 1024
+> hugemmap03    0  TINFO  :  set nr_hugepages to 1024
+> hugemmap03    1  TPASS  :  mmap into high region failed as expected:
+> errno=ENOMEM(12): Cannot allocate memory
+> hugemmap03    0  TINFO  :  set nr_hugepages to 0
+>
+>
+>
+>
 
-Please review this patch. Thanks.
+Looks good to me. Could you please make a patch for it?
 
-There is a bug on 64bit sendfile() with large file, please see
-https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
-for details.
+Thanks,
+Caspar
 
-This sendfile09.c was copied from sendfile02.c and using plain
-file as the out_file. The file size is 4G (4294967296 bytes).
----
- testcases/kernel/syscalls/sendfile/sendfile09.c | 245 ++++++++++++++++++++++++
- 1 file changed, 245 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sendfile/sendfile09.c
-
-diff --git a/testcases/kernel/syscalls/sendfile/sendfile09.c b/testcases/kernel/syscalls/sendfile/sendfile09.c
-new file mode 100644
-index 0000000..d88a72f
---- /dev/null
-+++ b/testcases/kernel/syscalls/sendfile/sendfile09.c
-@@ -0,0 +1,245 @@
-+/*
-+ *
-+ *   Copyright (c) International Business Machines  Corp., 2001
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;  if not, write to the Free Software
-+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ */
-+
-+/*
-+ * NAME
-+ *	sendfile09.c
-+ *
-+ * DESCRIPTION
-+ *	Testcase copied from sendfile02.c to test the basic functionality of the sendfile(2) system call on large file.
-+ *
-+ * ALGORITHM
-+ *	1. call sendfile(2) with offset = 0
-+ *	2. call sendfile(2) with offset in the middle of the file
-+ *
-+ * USAGE:  <for command-line>
-+ *  sendfile09 [-c n] [-i n] [-I x] [-P x] [-t]
-+ *     where,
-+ *             -i n : Execute test n times.
-+ *             -I x : Execute test for x seconds.
-+ *             -P x : Pause for x seconds between iterations.
-+ *             -t   : Turn on syscall timing.
-+ *
-+ *
-+ * RESTRICTIONS
-+ *	Only supports 64bit systems and kernel 2.6.33 or above
-+ */
-+#include <stdio.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sys/stat.h>
-+#include <sys/sendfile.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include <inttypes.h>
-+
-+#include "usctest.h"
-+#include "test.h"
-+
-+#ifndef OFF_T
-+#define OFF_T off_t
-+#endif /* Not def: OFF_T */
-+
-+TCID_DEFINE(sendfile09);
-+int TST_TOTAL = 4;
-+
-+char in_file[100];
-+char out_file[100];
-+int out_fd;
-+
-+void cleanup(void);
-+void setup(void);
-+
-+struct test_case_t {
-+	char *desc;
-+	int offset;
-+	int64_t exp_retval;
-+	int64_t exp_updated_offset;
-+} testcases[] = {
-+	{
-+	"Test sendfile(2) with offset = 0", 0, 4294967296, 4294967296}, {
-+	"Test sendfile(2) with offset in the middle of file", 2, 4294967294, 4294967296}, {
-+	"Test sendfile(2) with offset in the middle of file", 4, 4294967292, 4294967296}, {
-+	"Test sendfile(2) with offset in the middle of file", 6, 4294967290, 4294967296}
-+};
-+
-+#ifdef UCLINUX
-+static char *argv0;
-+#endif
-+
-+void do_sendfile(OFF_T offset, int i)
-+{
-+	int in_fd;
-+	struct stat sb;
-+	int wait_status;
-+	int wait_stat;
-+	off_t before_pos, after_pos;
-+
-+	if ((out_fd = open(out_file, O_WRONLY)) < 0) {
-+		tst_brkm(TBROK, cleanup, "open failed: %d", errno);
-+	}
-+
-+	if ((in_fd = open(in_file, O_RDONLY)) < 0) {
-+		tst_brkm(TBROK, cleanup, "open failed: %d", errno);
-+	}
-+
-+	if (stat(in_file, &sb) < 0) {
-+		tst_brkm(TBROK, cleanup, "stat failed: %d", errno);
-+	}
-+
-+	if ((before_pos = lseek(in_fd, 0, SEEK_CUR)) < 0) {
-+		tst_brkm(TBROK, cleanup,
-+			 "lseek before invoking sendfile failed: %d", errno);
-+	}
-+
-+	TEST(sendfile(out_fd, in_fd, &offset, sb.st_size - offset));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_brkm(TBROK, cleanup, "sendfile(2) failed: %s",
-+			strerror(TEST_RETURN));
-+	}
-+
-+	if ((after_pos = lseek(in_fd, 0, SEEK_CUR)) < 0) {
-+		tst_brkm(TBROK, cleanup,
-+			 "lseek after invoking sendfile failed: %d", errno);
-+	}
-+
-+	if (TEST_RETURN != testcases[i].exp_retval) {
-+		tst_resm(TFAIL, "sendfile(2) failed to return "
-+			 "expected value, expected: %" PRId64 ", "
-+			 "got: %" PRId64, testcases[i].exp_retval,
-+			 TEST_RETURN);
-+	} else if (offset != testcases[i].exp_updated_offset) {
-+		tst_resm(TFAIL, "sendfile(2) failed to update "
-+			 "OFFSET parameter to expected value, "
-+			 "expected: %" PRId64 ", got: %" PRId64,
-+			 testcases[i].exp_updated_offset,
-+			 (int64_t) offset);
-+	} else if (before_pos != after_pos) {
-+		tst_resm(TFAIL, "sendfile(2) updated the file position "
-+			 " of in_fd unexpectedly, expected file position: %"
-+			 PRId64 ", " " actual file position %" PRId64,
-+			 (int64_t) before_pos, (int64_t) after_pos);
-+	} else {
-+		tst_resm(TPASS, "functionality of sendfile() is "
-+			 "correct");
-+		wait_status = waitpid(-1, &wait_stat, 0);
-+	}
-+
-+	close(in_fd);
-+	close(out_fd);
-+}
-+
-+/*
-+ * setup() - performs all ONE TIME setup for this test.
-+ */
-+void setup(void)
-+{
-+	int fd;
-+	int i;
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	/* make a temporary directory and cd to it */
-+	tst_tmpdir();
-+	sprintf(in_file, "in.%d", getpid());
-+	if ((fd = creat(in_file, 00700)) < 0) {
-+		tst_brkm(TBROK, cleanup, "creat failed in setup, errno: %d",
-+			 errno);
-+	}
-+
-+	/* create a 4G file */
-+	for (i = 1; i <= (4 * 1024); i++) {
-+		if (lseek(fd, (1024 * 1024 - 1), SEEK_CUR) < 0) {
-+			tst_brkm(TBROK, cleanup, "lseek failed, errno: %d", errno);
-+		}
-+
-+		if (write(fd, "C", 1) < 0) {
-+			tst_brkm(TBROK, cleanup, "write failed, errno: %d", errno);
-+		}
-+	}
-+
-+	close(fd);
-+	sprintf(out_file, "out.%d", getpid());
-+	if ((fd = creat(out_file, 00700)) < 0) {
-+		tst_brkm(TBROK, cleanup, "creat failed in setup, errno: %d",
-+			 errno);
-+	}
-+	close(fd);
-+}
-+
-+/*
-+ * cleanup() - performs all ONE TIME cleanup for this test at
-+ *	       completion or premature exit.
-+ */
-+void cleanup(void)
-+{
-+	/*
-+	 * print timing stats if that option was specified.
-+	 * print errno log if that option was specified.
-+	 */
-+	TEST_CLEANUP;
-+
-+	close(out_fd);
-+	/* delete the test directory created in setup() */
-+	tst_rmdir();
-+
-+}
-+
-+int main(int ac, char **av)
-+{
-+	int i;
-+	int lc;
-+	const char *msg;		/* parse_opts() return message */
-+
-+#if __WORDSIZE == 32
-+	tst_brkm(TCONF, NULL, "This test is only for 64bit");
-+#endif
-+
-+	if (tst_kvercmp(2, 6, 33) < 0) {
-+		tst_resm(TINFO, "sendfile(2) on large file skipped for kernels < 2.6.33");
-+		return;
-+	}
-+
-+	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL) {
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+	}
-+#ifdef UCLINUX
-+	argv0 = av[0];
-+#endif
-+
-+	setup();
-+
-+	/*
-+	 * The following loop checks looping state if -c option given
-+	 */
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; ++i) {
-+			do_sendfile(testcases[i].offset, i);
-+		}
-+	}
-+	cleanup();
-+
-+	tst_exit();
-+}
--- 
-1.9.3
 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
