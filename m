@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X9YZF-0001pS-CJ
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 11:49:13 +0000
-Date: Tue, 22 Jul 2014 13:48:32 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X9akq-000763-Qh
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 14:09:20 +0000
+Date: Tue, 22 Jul 2014 16:08:38 +0200
 From: chrubis@suse.cz
-Message-ID: <20140722114832.GA18980@rei>
-References: <1405933204-12601-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140722140838.GA11469@rei>
+References: <1401685455.2838.8.camel@G08JYZSD130126>
+	<20140612131041.GB20221@rei>
+	<1403179593.7741.2.camel@G08JYZSD130126>
+	<20140625153950.GA5552@rei>
+	<1403866408.2119.28.camel@G08JYZSD130126>
+	<20140715143901.GA8247@rei>
+	<1405932572.5156.7.camel@G08JYZSD130126>
+	<1405934632.5156.13.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1405933204-12601-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/2] remove meaningless TRETR flag
+In-Reply-To: <1405934632.5156.13.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v4 3/3] Make can testes' name more saner
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,23 +31,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> -TRETR
-> -0010	/* .... 1... */
-> -.TP 10
->  TINFO
-> -0020	/* ...1 .... */
-> +0010	/* .... 1... */
->  .TP 10
->  TCONF
-> -0040	/* ..1. .... */
-> +0020	/* ...1 .... */
+> * Add can to scenario_groups/default.
+> 
+> * Add can_filter and can_rcv_own_msgs to network/.gitignore.
+> 
+> * Make the test's name more saner:
+> 	tst-filter.c --> can_filter.c
+> 	tst-rcv-own-msgs.c --> can_rcv_own_msgs.c
+> 	run_ltp-can_tests.sh --> can_run_tests.sh
 
-I've changed these back because we keep the original values in this
-patch and pushed, thanks.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
