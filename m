@@ -1,31 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1X2jzo-0000c6-7v
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 16:36:28 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X2jzm-0005jh-Bo
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 16:36:28 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s63GaJcO012150
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 12:36:20 -0400
-Received: from tarantula.localdomain (vpn-59-246.rdu2.redhat.com
-	[10.10.59.246])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s63GaHhx006781
-	(version=TLSv1/SSLv3 cipher=AES128-GCM-SHA256 bits=128 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 12:36:19 -0400
-Date: Thu, 3 Jul 2014 11:36:17 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20140703163617.GB5081@tarantula.localdomain>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1X9dKy-0006xd-5F
+	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 16:54:48 +0000
+Date: Tue, 22 Jul 2014 18:54:06 +0200
+From: chrubis@suse.cz
+Message-ID: <20140722165406.GA10128@rei>
+References: <1347769361.12788938.1405948971664.JavaMail.zimbra@redhat.com>
+	<1405955978-28590-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] sched_setparam{02,03} failures on 3.14 and newer kernels
+In-Reply-To: <1405955978-28590-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH v2] containers: added pidns/pidns03.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,129 +25,149 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-I'm getting failures with the sched_setparam02 and sched_setparam03 tests on
-the 3.14 and 3.15 kernels in Fedora that did not happen on 3.13.  Did something
-change in the upstream kernel?  Do the tests need to be updated?
+Hi!
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <sys/mount.h>
+> +#include <sys/types.h>
+> +#include <stdio.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <errno.h>
+> +#include "usctest.h"
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "libclone.h"
+> +
+> +
+> +#define PROCDIR "proc2"
+
+This is very minor, but we don't have to name it "proc2" now because we
+create it in the newly created test temporary directory, so why not just
+"proc" now?
+
+> +char *TCID	= "pidns03";
+> +int TST_TOTAL	= 1;
+> +
+> +
+> +static void cleanup(void)
+> +{
+> +	umount(PROCDIR);
+> +	rmdir(PROCDIR);
+
+You don't have to remove any files/directories under the test temporary
+directory, these are deleted automatically in tst_rmdir().
+
+> +	tst_rmdir();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_require_root(NULL);
+> +	tst_tmpdir();
+> +	SAFE_MKDIR(cleanup, PROCDIR, 0555);
+> +}
+> +
+> +int childFunc(void *arg)
+
+In LKML coding style (which LTP follows), mixed case is frowned upon.
+
+You can use checkpatch.pl (from scripts from linux kernel sources) to
+check you patch before sending it to the ML.
+
+> +{
+> +	char buf[10];
+> +	int result = 1;
+> +
+> +	if (mount("none", PROCDIR, "proc", MS_RDONLY, NULL) == -1) {
+> +		perror("mount");
+> +		return 1;
+> +	}
+> +
+> +	if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
+> +		perror("readlink");
+> +		return 1;
+> +	}
+> +
+> +
+> +	/* child should have PID 1 in a new pid namespace - if true
+> +	 * procfs belongs to the new pid namespace */
+> +	if (!strcmp(buf, "1"))
+> +		result = 0;
+> +	else
+> +		fprintf(stderr, "%s contains: %s\n", PROCDIR"/self", buf);
+> +
+> +	return result;
+> +}
+> +
+> +static void test(void)
+> +{
+> +	int status;
+> +	int ret;
+> +
+> +	ret = do_clone_tests(CLONE_NEWPID, childFunc, NULL, NULL, NULL);
+> +
+> +	if (ret == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+> +	else if ((wait(&status)) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "wait failed");
+> +
+> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> +		tst_resm(TFAIL, "mounting procfs in a new namespace");
+> +	else if (WIFSIGNALED(status))
+> +		tst_resm(TFAIL, "child was killed with signal = %d",
+> +			 WTERMSIG(status));
+                         ^
+			 We have tst_strsig() so that you can print
+			 human readable signal name instead of the
+			 number.
+
+> +	else
+> +		tst_resm(TPASS, "mounting procfs in a new namespace");
+
+I would do:
+
+	if (foo) {
+		tst_resm(...);
+		return;
+	}
+
+	if (bar) {
+		tst_resm(...);
+		return;
+	}
+
+	tst_resm(...);
 
 
-3.13 passes:
-===============================================================================
-[root@localhost bin]# uname -r
-3.13.8-200.fc20.x86_64
-[root@localhost bin]# ./sched_setparam02
-sched_setparam02    1  TPASS  :  Test with policy SCHED_FIFO Passed
-sched_setparam02    2  TPASS  :  Test with policy SCHED_RR Passed
-sched_setparam02    3  TPASS  :  Test with SCHED_OTHER Passed
-[root@localhost bin]# ./sched_setparam03
-sched_setparam03    1  TPASS  :  Test Passed
-===============================================================================
+rather than the if else if ... maze.
 
-3.14 fails:
-===============================================================================
-[root@localhost bin]# uname -r
-3.14.9-200.fc20.x86_64
-[root@localhost bin]# ./sched_setparam02
-sched_setparam02    0  TWARN  :  sched_getparam() returned priority value as 0
-sched_setparam02    1  TFAIL  :  Test with policy SCHED_FIFO Failed.
-                   sched_setparam() returned 0: TEST_ERRNO=SUCCESS(0): Success
-sched_setparam02    0  TWARN  :  sched_getparam() returned priority value as 0
-sched_setparam02    2  TFAIL  :  Test with policy SCHED_RR Failed.
-                   sched_setparam() returned 0: TEST_ERRNO=SUCCESS(0): Success
-sched_setparam02    3  TPASS  :  Test with SCHED_OTHER Passed
-[root@localhost bin]# ./sched_setparam03
-sched_setparam03    0  TWARN  :  sched_getparam() returned priority value as 0
-sched_setparam03    1  TFAIL  :  Test Failed
-===============================================================================
+Also the tst_brkm() exits the test execution (does not return) so the
+first else is redundand.
 
-3.15 also fails:
-===============================================================================
-[root@localhost bin]# uname -r
-3.15.3-200.fc20.x86_64
-[root@localhost bin]# ./sched_setparam02
-sched_setparam02    0  TWARN  :  sched_getparam() returned priority value as 0
-sched_setparam02    1  TFAIL  :  Test with policy SCHED_FIFO Failed.
-                   sched_setparam() returned 0: TEST_ERRNO=SUCCESS(0): Success
-sched_setparam02    0  TWARN  :  sched_getparam() returned priority value as 0
-sched_setparam02    2  TFAIL  :  Test with policy SCHED_RR Failed.
-                   sched_setparam() returned 0: TEST_ERRNO=SUCCESS(0): Success
-sched_setparam02    3  TPASS  :  Test with SCHED_OTHER Passed
-[root@localhost bin]# ./sched_setparam03
-sched_setparam03    0  TWARN  :  sched_getparam() returned priority value as 0
-sched_setparam03    1  TFAIL  :  Test Failed
-===============================================================================
+And we also have SAFE_WAIT() in include/safe_macros.h so you can do
+just:
 
+SAFE_WAIT(cleanup, &status);
 
-Running it through strace confirms that getparam is not returning the same
-value that the test sets with setparam.
+instead of the two if (...) tst_brkm(...);
 
-3.13 getparam == setparam:
-===============================================================================
-[root@localhost bin]# uname -r
-3.13.8-200.fc20.x86_64
-[root@localhost bin]# strace \
-    -e trace=sched_setscheduler,sched_setparam,sched_getparam \
-    ./sched_setparam02 >/dev/null
-sched_setscheduler(0, SCHED_FIFO, { 1 }) = 0
-sched_setparam(0, { 5 })                = 0
-sched_getparam(0, { 5 })                = 0
-sched_setscheduler(0, SCHED_RR, { 1 })  = 0
-sched_setparam(0, { 5 })                = 0
-sched_getparam(0, { 5 })                = 0
-sched_setscheduler(0, SCHED_OTHER, { 0 }) = 0
-sched_setparam(0, { 0 })                = 0
-sched_getparam(0, { 0 })                = 0
-+++ exited with 0 +++
-===============================================================================
+(Safe macros and library functions are documented in Test Writing Guidelines at
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines)
 
-3.14 getparam != setparam:
-===============================================================================
-[root@localhost bin]# uname -r
-3.14.9-200.fc20.x86_64
-[root@localhost bin]# strace \
-    -e trace=sched_setscheduler,sched_setparam,sched_getparam \
-    ./sched_setparam02 >/dev/null
-sched_setscheduler(0, SCHED_FIFO, { 1 }) = 0
-sched_setparam(0, { 5 })                = 0
-sched_getparam(0, { 0 })                = 0
-sched_setscheduler(0, SCHED_RR, { 1 })  = 0
-sched_setparam(0, { 5 })                = 0
-sched_getparam(0, { 0 })                = 0
-sched_setscheduler(0, SCHED_OTHER, { 0 }) = 0
-sched_setparam(0, { 0 })                = 0
-sched_getparam(0, { 0 })                = 0
-+++ exited with 5 +++
-===============================================================================
-
-3.15 getparam != setparam:
-===============================================================================
-[root@localhost bin]# uname -r
-3.15.3-200.fc20.x86_64
-[root@localhost bin]# strace \
-    -e trace=sched_setscheduler,sched_setparam,sched_getparam \
-    ./sched_setparam02 >/dev/null
-sched_setscheduler(0, SCHED_FIFO, { 1 }) = 0
-sched_setparam(0, { 5 })                = 0
-sched_getparam(0, { 0 })                = 0
-sched_setscheduler(0, SCHED_RR, { 1 })  = 0
-sched_setparam(0, { 5 })                = 0
-sched_getparam(0, { 0 })                = 0
-sched_setscheduler(0, SCHED_OTHER, { 0 }) = 0
-sched_setparam(0, { 0 })                = 0
-sched_getparam(0, { 0 })                = 0
-+++ exited with 5 +++
-===============================================================================
-
---
-Jeff
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
