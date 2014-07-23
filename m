@@ -1,45 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1X42mK-0003d8-Ep
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 06:51:56 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X42mI-0004n4-MB
-	for ltp-list@lists.sourceforge.net; Mon, 07 Jul 2014 06:51:56 +0000
-Received: from /spool/local
-	by e36.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Mon, 7 Jul 2014 00:51:48 -0600
-Received: from b03cxnp07029.gho.boulder.ibm.com
-	(b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-	by d03dlp03.boulder.ibm.com (Postfix) with ESMTP id 227A419D8026
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  7 Jul 2014 00:51:38 -0600 (MDT)
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by b03cxnp07029.gho.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with
-	ESMTP id s674mBEj11338190
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Jul 2014 06:48:11 +0200
-Received: from d03av02.boulder.ibm.com (localhost [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP
-	id s676pl3K022988
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Jul 2014 00:51:47 -0600
-Received: from localhost.localdomain ([9.125.26.118])
-	by d03av02.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	s676pkQq022941
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Jul 2014 00:51:46 -0600
-Date: Mon, 7 Jul 2014 14:51:40 +0800
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20140707065140.GA4421@localhost.localdomain>
-References: <20140704031641.GA20446@localhost.localdomain>
-	<53BB90C6.9020101@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53BB90C6.9020101@cn.fujitsu.com>
-Subject: Re: [LTP] [RFC PATCH] regression test for 64bit sendfile capped at
-	2G
+	(envelope-from <mmarhefk@redhat.com>) id 1X9srJ-0006bW-C6
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jul 2014 09:29:13 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X9srH-0007bQ-Vh
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jul 2014 09:29:13 +0000
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Wed, 23 Jul 2014 11:28:49 +0200
+Message-Id: <1406107729-29729-1-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <20140722165406.GA10128@rei>
+References: <20140722165406.GA10128@rei>
+Subject: [LTP] [PATCH v3] containers: added pidns/pidns03.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -49,47 +23,163 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: metan@suse.de
 
-On Tue, Jul 08, 2014 at 02:33:42PM +0800, Xiaoguang Wang wrote:
-> Hi,
-> 
-> On 07/04/2014 11:16 AM, Han Pingtian wrote:
-> > Hi,
-> > 
-> > Please review this patch. Thanks.
-> > 
-> > There is a bug on 64bit sendfile() with large file, please see
-> > https://lists.ozlabs.org/pipermail/linuxppc-dev/2014-June/118128.html
-> > for details.
-> 
-> I'd like to ask an irrelevant question about that where can we get such bug report or similar issues
-> about syscalls from a stable place(url), or how did you found this issue, thanks.
-> 
-> Give that currently there are 1039 test cases about syscalls in LTP(cat runtest/syscalls | grep -v "^#" | sed -e '/^$/d' | wc -l),
-> we can tell that syscalls is a very big test suite in LTP, so I'd like to add all similar regression test about
-> syscalls to LTP, which will expand ltp's test coverage, thanks. 
-> 
-> Regards,
-> Xiaoguang Wang
-> 
-Thanks for your reply. I knew this problem just by accidental. It wasn't
-found by me, but someone else. We are asked why we couldn't find it at
-first time though we had run ltp to test the syscalls. So I think it
-would be better to include a regession test for it to ltp. I think we
-can find out all those regressions by mointoring bug report web site and
-kernel's mailing list and something like these.
+* Clones a new child process with CLONE_NEWPID flag - the new child
+* process mounts procfs to a "proc" directory and checks if it belongs
+* to a new pid namespace by:
+* 1. reading value of a symbolic link "proc/self"
+* 2. comparing read value (PID) with "1"
+
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+---
+ testcases/kernel/containers/pidns/pidns03.c | 121 ++++++++++++++++++++++++++++
+ 1 file changed, 121 insertions(+)
+ create mode 100644 testcases/kernel/containers/pidns/pidns03.c
+
+diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
+new file mode 100644
+index 0000000..ac0dcbf
+--- /dev/null
++++ b/testcases/kernel/containers/pidns/pidns03.c
+@@ -0,0 +1,121 @@
++/* Copyright (c) 2014 Red Hat, Inc. All rights reserved.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ ***********************************************************************
++ * File: pidns03.c
++ *
++ * Description:
++ * Clones a new child process with CLONE_NEWPID flag - the new child
++ * process mounts procfs to a "proc" directory and checks if it belongs
++ * to a new pid namespace by:
++ * 1. reading value of a symbolic link "proc/self"
++ * 2. comparing read value (PID) with "1"
++ */
++
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <sys/mount.h>
++#include <sys/types.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <errno.h>
++#include "usctest.h"
++#include "test.h"
++#include "safe_macros.h"
++#include "libclone.h"
++
++
++#define PROCDIR "proc"
++char *TCID	= "pidns03";
++int TST_TOTAL	= 1;
++
++
++static void cleanup(void)
++{
++	tst_rmdir();
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++	tst_tmpdir();
++	SAFE_MKDIR(cleanup, PROCDIR, 0555);
++}
++
++int child_func(void *arg)
++{
++	char buf[10];
++
++	if (mount("none", PROCDIR, "proc", MS_RDONLY, NULL) == -1) {
++		perror("mount");
++		return 1;
++	}
++
++	if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
++		perror("readlink");
++		return 1;
++	}
++
++	umount(PROCDIR);
++
++	/* child should have PID 1 in a new pid namespace - if true
++	 * procfs belongs to the new pid namespace */
++	if (strcmp(buf, "1")) {
++		fprintf(stderr, "%s contains: %s\n", PROCDIR"/self", buf);
++		return 1;
++	}
++
++	return 0;
++}
++
++static void test(void)
++{
++	int status;
++
++	if (do_clone_tests(CLONE_NEWPID, child_func, NULL, NULL, NULL) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++
++	SAFE_WAIT(cleanup, &status);
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
++		tst_resm(TPASS, "mounting procfs in a new namespace");
++		return;
++	}
++
++	if (WIFSIGNALED(status)) {
++		tst_resm(TFAIL, "child was killed with signal %s",
++			 tst_strsig(WTERMSIG(status)));
++		return;
++	}
++
++	tst_resm(TFAIL, "mounting procfs in a new namespace");
++}
++
++int main(int argc, char *argv[])
++{
++	const char *msg;
++	int lc;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		test();
++
++	cleanup();
++	tst_exit();
++}
+-- 
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
