@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1X6f29-0006DF-6g
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 12:07:05 +0000
-Received: from e06smtp13.uk.ibm.com ([195.75.94.109])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X6f27-0002Cq-TQ
-	for ltp-list@lists.sourceforge.net; Mon, 14 Jul 2014 12:07:05 +0000
-Received: from /spool/local
-	by e06smtp13.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <oberpar@linux.vnet.ibm.com>; 
-	Mon, 14 Jul 2014 13:06:57 +0100
-Message-ID: <53C3C7D9.4030405@linux.vnet.ibm.com>
-Date: Mon, 14 Jul 2014 14:06:49 +0200
-From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X9qNu-0000Mr-Lf
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jul 2014 06:50:42 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1X9qNs-0001W3-P6
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jul 2014 06:50:42 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6N6oT7w000376
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Jul 2014 14:50:29 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 23 Jul 2014 14:49:49 +0800
+Message-ID: <1406098189-26377-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+In-Reply-To: <53CF585E.5010602@cn.fujitsu.com>
+References: <53CF585E.5010602@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1405335583.552821152@apps.rackspace.com>
-In-Reply-To: <1405335583.552821152@apps.rackspace.com>
-Subject: Re: [LTP] [Ltp-coverage] NO .gcda files ERROR while running LCOV
- for LTP coverage
+Subject: [LTP] [PATCH] lib/tst_tmpdir.c: fix bug when TESTDIR is not a
+	absolute pathname
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,90 +32,116 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shinto.john@smartplayin.com, naresh.kamboju@linaro.org
-Cc: ltp-list@lists.sourceforge.net, ltp-coverage@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 14.07.2014 12:59, shinto.john@smartplayin.com wrote:
-> Kernel version: 3.8.13
-> 
-> I am sending this mail to get your valuable inputs regarding an issue i
-> am facing while running LCOV as part of an LTP activity.
-> 
-> Currently i am working on LTP and GCOV integration on TI J6 board.
-> 
-> I have enabled the GCOV in kernel using attached patch.
-> 
-> This patch works fine for Beagle bone black with same kernel version
-> 3.8.13 and coverage results are captured for LTP.
+In lib/tst_tmpdir.c, when TESTDIR is not a absolute patchname beginning with '/',
+The corresponding code logic would be below:
+if (TESTDIR[0] != '/') {
+	if (getcwd(current_dir, PATH_MAX) == NULL)
+		strncpy(parent_dir, TESTDIR, PATH_MAX);
+	else
+		sprintf(parent_dir, "%s/%s", current_dir, TESTDIR);
+} else {
+	...
+}
 
-The attached patch looks like it's a mix of ARM-enabling parts together
-with an older version of the upstream version of the Linux kernel gcov
-patch. It might be an idea to replace those latter parts with the
-current upstream version (that is copy over all source files under
-kernel/gcov from a current upstream kernel).
+The statement "sprintf(parent_dir, "%s/%s", current_dir, TESTDIR);" is wrong,
+because we can change to any directory, which TESTDIR may no be child directory
+of current_dir, fix this.
 
-> Now in J6 i face below issue.
-> 
-> root@dra7xx-evm:/home/coverage# lcov -c -o coverage.info
-> Auto-detecting gcov kernel support.
-> Found upstream gcov kernel support at /sys/kernel/debug/gcov
-> Copying data to temporary directory /tmp/D5EuajnqI8
-> Capturing coverage data from /tmp/D5EuajnqI8
-> Found gcov version: 4.7.2
-> Scanning /tmp/D5EuajnqI8 for .gcda files ...
-> *geninfo: ERROR: no .gcda files found in /tmp/D5EuajnqI8!*
-> 
-> But when i checked /sys/kernel/debug/gcov/, i could see .gcda and .gcno
-> files in all the kernel folders. for eg
+Steps to reproduce this bug:
+This will output the below errors:
+fallocate01    1  TPASS  :  fallocate(3, 0, 49152, 4096) returned 0
+fallocate01    2  TPASS  :  write operation on fallocated(3, 0, 49152, 4096) returned 1
+fallocate01    3  TPASS  :  fallocate(4, 1, 49152, 4096) returned 0
+fallocate01    4  TPASS  :  write operation on fallocated(4, 1, 49152, 4096) returned 1
+fallocate01    0  TWARN  :  tst_rmdir: chdir(/home/lege/extern_stroage/ltp-dev/testcases/kernel/syscalls/fallocate/testdir/falkmsya7/testdir) failed
+Attempting to remove temp dir anyway: errno=ENOENT(2): No such file or directory
+fallocate01    0  TWARN  :  tst_rmdir: rmobj(testdir/falkmsya7) failed: lstat(testdir/falkmsya7) failed; errno=2: No such file or directory
 
-I don't see a situation in which lcov would silently fail to copy .gcda
-files. Some ideas to try out:
-1. Upgrade to the latest version of lcov [1]
-2. Try to run gcov manually on one of the .gcda files [2]
-3. Modify the lcov program to emit additional debugging output that
-   might help in identifying the cause of the problem. For this, add
-   the following statement as the last line of function
-   lcov_copy_single() in the lcov program:
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ lib/tst_tmpdir.c | 42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
-     print("from=$from to=$to len=".length($content)."\n");
-
-> ls -l
-> /sys/kernel/debug/gcov/home/dattatraya.patil/dar7xx/board-support/linux/kernel/wait.*
-> 
-> -rw-------    1 root     root             0 Jan  1  1970 wait.gcda
-> lrwxrwxrwx    1 root     root             0 Jan  1  1970 wait.gcno ->
-> /home/dattatraya.patil/dar7xx/board-support/linux/kernel/.tmp_wait.gcno
-> 
-> ls -l
-> /home/dattatraya.patil/dar7xx/board-support/linux/kernel/.tmp_wait.gcno
-> -rw-rw-r--    1 1001     1003         10748 Jul 14  2014
-> /home/dattatraya.patil/dar7xx/board-support/linux/kernel/.tmp_wait.gcno
-> 
-> In /sys/kernel/debug/gcov  folder, the .gcda and .gcno files looks empty
-> with 0kb.
-
-A size of 0kb is expected since the files in debugfs are virtual
-(content is only created when read from).
-
-> can you please share your valid inputs to point out the possible issue?
-
-
-Regards,
-  Peter Oberparleiter
-
-
-[1] http://ltp.sourceforge.net/coverage/lcov.php
-[2] https://www.kernel.org/doc/Documentation/gcov.txt
-
+diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+index 600d178..cd4b39a 100644
+--- a/lib/tst_tmpdir.c
++++ b/lib/tst_tmpdir.c
+@@ -148,8 +148,8 @@ void tst_tmpdir(void)
+ 			 "chmod(%s, %#o) failed", TESTDIR, DIR_MODE);
+ 
+ 	if (getcwd(test_start_work_dir, sizeof(test_start_work_dir)) == NULL) {
+-		tst_resm(TINFO, "Failed to record test working dir");
+-		test_start_work_dir[0] = '\0';
++		tst_brkm(TBROK | TERRNO, tmpdir_cleanup,
++			 "Failed to record test working dir");
+ 	}
+ 
+ 	/*
+@@ -173,7 +173,6 @@ void tst_tmpdir(void)
+ 
+ void tst_rmdir(void)
+ {
+-	char current_dir[PATH_MAX];
+ 	char *errmsg;
+ 	char *parent_dir;
+ 
+@@ -198,26 +197,29 @@ void tst_rmdir(void)
+ 	 * get full path.
+ 	 */
+ 	if (TESTDIR[0] != '/') {
+-		if (getcwd(current_dir, PATH_MAX) == NULL)
+-			strncpy(parent_dir, TESTDIR, PATH_MAX);
+-		else
+-			sprintf(parent_dir, "%s/%s", current_dir, TESTDIR);
++		if (chdir(test_start_work_dir) != 0) {
++			tst_resm(TWARN | TERRNO, "%s: chdir(%s) failed\n"
++				 "Attempting to remove temp dir anyway",
++				 __func__, test_start_work_dir);
++		}
+ 	} else {
+ 		strcpy(parent_dir, TESTDIR);
+-	}
+ 
+-	if ((parent_dir = dirname(parent_dir)) == NULL) {
+-		tst_resm(TWARN | TERRNO, "%s: dirname failed", __func__);
+-		return;
+-	}
+-
+-	/*
+-	 * Change directory to parent_dir (The dir above TESTDIR).
+-	 */
+-	if (chdir(parent_dir) != 0) {
+-		tst_resm(TWARN | TERRNO,
+-			 "%s: chdir(%s) failed\nAttempting to remove temp dir "
+-			 "anyway", __func__, parent_dir);
++		parent_dir = dirname(parent_dir);
++		if (parent_dir == NULL) {
++			tst_resm(TWARN | TERRNO,
++				 "%s: dirname failed", __func__);
++			return;
++		}
++
++		/*
++		 * Change directory to parent_dir (The dir above TESTDIR).
++		 */
++		if (chdir(parent_dir) != 0) {
++			tst_resm(TWARN | TERRNO, "%s: chdir(%s) failed\n"
++				 "Attempting to remove temp dir anyway",
++				 __func__, parent_dir);
++		}
+ 	}
+ 
+ 	/*
 -- 
-Peter Oberparleiter
-Linux on System z Development - IBM Germany
+1.8.2.1
 
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck&#174;
-Code Sight&#153; - the same software that powers the world's largest code
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
 search on Ohloh, the Black Duck Open Hub! Try it now.
 http://p.sf.net/sfu/bds
 _______________________________________________
