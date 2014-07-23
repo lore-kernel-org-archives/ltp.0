@@ -1,29 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from
-	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
-	id 1X8FoW-0005JV-V0
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 21:35:36 +0000
-Received: from smtp-out3.electric.net ([72.35.12.183])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X8FoV-0006VB-MR
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 21:35:36 +0000
-Received: from 1X8FoP-0006TB-TU by out3b.electric.net with emc1-ok (Exim
-	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1X8FoP-0006VQ-Uh
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 14:35:29 -0700
-Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
-	by out3b.electric.net with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
-	id 1X8FoP-0006TB-TU
-	for ltp-list@lists.sourceforge.net; Fri, 18 Jul 2014 14:35:29 -0700
-From: Joseph Beckenbach <jbeckenbach@lancope.com>
-Date: Fri, 18 Jul 2014 21:35:27 +0000
-Message-ID: <4506ACC2AE90484D87F9A883BA36C21C2ADF02C2@LCHQEX03.lancope.local>
-Content-Language: en-US
+	(envelope-from <jbastian@redhat.com>) id 1X9xtA-0005Oj-4E
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jul 2014 14:51:28 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1X9xt8-0004Cq-HX
+	for ltp-list@lists.sourceforge.net; Wed, 23 Jul 2014 14:51:28 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s6NEpCaU010038
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Jul 2014 10:51:19 -0400
+Received: from tarantula.localdomain (vpn-238-213.phx2.redhat.com
+	[10.3.238.213])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s6NEBK9m019071
+	(version=TLSv1/SSLv3 cipher=AES128-GCM-SHA256 bits=128 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 23 Jul 2014 10:11:22 -0400
+Date: Wed, 23 Jul 2014 09:11:20 -0500
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20140723141120.GK26140@tarantula.localdomain>
+References: <20140703163617.GB5081@tarantula.localdomain>
+	<20140703172829.GA12545@rei.scz.novell.com>
 MIME-Version: 1.0
-Subject: [LTP] More observations on HEAD
+Content-Disposition: inline
+In-Reply-To: <20140703172829.GA12545@rei.scz.novell.com>
+Subject: Re: [LTP] sched_setparam{02,03} failures on 3.14 and newer kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,36 +41,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi, all!
+On Thu, Jul 03, 2014 at 07:28:29PM +0200, chrubis@suse.cz wrote:
+> The man 7 sched suggests that SCHED_FIFO and SCHED_RR priority must be >
+> 0 at all times. So I guess that this is a bug and we need to find the
+> patch that changed the kernel behavior.
 
-Feel free to ignore this -- it's an experience report of a cluster of runs I've just done against 3.12.24 kernels.
 
-The default test set runs move_pages* twice.
+A patch was posted yesterday to fix this bug in the kernel.
 
-setfsuid04_16 and setregid{02,04,05,07}_16 TFAIL rather than TCONF on no-16-bit-syscalls systems.
+  http://marc.info/?l=linux-kernel&m=140608259706721&w=2
 
-run_cgroup_test_fj.sh hangs on heavy-load systems with $LTPROOT/output/ not present.
-
-Some test under container_test.sh (sourcing childns.sh) attempts to create veth pairs without verifying veth functionality supported.
-Other tests under container_test.sh fail to source files (childns.sh cannot source cmdlib.sh;  child_1.sh and childipv6.sh cannot source initialize.sh).
-
-Many tests under cgroup_regression_test.sh blindly log to hard-coded $LTPROOT/output/ directory without making sure it's there.
-Also, subtest #7 "fails to mount hugetlb" because it seemingly did not first check whether the functionality was enabled.
-
-Under cgroup_fj also seems to have some tests which do latency tests and other tests, outputting "TINFO" and "FAIL" and "PASS" not in standard format.
-I will see if I can bisect it down and work out which tests those are.
-
-dma_thread_diotest invocations all claim to be "dma_thread_diotest07" in the runltp outputfile.
-
-Thanks!
-
-Joseph
-Joseph Beckenbach, senior QA engineer : Automation
-x97166
-M 678-602-3192
-
+Jeff
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
