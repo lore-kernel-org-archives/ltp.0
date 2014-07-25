@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X6zko-00065c-2R
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 10:14:34 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XAb0d-0000zq-UQ
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 08:37:47 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X6zkm-0007k9-Mb
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 10:14:34 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6FAEOlQ021989
-	for <ltp-list@lists.sourceforge.net>; Tue, 15 Jul 2014 18:14:24 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 15 Jul 2014 18:13:48 +0800
-Message-ID: <1405419229-4222-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XAb0X-0002mA-MI
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 08:37:47 +0000
+Message-ID: <53D2170D.40201@cn.fujitsu.com>
+Date: Fri, 25 Jul 2014 16:36:29 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] lib: add SAFE_RENAME()
+References: <428ab3048d90dc9d998143aea2b2a624b43d5220.1406276230.git.jstancek@redhat.com>
+In-Reply-To: <428ab3048d90dc9d998143aea2b2a624b43d5220.1406276230.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] sched_setaffinity01: use ltp_syscall
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,55 +28,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- include/safe_macros.h |  5 +++++
- lib/safe_macros.c     | 16 ++++++++++++++++
- 2 files changed, 21 insertions(+)
+On 07/25/2014 04:18 PM, Jan Stancek wrote:
+> Using glibc wrapper on kernel with smaller CONFIG_NR_CPUS (for example
+> 255) leads to segmentation fault in glibc, because it triggers check,
+> which is verifying that there are no bits set beyond size of kernel cpu
+> mask:
+> 
+> int
+> __sched_setaffinity_new (pid_t pid, size_t cpusetsize, const cpu_set_t *cpuset)
+>   ...
+>   /* We now know the size of the kernel cpumask_t.  Make sure the user
+>      does not request to set a bit beyond that.  */
+>   for (size_t cnt = __kernel_cpumask_size; cnt < cpusetsize; ++cnt)
+>     if (((char *) cpuset)[cnt] != '\0') --> CRASH HERE
+> 
+> Call this syscall directly with ltp_syscall().
+> 
+> Reported-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index f521347..a79c4ad 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -266,5 +266,10 @@ int safe_mkfifo(const char *file, const int lineno,
- #define SAFE_MKFIFO(cleanup_fn, pathname, mode) \
- 	safe_mkfifo(__FILE__, __LINE__, (cleanup_fn), (pathname), (mode))
- 
-+int safe_rename(const char *file, const int lineno, void (*cleanup_fn)(void),
-+		const char *oldpath, const char *newpath);
-+#define SAFE_RENAME(cleanup_fn, oldpath, newpath) \
-+	safe_rename(__FILE__, __LINE__, (cleanup_fn), (oldpath), (newpath))
-+
- #endif /* __SAFE_MACROS_H__ */
- #endif /* __TEST_H__ */
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index a07cffa..eefacae 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -768,3 +768,19 @@ int safe_mkfifo(const char *file, const int lineno,
- 
- 	return rval;
- }
-+
-+int safe_rename(const char *file, const int lineno, void (*cleanup_fn)(void),
-+		const char *oldpath, const char *newpath)
-+{
-+	int rval;
-+
-+	rval = rename(oldpath, newpath);
-+
-+	if (rval == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: rename(%s, %s) failed",
-+			 file, lineno, oldpath, newpath);
-+	}
-+
-+	return rval;
-+}
--- 
-1.8.2.1
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+
+> ---
+>  .../sched_setaffinity/sched_setaffinity01.c        |   11 ++++++++---
+>  1 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> index 0ac4478..33a90b8 100644
+> --- a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> @@ -42,6 +42,7 @@
+>  #include "usctest.h"
+>  #include "safe_macros.h"
+>  #include "sched_setaffinity.h"
+> +#include "linux_syscall_numbers.h"
+>  
+>  char *TCID = "sched_setaffinity01";
+>  
+> @@ -151,9 +152,13 @@ int main(int argc, char *argv[])
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>  		tst_count = 0;
+>  		for (i = 0; i < TST_TOTAL; i++) {
+> -			TEST(sched_setaffinity(*(test_cases[i].pid),
+> -						*(test_cases[i].mask_size),
+> -						*(test_cases[i].mask)));
+> +			/* Avoid calling glibc wrapper function, as it may
+> +			 * try to read/validate data in cpu mask. This test
+> +			 * is passing invalid pointer on purpose. */
+> +			TEST(ltp_syscall(__NR_sched_setaffinity,
+> +				*(test_cases[i].pid),
+> +				*(test_cases[i].mask_size),
+> +				*(test_cases[i].mask)));
+>  
+>  			if (TEST_RETURN != -1)
+>  				tst_resm(TFAIL,
+> 
 
 
 ------------------------------------------------------------------------------
