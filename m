@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <deller@gmx.de>) id 1X5Gyz-0001Sr-B9
-	for ltp-list@lists.sourceforge.net; Thu, 10 Jul 2014 16:14:05 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X5Gyx-0002DQ-Ck
-	for ltp-list@lists.sourceforge.net; Thu, 10 Jul 2014 16:14:05 +0000
-Date: Thu, 10 Jul 2014 18:13:55 +0200
-From: Helge Deller <deller@gmx.de>
-Message-ID: <20140710161355.GA14288@ls3530.dhcp.wdf.sap.corp>
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XAa02-0008Nh-SE
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 07:33:08 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XAa00-0007eG-Jp
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 07:33:06 +0000
+Message-ID: <53D20804.4050909@cn.fujitsu.com>
+Date: Fri, 25 Jul 2014 15:32:20 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix fanotify syscall (again)
+References: <53D1ED3D.2070907@cn.fujitsu.com> <53D1FBB3.1030601@oracle.com>
+In-Reply-To: <53D1FBB3.1030601@oracle.com>
+Subject: Re: [LTP] Segmentation fault when running sched_setaffinity01 in
+ RHEL5.10GA
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,97 +28,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-This patch to some degree reverts my last patch which was committed as:
-  commit 5d08e164964e19be693e6e8fddf3afb82e505b4f
-  Author: Helge Deller <deller@gmx.de>
-  Date:   Wed Apr 16 21:00:28 2014 +0200
-  fix fanotify syscall check on compat kernel
+Hi,
 
-The problem is, that fanotify_mark() uses a 64bit parameter (mask).
-When calling this syscall with it's 64bit parameter on a 32bit arch it is very
-architecture and compiler dependend, in which order the lower and higher 32bits
-are put on the stack and thus ends up in the arguments for the Linux kernel.
+On 07/25/2014 02:39 PM, Stanislav Kholmanskikh wrote:
+> 
+> 
+> On 07/25/2014 09:38 AM, Xiaoguang Wang wrote:
+>> Hi,
+>>
+>> When we run sched_setaffinity01 in RHEL5.10GA, it occurs a segmentation fault.
+>> Below is the possible reason.
+> 
+> Hi!
+> 
+> I though I'd checked this test case on OL5 before submission. Let me check it again.
 
-So, to avoid any problems we really need to call this syscall the same way as
-it's defined by glibc.
+OL5 is based RHEL5?
+If it is, please also check your CONFIG_NR_CPUS in kernel config file. If it's 1024 or greater,
+this case will not fail. In my environment, this value is 255, thanks!
 
-This patch will utilize the glibc header <sys/fanotify.h> if available and
-only use a manual syscall as fallback.
+Regards,
+Xiaoguang Wang
+> 
+>>
+>> Hi Jan, would you please help to confirm this problem. I'm afraid RHEL5.10GA is an old
+>> distribution, which many people may not use it now, thanks!
+>>
+>>
+>> Glibc provides a encapsulation for the raw kernel sched_setaffinity(2) system call,
+>> the corresponding code is below(The version of glibc I used is glibc-2.5-20061008T1257-RHEL5.11Beta):
+>> I delete some code just for simple.
+>>
+>> #######################################################################################
+>>
+>> /* Size definition for CPU sets.  */
+>> # define __CPU_SETSIZE  1024
+>> # define __NCPUBITS     (8 * sizeof (__cpu_mask))
+>>
+>> /* Type for array elements in 'cpu_set'.  */
+>> typedef unsigned long int __cpu_mask;
+>>
+>> /* Basic access functions.  */
+>> # define __CPUELT(cpu)  ((cpu) / __NCPUBITS)
+>>
+>> /* Data structure to describe CPU mask.  */
+>> typedef struct
+>> {
+>>    __cpu_mask __bits[__CPU_SETSIZE / __NCPUBITS];
+>> } cpu_set_t;
+>>
+>>
+>> int __sched_setaffinity_new (pid_t pid, size_t cpusetsize, const cpu_set_t *cpuset)
+>> {
+>>    if (__builtin_expect (__kernel_cpumask_size == 0, 0))
+>>      {
+>>        int res;
+>>
+>>        while (res = INTERNAL_SYSCALL (sched_getaffinity, err, 3, getpid (),
+>>                                       psize, p),
+>>               INTERNAL_SYSCALL_ERROR_P (res, err)
+>>               && INTERNAL_SYSCALL_ERRNO (res, err) == EINVAL)
+>>           ....
+>>
+>>        __kernel_cpumask_size = res;
+>>      }
+>>
+>>    /* We now know the size of the kernel cpumask_t.  Make sure the user
+>>       does not request to set a bit beyond that.  */
+>>    for (size_t cnt = __kernel_cpumask_size; cnt < cpusetsize; ++cnt)
+>>      if (((char *) cpuset)[cnt] != '\0')
+>>        {
+>>          /* Found a nonzero byte.  This means the user request cannot be
+>>             fulfilled.  */
+>>          __set_errno (EINVAL);
+>>          return -1;
+>>        }
+>>
+>>    return INLINE_SYSCALL (sched_setaffinity, 3, pid, cpusetsize, cpuset);
+>> }
+>> #######################################################################################
+>>
+>> Glibc in RHEL5.10GA does not provide CPU_ALLOC_SIZE marco, so in ltp testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h,
+>> we define one.
+>> #######################################################################################
+>> #ifndef CPU_ALLOC_SIZE
+>> #define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t)
+>> #endif
+>> #######################################################################################
+>>
+>> Then CPU_ALLOC_SIZE would always return 128 in RHEL5.10GA, that is when we test EFAULT for sched_setaffinity(2),
+>> the passed cpusetsize is 128. But look at __sched_setaffinity_new() above, it first call
+>> raw sched_getaffinity(2) to get  the size of the kernel cpumask_t, In RHEL5.10GA,
+>> this value depends on CONFIG_NR_CPUS, if CONFIG_NR_CPUS is 255, the raw sched_getaffinity(2) will return 32.
+>> In this case, __kernel_cpumask_size would be 32, cpusetsize is 128. Give that we're testing
+>> EFAULT, cpuset is a invalid pointer, if cnt > 32, it will generate segmentation fault in glibc code,
+>> so this case exits abnormally
+>>
+>> As why this test case can run normally in RHEL6.5GA or RHEL7.0GA, it's because
+>> sched_getaffinity(2) in old kernel(RHEL5.10GA) return sizeof(cpumask_t), which totally depends on CONFIG_NR_CPUS.
+>> In newer kernel, sched_getaffinity(2) returns the smaller one between min_t(size_t, len, cpumask_size()),
+>> here len is the value passed to sched_getaffinity as cpusetsize, cpumask_size() is the max allowed length.
+>> so we can ensure __kernel_cpumask_size will never smaller cpusetsize, so the segmentation fault won't occur.
+>>
+>> So I also think CPU_ALLOC and CPU_ALLOC_SIZE is wrong in testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h. We should
+>> refer to the implementation in glibc. or we define CPU_ALLOC_SIZE using raw sched_getaffinity as a workaround in older kernel . See below code:
+>> #########################################################################################
+>>
+>>          int ret;
+>>          cpu_set_t cst;
+>>
+>>          memset(&cst, 0, sizeof(cst));
+>>
+>>          ret = syscall(__NR_sched_getaffinity, getpid(),
+>>                        sizeof(cpu_set_t), &cst);
+>>          if (ret < 0) {
+>>                  fprintf(stderr, "sched_getaffinity failed: %s\n",
+>>                          strerror(errno));
+>>                  return 1;
+>>          } else {
+>>                  printf("length of bit mask the kernel uses to represent the CPU"
+>>                         ": %d\n", ret);
+>>          }
+>> #########################################################################################
+>>
+>> Regards,
+>> Xiaoguang Wang
+>>
+>> ------------------------------------------------------------------------------
+>> Want fast and easy access to all the code in your enterprise? Index and
+>> search up to 200,000 lines of code with a free copy of Black Duck
+>> Code Sight - the same software that powers the world's largest code
+>> search on Ohloh, the Black Duck Open Hub! Try it now.
+>> http://p.sf.net/sfu/bds
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+> .
+> 
 
-Tested on the hppa/parisc 32- and 64bit architecture.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index a52093c..6625811 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -28,27 +28,43 @@
- #ifndef	__FANOTIFY_H__
- #define	__FANOTIFY_H__
- 
-+#include "config.h"
-+
- #include <stdint.h>
--#include <endian.h>
--#include "lapi/abisize.h"
- #include "linux_syscall_numbers.h"
- 
- /* fanotify(7) wrappers */
- 
--#define	myfanotify_init(flags, event_f_flags) \
--	syscall(__NR_fanotify_init, flags, event_f_flags)
- 
--long myfanotify_mark(int fd, unsigned int flags, uint64_t mask,
-+#if defined(HAVE_SYS_FANOTIFY_H)
-+
-+#include <sys/fanotify.h>
-+
-+static int myfanotify_init(unsigned int flags, unsigned int event_f_flags)
-+{
-+	return fanotify_init(flags, event_f_flags);
-+}
-+
-+static long myfanotify_mark(int fd, unsigned int flags, uint64_t mask,
-                      int dfd, const char *pathname)
- {
--#if LTP_USE_64_ABI
--	return ltp_syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname);
--#else
--	return ltp_syscall(__NR_fanotify_mark, fd, flags,
--			 __LONG_LONG_PAIR((unsigned long) (mask >> 32),
--					  (unsigned long) mask),
--			 dfd, (unsigned long) pathname);
--#endif
-+	return fanotify_mark(fd, flags, mask, dfd, pathname);
-+}
-+
-+#else /* HAVE_SYS_FANOTIFY_H */
-+
-+static int myfanotify_init(unsigned int flags, unsigned int event_f_flags)
-+{
-+	return syscall(__NR_fanotify_init, flags, event_f_flags);
- }
- 
-+static long myfanotify_mark(int fd, unsigned int flags, uint64_t mask,
-+                     int dfd, const char *pathname)
-+{
-+	return syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname);
-+}
-+
-+#endif
-+
-+
- #endif /* __FANOTIFY_H__ */
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
