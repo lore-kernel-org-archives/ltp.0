@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1X6wo7-0006aQ-W2
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 07:05:48 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X6wo5-0005nB-Qb
-	for ltp-list@lists.sourceforge.net; Tue, 15 Jul 2014 07:05:47 +0000
-Date: Tue, 15 Jul 2014 03:05:37 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2039620646.10066364.1405407937155.JavaMail.zimbra@redhat.com>
-In-Reply-To: <53C4D003.6020209@oracle.com>
-References: <53A12D27.8030205@oracle.com>
-	<1404286258-2053-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<708407934.9715608.1405343247089.JavaMail.zimbra@redhat.com>
-	<53C4D003.6020209@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XAYDU-0004bd-8Z
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 05:38:52 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XAYDS-0004Nu-GG
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 05:38:52 +0000
+Message-ID: <53D1ED3D.2070907@cn.fujitsu.com>
+Date: Fri, 25 Jul 2014 13:38:05 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V4] syscalls: implemented a test for
- sched_setaffinity() error values
+Subject: [LTP] Segmentation fault when running sched_setaffinity01 in
+	RHEL5.10GA
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,423 +26,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: LTP <ltp-list@lists.sourceforge.net>
+
+Hi,
+
+When we run sched_setaffinity01 in RHEL5.10GA, it occurs a segmentation fault.
+Below is the possible reason.
+
+Hi Jan, would you please help to confirm this problem. I'm afraid RHEL5.10GA is an old
+distribution, which many people may not use it now, thanks!
 
 
+Glibc provides a encapsulation for the raw kernel sched_setaffinity(2) system call,
+the corresponding code is below(The version of glibc I used is glibc-2.5-20061008T1257-RHEL5.11Beta):
+I delete some code just for simple.
+
+#######################################################################################
+
+/* Size definition for CPU sets.  */
+# define __CPU_SETSIZE  1024
+# define __NCPUBITS     (8 * sizeof (__cpu_mask))
+
+/* Type for array elements in 'cpu_set'.  */
+typedef unsigned long int __cpu_mask;
+
+/* Basic access functions.  */
+# define __CPUELT(cpu)  ((cpu) / __NCPUBITS)
+
+/* Data structure to describe CPU mask.  */
+typedef struct
+{
+  __cpu_mask __bits[__CPU_SETSIZE / __NCPUBITS];
+} cpu_set_t;
 
 
+int __sched_setaffinity_new (pid_t pid, size_t cpusetsize, const cpu_set_t *cpuset)
+{
+  if (__builtin_expect (__kernel_cpumask_size == 0, 0))
+    {
+      int res;
 
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net, "vasily isaenko" <vasily.isaenko@oracle.com>
-> Sent: Tuesday, 15 July, 2014 8:53:55 AM
-> Subject: Re: [LTP] [PATCH V4] syscalls: implemented a test for sched_setaffinity() error values
-> 
-> 
-> 
-> On 07/14/2014 05:07 PM, Jan Stancek wrote:
-> >
-> >
-> >
-> >
-> > ----- Original Message -----
-> >> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> >> To: ltp-list@lists.sourceforge.net
-> >> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
-> >> Sent: Wednesday, 2 July, 2014 9:30:58 AM
-> >> Subject: [LTP] [PATCH V4] syscalls: implemented a test for
-> >> 	sched_setaffinity() error values
-> >>
-> >> This test verifies sched_setaffinity(2) for all error conditions
-> >> to occur correctly.
-> >>
-> >> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> >
-> > Looks good to me, just a small nit: have a look at checkpatch output.
-> 
-> Thank you, Jan.
-> 
-> Do you mean this:
-> ERROR: Macros with multiple statements should be enclosed in a do -
-> while loop
-> #208: FILE:
-> testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h:37:
-> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
-> +if (ncpus > CPU_SETSIZE) { \
-> +	tst_brkm(TCONF, cleanup, \
-> +		"Your libc does not support masks with %ld cpus", ncpus); \
-> +}
-> 
-> ?
-> 
-> If so, I think I can't do it, because I need to assign CPU_ALLOC() to a
-> variable....
+      while (res = INTERNAL_SYSCALL (sched_getaffinity, err, 3, getpid (),
+                                     psize, p),
+             INTERNAL_SYSCALL_ERROR_P (res, err)
+             && INTERNAL_SYSCALL_ERRNO (res, err) == EINVAL)
+     	....
 
-I see.
+      __kernel_cpumask_size = res;
+    }
 
-> 
-> Or what did you mean? :)
+  /* We now know the size of the kernel cpumask_t.  Make sure the user
+     does not request to set a bit beyond that.  */
+  for (size_t cnt = __kernel_cpumask_size; cnt < cpusetsize; ++cnt)
+    if (((char *) cpuset)[cnt] != '\0')
+      {
+        /* Found a nonzero byte.  This means the user request cannot be
+           fulfilled.  */
+        __set_errno (EINVAL);
+        return -1;
+      }
 
-I thought that at least those "trailing semicolon" warnings and removing
-FSF address could be easily fixed.
+  return INLINE_SYSCALL (sched_setaffinity, 3, pid, cpusetsize, cpuset);
+}
+#######################################################################################
+
+Glibc in RHEL5.10GA does not provide CPU_ALLOC_SIZE marco, so in ltp testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h,
+we define one.
+#######################################################################################
+#ifndef CPU_ALLOC_SIZE
+#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t)
+#endif
+#######################################################################################
+
+Then CPU_ALLOC_SIZE would always return 128 in RHEL5.10GA, that is when we test EFAULT for sched_setaffinity(2),
+the passed cpusetsize is 128. But look at __sched_setaffinity_new() above, it first call
+raw sched_getaffinity(2) to get  the size of the kernel cpumask_t, In RHEL5.10GA,
+this value depends on CONFIG_NR_CPUS, if CONFIG_NR_CPUS is 255, the raw sched_getaffinity(2) will return 32.
+In this case, __kernel_cpumask_size would be 32, cpusetsize is 128. Give that we're testing 
+EFAULT, cpuset is a invalid pointer, if cnt > 32, it will generate segmentation fault in glibc code,
+so this case exits abnormally
+
+As why this test case can run normally in RHEL6.5GA or RHEL7.0GA, it's because
+sched_getaffinity(2) in old kernel(RHEL5.10GA) return sizeof(cpumask_t), which totally depends on CONFIG_NR_CPUS.
+In newer kernel, sched_getaffinity(2) returns the smaller one between min_t(size_t, len, cpumask_size()), 
+here len is the value passed to sched_getaffinity as cpusetsize, cpumask_size() is the max allowed length.
+so we can ensure __kernel_cpumask_size will never smaller cpusetsize, so the segmentation fault won't occur.
+
+So I also think CPU_ALLOC and CPU_ALLOC_SIZE is wrong in testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h. We should
+refer to the implementation in glibc. or we define CPU_ALLOC_SIZE using raw sched_getaffinity as a workaround in older kernel . See below code:
+#########################################################################################
+
+        int ret;
+        cpu_set_t cst;
+
+        memset(&cst, 0, sizeof(cst));
+
+        ret = syscall(__NR_sched_getaffinity, getpid(),
+                      sizeof(cpu_set_t), &cst);
+        if (ret < 0) {
+                fprintf(stderr, "sched_getaffinity failed: %s\n",
+                        strerror(errno));
+                return 1;
+        } else {
+                printf("length of bit mask the kernel uses to represent the CPU"
+                       ": %d\n", ret);
+        }
+#########################################################################################
 
 Regards,
-Jan
-
-> 
-> >
-> > Reviewed-by: Jan Stancek <jstancek@redhat.com>
-> >
-> > Regards,
-> > Jan
-> >
-> >> ---
-> >> Changes since V3:
-> >>   * use tst_fork() instead of fork() for privileged_pid
-> >>   * use tst_get_unused_pid() for free_pid
-> >>
-> >>   runtest/syscalls                                   |    1 +
-> >>   testcases/kernel/syscalls/.gitignore               |    1 +
-> >>   .../kernel/syscalls/sched_setaffinity/Makefile     |   23 +++
-> >>   .../syscalls/sched_setaffinity/sched_setaffinity.h |   60 +++++++
-> >>   .../sched_setaffinity/sched_setaffinity01.c        |  177
-> >>   ++++++++++++++++++++
-> >>   5 files changed, 262 insertions(+), 0 deletions(-)
-> >>   create mode 100644 testcases/kernel/syscalls/sched_setaffinity/Makefile
-> >>   create mode 100644
-> >>   testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
-> >>   create mode 100644
-> >>   testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> >>
-> >> diff --git a/runtest/syscalls b/runtest/syscalls
-> >> index 66d6a65..52556bc 100644
-> >> --- a/runtest/syscalls
-> >> +++ b/runtest/syscalls
-> >> @@ -895,6 +895,7 @@ sched_setscheduler02 sched_setscheduler02
-> >>
-> >>   sched_yield01 sched_yield01
-> >>
-> >> +sched_setaffinity01 sched_setaffinity01
-> >>   sched_getaffinity01 sched_getaffinity01
-> >>
-> >>   select01 select01
-> >> diff --git a/testcases/kernel/syscalls/.gitignore
-> >> b/testcases/kernel/syscalls/.gitignore
-> >> index 975c150..0c31582 100644
-> >> --- a/testcases/kernel/syscalls/.gitignore
-> >> +++ b/testcases/kernel/syscalls/.gitignore
-> >> @@ -724,6 +724,7 @@
-> >>   /sched_rr_get_interval/sched_rr_get_interval01
-> >>   /sched_rr_get_interval/sched_rr_get_interval02
-> >>   /sched_rr_get_interval/sched_rr_get_interval03
-> >> +/sched_setaffinity/sched_setaffinity01
-> >>   /sched_setparam/sched_setparam01
-> >>   /sched_setparam/sched_setparam02
-> >>   /sched_setparam/sched_setparam03
-> >> diff --git a/testcases/kernel/syscalls/sched_setaffinity/Makefile
-> >> b/testcases/kernel/syscalls/sched_setaffinity/Makefile
-> >> new file mode 100644
-> >> index 0000000..2d825f1
-> >> --- /dev/null
-> >> +++ b/testcases/kernel/syscalls/sched_setaffinity/Makefile
-> >> @@ -0,0 +1,23 @@
-> >> +#
-> >> +#  Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-> >> +#
-> >> +#  This program is free software;  you can redistribute it and/or modify
-> >> +#  it under the terms of the GNU General Public License as published by
-> >> +#  the Free Software Foundation; either version 2 of the License, or
-> >> +#  (at your option) any later version.
-> >> +#
-> >> +#  This program is distributed in the hope that it will be useful,
-> >> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> >> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> >> +#  the GNU General Public License for more details.
-> >> +#
-> >> +#  You should have received a copy of the GNU General Public License
-> >> +#  along with this program;  if not, write to the Free Software
-> >> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
-> >> USA
-> >> +#
-> >> +
-> >> +top_srcdir		?= ../../../..
-> >> +
-> >> +include $(top_srcdir)/include/mk/testcases.mk
-> >> +
-> >> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> >> diff --git
-> >> a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
-> >> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
-> >> new file mode 100644
-> >> index 0000000..8083894
-> >> --- /dev/null
-> >> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h
-> >> @@ -0,0 +1,60 @@
-> >> +/*
-> >> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-> >> + *
-> >> + * This program is free software; you can redistribute it and/or
-> >> + * modify it under the terms of the GNU General Public License as
-> >> + * published by the Free Software Foundation; either version 2 of
-> >> + * the License, or (at your option) any later version.
-> >> + *
-> >> + * This program is distributed in the hope that it would be useful,
-> >> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> >> + * GNU General Public License for more details.
-> >> + *
-> >> + * You should have received a copy of the GNU General Public License
-> >> + * along with this program; if not, write the Free Software Foundation,
-> >> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> >> + */
-> >> +
-> >> +/*
-> >> + * Some old libcs (like glibc < 2.7) do not provide interfaces for
-> >> + * dynamically sized cpu sets, but provide only static cpu_set_t type
-> >> + * with no more than CPU_SETSIZE cpus in it.
-> >> + *
-> >> + * This file is a wrapper of the dynamic interfaces using the static
-> >> ones.
-> >> + *
-> >> + * If the number of cpus available on the system is greater than
-> >> + * CPU_SETSIZE, this interface will not work. Update libc in this case :)
-> >> + */
-> >> +
-> >> +#define _GNU_SOURCE
-> >> +#include <sched.h>
-> >> +
-> >> +#ifndef LTP_SCHED_SETAFFINITY_H
-> >> +#define LTP_SCHED_SETAFFINITY_H
-> >> +
-> >> +#ifndef CPU_ALLOC
-> >> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
-> >> +if (ncpus > CPU_SETSIZE) { \
-> >> +	tst_brkm(TCONF, cleanup, \
-> >> +		"Your libc does not support masks with %ld cpus", ncpus); \
-> >> +}
-> >> +#endif
-> >> +
-> >> +#ifndef CPU_FREE
-> >> +#define CPU_FREE(ptr) free(ptr);
-> >> +#endif
-> >> +
-> >> +#ifndef CPU_ALLOC_SIZE
-> >> +#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t);
-> >> +#endif
-> >> +
-> >> +#ifndef CPU_ZERO_S
-> >> +#define CPU_ZERO_S(size, mask) CPU_ZERO(mask);
-> >> +#endif
-> >> +
-> >> +#ifndef CPU_SET_S
-> >> +#define CPU_SET_S(cpu, size, mask) CPU_SET(cpu, mask);
-> >> +#endif
-> >> +
-> >> +#endif /* LTP_SCHED_SETAFFINITY_H */
-> >> diff --git
-> >> a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> >> b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> >> new file mode 100644
-> >> index 0000000..d1b2abe
-> >> --- /dev/null
-> >> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> >> @@ -0,0 +1,177 @@
-> >> +/*
-> >> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-> >> + *
-> >> + * This program is free software; you can redistribute it and/or
-> >> + * modify it under the terms of the GNU General Public License as
-> >> + * published by the Free Software Foundation; either version 2 of
-> >> + * the License, or (at your option) any later version.
-> >> + *
-> >> + * This program is distributed in the hope that it would be useful,
-> >> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> >> + * GNU General Public License for more details.
-> >> + *
-> >> + * You should have received a copy of the GNU General Public License
-> >> + * along with this program; if not, write the Free Software Foundation,
-> >> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> >> + */
-> >> +
-> >> +/*
-> >> + * This test verifies sched_setaffinity(2) for all error conditions
-> >> + * to occur correctly.
-> >> + *
-> >> + * sched_setaffinity() returns -1 and sets the error code to:
-> >> + *
-> >> + * 1) EFAULT, if the supplied memory address is invalid
-> >> + * 2) EINVAL, if the mask doesn't contain at least one
-> >> + *    permitted cpu
-> >> + * 3) ESRCH, if the process whose id is pid could not
-> >> + *    be found
-> >> + * 4) EPERM, if the calling process doesn't have appropriate
-> >> + *    privileges
-> >> + */
-> >> +
-> >> +#define _GNU_SOURCE
-> >> +#include <errno.h>
-> >> +#include <pwd.h>
-> >> +#include <sched.h>
-> >> +#include <signal.h>
-> >> +#include <unistd.h>
-> >> +#include <sys/types.h>
-> >> +#include <sys/wait.h>
-> >> +#include "test.h"
-> >> +#include "usctest.h"
-> >> +#include "safe_macros.h"
-> >> +#include "sched_setaffinity.h"
-> >> +
-> >> +char *TCID = "sched_setaffinity01";
-> >> +
-> >> +#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
-> >> +
-> >> +static cpu_set_t *mask, *emask;
-> >> +static cpu_set_t *fmask = (void *)-1;
-> >> +static size_t mask_size, emask_size;
-> >> +static pid_t self_pid, privileged_pid, free_pid;
-> >> +static uid_t uid;
-> >> +static const char nobody_uid[] = "nobody";
-> >> +static struct passwd *ltpuser;
-> >> +static long ncpus;
-> >> +
-> >> +static struct test_case_t {
-> >> +	pid_t *pid;
-> >> +	size_t *mask_size;
-> >> +	cpu_set_t **mask;
-> >> +	int exp_errno;
-> >> +} test_cases[] = {
-> >> +	{&self_pid, &mask_size, &fmask, EFAULT},
-> >> +	{&self_pid, &emask_size, &emask, EINVAL},
-> >> +	{&free_pid, &mask_size, &mask, ESRCH},
-> >> +	{&privileged_pid, &mask_size, &mask, EPERM},
-> >> +};
-> >> +
-> >> +int TST_TOTAL = ARRAY_SIZE(test_cases);
-> >> +
-> >> +static void cleanup(void)
-> >> +{
-> >> +	if (mask != NULL) {
-> >> +		CPU_FREE(mask);
-> >> +		mask = NULL;
-> >> +	}
-> >> +
-> >> +	if (emask != NULL) {
-> >> +		CPU_FREE(emask);
-> >> +		emask = NULL;
-> >> +	}
-> >> +
-> >> +	SAFE_SETEUID(NULL, uid);
-> >> +
-> >> +	if (privileged_pid != 0) {
-> >> +		kill(privileged_pid, SIGKILL);
-> >> +		waitpid(privileged_pid, NULL, 0);
-> >> +		privileged_pid = 0;
-> >> +	}
-> >> +}
-> >> +
-> >> +static void setup(void)
-> >> +{
-> >> +	tst_require_root(NULL);
-> >> +	uid = geteuid();
-> >> +	ncpus = tst_ncpus_max();
-> >> +
-> >> +	/* Current mask */
-> >> +	mask = CPU_ALLOC(ncpus);
-> >> +	if (mask == NULL)
-> >> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
-> >> +			ncpus);
-> >> +	mask_size = CPU_ALLOC_SIZE(ncpus);
-> >> +	if (sched_getaffinity(0, mask_size, mask) < 0)
-> >> +		tst_brkm(TBROK | TERRNO, cleanup, "sched_getaffinity() failed");
-> >> +
-> >> +	/* Mask with one more cpu than available on the system */
-> >> +	emask = CPU_ALLOC(ncpus + 1);
-> >> +	if (emask == NULL)
-> >> +		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
-> >> +			ncpus + 1);
-> >> +	emask_size = CPU_ALLOC_SIZE(ncpus + 1);
-> >> +	CPU_ZERO_S(emask_size, emask);
-> >> +	CPU_SET_S(ncpus, emask_size, emask);
-> >> +
-> >> +	privileged_pid = tst_fork();
-> >> +	if (privileged_pid == 0) {
-> >> +		pause();
-> >> +
-> >> +		exit(0);
-> >> +	} else if (privileged_pid < 0) {
-> >> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
-> >> +	}
-> >> +
-> >> +	/* Dropping the root privileges */
-> >> +	ltpuser = getpwnam(nobody_uid);
-> >> +	if (ltpuser == NULL)
-> >> +		tst_brkm(TBROK | TERRNO, cleanup,
-> >> +			"getpwnam failed for user id %s", nobody_uid);
-> >> +
-> >> +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> >> +
-> >> +	/* this pid is not used by the OS */
-> >> +	free_pid = tst_get_unused_pid(cleanup);
-> >> +}
-> >> +
-> >> +int main(int argc, char *argv[])
-> >> +{
-> >> +	const char *msg;
-> >> +	int lc;
-> >> +	int i;
-> >> +
-> >> +	msg = parse_opts(argc, argv, NULL, NULL);
-> >> +	if (msg != NULL)
-> >> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> >> +
-> >> +	setup();
-> >> +
-> >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> >> +		tst_count = 0;
-> >> +		for (i = 0; i < TST_TOTAL; i++) {
-> >> +			TEST(sched_setaffinity(*(test_cases[i].pid),
-> >> +						*(test_cases[i].mask_size),
-> >> +						*(test_cases[i].mask)));
-> >> +
-> >> +			if (TEST_RETURN != -1)
-> >> +				tst_resm(TFAIL,
-> >> +					"sched_setaffinity() unexpectedly succeded");
-> >> +
-> >> +			if (TEST_ERRNO == test_cases[i].exp_errno) {
-> >> +				tst_resm(TPASS, "expected failure with '%s'",
-> >> +					strerror(test_cases[i].exp_errno));
-> >> +			} else {
-> >> +				tst_resm(TFAIL,
-> >> +					"call returned '%s', expected - '%s'",
-> >> +					strerror(TEST_ERRNO),
-> >> +					strerror(test_cases[i].exp_errno));
-> >> +			}
-> >> +		}
-> >> +	}
-> >> +
-> >> +	cleanup();
-> >> +	tst_exit();
-> >> +}
-> >> --
-> >> 1.7.1
-> >>
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Open source business process management suite built on Java and Eclipse
-> >> Turn processes into business applications with Bonita BPM Community
-> >> Edition
-> >> Quickly connect people, data, and systems into organized workflows
-> >> Winner of BOSSIE, CODIE, OW2 and Gartner awards
-> >> http://p.sf.net/sfu/Bonitasoft
-> >> _______________________________________________
-> >> Ltp-list mailing list
-> >> Ltp-list@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >>
-> 
+Xiaoguang Wang
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
