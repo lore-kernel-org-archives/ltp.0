@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X1xqe-0006rA-2F
-	for ltp-list@lists.sourceforge.net; Tue, 01 Jul 2014 13:11:48 +0000
-Date: Tue, 1 Jul 2014 15:11:27 +0200
-From: chrubis@suse.cz
-Message-ID: <20140701131127.GB23601@rei.scz.novell.com>
-References: <1404125304-28650-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1404125304-28650-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XAaTt-0007z9-OB
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 08:03:57 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XAaTs-0000KV-PT
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 08:03:57 +0000
+Message-ID: <53D20F4D.5000702@oracle.com>
+Date: Fri, 25 Jul 2014 12:03:25 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1404125304-28650-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 3/3] syscalls: use tst_get_unused_pid()
+References: <4506ACC2AE90484D87F9A883BA36C21C2ADF02C2@LCHQEX03.lancope.local>
+In-Reply-To: <4506ACC2AE90484D87F9A883BA36C21C2ADF02C2@LCHQEX03.lancope.local>
+Subject: Re: [LTP] More observations on HEAD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,97 +28,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Joseph Beckenbach <jbeckenbach@lancope.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+
+
+On 07/19/2014 01:35 AM, Joseph Beckenbach wrote:
+> Hi, all!
 
 Hi!
-> --- a/testcases/kernel/syscalls/move_pages/move_pages07.c
-> +++ b/testcases/kernel/syscalls/move_pages/move_pages07.c
-> @@ -95,7 +95,7 @@ int main(int argc, char **argv)
->  		void *pages[TEST_PAGES] = { 0 };
->  		int nodes[TEST_PAGES];
->  		int status[TEST_PAGES];
-> -		int ipid;
-> +		pid_t ipid;
->  
->  		/* reset tst_count in case we are looping */
->  		tst_count = 0;
-> @@ -107,15 +107,7 @@ int main(int argc, char **argv)
->  		for (i = 0; i < TEST_PAGES; i++)
->  			nodes[i] = to_node;
->  
-> -		ipid = fork();
-> -		if (ipid == -1) {
-> -			tst_resm(TBROK | TERRNO, "fork failed");
-> -			goto err_free_pages;
-> -		}
-> -		if (ipid == 0)
-> -			exit(0);
-> -
-> -		wait(NULL);
-> +		ipid = tst_get_unused_pid(cleanup);
->  
->  		ret = numa_move_pages(ipid, TEST_PAGES, pages, nodes,
->  				      status, MPOL_MF_MOVE);
-> @@ -125,9 +117,6 @@ int main(int argc, char **argv)
->  		else
->  			tst_resm(TFAIL|TERRNO, "move pages did not fail "
->  				 "with ESRCH ret: %d", ret);
-> -
-> -err_free_pages:
-> -		free_pages(pages, TEST_PAGES);
 
-The free_pages() should stay here because the codepath gets here
-eventually even if the goto does not happen.
+>
+> Feel free to ignore this -- it's an experience report of a cluster of runs I've just done against 3.12.24 kernels.
+>
+> The default test set runs move_pages* twice.
+>
+> setfsuid04_16 and setregid{02,04,05,07}_16 TFAIL rather than TCONF on no-16-bit-syscalls systems.
 
->  	}
->  #else
->  	tst_resm(TCONF, "move_pages support not found.");
+Hmm. Indeed, in my environment (OL6 + 3.8.13-26.2.3.el6uek.x86_64) 
+setfsuid04_16 fails, but setregid{01,02,03,04}_16 don't. And there are 
+no setregid{05, 07}_16
 
-...
-
-> diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
-> index 404c798..40180a2 100644
-> --- a/testcases/kernel/syscalls/setpgid/setpgid02.c
-> +++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
-> @@ -55,16 +55,17 @@
->  #include "test.h"
->  #include "usctest.h"
->  
-> -void setup();
-> -void cleanup();
-> +static void setup();
-> +static void cleanup();
-
-Add void to the parameters since you are touching it.
-
->  char *TCID = "setpgid02";
->  int TST_TOTAL = 3;
->  
-> -pid_t pgid, pid;
-> -pid_t bad_pid = -1;
-> -pid_t zero_pid = 0;
-> -pid_t inval_pid = 99999;
-> +static pid_t pgid, pid;
-> +static pid_t bad_pid = -1;
-> +static pid_t zero_pid;
-> +static pid_t unused_pid;
-> +static pid_t inval_pid = 99999;
+I'll look at setfsuid04_16.
 
 
-The rest of the patchset looks good to me, acked (with these two issues
-above fixed).
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>
+> run_cgroup_test_fj.sh hangs on heavy-load systems with $LTPROOT/output/ not present.
+>
+> Some test under container_test.sh (sourcing childns.sh) attempts to create veth pairs without verifying veth functionality supported.
+> Other tests under container_test.sh fail to source files (childns.sh cannot source cmdlib.sh;  child_1.sh and childipv6.sh cannot source initialize.sh).
+>
+> Many tests under cgroup_regression_test.sh blindly log to hard-coded $LTPROOT/output/ directory without making sure it's there.
+> Also, subtest #7 "fails to mount hugetlb" because it seemingly did not first check whether the functionality was enabled.
+>
+> Under cgroup_fj also seems to have some tests which do latency tests and other tests, outputting "TINFO" and "FAIL" and "PASS" not in standard format.
+> I will see if I can bisect it down and work out which tests those are.
+>
+> dma_thread_diotest invocations all claim to be "dma_thread_diotest07" in the runltp outputfile.
+>
+> Thanks!
+>
+> Joseph
+> Joseph Beckenbach, senior QA engineer : Automation
+> x97166
+> M 678-602-3192
+>
+>
+> ------------------------------------------------------------------------------
+> Want fast and easy access to all the code in your enterprise? Index and
+> search up to 200,000 lines of code with a free copy of Black Duck
+> Code Sight - the same software that powers the world's largest code
+> search on Ohloh, the Black Duck Open Hub! Try it now.
+> http://p.sf.net/sfu/bds
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
