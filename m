@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X2YBL-0000m5-H8
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:59:35 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X2YBK-0000P4-4t
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:59:35 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s633xMTR020375
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 11:59:22 +0800
-Message-ID: <53B4D46A.6010201@cn.fujitsu.com>
-Date: Thu, 3 Jul 2014 11:56:26 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XAcGo-00045D-Mk
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 09:58:34 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XAcGn-0002xw-4M
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 09:58:34 +0000
+Date: Fri, 25 Jul 2014 05:58:22 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <852230347.15187943.1406282302593.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53D216D0.6010706@oracle.com>
+References: <428ab3048d90dc9d998143aea2b2a624b43d5220.1406276230.git.jstancek@redhat.com>
+	<53D216D0.6010706@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [RFC] remove TRETR flag
+Subject: Re: [LTP] [PATCH] sched_setaffinity01: use ltp_syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,25 +28,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi,
 
-Flag TRETR is introduced to indicate test case is no longer valid and has been "retired".
-I grep "TRETR" in LTP and do not find any test cases use this flag. According to my understanding,
-if the test case is no longer valid, we can just remove it form LTP. So I'd like to remove this flag.
 
-What do you think about this operation? thanks.
+
+
+----- Original Message -----
+> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+> To: "Jan Stancek" <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
+> Cc: "wangxg fnst" <wangxg.fnst@cn.fujitsu.com>
+> Sent: Friday, 25 July, 2014 10:35:28 AM
+> Subject: Re: [PATCH] sched_setaffinity01: use ltp_syscall
+> 
+> 
+> 
+> On 07/25/2014 12:18 PM, Jan Stancek wrote:
+> > Using glibc wrapper on kernel with smaller CONFIG_NR_CPUS (for example
+> > 255) leads to segmentation fault in glibc, because it triggers check,
+> > which is verifying that there are no bits set beyond size of kernel cpu
+> > mask:
+> >
+> > int
+> > __sched_setaffinity_new (pid_t pid, size_t cpusetsize, const cpu_set_t
+> > *cpuset)
+> >    ...
+> >    /* We now know the size of the kernel cpumask_t.  Make sure the user
+> >       does not request to set a bit beyond that.  */
+> >    for (size_t cnt = __kernel_cpumask_size; cnt < cpusetsize; ++cnt)
+> >      if (((char *) cpuset)[cnt] != '\0') --> CRASH HERE
+> >
+> > Call this syscall directly with ltp_syscall().
+> >
+> > Reported-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> 
+> Acked-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+
+Pushed.
 
 Regards,
-Xiaoguang Wang
+Jan
+
+> 
+> 
+> > ---
+> >   .../sched_setaffinity/sched_setaffinity01.c        |   11 ++++++++---
+> >   1 files changed, 8 insertions(+), 3 deletions(-)
+> >
+> > diff --git
+> > a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> > b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> > index 0ac4478..33a90b8 100644
+> > --- a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> > +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+> > @@ -42,6 +42,7 @@
+> >   #include "usctest.h"
+> >   #include "safe_macros.h"
+> >   #include "sched_setaffinity.h"
+> > +#include "linux_syscall_numbers.h"
+> >
+> >   char *TCID = "sched_setaffinity01";
+> >
+> > @@ -151,9 +152,13 @@ int main(int argc, char *argv[])
+> >   	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> >   		tst_count = 0;
+> >   		for (i = 0; i < TST_TOTAL; i++) {
+> > -			TEST(sched_setaffinity(*(test_cases[i].pid),
+> > -						*(test_cases[i].mask_size),
+> > -						*(test_cases[i].mask)));
+> > +			/* Avoid calling glibc wrapper function, as it may
+> > +			 * try to read/validate data in cpu mask. This test
+> > +			 * is passing invalid pointer on purpose. */
+> > +			TEST(ltp_syscall(__NR_sched_setaffinity,
+> > +				*(test_cases[i].pid),
+> > +				*(test_cases[i].mask_size),
+> > +				*(test_cases[i].mask)));
+> >
+> >   			if (TEST_RETURN != -1)
+> >   				tst_resm(TFAIL,
+> >
+> 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
