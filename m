@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X2j9Z-0004OL-Vy
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 15:42:30 +0000
-Date: Thu, 3 Jul 2014 17:42:07 +0200
-From: chrubis@suse.cz
-Message-ID: <20140703154207.GA24189@rei.scz.novell.com>
-References: <20140702132544.GA4424@rei.scz.novell.com>
-	<1404372282-21896-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XAUlV-0002Kj-73
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 01:57:45 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XAUlT-0005di-AI
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 01:57:45 +0000
+Message-ID: <53D1B969.1030109@cn.fujitsu.com>
+Date: Fri, 25 Jul 2014 09:56:57 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1404372282-21896-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] test-writing-guidelines.txt: added info about
- tst_get_unused_pid()
+References: <239904743.14759248.1406204300232.JavaMail.zimbra@redhat.com>
+In-Reply-To: <239904743.14759248.1406204300232.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] cpuset01 -I 3600
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,25 +27,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, CAI Qian <caiqian@redhat.com>
 
-Hi!
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Hi Jan,
 
-Pushed with minor changes both to the LTP git and to the LTP wiki git,
-thanks.
+On 07/24/2014 08:18 PM, Jan Stancek wrote:
+> Hi,
+> 
+> is it necessary for this reproducer to run for an hour?
+> 
+> Would anyone object if it's moved to some stress runtest?
+> Or we can keep it also in mm, but with some smaller runtime, say 5 minutes.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+If it's a bug reproducer, I think reduce the runtime would be meaningless:)
+Sometimes we just need to run that long time to ensure the bug does not exist.
+So I'd like to move it to stress runtest, thanks!
+
+Regards,
+Xiaoguang Wang
+> 
+> Any thoughts?
+> 
+> Regards,
+> Jan
+> 
+> ------------------------------------------------------------------------------
+> Want fast and easy access to all the code in your enterprise? Index and
+> search up to 200,000 lines of code with a free copy of Black Duck
+> Code Sight - the same software that powers the world's largest code
+> search on Ohloh, the Black Duck Open Hub! Try it now.
+> http://p.sf.net/sfu/bds
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
