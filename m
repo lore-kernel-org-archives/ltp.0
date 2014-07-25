@@ -2,22 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1X9dMB-00072a-2s
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 16:56:03 +0000
-Received: from mail-pd0-f179.google.com ([209.85.192.179])
+	(envelope-from <caspar@casparzhang.com>) id 1XAVgb-0007Yy-Kb
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 02:56:45 +0000
+Received: from mail-pd0-f180.google.com ([209.85.192.180])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1X9dM9-0007aE-Nq
-	for ltp-list@lists.sourceforge.net; Tue, 22 Jul 2014 16:56:03 +0000
-Received: by mail-pd0-f179.google.com with SMTP id ft15so11453505pdb.24
+	(Exim 4.76) id 1XAVga-00057u-FV
+	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 02:56:45 +0000
+Received: by mail-pd0-f180.google.com with SMTP id y13so4840800pdi.39
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Jul 2014 09:55:55 -0700 (PDT)
-Message-ID: <53CE97F7.7070508@casparzhang.com>
-Date: Wed, 23 Jul 2014 00:57:27 +0800
+	Thu, 24 Jul 2014 19:56:38 -0700 (PDT)
+Message-ID: <53D1C7A3.2060002@casparzhang.com>
+Date: Fri, 25 Jul 2014 10:57:39 +0800
 From: Caspar Zhang <caspar@casparzhang.com>
 MIME-Version: 1.0
-References: <dc2462c674d71068608438bec6cb162481571eec.1406044787.git.jstancek@redhat.com>
-In-Reply-To: <dc2462c674d71068608438bec6cb162481571eec.1406044787.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] mmap15: raise high address to 2^53
+References: <239904743.14759248.1406204300232.JavaMail.zimbra@redhat.com>
+In-Reply-To: <239904743.14759248.1406204300232.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] cpuset01 -I 3600
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,39 +30,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
-Cc: wangli.ahau@gmail.com
+To: Jan Stancek <jstancek@redhat.com>, ltp-list <ltp-list@lists.sourceforge.net>
+Cc: CAI Qian <caiqian@redhat.com>
 
-On 07/23/2014 12:06 AM, Jan Stancek wrote:
-> Address space on s390x can go atm. as high as 2^53,
-> so raise high address used here to this level.
+On 07/24/2014 08:18 PM, Jan Stancek wrote:
+> Hi,
 >
-> Signed-off-by: Li Wang <wangli.ahau@gmail.com>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
+> is it necessary for this reproducer to run for an hour?
+>
+> Would anyone object if it's moved to some stress runtest?
+> Or we can keep it also in mm, but with some smaller runtime, say 5 minutes.
+>
+> Any thoughts?
+
+This case was originally designed to test regression of this bug: 
+http://lkml.org/lkml/2010/5/4/77 and from the link we can see the bug 
+was not easy to reproduce.
+
+Agreed to move to stress runtest.
 
 Thanks,
 Caspar
 
-> ---
->   testcases/kernel/syscalls/mmap/mmap15.c |    2 +-
->   1 files changed, 1 insertions(+), 1 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
-> index 321d405..49dbba4 100644
-> --- a/testcases/kernel/syscalls/mmap/mmap15.c
-> +++ b/testcases/kernel/syscalls/mmap/mmap15.c
-> @@ -41,7 +41,7 @@
->   char *TCID = "mmap15";
->   int TST_TOTAL = 1;
->
-> -#define HIGH_ADDR	(void *)(0x1000000000000)
-> +#define HIGH_ADDR	(void *)(1L << 53)
->
->   static long map_sz;
->
->
-
+> Regards,
+> Jan
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
