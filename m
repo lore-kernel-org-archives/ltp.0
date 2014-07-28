@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XAcmE-0003Ro-NU
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 10:31:02 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XAcmC-0005Dh-VN
-	for ltp-list@lists.sourceforge.net; Fri, 25 Jul 2014 10:31:02 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s6PAUsuO002194
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 25 Jul 2014 06:30:54 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Fri, 25 Jul 2014 12:30:18 +0200
-Message-Id: <1406284218-31956-1-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1537340131.14625347.1406186431983.JavaMail.zimbra@redhat.com>
-References: <1537340131.14625347.1406186431983.JavaMail.zimbra@redhat.com>
-Subject: [LTP] [PATCH v4] containers: added pidns/pidns03.c
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XBkfz-0005ev-De
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jul 2014 13:09:15 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XBkfx-0004Df-CK
+	for ltp-list@lists.sourceforge.net; Mon, 28 Jul 2014 13:09:15 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s6SD97ev018501
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 13:09:07 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s6SD96Lx000905
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 13:09:06 GMT
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s6SD96N7000891
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 13:09:06 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 28 Jul 2014 17:10:21 +0400
+Message-Id: <1406553022-3436-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 1/2] network: uniform network parameters
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,158 +40,287 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-* Clones a new child process with CLONE_NEWPID flag - the new child
-* process mounts procfs to a "proc" directory and checks if it belongs
-* to a new pid namespace by:
-* 1. reading value of a symbolic link "proc/self"
-* 2. comparing read value (PID) with "1"
+Move networktests.sh and networkstress.sh parameters to network.sh.
+Both network scripts have the same settings (e.g. RHOST), and
+some of the stress test parameters can be used by other net-tests,
+such as LHOST_INTERFACE and RHOST_INTERFACE variables.
+Also, add network features group to networkstress.sh.
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/containers/pidns/pidns03.c | 122 ++++++++++++++++++++++++++++
- 1 file changed, 122 insertions(+)
- create mode 100644 testcases/kernel/containers/pidns/pidns03.c
+ runtest/network_stress.features |    9 +++++
+ runtest/network_stress.tcp      |    2 -
+ runtest/network_stress.udp      |    4 --
+ send_patch.sh                   |    4 ++
+ testcases/lib/test_net.sh       |   11 +++++++
+ testscripts/network.sh          |   63 +++++++++++++++++++++++++++++++++++++++
+ testscripts/networkstress.sh    |   35 ++++------------------
+ testscripts/networktests.sh     |   10 +-----
+ 8 files changed, 94 insertions(+), 44 deletions(-)
+ create mode 100644 runtest/network_stress.features
+ create mode 100755 send_patch.sh
+ create mode 100755 testscripts/network.sh
 
-diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
 new file mode 100644
-index 0000000..600683d
+index 0000000..14fa2d9
 --- /dev/null
-+++ b/testcases/kernel/containers/pidns/pidns03.c
-@@ -0,0 +1,122 @@
-+/* Copyright (c) 2014 Red Hat, Inc. All rights reserved.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: pidns03.c
-+ *
-+ * Description:
-+ * Clones a new child process with CLONE_NEWPID flag - the new child
-+ * process mounts procfs to a "proc" directory and checks if it belongs
-+ * to a new pid namespace by:
-+ * 1. reading value of a symbolic link "proc/self"
-+ * 2. comparing read value (PID) with "1"
-+ */
++++ b/runtest/network_stress.features
+@@ -0,0 +1,9 @@
++#
++# Stress tests for various network features
++#
 +
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <sys/mount.h>
-+#include <sys/types.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include "usctest.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "libclone.h"
++tcp_fastopen tcp_fastopen_run.sh
 +
++vxlan01 vxlan01.sh
++vxlan02 vxlan02.sh
++vxlan03 vxlan03.sh
+diff --git a/runtest/network_stress.tcp b/runtest/network_stress.tcp
+index 9795d2a..7206b3a 100644
+--- a/runtest/network_stress.tcp
++++ b/runtest/network_stress.tcp
+@@ -331,5 +331,3 @@ tcp6-multi-diffnic11 tcp6-multi-diffnic11
+ tcp6-multi-diffnic12 tcp6-multi-diffnic12
+ tcp6-multi-diffnic13 tcp6-multi-diffnic13
+ tcp6-multi-diffnic14 tcp6-multi-diffnic14
+-
+-tcp_fastopen tcp_fastopen_run.sh
+diff --git a/runtest/network_stress.udp b/runtest/network_stress.udp
+index 2f62c14..bfe9d85 100644
+--- a/runtest/network_stress.udp
++++ b/runtest/network_stress.udp
+@@ -65,7 +65,3 @@ udp6-multi-diffnic04 udp6-multi-diffnic04
+ udp6-multi-diffnic05 udp6-multi-diffnic05
+ udp6-multi-diffnic06 udp6-multi-diffnic06
+ udp6-multi-diffnic07 udp6-multi-diffnic07
+-
+-vxlan01 vxlan01.sh
+-vxlan02 vxlan02.sh
+-vxlan03 vxlan03.sh
+diff --git a/send_patch.sh b/send_patch.sh
+new file mode 100755
+index 0000000..d2fae29
+--- /dev/null
++++ b/send_patch.sh
+@@ -0,0 +1,4 @@
++#!/bin/sh
++echo "Send patch..."
++git send-email --identity=ltp --annotate --smtp-debug --cover-letter --signoff ./../patchs/*
++echo "Done"
+\ No newline at end of file
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 51b3e38..81cfbb7 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -75,3 +75,14 @@ tst_rhost_run()
+ 
+ 	return $ret
+ }
 +
-+#define PROCDIR "proc"
-+char *TCID	= "pidns03";
-+int TST_TOTAL	= 1;
-+
-+
-+static void cleanup(void)
++tst_lhost_hwaddr()
 +{
-+	tst_rmdir();
++	echo $(ip link show $LHOST_INTERFACE | awk 'NR==2 { print $2 }')
 +}
 +
-+static void setup(void)
++tst_rhost_hwaddr()
 +{
-+	tst_require_root(NULL);
-+	tst_tmpdir();
-+	SAFE_MKDIR(cleanup, PROCDIR, 0555);
++	echo $(tst_rhost_run -s -c "ip link show $RHOST_INTERFACE | \
++		awk 'NR==2 { print $2 }'")
 +}
+diff --git a/testscripts/network.sh b/testscripts/network.sh
+new file mode 100755
+index 0000000..79c43ad
+--- /dev/null
++++ b/testscripts/network.sh
+@@ -0,0 +1,63 @@
++#!/bin/sh
 +
-+int child_func(void *arg)
-+{
-+	char buf[10];
++# Network Test Parameters
++#
++# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
 +
-+	if (mount("none", PROCDIR, "proc", MS_RDONLY, NULL) == -1) {
-+		perror("mount");
-+		return 1;
-+	}
++export RHOST=
++export PASSWD=
 +
-+	if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
-+		perror("readlink");
-+		umount(PROCDIR);
-+		return 1;
-+	}
++# ---***************************************************---
++# More information about network parameters can be found
++# in the following document: testcases/network/stress/README
 +
-+	umount(PROCDIR);
++LTP_RSH=
 +
-+	/* child should have PID 1 in a new pid namespace - if true
-+	 * procfs belongs to the new pid namespace */
-+	if (strcmp(buf, "1")) {
-+		fprintf(stderr, "%s contains: %s\n", PROCDIR"/self", buf);
-+		return 1;
-+	}
++# Set names for test interfaces
++LHOST_INTERFACE=
++RHOST_INTERFACE=
 +
-+	return 0;
-+}
++# Set first three octets of the network address
++IPV4_NETWORK=
++# Set local host last octet
++LHOST_IPV4_HOST=
++# Set remote host last octet
++RHOST_IPV4_HOST=
++# Set the reverse of IPV4_NETWORK
++IPV4_NETWORK_REVERSE=
++# Set first three octets of the network address
++IPV6_NETWORK=
++# Set local host last octet
++LHOST_IPV6_HOST=
++# Set remote host last octet
++RHOST_IPV6_HOST=
 +
-+static void test(void)
-+{
-+	int status;
++export HTTP_DOWNLOAD_DIR=
++export FTP_DOWNLOAD_DIR=
++export FTP_UPLOAD_DIR=
++export FTP_UPLOAD_URLDIR=
 +
-+	if (do_clone_tests(CLONE_NEWPID, child_func, NULL, NULL, NULL) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++# Set default parameters
++export LTP_RSH=${LTP_RSH:-"rsh -n"}
++export LHOST_INTERFACE=${LHOST_INTERFACE:-"eth0"}
++export RHOST_INTERFACE=${RHOST_INTERFACE:-"eth0"}
++export IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
++export IPV6_NETWORK=${IPV6_NETWORK:-"fd00:1:1:1"}
++export LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
++export RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
++export LHOST_IPV6_HOST=${LHOST_IPV6_HOST:-":2"}
++export RHOST_IPV6_HOST=${RHOST_IPV6_HOST:-":1"}
++export IPV4_NETWORK_REVERSE=${IPV4_NETWORK_REVERSE:-"0.0.10"}
 +
-+	SAFE_WAIT(cleanup, &status);
++TST_TOTAL=1
++TCID="network_settings"
 +
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-+		tst_resm(TPASS, "mounting procfs in a new namespace");
-+		return;
-+	}
++. test_net.sh
 +
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "child was killed with signal %s",
-+			 tst_strsig(WTERMSIG(status)));
-+		return;
-+	}
++export LHOST_HWADDRS=$(tst_lhost_hwaddr)
++export RHOST_HWADDRS=$(tst_rhost_hwaddr)
 +
-+	tst_resm(TFAIL, "mounting procfs in a new namespace");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	cleanup();
-+	tst_exit();
-+}
++export TMPDIR=/tmp/netpan-$$
++mkdir -p $TMPDIR
++CMDFILE=${TMPDIR}/network.tests
++VERBOSE="no"
+diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
+index b40af72..47f365d 100755
+--- a/testscripts/networkstress.sh
++++ b/testscripts/networkstress.sh
+@@ -12,32 +12,10 @@ if [ $? -eq 0 ]; then
+  export LTPROOT=${PWD}
+ fi
+ 
+-export TMPDIR=/tmp/netst-$$
+-mkdir $TMPDIR
+-VERBOSE="no"
+-INTERFACE="eth0"
+-
+-#===========================================================================
+-# Network parameters
+-export RHOST=
+-export RHOST_HWADDRS=
+-export HTTP_DOWNLOAD_DIR=
+-export FTP_DOWNLOAD_DIR=
+-export FTP_UPLOAD_DIR=
+-export FTP_UPLOAD_URLDIR=
+-
+-# Set firt three octets of the network address, by default 10.0.0
+-export IPV4_NETWORK=
+-# Set local host last octet, by default 2
+-export LHOST_IPV4_HOST=
+-# Set remote host last octet, by default 1
+-export RHOST_IPV4_HOST=
+-# Set the reverse of IPV4_NETWORK, by default 0.0.10
+-export IPV4_NETWORK_REVERSE=
++. $LTPROOT/testscripts/network.sh $0
+ 
+ #===========================================================================
+ # Default Test Settings
+-# export LTP_RSH=rsh
+ # export NS_DURATION=3600	# 1 hour
+ # export NS_TIMES=10000
+ # export CONNECTION_TOTAL=4000
+@@ -67,6 +45,7 @@ usage () {
+     echo " -R|r: Stress test for routing table"
+     echo " -B|b: Stress Broken IP packets"
+     echo " -M|m: Multicast stress tests"
++    echo " -F|f: Stress test for network features"
+     echo " -S|s: Run selected tests"
+     echo " -W|w: Run whole network stress tests"
+     echo " -D|d: Test duration (default ${NS_DURATION} sec)"
+@@ -77,7 +56,7 @@ usage () {
+     exit 1
+ }
+ 
+-while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
++while getopts AaEeTtIiUuRrMmFfSsWwBbVvN:n:D:d: OPTION
+ do
+     case $OPTION in
+ 	A|a) TEST_CASE="network_stress.appl";;
+@@ -88,6 +67,7 @@ do
+ 	U|u) TEST_CASE="network_stress.udp";;
+ 	R|r) TEST_CASE="network_stress.route";;
+ 	M|m) TEST_CASE="network_stress.multicast";;
++	F|f) TEST_CASE="network_stress.features";;
+ 	S|s) TEST_CASE="network_stress.selected";;
+ 	W|w) TEST_CASE="network_stress.whole";;
+ 	V|v) VERBOSE="yes";;
+@@ -102,8 +82,6 @@ if [ -z ${TEST_CASE} ]; then
+ 	usage
+ fi
+ 
+-export LHOST_HWADDRS=`ifconfig | grep ${INTERFACE} | grep HWaddr |awk '{print $5}'`
+-
+ if [ -z ${RHOST} ]; then
+ 	## Just a silly check
+ 	echo "Error: pay attention to configure"
+@@ -119,9 +97,8 @@ export PATH="${PATH}:${LTPROOT}/testcases/bin"
+ 
+ if [ ${VERBOSE} = "yes" ]; then
+ 	echo "Network parameters:"
+-	echo " - ${INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
+-	echo " - Remote IP address: ${RHOST}"
+-	echo " - Remote MAC address: ${RHOST_HWADDRS}"
++	echo " - ${LHOST_INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
++	echo " - ${RHOST_INTERFACE} remote interface (MAC address: ${RHOST_HWADDRS})"
+ 
+ 	cat $TMPDIR/network_stress.tests
+ 	${LTPROOT}/ver_linux
+diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
+index b136749..507b7e3 100755
+--- a/testscripts/networktests.sh
++++ b/testscripts/networktests.sh
+@@ -1,11 +1,6 @@
+ #!/bin/sh
+ # This will run all the network tests, with the status logged in /tmp/netpan.log
+ 
+-# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
+-export RHOST=
+-export PASSWD=
+-# ---***************************************************---
+-
+ cd `dirname $0`
+ export LTPROOT=${PWD}
+ echo $LTPROOT | grep testscripts > /dev/null 2>&1
+@@ -14,10 +9,7 @@ if [ $? -eq 0 ]; then
+  export LTPROOT=${PWD}
+ fi
+ 
+-export TMPDIR=/tmp/netpan-$$
+-mkdir -p $TMPDIR
+-CMDFILE=${TMPDIR}/network.tests
+-VERBOSE="no"
++. $LTPROOT/testscripts/network.sh $0
+ 
+ # For bitwise operation to determine which testsets run
+ CMD_IPV6=1		# 0x0001
 -- 
-1.8.3.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
