@@ -1,25 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X99Sn-0004CR-W7
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:00:54 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X99Sm-0005N2-2x
-	for ltp-list@lists.sourceforge.net; Mon, 21 Jul 2014 09:00:53 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6L90hri020949
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Jul 2014 17:00:43 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 21 Jul 2014 17:00:04 +0800
-Message-ID: <1405933204-12601-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1405933204-12601-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1405933204-12601-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/2] lib/tst_res.c: make tst_brkm() and tst_resm()
-	output more informative message
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XC2og-0005Se-PZ
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 08:31:26 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XC2of-0001sN-Ca
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 08:31:26 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s6T8VIMB026990
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jul 2014 04:31:18 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s6T8VHbK004550
+	for <ltp-list@lists.sourceforge.net>; Tue, 29 Jul 2014 04:31:17 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 29 Jul 2014 10:31:13 +0200
+Message-Id: <24aca741786196af9ca38705970289a66b12ab9b.1406622527.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] mem/oom: check for multiple outcomes if
+	overcommit_memory is 0 or 1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,323 +32,369 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-If testcase calls tst_brkm(...) to terminate test, usually we need
-to serch the message outputted by tst_brkm() to locate it in test
-program, it is inefficient, especially we have multiple same messages,
-so here we choose to make tst_brkm output extra information about
-source files and line number. Also make similar change to tst_resm().
+There is no guarantee that mmap() will fail before OOM tries to kill the
+process if overcommit is set to 0 or 1. So allow these tests to
+PASS if child is killed or some operation fails with ENOMEM.
 
-E.g.:
-We execute getxattr01 before this patch:
-[root@localhost getxattr]# ./getxattr01
-getxattr01    1  TCONF  :  No xattr support in fs or mount without user_xattr option
-getxattr01    2  TCONF  :  Remaining cases not appropriate for configuration
+This patch is introducing extra parameter "outcome" to oom()/testoom().
+It's an array of integers, which describe how child ended:
+exited/signalled and contains ret code or signal number. If child state
+matches any value in this array, it's considered as PASS.
 
-After this patch:
-[root@localhost getxattr]# ./getxattr01
-getxattr01    1  TCONF  :  getxattr01.c:158: No xattr support in fs or mount without user_xattr option
-getxattr01    2  TCONF  :  Remaining cases not appropriate for configuration
+Tests with overcommit_memory set to 2 are expected to fail with ENOMEM,
+all others are expected to fail with ENOMEM or be killed by SIGKILL.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- include/test.h | 44 ++++++++++++++++++++------
- lib/tst_res.c  | 99 ++++++++++++++++++++++++----------------------------------
- 2 files changed, 75 insertions(+), 68 deletions(-)
+ testcases/kernel/mem/include/mem.h |   14 +++++-
+ testcases/kernel/mem/lib/mem.c     |   95 ++++++++++++++++++++++++------------
+ testcases/kernel/mem/oom/oom01.c   |    9 ++-
+ testcases/kernel/mem/oom/oom02.c   |    6 +-
+ testcases/kernel/mem/oom/oom03.c   |   10 ++--
+ testcases/kernel/mem/oom/oom04.c   |    4 +-
+ testcases/kernel/mem/oom/oom05.c   |    8 ++--
+ 7 files changed, 96 insertions(+), 50 deletions(-)
 
-diff --git a/include/test.h b/include/test.h
-index 011866d..2013a36 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -118,16 +118,42 @@ extern int Forker_npids;
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 746164c..e7a8678 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -38,9 +38,19 @@ static inline void clean_node(unsigned long *array)
+ #define MLOCK			3
+ #define KSM			4
  
- /* lib/tst_res.c */
- const char *strttype(int ttype);
--void tst_res(int ttype, const char *fname, const char *arg_fmt, ...)
--	__attribute__ ((format (printf, 3, 4)));
--void tst_resm(int ttype, const char *arg_fmt, ...)
--	__attribute__ ((format (printf, 2, 3)));
--void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt, ...)
--	__attribute__ ((format (printf, 4, 5)));
--void tst_brk(int ttype, const char *fname, void (*func)(void), const char *arg_fmt, ...)
-+void tst_res_(const char *file, const int lineno, int ttype,
-+	const char *fname, const char *arg_fmt, ...)
-+	__attribute__ ((format (printf, 5, 6)));
++/* oom/testoom outcomes */
++#define EXIT_FLAG 0x100
++#define SIGNAL_FLAG 0x200
++#define OUTCOME_MASK 0xff
++#define EXITED(n) (EXIT_FLAG + (n & OUTCOME_MASK))
++#define SIGNALLED(n) (SIGNAL_FLAG + (n & OUTCOME_MASK))
 +
-+#define tst_res(ttype, fname, arg_fmt, ...) \
-+	tst_res_(__FILE__, __LINE__, (ttype), (fname), \
-+		 (arg_fmt), ##__VA_ARGS__)
++extern int EXITED_ENOMEM[];
++extern int ENOMEM_OR_SIGKILL[];
 +
-+void tst_resm_(const char *file, const int lineno, int ttype,
-+	const char *arg_fmt, ...)
- 	__attribute__ ((format (printf, 4, 5)));
--void tst_brkm(int ttype, void (*func)(void), const char *arg_fmt, ...)
--	__attribute__ ((format (printf, 3, 4))) LTP_ATTRIBUTE_NORETURN;
-+#define tst_resm(ttype, arg_fmt, ...) \
-+	tst_resm_(__FILE__, __LINE__, (ttype), \
-+		  (arg_fmt), ##__VA_ARGS__)
-+
-+void tst_resm_hexd_(const char *file, const int lineno, int ttype,
-+	const void *buf, size_t size, const char *arg_fmt, ...)
-+	__attribute__ ((format (printf, 6, 7)));
-+#define tst_resm_hexd(ttype, buf, size, arg_fmt, ...) \
-+	tst_resm_hexd_(__FILE__, __LINE__, (ttype), (buf), (size), \
-+		       (arg_fmt), ##__VA_ARGS__)
-+
-+void tst_brk_(const char *file, const int lineno, int ttype,
-+	const char *fname, void (*func)(void), const char *arg_fmt, ...)
-+	__attribute__ ((format (printf, 6, 7)));
-+#define tst_brk(ttype, fname, func, arg_fmt, ...) \
-+	tst_brk_(__FILE__, __LINE__, (ttype), (fname), (func), \
-+		 (arg_fmt), ##__VA_ARGS__)
-+
-+void tst_brkm_(const char *file, const int lineno, int ttype,
-+	void (*func)(void), const char *arg_fmt, ...)
-+	__attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
-+#define tst_brkm(ttype, func, arg_fmt, ...) \
-+	tst_brkm_(__FILE__, __LINE__, (ttype), (func), \
-+		  (arg_fmt), ##__VA_ARGS__)
-+
- void tst_require_root(void (*func)(void));
- int  tst_environ(void);
- void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 0383c98..c584265 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -36,12 +36,12 @@
-  *    OS Testing - Silicon Graphics, Inc.
-  *
-  *    FUNCTION NAME     :
-- *      tst_res() -       Print result message (include file contents)
-- *      tst_resm() -      Print result message
-- *      tst_resm_hexd() - Print result message (add buffer contents in hex)
-- *      tst_brk() -       Print result message (include file contents)
-+ *      tst_res_() -       Print result message (include file contents)
-+ *      tst_resm_() -      Print result message
-+ *      tst_resm_hexd_() - Print result message (add buffer contents in hex)
-+ *      tst_brk_() -       Print result message (include file contents)
-  *                        and break remaining test cases
-- *      tst_brkm() -      Print result message and break remaining test
-+ *      tst_brkm_() -      Print result message and break remaining test
-  *                        cases
-  *      tst_flush() -     Print any messages pending in the output stream
-  *      tst_exit() -      Exit test with a meaningful exit value.
-@@ -49,35 +49,6 @@
-  *
-  *    FUNCTION TITLE    : Standard automated test result reporting mechanism
-  *
-- *    SYNOPSIS:
-- *      #include "test.h"
-- *
-- *      void tst_res(ttype, fname, tmesg [,arg]...)
-- *      int  ttype;
-- *      char *fname;
-- *      char *tmesg;
-- *
-- *      void tst_resm(ttype, tmesg [,arg]...)
-- *      int  ttype;
-- *      char *tmesg;
-- *
-- *      void tst_brk(ttype, fname, cleanup, tmesg, [,argv]...)
-- *      int  ttype;
-- *      char *fname;
-- *      void (*cleanup)();
-- *      char *tmesg;
-- *
-- *      void tst_brkm(ttype, cleanup, tmesg [,arg]...)
-- *      int  ttype;
-- *      void (*cleanup)();
-- *      char *tmesg;
-- *
-- *      void tst_flush()
-- *
-- *      void tst_exit()
-- *
-- *      int  tst_environ()
-- *
-  *    AUTHOR            : Kent Rogers (from Dave Fenner's original)
-  *
-  *    CO-PILOT          : Rich Logan
-@@ -224,25 +195,29 @@ const char *strttype(int ttype)
- #include "signame.h"
+ long overcommit;
+-void oom(int testcase, int lite);
+-void testoom(int mempolicy, int lite);
++void oom(int testcase, int lite, int outcome[]);
++void testoom(int mempolicy, int lite, int outcome[]);
  
- /*
-- * tst_res() - Main result reporting function.  Handle test information
-+ * tst_res_() - Main result reporting function.  Handle test information
-  *             appropriately depending on output display mode.  Call
-  *             tst_condense() or tst_print() to actually print results.
-- *             All result functions (tst_resm(), tst_brk(), etc.)
-+ *             All result functions (tst_resm_(), tst_brk_(), etc.)
-  *             eventually get here to print the results.
-  */
--void tst_res(int ttype, const char *fname, const char *arg_fmt, ...)
-+void tst_res_(const char *file, const int lineno, int ttype,
-+	const char *fname, const char *arg_fmt, ...)
+ /* KSM */
+ 
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index c7910db..f207c58 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -25,52 +25,73 @@
+ #include "numa_helper.h"
+ 
+ /* OOM */
++int EXITED_ENOMEM[] = { EXITED(ENOMEM), 0 };
++int ENOMEM_OR_SIGKILL[] =  { EXITED(ENOMEM), SIGNALLED(SIGKILL), 0 };
+ 
+ static int alloc_mem(long int length, int testcase)
  {
- 	pthread_mutex_lock(&tmutex);
+-	void *s;
++	char *s;
++	long i;
++	int pagesz = getpagesize();
  
- 	char tmesg[USERMESG];
-+	int len = 0;
- 	int ttype_result = TTYPE_RESULT(ttype);
- 
- #if DEBUG
--	printf("IN tst_res; tst_count = %d\n", tst_count);
-+	printf("IN tst_res_; tst_count = %d\n", tst_count);
- 	fflush(stdout);
+ 	tst_resm(TINFO, "allocating %ld bytes.", length);
++
+ 	s = mmap(NULL, length, PROT_READ | PROT_WRITE,
+ 		 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+-	if (s == MAP_FAILED) {
+-		if (testcase == OVERCOMMIT && errno == ENOMEM)
+-			return 1;
+-		else
+-			tst_brkm(TBROK | TERRNO, cleanup, "mmap");
+-	}
++	if (s == MAP_FAILED)
++		return errno;
++
+ 	if (testcase == MLOCK && mlock(s, length) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mlock");
++		return errno;
+ #ifdef HAVE_MADV_MERGEABLE
+ 	if (testcase == KSM && madvise(s, length, MADV_MERGEABLE) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "madvise");
++		return errno;
  #endif
+-	memset(s, '\a', length);
++	for (i = 0; i < length; i += pagesz)
++		s[i] = '\a';
  
--	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
-+	if (file && (ttype_result != TPASS && ttype_result != TINFO))
-+		len = sprintf(tmesg, "%s:%d: ", file, lineno);
-+	EXPAND_VAR_ARGS(tmesg + len, arg_fmt, USERMESG - len);
+ 	return 0;
+ }
  
- 	/*
- 	 * Save the test result type by ORing ttype into the current exit
-@@ -599,10 +574,11 @@ int tst_environ(void)
- static int tst_brk_entered = 0;
- 
- /*
-- * tst_brk() - Fail or break current test case, and break the remaining
-+ * tst_brk_() - Fail or break current test case, and break the remaining
-  *             tests cases.
-  */
--void tst_brk(int ttype, const char *fname, void (*func) (void), const char *arg_fmt, ...)
-+void tst_brk_(const char *file, const int lineno, int ttype, const char *fname,
-+	void (*func)(void), const char *arg_fmt, ...)
+ static void test_alloc(int testcase, int lite)
  {
- 	pthread_mutex_lock(&tmutex);
+-	if (lite)
+-		alloc_mem(TESTMEM + MB, testcase);
+-	else
+-		while (1)
+-			if (alloc_mem(LENGTH, testcase))
+-				return;
++	int ret;
++
++	if (lite) {
++		ret = alloc_mem(TESTMEM + MB, testcase);
++	} else {
++		ret = 0;
++		while (!ret)
++			ret = alloc_mem(LENGTH, testcase);
++	}
++	exit(ret);
+ }
  
-@@ -610,7 +586,7 @@ void tst_brk(int ttype, const char *fname, void (*func) (void), const char *arg_
- 	int ttype_result = TTYPE_RESULT(ttype);
+-void oom(int testcase, int lite)
++/*
++ * oom - allocates memory according to specified testcase and checks
++ *       desired outcome (e.g. child killed, operation failed with ENOMEM)
++ * @testcase: selects how child allocates memory
++ *            valid choices are: OVERCOMMIT, NORMAL, MLOCK and KSM
++ * @lite: if non-zero, child makes only single TESTMEM+MB allocation
++ *        if zero, child keeps allocating memory until it gets killed
++ *        or some operation fails
++ * @outcome: array of integeres describing expected states of child process
++ *           If child state matches any, it will report PASS.
++ *           Two bytes are used in each int, higher byte specifies how child
++ *           exited, lower byte is return code or signal number, see EXITED()
++ *           and SIGNALLED() macros in mem.h.
++ *           Last integer must be 0 to denote end of array.
++ */
++void oom(int testcase, int lite, int outcome[])
+ {
+ 	pid_t pid;
+-	int status;
++	int status, i = 0, n;
  
- #if DEBUG
--	printf("IN tst_brk\n");
-+	printf("IN tst_brk_\n");
- 	fflush(stdout);
- 	fflush(stdout);
- #endif
-@@ -629,14 +605,16 @@ void tst_brk(int ttype, const char *fname, void (*func) (void), const char *arg_
- 		ttype = (ttype & ~ttype_result) | TBROK;
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+ 	case 0:
+ 		test_alloc(testcase, lite);
+-		exit(0);
+ 	default:
+ 		break;
  	}
+@@ -79,15 +100,27 @@ void oom(int testcase, int lite)
+ 	if (waitpid(-1, &status, 0) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
  
--	tst_res(ttype, fname, "%s", tmesg);
-+	tst_res_(file, lineno, ttype, fname, "%s", tmesg);
- 	if (tst_brk_entered == 0) {
--		if (ttype_result == TCONF)
--			tst_res(ttype, NULL,
-+		if (ttype_result == TCONF) {
-+			tst_res_(file, lineno, ttype, NULL,
- 				"Remaining cases not appropriate for "
- 				"configuration");
--		else if (ttype_result == TBROK)
--			tst_res(TBROK, NULL, "Remaining cases broken");
-+		} else if (ttype_result == TBROK) {
-+			tst_res_(file, lineno, TBROK, NULL,
-+				 "Remaining cases broken");
+-	if (testcase == OVERCOMMIT) {
+-		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
+-				 status);
+-	} else {
+-		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
+-			tst_resm(TFAIL, "the victim unexpectedly failed: %d",
+-				 status);
++	while (outcome[i]) {
++		n = outcome[i] & OUTCOME_MASK;
++		if ((outcome[i] & EXIT_FLAG) && WIFEXITED(status)
++			&& WEXITSTATUS(status) == n) {
++			tst_resm(TPASS, "victim retcode: (%d) %s",
++				n, strerror(n));
++			return;
++		} else if ((outcome[i] & SIGNAL_FLAG) && WIFSIGNALED(status)
++			&& WTERMSIG(status) == n) {
++			tst_resm(TPASS, "victim signalled: (%d) %s",
++				n, tst_strsig(n));
++			return;
 +		}
++		i++;
  	}
- 
- 	/*
-@@ -655,9 +633,10 @@ void tst_brk(int ttype, const char *fname, void (*func) (void), const char *arg_
++
++	tst_resm(TFAIL, "victim unexpectedly ended with status: %d", status);
++	if (WIFEXITED(status))
++		tst_resm(TFAIL, " retcode: %s",	strerror(WEXITSTATUS(status)));
++	if (WIFSIGNALED(status))
++		tst_resm(TFAIL, " termsig: %s",	tst_strsig(WTERMSIG(status)));
  }
  
- /*
-- * tst_resm() - Interface to tst_res(), with no filename.
-+ * tst_resm_() - Interface to tst_res(), with no filename.
-  */
--void tst_resm(int ttype, const char *arg_fmt, ...)
-+void tst_resm_(const char *file, const int lineno, int ttype,
-+	const char *arg_fmt, ...)
- {
- 	char tmesg[USERMESG];
- 
-@@ -669,21 +648,22 @@ void tst_resm(int ttype, const char *arg_fmt, ...)
- 
- 	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
--	tst_res(ttype, NULL, "%s", tmesg);
-+	tst_res_(file, lineno, ttype, NULL, "%s", tmesg);
- }
- 
- /*
-- * tst_resm_hexd() - Interface to tst_res(), with no filename.
-+ * tst_resm_hexd_() - Interface to tst_res(), with no filename.
-  * Also, dump specified buffer in hex.
-  */
--void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt, ...)
-+void tst_resm_hexd_(const char *file, const int lineno, int ttype,
-+	const void *buf, size_t size, const char *arg_fmt, ...)
- {
- 	pthread_mutex_lock(&tmutex);
- 
- 	char tmesg[USERMESG];
- 
- #if DEBUG
--	printf("IN tst_resm_hexd\n");
-+	printf("IN tst_resm_hexd_\n");
- 	fflush(stdout);
+ static void set_global_mempolicy(int mempolicy)
+@@ -135,22 +168,22 @@ static void set_global_mempolicy(int mempolicy)
  #endif
+ }
  
-@@ -696,7 +676,7 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
+-void testoom(int mempolicy, int lite)
++void testoom(int mempolicy, int lite, int outcome[])
+ {
+ 	set_global_mempolicy(mempolicy);
  
- 	if (size > size_max || size == 0 ||
- 		(offset + size * (symb_num + 1)) >= USERMESG)
--		tst_res(ttype, NULL, "%s", tmesg);
-+		tst_res_(file, lineno, ttype, NULL, "%s", tmesg);
- 	else
- 		pmesg += offset;
+ 	tst_resm(TINFO, "start normal OOM testing.");
+-	oom(NORMAL, lite);
++	oom(NORMAL, lite, outcome);
  
-@@ -709,7 +689,7 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
- 		sprintf(pmesg, "%02x", ((unsigned char *)buf)[i]);
- 		pmesg += symb_num;
- 		if ((i + 1) % size_max == 0 || i + 1 == size) {
--			tst_res(ttype, NULL, "%s", tmesg);
-+			tst_res_(file, lineno, ttype, NULL, "%s", tmesg);
- 			pmesg = tmesg;
+ 	tst_resm(TINFO, "start OOM testing for mlocked pages.");
+-	oom(MLOCK, lite);
++	oom(MLOCK, lite, outcome);
+ 
+ 	if (access(PATH_KSM, F_OK) == -1) {
+ 		tst_resm(TINFO, "KSM configuration is not enabled, "
+ 			 "skip OOM test for KSM pags");
+ 	} else {
+ 		tst_resm(TINFO, "start OOM testing for KSM pages.");
+-		oom(KSM, lite);
++		oom(KSM, lite, outcome);
+ 	}
+ }
+ 
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 076427c..c97fada 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -60,14 +60,17 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
++		/* we expect mmap to fail before OOM is hit */
+ 		set_sys_tune("overcommit_memory", 2, 1);
+-		oom(OVERCOMMIT, 0);
++		oom(OVERCOMMIT, 0, EXITED_ENOMEM);
+ 
++		/* with overcommit_memory set to 0 or 1 there's no
++		 * guarantee that mmap fails before OOM */
+ 		set_sys_tune("overcommit_memory", 0, 1);
+-		oom(OVERCOMMIT, 0);
++		oom(OVERCOMMIT, 0, ENOMEM_OR_SIGKILL);
+ 
+ 		set_sys_tune("overcommit_memory", 1, 1);
+-		testoom(0, 0);
++		testoom(0, 0, ENOMEM_OR_SIGKILL);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
+index 3f17400..e3242fc 100644
+--- a/testcases/kernel/mem/oom/oom02.c
++++ b/testcases/kernel/mem/oom/oom02.c
+@@ -65,13 +65,13 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
+ 
+ 		tst_resm(TINFO, "OOM on MPOL_BIND mempolicy...");
+-		testoom(MPOL_BIND, 0);
++		testoom(MPOL_BIND, 0, ENOMEM_OR_SIGKILL);
+ 
+ 		tst_resm(TINFO, "OOM on MPOL_INTERLEAVE mempolicy...");
+-		testoom(MPOL_INTERLEAVE, 0);
++		testoom(MPOL_INTERLEAVE, 0, ENOMEM_OR_SIGKILL);
+ 
+ 		tst_resm(TINFO, "OOM on MPOL_PREFERRED mempolicy...");
+-		testoom(MPOL_PREFERRED, 0);
++		testoom(MPOL_PREFERRED, 0, ENOMEM_OR_SIGKILL);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index dcb493c..a8cce9c 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
+ 				 "%d", getpid());
+ 		SAFE_FILE_PRINTF(cleanup, MEMCG_LIMIT, "%ld", TESTMEM);
+ 
+-		testoom(0, 0);
++		testoom(0, 0, ENOMEM_OR_SIGKILL);
+ 
+ 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
+ 			if (errno == ENOENT)
+@@ -77,15 +77,15 @@ int main(int argc, char *argv[])
+ 		} else {
+ 			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT,
+ 					 "%ld", TESTMEM);
+-			testoom(0, 1);
++			testoom(0, 1, ENOMEM_OR_SIGKILL);
+ 		}
+ 
+ 		/* OOM for MEMCG with mempolicy */
+ 		if (is_numa(cleanup)) {
+ 			tst_resm(TINFO, "OOM on MEMCG & mempolicy...");
+-			testoom(MPOL_BIND, 0);
+-			testoom(MPOL_INTERLEAVE, 0);
+-			testoom(MPOL_PREFERRED, 0);
++			testoom(MPOL_BIND, 0, ENOMEM_OR_SIGKILL);
++			testoom(MPOL_INTERLEAVE, 0, ENOMEM_OR_SIGKILL);
++			testoom(MPOL_PREFERRED, 0, ENOMEM_OR_SIGKILL);
  		}
  	}
-@@ -718,21 +698,22 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
- }
+ 	cleanup();
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 40360c3..0a74e89 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
  
- /*
-- * tst_brkm() - Interface to tst_brk(), with no filename.
-+ * tst_brkm_() - Interface to tst_brk(), with no filename.
-  */
--void tst_brkm(int ttype, void (*func) (void), const char *arg_fmt, ...)
-+void tst_brkm_(const char *file, const int lineno, int ttype,
-+	void (*func)(void), const char *arg_fmt, ...)
- {
- 	char tmesg[USERMESG];
+ 		tst_resm(TINFO, "OOM on CPUSET...");
+-		testoom(0, 0);
++		testoom(0, 0, ENOMEM_OR_SIGKILL);
  
- #if DEBUG
--	printf("IN tst_brkm\n");
-+	printf("IN tst_brkm_\n");
- 	fflush(stdout);
- 	fflush(stdout);
- #endif
+ 		if (is_numa(cleanup)) {
+ 			/*
+@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
+ 			write_cpuset_files(CPATH_NEW,
+ 					   "memory_migrate", "1");
+ 			tst_resm(TINFO, "OOM on CPUSET with mem migrate:");
+-			testoom(0, 0);
++			testoom(0, 0, ENOMEM_OR_SIGKILL);
+ 		}
+ 	}
+ 	cleanup();
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 7ca53ad..0992935 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
  
- 	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
+ 		tst_resm(TINFO, "OOM on CPUSET & MEMCG...");
+-		testoom(0, 0);
++		testoom(0, 0, ENOMEM_OR_SIGKILL);
  
--	tst_brk(ttype, NULL, func, "%s", tmesg);
-+	tst_brk_(file, lineno, ttype, NULL, func, "%s", tmesg);
- 	/* Shouldn't be reach, but fixes build time warnings about noreturn. */
- 	abort();
- }
+ 		/*
+ 		 * Under NUMA system, the migration of cpuset's memory
+@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
+ 			write_cpuset_files(CPATH_NEW, "memory_migrate", "1");
+ 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
+ 					"cpuset.memory_migrate=1");
+-			testoom(0, 0);
++			testoom(0, 0, ENOMEM_OR_SIGKILL);
+ 		}
+ 
+ 		if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
+@@ -93,12 +93,12 @@ int main(int argc, char *argv[])
+ 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
+ 					"special memswap limitation:");
+ 			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "%ld", TESTMEM);
+-			testoom(0, 0);
++			testoom(0, 0, ENOMEM_OR_SIGKILL);
+ 
+ 			tst_resm(TINFO, "OOM on CPUSET & MEMCG with "
+ 					"disabled memswap limitation:");
+ 			SAFE_FILE_PRINTF(cleanup, MEMCG_SW_LIMIT, "-1");
+-			testoom(0, 0);
++			testoom(0, 0, ENOMEM_OR_SIGKILL);
+ 		}
+ 	}
+ 
 -- 
-1.8.2.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
