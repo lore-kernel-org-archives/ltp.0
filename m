@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1X2Xla-0001kY-Ei
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:32:58 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1X2XlZ-0002JE-1X
-	for ltp-list@lists.sourceforge.net; Thu, 03 Jul 2014 03:32:58 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s633WmEO018979
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Jul 2014 11:32:48 +0800
-Message-ID: <53B4CE30.9050407@cn.fujitsu.com>
-Date: Thu, 3 Jul 2014 11:29:52 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1XC4AA-0001H0-Hz
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 09:57:42 +0000
+Date: Tue, 29 Jul 2014 11:56:56 +0200
+From: chrubis@suse.cz
+Message-ID: <20140729095656.GA18038@rei>
+References: <20140722143000.GA22955@rei>
+	<1406548301-21888-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1404356716-20493-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1404356716-20493-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] doc/man3/tst_res.3: fix the wrong description
-	about TPASS
+Content-Disposition: inline
+In-Reply-To: <1406548301-21888-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 1/3] lib/tst_res.c: introduce
+ tst_record_childstatus()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,44 +26,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi, 
+Hi!
+> In case we need do real test work in child porcess, it is OK for child process
+> to use tst_resm(), tst_brkm() or tst_exit(). Parent process can use
+> tst_record_childstatus() to make child process's test results propagated to parent
+> process correctly.
 
-Indeed TPASS dose not have effect on the test program's exit status, that it is defined 0.
-Sorry for the noise, please ignore this patch.
+Pushed with small enhancements.
 
-Regards,
-Xiaoguang Wang
+I've changed the tst_record_childstatus() to print which signal has
+killed the child and made it a bit more verbose. Added simple test under
+lib/tests/ etc.
 
-On 07/03/2014 11:05 AM, Xiaoguang Wang wrote:
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  doc/man3/tst_res.3 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/doc/man3/tst_res.3 b/doc/man3/tst_res.3
-> index 0754daf..3fc8e79 100644
-> --- a/doc/man3/tst_res.3
-> +++ b/doc/man3/tst_res.3
-> @@ -233,7 +233,7 @@ TCONF
->  0040	/* ..1. .... */
->  .RE
->  .P
-> -NOTE: \fBTPASS, TRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
-> +NOTE: \fBTRETR, TINFO\fR, and \fBTCONF\fR do not have an effect
->  on the test program exit status.
->  .P
->  \fBtst_environ()\fR is used to ensure that results reported by this library
-> 
+Thanks.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
