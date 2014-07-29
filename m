@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1X1x4U-0004CX-NW
-	for ltp-list@lists.sourceforge.net; Tue, 01 Jul 2014 12:22:02 +0000
-Date: Tue, 1 Jul 2014 14:21:41 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XC52p-0004IT-AT
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 10:54:11 +0000
+Date: Tue, 29 Jul 2014 12:53:25 +0200
 From: chrubis@suse.cz
-Message-ID: <20140701122120.GA23601@rei.scz.novell.com>
-References: <1404122135-8089-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140729105325.GD24424@rei>
+References: <1406586824-1692-1-git-send-email-gary.robertson@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1404122135-8089-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [[RFC PATCH]] lib/tst_res.c: make tst_brkm() output more
- informative message
+In-Reply-To: <1406586824-1692-1-git-send-email-gary.robertson@linaro.org>
+Subject: Re: [LTP] [PATCH] Allow mutex initialization without PI configured
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,119 +24,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Gary S. Robertson" <gary.robertson@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, mike.holmes@linaro.org
 
 Hi!
-> If testcase calls tst_brkm(...) to terminate test, usually we need
-> to serch the message outputted by tst_brkm() to locate it in test
-> program, it is inefficient, especially we have same messages, so here
-> we choose to make tst_brkm more informative.
+> LTP seems primarily intended to be built and run on the same machine,
+> and thus uses autotools / autoconf to determine the features of the host
+> machine's environment prior to compilation.  However, when distributing
+> precompiled binaries, or when building in a cross-compilation environment,
+> it is better not to disable features based on the compile-time environment.
 > 
-> E.g.:
-> We execute getxattr01 before this patch:
-> [root@localhost getxattr]# ./getxattr01
-> getxattr01    1  TCONF  :  No xattr support in fs or mount without user_xattr option
-> getxattr01    2  TCONF  :  Remaining cases not appropriate for configuration
+> This patch removes compile-time dependencies on priority-inheriting mutexes
+> and allows the code to attempt initialization of PI mutexes even
+> if the runtime environment lacks that feature... in which case
+> the associated test(s) should fail.
 > 
-> After this patch:
-> [root@localhost getxattr]# ./getxattr01
-> getxattr01    1  TCONF  :  getxattr01.c:158: No xattr support in fs or mount without user_xattr option
-> getxattr01    2  TCONF  :  Remaining cases not appropriate for configuration
+> Without this patch, init_pi_mutex() may be compiled as an empty function,
+> allowing subsequent operations to be attempted on an un-inititalized mutex.
+> Likewise, testpi-3 may fail to initialize a mutex before starting pthreads
+> which attempt to use the mutex.
 
-Looks useful to me. I wonder if we should limit the change to just
-tst_brkm() or if we should add it to tst_resm() too.
-
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  include/test.h            | 9 +++++++--
->  lib/tst_res.c             | 9 ++++++---
->  tools/apicmds/ltpapicmd.c | 2 +-
->  3 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/test.h b/include/test.h
-> index a4a23e3..9024493 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -126,8 +126,13 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
->  	__attribute__ ((format (printf, 4, 5)));
->  void tst_brk(int ttype, const char *fname, void (*func)(void), const char *arg_fmt, ...)
->  	__attribute__ ((format (printf, 4, 5)));
-> -void tst_brkm(int ttype, void (*func)(void), const char *arg_fmt, ...)
-> -	__attribute__ ((format (printf, 3, 4))) LTP_ATTRIBUTE_NORETURN;
-> +void tst_brkm_d(const char *file, const int lineno, int ttype,
-> +		void (*func)(void), const char *arg_fmt, ...)
-> +	__attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
-> +#define tst_brkm(ttype, func, arg_fmt, ...) \
-> +	tst_brkm_d(__FILE__, __LINE__, (ttype), (func),\
-> +		   (arg_fmt), ##__VA_ARGS__)
-> +
->  void tst_require_root(void (*func)(void));
->  int  tst_environ(void);
->  void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
-> diff --git a/lib/tst_res.c b/lib/tst_res.c
-> index 31186e0..015ca52 100644
-> --- a/lib/tst_res.c
-> +++ b/lib/tst_res.c
-> @@ -721,10 +721,12 @@ void tst_resm_hexd(int ttype, const void *buf, size_t size, const char *arg_fmt,
->  }
->  
->  /*
-> - * tst_brkm() - Interface to tst_brk(), with no filename.
-> + * tst_brkm_d() - Interface to tst_brk(), with no filename.
->   */
-> -void tst_brkm(int ttype, void (*func) (void), const char *arg_fmt, ...)
-> +void tst_brkm_d(const char *file, const int lineno, int ttype,
-> +	void (*func)(void), const char *arg_fmt, ...)
->  {
-> +	int len;
->  	char tmesg[USERMESG];
->  
->  #if DEBUG
-> @@ -733,7 +735,8 @@ void tst_brkm(int ttype, void (*func) (void), const char *arg_fmt, ...)
->  	fflush(stdout);
->  #endif
->  
-> -	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
-> +	len = sprintf(tmesg, "%s:%d: ", file, lineno);
-> +	EXPAND_VAR_ARGS(tmesg + len, arg_fmt, USERMESG);
->  
->  	tst_brk(ttype, NULL, func, "%s", tmesg);
->  	/* Shouldn't be reach, but fixes build time warnings about noreturn. */
-> diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
-> index 220edae..ae25244 100644
-> --- a/tools/apicmds/ltpapicmd.c
-> +++ b/tools/apicmds/ltpapicmd.c
-> @@ -173,7 +173,7 @@ void apicmd_brkm(int argc, char *argv[])
->  	}
->  	trestype = ident_ttype((argv++)[0]);
->  	argv++;
-> -	tst_brkm(trestype, NULL, "%s", *argv);
-> +	tst_brk(trestype, NULL, NULL, "%s", *argv);
->  }
->  
->  void apicmd_resm(int argc, char *argv[])
-
-
-I don't like the fact that this changes tst_brkm() to a macro, but I
-don't have a better idea.
-
-From a technical point, maybe I would just use tst_brkm_ instead of
-tst_brkm_d, otherwise it looks correct.
-
-Have you recompiled LTP with this change? Does everything work as
-expected?
+As far as I can see the configure check tests if PTHREAD_PRIO_INHERIT is
+defined in system headers. So if you just remove the ifdefs the
+compilation will fail and if that is not the case, the check is broken.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
