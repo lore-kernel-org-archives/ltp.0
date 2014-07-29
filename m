@@ -1,12 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Date: Mon, 14 Jul 2014 15:37:51 +0200
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XC4Mt-0007I7-4q
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 10:10:51 +0000
+Date: Tue, 29 Jul 2014 12:10:06 +0200
 From: chrubis@suse.cz
-Message-ID: <20140714133751.GB25946@rei.suse.cz>
-References: <1405335583.552821152@apps.rackspace.com>
+Message-ID: <20140729101005.GD18038@rei>
+References: <24aca741786196af9ca38705970289a66b12ab9b.1406622527.git.jstancek@redhat.com>
+	<20140729084306.GA15240@rei>
+	<1706184967.16286722.1406624646852.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1405335583.552821152@apps.rackspace.com>
-Subject: Re: [LTP] NO .gcda files ERROR while running LCOV for LTP coverage
+In-Reply-To: <1706184967.16286722.1406624646852.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] mem/oom: check for multiple outcomes if
+ overcommit_memory is 0 or 1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,30 +27,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shinto.john@smartplayin.com
-Cc: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, naresh.kamboju@linaro.org, ltp-coverage@lists.sourceforge.net, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> <font face="arial" size="3"><p style="margin:0;padding:0;font-family: arial; font-size: 12pt;">Hi Peter/Naresh/All,</p>
-> <p style="margin:0;padding:0;font-family: arial; font-size: 12pt;">&nbsp;</p>
-> <p style="margin:0;padding:0;font-family: arial; font-size: 12pt;">Kernel version: 3.8.13</p>
-> <p style="margin:0;padding:0;font-family: arial; font-size: 12pt;">&nbsp;</p>
-> <p style="margin:0;padding:0;font-family: arial; font-size: 12pt;">I am sending this mail to get your valuable inputs regarding an issue i am facing while running LCOV as part of an LTP activity.</p>
+> Not many. ENOMEM/SIGKILL or 0 (meaning child completed without issues)
+> are the most likely ones we'll need.
+> 
+> How about:
+>   oom(int testcase, int lite, int retcode, int can_be_killed)
 
-...
-
-Please do not send HTML emails to the list; use plain text instead.
+Looks good to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck&#174;
-Code Sight&#153; - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
