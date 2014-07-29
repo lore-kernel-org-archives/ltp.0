@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XBjTz-0003uN-IS
-	for ltp-list@lists.sourceforge.net; Mon, 28 Jul 2014 11:52:47 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XBjTy-0001Gt-E5
-	for ltp-list@lists.sourceforge.net; Mon, 28 Jul 2014 11:52:47 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s6SBqYWN016764
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Jul 2014 19:52:34 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 28 Jul 2014 19:51:39 +0800
-Message-ID: <1406548301-21888-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <20140722143000.GA22955@rei>
-References: <20140722143000.GA22955@rei>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XCBxd-0003Qp-DW
+	for ltp-list@lists.sourceforge.net; Tue, 29 Jul 2014 18:17:17 +0000
+Date: Tue, 29 Jul 2014 20:16:30 +0200
+From: chrubis@suse.cz
+Message-ID: <20140729181630.GA28318@rei>
+References: <1406585102-31700-1-git-send-email-gary.robertson@linaro.org>
+	<20140729104619.GC24424@rei>
+	<CAF7YWnxyXT2V=yKmEoSUzTbX8Cn9jVPTOK9-2sn_2jZCBOx_Gg@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3 1/3] lib/tst_res.c: introduce
-	tst_record_childstatus()
+Content-Disposition: inline
+In-Reply-To: <CAF7YWnxyXT2V=yKmEoSUzTbX8Cn9jVPTOK9-2sn_2jZCBOx_Gg@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] prio-wake: eliminate deprecated usleep calls
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,97 +26,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Gary Robertson <gary.robertson@linaro.org>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Holmes <mike.holmes@linaro.org>
 
-In case we need do real test work in child porcess, it is OK for child process
-to use tst_resm(), tst_brkm() or tst_exit(). Parent process can use
-tst_record_childstatus() to make child process's test results propagated to parent
-process correctly.
+Hi!
+> > > Replaced deprecated usleep calls with calls to rt_nanosleep,
+> > > which has no potentially adverse interactions with signals.
+> >
+> > Deprecated in which sense? In terms of realtime testsuite?
+> >
+> 
+> My apologies for being ambiguous... years of writing pthreads applications
+> has made this function 'deprecated' by default in my thinking.
+> usleep should generally be avoided when using many other timer functions
+> - including nanosleep, which is the basis of rt-nanosleep.
+> Generally speaking, usleep and nanosleep should not be used in the same
+> program.
+> 
+> Its interaction with SIGALRM may cause interference
+> with other functions using SIGALRM, if any are in use.
+> 
+> As indicated in the usleep() man page NOTES:
+> "       The interaction of this function with  the  SIGALRM  signal,  and
+> with
+>        other   timer  functions  such  as  alarm(2),  sleep(3),
+> nanosleep(2),
+>        setitimer(2),  timer_create(2),  timer_delete(2),
+> timer_getoverrun(2),
+>        timer_gettime(2), timer_settime(2), ualarm(3) is unspecified.
+> "
 
-Meanwhile we reset T_exitval to 0 for child process in tst_fork(), which will
-make child process can record test results with tst_resm() or tst_brkm() correctly.
+Ok.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- include/test.h | 10 ++++++++++
- lib/tst_res.c  | 29 ++++++++++++++++++++++++++++-
- 2 files changed, 38 insertions(+), 1 deletion(-)
+> > Has usleep() caused the test to fail? If so, why?
+> >
+> > usleep() is not causing prio-wake test failures in our environment.
+> 
+> We are getting race conditions among multiple waiter threads
+> on armv7a processors in the futex / mutex locking code
+> for the mutex associated with the condition variable in prio-wake.
+> This is causing one of the threads to 'hang' waiting for a lock
+> after the lock owner releases it and terminates.  Since this
+> doesn't happen on x86 it appears to be specific to the armv7a -
+> either in the compiler code generation or in some arch-specific
+> code somewhere... we are investigating.
+> 
+> In investigating possible reasons for the 'hangup' I began by
+> examining the source in prio-wake.c and saw the potentially
+> problematic usleep calls.  Knowing they don't always play
+> well with nanosleep I eliminated them on the chance that
+> they were contributing to the hangups... which in this case
+> they are not.
+> 
+> However as I said, years of coding pthreads apps
+> with various timer functions has led me to use only
+> nanosleep-related timer functions and to avoid usleep
+> altogether - so I submit this patch as a somewhat
+> 'nit-picking' minor cleanup.
 
-diff --git a/include/test.h b/include/test.h
-index 2013a36..b49ae22 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -161,9 +161,19 @@ void tst_flush(void);
- 
- /*
-  * tst_flush() + fork
-+ * NOTE: tst_fork() will reset T_exitval to 0 for child process.
-  */
- pid_t tst_fork(void);
- 
-+/* lib/tst_res.c */
-+/*
-+ * In case we need do real test work in child porcess, it is OK for
-+ * child process to use tst_resm(), tst_brkm() or tst_exit(). Parent
-+ * process can use tst_record_childstatus() to make child process's
-+ * test results propagated to parent process correctly.
-+ */
-+void tst_record_childstatus(void (*cleanup)(void), pid_t child);
-+
- extern int tst_count;
- 
- /* lib/tst_sig.c */
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index c584265..57f2d07 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -72,6 +72,9 @@
- #include <stdarg.h>
- #include <string.h>
- #include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
- #include "test.h"
- #include "usctest.h"
- #include "ltp_priv.h"
-@@ -542,8 +545,32 @@ void tst_exit(void)
- 
- pid_t tst_fork(void)
- {
-+	pid_t child;
-+
- 	tst_flush();
--	return fork();
-+
-+	child = fork();
-+	if (child == 0)
-+		T_exitval = 0;
-+
-+	return child;
-+}
-+
-+void tst_record_childstatus(void (*cleanup)(void), pid_t child)
-+{
-+	int status, ttype_result;
-+
-+	if (waitpid(child, &status, 0) < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "waitpid(%d) failed", child);
-+
-+	if (WIFEXITED(status)) {
-+		ttype_result = WEXITSTATUS(status);
-+		ttype_result = TTYPE_RESULT(ttype_result);
-+		T_exitval |= ttype_result;
-+	} else {
-+		tst_brkm(TBROK, cleanup, "child process(%d) killed by "
-+			 "unexpected signal", child);
-+	}
- }
- 
- pid_t tst_vfork(void)
+Ok.
+
+Can you please sumarize this a bit so that it fits into the commit
+message and resend the patch?
+
 -- 
-1.8.2.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Infragistics Professional
