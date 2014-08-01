@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zlang@redhat.com>) id 1XFg02-0005Q2-NS
-	for ltp-list@lists.sourceforge.net; Fri, 08 Aug 2014 08:58:10 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XFg01-0004p7-5A
-	for ltp-list@lists.sourceforge.net; Fri, 08 Aug 2014 08:58:10 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s788w2kf029664
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 Aug 2014 04:58:02 -0400
-From: Zorro Lang <zlang@redhat.com>
-Date: Fri,  8 Aug 2014 16:57:30 +0800
-Message-Id: <1407488250-17836-1-git-send-email-zlang@redhat.com>
-Subject: [LTP] [PATCH] fs/fsstress: prevent orphan and zombie processes to
-	be left
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XD7sn-0001w1-QW
+	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 08:08:09 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XD7sm-0002Qu-On
+	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 08:08:09 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s7187xk1020301
+	for <ltp-list@lists.sourceforge.net>; Fri, 1 Aug 2014 16:07:59 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 1 Aug 2014 16:06:20 +0800
+Message-ID: <1406880380-29383-1-git-send-email-gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] cpuacct/run_cpuacct_test.sh: fix the order of cleanup
+	and task_kill
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,181 +27,117 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-    parent use signal handler to deal with SIGTERM, make sure
-    children processes ended before parent.
+When there are running tasks in the child group of cgroup, the child
+group can't be removed. So fix the order of cleanup and task_kill in
+run_cpuacct_test.sh.
+
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
+ .../kernel/controllers/cpuacct/run_cpuacct_test.sh    | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-when I run "killall fsstress" in my testcase, I can't use a simple 'wait' to wait fsstress
- all over then 'umount' device. Because many orphan processes still running.
-
-This is not a bug, but I think this patch can make fsstress be better. So I
-backport xfstests/fsstress here.
-
-BTW, I modify some compile warning for opdesc_t ops[]. Hope it's not wrong ;)
-
-Thank you,
-Zorro Lang
-
-
- testcases/kernel/fs/fsstress/fsstress.c | 78 ++++++++++++++++++++++++---------
- 1 file changed, 58 insertions(+), 20 deletions(-)
-
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index 2243280..ec3f646 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -30,7 +30,11 @@
-  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
-  */
+diff --git a/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh b/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
+index 88425f8..b31aa45 100755
+--- a/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
++++ b/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
+@@ -236,16 +236,16 @@ case ${TEST_NUM} in
+ 	mkdir $cg_path/group_1/group_11/ 2> /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		echo "TFAIL Cannot create cpuacct cgroups Exiting Test"
+-		cleanup
+ 		task_kill 2> /dev/null
++		cleanup
+ 		exit 1
+ 	fi
+ 	echo $pid > $cg_path/group_1/group_11/tasks 2> /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		echo "TFAIL Not able to move a task to the cgroup"
+ 		echo "Exiting Test"
+-		cleanup 2> /dev/null
+ 		task_kill 2> /dev/null
++		cleanup
+ 		exit 1
+ 	fi
+ 	sleep 5
+@@ -262,13 +262,14 @@ case ${TEST_NUM} in
+ 	if [ $status -eq 0 ]; then
+ 		echo
+ 		tst_resm TPASS "$mes test executed successfully"
+-		cleanup 2> /dev/null
+ 		task_kill 2> /dev/null
++		cleanup
+ 		exit 0
+ 	else
+ 		echo
+ 		tst_resm TFAIL "$mes test execution Failed"
+-		cleanup 2> /dev/null
++		task_kill 2> /dev/null
++		cleanup
+ 		exit 1
+ 	fi
+ 	;;
+@@ -279,8 +280,8 @@ case ${TEST_NUM} in
+ 	mkdir $cg_path/group_1/group_12 2> /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		echo "TFAIL Cannot create cpuacct cgroups Exiting Test"
+-		cleanup 2> /dev/null
+ 		task_kill 2> /dev/null
++		cleanup
+ 		exit 1
+ 	fi
  
-+#include <config.h>
- #include "global.h"
-+#ifdef HAVE_SYS_PRCTL_H
-+#include <sys/prctl.h>
-+#endif
- 
- #define XFS_ERRTAG_MAX		17
- 
-@@ -160,35 +164,35 @@ opdesc_t ops[] = {
- 	{OP_BULKSTAT, "bulkstat", bulkstat_f, 1, 0, 1},
- 	{OP_BULKSTAT1, "bulkstat1", bulkstat1_f, 1, 0, 1},
- #endif
--	{OP_CHOWN, "chown", chown_f, 3, 1},
--	{OP_CREAT, "creat", creat_f, 4, 1},
--	{OP_DREAD, "dread", dread_f, 4, 0},
--	{OP_DWRITE, "dwrite", dwrite_f, 4, 1},
--	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1},
-+	{OP_CHOWN, "chown", chown_f, 3, 1, 0},
-+	{OP_CREAT, "creat", creat_f, 4, 1, 0},
-+	{OP_DREAD, "dread", dread_f, 4, 0, 0},
-+	{OP_DWRITE, "dwrite", dwrite_f, 4, 1, 0},
-+	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1, 0},
- #ifndef NO_XFS
- 	{OP_FREESP, "freesp", freesp_f, 1, 1, 1},
- #endif
--	{OP_FSYNC, "fsync", fsync_f, 1, 1},
--	{OP_GETDENTS, "getdents", getdents_f, 1, 0},
--	{OP_LINK, "link", link_f, 1, 1},
--	{OP_MKDIR, "mkdir", mkdir_f, 2, 1},
--	{OP_MKNOD, "mknod", mknod_f, 2, 1},
--	{OP_READ, "read", read_f, 1, 0},
--	{OP_READLINK, "readlink", readlink_f, 1, 0},
--	{OP_RENAME, "rename", rename_f, 2, 1},
-+	{OP_FSYNC, "fsync", fsync_f, 1, 1, 0},
-+	{OP_GETDENTS, "getdents", getdents_f, 1, 0, 0},
-+	{OP_LINK, "link", link_f, 1, 1, 0},
-+	{OP_MKDIR, "mkdir", mkdir_f, 2, 1, 0},
-+	{OP_MKNOD, "mknod", mknod_f, 2, 1, 0},
-+	{OP_READ, "read", read_f, 1, 0, 0},
-+	{OP_READLINK, "readlink", readlink_f, 1, 0, 0},
-+	{OP_RENAME, "rename", rename_f, 2, 1, 0},
- #ifndef NO_XFS
- 	{OP_RESVSP, "resvsp", resvsp_f, 1, 1, 1},
- #endif
--	{OP_RMDIR, "rmdir", rmdir_f, 1, 1},
--	{OP_STAT, "stat", stat_f, 1, 0},
--	{OP_SYMLINK, "symlink", symlink_f, 2, 1},
--	{OP_SYNC, "sync", sync_f, 1, 0},
--	{OP_TRUNCATE, "truncate", truncate_f, 2, 1},
--	{OP_UNLINK, "unlink", unlink_f, 1, 1},
-+	{OP_RMDIR, "rmdir", rmdir_f, 1, 1, 0},
-+	{OP_STAT, "stat", stat_f, 1, 0, 0},
-+	{OP_SYMLINK, "symlink", symlink_f, 2, 1, 0},
-+	{OP_SYNC, "sync", sync_f, 1, 0, 0},
-+	{OP_TRUNCATE, "truncate", truncate_f, 2, 1, 0},
-+	{OP_UNLINK, "unlink", unlink_f, 1, 1, 0},
- #ifndef NO_XFS
- 	{OP_UNRESVSP, "unresvsp", unresvsp_f, 1, 1, 1},
- #endif
--	{OP_WRITE, "write", write_f, 4, 1},
-+	{OP_WRITE, "write", write_f, 4, 1, 0},
- }, *ops_end;
- 
- flist_t flist[FT_nft] = {
-@@ -227,6 +231,7 @@ int no_xfs = 0;
- #else
- int no_xfs = 1;
- #endif
-+sig_atomic_t should_stop = 0;
- 
- void add_to_flist(int, int, int);
- void append_pathname(pathname_t *, char *);
-@@ -273,6 +278,11 @@ void usage(void);
- void write_freq(void);
- void zero_freq(void);
- 
-+void sg_handler(int signum)
-+{
-+	should_stop = 1;
-+}
-+
- int main(int argc, char **argv)
- {
- 	char buf[10];
-@@ -297,6 +307,7 @@ int main(int argc, char **argv)
- #ifndef NO_XFS
- 	xfs_error_injection_t err_inj;
- #endif
-+	struct sigaction action;
- 
- 	errrange = errtag = 0;
- 	umask(0);
-@@ -465,17 +476,44 @@ int main(int argc, char **argv)
- #endif
- 			close(fd);
- 		unlink(buf);
-+
-+
- 		if (nproc == 1) {
- 			procid = 0;
- 			doproc();
- 		} else {
-+			setpgid(0, 0);
-+			action.sa_handler = sg_handler;
-+			sigemptyset(&action.sa_mask);
-+			action.sa_flags = 0;
-+			if (sigaction(SIGTERM, &action, 0)) {
-+				perror("sigaction failed");
-+				exit(1);
-+			}
-+
- 			for (i = 0; i < nproc; i++) {
- 				if (fork() == 0) {
-+
-+					action.sa_handler = SIG_DFL;
-+					sigemptyset(&action.sa_mask);
-+					if (sigaction(SIGTERM, &action, 0))
-+						return 1;
-+#ifdef HAVE_SYS_PRCTL_H
-+					prctl(PR_SET_PDEATHSIG, SIGKILL);
-+					if (getppid() == 1) /* parent died already? */
-+						return 0;
-+#endif
- 					procid = i;
- 					doproc();
- 					return 0;
- 				}
- 			}
-+			while (wait(&stat) > 0 && !should_stop) {
-+				continue;
-+			}
-+			action.sa_flags = SA_RESTART;
-+			sigaction(SIGTERM, &action, 0);
-+			kill(-getpid(), SIGTERM);
- 			while (wait(&stat) > 0)
- 				continue;
- 		}
+@@ -292,8 +293,8 @@ case ${TEST_NUM} in
+ 		if [ $? -ne 0 ]; then
+ 			echo "TFAIL Not able to move task to cgroup"
+ 			echo "Exiting Test"
+-			cleanup 2> /dev/null
+ 			task_kill 2> /dev/null
++			cleanup
+ 			exit 1
+ 		fi
+ 		nr_tasks
+@@ -301,8 +302,8 @@ case ${TEST_NUM} in
+ 		if [ $? -ne 0 ]; then
+ 			echo "TFAIL Not able to move task to cgroup"
+ 			echo "Exiting Test"
+-			cleanup 2> /dev/null
+ 			task_kill 2> /dev/null
++			cleanup
+ 			exit 1
+ 		fi
+ 		sleep 2
+@@ -321,14 +322,14 @@ case ${TEST_NUM} in
+ 	if [ $status -eq 0 ]; then
+ 		echo
+ 		tst_resm TPASS "$mes test executed successfully"
+-		cleanup 2> /dev/null
+ 		task_kill 2> /dev/null
++		cleanup
+ 		exit 0
+ 	else
+ 		echo
+ 		tst_resm TFAIL "$mes test execution Failed"
+-		cleanup 2> /dev/null
+ 		task_kill 2> /dev/null
++		cleanup
+ 		exit 1
+ 	fi
+ 	;;
 -- 
 1.9.3
 
 
 ------------------------------------------------------------------------------
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
