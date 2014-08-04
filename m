@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XLrFE-0004IS-JJ
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 10:11:24 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XLrFD-00050F-1g
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 10:11:24 +0000
-Date: Mon, 25 Aug 2014 06:11:15 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <451887524.12237225.1408961475409.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
-References: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1XEDii-0006ts-Fe
+	for ltp-list@lists.sourceforge.net; Mon, 04 Aug 2014 08:34:16 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XEDih-0001Yj-K6
+	for ltp-list@lists.sourceforge.net; Mon, 04 Aug 2014 08:34:16 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 04 Aug 2014 04:34:09 -0400
+Message-ID: <1419562.aEt90tPbov@vapier>
+In-Reply-To: <1407139174-14098-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1407139174-14098-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] lib: Add SAFE_MOUNT()
+Subject: Re: [LTP] [PATCH] cgroup/cgroup_regression_test.sh: fix an issue
+	about removing directories
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,60 +25,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5204992778055450238=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiTWF0dXMgTWFyaGVma2Ei
-IDxtbWFyaGVma0ByZWRoYXQuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKPiBTZW50OiBGcmlkYXksIDE1IEF1Z3VzdCwgMjAxNCAxMjo1Mjo0MyBQTQo+IFN1YmplY3Q6
-IFtMVFBdIFtQQVRDSCAxLzNdIGxpYjogQWRkIFNBRkVfTU9VTlQoKQo+IAo+IFNpZ25lZC1vZmYt
-Ynk6IE1hdHVzIE1hcmhlZmthIDxtbWFyaGVma0ByZWRoYXQuY29tPgo+IC0tLQo+ICBpbmNsdWRl
-L3NhZmVfbWFjcm9zLmggfCAgOSArKysrKysrKysKPiAgbGliL3NhZmVfbWFjcm9zLmMgICAgIHwg
-MTkgKysrKysrKysrKysrKysrKysrKwo+ICAyIGZpbGVzIGNoYW5nZWQsIDI4IGluc2VydGlvbnMo
-KykKPiAKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zYWZlX21hY3Jvcy5oIGIvaW5jbHVkZS9zYWZl
-X21hY3Jvcy5oCj4gaW5kZXggYTc5YzRhZC4uZTFjMmZkMSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRl
-L3NhZmVfbWFjcm9zLmgKPiArKysgYi9pbmNsdWRlL3NhZmVfbWFjcm9zLmgKPiBAQCAtMjcxLDUg
-KzI3MSwxNCBAQCBpbnQgc2FmZV9yZW5hbWUoY29uc3QgY2hhciAqZmlsZSwgY29uc3QgaW50IGxp
-bmVubywgdm9pZAo+ICgqY2xlYW51cF9mbikodm9pZCksCj4gICNkZWZpbmUgU0FGRV9SRU5BTUUo
-Y2xlYW51cF9mbiwgb2xkcGF0aCwgbmV3cGF0aCkgXAo+ICAJc2FmZV9yZW5hbWUoX19GSUxFX18s
-IF9fTElORV9fLCAoY2xlYW51cF9mbiksIChvbGRwYXRoKSwgKG5ld3BhdGgpKQo+ICAKPiAraW50
-IHNhZmVfbW91bnQoY29uc3QgY2hhciAqZmlsZSwgY29uc3QgaW50IGxpbmVubywgdm9pZCAoKmNs
-ZWFudXBfZm4pKHZvaWQpLAo+ICsJICAgICAgIGNvbnN0IGNoYXIgKnNvdXJjZSwgY29uc3QgY2hh
-ciAqdGFyZ2V0LAo+ICsJICAgICAgIGNvbnN0IGNoYXIgKmZpbGVzeXN0ZW10eXBlLCB1bnNpZ25l
-ZCBsb25nIG1vdW50ZmxhZ3MsCj4gKwkgICAgICAgY29uc3Qgdm9pZCAqZGF0YSk7Cj4gKyNkZWZp
-bmUgU0FGRV9NT1VOVChjbGVhbnVwX2ZuLCBzb3VyY2UsIHRhcmdldCwgZmlsZXN5c3RlbXR5cGUs
-IFwKPiArCQkgICBtb3VudGZsYWdzLCBkYXRhKSBcCj4gKwlzYWZlX21vdW50KF9fRklMRV9fLCBf
-X0xJTkVfXywgKGNsZWFudXBfZm4pLCAoc291cmNlKSwgKHRhcmdldCksIFwKPiArCQkgICAoZmls
-ZXN5c3RlbXR5cGUpLCAobW91bnRmbGFncyksIChkYXRhKSkKPiArCj4gICNlbmRpZiAvKiBfX1NB
-RkVfTUFDUk9TX0hfXyAqLwo+ICAjZW5kaWYgLyogX19URVNUX0hfXyAqLwo+IGRpZmYgLS1naXQg
-YS9saWIvc2FmZV9tYWNyb3MuYyBiL2xpYi9zYWZlX21hY3Jvcy5jCj4gaW5kZXggZWVmYWNhZS4u
-N2U0OWIzNiAxMDA2NDQKPiAtLS0gYS9saWIvc2FmZV9tYWNyb3MuYwo+ICsrKyBiL2xpYi9zYWZl
-X21hY3Jvcy5jCj4gQEAgLTc4NCwzICs3ODQsMjIgQEAgaW50IHNhZmVfcmVuYW1lKGNvbnN0IGNo
-YXIgKmZpbGUsIGNvbnN0IGludCBsaW5lbm8sIHZvaWQKPiAoKmNsZWFudXBfZm4pKHZvaWQpLAo+
-ICAKPiAgCXJldHVybiBydmFsOwo+ICB9CgpKdXN0IGEgc21hbGwgbml0OiBDYW4geW91IGFkZCAi
-I2luY2x1ZGUgPHN5cy9tb3VudC5oPiIgdG8gZ2V0IHJpZCBvZiB0aGlzIHdhcm5pbmc6CnNhZmVf
-bWFjcm9zLmM6Njg2OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDi
-gJhtb3VudOKAmQoKUmVnYXJkcywKSmFuCgo+ICsKPiAraW50IHNhZmVfbW91bnQoY29uc3QgY2hh
-ciAqZmlsZSwgY29uc3QgaW50IGxpbmVubywgdm9pZCAoKmNsZWFudXBfZm4pKHZvaWQpLAo+ICsJ
-ICAgICAgIGNvbnN0IGNoYXIgKnNvdXJjZSwgY29uc3QgY2hhciAqdGFyZ2V0LAo+ICsJICAgICAg
-IGNvbnN0IGNoYXIgKmZpbGVzeXN0ZW10eXBlLCB1bnNpZ25lZCBsb25nIG1vdW50ZmxhZ3MsCj4g
-KwkgICAgICAgY29uc3Qgdm9pZCAqZGF0YSkKPiArewo+ICsJaW50IHJ2YWw7Cj4gKwo+ICsJcnZh
-bCA9IG1vdW50KHNvdXJjZSwgdGFyZ2V0LCBmaWxlc3lzdGVtdHlwZSwgbW91bnRmbGFncywgZGF0
-YSk7Cj4gKwo+ICsJaWYgKHJ2YWwgPT0gLTEpIHsKPiArCQl0c3RfYnJrbShUQlJPSyB8IFRFUlJO
-TywgY2xlYW51cF9mbiwKPiArCQkJICIlczolZDogbW91bnQoJXMsICVzLCAlcywgJWx1LCAlcCkg
-ZmFpbGVkIiwKPiArCQkJIGZpbGUsIGxpbmVubywgc291cmNlLCB0YXJnZXQsIGZpbGVzeXN0ZW10
-eXBlLAo+ICsJCQkgbW91bnRmbGFncywgZGF0YSk7Cj4gKwl9Cj4gKwo+ICsJcmV0dXJuIHJ2YWw7
-Cj4gK30KPiAtLQo+IDEuOC4zLjEKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1h
-aWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KU2xhc2hkb3QgVFYuICAKVmlkZW8gZm9yIE5lcmRzLiAgU3R1ZmYgdGhhdCBt
-YXR0ZXJzLgpodHRwOi8vdHYuc2xhc2hkb3Qub3JnLwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cg==
+
+--===============5204992778055450238==
+Content-Type: multipart/signed; boundary="nextPart8582631.Eb52e7CZC0";
+	micalg="pgp-sha1"; protocol="application/pgp-signature"
+
+
+--nextPart8582631.Eb52e7CZC0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+
+On Mon 04 Aug 2014 15:59:34 Xing Gu wrote:
+> -rmdir -p cgroup/*
+> +if [ "$(ls -A cgroup/)" ]; then
+> +=09rmdir -p cgroup/*
+> +else
+> +=09rmdir cgroup/
+> +fi
+
+one line:
+find cgroup/ -maxdepth 1 -depth -exec rmdir {} +
+=2Dmike
+--nextPart8582631.Eb52e7CZC0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABAgAGBQJT30WBAAoJEEFjO5/oN/WBadAP/RQqQheqvmDBfBEws76VFhCm
+mbWmafK68i9x8WksYsKyAJ4KZv8fYhsVIvEDQQjzFLFSTybLF2mcVunuuZE1b92F
+MyhlKTvX7IjqoU8/w6QmFB7LknxaNaD5k8NBoWPC486OdmtfmA6XB7WffJUBOHfb
+0rw2QKkj+RW03qbc8Nu6iuYsa1A2Fy5Kn8C9QKrIfM+nuaV2Y7uXRkt9GxHw7gUk
+leGo0fPX3TSNo3ZdMJqQJmzuweScG496ymkI1Ugic8OPj4HitwaQM4h3JRa1kRVX
+rVndzrJt6iEgiH1lU78Q4Nn2KsHNSOylff51g2NRULYrV69LOLVyQkpb7Eypk2nd
+JM9WAKhxTS7sPf1J5JbyWkGbbjx2XTSnA2xfvsm+cLny8f8unON+ZpYjd2POG5HX
+GVHzMBUuv83+lEUTLtv9YyyrJWE+E051qSFSeQ62uTWOlW6g+JbAVEK6zGT/to8C
+3eTFFg28WCUn8sOEYMWZokKr54pbjsfnkQ1xJIL4EfxpnlnNP5JbVuUkmSc8bc12
+cD6hkhdNb3cPtPdCYzim5vLsL2cqzzsHXxRVDBA88K7Nlc2yGYgAgi8kiy0Cr34J
+7jMMAjTcnvwaQd+w4mzcKnQp19lI44pzn68Vt4BrBllapesfNI9jYOH+EiaBwWTT
+bHG31vNxS6/tRelrm3+X
+=aBhu
+-----END PGP SIGNATURE-----
+
+--nextPart8582631.Eb52e7CZC0--
+
+
+
+--===============5204992778055450238==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+--===============5204992778055450238==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5204992778055450238==--
+
+
