@@ -1,30 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XMDXv-00078Z-Dx
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 10:00:11 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XMDXu-0008TW-2R
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 10:00:11 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7QA024S027085
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Aug 2014 06:00:02 -0400
-Received: from cc-vtoe5.lab.eng.brq.redhat.com
-	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7Q9xjB4003297
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Aug 2014 06:00:01 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Tue, 26 Aug 2014 11:59:30 +0200
-Message-Id: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
-References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 2/2] containers: added mountns/mountns04.c
+	(envelope-from <metan@suse.de>) id 1XEgCV-0007kL-C0
+	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 14:58:55 +0000
+Date: Tue, 5 Aug 2014 16:58:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20140805145804.GA17966@rei.suse.cz>
+References: <c0760953d5915e17e43a5e899bad7f5d0a7fde80.1407249825.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <c0760953d5915e17e43a5e899bad7f5d0a7fde80.1407249825.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] madvise05: new testcase for Oops in
+ madvise_willneed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,175 +22,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-* Tests an unbindable mount: unbindable mount is an unbindable
-  private mount
+Hi!
+> This is a regression test for madvise(2) system call. It tests
+> kernel for NULL ptr deref Oops fixed by:
+>   commit ee53664bda169f519ce3c6a22d378f0b946c8178
+>   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>   Date:   Fri Dec 20 15:10:03 2013 +0200
+>     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                              |   1 +
- testcases/kernel/containers/.gitignore          |   1 +
- testcases/kernel/containers/mountns/mountns04.c | 120 ++++++++++++++++++++++++
- 3 files changed, 122 insertions(+)
- create mode 100644 testcases/kernel/containers/mountns/mountns04.c
+Looks good to me.
 
-diff --git a/runtest/containers b/runtest/containers
-index 3653c9c..8e8e067 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -59,3 +59,4 @@ utstest_clone_5 utstest clone 5
- mountns01 mountns01
- mountns02 mountns02
- mountns03 mountns03
-+mountns04 mountns04
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 5b96cb9..4a98373 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -2,3 +2,4 @@
- mountns/mountns01
- mountns/mountns02
- mountns/mountns03
-+mountns/mountns04
-diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
-new file mode 100644
-index 0000000..470953e
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns04.c
-@@ -0,0 +1,120 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: mountns04.c
-+ *
-+ * Tests an unbindable mount: unbindable mount is an unbindable
-+ * private mount.
-+ * Description:
-+ * 1. Creates directories "A", "B" and files "A/A", "B/B"
-+ * 2. Unshares mount namespace and makes it private (so mounts/umounts
-+ *    have no effect on a real system)
-+ * 3. Bind mounts directory "A" to "A" and "B" to "B"
-+ * 4. Makes directory "B" shared and directory "A" unbindable
-+ * 5. Tries to bind mount unbindable "A" to "B":
-+ *    - if it fails, test passes
-+ *    - if it passes, test fails
-+ ***********************************************************************/
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <sys/mount.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "libclone.h"
-+#include "safe_macros.h"
-+#include "safe_file_ops.h"
-+#include "mountns_helper.h"
-+
-+
-+#define DIRA "A"
-+#define DIRB "B"
-+char *TCID	= "mountns04";
-+int TST_TOTAL	= 1;
-+
-+
-+static void cleanup(void)
-+{
-+	umount(DIRA);
-+	umount(DIRB);
-+	tst_rmdir();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	check_newns();	/* from mountns_helper.h */
-+
-+	/* checks if following mountflags are defined */
-+	#if !defined(MS_SHARED) || !defined(MS_PRIVATE) \
-+	    || !defined(MS_REC) || !defined(MS_UNBINDABLE)
-+		tst_brkm(TCONF, NULL, "needed mountflags are not defined");
-+	#endif
-+
-+	tst_tmpdir();
-+	SAFE_MKDIR(cleanup, DIRA, 0777);
-+	SAFE_MKDIR(cleanup, DIRB, 0777);
-+	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
-+	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
-+}
-+
-+static void test(void)
-+{
-+	/* unshares the mount ns */
-+	if (unshare(CLONE_NEWNS) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+	/* makes sure mounts/umounts have no effect on a real system */
-+	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-+
-+	/* bind mounts DIRA to itself */
-+	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-+	/* bind mounts DIRB to itself */
-+	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
-+
-+	/* makes mount DIRA unbindable */
-+	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_UNBINDABLE, NULL);
-+	/* makes mount DIRB shared */
-+	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
-+
-+	/* tries to bind mount unbindable DIRA to DIRB which should fail */
-+	if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1)
-+		tst_resm(TPASS, "unbindable mount passed");
-+	else {
-+		umount(DIRB);
-+		tst_resm(TFAIL, "unbindable mount faled");
-+	}
-+
-+	umount(DIRA);
-+	umount(DIRB);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	cleanup();
-+	tst_exit();
-+}
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
