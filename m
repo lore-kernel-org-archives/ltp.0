@@ -1,31 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XIF96-0002zp-0a
-	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:54:08 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XIF94-00050A-FX
-	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:54:07 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7FArxxH026768
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:54:00 -0400
-Received: from cc-vtoe5.lab.eng.brq.redhat.com
-	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7FArMYZ012634
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:53:58 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Fri, 15 Aug 2014 12:52:44 +0200
-Message-Id: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
-References: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 2/3] containers: added mountns dir and
-	mountns/mountns01.c
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XEes2-0002Zz-Kn
+	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 13:33:42 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XEerw-000457-QM
+	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 13:33:42 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s75DXUi6012042
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Aug 2014 13:33:31 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s75DXUjw021680
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Aug 2014 13:33:30 GMT
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s75DXUvo021669
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Aug 2014 13:33:30 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue,  5 Aug 2014 17:34:40 +0400
+Message-Id: <1407245680-4715-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v2 1/2] testscripts/network: uniform network parameters
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,259 +40,297 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-* tests shared mount: shared mount can be replicated to as many
-  mountpoints and all the replicas continue to be exactly same.
+* Move networktests.sh and networkstress.sh parameters to network.sh.
+  Both network scripts have the same settings (e.g. RHOST), and
+  some of the stress test parameters can be used by other net-tests,
+  such as LHOST_INTERFACE and RHOST_INTERFACE variables.
+* Add network features group to networkstress.sh.
+* Add network features tests to 'whole' group.
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/containers                                 |   2 +
- testcases/kernel/containers/mountns/Makefile       |  23 ++++
- testcases/kernel/containers/mountns/mountns01.c    | 142 +++++++++++++++++++++
- .../kernel/containers/mountns/mountns_helper.h     |  39 ++++++
- 4 files changed, 206 insertions(+)
- create mode 100644 testcases/kernel/containers/mountns/Makefile
- create mode 100644 testcases/kernel/containers/mountns/mountns01.c
- create mode 100644 testcases/kernel/containers/mountns/mountns_helper.h
+v2: Add net features tests to 'whole' group
+    tst_rhost_hwaddr(): run 'awk' on local machine
 
-diff --git a/runtest/containers b/runtest/containers
-index 5f5eeab..bf50ae4 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -14,4 +14,6 @@ pidns20 pidns20
- pidns30 pidns30
- pidns31 pidns31
+ runtest/network_stress.features |    9 +++++
+ runtest/network_stress.tcp      |    2 -
+ runtest/network_stress.udp      |    4 --
+ runtest/network_stress.whole    |   10 ++++++
+ testcases/lib/test_net.sh       |   11 +++++++
+ testscripts/network.sh          |   63 +++++++++++++++++++++++++++++++++++++++
+ testscripts/networkstress.sh    |   35 ++++------------------
+ testscripts/networktests.sh     |   10 +-----
+ 8 files changed, 100 insertions(+), 44 deletions(-)
+ create mode 100644 runtest/network_stress.features
+ create mode 100755 testscripts/network.sh
+
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+new file mode 100644
+index 0000000..14fa2d9
+--- /dev/null
++++ b/runtest/network_stress.features
+@@ -0,0 +1,9 @@
++#
++# Stress tests for various network features
++#
++
++tcp_fastopen tcp_fastopen_run.sh
++
++vxlan01 vxlan01.sh
++vxlan02 vxlan02.sh
++vxlan03 vxlan03.sh
+diff --git a/runtest/network_stress.tcp b/runtest/network_stress.tcp
+index 9795d2a..7206b3a 100644
+--- a/runtest/network_stress.tcp
++++ b/runtest/network_stress.tcp
+@@ -331,5 +331,3 @@ tcp6-multi-diffnic11 tcp6-multi-diffnic11
+ tcp6-multi-diffnic12 tcp6-multi-diffnic12
+ tcp6-multi-diffnic13 tcp6-multi-diffnic13
+ tcp6-multi-diffnic14 tcp6-multi-diffnic14
+-
+-tcp_fastopen tcp_fastopen_run.sh
+diff --git a/runtest/network_stress.udp b/runtest/network_stress.udp
+index 2f62c14..bfe9d85 100644
+--- a/runtest/network_stress.udp
++++ b/runtest/network_stress.udp
+@@ -65,7 +65,3 @@ udp6-multi-diffnic04 udp6-multi-diffnic04
+ udp6-multi-diffnic05 udp6-multi-diffnic05
+ udp6-multi-diffnic06 udp6-multi-diffnic06
+ udp6-multi-diffnic07 udp6-multi-diffnic07
+-
+-vxlan01 vxlan01.sh
+-vxlan02 vxlan02.sh
+-vxlan03 vxlan03.sh
+diff --git a/runtest/network_stress.whole b/runtest/network_stress.whole
+index 35c219f..7b0dfa3 100644
+--- a/runtest/network_stress.whole
++++ b/runtest/network_stress.whole
+@@ -551,3 +551,13 @@ ftp6-download-stress ftp6-download-stress
  
-+mountns01 mountns01
+ ftp4-upload-stress ftp4-upload-stress
+ ftp6-upload-stress ftp6-upload-stress
 +
- Containers	container_test.sh
-diff --git a/testcases/kernel/containers/mountns/Makefile b/testcases/kernel/containers/mountns/Makefile
-new file mode 100644
-index 0000000..f9b6b99
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/Makefile
-@@ -0,0 +1,23 @@
-+# Copyright (c) 2014 Red Hat, Inc.
 +#
-+# This program is free software: you can redistribute it and/or modify
-+# it under the terms of version 2 the GNU General Public License as
-+# published by the Free Software Foundation.
++# Stress tests for various network features
 +#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
++
++tcp_fastopen tcp_fastopen_run.sh
++
++vxlan01 vxlan01.sh
++vxlan02 vxlan02.sh
++vxlan03 vxlan03.sh
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 51b3e38..f58bf65 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -75,3 +75,14 @@ tst_rhost_run()
+ 
+ 	return $ret
+ }
++
++tst_lhost_hwaddr()
++{
++	echo $(ip link show $LHOST_INTERFACE | awk 'NR==2 { print $2 }')
++}
++
++tst_rhost_hwaddr()
++{
++	echo $(tst_rhost_run -s -c "ip link show $RHOST_INTERFACE" | \
++		awk 'NR==2 { print $2 }')
++}
+diff --git a/testscripts/network.sh b/testscripts/network.sh
+new file mode 100755
+index 0000000..b322713
+--- /dev/null
++++ b/testscripts/network.sh
+@@ -0,0 +1,63 @@
++#!/bin/sh
++
++# Network Test Parameters
 +#
-+# You should have received a copy of the GNU General Public License
-+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+##############################################################################
++# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
 +
-+top_srcdir              ?= ../../../..
++export RHOST=
++export PASSWD=
 +
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(abs_srcdir)/../Makefile.inc
++# ---***************************************************---
++# More information about network parameters can be found
++# in the following document: testcases/network/stress/README
 +
-+LDLIBS                  := -lclone -lltp
++LTP_RSH=
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
-new file mode 100644
-index 0000000..0393e0a
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns01.c
-@@ -0,0 +1,142 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: mountns01.c
-+ *
-+ * Tests a shared mount: shared mount can be replicated to as many
-+ * mountpoints and all the replicas continue to be exactly same.
-+ * Description:
-+ * 1. Creates directories "A", "B" and files "A/A", "B/B"
-+ * 2. Unshares mount namespace and makes it private (so mounts/umounts
-+ *    have no effect on a real system)
-+ * 3. Bind mounts directory "A" to "A" and "B" to "B"
-+ * 4. Makes both directories ("A" and "B") shared
-+ * 5. Clones a new child process with CLONE_NEWNS flag - the new child
-+ *    then bind mounts directory "B" to "A"
-+ * 6. Parent then checks if directory "A" contains the file "B"
-+ *    (changes in child should be visible in parent as mounts were
-+ *    shared):
-+ *    - if it does, test passes
-+ *    - if it doesn't, test fails
-+ ***********************************************************************/
++# Set names for test interfaces
++LHOST_INTERFACE=
++RHOST_INTERFACE=
 +
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <sys/mount.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "libclone.h"
-+#include "safe_macros.h"
-+#include "safe_file_ops.h"
-+#include "mountns_helper.h"
++# Set first three octets of the network address
++IPV4_NETWORK=
++# Set local host last octet
++LHOST_IPV4_HOST=
++# Set remote host last octet
++RHOST_IPV4_HOST=
++# Set the reverse of IPV4_NETWORK
++IPV4_NETWORK_REVERSE=
++# Set firt three octets of the network address
++IPV6_NETWORK=
++# Set local host last octet
++LHOST_IPV6_HOST=
++# Set remote host last octet
++RHOST_IPV6_HOST=
 +
++export HTTP_DOWNLOAD_DIR=
++export FTP_DOWNLOAD_DIR=
++export FTP_UPLOAD_DIR=
++export FTP_UPLOAD_URLDIR=
 +
-+#define DIRA "A"
-+#define DIRB "B"
-+char *TCID	= "mountns01";
-+int TST_TOTAL	= 1;
++# Set default parameters
++export LTP_RSH=${LTP_RSH:-"rsh -n"}
++export LHOST_INTERFACE=${LHOST_INTERFACE:-"eth0"}
++export RHOST_INTERFACE=${RHOST_INTERFACE:-"eth0"}
++export IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
++export IPV6_NETWORK=${IPV6_NETWORK:-"fd00:1:1:1"}
++export LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
++export RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
++export LHOST_IPV6_HOST=${LHOST_IPV6_HOST:-":2"}
++export RHOST_IPV6_HOST=${RHOST_IPV6_HOST:-":1"}
++export IPV4_NETWORK_REVERSE=${IPV4_NETWORK_REVERSE:-"0.0.10"}
 +
++TST_TOTAL=1
++TCID="network_settings"
 +
-+static void cleanup(void)
-+{
-+	umount(DIRA);
-+	umount(DIRA);
-+	umount(DIRB);
-+	tst_rmdir();
-+}
++. test_net.sh
 +
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	check_newns();	/* from mountns_helper.h */
-+	tst_tmpdir();
-+	SAFE_MKDIR(cleanup, DIRA, 0777);
-+	SAFE_MKDIR(cleanup, DIRB, 0777);
-+	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
-+	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
-+}
++export LHOST_HWADDRS=$(tst_lhost_hwaddr)
++export RHOST_HWADDRS=$(tst_rhost_hwaddr)
 +
-+int child_func(void *arg)
-+{
-+	/* bind mounts DIRB to DIRA making contents of DIRB visible
-+	 * in DIRA */
-+	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
-+		perror("mount");
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+static void test(void)
-+{
-+	int status;
-+
-+	/* unshares the mount ns */
-+	if (unshare(CLONE_NEWNS) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+	/* makes sure parent mounts/umounts have no effect on a real system */
-+	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-+
-+	/* bind mounts DIRA to itself */
-+	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-+	/* bind mounts DIRB to itself */
-+	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
-+
-+	/* makes mount DIRA shared */
-+	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
-+	/* makes mount DIRB shared */
-+	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
-+
-+
-+	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-+
-+	SAFE_WAIT(cleanup, &status);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+		tst_brkm(TBROK, cleanup, "mount (in child) failed");
-+
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "child was killed with signal %s",
-+			 tst_strsig(WTERMSIG(status)));
-+		return;
-+	}
-+
-+	/* as child shared mounts with parent, parent should also
-+	 * see file "B" in DIRA; following checks if DIRA contains file "B" */
-+	if (access(DIRA"/B", F_OK) != -1)
-+		tst_resm(TPASS, "share mount passed");
-+	else
-+		tst_resm(TFAIL, "share mount failed");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	cleanup();
-+	tst_exit();
-+}
-diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
-new file mode 100644
-index 0000000..e305028
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns_helper.h
-@@ -0,0 +1,39 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include "libclone.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+
-+static int dummy_child(void *v)
-+{
-+	(void) v;
-+	return 0;
-+}
-+
-+static int check_newns(void)
-+{
-+	int pid, status;
-+
-+	if (tst_kvercmp(2, 4, 19) < 0)
-+		tst_brkm(TCONF, NULL, "CLONE_NEWNS not supported");
-+
-+	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWNS, dummy_child, NULL);
-+	if (pid == -1)
-+		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS not supported");
-+	SAFE_WAIT(NULL, &status);
-+
-+	return 0;
-+}
++export TMPDIR=/tmp/netpan-$$
++mkdir -p $TMPDIR
++CMDFILE=${TMPDIR}/network.tests
++VERBOSE="no"
+diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
+index b40af72..47f365d 100755
+--- a/testscripts/networkstress.sh
++++ b/testscripts/networkstress.sh
+@@ -12,32 +12,10 @@ if [ $? -eq 0 ]; then
+  export LTPROOT=${PWD}
+ fi
+ 
+-export TMPDIR=/tmp/netst-$$
+-mkdir $TMPDIR
+-VERBOSE="no"
+-INTERFACE="eth0"
+-
+-#===========================================================================
+-# Network parameters
+-export RHOST=
+-export RHOST_HWADDRS=
+-export HTTP_DOWNLOAD_DIR=
+-export FTP_DOWNLOAD_DIR=
+-export FTP_UPLOAD_DIR=
+-export FTP_UPLOAD_URLDIR=
+-
+-# Set firt three octets of the network address, by default 10.0.0
+-export IPV4_NETWORK=
+-# Set local host last octet, by default 2
+-export LHOST_IPV4_HOST=
+-# Set remote host last octet, by default 1
+-export RHOST_IPV4_HOST=
+-# Set the reverse of IPV4_NETWORK, by default 0.0.10
+-export IPV4_NETWORK_REVERSE=
++. $LTPROOT/testscripts/network.sh $0
+ 
+ #===========================================================================
+ # Default Test Settings
+-# export LTP_RSH=rsh
+ # export NS_DURATION=3600	# 1 hour
+ # export NS_TIMES=10000
+ # export CONNECTION_TOTAL=4000
+@@ -67,6 +45,7 @@ usage () {
+     echo " -R|r: Stress test for routing table"
+     echo " -B|b: Stress Broken IP packets"
+     echo " -M|m: Multicast stress tests"
++    echo " -F|f: Stress test for network features"
+     echo " -S|s: Run selected tests"
+     echo " -W|w: Run whole network stress tests"
+     echo " -D|d: Test duration (default ${NS_DURATION} sec)"
+@@ -77,7 +56,7 @@ usage () {
+     exit 1
+ }
+ 
+-while getopts AaEeTtIiUuRrMmSsWwBbVvN:n:D:d: OPTION
++while getopts AaEeTtIiUuRrMmFfSsWwBbVvN:n:D:d: OPTION
+ do
+     case $OPTION in
+ 	A|a) TEST_CASE="network_stress.appl";;
+@@ -88,6 +67,7 @@ do
+ 	U|u) TEST_CASE="network_stress.udp";;
+ 	R|r) TEST_CASE="network_stress.route";;
+ 	M|m) TEST_CASE="network_stress.multicast";;
++	F|f) TEST_CASE="network_stress.features";;
+ 	S|s) TEST_CASE="network_stress.selected";;
+ 	W|w) TEST_CASE="network_stress.whole";;
+ 	V|v) VERBOSE="yes";;
+@@ -102,8 +82,6 @@ if [ -z ${TEST_CASE} ]; then
+ 	usage
+ fi
+ 
+-export LHOST_HWADDRS=`ifconfig | grep ${INTERFACE} | grep HWaddr |awk '{print $5}'`
+-
+ if [ -z ${RHOST} ]; then
+ 	## Just a silly check
+ 	echo "Error: pay attention to configure"
+@@ -119,9 +97,8 @@ export PATH="${PATH}:${LTPROOT}/testcases/bin"
+ 
+ if [ ${VERBOSE} = "yes" ]; then
+ 	echo "Network parameters:"
+-	echo " - ${INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
+-	echo " - Remote IP address: ${RHOST}"
+-	echo " - Remote MAC address: ${RHOST_HWADDRS}"
++	echo " - ${LHOST_INTERFACE} local interface (MAC address: ${LHOST_HWADDRS})"
++	echo " - ${RHOST_INTERFACE} remote interface (MAC address: ${RHOST_HWADDRS})"
+ 
+ 	cat $TMPDIR/network_stress.tests
+ 	${LTPROOT}/ver_linux
+diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
+index b136749..507b7e3 100755
+--- a/testscripts/networktests.sh
++++ b/testscripts/networktests.sh
+@@ -1,11 +1,6 @@
+ #!/bin/sh
+ # This will run all the network tests, with the status logged in /tmp/netpan.log
+ 
+-# ---***** THESE MUST BE SET FOR CORRECT OPERATION *****---
+-export RHOST=
+-export PASSWD=
+-# ---***************************************************---
+-
+ cd `dirname $0`
+ export LTPROOT=${PWD}
+ echo $LTPROOT | grep testscripts > /dev/null 2>&1
+@@ -14,10 +9,7 @@ if [ $? -eq 0 ]; then
+  export LTPROOT=${PWD}
+ fi
+ 
+-export TMPDIR=/tmp/netpan-$$
+-mkdir -p $TMPDIR
+-CMDFILE=${TMPDIR}/network.tests
+-VERBOSE="no"
++. $LTPROOT/testscripts/network.sh $0
+ 
+ # For bitwise operation to determine which testsets run
+ CMD_IPV6=1		# 0x0001
 -- 
-1.8.3.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
