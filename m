@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XEwdj-0000Tf-Qf
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 08:32:07 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XEg04-0005zN-Bo
+	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 14:46:04 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XEwdi-0007dr-Dy
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 08:32:07 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s768Vx7L015348
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XEg03-0000ed-1y
+	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 14:46:04 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s75EjuOD000471
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Aug 2014 04:31:59 -0400
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Aug 2014 10:45:56 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed,  6 Aug 2014 10:31:55 +0200
-Message-Id: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] madvise05: new testcase for Oops in
-	madvise_willneed
+Date: Tue,  5 Aug 2014 16:45:53 +0200
+Message-Id: <c0760953d5915e17e43a5e899bad7f5d0a7fde80.1407249825.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] madvise05: new testcase for Oops in madvise_willneed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,16 +42,10 @@ kernel for NULL ptr deref Oops fixed by:
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
-Changes in v2:
-1. exclude this test from kernels < 3.9.
-   Older kernels do not support swap file prefetch,
-   which caused madvise to return EBADF. And if backing file is
-   added to mmap, reproducer no longer works.
-
  runtest/syscalls                              |    1 +
  testcases/kernel/syscalls/.gitignore          |    1 +
- testcases/kernel/syscalls/madvise/madvise05.c |   90 +++++++++++++++++++++++++
- 3 files changed, 92 insertions(+), 0 deletions(-)
+ testcases/kernel/syscalls/madvise/madvise05.c |   81 +++++++++++++++++++++++++
+ 3 files changed, 83 insertions(+), 0 deletions(-)
  create mode 100644 testcases/kernel/syscalls/madvise/madvise05.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
@@ -81,10 +74,10 @@ index fb2425e..fd52217 100644
  /memcmp/memcmp01
 diff --git a/testcases/kernel/syscalls/madvise/madvise05.c b/testcases/kernel/syscalls/madvise/madvise05.c
 new file mode 100644
-index 0000000..384dea7
+index 0000000..043eb4d
 --- /dev/null
 +++ b/testcases/kernel/syscalls/madvise/madvise05.c
-@@ -0,0 +1,90 @@
+@@ -0,0 +1,81 @@
 +/*
 + *  Copyright (c) Linux Test Project, 2014
 + *
@@ -106,9 +99,9 @@ index 0000000..384dea7
 + *   Date:   Fri Dec 20 15:10:03 2013 +0200
 + *     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
 + *
-+ * On buggy kernel with CONFIG_TRANSPARENT_HUGEPAGE=y CONFIG_DEBUG_LOCK_ALLOC=y
-+ * this testcase should produce Oops and/or be killed. On fixed/good kernel
-+ * this testcase runs to completion (retcode is 0)
++ * On buggy kernel with CONFIG_DEBUG_LOCK_ALLOC=y this testcase should
++ * produce Oops and/or be killed. On fixed/good kernel this testcase
++ * runs to completion (retcode is 0)
 + */
 +
 +#include <sys/mman.h>
@@ -145,15 +138,9 @@ index 0000000..384dea7
 +		if (TEST_RETURN == -1)
 +			tst_brkm(TBROK | TTERRNO, cleanup, "mprotect failed");
 +		TEST(madvise(p, ALLOC_SIZE, MADV_WILLNEED));
-+		SAFE_MUNMAP(cleanup, p, ALLOC_SIZE);
-+
-+		if (TEST_RETURN == 0)
-+			continue;
-+
-+		if (TEST_ERRNO == EBADF)
-+			tst_brkm(TCONF, cleanup, "CONFIG_SWAP=n");
-+		else
++		if (TEST_RETURN == -1)
 +			tst_brkm(TBROK | TTERRNO, cleanup, "madvise failed");
++		SAFE_MUNMAP(cleanup, p, ALLOC_SIZE);
 +	}
 +
 +	tst_resm(TPASS, "issue has not been reproduced");
@@ -165,9 +152,6 @@ index 0000000..384dea7
 +static void setup(void)
 +{
 +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	if (tst_kvercmp(3, 9, 0) < 0)
-+		tst_brkm(TCONF, NULL, "madvise(MADV_WILLNEED) swap file "
-+			"prefetch available only since 3.9");
 +	TEST_PAUSE;
 +}
 +
