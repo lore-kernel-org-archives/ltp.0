@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zlang@redhat.com>) id 1XH8sX-0003m2-Nu
-	for ltp-list@lists.sourceforge.net; Tue, 12 Aug 2014 10:00:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XH8sV-0005SP-LJ
-	for ltp-list@lists.sourceforge.net; Tue, 12 Aug 2014 10:00:29 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7CA0K4o020724
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 06:00:20 -0400
-From: Zorro Lang <zlang@redhat.com>
-Date: Tue, 12 Aug 2014 18:00:16 +0800
-Message-Id: <1407837616-13078-1-git-send-email-zlang@redhat.com>
-Subject: [LTP] [PATCH] fs/fsstress: modify compile warning about fsstress.c
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XEyKU-0000zy-Qs
+	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 10:20:22 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XEyKT-0003Is-S0
+	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 10:20:22 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s76AKC2u032264
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Aug 2014 18:20:12 +0800
+Message-ID: <1407320367.2223.16.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Wed, 6 Aug 2014 18:19:27 +0800
+In-Reply-To: <1404116297.3148.7.camel@G08JYZSD130126>
+References: <1404116297.3148.7.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] waitid/waitid02.c: Add new ECHILD errno test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,86 +28,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-when compile kernel/fs/fsstress/fsstress.c, some warning always be printed.
-Because there is a new field 'isxfs' be added in opdesc_t struct,
-but some lines of opdesc_t ops[] forget to init this field.
+Ping. :)
 
-Signed-off-by: Zorro Lang <zlang@redhat.com>
----
- testcases/kernel/fs/fsstress/fsstress.c | 40 ++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+Best regards,
+Zeng
+On Mon, 2014-06-30 at 16:18 +0800, Zeng Linggang wrote:
+> * Add new ECHILD errno test for waitid(2)
+> 	idtype and id (waitid()) is not a child of the calling process.
+> 
+> * Cleanup: remove an useless tst_exit()
+> 
+> * Add tst_count = 0
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/waitid/waitid02.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/waitid/waitid02.c b/testcases/kernel/syscalls/waitid/waitid02.c
+> index 3806655..6259fa3 100644
+> --- a/testcases/kernel/syscalls/waitid/waitid02.c
+> +++ b/testcases/kernel/syscalls/waitid/waitid02.c
+> @@ -130,6 +130,16 @@ struct testcase_t tdat[] = {
+>  		.setup = setup6,
+>  		.cleanup = cleanup6
+>  	},
+> +	{
+> +		.msg = "P_PID, WEXITED not a child of the calling process",
+> +		.idtype = P_PID,
+> +		.id = 1,
+> +		.options = WEXITED,
+> +		.exp_ret = -1,
+> +		.exp_errno = ECHILD,
+> +		.setup = setup2,
+> +		.cleanup = cleanup2
+> +	},
+>  
+>  };
+>  
+> @@ -281,13 +291,12 @@ int main(int ac, char **av)
+>  	const char *msg;
+>  
+>  	msg = parse_opts(ac, av, NULL, NULL);
+> -	if (msg != NULL) {
+> +	if (msg != NULL)
+>  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> -		tst_exit();
+> -	}
+>  
+>  	setup();
+>  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+> +		tst_count = 0;
+>  		for (testno = 0; testno < TST_TOTAL; testno++)
+>  			test_waitid(&tdat[testno]);
+>  	}
 
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index 4a8a1c2..1783783 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -164,35 +164,35 @@ opdesc_t ops[] = {
- 	{OP_BULKSTAT, "bulkstat", bulkstat_f, 1, 0, 1},
- 	{OP_BULKSTAT1, "bulkstat1", bulkstat1_f, 1, 0, 1},
- #endif
--	{OP_CHOWN, "chown", chown_f, 3, 1},
--	{OP_CREAT, "creat", creat_f, 4, 1},
--	{OP_DREAD, "dread", dread_f, 4, 0},
--	{OP_DWRITE, "dwrite", dwrite_f, 4, 1},
--	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1},
-+	{OP_CHOWN, "chown", chown_f, 3, 1, 0},
-+	{OP_CREAT, "creat", creat_f, 4, 1, 0},
-+	{OP_DREAD, "dread", dread_f, 4, 0, 0},
-+	{OP_DWRITE, "dwrite", dwrite_f, 4, 1, 0},
-+	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1, 0},
- #ifndef NO_XFS
- 	{OP_FREESP, "freesp", freesp_f, 1, 1, 1},
- #endif
--	{OP_FSYNC, "fsync", fsync_f, 1, 1},
--	{OP_GETDENTS, "getdents", getdents_f, 1, 0},
--	{OP_LINK, "link", link_f, 1, 1},
--	{OP_MKDIR, "mkdir", mkdir_f, 2, 1},
--	{OP_MKNOD, "mknod", mknod_f, 2, 1},
--	{OP_READ, "read", read_f, 1, 0},
--	{OP_READLINK, "readlink", readlink_f, 1, 0},
--	{OP_RENAME, "rename", rename_f, 2, 1},
-+	{OP_FSYNC, "fsync", fsync_f, 1, 1, 0},
-+	{OP_GETDENTS, "getdents", getdents_f, 1, 0, 0},
-+	{OP_LINK, "link", link_f, 1, 1, 0},
-+	{OP_MKDIR, "mkdir", mkdir_f, 2, 1, 0},
-+	{OP_MKNOD, "mknod", mknod_f, 2, 1, 0},
-+	{OP_READ, "read", read_f, 1, 0, 0},
-+	{OP_READLINK, "readlink", readlink_f, 1, 0, 0},
-+	{OP_RENAME, "rename", rename_f, 2, 1, 0},
- #ifndef NO_XFS
- 	{OP_RESVSP, "resvsp", resvsp_f, 1, 1, 1},
- #endif
--	{OP_RMDIR, "rmdir", rmdir_f, 1, 1},
--	{OP_STAT, "stat", stat_f, 1, 0},
--	{OP_SYMLINK, "symlink", symlink_f, 2, 1},
--	{OP_SYNC, "sync", sync_f, 1, 0},
--	{OP_TRUNCATE, "truncate", truncate_f, 2, 1},
--	{OP_UNLINK, "unlink", unlink_f, 1, 1},
-+	{OP_RMDIR, "rmdir", rmdir_f, 1, 1, 0},
-+	{OP_STAT, "stat", stat_f, 1, 0, 0},
-+	{OP_SYMLINK, "symlink", symlink_f, 2, 1, 0},
-+	{OP_SYNC, "sync", sync_f, 1, 0, 0},
-+	{OP_TRUNCATE, "truncate", truncate_f, 2, 1, 0},
-+	{OP_UNLINK, "unlink", unlink_f, 1, 1, 0},
- #ifndef NO_XFS
- 	{OP_UNRESVSP, "unresvsp", unresvsp_f, 1, 1, 1},
- #endif
--	{OP_WRITE, "write", write_f, 4, 1},
-+	{OP_WRITE, "write", write_f, 4, 1, 0},
- }, *ops_end;
- 
- flist_t flist[FT_nft] = {
--- 
-1.9.3
 
 
 ------------------------------------------------------------------------------
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
