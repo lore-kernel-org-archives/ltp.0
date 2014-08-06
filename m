@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XFD6X-0001lG-EI
-	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 02:06:57 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XFD6W-00054K-52
-	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 02:06:57 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s7726lKV003161
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Aug 2014 10:06:47 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Thu, 7 Aug 2014 10:05:01 +0800
-Message-ID: <1407377101-16898-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XEyyH-00077t-8W
+	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 11:01:29 +0000
+Date: Wed, 6 Aug 2014 13:00:38 +0200
+From: chrubis@suse.cz
+Message-ID: <20140806110037.GA5702@rei>
+References: <1402060015.2086.2.camel@G08JYZSD130126>
+	<20140617095229.GB29213@rei.Home>
+	<1403698904.2434.22.camel@G08JYZSD130126>
+	<1751892689.30818356.1403778578891.JavaMail.zimbra@redhat.com>
+	<20140626103816.GA10335@rei.Home>
+	<1403834572.2119.6.camel@G08JYZSD130126>
+	<1407320291.2223.15.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] perf_event_open: fix test case identifier
+Content-Disposition: inline
+In-Reply-To: <1407320291.2223.15.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH v3] add new errno testes for timerfd_*
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +30,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/perf_event_open/perf_event_open01.c | 2 +-
- testcases/kernel/syscalls/perf_event_open/perf_event_open02.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Hi!
+> Ping. :)
 
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-index 02a87cd..b12de5c 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-@@ -46,7 +46,7 @@
- #include "linux_syscall_numbers.h"
- #include "safe_macros.h"
- 
--char *TCID = "performance_counter01";
-+char *TCID = "perf_event_open01";
- int TST_TOTAL = 6;
- 
- #if HAVE_PERF_EVENT_ATTR
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-index e345ed4..fe94b6a 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-@@ -74,7 +74,7 @@ The -v flag makes it print out the values of each counter.
- #include "safe_macros.h"
- #include "linux_syscall_numbers.h"
- 
--char *TCID = "performance_counter02";
-+char *TCID = "perf_event_open02";
- int TST_TOTAL = 1;
- 
- #if HAVE_PERF_EVENT_ATTR
+Pushed, thanks.
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Infragistics Professional
