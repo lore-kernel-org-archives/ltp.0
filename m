@@ -2,28 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zlang@redhat.com>) id 1XNGG0-0005de-EB
-	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 07:06:00 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XNGFz-0001Ff-9Y
-	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 07:06:00 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7T75q1v025403
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 03:05:52 -0400
-Received: from dhcp-65-110.nay.redhat.com (dhcp-12-112.nay.redhat.com
-	[10.66.12.112])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7T75o2W006177
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 03:05:51 -0400
-Message-ID: <5400264D.5040500@redhat.com>
-Date: Fri, 29 Aug 2014 15:05:49 +0800
-From: Zorro Lang <zlang@redhat.com>
+	(envelope-from <jstancek@redhat.com>) id 1XEvsE-0007M5-3a
+	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 07:43:02 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XEvsC-0006DY-NA
+	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 07:43:02 +0000
+Date: Wed, 6 Aug 2014 03:42:52 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1295578079.3016213.1407310972515.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53E11A03.5000704@casparzhang.com>
+References: <c0760953d5915e17e43a5e899bad7f5d0a7fde80.1407249825.git.jstancek@redhat.com>
+	<53E11A03.5000704@casparzhang.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fs/fsstress: modify compile warning about fsstress.c
+Subject: Re: [LTP] [PATCH] madvise05: new testcase for Oops in
+ madvise_willneed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,99 +29,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <caspar@casparzhang.com>
+Cc: ltp-list@lists.sourceforge.net
 
-when compile kernel/fs/fsstress/fsstress.c, some warning always be printed.
-Because there is a new field 'isxfs' be added in opdesc_t struct,
-but some lines of opdesc_t ops[] forget to init this field.
 
-Signed-off-by: Zorro Lang <zlang@redhat.com>
----
 
-Hi,
+----- Original Message -----
+> From: "Caspar Zhang" <caspar@casparzhang.com>
+> To: "Jan Stancek" <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 5 August, 2014 7:53:07 PM
+> Subject: Re: [LTP] [PATCH] madvise05: new testcase for Oops in madvise_willneed
+> 
+> On 08/05/2014 10:45 PM, Jan Stancek wrote:
+> > This is a regression test for madvise(2) system call. It tests
+> > kernel for NULL ptr deref Oops fixed by:
+> >    commit ee53664bda169f519ce3c6a22d378f0b946c8178
+> >    Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> >    Date:   Fri Dec 20 15:10:03 2013 +0200
+> >      mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
+> >
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >   runtest/syscalls                              |    1 +
+> >   testcases/kernel/syscalls/.gitignore          |    1 +
+> >   testcases/kernel/syscalls/madvise/madvise05.c |   81
+> >   +++++++++++++++++++++++++
+> >   3 files changed, 83 insertions(+), 0 deletions(-)
+> >   create mode 100644 testcases/kernel/syscalls/madvise/madvise05.c
+> >
 
-Ping ...
+> Is MADV_WILLNEED available on all releases? If yes, the new case looks
+> good to me.
 
-I have sent my two patch for a long time, but no response until now. If
-there are any problems you don't want to merge it, please tell me.
+It was introduced before 2.4, so I assume it's available on releases
+made after 2002. Also none of other madvise testcases checks/tests for it.
 
-(Re-send this patch again now. )
+However, I noticed that older kernels fail with EBADF, if there is no
+backing file. I'll fix that and send v2.
 
-Thank you,
-Zorro Lang
-
- testcases/kernel/fs/fsstress/fsstress.c | 40
-++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c
-b/testcases/kernel/fs/fsstress/fsstress.c
-index 4a8a1c2..1783783 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -164,35 +164,35 @@ opdesc_t ops[] = {
- 	{OP_BULKSTAT, "bulkstat", bulkstat_f, 1, 0, 1},
- 	{OP_BULKSTAT1, "bulkstat1", bulkstat1_f, 1, 0, 1},
- #endif
--	{OP_CHOWN, "chown", chown_f, 3, 1},
--	{OP_CREAT, "creat", creat_f, 4, 1},
--	{OP_DREAD, "dread", dread_f, 4, 0},
--	{OP_DWRITE, "dwrite", dwrite_f, 4, 1},
--	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1},
-+	{OP_CHOWN, "chown", chown_f, 3, 1, 0},
-+	{OP_CREAT, "creat", creat_f, 4, 1, 0},
-+	{OP_DREAD, "dread", dread_f, 4, 0, 0},
-+	{OP_DWRITE, "dwrite", dwrite_f, 4, 1, 0},
-+	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1, 0},
- #ifndef NO_XFS
- 	{OP_FREESP, "freesp", freesp_f, 1, 1, 1},
- #endif
--	{OP_FSYNC, "fsync", fsync_f, 1, 1},
--	{OP_GETDENTS, "getdents", getdents_f, 1, 0},
--	{OP_LINK, "link", link_f, 1, 1},
--	{OP_MKDIR, "mkdir", mkdir_f, 2, 1},
--	{OP_MKNOD, "mknod", mknod_f, 2, 1},
--	{OP_READ, "read", read_f, 1, 0},
--	{OP_READLINK, "readlink", readlink_f, 1, 0},
--	{OP_RENAME, "rename", rename_f, 2, 1},
-+	{OP_FSYNC, "fsync", fsync_f, 1, 1, 0},
-+	{OP_GETDENTS, "getdents", getdents_f, 1, 0, 0},
-+	{OP_LINK, "link", link_f, 1, 1, 0},
-+	{OP_MKDIR, "mkdir", mkdir_f, 2, 1, 0},
-+	{OP_MKNOD, "mknod", mknod_f, 2, 1, 0},
-+	{OP_READ, "read", read_f, 1, 0, 0},
-+	{OP_READLINK, "readlink", readlink_f, 1, 0, 0},
-+	{OP_RENAME, "rename", rename_f, 2, 1, 0},
- #ifndef NO_XFS
- 	{OP_RESVSP, "resvsp", resvsp_f, 1, 1, 1},
- #endif
--	{OP_RMDIR, "rmdir", rmdir_f, 1, 1},
--	{OP_STAT, "stat", stat_f, 1, 0},
--	{OP_SYMLINK, "symlink", symlink_f, 2, 1},
--	{OP_SYNC, "sync", sync_f, 1, 0},
--	{OP_TRUNCATE, "truncate", truncate_f, 2, 1},
--	{OP_UNLINK, "unlink", unlink_f, 1, 1},
-+	{OP_RMDIR, "rmdir", rmdir_f, 1, 1, 0},
-+	{OP_STAT, "stat", stat_f, 1, 0, 0},
-+	{OP_SYMLINK, "symlink", symlink_f, 2, 1, 0},
-+	{OP_SYNC, "sync", sync_f, 1, 0, 0},
-+	{OP_TRUNCATE, "truncate", truncate_f, 2, 1, 0},
-+	{OP_UNLINK, "unlink", unlink_f, 1, 1, 0},
- #ifndef NO_XFS
- 	{OP_UNRESVSP, "unresvsp", unresvsp_f, 1, 1, 1},
- #endif
--	{OP_WRITE, "write", write_f, 4, 1},
-+	{OP_WRITE, "write", write_f, 4, 1, 0},
- }, *ops_end;
-  flist_t flist[FT_nft] = {
--- 
-1.9.3
+Regards,
+Jan
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
