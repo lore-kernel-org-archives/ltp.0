@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XD20R-000673-Bh
-	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 01:51:39 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XD20Q-0000qb-AK
-	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 01:51:39 +0000
-Message-ID: <53DAF29D.7040008@cn.fujitsu.com>
-Date: Fri, 1 Aug 2014 09:51:25 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XFI1D-0000sP-VB
+	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 07:21:48 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XFI1C-0001Xo-Mp
+	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 07:21:47 +0000
+Date: Thu, 7 Aug 2014 03:21:35 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <795326558.3533486.1407396095854.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53E2CA8D.9080406@cn.fujitsu.com>
+References: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
+	<53E2CA8D.9080406@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <53D4BB5B.5030701@cn.fujitsu.com>
-	<1406451654-14224-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1406451654-14224-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/2] lib: add SAFE_RENAME()
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [PATCH v2] madvise05: new testcase for Oops in
+ madvise_willneed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,26 +29,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 07/27/2014 05:00 PM, Xiaoguang Wang wrote:
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  include/safe_macros.h |  5 +++++
->  lib/safe_macros.c     | 16 ++++++++++++++++
->  2 files changed, 21 insertions(+)
 
-Applied the series, thank you and Jan's test-review.
 
-Wanlong Gao
+
+
+----- Original Message -----
+> From: "Wanlong Gao" <gaowanlong@cn.fujitsu.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 7 August, 2014 2:38:37 AM
+> Subject: Re: [LTP] [PATCH v2] madvise05: new testcase for Oops in madvise_willneed
+> 
+> On 08/06/2014 04:31 PM, Jan Stancek wrote:
+> > This is a regression test for madvise(2) system call. It tests
+> > kernel for NULL ptr deref Oops fixed by:
+> >   commit ee53664bda169f519ce3c6a22d378f0b946c8178
+> >   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> >   Date:   Fri Dec 20 15:10:03 2013 +0200
+> >     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
+> > 
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> 
+> Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+Pushed.
+
+Regards,
+Jan
+
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
