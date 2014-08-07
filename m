@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xzhou@redhat.com>) id 1XKIJB-0004JW-VW
-	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 02:41:02 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XKIJ9-0003Nf-JI
-	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 02:41:01 +0000
-Date: Wed, 20 Aug 2014 22:40:52 -0400 (EDT)
-From: Xiong Zhou <xzhou@redhat.com>
-Message-ID: <1686916829.22340995.1408588852554.JavaMail.zimbra@redhat.com>
-In-Reply-To: <53F48DAE.4030704@oracle.com>
-References: <970276274.18779164.1407818238974.JavaMail.zimbra@redhat.com>
-	<53F48DAE.4030704@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XFBjT-0005SC-Fi
+	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 00:39:03 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XFBjR-0004vX-Ky
+	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 00:39:03 +0000
+Message-ID: <53E2CA8D.9080406@cn.fujitsu.com>
+Date: Thu, 7 Aug 2014 08:38:37 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] Skip some dio/fcntl cases on NFS
+References: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
+In-Reply-To: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] madvise05: new testcase for Oops in
+	madvise_willneed
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,425 +29,164 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
+On 08/06/2014 04:31 PM, Jan Stancek wrote:
+> This is a regression test for madvise(2) system call. It tests
+> kernel for NULL ptr deref Oops fixed by:
+>   commit ee53664bda169f519ce3c6a22d378f0b946c8178
+>   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>   Date:   Fri Dec 20 15:10:03 2013 +0200
+>     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
 
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, August 20, 2014 7:59:42 PM
-> Subject: Re: [LTP] [PATCH v2] Skip some dio/fcntl cases on NFS
+> ---
+> Changes in v2:
+> 1. exclude this test from kernels < 3.9.
+>    Older kernels do not support swap file prefetch,
+>    which caused madvise to return EBADF. And if backing file is
+>    added to mmap, reproducer no longer works.
 > 
-> Hi!
+>  runtest/syscalls                              |    1 +
+>  testcases/kernel/syscalls/.gitignore          |    1 +
+>  testcases/kernel/syscalls/madvise/madvise05.c |   90 +++++++++++++++++++++++++
+>  3 files changed, 92 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/madvise/madvise05.c
 > 
-> Sorry for delay.
-> 
-
-No problem. :)
-
-Thanks for reviewing!
-
-> On 08/12/2014 08:37 AM, Xiong Zhou wrote:
-> >
-> > According to description of NFS and directIO in open(2), especially
-> > "The Linux NFS client places no alignment restrictions on
-> > O_DIRECT I/O", ignore "odd count"/"non-aligned" read-write FAILs
-> > in diotest4. Some dup code clean up btw.
-> 
-> I think it would be better to split the logic and cleanup parts into
-> separate patches, because both parts are not small.
-> 
-
-Yes, It should be split. So does the change of different files.
-
-> 
-> >
-> > According to nfs(5), NLM supports advisory file locks only. So skip
-> > fcntl16 test if NFS.
-> >
-> > Signed-off-by: Xiong Zhou <xzhou@redhat.com>
-> > ---
-> >   testcases/kernel/io/direct_io/diotest4.c  | 148
-> >   ++++++++++++++----------------
-> >   testcases/kernel/syscalls/fcntl/fcntl16.c |   8 ++
-> >   2 files changed, 79 insertions(+), 77 deletions(-)
-> >
-> > diff --git a/testcases/kernel/io/direct_io/diotest4.c
-> > b/testcases/kernel/io/direct_io/diotest4.c
-> > index 10281bf..934d5b1 100644
-> > --- a/testcases/kernel/io/direct_io/diotest4.c
-> > +++ b/testcases/kernel/io/direct_io/diotest4.c
-> > @@ -71,9 +71,11 @@
-> >
-> >   #include "test.h"
-> >   #include "usctest.h"
-> > +#include "tst_fs_type.h"
-> >
-> >   char *TCID = "diotest4";	/* Test program identifier.    */
-> >   int TST_TOTAL = 17;		/* Total number of test conditions */
-> > +int NO_NFS = 1;			/* Test on NFS or not */
-> >
-> >   #ifdef O_DIRECT
-> >
-> > @@ -171,6 +173,16 @@ void prg_usage()
-> >   	exit(1);
-> >   }
-> >
-> > +static void testcheck_end(int ret, int *failed, int *fail_count, char
-> > *msg)
-> > +{
-> > +	if (ret != 0) {
-> > +		*failed = TRUE;
-> > +		*fail_count++;
-> > +		tst_resm(TFAIL, msg);
-> > +	} else
-> > +		tst_resm(TPASS, msg);
-> > +}
-> > +
-> >   static void setup(void);
-> >   static void cleanup(void);
-> >   static int fd1 = -1;
-> > @@ -206,6 +218,10 @@ int main(int argc, char *argv[])
-> >
-> >   	setup();
-> >
-> > +	/* On NFS or not */
-> > +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
-> > +		NO_NFS = 0;
-> > +
-> 
-> Maybe put it to setup(). IMHO, it's logically coupled with setup().
-> 
-
-OK, It does and it meets the 'Unless' part of libltp guideline 3 in doc/style-guide.txt.
-
-> >   	/* Open file and fill, allocate for buffer */
-> >   	if ((fd = open(filename, O_DIRECT | O_RDWR | O_CREAT, 0666)) < 0) {
-> >   		tst_brkm(TBROK, cleanup, "open failed for %s: %s",
-> > @@ -251,17 +267,41 @@ int main(int argc, char *argv[])
-> >   	/* Test-3: Odd count of read and write */
-> >   	offset = 0;
-> >   	count = 1;
-> > +	l_fail = 0;
-> >   	lseek(fd, 0, SEEK_SET);
-> >   	if (write(fd, buf2, 4096) == -1) {
-> >   		tst_resm(TFAIL, "can't write to file %d", ret);
-> >   	}
-> > -	ret = runtest_f(fd, buf2, offset, count, EINVAL, 3, "odd count");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "Odd count of read and write");
-> > -	} else
-> > -		tst_resm(TPASS, "Odd count of read and write");
-> > +	if (lseek(fd, offset, SEEK_SET) < 0) {
-> > +		if (errno != EINVAL) {
-> > +			tst_resm(TFAIL, "lseek before read failed: %s",
-> > +				 strerror(errno));
-> > +			l_fail = TRUE;
-> > +		}
-> > +	} else {
-> > +		ret = read(fd, buf2, count);
-> > +		if ((ret >= 0 || errno != EINVAL) && NO_NFS) {
-> > +			tst_resm(TFAIL, "read allows %s. returns %d: %s",
-> > +				 "odd count", ret, strerror(errno));
-> > +			l_fail = TRUE;
-> > +		}
-> > +	}
-> > +	if (lseek(fd, offset, SEEK_SET) < 0) {
-> > +		if (errno != EINVAL) {
-> > +			tst_resm(TFAIL, "lseek before write failed: %s",
-> > +				 strerror(errno));
-> > +			l_fail = TRUE;
-> > +		}
-> > +	} else {
-> > +		ret = write(fd, buf2, count);
-> > +		if ((ret >= 0 || errno != EINVAL) && NO_NFS) {
-> > +			tst_resm(TFAIL, "write allows %s.returns %d: %s",
-> > +				 "odd count", ret, strerror(errno));
-> > +			l_fail = TRUE;
-> > +		}
-> > +	}
-> > +	testcheck_end(l_fail, &failed, &fail_count,
-> > +				"Odd count of read and write");
-> 
-> You copied code from runtest_f(). I suppose it's easier to skip this
-> entire test case on NFS, than skipping only write() and read() failures.
-> Like:
-> 
-> offset = 0;
-> count = 1;
-> lseek(fd, 0, SEEK_SET);
-> if (write(...)) {
->     ...
-> }
-> if (NO_NFS) {
->     ret = runtest_f();
->     testcheck_end();
-> } else {
->     tst_resm(TCONF, "Statement that this test case is not applicable to
-> NFS");
-> }
-> total++;
-
-OK, This is better and more concise.
-
-
-> 
-> >   	total++;
-> >
-> >   	/* Test-4: Read beyond the file size */
-> > @@ -290,12 +330,7 @@ int main(int argc, char *argv[])
-> >   	count = bufsize;
-> >   	newfd = -1;
-> >   	ret = runtest_f(newfd, buf2, offset, count, EBADF, 5, "negative fd");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "Invalid file descriptor");
-> > -	} else
-> > -		tst_resm(TPASS, "Invalid file descriptor");
-> > +	testcheck_end(ret, &failed, &fail_count, "Invalid file descriptor");
-> >   	total++;
-> >
-> >   	/* Test-6: Out of range file descriptor */
-> > @@ -306,15 +341,10 @@ int main(int argc, char *argv[])
-> >   		failed = TRUE;
-> >   		tst_resm(TFAIL, "Out of range file descriptor");
-> >   	} else {
-> > -		ret =
-> > -		    runtest_f(newfd, buf2, offset, count, EBADF, 6,
-> > +		ret = runtest_f(newfd, buf2, offset, count, EBADF, 6,
-> >   			      "out of range fd");
-> > -		if (ret != 0) {
-> > -			failed = TRUE;
-> > -			fail_count++;
-> > -			tst_resm(TFAIL, "Out of range file descriptor");
-> > -		} else
-> > -			tst_resm(TPASS, "Out of range file descriptor");
-> > +		testcheck_end(ret, &failed, &fail_count,
-> > +					"Out of range file descriptor");
-> >   	}
-> >   	close(newfd);
-> >   	total++;
-> > @@ -327,12 +357,7 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   	}
-> >   	ret = runtest_f(fd, buf2, offset, count, EBADF, 7, "closed fd");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "Closed file descriptor");
-> > -	} else
-> > -		tst_resm(TPASS, "Closed file descriptor");
-> > +	testcheck_end(ret, &failed, &fail_count, "Closed file descriptor");
-> >   	total++;
-> >
-> >   	/* Test-9: removed */
-> > @@ -345,12 +370,8 @@ int main(int argc, char *argv[])
-> >   		tst_resm(TCONF, "Direct I/O on /dev/null is not supported");
-> >   	} else {
-> >   		ret = runtest_s(newfd, buf2, offset, count, 9, "/dev/null");
-> > -		if (ret != 0) {
-> > -			failed = TRUE;
-> > -			fail_count++;
-> > -			tst_resm(TFAIL, "character device read, write");
-> > -		} else
-> > -			tst_resm(TPASS, "character device read, write");
-> > +		testcheck_end(ret, &failed, &fail_count,
-> > +					"character device read, write");
-> >   	}
-> >   	close(newfd);
-> >   	total++;
-> > @@ -373,12 +394,8 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   	}
-> >   	ret = runtest_s(fd, buf2, offset, count, 10, "mmapped file");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "read, write to a mmaped file");
-> > -	} else
-> > -		tst_resm(TPASS, "read, write to a mmaped file");
-> > +	testcheck_end(ret, &failed, &fail_count,
-> > +				"read, write to a mmaped file");
-> >   	total++;
-> >
-> >   	/* Test-11: read, write to an unmaped file with munmap */
-> > @@ -387,12 +404,8 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   	}
-> >   	ret = runtest_s(fd, buf2, offset, count, 11, "unmapped file");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "read, write to an unmapped file");
-> > -	} else
-> > -		tst_resm(TPASS, "read, write to an unmapped file");
-> > +	testcheck_end(ret, &failed, &fail_count,
-> > +				"read, write to an unmapped file");
-> >   	close(fd);
-> >   	total++;
-> >
-> > @@ -459,7 +472,7 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   		l_fail = TRUE;
-> >   	} else {
-> > -		if ((ret = read(fd, buf2 + 1, count)) != -1) {
-> > +		if (((ret = read(fd, buf2 + 1, count)) != -1) && NO_NFS) {
-> >   			tst_resm(TFAIL,
-> >   				 "allows read nonaligned buf. returns %d: %s",
-> >   				 ret, strerror(errno));
-> > @@ -471,19 +484,15 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   		l_fail = TRUE;
-> >   	} else {
-> > -		if ((ret = write(fd, buf2 + 1, count)) != -1) {
-> > +		if (((ret = write(fd, buf2 + 1, count)) != -1) && NO_NFS) {
-> >   			tst_resm(TFAIL,
-> >   				 "allows write nonaligned buf. returns %d: %s",
-> >   				 ret, strerror(errno));
-> >   			l_fail = TRUE;
-> >   		}
-> >   	}
-> > -	if (l_fail) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "read, write with non-aligned buffer");
-> > -	} else
-> > -		tst_resm(TPASS, "read, write with non-aligned buffer");
-> > +	testcheck_end(l_fail, &failed, &fail_count,
-> > +				"read, write with non-aligned buffer");
-> 
-> Could we use runtest_f(EINVAL) here for Test-14 and apply the algorithm
-> I described above for Test-3?
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 5e6e0f4..142c350 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -715,6 +715,7 @@ madvise01 madvise01
+>  madvise02 madvise02
+>  madvise03 madvise03
+>  madvise04 madvise04
+> +madvise05 madvise05
+>  
+>  newuname01 newuname01
+>  
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index fb2425e..fd52217 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -479,6 +479,7 @@
+>  /madvise/madvise02
+>  /madvise/madvise03
+>  /madvise/madvise04
+> +/madvise/madvise05
+>  /mallopt/mallopt01
+>  /mbind/mbind01
+>  /memcmp/memcmp01
+> diff --git a/testcases/kernel/syscalls/madvise/madvise05.c b/testcases/kernel/syscalls/madvise/madvise05.c
+> new file mode 100644
+> index 0000000..384dea7
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/madvise/madvise05.c
+> @@ -0,0 +1,90 @@
+> +/*
+> + *  Copyright (c) Linux Test Project, 2014
+> + *
+> + *  This program is free software; you can redistribute it and/or modify
+> + *  it under the terms of the GNU General Public License as published by
+> + *  the Free Software Foundation; either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + *  This program is distributed in the hope that it will be useful,
+> + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *  GNU Library General Public License for more details.
+> + */
+> +/*
+> + * This is a regression test for madvise(2) system call. It tests kernel
+> + * for NULL ptr deref Oops fixed by:
+> + *   commit ee53664bda169f519ce3c6a22d378f0b946c8178
+> + *   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> + *   Date:   Fri Dec 20 15:10:03 2013 +0200
+> + *     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
+> + *
+> + * On buggy kernel with CONFIG_TRANSPARENT_HUGEPAGE=y CONFIG_DEBUG_LOCK_ALLOC=y
+> + * this testcase should produce Oops and/or be killed. On fixed/good kernel
+> + * this testcase runs to completion (retcode is 0)
+> + */
+> +
+> +#include <sys/mman.h>
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "safe_macros.h"
+> +
+> +#define ALLOC_SIZE (32 * 1024 * 1024)
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +char *TCID = "madvise05";
+> +int TST_TOTAL = 1;
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +	const char *msg = NULL;
+> +	void *p;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		p = SAFE_MMAP(cleanup, NULL, ALLOC_SIZE, PROT_READ,
+> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
+> +		TEST(mprotect(p, ALLOC_SIZE, PROT_NONE));
+> +		if (TEST_RETURN == -1)
+> +			tst_brkm(TBROK | TTERRNO, cleanup, "mprotect failed");
+> +		TEST(madvise(p, ALLOC_SIZE, MADV_WILLNEED));
+> +		SAFE_MUNMAP(cleanup, p, ALLOC_SIZE);
+> +
+> +		if (TEST_RETURN == 0)
+> +			continue;
+> +
+> +		if (TEST_ERRNO == EBADF)
+> +			tst_brkm(TCONF, cleanup, "CONFIG_SWAP=n");
+> +		else
+> +			tst_brkm(TBROK | TTERRNO, cleanup, "madvise failed");
+> +	}
+> +
+> +	tst_resm(TPASS, "issue has not been reproduced");
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +	if (tst_kvercmp(3, 9, 0) < 0)
+> +		tst_brkm(TCONF, NULL, "madvise(MADV_WILLNEED) swap file "
+> +			"prefetch available only since 3.9");
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +}
 > 
 
-Of course.
-
-Thanks for reviewing!
-
-Regards,
-xzhou
-
-> 
-> >   	total++;
-> >   	close(fd);
-> >
-> > @@ -500,8 +509,7 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   		l_fail = TRUE;
-> >   	} else {
-> > -		ret =
-> > -		    read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
-> > +		ret = read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
-> >   			 count);
-> >   		if (ret >= 0 || errno != EFAULT) {
-> >   			tst_resm(TFAIL,
-> > @@ -515,8 +523,7 @@ int main(int argc, char *argv[])
-> >   			 strerror(errno));
-> >   		l_fail = TRUE;
-> >   	} else {
-> > -		ret =
-> > -		    write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
-> > +		ret = write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
-> >   			  count);
-> >   		if (ret < 0) {
-> >   			tst_resm(TFAIL,
-> > @@ -525,12 +532,8 @@ int main(int argc, char *argv[])
-> >   			l_fail = TRUE;
-> >   		}
-> >   	}
-> > -	if (l_fail) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "read, write buffer in read-only space");
-> > -	} else
-> > -		tst_resm(TPASS, "read, write buffer in read-only space");
-> > +	testcheck_end(l_fail, &failed, &fail_count,
-> > +				"read, write buffer in read-only space");
-> >   	close(fd);
-> >   	total++;
-> >
-> > @@ -545,15 +548,10 @@ int main(int argc, char *argv[])
-> >   		tst_brkm(TBROK | TERRNO, cleanup,
-> >   			 "open(%s, O_DIRECT|O_RDWR) failed", filename);
-> >   	}
-> > -	ret =
-> > -	    runtest_f(fd, buf1, offset, count, EFAULT, 16,
-> > +	ret = runtest_f(fd, buf1, offset, count, EFAULT, 16,
-> >   		      " nonexistant space");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "read, write in non-existant space");
-> > -	} else
-> > -		tst_resm(TPASS, "read, write in non-existant space");
-> > +	testcheck_end(ret, &failed, &fail_count,
-> > +				"read, write in non-existant space");
-> >   	total++;
-> >   	close(fd);
-> >
-> > @@ -565,12 +563,8 @@ int main(int argc, char *argv[])
-> >   			 "open(%s, O_DIRECT|O_RDWR|O_SYNC failed)", filename);
-> >   	}
-> >   	ret = runtest_s(fd, buf2, offset, count, 17, "opened with O_SYNC");
-> > -	if (ret != 0) {
-> > -		failed = TRUE;
-> > -		fail_count++;
-> > -		tst_resm(TFAIL, "read, write for file with O_SYNC");
-> > -	} else
-> > -		tst_resm(TPASS, "read, write for file with O_SYNC");
-> > +	testcheck_end(ret, &failed, &fail_count,
-> > +				"read, write for file with O_SYNC");
-> >   	total++;
-> >   	close(fd);
-> >
-> > diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c
-> > b/testcases/kernel/syscalls/fcntl/fcntl16.c
-> > index 44b6a80..7dba6ea 100644
-> > --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
-> > +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
-> > @@ -51,6 +51,8 @@
-> >   #include <sys/types.h>
-> >   #include <sys/wait.h>
-> >
-> > +#include "tst_fs_type.h"
-> > +
-> >   #define SKIPVAL 0x0f00
-> >   //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
-> >   #define SKIP 0,0,0L,0L,0
-> > @@ -412,6 +414,12 @@ void setup(void)
-> >
-> >   	tst_tmpdir();
-> >
-> > +	/* On NFS or not */
-> > +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
-> > +		tst_brkm(TCONF, cleanup, "Cannot test madatory locking "
-> > +			"on a file located on an NFS filesystem");
-> > +	}
-> > +
-> >   	/* set up temp filename */
-> >   	sprintf(tmpname, "fcntl4.%d", parent);
-> >
-> >
-> 
-> ------------------------------------------------------------------------------
-> Slashdot TV.
-> Video for Nerds.  Stuff that matters.
-> http://tv.slashdot.org/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
