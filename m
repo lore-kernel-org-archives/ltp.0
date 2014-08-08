@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XLu2R-0007jd-S6
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 13:10:23 +0000
-Date: Mon, 25 Aug 2014 15:09:20 +0200
-From: chrubis@suse.cz
-Message-ID: <20140825130920.GA13575@rei.suse.cz>
-References: <e70bae8bd74a29e9959cae96900a849254b37c9f.1408615314.git.jstancek@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e70bae8bd74a29e9959cae96900a849254b37c9f.1408615314.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] safe_macros: turn functions with off_t parameter
- into static inline
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zlang@redhat.com>) id 1XFg02-0005Q2-NS
+	for ltp-list@lists.sourceforge.net; Fri, 08 Aug 2014 08:58:10 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XFg01-0004p7-5A
+	for ltp-list@lists.sourceforge.net; Fri, 08 Aug 2014 08:58:10 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s788w2kf029664
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 Aug 2014 04:58:02 -0400
+From: Zorro Lang <zlang@redhat.com>
+Date: Fri,  8 Aug 2014 16:57:30 +0800
+Message-Id: <1407488250-17836-1-git-send-email-zlang@redhat.com>
+Subject: [LTP] [PATCH] fs/fsstress: prevent orphan and zombie processes to
+	be left
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,54 +28,181 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Some functions used to implement safe macros have parameters
-> of type off_t or structures containing off_t fields.
-> 
-> We don't want these to be compiled into libltp, because
-> some testcases are compiled with different flags such as:
->   -D_FILE_OFFSET_BITS=64 -DOFF_T=__off64_t
-> which then creates incompatibility and testcases can fail.
-> 
-> For example sendfile06_64 on i386:
->     sendfile06_64    1  TFAIL  :  sendfile06.c:90: sendfile(2) failed
->           to return expected value, expected: 17592186044442, got: 26
+    parent use signal handler to deal with SIGTERM, make sure
+    children processes ended before parent.
+---
 
-And I've just found that the same applies to rlim_t used in setrlimit()
-rlimit structure.
+when I run "killall fsstress" in my testcase, I can't use a simple 'wait' to wait fsstress
+ all over then 'umount' device. Because many orphan processes still running.
 
-(taken from /usr/include/bits/resource.h)
+This is not a bug, but I think this patch can make fsstress be better. So I
+backport xfstests/fsstress here.
 
-/* Type for resource quantity measurement.  */
-#ifndef __USE_FILE_OFFSET64
-typedef __rlim_t rlim_t;
-#else
-typedef __rlim64_t rlim_t;
-#endif
-#ifdef __USE_LARGEFILE64
-typedef __rlim64_t rlim64_t;
-#endif
+BTW, I modify some compile warning for opdesc_t ops[]. Hope it's not wrong ;)
 
-And the testcase that fails in SAFE_SETRLIMIT() is truncate03_64 after
-the patch that fixes the EFBIG limit.
+Thank you,
+Zorro Lang
 
-So unless you are already working on it I will prepare and push a patch
-that moves rlimit related safe macros to the header as well.
 
+ testcases/kernel/fs/fsstress/fsstress.c | 78 ++++++++++++++++++++++++---------
+ 1 file changed, 58 insertions(+), 20 deletions(-)
+
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index 2243280..ec3f646 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -30,7 +30,11 @@
+  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
+  */
+ 
++#include <config.h>
+ #include "global.h"
++#ifdef HAVE_SYS_PRCTL_H
++#include <sys/prctl.h>
++#endif
+ 
+ #define XFS_ERRTAG_MAX		17
+ 
+@@ -160,35 +164,35 @@ opdesc_t ops[] = {
+ 	{OP_BULKSTAT, "bulkstat", bulkstat_f, 1, 0, 1},
+ 	{OP_BULKSTAT1, "bulkstat1", bulkstat1_f, 1, 0, 1},
+ #endif
+-	{OP_CHOWN, "chown", chown_f, 3, 1},
+-	{OP_CREAT, "creat", creat_f, 4, 1},
+-	{OP_DREAD, "dread", dread_f, 4, 0},
+-	{OP_DWRITE, "dwrite", dwrite_f, 4, 1},
+-	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1},
++	{OP_CHOWN, "chown", chown_f, 3, 1, 0},
++	{OP_CREAT, "creat", creat_f, 4, 1, 0},
++	{OP_DREAD, "dread", dread_f, 4, 0, 0},
++	{OP_DWRITE, "dwrite", dwrite_f, 4, 1, 0},
++	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1, 0},
+ #ifndef NO_XFS
+ 	{OP_FREESP, "freesp", freesp_f, 1, 1, 1},
+ #endif
+-	{OP_FSYNC, "fsync", fsync_f, 1, 1},
+-	{OP_GETDENTS, "getdents", getdents_f, 1, 0},
+-	{OP_LINK, "link", link_f, 1, 1},
+-	{OP_MKDIR, "mkdir", mkdir_f, 2, 1},
+-	{OP_MKNOD, "mknod", mknod_f, 2, 1},
+-	{OP_READ, "read", read_f, 1, 0},
+-	{OP_READLINK, "readlink", readlink_f, 1, 0},
+-	{OP_RENAME, "rename", rename_f, 2, 1},
++	{OP_FSYNC, "fsync", fsync_f, 1, 1, 0},
++	{OP_GETDENTS, "getdents", getdents_f, 1, 0, 0},
++	{OP_LINK, "link", link_f, 1, 1, 0},
++	{OP_MKDIR, "mkdir", mkdir_f, 2, 1, 0},
++	{OP_MKNOD, "mknod", mknod_f, 2, 1, 0},
++	{OP_READ, "read", read_f, 1, 0, 0},
++	{OP_READLINK, "readlink", readlink_f, 1, 0, 0},
++	{OP_RENAME, "rename", rename_f, 2, 1, 0},
+ #ifndef NO_XFS
+ 	{OP_RESVSP, "resvsp", resvsp_f, 1, 1, 1},
+ #endif
+-	{OP_RMDIR, "rmdir", rmdir_f, 1, 1},
+-	{OP_STAT, "stat", stat_f, 1, 0},
+-	{OP_SYMLINK, "symlink", symlink_f, 2, 1},
+-	{OP_SYNC, "sync", sync_f, 1, 0},
+-	{OP_TRUNCATE, "truncate", truncate_f, 2, 1},
+-	{OP_UNLINK, "unlink", unlink_f, 1, 1},
++	{OP_RMDIR, "rmdir", rmdir_f, 1, 1, 0},
++	{OP_STAT, "stat", stat_f, 1, 0, 0},
++	{OP_SYMLINK, "symlink", symlink_f, 2, 1, 0},
++	{OP_SYNC, "sync", sync_f, 1, 0, 0},
++	{OP_TRUNCATE, "truncate", truncate_f, 2, 1, 0},
++	{OP_UNLINK, "unlink", unlink_f, 1, 1, 0},
+ #ifndef NO_XFS
+ 	{OP_UNRESVSP, "unresvsp", unresvsp_f, 1, 1, 1},
+ #endif
+-	{OP_WRITE, "write", write_f, 4, 1},
++	{OP_WRITE, "write", write_f, 4, 1, 0},
+ }, *ops_end;
+ 
+ flist_t flist[FT_nft] = {
+@@ -227,6 +231,7 @@ int no_xfs = 0;
+ #else
+ int no_xfs = 1;
+ #endif
++sig_atomic_t should_stop = 0;
+ 
+ void add_to_flist(int, int, int);
+ void append_pathname(pathname_t *, char *);
+@@ -273,6 +278,11 @@ void usage(void);
+ void write_freq(void);
+ void zero_freq(void);
+ 
++void sg_handler(int signum)
++{
++	should_stop = 1;
++}
++
+ int main(int argc, char **argv)
+ {
+ 	char buf[10];
+@@ -297,6 +307,7 @@ int main(int argc, char **argv)
+ #ifndef NO_XFS
+ 	xfs_error_injection_t err_inj;
+ #endif
++	struct sigaction action;
+ 
+ 	errrange = errtag = 0;
+ 	umask(0);
+@@ -465,17 +476,44 @@ int main(int argc, char **argv)
+ #endif
+ 			close(fd);
+ 		unlink(buf);
++
++
+ 		if (nproc == 1) {
+ 			procid = 0;
+ 			doproc();
+ 		} else {
++			setpgid(0, 0);
++			action.sa_handler = sg_handler;
++			sigemptyset(&action.sa_mask);
++			action.sa_flags = 0;
++			if (sigaction(SIGTERM, &action, 0)) {
++				perror("sigaction failed");
++				exit(1);
++			}
++
+ 			for (i = 0; i < nproc; i++) {
+ 				if (fork() == 0) {
++
++					action.sa_handler = SIG_DFL;
++					sigemptyset(&action.sa_mask);
++					if (sigaction(SIGTERM, &action, 0))
++						return 1;
++#ifdef HAVE_SYS_PRCTL_H
++					prctl(PR_SET_PDEATHSIG, SIGKILL);
++					if (getppid() == 1) /* parent died already? */
++						return 0;
++#endif
+ 					procid = i;
+ 					doproc();
+ 					return 0;
+ 				}
+ 			}
++			while (wait(&stat) > 0 && !should_stop) {
++				continue;
++			}
++			action.sa_flags = SA_RESTART;
++			sigaction(SIGTERM, &action, 0);
++			kill(-getpid(), SIGTERM);
+ 			while (wait(&stat) > 0)
+ 				continue;
+ 		}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
