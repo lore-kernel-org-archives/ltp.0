@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XJHV9-0004Ki-6e
-	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:37:11 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XJHV7-0007tn-Qd
-	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:37:11 +0000
-Message-ID: <53F1ACA9.805@cn.fujitsu.com>
-Date: Mon, 18 Aug 2014 15:35:05 +0800
-From: "gux.fnst" <gux.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xzhou@redhat.com>) id 1XGjXy-0001qd-Sd
+	for ltp-list@lists.sourceforge.net; Mon, 11 Aug 2014 06:57:34 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XGjXx-0000qD-7z
+	for ltp-list@lists.sourceforge.net; Mon, 11 Aug 2014 06:57:34 +0000
+Received: from zmail22.collab.prod.int.phx2.redhat.com
+	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
+	by mx5-phx2.redhat.com (8.14.4/8.14.4) with ESMTP id s7B6vRmi031401
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Aug 2014 02:57:27 -0400
+Date: Mon, 11 Aug 2014 02:57:27 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <23710388.18328282.1407740246999.JavaMail.zimbra@redhat.com>
+In-Reply-To: <2123230838.18328229.1407740231363.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-References: <1407405010-23077-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<2144922040.6431142.1407925292759.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2144922040.6431142.1407925292759.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] run_memctl_test.sh: replace the former intercept
- method
+Subject: [LTP] [PATCH] diotest4/fcntl16: Skip some dio/fcntl cases on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,97 +30,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
+According to description of NFS and directIO in open(2), especially
+"The Linux NFS client places no alignment restrictions on
+O_DIRECT I/O", ignore some FAILs in diotest4.
 
+According to nfs(5), NLM supports advisory file locks only. So skip
+fcntl16 test if NFS.
 
-On 08/13/2014 06:21 PM, Jan Stancek wrote:
->
->
-> ----- Original Message -----
->> From: "Xing Gu" <gux.fnst@cn.fujitsu.com>
->> To: ltp-list@lists.sourceforge.net
->> Sent: Thursday, 7 August, 2014 11:50:10 AM
->> Subject: [LTP] [PATCH] run_memctl_test.sh: replace the former intercept	method
->>
->> In RHEL6.5GA and RHEL7.0GA, running run_memctl_test.sh outputs
->> "/opt/ltp/testcases/bin/run_memctl_test.sh: line 87: [: -lt:
->> unary operator expected" error. This is because $MEM_AVAIL
->> is empty here, which is caused by command "tr -s [:space:]" that
->> loses efficacy. Using "awk" replaces the former intercept method.
->
-> Hi,
->
-> or you could put quotes around it:
->   tr -s "[:space:]"
->
-> so it's not evaluated as wildcard:
->   # cd /opt/ltp/
->   # echo [:space:]
->   [:space:]
->
->   # cd testcases/bin/
->   # echo [:space:]
->   c
->
->   # ls -al c
->   -rwxrwxr-x. 1 root root 11251 Jul 30 02:20 c
->
-> If you're wondering where that "c" comes from:
->   ./testcases/kernel/security/filecaps/c.c
->
-> I'm OK with using awk, though commit message could be more clear.
->
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/io/direct_io/diotest4.c  | 14 ++++++++++----
+ testcases/kernel/syscalls/fcntl/fcntl16.c |  8 ++++++++
+ 2 files changed, 18 insertions(+), 4 deletions(-)
 
-I see. Thanks for your review.
-
-Regards,
-Xing Gu
-
-> Reviewed-by: Jan Stancek <jstancek@redhat.com>
->
-> Regards,
-> Jan
->
->>
->> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
->> ---
->>   testcases/kernel/controllers/memctl/run_memctl_test.sh | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/testcases/kernel/controllers/memctl/run_memctl_test.sh
->> b/testcases/kernel/controllers/memctl/run_memctl_test.sh
->> index 66e8f4f..fe171df 100755
->> --- a/testcases/kernel/controllers/memctl/run_memctl_test.sh
->> +++ b/testcases/kernel/controllers/memctl/run_memctl_test.sh
->> @@ -83,7 +83,7 @@ cd $LTPROOT/testcases/bin/
->>   #################################################################################
->>
->>   # First of all check if the system has sufficient memory
->> -MEM_AVAIL=`cat /proc/meminfo | grep MemTotal | tr -s [:space:] | cut -d" "
->> -f2`;
->> +MEM_AVAIL=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`;
->>   if [ $MEM_AVAIL -lt 262144 ]	# 256MB(as test requires some ~200MB)
->>   then
->>   	echo System does not have sufficient free memory.;
->> --
->> 1.9.3
->>
->>
->> ------------------------------------------------------------------------------
->> Infragistics Professional
->> Build stunning WinForms apps today!
->> Reboot your WinForms applications with our WinForms controls.
->> Build a bridge from your legacy apps to the future.
->> http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-> .
->
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index 10281bf..506e34c 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -71,9 +71,11 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "tst_fs_type.h"
+ 
+ char *TCID = "diotest4";	/* Test program identifier.    */
+ int TST_TOTAL = 17;		/* Total number of test conditions */
++int NO_NFS = 1;			/* Test on NFS or not */
+ 
+ #ifdef O_DIRECT
+ 
+@@ -106,7 +108,7 @@ runtest_f(int fd, char *buf, int offset, int count, int errnum, int testnum,
+ 		}
+ 	} else {
+ 		ret = read(fd, buf, count);
+-		if (ret >= 0 || errno != errnum) {
++		if ((ret >= 0 || errno != errnum) && NO_NFS) {
+ 			tst_resm(TFAIL, "read allows %s. returns %d: %s",
+ 				 msg, ret, strerror(errno));
+ 			l_fail = TRUE;
+@@ -120,7 +122,7 @@ runtest_f(int fd, char *buf, int offset, int count, int errnum, int testnum,
+ 		}
+ 	} else {
+ 		ret = write(fd, buf, count);
+-		if (ret >= 0 || errno != errnum) {
++		if ((ret >= 0 || errno != errnum) && NO_NFS) {
+ 			tst_resm(TFAIL, "write allows %s.returns %d: %s",
+ 				 msg, ret, strerror(errno));
+ 			l_fail = TRUE;
+@@ -206,6 +208,10 @@ int main(int argc, char *argv[])
+ 
+ 	setup();
+ 
++	/* On NFS or not */
++	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
++		NO_NFS = 0;
++
+ 	/* Open file and fill, allocate for buffer */
+ 	if ((fd = open(filename, O_DIRECT | O_RDWR | O_CREAT, 0666)) < 0) {
+ 		tst_brkm(TBROK, cleanup, "open failed for %s: %s",
+@@ -459,7 +465,7 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 		l_fail = TRUE;
+ 	} else {
+-		if ((ret = read(fd, buf2 + 1, count)) != -1) {
++		if (((ret = read(fd, buf2 + 1, count)) != -1) && NO_NFS) {
+ 			tst_resm(TFAIL,
+ 				 "allows read nonaligned buf. returns %d: %s",
+ 				 ret, strerror(errno));
+@@ -471,7 +477,7 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 		l_fail = TRUE;
+ 	} else {
+-		if ((ret = write(fd, buf2 + 1, count)) != -1) {
++		if (((ret = write(fd, buf2 + 1, count)) != -1) && NO_NFS) {
+ 			tst_resm(TFAIL,
+ 				 "allows write nonaligned buf. returns %d: %s",
+ 				 ret, strerror(errno));
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+index 44b6a80..7dba6ea 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl16.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+@@ -51,6 +51,8 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ 
++#include "tst_fs_type.h"
++
+ #define SKIPVAL 0x0f00
+ //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
+ #define SKIP 0,0,0L,0L,0
+@@ -412,6 +414,12 @@ void setup(void)
+ 
+ 	tst_tmpdir();
+ 
++	/* On NFS or not */
++	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
++		tst_brkm(TCONF, cleanup, "Cannot test madatory locking "
++			"on a file located on an NFS filesystem");
++	}
++
+ 	/* set up temp filename */
+ 	sprintf(tmpname, "fcntl4.%d", parent);
+ 
+-- 
+1.8.3.1
 
 ------------------------------------------------------------------------------
 _______________________________________________
