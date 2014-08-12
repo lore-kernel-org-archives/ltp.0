@@ -1,23 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XD7sn-0001w1-QW
-	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 08:08:09 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XD7sm-0002Qu-On
-	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 08:08:09 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s7187xk1020301
-	for <ltp-list@lists.sourceforge.net>; Fri, 1 Aug 2014 16:07:59 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 1 Aug 2014 16:06:20 +0800
-Message-ID: <1406880380-29383-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuacct/run_cpuacct_test.sh: fix the order of cleanup
-	and task_kill
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XHAjx-0000WC-15
+	for ltp-list@lists.sourceforge.net; Tue, 12 Aug 2014 11:59:45 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XHAjw-00026U-0H
+	for ltp-list@lists.sourceforge.net; Tue, 12 Aug 2014 11:59:44 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s7CBxaqE001977
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 11:59:38 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s7CBxag6012276
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 11:59:36 GMT
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s7CBxZdI027161
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 11:59:35 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 12 Aug 2014 15:59:30 +0400
+Message-Id: <1407844770-15011-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <20140812112652.GA1656@rei.suse.cz>
+References: <20140812112652.GA1656@rei.suse.cz>
+Subject: [LTP] [PATCH] rt_sigaction.h: define HAVE_SA_RESTORER for most
+	platforms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,117 +39,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-When there are running tasks in the child group of cgroup, the child
-group can't be removed. So fix the order of cleanup and task_kill in
-run_cpuacct_test.sh.
+On some platforms LTP fails to compile, because (struct sigaction)
+doesn't have .sa_restorer member. For example - ia64.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+To overcome such failures we employ HAVE_SA_RESTORER define.
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- .../kernel/controllers/cpuacct/run_cpuacct_test.sh    | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Verified on SPARC, x86_64, i386.
 
-diff --git a/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh b/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
-index 88425f8..b31aa45 100755
---- a/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
-+++ b/testcases/kernel/controllers/cpuacct/run_cpuacct_test.sh
-@@ -236,16 +236,16 @@ case ${TEST_NUM} in
- 	mkdir $cg_path/group_1/group_11/ 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		echo "TFAIL Cannot create cpuacct cgroups Exiting Test"
--		cleanup
- 		task_kill 2> /dev/null
-+		cleanup
- 		exit 1
- 	fi
- 	echo $pid > $cg_path/group_1/group_11/tasks 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		echo "TFAIL Not able to move a task to the cgroup"
- 		echo "Exiting Test"
--		cleanup 2> /dev/null
- 		task_kill 2> /dev/null
-+		cleanup
- 		exit 1
- 	fi
- 	sleep 5
-@@ -262,13 +262,14 @@ case ${TEST_NUM} in
- 	if [ $status -eq 0 ]; then
- 		echo
- 		tst_resm TPASS "$mes test executed successfully"
--		cleanup 2> /dev/null
- 		task_kill 2> /dev/null
-+		cleanup
- 		exit 0
- 	else
- 		echo
- 		tst_resm TFAIL "$mes test execution Failed"
--		cleanup 2> /dev/null
-+		task_kill 2> /dev/null
-+		cleanup
- 		exit 1
- 	fi
- 	;;
-@@ -279,8 +280,8 @@ case ${TEST_NUM} in
- 	mkdir $cg_path/group_1/group_12 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		echo "TFAIL Cannot create cpuacct cgroups Exiting Test"
--		cleanup 2> /dev/null
- 		task_kill 2> /dev/null
-+		cleanup
- 		exit 1
- 	fi
+
+ include/lapi/rt_sigaction.h |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
+index 9ea5e0f..46f6a50 100644
+--- a/include/lapi/rt_sigaction.h
++++ b/include/lapi/rt_sigaction.h
+@@ -40,6 +40,11 @@ struct kernel_sigaction {
+ 	sigset_t sa_mask;
+ };
  
-@@ -292,8 +293,8 @@ case ${TEST_NUM} in
- 		if [ $? -ne 0 ]; then
- 			echo "TFAIL Not able to move task to cgroup"
- 			echo "Exiting Test"
--			cleanup 2> /dev/null
- 			task_kill 2> /dev/null
-+			cleanup
- 			exit 1
- 		fi
- 		nr_tasks
-@@ -301,8 +302,8 @@ case ${TEST_NUM} in
- 		if [ $? -ne 0 ]; then
- 			echo "TFAIL Not able to move task to cgroup"
- 			echo "Exiting Test"
--			cleanup 2> /dev/null
- 			task_kill 2> /dev/null
-+			cleanup
- 			exit 1
- 		fi
- 		sleep 2
-@@ -321,14 +322,14 @@ case ${TEST_NUM} in
- 	if [ $status -eq 0 ]; then
- 		echo
- 		tst_resm TPASS "$mes test executed successfully"
--		cleanup 2> /dev/null
- 		task_kill 2> /dev/null
-+		cleanup
- 		exit 0
- 	else
- 		echo
- 		tst_resm TFAIL "$mes test execution Failed"
--		cleanup 2> /dev/null
- 		task_kill 2> /dev/null
-+		cleanup
- 		exit 1
- 	fi
- 	;;
++/* This macro marks if (struct sigaction) has .sa_restorer member */
++#if !defined(__ia64__) && !defined(__alpha__) && !defined(__hppa__)
++# define HAVE_SA_RESTORER
++#endif
++
+ #ifdef __x86_64__
+ 
+ /*
+@@ -59,7 +64,6 @@ struct kernel_sigaction {
+  * (struct sigaction).sa_restorer for this architecture.
+  */
+ #undef SA_RESTORER
+-#define HAVE_SA_RESTORER
+ #define SA_RESTORER     0x04000000
+ 
+ void (*restore_rt)(void);
+@@ -203,7 +207,9 @@ static int ltp_rt_sigaction(int signum, const struct sigaction *act,
+ 			memcpy(&oact->sa_mask, &koact.sa_mask,
+ 				sizeof(sigset_t));
+ 			oact->sa_flags = koact.sa_flags;
++#ifdef HAVE_SA_RESTORER
+ 			oact->sa_restorer = koact.sa_restorer;
++#endif
+ 		}
+ 	}
+ 
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
