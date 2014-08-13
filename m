@@ -1,28 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XMG7H-0006rv-CH
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 12:44:51 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <asavkov@redhat.com>) id 1XHajC-00083G-OK
+	for ltp-list@lists.sourceforge.net; Wed, 13 Aug 2014 15:44:42 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XMG7F-0005q4-TU
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 12:44:51 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7QCigCY025702
+	(Exim 4.76) id 1XHaj7-0005fp-JX
+	for ltp-list@lists.sourceforge.net; Wed, 13 Aug 2014 15:44:42 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7DFiVsn014141
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Aug 2014 08:44:42 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7QCif4b010580
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 Aug 2014 08:44:42 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Tue, 26 Aug 2014 14:44:33 +0200
-Message-Id: <1409057073-2988-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH] containers: added netns/netns_netlink.c
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Aug 2014 11:44:31 -0400
+From: Artem Savkov <asavkov@redhat.com>
+Date: Wed, 13 Aug 2014 17:44:26 +0200
+Message-Id: <1407944666-32659-7-git-send-email-asavkov@redhat.com>
+In-Reply-To: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
+References: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
+Subject: [LTP] [PATCH v2 6/6] kernel/containers/netns cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,241 +34,306 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Artem Savkov <asavkov@redhat.com>
 
-* Tests a netlink interface inside a new network namespace
+Updated netns testcases to use tst_resm/tst_exit interfaces instead of plain
+exits and call subexecutables using just their name instead of full path as
+it is guaranteed that they are within $PATH.
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
 ---
- runtest/containers                                |   1 +
- testcases/kernel/containers/.gitignore            |   1 +
- testcases/kernel/containers/netns/Makefile        |   2 +-
- testcases/kernel/containers/netns/netns_netlink.c | 175 ++++++++++++++++++++++
- 4 files changed, 178 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/containers/netns/netns_netlink.c
+ testcases/kernel/containers/netns/common.c         | 49 ++++------------------
+ testcases/kernel/containers/netns/par_chld_ipv6.c  | 41 +++++++-----------
+ .../kernel/containers/netns/two_children_ns.c      | 42 ++++++-------------
+ 3 files changed, 36 insertions(+), 96 deletions(-)
 
-diff --git a/runtest/containers b/runtest/containers
-index 8e8e067..7d01a44 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -28,6 +28,7 @@ netns_two_children_ns netns_two_children_ns
- netns_crtchild_delchild netns_crtchild_delchild
- netns_par_chld_ipv6 netns_par_chld_ipv6
- netns_par_chld_ftp netns_par_chld_ftp.sh
-+netns_netlink netns_netlink
+diff --git a/testcases/kernel/containers/netns/common.c b/testcases/kernel/containers/netns/common.c
+index 6862700..2a54be5 100644
+--- a/testcases/kernel/containers/netns/common.c
++++ b/testcases/kernel/containers/netns/common.c
+@@ -45,6 +45,9 @@
+ #include "config.h"
+ #include "common.h"
  
- shmnstest_none shmnstest none
- shmnstest_clone shmnstest clone
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 4a98373..95daf12 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -3,3 +3,4 @@ mountns/mountns01
- mountns/mountns02
- mountns/mountns03
- mountns/mountns04
-+netns/netns_netlink
-diff --git a/testcases/kernel/containers/netns/Makefile b/testcases/kernel/containers/netns/Makefile
-index cdda23b..eea0d88 100644
---- a/testcases/kernel/containers/netns/Makefile
-+++ b/testcases/kernel/containers/netns/Makefile
-@@ -31,7 +31,7 @@ LDLIBS			+= -lclone
- MAKE_TARGETS		:= netns_create_container netns_crtchild \
- 			   netns_crtchild_delchild netns_par_chld_ftp \
- 			   netns_par_chld_ipv6 netns_sysfsview \
--			   netns_two_children_ns
-+			   netns_two_children_ns netns_netlink
++#define PARENTNS_SCRIPT "parentns.sh"
++#define CHILDNS_SCRIPT "childns.sh"
++
+ static int child_fn(void *c1);
  
- $(MAKE_TARGETS): %: common.o %.o
+ int crtchild(char *s1, char *s2)
+@@ -58,11 +61,11 @@ int crtchild(char *s1, char *s2)
+ int create_net_namespace(char *p1, char *c1)
+ {
+ 	int pid, status = 0, ret;
+-	char *ltproot, *par;
++	char par[FILENAME_MAX];
+ 	long int clone_flags = 0;
  
-diff --git a/testcases/kernel/containers/netns/netns_netlink.c b/testcases/kernel/containers/netns/netns_netlink.c
-new file mode 100644
-index 0000000..5f5d41f
---- /dev/null
-+++ b/testcases/kernel/containers/netns/netns_netlink.c
-@@ -0,0 +1,175 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: netns_netlink.c
-+ *
-+ * Tests a netlink interface inside a new network namespace.
-+ * Description:
-+ * 1. Unshares a network namespace (so network related actions
-+ *    have no effect on a real system)
-+ * 2. Forks a child which creates a NETLINK_ROUTE netlink socket
-+ *    and listens to RTMGRP_LINK (network interface create/delete/up/down)
-+ *    multicast group.
-+ * 4. Child then waits for parent approval to receive data from socket
-+ * 3. Parent creates a new TAP interface (dummy0) and immediately
-+ *    removes it (which should generate some data in child's netlink socket).
-+ *    Then it allows child to continue.
-+ * 4. As the child was listening to RTMGRP_LINK multicast group, it should
-+ *    detect the new interface creation (by reading data from netlink socket),
-+ *    if so, the test passes, otherwise it fails.
-+ */
+ 	if (tst_kvercmp(2, 6, 19) < 0)
+-		return 1;
++		tst_brkm(TCONF, NULL, "CLONE_NEWPID not supported");
+ 
+ 	clone_flags |= CLONE_NEWNS;
+ /* Enable other namespaces too optionally */
+@@ -77,32 +80,15 @@ int create_net_namespace(char *p1, char *c1)
+ 		return -1;
+ 	}
+ 
+-	/* This code will be executed in parent */
+-	ltproot = getenv("LTPROOT");
+-
+-	if (!ltproot) {
+-		printf("LTPROOT env variable is not set\n");
+-		printf("Please set LTPROOT and re-run the test.. Thankyou\n");
+-		return -1;
+-	}
+-
+-	par = malloc(FILENAME_MAX);
+-
+-	if (par == NULL) {
+-		printf("FAIL: error while allocating memory");
+-		exit(1);
+-	}
+-
+ 	/* We need to pass the child pid to the parentns.sh script */
+-	sprintf(par, "%s/testcases/bin/parentns.sh %s %" PRId32, ltproot, p1,
+-		pid);
++	sprintf(par, "%s %s %" PRId32, PARENTNS_SCRIPT, p1, pid);
+ 
+ 	ret = system(par);
+ 	status = WEXITSTATUS(ret);
+ 	if (ret == -1 || status != 0) {
+-		printf("Error while running the script\n");
++		tst_resm(TFAIL, "Error while running the script\n");
+ 		fflush(stdout);
+-		exit(1);
++		tst_exit();
+ 	}
+ 	fflush(stdout);
+ 
+@@ -118,7 +104,6 @@ int create_net_namespace(char *p1, char *c1)
+ /* The function to be executed in the child namespace */
+ int child_fn(void *c1)
+ {
+-	char *ltproot, *child;
+ 	unsigned long flags = 0;
+ #if HAVE_UNSHARE
+ 	int ret;
+@@ -130,22 +115,6 @@ int child_fn(void *c1)
+ 	flags |= CLONE_NEWUTS;
+ 	flags |= CLONE_FS;
+ 
+-	ltproot = getenv("LTPROOT");
+-
+-	if (!ltproot) {
+-		printf("LTPROOT env variable is not set\n");
+-		printf("Please set LTPROOT and re-run the test..\n");
+-		return -1;
+-	}
+-
+-	child = malloc(FILENAME_MAX);
+-	if (child == NULL) {
+-		printf("FAIL: error while allocating memory");
+-		exit(1);
+-	}
+-
+-	sprintf(child, "%s/testcases/bin/childns.sh", ltproot);
+-
+ 	/* Unshare the network namespace in the child */
+ #if HAVE_UNSHARE
+ 	ret = unshare(flags);
+@@ -153,7 +122,7 @@ int child_fn(void *c1)
+ 		perror("Failed to unshare for netns...");
+ 		return 1;
+ 	}
+-	return crtchild(child, c1);
++	return crtchild(CHILDNS_SCRIPT, c1);
+ #else
+ 	printf("System doesn't support unshare.\n");
+ 	return -1;
+diff --git a/testcases/kernel/containers/netns/par_chld_ipv6.c b/testcases/kernel/containers/netns/par_chld_ipv6.c
+index c9f7ad2..bb1e2fc 100644
+--- a/testcases/kernel/containers/netns/par_chld_ipv6.c
++++ b/testcases/kernel/containers/netns/par_chld_ipv6.c
+@@ -50,6 +50,9 @@
+ char *TCID = "netns_ipv6";
+ int TST_TOTAL = 1;
+ 
++#define PARENT_SCRIPT "paripv6.sh"
++#define CHILD_SCRIPT "childipv6.sh"
 +
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <asm/types.h>
-+#include <sys/socket.h>
-+#include <linux/netlink.h>
-+#include <linux/rtnetlink.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include "usctest.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "netns_helper.h"
-+
-+
-+char *TCID	= "netns_netlink";
-+int TST_TOTAL	= 1;
-+int pipefd[2];
-+
-+
-+static void cleanup(void)
-+{
-+	close(pipefd[0]);
-+	close(pipefd[1]);
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	check_netns();
-+}
-+
-+int child_func(void)
-+{
-+	int fd, len;
-+	struct sockaddr_nl sa;
-+	char c, buffer[4096];
-+	struct nlmsghdr *nlh;
-+
-+	/* child will listen to a network interface create/delete/up/down
-+	 * events */
-+	memset(&sa, 0, sizeof(sa));
-+	sa.nl_family = AF_NETLINK;
-+	sa.nl_groups = RTMGRP_LINK;
-+	
-+	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-+	if (fd == -1) {
-+		perror("socket");
-+		return 1;
-+	}
-+	if (bind(fd, (struct sockaddr *) &sa, sizeof(sa)) == -1) {
-+		perror("bind");
-+		return 1;
-+	}
-+
-+	/* waits for parent to create an interface */
-+	read(pipefd[0], &c, 1);
-+
-+	nlh = (struct nlmsghdr *) buffer;
-+	/* non-blocking recv call */
-+	while ((len = recv(fd, nlh, sizeof(buffer), MSG_DONTWAIT)) > 0) {
-+		/* stop receiving only on interface create event */
-+		if (nlh->nlmsg_type == RTM_NEWLINK)
-+			break;
-+	}
-+
-+	if (len == -1) {
-+		perror("recv");
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static void test(void)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	/* creates a pipe for synchronization between parent and child */
-+	SAFE_PIPE(cleanup, pipefd);
-+
-+	/* unshares the network namespace */
-+	if (unshare(CLONE_NEWNET) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+
-+	pid = fork();
-+	if (pid < 0) {  /* error */
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
-+	}
-+	if (pid == 0) { /* child */
-+		_exit(child_func());
-+	}
-+
-+	/* parent */
-+	/* creates TAP network interface dummy0 */
-+	if (system("ip tuntap add dev dummy0 mode tap") == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
-+
-+	/* removes previously created dummy0 device */
-+	if (system("ip tuntap del mode tap dummy0") == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
-+
-+	/* allow child to continue */
-+	SAFE_WRITE(cleanup, 0, pipefd[1], "0", 1);
-+
-+
-+	SAFE_WAITPID(cleanup, pid, &status, 0);
-+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-+		tst_resm(TFAIL, "netlink interface fail");
-+		return;
-+	}
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "child was killed with signal %s",
-+			 tst_strsig(WTERMSIG(status)));
-+		return;
-+	}
-+
-+	tst_resm(TPASS, "netlink interface pass");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		test();
-+		cleanup();
-+		/* To get rid of "resource temporarily unavalable" errors
-+		 * when testing with -i option */
-+		sleep(1);
-+	}
-+
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+@@ -61,7 +64,6 @@ int main(void)
+ {
+ 	int pid, status = 0, ret;
+ 	long int flags = 0;
+-	char *ltproot, *par, *child;
+ 
+ 	setup();
+ 
+@@ -69,26 +71,7 @@ int main(void)
+ 	flags |= CLONE_NEWNET;
+ 
+ 	if (tst_kvercmp(2, 6, 19) < 0)
+-		return 1;
+-
+-	ltproot = getenv("LTPROOT");
+-
+-	if (!ltproot) {
+-		tst_resm(TINFO, "LTPROOT env variable is not set");
+-		tst_resm(TINFO,
+-			 "Please set LTPROOT and re-run the test.. Thankyou");
+-		return -1;
+-	}
+-
+-	par = malloc(FILENAME_MAX);
+-	child = malloc(FILENAME_MAX);
+-
+-	if (par == NULL || child == NULL) {
+-		tst_resm(TFAIL, "error while allocating mem");
+-		exit(1);
+-	}
+-	sprintf(par, "%s/testcases/bin/paripv6.sh", ltproot);
+-	sprintf(child, "%s/testcases/bin/childipv6.sh", ltproot);
++		tst_brkm(TCONF, NULL, "CLONE_NEWPID not supported");
+ 
+ 	if ((pid = fork()) == 0) {
+ 
+@@ -99,23 +82,26 @@ int main(void)
+ 			perror("unshare");
+ 			tst_resm(TFAIL,
+ 				 "Error:Unshare syscall failed for network namespace");
+-			return 1;
++			tst_exit();
+ 		}
+ #else
+ 		tst_resm(TCONF, "System doesn't have unshare support");
+ #endif
+-		return crtchild(child, NULL);
++		if (crtchild(CHILD_SCRIPT, NULL) != 0) {
++			tst_resm(TFAIL, "Failed running child script");
++			tst_exit();
++		}
+ 	} else {
+ 
+ 		//parent
+-		ret = system(par);
++		ret = system(PARENT_SCRIPT);
+ 		status = WEXITSTATUS(ret);
+ 		if (ret == -1 || status != 0) {
+ 			tst_resm(TFAIL,
+ 				 "Error: While running the IPv6 tests between \
+ parent & child NS");
+ 			fflush(stdout);
+-			exit(1);
++			tst_exit();
+ 		}
+ 		fflush(stdout);
+ 
+@@ -124,9 +110,10 @@ parent & child NS");
+ 		if (status != 0 || ret == -1) {
+ 			tst_resm(TFAIL, "waitpid() returns %d, errno %d", ret,
+ 				 errno);
+-			status = errno;
++			tst_exit();
+ 		}
+ 		tst_resm(TPASS, "par child ipv6");
+-		return status;
++		tst_exit();
+ 	}
 +	tst_exit();
-+}
+ }
+diff --git a/testcases/kernel/containers/netns/two_children_ns.c b/testcases/kernel/containers/netns/two_children_ns.c
+index 8cc0e5d..9bc291c 100644
+--- a/testcases/kernel/containers/netns/two_children_ns.c
++++ b/testcases/kernel/containers/netns/two_children_ns.c
+@@ -63,8 +63,7 @@ int main(void)
+ {
+ 	int ret, pid[2], status, i;
+ 	long long flags = 0;
+-	char *child[2], *par[2];
+-	char *ltproot;
++	char child[2][FILENAME_MAX], par[2][FILENAME_MAX];
+ 
+ 	setup();
+ 
+@@ -78,30 +77,12 @@ int main(void)
+ 
+ 	/* Checking for Kernel Version */
+ 	if (tst_kvercmp(2, 6, 19) < 0)
+-		return 1;
+-
+-	ltproot = getenv("LTPROOT");
+-	if (!ltproot) {
+-		tst_resm(TINFO, "LTPROOT env variable is not set");
+-		tst_resm(TINFO,
+-			 "Please set LTPROOT and re-run the test.. Thankyou");
+-		return -1;
+-	}
+-
+-	child[0] = malloc(FILENAME_MAX);
+-	child[1] = malloc(FILENAME_MAX);
+-	par[0] = malloc(FILENAME_MAX);
+-	par[1] = malloc(FILENAME_MAX);
+-	if (child[0] == NULL || child[1] == NULL ||
+-	    par[0] == NULL || par[1] == NULL) {
+-		tst_resm(TFAIL, "error while allocating mem");
+-		exit(1);
+-	}
++		tst_brkm(TCONF, NULL, "CLONE_NEWPID not supported");
+ 
+-	sprintf(child[0], "%s/testcases/bin/child_1.sh", ltproot);
+-	sprintf(child[1], "%s/testcases/bin/child_2.sh", ltproot);
+-	sprintf(par[0], "%s/testcases/bin/parent_1.sh", ltproot);
+-	sprintf(par[1], "%s/testcases/bin/parent_2.sh", ltproot);
++	strcpy(child[0], "child_1.sh");
++	strcpy(child[1], "child_2.sh");
++	strcpy(par[0], "parent_1.sh");
++	strcpy(par[1], "parent_2.sh");
+ 
+ 	/* Loop for creating two child Network Namespaces */
+ 	for (i = 0; i < 2; i++) {
+@@ -115,10 +96,13 @@ int main(void)
+ 				perror("Unshare");
+ 				tst_resm(TFAIL,
+ 					 "Error:Unshare syscall failed for network namespace");
+-				return ret;
++				tst_exit();
+ 			}
+ #endif
+-			return crtchild(child[i], NULL);
++			if (crtchild(child[i], NULL) != 0) {
++				tst_resm(TFAIL, "Failed running child script");
++				tst_exit();
++			}
+ 		} else {
+ 			//Parent
+ 
+@@ -127,7 +111,7 @@ int main(void)
+ 			if (ret == -1 || status != 0) {
+ 				tst_resm(TFAIL,
+ 					 "Error while running the scripts");
+-				exit(status);
++				tst_exit();
+ 			}
+ 		}
+ 	}			//End of FOR Loop
+@@ -140,7 +124,7 @@ int main(void)
+ 			tst_resm(TFAIL, "waitpid() returns %d, errno %d", ret,
+ 				 status);
+ 			fflush(stdout);
+-			exit(status);
++			tst_exit();
+ 		}
+ 	}
+ 
 -- 
-1.8.3.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
