@@ -1,17 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XGs8O-0008Iv-1H
-	for ltp-list@lists.sourceforge.net; Mon, 11 Aug 2014 16:07:44 +0000
-Date: Mon, 11 Aug 2014 18:06:49 +0200
-From: chrubis@suse.cz
-Message-ID: <20140811160648.GA5271@rei>
-References: <4506ACC2AE90484D87F9A883BA36C21C2ADF02C2@LCHQEX03.lancope.local>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4506ACC2AE90484D87F9A883BA36C21C2ADF02C2@LCHQEX03.lancope.local>
-Subject: Re: [LTP] More observations on HEAD
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <asavkov@redhat.com>) id 1XHaj9-0004yR-Jl
+	for ltp-list@lists.sourceforge.net; Wed, 13 Aug 2014 15:44:39 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XHaj7-0005fo-JW
+	for ltp-list@lists.sourceforge.net; Wed, 13 Aug 2014 15:44:39 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7DFiVXK007195
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 Aug 2014 11:44:31 -0400
+From: Artem Savkov <asavkov@redhat.com>
+Date: Wed, 13 Aug 2014 17:44:25 +0200
+Message-Id: <1407944666-32659-6-git-send-email-asavkov@redhat.com>
+In-Reply-To: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
+References: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
+Subject: [LTP] [PATCH v2 5/6] check_for_unshare test removed from containers
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,53 +30,140 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Joseph Beckenbach <jbeckenbach@lancope.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Artem Savkov <asavkov@redhat.com>
 
-Hi!
-> The default test set runs move_pages* twice.
+Removed this test as it doesn't seem to be needed any more, it just checks
+availability of unshare(2) call and all the code that actually uses it has it
+wrapped with appropriate #if HAVE_UNSARE clauses.
 
-True, these are part of two different runtest files and both runtest
-files are part of default scenario. I do not think that this is wrong as
-it is.
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
+---
+ runtest/containers                              |  2 -
+ testcases/kernel/containers/check_for_unshare.c | 57 -------------------------
+ testcases/kernel/containers/container_test.sh   | 32 --------------
+ 3 files changed, 91 deletions(-)
+ delete mode 100644 testcases/kernel/containers/check_for_unshare.c
+ delete mode 100755 testcases/kernel/containers/container_test.sh
 
-It's rather limitation of the current system to run testcases. What I
-would rather is is some label based system, where testcases can be
-labeled with different scenarios.
-
-I.e. in this cases move_pages would be labeled as syscalls, numa and
-default. Then we can run testcases by labels rather than runtest
-files...
-
-> run_cgroup_test_fj.sh hangs on heavy-load systems with $LTPROOT/output/ not present.
-> 
-> Some test under container_test.sh (sourcing childns.sh) attempts to create veth pairs without verifying veth functionality supported.
-> Other tests under container_test.sh fail to source files (childns.sh cannot source cmdlib.sh;  child_1.sh and childipv6.sh cannot source initialize.sh).
-> 
-> Many tests under cgroup_regression_test.sh blindly log to hard-coded $LTPROOT/output/ directory without making sure it's there.
-> Also, subtest #7 "fails to mount hugetlb" because it seemingly did not first check whether the functionality was enabled.
-> 
-> Under cgroup_fj also seems to have some tests which do latency tests and other tests, outputting "TINFO" and "FAIL" and "PASS" not in standard format.
-> I will see if I can bisect it down and work out which tests those are.
-
-Adding checks for missing functionality should be pretty
-straightforward and patches are welcome :).
-
-The runltp script contains code to create the $LTPROOT/output directory
-so there are a few testcases that expect that directory to exist,
-nevertheless they should create test temporary directory with tst_tmpdir
-and use it instead.
-
-> dma_thread_diotest invocations all claim to be "dma_thread_diotest07" in the runltp outputfile.
-
-We forget to rename the TCID after we renamed the file. Fixed.
-
+diff --git a/runtest/containers b/runtest/containers
+index 827a5d7..a15bd50 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -55,5 +55,3 @@ utstest_clone_2 utstest clone 2
+ utstest_clone_3 utstest clone 3
+ utstest_clone_4 utstest clone 4
+ utstest_clone_5 utstest clone 5
+-
+-Containers	container_test.sh
+diff --git a/testcases/kernel/containers/check_for_unshare.c b/testcases/kernel/containers/check_for_unshare.c
+deleted file mode 100644
+index fbb8d11..0000000
+--- a/testcases/kernel/containers/check_for_unshare.c
++++ /dev/null
+@@ -1,57 +0,0 @@
+-/*
+-* Copyright (c) International Business Machines Corp., 2008
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-**************************************************************************/
+-/*
+-* Description:
+-* This program verifies the kernel version to be no later than 2.6.16
+-* And checks if the unshare() system call is defined using dlsym(),
+-* in the Dynamically Linked Libraries.
+-*
+-* Date : 26-11-2008
+-* Author : Veerendra C <vechandr@in.ibm.com>
+-*/
+-
+-#include <dlfcn.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include "test.h"
+-
+-const char *TCID = "check_for_unshare";
+-
+-int main(int argc, char **argv)
+-{
+-	void *handle;
+-	void *ret;
+-	char *error;
+-	if (tst_kvercmp(2, 6, 16) < 0)
+-		return 1;
+-
+-	handle = dlopen(NULL, RTLD_LAZY);
+-	if (!handle) {
+-		fprintf(stderr, "%s\n", dlerror());
+-		exit(1);
+-	}
+-
+-	dlerror();		/* Clear any existing error */
+-	ret = dlsym(handle, "unshare");
+-	if ((error = dlerror()) != NULL) {
+-		fprintf(stderr, "Error: %s\n", error);
+-		exit(1);
+-	}
+-
+-	dlclose(handle);
+-	return 0;
+-}
+diff --git a/testcases/kernel/containers/container_test.sh b/testcases/kernel/containers/container_test.sh
+deleted file mode 100755
+index 9e515e4..0000000
+--- a/testcases/kernel/containers/container_test.sh
++++ /dev/null
+@@ -1,32 +0,0 @@
+-#!/bin/bash
+-#
+-# This test performs capability tests for file operations.
+-#
+-# Copyright 2007 IBM
+-#
+-# This program is free software; you can redistribute it and/or modify it
+-# under the terms of the GNU General Public License as published by the Free
+-# Software Foundation; either version 2 of the License, or (at your option)
+-# any later version.
+-
+-#check_utsns_enabled
+-check_for_unshare
+-if [ $? -eq 1 ]; then
+-	echo "Unshare not supported.  Not running container tests"
+-	exit 0
+-fi
+-
+-#check_userns_enabled
+-#if [ $? -eq 0 ]; then
+-	#echo "Running userns tests."
+-#	userns_mounts unshare
+-#	userns_mounts clone
+-#	userns_sigio none
+-#	userns_sigio unshare
+-#	userns_sigio clone
+-#	for i in `seq 1 4`; do
+-#		userns_sigpending $i
+-#	done
+-#else
+-	#echo "User namespaces not enabled in kernel.  Not running userns tests."
+-#fi
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
