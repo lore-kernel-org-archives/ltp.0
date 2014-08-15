@@ -1,27 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XLoXy-0002O9-Rp
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 07:18:34 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XIJFg-0007bZ-K5
+	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 15:17:12 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XLoXx-0004Ac-HO
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 07:18:34 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7P7IQrp012307
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XIJFd-0006GR-MS
+	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 15:17:12 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7FFH2gG003912
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Aug 2014 03:18:26 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s7P7IPTE032359
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Aug 2014 03:18:25 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 25 Aug 2014 09:18:28 +0200
-Message-Id: <76c5a7f9b5adf86f92c575e3673e3f6a4fa57586.1408951056.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] lib/rmobj: avoid using lstat
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 11:17:02 -0400
+Received: from cc-vtoe5.lab.eng.brq.redhat.com
+	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7FFH1pY024206
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 11:17:02 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Fri, 15 Aug 2014 17:16:49 +0200
+Message-Id: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <1408099965-15748-3-git-send-email-mmarhefk@redhat.com>
+References: <1408099965-15748-3-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 3/3 v2] containers: added mountns/mountns02.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,75 +40,228 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-rmobj() is failing for _64 version of testcases, which use large
-files, where it hits EOVERFLOW in lstat():
+* Tests a private mount: private mount does not forward or receive
+  propagation.
 
-open12      0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmp/opexIqjV3) failed:
-       lstat(/tmp/opexIqjV3/large_file) failed; errno=75:
-       Value too large for defined data type
-
-Avoid using any *stat functions, instead try to open "obj"
-with open(O_DIRECTORY | O_NOFOLLOW,..). If it succeeds,
-we know we are dealing with directory, otherwise assume
-it's a file or symlink.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
 ---
- lib/rmobj.c |   16 ++++++----------
- 1 files changed, 6 insertions(+), 10 deletions(-)
+ runtest/containers                              |   1 +
+ testcases/kernel/containers/mountns/mountns02.c | 190 ++++++++++++++++++++++++
+ 2 files changed, 191 insertions(+)
+ create mode 100644 testcases/kernel/containers/mountns/mountns02.c
 
-diff --git a/lib/rmobj.c b/lib/rmobj.c
-index 9b6a643..a9de59c 100644
---- a/lib/rmobj.c
-+++ b/lib/rmobj.c
-@@ -77,6 +77,7 @@
-  *      NULL) and return -1.  Otherwise it will return 0.
-  *
-  ************************************************************/
+diff --git a/runtest/containers b/runtest/containers
+index bf50ae4..ab16bc0 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -15,5 +15,6 @@ pidns30 pidns30
+ pidns31 pidns31
+ 
+ mountns01 mountns01
++mountns02 mountns02
+ 
+ Containers	container_test.sh
+diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
+new file mode 100644
+index 0000000..8a677b7
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/mountns02.c
+@@ -0,0 +1,190 @@
++/* Copyright (c) 2014 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ ***********************************************************************
++ * File: mountns02.c
++ *
++ * Tests a private mount: private mount does not forward or receive
++ * propagation.
++ * Description:
++ * 1. Creates directories "A", "B" and files "A/A", "B/B"
++ * 2. Unshares mount namespace and makes it private (so mounts/umounts
++ *    have no effect on a real system)
++ * 3. Bind mounts directory "A" to "A" and "B" to "B"
++ * 4. Makes both directories ("A" and "B") shared
++ * 5. Clones a new child process with CLONE_NEWNS flag - the new child
++ *    then mounts directory "A" as private and bind mounts directory
++ *    "B" to "A" (now child must wait for parent to make check - wait
++ *    is needed because mount ns in child stops exist as soon as child
++ *    terminates)
++ * 6. Parent checks if directory "A" doesn't contain the file "B"
++ *    (changes in child should not be visible in parent as mount in child
++ *    was private):
++ *    - if it doesn't, test passes
++ *    - if it does, test fails
++ * 7. Parent allows child to terminate
++ ***********************************************************************/
++
 +#define _GNU_SOURCE
- #include <errno.h>		/* for errno */
- #include <stdio.h>		/* for NULL */
- #include <stdlib.h>		/* for malloc() */
-@@ -84,6 +85,7 @@
- #include <limits.h>		/* for PATH_MAX */
- #include <sys/types.h>		/* for opendir(), readdir(), closedir(), stat() */
- #include <sys/stat.h>		/* for [l]stat() */
-+#include <fcntl.h>
- #include <dirent.h>		/* for opendir(), readdir(), closedir() */
- #include <unistd.h>		/* for rmdir(), unlink() */
- #include "rmobj.h"
-@@ -98,19 +100,13 @@ int rmobj(char *obj, char **errmsg)
- 	char dirobj[PATH_MAX];	/* object inside directory to modify */
- 	struct stat statbuf;	/* used to hold stat information */
- 	static char err_msg[1024];	/* error message */
-+	int fd;
- 
- 	/* Determine the file type */
--	if (lstat(obj, &statbuf) < 0) {
--		if (errmsg != NULL) {
--			sprintf(err_msg, "lstat(%s) failed; errno=%d: %s",
--				obj, errno, SYSERR);
--			*errmsg = err_msg;
--		}
--		return -1;
--	}
- 
--	/* Take appropriate action, depending on the file type */
--	if ((statbuf.st_mode & S_IFMT) == S_IFDIR) {
-+	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
-+	if (fd != -1) {
-+		close(fd);
- 		/* object is a directory */
- 
- 		/* Do NOT perform the request if the directory is "/" */
++#include <sys/wait.h>
++#include <sys/mount.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
++#include "test.h"
++#include "usctest.h"
++#include "libclone.h"
++#include "safe_macros.h"
++#include "safe_file_ops.h"
++#include "mountns_helper.h"
++
++
++#define DIRA "A"
++#define DIRB "B"
++char *TCID	= "mountns02";
++int TST_TOTAL	= 1;
++int pipefd1[2];
++int pipefd2[2];
++
++
++static void cleanup(void)
++{
++	close(pipefd1[0]);
++	close(pipefd1[1]);
++	close(pipefd2[0]);
++	close(pipefd2[1]);
++	umount(DIRA);
++	umount(DIRA);
++	umount(DIRB);
++	tst_rmdir();
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++	check_newns();	/* from mountns_helper.h */
++	tst_tmpdir();
++	SAFE_MKDIR(cleanup, DIRA, 0777);
++	SAFE_MKDIR(cleanup, DIRB, 0777);
++	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
++	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
++}
++
++int child_func(void *arg)
++{
++	char buf;
++
++	/* makes DIRA private */
++	if (mount("none", DIRA, "none", MS_PRIVATE, NULL) == -1) {
++		perror("mount");
++		write(pipefd1[1], "1", 1);
++		return 1;
++	}
++
++	/* bind mounts DIRB to DIRA making contents of DIRB visible
++	 * in DIRA (should apply only for child as DIRA is private) */
++        if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
++		perror("mount");
++		write(pipefd1[1], "1", 1);
++		return 1;
++	}
++
++	/* tells parent to stop waiting and continue */
++	write(pipefd1[1], "0", 1);
++
++	/* waits for parent approval to terminate */
++	read(pipefd2[0], &buf, 1);
++
++	return 0;
++}
++
++static void test(void)
++{
++	int status, pass;
++	char buf;
++
++	/* creates a pipe for synchronization between parent and child */
++	SAFE_PIPE(cleanup, pipefd1);
++	SAFE_PIPE(cleanup, pipefd2);
++
++	/* unshares the mount ns */
++	if (unshare(CLONE_NEWNS) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
++	/* makes sure parent mounts/umounts have no effect on a real system */
++	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
++
++	/* bind mounts DIRA to itself */
++	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
++	/* bind mounts DIRB to itself */
++	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
++
++	/* makes mount DIRA shared */
++	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
++	/* makes mount DIRB shared */
++	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
++
++
++	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++
++	/* waits for child bind mount */
++	SAFE_READ(cleanup, 0, pipefd1[0], &buf, 1);
++	/* in case some mount failed in child */
++	if (buf == '1')
++		tst_brkm(TBROK, cleanup, "child failed");
++
++	/* as child made private mount from DIRA, parent should not
++	 * see file "B" in DIRA; following checks if DIRA doesn't contain
++	 * file "B" */
++	if (access(DIRA"/B", F_OK) == -1)
++		pass = 1;
++	else
++		pass = 0;
++
++	/* tells child to terminate */
++	SAFE_WRITE(cleanup, 0, pipefd2[1], "0", 1);
++
++	SAFE_WAIT(cleanup, &status);
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
++		tst_brkm(TBROK, cleanup, "child failed");
++
++	if (WIFSIGNALED(status)) {
++		tst_resm(TFAIL, "child was killed with signal %s",
++			 tst_strsig(WTERMSIG(status)));
++		return;
++	}
++
++	if (pass)
++		tst_resm(TPASS, "private mount passed");
++	else
++		tst_resm(TFAIL, "private mount failed");
++}
++
++int main(int argc, char *argv[])
++{
++	const char *msg;
++	int lc;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		test();
++
++	cleanup();
++	tst_exit();
++}
 -- 
-1.7.1
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
