@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XK5RG-0005ot-Lx
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 12:56:30 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XK5RD-0004Tl-VW
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 12:56:30 +0000
-Date: Wed, 20 Aug 2014 08:56:21 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <663056555.9870858.1408539381311.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1070499573.9869577.1408539206966.JavaMail.zimbra@redhat.com>
-References: <1070499573.9869577.1408539206966.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] open12 failing on i386 with EOVERFLOW
+	(envelope-from <mmarhefk@redhat.com>) id 1XIF96-0002zp-0a
+	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:54:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XIF94-00050A-FX
+	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:54:07 +0000
+Received: from int-mx13.intmail.prod.int.phx2.redhat.com
+	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7FArxxH026768
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:54:00 -0400
+Received: from cc-vtoe5.lab.eng.brq.redhat.com
+	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
+	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7FArMYZ012634
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:53:58 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Fri, 15 Aug 2014 12:52:44 +0200
+Message-Id: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
+References: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 2/3] containers: added mountns dir and
+	mountns/mountns01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,90 +35,264 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
+* tests shared mount: shared mount can be replicated to as many
+  mountpoints and all the replicas continue to be exactly same.
 
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+---
+ runtest/containers                                 |   2 +
+ testcases/kernel/containers/mountns/Makefile       |  23 ++++
+ testcases/kernel/containers/mountns/mountns01.c    | 142 +++++++++++++++++++++
+ .../kernel/containers/mountns/mountns_helper.h     |  39 ++++++
+ 4 files changed, 206 insertions(+)
+ create mode 100644 testcases/kernel/containers/mountns/Makefile
+ create mode 100644 testcases/kernel/containers/mountns/mountns01.c
+ create mode 100644 testcases/kernel/containers/mountns/mountns_helper.h
 
+diff --git a/runtest/containers b/runtest/containers
+index 5f5eeab..bf50ae4 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -14,4 +14,6 @@ pidns20 pidns20
+ pidns30 pidns30
+ pidns31 pidns31
+ 
++mountns01 mountns01
++
+ Containers	container_test.sh
+diff --git a/testcases/kernel/containers/mountns/Makefile b/testcases/kernel/containers/mountns/Makefile
+new file mode 100644
+index 0000000..f9b6b99
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/Makefile
+@@ -0,0 +1,23 @@
++# Copyright (c) 2014 Red Hat, Inc.
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of version 2 the GNU General Public License as
++# published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++##############################################################################
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(abs_srcdir)/../Makefile.inc
++
++LDLIBS                  := -lclone -lltp
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
+new file mode 100644
+index 0000000..0393e0a
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/mountns01.c
+@@ -0,0 +1,142 @@
++/* Copyright (c) 2014 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ ***********************************************************************
++ * File: mountns01.c
++ *
++ * Tests a shared mount: shared mount can be replicated to as many
++ * mountpoints and all the replicas continue to be exactly same.
++ * Description:
++ * 1. Creates directories "A", "B" and files "A/A", "B/B"
++ * 2. Unshares mount namespace and makes it private (so mounts/umounts
++ *    have no effect on a real system)
++ * 3. Bind mounts directory "A" to "A" and "B" to "B"
++ * 4. Makes both directories ("A" and "B") shared
++ * 5. Clones a new child process with CLONE_NEWNS flag - the new child
++ *    then bind mounts directory "B" to "A"
++ * 6. Parent then checks if directory "A" contains the file "B"
++ *    (changes in child should be visible in parent as mounts were
++ *    shared):
++ *    - if it does, test passes
++ *    - if it doesn't, test fails
++ ***********************************************************************/
++
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <sys/mount.h>
++#include <stdio.h>
++#include <errno.h>
++#include "test.h"
++#include "usctest.h"
++#include "libclone.h"
++#include "safe_macros.h"
++#include "safe_file_ops.h"
++#include "mountns_helper.h"
++
++
++#define DIRA "A"
++#define DIRB "B"
++char *TCID	= "mountns01";
++int TST_TOTAL	= 1;
++
++
++static void cleanup(void)
++{
++	umount(DIRA);
++	umount(DIRA);
++	umount(DIRB);
++	tst_rmdir();
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++	check_newns();	/* from mountns_helper.h */
++	tst_tmpdir();
++	SAFE_MKDIR(cleanup, DIRA, 0777);
++	SAFE_MKDIR(cleanup, DIRB, 0777);
++	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
++	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
++}
++
++int child_func(void *arg)
++{
++	/* bind mounts DIRB to DIRA making contents of DIRB visible
++	 * in DIRA */
++	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
++		perror("mount");
++		return 1;
++	}
++	return 0;
++}
++
++static void test(void)
++{
++	int status;
++
++	/* unshares the mount ns */
++	if (unshare(CLONE_NEWNS) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
++	/* makes sure parent mounts/umounts have no effect on a real system */
++	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
++
++	/* bind mounts DIRA to itself */
++	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
++	/* bind mounts DIRB to itself */
++	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
++
++	/* makes mount DIRA shared */
++	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
++	/* makes mount DIRB shared */
++	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
++
++
++	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++
++	SAFE_WAIT(cleanup, &status);
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
++		tst_brkm(TBROK, cleanup, "mount (in child) failed");
++
++	if (WIFSIGNALED(status)) {
++		tst_resm(TFAIL, "child was killed with signal %s",
++			 tst_strsig(WTERMSIG(status)));
++		return;
++	}
++
++	/* as child shared mounts with parent, parent should also
++	 * see file "B" in DIRA; following checks if DIRA contains file "B" */
++	if (access(DIRA"/B", F_OK) != -1)
++		tst_resm(TPASS, "share mount passed");
++	else
++		tst_resm(TFAIL, "share mount failed");
++}
++
++int main(int argc, char *argv[])
++{
++	const char *msg;
++	int lc;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		test();
++
++	cleanup();
++	tst_exit();
++}
+diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
+new file mode 100644
+index 0000000..e305028
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/mountns_helper.h
+@@ -0,0 +1,39 @@
++/* Copyright (c) 2014 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include "libclone.h"
++#include "test.h"
++#include "safe_macros.h"
++
++static int dummy_child(void *v)
++{
++	(void) v;
++	return 0;
++}
++
++static int check_newns(void)
++{
++	int pid, status;
++
++	if (tst_kvercmp(2, 4, 19) < 0)
++		tst_brkm(TCONF, NULL, "CLONE_NEWNS not supported");
++
++	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWNS, dummy_child, NULL);
++	if (pid == -1)
++		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS not supported");
++	SAFE_WAIT(NULL, &status);
++
++	return 0;
++}
+-- 
+1.8.3.1
 
-
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: "ltp-list" <ltp-list@lists.sf.net>
-> Sent: Wednesday, 20 August, 2014 2:53:26 PM
-> Subject: [LTP] open12 failing on i386 with EOVERFLOW
-> 
-> Hi,
-> 
-> I'm seeing following failure in this testcase on RHEL-6.5 Server i386 GA
-> distro:
-> 
-> # env PATH=`pwd`:$PATH ./open12
-> open12      1  TFAIL  :  open12.c:104: test O_APPEND for open failed
-> open12      2  TCONF  :  open12.c:123: test O_NOATIME flag for open needs
-> filesystems which is mounted without noatime and relatime
-> open12      3  TPASS  :  test O_CLOEXEC for open success
-> open12      4  TPASS  :  test O_LARGEFILE for open success
-> open12      0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmp/opexIqjV3)
-> failed: lstat(/tmp/opexIqjV3/large_file) failed; errno=75: Value too large
-> for defined data type
-> 
-
-Same issue in openat02:
-
-# env PATH=`pwd`:$PATH ./openat02
-openat02    1  TPASS  :  test O_APPEND for openat success
-openat02    2  TPASS  :  test O_CLOEXEC for openat success
-openat02    3  TPASS  :  test O_LARGEFILE for openat success
-openat02    4  TCONF  :  openat02.c:242: test O_NOATIME flag for openat needs filesystems which are mounted without noatime and relatime
-openat02    5  TPASS  :  test O_NOFOLLOW for openat success
-openat02    6  TPASS  :  test O_TRUNC for openat success
-openat02    0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmp/opeim4IKK) failed: lstat(/tmp/opeim4IKK/large_file) failed; errno=75: Value too large for defined data type
-
-
-> Since it's linked from library, adding -D_FILE_OFFSET_BITS=64 to this
-> testcase has
-> no effect.
-> 
-> One simple way to fix it would be to unlink it in test, so that
-> rmobj.c doesn't hit it.
-> 
-> $ diff -u open12.c /tmp/open12.c
-> --- open12.c	2014-08-14 17:46:33.052044613 +0200
-> +++ /tmp/open12.c	2014-08-20 14:48:35.655208417 +0200
-> @@ -221,6 +221,10 @@
->  		tst_resm(TPASS, "test O_LARGEFILE for open success");
->  		SAFE_CLOSE(cleanup, TEST_RETURN);
->  	}
-> +
-> +	/* clean it up here, because lib/rmobj.c on 32bit will
-> +	 * hit EOVERFLOW in lstat() */
-> +	unlink(LARGE_FILE);
->  }
->  
->  static void cleanup(void)
-> 
-> Any thoughts?
-> 
-> Regards,
-> Jan
-> 
-> ------------------------------------------------------------------------------
-> Slashdot TV.
-> Video for Nerds.  Stuff that matters.
-> http://tv.slashdot.org/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
