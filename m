@@ -1,28 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XKibw-0008IC-Kx
-	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 06:46:08 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XKibv-0005oB-Bh
-	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 06:46:08 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7M6jxvq011630
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Aug 2014 02:46:00 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s7M6jweO011797
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 Aug 2014 02:45:59 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 22 Aug 2014 08:45:56 +0200
-Message-Id: <77268e159df98c56fa62012617a7c3f3b918f6b7.1408689882.git.jstancek@redhat.com>
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XJHV9-0004Ki-6e
+	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:37:11 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XJHV7-0007tn-Qd
+	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:37:11 +0000
+Message-ID: <53F1ACA9.805@cn.fujitsu.com>
+Date: Mon, 18 Aug 2014 15:35:05 +0800
+From: "gux.fnst" <gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mmap15: don't fail if mmap returns EINVAL
+References: <1407405010-23077-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<2144922040.6431142.1407925292759.JavaMail.zimbra@redhat.com>
+In-Reply-To: <2144922040.6431142.1407925292759.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] run_memctl_test.sh: replace the former intercept
+ method
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,32 +26,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-T2xkZXIga2VybmVscyAoMi42LjMyKSBvbiBwcGM2NCByZXR1cm4gRUlOVkFMIGluc3RlYWQgb2Yg
-RU5PTUVNLgoKTWFuIHBhZ2Ugc2F5czoKIkVJTlZBTCBXZSBkb27igJl0IGxpa2UgYWRkciwgbGVu
-Z3RoLCBvciBvZmZzZXQgKGUuZy4sIHRoZXkgYXJlIHRvbyBsYXJnZSwKb3Igbm90IGFsaWduZWQg
-b24gYSBwYWdlIGJvdW5kYXJ5KS4iLCB3aGljaCBzdWdnZXN0cyB0aGF0IGJvdGgKRU5PTUVNIGFu
-ZCBFSU5WQUwgc2hvdWxkIGJlIGNvbnNpZGVyZWQuCgpTaWduZWQtb2ZmLWJ5OiBKYW4gU3RhbmNl
-ayA8anN0YW5jZWtAcmVkaGF0LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21t
-YXAvbW1hcDE1LmMgfCAgICA0ICsrLS0KIDEgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCsp
-LCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-bW1hcC9tbWFwMTUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTUuYwpp
-bmRleCA0OWRiYmE0Li5mMWZjMjY3IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL21tYXAvbW1hcDE1LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21t
-YXAxNS5jCkBAIC04MCwxMCArODAsMTAgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCiAJ
-CQljb250aW51ZTsKIAkJfQogCi0JCWlmIChlcnJubyAhPSBFTk9NRU0pIHsKKwkJaWYgKGVycm5v
-ICE9IEVOT01FTSAmJiBlcnJubyAhPSBFSU5WQUwpIHsKIAkJCXRzdF9yZXNtKFRGQUlMIHwgVEVS
-Uk5PLCAibW1hcCBpbnRvIGhpZ2ggcmVnaW9uICIKIAkJCQkgImZhaWxlZCB1bmV4cGVjdGVkbHkg
-LSBleHBlY3QgIgotCQkJCSAiZXJybm89RU5PTUVNLCBnb3QiKTsKKwkJCQkgImVycm5vPUVOT01F
-TS9FSU5WQUwsIGdvdCIpOwogCQl9IGVsc2UgewogCQkJdHN0X3Jlc20oVFBBU1MgfCBURVJSTk8s
-ICJtbWFwIGludG8gaGlnaCByZWdpb24gIgogCQkJCSAiZmFpbGVkIGFzIGV4cGVjdGVkIik7Ci0t
-IAoxLjcuMQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTbGFzaGRvdCBUVi4gIApWaWRlbyBmb3Ig
-TmVyZHMuICBTdHVmZiB0aGF0IG1hdHRlcnMuCmh0dHA6Ly90di5zbGFzaGRvdC5vcmcvCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
-bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+
+
+On 08/13/2014 06:21 PM, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Xing Gu" <gux.fnst@cn.fujitsu.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Sent: Thursday, 7 August, 2014 11:50:10 AM
+>> Subject: [LTP] [PATCH] run_memctl_test.sh: replace the former intercept	method
+>>
+>> In RHEL6.5GA and RHEL7.0GA, running run_memctl_test.sh outputs
+>> "/opt/ltp/testcases/bin/run_memctl_test.sh: line 87: [: -lt:
+>> unary operator expected" error. This is because $MEM_AVAIL
+>> is empty here, which is caused by command "tr -s [:space:]" that
+>> loses efficacy. Using "awk" replaces the former intercept method.
+>
+> Hi,
+>
+> or you could put quotes around it:
+>   tr -s "[:space:]"
+>
+> so it's not evaluated as wildcard:
+>   # cd /opt/ltp/
+>   # echo [:space:]
+>   [:space:]
+>
+>   # cd testcases/bin/
+>   # echo [:space:]
+>   c
+>
+>   # ls -al c
+>   -rwxrwxr-x. 1 root root 11251 Jul 30 02:20 c
+>
+> If you're wondering where that "c" comes from:
+>   ./testcases/kernel/security/filecaps/c.c
+>
+> I'm OK with using awk, though commit message could be more clear.
+>
+
+I see. Thanks for your review.
+
+Regards,
+Xing Gu
+
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
+>
+> Regards,
+> Jan
+>
+>>
+>> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+>> ---
+>>   testcases/kernel/controllers/memctl/run_memctl_test.sh | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/testcases/kernel/controllers/memctl/run_memctl_test.sh
+>> b/testcases/kernel/controllers/memctl/run_memctl_test.sh
+>> index 66e8f4f..fe171df 100755
+>> --- a/testcases/kernel/controllers/memctl/run_memctl_test.sh
+>> +++ b/testcases/kernel/controllers/memctl/run_memctl_test.sh
+>> @@ -83,7 +83,7 @@ cd $LTPROOT/testcases/bin/
+>>   #################################################################################
+>>
+>>   # First of all check if the system has sufficient memory
+>> -MEM_AVAIL=`cat /proc/meminfo | grep MemTotal | tr -s [:space:] | cut -d" "
+>> -f2`;
+>> +MEM_AVAIL=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`;
+>>   if [ $MEM_AVAIL -lt 262144 ]	# 256MB(as test requires some ~200MB)
+>>   then
+>>   	echo System does not have sufficient free memory.;
+>> --
+>> 1.9.3
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> Infragistics Professional
+>> Build stunning WinForms apps today!
+>> Reboot your WinForms applications with our WinForms controls.
+>> Build a bridge from your legacy apps to the future.
+>> http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+> .
+>
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
