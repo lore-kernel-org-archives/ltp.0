@@ -1,28 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XIF8W-0002xm-NM
-	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:53:32 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XIF8V-0004zD-7r
-	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:53:32 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7FArN3l018565
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:53:24 -0400
-Received: from cc-vtoe5.lab.eng.brq.redhat.com
-	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7FArMYY012634
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:53:23 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Fri, 15 Aug 2014 12:52:43 +0200
-Message-Id: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 1/3] lib: Add SAFE_MOUNT()
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XJHh3-000533-Qe
+	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:49:29 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XJHh2-0004e3-5J
+	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:49:29 +0000
+Date: Mon, 18 Aug 2014 03:49:19 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <644993033.8297183.1408348159291.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53F1A492.60108@oracle.com>
+References: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
+	<7f26ec5fbdf900ddb77ec9a40debc5291498ab1b.1389101980.git.jstancek@redhat.com>
+	<53F1A492.60108@oracle.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH 2/3] cpuset/cpuset_syscall_test: check
+ HAVE_DECL_MPOL_F_MEMS_ALLOWED
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,70 +27,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Shuang Qiu <shuang.qiu@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- include/safe_macros.h |  9 +++++++++
- lib/safe_macros.c     | 19 +++++++++++++++++++
- 2 files changed, 28 insertions(+)
-
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index a79c4ad..e1c2fd1 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -271,5 +271,14 @@ int safe_rename(const char *file, const int lineno, void (*cleanup_fn)(void),
- #define SAFE_RENAME(cleanup_fn, oldpath, newpath) \
- 	safe_rename(__FILE__, __LINE__, (cleanup_fn), (oldpath), (newpath))
- 
-+int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
-+	       const char *source, const char *target,
-+	       const char *filesystemtype, unsigned long mountflags,
-+	       const void *data);
-+#define SAFE_MOUNT(cleanup_fn, source, target, filesystemtype, \
-+		   mountflags, data) \
-+	safe_mount(__FILE__, __LINE__, (cleanup_fn), (source), (target), \
-+		   (filesystemtype), (mountflags), (data))
-+
- #endif /* __SAFE_MACROS_H__ */
- #endif /* __TEST_H__ */
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index eefacae..7e49b36 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -784,3 +784,22 @@ int safe_rename(const char *file, const int lineno, void (*cleanup_fn)(void),
- 
- 	return rval;
- }
-+
-+int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
-+	       const char *source, const char *target,
-+	       const char *filesystemtype, unsigned long mountflags,
-+	       const void *data)
-+{
-+	int rval;
-+
-+	rval = mount(source, target, filesystemtype, mountflags, data);
-+
-+	if (rval == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: mount(%s, %s, %s, %lu, %p) failed",
-+			 file, lineno, source, target, filesystemtype,
-+			 mountflags, data);
-+	}
-+
-+	return rval;
-+}
--- 
-1.8.3.1
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiU2h1YW5nIFFpdSIgPHNo
+dWFuZy5xaXVAb3JhY2xlLmNvbT4KPiBUbzogIkphbiBTdGFuY2VrIiA8anN0YW5jZWtAcmVkaGF0
+LmNvbT4KPiBDYzogbHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gU2VudDogTW9uZGF5
+LCAxOCBBdWd1c3QsIDIwMTQgOTowMDozNCBBTQo+IFN1YmplY3Q6IFJlOiBbTFRQXSBbUEFUQ0gg
+Mi8zXSBjcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdDogY2hlY2sgSEFWRV9ERUNMX01QT0xfRl9N
+RU1TX0FMTE9XRUQKPiAKPiBIaSBKYW4sCj4gCj4gSW4gdGhpcyBjYXNlLGlmIE1QT0xfRl9NRU1T
+X0FMTE9XRUQgaXMgdW5kZWNsYXJlZCwicmV0ID0gLTEiIHdpbGwgbWFrZQo+IHNvbWUgb2YgY3B1
+c2V0X3N5c2NhbGxfdGVzdCBmYWlsZWQuCj4gaS5lLiB0ZXN0MTUgZmFpbGVkOiBjcHVzZXRfc3lz
+Y2FsbCAxNSBURkFJTCA6IFRlc3QgdGFzayBleGl0ZWQKPiBhYm5vcm1hbGx5LihleHBlY3QgcmV0
+dXJuIHZhbHVlIGlzIDApCj4gV2h5IGRvIHdlIGZhaWwgdGhpcyB0ZXN0IGlmIE1QT0xfRl9NRU1T
+X0FMTE9XRUQgaXMgdW5kZWNsYXJlZCByYXRoZXIKPiB0aGFuIHNraXAgdGhpcyB0ZXN0LgoKSGks
+Cgp0aGF0IGxvb2tzIGxpa2UgYW4gb3ZlcnNpZ2h0LCB3aGljaCBpcyB0aGVyZSBmb3IgY291cGxl
+IHllYXJzLgoKQ29tbWl0IGJlbG93IHdhcyBzdXBwb3NlZCB0byByZXN0b3JlIHRoYXQgY2h1bmsg
+dG8gcHJldmlvdXMgc3RhdGUsCndoZXJlIGl0IGF0IGxlYXN0IGNvbXBpbGVkLiBJIGFncmVlIHRo
+YXQgc2tpcCAob2YgdGVzdDE1LzE2IGJ5IHRoZSBmaXJzdCBsb29rKQp3b3VsZCBiZSBiZXR0ZXIu
+CgpSZWdhcmRzLApKYW4KCj4gCj4gVGhhbmtzCj4gU2h1YW5nCj4gT24gMDEvMDcvMjAxNCAwOTo0
+NiBQTSwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4gPiBUaGlzIGlzIHRvIGZpeCBjb21waWxhdGlvbiBv
+biBSSEVMNS4zOgo+ID4gICAgZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcg
+LXBpcGUgLVdhbGwgLURfRk9SVElGWV9TT1VSQ0U9Mgo+ID4gICAgLUkvcm9vdC9sdHAvdGVzdGNh
+c2VzL2tlcm5lbC9pbmNsdWRlIC1ETlVNQV9WRVJTSU9OMV9DT01QQVRJQklMSVRZCj4gPiAgICAt
+SS4uLy4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlCj4gPiAgICAt
+TC9yb290L2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfc3lz
+Y2FsbF90ZXN0Ly4uL2NwdXNldF9saWIKPiA+ICAgIC1ML3Jvb3QvbHRwL3Rlc3RjYXNlcy9rZXJu
+ZWwvY29udHJvbGxlcnMvY3B1c2V0L2NwdXNldF9zeXNjYWxsX3Rlc3QvLi4vLi4vbGliY29udHJv
+bGxlcnMKPiA+ICAgIC1MLi4vLi4vLi4vLi4vLi4vbGliICBjcHVzZXRfc3lzY2FsbF90ZXN0LmMg
+ICAtbGx0cCAtbGNwdV9zZXQKPiA+ICAgIC1sY29udHJvbGxlcnMgLWxsdHAgLWxudW1hIC1vIGNw
+dXNldF9zeXNjYWxsX3Rlc3QKPiA+ICAgIGNwdXNldF9zeXNjYWxsX3Rlc3QuYzogSW4gZnVuY3Rp
+b24g4oCYdGVzdF9nZXRfbWVtcG9saWN54oCZOgo+ID4gICAgY3B1c2V0X3N5c2NhbGxfdGVzdC5j
+OjE5MDogZXJyb3I6IOKAmE1QT0xfRl9NRU1TX0FMTE9XRUTigJkgdW5kZWNsYXJlZAo+ID4gICAg
+KGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQo+ID4gICAgY3B1c2V0X3N5c2NhbGxfdGVzdC5j
+OjE5MDogZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcwo+ID4gICAgcmVwb3J0
+ZWQgb25seSBvbmNlCj4gPiAgICBjcHVzZXRfc3lzY2FsbF90ZXN0LmM6MTkwOiBlcnJvcjogZm9y
+IGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCj4gPiAgICBtYWtlWzVdOiAqKiogW2NwdXNl
+dF9zeXNjYWxsX3Rlc3RdIEVycm9yIDEKPiA+Cj4gPiBUaGlzIHBhdGNoIHJlc3RvcmVzIGNoZWNr
+IHdoaWNoIGhhcyBiZWVuIHJlbW92ZWQgYnkgdGhpcyBjb21taXQ6Cj4gPiAgICBjb21taXQgODcx
+NTZhMDVhMmZmZDUwZjVlNDY3ZDZmOTg2ZGFhZTlkYTdiOWNmNwo+ID4gICAgQXV0aG9yOiBTdGFu
+aXNsYXYgS2hvbG1hbnNraWtoIDxzdGFuaXNsYXYua2hvbG1hbnNraWtoQG9yYWNsZS5jb20+Cj4g
+PiAgICBEYXRlOiAgIFR1ZSBPY3QgMSAxNzo0NDo1MCAyMDEzICswNDAwCj4gPiAgICAgIGNwdXNl
+dC9jcHVzZXRfc3lzY2FsbF90ZXN0OiBmaXhlcwo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IEphbiBT
+dGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgo+ID4gLS0tCj4gPiAgIC4uLi9jcHVzZXRfc3lz
+Y2FsbF90ZXN0L2NwdXNldF9zeXNjYWxsX3Rlc3QuYyAgICAgIHwgICAgNCArKysrCj4gPiAgIDEg
+ZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+ID4KPiA+IGRp
+ZmYgLS1naXQKPiA+IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0
+X3N5c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2FsbF90ZXN0LmMKPiA+IGIvdGVzdGNhc2VzL2tlcm5l
+bC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2FsbF90
+ZXN0LmMKPiA+IGluZGV4IGRkMzVjZDAuLmUyMDIyOTUgMTAwNjQ0Cj4gPiAtLS0KPiA+IGEvdGVz
+dGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVz
+ZXRfc3lzY2FsbF90ZXN0LmMKPiA+ICsrKwo+ID4gYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xs
+ZXJzL2NwdXNldC9jcHVzZXRfc3lzY2FsbF90ZXN0L2NwdXNldF9zeXNjYWxsX3Rlc3QuYwo+ID4g
+QEAgLTE4Niw4ICsxODYsMTIgQEAgdm9pZCB0ZXN0X2dldF9tZW1wb2xpY3kodm9pZCkKPiA+ICAg
+CQlyZXQgPSAxOwo+ID4gICAJCXJldHVybjsKPiA+ICAgCX0KPiA+ICsjaWYgSEFWRV9ERUNMX01Q
+T0xfRl9NRU1TX0FMTE9XRUQKPiA+ICAgCXJldCA9IGdldF9tZW1wb2xpY3koTlVMTCwgYml0bWFz
+a19tYXNrKG5tYXNrKSwgYml0bWFza19uYml0cyhubWFzayksIDAsCj4gPiAgIAkJCSAgICBNUE9M
+X0ZfTUVNU19BTExPV0VEKTsKPiA+ICsjZWxzZQo+ID4gKwlyZXQgPSAtMTsKPiA+ICsjZW5kaWYK
+PiA+ICAgCj4gPiAgIAliaXRtYXNrX2Rpc3BsYXlsaXN0KHN0ciwgMjU2LCBubWFzayk7Cj4gPiAg
+IAlwdXRzKHN0cik7Cj4gCj4gCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0
+cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
