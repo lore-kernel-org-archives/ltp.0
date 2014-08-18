@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XFJfm-0006HV-6G
-	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 09:07:46 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XFJfj-0005D9-3R
-	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 09:07:46 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s7797VUN027251
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Aug 2014 17:07:31 +0800
-Message-ID: <1407402404.1347.29.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 7 Aug 2014 17:06:44 +0800
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XJPGd-0004Di-27
+	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 15:54:43 +0000
+Date: Mon, 18 Aug 2014 17:53:43 +0200
+From: chrubis@suse.cz
+Message-ID: <20140818155343.GA12026@rei.suse.cz>
+References: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] securebits: some cleanup
+Content-Disposition: inline
+In-Reply-To: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
+Subject: Re: [LTP] [PATCH v2 0/6] testcases/kernel/containers cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,117 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Artem Savkov <asavkov@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-* Add Copyright for run_securebits.sh
+Hi!
+> Container tests are currently clumped together in a single script, this
+> patchset separates them so that they are listed one by on in runtest/containers
+> 
+> v2 set contains a bunch of changes for better compliance with LTP codestyle and
+> an additional patch doing the same for old code in netns testcases.
 
-* Use test.sh for run_securebits.sh
+All pushed, thanks.
 
-* Somecleanup for Makefile
+For me the par_chld_ftp test fails (after vsftpd was installed), I will
+have a look into that tomorrow.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/security/securebits/Makefile      |  7 +--
- .../kernel/security/securebits/run_securebits.sh   | 51 +++++++++++++++-------
- 2 files changed, 39 insertions(+), 19 deletions(-)
+I will also rename a few of the scripts in order to avoid installation
+collisions (rename initialize.sh to netns_initialize.sh etc.)
 
-diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
-index 51018d9..47271c9 100644
---- a/testcases/kernel/security/securebits/Makefile
-+++ b/testcases/kernel/security/securebits/Makefile
-@@ -4,7 +4,8 @@
- ##                                                                            ##
- ## This program is free software;  you can redistribute it and#or modify      ##
- ## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
-+## the Free Software Foundation; either version 2 of the License, or          ##
-+## (at your option) any later version.                                        ##
- ##                                                                            ##
- ## This program is distributed in the hope that it will be useful, but        ##
- ## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-@@ -12,8 +13,8 @@
- ## for more details.                                                          ##
- ##                                                                            ##
- ## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
- ##                                                                            ##
- ################################################################################
- 
-diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
-index 4d9e272..c3a301c 100644
---- a/testcases/kernel/security/securebits/run_securebits.sh
-+++ b/testcases/kernel/security/securebits/run_securebits.sh
-@@ -1,20 +1,39 @@
- #!/bin/sh
-+################################################################################
-+##                                                                            ##
-+##  Copyright (c) Linux Test Project, 2014                                    ##
-+##                                                                            ##
-+##  This program is free software; you can redistribute it and/or modify      ##
-+##  it under the terms of the GNU General Public License as published by      ##
-+##  the Free Software Foundation; either version 2 of the License, or         ##
-+##  (at your option) any later version.                                       ##
-+##                                                                            ##
-+##  This program is distributed in the hope that it will be useful,           ##
-+##  but WITHOUT ANY WARRANTY; without even the implied warranty of            ##
-+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             ##
-+##  GNU Library General Public License for more details.                      ##
-+##                                                                            ##
-+################################################################################
- 
--echo "testing keepcaps"
--check_keepcaps 1
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
--check_keepcaps 2
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
--check_keepcaps 3
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
-+TCID="keepcaps"
-+TST_TOTAL=1
-+
-+. test.sh
-+
-+exit_code=0
-+for i in 1 2 3
-+do
-+	check_keepcaps $i
-+	ret=$?
-+	if [ $ret -ne 0 ]; then
-+		exit_code=$ret
-+	fi
-+done
-+
-+if [ $exit_code -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
- fi
- 
--exit $exit_code
-+tst_exit
 -- 
-1.9.3
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
