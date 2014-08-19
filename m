@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1XKp0k-0005is-Fl
-	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 13:36:10 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XKp0j-0004QX-H3
-	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 13:36:10 +0000
-Message-ID: <53F7473C.5010306@oracle.com>
-Date: Fri, 22 Aug 2014 17:35:56 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XJhfy-0003b9-Mw
+	for ltp-list@lists.sourceforge.net; Tue, 19 Aug 2014 11:34:06 +0000
+Date: Tue, 19 Aug 2014 13:33:03 +0200
+From: chrubis@suse.cz
+Message-ID: <20140819113303.GA27917@rei.suse.cz>
+References: <92b6bfe6278a2b2e15bd47a572d909f3828f6a7b.1408357299.git.jstancek@redhat.com>
+	<20140818123739.GB5202@rei.suse.cz>
 MIME-Version: 1.0
-References: <77268e159df98c56fa62012617a7c3f3b918f6b7.1408689882.git.jstancek@redhat.com>
-	<53F6F9BC.3040504@cn.fujitsu.com>
-In-Reply-To: <53F6F9BC.3040504@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mmap15: don't fail if mmap returns EINVAL
+Content-Disposition: inline
+In-Reply-To: <20140818123739.GB5202@rei.suse.cz>
+Subject: Re: [LTP] [PATCH v2] profil01: rewrite testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,47 +22,23 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-CgpPbiAwOC8yMi8yMDE0IDEyOjA1IFBNLCBXYW5sb25nIEdhbyB3cm90ZToKPiBPbiAwOC8yMi8y
-MDE0IDAyOjQ1IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPj4gT2xkZXIga2VybmVscyAoMi42LjMy
-KSBvbiBwcGM2NCByZXR1cm4gRUlOVkFMIGluc3RlYWQgb2YgRU5PTUVNLgo+Pgo+PiBNYW4gcGFn
-ZSBzYXlzOgo+PiAiRUlOVkFMIFdlIGRvbuKAmXQgbGlrZSBhZGRyLCBsZW5ndGgsIG9yIG9mZnNl
-dCAoZS5nLiwgdGhleSBhcmUgdG9vIGxhcmdlLAo+PiBvciBub3QgYWxpZ25lZCBvbiBhIHBhZ2Ug
-Ym91bmRhcnkpLiIsIHdoaWNoIHN1Z2dlc3RzIHRoYXQgYm90aAo+PiBFTk9NRU0gYW5kIEVJTlZB
-TCBzaG91bGQgYmUgY29uc2lkZXJlZC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsg
-PGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4KPiBBY2tlZC1ieTogV2FubG9uZyBHYW8gPGdhb3dhbmxv
-bmdAY24uZnVqaXRzdS5jb20+CgpNb2Rlcm4gc3BhcmM2NCBrZXJuZWxzIHJldHVybiBFSU5WQUwg
-YXMgd2VsbC4KCkFja2VkLWJ5OiBTdGFuaXNsYXYgS2hvbG1hbnNraWtoIDxzdGFuaXNsYXYua2hv
-bG1hbnNraWtoQG9yYWNsZS5jb20+CgoKPgo+PiAtLS0KPj4gICB0ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL21tYXAvbW1hcDE1LmMgfCAgICA0ICsrLS0KPj4gICAxIGZpbGVzIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvbW1hcC9tbWFwMTUuYwo+PiBpbmRleCA0OWRiYmE0Li5mMWZjMjY3IDEwMDY0NAo+PiAtLS0g
-YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDE1LmMKPj4gKysrIGIvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNS5jCj4+IEBAIC04MCwxMCArODAsMTAgQEAg
-aW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4+ICAgCQkJY29udGludWU7Cj4+ICAgCQl9Cj4+
-Cj4+IC0JCWlmIChlcnJubyAhPSBFTk9NRU0pIHsKPj4gKwkJaWYgKGVycm5vICE9IEVOT01FTSAm
-JiBlcnJubyAhPSBFSU5WQUwpIHsKPj4gICAJCQl0c3RfcmVzbShURkFJTCB8IFRFUlJOTywgIm1t
-YXAgaW50byBoaWdoIHJlZ2lvbiAiCj4+ICAgCQkJCSAiZmFpbGVkIHVuZXhwZWN0ZWRseSAtIGV4
-cGVjdCAiCj4+IC0JCQkJICJlcnJubz1FTk9NRU0sIGdvdCIpOwo+PiArCQkJCSAiZXJybm89RU5P
-TUVNL0VJTlZBTCwgZ290Iik7CgpNYXliZSBhZGQgdGhpcyBFTk9NRU0vRUlOVkFMIGluIHRoZSBj
-b21tZW50IGZldyBzdGluZ3MgYWJvdmU6Ci8qIEF0dGVtcHQgdG8gbW1hcCBpbnRvIGhpZ2htZW0g
-YWRkciwgc2hvdWxkIGdldCBFTk9NRU0gKi8KCj8KClRoYW5rcy4KCj4+ICAgCQl9IGVsc2Ugewo+
-PiAgIAkJCXRzdF9yZXNtKFRQQVNTIHwgVEVSUk5PLCAibW1hcCBpbnRvIGhpZ2ggcmVnaW9uICIK
-Pj4gICAJCQkJICJmYWlsZWQgYXMgZXhwZWN0ZWQiKTsKPj4KPgo+Cj4gLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCj4gU2xhc2hkb3QgVFYuCj4gVmlkZW8gZm9yIE5lcmRzLiAgU3R1ZmYgdGhhdCBtYXR0
-ZXJzLgo+IGh0dHA6Ly90di5zbGFzaGRvdC5vcmcvCj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlz
-dEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby9sdHAtbGlzdAo+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2xhc2hkb3Qg
-VFYuICAKVmlkZW8gZm9yIE5lcmRzLiAgU3R1ZmYgdGhhdCBtYXR0ZXJzLgpodHRwOi8vdHYuc2xh
-c2hkb3Qub3JnLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> Looks good, acked.
+
+Pushed, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
