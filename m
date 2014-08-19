@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XMDBu-00074z-S3
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 09:37:26 +0000
-Date: Tue, 26 Aug 2014 11:36:23 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XJi3u-0004LR-Iw
+	for ltp-list@lists.sourceforge.net; Tue, 19 Aug 2014 11:58:50 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 8C0CBABAE
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 19 Aug 2014 11:58:43 +0000 (UTC)
+Date: Tue, 19 Aug 2014 13:57:51 +0200
 From: chrubis@suse.cz
-Message-ID: <20140826093623.GB25567@rei.suse.cz>
-References: <e70bae8bd74a29e9959cae96900a849254b37c9f.1408615314.git.jstancek@redhat.com>
-	<20140825130920.GA13575@rei.suse.cz>
-	<400651514.12451738.1408972658808.JavaMail.zimbra@redhat.com>
-	<20140825140749.GB13778@rei.suse.cz>
-	<1251340269.12540621.1408977990485.JavaMail.zimbra@redhat.com>
-	<1139993286.12980615.1409044361683.JavaMail.zimbra@redhat.com>
+Message-ID: <20140819115751.GC27917@rei.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1139993286.12980615.1409044361683.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] safe_macros: turn functions with off_t parameter
- into static inline
+Subject: [LTP] LTP release freeze and testing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,36 +26,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 Hi!
-> Testing went OK, I came across one new issue on system supporting CPU hotplug in 
-> sched_setaffinity01.c / tst_ncpus_max().
-> 
-> tst_ncpus_max is using sysconf(_SC_NPROCESSORS_CONF), but sched_getaffinity
-> cares about all possible cpus, so it fails with EINVAL, because mask is too small.
-> 
-> I'm thinking we should try to read /sys/devices/system/cpu/possible or even
-> /sys/devices/system/cpu/kernel_max (NR_CPUS) and use that value to be safe
-> and only fall back to _SC_NPROCESSORS_CONF as last resort.
+It took longer that it should but now all the patches that should get in
+before release freeze are in.
 
-Sounds good to me.
+Now I would like to freeze the git repository at least for about a week
+and kindly ask everybody out there to try latest git head, test it and
+report any problems especially build failures and regressions.
 
-> There's a big mail thread about this issue, I think Carlos made a nice summary:
->   https://sourceware.org/ml/libc-alpha/2013-07/msg00429.html
+And if everything goes reasonably well we will produce relase next week.
 
-I was part of the discussion, the API for getting number of processors
-on Linux is currently in mess :(.
+Does everybody agree with the schedule?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
