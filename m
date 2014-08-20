@@ -1,25 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <asavkov@redhat.com>) id 1XHaj9-0005B6-W7
-	for ltp-list@lists.sourceforge.net; Wed, 13 Aug 2014 15:44:40 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XK4YU-0007M3-CI
+	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 11:59:54 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XHaj6-0001Z3-S8
-	for ltp-list@lists.sourceforge.net; Wed, 13 Aug 2014 15:44:39 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7DFiUTh014125
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Aug 2014 11:44:30 -0400
-From: Artem Savkov <asavkov@redhat.com>
-Date: Wed, 13 Aug 2014 17:44:24 +0200
-Message-Id: <1407944666-32659-5-git-send-email-asavkov@redhat.com>
-In-Reply-To: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
-References: <1407944666-32659-1-git-send-email-asavkov@redhat.com>
-Subject: [LTP] [PATCH v2 4/6] uts tests: runutstest.sh -> runtest/containers
+	(Exim 4.76) id 1XK4YS-0003sb-W3
+	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 11:59:54 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s7KBxkqD023718
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 20 Aug 2014 11:59:47 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s7KBxjf5028464
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 20 Aug 2014 11:59:46 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	s7KBxj7O001858
+	for <ltp-list@lists.sourceforge.net>; Wed, 20 Aug 2014 11:59:45 GMT
+Message-ID: <53F48DAE.4030704@oracle.com>
+Date: Wed, 20 Aug 2014 15:59:42 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+References: <970276274.18779164.1407818238974.JavaMail.zimbra@redhat.com>
+In-Reply-To: <970276274.18779164.1407818238974.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v2] Skip some dio/fcntl cases on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,350 +39,382 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Artem Savkov <asavkov@redhat.com>
 
-Extracted utsname tests from runutstest.sh and container_test.sh and added
-them one by one to runtest/containers.
-hostname recovery moved to utstest.c. tst_exits removed from P2 so that
-hostname is actually recovered.
-README is removed as it was mostly duplicating utstest.c's header.
+Hi!
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- runtest/containers                                 | 11 +++++
- testcases/kernel/containers/container_test.sh      |  7 ---
- testcases/kernel/containers/utsname/README         | 53 ----------------------
- .../containers/utsname/check_utsns_enabled.c       | 50 --------------------
- testcases/kernel/containers/utsname/runutstest.sh  | 33 --------------
- testcases/kernel/containers/utsname/utstest.c      | 51 +++++++++++++++++----
- 6 files changed, 53 insertions(+), 152 deletions(-)
- delete mode 100644 testcases/kernel/containers/utsname/README
- delete mode 100644 testcases/kernel/containers/utsname/check_utsns_enabled.c
- delete mode 100755 testcases/kernel/containers/utsname/runutstest.sh
+Sorry for delay.
 
-diff --git a/runtest/containers b/runtest/containers
-index 0f40716..827a5d7 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -45,4 +45,15 @@ semtest_2ns_none semtest_2ns none
- semtest_2ns_clone semtest_2ns clone
- semtest_2ns_unshare semtest_2ns unshare
- 
-+utstest_unshare_1 utstest unshare 1
-+utstest_unshare_2 utstest unshare 2
-+utstest_unshare_3 utstest unshare 3
-+utstest_unshare_4 utstest unshare 4
-+utstest_unshare_5 utstest unshare 5
-+utstest_clone_1 utstest clone 1
-+utstest_clone_2 utstest clone 2
-+utstest_clone_3 utstest clone 3
-+utstest_clone_4 utstest clone 4
-+utstest_clone_5 utstest clone 5
-+
- Containers	container_test.sh
-diff --git a/testcases/kernel/containers/container_test.sh b/testcases/kernel/containers/container_test.sh
-index ca67bb2..9e515e4 100755
---- a/testcases/kernel/containers/container_test.sh
-+++ b/testcases/kernel/containers/container_test.sh
-@@ -15,13 +15,6 @@ if [ $? -eq 1 ]; then
- 	echo "Unshare not supported.  Not running container tests"
- 	exit 0
- fi
--check_utsns_enabled
--if [ $? -eq 0 ]; then
--	echo "Running utsns tests."
--	runutstest.sh
--else
--	echo "Uts namespaces not enabled in kernel.  Not running utsns tests."
--fi
- 
- #check_userns_enabled
- #if [ $? -eq 0 ]; then
-diff --git a/testcases/kernel/containers/utsname/README b/testcases/kernel/containers/utsname/README
-deleted file mode 100644
-index 5734f88..0000000
---- a/testcases/kernel/containers/utsname/README
-+++ /dev/null
-@@ -1,53 +0,0 @@
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2007                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--################################################################################
--
--This contains five tests for the uts namespace unsharing functionality.
--
--To enable this functionality, you currently must use a -mm kernel (see
--kernel.org). Then to run these tests, just type
--
--	sh runutstest.sh
--
--The tests are intended to do the following:
--
--test 1: check that after fork, two children see the same utsname
--	P1: A=gethostname
--	P2: B=gethostname
--	Ensure(A==B)
--test 2: check that after fork, two children are in the same utsname namespace.
--	P1: sethostname(newname); A=gethostname
--	P2: (wait); B=gethostname
--	Ensure (A==B)
--
--test 3: check that after unshare, processes are in different utsname namespaces.
--	P1: A=gethostname; unshare(utsname); sethostname(newname); C=gethostname
--	P2: B=gethostname; (wait); (wait); D=gethostname
--	Ensure (A==B && A==D && C!=D)
--
--test 4: similar to test 3, but other child changes hostname.
--	P1: A=gethostname; unshare(utsname); (wait); C=gethostname
--	P2: B=gethostname; (wait); sethostname(newname); D=gethostname
--	Ensure (A==B && A==C && C!=D)
--
--test 5: check that unsharing utsname without required permissions (CAP_SYS_AUDIT)
--	fails.
--	P1: A=gethostname; unshare(utsname) without suff. perms; (wait); C=gethostname
--	P2: B=gethostname; (wait); sethostname(newname); D=gethostname
--	Ensure (A==B==C==D) and state is ok.
-diff --git a/testcases/kernel/containers/utsname/check_utsns_enabled.c b/testcases/kernel/containers/utsname/check_utsns_enabled.c
-deleted file mode 100644
-index 8834052..0000000
---- a/testcases/kernel/containers/utsname/check_utsns_enabled.c
-+++ /dev/null
-@@ -1,50 +0,0 @@
--/*
--* Copyright (c) International Business Machines Corp., 2007
--* This program is free software; you can redistribute it and/or modify
--* it under the terms of the GNU General Public License as published by
--* the Free Software Foundation; either version 2 of the License, or
--* (at your option) any later version.
--*
--* This program is distributed in the hope that it will be useful,
--* but WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
--* the GNU General Public License for more details.
--* You should have received a copy of the GNU General Public License
--* along with this program; if not, write to the Free Software
--* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--*
--* Author: Serge Hallyn <serue@us.ibm.com>
--*
--* uts namespaces were introduced around 2.6.19.  Kernels before that,
--* assume they are not enabled.  Kernels after that, check for -EINVAL
--* when trying to use CLONE_NEWUTS.
--***************************************************************************/
--
--#include <sys/utsname.h>
--#include <sched.h>
--#include <stdio.h>
--#include "../libclone/libclone.h"
--#include "test.h"
--
--const char *TCID = "check_utsns_enabled";
--
--int dummy(void *v)
--{
--	return 0;
--}
--
--int main(void)
--{
--	int pid;
--
--	if (tst_kvercmp(2, 6, 19) < 0)
--		return 1;
--
--	pid = ltp_clone_quick(CLONE_NEWUTS, dummy, NULL);
--
--	if (pid == -1) {
--		perror("ltp_clone_quick");
--		return 3;
--	}
--	return 0;
--}
-diff --git a/testcases/kernel/containers/utsname/runutstest.sh b/testcases/kernel/containers/utsname/runutstest.sh
-deleted file mode 100755
-index d3a8021..0000000
---- a/testcases/kernel/containers/utsname/runutstest.sh
-+++ /dev/null
-@@ -1,33 +0,0 @@
--#!/bin/sh
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2007                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--################################################################################
--
--oldhostname=`hostname`
--echo "unshare tests"
--for i in `seq 1 5`; do
--	echo "test $i (unshare)"
--	utstest unshare $i
--done
--echo "clone tests"
--for i in `seq 1 5`; do
--	echo "test $i (clone)"
--	utstest clone $i
--done
--hostname "$oldhostname"
-diff --git a/testcases/kernel/containers/utsname/utstest.c b/testcases/kernel/containers/utsname/utstest.c
-index a399605..c70f90b 100644
---- a/testcases/kernel/containers/utsname/utstest.c
-+++ b/testcases/kernel/containers/utsname/utstest.c
-@@ -54,11 +54,32 @@
- #include <errno.h>
- #include "test.h"
- #include <libclone.h>
-+#include "safe_macros.h"
- 
- char *TCID = "uts_namespace";
- int TST_TOTAL = 1;
- 
--int drop_root()
-+static int dummy_child(void *v)
-+{
-+	(void) v;
-+	return 0;
-+}
-+
-+static void check_newuts(void)
-+{
-+	int pid, status;
-+
-+	if (tst_kvercmp(2, 6, 19) < 0)
-+		tst_brkm(TCONF, NULL, "CLONE_NEWUTS not supported");
-+
-+	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWUTS, dummy_child, NULL);
-+	if (pid == -1)
-+		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWUTS not supported");
-+
-+	SAFE_WAIT(NULL, &status);
-+}
-+
-+int drop_root(void)
- {
- 	int ret;
- 	ret = setresuid(1000, 1000, 1000);
-@@ -69,13 +90,14 @@ int drop_root()
- 	return 1;
- }
- 
--int p1fd[2], p2fd[2];
--pid_t cpid;
--
- #define HLEN 100
- #define NAME1 "serge1"
- #define NAME2 "serge2"
- 
-+int p1fd[2], p2fd[2];
-+static char oldhost[HLEN];
-+pid_t cpid;
-+
- void picknewhostname(char *orig, char *new)
- {
- 	memset(new, 0, HLEN);
-@@ -198,7 +220,7 @@ int P1(void *vtest)
- 	default:
- 		break;
- 	}
--	return -1;
-+	tst_exit();
- }
- 
- int P2(void *vtest)
-@@ -234,8 +256,7 @@ int P2(void *vtest)
- 		}
- 		if (hostname[0] == '0') {
- 			tst_resm(TPASS, "P2: P1 claims error");
--			tst_exit();
--			exit(0);
-+			return 0;
- 		}
- 		gethostname(hostname, HLEN);
- 		picknewhostname(hostname, newhostname);
-@@ -246,10 +267,21 @@ int P2(void *vtest)
- 		tst_resm(TFAIL, "undefined test: %d", testnum);
- 		break;
- 	}
--	tst_exit();
- 	return 0;
- }
- 
-+static void setup(void)
-+{
-+	gethostname(oldhost, HLEN);
-+	tst_require_root(NULL);
-+	check_newuts();
-+}
-+
-+static void cleanup(void)
-+{
-+	sethostname(oldhost, strlen(oldhost));
-+}
-+
- #define UNSHARESTR "unshare"
- #define CLONESTR "clone"
- int main(int argc, char *argv[])
-@@ -258,6 +290,7 @@ int main(int argc, char *argv[])
- 	int testnum;
- 	void *vtest;
- 
-+	setup();
- 	if (argc != 3) {
- 		tst_resm(TFAIL, "Usage: %s <clone|unshare> <testnum>",
- 			 argv[0]);
-@@ -304,7 +337,6 @@ int main(int argc, char *argv[])
- 			if (!drop_root()) {
- 				tst_resm(TFAIL, "failed to drop root.");
- 				tst_exit();
--				exit(1);
- 			}
- 			r = do_clone_unshare_test(use_clone, CLONE_NEWUTS,
- 						  P1, vtest);
-@@ -320,5 +352,6 @@ int main(int argc, char *argv[])
- 		break;
- 	}
- 
-+	cleanup();
- 	tst_exit();
- }
--- 
-1.9.3
+On 08/12/2014 08:37 AM, Xiong Zhou wrote:
+>
+> According to description of NFS and directIO in open(2), especially
+> "The Linux NFS client places no alignment restrictions on
+> O_DIRECT I/O", ignore "odd count"/"non-aligned" read-write FAILs
+> in diotest4. Some dup code clean up btw.
 
+I think it would be better to split the logic and cleanup parts into 
+separate patches, because both parts are not small.
+
+
+>
+> According to nfs(5), NLM supports advisory file locks only. So skip
+> fcntl16 test if NFS.
+>
+> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+> ---
+>   testcases/kernel/io/direct_io/diotest4.c  | 148 ++++++++++++++----------------
+>   testcases/kernel/syscalls/fcntl/fcntl16.c |   8 ++
+>   2 files changed, 79 insertions(+), 77 deletions(-)
+>
+> diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+> index 10281bf..934d5b1 100644
+> --- a/testcases/kernel/io/direct_io/diotest4.c
+> +++ b/testcases/kernel/io/direct_io/diotest4.c
+> @@ -71,9 +71,11 @@
+>
+>   #include "test.h"
+>   #include "usctest.h"
+> +#include "tst_fs_type.h"
+>
+>   char *TCID = "diotest4";	/* Test program identifier.    */
+>   int TST_TOTAL = 17;		/* Total number of test conditions */
+> +int NO_NFS = 1;			/* Test on NFS or not */
+>
+>   #ifdef O_DIRECT
+>
+> @@ -171,6 +173,16 @@ void prg_usage()
+>   	exit(1);
+>   }
+>
+> +static void testcheck_end(int ret, int *failed, int *fail_count, char *msg)
+> +{
+> +	if (ret != 0) {
+> +		*failed = TRUE;
+> +		*fail_count++;
+> +		tst_resm(TFAIL, msg);
+> +	} else
+> +		tst_resm(TPASS, msg);
+> +}
+> +
+>   static void setup(void);
+>   static void cleanup(void);
+>   static int fd1 = -1;
+> @@ -206,6 +218,10 @@ int main(int argc, char *argv[])
+>
+>   	setup();
+>
+> +	/* On NFS or not */
+> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
+> +		NO_NFS = 0;
+> +
+
+Maybe put it to setup(). IMHO, it's logically coupled with setup().
+
+>   	/* Open file and fill, allocate for buffer */
+>   	if ((fd = open(filename, O_DIRECT | O_RDWR | O_CREAT, 0666)) < 0) {
+>   		tst_brkm(TBROK, cleanup, "open failed for %s: %s",
+> @@ -251,17 +267,41 @@ int main(int argc, char *argv[])
+>   	/* Test-3: Odd count of read and write */
+>   	offset = 0;
+>   	count = 1;
+> +	l_fail = 0;
+>   	lseek(fd, 0, SEEK_SET);
+>   	if (write(fd, buf2, 4096) == -1) {
+>   		tst_resm(TFAIL, "can't write to file %d", ret);
+>   	}
+> -	ret = runtest_f(fd, buf2, offset, count, EINVAL, 3, "odd count");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "Odd count of read and write");
+> -	} else
+> -		tst_resm(TPASS, "Odd count of read and write");
+> +	if (lseek(fd, offset, SEEK_SET) < 0) {
+> +		if (errno != EINVAL) {
+> +			tst_resm(TFAIL, "lseek before read failed: %s",
+> +				 strerror(errno));
+> +			l_fail = TRUE;
+> +		}
+> +	} else {
+> +		ret = read(fd, buf2, count);
+> +		if ((ret >= 0 || errno != EINVAL) && NO_NFS) {
+> +			tst_resm(TFAIL, "read allows %s. returns %d: %s",
+> +				 "odd count", ret, strerror(errno));
+> +			l_fail = TRUE;
+> +		}
+> +	}
+> +	if (lseek(fd, offset, SEEK_SET) < 0) {
+> +		if (errno != EINVAL) {
+> +			tst_resm(TFAIL, "lseek before write failed: %s",
+> +				 strerror(errno));
+> +			l_fail = TRUE;
+> +		}
+> +	} else {
+> +		ret = write(fd, buf2, count);
+> +		if ((ret >= 0 || errno != EINVAL) && NO_NFS) {
+> +			tst_resm(TFAIL, "write allows %s.returns %d: %s",
+> +				 "odd count", ret, strerror(errno));
+> +			l_fail = TRUE;
+> +		}
+> +	}
+> +	testcheck_end(l_fail, &failed, &fail_count,
+> +				"Odd count of read and write");
+
+You copied code from runtest_f(). I suppose it's easier to skip this 
+entire test case on NFS, than skipping only write() and read() failures. 
+Like:
+
+offset = 0;
+count = 1;
+lseek(fd, 0, SEEK_SET);
+if (write(...)) {
+    ...
+}
+if (NO_NFS) {
+    ret = runtest_f();
+    testcheck_end();
+} else {
+    tst_resm(TCONF, "Statement that this test case is not applicable to 
+NFS");
+}
+total++;
+
+>   	total++;
+>
+>   	/* Test-4: Read beyond the file size */
+> @@ -290,12 +330,7 @@ int main(int argc, char *argv[])
+>   	count = bufsize;
+>   	newfd = -1;
+>   	ret = runtest_f(newfd, buf2, offset, count, EBADF, 5, "negative fd");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "Invalid file descriptor");
+> -	} else
+> -		tst_resm(TPASS, "Invalid file descriptor");
+> +	testcheck_end(ret, &failed, &fail_count, "Invalid file descriptor");
+>   	total++;
+>
+>   	/* Test-6: Out of range file descriptor */
+> @@ -306,15 +341,10 @@ int main(int argc, char *argv[])
+>   		failed = TRUE;
+>   		tst_resm(TFAIL, "Out of range file descriptor");
+>   	} else {
+> -		ret =
+> -		    runtest_f(newfd, buf2, offset, count, EBADF, 6,
+> +		ret = runtest_f(newfd, buf2, offset, count, EBADF, 6,
+>   			      "out of range fd");
+> -		if (ret != 0) {
+> -			failed = TRUE;
+> -			fail_count++;
+> -			tst_resm(TFAIL, "Out of range file descriptor");
+> -		} else
+> -			tst_resm(TPASS, "Out of range file descriptor");
+> +		testcheck_end(ret, &failed, &fail_count,
+> +					"Out of range file descriptor");
+>   	}
+>   	close(newfd);
+>   	total++;
+> @@ -327,12 +357,7 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   	}
+>   	ret = runtest_f(fd, buf2, offset, count, EBADF, 7, "closed fd");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "Closed file descriptor");
+> -	} else
+> -		tst_resm(TPASS, "Closed file descriptor");
+> +	testcheck_end(ret, &failed, &fail_count, "Closed file descriptor");
+>   	total++;
+>
+>   	/* Test-9: removed */
+> @@ -345,12 +370,8 @@ int main(int argc, char *argv[])
+>   		tst_resm(TCONF, "Direct I/O on /dev/null is not supported");
+>   	} else {
+>   		ret = runtest_s(newfd, buf2, offset, count, 9, "/dev/null");
+> -		if (ret != 0) {
+> -			failed = TRUE;
+> -			fail_count++;
+> -			tst_resm(TFAIL, "character device read, write");
+> -		} else
+> -			tst_resm(TPASS, "character device read, write");
+> +		testcheck_end(ret, &failed, &fail_count,
+> +					"character device read, write");
+>   	}
+>   	close(newfd);
+>   	total++;
+> @@ -373,12 +394,8 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   	}
+>   	ret = runtest_s(fd, buf2, offset, count, 10, "mmapped file");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "read, write to a mmaped file");
+> -	} else
+> -		tst_resm(TPASS, "read, write to a mmaped file");
+> +	testcheck_end(ret, &failed, &fail_count,
+> +				"read, write to a mmaped file");
+>   	total++;
+>
+>   	/* Test-11: read, write to an unmaped file with munmap */
+> @@ -387,12 +404,8 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   	}
+>   	ret = runtest_s(fd, buf2, offset, count, 11, "unmapped file");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "read, write to an unmapped file");
+> -	} else
+> -		tst_resm(TPASS, "read, write to an unmapped file");
+> +	testcheck_end(ret, &failed, &fail_count,
+> +				"read, write to an unmapped file");
+>   	close(fd);
+>   	total++;
+>
+> @@ -459,7 +472,7 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   		l_fail = TRUE;
+>   	} else {
+> -		if ((ret = read(fd, buf2 + 1, count)) != -1) {
+> +		if (((ret = read(fd, buf2 + 1, count)) != -1) && NO_NFS) {
+>   			tst_resm(TFAIL,
+>   				 "allows read nonaligned buf. returns %d: %s",
+>   				 ret, strerror(errno));
+> @@ -471,19 +484,15 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   		l_fail = TRUE;
+>   	} else {
+> -		if ((ret = write(fd, buf2 + 1, count)) != -1) {
+> +		if (((ret = write(fd, buf2 + 1, count)) != -1) && NO_NFS) {
+>   			tst_resm(TFAIL,
+>   				 "allows write nonaligned buf. returns %d: %s",
+>   				 ret, strerror(errno));
+>   			l_fail = TRUE;
+>   		}
+>   	}
+> -	if (l_fail) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "read, write with non-aligned buffer");
+> -	} else
+> -		tst_resm(TPASS, "read, write with non-aligned buffer");
+> +	testcheck_end(l_fail, &failed, &fail_count,
+> +				"read, write with non-aligned buffer");
+
+Could we use runtest_f(EINVAL) here for Test-14 and apply the algorithm 
+I described above for Test-3?
+
+
+>   	total++;
+>   	close(fd);
+>
+> @@ -500,8 +509,7 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   		l_fail = TRUE;
+>   	} else {
+> -		ret =
+> -		    read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+> +		ret = read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+>   			 count);
+>   		if (ret >= 0 || errno != EFAULT) {
+>   			tst_resm(TFAIL,
+> @@ -515,8 +523,7 @@ int main(int argc, char *argv[])
+>   			 strerror(errno));
+>   		l_fail = TRUE;
+>   	} else {
+> -		ret =
+> -		    write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+> +		ret = write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+>   			  count);
+>   		if (ret < 0) {
+>   			tst_resm(TFAIL,
+> @@ -525,12 +532,8 @@ int main(int argc, char *argv[])
+>   			l_fail = TRUE;
+>   		}
+>   	}
+> -	if (l_fail) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "read, write buffer in read-only space");
+> -	} else
+> -		tst_resm(TPASS, "read, write buffer in read-only space");
+> +	testcheck_end(l_fail, &failed, &fail_count,
+> +				"read, write buffer in read-only space");
+>   	close(fd);
+>   	total++;
+>
+> @@ -545,15 +548,10 @@ int main(int argc, char *argv[])
+>   		tst_brkm(TBROK | TERRNO, cleanup,
+>   			 "open(%s, O_DIRECT|O_RDWR) failed", filename);
+>   	}
+> -	ret =
+> -	    runtest_f(fd, buf1, offset, count, EFAULT, 16,
+> +	ret = runtest_f(fd, buf1, offset, count, EFAULT, 16,
+>   		      " nonexistant space");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "read, write in non-existant space");
+> -	} else
+> -		tst_resm(TPASS, "read, write in non-existant space");
+> +	testcheck_end(ret, &failed, &fail_count,
+> +				"read, write in non-existant space");
+>   	total++;
+>   	close(fd);
+>
+> @@ -565,12 +563,8 @@ int main(int argc, char *argv[])
+>   			 "open(%s, O_DIRECT|O_RDWR|O_SYNC failed)", filename);
+>   	}
+>   	ret = runtest_s(fd, buf2, offset, count, 17, "opened with O_SYNC");
+> -	if (ret != 0) {
+> -		failed = TRUE;
+> -		fail_count++;
+> -		tst_resm(TFAIL, "read, write for file with O_SYNC");
+> -	} else
+> -		tst_resm(TPASS, "read, write for file with O_SYNC");
+> +	testcheck_end(ret, &failed, &fail_count,
+> +				"read, write for file with O_SYNC");
+>   	total++;
+>   	close(fd);
+>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+> index 44b6a80..7dba6ea 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+> @@ -51,6 +51,8 @@
+>   #include <sys/types.h>
+>   #include <sys/wait.h>
+>
+> +#include "tst_fs_type.h"
+> +
+>   #define SKIPVAL 0x0f00
+>   //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
+>   #define SKIP 0,0,0L,0L,0
+> @@ -412,6 +414,12 @@ void setup(void)
+>
+>   	tst_tmpdir();
+>
+> +	/* On NFS or not */
+> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
+> +		tst_brkm(TCONF, cleanup, "Cannot test madatory locking "
+> +			"on a file located on an NFS filesystem");
+> +	}
+> +
+>   	/* set up temp filename */
+>   	sprintf(tmpname, "fcntl4.%d", parent);
+>
+>
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
