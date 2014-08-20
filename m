@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xzhou@redhat.com>) id 1XJucd-0002Jl-Hq
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 01:23:31 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XK5RG-0005ot-Lx
+	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 12:56:30 +0000
 Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XJucb-0008EY-D1
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 01:23:31 +0000
-Received: from zmail22.collab.prod.int.phx2.redhat.com
-	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
-	by mx4-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id s7K1NNL5007851
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Aug 2014 21:23:23 -0400
-Date: Tue, 19 Aug 2014 21:23:22 -0400 (EDT)
-From: Xiong Zhou <xzhou@redhat.com>
-Message-ID: <1191661057.21837833.1408497802708.JavaMail.zimbra@redhat.com>
-In-Reply-To: <970276274.18779164.1407818238974.JavaMail.zimbra@redhat.com>
-References: <970276274.18779164.1407818238974.JavaMail.zimbra@redhat.com>
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XK5RD-0004Tl-VW
+	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 12:56:30 +0000
+Date: Wed, 20 Aug 2014 08:56:21 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <663056555.9870858.1408539381311.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1070499573.9869577.1408539206966.JavaMail.zimbra@redhat.com>
+References: <1070499573.9869577.1408539206966.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] Skip some dio/fcntl cases on NFS
+Subject: Re: [LTP] open12 failing on i386 with EOVERFLOW
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,353 +27,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
 
-Ping.
 
-Thanks,
-xzhou
+
+
 
 ----- Original Message -----
-> From: "Xiong Zhou" <xzhou@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, August 12, 2014 12:37:18 PM
-> Subject: [LTP] [PATCH v2] Skip some dio/fcntl cases on NFS
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "ltp-list" <ltp-list@lists.sf.net>
+> Sent: Wednesday, 20 August, 2014 2:53:26 PM
+> Subject: [LTP] open12 failing on i386 with EOVERFLOW
 > 
+> Hi,
 > 
-> According to description of NFS and directIO in open(2), especially
-> "The Linux NFS client places no alignment restrictions on
-> O_DIRECT I/O", ignore "odd count"/"non-aligned" read-write FAILs
-> in diotest4. Some dup code clean up btw.
+> I'm seeing following failure in this testcase on RHEL-6.5 Server i386 GA
+> distro:
 > 
-> According to nfs(5), NLM supports advisory file locks only. So skip
-> fcntl16 test if NFS.
+> # env PATH=`pwd`:$PATH ./open12
+> open12      1  TFAIL  :  open12.c:104: test O_APPEND for open failed
+> open12      2  TCONF  :  open12.c:123: test O_NOATIME flag for open needs
+> filesystems which is mounted without noatime and relatime
+> open12      3  TPASS  :  test O_CLOEXEC for open success
+> open12      4  TPASS  :  test O_LARGEFILE for open success
+> open12      0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmp/opexIqjV3)
+> failed: lstat(/tmp/opexIqjV3/large_file) failed; errno=75: Value too large
+> for defined data type
 > 
-> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
-> ---
->  testcases/kernel/io/direct_io/diotest4.c  | 148
->  ++++++++++++++----------------
->  testcases/kernel/syscalls/fcntl/fcntl16.c |   8 ++
->  2 files changed, 79 insertions(+), 77 deletions(-)
+
+Same issue in openat02:
+
+# env PATH=`pwd`:$PATH ./openat02
+openat02    1  TPASS  :  test O_APPEND for openat success
+openat02    2  TPASS  :  test O_CLOEXEC for openat success
+openat02    3  TPASS  :  test O_LARGEFILE for openat success
+openat02    4  TCONF  :  openat02.c:242: test O_NOATIME flag for openat needs filesystems which are mounted without noatime and relatime
+openat02    5  TPASS  :  test O_NOFOLLOW for openat success
+openat02    6  TPASS  :  test O_TRUNC for openat success
+openat02    0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmp/opeim4IKK) failed: lstat(/tmp/opeim4IKK/large_file) failed; errno=75: Value too large for defined data type
+
+
+> Since it's linked from library, adding -D_FILE_OFFSET_BITS=64 to this
+> testcase has
+> no effect.
 > 
-> diff --git a/testcases/kernel/io/direct_io/diotest4.c
-> b/testcases/kernel/io/direct_io/diotest4.c
-> index 10281bf..934d5b1 100644
-> --- a/testcases/kernel/io/direct_io/diotest4.c
-> +++ b/testcases/kernel/io/direct_io/diotest4.c
-> @@ -71,9 +71,11 @@
->  
->  #include "test.h"
->  #include "usctest.h"
-> +#include "tst_fs_type.h"
->  
->  char *TCID = "diotest4";	/* Test program identifier.    */
->  int TST_TOTAL = 17;		/* Total number of test conditions */
-> +int NO_NFS = 1;			/* Test on NFS or not */
->  
->  #ifdef O_DIRECT
->  
-> @@ -171,6 +173,16 @@ void prg_usage()
->  	exit(1);
+> One simple way to fix it would be to unlink it in test, so that
+> rmobj.c doesn't hit it.
+> 
+> $ diff -u open12.c /tmp/open12.c
+> --- open12.c	2014-08-14 17:46:33.052044613 +0200
+> +++ /tmp/open12.c	2014-08-20 14:48:35.655208417 +0200
+> @@ -221,6 +221,10 @@
+>  		tst_resm(TPASS, "test O_LARGEFILE for open success");
+>  		SAFE_CLOSE(cleanup, TEST_RETURN);
+>  	}
+> +
+> +	/* clean it up here, because lib/rmobj.c on 32bit will
+> +	 * hit EOVERFLOW in lstat() */
+> +	unlink(LARGE_FILE);
 >  }
 >  
-> +static void testcheck_end(int ret, int *failed, int *fail_count, char *msg)
-> +{
-> +	if (ret != 0) {
-> +		*failed = TRUE;
-> +		*fail_count++;
-> +		tst_resm(TFAIL, msg);
-> +	} else
-> +		tst_resm(TPASS, msg);
-> +}
-> +
->  static void setup(void);
->  static void cleanup(void);
->  static int fd1 = -1;
-> @@ -206,6 +218,10 @@ int main(int argc, char *argv[])
->  
->  	setup();
->  
-> +	/* On NFS or not */
-> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
-> +		NO_NFS = 0;
-> +
->  	/* Open file and fill, allocate for buffer */
->  	if ((fd = open(filename, O_DIRECT | O_RDWR | O_CREAT, 0666)) < 0) {
->  		tst_brkm(TBROK, cleanup, "open failed for %s: %s",
-> @@ -251,17 +267,41 @@ int main(int argc, char *argv[])
->  	/* Test-3: Odd count of read and write */
->  	offset = 0;
->  	count = 1;
-> +	l_fail = 0;
->  	lseek(fd, 0, SEEK_SET);
->  	if (write(fd, buf2, 4096) == -1) {
->  		tst_resm(TFAIL, "can't write to file %d", ret);
->  	}
-> -	ret = runtest_f(fd, buf2, offset, count, EINVAL, 3, "odd count");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "Odd count of read and write");
-> -	} else
-> -		tst_resm(TPASS, "Odd count of read and write");
-> +	if (lseek(fd, offset, SEEK_SET) < 0) {
-> +		if (errno != EINVAL) {
-> +			tst_resm(TFAIL, "lseek before read failed: %s",
-> +				 strerror(errno));
-> +			l_fail = TRUE;
-> +		}
-> +	} else {
-> +		ret = read(fd, buf2, count);
-> +		if ((ret >= 0 || errno != EINVAL) && NO_NFS) {
-> +			tst_resm(TFAIL, "read allows %s. returns %d: %s",
-> +				 "odd count", ret, strerror(errno));
-> +			l_fail = TRUE;
-> +		}
-> +	}
-> +	if (lseek(fd, offset, SEEK_SET) < 0) {
-> +		if (errno != EINVAL) {
-> +			tst_resm(TFAIL, "lseek before write failed: %s",
-> +				 strerror(errno));
-> +			l_fail = TRUE;
-> +		}
-> +	} else {
-> +		ret = write(fd, buf2, count);
-> +		if ((ret >= 0 || errno != EINVAL) && NO_NFS) {
-> +			tst_resm(TFAIL, "write allows %s.returns %d: %s",
-> +				 "odd count", ret, strerror(errno));
-> +			l_fail = TRUE;
-> +		}
-> +	}
-> +	testcheck_end(l_fail, &failed, &fail_count,
-> +				"Odd count of read and write");
->  	total++;
->  
->  	/* Test-4: Read beyond the file size */
-> @@ -290,12 +330,7 @@ int main(int argc, char *argv[])
->  	count = bufsize;
->  	newfd = -1;
->  	ret = runtest_f(newfd, buf2, offset, count, EBADF, 5, "negative fd");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "Invalid file descriptor");
-> -	} else
-> -		tst_resm(TPASS, "Invalid file descriptor");
-> +	testcheck_end(ret, &failed, &fail_count, "Invalid file descriptor");
->  	total++;
->  
->  	/* Test-6: Out of range file descriptor */
-> @@ -306,15 +341,10 @@ int main(int argc, char *argv[])
->  		failed = TRUE;
->  		tst_resm(TFAIL, "Out of range file descriptor");
->  	} else {
-> -		ret =
-> -		    runtest_f(newfd, buf2, offset, count, EBADF, 6,
-> +		ret = runtest_f(newfd, buf2, offset, count, EBADF, 6,
->  			      "out of range fd");
-> -		if (ret != 0) {
-> -			failed = TRUE;
-> -			fail_count++;
-> -			tst_resm(TFAIL, "Out of range file descriptor");
-> -		} else
-> -			tst_resm(TPASS, "Out of range file descriptor");
-> +		testcheck_end(ret, &failed, &fail_count,
-> +					"Out of range file descriptor");
->  	}
->  	close(newfd);
->  	total++;
-> @@ -327,12 +357,7 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  	}
->  	ret = runtest_f(fd, buf2, offset, count, EBADF, 7, "closed fd");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "Closed file descriptor");
-> -	} else
-> -		tst_resm(TPASS, "Closed file descriptor");
-> +	testcheck_end(ret, &failed, &fail_count, "Closed file descriptor");
->  	total++;
->  
->  	/* Test-9: removed */
-> @@ -345,12 +370,8 @@ int main(int argc, char *argv[])
->  		tst_resm(TCONF, "Direct I/O on /dev/null is not supported");
->  	} else {
->  		ret = runtest_s(newfd, buf2, offset, count, 9, "/dev/null");
-> -		if (ret != 0) {
-> -			failed = TRUE;
-> -			fail_count++;
-> -			tst_resm(TFAIL, "character device read, write");
-> -		} else
-> -			tst_resm(TPASS, "character device read, write");
-> +		testcheck_end(ret, &failed, &fail_count,
-> +					"character device read, write");
->  	}
->  	close(newfd);
->  	total++;
-> @@ -373,12 +394,8 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  	}
->  	ret = runtest_s(fd, buf2, offset, count, 10, "mmapped file");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "read, write to a mmaped file");
-> -	} else
-> -		tst_resm(TPASS, "read, write to a mmaped file");
-> +	testcheck_end(ret, &failed, &fail_count,
-> +				"read, write to a mmaped file");
->  	total++;
->  
->  	/* Test-11: read, write to an unmaped file with munmap */
-> @@ -387,12 +404,8 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  	}
->  	ret = runtest_s(fd, buf2, offset, count, 11, "unmapped file");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "read, write to an unmapped file");
-> -	} else
-> -		tst_resm(TPASS, "read, write to an unmapped file");
-> +	testcheck_end(ret, &failed, &fail_count,
-> +				"read, write to an unmapped file");
->  	close(fd);
->  	total++;
->  
-> @@ -459,7 +472,7 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  		l_fail = TRUE;
->  	} else {
-> -		if ((ret = read(fd, buf2 + 1, count)) != -1) {
-> +		if (((ret = read(fd, buf2 + 1, count)) != -1) && NO_NFS) {
->  			tst_resm(TFAIL,
->  				 "allows read nonaligned buf. returns %d: %s",
->  				 ret, strerror(errno));
-> @@ -471,19 +484,15 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  		l_fail = TRUE;
->  	} else {
-> -		if ((ret = write(fd, buf2 + 1, count)) != -1) {
-> +		if (((ret = write(fd, buf2 + 1, count)) != -1) && NO_NFS) {
->  			tst_resm(TFAIL,
->  				 "allows write nonaligned buf. returns %d: %s",
->  				 ret, strerror(errno));
->  			l_fail = TRUE;
->  		}
->  	}
-> -	if (l_fail) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "read, write with non-aligned buffer");
-> -	} else
-> -		tst_resm(TPASS, "read, write with non-aligned buffer");
-> +	testcheck_end(l_fail, &failed, &fail_count,
-> +				"read, write with non-aligned buffer");
->  	total++;
->  	close(fd);
->  
-> @@ -500,8 +509,7 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  		l_fail = TRUE;
->  	} else {
-> -		ret =
-> -		    read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
-> +		ret = read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
->  			 count);
->  		if (ret >= 0 || errno != EFAULT) {
->  			tst_resm(TFAIL,
-> @@ -515,8 +523,7 @@ int main(int argc, char *argv[])
->  			 strerror(errno));
->  		l_fail = TRUE;
->  	} else {
-> -		ret =
-> -		    write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
-> +		ret = write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
->  			  count);
->  		if (ret < 0) {
->  			tst_resm(TFAIL,
-> @@ -525,12 +532,8 @@ int main(int argc, char *argv[])
->  			l_fail = TRUE;
->  		}
->  	}
-> -	if (l_fail) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "read, write buffer in read-only space");
-> -	} else
-> -		tst_resm(TPASS, "read, write buffer in read-only space");
-> +	testcheck_end(l_fail, &failed, &fail_count,
-> +				"read, write buffer in read-only space");
->  	close(fd);
->  	total++;
->  
-> @@ -545,15 +548,10 @@ int main(int argc, char *argv[])
->  		tst_brkm(TBROK | TERRNO, cleanup,
->  			 "open(%s, O_DIRECT|O_RDWR) failed", filename);
->  	}
-> -	ret =
-> -	    runtest_f(fd, buf1, offset, count, EFAULT, 16,
-> +	ret = runtest_f(fd, buf1, offset, count, EFAULT, 16,
->  		      " nonexistant space");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "read, write in non-existant space");
-> -	} else
-> -		tst_resm(TPASS, "read, write in non-existant space");
-> +	testcheck_end(ret, &failed, &fail_count,
-> +				"read, write in non-existant space");
->  	total++;
->  	close(fd);
->  
-> @@ -565,12 +563,8 @@ int main(int argc, char *argv[])
->  			 "open(%s, O_DIRECT|O_RDWR|O_SYNC failed)", filename);
->  	}
->  	ret = runtest_s(fd, buf2, offset, count, 17, "opened with O_SYNC");
-> -	if (ret != 0) {
-> -		failed = TRUE;
-> -		fail_count++;
-> -		tst_resm(TFAIL, "read, write for file with O_SYNC");
-> -	} else
-> -		tst_resm(TPASS, "read, write for file with O_SYNC");
-> +	testcheck_end(ret, &failed, &fail_count,
-> +				"read, write for file with O_SYNC");
->  	total++;
->  	close(fd);
->  
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c
-> b/testcases/kernel/syscalls/fcntl/fcntl16.c
-> index 44b6a80..7dba6ea 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
-> @@ -51,6 +51,8 @@
->  #include <sys/types.h>
->  #include <sys/wait.h>
->  
-> +#include "tst_fs_type.h"
-> +
->  #define SKIPVAL 0x0f00
->  //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
->  #define SKIP 0,0,0L,0L,0
-> @@ -412,6 +414,12 @@ void setup(void)
->  
->  	tst_tmpdir();
->  
-> +	/* On NFS or not */
-> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
-> +		tst_brkm(TCONF, cleanup, "Cannot test madatory locking "
-> +			"on a file located on an NFS filesystem");
-> +	}
-> +
->  	/* set up temp filename */
->  	sprintf(tmpname, "fcntl4.%d", parent);
->  
-> --
-> 1.8.3.1
+>  static void cleanup(void)
+> 
+> Any thoughts?
+> 
+> Regards,
+> Jan
 > 
 > ------------------------------------------------------------------------------
+> Slashdot TV.
+> Video for Nerds.  Stuff that matters.
+> http://tv.slashdot.org/
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
