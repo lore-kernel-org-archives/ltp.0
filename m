@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XK5jg-0006RU-57
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 13:15:32 +0000
-Date: Wed, 20 Aug 2014 15:14:31 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XK8uP-0002Sy-2E
+	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 16:38:49 +0000
+Date: Wed, 20 Aug 2014 18:37:48 +0200
 From: chrubis@suse.cz
-Message-ID: <20140820131431.GA22299@rei>
-References: <e20fc51f1c2cd8c19583050135c50b807677ee40.1408527528.git.jstancek@redhat.com>
+Message-ID: <20140820163748.GC23887@rei>
+References: <2034790660.10002643.1408549800988.JavaMail.zimbra@redhat.com>
+	<2040651060.10018391.1408550993826.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <e20fc51f1c2cd8c19583050135c50b807677ee40.1408527528.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] truncate03: impose max file size limit for EFBIG
- test
+In-Reply-To: <2040651060.10018391.1408550993826.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] sendfile06_64 failure on i386
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,72 +26,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Using LLONG_MAX as maximum can fail on XFS, because here the maximum
-> file size is 2^63-1, so this test may unexpectedly succeed.
-
-I've found this failure on ext3 on SLES as well and tested that the
-patch fixes the problem.
-
-> ---
->  testcases/kernel/syscalls/truncate/truncate03.c |   18 +++++++++++++++++-
->  1 files changed, 17 insertions(+), 1 deletions(-)
+> this testcase is currently failing on i386:
 > 
-> diff --git a/testcases/kernel/syscalls/truncate/truncate03.c b/testcases/kernel/syscalls/truncate/truncate03.c
-> index ed5073d..54b7d3c 100644
-> --- a/testcases/kernel/syscalls/truncate/truncate03.c
-> +++ b/testcases/kernel/syscalls/truncate/truncate03.c
-> @@ -50,6 +50,7 @@
->  #include <string.h>
->  #include <signal.h>
->  #include <pwd.h>
-> +#include <sys/resource.h>
->  
->  #include "test.h"
->  #include "usctest.h"
-> @@ -65,6 +66,7 @@
->  #define NEW_MODE	S_IRUSR | S_IRGRP | S_IROTH
->  #define DIR_MODE	S_IRWXU
->  #define TRUNC_LEN	256
-> +#define MAX_FSIZE	(16*1024*1024)
->  
->  static char long_pathname[PATH_MAX + 2];
->  
-> @@ -82,7 +84,7 @@ static struct test_case_t {
->  	{ long_pathname, TRUNC_LEN, ENAMETOOLONG },
->  	{ "", TRUNC_LEN, ENOENT },
->  	{ TEST_DIR1, TRUNC_LEN, EISDIR },
-> -	{ TEST_FILE3, LLONG_MAX, EFBIG },
-> +	{ TEST_FILE3, MAX_FSIZE*2, EFBIG },
->  	{ TEST_SYM1, TRUNC_LEN, ELOOP }
->  };
->  
-> @@ -124,6 +126,8 @@ void setup(void)
->  {
->  	struct passwd *ltpuser;
->  	char *bad_addr;
-> +	struct rlimit rlim;
-> +	sigset_t sigset;
->  
->  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->  
-> @@ -156,6 +160,18 @@ void setup(void)
->  
->  	SAFE_SYMLINK(cleanup, TEST_SYM1, TEST_SYM2);
->  	SAFE_SYMLINK(cleanup, TEST_SYM2, TEST_SYM1);
-> +
-> +	rlim.rlim_cur = MAX_FSIZE;
-> +	rlim.rlim_max = MAX_FSIZE;
-> +	TEST(setrlimit(RLIMIT_FSIZE, &rlim));
-> +	if (TEST_RETURN != 0)
-> +		tst_brkm(TBROK | TTERRNO, cleanup, "setrlimit");
+> sendfile06_64    1  TFAIL  :  sendfile06.c:90: sendfile(2) failed to return expected value, expected: 17592186044442, got: 26
+> 
+> It's using SAFE_FSTAT from libltp, which is not compiled with 
+>   -D_FILE_OFFSET_BITS=64 -DOFF_T=__off64_t as the testcase.
+> 
+> The testcase can pass if I turn SAFE_FSTAT into plain fstat:
+> 
+> -       SAFE_FSTAT(cleanup, fd, &sb);
+> +       TEST(fstat(fd, &sb));
+> +       if (TEST_RETURN != 0)
+> +               tst_brkm(TBROK | TTERRNO, cleanup, "fstat");
+> 
+> but I'm wondering if we can fix this at global level, so users
+> of safe_macros don't have to worry about this.
 
-We have SAFE_SETRLIMIT() but that is merely cometic change.
+I guess that turning the safe_fstat() into static inline function and
+putting it into the safe_macros.h header should fix the issue. That way
+the fstat would use struct stat64 corectly if corresponding macros are
+defined.
 
-Otherwise it's acked and tested, and as it fixes testcase regression it
-should go in before the release.
+Anything else would need more ifdefs and would be fairly tricky to
+maintain.
 
 -- 
 Cyril Hrubis
