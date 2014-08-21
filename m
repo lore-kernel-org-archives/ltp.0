@@ -1,35 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1XHAjx-0000WC-15
-	for ltp-list@lists.sourceforge.net; Tue, 12 Aug 2014 11:59:45 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XHAjw-00026U-0H
-	for ltp-list@lists.sourceforge.net; Tue, 12 Aug 2014 11:59:44 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s7CBxaqE001977
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 11:59:38 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s7CBxag6012276
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 11:59:36 GMT
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s7CBxZdI027161
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 Aug 2014 11:59:35 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 12 Aug 2014 15:59:30 +0400
-Message-Id: <1407844770-15011-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <20140812112652.GA1656@rei.suse.cz>
-References: <20140812112652.GA1656@rei.suse.cz>
-Subject: [LTP] [PATCH] rt_sigaction.h: define HAVE_SA_RESTORER for most
-	platforms
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XKTgO-0005AM-Ra
+	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 14:49:44 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XKTgN-0004Ur-Hc
+	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 14:49:44 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7LEnauW008932
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Aug 2014 10:49:36 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s7LEnZhS030410
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Aug 2014 10:49:36 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 21 Aug 2014 16:49:32 +0200
+Message-Id: <6ba0b8b6c7864f4608c263f59e75aeb1f5fe8030.1408632251.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] lib/rmobj: avoid using lstat
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,60 +36,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-On some platforms LTP fails to compile, because (struct sigaction)
-doesn't have .sa_restorer member. For example - ia64.
+rmobj() is failing for _64 version of testcases, which use large
+files, where it hits EOVERFLOW in lstat():
 
-To overcome such failures we employ HAVE_SA_RESTORER define.
+open12      0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmp/opexIqjV3) failed:
+       lstat(/tmp/opexIqjV3/large_file) failed; errno=75:
+       Value too large for defined data type
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Avoid using any *stat functions, instead try to open "obj"
+with open(O_DIRECTORY | O_NOFOLLOW,..). If it succeeds,
+we know we are dealing with directory, otherwise assume
+it's a file or symlink.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
-Verified on SPARC, x86_64, i386.
+ lib/rmobj.c |   15 +++++----------
+ 1 files changed, 5 insertions(+), 10 deletions(-)
 
-
- include/lapi/rt_sigaction.h |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
-
-diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
-index 9ea5e0f..46f6a50 100644
---- a/include/lapi/rt_sigaction.h
-+++ b/include/lapi/rt_sigaction.h
-@@ -40,6 +40,11 @@ struct kernel_sigaction {
- 	sigset_t sa_mask;
- };
+diff --git a/lib/rmobj.c b/lib/rmobj.c
+index 9b6a643..9322fa9 100644
+--- a/lib/rmobj.c
++++ b/lib/rmobj.c
+@@ -84,6 +84,7 @@
+ #include <limits.h>		/* for PATH_MAX */
+ #include <sys/types.h>		/* for opendir(), readdir(), closedir(), stat() */
+ #include <sys/stat.h>		/* for [l]stat() */
++#include <fcntl.h>
+ #include <dirent.h>		/* for opendir(), readdir(), closedir() */
+ #include <unistd.h>		/* for rmdir(), unlink() */
+ #include "rmobj.h"
+@@ -98,19 +99,13 @@ int rmobj(char *obj, char **errmsg)
+ 	char dirobj[PATH_MAX];	/* object inside directory to modify */
+ 	struct stat statbuf;	/* used to hold stat information */
+ 	static char err_msg[1024];	/* error message */
++	int fd;
  
-+/* This macro marks if (struct sigaction) has .sa_restorer member */
-+#if !defined(__ia64__) && !defined(__alpha__) && !defined(__hppa__)
-+# define HAVE_SA_RESTORER
-+#endif
-+
- #ifdef __x86_64__
+ 	/* Determine the file type */
+-	if (lstat(obj, &statbuf) < 0) {
+-		if (errmsg != NULL) {
+-			sprintf(err_msg, "lstat(%s) failed; errno=%d: %s",
+-				obj, errno, SYSERR);
+-			*errmsg = err_msg;
+-		}
+-		return -1;
+-	}
  
- /*
-@@ -59,7 +64,6 @@ struct kernel_sigaction {
-  * (struct sigaction).sa_restorer for this architecture.
-  */
- #undef SA_RESTORER
--#define HAVE_SA_RESTORER
- #define SA_RESTORER     0x04000000
+-	/* Take appropriate action, depending on the file type */
+-	if ((statbuf.st_mode & S_IFMT) == S_IFDIR) {
++	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
++	if (fd != -1) {
++		close(fd);
+ 		/* object is a directory */
  
- void (*restore_rt)(void);
-@@ -203,7 +207,9 @@ static int ltp_rt_sigaction(int signum, const struct sigaction *act,
- 			memcpy(&oact->sa_mask, &koact.sa_mask,
- 				sizeof(sigset_t));
- 			oact->sa_flags = koact.sa_flags;
-+#ifdef HAVE_SA_RESTORER
- 			oact->sa_restorer = koact.sa_restorer;
-+#endif
- 		}
- 	}
- 
+ 		/* Do NOT perform the request if the directory is "/" */
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
