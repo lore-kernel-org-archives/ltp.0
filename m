@@ -1,24 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <caspar@casparzhang.com>) id 1XF4FD-0006QG-I6
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 16:39:19 +0000
-Received: from mail-pd0-f182.google.com ([209.85.192.182])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XF4F7-00085Q-HD
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 16:39:19 +0000
-Received: by mail-pd0-f182.google.com with SMTP id fp1so3593441pdb.13
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Aug 2014 09:39:04 -0700 (PDT)
-Message-ID: <53E25A90.40303@casparzhang.com>
-Date: Thu, 07 Aug 2014 00:40:48 +0800
-From: Caspar Zhang <caspar@casparzhang.com>
-MIME-Version: 1.0
-References: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
-In-Reply-To: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2] madvise05: new testcase for Oops in
-	madvise_willneed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XKNza-00054R-Uk
+	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 08:45:10 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XKNzY-0006uu-QA
+	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 08:45:10 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s7L8j1iV012338
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Aug 2014 08:45:02 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s7L8j1kr006250
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Aug 2014 08:45:01 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s7L8j1O2006223
+	for <ltp-list@lists.sourceforge.net>; Thu, 21 Aug 2014 08:45:01 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 21 Aug 2014 12:44:54 +0400
+Message-Id: <1408610694-12939-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [RFC/PATCH] ltpstress.sh: added cmdline to set the block
+	device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,164 +37,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On 08/06/2014 04:31 PM, Jan Stancek wrote:
-> This is a regression test for madvise(2) system call. It tests
-> kernel for NULL ptr deref Oops fixed by:
->    commit ee53664bda169f519ce3c6a22d378f0b946c8178
->    Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->    Date:   Fri Dec 20 15:10:03 2013 +0200
->      mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-Acked-by: Caspar Zhang <caspar@casparzhang.com>
+I think it's not needed to use set_block_device(),
+create_block_device() from runltp, because their logic
+is in tst_acquire_device()/tst_release_device() now.
 
-> ---
-> Changes in v2:
-> 1. exclude this test from kernels < 3.9.
->     Older kernels do not support swap file prefetch,
->     which caused madvise to return EBADF. And if backing file is
->     added to mmap, reproducer no longer works.
->
->   runtest/syscalls                              |    1 +
->   testcases/kernel/syscalls/.gitignore          |    1 +
->   testcases/kernel/syscalls/madvise/madvise05.c |   90 +++++++++++++++++++++++++
->   3 files changed, 92 insertions(+), 0 deletions(-)
->   create mode 100644 testcases/kernel/syscalls/madvise/madvise05.c
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 5e6e0f4..142c350 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -715,6 +715,7 @@ madvise01 madvise01
->   madvise02 madvise02
->   madvise03 madvise03
->   madvise04 madvise04
-> +madvise05 madvise05
->
->   newuname01 newuname01
->
-> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-> index fb2425e..fd52217 100644
-> --- a/testcases/kernel/syscalls/.gitignore
-> +++ b/testcases/kernel/syscalls/.gitignore
-> @@ -479,6 +479,7 @@
->   /madvise/madvise02
->   /madvise/madvise03
->   /madvise/madvise04
-> +/madvise/madvise05
->   /mallopt/mallopt01
->   /mbind/mbind01
->   /memcmp/memcmp01
-> diff --git a/testcases/kernel/syscalls/madvise/madvise05.c b/testcases/kernel/syscalls/madvise/madvise05.c
-> new file mode 100644
-> index 0000000..384dea7
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/madvise/madvise05.c
-> @@ -0,0 +1,90 @@
-> +/*
-> + *  Copyright (c) Linux Test Project, 2014
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + *  This program is distributed in the hope that it will be useful,
-> + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *  GNU Library General Public License for more details.
-> + */
-> +/*
-> + * This is a regression test for madvise(2) system call. It tests kernel
-> + * for NULL ptr deref Oops fixed by:
-> + *   commit ee53664bda169f519ce3c6a22d378f0b946c8178
-> + *   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> + *   Date:   Fri Dec 20 15:10:03 2013 +0200
-> + *     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
-> + *
-> + * On buggy kernel with CONFIG_TRANSPARENT_HUGEPAGE=y CONFIG_DEBUG_LOCK_ALLOC=y
-> + * this testcase should produce Oops and/or be killed. On fixed/good kernel
-> + * this testcase runs to completion (retcode is 0)
-> + */
-> +
-> +#include <sys/mman.h>
-> +#include <errno.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +
-> +#define ALLOC_SIZE (32 * 1024 * 1024)
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +char *TCID = "madvise05";
-> +int TST_TOTAL = 1;
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	const char *msg = NULL;
-> +	void *p;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		p = SAFE_MMAP(cleanup, NULL, ALLOC_SIZE, PROT_READ,
-> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
-> +		TEST(mprotect(p, ALLOC_SIZE, PROT_NONE));
-> +		if (TEST_RETURN == -1)
-> +			tst_brkm(TBROK | TTERRNO, cleanup, "mprotect failed");
-> +		TEST(madvise(p, ALLOC_SIZE, MADV_WILLNEED));
-> +		SAFE_MUNMAP(cleanup, p, ALLOC_SIZE);
-> +
-> +		if (TEST_RETURN == 0)
-> +			continue;
-> +
-> +		if (TEST_ERRNO == EBADF)
-> +			tst_brkm(TCONF, cleanup, "CONFIG_SWAP=n");
-> +		else
-> +			tst_brkm(TBROK | TTERRNO, cleanup, "madvise failed");
-> +	}
-> +
-> +	tst_resm(TPASS, "issue has not been reproduced");
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	if (tst_kvercmp(3, 9, 0) < 0)
-> +		tst_brkm(TCONF, NULL, "madvise(MADV_WILLNEED) swap file "
-> +			"prefetch available only since 3.9");
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +}
->
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testscripts/ltpstress.sh |   13 +++++++++++--
+ 1 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
+index a0dc088..39a5caf 100755
+--- a/testscripts/ltpstress.sh
++++ b/testscripts/ltpstress.sh
+@@ -58,7 +58,8 @@ usage()
+ {
+ 
+ 	cat <<-END >&2
+-	usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ] [ -n ] [ -p ] [ -q ] [ -t duration ] [ -x TMPDIR ] [ [-S]|[-T] ]
++    usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ]
++    [ -n ] [ -p ] [ -q ] [ -t duration ] [ -x TMPDIR ] [-b DEVICE] [-B LTP_DEV_FS_TYPE] [ [-S]|[-T] ]
+ 
+     -d datafile     Data file for 'sar' or 'top' to log to. Default is "/tmp/ltpstress.data".
+     -i # (in sec)   Interval that 'sar' or 'top' should take snapshots. Default is 10 seconds.
+@@ -72,6 +73,10 @@ usage()
+     -T              Use LTP's modified 'top' tool to measure data.
+     -t duration     Execute the testsuite for given duration in hours. Default is 24.
+     -x TMPDIR       Directory where temporary files will be created.
++    -b DEVICE       Some tests require an unmounted block device
++                    to run correctly. If DEVICE is not set, a loop device is
++                    created and used automatically.
++    -B LTP_DEV_FS_TYPE The file system of DEVICE.
+ 
+ 	example: ${0##*/} -d /tmp/sardata -l /tmp/ltplog.$$ -m 128 -t 24 -S
+ 	END
+@@ -88,7 +93,7 @@ check_memsize()
+   leftover_memsize=$memsize
+ }
+ 
+-while getopts d:hi:I:l:STt:m:npqx:\? arg
++while getopts d:hi:I:l:STt:m:npqx:b:B:\? arg
+ do  case $arg in
+ 
+ 	d)	datafile="$OPTARG";;
+@@ -138,6 +143,10 @@ do  case $arg in
+ 
+ 	x)	export TMPBASE=$(readlink -f ${OPTARG});;
+ 
++	b)	export LTP_DEV=${OPTARG};;
++
++	B)	export LTP_DEV_FS_TYPE=${OPTARG};;
++
+         \?)     echo "Help info:"
+ 		usage;;
+         esac
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
